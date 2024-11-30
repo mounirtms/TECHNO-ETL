@@ -1,0 +1,56 @@
+.status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    width: max-content;
+    text-align: right;
+    color: #fff;
+    white-space: wrap; 
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 0.875rem;
+    text-transform: capitalize;
+}
+
+.status.inProgress {
+    background-color: #FF9800;
+}
+
+.status.pending {
+    background-color: #FF5722;
+}
+
+.status.delivered {
+    background-color: #4CAF50;
+}
+
+.status.canceled {
+    background-color: #9E9E9E;
+}
+
+.status.closed {
+    background-color: #3F51B5;
+}
+
+.status.fraud {
+    background-color: #F44336;
+}
+
+.status.unknown {
+    background-color: #9E9E9E;
+}
+
+.status.confirmationPending {
+    background-color: #3bffc4;
+}
+
+.status.deliveryInProgress {
+    background-color: #FFC107;
+}
+
+.status.deliveryConfirmed {
+    background-color: #009688;
+}
+
+.status.orderCompleted {
+    background-color: #4CAF50;
+}

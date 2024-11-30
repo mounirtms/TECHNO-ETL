@@ -1,0 +1,292 @@
+[
+    {
+        "name": "Adrar",
+        "arname": "أدرار",
+        "code": "01"
+    },
+    {
+        "name": "Chlef",
+        "arname": " الشلف",
+        "code": "02"
+    },
+    {
+        "name": "Laghouat",
+        "arname": "الأغواط",
+        "code": "03"
+    },
+    {
+        "name": "Oum El Bouaghi",
+        "arname": "أم البواقي",
+        "code": "04"
+    },
+    {
+        "name": "Batna",
+        "arname": "باتنة",
+        "code": "05"
+    },
+    {
+        "name": "Béjaïa",
+        "arname": " بجاية",
+        "code": "06"
+    },
+    {
+        "name": "Biskra",
+        "arname": "بسكرة",
+        "code": "07"
+    },
+    {
+        "name": "Béchar",
+        "arname": "بشار",
+        "code": "08"
+    },
+    {
+        "name": "Blida",
+        "arname": "البليدة",
+        "code": "09"
+    },
+    {
+        "name": "Bouira",
+        "arname": "البويرة",
+        "code": "10"
+    },
+    {
+        "name": "Tamanrasset",
+        "arname": "تمنراست",
+        "code": "11"
+    },
+    {
+        "name": "Tébessa",
+        "arname": "تبسة",
+        "code": "12"
+    },
+    {
+        "name": "Tlemcen",
+        "arname": "تلمسان",
+        "code": "13"
+    },
+    {
+        "name": "Tiaret",
+        "arname": "تيارت",
+        "code": "14"
+    },
+    {
+        "name": "Tizi Ouzou",
+        "arname": "تيزي وزو",
+        "code": "15"
+    },
+    {
+        "name": "Alger",
+        "arname": "الجزائر",
+        "code": "16"
+    },
+    {
+        "name": "Djelfa",
+        "arname": "الجلفة",
+        "code": "17"
+    },
+    {
+        "name": "Jijel",
+        "arname": "جيجل",
+        "code": "18"
+    },
+    {
+        "name": "Sétif",
+        "arname": "سطيف",
+        "code": "19"
+    },
+    {
+        "name": "Saïda",
+        "arname": "سعيدة",
+        "code": "20"
+    },
+    {
+        "name": "Skikda",
+        "arname": "سكيكدة",
+        "code": "21"
+    },
+    {
+        "name": "Sidi Bel Abbès",
+        "arname": "سيدي بلعباس",
+        "code": "22"
+    },
+    {
+        "name": "Annaba",
+        "arname": "عنابة",
+        "code": "23"
+    },
+    {
+        "name": "Guelma",
+        "arname": "قالمة",
+        "code": "24"
+    },
+    {
+        "name": "Constantine",
+        "arname": "قسنطينة",
+        "code": "25"
+    },
+    {
+        "name": "Médéa",
+        "arname": "المدية",
+        "code": "26"
+    },
+    {
+        "name": "Mostaganem",
+        "arname": "مستغانم",
+        "code": "27"
+    },
+    {
+        "name": "M'Sila",
+        "arname": "المسيلة",
+        "code": "28"
+    },
+    {
+        "name": "Mascara",
+        "arname": "معسكر",
+        "code": "29"
+    },
+    {
+        "name": "Ouargla",
+        "arname": "ورقلة",
+        "code": "30"
+    },
+    {
+        "name": "Oran",
+        "arname": "وهران",
+        "code": "31"
+    },
+    {
+        "name": "El Bayadh",
+        "arname": "البيض",
+        "code": "32"
+    },
+    {
+        "name": "Illizi",
+        "arname": "إليزي",
+        "code": "33"
+    },
+    {
+        "name": "Bordj Bou Arreridj",
+        "arname": "برج بوعريريج",
+        "code": "34"
+    },
+    {
+        "name": "Boumerdès",
+        "arname": "بومرداس",
+        "code": "35"
+    },
+    {
+        "name": "El Tarf",
+        "arname": "الطارف",
+        "code": "36"
+    },
+    {
+        "name": "Tindouf",
+        "arname": "تندوف",
+        "code": "37"
+    },
+    {
+        "name": "Tissemsilt",
+        "arname": "تيسمسيلت",
+        "code": "38"
+    },
+    {
+        "name": "El Oued",
+        "arname": "الوادي",
+        "code": "39"
+    },
+    {
+        "name": "Khenchela",
+        "arname": "خنشلة",
+        "code": "40"
+    },
+    {
+        "name": "Souk Ahras",
+        "arname": "سوق أهراس",
+        "code": "41"
+    },
+    {
+        "name": "Tipaza",
+        "arname": "تيبازة",
+        "code": "42"
+    },
+    {
+        "name": "Mila",
+        "arname": "ميلة",
+        "code": "43"
+    },
+    {
+        "name": "Aïn Defla",
+        "arname": "عين الدفلة",
+        "code": "44"
+    },
+    {
+        "name": "Naâma",
+        "arname": "النعامة",
+        "code": "45"
+    },
+    {
+        "name": "Aïn Témouchent",
+        "arname": "عين تيموشنت",
+        "code": "46"
+    },
+    {
+        "name": "Ghardaïa",
+        "arname": "غرداية",
+        "code": "47"
+    },
+    {
+        "name": "Relizane",
+        "arname": "غليزان",
+        "code": "48"
+    },
+    {
+        "name": "Timimoun",
+        "arname": "تيميمون",
+        "code": "49"
+    },
+    {
+        "name": "Bordj Badji Mokhtar",
+        "arname": "برج باجي مختار",
+        "code": "50"
+    },
+    {
+        "name": "Ouled Djellal",
+        "arname": "أولاد جلال",
+        "code": "51"
+    },
+    {
+        "name": "Béni Abbès",
+        "arname": "بني عباس",
+        "code": "52"
+    },
+    {
+        "name": "In Salah",
+        "arname": "عين صالح",
+        "code": "53"
+    },
+    {
+        "name": "In Guezzam",
+        "arname": "عين قزام",
+        "code": "54"
+    },
+    {
+        "name": "Touggourt",
+        "arname": "تقرت",
+        "code": "55"
+    },
+    {
+        "name": "Djanet",
+        "arname": "جانت",
+        "code": "56"
+    },
+    {
+        "name": "El Meghaier",
+        "arname": "المغير",
+        "code": "57"
+    },
+    {
+        "name": "El Menia",
+        "arname": "المنيعة",
+        "code": "58"
+    }
+]

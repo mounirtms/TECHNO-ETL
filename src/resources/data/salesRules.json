@@ -1,0 +1,1222 @@
+[
+    {
+        "rule_id": 1,
+        "name": "-10% si plus de 3000 DA",
+        "store_labels": [
+            {
+                "store_id": 0,
+                "store_label": "Gagnez -10% de remise, pour chaque achat de 3000 DA ou plus."
+            }
+        ],
+        "description": "",
+        "website_ids": [
+            1
+        ],
+        "customer_group_ids": [
+            0,
+            1,
+            2,
+            3
+        ],
+        "from_date": "2021-04-26",
+        "to_date": "2021-05-14",
+        "uses_per_customer": 0,
+        "is_active": false,
+        "condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Combine",
+            "conditions": [
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Address",
+                    "operator": ">=",
+                    "attribute_name": "base_subtotal",
+                    "value": "3000"
+                }
+            ],
+            "aggregator_type": "all",
+            "operator": null,
+            "value": "1"
+        },
+        "action_condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product\\Combine",
+            "conditions": [
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "!=",
+                    "attribute_name": "sku",
+                    "value": "B0000001, B0000002",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                }
+            ],
+            "aggregator_type": "any",
+            "operator": null,
+            "value": "1"
+        },
+        "stop_rules_processing": false,
+        "is_advanced": true,
+        "sort_order": 0,
+        "simple_action": "by_percent",
+        "discount_amount": 10,
+        "discount_step": 1,
+        "apply_to_shipping": false,
+        "times_used": 5,
+        "is_rss": false,
+        "coupon_type": "NO_COUPON",
+        "use_auto_generation": false,
+        "uses_per_coupon": 0,
+        "simple_free_shipping": "0",
+        "extension_attributes": {
+            "promo_banners_lite": [
+                {
+                    "entity_id": 1,
+                    "salesrule_id": 1,
+                    "banner_type": "0"
+                },
+                {
+                    "entity_id": 2,
+                    "salesrule_id": 1,
+                    "banner_type": "1"
+                },
+                {
+                    "entity_id": 3,
+                    "salesrule_id": 1,
+                    "banner_type": "2"
+                }
+            ],
+            "banner_product_sku": "",
+            "show_banner_for": 0,
+            "ampromo_rule": {
+                "sku": "",
+                "type": 0,
+                "after_product_banner_show_gift_images": 0,
+                "after_product_banner_show_gift_name": false,
+                "top_banner_show_gift_images": 0,
+                "top_banner_show_gift_name": false,
+                "minimal_items_price": 0,
+                "apply_tax": 0,
+                "apply_shipping": 0
+            },
+            "amrules": {
+                "promo_cats": "",
+                "promo_skus": "",
+                "apply_discount_to": "asc",
+                "eachm": "0",
+                "priceselector": 0,
+                "nqty": "0",
+                "max_discount": "0",
+                "enable_general_skip_settings": true,
+                "skip_rule": "",
+                "use_for": 0
+            },
+            "limit": 0,
+            "count": 0
+        }
+    },
+    {
+        "rule_id": 2,
+        "name": "Acheter un sacados tiger garçon, gagner une trousse remplie gratuite",
+        "store_labels": [
+            {
+                "store_id": 0,
+                "store_label": "Promo Trousse Gratuite pour Sacados Tiger"
+            },
+            {
+                "store_id": 1,
+                "store_label": "Promo Trousse Gratuite pour Sacados Tiger"
+            }
+        ],
+        "description": "Should buy 1 specified product\r\n\r\n        If  ALL  of these conditions are  TRUE :\r\n  Category  is  320    \r\n    \r\nTo get 1 product  of each products \"TROUSSE REMPLIE GRATUITE DE 3 OU 4 COMPARTIMENTS GARÇON \"TIGER\" REF: GT/PPR-2\" for free\r\nYour Rule will be triggered automatically only First Time",
+        "website_ids": [
+            1
+        ],
+        "customer_group_ids": [
+            0,
+            1,
+            2,
+            3
+        ],
+        "from_date": "2021-08-30",
+        "to_date": "2021-10-31",
+        "uses_per_customer": 0,
+        "is_active": false,
+        "condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Combine",
+            "aggregator_type": "all",
+            "operator": null,
+            "value": true
+        },
+        "action_condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product\\Combine",
+            "conditions": [
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "==",
+                    "attribute_name": "category_ids",
+                    "value": "320",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                }
+            ],
+            "aggregator_type": "all",
+            "operator": null,
+            "value": "1"
+        },
+        "stop_rules_processing": false,
+        "is_advanced": true,
+        "sort_order": 0,
+        "simple_action": "ampromo_items",
+        "discount_amount": 1,
+        "discount_qty": 1,
+        "discount_step": 1,
+        "apply_to_shipping": false,
+        "times_used": 4,
+        "is_rss": false,
+        "coupon_type": "NO_COUPON",
+        "use_auto_generation": false,
+        "uses_per_coupon": 0,
+        "simple_free_shipping": "0",
+        "extension_attributes": {
+            "promo_banners_lite": [
+                {
+                    "entity_id": 7,
+                    "salesrule_id": 2,
+                    "banner_type": "0"
+                },
+                {
+                    "entity_id": 8,
+                    "salesrule_id": 2,
+                    "banner_type": "1"
+                },
+                {
+                    "entity_id": 9,
+                    "salesrule_id": 2,
+                    "banner_type": "2"
+                }
+            ],
+            "banner_product_sku": "",
+            "show_banner_for": 0,
+            "ampromo_rule": {
+                "sku": "1140623849",
+                "type": 0,
+                "after_product_banner_show_gift_images": 0,
+                "after_product_banner_show_gift_name": false,
+                "top_banner_show_gift_images": 0,
+                "top_banner_show_gift_name": false,
+                "items_discount": "",
+                "minimal_items_price": 0,
+                "apply_tax": 0,
+                "apply_shipping": 0
+            },
+            "amrules": {
+                "promo_cats": "",
+                "promo_skus": "",
+                "apply_discount_to": "asc",
+                "eachm": "0",
+                "priceselector": 0,
+                "nqty": "0",
+                "max_discount": "0",
+                "enable_general_skip_settings": true,
+                "skip_rule": "",
+                "use_for": 0
+            },
+            "limit": 0,
+            "count": 0
+        }
+    },
+    {
+        "rule_id": 3,
+        "name": "Acheter un sacados tiger fille, gagner une trousse remplie gratuite",
+        "store_labels": [
+            {
+                "store_id": 0,
+                "store_label": "Promo Trousse Gratuite pour Sacados Tiger"
+            },
+            {
+                "store_id": 1,
+                "store_label": "Promo Trousse Gratuite pour Sacados Tiger"
+            }
+        ],
+        "description": "Should buy 1 specified product\r\n\r\n        If  ALL  of these conditions are  TRUE :\r\n  Category  is  321    \r\n    \r\nTo get 1 product  of each products \"TROUSSE REMPLIE GRATUITE DE 3 OU 4 COMPARTIMENTS FILLE \"TIGER\" REF: GT/PPR-2\" for free\r\nYour Rule will be triggered automatically only First Time",
+        "website_ids": [
+            1
+        ],
+        "customer_group_ids": [
+            0,
+            1,
+            2,
+            3
+        ],
+        "from_date": "2021-08-30",
+        "to_date": "2021-10-31",
+        "uses_per_customer": 0,
+        "is_active": false,
+        "condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Combine",
+            "aggregator_type": "all",
+            "operator": null,
+            "value": true
+        },
+        "action_condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product\\Combine",
+            "conditions": [
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "==",
+                    "attribute_name": "category_ids",
+                    "value": "321",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                }
+            ],
+            "aggregator_type": "all",
+            "operator": null,
+            "value": "1"
+        },
+        "stop_rules_processing": false,
+        "is_advanced": true,
+        "sort_order": 0,
+        "simple_action": "ampromo_items",
+        "discount_amount": 1,
+        "discount_qty": 1,
+        "discount_step": 1,
+        "apply_to_shipping": false,
+        "times_used": 1,
+        "is_rss": false,
+        "coupon_type": "NO_COUPON",
+        "use_auto_generation": false,
+        "uses_per_coupon": 0,
+        "simple_free_shipping": "0",
+        "extension_attributes": {
+            "promo_banners_lite": [
+                {
+                    "entity_id": 10,
+                    "salesrule_id": 3,
+                    "banner_type": "0"
+                },
+                {
+                    "entity_id": 11,
+                    "salesrule_id": 3,
+                    "banner_type": "1"
+                },
+                {
+                    "entity_id": 12,
+                    "salesrule_id": 3,
+                    "banner_type": "2"
+                }
+            ],
+            "banner_product_sku": "",
+            "show_banner_for": 0,
+            "ampromo_rule": {
+                "sku": "1140623848",
+                "type": 0,
+                "after_product_banner_show_gift_images": 0,
+                "after_product_banner_show_gift_name": false,
+                "top_banner_show_gift_images": 0,
+                "top_banner_show_gift_name": false,
+                "items_discount": "",
+                "minimal_items_price": 0,
+                "apply_tax": 0,
+                "apply_shipping": 0
+            },
+            "amrules": {
+                "promo_cats": "",
+                "promo_skus": "",
+                "apply_discount_to": "asc",
+                "eachm": "0",
+                "priceselector": 0,
+                "nqty": "0",
+                "max_discount": "0",
+                "enable_general_skip_settings": true,
+                "skip_rule": "",
+                "use_for": 0
+            },
+            "limit": 0,
+            "count": 0
+        }
+    },
+    {
+        "rule_id": 5,
+        "name": "Tiger influancer -5% (Arwa) 2021",
+        "store_labels": [
+            {
+                "store_id": 0,
+                "store_label": "Promo Arwa Tiger -5%"
+            },
+            {
+                "store_id": 1,
+                "store_label": "Promo Arwa Tiger -5%"
+            }
+        ],
+        "description": "Tiger -5% for Arwa 2021",
+        "website_ids": [
+            1
+        ],
+        "customer_group_ids": [
+            0,
+            1
+        ],
+        "from_date": "2021-08-30",
+        "to_date": "2021-09-20",
+        "uses_per_customer": 0,
+        "is_active": false,
+        "condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Combine",
+            "aggregator_type": "all",
+            "operator": null,
+            "value": "1"
+        },
+        "action_condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product\\Combine",
+            "conditions": [
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "==",
+                    "attribute_name": "category_ids",
+                    "value": "1966",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                }
+            ],
+            "aggregator_type": "all",
+            "operator": null,
+            "value": "1"
+        },
+        "stop_rules_processing": false,
+        "is_advanced": true,
+        "sort_order": 0,
+        "simple_action": "by_percent",
+        "discount_amount": 5,
+        "discount_step": 1,
+        "apply_to_shipping": false,
+        "times_used": 0,
+        "is_rss": true,
+        "coupon_type": "SPECIFIC_COUPON",
+        "use_auto_generation": false,
+        "uses_per_coupon": 0,
+        "simple_free_shipping": "0",
+        "extension_attributes": {
+            "promo_banners_lite": [
+                {
+                    "entity_id": 16,
+                    "salesrule_id": 5,
+                    "banner_type": "0"
+                },
+                {
+                    "entity_id": 17,
+                    "salesrule_id": 5,
+                    "banner_type": "1"
+                },
+                {
+                    "entity_id": 18,
+                    "salesrule_id": 5,
+                    "banner_type": "2"
+                }
+            ],
+            "banner_product_sku": "",
+            "show_banner_for": 0,
+            "ampromo_rule": {
+                "sku": "",
+                "type": 0,
+                "after_product_banner_show_gift_images": 0,
+                "after_product_banner_show_gift_name": false,
+                "top_banner_show_gift_images": 0,
+                "top_banner_show_gift_name": false,
+                "minimal_items_price": 0,
+                "apply_tax": 0,
+                "apply_shipping": 0
+            },
+            "amrules": {
+                "promo_cats": "",
+                "promo_skus": "",
+                "apply_discount_to": "asc",
+                "eachm": "0",
+                "priceselector": 0,
+                "nqty": "0",
+                "max_discount": "0",
+                "enable_general_skip_settings": true,
+                "skip_rule": "",
+                "use_for": 0
+            },
+            "limit": 0,
+            "count": 0
+        }
+    },
+    {
+        "rule_id": 6,
+        "name": "Tiger influancer -5% (Rayan) 2021",
+        "store_labels": [
+            {
+                "store_id": 0,
+                "store_label": "Promo Rayan Tiger -5%"
+            },
+            {
+                "store_id": 1,
+                "store_label": "Promo Rayan Tiger -5%"
+            }
+        ],
+        "description": "\r\n",
+        "website_ids": [
+            1
+        ],
+        "customer_group_ids": [
+            0,
+            1
+        ],
+        "from_date": "2021-08-30",
+        "to_date": "2021-09-20",
+        "uses_per_customer": 0,
+        "is_active": false,
+        "condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Combine",
+            "aggregator_type": "all",
+            "operator": null,
+            "value": "1"
+        },
+        "action_condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product\\Combine",
+            "conditions": [
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "==",
+                    "attribute_name": "category_ids",
+                    "value": "1966",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                }
+            ],
+            "aggregator_type": "all",
+            "operator": null,
+            "value": "1"
+        },
+        "stop_rules_processing": false,
+        "is_advanced": true,
+        "sort_order": 0,
+        "simple_action": "by_percent",
+        "discount_amount": 5,
+        "discount_step": 1,
+        "apply_to_shipping": false,
+        "times_used": 0,
+        "is_rss": true,
+        "coupon_type": "SPECIFIC_COUPON",
+        "use_auto_generation": false,
+        "uses_per_coupon": 0,
+        "simple_free_shipping": "0",
+        "extension_attributes": {
+            "promo_banners_lite": [
+                {
+                    "entity_id": 19,
+                    "salesrule_id": 6,
+                    "banner_type": "0"
+                },
+                {
+                    "entity_id": 20,
+                    "salesrule_id": 6,
+                    "banner_type": "1"
+                },
+                {
+                    "entity_id": 21,
+                    "salesrule_id": 6,
+                    "banner_type": "2"
+                }
+            ],
+            "banner_product_sku": "",
+            "show_banner_for": 0,
+            "ampromo_rule": {
+                "sku": "",
+                "type": 0,
+                "after_product_banner_show_gift_images": 0,
+                "after_product_banner_show_gift_name": false,
+                "top_banner_show_gift_images": 0,
+                "top_banner_show_gift_name": false,
+                "minimal_items_price": 0,
+                "apply_tax": 0,
+                "apply_shipping": 0
+            },
+            "amrules": {
+                "promo_cats": "",
+                "promo_skus": "",
+                "apply_discount_to": "asc",
+                "eachm": "0",
+                "priceselector": 0,
+                "nqty": "0",
+                "max_discount": "0",
+                "enable_general_skip_settings": true,
+                "skip_rule": "",
+                "use_for": 0
+            },
+            "limit": 0,
+            "count": 0
+        }
+    },
+    {
+        "rule_id": 11,
+        "name": "Techno1001",
+        "store_labels": [
+            {
+                "store_id": 0,
+                "store_label": "Techno1001"
+            },
+            {
+                "store_id": 1,
+                "store_label": "Techno1001"
+            }
+        ],
+        "description": "Cher Mohamed,\r\n\r\nSuite à notre accord avec le groupe 1001, et la validation des remises par notre Directeur de Distribution, en Cc,\r\n\r\nMerci de nous créer :\r\n1.\tUn code promo pour les Fans des groupes et pages 1001 avec une remise de 05% pour tout achat sur la plateforme Techno e-commerce \r\n2.\tPour les admins de ces pages et groupes, nous allons recevoir leurs coordonnées, puis nous allons leurs créer des comptes sur notre plateforme e-commerce avec une remise de 8% sur tout achat tout au long du contrat qui nous lie avec 1001\r\n\r\nBien à toi.\r\n\r\nSalam ",
+        "website_ids": [
+            1
+        ],
+        "customer_group_ids": [
+            0,
+            1
+        ],
+        "from_date": "2021-09-06",
+        "to_date": "2021-10-15",
+        "uses_per_customer": 0,
+        "is_active": false,
+        "condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Combine",
+            "conditions": [
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Address",
+                    "operator": ">=",
+                    "attribute_name": "base_subtotal",
+                    "value": "1000"
+                }
+            ],
+            "aggregator_type": "all",
+            "operator": null,
+            "value": "1"
+        },
+        "action_condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product\\Combine",
+            "conditions": [
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "!=",
+                    "attribute_name": "category_ids",
+                    "value": "1798",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                },
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "!=",
+                    "attribute_name": "sku",
+                    "value": "1140612959",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                },
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "!=",
+                    "attribute_name": "sku",
+                    "value": "1140591999",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                }
+            ],
+            "aggregator_type": "all",
+            "operator": null,
+            "value": "1"
+        },
+        "stop_rules_processing": false,
+        "is_advanced": true,
+        "sort_order": 0,
+        "simple_action": "by_percent",
+        "discount_amount": 8,
+        "discount_step": 1,
+        "apply_to_shipping": false,
+        "times_used": 0,
+        "is_rss": true,
+        "coupon_type": "SPECIFIC_COUPON",
+        "use_auto_generation": false,
+        "uses_per_coupon": 0,
+        "simple_free_shipping": "0",
+        "extension_attributes": {
+            "promo_banners_lite": [
+                {
+                    "entity_id": 22,
+                    "salesrule_id": 11,
+                    "banner_type": "0"
+                },
+                {
+                    "entity_id": 23,
+                    "salesrule_id": 11,
+                    "banner_type": "1"
+                },
+                {
+                    "entity_id": 24,
+                    "salesrule_id": 11,
+                    "banner_type": "2"
+                }
+            ],
+            "banner_product_sku": "",
+            "show_banner_for": 0,
+            "ampromo_rule": {
+                "sku": "",
+                "type": 0,
+                "after_product_banner_show_gift_images": 0,
+                "after_product_banner_show_gift_name": false,
+                "top_banner_show_gift_images": 0,
+                "top_banner_show_gift_name": false,
+                "minimal_items_price": 0,
+                "apply_tax": 0,
+                "apply_shipping": 0
+            },
+            "amrules": {
+                "promo_cats": "",
+                "promo_skus": "",
+                "apply_discount_to": "asc",
+                "eachm": "0",
+                "priceselector": 0,
+                "nqty": "0",
+                "max_discount": "0",
+                "enable_general_skip_settings": true,
+                "skip_rule": "",
+                "use_for": 0
+            },
+            "limit": 0,
+            "count": 0
+        }
+    },
+    {
+        "rule_id": 13,
+        "name": "Techno-noudjoum",
+        "store_labels": [
+            {
+                "store_id": 0,
+                "store_label": "Techno-Noudjoum21"
+            },
+            {
+                "store_id": 1,
+                "store_label": "Techno-Noudjoum21"
+            }
+        ],
+        "description": "Cher Mohame\r\n\r\nComme entendu hier\r\n\r\nMerci de me générer un code promo pour les adhérents du club noudjoum\r\n\r\nValable au 15/10/2021 avec une remise de 08%\r\n\r\nBien a toi \r\n\r\nsalam",
+        "website_ids": [
+            1
+        ],
+        "customer_group_ids": [
+            0,
+            1
+        ],
+        "from_date": "2021-09-13",
+        "to_date": "2021-10-15",
+        "uses_per_customer": 0,
+        "is_active": false,
+        "condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Combine",
+            "conditions": [
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Address",
+                    "operator": ">=",
+                    "attribute_name": "base_subtotal",
+                    "value": "1000"
+                }
+            ],
+            "aggregator_type": "all",
+            "operator": null,
+            "value": "1"
+        },
+        "action_condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product\\Combine",
+            "conditions": [
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "!=",
+                    "attribute_name": "category_ids",
+                    "value": "1798",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                },
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "!=",
+                    "attribute_name": "sku",
+                    "value": "1140612959",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                },
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "!=",
+                    "attribute_name": "sku",
+                    "value": "1140591999",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                }
+            ],
+            "aggregator_type": "all",
+            "operator": null,
+            "value": "1"
+        },
+        "stop_rules_processing": true,
+        "is_advanced": true,
+        "sort_order": 0,
+        "simple_action": "by_percent",
+        "discount_amount": 10,
+        "discount_step": 1,
+        "apply_to_shipping": false,
+        "times_used": 0,
+        "is_rss": true,
+        "coupon_type": "SPECIFIC_COUPON",
+        "use_auto_generation": false,
+        "uses_per_coupon": 0,
+        "simple_free_shipping": "0",
+        "extension_attributes": {
+            "promo_banners_lite": [
+                {
+                    "entity_id": 28,
+                    "salesrule_id": 13,
+                    "banner_type": "0"
+                },
+                {
+                    "entity_id": 29,
+                    "salesrule_id": 13,
+                    "banner_type": "1"
+                },
+                {
+                    "entity_id": 30,
+                    "salesrule_id": 13,
+                    "banner_type": "2"
+                }
+            ],
+            "banner_product_sku": "",
+            "show_banner_for": 0,
+            "ampromo_rule": {
+                "sku": "",
+                "type": 0,
+                "after_product_banner_show_gift_images": 0,
+                "after_product_banner_show_gift_name": false,
+                "top_banner_show_gift_images": 0,
+                "top_banner_show_gift_name": false,
+                "items_discount": "",
+                "minimal_items_price": 0,
+                "apply_tax": 0,
+                "apply_shipping": 0
+            },
+            "amrules": {
+                "promo_cats": "",
+                "promo_skus": "",
+                "apply_discount_to": "asc",
+                "eachm": "0",
+                "priceselector": 0,
+                "nqty": "0",
+                "max_discount": "0",
+                "enable_general_skip_settings": true,
+                "skip_rule": "",
+                "use_for": 0
+            },
+            "limit": 0,
+            "count": 0
+        }
+    },
+    {
+        "rule_id": 14,
+        "name": "Techno-fni",
+        "store_labels": [
+            {
+                "store_id": 0,
+                "store_label": "Techno-FNI21"
+            },
+            {
+                "store_id": 1,
+                "store_label": "Techno-FNI21"
+            }
+        ],
+        "description": "",
+        "website_ids": [
+            1
+        ],
+        "customer_group_ids": [
+            0,
+            1
+        ],
+        "from_date": "2021-09-13",
+        "to_date": "2021-10-15",
+        "uses_per_customer": 0,
+        "is_active": false,
+        "condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Combine",
+            "conditions": [
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Address",
+                    "operator": ">=",
+                    "attribute_name": "base_subtotal",
+                    "value": "1000"
+                }
+            ],
+            "aggregator_type": "all",
+            "operator": null,
+            "value": "1"
+        },
+        "action_condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product\\Combine",
+            "conditions": [
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "!=",
+                    "attribute_name": "category_ids",
+                    "value": "1798",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                },
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "!=",
+                    "attribute_name": "sku",
+                    "value": "1140612959",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                },
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "!=",
+                    "attribute_name": "sku",
+                    "value": "1140591999",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                }
+            ],
+            "aggregator_type": "all",
+            "operator": null,
+            "value": "1"
+        },
+        "stop_rules_processing": false,
+        "is_advanced": true,
+        "sort_order": 0,
+        "simple_action": "by_percent",
+        "discount_amount": 8,
+        "discount_step": 1,
+        "apply_to_shipping": false,
+        "times_used": 0,
+        "is_rss": true,
+        "coupon_type": "SPECIFIC_COUPON",
+        "use_auto_generation": false,
+        "uses_per_coupon": 0,
+        "simple_free_shipping": "0",
+        "extension_attributes": {
+            "promo_banners_lite": [
+                {
+                    "entity_id": 31,
+                    "salesrule_id": 14,
+                    "banner_type": "0"
+                },
+                {
+                    "entity_id": 32,
+                    "salesrule_id": 14,
+                    "banner_type": "1"
+                },
+                {
+                    "entity_id": 33,
+                    "salesrule_id": 14,
+                    "banner_type": "2"
+                }
+            ],
+            "banner_product_sku": "",
+            "show_banner_for": 0,
+            "ampromo_rule": {
+                "sku": "",
+                "type": 0,
+                "after_product_banner_show_gift_images": 0,
+                "after_product_banner_show_gift_name": false,
+                "top_banner_show_gift_images": 0,
+                "top_banner_show_gift_name": false,
+                "items_discount": "",
+                "minimal_items_price": 0,
+                "apply_tax": 0,
+                "apply_shipping": 0
+            },
+            "amrules": {
+                "promo_cats": "",
+                "promo_skus": "",
+                "apply_discount_to": "asc",
+                "eachm": "0",
+                "priceselector": 0,
+                "nqty": "0",
+                "max_discount": "0",
+                "enable_general_skip_settings": true,
+                "skip_rule": "",
+                "use_for": 0
+            },
+            "limit": 0,
+            "count": 0
+        }
+    },
+    {
+        "rule_id": 15,
+        "name": "Techno-BTS21(sms)",
+        "store_labels": [
+            {
+                "store_id": 0,
+                "store_label": "TechnoBTS21"
+            },
+            {
+                "store_id": 1,
+                "store_label": "TechnoBTS21"
+            }
+        ],
+        "description": "",
+        "website_ids": [
+            1
+        ],
+        "customer_group_ids": [
+            0,
+            1
+        ],
+        "from_date": "2021-09-13",
+        "to_date": "2021-10-15",
+        "uses_per_customer": 0,
+        "is_active": false,
+        "condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Combine",
+            "conditions": [
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Address",
+                    "operator": ">=",
+                    "attribute_name": "base_subtotal",
+                    "value": "1000"
+                }
+            ],
+            "aggregator_type": "all",
+            "operator": null,
+            "value": "1"
+        },
+        "action_condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product\\Combine",
+            "conditions": [
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "!=",
+                    "attribute_name": "category_ids",
+                    "value": "1798",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                },
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "!=",
+                    "attribute_name": "sku",
+                    "value": "1140612959",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                },
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "!=",
+                    "attribute_name": "sku",
+                    "value": "1140591999",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                }
+            ],
+            "aggregator_type": "all",
+            "operator": null,
+            "value": "1"
+        },
+        "stop_rules_processing": true,
+        "is_advanced": true,
+        "sort_order": 0,
+        "simple_action": "by_percent",
+        "discount_amount": 8,
+        "discount_step": 1,
+        "apply_to_shipping": false,
+        "times_used": 0,
+        "is_rss": true,
+        "coupon_type": "SPECIFIC_COUPON",
+        "use_auto_generation": false,
+        "uses_per_coupon": 0,
+        "simple_free_shipping": "0",
+        "extension_attributes": {
+            "promo_banners_lite": [
+                {
+                    "entity_id": 34,
+                    "salesrule_id": 15,
+                    "banner_type": "0"
+                },
+                {
+                    "entity_id": 35,
+                    "salesrule_id": 15,
+                    "banner_type": "1"
+                },
+                {
+                    "entity_id": 36,
+                    "salesrule_id": 15,
+                    "banner_type": "2"
+                }
+            ],
+            "banner_product_sku": "",
+            "show_banner_for": 0,
+            "ampromo_rule": {
+                "sku": "",
+                "type": 0,
+                "after_product_banner_show_gift_images": 0,
+                "after_product_banner_show_gift_name": false,
+                "top_banner_show_gift_images": 0,
+                "top_banner_show_gift_name": false,
+                "minimal_items_price": 0,
+                "apply_tax": 0,
+                "apply_shipping": 0
+            },
+            "amrules": {
+                "promo_cats": "",
+                "promo_skus": "",
+                "apply_discount_to": "asc",
+                "eachm": "0",
+                "priceselector": 0,
+                "nqty": "0",
+                "max_discount": "0",
+                "enable_general_skip_settings": true,
+                "skip_rule": "",
+                "use_for": 0
+            },
+            "limit": 0,
+            "count": 9
+        }
+    },
+    {
+        "rule_id": 18,
+        "name": "Acheter 4000DA MAPED et gagner 2 produits",
+        "store_labels": [
+            {
+                "store_id": 0,
+                "store_label": "Acheter 4000DA MAPED et gagner 2 produits"
+            },
+            {
+                "store_id": 1,
+                "store_label": "Acheter 4000DA MAPED et gagner 2 produits"
+            }
+        ],
+        "description": "Should spent 4000 on specified product\r\nIf  ALL  of these conditions are  TRUE :\r\n  Category  is  1968    \r\n\r\nTo get 2 products  of each products \"T-SHIRT \"MAPED\" REF: MKG0001\", \"ENSEMBLE DE TRACAGE 04 PIECES 20cm UNBREAKABLE BLEU \"MAPED\" REF: 981703\" for free\r\nYour Rule will be triggered automatically Every Time",
+        "website_ids": [
+            1
+        ],
+        "customer_group_ids": [
+            0,
+            1,
+            2,
+            3
+        ],
+        "from_date": "2021-09-19",
+        "to_date": "2021-10-31",
+        "uses_per_customer": 0,
+        "is_active": false,
+        "condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Combine",
+            "conditions": [
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Address",
+                    "operator": ">=",
+                    "attribute_name": "base_subtotal",
+                    "value": "4000"
+                }
+            ],
+            "aggregator_type": "all",
+            "operator": null,
+            "value": "1"
+        },
+        "action_condition": {
+            "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product\\Combine",
+            "conditions": [
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "==",
+                    "attribute_name": "category_ids",
+                    "value": "1968",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                },
+                {
+                    "condition_type": "Magento\\SalesRule\\Model\\Rule\\Condition\\Product",
+                    "operator": "!=",
+                    "attribute_name": "category_ids",
+                    "value": "1974",
+                    "extension_attributes": {
+                        "attribute_scope": ""
+                    }
+                }
+            ],
+            "aggregator_type": "all",
+            "operator": null,
+            "value": "1"
+        },
+        "stop_rules_processing": false,
+        "is_advanced": true,
+        "sort_order": 0,
+        "simple_action": "ampromo_spent",
+        "discount_amount": 1,
+        "discount_step": 4000,
+        "apply_to_shipping": false,
+        "times_used": 0,
+        "is_rss": false,
+        "coupon_type": "NO_COUPON",
+        "use_auto_generation": false,
+        "uses_per_coupon": 0,
+        "simple_free_shipping": "0",
+        "extension_attributes": {
+            "promo_banners_lite": [
+                {
+                    "entity_id": 40,
+                    "salesrule_id": 18,
+                    "banner_type": "0"
+                },
+                {
+                    "entity_id": 41,
+                    "salesrule_id": 18,
+                    "banner_type": "1"
+                },
+                {
+                    "entity_id": 42,
+                    "salesrule_id": 18,
+                    "banner_type": "2"
+                }
+            ],
+            "banner_product_sku": "",
+            "show_banner_for": 0,
+            "ampromo_rule": {
+                "sku": "255, 1140634480",
+                "type": 0,
+                "after_product_banner_show_gift_images": 0,
+                "after_product_banner_show_gift_name": false,
+                "top_banner_show_gift_images": 0,
+                "top_banner_show_gift_name": false,
+                "items_discount": "",
+                "minimal_items_price": 0,
+                "apply_tax": 0,
+                "apply_shipping": 0
+            },
+            "amrules": {
+                "promo_cats": "",
+                "promo_skus": "",
+                "apply_discount_to": "asc",
+                "eachm": "0",
+                "priceselector": 0,
+                "nqty": "0",
+                "max_discount": "0",
+                "enable_general_skip_settings": true,
+                "skip_rule": "",
+                "use_for": 0
+            },
+            "limit": 0,
+            "count": 28
+        }
+    }
+]

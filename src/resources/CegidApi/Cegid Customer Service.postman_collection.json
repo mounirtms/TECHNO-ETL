@@ -1,0 +1,125 @@
+{
+	"info": {
+		"_postman_id": "ecec27c1-aba9-4377-9b41-c5be513889fb",
+		"name": "Cegid Customer Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39870740"
+	},
+	"item": [
+		{
+			"name": "HelloWorld Test",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{USERNAME}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "text/xml;charset=UTF-8"
+					},
+					{
+						"key": "SOAPAction",
+						"value": "\"http://www.cegid.fr/Retail/1.0/ICbrBasicWebServiceInterface/HelloWorld\""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:ret=\"http://www.cegid.fr/Retail/1.0\">\n    <soap:Header>\n        <ret:RetailContext>\n            <ret:DatabaseId>DBRETAIL01</ret:DatabaseId>\n        </ret:RetailContext>\n    </soap:Header>\n    <soap:Body>\n        <ret:HelloWorld>\n            <ret:text>test connection</ret:text>\n            <ret:clientContext>\n                <ret:DatabaseId>DBRETAIL01</ret:DatabaseId>\n            </ret:clientContext>\n        </ret:HelloWorld>\n    </soap:Body>\n</soap:Envelope>"
+				},
+				"url": {
+					"raw": "http://10.0.2.58/Y2_LAB/CustomerWcfService.svc?wdsl",
+					"protocol": "http",
+					"host": [
+						"10",
+						"0",
+						"2",
+						"58"
+					],
+					"path": [
+						"Y2_LAB",
+						"CustomerWcfService.svc"
+					],
+					"query": [
+						{
+							"key": "wdsl",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "{{PASSWORD}}",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "{{USERNAME}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "Cegid Y2 Retail Integration",
+			"value": "http://10.0.2.58/Y2_LAB",
+			"type": "string"
+		},
+		{
+			"key": "USERNAME",
+			"value": "DBRETAIL01\\mounir.ab",
+			"type": "string"
+		},
+		{
+			"key": "PASSWORD",
+			"value": "2025",
+			"type": "string"
+		},
+		{
+			"key": "DATABASE_ID",
+			"value": "DBRETAIL01",
+			"type": "string"
+		}
+	]
+}
