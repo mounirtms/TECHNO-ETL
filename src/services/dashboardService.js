@@ -1,6 +1,9 @@
 import { subDays, parseISO, isWithinInterval, startOfDay, endOfDay } from 'date-fns';
 import { getOrders } from './dataService';
-
+// dashboardService.js (in prepareChartData)
+import { format } from 'date-fns'; // Import format
+// ...
+const date = format(parseISO(order.created_at), 'yyyy-MM-dd'); 
 export const DATE_RANGES = {
     LAST_WEEK: 'last_week',
     LAST_MONTH: 'last_month',

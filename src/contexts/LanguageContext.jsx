@@ -2,7 +2,9 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ref, get, set } from 'firebase/database';
 import { database } from '../config/firebase';
 import { useAuth } from './AuthContext';
-
+import enTranslations from '../assets/locale/en.json';
+import frTranslations from '../assets/locale/fr.json';
+import arTranslations from '../assets/locale/ar.json';
 const LanguageContext = createContext();
 
 export const useLanguage = () => {
@@ -14,43 +16,19 @@ export const languages = {
     en: {
         name: 'English',
         dir: 'ltr',
-        // Add translations here
-        translations: {
-            dashboard: 'Dashboard',
-            products: 'Products',
-            orders: 'Orders',
-            customers: 'Customers',
-            settings: 'Settings',
-            logout: 'Logout',
-            // Add more translations
-        }
+        translations: enTranslations
     },
     fr: {
         name: 'Français',
         dir: 'ltr',
-        translations: {
-            dashboard: 'Tableau de bord',
-            products: 'Produits',
-            orders: 'Commandes',
-            customers: 'Clients',
-            settings: 'Paramètres',
-            logout: 'Déconnexion',
-        }
+        translations: frTranslations
     },
     ar: {
         name: 'العربية',
         dir: 'rtl',
-        translations: {
-            dashboard: 'لوحة التحكم',
-            products: 'المنتجات',
-            orders: 'الطلبات',
-            customers: 'العملاء',
-            settings: 'الإعدادات',
-            logout: 'تسجيل الخروج',
-        }
+        translations: arTranslations
     }
 };
-
 export const LanguageProvider = ({ children }) => {
     const { currentUser } = useAuth();
     const [currentLanguage, setCurrentLanguage] = useState('en');

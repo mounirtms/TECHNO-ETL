@@ -1,0 +1,44 @@
+{
+    "dashboard": {
+        "title": "لوحة التحكم",
+        "totalOrders": "إجمالي الطلبات",
+        "totalCustomers": "إجمالي العملاء",
+        "totalProducts": "إجمالي المنتجات",
+        "totalSales": "إجمالي المبيعات",
+        "salesOverTime": "المبيعات على مر الزمن",
+        "chartComingSoon": "الرسم البياني قريبا",
+        "recentOrders": "الطلبات الأخيرة",
+        "noRecentOrders": "لا توجد طلبات حديثة",
+        "lastWeek": "الأسبوع الماضي",
+        "lastMonth": "الشهر الماضي",
+        "lastYear": "العام الماضي",
+        "refresh": "تحديث"
+    },
+    "products": "المنتجات",
+    "orders": "الطلبات",
+    "customers": "العملاء",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج",
+    "profile": {
+        "fullName": "الاسم الكامل",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "position": "المنصب",
+        "language": "اللغة",
+        "theme": "المظهر",
+        "notifications": "الإشعارات",
+        "personalInfo": "المعلومات الشخصية",
+        "accountSettings": "إعدادات الحساب"
+    },
+    "login": {
+        "welcome": "أهلا بك",
+        "signIn": "تسجيل الدخول",
+        "forgotPassword": "هل نسيت كلمة المرور؟",
+        "createAccount": "إنشاء حساب"
+    },
+    "errors": {
+        "networkError": "خطأ في الشبكة",
+        "serverError": "خطأ في الخادم",
+        "notFound": "الصفحة غير موجودة"
+    }
+}

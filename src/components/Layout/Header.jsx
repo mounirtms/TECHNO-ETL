@@ -9,86 +9,81 @@ import {
     MenuItem
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { StyledAppBar } from './styles';
+import { DRAWER_WIDTH, COLLAPSED_WIDTH } from './constants';
+import { useAuth } from '../../contexts/AuthContext';
+import { useTab } from '../../contexts/TabContext';
+import UserMenu from '../user/UserMenu'; // Import UserMenu
 
-/**
- * Header Component
- * 
- * Features:
- * - Drawer toggle button
- * - App title
- * - Profile menu
- * - Responsive design
- * - Smooth transitions
- */
-const Header = ({ 
+export const Header = ({
     isDrawerCollapsed,
     handleDrawerToggle,
     handleProfileMenuOpen,
     handleProfileMenuClose,
     anchorEl
 }) => {
+    const { currentUser } = useAuth();
+    const { openTab } = useTab();
+
+    const handleOpenProfile = () => {
+        if (currentUser) {
+            const profileTabId = 'UserProfile';
+            openTab(profileTabId);
+        }
+        handleProfileMenuClose();
+    };
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+            handleProfileMenuClose();
+            // Optionally redirect to login page
+        } catch (error) {
+            console.error('Logout failed', error);
+            // Optionally show an error notification
+        }
+    };
+
     return (
-        <StyledAppBar 
-            position="sticky" 
+        <StyledAppBar
+            position="fixed"
             open={!isDrawerCollapsed}
-            collapsed={isDrawerCollapsed}
+            sx={{
+                width: {
+                    xs: '100%',
+                    sm: `calc(100% - ${isDrawerCollapsed ? COLLAPSED_WIDTH : DRAWER_WIDTH}px)`
+                },
+                marginLeft: {
+                    sm: isDrawerCollapsed ? `${COLLAPSED_WIDTH}px` : `${DRAWER_WIDTH}px`
+                },
+                transition: theme => theme.transitions.create(['width', 'margin'], {
+                    easing: theme.transitions.easing.sharp,
+                    duration: theme.transitions.duration.enteringScreen,
+                }),
+            }}
         >
             <Toolbar>
-                {/* Drawer Toggle Button */}
                 <IconButton
-                    color="inherit"
-                    aria-label="toggle drawer"
+                    size="large"
                     edge="start"
-                    onClick={handleDrawerToggle}
-                    sx={{ 
-                        mr: 2,
-                        transition: theme => theme.transitions.create('transform', {
-                            duration: theme.transitions.duration.shorter
-                        }),
-                        transform: isDrawerCollapsed ? 'rotate(0deg)' : 'rotate(180deg)'
-                    }}
+                    color="inherit"
+                    aria-label="menu"
+                    onClick={handleDrawerToggle} // Ensure this is correct
+                    sx={{ mr: 2, ...(!isDrawerCollapsed && { display: 'none' }) }} // Hide when open
                 >
                     <MenuIcon />
                 </IconButton>
 
-                {/* App Title */}
-                <Typography 
-                    variant="h6" 
-                    noWrap 
-                    component="div" 
-                    sx={{ flexGrow: 1 }}
-                >
+                <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
                     Techno Stationery
                 </Typography>
 
-                {/* Profile Menu */}
-                <IconButton
-                    onClick={handleProfileMenuOpen}
-                    size="large"
-                    edge="end"
-                    aria-label="account"
-                    aria-controls={Boolean(anchorEl) ? 'profile-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={Boolean(anchorEl) ? 'true' : undefined}
-                    color="inherit"
-                >
-                    <Avatar>A</Avatar>
-                </IconButton>
-
-                <Menu
-                    id="profile-menu"
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleProfileMenuClose}
-                    onClick={handleProfileMenuClose}
-                    transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                    anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                >
-                    <MenuItem onClick={handleProfileMenuClose}>Profile</MenuItem>
-                    <MenuItem onClick={handleProfileMenuClose}>My account</MenuItem>
-                    <MenuItem onClick={handleProfileMenuClose}>Logout</MenuItem>
-                </Menu>
+                <UserMenu
+                    onProfileClick={handleOpenProfile}
+                    onSettingsClick={() => openTab('Settings')}
+                    onLogout={handleLogout}
+                />
             </Toolbar>
         </StyledAppBar>
     );

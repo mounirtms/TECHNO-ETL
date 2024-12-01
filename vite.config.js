@@ -20,7 +20,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 2626,
+    port: 2524,
     strictPort: true,
     open: true,
     hmr: {

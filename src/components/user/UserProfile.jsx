@@ -75,7 +75,43 @@ const UserProfile = () => {
         theme: 'light',
         notifications: true,
     });
+    const handleGetAccessToken = async () => {
+        const { magentoUrl, magentoUsername, magentoPassword } = userData;
+        try {
+            // Logic to get the access token from Magento
+            console.log('Getting access token for:', magentoUrl, magentoUsername);
+            // Example: Make an API call to Magento to get the token
+            // const response = await fetch(`${magentoUrl}/rest/V1/integration/admin/token`, {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify({
+            //         username: magentoUsername,
+            //         password: magentoPassword,
+            //     }),
+            // });
+            // const token = await response.json();
+            // console.log('Access Token:', token);
+        } catch (error) {
+            console.error('Error getting access token:', error);
+        }
+    };
 
+    const handleSaveProfileSettings = async () => {
+        try {
+            // Logic to save profile settings to Firebase
+            console.log('Saving profile settings:', userData);
+            // Example: Save to Firebase
+            // const userRef = ref(database, `users/${currentUser.uid}/settings`);
+            // await set(userRef, {
+            //     ...userData,
+            //     updatedAt: new Date().toISOString(),
+            // });
+        } catch (error) {
+            console.error('Error saving profile settings:', error);
+        }
+    };
     useEffect(() => {
         const loadUserSettings = async () => {
             // In development, just log a message
@@ -254,6 +290,49 @@ const UserProfile = () => {
             <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
                 {translate('profile.notificationsDescription')}
             </Typography>
+            <TextField
+            label="Magento URL"
+            value={userData.magentoUrl || ''}
+            onChange={handleInputChange('magentoUrl')}
+            disabled={!editMode}
+            fullWidth
+            variant="outlined"
+        />
+        <TextField
+            label="Magento Username"
+            value={userData.magentoUsername || ''}
+            onChange={handleInputChange('magentoUsername')}
+            disabled={!editMode}
+            fullWidth
+            variant="outlined"
+        />
+        <TextField
+            label="Magento Password"
+            type="password"
+            value={userData.magentoPassword || ''}
+            onChange={handleInputChange('magentoPassword')}
+            disabled={!editMode}
+            fullWidth
+            variant="outlined"
+        />
+        <Button
+            variant="contained"
+            color="primary"
+            onClick={handleGetAccessToken}
+            disabled={!editMode}
+            sx={{ mt: 2 }}
+        >
+            Get Access Token
+        </Button>
+        <Button
+            variant="contained"
+            color="secondary"
+            onClick={handleSaveProfileSettings}
+            disabled={!editMode}
+            sx={{ mt: 2 }}
+        >
+            Save Profile Settings
+        </Button>
         </ProfileSection>
     );
 

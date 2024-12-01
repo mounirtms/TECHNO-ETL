@@ -1,0 +1,44 @@
+{
+    "dashboard": {
+        "title": "Dashboard",
+        "totalOrders": "Total Orders",
+        "totalCustomers": "Total Customers",
+        "totalProducts": "Total Products",
+        "totalSales": "Total Sales",
+        "salesOverTime": "Sales Over Time",
+        "chartComingSoon": "Chart Coming Soon",
+        "recentOrders": "Recent Orders",
+        "noRecentOrders": "No Recent Orders",
+        "lastWeek": "Last Week",
+        "lastMonth": "Last Month",
+        "lastYear": "Last Year",
+        "refresh": "Refresh"
+    },
+    "products": "Products",
+    "orders": "Orders",
+    "customers": "Customers",
+    "settings": "Settings",
+    "logout": "Logout",
+    "profile": {
+        "fullName": "Full Name",
+        "email": "Email",
+        "phone": "Phone",
+        "position": "Position",
+        "language": "Language",
+        "theme": "Theme",
+        "notifications": "Notifications",
+        "personalInfo": "Personal Information",
+        "accountSettings": "Account Settings"
+    },
+    "login": {
+        "welcome": "Welcome",
+        "signIn": "Sign In",
+        "forgotPassword": "Forgot Password?",
+        "createAccount": "Create Account"
+    },
+    "errors": {
+        "networkError": "Network Error",
+        "serverError": "Server Error",
+        "notFound": "Page Not Found"
+    }
+}

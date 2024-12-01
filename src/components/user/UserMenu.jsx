@@ -111,12 +111,7 @@ const UserMenu = ({ onProfileClick, onSettingsClick, onLogout }) => {
                     </ListItemIcon>
                     <ListItemText primary={translate('common.profile')} />
                 </MenuItem>
-                <MenuItem onClick={handleSettingsClick}>
-                    <ListItemIcon>
-                        <SettingsIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText primary={translate('common.settings')} />
-                </MenuItem>
+            
                 <Divider />
                 <MenuItem onClick={handleLogout}>
                     <ListItemIcon>

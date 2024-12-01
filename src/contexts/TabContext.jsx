@@ -7,6 +7,8 @@ import ProductsGrid from '../components/grids/ProductsGrid';
 import CustomersGrid from '../components/grids/CustomersGrid';
 import OrdersGrid from '../components/grids/OrdersGrid';
 import InvoicesGrid from '../components/grids/InvoicesGrid';
+import UserProfile from '../components/user/UserProfile';
+import CategoryTree from '../components/grids/CategoryTree';
 
 // Component mapping
 const COMPONENT_MAP = {
@@ -14,78 +16,77 @@ const COMPONENT_MAP = {
     ProductsGrid: ProductsGrid,
     CustomersGrid: CustomersGrid,
     OrdersGrid: OrdersGrid,
-    InvoicesGrid: InvoicesGrid
+    InvoicesGrid: InvoicesGrid,
+    UserProfile: UserProfile,
+    CategoryTree: CategoryTree
 };
 
 const TabContext = createContext();
 
 export const TabProvider = ({ children }) => {
+    // Initialize with only the Dashboard tab active
+    const initialTab = MENU_ITEMS.find(item => item.id === 'Dashboard');
     const [tabs, setTabs] = useState([
         { 
-            id: 'dashboard', 
-            label: 'Dashboard', 
-            component: 'Dashboard', 
+            id: initialTab.id, 
+            label: initialTab.label, 
+            component: initialTab.id, 
             closeable: false 
         }
     ]);
-    const [activeTab, setActiveTab] = useState('dashboard');
+    const [activeTab, setActiveTab] = useState(initialTab.id);
 
     const openTab = (tabId) => {
-        const tabConfig = MENU_ITEMS.find(item => item.id === tabId);
+        const tabExists = tabs.some(tab => tab.id === tabId);
         
-        if (tabConfig) {
-            // Check if tab already exists
-            const existingTabIndex = tabs.findIndex(tab => tab.id === tabId);
-            
-            if (existingTabIndex === -1) {
-                // Add new tab if it doesn't exist
-                const newTab = {
-                    id: tabId,
-                    label: tabConfig.label,
-                    component: tabConfig.component,
-                    closeable: tabId !== 'dashboard'
-                };
-                
-                setTabs(prevTabs => [...prevTabs, newTab]);
+        if (!tabExists) {
+            const newTab = MENU_ITEMS.find(item => item.id === tabId);
+            if (newTab) {
+                setTabs(prevTabs => [
+                    ...prevTabs, 
+                    { 
+                        ...newTab, 
+                        closeable: true 
+                    }
+                ]);
             }
-            
-            // Set as active tab
-            setActiveTab(tabId);
         }
+        
+        setActiveTab(tabId);
     };
 
     const closeTab = (tabId) => {
-        // Prevent closing dashboard tab
-        if (tabId === 'dashboard') return;
+        // Prevent closing Dashboard
+        if (tabId === 'Dashboard') return;
 
         setTabs(prevTabs => prevTabs.filter(tab => tab.id !== tabId));
         
-        // If closing active tab, switch to dashboard
+        // Set active tab to Dashboard if closed tab was active
         if (activeTab === tabId) {
-            setActiveTab('dashboard');
+            setActiveTab('Dashboard');
         }
     };
 
-    // Function to get the active component
     const getActiveComponent = () => {
-        const tab = tabs.find(t => t.id === activeTab);
-        return tab ? COMPONENT_MAP[tab.component] : Dashboard;
+        const activeTabItem = tabs.find(tab => tab.id === activeTab);
+        return activeTabItem ? COMPONENT_MAP[activeTabItem.id] : null;
     };
 
     return (
-        <TabContext.Provider value={{ 
-            tabs, 
-            activeTab, 
-            setActiveTab,
-            openTab, 
-            closeTab,
-            getActiveComponent
-        }}>
+        <TabContext.Provider 
+            value={{ 
+                tabs, 
+                activeTab, 
+                setActiveTab, 
+                openTab, 
+                closeTab, 
+                getActiveComponent 
+            }}
+        >
             {children}
         </TabContext.Provider>
     );
 };
-
 export const useTab = () => {
     const context = useContext(TabContext);
     if (!context) {
@@ -93,5 +94,3 @@ export const useTab = () => {
     }
     return context;
 };
-
-export default TabContext;

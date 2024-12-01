@@ -1,0 +1,44 @@
+{
+    "dashboard": {
+        "title": "Tableau de bord",
+        "totalOrders": "Total des commandes",
+        "totalCustomers": "Total des clients",
+        "totalProducts": "Total des produits",
+        "totalSales": "Total des ventes",
+        "salesOverTime": "Ventes au fil du temps",
+        "chartComingSoon": "Graphique à venir",
+        "recentOrders": "Commandes récentes",
+        "noRecentOrders": "Aucune commande récente",
+        "lastWeek": "La semaine dernière",
+        "lastMonth": "Le mois dernier",
+        "lastYear": "L'année dernière",
+        "refresh": "Rafraîchir"
+    },
+    "products": "Produits",
+    "orders": "Commandes",
+    "customers": "Clients",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "profile": {
+        "fullName": "Nom complet",
+        "email": "Email",
+        "phone": "Téléphone",
+        "position": "Poste",
+        "language": "Langue",
+        "theme": "Thème",
+        "notifications": "Notifications",
+        "personalInfo": "Informations personnelles",
+        "accountSettings": "Paramètres du compte"
+    },
+    "login": {
+        "welcome": "Bienvenue",
+        "signIn": "Se connecter",
+        "forgotPassword": "Mot de passe oublié?",
+        "createAccount": "Créer un compte"
+    },
+    "errors": {
+        "networkError": "Erreur réseau",
+        "serverError": "Erreur serveur",
+        "notFound": "Page non trouvée"
+    }
+}

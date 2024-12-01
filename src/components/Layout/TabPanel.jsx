@@ -29,10 +29,16 @@ function a11yProps(index) {
 
 const TabPanel = () => {
     const theme = useTheme();
-    const { tabs, activeTab, setActiveTab, closeTab } = useTab();
+    const { 
+        tabs, 
+        activeTab, 
+        openTab, 
+        closeTab, 
+        getActiveComponent 
+    } = useTab();
 
     const handleChange = (event, newValue) => {
-        setActiveTab(newValue);
+        openTab(newValue);
     };
 
     const handleCloseTab = (e, tabId) => {
@@ -41,7 +47,7 @@ const TabPanel = () => {
     };
 
     // Get the current active component
-    const ActiveComponent = useTab().getActiveComponent();
+    const ActiveComponent = getActiveComponent();
 
     return (
         <Box sx={{ 
@@ -51,70 +57,76 @@ const TabPanel = () => {
             flexDirection: 'column',
             overflow: 'hidden'
         }}>
-            {/* Tabs Navigation */}
+            {/* Tabs Container */}
             <Box sx={{ 
                 borderBottom: 1, 
                 borderColor: 'divider',
-                backgroundColor: theme.palette.background.paper,
-                width: '100%'
+                backgroundColor: theme.palette.background.paper
             }}>
-                <Tabs 
-                    value={activeTab} 
+                <Tabs
+                    value={activeTab}
                     onChange={handleChange}
-                    aria-label="admin dashboard tabs"
                     variant="scrollable"
                     scrollButtons="auto"
+                    allowScrollButtonsMobile
                     sx={{
-                        '& .MuiTabs-indicator': {
-                            backgroundColor: theme.palette.primary.main,
-                        },
-                        '& .MuiTab-root': {
-                            minHeight: 48,
-                            textTransform: 'none',
-                            '&.Mui-selected': {
-                                color: theme.palette.primary.main,
-                            }
+                        '& .MuiTabs-scrollButtons': {
+                            color: theme.palette.text.secondary
                         }
                     }}
                 >
-                    {tabs.map((tab) => (
-                        <Tab
+                    {tabs.map((tab, index) => (
+                        <Tab 
                             key={tab.id}
                             label={
-                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Box 
+                                    sx={{ 
+                                        display: 'flex', 
+                                        alignItems: 'center',
+                                        gap: 1 
+                                    }}
+                                >
                                     {tab.label}
                                     {tab.closeable && (
                                         <IconButton
                                             size="small"
                                             onClick={(e) => handleCloseTab(e, tab.id)}
-                                            sx={{
-                                                ml: 1,
-                                                fontSize: '0.875rem',
-                                                '&:hover': {
-                                                    color: theme.palette.error.main,
-                                                }
+                                            sx={{ 
+                                                ml: 1, 
+                                                '&:hover': { 
+                                                    backgroundColor: theme.palette.action.hover 
+                                                } 
                                             }}
                                         >
-                                            <CloseIcon fontSize="inherit" />
+                                            <CloseIcon fontSize="small" />
                                         </IconButton>
                                     )}
                                 </Box>
                             }
-                            {...a11yProps(tab.id)}
+                            value={tab.id}
+                            {...a11yProps(index)}
+                            sx={{
+                                textTransform: 'none',
+                                minWidth: 120,
+                                '&.Mui-selected': {
+                                    fontWeight: 'bold'
+                                }
+                            }}
                         />
                     ))}
                 </Tabs>
             </Box>
 
-            {/* Tab Content Area */}
-            <Box sx={{ 
-                flexGrow: 1,
-                width: '100%',
-                overflow: 'auto',
-                p: 3,
-                backgroundColor: theme.palette.background.default
-            }}>
-                {ActiveComponent && <ActiveComponent />}
+            {/* Active Component Container */}
+            <Box 
+                sx={{
+                    flexGrow: 1,
+                    overflow: 'auto',
+                    p: theme.spacing(3),
+                    backgroundColor: theme.palette.background.default
+                }}
+            >
+                <ActiveComponent />
             </Box>
         </Box>
     );

@@ -31,80 +31,32 @@ const theme = createTheme({
     },
   },
   components: {
-    MuiAppBar: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#2B2B2B',
-          color: '#FFFFFF',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        },
-      },
-    },
     MuiDrawer: {
       styleOverrides: {
         paper: {
           backgroundColor: '#2B2B2B',
           color: '#FFFFFF',
           borderRight: 'none',
+          transition: 'width 0.3s ease',
+          overflowX: 'hidden',
           '& .MuiListItemIcon-root': {
             color: '#FFFFFF',
           },
           '& .MuiListItemText-root': {
             color: '#FFFFFF',
           },
-          '& .MuiListItemButton-root:hover': {
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          '& .MuiListItemButton-root': {
+            transition: 'background-color 0.3s ease, transform 0.3s ease',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              transform: 'translateX(5px)',
+            },
           },
           '& .Mui-selected': {
             backgroundColor: '#F26322 !important',
             '&:hover': {
               backgroundColor: '#C24D1B !important',
             },
-          },
-        },
-      },
-    },
-    MuiTabs: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#F8F9FA',
-          borderBottom: '2px solid #E9ECEF',
-          '& .MuiTab-root': {
-            color: '#6C757D',
-            '&.Mui-selected': {
-              color: '#F26322',
-            },
-          },
-          '& .MuiTabs-indicator': {
-            backgroundColor: '#F26322',
-            height: '3px',
-          },
-        },
-      },
-    },
-    MuiTab: {
-      styleOverrides: {
-        root: {
-          textTransform: 'none',
-          fontWeight: 500,
-          '&:hover': {
-            color: '#F26322',
-            opacity: 0.8,
-          },
-        },
-      },
-    },
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          textTransform: 'none',
-          borderRadius: 4,
-          fontWeight: 500,
-        },
-        contained: {
-          boxShadow: 'none',
-          '&:hover': {
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           },
         },
       },

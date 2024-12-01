@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
     Box, 
     Typography, 
@@ -8,6 +8,9 @@ import {
     CardContent,
     CardHeader,
     IconButton,
+    Button,
+    Select,
+    MenuItem,
     useTheme
 } from '@mui/material';
 import {
@@ -23,29 +26,54 @@ const Dashboard = () => {
     const { translate } = useLanguage();
     const theme = useTheme();
 
+    // Local data for cards and charts
+    const localData = {
+        totalOrders: 200,
+        totalCustomers: 1300,
+        totalProducts: 500,
+        totalSales: 20000,
+        salesOverTime: [
+            { date: '2023-10-01', sales: 500 },
+            { date: '2023-10-02', sales: 450 },
+            { date: '2023-10-03', sales: 600 },
+            // Add more data points as needed
+        ]
+    };
+
+    const [period, setPeriod] = useState('last_week'); // Default period
+
+    const handlePeriodChange = (event) => {
+        setPeriod(event.target.value);
+        // Logic to update data based on period
+    };
+
+    const handleRefresh = () => {
+        // Logic to refresh data
+        console.log('Data refreshed');
+    };
     const cards = [
         {
-            title: translate('totalOrders'),
-            value: '150',
-            icon: <OrdersIcon />,
+            title: translate('dashboard.totalOrders'),
+            value: localData.totalOrders,
+            icon: <OrdersIcon />, 
             color: theme.palette.primary.main
         },
         {
-            title: translate('totalCustomers'),
-            value: '1,250',
-            icon: <CustomersIcon />,
+            title: translate('dashboard.totalCustomers'),
+            value: localData.totalCustomers,
+            icon: <CustomersIcon />, 
             color: theme.palette.success.main
         },
         {
-            title: translate('totalProducts'),
-            value: '450',
-            icon: <ProductsIcon />,
+            title: translate('dashboard.totalProducts'),
+            value: localData.totalProducts,
+            icon: <ProductsIcon />, 
             color: theme.palette.warning.main
         },
         {
-            title: translate('totalSales'),
-            value: '$15,750',
-            icon: <SalesIcon />,
+            title: translate('dashboard.totalSales'),
+            value: `$${localData.totalSales.toLocaleString()}`,
+            icon: <SalesIcon />, 
             color: theme.palette.info.main
         }
     ];
@@ -57,7 +85,22 @@ const Dashboard = () => {
             maxWidth: '100%',
             overflow: 'auto'
         }}>
-             
+            {/* Toolbar for period selection and refresh */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+                <Select
+                    value={period}
+                    onChange={handlePeriodChange}
+                    sx={{ minWidth: 120 }}
+                >
+                    <MenuItem value="last_week">{translate('dashboard.lastWeek')}</MenuItem>
+                    <MenuItem value="last_month">{translate('dashboard.lastMonth')}</MenuItem>
+                    <MenuItem value="last_year">{translate('dashboard.lastYear')}</MenuItem>
+                </Select>
+                <Button variant="contained" color="primary" onClick={handleRefresh}>
+                    {translate('dashboard.refresh')}
+                </Button>
+            </Box>
+
             <Grid container spacing={{ xs: 2, sm: 3 }}>
                 {cards.map((card, index) => (
                     <Grid item xs={12} sm={6} md={3} key={index}>
@@ -124,14 +167,14 @@ const Dashboard = () => {
                 <Grid item xs={12} md={8}>
                     <Card sx={{ height: '100%', minHeight: { xs: 300, sm: 400 } }}>
                         <CardHeader
-                            title={translate('salesOverTime')}
+                            title={translate('dashboard.salesOverTime')}
                             titleTypographyProps={{ 
                                 variant: 'h6',
                                 fontSize: { xs: '1rem', sm: '1.25rem' }
                             }}
                         />
                         <CardContent>
-                            {/* Chart component will go here */}
+                            {/* Example chart implementation */}
                             <Box sx={{ 
                                 height: { xs: 200, sm: 300 },
                                 display: 'flex',
@@ -139,7 +182,7 @@ const Dashboard = () => {
                                 justifyContent: 'center'
                             }}>
                                 <Typography color="textSecondary">
-                                    {translate('chartComingSoon')}
+                                    {translate('dashboard.chartComingSoon')}
                                 </Typography>
                             </Box>
                         </CardContent>
@@ -149,7 +192,7 @@ const Dashboard = () => {
                 <Grid item xs={12} md={4}>
                     <Card sx={{ height: '100%' }}>
                         <CardHeader
-                            title={translate('recentOrders')}
+                            title={translate('dashboard.recentOrders')}
                             titleTypographyProps={{ 
                                 variant: 'h6',
                                 fontSize: { xs: '1rem', sm: '1.25rem' }
@@ -164,7 +207,7 @@ const Dashboard = () => {
                                 justifyContent: 'center'
                             }}>
                                 <Typography color="textSecondary">
-                                    {translate('noRecentOrders')}
+                                    {translate('dashboard.noRecentOrders')}
                                 </Typography>
                             </Box>
                         </CardContent>

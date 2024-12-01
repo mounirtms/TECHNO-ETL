@@ -149,68 +149,7 @@ const Login = () => {
                         </Alert>
                     )}
 
-                    <form onSubmit={handleMagentoSignIn} style={{ width: '100%' }}>
-                        <TextField
-                            fullWidth
-                            label="Username"
-                            name="username"
-                            type="text"
-                            value={formData.username}
-                            onChange={handleInputChange}
-                            margin="normal"
-                            required
-                            size="small"
-                            placeholder="Enter your username"
-                            inputProps={{
-                                autoComplete: 'username'
-                            }}
-                        />
-                        <TextField
-                            fullWidth
-                            label="Password"
-                            name="password"
-                            type={showPassword ? 'text' : 'password'}
-                            value={formData.password}
-                            onChange={handleInputChange}
-                            margin="normal"
-                            required
-                            size="small"
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            edge="end"
-                                            size="small"
-                                        >
-                                            {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-                            <Link href="#" variant="body2" underline="hover">
-                                Forgot password?
-                            </Link>
-                        </Box>
-                        <Button
-                            fullWidth
-                            type="submit"
-                            variant="contained"
-                            disabled={loading}
-                            sx={{ mb: 2 }}
-                        >
-                            {loading ? <CircularProgress size={24} /> : 'Sign in'}
-                        </Button>
-                    </form>
-
-                    <Divider sx={{ width: '100%' }}>
-                        <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
-                            OR
-                        </Typography>
-                    </Divider>
-
+          
                     <GoogleButton
                         fullWidth
                         variant="outlined"
@@ -222,7 +161,9 @@ const Login = () => {
                     </GoogleButton>
                 </StyledPaper>
             </Container>
-            <Footer />
+            <Footer 
+             isLoginScreen={true} 
+             />
         </Box>
     );
 };

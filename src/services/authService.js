@@ -1,4 +1,13 @@
 const API_URL = import.meta.env.VITE_MAGENTO_API_URL;
+// authService.js
+const isDevelopment = import.meta.env.MODE === 'development';
+
+
+export const isAuthenticated = isDevelopment 
+    ? () => true : authService.isAuthenticated.bind(authService); // Conditional export
+
+export const getToken = isDevelopment
+    ? () => 'dev-token' : authService.getToken.bind(authService);   // Conditional export
 
 class AuthService {
   async login(username, password) {
@@ -79,11 +88,8 @@ class AuthService {
 
 export const authService = new AuthService();
 
-// Development mode: Authentication is disabled
-export const isAuthenticated = () => true;
-
-// Development mode: Always return a mock token
-export const getToken = () => 'dev-token';
+ 
+ 
 
 export const login = authService.login.bind(authService);
 export const logout = authService.logout.bind(authService);
