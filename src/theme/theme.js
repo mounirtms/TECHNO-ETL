@@ -6,16 +6,14 @@ const getTheme = (mode, direction) => {
     palette: {
       mode,
       primary: {
-        main: '#1A4B84',
-        light: '#2A6CB4',
-        dark: '#0F2B4D',
-        contrastText: '#ffffff',
+        main: '#1976d2',
+        light: '#42a5f5',
+        dark: '#1565c0',
       },
       secondary: {
-        main: '#FF6B35',
-        light: '#FF8B55',
-        dark: '#E54B15',
-        contrastText: '#ffffff',
+        main: '#9c27b0',
+        light: '#ba68c8',
+        dark: '#7b1fa2',
       },
       error: {
         main: '#dc3545',
@@ -50,8 +48,8 @@ const getTheme = (mode, direction) => {
         900: '#212529',
       },
       background: {
-        default: mode === 'light' ? '#f8f9fa' : '#121212',
-        paper: mode === 'light' ? '#ffffff' : '#1e1e1e',
+        default: mode === 'dark' ? '#121212' : '#f5f5f5',
+        paper: mode === 'dark' ? '#1e1e1e' : '#ffffff',
       },
     },
     typography: {
@@ -184,6 +182,58 @@ const getTheme = (mode, direction) => {
             },
           },
         },
+      },
+      MuiAppBar: {
+        styleOverrides: {
+          root: {
+            backdropFilter: 'blur(8px)',
+            backgroundColor: mode === 'dark' ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+            transition: 'all 0.3s ease-in-out',
+            '&:hover': {
+              backgroundColor: mode === 'dark' ? 'rgba(30, 30, 30, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+            }
+          }
+        }
+      },
+      MuiDrawer: {
+        styleOverrides: {
+          paper: {
+            backgroundColor: mode === 'dark' ? '#1e1e1e' : '#ffffff',
+            backgroundImage: 'none'
+          }
+        }
+      },
+      MuiTabs: {
+        styleOverrides: {
+          root: {
+            width: '100%',
+            '& .MuiTabs-flexContainer': {
+              justifyContent: 'center'
+            }
+          }
+        }
+      },
+      MuiTab: {
+        styleOverrides: {
+          root: {
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              backgroundColor: mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+              transform: 'translateY(-2px)'
+            }
+          }
+        }
+      }
+    },
+    transitions: {
+      duration: {
+        shortest: 150,
+        shorter: 200,
+        short: 250,
+        standard: 300,
+        complex: 375,
+        enteringScreen: 225,
+        leavingScreen: 195,
       },
     },
   });

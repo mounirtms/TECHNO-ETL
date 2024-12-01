@@ -1,162 +1,143 @@
-import BaseGrid from '../common/BaseGrid';
-import magentoApi from '../../services/magentoApi';
-import { Box, Typography, Chip, Grid, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import {
+    Box,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TablePagination,
+    Typography,
+    IconButton,
+    Tooltip,
+    CircularProgress,
+    Chip
+} from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
+import DownloadIcon from '@mui/icons-material/Download';
+import invoices from '../../assets/data/invoices.json';
 
-const columns = [
-  { field: 'entity_id', headerName: 'Invoice #', width: 100 },
-  { 
-    field: 'order_id',
-    headerName: 'Order #',
-    width: 100,
-  },
-  {
-    field: 'created_at',
-    headerName: 'Date',
-    width: 180,
-    valueFormatter: (params) => {
-      return new Date(params.value).toLocaleString();
-    },
-  },
-  {
-    field: 'state',
-    headerName: 'Status',
-    width: 130,
-    renderCell: (params) => {
-      const statusColors = {
-        1: 'success', // paid
-        2: 'warning', // pending
-        3: 'error',   // canceled
-      };
-      
-      const statusLabels = {
-        1: 'Paid',
-        2: 'Pending',
-        3: 'Canceled',
-      };
-      
-      return (
-        <Chip
-          label={statusLabels[params.value] || params.value}
-          color={statusColors[params.value] || 'default'}
-          size="small"
-        />
-      );
-    },
-  },
-  {
-    field: 'grand_total',
-    headerName: 'Grand Total',
-    width: 130,
-    type: 'number',
-    valueFormatter: (params) => {
-      if (params.value == null) return '';
-      return `$${params.value.toFixed(2)}`;
-    },
-  },
-  {
-    field: 'billing_name',
-    headerName: 'Bill To',
-    width: 200,
-    valueGetter: (params) => {
-      const billing = params.row.billing_address || {};
-      return `${billing.firstname || ''} ${billing.lastname || ''}`.trim();
-    },
-  },
-];
+const InvoicesGrid = () => {
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [loading, setLoading] = useState(true);
+    const [data, setData] = useState([]);
 
-const InvoiceDetailPanel = ({ row }) => {
-  const items = row.items || [];
-  
-  return (
-    <Box sx={{ p: 2 }}>
-      <Typography variant="h6" gutterBottom>
-        Invoice Details #{row.increment_id}
-      </Typography>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Typography variant="subtitle2" gutterBottom>
-            Invoice Items
-          </Typography>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>SKU</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell align="right">Price</TableCell>
-                <TableCell align="right">Qty</TableCell>
-                <TableCell align="right">Subtotal</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {items.map((item) => (
-                <TableRow key={item.entity_id}>
-                  <TableCell>{item.sku}</TableCell>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell align="right">${Number(item.price).toFixed(2)}</TableCell>
-                  <TableCell align="right">{item.qty}</TableCell>
-                  <TableCell align="right">${Number(item.row_total).toFixed(2)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="subtitle2" gutterBottom>
-            Billing Address
-          </Typography>
-          <Typography variant="body2">
-            {row.billing_address?.firstname} {row.billing_address?.lastname}
-          </Typography>
-          <Typography variant="body2">
-            {row.billing_address?.street?.join(', ')}
-          </Typography>
-          <Typography variant="body2">
-            {row.billing_address?.city}, {row.billing_address?.region} {row.billing_address?.postcode}
-          </Typography>
-          <Typography variant="body2">
-            {row.billing_address?.country_id}
-          </Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography variant="subtitle2" gutterBottom>
-            Invoice Totals
-          </Typography>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-            <Typography variant="body2">Subtotal:</Typography>
-            <Typography variant="body2">${Number(row.subtotal).toFixed(2)}</Typography>
-          </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-            <Typography variant="body2">Shipping & Handling:</Typography>
-            <Typography variant="body2">${Number(row.shipping_amount).toFixed(2)}</Typography>
-          </Box>
-          {Number(row.discount_amount) !== 0 && (
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-              <Typography variant="body2">Discount:</Typography>
-              <Typography variant="body2">${Math.abs(Number(row.discount_amount)).toFixed(2)}</Typography>
+    useEffect(() => {
+        // Simulate loading data
+        const loadData = () => {
+            setData(invoices);
+            setLoading(false);
+        };
+        loadData();
+    }, []);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    const getStatusColor = (status) => {
+        switch (status.toLowerCase()) {
+            case 'paid':
+                return 'success';
+            case 'pending':
+                return 'warning';
+            case 'overdue':
+                return 'error';
+            case 'cancelled':
+                return 'default';
+            default:
+                return 'info';
+        }
+    };
+
+    if (loading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                <CircularProgress />
             </Box>
-          )}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-            <Typography variant="body2">Tax:</Typography>
-            <Typography variant="body2">${Number(row.tax_amount).toFixed(2)}</Typography>
-          </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1 }}>
-            <Typography variant="subtitle2">Grand Total:</Typography>
-            <Typography variant="subtitle2">${Number(row.grand_total).toFixed(2)}</Typography>
-          </Box>
-        </Grid>
-      </Grid>
-    </Box>
-  );
+        );
+    }
+
+    return (
+        <Box sx={{ width: '100%', height: '100%', p: 3 }}>
+            <Typography variant="h4" gutterBottom>
+                Invoices
+            </Typography>
+            
+            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                <TableContainer sx={{ maxHeight: 'calc(100vh - 300px)' }}>
+                    <Table stickyHeader>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Invoice #</TableCell>
+                                <TableCell>Order #</TableCell>
+                                <TableCell>Date</TableCell>
+                                <TableCell>Customer</TableCell>
+                                <TableCell>Amount</TableCell>
+                                <TableCell>Status</TableCell>
+                                <TableCell align="right">Actions</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {data
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((invoice) => (
+                                    <TableRow hover key={invoice.id}>
+                                        <TableCell>#{invoice.increment_id}</TableCell>
+                                        <TableCell>#{invoice.order_id}</TableCell>
+                                        <TableCell>{new Date(invoice.created_at).toLocaleDateString()}</TableCell>
+                                        <TableCell>{invoice.customer_name}</TableCell>
+                                        <TableCell>${invoice.grand_total}</TableCell>
+                                        <TableCell>
+                                            <Chip
+                                                label={invoice.status}
+                                                color={getStatusColor(invoice.status)}
+                                                size="small"
+                                            />
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <Tooltip title="View Invoice">
+                                                <IconButton size="small" color="primary">
+                                                    <VisibilityIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Print Invoice">
+                                                <IconButton size="small">
+                                                    <LocalPrintshopIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Download PDF">
+                                                <IconButton size="small" color="secondary">
+                                                    <DownloadIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[10, 25, 50, 100]}
+                    component="div"
+                    count={data.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </Paper>
+        </Box>
+    );
 };
 
-export default function InvoicesGrid() {
-  return (
-    <BaseGrid
-      title="Invoices"
-      columns={columns}
-      fetchData={magentoApi.getInvoices.bind(magentoApi)}
-      detailPanel={InvoiceDetailPanel}
-      initialSort={[{ field: 'created_at', sort: 'desc' }]}
-    />
-  );
-}
+export default InvoicesGrid;

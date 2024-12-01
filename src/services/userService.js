@@ -32,6 +32,6 @@ export const defaultUserSettings = {
         email: '',
         phone: '',
         position: '',
-        avatar: '/src/resources/imgs/customer01.jpg',
+        avatar: '/src/resources/images/customer01.jpg',
     }
 };

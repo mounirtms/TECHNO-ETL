@@ -2,7 +2,6 @@
 const config = {
     api: {
         magento: {
-            baseUrl: import.meta.env.VITE_MAGENTO_API_URL || 'https://technostationery.com/rest/V1',
             endpoints: {
                 login: '/integration/admin/token',
                 storeConfig: '/store/storeConfigs',

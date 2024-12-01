@@ -45,7 +45,7 @@ const Footer = memo(({ version = '1.0.0', buildInfo = 'Development Build' }) => 
                             underline="hover"
                             variant="caption"
                         >
-                            Documentation
+                            technostationary.com
                         </Link>
                     </Box>
                 </Box>

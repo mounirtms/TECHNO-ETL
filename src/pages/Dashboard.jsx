@@ -57,17 +57,7 @@ const Dashboard = () => {
             maxWidth: '100%',
             overflow: 'auto'
         }}>
-            <Typography 
-                variant="h4" 
-                gutterBottom 
-                sx={{ 
-                    mb: 4,
-                    fontSize: { xs: '1.5rem', sm: '2rem' }
-                }}
-            >
-                {translate('dashboard')}
-            </Typography>
-
+             
             <Grid container spacing={{ xs: 2, sm: 3 }}>
                 {cards.map((card, index) => (
                     <Grid item xs={12} sm={6} md={3} key={index}>

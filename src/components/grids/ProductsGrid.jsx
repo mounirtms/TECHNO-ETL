@@ -1,110 +1,140 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
-import { Box, Paper } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import {
+    Box,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TablePagination,
+    Typography,
+    IconButton,
+    Tooltip,
+    CircularProgress
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import magentoApi from '../../services/magentoApi';
 
-const columns = [
-  { field: 'id', headerName: 'ID', width: 90 },
-  { field: 'sku', headerName: 'SKU', width: 130 },
-  { field: 'name', headerName: 'Name', width: 200 },
-  { 
-    field: 'price', 
-    headerName: 'Price', 
-    width: 130, 
-    type: 'number',
-    valueFormatter: (params) => {
-      if (params.value == null) return '';
-      return `$${params.value}`;
-    }
-  },
-  { 
-    field: 'status', 
-    headerName: 'Status', 
-    width: 130,
-    valueFormatter: (params) => {
-      const statusMap = {
-        1: 'Enabled',
-        2: 'Disabled'
-      };
-      return statusMap[params.value] || params.value;
-    }
-  },
-  { field: 'type_id', headerName: 'Type', width: 130 },
-  { 
-    field: 'qty', 
-    headerName: 'Stock', 
-    width: 130, 
-    type: 'number',
-    valueGetter: (params) => params.row.extension_attributes?.stock_item?.qty
-  },
-];
+const ProductsGrid = () => {
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [loading, setLoading] = useState(true);
+    const [data, setData] = useState([]);
+    const [rowCount, setRowCount] = useState(0);
 
-export default function ProductsGrid() {
-  const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [paginationModel, setPaginationModel] = useState({
-    pageSize: 10,
-    page: 0,
-  });
-  const [rowCount, setRowCount] = useState(0);
-  const [sortModel, setSortModel] = useState([
-    {
-      field: 'created_at',
-      sort: 'desc',
-    },
-  ]);
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                setLoading(true);
+                const response = await magentoApi.getProducts({
+                    currentPage: page + 1,
+                    pageSize: rowsPerPage,
+                });
+                setData(response.items || []);
+                setRowCount(response.total_count || 0);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const response = await magentoApi.getProducts({
-          currentPage: paginationModel.page + 1,
-          pageSize: paginationModel.pageSize,
-          sortOrders: sortModel.map(sort => ({
-            field: sort.field,
-            direction: sort.sort.toUpperCase()
-          }))
-        });
-        setRows(response.items || []);
-        setRowCount(response.total_count || 0);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      } finally {
-        setLoading(false);
-      }
+        fetchProducts();
+    }, [page, rowsPerPage]);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
     };
 
-    fetchProducts();
-  }, [paginationModel, sortModel]);
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
 
-  return (
-    <Paper elevation={2} sx={{ height: '100%', width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        paginationModel={paginationModel}
-        onPaginationModelChange={setPaginationModel}
-        paginationMode="server"
-        sortingMode="server"
-        sortModel={sortModel}
-        onSortModelChange={setSortModel}
-        rowCount={rowCount}
-        pageSizeOptions={[10, 25, 50]}
-        loading={loading}
-        disableRowSelectionOnClick
-        autoHeight
-        density="comfortable"
-        sx={{
-          '& .MuiDataGrid-cell:focus': {
-            outline: 'none',
-          },
-          '& .MuiDataGrid-row:hover': {
-            backgroundColor: 'action.hover',
-          },
-        }}
-      />
-    </Paper>
-  );
-}
+    if (loading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    return (
+        <Box sx={{ width: '100%', height: '100%', p: 3 }}>
+            <Typography variant="h4" gutterBottom>
+                Products
+            </Typography>
+            
+            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                <TableContainer sx={{ maxHeight: 'calc(100vh - 300px)' }}>
+                    <Table stickyHeader>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>ID</TableCell>
+                                <TableCell>Name</TableCell>
+                                <TableCell>SKU</TableCell>
+                                <TableCell>Price</TableCell>
+                                <TableCell>Stock</TableCell>
+                                <TableCell>Status</TableCell>
+                                <TableCell align="right">Actions</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {data
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((product) => (
+                                    <TableRow hover key={product.id}>
+                                        <TableCell>{product.id}</TableCell>
+                                        <TableCell>{product.name}</TableCell>
+                                        <TableCell>{product.sku}</TableCell>
+                                        <TableCell>${product.price}</TableCell>
+                                        <TableCell>{product.extension_attributes?.stock_item?.qty}</TableCell>
+                                        <TableCell>
+                                            <Box
+                                                sx={{
+                                                    backgroundColor: product.status === 1 ? 'success.light' : 'error.light',
+                                                    color: 'white',
+                                                    px: 1,
+                                                    py: 0.5,
+                                                    borderRadius: 1,
+                                                    display: 'inline-block',
+                                                }}
+                                            >
+                                                {product.status === 1 ? 'Enabled' : 'Disabled'}
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <Tooltip title="Edit">
+                                                <IconButton size="small">
+                                                    <EditIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Delete">
+                                                <IconButton size="small" color="error">
+                                                    <DeleteIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[10, 25, 50, 100]}
+                    component="div"
+                    count={rowCount}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </Paper>
+        </Box>
+    );
+};
+
+export default ProductsGrid;

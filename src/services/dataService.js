@@ -1,10 +1,10 @@
 // Import JSON data
-import orders from '../resources/data/orders.json';
-import customers from '../resources/data/customers.json';
-import invoices from '../resources/data/invoices.json';
-import products from '../resources/data/products.json';
-import salesRules from '../resources/data/salesRules.json';
-import categories from '../resources/data/category.json';
+import orders from '../assets/data/orders.json';
+import customers from '../assets/data/customers.json';
+import invoices from '../assets/data/invoices.json';
+import products from '../assets/data/products.json';
+import salesRules from '../assets/data/salesRules.json';
+import categories from '../assets/data/category.json';
 
 export const getOrders = () => orders;
 export const getCustomers = () => customers;

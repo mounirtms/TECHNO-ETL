@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import theme from './theme';
 import Layout from './components/Layout/Layout';
 import Login from './pages/Login';
@@ -22,6 +24,18 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 <LanguageProvider>
                     <ThemeProvider theme={theme}>
                         <CssBaseline />
+                        <ToastContainer
+                            position="top-right"
+                            autoClose={3000}
+                            hideProgressBar={false}
+                            newestOnTop
+                            closeOnClick
+                            rtl={false}
+                            pauseOnFocusLoss
+                            draggable
+                            pauseOnHover
+                            theme="colored"
+                        />
                         <Routes>
                             <Route path="/login" element={<Login />} />
                             <Route
