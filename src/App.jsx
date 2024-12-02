@@ -11,6 +11,7 @@ import { prefixer } from 'stylis';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import Toast from './components/common/Toast';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { useAuth } from './contexts/AuthContext';
 import { Box, CircularProgress } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';

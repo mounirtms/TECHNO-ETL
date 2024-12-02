@@ -20,15 +20,66 @@
     "settings": "Paramètres",
     "logout": "Déconnexion",
     "profile": {
-        "fullName": "Nom complet",
-        "email": "Email",
-        "phone": "Téléphone",
-        "position": "Poste",
-        "language": "Langue",
-        "theme": "Thème",
-        "notifications": "Notifications",
-        "personalInfo": "Informations personnelles",
-        "accountSettings": "Paramètres du compte"
+        "personalInfo": {
+            "title": "Informations Personnelles",
+            "firstName": "Prénom",
+            "lastName": "Nom de Famille",
+            "email": "Adresse Email",
+            "phone": "Numéro de Téléphone",
+            "birthDate": "Date de Naissance",
+            "gender": "Genre",
+            "address": "Adresse",
+            "city": "Ville",
+            "country": "Pays",
+            "postalCode": "Code Postal"
+        },
+        "preferences": {
+            "title": "Préférences Utilisateur",
+            "language": "Langue de l'Interface",
+            "theme": "Thème de Couleur",
+            "lightMode": "Mode Clair",
+            "darkMode": "Mode Sombre",
+            "fontSize": "Taille de Police",
+            "small": "Petit",
+            "medium": "Moyen", 
+            "large": "Grand",
+            "notifications": {
+                "title": "Préférences de Notifications",
+                "email": "Notifications par Email",
+                "sms": "Notifications SMS",
+                "push": "Notifications Push",
+                "marketing": "Communications Marketing"
+            }
+        },
+        "apiSettings": {
+            "title": "Configuration API",
+            "magento": {
+                "title": "API Magento",
+                "url": "URL Magento",
+                "username": "Nom d'Utilisateur Magento",
+                "password": "Mot de Passe Magento",
+                "token": "Jeton d'Accès",
+                "generateToken": "Générer un Jeton"
+            },
+            "cegid": {
+                "title": "API Cegid",
+                "url": "URL Cegid",
+                "username": "Nom d'Utilisateur Cegid", 
+                "password": "Mot de Passe Cegid",
+                "database": "Nom de la Base de Données",
+                "connect": "Connecter"
+            },
+            "security": {
+                "title": "Paramètres de Sécurité",
+                "twoFactorAuth": "Authentification à Deux Facteurs",
+                "ipRestriction": "Restrictions d'Adresse IP"
+            }
+        },
+        "actions": {
+            "save": "Enregistrer les Modifications",
+            "cancel": "Annuler",
+            "edit": "Modifier le Profil"
+        }
     },
     "login": {
         "welcome": "Bienvenue",

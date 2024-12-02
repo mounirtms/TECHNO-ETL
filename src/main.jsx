@@ -1,15 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import theme from './theme';
 import Layout from './components/Layout/Layout';
 import Login from './pages/Login';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import './index.css';
 
 const PrivateRoute = ({ children }) => {
@@ -22,10 +21,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Router>
             <AuthProvider>
                 <LanguageProvider>
-                    <ThemeProvider theme={theme}>
+                    <ThemeProvider>
                         <CssBaseline />
                         <ToastContainer
-                            position="top-right"
+                            position="bottom-left"
                             autoClose={3000}
                             hideProgressBar={false}
                             newestOnTop

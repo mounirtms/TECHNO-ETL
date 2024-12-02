@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { ref, get, set } from 'firebase/database';
+import { ref, update, get } from 'firebase/database';
 import { database } from '../config/firebase';
 import { useAuth } from './AuthContext';
 import enTranslations from '../assets/locale/en.json';
 import frTranslations from '../assets/locale/fr.json';
 import arTranslations from '../assets/locale/ar.json';
+
 const LanguageContext = createContext();
 
 export const useLanguage = () => {
@@ -29,64 +30,72 @@ export const languages = {
         translations: arTranslations
     }
 };
+
 export const LanguageProvider = ({ children }) => {
     const { currentUser } = useAuth();
-    const [currentLanguage, setCurrentLanguage] = useState('en');
-    const [showGooglePrompt, setShowGooglePrompt] = useState(false);
+    const [currentLanguage, setCurrentLanguage] = useState(() => {
+        return localStorage.getItem('userLanguage') || 'en';
+    });
 
     const saveUserLanguage = async (lang) => {
-        if (!currentUser) return;
+        if (!currentUser || !languages[lang]) return;
 
-        if (currentUser.isMagentoUser) {
-            // For Magento users, store in localStorage
+        try {
+            // Save to localStorage for immediate access
             localStorage.setItem('userLanguage', lang);
-            setShowGooglePrompt(true); // Show prompt to link Google account
-        } else {
-            // For Google users, store in Firebase
-            try {
-                const userRef = ref(database, `users/${currentUser.uid}/settings`);
-                await set(userRef, {
-                    language: lang,
-                    updatedAt: new Date().toISOString()
-                });
-            } catch (error) {
-                console.error('Error saving language preference:', error);
-            }
+            
+            // Save to Firebase for persistence
+            const userRef = ref(database, `users/${currentUser.uid}/preferences`);
+            await update(userRef, { language: lang });
+        } catch (error) {
+            console.error('Error saving user language:', error);
         }
     };
 
     const loadUserLanguage = async () => {
         if (!currentUser) {
-            setCurrentLanguage('en');
+            const localLang = localStorage.getItem('userLanguage');
+            if (localLang && languages[localLang]) {
+                setCurrentLanguage(localLang);
+            }
             return;
         }
 
         try {
-            if (currentUser.isMagentoUser) {
-                // For Magento users, load from localStorage
-                const savedLanguage = localStorage.getItem('userLanguage');
-                if (savedLanguage && languages[savedLanguage]) {
-                    setCurrentLanguage(savedLanguage);
-                }
+            const userRef = ref(database, `users/${currentUser.uid}/preferences`);
+            const snapshot = await get(userRef);
+            const preferences = snapshot.val();
+            
+            if (preferences?.language && languages[preferences.language]) {
+                setCurrentLanguage(preferences.language);
+                localStorage.setItem('userLanguage', preferences.language);
             } else {
-                // For Google users, load from Firebase
-                const userRef = ref(database, `users/${currentUser.uid}/settings`);
-                const snapshot = await get(userRef);
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    if (data.language && languages[data.language]) {
-                        setCurrentLanguage(data.language);
-                    }
+                // If no Firebase preference, check localStorage
+                const localLang = localStorage.getItem('userLanguage');
+                if (localLang && languages[localLang]) {
+                    setCurrentLanguage(localLang);
+                    // Sync localStorage preference to Firebase
+                    await update(userRef, { language: localLang });
                 }
             }
         } catch (error) {
-            console.error('Error loading language preference:', error);
+            console.error('Error loading user language:', error);
+            const localLang = localStorage.getItem('userLanguage');
+            if (localLang && languages[localLang]) {
+                setCurrentLanguage(localLang);
+            }
         }
     };
 
     useEffect(() => {
         loadUserLanguage();
     }, [currentUser]);
+
+    const getNestedTranslation = (obj, path) => {
+        return path.split('.').reduce((prev, curr) => {
+            return prev ? prev[curr] : undefined;
+        }, obj);
+    };
 
     const value = {
         currentLanguage,
@@ -98,9 +107,10 @@ export const LanguageProvider = ({ children }) => {
             }
         },
         getDirection: () => languages[currentLanguage]?.dir || 'ltr',
-        translate: (key) => languages[currentLanguage]?.translations[key] || key,
-        showGooglePrompt,
-        setShowGooglePrompt
+        translate: (key) => {
+            const translation = getNestedTranslation(languages[currentLanguage]?.translations, key);
+            return translation || key;
+        }
     };
 
     return (

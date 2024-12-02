@@ -1,4 +1,10 @@
 {
+    
+"common": {
+        "profile": "Profile",
+        "logout": "Logout",
+        "settings": "Settings"
+    },
     "dashboard": {
         "title": "Dashboard",
         "totalOrders": "Total Orders",
@@ -13,6 +19,7 @@
         "lastMonth": "Last Month",
         "lastYear": "Last Year",
         "refresh": "Refresh"
+        
     },
     "products": "Products",
     "orders": "Orders",
@@ -20,15 +27,90 @@
     "settings": "Settings",
     "logout": "Logout",
     "profile": {
-        "fullName": "Full Name",
-        "email": "Email",
-        "phone": "Phone",
-        "position": "Position",
-        "language": "Language",
-        "theme": "Theme",
-        "notifications": "Notifications",
-        "personalInfo": "Personal Information",
-        "accountSettings": "Account Settings"
+        "personalInfo": {
+            "title": "Personal Information",
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "email": "Email Address",
+            "phone": "Phone Number",
+            "birthDate": "Date of Birth",
+            "gender": "Gender",
+            "address": "Address",
+            "city": "City",
+            "country": "Country",
+            "postalCode": "Postal Code"
+        },
+        "preferences": {
+            "title": "User Preferences",
+            "language": "Interface Language",
+            "theme": "Color Theme",
+            "lightMode": "Light Mode",
+            "darkMode": "Dark Mode",
+            "fontSize": "Font Size",
+            "small": "Small",
+            "medium": "Medium", 
+       
+    
+            "saveSuccess": "Preferences saved successfully",
+            "saveFailed": "Failed to save preferences",
+    
+            "notifications": {
+                "title": "Notification Preferences",
+                "email": "Email Notifications",
+                "sms": "SMS Notifications",
+                "push": "Push Notifications",
+                "marketing": "Marketing Communications"
+            }
+        },
+        "apiSettings": {
+            "title": "API Settings",
+            "validation": {
+                "missingCredentials": "Please provide Magento URL, username, and password",
+                "missingCegidCredentials": "Please provide Cegid URL, username, password, and database"
+
+            },
+            
+            "magento": {
+                "title": "Magento API",
+                "url": "API URL",
+                "username": "Username",
+                "password": "Password",
+                "generateToken": "Generate Token",
+                "tokenGeneratedSuccess": "Magento token generated successfully",
+                "invalidCredentials": "Invalid credentials",
+                "accessDenied": "Access denied",
+                "tokenGenerationFailed": "Failed to generate token"
+            },
+            "cegid": {
+                "title": "Cegid API",
+                "url": "Service URL",
+                "username": "Username",
+                "password": "Password",
+                "database": "Database",
+                "connect": "Connect",
+                "connectionSuccess": "Connected to Cegid successfully",
+                "connectionFailed": "Connection failed",
+                "parseError": "Error parsing response",
+                "authenticationFailed": "Authentication failed"
+            },
+            "security": {
+                "title": "Security Settings",
+                "twoFactorAuth": "Two-Factor Authentication",
+                "ipRestriction": "IP Address Restrictions"
+            },
+            "errors": {
+                "invalidCredentials": "Invalid credentials",
+                "accessDenied": "Access denied",
+                "serverError": "Server error occurred",
+                "networkError": "Network error",
+                "unknownError": "An unknown error occurred"
+            }
+        },
+        "actions": {
+            "save": "Save Changes",
+            "cancel": "Cancel",
+            "edit": "Edit Profile"
+        }
     },
     "login": {
         "welcome": "Welcome",

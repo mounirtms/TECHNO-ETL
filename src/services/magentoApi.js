@@ -1,4 +1,4 @@
-import { getToken, logout } from './authService';
+import { getToken, logout } from './magentoService';
 
 const API_URL = import.meta.env.VITE_MAGENTO_API_URL;
 

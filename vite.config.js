@@ -57,20 +57,38 @@ export default defineConfig({
         }
       },
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:2524',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+      '/magento-api': {
+        target: 'https://technostationery.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/magento-api/, ''),
+        secure: false,
+        configure: (proxy, options) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            proxyReq.setHeader('Origin', 'https://techno-webapp.web.app');
+            proxyReq.setHeader('Access-Control-Request-Method', 'POST, GET, OPTIONS');
+            proxyReq.setHeader('Access-Control-Request-Headers', 'Content-Type, Authorization');
+          });
+        }
       }
     },
-    cors: false
+    cors: {
+      origin: 'https://techno-webapp.web.app',
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      credentials: true
+    }
   },
   build: {
     target: 'esnext',
     outDir: 'dist',
     assetsDir: 'assets',
-    minify: 'esbuild',
-    sourcemap: true,
+    sourcemap: process.env.NODE_ENV !== 'production',
+    minify: process.env.NODE_ENV === 'production',
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html')
@@ -78,7 +96,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
-          mui: ['@mui/material', '@mui/icons-material'],
+          ui: ['@mui/material', '@emotion/react', '@emotion/styled'],
           charts: ['recharts']
         },
         assetFileNames: ({ name }) => {
@@ -93,7 +111,8 @@ export default defineConfig({
       }
     },
     assetsInclude: ['**/*.jpg', '**/*.png', '**/*.gif', '**/*.svg', '**/*.json', '**/*.csv', '**/*.xml'],
-    copyPublicDir: true
+    copyPublicDir: true,
+    chunkSizeWarningLimit: 1000
   },
   optimizeDeps: {
     include: [

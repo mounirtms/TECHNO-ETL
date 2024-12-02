@@ -10,9 +10,13 @@ import {
     IconButton,
     Button,
     Select,
+    Alert,
     MenuItem,
+    CircularProgress,
     useTheme
 } from '@mui/material';
+import { useDashboardController } from '../services/DashboardController';
+
 import {
     ShoppingCart as OrdersIcon,
     People as CustomersIcon,
@@ -25,7 +29,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 const Dashboard = () => {
     const { translate } = useLanguage();
     const theme = useTheme();
-
+    const { loading, error } = useDashboardController();
     // Local data for cards and charts
     const localData = {
         totalOrders: 200,
@@ -77,6 +81,19 @@ const Dashboard = () => {
             color: theme.palette.info.main
         }
     ];
+    if (loading) return (
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+            <CircularProgress />
+        </Box>
+    );
+    
+    if (error) return (
+        <Box p={3}>
+            <Alert severity="error">
+                {error.message || 'An error occurred while loading the dashboard'}
+            </Alert>
+        </Box>
+    );
 
     return (
         <Box sx={{ 

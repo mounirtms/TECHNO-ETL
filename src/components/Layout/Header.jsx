@@ -11,10 +11,10 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { StyledAppBar } from './styles';
-import { DRAWER_WIDTH, COLLAPSED_WIDTH } from './constants';
+import { DRAWER_WIDTH, COLLAPSED_WIDTH } from './Constants';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTab } from '../../contexts/TabContext';
-import UserMenu from '../user/UserMenu'; // Import UserMenu
+import UserMenu from './UserMenu'; 
 
 export const Header = ({
     isDrawerCollapsed,

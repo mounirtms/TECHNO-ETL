@@ -8,7 +8,6 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTab } from '../../contexts/TabContext';
-
 /**
  * TabPanel Component
  * 
@@ -126,7 +125,11 @@ const TabPanel = () => {
                     backgroundColor: theme.palette.background.default
                 }}
             >
-                <ActiveComponent />
+                {ActiveComponent ? <ActiveComponent /> : (
+                    <Box sx={{ p: 2, textAlign: 'center', color: 'error.main' }}>
+                        No component selected
+                    </Box>
+                )}
             </Box>
         </Box>
     );

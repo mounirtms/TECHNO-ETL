@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "bunx --bun vite",
-    "prod": "bunx --bun vite build",
+    "prod": "vite build",
+    "deploy": "firebase deploy --only hosting",
     "clean": "rm -rf node_modules/.vite && rm -rf dist && bun install && bun run dev",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "bunx --bun vite preview"
@@ -19,8 +20,10 @@
     "@mui/x-data-grid": "^6.13.0",
     "@mui/x-date-pickers": "^6.16.0",
     "@mui/x-tree-view": "^7.23.0",
+    "axios": "^1.7.8",
     "bootstrap": "^5.3.3",
     "date-fns": "^2.30.0",
+     "cross-env": "^7.0.3",
     "firebase": "^11.0.2",
     "framer-motion": "^11.12.0",
     "node-cron": "^3.0.3",
@@ -32,7 +35,11 @@
     "recharts": "^2.8.0",
     "sass": "^1.81.0",
     "stylis": "^4.3.0",
-    "stylis-plugin-rtl": "^2.1.1"
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "http-proxy-middleware": "^2.0.6",
+    "stylis-plugin-rtl": "^2.1.1",
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

@@ -4,6 +4,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import CategoryIcon from '@mui/icons-material/Category';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
 
@@ -62,5 +63,11 @@ export const MENU_ITEMS = [
         path: '/categories'
     },
     { id: 'stocks', label: 'Stocks', icon: InventoryIcon, path: '/stocks' },
-    { id: 'sources', label: 'Sources', icon: LocationOnIcon, path: '/sources' }
+    { id: 'sources', label: 'Sources', icon: LocationOnIcon, path: '/sources' },
+    { 
+        id: 'UserProfile', 
+        label: 'User Profile', 
+        icon: AccountCircleIcon, 
+        path: '/user-profile' 
+    }
 ];

@@ -15,8 +15,7 @@ import {
     CircularProgress
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import magentoApi from '../../services/magentoApi';
+import DeleteIcon from '@mui/icons-material/Delete'; 
 
 const ProductsGrid = () => {
     const [page, setPage] = useState(0);

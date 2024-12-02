@@ -7,7 +7,7 @@ import ProductsGrid from '../components/grids/ProductsGrid';
 import CustomersGrid from '../components/grids/CustomersGrid';
 import OrdersGrid from '../components/grids/OrdersGrid';
 import InvoicesGrid from '../components/grids/InvoicesGrid';
-import UserProfile from '../components/user/UserProfile';
+import UserProfile from '../components/UserProfile';
 import CategoryTree from '../components/grids/CategoryTree';
 
 // Component mapping
@@ -42,6 +42,12 @@ export const TabProvider = ({ children }) => {
         if (!tabExists) {
             const newTab = MENU_ITEMS.find(item => item.id === tabId);
             if (newTab) {
+                // Check if component exists before adding tab
+                if (!COMPONENT_MAP[newTab.id]) {
+                    console.error(`No component found for tab: ${newTab.id}`);
+                    return;
+                }
+
                 setTabs(prevTabs => [
                     ...prevTabs, 
                     { 
@@ -49,6 +55,9 @@ export const TabProvider = ({ children }) => {
                         closeable: true 
                     }
                 ]);
+            } else {
+                console.error(`No menu item found for tabId: ${tabId}`);
+                return;
             }
         }
         
@@ -69,7 +78,28 @@ export const TabProvider = ({ children }) => {
 
     const getActiveComponent = () => {
         const activeTabItem = tabs.find(tab => tab.id === activeTab);
-        return activeTabItem ? COMPONENT_MAP[activeTabItem.id] : null;
+        
+        if (!activeTabItem) {
+            console.warn(`No tab found for activeTab: ${activeTab}`);
+            return () => (
+                <Box sx={{ p: 2, textAlign: 'center', color: 'error.main' }}>
+                    No component found for this tab.
+                </Box>
+            );
+        }
+
+        const Component = COMPONENT_MAP[activeTabItem.id];
+        
+        if (!Component) {
+            console.warn(`No component mapped for tab: ${activeTabItem.id}`);
+            return () => (
+                <Box sx={{ p: 2, textAlign: 'center', color: 'error.main' }}>
+                    Component not found for {activeTabItem.label}
+                </Box>
+            );
+        }
+
+        return Component;
     };
 
     return (
