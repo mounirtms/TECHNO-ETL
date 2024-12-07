@@ -1,141 +1,169 @@
-import React, { useState, useEffect } from 'react';
-import {
-    Box,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TablePagination,
-    Typography,
-    IconButton,
-    Tooltip,
-    CircularProgress,
-    Chip
-} from '@mui/material';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
+import React, { useState, useCallback } from 'react';
+import { Box } from '@mui/material';
+import BaseGrid from '../common/BaseGrid';
+import { StatsCards } from '../common/StatsCards';
+import magentoApi from '../../services/magentoService';
+import { toast } from 'react-toastify';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import orders from '../../assets/data/orders.json';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import PendingIcon from '@mui/icons-material/Pending';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { getStatusColumn } from '../../utils/gridUtils';
 
+/**
+ * OrdersGrid Component
+ * Displays orders data in a grid format with status cards
+ */
 const OrdersGrid = () => {
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [loading, setLoading] = useState(true);
+    // State management
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
+    const [filters, setFilters] = useState({});
+    const [stats, setStats] = useState({
+        total: 0,
+        processing: 0,
+        shipped: 0,
+        completed: 0,
+        cancelled: 0
+    });
 
-    useEffect(() => {
-        // Simulate loading data
-        const loadData = () => {
+    // Grid columns configuration
+    const columns = [
+        { 
+            field: 'increment_id', 
+            headerName: 'Order #', 
+            width: 130 
+        },
+        { 
+            field: 'customer_name', 
+            headerName: 'Customer', 
+            flex: 1,
+            valueGetter: (params) => 
+                `${params.row.customer_firstname || ''} ${params.row.customer_lastname || ''}`
+        },
+        { 
+            field: 'grand_total', 
+            headerName: 'Total', 
+            width: 120,
+            valueFormatter: (params) => `$${params.value.toFixed(2)}`
+        },
+        getStatusColumn('status', {
+            filterOptions: [
+                { value: 'processing', label: 'Processing' },
+                { value: 'shipped', label: 'Shipped' },
+                { value: 'complete', label: 'Complete' },
+                { value: 'cancelled', label: 'Cancelled' }
+            ]
+        })
+    ];
+
+    // Data fetching handler
+    const handleRefresh = useCallback(async ({ page, pageSize, filter }) => {
+        try {
+            setLoading(true);
+            const searchCriteria = {
+                filterGroups: [],
+                pageSize,
+                currentPage: page + 1
+            };
+
+            if (filter?.status) {
+                searchCriteria.filterGroups.push({
+                    filters: [{
+                        field: 'status',
+                        value: filter.status,
+                        condition_type: 'eq'
+                    }]
+                });
+            }
+
+            const response = await magentoApi.getOrders(searchCriteria);
+            const orders = response?.items || [];
             setData(orders);
+            updateStats(orders);
+        } catch (error) {
+            toast.error(error.message || 'Failed to load orders');
+            throw error;
+        } finally {
             setLoading(false);
-        };
-        loadData();
+        }
     }, []);
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
+    // Update order statistics
+    const updateStats = useCallback((orders) => {
+        const newStats = orders.reduce((acc, order) => ({
+            total: acc.total + 1,
+            processing: acc.processing + (order.status === 'processing' ? 1 : 0),
+            shipped: acc.shipped + (order.status === 'shipped' ? 1 : 0),
+            completed: acc.completed + (order.status === 'complete' ? 1 : 0),
+            cancelled: acc.cancelled + (order.status === 'cancelled' ? 1 : 0)
+        }), {
+            total: 0,
+            processing: 0,
+            shipped: 0,
+            completed: 0,
+            cancelled: 0
+        });
+        setStats(newStats);
+    }, []);
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
-
-    const getStatusColor = (status) => {
-        switch (status.toLowerCase()) {
-            case 'processing':
-                return 'warning';
-            case 'completed':
-                return 'success';
-            case 'cancelled':
-                return 'error';
-            case 'pending':
-                return 'info';
-            default:
-                return 'default';
+    // Stats cards configuration
+    const statCards = [
+        {
+            title: "All Orders",
+            value: stats.total,
+            icon: ShoppingCartIcon,
+            color: "primary",
+            active: !filters.status,
+            onClick: () => setFilters({})
+        },
+        {
+            title: "Processing",
+            value: stats.processing,
+            icon: PendingIcon,
+            color: "warning",
+            active: filters.status === 'processing',
+            onClick: () => setFilters({ status: 'processing' })
+        },
+        {
+            title: "Shipped",
+            value: stats.shipped,
+            icon: LocalShippingIcon,
+            color: "info",
+            active: filters.status === 'shipped',
+            onClick: () => setFilters({ status: 'shipped' })
+        },
+        {
+            title: "Completed",
+            value: stats.completed,
+            icon: CheckCircleIcon,
+            color: "success",
+            active: filters.status === 'complete',
+            onClick: () => setFilters({ status: 'complete' })
+        },
+        {
+            title: "Cancelled",
+            value: stats.cancelled,
+            icon: CancelIcon,
+            color: "error",
+            active: filters.status === 'cancelled',
+            onClick: () => setFilters({ status: 'cancelled' })
         }
-    };
-
-    if (loading) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                <CircularProgress />
-            </Box>
-        );
-    }
+    ];
 
     return (
-        <Box sx={{ width: '100%', height: '100%', p: 3 }}>
-            <Typography variant="h4" gutterBottom>
-                Orders
-            </Typography>
-            
-            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer sx={{ maxHeight: 'calc(100vh - 300px)' }}>
-                    <Table stickyHeader>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Order #</TableCell>
-                                <TableCell>Date</TableCell>
-                                <TableCell>Customer</TableCell>
-                                <TableCell>Total</TableCell>
-                                <TableCell>Items</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell align="right">Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {data
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((order) => (
-                                    <TableRow hover key={order.id}>
-                                        <TableCell>#{order.increment_id}</TableCell>
-                                        <TableCell>{new Date(order.created_at).toLocaleDateString()}</TableCell>
-                                        <TableCell>{order.customer_name}</TableCell>
-                                        <TableCell>${order.grand_total}</TableCell>
-                                        <TableCell>{order.total_items}</TableCell>
-                                        <TableCell>
-                                            <Chip
-                                                label={order.status}
-                                                color={getStatusColor(order.status)}
-                                                size="small"
-                                            />
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Tooltip title="View Order">
-                                                <IconButton size="small" color="primary">
-                                                    <VisibilityIcon fontSize="small" />
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip title="Print Order">
-                                                <IconButton size="small">
-                                                    <LocalPrintshopIcon fontSize="small" />
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip title="Reorder">
-                                                <IconButton size="small" color="secondary">
-                                                    <ShoppingCartIcon fontSize="small" />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[10, 25, 50, 100]}
-                    component="div"
-                    count={data.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Paper>
+        <Box>
+            <StatsCards cards={statCards} />
+            <BaseGrid
+                columns={columns}
+                data={data}
+                loading={loading}
+                onRefresh={handleRefresh}
+                currentFilter={filters}
+                onFilterChange={setFilters}
+                onError={(error) => toast.error(error.message)}
+            />
         </Box>
     );
 };

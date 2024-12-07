@@ -17,17 +17,18 @@ import {
 const ApiSettingsTab = () => {
     const { translate } = useLanguage();
     const { userData, updateUserData } = useProfileController();
+    const [loading, setLoading] = useState(false);
     const [apiSettings, setApiSettings] = useState({
         cegid: {
-            url: userData?.apiSettings?.cegid?.url || '',
-            username: userData?.apiSettings?.cegid?.username || '',
-            password: userData?.apiSettings?.cegid?.password || '',
-            database: userData?.apiSettings?.cegid?.database || ''
+            url: userData?.apiSettings?.cegid?.url || import.meta.env.VITE_Cegid_API_URL || '',
+            username: userData?.apiSettings?.cegid?.username || import.meta.env.VITE_Cegid_ADMIN_USERNAME || '',
+            password: userData?.apiSettings?.cegid?.password || import.meta.env.VITE_Cegid_ADMIN_PASSWORD || '',
+            database: userData?.apiSettings?.cegid?.database ||import.meta.env.VITE_Cegid_ADMIN_DATABASE || 'DBRETAIL01'
         },
         magento: {
-            url: userData?.apiSettings?.magento?.url || '',
-            username: userData?.apiSettings?.magento?.username || '',
-            password: userData?.apiSettings?.magento?.password || '',
+            url: userData?.apiSettings?.magento?.url || import.meta.env.VITE_MAGENTO_API_URL || 'https://technostationery.com/rest/V1',
+            username: userData?.apiSettings?.magento?.username || import.meta.env.VITE_MAGENTO_ADMIN_USERNAME || '',
+            password: userData?.apiSettings?.magento?.password || import.meta.env.VITE_MAGENTO_ADMIN_PASSWORD || '',
             token: userData?.apiSettings?.magento?.token || ''
         }
     });
@@ -65,10 +66,12 @@ const ApiSettingsTab = () => {
             await updateUserData({
                 apiSettings: apiSettings
             }, 'apiSettings');
-              toast.success(translate('profile.apiSettings.saveSuccess'));
+            toast.success(translate('profile.apiSettings.saveSuccess'));
         } catch (error) {
             toast.error(translate('profile.apiSettings.saveError'));
         }
+        localStorage.setItem('offlineApiSettings', JSON.stringify(apiSettings));
+
     };
 
     const handleCegidConnect = async () => {
@@ -102,14 +105,22 @@ const ApiSettingsTab = () => {
     };
 
     const handleGenerateMagentoToken = async () => {
+        if (loading) return;
+        
         const { url, username, password } = apiSettings.magento;
+        if ( !username || !password) {
+            toast.error(translate('profile.apiSettings.magento.validation.missing'));
+            return;
+        }
 
         try {
             setLoading(true);
-            // Use magentoService login to get token
-            const token = await magentoApi.login(url, username, password);
+            const token = await magentoApi.login(username, password,url);
             
-            // Update apiSettings with new token
+            if (!token) {
+                throw new Error('No token received from server');
+            }
+
             const updatedSettings = {
                 ...apiSettings,
                 magento: {
@@ -118,7 +129,6 @@ const ApiSettingsTab = () => {
                 }
             };
 
-            // Save to user profile
             await updateUserData({
                 apiSettings: updatedSettings
             }, 'apiSettings');
@@ -127,12 +137,14 @@ const ApiSettingsTab = () => {
             toast.success(translate('profile.apiSettings.magento.tokenSuccess'));
         } catch (error) {
             console.error('Magento token generation error:', error);
-            toast.error(translate('profile.apiSettings.magento.tokenError'));
+            const errorMessage = error.message === 'No token received from server'
+                ? translate('profile.apiSettings.magento.noToken')
+                : translate('profile.apiSettings.magento.tokenError');
+            toast.error(errorMessage);
         } finally {
             setLoading(false);
         }
     };
- 
 
     return (
         <Paper sx={{ p: 2, height: '100%', overflowY: 'auto' }}>
@@ -184,9 +196,9 @@ const ApiSettingsTab = () => {
                 </Grid>
             </Grid>
 
-            <Button 
-                variant="contained" 
-                color="primary" 
+            <Button
+                variant="contained"
+                color="primary"
                 onClick={handleCegidConnect}
                 sx={{ mt: 2, mr: 2 }}
             >
@@ -231,22 +243,23 @@ const ApiSettingsTab = () => {
                 </Grid>
             </Grid>
 
-            <Button 
-                variant="contained" 
-                color="primary" 
+            <Button
+                variant="contained"
+                color="primary"
                 onClick={handleGenerateMagentoToken}
                 sx={{ mt: 2 }}
             >
                 {translate('profile.apiSettings.magento.generateToken')}
             </Button>
-
+ 
             <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSaveSettings}
-                >
-                    {translate('profile.apiSettings.save')}
-                </Button>
+                variant="contained"
+                color="primary"
+                onClick={handleSaveSettings}
+                sx={{ mt: 2, ml:36 }}
+            >
+                {translate('profile.apiSettings.save')}
+            </Button>
         </Paper>
     );
 };

@@ -31,21 +31,22 @@ const UserProfile = () => {
     return (
         <Paper sx={{ height: '100%', overflow: 'hidden' }}>
             <Tabs value={activeTab} onChange={handleTabChange}>
-                <Tab icon={<PersonIcon />} label="Personal Info" />
                 <Tab icon={<ApiIcon />} label="API Settings" />
                 <Tab icon={<LanguageIcon />} label="Preferences" />
+                <Tab icon={<PersonIcon />} label="Personal Info" />
+
             </Tabs>
             <Box sx={{ p: 3, height: 'calc(100% - 48px)', overflowY: 'auto' }}>
-                {activeTab === 0 && (
+                {activeTab === 2 && (
                     <PersonalInfoTab
                         userData={userData}
                         onUpdateUserData={updateUserData}
                     />
                 )}
-                {activeTab === 1 && (
+                {activeTab === 0 && (
                     <ApiSettingsTab />
                 )}
-                {activeTab === 2 && (
+                {activeTab === 1 && (
                     <PreferencesTab
                         onUpdateUserData={updateUserData}
                     />

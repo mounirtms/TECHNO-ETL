@@ -82,16 +82,16 @@ export const defaultUserSettings = {
     },
     apiSettings: {
         cegid: {
-            url: '',
-            username: '',
-            password: '',
-            database: ''
+            url: import.meta.env.VITE_Cegid_API_URL || '',
+            username: import.meta.env.VITE_Cegid_ADMIN_USERNAME || '',
+            password: import.meta.env.VITE_Cegid_ADMIN_PASSWORD || '',
+            database: import.meta.env.VITE_Cegid_ADMIN_DATABASE || 'DBRETAIL01'
         },
         magento: {
-            url: 'https://technostationery.com/rest/V1',
-            username: '',
-            token: '',
-            password: ''
+            url: import.meta.env.VITE_MAGENTO_API_URL || 'https://technostationery.com/rest/V1',
+            username: import.meta.env.VITE_MAGENTO_ADMIN_USERNAME || '',
+            password: import.meta.env.VITE_MAGENTO_ADMIN_PASSWORD || '',
+            token: ''
         }
     },
     personalInfo: {

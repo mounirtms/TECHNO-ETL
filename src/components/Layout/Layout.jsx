@@ -6,7 +6,7 @@ import TabPanel from './TabPanel';
 import Footer from './Footer';
 import { TabProvider } from '../../contexts/TabContext';
 import { LanguageProvider, useLanguage } from '../../contexts/LanguageContext'; // Import LanguageProvider
-import { DRAWER_WIDTH, COLLAPSED_WIDTH } from './constants'; // Use shared constants for consistent layout
+import { DRAWER_WIDTH, COLLAPSED_WIDTH } from './Constants'; // Use shared constants for consistent layout
 
 const Layout = () => {
     const theme = useTheme();

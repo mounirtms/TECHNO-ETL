@@ -1,4 +1,6 @@
-import { format } from 'date-fns';
+import React from 'react';
+import { Chip } from '@mui/material';
+import { StatusCell } from '../components/common/BaseGrid';
 
 const isDate = (value) => {
     const date = new Date(value);
@@ -28,32 +30,70 @@ const isStatus = (key, value) => {
         (key.includes('status') || key.includes('state'));
 };
 
-export const generateColumns = (firstRecord, currency = 'DZD') => {
-    if (!firstRecord) return [];
+export const STATUS_COLORS = {
+    // Order statuses
+    processing: 'warning',
+    shipped: 'info',
+    complete: 'success',
+    completed: 'success',
+    cancelled: 'error',
+    
+    // Customer statuses
+    active: 'success',
+    inactive: 'error',
+    subscribed: 'info',
+    not_subscribed: 'default',
+    
+    // Product statuses
+    enabled: 'success',
+    disabled: 'error',
+    in_stock: 'success',
+    out_of_stock: 'error',
+    
+    // Invoice statuses
+    paid: 'success',
+    pending: 'warning',
+    overdue: 'error',
+    refunded: 'info'
+};
 
-    return Object.keys(firstRecord).map(key => {
+export const getStatusColumn = (field = 'status', options = {}) => ({
+    field,
+    headerName: options.headerName || 'Status',
+    width: options.width || 130,
+    renderCell: (params) => StatusCell({ value: params.value, statusColors: options.statusColors }),
+    filterOptions: options.filterOptions || [],
+    ...options
+});
+
+export const generateColumns = (firstRecord, childColumns = []) => {
+    if (!firstRecord) return childColumns;
+    const uniqueColumns = new Set();
+    const generatedColumns = [];
+
+    childColumns.forEach(col => uniqueColumns.add(col.field));
+    Object.keys(firstRecord).forEach(key => {
+     
         const value = firstRecord[key];
-        const baseColumn = {
+
+        // Skip keys where the value is an array or an object
+        if (Array.isArray(value) || typeof value === 'object' || !uniqueColumns.has(key)) {
+            return; // Skip this iteration
+        }
+     
+        let baseColumn = {
             field: key,
+            hide: true,
             headerName: key.split('_').map(word => 
                 word.charAt(0).toUpperCase() + word.slice(1)
             ).join(' '),
             width: 150,
             filterable: true
         };
-
-        // Skip complex objects and arrays for default view
-        if (typeof value === 'object' && value !== null) {
-            return {
-                ...baseColumn,
-                width: 120,
-                renderCell: () => '...',
-                filterable: false
-            };
-        }
+ 
 
         if (isDate(value)) {
-            return {
+            baseColumn = {
                 ...baseColumn,
                 type: 'date',
                 valueFormatter: (params) => 
@@ -62,26 +102,26 @@ export const generateColumns = (firstRecord, currency = 'DZD') => {
         }
 
         if (isCurrency(key, value)) {
-            return {
+            baseColumn = {
                 ...baseColumn,
                 type: 'number',
                 valueFormatter: (params) => 
                     new Intl.NumberFormat('fr-DZ', {
                         style: 'currency',
-                        currency: currency
+                        currency: 'DZD'
                     }).format(params.value)
             };
         }
 
         if (isNumeric(value)) {
-            return {
+            baseColumn = {
                 ...baseColumn,
                 type: 'number'
             };
         }
 
         if (isBoolean(value)) {
-            return {
+            baseColumn = {
                 ...baseColumn,
                 type: 'boolean',
                 width: 120
@@ -89,12 +129,16 @@ export const generateColumns = (firstRecord, currency = 'DZD') => {
         }
 
         if (isStatus(key, value)) {
-            return {
+            baseColumn = {
                 ...baseColumn,
+                renderCell: (params) => StatusCell({ value: params.value }),
                 width: 130
             };
         }
 
-        return baseColumn;
+        generatedColumns.push(baseColumn);
     });
+  
+   
+    return  generatedColumns;
 };

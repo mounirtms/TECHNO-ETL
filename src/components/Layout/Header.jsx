@@ -9,9 +9,10 @@ import {
     MenuItem
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { StyledAppBar } from './styles';
 import { DRAWER_WIDTH, COLLAPSED_WIDTH } from './Constants';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTab } from '../../contexts/TabContext';
 import UserMenu from './UserMenu'; 
@@ -64,15 +65,18 @@ export const Header = ({
             }}
         >
             <Toolbar>
-                <IconButton
+            <IconButton
                     size="large"
                     edge="start"
                     color="inherit"
-                    aria-label="menu"
-                    onClick={handleDrawerToggle} // Ensure this is correct
-                    sx={{ mr: 2, ...(!isDrawerCollapsed && { display: 'none' }) }} // Hide when open
+                    aria-label={isDrawerCollapsed ? "expand menu" : "collapse menu"}
+                    onClick={handleDrawerToggle}
+                    sx={{ 
+                        mr: 2,
+                        display: 'flex' // Always show the toggle button
+                    }}
                 >
-                    <MenuIcon />
+                    {isDrawerCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                 </IconButton>
 
                 <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>

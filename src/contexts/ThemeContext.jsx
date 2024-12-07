@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { createTheme, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
+import { StyledEngineProvider } from '@mui/material/styles';
 
 const ThemeContext = createContext();
 
@@ -52,24 +53,20 @@ export const ThemeProvider = ({ children }) => {
     setThemeMode(prevMode => prevMode === 'light' ? 'dark' : 'light');
   };
 
-  const value = {
-    themeMode,
-    setThemeMode,
-    toggleTheme
-  };
-
   return (
-    <ThemeContext.Provider value={value}>
-      <MuiThemeProvider theme={theme}>
-        {children}
-      </MuiThemeProvider>
+    <ThemeContext.Provider value={{ themeMode, toggleTheme }}>
+      <StyledEngineProvider injectFirst>
+        <MuiThemeProvider theme={theme}>
+          {children}
+        </MuiThemeProvider>
+      </StyledEngineProvider>
     </ThemeContext.Provider>
   );
 };
 
 export const useTheme = () => {
   const context = useContext(ThemeContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;

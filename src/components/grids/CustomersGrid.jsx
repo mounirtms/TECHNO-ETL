@@ -1,150 +1,141 @@
-import React, { useState, useEffect } from 'react';
-import {
-    Box,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TablePagination,
-    Typography,
-    IconButton,
-    Tooltip,
-    CircularProgress,
-    Avatar
-} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EmailIcon from '@mui/icons-material/Email';
-import customers from '../../assets/data/customers.json';
+import React, { useState, useCallback } from 'react';
+import { Box } from '@mui/material';
+import BaseGrid from '../common/BaseGrid';
+import { StatsCards } from '../common/StatsCards';
+import magentoApi from '../../services/magentoService';
+import { toast } from 'react-toastify';
+import PeopleIcon from '@mui/icons-material/People';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import BlockIcon from '@mui/icons-material/Block';
+import { getStatusColumn } from '../../utils/gridUtils';
 
+/**
+ * CustomersGrid Component
+ * Displays customer data in a grid format with status cards
+ */
 const CustomersGrid = () => {
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [loading, setLoading] = useState(true);
+    // State management
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
+    const [filters, setFilters] = useState({});
+    const [stats, setStats] = useState({
+        total: 0,
+        active: 0,
+        inactive: 0
+    });
 
-    useEffect(() => {
-        // Simulate loading data
-        const loadData = () => {
+    // Grid columns configuration
+    const columns = [
+        { 
+            field: 'email', 
+            headerName: 'Email', 
+            width: 250 
+        },
+        { 
+            field: 'firstname', 
+            headerName: 'First Name', 
+            flex: 1 
+        },
+        { 
+            field: 'lastname', 
+            headerName: 'Last Name', 
+            flex: 1 
+        },
+        
+        getStatusColumn('status', {
+            filterOptions: [
+                { value: 'active', label: 'Active' },
+                { value: 'inactive', label: 'Inactive' }
+            ]
+        })
+    ];
+
+    // Data fetching handler
+    const handleRefresh = useCallback(async ({ page, pageSize, filter }) => {
+        try {
+            setLoading(true);
+            const searchCriteria = {
+                filterGroups: [],
+                pageSize,
+                currentPage: page + 1
+            };
+
+            if (filter?.status) {
+                searchCriteria.filterGroups.push({
+                    filters: [{
+                        field: 'status',
+                        value: filter.status,
+                        condition_type: 'eq'
+                    }]
+                });
+            }
+
+            const response = await magentoApi.getCustomers(searchCriteria);
+            const customers = response?.items || [];
             setData(customers);
+            updateStats(customers);
+        } catch (error) {
+            toast.error(error.message || 'Failed to load customers');
+            throw error;
+        } finally {
             setLoading(false);
-        };
-        loadData();
+        }
     }, []);
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
+    // Update customer statistics
+    const updateStats = useCallback((customers) => {
+        const newStats = customers.reduce((acc, customer) => ({
+            total: acc.total + 1,
+            active: acc.active + (customer.status === 'active' ? 1 : 0),
+            inactive: acc.inactive + (customer.status === 'inactive' ? 1 : 0)
+        }), {
+            total: 0,
+            active: 0,
+            inactive: 0
+        });
+        setStats(newStats);
+    }, []);
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
-
-    const getInitials = (name) => {
-        return name
-            .split(' ')
-            .map(word => word[0])
-            .join('')
-            .toUpperCase();
-    };
-
-    if (loading) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                <CircularProgress />
-            </Box>
-        );
-    }
+    // Stats cards configuration
+    const statCards = [
+        {
+            title: "All Customers",
+            value: stats.total,
+            icon: PeopleIcon,
+            color: "primary",
+            active: !filters.status,
+            onClick: () => setFilters({})
+        },
+        {
+            title: "Active",
+            value: stats.active,
+            icon: CheckCircleIcon,
+            color: "success",
+            active: filters.status === 'active',
+            onClick: () => setFilters({ status: 'active' })
+        },
+        {
+            title: "Inactive",
+            value: stats.inactive,
+            icon: BlockIcon,
+            color: "error",
+            active: filters.status === 'inactive',
+            onClick: () => setFilters({ status: 'inactive' })
+        }
+    ];
 
     return (
-        <Box sx={{ width: '100%', height: '100%', p: 3 }}>
-            <Typography variant="h4" gutterBottom>
-                Customers
-            </Typography>
-            
-            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer sx={{ maxHeight: 'calc(100vh - 300px)' }}>
-                    <Table stickyHeader>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Customer</TableCell>
-                                <TableCell>Email</TableCell>
-                                <TableCell>Phone</TableCell>
-                                <TableCell>Orders</TableCell>
-                                <TableCell>Total Spent</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell align="right">Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {data
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((customer) => (
-                                    <TableRow hover key={customer.id}>
-                                        <TableCell>
-                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                                <Avatar sx={{ mr: 2 }}>
-                                                    {getInitials(customer.name)}
-                                                </Avatar>
-                                                <Typography variant="body2">
-                                                    {customer.name}
-                                                </Typography>
-                                            </Box>
-                                        </TableCell>
-                                        <TableCell>{customer.email}</TableCell>
-                                        <TableCell>{customer.phone}</TableCell>
-                                        <TableCell>{customer.orders_count}</TableCell>
-                                        <TableCell>${customer.total_spent}</TableCell>
-                                        <TableCell>
-                                            <Box
-                                                sx={{
-                                                    backgroundColor: customer.status === 'active' ? 'success.light' : 'error.light',
-                                                    color: 'white',
-                                                    px: 1,
-                                                    py: 0.5,
-                                                    borderRadius: 1,
-                                                    display: 'inline-block',
-                                                }}
-                                            >
-                                                {customer.status}
-                                            </Box>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Tooltip title="Email">
-                                                <IconButton size="small" color="primary">
-                                                    <EmailIcon fontSize="small" />
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip title="Edit">
-                                                <IconButton size="small">
-                                                    <EditIcon fontSize="small" />
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip title="Delete">
-                                                <IconButton size="small" color="error">
-                                                    <DeleteIcon fontSize="small" />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[10, 25, 50, 100]}
-                    component="div"
-                    count={data.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Paper>
+        <Box>
+            <StatsCards cards={statCards} />
+            <BaseGrid
+                columns={columns}
+                data={data}
+                loading={loading}
+                onRefresh={handleRefresh}
+                currentFilter={filters}
+                onFilterChange={setFilters}
+                onError={(error) => toast.error(error.message)}
+            />
         </Box>
     );
 };

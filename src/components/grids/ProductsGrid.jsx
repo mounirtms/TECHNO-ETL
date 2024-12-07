@@ -1,137 +1,147 @@
-import React, { useState, useEffect } from 'react';
-import {
-    Box,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TablePagination,
-    Typography,
-    IconButton,
-    Tooltip,
-    CircularProgress
-} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete'; 
+import React, { useState, useCallback } from 'react';
+import { Box } from '@mui/material';
+import BaseGrid from '../common/BaseGrid';
+import { StatsCards } from '../common/StatsCards';
+import magentoApi from '../../services/magentoService';
+import { toast } from 'react-toastify';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
+import { getStatusColumn } from '../../utils/gridUtils';
 
+/**
+ * ProductsGrid Component
+ * Displays product data in a grid format with status cards
+ */
 const ProductsGrid = () => {
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [loading, setLoading] = useState(true);
+    // State management
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
-    const [rowCount, setRowCount] = useState(0);
+    const [filters, setFilters] = useState({});
+    const [stats, setStats] = useState({
+        total: 0,
+        inStock: 0,
+        outOfStock: 0
+    });
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                setLoading(true);
-                const response = await magentoApi.getProducts({
-                    currentPage: page + 1,
-                    pageSize: rowsPerPage,
+    // Grid columns configuration
+    const columns = [
+        { 
+            field: 'sku', 
+            headerName: 'SKU', 
+            width: 130 
+        },
+        { 
+            field: 'name', 
+            headerName: 'Product Name', 
+            flex: 1 
+        },
+        { 
+            field: 'price', 
+            headerName: 'Price', 
+            width: 120,
+            valueFormatter: (params) => `$${params.value.toFixed(2)}`
+        },
+        { 
+            field: 'qty', 
+            headerName: 'Quantity', 
+            width: 100,
+            type: 'number'
+        },
+        getStatusColumn('stock_status', {
+            filterOptions: [
+                { value: 'in_stock', label: 'In Stock' },
+                { value: 'out_of_stock', label: 'Out of Stock' }
+            ]
+        })
+    ];
+
+    // Data fetching handler
+    const handleRefresh = useCallback(async ({ page, pageSize, filter }) => {
+        try {
+            setLoading(true);
+            const searchCriteria = {
+                filterGroups: [],
+                pageSize,
+                currentPage: page + 1
+            };
+
+            if (filter?.stock_status) {
+                searchCriteria.filterGroups.push({
+                    filters: [{
+                        field: 'stock_status',
+                        value: filter.stock_status,
+                        condition_type: 'eq'
+                    }]
                 });
-                setData(response.items || []);
-                setRowCount(response.total_count || 0);
-            } catch (error) {
-                console.error('Error fetching products:', error);
-            } finally {
-                setLoading(false);
             }
-        };
 
-        fetchProducts();
-    }, [page, rowsPerPage]);
+            const response = await magentoApi.getProducts(searchCriteria);
+            const products = response?.items || [];
+            setData(products);
+            updateStats(products);
+        } catch (error) {
+            toast.error(error.message || 'Failed to load products');
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
+    // Update product statistics
+    const updateStats = useCallback((products) => {
+        const newStats = products.reduce((acc, product) => ({
+            total: acc.total + 1,
+            inStock: acc.inStock + (product.stock_status === 'in_stock' ? 1 : 0),
+            outOfStock: acc.outOfStock + (product.stock_status === 'out_of_stock' ? 1 : 0)
+        }), {
+            total: 0,
+            inStock: 0,
+            outOfStock: 0
+        });
+        setStats(newStats);
+    }, []);
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
-
-    if (loading) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                <CircularProgress />
-            </Box>
-        );
-    }
+    // Stats cards configuration
+    const statCards = [
+        {
+            title: "All Products",
+            value: stats.total,
+            icon: InventoryIcon,
+            color: "primary",
+            active: !filters.stock_status,
+            onClick: () => setFilters({})
+        },
+        {
+            title: "In Stock",
+            value: stats.inStock,
+            icon: CheckCircleIcon,
+            color: "success",
+            active: filters.stock_status === 'in_stock',
+            onClick: () => setFilters({ stock_status: 'in_stock' })
+        },
+        {
+            title: "Out of Stock",
+            value: stats.outOfStock,
+            icon: ErrorIcon,
+            color: "error",
+            active: filters.stock_status === 'out_of_stock',
+            onClick: () => setFilters({ stock_status: 'out_of_stock' })
+        }
+    ];
 
     return (
-        <Box sx={{ width: '100%', height: '100%', p: 3 }}>
-            <Typography variant="h4" gutterBottom>
-                Products
-            </Typography>
-            
-            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer sx={{ maxHeight: 'calc(100vh - 300px)' }}>
-                    <Table stickyHeader>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>ID</TableCell>
-                                <TableCell>Name</TableCell>
-                                <TableCell>SKU</TableCell>
-                                <TableCell>Price</TableCell>
-                                <TableCell>Stock</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell align="right">Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {data
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((product) => (
-                                    <TableRow hover key={product.id}>
-                                        <TableCell>{product.id}</TableCell>
-                                        <TableCell>{product.name}</TableCell>
-                                        <TableCell>{product.sku}</TableCell>
-                                        <TableCell>${product.price}</TableCell>
-                                        <TableCell>{product.extension_attributes?.stock_item?.qty}</TableCell>
-                                        <TableCell>
-                                            <Box
-                                                sx={{
-                                                    backgroundColor: product.status === 1 ? 'success.light' : 'error.light',
-                                                    color: 'white',
-                                                    px: 1,
-                                                    py: 0.5,
-                                                    borderRadius: 1,
-                                                    display: 'inline-block',
-                                                }}
-                                            >
-                                                {product.status === 1 ? 'Enabled' : 'Disabled'}
-                                            </Box>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Tooltip title="Edit">
-                                                <IconButton size="small">
-                                                    <EditIcon fontSize="small" />
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip title="Delete">
-                                                <IconButton size="small" color="error">
-                                                    <DeleteIcon fontSize="small" />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[10, 25, 50, 100]}
-                    component="div"
-                    count={rowCount}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Paper>
+        <Box>
+            <StatsCards cards={statCards} />
+            <BaseGrid
+                columns={columns}
+                data={data}
+                loading={loading}
+                onRefresh={handleRefresh}
+                currentFilter={filters}
+                onFilterChange={setFilters}
+                onError={(error) => toast.error(error.message)}
+            />
         </Box>
     );
 };

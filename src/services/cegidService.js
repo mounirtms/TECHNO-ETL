@@ -1,121 +1,213 @@
+
 import axios from 'axios';
-import { parseString } from 'xml2js';
 import { toast } from 'react-toastify';
 
 class CegidApi {
     constructor() {
-        this.api = axios.create({
+        this.baseConfig = {
             headers: {
-                'Content-Type': 'text/xml;charset=UTF-8',
-            },
-        });
-
-        // Add request interceptor
-        this.api.interceptors.request.use(
-            (config) => {
-                const sessionToken = localStorage.getItem('cegidSessionToken');
-                if (sessionToken) {
-                    config.headers['X-Session-Token'] = sessionToken;
-                }
-                config.headers['Access-Control-Allow-Origin'] = '*';
-                config.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS';
-                config.headers['Access-Control-Allow-Headers'] = 'Content-Type, X-Session-Token';
-                return config;
-            },
-            (error) => Promise.reject(error)
-        );
-
-        // Add response interceptor
-        this.api.interceptors.response.use(
-            (response) => response,
-            (error) => {
-                if (error.response) {
-                    const faultString = error.response?.data?.match(/<faultstring>(.*?)<\/faultstring>/)?.[1];
-                    if (faultString) {
-                        toast.error(faultString);
-                    } else {
-                        toast.error('An error occurred while processing your request');
-                    }
-                } else if (error.request) {
-                    toast.error('Network error. Please check your connection.');
-                }
-                return Promise.reject(error);
+                'Content-Type': 'text/xml',
+                'Accept': '*/*'
             }
-        );
+        };
+
+        // Retrieve stored credentials
+        this.credentials = {
+            url: import.meta.env.VITE_Cegid_API_URL,
+            username: import.meta.env.VITE_Cegid_ADMIN_USERNAME,
+            password: import.meta.env.VITE_Cegid_ADMIN_PASSWORD,
+            database: import.meta.env.VITE_Cegid_ADMIN_DATABASE
+        };
+              // Cancel token source for managing requests
+              this.cancelTokenSource = null;
     }
 
-    // SOAP request helpers
-    createSoapEnvelope(body) {
-        return `<?xml version="1.0" encoding="UTF-8"?>
-            <soapenv:Envelope 
-                xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
-                xmlns:ceg="http://cegid.com/webservices">
-                <soapenv:Header/>
-                <soapenv:Body>${body}</soapenv:Body>
-            </soapenv:Envelope>`;
+    // Create SOAP envelope with proper XML structure
+    createSoapEnvelope(body, database) {
+        return `<?xml version="1.0" encoding="utf-8"?>
+            <soap:Envelope 
+                xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" 
+                xmlns:ret="http://www.cegid.fr/Retail/1.0">
+                <soap:Header>
+                    <ret:RetailContext>
+                        <ret:DatabaseId>${database}</ret:DatabaseId>
+                    </ret:RetailContext>
+                </soap:Header>
+                <soap:Body>
+                    ${body}
+                </soap:Body>
+            </soap:Envelope>`;
     }
 
-    async parseSoapResponse(response) {
-        return new Promise((resolve, reject) => {
-            parseString(response.data, { explicitArray: false }, (err, result) => {
-                if (err) {
-                    reject(new Error('Failed to parse SOAP response'));
-                } else {
-                    resolve(result);
-                }
-            });
-        });
+    // Create HelloWorld request body
+    createHelloWorldBody(database) {
+        return `
+            <ret:HelloWorld>
+                <ret:text>Techo Stationary connection</ret:text>
+                <ret:clientContext>
+                    <ret:DatabaseId>${database}</ret:DatabaseId>
+                </ret:clientContext>
+            </ret:HelloWorld>`;
     }
 
-    // Authentication
-    async handleCegidConnect(url, username, password, database) {
+   // Simple XML response parser
+   parseSoapResponse(xmlString) {
+    try {
+        // Extract content between HelloWorldResult tags
+        const match = xmlString.match(/<HelloWorldResult>(.*?)<\/HelloWorldResult>/s);
+        if (match) {
+            const result = match[1].trim();
+            // Extract database and identity information
+            const dbMatch = result.match(/DataBaseId: \((.*?)\)/);
+            const identityMatch = result.match(/Current Identity: \((.*?)\)/);
+            return {
+                success: true,
+                result,
+                database: dbMatch ? dbMatch[1] : null,
+                identity: identityMatch ? identityMatch[1] : null
+            };
+        }
+        
+        // Check for fault
+        const faultMatch = xmlString.match(/<faultstring>(.*?)<\/faultstring>/s);
+        if (faultMatch) {
+            throw new Error(faultMatch[1].trim());
+        }
+
+        return {
+            success: true,
+            raw: xmlString
+        };
+    } catch (error) {
+        console.error('XML Parsing Error:', error);
+        throw error;
+    }
+}
+
+    // Create Basic Auth header using browser's btoa
+    createBasicAuth(username, password) {
         try {
-            if (!url || !username || !password || !database) {
-                throw new Error('Missing required credentials');
-            }
-
-            this.api.defaults.baseURL = url.endsWith('/') ? url : `${url}/`;
-
-            const authBody = `
-                <ceg:Authenticate>
-                    <ceg:credentials>
-                        <ceg:DatabaseId>${database}</ceg:DatabaseId>
-                        <ceg:Login>${username}</ceg:Login>
-                        <ceg:Password>${password}</ceg:Password>
-                    </ceg:credentials>
-                </ceg:Authenticate>`;
-
-            const response = await this.api.post('', this.createSoapEnvelope(authBody), {
-                headers: { 'SOAPAction': 'http://cegid.com/webservices/Authenticate' }
-            });
-
-            const result = await this.parseSoapResponse(response);
-            const sessionToken = result?.['soap:Envelope']?.['soap:Body']?.AuthenticateResponse?.SessionToken;
-
-            if (!sessionToken) {
-                throw new Error('No session token in response');
-            }
-
-            localStorage.setItem('cegidSessionToken', sessionToken);
-            toast.success('Successfully connected to Cegid');
-            return { success: true, sessionToken };
-
+            const auth = btoa(`${username}:${password}`);
+            return `Basic ${auth}`;
         } catch (error) {
-            console.error('Cegid connection error:', error);
-            toast.error(error.message || 'Failed to connect to Cegid');
-            throw error;
+            console.error('Error creating Basic Auth:', error);
+            throw new Error('Failed to create authorization header');
         }
     }
 
-    // Data fetching
-    async fetchData(action, body) {
+       // Cancel any ongoing requests
+       cancelOngoingRequests() {
+        if (this.cancelTokenSource) {
+            this.cancelTokenSource.cancel('Operation cancelled due to new request');
+            this.cancelTokenSource = null;
+        }
+    }
+
+  // Cegid Connection Method with Basic Authentication
+  async handleCegidConnect(
+    url = this.credentials.url, 
+    username = this.credentials.username, 
+    password = this.credentials.password, 
+    database = this.credentials.database
+) {
+    try {
+        // Cancel any ongoing requests
+        this.cancelOngoingRequests();
+        
+        // Create new cancel token
+        this.cancelTokenSource = axios.CancelToken.source();
+
+        // Validate inputs
+        if (!url || !username || !password || !database) {
+            throw new Error('Missing required credentials');
+        }
+
+        const serviceUrl = url.endsWith('/') 
+            ? `${url}CustomerWcfService.svc` 
+            : `${url}/CustomerWcfService.svc`;
+
+        // Create SOAP request with proper structure
+        const soapRequest = this.createSoapEnvelope(
+            this.createHelloWorldBody(database),
+            database
+        );
+
+        console.log('Making request to:', serviceUrl);
+        const headers = {
+            ...this.baseConfig.headers,
+            'Authorization': this.createBasicAuth(username, password),
+            'SOAPAction': 'http://www.cegid.fr/Retail/1.0/ICbrBasicWebServiceInterface/HelloWorld'
+        };
+        console.log('With headers:', headers);
+
+        // Make SOAP request with Basic Authentication
+        const response = await axios({
+            method: 'post',
+            url: serviceUrl,
+            data: soapRequest,
+            headers,
+            maxRedirects: 0,
+            cancelToken: this.cancelTokenSource.token
+        });
+
+        // Parse response
+        const result = this.parseSoapResponse(response.data);
+        
+        // Store credentials securely
+        localStorage.setItem('cegidCredentials', JSON.stringify({
+            url: serviceUrl,
+            username,
+            database
+        }));
+
+        // Show success toast with database and username
+        toast.success(
+            `Connected to Cegid successfully!\nDatabase: ${result.database || database}\nUser: ${result.identity || username}`,
+            { autoClose: 5000 }
+        );
+        
+        return result;
+
+    } catch (error) {
+        console.error('Cegid Connection Error:', error);
+        
+        // Don't show error toast if request was cancelled
+        if (!axios.isCancel(error)) {
+            const errorMessage = error.response?.data 
+                ? this.parseSoapResponse(error.response.data).message || error.message
+                : error.message;
+            
+            toast.error(`Connection failed: ${errorMessage}`, { autoClose: 5000 });
+            throw new Error(`Cegid Connection Error: ${errorMessage}`);
+        }
+    } finally {
+        this.cancelTokenSource = null;
+    }
+}
+    // Generic method for making SOAP requests
+    async fetchData(action, body, options = {}) {
         try {
-            const response = await this.api.post('', this.createSoapEnvelope(body), {
-                headers: { 'SOAPAction': `http://cegid.com/webservices/${action}` }
+            const credentials = JSON.parse(localStorage.getItem('cegidCredentials'));
+            if (!credentials) {
+                throw new Error('No stored credentials found');
+            }
+
+            const soapRequest = this.createSoapEnvelope(body, credentials.database);
+
+            const response = await axios({
+                method: 'post',
+                url: credentials.url,
+                data: soapRequest,
+                headers: {
+                    ...this.baseConfig.headers,
+                    'Authorization': this.createBasicAuth(credentials.username, this.credentials.password),
+                    'SOAPAction': action
+                }
             });
-            return this.parseSoapResponse(response);
+
+            return this.parseSoapResponse(response.data);
         } catch (error) {
-            console.error(`Error in ${action}:`, error);
+            console.error('Cegid API Fetch Error:', error);
             throw error;
         }
     }
@@ -123,62 +215,14 @@ class CegidApi {
     // Inventory endpoints
     async getStock(itemId) {
         const body = `
-            <ceg:GetStock>
-                <ceg:request>
-                    <ceg:ItemId>${itemId}</ceg:ItemId>
-                </ceg:request>
-            </ceg:GetStock>`;
-        return this.fetchData('GetStock', body);
-    }
-
-    async getStockList(itemIds = []) {
-        const itemElements = itemIds.map(id => `<ceg:ItemId>${id}</ceg:ItemId>`).join('');
-        const body = `
-            <ceg:GetStockList>
-                <ceg:request>
-                    ${itemElements}
-                </ceg:request>
-            </ceg:GetStockList>`;
-        return this.fetchData('GetStockList', body);
-    }
-
-    // Sales Order endpoints
-    async getSalesOrders(startDate, endDate) {
-        const body = `
-            <ceg:GetSalesOrders>
-                <ceg:request>
-                    <ceg:StartDate>${startDate}</ceg:StartDate>
-                    <ceg:EndDate>${endDate}</ceg:EndDate>
-                </ceg:request>
-            </ceg:GetSalesOrders>`;
-        return this.fetchData('GetSalesOrders', body);
-    }
-
-    // Customer endpoints
-    async getCustomer(customerId) {
-        const body = `
-            <ceg:GetCustomer>
-                <ceg:request>
-                    <ceg:CustomerId>${customerId}</ceg:CustomerId>
-                </ceg:request>
-            </ceg:GetCustomer>`;
-        return this.fetchData('GetCustomer', body);
-    }
-
-    // Item endpoints
-    async getItem(itemId) {
-        const body = `
-            <ceg:GetItem>
-                <ceg:request>
-                    <ceg:ItemId>${itemId}</ceg:ItemId>
-                </ceg:request>
-            </ceg:GetItem>`;
-        return this.fetchData('GetItem', body);
+            <ret:GetStock>
+                <ret:request>
+                    <ret:ItemId>${itemId}</ret:ItemId>
+                </ret:request>
+            </ret:GetStock>`;
+        return this.fetchData('http://www.cegid.fr/Retail/1.0/ICbrBasicWebServiceInterface/GetStock', body);
     }
 }
 
 const cegidApi = new CegidApi();
 export default cegidApi;
-
-// Export individual methods for convenience
-export const { handleCegidConnect, getStock, getStockList, getSalesOrders, getCustomer, getItem } = cegidApi;

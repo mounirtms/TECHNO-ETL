@@ -45,7 +45,9 @@
             "language": "Interface Language",
             "theme": "Color Theme",
             "lightMode": "Light Mode",
+            "lightTheme": "Light Mode",
             "darkMode": "Dark Mode",
+            "darkTheme": "Dark Mode",
             "fontSize": "Font Size",
             "small": "Small",
             "medium": "Medium", 
@@ -64,6 +66,7 @@
         },
         "apiSettings": {
             "title": "API Settings",
+            "save":"Save Changes",
             "validation": {
                 "missingCredentials": "Please provide Magento URL, username, and password",
                 "missingCegidCredentials": "Please provide Cegid URL, username, password, and database"

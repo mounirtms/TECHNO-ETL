@@ -1,143 +1,154 @@
-import React, { useState, useEffect } from 'react';
-import {
-    Box,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TablePagination,
-    Typography,
-    IconButton,
-    Tooltip,
-    CircularProgress,
-    Chip
-} from '@mui/material';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
-import DownloadIcon from '@mui/icons-material/Download';
-import invoices from '../../assets/data/invoices.json';
+import React, { useState, useCallback } from 'react';
+import { Box } from '@mui/material';
+import BaseGrid from '../common/BaseGrid';
+import { StatsCards } from '../common/StatsCards';
+import magentoApi from '../../services/magentoService';
+import { toast } from 'react-toastify';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import PendingIcon from '@mui/icons-material/Pending';
+import { getStatusColumn } from '../../utils/gridUtils';
 
-const InvoicesGrid = () => {
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [loading, setLoading] = useState(true);
+/**
+ * InvoiceGrid Component
+ * Displays invoice data in a grid format with status cards
+ */
+const InvoiceGrid = ({ orderId }) => {
+    // State management
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
+    const [filters, setFilters] = useState({});
+    const [stats, setStats] = useState({
+        total: 0,
+        paid: 0,
+        pending: 0
+    });
 
-    useEffect(() => {
-        // Simulate loading data
-        const loadData = () => {
+    // Grid columns configuration
+    const columns = [
+        { 
+            field: 'increment_id', 
+            headerName: 'Invoice #', 
+            width: 130 
+        },
+        { 
+            field: 'order_increment_id', 
+            headerName: 'Order #', 
+            width: 130 
+        },
+        { 
+            field: 'grand_total', 
+            headerName: 'Total', 
+            width: 120,
+            valueFormatter: (params) => `$${params.value.toFixed(2)}`
+        },
+       
+        getStatusColumn('status', {
+            filterOptions: [
+                { value: 'paid', label: 'Paid' },
+                { value: 'pending', label: 'Pending' }
+            ]
+        })
+    ];
+
+    // Data fetching handler
+    const handleRefresh = useCallback(async ({ page, pageSize, filter }) => {
+        try {
+            setLoading(true);
+            const searchCriteria = {
+                filterGroups: [],
+                pageSize,
+                currentPage: page + 1
+            };
+
+            if (orderId) {
+                searchCriteria.filterGroups.push({
+                    filters: [{
+                        field: 'order_id',
+                        value: orderId,
+                        condition_type: 'eq'
+                    }]
+                });
+            }
+
+            if (filter?.status) {
+                searchCriteria.filterGroups.push({
+                    filters: [{
+                        field: 'status',
+                        value: filter.status,
+                        condition_type: 'eq'
+                    }]
+                });
+            }
+
+            const response = await magentoApi.getInvoices(searchCriteria);
+            const invoices = response?.items || [];
             setData(invoices);
+            updateStats(invoices);
+        } catch (error) {
+            toast.error(error.message || 'Failed to load invoices');
+            throw error;
+        } finally {
             setLoading(false);
-        };
-        loadData();
+        }
+    }, [orderId]);
+
+    // Update invoice statistics
+    const updateStats = useCallback((invoices) => {
+        const newStats = invoices.reduce((acc, invoice) => ({
+            total: acc.total + 1,
+            paid: acc.paid + (invoice.status === 'paid' ? 1 : 0),
+            pending: acc.pending + (invoice.status === 'pending' ? 1 : 0)
+        }), {
+            total: 0,
+            paid: 0,
+            pending: 0
+        });
+        setStats(newStats);
     }, []);
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
-
-    const getStatusColor = (status) => {
-        switch (status.toLowerCase()) {
-            case 'paid':
-                return 'success';
-            case 'pending':
-                return 'warning';
-            case 'overdue':
-                return 'error';
-            case 'cancelled':
-                return 'default';
-            default:
-                return 'info';
+    // Stats cards configuration
+    const statCards = [
+        {
+            title: "All Invoices",
+            value: stats.total,
+            icon: ReceiptIcon,
+            color: "primary",
+            active: !filters.status,
+            onClick: () => setFilters({})
+        },
+        {
+            title: "Paid",
+            value: stats.paid,
+            icon: CheckCircleIcon,
+            color: "success",
+            active: filters.status === 'paid',
+            onClick: () => setFilters({ status: 'paid' })
+        },
+        {
+            title: "Pending",
+            value: stats.pending,
+            icon: PendingIcon,
+            color: "warning",
+            active: filters.status === 'pending',
+            onClick: () => setFilters({ status: 'pending' })
         }
-    };
-
-    if (loading) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                <CircularProgress />
-            </Box>
-        );
-    }
+    ];
 
     return (
-        <Box sx={{ width: '100%', height: '100%', p: 3 }}>
-            <Typography variant="h4" gutterBottom>
-                Invoices
-            </Typography>
-            
-            <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-                <TableContainer sx={{ maxHeight: 'calc(100vh - 300px)' }}>
-                    <Table stickyHeader>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Invoice #</TableCell>
-                                <TableCell>Order #</TableCell>
-                                <TableCell>Date</TableCell>
-                                <TableCell>Customer</TableCell>
-                                <TableCell>Amount</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell align="right">Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {data
-                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                .map((invoice) => (
-                                    <TableRow hover key={invoice.id}>
-                                        <TableCell>#{invoice.increment_id}</TableCell>
-                                        <TableCell>#{invoice.order_id}</TableCell>
-                                        <TableCell>{new Date(invoice.created_at).toLocaleDateString()}</TableCell>
-                                        <TableCell>{invoice.customer_name}</TableCell>
-                                        <TableCell>${invoice.grand_total}</TableCell>
-                                        <TableCell>
-                                            <Chip
-                                                label={invoice.status}
-                                                color={getStatusColor(invoice.status)}
-                                                size="small"
-                                            />
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Tooltip title="View Invoice">
-                                                <IconButton size="small" color="primary">
-                                                    <VisibilityIcon fontSize="small" />
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip title="Print Invoice">
-                                                <IconButton size="small">
-                                                    <LocalPrintshopIcon fontSize="small" />
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip title="Download PDF">
-                                                <IconButton size="small" color="secondary">
-                                                    <DownloadIcon fontSize="small" />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[10, 25, 50, 100]}
-                    component="div"
-                    count={data.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Paper>
+        <Box>
+            <StatsCards cards={statCards} />
+            <BaseGrid
+                columns={columns}
+                data={data}
+                loading={loading}
+                onRefresh={handleRefresh}
+                currentFilter={filters}
+                onFilterChange={setFilters}
+                onError={(error) => toast.error(error.message)}
+            />
         </Box>
     );
 };
 
-export default InvoicesGrid;
+export default InvoiceGrid;

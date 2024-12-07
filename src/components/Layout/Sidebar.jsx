@@ -14,6 +14,8 @@ import { MENU_ITEMS } from './Constants';
 import { useTab } from '../../contexts/TabContext';
 import technoIcon from '../../assets/images/techno.png';
 import logoTechno from '../../assets/images/logo_techno.png';
+const DRAWER_WIDTH = 240;
+const COLLAPSED_WIDTH = 64;
 const Sidebar = ({ open, toggleDrawer }) => {
     const theme = useTheme();
     const { activeTab, openTab } = useTab();
@@ -24,39 +26,32 @@ const Sidebar = ({ open, toggleDrawer }) => {
 
     return (
         <Drawer
-            variant="permanent"
-            open={open}
-            onClose={toggleDrawer}
-            sx={{
-                width: open ? 240 : 64,
-                flexShrink: 0,
-                whiteSpace: 'nowrap',
-                boxSizing: 'border-box',
+        variant="permanent"
+        open={open}
+        sx={{
+            width: open ? DRAWER_WIDTH : COLLAPSED_WIDTH,
+            flexShrink: 0,
+            whiteSpace: 'nowrap',
+            boxSizing: 'border-box',
+            '& .MuiDrawer-paper': {
+                width: open ? DRAWER_WIDTH : COLLAPSED_WIDTH,
                 transition: theme.transitions.create('width', {
                     easing: theme.transitions.easing.sharp,
                     duration: theme.transitions.duration.enteringScreen,
                 }),
-                '& .MuiDrawer-paper': {
-                    overflowX: 'hidden',
-                    width: open ? 240 : 64,
-                    transition: theme.transitions.create('width', {
-                        easing: theme.transitions.easing.sharp,
-                        duration: theme.transitions.duration.enteringScreen,
-                    }),
-                },
-            }}
+                overflowX: 'hidden',
+                backgroundColor: theme.palette.background.paper,
+                borderRight: `1px solid ${theme.palette.divider}`,
+            },
+        }}
         >
-            <Box
+             <Box
                 sx={{
                     height: 64,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     padding: 2,
-                    transition: theme.transitions.create('all', {
-                        easing: theme.transitions.easing.sharp,
-                        duration: theme.transitions.duration.enteringScreen,
-                    }),
                 }}
             >
                 <img
@@ -84,6 +79,7 @@ const Sidebar = ({ open, toggleDrawer }) => {
                             selected={activeTab === item.id}
                             onClick={() => handleTabClick(item.id)}
                             sx={{
+                                minHeight: 48,
                                 justifyContent: open ? 'initial' : 'center',
                                 px: 2.5,
                                 '&.Mui-selected': {
@@ -100,14 +96,15 @@ const Sidebar = ({ open, toggleDrawer }) => {
                             >
                                 <item.icon />
                             </ListItemIcon>
-                            {open && (
-                                <ListItemText 
-                                    primary={item.label} 
-                                    primaryTypographyProps={{
-                                        variant: 'body2'
-                                    }}
-                                />
-                            )}
+                            <ListItemText 
+                                primary={item.label} 
+                                sx={{ 
+                                    opacity: open ? 1 : 0,
+                                    transition: theme.transitions.create('opacity', {
+                                        duration: theme.transitions.duration.enteringScreen,
+                                    })
+                                }} 
+                            />
                         </ListItem>
                     </Tooltip>
                 ))}

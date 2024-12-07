@@ -12,8 +12,8 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import './index.css';
 
 const PrivateRoute = ({ children }) => {
-    const { currentUser } = useAuth();
-    return currentUser ? children : <Navigate to="/login" />;
+    // Bypass authentication check
+    return children;
 };
 
 ReactDOM.createRoot(document.getElementById('root')).render(

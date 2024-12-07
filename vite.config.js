@@ -20,7 +20,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 2524,
+    port: 82,
     strictPort: true,
     open: true,
     hmr: {
@@ -34,48 +34,41 @@ export default defineConfig({
       include: ['src/**', 'index.html']
     },
     proxy: {
-      '/rest': {
-        target: 'https://technostationery.com',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/rest/, '/rest'),
-        configure: (proxy, _options) => {
-          proxy.on('error', (err, _req, _res) => {
-            console.log('proxy error', err);
-          });
-          proxy.on('proxyReq', (proxyReq, req, _res) => {
-            console.log('Sending Request to the Target:', req.method, req.url);
-          });
-          proxy.on('proxyRes', (proxyRes, req, _res) => {
-            console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
-          });
-        },
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-        }
-      },
-      '/api': {
-        target: 'http://localhost:2524',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/api/, ''),
-      },
       '/magento-api': {
-        target: 'https://technostationery.com',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/magento-api/, ''),
-        secure: false,
-        configure: (proxy, options) => {
-          proxy.on('proxyReq', (proxyReq, req, res) => {
-            proxyReq.setHeader('Origin', 'https://techno-webapp.web.app');
-            proxyReq.setHeader('Access-Control-Request-Method', 'POST, GET, OPTIONS');
-            proxyReq.setHeader('Access-Control-Request-Headers', 'Content-Type, Authorization');
-          });
-        }
+          target: 'https://technostationery.com/rest/V1',
+          changeOrigin: true,
+          secure: false,  // Disable SSL verification
+          rewrite: (path) => path.replace(/^\/magento-api/, ''),
+          configure: (proxy, _options) => {
+              proxy.on('error', (err, _req, _res) => {
+                  console.log('Magento proxy error:', err);
+              });
+              proxy.on('proxyReq', (proxyReq, req, _res) => {
+                  // Remove origin and referer headers for development
+                  proxyReq.removeHeader('origin');
+                  proxyReq.removeHeader('referer');
+                  console.log('Magento request:', req.method, req.url);
+              });
+          }
+      },
+      '/cegid-api': {
+          target: 'http://10.0.2.58/Y2_LAB',
+          changeOrigin: true,
+          secure: false,  // Disable SSL verification
+          rewrite: (path) => path.replace(/^\/cegid-api/, ''),
+          configure: (proxy, _options) => {
+              proxy.on('error', (err, _req, _res) => {
+                  console.log('Cegid proxy error:', err);
+              });
+              proxy.on('proxyReq', (proxyReq, req, _res) => {
+                  // Remove origin and referer headers for development
+                  proxyReq.removeHeader('origin');
+                  proxyReq.removeHeader('referer');
+                  console.log('Cegid request:', req.method, req.url);
+              });
+          }
       }
-    },
+  },
     cors: {
       origin: 'https://techno-webapp.web.app',
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
