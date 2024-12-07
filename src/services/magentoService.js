@@ -4,7 +4,6 @@ import customersData from '../assets/data/customers.json';
 import productsData from '../assets/data/products.json';
 import ordersData from '../assets/data/orders.json';
 import invoicesData from '../assets/data/invoices.json';
-
 import categoryData from '../assets/data/category.json';
 import { toast } from 'react-toastify';
 
@@ -382,6 +381,48 @@ class MagentoApi {
         return this.fetchData('GET', '/shipments', this.buildSearchCriteria(searchCriteria));
     }
 
+    // Inventory Source endpoints
+    async getSources(searchCriteria = {}) {
+        try {
+            const response = await this.api.get('/inventory/sources', {
+                params: this.buildSearchCriteria(searchCriteria)
+            });
+            return response;
+        } catch (error) {
+            return this.handleApi401Error(error);
+        }
+    }
+
+    async getSource(sourceCode) {
+        try {
+            const response = await this.api.get(`/inventory/sources/${sourceCode}`);
+            return response;
+        } catch (error) {
+            return this.handleApi401Error(error);
+        }
+    }
+
+    // Stock endpoints
+    async getStocks(searchCriteria = {}) {
+        try {
+            const response = await this.api.get('/inventory/stocks', {
+                params: this.buildSearchCriteria(searchCriteria)
+            });
+            return response;
+        } catch (error) {
+            return this.handleApi401Error(error);
+        }
+    }
+
+    async getStock(stockId) {
+        try {
+            const response = await this.api.get(`/inventory/stocks/${stockId}`);
+            return response;
+        } catch (error) {
+            return this.handleApi401Error(error);
+        }
+    }
+
     // Cache management
     async cleanCache(types = ['full_page']) {
         return this.fetchData('POST', '/cacheType/clean', { types });
@@ -440,5 +481,6 @@ export const {
     getProducts, getProduct, getCategories, getCategory,
     getStockItems, updateStockItem,
     getInvoices, getShipments,
-    cleanCache, shipOrder
+    cleanCache, shipOrder,
+    getSources, getSource, getStocks, getStock
 } = magentoApi;

@@ -1,49 +1,108 @@
 import React from 'react';
-import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
-
-const StyledCard = styled(Card)(({ theme, active }) => ({
+import { Box, Grid, Card, CardContent, Typography, Paper } from '@mui/material';
+import { styled,useTheme } from '@mui/material/styles';
+ 
+const StyledCard = styled(Card)(({ theme, active, color = 'primary' }) => ({
     cursor: 'pointer',
-    transition: 'all 0.3s',
-    backgroundColor: theme.palette.background.paper,
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+    backgroundColor: active ? theme.palette[color].main : theme.palette.background.paper,
     borderRadius: theme.shape.borderRadius,
-    boxShadow: theme.shadows[1], // Reduced shadow for a flatter look
-    padding: theme.spacing(1), // Reduced padding
+    boxShadow: active ? '0 4px 12px rgba(0, 0, 0, 0.2)' : 'none',
+    height: '100%',
+    minWidth: 200,
+    position: 'relative',
+    overflow: 'hidden',
     '&:hover': {
-        transform: 'translateY(-2px)', // Subtle hover effect
-        boxShadow: theme.shadows[3]
+        backgroundColor: active 
+            ? theme.palette[color].dark 
+            : theme.palette.action.hover,
+        transform: 'scale(1.05)',
+        boxShadow: '0 6px 20px rgba(0, 0, 0, 0.3)',
     },
-    ...(active && {
-        borderColor: theme.palette.primary.main,
-        borderWidth: 2,
-        borderStyle: 'solid'
-    })
+    '&::before': active ? {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: '2px',
+        backgroundColor: theme.palette[color].dark
+    } : {}
 }));
 
-const StatCard = ({ title, value, icon: Icon, color, active, onClick }) => (
-    <StyledCard active={active} onClick={onClick}>
-        <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                <Icon sx={{ color: `${color}.main`, mr: 1, fontSize: 24 }} /> {/* Reduced icon size */}
-                <Typography variant="subtitle2" component="div" color={color} sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
-                    {title}
-                </Typography>
-            </Box>
-            <Typography variant="h5" component="div" sx={{ fontWeight: 600, fontSize: '1.25rem' }}>
-                {value}
-            </Typography>
-        </CardContent>
-    </StyledCard>
-);
+const StatCard = ({ title, value, icon: Icon, color = 'primary', active, onClick }) => {
+    const theme = useTheme(); // Access the theme
 
+    return (
+        <StyledCard active={active} onClick={onClick} color={color}>
+            <CardContent sx={{ p: '14px' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Icon sx={{ fontSize: 40, color: theme.palette[color].main }} />
+                        <Box sx={{ ml: 2 }}>
+                            <Typography variant="h8" component="div" sx={{ fontWeight: 'bold' }}>{title}</Typography>
+                            <Typography variant="body2" color="text.secondary">{value}</Typography>
+                        </Box>
+                    </Box>
+                </Box>
+            </CardContent>
+        </StyledCard>
+    );
+};
 const StatsCards = ({ cards }) => (
-    <Grid container spacing={3} sx={{ mb: 3 }}>
-        {cards.map((card, index) => (
-            <Grid item xs={12} sm={6} md={2.4} key={index}>
-                <StatCard {...card} />
+    <Paper 
+        elevation={2}
+        sx={{ 
+            position: 'fixed',
+            bottom: 28,
+            left: { xs: 0, sm: 240 }, // Account for sidebar width (240px)
+            right: 0,
+            zIndex: 1099,
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            borderTop: '1px solid',
+            borderColor: 'divider',
+            px: 3,
+            py: 2,
+            backdropFilter: 'blur(8px)',
+            '@media (min-width: 600px)': {
+                width: 'calc(100% - 240px)', // Subtract sidebar width
+            }
+        }}
+    >
+        <Box
+            sx={{
+                maxWidth: 1536,
+                width: '100%',
+                margin: '0 auto',
+                px: { xs: 1, sm: 2, md: 3 },
+            }}
+        >
+            <Grid 
+                container 
+                spacing={0.8}
+                sx={{ 
+                    width: '100%',
+                    margin: 0,
+                    alignItems: 'stretch',
+                    justifyContent: 'space-between'
+                }}
+            >
+                {cards.map((card, index) => (
+                    <Grid 
+                        item 
+                        key={index} 
+                        sx={{ 
+                            flex: 1,
+                            minWidth: 0,
+                            width: `${100 / cards.length}%`
+                        }}
+                    >
+                        <StatCard {...card} />
+                    </Grid>
+                ))}
             </Grid>
-        ))}
-    </Grid>
+        </Box>
+    </Paper>
 );
 
 export { StatsCards, StatCard };

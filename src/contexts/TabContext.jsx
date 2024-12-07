@@ -8,7 +8,9 @@ import CustomersGrid from '../components/grids/CustomersGrid';
 import OrdersGrid from '../components/grids/OrdersGrid';
 import InvoicesGrid from '../components/grids/InvoicesGrid';
 import UserProfile from '../components/UserProfile';
-import CategoryTree from '../components/grids/CategoryTree';
+import CategoryTree from '../components/grids/CategoryGrid';
+import StocksGrid from '../components/grids/StocksGrid';
+import SourcesGrid from '../components/grids/SourcesGrid';
 
 // Component mapping
 const COMPONENT_MAP = {
@@ -18,7 +20,9 @@ const COMPONENT_MAP = {
     OrdersGrid: OrdersGrid,
     InvoicesGrid: InvoicesGrid,
     UserProfile: UserProfile,
-    CategoryTree: CategoryTree
+    CategoryTree: CategoryTree,
+    StocksGrid: StocksGrid,
+    SourcesGrid: SourcesGrid
 };
 
 const TabContext = createContext();

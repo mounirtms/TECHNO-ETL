@@ -128,6 +128,7 @@ const CustomersGrid = () => {
         <Box>
             <StatsCards cards={statCards} />
             <BaseGrid
+                gridName="CustomersGrid"
                 columns={columns}
                 data={data}
                 loading={loading}

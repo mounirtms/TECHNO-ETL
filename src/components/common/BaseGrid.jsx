@@ -1,59 +1,71 @@
-import React, { useState, useMemo } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import {
     Paper, Box, Menu, MenuItem, IconButton, Button,
     Select, FormControl, InputLabel, Tooltip, TextField,
     InputAdornment, Chip, Dialog, DialogTitle, DialogContent,
     DialogActions, Typography
 } from '@mui/material';
-import { alpha, styled } from '@mui/material/styles';
+import { alpha, styled, useTheme } from '@mui/material/styles';
+import {
+    DataGrid,
+    GridToolbarContainer,
+    GridToolbarColumnsButton,
+    GridToolbarFilterButton,
+    GridToolbarExport,
+    GridToolbarDensitySelector
+} from '@mui/x-data-grid';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete'; 
 import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
+import { generateColumns, mergeColumns } from '../../utils/gridUtils';
+import InvoiceGrid from '../grids/InvoicesGrid';
+import CategoryGrid from '../grids/CategoryGrid';
 import { toast } from 'react-toastify';
+import CustomersGrid from '../grids/CustomersGrid';
 
 /**
  * Styled wrapper for the DataGrid component
  * Provides consistent styling across all grid instances
  */
 const StyledBox = styled(Box)(({ theme }) => ({
-    height: 600,
     width: '100%',
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: theme.shape.borderRadius,
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
     '& .MuiDataGrid-root': {
         border: 'none',
         backgroundColor: theme.palette.background.paper,
-        '& .MuiDataGrid-cell:focus, .MuiDataGrid-columnHeader:focus': {
-            outline: 'none'
+        '& .MuiDataGrid-cell': {
+            borderColor: theme.palette.divider
+        },
+        '& .MuiDataGrid-columnHeaders': {
+            backgroundColor: theme.palette.background.default,
+            borderBottom: `1px solid ${theme.palette.divider}`
+        },
+        '& .MuiDataGrid-virtualScroller': {
+            backgroundColor: theme.palette.background.paper
+        },
+        '& .MuiDataGrid-footerContainer': {
+            backgroundColor: theme.palette.background.default,
+            borderTop: `1px solid ${theme.palette.divider}`,
+            position: 'sticky',
+            bottom: 0,
+            zIndex: 2
+        },
+        '& .MuiDataGrid-row:hover': {
+            backgroundColor: theme.palette.action.hover
+        },
+        '& .MuiDataGrid-row.Mui-selected': {
+            backgroundColor: theme.palette.action.selected,
+            '&:hover': {
+                backgroundColor: theme.palette.action.selected
+            }
         }
-    },
-    '& .MuiDataGrid-toolbarContainer': {
-        padding: theme.spacing(2),
-        gap: theme.spacing(2),
-        borderBottom: `1px solid ${theme.palette.divider}`
-    },
-    '& .row-expanded': {
-        backgroundColor: theme.palette.action.hover,
-    },
-    '& .MuiDataGrid-row': {
-        '& .actions': {
-            opacity: 0,
-            transition: 'opacity 0.2s ease-in-out',
-        },
-        '&:hover': {
-            backgroundColor: theme.palette.action.hover,
-            '& .actions': {
-                opacity: 1,
-            },
-        },
-    },
-    '& .row-details': {
-        backgroundColor: theme.palette.grey[50],
-    },
-    '& .MuiDataGrid-columnHeaders': {
-        backgroundColor: alpha(theme.palette.primary.main, 0.02),
-        borderBottom: `1px solid ${theme.palette.divider}`
     }
 }));
 
@@ -61,128 +73,154 @@ const StyledBox = styled(Box)(({ theme }) => ({
  * Status Cell Component
  * Renders a status chip with appropriate color based on status value
  */
-const StatusCell = ({ value, statusColors = {} }) => {
+export const StatusCell = ({ value, statusColors, className }) => {
+    const theme = useTheme();
+    
     const getStatusColor = (status) => {
-        if (statusColors[status]) return statusColors[status];
-        
-        switch (status?.toLowerCase()) {
-            case 'active':
-            case 'enabled':
-            case 'complete':
-            case 'completed':
+        const color = statusColors?.[status] || 'default';
+        switch (color) {
             case 'success':
-                return 'success';
-            case 'processing':
-            case 'pending':
-            case 'in_progress':
-                return 'warning';
-            case 'inactive':
-            case 'disabled':
-            case 'cancelled':
-            case 'failed':
-                return 'error';
-            case 'shipped':
-            case 'delivering':
-                return 'info';
+                return theme.palette.success.main;
+            case 'error':
+                return theme.palette.error.main;
+            case 'warning':
+                return theme.palette.warning.main;
+            case 'info':
+                return theme.palette.info.main;
             default:
-                return 'default';
+                return theme.palette.grey[500];
         }
     };
 
     return (
         <Chip
-            label={value}
+            label={value?.toString().replace(/_/g, ' ')}
             size="small"
-            color={getStatusColor(value)}
-            sx={{ minWidth: 85, justifyContent: 'center' }}
+            className={className}
+            sx={{
+                backgroundColor: `${getStatusColor(value)}15`,
+                color: getStatusColor(value),
+                borderRadius: '4px',
+                fontWeight: 600,
+                textTransform: 'capitalize',
+                '&.inProgress': {
+                    backgroundColor: `${theme.palette.info.main}15`,
+                    color: theme.palette.info.main,
+                },
+                '&.pending': {
+                    backgroundColor: `${theme.palette.warning.main}15`,
+                    color: theme.palette.warning.main,
+                },
+                '&.delivered': {
+                    backgroundColor: `${theme.palette.success.main}15`,
+                    color: theme.palette.success.main,
+                },
+                '&.canceled': {
+                    backgroundColor: `${theme.palette.error.main}15`,
+                    color: theme.palette.error.main,
+                },
+                '&.closed': {
+                    backgroundColor: `${theme.palette.grey[500]}15`,
+                    color: theme.palette.grey[500],
+                },
+                '&.fraud': {
+                    backgroundColor: `${theme.palette.error.dark}15`,
+                    color: theme.palette.error.dark,
+                },
+                '&.confirmationPending': {
+                    backgroundColor: `${theme.palette.warning.light}15`,
+                    color: theme.palette.warning.light,
+                },
+                '&.deliveryInProgress': {
+                    backgroundColor: `${theme.palette.info.light}15`,
+                    color: theme.palette.info.light,
+                },
+                '&.deliveryConfirmed': {
+                    backgroundColor: `${theme.palette.success.light}15`,
+                    color: theme.palette.success.light,
+                },
+                '&.orderCompleted': {
+                    backgroundColor: `${theme.palette.success.dark}15`,
+                    color: theme.palette.success.dark,
+                }
+            }}
         />
     );
 };
 
 /**
- * Custom Toolbar Component
+ * Custom Grid Toolbar Component
  * Provides search and filter controls
  */
-const CustomToolbar = ({
+const CustomGridToolbar = ({
     onRefresh,
-    filterOptions = [],
-    currentFilter = {},
-    onFilterChange
+    onFilter,
+    onAdd,
+    onEdit,
+    onDelete,
+    selectedCount,
+    filterModel
 }) => {
-    const [searchValue, setSearchValue] = useState('');
-    const [filterAnchorEl, setFilterAnchorEl] = useState(null);
-
-    const handleSearch = (event) => {
-        const value = event.target.value;
-        setSearchValue(value);
-        onFilterChange?.({
-            ...(currentFilter || {}),
-            search: value
-        });
-    };
-
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    
     return (
-        <Box sx={{
-            p: 2,
-            display: 'flex',
-            gap: 2,
-            alignItems: 'center',
-            borderBottom: 1,
-            borderColor: 'divider'
-        }}>
-            {onRefresh && (
-                <Tooltip title="Refresh">
-                    <IconButton onClick={onRefresh}>
+        <GridToolbarContainer>
+            <Box sx={{ flexGrow: 1, display: 'flex', gap: 1 }}>
+                {onRefresh && (
+                    <IconButton onClick={onRefresh} size="small">
                         <RefreshIcon />
                     </IconButton>
-                </Tooltip>
-            )}
+                )}
+                
+                {/* Column visibility menu - built-in MUI-X feature */}
+                <GridToolbarColumnsButton />
+                
+                {/* Filter button */}
+                <GridToolbarFilterButton />
+                
+                {/* Export button */}
+                <GridToolbarExport />
+                
+                {/* Density selector */}
+                <GridToolbarDensitySelector />
+            </Box>
             
-            <TextField
-                size="small"
-                placeholder="Search..."
-                value={searchValue}
-                onChange={handleSearch}
-                InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start">
-                            <SearchIcon />
-                        </InputAdornment>
-                    )
-                }}
-            />
-
-            {filterOptions.length > 0 && (
-                <>
-                    <Button
-                        startIcon={<FilterListIcon />}
-                        onClick={(e) => setFilterAnchorEl(e.currentTarget)}
-                        size="small"
-                        color="primary"
-                    >
-                        Filter
-                    </Button>
-                    <Menu
-                        anchorEl={filterAnchorEl}
-                        open={Boolean(filterAnchorEl)}
-                        onClose={() => setFilterAnchorEl(null)}
-                    >
-                        {filterOptions.map((option) => (
-                            <MenuItem
-                                key={option.value}
-                                onClick={() => {
-                                    onFilterChange?.(option.value);
-                                    setFilterAnchorEl(null);
-                                }}
-                                selected={currentFilter === option.value}
+            <Box sx={{ display: 'flex', gap: 1 }}>
+                {selectedCount > 0 && (
+                    <>
+                        {onEdit && (
+                            <IconButton
+                                onClick={onEdit}
+                                size="small"
+                                color="primary"
                             >
-                                {option.label}
-                            </MenuItem>
-                        ))}
-                    </Menu>
-                </>
-            )}
-        </Box>
+                                <EditIcon />
+                            </IconButton>
+                        )}
+                        {onDelete && (
+                            <IconButton
+                                onClick={onDelete}
+                                size="small"
+                                color="error"
+                            >
+                                <DeleteIcon />
+                            </IconButton>
+                        )}
+                    </>
+                )}
+                {onAdd && (
+                    <Button
+                        variant="contained"
+                        size="small"
+                        startIcon={<AddIcon />}
+                        onClick={onAdd}
+                    >
+                        Add New
+                    </Button>
+                )}
+            </Box>
+        </GridToolbarContainer>
     );
 };
 
@@ -241,7 +279,9 @@ const ActionsCell = ({ row, onEdit, onDelete }) => (
  */
 const RecordDetailsDialog = ({ open, onClose, record }) => {
     const isOrder = record?.entity_type === 'order' || 
-                   record?.increment_id?.startsWith('1'); // Simple check for order
+                   record?.increment_id?.startsWith('1');
+    const isProduct = record?.entity_type === 'product' ||
+                     record?.sku;
 
     return (
         <Dialog 
@@ -251,7 +291,9 @@ const RecordDetailsDialog = ({ open, onClose, record }) => {
             fullWidth
         >
             <DialogTitle>
-                {isOrder ? `Order #${record?.increment_id} Details` : 'Record Details'}
+                {isOrder ? `Order #${record?.increment_id} Details` : 
+                 isProduct ? `Product ${record?.sku || record?.name} Details` :
+                 'Record Details'}
             </DialogTitle>
             <DialogContent>
                 <Box
@@ -277,6 +319,15 @@ const RecordDetailsDialog = ({ open, onClose, record }) => {
                         <InvoiceGrid orderId={record.entity_id} />
                     </Box>
                 )}
+
+                {isProduct && (
+                    <Box sx={{ mt: 4 }}>
+                        <Typography variant="h6" gutterBottom>
+                            Categories
+                        </Typography>
+                        <CategoryGrid productId={record.entity_id} />
+                    </Box>
+                )}
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Close</Button>
@@ -284,11 +335,21 @@ const RecordDetailsDialog = ({ open, onClose, record }) => {
         </Dialog>
     );
 };
+
+const staticPrimaryKeys = {
+    OrdersGrid: 'increment_id',
+    InvoicesGrid: 'entity_id',
+    ProductsGrid: 'sku',
+    CustomersGrid: 'id',
+    CategoryGrid: 'id' // Example for CategoryGrid
+};
+
 /**
  * Base Grid Component
  * Provides core grid functionality with customizable features
  */
 const BaseGrid = ({
+    gridName, // New prop for grid name
     columns: userColumns,
     data,
     loading: externalLoading = false,
@@ -296,7 +357,9 @@ const BaseGrid = ({
     filterOptions = [],
     currentFilter = 'all',
     onFilterChange,
-    getRowId = (row) => row.entity_id || row.id,
+    getRowId = (row) => {
+        return row[staticPrimaryKeys[gridName]]; // Use the gridName prop
+    },
     totalCount = 0,
     preColumns = [],
     endColumns = [
@@ -319,25 +382,39 @@ const BaseGrid = ({
     });
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+    const [selectionModel, setSelectionModel] = useState({});
 
     // Process and enhance columns
     const finalColumns = useMemo(() => {
         try {
-            if (!data?.length) return [];
+            // Combine all column types
+            let baseColumns = [...preColumns, ...userColumns, ...endColumns];
             
-            const allColumns = [...preColumns, ...userColumns, ...endColumns];
-            return allColumns.map(column => ({
+            if (!data?.length) return baseColumns;
+            
+            // Generate additional columns and merge them
+            const generatedColumns = generateColumns(data[0], baseColumns);
+            const mergedColumns = mergeColumns(baseColumns, generatedColumns);
+            
+            // Process all columns with standard configurations
+            return mergedColumns.map(column => ({
                 ...column,
                 filterable: column.filterable !== false,
-                hide: initialVisibleColumns.length > 0 && 
-                      !initialVisibleColumns.includes(column.field)
+                sortable: column.sortable !== false,
+                hideable: true, // Allow all columns to be hidden/shown
+                // Keep explicitly defined hide status or use default (hidden for generated)
+                hide: column.hide === undefined ? 
+                    !baseColumns.some(bc => bc.field === column.field) : 
+                    column.hide,
+                // Add any other default column properties here
+                minWidth: column.minWidth || 100,
+                flex: column.flex || (column.width ? undefined : 1)
             }));
-        } catch (err) {
-            onError?.(err);
+        } catch (error) {
+            console.error('Error processing columns:', error);
             return [];
         }
-    }, [data, preColumns, userColumns, endColumns, initialVisibleColumns]);
-
+    }, [preColumns, userColumns, endColumns, data]);
     // Event handlers
     const handleRefresh = async () => {
         if (!onRefresh) return;
@@ -378,39 +455,84 @@ const BaseGrid = ({
         setDetailsDialogOpen(true);
     };
 
+    const handleSelectionModelChange = (newSelectionModel) => {
+        setSelectionModel(newSelectionModel);
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await handleRefresh(); // Call handleRefresh to fetch data on mount
+        };
+
+        fetchData();
+    }, []); // Empty dependency array to run only once on mount
+
     return (
-        <Paper elevation={2}>
-            <CustomToolbar
-                onRefresh={handleRefresh}
-                filterOptions={filterOptions}
-                currentFilter={currentFilter}
-                onFilterChange={handleFilterChange}
-            />
-            <StyledBox>
-                <DataGrid
-                    rows={data || []}
-                    columns={finalColumns}
-                    loading={internalLoading || externalLoading}
-                    paginationModel={paginationModel}
-                    onPaginationModelChange={handlePaginationModelChange}
-                    sortModel={sortModel}
-                    onSortModelChange={handleSortModelChange}
-                    getRowId={getRowId}
-                    rowCount={totalCount}
-                    pageSizeOptions={[10, 25, 50, 100]}
-                    disableRowSelectionOnClick
-                    onRowDoubleClick={handleRowDoubleClick}
-                />
-            </StyledBox>
+        <Box>
+            <Box sx={{ 
+                width: '100%',
+                pb: 16, 
+                '& .MuiDataGrid-root': {
+                    minHeight: 400,
+                    maxHeight: 'calc(100vh - 248px)', 
+                    display: 'flex',
+                    flexDirection: 'column'
+                }
+            }}>
+                <StyledBox>
+                    <DataGrid
+                        rows={data}
+                        columns={finalColumns}
+                        loading={internalLoading || externalLoading}
+                        paginationMode="server"
+                        filterMode="server"
+                        rowCount={totalCount}
+                        page={paginationModel.page}
+                        pageSize={paginationModel.pageSize}
+                        onPageChange={handlePaginationModelChange}
+                        onPageSizeChange={(pageSize) => setPaginationModel(prev => ({ ...prev, pageSize }))}
+                        getRowId={getRowId} // Use the updated getRowId function
+                        components={{
+                            Toolbar: () => (
+                                <CustomGridToolbar
+                                    onRefresh={handleRefresh}
+                                    onFilter={handleFilterChange}
+                                    onAdd={null}
+                                    onEdit={null}
+                                    onDelete={null}
+                                    selectedCount={selectionModel.length}
+                                    filterModel={currentFilter}
+                                />
+                            )
+                        }}
+                        componentsProps={{
+                            toolbar: {
+                                showQuickFilter: true,
+                                quickFilterProps: { debounceMs: 500 },
+                            }
+                        }}
+                        pageSizeOptions={[10, 25, 50, 100]}
+                        disableRowSelectionOnClick
+                        onRowDoubleClick={handleRowDoubleClick}
+                        checkboxSelection
+                        onSelectionModelChange={handleSelectionModelChange}
+                        selectionModel={selectionModel}
+                        sx={{
+                            '& .MuiDataGrid-cell:focus': {
+                                outline: 'none'
+                            }
+                        }}
+                    />
+                </StyledBox>
+            </Box>
             
             <RecordDetailsDialog
                 open={detailsDialogOpen}
                 onClose={() => setDetailsDialogOpen(false)}
                 record={selectedRecord}
             />
-        </Paper>
+        </Box>
     );
 };
 
-export { StatusCell };
 export default BaseGrid;

@@ -29,26 +29,14 @@ const InvoiceGrid = ({ orderId }) => {
         { 
             field: 'increment_id', 
             headerName: 'Invoice #', 
-            width: 130 
+            width: 130 ,
+            hide:true
         },
         { 
-            field: 'order_increment_id', 
+            field: 'entity_id', 
             headerName: 'Order #', 
             width: 130 
-        },
-        { 
-            field: 'grand_total', 
-            headerName: 'Total', 
-            width: 120,
-            valueFormatter: (params) => `$${params.value.toFixed(2)}`
-        },
-       
-        getStatusColumn('status', {
-            filterOptions: [
-                { value: 'paid', label: 'Paid' },
-                { value: 'pending', label: 'Pending' }
-            ]
-        })
+        }, 
     ];
 
     // Data fetching handler
@@ -139,6 +127,7 @@ const InvoiceGrid = ({ orderId }) => {
         <Box>
             <StatsCards cards={statCards} />
             <BaseGrid
+               gridName="InvoicesGrid"
                 columns={columns}
                 data={data}
                 loading={loading}

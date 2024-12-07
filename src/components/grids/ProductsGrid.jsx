@@ -36,12 +36,17 @@ const ProductsGrid = () => {
             headerName: 'Product Name', 
             flex: 1 
         },
-        { 
-            field: 'price', 
-            headerName: 'Price', 
-            width: 120,
-            valueFormatter: (params) => `$${params.value.toFixed(2)}`
+        {
+            field:'type_id',
+            headerName: 'Product Type', 
         },
+        {
+            field:'price',
+            headerName: 'Price', 
+            width: 100,
+            type: 'money'
+        },
+        
         { 
             field: 'qty', 
             headerName: 'Quantity', 
@@ -134,6 +139,7 @@ const ProductsGrid = () => {
         <Box>
             <StatsCards cards={statCards} />
             <BaseGrid
+              gridName="ProductsGrid"
                 columns={columns}
                 data={data}
                 loading={loading}

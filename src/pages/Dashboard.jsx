@@ -33,6 +33,7 @@ const formatDate = (date) => {
         day: 'numeric'
     }).format(new Date(date));
 };
+
 const Dashboard = () => {
     const [startDate, setStartDate] = useState(new Date(new Date().setMonth(new Date().getMonth() - 1)));
     const [endDate, setEndDate] = useState(new Date());
@@ -167,9 +168,24 @@ const Dashboard = () => {
     ];
 
     return (
-        <Box sx={{ p: 3 }}>
+        <Box 
+            sx={{ 
+                p: 3,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 3,
+                height: '100%',
+                position: 'relative'
+            }}
+        >
             {/* Date Range Selector */}
-            <Paper sx={{ p: 2, mb: 3 }}>
+            <Paper 
+                elevation={2}
+                sx={{ 
+                    p: 2,
+                    backgroundColor: 'background.paper',
+                }}
+            >
                 <Grid container spacing={2} alignItems="center">
                     <Grid item xs={12} sm={4}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -192,30 +208,31 @@ const Dashboard = () => {
                         </LocalizationProvider>
                     </Grid>
                     <Grid item xs={12} sm={4}>
-                        <Box sx={{ display: 'flex', justifyContent: { xs: 'flex-start', sm: 'flex-end' } }}>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => fetchDashboardData(true)}
-                                startIcon={<RefreshIcon />}
-                                sx={{ minWidth: 120 }}
-                            >
-                                Refresh
-                            </Button>
-                        </Box>
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            onClick={() => fetchDashboardData(true)}
+                            startIcon={<RefreshIcon />}
+                        >
+                            Refresh
+                        </Button>
                     </Grid>
                 </Grid>
             </Paper>
 
-            {/* Stats Cards */}
-            <StatsCards cards={statCards} />
-
-            {/* Charts */}
+            {/* Charts Section */}
             <Grid container spacing={3}>
+                {/* Orders Trend Chart */}
                 <Grid item xs={12} md={6}>
-                    <Paper sx={{ p: 2 }}>
-                        <h3>Orders Trend</h3>
-                        <ResponsiveContainer width="100%" height={300}>
+                    <Paper 
+                        elevation={2}
+                        sx={{ 
+                            p: 2,
+                            height: '400px',
+                            backgroundColor: 'background.paper',
+                        }}
+                    >
+                        <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={orderTrends}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="date" />
@@ -227,10 +244,18 @@ const Dashboard = () => {
                         </ResponsiveContainer>
                     </Paper>
                 </Grid>
+
+                {/* Revenue Trend Chart */}
                 <Grid item xs={12} md={6}>
-                    <Paper sx={{ p: 2 }}>
-                        <h3>Revenue Trend</h3>
-                        <ResponsiveContainer width="100%" height={300}>
+                    <Paper 
+                        elevation={2}
+                        sx={{ 
+                            p: 2,
+                            height: '400px',
+                            backgroundColor: 'background.paper',
+                        }}
+                    >
+                        <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={revenueTrends}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="date" />
@@ -243,6 +268,9 @@ const Dashboard = () => {
                     </Paper>
                 </Grid>
             </Grid>
+
+            {/* Stats Cards */}
+            <StatsCards cards={statCards} />
         </Box>
     );
 };

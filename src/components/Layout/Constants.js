@@ -5,21 +5,13 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import CategoryIcon from '@mui/icons-material/Category';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
-
-
-
-import LocationOnIcon from '@mui/icons-material/LocationOn'; // 
-
-
-
-
-
-
-
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import WarehouseIcon from '@mui/icons-material/Warehouse';
+import Inventory2Icon from '@mui/icons-material/Inventory2';
 
 export const DRAWER_WIDTH = 240;
 export const COLLAPSED_WIDTH = 64;
+
 /**
  * Menu Items Configuration
  * 
@@ -62,12 +54,21 @@ export const MENU_ITEMS = [
         icon: CategoryIcon,
         path: '/categories'
     },
-    { id: 'stocks', label: 'Stocks', icon: InventoryIcon, path: '/stocks' },
-    { id: 'sources', label: 'Sources', icon: LocationOnIcon, path: '/sources' },
-    { 
-        id: 'UserProfile', 
-        label: 'User Profile', 
-        icon: AccountCircleIcon, 
-        path: '/user-profile' 
-    }
-];
+    {
+        id: 'StocksGrid',
+        label: 'Stocks',
+        icon: Inventory2Icon,
+        path: '/stocks'
+    },
+    {
+        id: 'SourcesGrid',
+        label: 'Sources',
+        icon: WarehouseIcon,
+        path: '/sources'
+    },
+    {
+        id: 'UserProfile',
+        label: 'Profile',
+        icon: AccountCircleIcon,
+        path: '/profile'
+    }];

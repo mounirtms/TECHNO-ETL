@@ -42,12 +42,7 @@ const OrdersGrid = () => {
             valueGetter: (params) => 
                 `${params.row.customer_firstname || ''} ${params.row.customer_lastname || ''}`
         },
-        { 
-            field: 'grand_total', 
-            headerName: 'Total', 
-            width: 120,
-            valueFormatter: (params) => `$${params.value.toFixed(2)}`
-        },
+       
         getStatusColumn('status', {
             filterOptions: [
                 { value: 'processing', label: 'Processing' },
@@ -156,6 +151,7 @@ const OrdersGrid = () => {
         <Box>
             <StatsCards cards={statCards} />
             <BaseGrid
+                gridName="OrdersGrid"
                 columns={columns}
                 data={data}
                 loading={loading}
