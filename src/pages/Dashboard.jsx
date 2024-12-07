@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Grid, Paper, TextField, Button } from '@mui/material';
+import { Box, Grid, Paper, TextField, Button, Typography } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -12,6 +12,7 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import SettingsIcon from '@mui/icons-material/Settings';
 import magentoApi from '../services/magentoService';
 import { toast } from 'react-toastify';
 
@@ -27,11 +28,25 @@ const formatCurrency = (amount) => {
 
 // Format date in Arabic
 const formatDate = (date) => {
-    return new Intl.DateTimeFormat('ar', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    }).format(new Date(date));
+    if (!date) return '';
+    
+    try {
+        const dateObj = typeof date === 'string' ? new Date(date) : date;
+        
+        // Check if date is valid
+        if (isNaN(dateObj.getTime())) {
+            return '';
+        }
+
+        return new Intl.DateTimeFormat('ar', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        }).format(dateObj);
+    } catch (error) {
+        console.warn('Date formatting error:', error);
+        return '';
+    }
 };
 
 const Dashboard = () => {
@@ -48,6 +63,7 @@ const Dashboard = () => {
     const [revenueTrends, setRevenueTrends] = useState([]);
     const [loading, setLoading] = useState(true);
     const [lastFetch, setLastFetch] = useState(null);
+    const [showSettings, setShowSettings] = useState(false);
     const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
     const fetchDashboardData = async (force = false) => {
@@ -134,143 +150,245 @@ const Dashboard = () => {
         fetchDashboardData();
     }, [startDate, endDate]);
 
-    const statCards = [
-        {
-            title: "Total Orders",
-            value: stats.totalOrders,
-            icon: ShoppingCartIcon,
-            color: "primary"
-        },
-        {
-            title: "Total Customers",
-            value: stats.totalCustomers,
-            icon: PeopleIcon,
-            color: "success"
-        },
-        {
-            title: "Total Products",
-            value: stats.totalProducts,
-            icon: InventoryIcon,
-            color: "info"
-        },
-        {
-            title: "Total Revenue",
-            value: formatCurrency(stats.totalRevenue),
-            icon: AttachMoneyIcon,
-            color: "warning"
-        },
-        {
-            title: "Avg Order Value",
-            value: formatCurrency(stats.averageOrderValue),
-            icon: TrendingUpIcon,
-            color: "error"
-        }
-    ];
-
     return (
         <Box 
             sx={{ 
-                p: 3,
+                height: '100vh',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 3,
-                height: '100%',
-                position: 'relative'
+                p: { xs: 2, sm: 3 },
+                overflow: 'hidden'
             }}
         >
-            {/* Date Range Selector */}
+            {/* Date Filters and Actions */}
             <Paper 
-                elevation={2}
+                elevation={1}
                 sx={{ 
-                    p: 2,
-                    backgroundColor: 'background.paper',
+                    p: { xs: 2, sm: 3 },
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: 2,
+                    alignItems: 'center',
+                    bgcolor: 'background.paper',
+                    borderRadius: 2
                 }}
             >
-                <Grid container spacing={2} alignItems="center">
-                    <Grid item xs={12} sm={4}>
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                label="Start Date"
-                                value={startDate}
-                                onChange={setStartDate}
-                                renderInput={(params) => <TextField {...params} fullWidth />}
-                            />
-                        </LocalizationProvider>
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <DatePicker
-                                label="End Date"
-                                value={endDate}
-                                onChange={setEndDate}
-                                renderInput={(params) => <TextField {...params} fullWidth />}
-                            />
-                        </LocalizationProvider>
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            onClick={() => fetchDashboardData(true)}
-                            startIcon={<RefreshIcon />}
-                        >
-                            Refresh
-                        </Button>
-                    </Grid>
-                </Grid>
+                <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={arLocale}>
+                    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', flex: 1 }}>
+                        <DatePicker
+                            label="Start Date"
+                            value={startDate}
+                            onChange={setStartDate}
+                            renderInput={(params) => 
+                                <TextField 
+                                    {...params} 
+                                    size="small"
+                                    sx={{ minWidth: { xs: '100%', sm: 200 } }}
+                                />
+                            }
+                        />
+                        <DatePicker
+                            label="End Date"
+                            value={endDate}
+                            onChange={setEndDate}
+                            renderInput={(params) => 
+                                <TextField 
+                                    {...params} 
+                                    size="small"
+                                    sx={{ minWidth: { xs: '100%', sm: 200 } }}
+                                />
+                            }
+                        />
+                    </Box>
+                </LocalizationProvider>
+                <Box sx={{ display: 'flex', gap: 2, ml: 'auto' }}>
+                    <Button
+                        startIcon={<RefreshIcon />}
+                        onClick={() => fetchDashboardData(true)}
+                        disabled={loading}
+                        variant="contained"
+                        size="small"
+                    >
+                        {loading ? 'Refreshing...' : 'Refresh'}
+                    </Button>
+                    <Button
+                        startIcon={<SettingsIcon />}
+                        onClick={() => setShowSettings(!showSettings)}
+                        variant="outlined"
+                        size="small"
+                    >
+                        Settings
+                    </Button>
+                </Box>
             </Paper>
 
-            {/* Charts Section */}
-            <Grid container spacing={3}>
-                {/* Orders Trend Chart */}
-                <Grid item xs={12} md={6}>
-                    <Paper 
-                        elevation={2}
-                        sx={{ 
-                            p: 2,
-                            height: '400px',
-                            backgroundColor: 'background.paper',
-                        }}
-                    >
-                        <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={orderTrends}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="date" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Line type="monotone" dataKey="orders" stroke="#8884d8" />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </Paper>
-                </Grid>
-
-                {/* Revenue Trend Chart */}
-                <Grid item xs={12} md={6}>
-                    <Paper 
-                        elevation={2}
-                        sx={{ 
-                            p: 2,
-                            height: '400px',
-                            backgroundColor: 'background.paper',
-                        }}
-                    >
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={revenueTrends}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="date" />
-                                <YAxis />
-                                <Tooltip />
-                                <Legend />
-                                <Bar dataKey="revenue" fill="#82ca9d" />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </Paper>
-                </Grid>
-            </Grid>
-
             {/* Stats Cards */}
-            <StatsCards cards={statCards} />
+            <Box sx={{ width: '100%' }}>
+                <StatsCards
+                    cards={[
+                        {
+                            title: 'Total Orders',
+                            value: stats.totalOrders,
+                            icon: ShoppingCartIcon,
+                            color: 'primary'
+                        },
+                        {
+                            title: 'Total Revenue',
+                            value: formatCurrency(stats.totalRevenue),
+                            icon: AttachMoneyIcon,
+                            color: 'success'
+                        },
+                        {
+                            title: 'Average Order',
+                            value: formatCurrency(stats.averageOrderValue),
+                            icon: TrendingUpIcon,
+                            color: 'info'
+                        },
+                        {
+                            title: 'Total Products',
+                            value: stats.totalProducts,
+                            icon: InventoryIcon,
+                            color: 'warning'
+                        }
+                    ]}
+                />
+            </Box>
+
+            {/* Charts */}
+            <Box sx={{ 
+                flex: 1,
+                overflow: 'auto',
+                width: '100%'
+            }}>
+                <Grid 
+                    container 
+                    spacing={3} 
+                    sx={{ 
+                        height: '100%',
+                        alignItems: 'stretch'
+                    }}
+                >
+                    <Grid item xs={12} lg={6}>
+                        <Paper 
+                            elevation={1} 
+                            sx={{ 
+                                p: { xs: 2, sm: 3 },
+                                height: '100%',
+                                minHeight: 400,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                borderRadius: 2,
+                                transition: 'all 0.2s ease-in-out',
+                                '&:hover': {
+                                    transform: 'translateY(-4px)',
+                                    boxShadow: (theme) => theme.shadows[4]
+                                }
+                            }}
+                        >
+                            <Typography 
+                                variant="h6" 
+                                gutterBottom
+                                sx={{ 
+                                    fontWeight: 600,
+                                    color: 'text.primary',
+                                    mb: 3
+                                }}
+                            >
+                                Orders Trend
+                            </Typography>
+                            <Box sx={{ flex: 1, minHeight: 0 }}>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <LineChart data={orderTrends}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis 
+                                            dataKey="date" 
+                                            tick={{ fontSize: 12 }}
+                                            tickFormatter={(value) => {
+                                                if (!value) return '';
+                                                return formatDate(value);
+                                            }}
+                                        />
+                                        <YAxis tick={{ fontSize: 12 }} />
+                                        <Tooltip 
+                                            formatter={(value) => [value, 'Orders']}
+                                            labelFormatter={(label) => {
+                                                if (!label) return '';
+                                                return formatDate(label);
+                                            }}
+                                        />
+                                        <Legend />
+                                        <Line 
+                                            type="monotone" 
+                                            dataKey="orders" 
+                                            stroke="#8884d8" 
+                                            strokeWidth={2}
+                                            dot={{ r: 4 }}
+                                            activeDot={{ r: 6 }}
+                                        />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </Box>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={12} lg={6}>
+                        <Paper 
+                            elevation={1} 
+                            sx={{ 
+                                p: { xs: 2, sm: 3 },
+                                height: '100%',
+                                minHeight: 400,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                borderRadius: 2,
+                                transition: 'all 0.2s ease-in-out',
+                                '&:hover': {
+                                    transform: 'translateY(-4px)',
+                                    boxShadow: (theme) => theme.shadows[4]
+                                }
+                            }}
+                        >
+                            <Typography 
+                                variant="h6" 
+                                gutterBottom
+                                sx={{ 
+                                    fontWeight: 600,
+                                    color: 'text.primary',
+                                    mb: 3
+                                }}
+                            >
+                                Revenue Trend
+                            </Typography>
+                            <Box sx={{ flex: 1, minHeight: 0 }}>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={revenueTrends}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis 
+                                            dataKey="date" 
+                                            tick={{ fontSize: 12 }}
+                                            tickFormatter={(value) => formatDate(value)}
+                                        />
+                                        <YAxis 
+                                            tick={{ fontSize: 12 }}
+                                            tickFormatter={(value) => formatCurrency(value)}
+                                        />
+                                        <Tooltip 
+                                            formatter={(value) => [formatCurrency(value), 'Revenue']}
+                                            labelFormatter={(label) => formatDate(label)}
+                                        />
+                                        <Legend />
+                                        <Bar 
+                                            dataKey="revenue" 
+                                            fill="#82ca9d"
+                                            radius={[4, 4, 0, 0]}
+                                        />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </Box>
+                        </Paper>
+                    </Grid>
+                </Grid>
+            </Box>
         </Box>
     );
 };

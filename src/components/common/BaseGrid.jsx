@@ -3,7 +3,8 @@ import {
     Paper, Box, Menu, MenuItem, IconButton, Button,
     Select, FormControl, InputLabel, Tooltip, TextField,
     InputAdornment, Chip, Dialog, DialogTitle, DialogContent,
-    DialogActions, Typography
+    DialogActions, Typography, List, ListItem, ListItemText,
+    ListItemIcon, Checkbox, Switch
 } from '@mui/material';
 import { alpha, styled, useTheme } from '@mui/material/styles';
 import {
@@ -11,8 +12,7 @@ import {
     GridToolbarContainer,
     GridToolbarColumnsButton,
     GridToolbarFilterButton,
-    GridToolbarExport,
-    GridToolbarDensitySelector
+    GridToolbarExport
 } from '@mui/x-data-grid';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -20,7 +20,12 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete'; 
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
-import { generateColumns, mergeColumns } from '../../utils/gridUtils';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { ref, set, get } from 'firebase/database';
+import { database } from '../../config/firebase';
+import {
+    generateColumns, mergeColumns
+} from '../../utils/gridUtils';
 import InvoiceGrid from '../grids/InvoicesGrid';
 import CategoryGrid from '../grids/CategoryGrid';
 import { toast } from 'react-toastify';
@@ -152,74 +157,114 @@ export const StatusCell = ({ value, statusColors, className }) => {
  * Custom Grid Toolbar Component
  * Provides search and filter controls
  */
-const CustomGridToolbar = ({
-    onRefresh,
-    onFilter,
-    onAdd,
-    onEdit,
-    onDelete,
-    selectedCount,
-    filterModel
+const CustomGridToolbar = ({ 
+    onRefresh, 
+    onFilter, 
+    onAdd, 
+    onEdit, 
+    onDelete, 
+    selectedCount, 
+    filterModel,
+    columns,
+    gridName,
+    customFilters = [],
+    onCustomFilterChange,
+    currentCustomFilter
 }) => {
     const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
-    
+    const [settingsOpen, setSettingsOpen] = useState(false);
+
+    const handleFilterClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleFilterClose = () => {
+        setAnchorEl(null);
+    };
+
     return (
         <GridToolbarContainer>
-            <Box sx={{ flexGrow: 1, display: 'flex', gap: 1 }}>
-                {onRefresh && (
-                    <IconButton onClick={onRefresh} size="small">
-                        <RefreshIcon />
-                    </IconButton>
-                )}
-                
-                {/* Column visibility menu - built-in MUI-X feature */}
-                <GridToolbarColumnsButton />
-                
-                {/* Filter button */}
-                <GridToolbarFilterButton />
-                
-                {/* Export button */}
-                <GridToolbarExport />
-                
-                {/* Density selector */}
-                <GridToolbarDensitySelector />
-            </Box>
-            
-            <Box sx={{ display: 'flex', gap: 1 }}>
-                {selectedCount > 0 && (
-                    <>
-                        {onEdit && (
-                            <IconButton
-                                onClick={onEdit}
+            <Box sx={{ 
+                display: 'flex', 
+                gap: 1, 
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                p: 1,
+                width: '100%'
+            }}>
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                    <GridToolbarColumnsButton />
+                    <GridToolbarFilterButton />
+                    <GridToolbarExport />
+                    
+                    {customFilters.length > 0 && (
+                        <>
+                            <Button
                                 size="small"
+                                startIcon={<FilterListIcon />}
+                                onClick={handleFilterClick}
                                 color="primary"
+                                variant="outlined"
                             >
-                                <EditIcon />
-                            </IconButton>
-                        )}
-                        {onDelete && (
-                            <IconButton
-                                onClick={onDelete}
-                                size="small"
-                                color="error"
+                                {currentCustomFilter ? customFilters.find(f => f.value === currentCustomFilter)?.label : 'Custom Filters'}
+                            </Button>
+                            <Menu
+                                anchorEl={anchorEl}
+                                open={Boolean(anchorEl)}
+                                onClose={handleFilterClose}
                             >
-                                <DeleteIcon />
+                                {customFilters.map((filter) => (
+                                    <MenuItem
+                                        key={filter.value}
+                                        onClick={() => {
+                                            onCustomFilterChange(filter.value);
+                                            handleFilterClose();
+                                        }}
+                                        selected={currentCustomFilter === filter.value}
+                                    >
+                                        {filter.label}
+                                    </MenuItem>
+                                ))}
+                            </Menu>
+                        </>
+                    )}
+                </Box>
+
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', ml: 'auto' }}>
+                    {onRefresh && (
+                        <Tooltip title="Refresh data">
+                            <IconButton onClick={onRefresh} size="small">
+                                <RefreshIcon />
                             </IconButton>
-                        )}
-                    </>
-                )}
-                {onAdd && (
-                    <Button
-                        variant="contained"
-                        size="small"
-                        startIcon={<AddIcon />}
-                        onClick={onAdd}
-                    >
-                        Add New
-                    </Button>
-                )}
+                        </Tooltip>
+                    )}
+                    {onAdd && (
+                        <Button
+                            startIcon={<AddIcon />}
+                            onClick={onAdd}
+                            size="small"
+                            variant="contained"
+                        >
+                            Add New
+                        </Button>
+                    )}
+                    <Tooltip title="Settings">
+                        <IconButton onClick={() => setSettingsOpen(true)}>
+                            <SettingsIcon />
+                        </IconButton>
+                    </Tooltip>
+                </Box>
             </Box>
+            <SettingsDialog
+                open={settingsOpen}
+                onClose={() => setSettingsOpen(false)}
+                columns={columns}
+                gridName={gridName}
+                onSave={(settings) => {
+                    // Handle settings save
+                    console.log('Settings saved:', settings);
+                }}
+            />
         </GridToolbarContainer>
     );
 };
@@ -342,6 +387,95 @@ const staticPrimaryKeys = {
     ProductsGrid: 'sku',
     CustomersGrid: 'id',
     CategoryGrid: 'id' // Example for CategoryGrid
+};
+
+const SettingsDialog = ({ open, onClose, columns, gridName, onSave }) => {
+    const [columnSettings, setColumnSettings] = useState({});
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const loadSettings = async () => {
+            try {
+                const settingsRef = ref(database, `gridSettings/${gridName}`);
+                const snapshot = await get(settingsRef);
+                if (snapshot.exists()) {
+                    setColumnSettings(snapshot.val());
+                } else {
+                    const defaultSettings = columns.reduce((acc, col) => ({
+                        ...acc,
+                        [col.field]: { visible: true, index: col.index || 0 }
+                    }), {});
+                    setColumnSettings(defaultSettings);
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+                toast.error('Failed to load grid settings');
+            }
+            setLoading(false);
+        };
+
+        if (open) {
+            loadSettings();
+        }
+    }, [open, gridName, columns]);
+
+    const handleToggleColumn = (field) => {
+        setColumnSettings(prev => ({
+            ...prev,
+            [field]: { ...prev[field], visible: !prev[field].visible }
+        }));
+    };
+
+    const handleSave = async () => {
+        try {
+            const settingsRef = ref(database, `gridSettings/${gridName}`);
+            await set(settingsRef, columnSettings);
+            onSave(columnSettings);
+            onClose();
+            toast.success('Grid settings saved successfully');
+        } catch (error) {
+            console.error('Error saving settings:', error);
+            toast.error('Failed to save grid settings');
+        }
+    };
+
+    return (
+        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+            <DialogTitle>Grid Settings</DialogTitle>
+            <DialogContent>
+                {loading ? (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+                        <Typography>Loading settings...</Typography>
+                    </Box>
+                ) : (
+                    <List>
+                        {columns.map((column) => (
+                            <ListItem key={column.field}>
+                                <ListItemIcon>
+                                    <Checkbox
+                                        edge="start"
+                                        checked={columnSettings[column.field]?.visible ?? true}
+                                        onChange={() => handleToggleColumn(column.field)}
+                                    />
+                                </ListItemIcon>
+                                <ListItemText primary={column.headerName || column.field} />
+                            </ListItem>
+                        ))}
+                    </List>
+                )}
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={onClose}>Cancel</Button>
+                <Button 
+                    onClick={handleSave} 
+                    color="primary"
+                    disabled={loading}
+                >
+                    Save Changes
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
 };
 
 /**
@@ -502,6 +636,11 @@ const BaseGrid = ({
                                     onDelete={null}
                                     selectedCount={selectionModel.length}
                                     filterModel={currentFilter}
+                                    columns={finalColumns}
+                                    gridName={gridName}
+                                    customFilters={[]}
+                                    onCustomFilterChange={() => {}}
+                                    currentCustomFilter={''}
                                 />
                             )
                         }}

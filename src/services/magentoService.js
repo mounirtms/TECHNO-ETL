@@ -214,33 +214,33 @@ class MagentoApi {
 
     magentoServiceException(response) {
         let errorMessage = ' ';
-
-        if (response.status)
-            switch (response.status) {
-                case 400:
-                    errorMessage = error.response.data?.message || 'Bad Request: Invalid parameters';
-                    break;
-                case 401:
-                    errorMessage = 'Invalid credentials. Please check your username and password.';
-                    return handleApi401Error(response);
-                    this.clearToken(); // Clear invalid token
-                    break;
-                case 403:
-                    errorMessage = 'Access denied. You do not have permission to perform this action.';
-                    break;
-                case 404:
-                    errorMessage = 'The requested resource was not found.';
-                    break;
-                case 422:
-                    // Unprocessable Entity - often validation errors
-                    errorMessage = error.response.data?.message || 'Validation failed';
-                    break;
-                case 500:
-                    errorMessage = 'Internal server error. Please try again later.';
-                    break;
-                default:
-                    errorMessage = error.response.data?.message || 'An unexpected error occurred';
-            }
+   
+            if (response.status)
+                switch (response.status) {
+                    case 400:
+                        errorMessage = error.response.data?.message || 'Bad Request: Invalid parameters';
+                        break;
+                    case 401:
+                        errorMessage = 'Invalid credentials. Please check your username and password.';
+                        return handleApi401Error(response);
+                        this.clearToken(); // Clear invalid token
+                        break;
+                    case 403:
+                        errorMessage = 'Access denied. You do not have permission to perform this action.';
+                        break;
+                    case 404:
+                        errorMessage = 'The requested resource was not found.';
+                        break;
+                    case 422:
+                        // Unprocessable Entity - often validation errors
+                        errorMessage = error.response.data?.message || 'Validation failed';
+                        break;
+                    case 500:
+                        errorMessage = 'Internal server error. Please try again later.';
+                        break;
+                    default:
+                        errorMessage = error.response.data?.message || 'An unexpected error occurred';
+                }
         console.log(errorMessage)
     };
 

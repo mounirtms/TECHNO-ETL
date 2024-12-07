@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext } from 'react';
 import { MENU_ITEMS } from '../components/Layout/Constants';
 
 // Import all components dynamically
+// Import all components dynamically
 import Dashboard from '../pages/Dashboard';
 import ProductsGrid from '../components/grids/ProductsGrid';
 import CustomersGrid from '../components/grids/CustomersGrid';
@@ -11,7 +12,7 @@ import UserProfile from '../components/UserProfile';
 import CategoryTree from '../components/grids/CategoryGrid';
 import StocksGrid from '../components/grids/StocksGrid';
 import SourcesGrid from '../components/grids/SourcesGrid';
-
+import CegidGrid from '../components/grids/CegidGrid';
 // Component mapping
 const COMPONENT_MAP = {
     Dashboard: Dashboard,
@@ -22,7 +23,8 @@ const COMPONENT_MAP = {
     UserProfile: UserProfile,
     CategoryTree: CategoryTree,
     StocksGrid: StocksGrid,
-    SourcesGrid: SourcesGrid
+    SourcesGrid: SourcesGrid,
+    CegidProductsGrid: CegidGrid
 };
 
 const TabContext = createContext();

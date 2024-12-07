@@ -16,41 +16,43 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // Protected Route wrapper component
 const ProtectedRoute = ({ children }) => {
-    const { isAuthenticated } = useAuth();
-    return isAuthenticated ? children : <Navigate to="/login" />;
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
 const App = () => {
-    return (
-        <AuthProvider>
-            <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <ToastContainer position="top-right" />
-                <BrowserRouter>
-                    <Routes>
-                        {/* Public routes */}
-                        <Route path="/login" element={<Login />} />
-                        
-                        {/* Protected routes */}
-                        <Route path="/" element={
-                            <ProtectedRoute>
-                                <Layout />
-                            </ProtectedRoute>
-                        }>
-                            <Route index element={<Navigate to="/dashboard" replace />} />
-                            <Route path="dashboard" element={<Dashboard />} />
-                            <Route path="orders" element={<Orders />} />
-                            <Route path="products" element={<Products />} />
-                            <Route path="customers" element={<Customers />} />
-                        </Route>
+  return (
+    <AuthProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <ToastContainer position="top-right" />
+        <BrowserRouter>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/login" element={<Login />} />
 
-                        {/* Redirect all other routes to login */}
-                        <Route path="*" element={<Navigate to="/login" replace />} />
-                    </Routes>
-                </BrowserRouter>
-            </ThemeProvider>
-        </AuthProvider>
-    );
+            {/* Protected routes */}
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Layout />
+              </ProtectedRoute>
+            }>
+              <Route index element={<Navigate to="/dashboard" replace />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="orders" element={<Orders />} />
+              <Route path="products" element={<Products />} />
+              <Route path="customers" element={<Customers />} />
+              <Route path="cegid-products" element={<CegidGrid />} />
+
+            </Route>
+
+            {/* Redirect all other routes to login */}
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
+    </AuthProvider>
+  );
 };
 
 export default App;

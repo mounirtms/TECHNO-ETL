@@ -1,40 +1,50 @@
-import { createClient } from 'easy-soap-request';
+import soapRequest from 'easy-soap-request';
+import xml2js from 'xml2js';
 
-const cegidUrl = import.meta.env.VITE_Cegid_API_URL; // Your Cegid API URL
+const cegidUrl = import.meta.env.VITE_Cegid_API_URL;
 const cegidUsername = import.meta.env.VITE_Cegid_ADMIN_USERNAME;
 const cegidPassword = import.meta.env.VITE_Cegid_ADMIN_PASSWORD;
 
 async function getProductsFromCegid() {
-    const wsdl = await fetch('/assets/CegidApi/InventoryService.wsdl').then(res => res.text()) ;  // Load the correct WSDL (adjust path)
+    const wsdl = await fetch('/assets/CegidApi/InventoryService.wsdl').then(res => res.text());
 
-    // Define the Cegid SOAP headers here (check WSDL for authentication method)
     const headers = {
-      // 'cegid-authentication':  '...', // Example Cegid authentication header 
+        'Content-Type': 'text/xml;charset=UTF-8',
+        // Add any other required headers here
     };
 
-    const { response } = await createClient(wsdl);
-    const { body, statusCode } = await response.getInventory(headers, { /* Request parameters as per WSDL */ });
+    const xml = `<?xml version="1.0" encoding="utf-8"?>
+    <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+        <soap:Body>
+            <!-- Your SOAP request body here -->
+        </soap:Body>
+    </soap:Envelope>`;
+
+    const { response } = await soapRequest({
+        url: cegidUrl,
+        headers: headers,
+        xml: xml,
+    });
+
+    const { body, statusCode } = response;
 
     if (statusCode !== 200) {
-      throw new Error(`Cegid API error ${statusCode}: ${body}`);
+        throw new Error(`Cegid API error ${statusCode}: ${body}`);
     }
 
-    // Parse the XML response
-    // ... (use an XML parser to extract product data from body)
+    const parser = new xml2js.Parser();
+    const parsedData = await parser.parseStringPromise(body);
 
-    // Transform to Magento format
-    // ... 
+    const transformedMagentoData = parsedData.Inventory.Items.map(item => ({
+        itemCode: item.ItemCode[0],
+        description: item.Description[0],
+        price: item.Price[0],
+        stock: item.Stock[0],
+        store: item.Store[0],
+        status: item.Status[0]
+    }));
+
     return transformedMagentoData;
 }
 
-async function syncProducts() {
-  try {
-    const cegidProducts = await getProductsFromCegid();
-    // Call Magento bulk API to update products
-    // ...
-  } catch (error) {
-    // ... Error handling and logging
-  }
-}
-
-// Schedule syncProducts to run daily
+export { getProductsFromCegid };

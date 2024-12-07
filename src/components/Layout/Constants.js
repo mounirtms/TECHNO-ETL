@@ -8,7 +8,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
-
+import StorefrontIcon from '@mui/icons-material/Storefront';
 export const DRAWER_WIDTH = 240;
 export const COLLAPSED_WIDTH = 64;
 
@@ -29,6 +29,12 @@ export const MENU_ITEMS = [
         label: 'Products',
         icon: InventoryIcon,
         path: '/products'
+    },
+    {
+        id: 'CegidProductsGrid',
+        label: 'Cegid Products',
+        icon: StorefrontIcon,
+        path: '/cegid-products'
     },
     {
         id: 'CustomersGrid',
