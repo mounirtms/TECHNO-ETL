@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext } from 'react';
-import { MENU_ITEMS } from '../components/Layout/Constants';
+import { Box } from '@mui/material'; // Add Box import for error rendering
+import { MENU_ITEMS } from '../components/layout/Constants';
 
-// Import all components dynamically
 // Import all components dynamically
 import Dashboard from '../pages/Dashboard';
 import ProductsGrid from '../components/grids/ProductsGrid';
@@ -13,6 +13,7 @@ import CategoryTree from '../components/grids/CategoryGrid';
 import StocksGrid from '../components/grids/StocksGrid';
 import SourcesGrid from '../components/grids/SourcesGrid';
 import CegidGrid from '../components/grids/CegidGrid';
+
 // Component mapping
 const COMPONENT_MAP = {
     Dashboard: Dashboard,
@@ -29,9 +30,12 @@ const COMPONENT_MAP = {
 
 const TabContext = createContext();
 
-export const TabProvider = ({ children }) => {
-    // Initialize with only the Dashboard tab active
-    const initialTab = MENU_ITEMS.find(item => item.id === 'Dashboard');
+export const TabProvider = ({ children, sidebarOpen }) => {
+    // Ensure initial tab is always set
+    const initialTab = MENU_ITEMS.find(item => item.id === 'Dashboard') || MENU_ITEMS[0];
+    
+    console.log('Initial Tab:', initialTab); // Debugging log
+
     const [tabs, setTabs] = useState([
         { 
             id: initialTab.id, 
@@ -48,7 +52,6 @@ export const TabProvider = ({ children }) => {
         if (!tabExists) {
             const newTab = MENU_ITEMS.find(item => item.id === tabId);
             if (newTab) {
-                // Check if component exists before adding tab
                 if (!COMPONENT_MAP[newTab.id]) {
                     console.error(`No component found for tab: ${newTab.id}`);
                     return;
@@ -61,9 +64,6 @@ export const TabProvider = ({ children }) => {
                         closeable: true 
                     }
                 ]);
-            } else {
-                console.error(`No menu item found for tabId: ${tabId}`);
-                return;
             }
         }
         
@@ -71,12 +71,10 @@ export const TabProvider = ({ children }) => {
     };
 
     const closeTab = (tabId) => {
-        // Prevent closing Dashboard
         if (tabId === 'Dashboard') return;
 
         setTabs(prevTabs => prevTabs.filter(tab => tab.id !== tabId));
         
-        // Set active tab to Dashboard if closed tab was active
         if (activeTab === tabId) {
             setActiveTab('Dashboard');
         }
@@ -85,6 +83,8 @@ export const TabProvider = ({ children }) => {
     const getActiveComponent = () => {
         const activeTabItem = tabs.find(tab => tab.id === activeTab);
         
+        console.log('Active Tab Item:', activeTabItem); // Debugging log
+
         if (!activeTabItem) {
             console.warn(`No tab found for activeTab: ${activeTab}`);
             return () => (
@@ -96,6 +96,8 @@ export const TabProvider = ({ children }) => {
 
         const Component = COMPONENT_MAP[activeTabItem.id];
         
+        console.log('Component:', Component); // Debugging log
+
         if (!Component) {
             console.warn(`No component mapped for tab: ${activeTabItem.id}`);
             return () => (
@@ -109,20 +111,18 @@ export const TabProvider = ({ children }) => {
     };
 
     return (
-        <TabContext.Provider 
-            value={{ 
-                tabs, 
-                activeTab, 
-                setActiveTab, 
-                openTab, 
-                closeTab, 
-                getActiveComponent 
-            }}
-        >
+        <TabContext.Provider value={{ 
+            tabs, 
+            activeTab, 
+            openTab, 
+            closeTab, 
+            getActiveComponent 
+        }}>
             {children}
         </TabContext.Provider>
     );
 };
+
 export const useTab = () => {
     const context = useContext(TabContext);
     if (!context) {

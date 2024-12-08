@@ -1,7 +1,8 @@
 import React from 'react';
-import { Box, Grid, Card, CardContent, Typography, Paper } from '@mui/material';
+import { Box, Grid, Card, useMediaQuery , CardContent, Typography, Paper } from '@mui/material';
 import { styled,useTheme } from '@mui/material/styles';
- 
+import { DRAWER_WIDTH, COLLAPSED_WIDTH, STATS_CARD_HEIGHT } from '../Layout/Constants';
+
 const StyledCard = styled(Card)(({ theme, active, color = 'primary' }) => ({
     cursor: 'pointer',
     transition: 'transform 0.3s ease, box-shadow 0.3s ease',
@@ -49,60 +50,98 @@ const StatCard = ({ title, value, icon: Icon, color = 'primary', active, onClick
         </StyledCard>
     );
 };
-const StatsCards = ({ cards }) => (
-    <Paper 
-        elevation={2}
-        sx={{ 
-            position: 'fixed',
-            bottom: 28,
-            left: { xs: 0, sm: 240 }, // Account for sidebar width (240px)
-            right: 0,
-            zIndex: 1099,
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-            borderTop: '1px solid',
-            borderColor: 'divider',
-            px: 3,
-            py: 2,
-            backdropFilter: 'blur(8px)',
-            '@media (min-width: 600px)': {
-                width: 'calc(100% - 240px)', // Subtract sidebar width
-            }
-        }}
-    >
-        <Box
+const StatsCards = ({ cards, sidebarOpen }) => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+    // Dynamically calculate width based on sidebar state
+    const calculateWidth = () => {
+        if (isMobile) return '100%';
+        return `calc(100% - ${sidebarOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH}px)`;
+    };
+
+    return (
+        <Box 
             sx={{
-                maxWidth: 1536,
-                width: '100%',
-                margin: '0 auto',
-                px: { xs: 1, sm: 2, md: 3 },
+                position: 'fixed',
+                bottom: '28px', // Just above the footer
+              
+                width: calculateWidth(),
+                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                borderTop: '1px solid',
+                borderColor: 'divider',
+                px: 1,
+                py: 0.5,
+                backdropFilter: 'blur(8px)',
+                transition: theme.transitions.create(['width', 'left'], {
+                    easing: theme.transitions.easing.sharp,
+                    duration: theme.transitions.duration.enteringScreen,
+                }),
+                '@media (max-width: 600px)': {
+                    left: 0,
+                    width: '100%'
+                }
             }}
         >
             <Grid 
                 container 
-                spacing={0.8}
-                sx={{ 
-                    width: '100%',
-                    margin: 0,
-                    alignItems: 'stretch',
-                    justifyContent: 'space-between'
-                }}
+                spacing={1} 
+                alignItems="center" 
+                justifyContent="space-between"
             >
-                {cards.map((card, index) => (
-                    <Grid 
-                        item 
-                        key={index} 
-                        sx={{ 
-                            flex: 1,
-                            minWidth: 0,
-                            width: `${100 / cards.length}%`
-                        }}
-                    >
-                        <StatCard {...card} />
-                    </Grid>
-                ))}
+                {cards.map((card, index) => {
+                    const Icon = card.icon;
+                    return (
+                        <Grid item xs key={index}>
+                            <Paper 
+                                elevation={1} 
+                                sx={{ 
+                                    p: 0.5, 
+                                    display: 'flex', 
+                                    alignItems: 'center',
+                                    height: STATS_CARD_HEIGHT,
+                                    backgroundColor: theme.palette.background.paper
+                                }}
+                            >
+                                <Icon 
+                                    sx={{ 
+                                        fontSize: '1rem', 
+                                        mr: 1, 
+                                        color: theme.palette.text.secondary 
+                                    }} 
+                                />
+                                <Box>
+                                    <Typography 
+                                        variant="caption" 
+                                        sx={{ 
+                                            display: 'block',
+                                            fontSize: '0.625rem',
+                                            fontWeight: 'bold',
+                                            textTransform: 'uppercase',
+                                            opacity: 0.7,
+                                            lineHeight: 1
+                                        }}
+                                    >
+                                        {card.title}
+                                    </Typography>
+                                    <Typography 
+                                        variant="caption" 
+                                        sx={{ 
+                                            fontWeight: 'bold',
+                                            fontSize: '0.75rem',
+                                            lineHeight: 1
+                                        }}
+                                    >
+                                        {card.value}
+                                    </Typography>
+                                </Box>
+                            </Paper>
+                        </Grid>
+                    );
+                })}
             </Grid>
         </Box>
-    </Paper>
-);
+    );
+};
 
 export { StatsCards, StatCard };

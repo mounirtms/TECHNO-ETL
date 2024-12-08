@@ -44,7 +44,7 @@ const Sidebar = ({ open, toggleDrawer }) => {
                 borderRight: `1px solid ${theme.palette.divider}`,
             },
         }}
-        >
+    >
              <Box
                 sx={{
                     height: 64,

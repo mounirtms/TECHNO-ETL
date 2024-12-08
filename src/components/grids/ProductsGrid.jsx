@@ -102,15 +102,15 @@ const ProductsGrid = () => {
             try {
                 const response = await magentoApi.getProducts(filters);
                 setData(response.data.items);
-    
+
                 const totalCount = response.data.total_count;
                 const inStockCount = response.data.items.filter(item => item.qty > 0).length;
                 const outOfStockCount = response.data.items.filter(item => item.qty === 0).length;
                 const lowStockCount = response.data.items.filter(item => item.qty < 10).length;
-                const averagePrice = totalCount > 0 
-                    ? response.data.items.reduce((acc, item) => acc + item.price, 0) / totalCount 
+                const averagePrice = totalCount > 0
+                    ? response.data.items.reduce((acc, item) => acc + item.price, 0) / totalCount
                     : 0; // Default to 0 if no products
-    
+
                 setStats({
                     total: totalCount,
                     inStock: inStockCount,
@@ -124,7 +124,7 @@ const ProductsGrid = () => {
                 setLoading(false);
             }
         };
-    
+
         fetchData();
     }, [filters]);
 
@@ -160,16 +160,8 @@ const ProductsGrid = () => {
 
     return (
         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
-         
-         <StatsCards
-                 cards={[
-                    { title: 'Total Products', value: stats.total, icon: InventoryIcon },
-                    { title: 'In Stock', value: stats.inStock, icon: CheckCircleIcon },
-                    { title: 'Out of Stock', value: stats.outOfStock, icon: ErrorIcon },
-                    { title: 'Low Stock', value: stats.lowStock, icon: TrendingDownIcon },
-                    { title: 'Average Price', value: stats.averagePrice ? stats.averagePrice.toFixed(2) : 'N/A', icon: AttachMoneyIcon }
-                ]}
-            />
+
+
             <BaseGrid
                 gridName="ProductsGrid"
                 columns={columns}
@@ -180,7 +172,15 @@ const ProductsGrid = () => {
                 currentCustomFilter={currentFilter}
                 onCustomFilterChange={handleFilterChange}
             />
-            
+            <StatsCards
+                cards={[
+                    { title: 'Total Products', value: stats.total, icon: InventoryIcon },
+                    { title: 'In Stock', value: stats.inStock, icon: CheckCircleIcon },
+                    { title: 'Out of Stock', value: stats.outOfStock, icon: ErrorIcon },
+                    { title: 'Low Stock', value: stats.lowStock, icon: TrendingDownIcon },
+                    { title: 'Average Price', value: stats.averagePrice ? stats.averagePrice.toFixed(2) : 'N/A', icon: AttachMoneyIcon }
+                ]}
+            />
         </Box>
     );
 };

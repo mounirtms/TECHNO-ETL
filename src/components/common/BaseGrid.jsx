@@ -30,6 +30,11 @@ import InvoiceGrid from '../grids/InvoicesGrid';
 import CategoryGrid from '../grids/CategoryGrid';
 import { toast } from 'react-toastify';
 import CustomersGrid from '../grids/CustomersGrid';
+import { 
+    HEADER_HEIGHT, 
+    FOOTER_HEIGHT, 
+    STATS_CARD_HEIGHT 
+} from '../Layout/Constants';
 
 /**
  * Styled wrapper for the DataGrid component
@@ -517,6 +522,7 @@ const BaseGrid = ({
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
     const [selectionModel, setSelectionModel] = useState({});
+    const [gridHeight, setGridHeight] = useState('100%');
 
     // Process and enhance columns
     const finalColumns = useMemo(() => {
@@ -597,12 +603,34 @@ const BaseGrid = ({
         const fetchData = async () => {
             await handleRefresh(); // Call handleRefresh to fetch data on mount
         };
-
+        const calculateGridHeight = () => {
+            const windowHeight = window.innerHeight;
+            const calculatedHeight = windowHeight 
+                - HEADER_HEIGHT 
+                - FOOTER_HEIGHT 
+                - STATS_CARD_HEIGHT-50;
+            
+            setGridHeight(`${calculatedHeight}px`);
+        };
         fetchData();
+          // Calculate initial height
+          calculateGridHeight();
+
+          // Recalculate on window resize
+          window.addEventListener('resize', calculateGridHeight);
+  
+          // Cleanup listener
+          return () => window.removeEventListener('resize', calculateGridHeight);
     }, []); // Empty dependency array to run only once on mount
 
     return (
-        <Box>
+        <Box
+        sx={{ 
+            height: gridHeight,
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column'
+        }}>
             <Box sx={{ 
                 width: '100%',
                 pb: 16, 
