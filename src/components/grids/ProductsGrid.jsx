@@ -102,12 +102,21 @@ const ProductsGrid = () => {
             try {
                 const response = await magentoApi.getProducts(filters);
                 setData(response.data.items);
+    
+                const totalCount = response.data.total_count;
+                const inStockCount = response.data.items.filter(item => item.qty > 0).length;
+                const outOfStockCount = response.data.items.filter(item => item.qty === 0).length;
+                const lowStockCount = response.data.items.filter(item => item.qty < 10).length;
+                const averagePrice = totalCount > 0 
+                    ? response.data.items.reduce((acc, item) => acc + item.price, 0) / totalCount 
+                    : 0; // Default to 0 if no products
+    
                 setStats({
-                    total: response.data.total_count,
-                    inStock: response.data.items.filter(item => item.qty > 0).length,
-                    outOfStock: response.data.items.filter(item => item.qty === 0).length,
-                    lowStock: response.data.items.filter(item => item.qty < 10).length,
-                    averagePrice: response.data.items.reduce((acc, item) => acc + item.price, 0) / response.data.items.length
+                    total: totalCount,
+                    inStock: inStockCount,
+                    outOfStock: outOfStockCount,
+                    lowStock: lowStockCount,
+                    averagePrice: averagePrice // Ensure this is a number
                 });
             } catch (error) {
                 toast.error('Failed to fetch products');
@@ -115,7 +124,7 @@ const ProductsGrid = () => {
                 setLoading(false);
             }
         };
-
+    
         fetchData();
     }, [filters]);
 
@@ -158,7 +167,7 @@ const ProductsGrid = () => {
                     { title: 'In Stock', value: stats.inStock, icon: CheckCircleIcon },
                     { title: 'Out of Stock', value: stats.outOfStock, icon: ErrorIcon },
                     { title: 'Low Stock', value: stats.lowStock, icon: TrendingDownIcon },
-                    { title: 'Average Price', value: stats.averagePrice.toFixed(2), icon: AttachMoneyIcon }
+                    { title: 'Average Price', value: stats.averagePrice ? stats.averagePrice.toFixed(2) : 'N/A', icon: AttachMoneyIcon }
                 ]}
             />
             <BaseGrid
