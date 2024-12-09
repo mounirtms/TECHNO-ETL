@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
-    Box, 
-    Grid, 
-    Paper, 
-    TextField, 
-    Button, 
-    Typography, 
-    useMediaQuery 
+import {
+    Box,
+    Grid,
+    Paper,
+    TextField,
+    Button,
+    Typography,
+    useMediaQuery
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -39,10 +39,10 @@ const formatCurrency = (amount) => {
 // Format date in Arabic
 const formatDate = (date) => {
     if (!date) return '';
-    
+
     try {
         const dateObj = typeof date === 'string' ? new Date(date) : date;
-        
+
         // Check if date is valid
         if (isNaN(dateObj.getTime())) {
             return '';
@@ -62,7 +62,7 @@ const formatDate = (date) => {
 const Dashboard = () => {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    
+
     // State management
     const [startDate, setStartDate] = useState(new Date(new Date().setMonth(new Date().getMonth() - 1)));
     const [endDate, setEndDate] = useState(new Date());
@@ -87,30 +87,38 @@ const Dashboard = () => {
             }
 
             setLoading(true);
-            
-            // Fetch orders within date range
-            const orderResponse = await magentoApi.getOrders({
+
+            // Format dates for API requests
+            const formattedStartDate = startDate.toISOString();
+            const formattedEndDate = endDate.toISOString();
+
+            // Create date filter object
+            const dateFilter = {
                 filterGroups: [{
                     filters: [{
                         field: 'created_at',
-                        value: startDate.toISOString(),
+                        value: formattedStartDate,
                         condition_type: 'gteq'
                     }, {
                         field: 'created_at',
-                        value: endDate.toISOString(),
+                        value: formattedEndDate,
                         condition_type: 'lteq'
                     }]
                 }]
-            });
+            };
 
+            // Fetch orders with date filter
+            const orderResponse = await magentoApi.getOrders(dateFilter);
+
+            // Fetch customers with date filter
+            const customerResponse = await magentoApi.getCustomers(dateFilter);
+
+            // Fetch products (products don't typically need date filtering)
+            const productResponse = await magentoApi.getProducts({});
+
+            // Rest of your existing code...
             const orders = orderResponse.items || [];
             const totalRevenue = orders.reduce((sum, order) => sum + Number(order.grand_total), 0);
-
-            // Fetch customers count
-            const customerResponse = await magentoApi.getCustomers({});
-            
-            // Fetch products count
-            const productResponse = await magentoApi.getProducts({});
 
             // Calculate stats
             const newStats = {
@@ -141,28 +149,36 @@ const Dashboard = () => {
         const revenueByDate = {};
 
         orders.forEach(order => {
-            const date = formatDate(order.created_at);
-            ordersByDate[date] = (ordersByDate[date] || 0) + 1;
-            revenueByDate[date] = (revenueByDate[date] || 0) + Number(order.grand_total);
+            const date = new Date(order.created_at);
+            const dateKey = date.toISOString().split('T')[0]; // Use ISO date as key
+
+            ordersByDate[dateKey] = (ordersByDate[dateKey] || 0) + 1;
+            revenueByDate[dateKey] = (revenueByDate[dateKey] || 0) + Number(order.grand_total);
         });
 
-        const orderTrends = Object.entries(ordersByDate).map(([date, count]) => ({
-            date,
-            orders: count
-        }));
+        const orderTrends = Object.entries(ordersByDate)
+            .map(([date, count]) => ({
+                date: new Date(date), // Store as Date object
+                orders: count
+            }))
+            .sort((a, b) => a.date - b.date);
 
-        const revenueTrends = Object.entries(revenueByDate).map(([date, revenue]) => ({
-            date,
-            revenue,
-            formattedRevenue: formatCurrency(revenue)
-        }));
+        const revenueTrends = Object.entries(revenueByDate)
+            .map(([date, revenue]) => ({
+                date: new Date(date), // Store as Date object
+                revenue,
+                formattedRevenue: formatCurrency(revenue)
+            }))
+            .sort((a, b) => a.date - b.date);
 
         return { orderTrends, revenueTrends };
     };
 
     useEffect(() => {
-        fetchDashboardData();
+        fetchDashboardData(true);
     }, [startDate, endDate]);
+
+
 
     // Calculate available height for content
     const calculateContentHeight = () => {
@@ -170,7 +186,7 @@ const Dashboard = () => {
         const statsCardHeight = DASHBOARD_TAB_HEIGHT;
         const headerHeight = HEADER_HEIGHT;
         const footerHeight = FOOTER_HEIGHT;
-        
+
         return windowHeight - (headerHeight + statsCardHeight + footerHeight + 40); // Extra padding
     };
 
@@ -186,7 +202,7 @@ const Dashboard = () => {
     }, []);
 
     return (
-        <Box 
+        <Box
             sx={{
                 height: '100vh',
                 display: 'flex',
@@ -197,7 +213,7 @@ const Dashboard = () => {
             }}
         >
             {/* Date Filters and Actions */}
-            <Box 
+            <Box
                 sx={{
                     p: { xs: 2, sm: 3 },
                     display: 'flex',
@@ -214,9 +230,9 @@ const Dashboard = () => {
                             label="Start Date"
                             value={startDate}
                             onChange={setStartDate}
-                            renderInput={(params) => 
-                                <TextField 
-                                    {...params} 
+                            renderInput={(params) =>
+                                <TextField
+                                    {...params}
                                     size="small"
                                     sx={{ minWidth: { xs: '100%', sm: 200 } }}
                                 />
@@ -226,9 +242,9 @@ const Dashboard = () => {
                             label="End Date"
                             value={endDate}
                             onChange={setEndDate}
-                            renderInput={(params) => 
-                                <TextField 
-                                    {...params} 
+                            renderInput={(params) =>
+                                <TextField
+                                    {...params}
                                     size="small"
                                     sx={{ minWidth: { xs: '100%', sm: 200 } }}
                                 />
@@ -288,27 +304,27 @@ const Dashboard = () => {
             />
 
             {/* Dashboard Content with Scrollable Area */}
-            <Box 
-                sx={{ 
-                    flexGrow: 1, 
+            <Box
+                sx={{
+                    flexGrow: 1,
                     overflowY: 'auto',
                     height: `${contentHeight}px`,
                     mt: 2, // Space between stats cards and content
                     pr: 1 // Scrollbar space
                 }}
             >
-                <Grid 
-                    container 
-                    spacing={1} 
-                    sx={{ 
+                <Grid
+                    container
+                    spacing={1}
+                    sx={{
                         height: '100%',
                         alignItems: 'stretch'
                     }}
                 >
                     <Grid item xs={12} lg={6}>
-                        <Paper 
-                            elevation={1} 
-                            sx={{ 
+                        <Paper
+                            elevation={1}
+                            sx={{
                                 p: { xs: 2, sm: 3 },
                                 height: '100%',
                                 minHeight: 400,
@@ -322,10 +338,10 @@ const Dashboard = () => {
                                 }
                             }}
                         >
-                            <Typography 
-                                variant="h6" 
+                            <Typography
+                                variant="h6"
                                 gutterBottom
-                                sx={{ 
+                                sx={{
                                     fontWeight: 600,
                                     color: 'text.primary',
                                     mb: 3
@@ -337,30 +353,24 @@ const Dashboard = () => {
                                 <ResponsiveContainer width="100%" height="100%">
                                     <LineChart data={orderTrends}>
                                         <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis 
-                                            dataKey="date" 
-                                            tick={{ fontSize: 12 }}
-                                            tickFormatter={(value) => {
-                                                if (!value) return '';
-                                                return formatDate(value);
-                                            }}
+                                        <XAxis
+                                            dataKey="date"
+                                            type="date"
+                                            scale="time"
+                                            domain={['auto', 'auto']}
+                                            tickFormatter={(date) => formatDate(date)}
                                         />
                                         <YAxis tick={{ fontSize: 12 }} />
-                                        <Tooltip 
+                                        <Tooltip
+                                            labelFormatter={(date) => formatDate(date)}
                                             formatter={(value) => [value, 'Orders']}
-                                            labelFormatter={(label) => {
-                                                if (!label) return '';
-                                                return formatDate(label);
-                                            }}
                                         />
                                         <Legend />
-                                        <Line 
-                                            type="monotone" 
-                                            dataKey="orders" 
-                                            stroke="#8884d8" 
+                                        <Line
+                                            type="monotone"
+                                            dataKey="orders"
+                                            stroke="#8884d8"
                                             strokeWidth={2}
-                                            dot={{ r: 4 }}
-                                            activeDot={{ r: 6 }}
                                         />
                                     </LineChart>
                                 </ResponsiveContainer>
@@ -368,9 +378,9 @@ const Dashboard = () => {
                         </Paper>
                     </Grid>
                     <Grid item xs={12} lg={6}>
-                        <Paper 
-                            elevation={1} 
-                            sx={{ 
+                        <Paper
+                            elevation={1}
+                            sx={{
                                 p: { xs: 2, sm: 3 },
                                 height: '100%',
                                 minHeight: 300,
@@ -384,10 +394,10 @@ const Dashboard = () => {
                                 }
                             }}
                         >
-                            <Typography 
-                                variant="h6" 
+                            <Typography
+                                variant="h6"
                                 gutterBottom
-                                sx={{ 
+                                sx={{
                                     fontWeight: 600,
                                     color: 'text.primary',
                                     mb: 3
@@ -399,22 +409,24 @@ const Dashboard = () => {
                                 <ResponsiveContainer width="100%" height="100%">
                                     <BarChart data={revenueTrends}>
                                         <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis 
-                                            dataKey="date" 
-                                            tick={{ fontSize: 12 }}
-                                            tickFormatter={(value) => formatDate(value)}
+                                        <XAxis
+                                            dataKey="date"
+                                            type="date"
+                                            scale="time"
+                                            domain={['auto', 'auto']}
+                                            tickFormatter={(date) => formatDate(date)}
                                         />
-                                        <YAxis 
+                                        <YAxis
                                             tick={{ fontSize: 12 }}
                                             tickFormatter={(value) => formatCurrency(value)}
                                         />
-                                        <Tooltip 
+                                        <Tooltip
+                                            labelFormatter={(date) => formatDate(date)}
                                             formatter={(value) => [formatCurrency(value), 'Revenue']}
-                                            labelFormatter={(label) => formatDate(label)}
                                         />
                                         <Legend />
-                                        <Bar 
-                                            dataKey="revenue" 
+                                        <Bar
+                                            dataKey="revenue"
                                             fill="#82ca9d"
                                             radius={[4, 4, 0, 0]}
                                         />

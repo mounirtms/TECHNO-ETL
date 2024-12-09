@@ -17,7 +17,7 @@ import {
 import RefreshIcon from '@mui/icons-material/Refresh';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete'; 
+import DeleteIcon from '@mui/icons-material/Delete';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -30,11 +30,11 @@ import InvoiceGrid from '../grids/InvoicesGrid';
 import CategoryGrid from '../grids/CategoryGrid';
 import { toast } from 'react-toastify';
 import CustomersGrid from '../grids/CustomersGrid';
-import { 
-    HEADER_HEIGHT, 
-    FOOTER_HEIGHT, 
-    DASHBOARD_TAB_HEIGHT, 
-    STATS_CARD_HEIGHT 
+import {
+    HEADER_HEIGHT,
+    FOOTER_HEIGHT,
+    DASHBOARD_TAB_HEIGHT,
+    STATS_CARD_HEIGHT
 } from '../Layout/Constants';
 
 /**
@@ -47,14 +47,14 @@ const StyledBox = styled(Box)(({ theme }) => ({
     borderRadius: theme.shape.borderRadius,
     overflow: 'hidden',
     display: 'flex',
+    minHeight: '500px', // Add minimum height
     flexDirection: 'column',
-    height: `calc(100vh - ${
-        HEADER_HEIGHT + 
-        FOOTER_HEIGHT + 
-        STATS_CARD_HEIGHT + 
-        DASHBOARD_TAB_HEIGHT + 
+    height: `calc(100vh - ${HEADER_HEIGHT +
+        FOOTER_HEIGHT +
+        STATS_CARD_HEIGHT +
+        DASHBOARD_TAB_HEIGHT +
         theme.spacing(4)
-    }px)`, // Add some extra spacing
+        }px)`, // Add some extra spacing
     '& .MuiDataGrid-root': {
         border: 'none',
         height: '100%',
@@ -97,7 +97,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
  */
 export const StatusCell = ({ value, statusColors, className }) => {
     const theme = useTheme();
-    
+
     const getStatusColor = (status) => {
         const color = statusColors?.[status] || 'default';
         switch (color) {
@@ -174,13 +174,13 @@ export const StatusCell = ({ value, statusColors, className }) => {
  * Custom Grid Toolbar Component
  * Provides search and filter controls
  */
-const CustomGridToolbar = ({ 
-    onRefresh, 
-    onFilter, 
-    onAdd, 
-    onEdit, 
-    onDelete, 
-    selectedCount, 
+const CustomGridToolbar = ({
+    onRefresh,
+    onFilter,
+    onAdd,
+    onEdit,
+    onDelete,
+    selectedCount,
     filterModel,
     columns,
     gridName,
@@ -216,17 +216,17 @@ const CustomGridToolbar = ({
 
     return (
         <Box sx={{
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'space-between', 
-            width: '100%', 
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '100%',
             p: 1
         }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Tooltip title="Refresh Data">
-                    <Button 
-                        variant="outlined" 
-                        size="small" 
+                    <Button
+                        variant="outlined"
+                        size="small"
                         onClick={onRefresh}
                         sx={toolbarButtonStyle}
                         startIcon={<RefreshIcon />}
@@ -236,9 +236,9 @@ const CustomGridToolbar = ({
                 </Tooltip>
 
                 {customFilters && customFilters.length > 0 && (
-                    <FormControl 
-                        variant="outlined" 
-                        size="small" 
+                    <FormControl
+                        variant="outlined"
+                        size="small"
                         sx={{ minWidth: 120 }}
                     >
                         <Select
@@ -247,8 +247,8 @@ const CustomGridToolbar = ({
                             sx={toolbarButtonStyle}
                         >
                             {customFilters.map((option) => (
-                                <MenuItem 
-                                    key={option.value} 
+                                <MenuItem
+                                    key={option.value}
                                     value={option.value}
                                 >
                                     {option.label}
@@ -260,8 +260,8 @@ const CustomGridToolbar = ({
             </Box>
 
             <Tooltip title="Grid Settings">
-                <IconButton 
-                    size="small" 
+                <IconButton
+                    size="small"
                     onClick={handleSettingsClick}
                     sx={{
                         color: theme.palette.text.secondary,
@@ -274,7 +274,7 @@ const CustomGridToolbar = ({
                 </IconButton>
             </Tooltip>
 
-            <SettingsDialog 
+            <SettingsDialog
                 open={settingsDialogOpen}
                 onClose={() => setSettingsDialogOpen(false)}
                 columns={columns}
@@ -344,26 +344,42 @@ const ActionsCell = ({ row, onEdit, onDelete }) => (
 );
 
 /**
- * Record Details Dialog Component
- * Displays JSON details of a record
+ * A React component that displays a dialog with the details of a record.
+ * The dialog shows the JSON representation of the record, and also displays
+ * additional information based on the type of the record (order or product).
+ * 
+ * @param {object} props - The component props.
+ * @param {boolean} props.open - Whether the dialog is open or not.
+ * @param {function} props.onClose - A callback function to be called when the dialog is closed.
+ * @param {object} props.record - The record object to be displayed in the dialog.
+ */
+/**
+ * A React component that displays a dialog with the details of a record.
+ * The dialog shows the JSON representation of the record, and also displays
+ * additional information based on the type of the record (order or product).
+ * 
+ * @param {object} props - The component props.
+ * @param {boolean} props.open - Whether the dialog is open or not.
+ * @param {function} props.onClose - A callback function to be called when the dialog is closed.
+ * @param {object} props.record - The record object to be displayed in the dialog.
  */
 const RecordDetailsDialog = ({ open, onClose, record }) => {
-    const isOrder = record?.entity_type === 'order' || 
-                   record?.increment_id?.startsWith('1');
+    const isOrder = record?.entity_type === 'order' ||
+        record?.increment_id?.startsWith('1');
     const isProduct = record?.entity_type === 'product' ||
-                     record?.sku;
+        record?.sku;
 
     return (
-        <Dialog 
-            open={open} 
+        <Dialog
+            open={open}
             onClose={onClose}
             maxWidth="md"
             fullWidth
         >
             <DialogTitle>
-                {isOrder ? `Order #${record?.increment_id} Details` : 
-                 isProduct ? `Product ${record?.sku || record?.name} Details` :
-                 'Record Details'}
+                {isOrder ? `Order #${record?.increment_id} Details` :
+                    isProduct ? `Product ${record?.sku || record?.name} Details` :
+                        'Record Details'}
             </DialogTitle>
             <DialogContent>
                 <Box
@@ -380,7 +396,7 @@ const RecordDetailsDialog = ({ open, onClose, record }) => {
                         {JSON.stringify(record, null, 2)}
                     </Typography>
                 </Box>
-                
+
                 {isOrder && (
                     <Box sx={{ mt: 4 }}>
                         <Typography variant="h6" gutterBottom>
@@ -491,8 +507,8 @@ const SettingsDialog = ({ open, onClose, columns, gridName, onSave }) => {
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button 
-                    onClick={handleSave} 
+                <Button
+                    onClick={handleSave}
                     color="primary"
                     disabled={loading}
                 >
@@ -522,15 +538,16 @@ const BaseGrid = ({
     totalCount = 0,
     preColumns = [],
     endColumns = [
-        { 
-            field: 'created_at', 
-            headerName: 'Created At', 
+        {
+            field: 'created_at',
+            headerName: 'Created At',
             width: 180,
             valueFormatter: (params) => new Date(params.value).toLocaleDateString()
         }
     ],
     initialVisibleColumns = [],
-    onError
+    onError,
+    ...props
 }) => {
     // State management
     const [sortModel, setSortModel] = useState([{ field: 'id', sort: 'desc' }]);
@@ -539,6 +556,7 @@ const BaseGrid = ({
         page: 0,
         pageSize: 10
     });
+    const safeData = Array.isArray(data) ? data : [];
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
     const [selectionModel, setSelectionModel] = useState({});
@@ -549,13 +567,13 @@ const BaseGrid = ({
         try {
             // Combine all column types
             let baseColumns = [...preColumns, ...userColumns, ...endColumns];
-            
+
             if (!data?.length) return baseColumns;
-            
+
             // Generate additional columns and merge them
             const generatedColumns = generateColumns(data[0], baseColumns);
             const mergedColumns = mergeColumns(baseColumns, generatedColumns);
-            
+
             // Process all columns with standard configurations
             return mergedColumns.map(column => ({
                 ...column,
@@ -563,8 +581,8 @@ const BaseGrid = ({
                 sortable: column.sortable !== false,
                 hideable: true, // Allow all columns to be hidden/shown
                 // Keep explicitly defined hide status or use default (hidden for generated)
-                hide: column.hide === undefined ? 
-                    !baseColumns.some(bc => bc.field === column.field) : 
+                hide: column.hide === undefined ?
+                    !baseColumns.some(bc => bc.field === column.field) :
                     column.hide,
                 // Add any other default column properties here
                 minWidth: column.minWidth || 100,
@@ -578,7 +596,7 @@ const BaseGrid = ({
     // Event handlers
     const handleRefresh = async () => {
         if (!onRefresh) return;
-        
+
         setInternalLoading(true);
         try {
             await onRefresh({
@@ -625,88 +643,88 @@ const BaseGrid = ({
         };
         const calculateGridHeight = () => {
             const windowHeight = window.innerHeight;
-            const tabPanelHeight = windowHeight 
-                - HEADER_HEIGHT 
-                - FOOTER_HEIGHT 
+            const tabPanelHeight = windowHeight
+                - HEADER_HEIGHT
+                - FOOTER_HEIGHT
                 - DASHBOARD_TAB_HEIGHT;
-            
+
             const calculatedHeight = tabPanelHeight - STATS_CARD_HEIGHT;
-            
+
             setGridHeight(`${calculatedHeight}px`);
         };
         fetchData();
-          // Calculate initial height
-          calculateGridHeight();
+        // Calculate initial height
+        calculateGridHeight();
 
-          // Recalculate on window resize
-          window.addEventListener('resize', calculateGridHeight);
-  
-          // Cleanup listener
-          return () => window.removeEventListener('resize', calculateGridHeight);
+        // Recalculate on window resize
+        window.addEventListener('resize', calculateGridHeight);
+
+        // Cleanup listener
+        return () => window.removeEventListener('resize', calculateGridHeight);
     }, []); // Empty dependency array to run only once on mount
 
     return (
         <Box
-        sx={{ 
-            height: gridHeight,
-            width: '100%',
-            minHeight: 300, // Added minimum height
-            display: 'flex',
-            flexDirection: 'column'
-        }}>
-           
-                <StyledBox>
-                    <DataGrid
-                        rows={data}
-                        columns={finalColumns}
-                        loading={internalLoading || externalLoading}
-                        paginationMode="server"
-                        filterMode="server"
-                        rowCount={totalCount}
-                        page={paginationModel.page}
-                        pageSize={paginationModel.pageSize}
-                        onPageChange={handlePaginationModelChange}
-                        onPageSizeChange={(pageSize) => setPaginationModel(prev => ({ ...prev, pageSize }))}
-                        getRowId={getRowId} // Use the updated getRowId function
-                        components={{
-                            Toolbar: () => (
-                                <CustomGridToolbar
-                                    onRefresh={handleRefresh}
-                                    onFilter={handleFilterChange}
-                                    onAdd={null}
-                                    onEdit={null}
-                                    onDelete={null}
-                                    selectedCount={selectionModel.length}
-                                    filterModel={currentFilter}
-                                    columns={finalColumns}
-                                    gridName={gridName}
-                                    customFilters={[]}
-                                    onCustomFilterChange={() => {}}
-                                    currentCustomFilter={''}
-                                />
-                            )
-                        }}
-                        componentsProps={{
-                            toolbar: {
-                                showQuickFilter: true,
-                                quickFilterProps: { debounceMs: 500 },
-                            }
-                        }}
-                        pageSizeOptions={[10, 25, 50, 100]}
-                        disableRowSelectionOnClick
-                        onRowDoubleClick={handleRowDoubleClick}
-                        checkboxSelection
-                        onSelectionModelChange={handleSelectionModelChange}
-                        selectionModel={selectionModel}
-                        sx={{
-                            '& .MuiDataGrid-cell:focus': {
-                                outline: 'none'
-                            }
-                        }}
-                    />
-                </StyledBox>
-            
-            
+            sx={{
+                height: gridHeight,
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column'
+            }}>
+
+            <StyledBox>
+                <DataGrid
+                    rows={safeData}
+                    columns={finalColumns}
+                    loading={internalLoading || externalLoading}
+                    paginationMode="server"
+                    filterMode="server"
+                    rowCount={totalCount}
+                    page={paginationModel.page}
+                    pageSize={paginationModel.pageSize}
+                    onPageChange={handlePaginationModelChange}
+                    onPageSizeChange={(pageSize) => setPaginationModel(prev => ({ ...prev, pageSize }))}
+                    getRowId={getRowId} // Use the updated getRowId function
+                    components={{
+                        Toolbar: () => (
+                            <CustomGridToolbar
+                                onRefresh={handleRefresh}
+                                onFilter={handleFilterChange}
+                                onAdd={null}
+                                onEdit={null}
+                                onDelete={null}
+                                selectedCount={selectionModel.length}
+                                filterModel={currentFilter}
+                                columns={finalColumns}
+                                gridName={gridName}
+                                customFilters={[]}
+                                onCustomFilterChange={() => { }}
+                                currentCustomFilter={''}
+                            />
+                        )
+                    }}
+                    componentsProps={{
+                        toolbar: {
+                            showQuickFilter: true,
+                            quickFilterProps: { debounceMs: 500 },
+                        }
+                    }}
+                    pageSizeOptions={[10, 25, 50, 100]}
+                    disableRowSelectionOnClick
+                    onRowDoubleClick={handleRowDoubleClick}
+                    checkboxSelection
+                    onSelectionModelChange={handleSelectionModelChange}
+                    selectionModel={selectionModel}
+                    {...props}
+                    sx={{
+                        '& .MuiDataGrid-cell:focus': {
+                            outline: 'none'
+                        }
+                    }}
+                />
+            </StyledBox>
+
+
             <RecordDetailsDialog
                 open={detailsDialogOpen}
                 onClose={() => setDetailsDialogOpen(false)}

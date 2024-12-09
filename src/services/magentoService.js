@@ -9,20 +9,27 @@ import { toast } from 'react-toastify';
 
 class MagentoApi {
     constructor() {
-        this.baseURL = import.meta.env.VITE_MAGENTO_API_URL || 'https://technostationery.com/rest/V1';
+        // Use proxy URL in development, direct URL in production
+        this.baseURL = import.meta.env.DEV 
+            ? '/magento-api'  // This will be proxied through Vite
+            : (import.meta.env.VITE_MAGENTO_API_URL || 'https://technostationery.com/rest/V1');
 
         this.api = axios.create({
             baseURL: this.baseURL,
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                //'Origin': 'https://technostationery.com'
             },
-            timeout: 30000, // Increased timeout
-            validateStatus: status => status < 500 // Handle 4xx errors in response interceptor
+           // withCredentials: false, // Disable credentials
+            timeout: 30000,
+            validateStatus: status => status < 500
         });
 
         // Add request interceptor
         this.api.interceptors.request.use(
             (config) => {
+               
                 const adminToken = this.getToken();
                 if (adminToken) {
                     if (!config.url.includes('admin/token')) {
@@ -46,18 +53,11 @@ class MagentoApi {
             }
         );
 
-        // Add response interceptor
+        // Add response interceptor for better error handling
         this.api.interceptors.response.use(
             response => {
 
-                // Log full response for debugging
-                console.log('Magento API Full Response:', {
-                    status: response.status,
-                    data: response.data,
-                    headers: response.headers
-                });
-
-                // Check for different response structures
+                  // Check for different response structures
                 if (response.status === 200) {
                     // Successful response
                     if (response.data) {
@@ -86,9 +86,32 @@ class MagentoApi {
                 return this.magentoServiceException(response);
 
             },
-            error => {
-                console.error('Magento API Error:', error);
-                return this.magentoServiceException(error.response);
+            (error) => {
+                if (error.response) {
+                    console.error('Magento API Error Response:', {
+                        status: error.response.status,
+                        data: error.response.data,
+                        headers: error.response.headers
+                    });
+                    
+                    // Handle specific error cases
+                    switch (error.response.status) {
+                        case 401:
+                            return this.handleApi401Error(error);
+                        case 403:
+                            console.error('Access Forbidden - Check API permissions');
+                            break;
+                        default:
+                            console.error('API Error:', error.response.data);
+                    }
+                } else if (error.code === 'ERR_NETWORK') {
+                    console.error('Network Error - Possible CORS issue:', {
+                        message: error.message,
+                        config: error.config
+                    });
+                    // You might want to implement a retry mechanism here
+                }
+                return Promise.reject(error);
             }
         );
     }
@@ -272,24 +295,47 @@ class MagentoApi {
     buildSearchCriteria(params = {}) {
         const {
             filterGroups = [],
-            pageSize = defaultGridSettings.pageSize,
+            pageSize = 10,
             currentPage = 1,
             sortOrders = [{
-                field: defaultGridSettings.defaultSort.field,
-                direction: defaultGridSettings.defaultSort.sort
-            }]
+                field: 'created_at',
+                direction: 'DESC'
+            }],
+            startDate,
+            endDate
         } = params;
 
-        const searchCriteria = {
+        let updatedFilterGroups = [...filterGroups];
+        
+        if (startDate || endDate) {
+            const dateFilters = [];
+            if (startDate) {
+                dateFilters.push({
+                    field: 'created_at',
+                    value: startDate,
+                    condition_type: 'gteq'
+                });
+            }
+            if (endDate) {
+                dateFilters.push({
+                    field: 'created_at',
+                    value: endDate,
+                    condition_type: 'lteq'
+                });
+            }
+            if (dateFilters.length > 0) {
+                updatedFilterGroups.push({ filters: dateFilters });
+            }
+        }
+
+        return {
             searchCriteria: {
-                filterGroups,
+                filterGroups: updatedFilterGroups,
                 pageSize,
                 currentPage,
                 sortOrders
             }
         };
-
-        return searchCriteria;
     }
 
     // Generic data fetching

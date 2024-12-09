@@ -35,40 +35,40 @@ export default defineConfig({
     },
     proxy: {
       '/magento-api': {
-          target: 'https://technostationery.com/rest/V1',
-          changeOrigin: true,
-          secure: false,  // Disable SSL verification
-          rewrite: (path) => path.replace(/^\/magento-api/, ''),
-          configure: (proxy, _options) => {
-              proxy.on('error', (err, _req, _res) => {
-                  console.log('Magento proxy error:', err);
-              });
-              proxy.on('proxyReq', (proxyReq, req, _res) => {
-                  // Remove origin and referer headers for development
-                  proxyReq.removeHeader('origin');
-                  proxyReq.removeHeader('referer');
-                  console.log('Magento request:', req.method, req.url);
-              });
-          }
+        target: 'https://technostationery.com',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/magento-api/, '/rest/V1'),
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('proxy error', err);
+          });
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
+            console.log('Sending Request to the Target:', req.method, req.url);
+          });
+          proxy.on('proxyRes', (proxyRes, req, _res) => {
+            console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
+          });
+        }
       },
       '/cegid-api': {
-          target: 'http://10.0.2.58/Y2_LAB',
-          changeOrigin: true,
-          secure: false,  // Disable SSL verification
-          rewrite: (path) => path.replace(/^\/cegid-api/, ''),
-          configure: (proxy, _options) => {
-              proxy.on('error', (err, _req, _res) => {
-                  console.log('Cegid proxy error:', err);
-              });
-              proxy.on('proxyReq', (proxyReq, req, _res) => {
-                  // Remove origin and referer headers for development
-                  proxyReq.removeHeader('origin');
-                  proxyReq.removeHeader('referer');
-                  console.log('Cegid request:', req.method, req.url);
-              });
-          }
+        target: 'http://10.0.2.58/Y2_LAB',
+        changeOrigin: true,
+        secure: false,  // Disable SSL verification
+        rewrite: (path) => path.replace(/^\/cegid-api/, ''),
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('Cegid proxy error:', err);
+          });
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
+            // Remove origin and referer headers for development
+            proxyReq.removeHeader('origin');
+            proxyReq.removeHeader('referer');
+            console.log('Cegid request:', req.method, req.url);
+          });
+        }
       }
-  },
+    },
     cors: {
       origin: 'https://techno-webapp.web.app',
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
