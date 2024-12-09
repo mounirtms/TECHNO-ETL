@@ -1,4 +1,11 @@
 {
+    "common": {
+        "profile": "Profil",
+        "logout": "Déconnexion",
+        "settings": "Paramètres",
+        "refresh": "Actualiser",
+        "changeLanguage": "Changer de langue"
+    },
     "dashboard": {
         "title": "Tableau de bord",
         "totalOrders": "Total des commandes",
@@ -35,17 +42,45 @@
         },
         "preferences": {
             "title": "Préférences Utilisateur",
-            "language": "Langue de l'Interface",
-            "theme": "Thème de Couleur",
-            "lightMode": "Mode Clair",
-            "darkMode": "Mode Sombre",
-            "fontSize": "Taille de Police",
-            "small": "Petit",
-            "medium": "Moyen", 
-            "large": "Grand",
+            "language": {
+                "title": "Langue de l'Interface",
+                "description": "Choisissez la langue préférée pour le tableau de bord",
+                "availableLanguages": {
+                    "en": "Anglais (États-Unis)",
+                    "fr": "Français (France)",
+                    "ar": "Arabe (Moyen-Orient)"
+                },
+                "systemDefault": "Défaut du Système",
+                "currentLanguage": "Langue Actuelle",
+                "changeLanguage": "Changer de Langue",
+                "languageChanged": "Langue changée avec succès",
+                "languageChangeError": "Échec du changement de langue"
+            },
+            "theme": {
+                "title": "Apparence",
+                "description": "Personnalisez l'apparence de votre tableau de bord",
+                "lightMode": "Mode Clair",
+                "darkMode": "Mode Sombre",
+                "systemDefault": "Défaut du Système"
+            },
+            "accessibility": {
+                "title": "Accessibilité",
+                "fontSize": {
+                    "title": "Taille de Police",
+                    "small": "Petit",
+                    "medium": "Moyen", 
+                    "large": "Grand",
+                    "description": "Ajustez la taille du texte pour une meilleure lisibilité"
+                },
+                "highContrast": {
+                    "title": "Mode Contraste Élevé",
+                    "description": "Améliorez la visibilité pour les utilisateurs malvoyants"
+                }
+            },
             "notifications": {
-                "title": "Préférences de Notifications",
-                "email": "Notifications par Email",
+                "title": "Préférences de Notification",
+                "description": "Contrôlez comment et quand vous recevez des notifications",
+                "email": "Notifications par E-mail",
                 "sms": "Notifications SMS",
                 "push": "Notifications Push",
                 "marketing": "Communications Marketing"
@@ -84,8 +119,13 @@
     "login": {
         "welcome": "Bienvenue",
         "signIn": "Se connecter",
-        "forgotPassword": "Mot de passe oublié?",
-        "createAccount": "Créer un compte"
+        "signInWithGoogle": "Se connecter avec Google",
+        "username": "Nom d'utilisateur",
+        "password": "Mot de passe",
+        "forgotPassword": "Mot de passe oublié ?",
+        "or": "ou",
+        "noAccount": "Pas de compte ?",
+        "signUp": "S'inscrire"
     },
     "errors": {
         "networkError": "Erreur réseau",

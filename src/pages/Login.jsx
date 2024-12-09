@@ -1,171 +1,246 @@
 import React, { useState, useEffect } from 'react';
-import {
-    Box,
-    Container,
-    Paper,
-    Typography,
-    Button,
-    Link,
+import { 
+    Box, 
+    Container, 
+    Typography, 
+    Button, 
     CircularProgress,
     Alert,
-    Divider,
     useTheme,
-    TextField,
-    InputAdornment,
-    IconButton,
+    keyframes,
+    styled
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import GoogleIcon from '@mui/icons-material/Google';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 import Footer from '../components/Layout/Footer';
+import { FOOTER_HEIGHT } from '../components/Layout/Constants';
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
-    marginTop: theme.spacing(8),
-    padding: theme.spacing(4),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: theme.spacing(2),
-    maxWidth: '400px',
+// Animated background keyframes
+const backgroundAnimation = keyframes`
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+`;
+
+// Floating elements animation
+const floatAnimation = keyframes`
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+`;
+
+// Styled components
+const AnimatedBackground = styled(Box)(({ theme }) => ({
+    position: 'fixed',
+    top: 0,
+    left: 0,
     width: '100%',
-    borderRadius: theme.shape.borderRadius * 2,
-    boxShadow: '0 8px 40px rgba(0,0,0,0.12)',
+    height: '100%',
+    background: `linear-gradient(
+        -45deg, 
+        ${theme.palette.primary.main}, 
+        ${theme.palette.secondary.main}, 
+        ${theme.palette.primary.light}, 
+        ${theme.palette.secondary.light}
+    )`,
+    backgroundSize: '400% 400%',
+    animation: `${backgroundAnimation} 15s ease infinite`,
+    zIndex: -1,
 }));
 
-const LogoContainer = styled(Box)(({ theme }) => ({
-    marginBottom: theme.spacing(4),
+const LoginContainer = styled(Container)(({ theme }) => ({
     display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    height: '100vh',
+    position: 'relative',
+    zIndex: 1,
+}));
+
+const LoginCard = styled(Box)(({ theme }) => ({
+    background: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: theme.spacing(4),
+    padding: theme.spacing(4),
     width: '100%',
-    '& img': {
-        width: '180px',
-        height: 'auto',
+    maxWidth: 450,
+    boxShadow: '0 16px 32px rgba(0, 0, 0, 0.1)',
+    backdropFilter: 'blur(10px)',
+    textAlign: 'center',
+    transition: 'all 0.3s ease',
+    '&:hover': {
+        transform: 'scale(1.02)',
+        boxShadow: '0 24px 48px rgba(0, 0, 0, 0.15)',
     },
 }));
 
+const FloatingElement = styled(Box)(({ theme }) => ({
+    position: 'absolute',
+    borderRadius: '50%',
+    opacity: 0.6,
+    zIndex: -1,
+    animation: `${floatAnimation} 5s ease-in-out infinite`,
+}));
+
 const GoogleButton = styled(Button)(({ theme }) => ({
-    padding: theme.spacing(1),
-    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(1.5),
+    borderRadius: theme.shape.borderRadius * 2,
     textTransform: 'none',
-    fontSize: '0.875rem',
+    fontSize: '1rem',
     fontWeight: 500,
     backgroundColor: '#ffffff',
     color: theme.palette.text.primary,
     border: `1px solid ${theme.palette.divider}`,
     '&:hover': {
         backgroundColor: theme.palette.grey[50],
-        borderColor: theme.palette.grey[300],
+        borderColor: theme.palette.primary.main,
     },
     '& .MuiButton-startIcon': {
         marginRight: theme.spacing(1),
     },
 }));
 
-const Login = () => {
+const LoginPage = () => {
     const theme = useTheme();
-    const { signInWithGoogle, signInWithMagento, currentUser } = useAuth();
-    const navigate = useNavigate();
-    const location = useLocation();
+    const { signInWithGoogle } = useAuth();
+    const { translate } = useLanguage();
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [formData, setFormData] = useState({
-        username: '',
-        password: '',
-    });
+    const [error, setError] = useState(null);
 
-    // Redirect if already logged in
+    // Create floating background elements
+    const [floatingElements, setFloatingElements] = useState([]);
+
     useEffect(() => {
-        if (currentUser) {
-            const from = location.state?.from?.pathname || '/';
-            navigate(from, { replace: true });
-        }
-    }, [currentUser, navigate, location]);
+        const generateFloatingElements = () => {
+            const elements = [];
+            for (let i = 0; i < 10; i++) {
+                elements.push({
+                    top: `${Math.random() * 100}%`,
+                    left: `${Math.random() * 100}%`,
+                    width: `${Math.random() * 100 + 50}px`,
+                    height: `${Math.random() * 100 + 50}px`,
+                    backgroundColor: theme.palette.primary.light,
+                    animationDelay: `${Math.random() * 5}s`,
+                });
+            }
+            setFloatingElements(elements);
+        };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
-    const handleMagentoSignIn = async (e) => {
-        e.preventDefault();
-        try {
-            setError('');
-            setLoading(true);
-            await signInWithMagento(formData.username, formData.password);
-            // Navigation will be handled by the useEffect
-        } catch (error) {
-            console.error('Login error:', error);
-            setError(error.message || 'Invalid username or password. Please check your credentials.');
-        } finally {
-            setLoading(false);
-        }
-    };
+        generateFloatingElements();
+    }, [theme]);
 
     const handleGoogleSignIn = async () => {
         try {
-            setError('');
             setLoading(true);
+            setError(null);
             await signInWithGoogle();
-            // Navigation will be handled by the useEffect
-        } catch (error) {
-            console.error('Google login error:', error);
-            setError('Failed to sign in with Google. Please try again.');
+            // Navigation handled by AuthContext
+        } catch (err) {
+            setError(err.message);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <Box sx={{
-            minHeight: '100vh',
-            display: 'flex',
-            flexDirection: 'column',
-            backgroundColor: theme.palette.background.default,
-        }}>
-            <Container component="main" maxWidth={false} sx={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                padding: theme.spacing(3),
-            }}>
-                <StyledPaper elevation={0}>
-                    <LogoContainer>
-                        <img src="/src/assets/images/logo_techno.png" alt="Logo" />
-                    </LogoContainer>
-  
+        <Box 
+            sx={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                minHeight: '100vh',
+                paddingBottom: `${FOOTER_HEIGHT}px`,
+                position: 'relative',
+                overflow: 'hidden',
+            }}
+        >
+            {/* Animated Background */}
+            <AnimatedBackground />
+
+            {/* Floating Background Elements */}
+            {floatingElements.map((element, index) => (
+                <FloatingElement 
+                    key={index} 
+                    sx={{
+                        ...element,
+                        animationDelay: element.animationDelay,
+                    }} 
+                />
+            ))}
+
+            <LoginContainer maxWidth="sm">
+                <LoginCard>
+                    <Typography 
+                        variant="h3" 
+                        component="h1" 
+                        gutterBottom 
+                        sx={{ 
+                            fontWeight: 'bold', 
+                            background: `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                        }}
+                    >
+                        TechnoStationary
+                    </Typography>
+                    
+                    <Typography 
+                        variant="h6" 
+                        color="textSecondary" 
+                        gutterBottom
+                    >
+                        Dashboard Project
+                    </Typography>
 
                     {error && (
-                        <Alert severity="error" sx={{ width: '100%', mb: 2 }}>
+                        <Alert 
+                            severity="error" 
+                            sx={{ width: '100%', mt: 2, mb: 2 }}
+                        >
                             {error}
                         </Alert>
                     )}
 
-          
-                    <GoogleButton
-                        fullWidth
-                        variant="outlined"
-                        startIcon={<GoogleIcon />}
-                        onClick={handleGoogleSignIn}
-                        disabled={loading}
+                    <Box 
+                        sx={{ 
+                            display: 'flex', 
+                            justifyContent: 'center', 
+                            alignItems: 'center', 
+                            mt: 3 
+                        }}
                     >
-                        Sign in with Google
-                    </GoogleButton>
-                </StyledPaper>
-            </Container>
-            <Footer 
-             isLoginScreen={true} 
-             />
+                        {loading ? (
+                            <CircularProgress size={48} />
+                        ) : (
+                            <GoogleButton
+                                fullWidth
+                                variant="outlined"
+                                startIcon={<GoogleIcon />}
+                                onClick={handleGoogleSignIn}
+                                disabled={loading}
+                            >
+                                {translate('login.signInWithGoogle')}
+                            </GoogleButton>
+                        )}
+                    </Box>
+                </LoginCard>
+            </LoginContainer>
+            
+            <Footer isLoginScreen={true} />
         </Box>
     );
 };
 
-export default Login;
+export default LoginPage;

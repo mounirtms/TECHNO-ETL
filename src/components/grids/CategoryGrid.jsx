@@ -29,15 +29,21 @@ const CategoryGrid = ({ productId }) => {
     });
 
     // Process categories into flat structure with levels and visibility
-    const processCategories = (categories, level = 0, parentId = null, result = []) => {
+    const processCategories = (categories, level = 0, parentId = null, result = [], parentPath = '') => {
         if (!Array.isArray(categories)) {
             categories = [categories]; // Handle root category case
         }
 
-        categories.forEach(category => {
+        categories.forEach((category, index) => {
+            // Create a unique path-based identifier
+            const currentPath = parentPath ? `${parentPath}-${category.id}` : `${category.id}`;
+            
             const processedCategory = {
                 ...category,
-                id: category.id,
+                // Use the path-based identifier to ensure uniqueness
+                id: currentPath,
+                // Preserve original Magento id for reference
+                originalId: category.id,
                 level,
                 parentId,
                 has_children: category.children_data?.length > 0,
@@ -46,7 +52,13 @@ const CategoryGrid = ({ productId }) => {
             result.push(processedCategory);
 
             if (category.children_data?.length > 0) {
-                processCategories(category.children_data, level + 1, category.id, result);
+                processCategories(
+                    category.children_data, 
+                    level + 1, 
+                    category.id, 
+                    result, 
+                    currentPath
+                );
             }
         });
 

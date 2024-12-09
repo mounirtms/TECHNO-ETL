@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Grid, Paper, TextField, Button, Typography } from '@mui/material';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { 
+    Box, 
+    Grid, 
+    Paper, 
+    TextField, 
+    Button, 
+    Typography, 
+    useMediaQuery 
+} from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import arLocale from 'date-fns/locale/ar';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import arLocale from 'date-fns/locale/ar-SA';
 import { StatsCards } from '../components/common/StatsCards';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -15,6 +24,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import SettingsIcon from '@mui/icons-material/Settings';
 import magentoApi from '../services/magentoService';
 import { toast } from 'react-toastify';
+import { DRAWER_WIDTH, COLLAPSED_WIDTH, HEADER_HEIGHT, FOOTER_HEIGHT, DASHBOARD_TAB_HEIGHT } from '../components/Layout/Constants';
 
 // Format currency in DZD
 const formatCurrency = (amount) => {
@@ -50,6 +60,10 @@ const formatDate = (date) => {
 };
 
 const Dashboard = () => {
+    const theme = useTheme();
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    
+    // State management
     const [startDate, setStartDate] = useState(new Date(new Date().setMonth(new Date().getMonth() - 1)));
     const [endDate, setEndDate] = useState(new Date());
     const [stats, setStats] = useState({
@@ -150,32 +164,52 @@ const Dashboard = () => {
         fetchDashboardData();
     }, [startDate, endDate]);
 
+    // Calculate available height for content
+    const calculateContentHeight = () => {
+        const windowHeight = window.innerHeight;
+        const statsCardHeight = DASHBOARD_TAB_HEIGHT;
+        const headerHeight = HEADER_HEIGHT;
+        const footerHeight = FOOTER_HEIGHT;
+        
+        return windowHeight - (headerHeight + statsCardHeight + footerHeight + 40); // Extra padding
+    };
+
+    const [contentHeight, setContentHeight] = useState(calculateContentHeight());
+
+    useEffect(() => {
+        const handleResize = () => {
+            setContentHeight(calculateContentHeight());
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     return (
         <Box 
-            sx={{ 
+            sx={{
                 height: '100vh',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 3,
+                gap: 1,
                 p: { xs: 2, sm: 3 },
                 overflow: 'hidden'
             }}
         >
             {/* Date Filters and Actions */}
-            <Paper 
-                elevation={1}
-                sx={{ 
+            <Box 
+                sx={{
                     p: { xs: 2, sm: 3 },
                     display: 'flex',
                     flexWrap: 'wrap',
-                    gap: 2,
+                    gap: 1,
                     alignItems: 'center',
                     bgcolor: 'background.paper',
                     borderRadius: 2
                 }}
             >
                 <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={arLocale}>
-                    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', flex: 1 }}>
+                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', flex: 1 }}>
                         <DatePicker
                             label="Start Date"
                             value={startDate}
@@ -202,7 +236,7 @@ const Dashboard = () => {
                         />
                     </Box>
                 </LocalizationProvider>
-                <Box sx={{ display: 'flex', gap: 2, ml: 'auto' }}>
+                <Box sx={{ display: 'flex', gap: 1, ml: 'auto' }}>
                     <Button
                         startIcon={<RefreshIcon />}
                         onClick={() => fetchDashboardData(true)}
@@ -221,49 +255,51 @@ const Dashboard = () => {
                         Settings
                     </Button>
                 </Box>
-            </Paper>
-
-            {/* Stats Cards */}
-            <Box sx={{ width: '100%' }}>
-                <StatsCards
-                    cards={[
-                        {
-                            title: 'Total Orders',
-                            value: stats.totalOrders,
-                            icon: ShoppingCartIcon,
-                            color: 'primary'
-                        },
-                        {
-                            title: 'Total Revenue',
-                            value: formatCurrency(stats.totalRevenue),
-                            icon: AttachMoneyIcon,
-                            color: 'success'
-                        },
-                        {
-                            title: 'Average Order',
-                            value: formatCurrency(stats.averageOrderValue),
-                            icon: TrendingUpIcon,
-                            color: 'info'
-                        },
-                        {
-                            title: 'Total Products',
-                            value: stats.totalProducts,
-                            icon: InventoryIcon,
-                            color: 'warning'
-                        }
-                    ]}
-                />
             </Box>
 
-            {/* Charts */}
-            <Box sx={{ 
-                flex: 1,
-                overflow: 'auto',
-                width: '100%'
-            }}>
+            {/* Stats Cards */}
+            <StatsCards
+                cards={[
+                    {
+                        title: 'Total Orders',
+                        value: stats.totalOrders,
+                        icon: ShoppingCartIcon,
+                        color: 'primary'
+                    },
+                    {
+                        title: 'Total Revenue',
+                        value: formatCurrency(stats.totalRevenue),
+                        icon: AttachMoneyIcon,
+                        color: 'success'
+                    },
+                    {
+                        title: 'Average Order',
+                        value: formatCurrency(stats.averageOrderValue),
+                        icon: TrendingUpIcon,
+                        color: 'info'
+                    },
+                    {
+                        title: 'Total Products',
+                        value: stats.totalProducts,
+                        icon: InventoryIcon,
+                        color: 'warning'
+                    }
+                ]}
+            />
+
+            {/* Dashboard Content with Scrollable Area */}
+            <Box 
+                sx={{ 
+                    flexGrow: 1, 
+                    overflowY: 'auto',
+                    height: `${contentHeight}px`,
+                    mt: 2, // Space between stats cards and content
+                    pr: 1 // Scrollbar space
+                }}
+            >
                 <Grid 
                     container 
-                    spacing={3} 
+                    spacing={1} 
                     sx={{ 
                         height: '100%',
                         alignItems: 'stretch'
@@ -337,7 +373,7 @@ const Dashboard = () => {
                             sx={{ 
                                 p: { xs: 2, sm: 3 },
                                 height: '100%',
-                                minHeight: 400,
+                                minHeight: 300,
                                 display: 'flex',
                                 flexDirection: 'column',
                                 borderRadius: 2,

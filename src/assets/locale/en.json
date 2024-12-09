@@ -1,9 +1,10 @@
 {
-    
-"common": {
+    "common": {
         "profile": "Profile",
         "logout": "Logout",
-        "settings": "Settings"
+        "settings": "Settings",
+        "refresh": "Refresh",
+        "changeLanguage": "Change Language"
     },
     "dashboard": {
         "title": "Dashboard",
@@ -19,7 +20,6 @@
         "lastMonth": "Last Month",
         "lastYear": "Last Year",
         "refresh": "Refresh"
-        
     },
     "products": "Products",
     "orders": "Orders",
@@ -42,22 +42,44 @@
         },
         "preferences": {
             "title": "User Preferences",
-            "language": "Interface Language",
-            "theme": "Color Theme",
-            "lightMode": "Light Mode",
-            "lightTheme": "Light Mode",
-            "darkMode": "Dark Mode",
-            "darkTheme": "Dark Mode",
-            "fontSize": "Font Size",
-            "small": "Small",
-            "medium": "Medium", 
-       
-    
-            "saveSuccess": "Preferences saved successfully",
-            "saveFailed": "Failed to save preferences",
-    
+            "language": {
+                "title": "Interface Language",
+                "description": "Choose your preferred language for the dashboard",
+                "availableLanguages": {
+                    "en": "English (United States)",
+                    "fr": "French (France)",
+                    "ar": "Arabic (Middle East)"
+                },
+                "systemDefault": "System Default",
+                "currentLanguage": "Current Language",
+                "changeLanguage": "Change Language",
+                "languageChanged": "Language changed successfully",
+                "languageChangeError": "Failed to change language"
+            },
+            "theme": {
+                "title": "Appearance",
+                "description": "Customize your dashboard look and feel",
+                "lightMode": "Light Mode",
+                "darkMode": "Dark Mode",
+                "systemDefault": "System Default"
+            },
+            "accessibility": {
+                "title": "Accessibility",
+                "fontSize": {
+                    "title": "Font Size",
+                    "small": "Small",
+                    "medium": "Medium", 
+                    "large": "Large",
+                    "description": "Adjust text size for better readability"
+                },
+                "highContrast": {
+                    "title": "High Contrast Mode",
+                    "description": "Improve visibility for users with visual impairments"
+                }
+            },
             "notifications": {
                 "title": "Notification Preferences",
+                "description": "Control how and when you receive notifications",
                 "email": "Email Notifications",
                 "sms": "SMS Notifications",
                 "push": "Push Notifications",
@@ -70,9 +92,7 @@
             "validation": {
                 "missingCredentials": "Please provide Magento URL, username, and password",
                 "missingCegidCredentials": "Please provide Cegid URL, username, password, and database"
-
             },
-            
             "magento": {
                 "title": "Magento API",
                 "url": "API URL",
@@ -118,7 +138,13 @@
     "login": {
         "welcome": "Welcome",
         "signIn": "Sign In",
+        "signInWithGoogle": "Sign in with Google",
+        "username": "Username",
+        "password": "Password",
         "forgotPassword": "Forgot Password?",
+        "or": "or",
+        "noAccount": "Don't have an account?",
+        "signUp": "Sign Up",
         "createAccount": "Create Account"
     },
     "errors": {

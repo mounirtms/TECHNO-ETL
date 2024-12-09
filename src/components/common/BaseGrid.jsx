@@ -33,6 +33,7 @@ import CustomersGrid from '../grids/CustomersGrid';
 import { 
     HEADER_HEIGHT, 
     FOOTER_HEIGHT, 
+    DASHBOARD_TAB_HEIGHT, 
     STATS_CARD_HEIGHT 
 } from '../Layout/Constants';
 
@@ -47,36 +48,47 @@ const StyledBox = styled(Box)(({ theme }) => ({
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
+    height: `calc(100vh - ${
+        HEADER_HEIGHT + 
+        FOOTER_HEIGHT + 
+        STATS_CARD_HEIGHT + 
+        DASHBOARD_TAB_HEIGHT + 
+        theme.spacing(4)
+    }px)`, // Add some extra spacing
     '& .MuiDataGrid-root': {
         border: 'none',
-        backgroundColor: theme.palette.background.paper,
-        '& .MuiDataGrid-cell': {
-            borderColor: theme.palette.divider
-        },
-        '& .MuiDataGrid-columnHeaders': {
-            backgroundColor: theme.palette.background.default,
-            borderBottom: `1px solid ${theme.palette.divider}`
-        },
-        '& .MuiDataGrid-virtualScroller': {
-            backgroundColor: theme.palette.background.paper
-        },
-        '& .MuiDataGrid-footerContainer': {
-            backgroundColor: theme.palette.background.default,
-            borderTop: `1px solid ${theme.palette.divider}`,
-            position: 'sticky',
-            bottom: 0,
-            zIndex: 2
-        },
-        '& .MuiDataGrid-row:hover': {
-            backgroundColor: theme.palette.action.hover
-        },
-        '& .MuiDataGrid-row.Mui-selected': {
-            backgroundColor: theme.palette.action.selected,
-            '&:hover': {
-                backgroundColor: theme.palette.action.selected
-            }
+        height: '100%',
+        width: '100%',
+    },
+    '& .MuiDataGrid-main': {
+        height: '100%',
+    },
+    '& .MuiDataGrid-virtualScroller': {
+        height: `calc(100% - 52px)`, // Adjust for toolbar height
+    },
+    '& .MuiDataGrid-cell': {
+        borderColor: theme.palette.divider
+    },
+    '& .MuiDataGrid-columnHeaders': {
+        backgroundColor: theme.palette.background.default,
+        borderBottom: `1px solid ${theme.palette.divider}`
+    },
+    '& .MuiDataGrid-footerContainer': {
+        backgroundColor: theme.palette.background.default,
+        borderTop: `1px solid ${theme.palette.divider}`,
+        position: 'sticky',
+        bottom: 0,
+        zIndex: 2
+    },
+    '& .MuiDataGrid-row:hover': {
+        backgroundColor: theme.palette.action.hover
+    },
+    '& .MuiDataGrid-row.Mui-selected': {
+        backgroundColor: theme.palette.action.selected,
+        '&:hover': {
+            backgroundColor: theme.palette.action.selected
         }
-    }
+    },
 }));
 
 /**
@@ -176,101 +188,109 @@ const CustomGridToolbar = ({
     onCustomFilterChange,
     currentCustomFilter
 }) => {
+    const theme = useTheme();
     const [anchorEl, setAnchorEl] = useState(null);
-    const [settingsOpen, setSettingsOpen] = useState(false);
+    const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
 
-    const handleFilterClick = (event) => {
+    const toolbarButtonStyle = {
+        color: theme.palette.text.secondary,
+        borderColor: theme.palette.divider,
+        '&:hover': {
+            backgroundColor: theme.palette.action.hover,
+            borderColor: theme.palette.text.primary
+        }
+    };
+
+    const handleSettingsClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleFilterClose = () => {
+    const handleSettingsClose = () => {
         setAnchorEl(null);
     };
 
-    return (
-        <GridToolbarContainer>
-            <Box sx={{ 
-                display: 'flex', 
-                gap: 1, 
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                p: 1,
-                width: '100%'
-            }}>
-                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                    <GridToolbarColumnsButton />
-                    <GridToolbarFilterButton />
-                    <GridToolbarExport />
-                    
-                    {customFilters.length > 0 && (
-                        <>
-                            <Button
-                                size="small"
-                                startIcon={<FilterListIcon />}
-                                onClick={handleFilterClick}
-                                color="primary"
-                                variant="outlined"
-                            >
-                                {currentCustomFilter ? customFilters.find(f => f.value === currentCustomFilter)?.label : 'Custom Filters'}
-                            </Button>
-                            <Menu
-                                anchorEl={anchorEl}
-                                open={Boolean(anchorEl)}
-                                onClose={handleFilterClose}
-                            >
-                                {customFilters.map((filter) => (
-                                    <MenuItem
-                                        key={filter.value}
-                                        onClick={() => {
-                                            onCustomFilterChange(filter.value);
-                                            handleFilterClose();
-                                        }}
-                                        selected={currentCustomFilter === filter.value}
-                                    >
-                                        {filter.label}
-                                    </MenuItem>
-                                ))}
-                            </Menu>
-                        </>
-                    )}
-                </Box>
+    const handleSettingsDialogOpen = () => {
+        setSettingsDialogOpen(true);
+        handleSettingsClose();
+    };
 
-                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', ml: 'auto' }}>
-                    {onRefresh && (
-                        <Tooltip title="Refresh data">
-                            <IconButton onClick={onRefresh} size="small">
-                                <RefreshIcon />
-                            </IconButton>
-                        </Tooltip>
-                    )}
-                    {onAdd && (
-                        <Button
-                            startIcon={<AddIcon />}
-                            onClick={onAdd}
-                            size="small"
-                            variant="contained"
+    return (
+        <Box sx={{
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between', 
+            width: '100%', 
+            p: 1
+        }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Tooltip title="Refresh Data">
+                    <Button 
+                        variant="outlined" 
+                        size="small" 
+                        onClick={onRefresh}
+                        sx={toolbarButtonStyle}
+                        startIcon={<RefreshIcon />}
+                    >
+                        Refresh
+                    </Button>
+                </Tooltip>
+
+                {customFilters && customFilters.length > 0 && (
+                    <FormControl 
+                        variant="outlined" 
+                        size="small" 
+                        sx={{ minWidth: 120 }}
+                    >
+                        <Select
+                            value={currentCustomFilter}
+                            onChange={(e) => onCustomFilterChange(e.target.value)}
+                            sx={toolbarButtonStyle}
                         >
-                            Add New
-                        </Button>
-                    )}
-                    <Tooltip title="Settings">
-                        <IconButton onClick={() => setSettingsOpen(true)}>
-                            <SettingsIcon />
-                        </IconButton>
-                    </Tooltip>
-                </Box>
+                            {customFilters.map((option) => (
+                                <MenuItem 
+                                    key={option.value} 
+                                    value={option.value}
+                                >
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                )}
             </Box>
-            <SettingsDialog
-                open={settingsOpen}
-                onClose={() => setSettingsOpen(false)}
+
+            <Tooltip title="Grid Settings">
+                <IconButton 
+                    size="small" 
+                    onClick={handleSettingsClick}
+                    sx={{
+                        color: theme.palette.text.secondary,
+                        '&:hover': {
+                            backgroundColor: theme.palette.action.hover
+                        }
+                    }}
+                >
+                    <SettingsIcon />
+                </IconButton>
+            </Tooltip>
+
+            <SettingsDialog 
+                open={settingsDialogOpen}
+                onClose={() => setSettingsDialogOpen(false)}
                 columns={columns}
                 gridName={gridName}
-                onSave={(settings) => {
-                    // Handle settings save
-                    console.log('Settings saved:', settings);
-                }}
             />
-        </GridToolbarContainer>
+
+            <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleSettingsClose}
+            >
+                <MenuItem onClick={handleSettingsDialogOpen}>
+                    Customize Columns
+                </MenuItem>
+            </Menu>
+        </Box>
     );
 };
 
@@ -605,10 +625,12 @@ const BaseGrid = ({
         };
         const calculateGridHeight = () => {
             const windowHeight = window.innerHeight;
-            const calculatedHeight = windowHeight 
+            const tabPanelHeight = windowHeight 
                 - HEADER_HEIGHT 
                 - FOOTER_HEIGHT 
-                - STATS_CARD_HEIGHT-50;
+                - DASHBOARD_TAB_HEIGHT;
+            
+            const calculatedHeight = tabPanelHeight - STATS_CARD_HEIGHT;
             
             setGridHeight(`${calculatedHeight}px`);
         };
@@ -628,19 +650,11 @@ const BaseGrid = ({
         sx={{ 
             height: gridHeight,
             width: '100%',
+            minHeight: 300, // Added minimum height
             display: 'flex',
             flexDirection: 'column'
         }}>
-            <Box sx={{ 
-                width: '100%',
-                pb: 16, 
-                '& .MuiDataGrid-root': {
-                    minHeight: 400,
-                    maxHeight: 'calc(100vh - 248px)', 
-                    display: 'flex',
-                    flexDirection: 'column'
-                }
-            }}>
+           
                 <StyledBox>
                     <DataGrid
                         rows={data}
@@ -691,7 +705,7 @@ const BaseGrid = ({
                         }}
                     />
                 </StyledBox>
-            </Box>
+            
             
             <RecordDetailsDialog
                 open={detailsDialogOpen}

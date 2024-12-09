@@ -20,6 +20,7 @@ export const COLLAPSED_WIDTH = 64;  // Collapsed/minimized sidebar width
 // Header and Footer Heights
 export const HEADER_HEIGHT = 64;
 export const FOOTER_HEIGHT = 28;
+export const DASHBOARD_TAB_HEIGHT = 80; // Set to 80 as requested
 // Existing constants...
 export const STATS_CARD_ZINDEX = 1200; // High z-index for stat cards
 

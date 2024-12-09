@@ -160,7 +160,15 @@ const ProductsGrid = () => {
 
     return (
         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
-
+            <StatsCards
+                cards={[
+                    { title: 'Total Products', value: stats.total, icon: InventoryIcon },
+                    { title: 'In Stock', value: stats.inStock, icon: CheckCircleIcon },
+                    { title: 'Out of Stock', value: stats.outOfStock, icon: ErrorIcon },
+                    { title: 'Low Stock', value: stats.lowStock, icon: TrendingDownIcon },
+                    { title: 'Average Price', value: stats.averagePrice ? stats.averagePrice.toFixed(2) : 'N/A', icon: AttachMoneyIcon }
+                ]}
+            />
 
             <BaseGrid
                 gridName="ProductsGrid"
@@ -171,15 +179,6 @@ const ProductsGrid = () => {
                 customFilters={filterOptions}
                 currentCustomFilter={currentFilter}
                 onCustomFilterChange={handleFilterChange}
-            />
-            <StatsCards
-                cards={[
-                    { title: 'Total Products', value: stats.total, icon: InventoryIcon },
-                    { title: 'In Stock', value: stats.inStock, icon: CheckCircleIcon },
-                    { title: 'Out of Stock', value: stats.outOfStock, icon: ErrorIcon },
-                    { title: 'Low Stock', value: stats.lowStock, icon: TrendingDownIcon },
-                    { title: 'Average Price', value: stats.averagePrice ? stats.averagePrice.toFixed(2) : 'N/A', icon: AttachMoneyIcon }
-                ]}
             />
         </Box>
     );

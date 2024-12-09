@@ -161,7 +161,7 @@ const OrdersGrid = () => {
     }, []);
 
     return (
-        <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', gap: 1 }}>
             <StatsCards
                 cards={[
                     {

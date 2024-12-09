@@ -10,7 +10,7 @@ import TabPanel from './TabPanel';
 import Footer from './Footer';
 import { TabProvider } from '../../contexts/TabContext';
 import { LanguageProvider } from '../../contexts/LanguageContext';
-import { DRAWER_WIDTH, COLLAPSED_WIDTH } from './Constants';
+import { DRAWER_WIDTH, COLLAPSED_WIDTH, FOOTER_HEIGHT } from './Constants';
 
 const Layout = () => {
     const theme = useTheme();
@@ -33,7 +33,8 @@ const Layout = () => {
                     />
                     <Box sx={{ 
                         display: 'flex', 
-                        flexGrow: 1 
+                        flexGrow: 1,
+                        paddingBottom: `${FOOTER_HEIGHT}px` 
                     }}>
                         <Sidebar open={sidebarOpen} toggleDrawer={() => setSidebarOpen(prev => !prev)} />
                         <Box component="main" sx={{ 

@@ -1,18 +1,37 @@
 {
+    "common": {
+        "profile": "الملف الشخصي",
+        "logout": "تسجيل الخروج",
+        "settings": "الإعدادات",
+        "refresh": "تحديث",
+        "changeLanguage": "تغيير اللغة"
+    },
+    "login": {
+        "signInWithGoogle": "تسجيل الدخول باستخدام Google",
+        "username": "اسم المستخدم",
+        "password": "كلمة المرور",
+        "signIn": "تسجيل الدخول",
+        "forgotPassword": "هل نسيت كلمة المرور؟",
+        "or": "أو",
+        "noAccount": "ليس لديك حساب؟",
+        "signUp": "إنشاء حساب",
+        "welcome": "أهلا بك",
+        "createAccount": "إنشاء حساب"
+    },
     "dashboard": {
         "title": "لوحة التحكم",
         "totalOrders": "إجمالي الطلبات",
         "totalCustomers": "إجمالي العملاء",
         "totalProducts": "إجمالي المنتجات",
         "totalSales": "إجمالي المبيعات",
-        "salesOverTime": "المبيعات على مر الزمن",
-        "chartComingSoon": "الرسم البياني قريبا",
-        "recentOrders": "الطلبات الأخيرة",
+        "salesOverTime": "المبيعات على مدار الوقت",
+        "chartComingSoon": "الرسم البياني قريبًا",
+        "recentOrders": "الطلبات الحديثة",
         "noRecentOrders": "لا توجد طلبات حديثة",
         "lastWeek": "الأسبوع الماضي",
         "lastMonth": "الشهر الماضي",
         "lastYear": "العام الماضي",
-        "refresh": "تحديث"
+        "salesOverTime": "المبيعات على مر الزمن"
     },
     "products": "المنتجات",
     "orders": "الطلبات",
@@ -35,16 +54,44 @@
         },
         "preferences": {
             "title": "تفضيلات المستخدم",
-            "language": "لغة الواجهة",
-            "theme": "نظام الألوان",
-            "lightMode": "الوضع الفاتح",
-            "darkMode": "الوضع المظلم",
-            "fontSize": "حجم الخط",
-            "small": "صغير",
-            "medium": "متوسط", 
-            "large": "كبير",
+            "language": {
+                "title": "لغة الواجهة",
+                "description": "اختر اللغة المفضلة للوحة المعلومات",
+                "availableLanguages": {
+                    "en": "الإنجليزية (الولايات المتحدة)",
+                    "fr": "الفرنسية (فرنسا)",
+                    "ar": "العربية (الشرق الأوسط)"
+                },
+                "systemDefault": "الإعداد الافتراضي للنظام",
+                "currentLanguage": "اللغة الحالية",
+                "changeLanguage": "تغيير اللغة",
+                "languageChanged": "تم تغيير اللغة بنجاح",
+                "languageChangeError": "فشل تغيير اللغة"
+            },
+            "theme": {
+                "title": "المظهر",
+                "description": "خصص مظهر لوحة المعلومات",
+                "lightMode": "الوضع الفاتح",
+                "darkMode": "الوضع الداكن",
+                "systemDefault": "الإعداد الافتراضي للنظام"
+            },
+            "accessibility": {
+                "title": "إمكانية الوصول",
+                "fontSize": {
+                    "title": "حجم الخط",
+                    "small": "صغير",
+                    "medium": "متوسط", 
+                    "large": "كبير",
+                    "description": "اضبط حجم النص لتحسين سهولة القراءة"
+                },
+                "highContrast": {
+                    "title": "وضع التباين العالي",
+                    "description": "تحسين الرؤية للمستخدمين ذوي الإعاقة البصرية"
+                }
+            },
             "notifications": {
                 "title": "تفضيلات الإشعارات",
+                "description": "التحكم في كيفية ووقت استلام الإشعارات",
                 "email": "إشعارات البريد الإلكتروني",
                 "sms": "إشعارات الرسائل النصية",
                 "push": "الإشعارات الفورية",
@@ -64,7 +111,7 @@
             "cegid": {
                 "title": "واجهة برمجة التطبيقات سيجيد",
                 "url": "رابط سيجيد",
-                "username": "اسم مستخدم سيجيد", 
+                "username": "اسم مستخدم سيجيد",
                 "password": "كلمة مرور سيجيد",
                 "database": "اسم قاعدة البيانات",
                 "connect": "اتصال"
@@ -80,12 +127,6 @@
             "cancel": "إلغاء",
             "edit": "تعديل الملف الشخصي"
         }
-    },
-    "login": {
-        "welcome": "أهلا بك",
-        "signIn": "تسجيل الدخول",
-        "forgotPassword": "هل نسيت كلمة المرور؟",
-        "createAccount": "إنشاء حساب"
     },
     "errors": {
         "networkError": "خطأ في الشبكة",
