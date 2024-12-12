@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
     Box, 
     Typography, 
@@ -8,7 +8,7 @@ import {
 import { DRAWER_WIDTH, COLLAPSED_WIDTH, FOOTER_HEIGHT } from './Constants';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useAuth } from '../../contexts/AuthContext';
-import packageJson from '../../../package.json';
+import versionInfo from '../../../version.json';
 
 const FooterContainer = styled(({ 
     component, 
@@ -73,8 +73,18 @@ const AnimatedLink = styled(Link)(({ theme }) => ({
 const Footer = ({ sidebarOpen, isLoginScreen = false }) => {
     const { language } = useLanguage();
     const { isUsingLocalData } = useAuth();
+    const [version, setVersion] = useState('');
     const currentYear = new Date().getFullYear();
-    const buildVersion = packageJson.version || '1.0.0';
+
+    useEffect(() => {
+        // Load version from version.json
+        const loadVersion = async () => {
+            const response = await fetch('../../../version.json');
+            const data = await response.json();
+            setVersion(data.version);
+        };
+        loadVersion();
+    }, []);
 
     return (
         <FooterContainer 
@@ -112,7 +122,7 @@ const Footer = ({ sidebarOpen, isLoginScreen = false }) => {
 
             <Box>
                 <Typography variant="body2">
-                    v{buildVersion}
+                    v{version}
                 </Typography>
             </Box>
         </FooterContainer>

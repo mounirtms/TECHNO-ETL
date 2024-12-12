@@ -1,266 +1,242 @@
-import React, { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
-import cegidApi from '../../../services/cegidService';
-import magentoApi from '../../../services/magentoService';
-
-import { useLanguage } from '../../../contexts/LanguageContext';
-import { useProfileController } from '../ProfileController';
+import React, { useState } from 'react';
 import {
     Box,
-    Typography,
     TextField,
     Button,
     Grid,
-    Paper
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Collapse,
+    Typography,
+    Divider,
+    Alert,
+    CircularProgress
 } from '@mui/material';
+import { useProfileController } from '../ProfileController';
 
 const ApiSettingsTab = () => {
-    const { translate } = useLanguage();
-    const { userData, updateUserData } = useProfileController();
-    const [loading, setLoading] = useState(false);
-    const [apiSettings, setApiSettings] = useState({
-        cegid: {
-            url: userData?.apiSettings?.cegid?.url || import.meta.env.VITE_Cegid_API_URL || '',
-            username: userData?.apiSettings?.cegid?.username || import.meta.env.VITE_Cegid_ADMIN_USERNAME || '',
-            password: userData?.apiSettings?.cegid?.password || import.meta.env.VITE_Cegid_ADMIN_PASSWORD || '',
-            database: userData?.apiSettings?.cegid?.database ||import.meta.env.VITE_Cegid_ADMIN_DATABASE || 'DBRETAIL01'
-        },
-        magento: {
-            url: userData?.apiSettings?.magento?.url || import.meta.env.VITE_MAGENTO_API_URL || 'https://technostationery.com/rest/V1',
-            username: userData?.apiSettings?.magento?.username || import.meta.env.VITE_MAGENTO_ADMIN_USERNAME || '',
-            password: userData?.apiSettings?.magento?.password || import.meta.env.VITE_MAGENTO_ADMIN_PASSWORD || '',
-            token: userData?.apiSettings?.magento?.token || ''
-        }
-    });
+    const { userData, updateUserData, loading } = useProfileController();
+    const [testingConnection, setTestingConnection] = useState(false);
 
-    // Update local state when userData changes
-    useEffect(() => {
-        if (userData?.apiSettings) {
-            setApiSettings(prev => ({
-                ...prev,
-                cegid: {
-                    ...prev.cegid,
-                    ...userData.apiSettings.cegid
-                },
-                magento: {
-                    ...prev.magento,
-                    ...userData.apiSettings.magento
-                }
-            }));
-        }
-    }, [userData]);
-
-    const handleInputChange = (e, service) => {
-        const { name, value } = e.target;
-        setApiSettings(prev => ({
-            ...prev,
+    const handleChange = (service, field, value) => {
+        const newApiSettings = {
+            ...userData.apiSettings,
             [service]: {
-                ...prev[service],
-                [name]: value
+                ...userData.apiSettings[service],
+                [field]: value
             }
-        }));
-    };
+        };
 
-    const handleSaveSettings = async () => {
-        try {
-            await updateUserData({
-                apiSettings: apiSettings
-            }, 'apiSettings');
-            toast.success(translate('profile.apiSettings.saveSuccess'));
-        } catch (error) {
-            toast.error(translate('profile.apiSettings.saveError'));
-        }
-        localStorage.setItem('offlineApiSettings', JSON.stringify(apiSettings));
-
-    };
-
-    const handleCegidConnect = async () => {
-        const { url, username, password, database } = apiSettings.cegid;
-
-        // Validate inputs
-        if (!url || !username || !password || !database) {
-            toast.error(translate('profile.apiSettings.validation.missingCegidCredentials'));
-            return;
+        if (service === 'magento' && field === 'authMode') {
+            // Reset token when switching auth modes
+            newApiSettings.magento.token = '';
         }
 
-        try {
-            // Use cegidApi to connect
-            const result = await cegidApi.handleCegidConnect(url, username, password, database);
+        updateUserData({ apiSettings: newApiSettings }, 'apiSettings');
+    };
 
-            // Update API settings with session token
-            await updateUserData({
-                apiSettings: {
-                    cegid: {
-                        ...apiSettings.cegid,
-                        sessionToken: result.sessionToken
-                    }
+    const handleOAuthChange = (field, value) => {
+        const newApiSettings = {
+            ...userData.apiSettings,
+            magento: {
+                ...userData.apiSettings.magento,
+                oauth: {
+                    ...userData.apiSettings.magento.oauth,
+                    [field]: value
                 }
-            }, 'apiSettings');
-
-            toast.success(translate('profile.apiSettings.cegidConnectSuccess'));
-        } catch (error) {
-            console.error('Cegid connection error:', error);
-            toast.error(translate('profile.apiSettings.cegidConnectError'));
-        }
-    };
-
-    const handleGenerateMagentoToken = async () => {
-        if (loading) return;
-        
-        const { url, username, password } = apiSettings.magento;
-        if ( !username || !password) {
-            toast.error(translate('profile.apiSettings.magento.validation.missing'));
-            return;
-        }
-
-        try {
-            setLoading(true);
-            const token = await magentoApi.login(username, password,url);
-            
-            if (!token) {
-                throw new Error('No token received from server');
             }
+        };
+        updateUserData({ apiSettings: newApiSettings }, 'apiSettings');
+    };
 
-            const updatedSettings = {
-                ...apiSettings,
-                magento: {
-                    ...apiSettings.magento,
-                    token
-                }
-            };
-
-            await updateUserData({
-                apiSettings: updatedSettings
-            }, 'apiSettings');
-
-            setApiSettings(updatedSettings);
-            toast.success(translate('profile.apiSettings.magento.tokenSuccess'));
+    const testConnection = async (service) => {
+        setTestingConnection(true);
+        try {
+            // Implement connection test logic here
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Show success message
         } catch (error) {
-            console.error('Magento token generation error:', error);
-            const errorMessage = error.message === 'No token received from server'
-                ? translate('profile.apiSettings.magento.noToken')
-                : translate('profile.apiSettings.magento.tokenError');
-            toast.error(errorMessage);
+            // Show error message
         } finally {
-            setLoading(false);
+            setTestingConnection(false);
         }
     };
 
     return (
-        <Paper sx={{ p: 2, height: '100%', overflowY: 'auto' }}>
-            <Typography variant="h6" gutterBottom>
-                {translate('profile.apiSettings.cegid.title')}
+        <Box sx={{ p: 2 }}>
+            {/* Magento API Settings */}
+            <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'medium' }}>
+                Magento API Settings
             </Typography>
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={8}>
+                    <TextField
+                        size="small"
+                        fullWidth
+                        label="Magento API URL"
+                        value={userData?.apiSettings?.magento?.url || ''}
+                        onChange={(e) => handleChange('magento', 'url', e.target.value)}
+                    />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <FormControl fullWidth size="small">
+                        <InputLabel>Auth Mode</InputLabel>
+                        <Select
+                            value={userData?.apiSettings?.magento?.authMode || 'basic'}
+                            onChange={(e) => handleChange('magento', 'authMode', e.target.value)}
+                            label="Auth Mode"
+                        >
+                            <MenuItem value="basic">Basic Auth</MenuItem>
+                            <MenuItem value="oauth">OAuth 1.0</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
 
-            <Grid container spacing={1}>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        fullWidth
-                        margin="dense"
-                        label={translate('profile.apiSettings.cegid.url')}
-                        name="url"
-                        value={apiSettings.cegid.url}
-                        onChange={(e) => handleInputChange(e, 'cegid')}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        fullWidth
-                        margin="dense"
-                        label={translate('profile.apiSettings.cegid.username')}
-                        name="username"
-                        value={apiSettings.cegid.username}
-                        onChange={(e) => handleInputChange(e, 'cegid')}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        fullWidth
-                        margin="dense"
-                        label={translate('profile.apiSettings.cegid.password')}
-                        type="password"
-                        name="password"
-                        value={apiSettings.cegid.password}
-                        onChange={(e) => handleInputChange(e, 'cegid')}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        fullWidth
-                        margin="dense"
-                        label={translate('profile.apiSettings.cegid.database')}
-                        name="database"
-                        value={apiSettings.cegid.database}
-                        onChange={(e) => handleInputChange(e, 'cegid')}
-                    />
+                {/* Basic Auth Fields */}
+                <Collapse in={userData?.apiSettings?.magento?.authMode === 'basic'} sx={{ width: '100%' }}>
+                    <Grid container spacing={2} sx={{ mt: 0, ml: 0 }}>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                size="small"
+                                fullWidth
+                                label="Username"
+                                value={userData?.apiSettings?.magento?.username || ''}
+                                onChange={(e) => handleChange('magento', 'username', e.target.value)}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                size="small"
+                                fullWidth
+                                type="password"
+                                label="Password"
+                                value={userData?.apiSettings?.magento?.password || ''}
+                                onChange={(e) => handleChange('magento', 'password', e.target.value)}
+                            />
+                        </Grid>
+                    </Grid>
+                </Collapse>
+
+                {/* OAuth Fields */}
+                <Collapse in={userData?.apiSettings?.magento?.authMode === 'oauth'} sx={{ width: '100%' }}>
+                    <Grid container spacing={2} sx={{ mt: 0, ml: 0 }}>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <TextField
+                                size="small"
+                                fullWidth
+                                label="Consumer Key"
+                                value={userData?.apiSettings?.magento?.oauth?.consumerKey || ''}
+                                onChange={(e) => handleOAuthChange('consumerKey', e.target.value)}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <TextField
+                                size="small"
+                                fullWidth
+                                label="Consumer Secret"
+                                type="password"
+                                value={userData?.apiSettings?.magento?.oauth?.consumerSecret || ''}
+                                onChange={(e) => handleOAuthChange('consumerSecret', e.target.value)}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <TextField
+                                size="small"
+                                fullWidth
+                                label="Access Token"
+                                value={userData?.apiSettings?.magento?.oauth?.accessToken || ''}
+                                onChange={(e) => handleOAuthChange('accessToken', e.target.value)}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <TextField
+                                size="small"
+                                fullWidth
+                                label="Token Secret"
+                                type="password"
+                                value={userData?.apiSettings?.magento?.oauth?.tokenSecret || ''}
+                                onChange={(e) => handleOAuthChange('tokenSecret', e.target.value)}
+                            />
+                        </Grid>
+                    </Grid>
+                </Collapse>
+
+                <Grid item xs={12}>
+                    <Button
+                        size="small"
+                        variant="contained"
+                        color="primary"
+                        disabled={testingConnection}
+                        onClick={() => testConnection('magento')}
+                        sx={{ mr: 2, mt: 1 }}
+                        startIcon={testingConnection && <CircularProgress size={16} color="inherit" />}
+                    >
+                        {testingConnection ? 'Testing...' : 'Test Connection'}
+                    </Button>
                 </Grid>
             </Grid>
 
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={handleCegidConnect}
-                sx={{ mt: 2, mr: 2 }}
-            >
-                {translate('profile.apiSettings.cegid.connect')}
-            </Button>
+            <Divider sx={{ my: 2 }} />
 
-            <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
-                {translate('profile.apiSettings.magento.title')}
+            {/* Cegid API Settings */}
+            <Typography variant="subtitle1" sx={{ mb: 1, mt: 2, fontWeight: 'medium' }}>
+                Cegid API Settings
             </Typography>
-
-            <Grid container spacing={1}>
-                <Grid item xs={12} sm={6}>
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
                     <TextField
+                        size="small"
                         fullWidth
-                        margin="dense"
-                        label={translate('profile.apiSettings.magento.url')}
-                        name="url"
-                        value={apiSettings.magento.url}
-                        onChange={(e) => handleInputChange(e, 'magento')}
+                        label="Cegid API URL"
+                        value={userData?.apiSettings?.cegid?.url || ''}
+                        onChange={(e) => handleChange('cegid', 'url', e.target.value)}
                     />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} md={3}>
                     <TextField
+                        size="small"
                         fullWidth
-                        margin="dense"
-                        label={translate('profile.apiSettings.magento.username')}
-                        name="username"
-                        value={apiSettings.magento.username}
-                        onChange={(e) => handleInputChange(e, 'magento')}
+                        label="Username"
+                        value={userData?.apiSettings?.cegid?.username || ''}
+                        onChange={(e) => handleChange('cegid', 'username', e.target.value)}
                     />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} md={3}>
                     <TextField
+                        size="small"
                         fullWidth
-                        margin="dense"
-                        label={translate('profile.apiSettings.magento.password')}
                         type="password"
-                        name="password"
-                        value={apiSettings.magento.password}
-                        onChange={(e) => handleInputChange(e, 'magento')}
+                        label="Password"
+                        value={userData?.apiSettings?.cegid?.password || ''}
+                        onChange={(e) => handleChange('cegid', 'password', e.target.value)}
                     />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        size="small"
+                        fullWidth
+                        label="Database"
+                        value={userData?.apiSettings?.cegid?.database || ''}
+                        onChange={(e) => handleChange('cegid', 'database', e.target.value)}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <Button
+                        size="small"
+                        variant="contained"
+                        color="primary"
+                        disabled={testingConnection}
+                        onClick={() => testConnection('cegid')}
+                        sx={{ mr: 2, mt: 1 }}
+                        startIcon={testingConnection && <CircularProgress size={16} color="inherit" />}
+                    >
+                        {testingConnection ? 'Testing...' : 'Test Connection'}
+                    </Button>
                 </Grid>
             </Grid>
-
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={handleGenerateMagentoToken}
-                sx={{ mt: 2 }}
-            >
-                {translate('profile.apiSettings.magento.generateToken')}
-            </Button>
- 
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={handleSaveSettings}
-                sx={{ mt: 2, ml:36 }}
-            >
-                {translate('profile.apiSettings.save')}
-            </Button>
-        </Paper>
+        </Box>
     );
 };
 

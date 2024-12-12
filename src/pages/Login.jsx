@@ -13,8 +13,9 @@ import {
 import GoogleIcon from '@mui/icons-material/Google';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import Footer from '../components/Layout/Footer';
-import { FOOTER_HEIGHT } from '../components/Layout/Constants';
+import Footer from '../components/layout/Footer';
+import { FOOTER_HEIGHT } from '../components/layout/Constants';
+import { useNavigate } from 'react-router-dom';
 
 // Animated background keyframes
 const backgroundAnimation = keyframes`
@@ -76,7 +77,7 @@ const LoginCard = styled(Box)(({ theme }) => ({
     borderRadius: theme.spacing(4),
     padding: theme.spacing(4),
     width: '100%',
-    maxWidth: 450,
+    maxWidth: 650,
     boxShadow: '0 16px 32px rgba(0, 0, 0, 0.1)',
     backdropFilter: 'blur(10px)',
     textAlign: 'center',
@@ -119,6 +120,33 @@ const LoginPage = () => {
     const { translate } = useLanguage();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
+    const skipAuth = import.meta.env.VITE_SKIP_AUTH === 'true';
+
+    useEffect(() => {
+        // Redirect to dashboard immediately in dev mode
+        if (skipAuth) {
+            navigate('/', { replace: true });
+        }
+    }, [skipAuth, navigate]);
+
+    // If in dev mode, don't render the login page
+    if (skipAuth) {
+        return null;
+    }
+
+    const handleGoogleSignIn = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            await signInWithGoogle();
+            // Navigation handled by AuthContext
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Create floating background elements
     const [floatingElements, setFloatingElements] = useState([]);
@@ -141,19 +169,6 @@ const LoginPage = () => {
 
         generateFloatingElements();
     }, [theme]);
-
-    const handleGoogleSignIn = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            await signInWithGoogle();
-            // Navigation handled by AuthContext
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <Box 

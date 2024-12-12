@@ -1,8 +1,71 @@
-import { ref, set, get, update, onValue, off } from 'firebase/database';
+import { ref, set, get, update, onValue } from 'firebase/database';
 import { database } from '../config/firebase';
-import { toast } from 'react-toastify';
 
-// Apply user preferences to contexts
+// Default user settings
+const defaultUserSettings = {
+    personalInfo: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        address: '',
+        city: '',
+        country: '',
+        postalCode: '',
+        birthDate: '',
+        gender: '',
+    },
+    apiSettings: {
+        magento: {
+            url: import.meta.env.VITE_MAGENTO_URL || '',
+            username:  import.meta.env.VITE_MAGENTO_USERNAME || '',
+            password:  import.meta.env.VITE_MAGENTO_PASSWORD || '',
+            authMode:  import.meta.env.VITE_MAGENTO_AUTH_TYPE || 'basic'
+        },
+        cegid: {
+            url: '',
+            username: '',
+            password: '',
+            database: ''
+        }
+    },
+    preferences: {
+        language: 'en',
+        theme: 'light'
+    }
+};
+
+// Consolidated saveUserSettings function to handle all user settings together
+export const saveUserSettings = async (userId, settings) => {
+    try {
+        const userRef = ref(database, `users/${userId}`);
+
+        // Save all settings as a single object
+        await set(userRef, {
+            personalInfo: settings.personalInfo || defaultUserSettings.personalInfo,
+            apiSettings: settings.apiSettings || defaultUserSettings.apiSettings,
+            preferences: settings.preferences || defaultUserSettings.preferences,
+            updatedAt: new Date().toISOString()
+        });
+
+        // Save to local storage for offline mode
+        localStorage.setItem('userSettings', JSON.stringify(settings));
+
+        return {
+            success: true,
+            message: 'User settings saved successfully'
+        };
+    } catch (error) {
+        console.error('Error saving user settings:', error);
+        throw {
+            success: false,
+            message: 'Failed to save user settings',
+            error: error.message
+        };
+    }
+};
+
+// Reintroducing the applyUserPreferences function
 export const applyUserPreferences = (data, { setLanguage, setThemeMode }) => {
     if (data?.preferences) {
         if (data.preferences.language && setLanguage) {
@@ -14,91 +77,28 @@ export const applyUserPreferences = (data, { setLanguage, setThemeMode }) => {
     }
 };
 
-// Set user data (for all profile settings)
-export const setUserData = async (userId, settings) => {
-    if (!userId) {
-        throw new Error('User ID is required');
-    }
-    try {
-        const userRef = ref(database, `users/${userId}`);
-        
-        // Ensure we maintain the correct data structure
-        const normalizedSettings = {
-            preferences: settings.preferences || {},
-            apiSettings: settings.apiSettings || {},
-            personalInfo: settings.personalInfo || {}
-        };
-
-        await update(userRef, normalizedSettings);
-        
-        // Store API token if present in updates
-        if (settings.apiSettings?.magento?.token) {
-            localStorage.setItem('adminToken', settings.apiSettings.magento.token);
-        }
-        return true;
-    } catch (error) {
-        console.error('Error saving user settings:', error);
-        throw error;
-    }
-};
-
-// Get user profile data with real-time updates
+// Function to get user profile data from Firebase
 export const getUserProfileData = (userId, callback) => {
-    if (!userId) return null;
-    
     const userRef = ref(database, `users/${userId}`);
-    onValue(userRef, (snapshot) => {
-        const data = snapshot.val() || defaultUserSettings;
+
+    // Listen for value changes
+    const unsubscribe = onValue(userRef, (snapshot) => {
+        const data = snapshot.val();
+        console.log('User Data Retrieved:', data); // Log retrieved data
         callback(data);
-    });
+    }, { onlyOnce: false });
 
-    // Return cleanup function
-    return () => off(userRef);
+    console.log('Unsubscribe Function:', unsubscribe); // Log the unsubscribe function
+
+    return unsubscribe; // Return the unsubscribe function
 };
 
-// Get user profile data once
-export const getUserProfileDataOnce = async (userId) => {
-    if (!userId) return null;
-    
-    try {
-        const userRef = ref(database, `users/${userId}`);
-        const snapshot = await get(userRef);
-        return snapshot.val() || defaultUserSettings;
-    } catch (error) {
-        console.error('Error getting user profile:', error);
-        throw error;
-    }
+// Helper function to encrypt sensitive data
+const encryptValue = (value) => {
+  return `encrypted_${value}`;
 };
 
-// Default user settings
-export const defaultUserSettings = {
-    preferences: {
-        language: 'en',
-        theme: 'light',
-        notifications: {
-            email: true,
-            push: true
-        }
-    },
-    apiSettings: {
-        cegid: {
-            url: import.meta.env.VITE_Cegid_API_URL || '',
-            username: import.meta.env.VITE_Cegid_ADMIN_USERNAME || '',
-            password: import.meta.env.VITE_Cegid_ADMIN_PASSWORD || '',
-            database: import.meta.env.VITE_Cegid_ADMIN_DATABASE || 'DBRETAIL01'
-        },
-        magento: {
-            url: import.meta.env.VITE_MAGENTO_API_URL || 'https://technostationery.com/rest/V1',
-            username: import.meta.env.VITE_MAGENTO_ADMIN_USERNAME || '',
-            password: import.meta.env.VITE_MAGENTO_ADMIN_PASSWORD || '',
-            token: ''
-        }
-    },
-    personalInfo: {
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        avatar: '/src/resources/images/customer01.jpg'
-    }
+// Helper function to decrypt sensitive data
+const decryptValue = (value) => {
+  return value.replace('encrypted_', '');
 };

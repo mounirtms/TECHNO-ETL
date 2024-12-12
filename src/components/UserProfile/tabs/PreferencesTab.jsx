@@ -1,197 +1,155 @@
-import React, { useState, useEffect } from 'react';
-import { 
-    Box, 
-    Typography, 
-    Grid, 
-    Paper, 
-    FormControl, 
-    InputLabel, 
-    Select, 
-    MenuItem, 
-    Switch, 
-    FormControlLabel, 
-    RadioGroup, 
-    Radio,
-    Divider,
-    Button
-} from '@mui/material';
-import { Save as SaveIcon } from '@mui/icons-material';
-import { toast } from 'react-toastify';
-import { useLanguage } from '../../../contexts/LanguageContext';
+import React, { useEffect } from 'react';
+import { Box, Grid, Typography, FormControl, Select, MenuItem, Switch, FormControlLabel } from '@mui/material';
 import { useTheme } from '../../../contexts/ThemeContext';
-import { languages } from '../../../contexts/LanguageContext';
+import { useLanguage } from '../../../contexts/LanguageContext';
+import { saveUserSettings } from '../../../services/userService';
 import { useAuth } from '../../../contexts/AuthContext';
 
-const PreferencesTab = ({ onUpdateUserData }) => {
-    const { currentUser } = useAuth();
-    const { translate, currentLanguage, setLanguage } = useLanguage();
-    const { themeMode, setThemeMode } = useTheme();
-    
-    const [preferences, setPreferences] = useState({
-        language: currentLanguage,
-        theme: themeMode,
-        fontSize: 'medium',
-        notifications: {
-            email: false,
-            sms: false,
-            push: false,
-            marketing: false
-        }
-    });
+const PreferencesTab = () => {
+  const { mode, toggleTheme } = useTheme();
+  const { currentLanguage, setLanguage, translate, languages } = useLanguage();
+  const { currentUser } = useAuth();
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setPreferences(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    
-        // Apply changes immediately
-        if (name === 'language') {
-            setLanguage(value);
-        }
-        if (name === 'theme') {
-            setThemeMode(value);
-        }
-      onUpdateUserData({
-        preferences: {
-            ...preferences,
-            [name]: value
-        }
-    }, 'preferences');    };
-    
-    const handleNotificationChange = (e) => {
-        const { name, checked } = e.target;
-        setPreferences(prev => ({
-            ...prev,
-            notifications: {
-                ...prev.notifications,
-                [name]: checked
-            }
-        }));
+  useEffect(() => {
+    const savePreferences = async () => {
+      if (currentUser) {
+        await saveUserSettings(currentUser.uid, {
+          type: 'preferences',
+          data: {
+            language: currentLanguage,
+            theme: mode
+          }
+        });
+      }
     };
 
-    const handleSave = async () => {
-        try {
-            await onUpdateUserData({
-                preferences: {
-                    language: preferences.language,
-                    theme: preferences.theme,
-                    fontSize: preferences.fontSize,
-                    notifications: preferences.notifications
-                }
-            }, 'preferences');
+    savePreferences();
+  }, [currentLanguage, mode, currentUser]);
 
-            toast.success(translate('preferences.saveSuccess'));
-        } catch (error) {
-            console.error('Error saving preferences:', error);
-            toast.error(translate('preferences.saveError'));
-        }
-    };
+  const handleLanguageChange = (event) => {
+    setLanguage(event.target.value);
+  };
 
-    return (
-        <Paper sx={{ p: 3, m: 2 }}>
-            <Typography variant="h6" gutterBottom>
-                {translate('preferences.title')}
-            </Typography>
-
-            <FormControl fullWidth margin="normal">
-    <InputLabel>{translate('preferences.language')}</InputLabel>
-    <Select
-        name="language"
-        value={preferences.language}
-        label={translate('preferences.language')}
-        onChange={handleChange}
-    >
-        {Object.entries(languages).map(([code, langData]) => (
-            <MenuItem key={code} value={code}>
-                {langData.name}
-            </MenuItem>
-        ))}
-    </Select>
-</FormControl>
-            {/* Theme Selection */}
-            <FormControl fullWidth margin="normal">
-                <InputLabel>{translate('preferences.theme')}</InputLabel>
-                <Select
-                    name="theme"
-                    value={preferences.theme}
-                    label={translate('preferences.theme')}
-                    onChange={handleChange}
-                >
-                    <MenuItem value="light">{translate('preferences.lightTheme')}</MenuItem>
-                    <MenuItem value="dark">{translate('preferences.darkTheme')}</MenuItem>
-                </Select>
-            </FormControl>
-
-            {/* Notifications */}
-            <Typography variant="subtitle1" sx={{ mt: 2 }}>
-                {translate('preferences.notifications')}
-            </Typography>
-            <Grid container spacing={2}>
-                <Grid item xs={6}>
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                checked={preferences.notifications.email}
-                                onChange={handleNotificationChange}
-                                name="email"
-                            />
-                        }
-                        label={translate('preferences.emailNotifications')}
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                checked={preferences.notifications.sms}
-                                onChange={handleNotificationChange}
-                                name="sms"
-                            />
-                        }
-                        label={translate('preferences.smsNotifications')}
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                checked={preferences.notifications.push}
-                                onChange={handleNotificationChange}
-                                name="push"
-                            />
-                        }
-                        label={translate('preferences.pushNotifications')}
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                checked={preferences.notifications.marketing}
-                                onChange={handleNotificationChange}
-                                name="marketing"
-                            />
-                        }
-                        label={translate('preferences.marketingNotifications')}
-                    />
-                </Grid>
-            </Grid>
-
-            <Divider sx={{ my: 2 }} />
-
-            <Button
-                variant="contained"
-                color="primary"
-                startIcon={<SaveIcon />}
-                onClick={handleSave}
-                fullWidth
+  return (
+    <Box sx={{ p: 3 }}>
+      <Grid container spacing={3}>
+        {/* Language Settings */}
+        <Grid item xs={12} md={6}>
+          <Typography variant="h6" gutterBottom>
+            {translate('profile.preferences.language.title')}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" paragraph>
+            {translate('profile.preferences.language.description')}
+          </Typography>
+          <FormControl fullWidth>
+            <Select
+              value={currentLanguage}
+              onChange={handleLanguageChange}
+              size="small"
             >
-                {translate('preferences.save')}
-            </Button>
-        </Paper>
-    );
+              {Object.entries(languages).map(([code, lang]) => (
+                <MenuItem key={code} value={code}>
+                  {translate(`profile.preferences.language.availableLanguages.${code}`)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+
+        {/* Theme Settings */}
+        <Grid item xs={12} md={6}>
+          <Typography variant="h6" gutterBottom>
+            {translate('profile.preferences.theme.title')}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" paragraph>
+            {translate('profile.preferences.theme.description')}
+          </Typography>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={mode === 'dark'}
+                onChange={toggleTheme}
+                name="themeMode"
+              />
+            }
+            label={translate(`profile.preferences.theme.${mode}Mode`)}
+          />
+        </Grid>
+
+        {/* Notification Settings */}
+        <Grid item xs={12}>
+          <Typography variant="h6" gutterBottom>
+            {translate('profile.preferences.notifications.title')}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" paragraph>
+            {translate('profile.preferences.notifications.description')}
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <FormControlLabel
+                control={<Switch defaultChecked />}
+                label={translate('profile.preferences.notifications.email')}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControlLabel
+                control={<Switch defaultChecked />}
+                label={translate('profile.preferences.notifications.push')}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControlLabel
+                control={<Switch />}
+                label={translate('profile.preferences.notifications.sms')}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControlLabel
+                control={<Switch defaultChecked />}
+                label={translate('profile.preferences.notifications.marketing')}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+
+        {/* Accessibility Settings */}
+        <Grid item xs={12}>
+          <Typography variant="h6" gutterBottom>
+            {translate('profile.preferences.accessibility.title')}
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <FormControlLabel
+                control={<Switch />}
+                label={translate('profile.preferences.accessibility.highContrast.title')}
+              />
+              <Typography variant="body2" color="textSecondary">
+                {translate('profile.preferences.accessibility.highContrast.description')}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <Typography variant="subtitle2" gutterBottom>
+                  {translate('profile.preferences.accessibility.fontSize.title')}
+                </Typography>
+                <Select
+                  size="small"
+                  defaultValue="medium"
+                >
+                  <MenuItem value="small">{translate('profile.preferences.accessibility.fontSize.small')}</MenuItem>
+                  <MenuItem value="medium">{translate('profile.preferences.accessibility.fontSize.medium')}</MenuItem>
+                  <MenuItem value="large">{translate('profile.preferences.accessibility.fontSize.large')}</MenuItem>
+                </Select>
+                <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                  {translate('profile.preferences.accessibility.fontSize.description')}
+                </Typography>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Box>
+  );
 };
 
 export default PreferencesTab;

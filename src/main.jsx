@@ -56,28 +56,24 @@ const ProtectedRoute = () => {
     const { currentUser, loading } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
+    const skipAuth = import.meta.env.VITE_SKIP_AUTH === 'true';
 
     React.useEffect(() => {
-        if (!loading && !currentUser) {
-            // Redirect to login if not authenticated
+        if (!loading && !currentUser && !skipAuth) {
+            // Redirect to login if not authenticated and not in dev mode
             navigate('/login', { 
                 state: { from: location }, 
                 replace: true 
             });
         }
-    }, [currentUser, loading, navigate, location]);
+    }, [currentUser, loading, navigate, location, skipAuth]);
 
-    // Performance TODO: 
-    // - Implement more efficient loading state management
-    // - Consider using a global loading state manager
-    if (loading) {
+    if (loading && !skipAuth) {
         return <LoadingFallback />;
     }
 
-    // TODO: Add more granular access control
-    // - Implement role-based access control
-    // - Add permission checks before rendering protected routes
-    return currentUser ? <Outlet /> : <Navigate to="/login" replace />;
+    // Allow access in dev mode or if authenticated
+    return (skipAuth || currentUser) ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 // Login Route Wrapper

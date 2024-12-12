@@ -4,12 +4,12 @@ A modern React-based admin dashboard template for Magento with RTL support and d
 
 ## Features
 
-- 🌓 Dark Mode Support
-- 🌐 RTL Support
-- 📱 Responsive Design
-- 📊 Data Grid with Filtering
-- 👤 User Profile
-- 🎨 Material-UI Components
+- Dark Mode Support
+- RTL Support
+- Responsive Design
+- Data Grid with Filtering
+- User Profile
+- Material-UI Components
 
 ## Setup
 
@@ -47,3 +47,21 @@ npm run dev
 - MUI X-Data-Grid
 - Emotion (for styling)
 - Stylis (for RTL support)
+
+## Environment Variables
+
+- `VITE_MAGENTO_URL`: The base URL for your Magento API.
+- `VITE_MAGENTO_USERNAME`: Your Magento API username.
+- `VITE_MAGENTO_PASSWORD`: Your Magento API password.
+- `VITE_MAGENTO_AUTH_TYPE`: The type of authentication (e.g., basic).
+
+## Development Standards
+
+- Follow consistent naming conventions for components and variables.
+- Use functional components and hooks for state management.
+- Ensure all components are well-documented with comments explaining their purpose and functionality.
+
+## Comments and Documentation
+
+- All components should include comments that describe their functionality.
+- Use JSDoc-style comments for functions and props to improve maintainability and readability.

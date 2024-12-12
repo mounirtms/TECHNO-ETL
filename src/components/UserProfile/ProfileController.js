@@ -1,17 +1,27 @@
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTheme } from '../../contexts/ThemeContext';
-import { getUserProfileData, setUserData, applyUserPreferences } from '../../services/userService';
+import { getUserProfileData, saveUserSettings, applyUserPreferences } from '../../services/userService';
 import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
+
+const defaultUserSettings = {
+  personalInfo: {},
+  apiSettings: {},
+  preferences: {}
+};
 
 export const useProfileController = () => {
     const { currentUser } = useAuth();
     const { setLanguage } = useLanguage();
     const { setThemeMode } = useTheme();
-    const [userData, setUserDataState] = useState(null);
+    const [userData, setUserDataState] = useState(() => {
+        const storedData = localStorage.getItem('userSettings');
+        return storedData ? JSON.parse(storedData) : null;
+    });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isDirty, setIsDirty] = useState(false); // Track dirty state
 
     useEffect(() => {
         if (!currentUser) {
@@ -22,7 +32,10 @@ export const useProfileController = () => {
 
         const unsubscribe = getUserProfileData(currentUser.uid, (data) => {
             try {
+                // Update user data state
                 setUserDataState(data);
+                // Save to local storage for offline mode
+                localStorage.setItem('userSettings', JSON.stringify(data));
                 // Apply preferences using shared handler
                 applyUserPreferences(data, { setLanguage, setThemeMode });
                 setLoading(false);
@@ -33,49 +46,67 @@ export const useProfileController = () => {
             }
         });
 
-        return () => unsubscribe();
+        return () => {
+            if (typeof unsubscribe === 'function') {
+                unsubscribe(); // Ensure unsubscribe is called correctly
+            }
+        };
     }, [currentUser, setLanguage, setThemeMode]);
 
-    const updateUserData = async (updates, updateType = '') => {
+    const updateUserData = (updates) => {
+        if (!currentUser) {
+            toast.error('User not authenticated');
+            return;
+        }
+
+        // Log existing userData and updates for debugging
+        console.log('Current User Data:', userData);
+        console.log('Updates:', updates);
+
+        // Merge updates with existing data to maintain structure
+        const mergedData = {
+            ...defaultUserSettings, // Start with default settings
+            ...userData,
+            ...updates,
+            preferences: {
+                ...defaultUserSettings.preferences,
+                ...userData?.preferences,
+                ...updates.preferences
+            },
+            apiSettings: {
+                ...defaultUserSettings.apiSettings,
+                ...userData?.apiSettings,
+                ...updates.apiSettings
+            }
+        };
+
+        // Log mergedData for debugging
+        console.log('Merged Data:', mergedData);
+
+        // Validate mergedData to ensure no undefined values
+        if (!mergedData.personalInfo || !mergedData.apiSettings || !mergedData.preferences) {
+            throw new Error('Merged data contains undefined values');
+        }
+
+        // Save to local storage for offline mode
+        localStorage.setItem('userSettings', JSON.stringify(mergedData));
+        setUserDataState(mergedData); // Update userData state
+        setIsDirty(true); // Mark as dirty when updates are made
+    };
+
+    const saveUserData = async () => {
         if (!currentUser) {
             toast.error('User not authenticated');
             return;
         }
 
         try {
-            // Merge updates with existing data to maintain structure
-            const mergedData = {
-                ...userData,
-                ...updates,
-                preferences: {
-                    ...userData?.preferences,
-                    ...updates.preferences
-                },
-                apiSettings: {
-                    ...userData?.apiSettings,
-                    ...updates.apiSettings
-                }
-            };
-
-            await setUserData(currentUser.uid, mergedData);
-            
-            // Show success toast based on update type
-            switch(updateType) {
-                case 'preferences':
-                    toast.success('Preferences updated successfully');
-                    break;
-                case 'personalInfo':
-                    toast.success('Personal information updated successfully');
-                    break;
-                case 'apiSettings':
-                    toast.success('API settings updated successfully');
-                    break;
-                default:
-                    toast.success('User data updated successfully');
-            }
+            await saveUserSettings(currentUser.uid, userData);
+            toast.success('User settings saved successfully');
+            setIsDirty(false); // Reset dirty state after saving
         } catch (error) {
-            console.error('Error updating user data:', error);
-            toast.error('Failed to update user data');
+            console.error('Error saving user data:', error);
+            toast.error('Failed to save user data');
         }
     };
 
@@ -83,6 +114,8 @@ export const useProfileController = () => {
         userData,
         loading,
         error,
-        updateUserData
+        updateUserData,
+        saveUserData,
+        isDirty // Expose dirty state
     };
 };
