@@ -13,9 +13,12 @@ import { StyledAppBar } from './styles';
 import { DRAWER_WIDTH, COLLAPSED_WIDTH } from './Constants';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { LanguageProvider,useLanguage } from '../../contexts/LanguageContext';
+
 import { useAuth } from '../../contexts/AuthContext';
 import { useTab } from '../../contexts/TabContext';
 import UserMenu from './UserMenu'; 
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'; // Import the AccountCircle icon
 
 export const Header = ({
     isDrawerCollapsed,
@@ -26,15 +29,9 @@ export const Header = ({
 }) => {
     const { currentUser } = useAuth();
     const { openTab } = useTab();
-
-    const handleOpenProfile = () => {
-        if (currentUser) {
-            const profileTabId = 'UserProfile';
-            openTab(profileTabId);
-        }
-        handleProfileMenuClose();
-    };
-
+    const { currentLanguage } = useLanguage();
+    const isRTL = currentLanguage === 'ar';
+ 
     const handleLogout = async () => {
         try {
             await logout();
@@ -65,7 +62,7 @@ export const Header = ({
             }}
         >
             <Toolbar>
-            <IconButton
+                <IconButton
                     size="large"
                     edge="start"
                     color="inherit"
@@ -73,6 +70,7 @@ export const Header = ({
                     onClick={handleDrawerToggle}
                     sx={{ 
                         mr: 2,
+                        
                         display: 'flex' // Always show the toggle button
                     }}
                 >
@@ -83,11 +81,9 @@ export const Header = ({
                     Techno Stationery
                 </Typography>
 
-                <UserMenu
-                    onProfileClick={handleOpenProfile}
-                    onSettingsClick={() => openTab('Settings')}
-                    onLogout={handleLogout}
-                />
+      
+               
+                <UserMenu  />
             </Toolbar>
         </StyledAppBar>
     );

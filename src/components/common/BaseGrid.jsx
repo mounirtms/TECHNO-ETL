@@ -118,7 +118,7 @@ export const StatusCell = ({ value, statusColors, className }) => {
         <Chip
             label={value?.toString().replace(/_/g, ' ')}
             size="small"
-            className={className}
+            className={className?.toString()}
             sx={{
                 backgroundColor: `${getStatusColor(value)}15`,
                 color: getStatusColor(value),
@@ -524,7 +524,7 @@ const SettingsDialog = ({ open, onClose, columns, gridName, onSave }) => {
  * Provides core grid functionality with customizable features
  */
 const BaseGrid = ({
-    gridName, // New prop for grid name
+    gridName,
     columns: userColumns,
     data,
     loading: externalLoading = false,
@@ -533,7 +533,7 @@ const BaseGrid = ({
     currentFilter = 'all',
     onFilterChange,
     getRowId = (row) => {
-        return row[staticPrimaryKeys[gridName]]; // Use the gridName prop
+        return row[staticPrimaryKeys[gridName]];
     },
     totalCount = 0,
     preColumns = [],
@@ -547,14 +547,20 @@ const BaseGrid = ({
     ],
     initialVisibleColumns = [],
     onError,
+    defaultSortField = 'created_at',
+    defaultSortDirection = 'desc',
+    defaultPageSize = 25,
     ...props
 }) => {
     // State management
-    const [sortModel, setSortModel] = useState([{ field: 'id', sort: 'desc' }]);
+    const [sortModel, setSortModel] = useState([{ 
+        field: defaultSortField, 
+        sort: defaultSortDirection 
+    }]);
     const [internalLoading, setInternalLoading] = useState(false);
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
-        pageSize: 10
+        pageSize: defaultPageSize
     });
     const safeData = Array.isArray(data) ? data : [];
     const [selectedRecord, setSelectedRecord] = useState(null);
@@ -562,29 +568,37 @@ const BaseGrid = ({
     const [selectionModel, setSelectionModel] = useState({});
     const [gridHeight, setGridHeight] = useState('100%');
 
+    // Common page size options for all grids
+    const commonPageSizes = [10, 25, 50, 100];
+
     // Process and enhance columns
     const finalColumns = useMemo(() => {
         try {
-            // Combine all column types
             let baseColumns = [...preColumns, ...userColumns, ...endColumns];
+            
+            // Ensure created_at is always present and sorted by default
+            if (!baseColumns.find(col => col.field === 'created_at')) {
+                baseColumns.push({
+                    field: 'created_at',
+                    headerName: 'Created At',
+                    width: 180,
+                    valueFormatter: (params) => new Date(params.value).toLocaleDateString()
+                });
+            }
 
             if (!data?.length) return baseColumns;
 
-            // Generate additional columns and merge them
             const generatedColumns = generateColumns(data[0], baseColumns);
             const mergedColumns = mergeColumns(baseColumns, generatedColumns);
 
-            // Process all columns with standard configurations
             return mergedColumns.map(column => ({
                 ...column,
                 filterable: column.filterable !== false,
                 sortable: column.sortable !== false,
-                hideable: true, // Allow all columns to be hidden/shown
-                // Keep explicitly defined hide status or use default (hidden for generated)
+                hideable: true,
                 hide: column.hide === undefined ?
                     !baseColumns.some(bc => bc.field === column.field) :
                     column.hide,
-                // Add any other default column properties here
                 minWidth: column.minWidth || 100,
                 flex: column.flex || (column.width ? undefined : 1)
             }));
@@ -593,6 +607,7 @@ const BaseGrid = ({
             return [];
         }
     }, [preColumns, userColumns, endColumns, data]);
+
     // Event handlers
     const handleRefresh = async () => {
         if (!onRefresh) return;
@@ -614,6 +629,7 @@ const BaseGrid = ({
 
     const handleFilterChange = (newFilter) => {
         onFilterChange?.(newFilter);
+        // Reset to first page when filter changes
         setPaginationModel(prev => ({ ...prev, page: 0 }));
         handleRefresh();
     };
@@ -678,13 +694,23 @@ const BaseGrid = ({
                     columns={finalColumns}
                     loading={internalLoading || externalLoading}
                     paginationMode="server"
+                    sortingMode="server"
                     filterMode="server"
                     rowCount={totalCount}
-                    page={paginationModel.page}
-                    pageSize={paginationModel.pageSize}
-                    onPageChange={handlePaginationModelChange}
-                    onPageSizeChange={(pageSize) => setPaginationModel(prev => ({ ...prev, pageSize }))}
-                    getRowId={getRowId} // Use the updated getRowId function
+                    pagination
+                    paginationModel={paginationModel}
+                    onPaginationModelChange={handlePaginationModelChange}
+                    pageSizeOptions={commonPageSizes}
+                    sortModel={sortModel}
+                    onSortModelChange={handleSortModelChange}
+                    getRowId={getRowId}
+                    disableRowSelectionOnClick
+                    onRowDoubleClick={handleRowDoubleClick}
+                    initialState={{
+                        sorting: {
+                            sortModel: [{ field: defaultSortField, sort: defaultSortDirection }]
+                        }
+                    }}
                     components={{
                         Toolbar: () => (
                             <CustomGridToolbar
@@ -697,33 +723,15 @@ const BaseGrid = ({
                                 filterModel={currentFilter}
                                 columns={finalColumns}
                                 gridName={gridName}
-                                customFilters={[]}
-                                onCustomFilterChange={() => { }}
-                                currentCustomFilter={''}
+                                customFilters={filterOptions}
+                                onCustomFilterChange={handleFilterChange}
+                                currentCustomFilter={currentFilter}
                             />
                         )
                     }}
-                    componentsProps={{
-                        toolbar: {
-                            showQuickFilter: true,
-                            quickFilterProps: { debounceMs: 500 },
-                        }
-                    }}
-                    pageSizeOptions={[10, 25, 50, 100]}
-                    disableRowSelectionOnClick
-                    onRowDoubleClick={handleRowDoubleClick}
-                    checkboxSelection
-                    onSelectionModelChange={handleSelectionModelChange}
-                    selectionModel={selectionModel}
                     {...props}
-                    sx={{
-                        '& .MuiDataGrid-cell:focus': {
-                            outline: 'none'
-                        }
-                    }}
                 />
             </StyledBox>
-
 
             <RecordDetailsDialog
                 open={detailsDialogOpen}

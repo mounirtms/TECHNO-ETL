@@ -28,20 +28,24 @@ const Layout = () => {
                     <Header
                         isDrawerCollapsed={!sidebarOpen}
                         handleDrawerToggle={() => setSidebarOpen(prev => !prev)}
-                        handleProfileMenuOpen={() => {}}
-                        handleProfileMenuClose={() => {}}
                     />
                     <Box sx={{ 
                         display: 'flex', 
                         flexGrow: 1,
                         paddingBottom: `${FOOTER_HEIGHT}px` 
                     }}>
-                        <Sidebar open={sidebarOpen} toggleDrawer={() => setSidebarOpen(prev => !prev)} />
-                        <Box component="main" sx={{ 
-                            flexGrow: 1, 
-                            width: `calc(100% - ${sidebarOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH}px)`,
-                            overflow: 'hidden'
-                        }}>
+                        <Sidebar 
+                            open={sidebarOpen} 
+                            toggleDrawer={() => setSidebarOpen(prev => !prev)} 
+                        />
+                        <Box 
+                            component="main" 
+                            sx={{ 
+                                flexGrow: 1, 
+                                width: `calc(100% - ${sidebarOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH}px)`,
+                                overflow: 'hidden'
+                            }}
+                        >
                             <TabPanel sidebarOpen={sidebarOpen} />
                         </Box>
                     </Box>
@@ -51,5 +55,4 @@ const Layout = () => {
         </LanguageProvider>
     );
 };
-
 export default Layout;

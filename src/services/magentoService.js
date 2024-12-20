@@ -8,20 +8,20 @@ import categoryData from '../assets/data/category.json';
 import { toast } from 'react-toastify';
 
 class MagentoApi {
+    #cache = new Map();
+    #cacheTimeout = 5 * 60 * 1000; // 5 minutes
+
     constructor() {
-        // Use proxy URL in development, direct URL in production
-        this.baseURL = import.meta.env.DEV 
-            ? '/magento-api'  // This will be proxied through Vite
-            : (import.meta.env.VITE_MAGENTO_API_URL || 'https://technostationery.com/rest/V1');
+        this.baseURL = localStorage.getItem('magentoApiUrl') || 
+                      import.meta.env.VITE_MAGENTO_API_URL || 
+                      'https://technostationery.com/rest/V1';
 
         this.api = axios.create({
             baseURL: this.baseURL,
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                //'Origin': 'https://technostationery.com'
+                'Accept': 'application/json'
             },
-           // withCredentials: false, // Disable credentials
             timeout: 30000,
             validateStatus: status => status < 500
         });
@@ -29,6 +29,11 @@ class MagentoApi {
         // Add request interceptor
         this.api.interceptors.request.use(
             (config) => {
+                const currentApiUrl = localStorage.getItem('magentoApiUrl');
+                if (currentApiUrl && currentApiUrl !== this.baseURL) {
+                    this.baseURL = currentApiUrl;
+                    config.baseURL = currentApiUrl;
+                }
                
                 const adminToken = this.getToken();
                 if (adminToken) {
@@ -36,14 +41,6 @@ class MagentoApi {
                         config.headers['Authorization'] = `Bearer ${adminToken}`;
                     }
                 }
-
-                // Log request details
-                console.log('Magento API Request:', {
-                    url: config.url,
-                    method: config.method,
-                    headers: config.headers,
-                    data: config.data
-                });
 
                 return config;
             },
@@ -222,6 +219,22 @@ class MagentoApi {
         }
     }
 
+    async connectOAuth(clientId, clientSecret) {
+        try {
+            const response = await this.api.post('/oauth/token', {
+                client_id: clientId,
+                client_secret: clientSecret,
+                grant_type: 'client_credentials'
+            });
+            const token = response.data.access_token;
+            this.setToken(token); // Store the token for future requests
+            return token;
+        } catch (error) {
+            console.error('OAuth connection error:', error);
+            throw new Error('Failed to connect using OAuth');
+        }
+    }
+
     // Logout
     async logout() {
         try {
@@ -362,19 +375,98 @@ class MagentoApi {
     }
 
     // Specific API methods
-    async getOrders(searchCriteria) {
-        return this.fetchData('GET', '/orders', this.buildSearchCriteria(searchCriteria));
+    async getOrders(searchCriteria = {}) {
+        try {
+            const cacheKey = `orders-${JSON.stringify(searchCriteria)}`;
+            const cached = this.getCachedData(cacheKey);
+            if (cached) return cached;
+
+            // Ensure filterGroups is an array
+            if (!searchCriteria.filterGroups) {
+                searchCriteria.filterGroups = [];
+            }
+
+            // Format the search criteria for Magento's API
+            const formattedCriteria = {
+                searchCriteria: {
+                    filterGroups: searchCriteria.filterGroups.map(group => ({
+                        filters: group.filters.map(filter => ({
+                            field: filter.field,
+                            value: filter.value,
+                            condition_type: filter.conditionType || 'eq'
+                        }))
+                    })),
+                    pageSize: searchCriteria.pageSize || 10,
+                    currentPage: searchCriteria.currentPage || 1
+                }
+            };
+
+            // Make the API call
+            const response = await this.api.get('/orders', {
+                params: formattedCriteria
+            });
+
+            // Return the response data
+            const result = {
+                items: response.items || [],
+                total_count: response.total_count || 0,
+                search_criteria: response.search_criteria || {}
+            };
+            
+            this.setCachedData(cacheKey, result);
+            return result;
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+            const localData = { 
+                items: this.getLocalData('orders'), 
+                total_count: this.getLocalData('orders').length 
+            };
+            this.setCachedData('orders-local', localData);
+            return localData;
+        }
     }
 
-    async getCustomers(searchCriteria) {
-        return this.fetchData('GET', '/customers/search', this.buildSearchCriteria(searchCriteria));
+    async getProducts(searchCriteria = {}) {
+        try {
+            const cacheKey = `products-${JSON.stringify(searchCriteria)}`;
+            const cached = this.getCachedData(cacheKey);
+            if (cached) return cached;
+
+            // Format the search criteria for Magento's API
+            const formattedCriteria = {
+                searchCriteria: {
+                    filterGroups: searchCriteria.filterGroups || [],
+                    pageSize: searchCriteria.pageSize || 10,
+                    currentPage: searchCriteria.currentPage || 1,
+                    sortOrders: searchCriteria.sortOrders || []
+                }
+            };
+
+            // Make the API call
+            const response = await this.api.get('/products', {
+                params: formattedCriteria
+            });
+
+            // Return the response data
+            const result = {
+                items: response.items || [],
+                total_count: response.total_count || 0,
+                search_criteria: response.search_criteria || {}
+            };
+            
+            this.setCachedData(cacheKey, result);
+            return result;
+        } catch (error) {
+            console.error('Error fetching products:', error);
+            const localData = { 
+                items: this.getLocalData('products'), 
+                total_count: this.getLocalData('products').length 
+            };
+            this.setCachedData('products-local', localData);
+            return localData;
+        }
     }
 
-    async getProducts(searchCriteria) {
-        return this.fetchData('GET', '/products', this.buildSearchCriteria(searchCriteria));
-    }
-
-    // Additional methods for specific operations
     async getOrder(orderId) {
         return this.api.get(`/orders/${orderId}`);
     }
@@ -388,8 +480,92 @@ class MagentoApi {
     }
 
     // Catalog endpoints
-    async getCategories() {
-        return this.fetchData('GET', '/categories');
+    async getCategories(searchCriteria = {}) {
+        try {
+            const cacheKey = `categories-${JSON.stringify(searchCriteria)}`;
+            const cached = this.getCachedData(cacheKey);
+            if (cached) return cached;
+
+            const formattedCriteria = {
+                searchCriteria: {
+                    filterGroups: searchCriteria.filterGroups || [],
+                    pageSize: searchCriteria.pageSize || 100,
+                    currentPage: searchCriteria.currentPage || 1,
+                    sortOrders: [{
+                        field: 'position',
+                        direction: 'ASC'
+                    }]
+                }
+            };
+
+            console.log('Fetching categories with criteria:', formattedCriteria);
+            
+            try {
+                const response = await this.api.get('/categories/list', {
+                    params: formattedCriteria
+                });
+                console.log('Raw category response:', response);
+
+                if (!response || !response.items) {
+                    throw new Error('Invalid response format');
+                }
+
+                const result = {
+                    items: response.items.map(cat => ({
+                        entity_id: cat.id || cat.entity_id,
+                        parent_id: cat.parent_id || '0',
+                        name: cat.name || 'Unnamed Category',
+                        position: parseInt(cat.position) || 0,
+                        level: parseInt(cat.level) || 0,
+                        is_active: Boolean(cat.is_active),
+                        product_count: parseInt(cat.product_count) || 0
+                    })),
+                    total_count: response.total_count || response.items.length,
+                    search_criteria: response.search_criteria || {}
+                };
+
+                console.log('Processed category result:', result);
+                this.setCachedData(cacheKey, result);
+                return result;
+            } catch (apiError) {
+                console.error('API Error:', apiError);
+                throw apiError;
+            }
+        } catch (error) {
+            console.error('Error in getCategories:', error);
+            
+            // Fallback to local data
+            const localCategories = [
+                {
+                    entity_id: '1',
+                    parent_id: '0',
+                    name: 'Root Catalog',
+                    position: 0,
+                    level: 0,
+                    is_active: true,
+                    product_count: 0
+                },
+                {
+                    entity_id: '2',
+                    parent_id: '1',
+                    name: 'Default Category',
+                    position: 1,
+                    level: 1,
+                    is_active: true,
+                    product_count: 0
+                }
+                // Add more sample categories if needed
+            ];
+
+            const localData = { 
+                items: localCategories,
+                total_count: localCategories.length,
+                search_criteria: searchCriteria
+            };
+            
+            this.setCachedData('categories-local', localData);
+            return localData;
+        }
     }
 
     async getCategory(categoryId) {
@@ -469,54 +645,111 @@ class MagentoApi {
         }
     }
 
-    // Cache management
+    getCachedData(key) {
+        const cached = this.#cache.get(key);
+        if (cached && (Date.now() - cached.timestamp) < this.#cacheTimeout) {
+            console.log('Cache hit for:', key);
+            return cached.data;
+        }
+        console.log('Cache miss for:', key);
+        return null;
+    }
+
+    setCachedData(key, data) {
+        console.log('Caching data for:', key);
+        this.#cache.set(key, {
+            data,
+            timestamp: Date.now()
+        });
+    }
+
+    clearCache() {
+        console.log('Clearing cache');
+        this.#cache.clear();
+    }
+
+    async getCustomers(searchCriteria = {}) {
+        try {
+            const cacheKey = `customers-${JSON.stringify(searchCriteria)}`;
+            const cached = this.getCachedData(cacheKey);
+            if (cached) return cached;
+
+            const formattedCriteria = {
+                searchCriteria: {
+                    filterGroups: searchCriteria.filterGroups || [],
+                    pageSize: searchCriteria.pageSize || 10,
+                    currentPage: searchCriteria.currentPage || 1,
+                    sortOrders: searchCriteria.sortOrders || []
+                }
+            };
+
+            const response = await this.api.get('/customers/search', { params: formattedCriteria });
+            const result = {
+                items: response.items || [],
+                total_count: response.total_count || 0,
+                search_criteria: response.search_criteria || {}
+            };
+            
+            this.setCachedData(cacheKey, result);
+            return result;
+        } catch (error) {
+            console.error('Error fetching customers:', error);
+            const localData = { 
+                items: this.getLocalData('customers'), 
+                total_count: this.getLocalData('customers').length 
+            };
+            this.setCachedData('customers-local', localData);
+            return localData;
+        }
+    }
+
     async cleanCache(types = ['full_page']) {
         return this.fetchData('POST', '/cacheType/clean', { types });
     }
+
+    // Utility function to get local data
+    getLocalData(entityType) {
+        const dataMap = {
+            customers: customersData,
+            products: productsData,
+            orders: ordersData,
+            invoices: invoicesData,
+            categories: categoryData
+        };
+        return dataMap[entityType] || [];
+    };
+
+    // Error handling function with fallback to local data
+    handleApi401Error = async (error) => {
+
+        let entityType;
+        if ((error.request.responseURL).includes('orders')) {
+            entityType = 'orders'
+        } else {
+            if ((error.request.responseURL).includes('products')) {
+                entityType = 'products'
+            }
+            else if ((error.request.responseURL).includes('customers')) {
+                entityType = 'customers'
+            }
+            else if ((error.request.responseURL).includes('invoice')) {
+                entityType = 'invoices'
+            }
+            else if ((error.request.responseURL).includes('categories')) {
+                entityType = 'categories'
+            }
+        }
+
+        let localData = this.getLocalData(entityType);
+
+        return {
+            items: localData,
+            total_count: localData.length,
+            search_criteria: {}
+        };
+    };
 }
-// Utility function to get local data
-const getLocalData = (entityType) => {
-    const dataMap = {
-        customers: customersData,
-        products: productsData,
-        orders: ordersData,
-        invoices: invoicesData,
-        categories: categoryData
-    };
-    return dataMap[entityType] || [];
-};
 
-// Error handling function with fallback to local data
-const handleApi401Error = async (error) => {
-
-    let entityType;
-    if ((error.request.responseURL).includes('orders')) {
-        entityType = 'orders'
-    } else {
-        if ((error.request.responseURL).includes('products')) {
-            entityType = 'products'
-        }
-        else if ((error.request.responseURL).includes('customers')) {
-            entityType = 'customers'
-        }
-        else if ((error.request.responseURL).includes('invoice')) {
-            entityType = 'invoices'
-        }
-        else if ((error.request.responseURL).includes('categories')) {
-            entityType = 'categories'
-        }
-    }
-
-    let localData = getLocalData(entityType);
-
-    return {
-        items: localData,
-        total_count: localData.length,
-        search_criteria: {}
-    };
-
-
-};
 const magentoApi = new MagentoApi();
 export default magentoApi;
 
@@ -528,5 +761,6 @@ export const {
     getStockItems, updateStockItem,
     getInvoices, getShipments,
     cleanCache, shipOrder,
-    getSources, getSource, getStocks, getStock
+    getSources, getSource, getStocks, getStock,
+    connectOAuth
 } = magentoApi;

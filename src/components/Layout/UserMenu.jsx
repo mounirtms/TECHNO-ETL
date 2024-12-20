@@ -41,7 +41,7 @@ const StyledMenu = styled(Menu)(({ theme }) => ({
     },
 }));
 
-const UserMenu = ({ onProfileClick, onSettingsClick, onLogout }) => {
+const UserMenu = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const { currentUser, logout } = useAuth();
     const { translate } = useLanguage();
@@ -55,17 +55,13 @@ const UserMenu = ({ onProfileClick, onSettingsClick, onLogout }) => {
         setAnchorEl(null);
     };
 
-    const handleProfileClick = () => {
+    const handleOpenProfile = () => {
+        if (currentUser) { 
+            openTab('UserProfile');
+        }
         handleClose();
-        openTab('UserProfile'); // Use openTab to ensure the UserProfile tab is opened
-        onProfileClick(); // Keep the original onProfileClick for any additional logic
-
     };
-
-    const handleSettingsClick = () => {
-        handleClose();
-        onSettingsClick();
-    };
+ 
 
     const handleLogout = async () => {
         try {
@@ -112,6 +108,12 @@ const UserMenu = ({ onProfileClick, onSettingsClick, onLogout }) => {
             >
          
          
+                <MenuItem onClick={handleOpenProfile}>
+                    <ListItemIcon>
+                        <SettingsIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText primary={translate('common.settings')} />
+                </MenuItem>
                 <MenuItem onClick={handleLogout}>
                     <ListItemIcon>
                         <LogoutIcon fontSize="small" />

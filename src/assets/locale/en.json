@@ -35,11 +35,15 @@
             "phone": "Phone Number",
             "birthDate": "Date of Birth",
             "gender": "Gender",
+            "male": "Male",
+            "female": "Female",
+            "other": "Other",
             "address": "Address",
             "city": "City",
             "country": "Country",
             "postalCode": "Postal Code"
         },
+        "syncToCloud": "Sync to Cloud",
         "preferences": {
             "title": "User Preferences",
             "language": {
@@ -88,7 +92,7 @@
         },
         "apiSettings": {
             "title": "API Settings",
-            "save":"Save Changes",
+            "save": "Save Changes",
             "validation": {
                 "missingCredentials": "Please provide Magento URL, username, and password",
                 "missingCegidCredentials": "Please provide Cegid URL, username, password, and database"
@@ -98,35 +102,27 @@
                 "url": "API URL",
                 "username": "Username",
                 "password": "Password",
-                "generateToken": "Generate Token",
-                "tokenGeneratedSuccess": "Magento token generated successfully",
-                "invalidCredentials": "Invalid credentials",
-                "accessDenied": "Access denied",
-                "tokenGenerationFailed": "Failed to generate token"
+                "authMode": "Authentication Mode",
+                "getToken": "Get Token",
+                "connect": "Connect",
+                "tokenSuccess": "Token obtained successfully",
+                "tokenError": "Failed to obtain token",
+                "oauthSuccess": "OAuth connection successful",
+                "oauthError": "OAuth connection failed",
+                "consumerKey": "Consumer Key",
+                "consumerSecret": "Consumer Secret",
+                "accessToken": "Access Token",
+                "accessTokenSecret": "Access Token Secret"
             },
             "cegid": {
                 "title": "Cegid API",
-                "url": "Service URL",
+                "url": "API URL",
                 "username": "Username",
                 "password": "Password",
                 "database": "Database",
-                "connect": "Connect",
-                "connectionSuccess": "Connected to Cegid successfully",
-                "connectionFailed": "Connection failed",
-                "parseError": "Error parsing response",
-                "authenticationFailed": "Authentication failed"
-            },
-            "security": {
-                "title": "Security Settings",
-                "twoFactorAuth": "Two-Factor Authentication",
-                "ipRestriction": "IP Address Restrictions"
-            },
-            "errors": {
-                "invalidCredentials": "Invalid credentials",
-                "accessDenied": "Access denied",
-                "serverError": "Server error occurred",
-                "networkError": "Network error",
-                "unknownError": "An unknown error occurred"
+                "testConnection": "Test Connection",
+                "testSuccess": "Connection test successful",
+                "testError": "Connection test failed"
             }
         },
         "actions": {

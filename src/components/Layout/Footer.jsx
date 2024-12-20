@@ -14,7 +14,7 @@ const FooterContainer = styled(({
     component, 
     sidebarOpen, 
     isLoginScreen, 
-    isUsingLocalData, 
+    isUsingLocalData,
     ...props 
 }) => (
     <Box 
@@ -44,16 +44,8 @@ const FooterContainer = styled(({
         }),
         boxShadow: theme.shadows[2],
         zIndex: theme.zIndex.drawer + 1,
-        
-        // Styling based on data attributes
-        '&[data-local-data="true"]': {
-            backgroundColor: theme.palette.error.main,
-            color: theme.palette.error.contrastText,
-        },
-        '&[data-local-data="false"]': {
-            backgroundColor: theme.palette.primary.main,
-            color: theme.palette.primary.contrastText,
-        }
+        backgroundColor: isUsingLocalData ? theme.palette.error.main : theme.palette.primary.main,
+        color: isUsingLocalData ? theme.palette.error.contrastText : theme.palette.primary.contrastText
     };
 
     return baseStyles;
@@ -77,7 +69,6 @@ const Footer = ({ sidebarOpen, isLoginScreen = false }) => {
     const currentYear = new Date().getFullYear();
 
     useEffect(() => {
-        // Load version from version.json
         const loadVersion = async () => {
             const response = await fetch('../../../version.json');
             const data = await response.json();

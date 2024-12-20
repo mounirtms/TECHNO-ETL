@@ -1,29 +1,30 @@
 import React, { Suspense, lazy } from 'react'; // TODO: Implement lazy loading for components
 import ReactDOM from 'react-dom/client';
-import { 
-    BrowserRouter as Router, 
-    Routes, 
-    Route, 
-    Navigate, 
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Navigate,
     Outlet,
     useLocation,
     useNavigate
 } from 'react-router-dom';
-import { 
-    CssBaseline, 
-    CircularProgress, 
-    Box 
+import {
+    CssBaseline,
+    CircularProgress,
+    Box
 } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Layout from './components/layout/Layout';
+import Layout from './components/Layout/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import './index.css';
-
+import { getDatabase, ref, set, get } from 'firebase/database';
+import { MENU_ITEMS } from './components/Layout/Constants'; // Adjust the path as necessary
 // Performance TODO: Consider code splitting for large components
 
 // Performance TODO: Implement route-based code splitting
@@ -33,12 +34,12 @@ import './index.css';
 
 // Performance Optimization: Loading Fallback Component
 const LoadingFallback = () => (
-    <Box 
-        sx={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center', 
-            height: '100vh' 
+    <Box
+        sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh'
         }}
     >
         <CircularProgress />
@@ -57,15 +58,33 @@ const ProtectedRoute = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const skipAuth = import.meta.env.VITE_SKIP_AUTH === 'true';
+    const fetchMenuItemsFromDatabase = async () => {
+        const db = getDatabase();
+        const menuItemsRef = ref(db, 'constants');
 
-    React.useEffect(() => {
-        if (!loading && !currentUser && !skipAuth) {
-            // Redirect to login if not authenticated and not in dev mode
-            navigate('/login', { 
-                state: { from: location }, 
-                replace: true 
-            });
+        try {
+            const snapshot = await get(menuItemsRef);
+            if (snapshot.exists()) {
+                const menuItems = snapshot.val();
+                console.log('Fetched MENU_ITEMS:', menuItems);
+                localStorage.setItem('dynamicMenuItems', JSON.stringify(menuItems)); // Save to local storage menuItems;
+            } else {
+                console.log('No data available');
+            }
+        } catch (error) {
+            console.error('Error fetching MENU_ITEMS:', error);
         }
+    };
+    React.useEffect(() => {
+        //  if (!loading && !currentUser && !skipAuth) {
+        // Redirect to login if not authenticated and not in dev mode
+        //    navigate('/login', {
+        //      state: { from: location },
+        //    replace: true
+        //});
+        //}else{
+        fetchMenuItemsFromDatabase();
+        //}
     }, [currentUser, loading, navigate, location, skipAuth]);
 
     if (loading && !skipAuth) {
@@ -92,7 +111,17 @@ const LoginRoute = () => {
             navigate(from, { replace: true });
         }
     }, [currentUser, loading, navigate, location]);
+    const uploadConstantsToDatabase = async () => {
+        const db = getDatabase();
+        const constantsRef = ref(db, 'menuItems');
 
+        try {
+            await set(constantsRef, MENU_ITEMS);
+            console.log('Constants uploaded successfully.');
+        } catch (error) {
+            console.error('Error uploading constants:', error);
+        }
+    };
     // Performance TODO:
     // - Optimize redirect logic
     // - Implement client-side route caching
@@ -129,7 +158,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                             - Optimize CSS-in-JS rendering
                         */}
                         <CssBaseline />
-                        
+
                         {/* 
                             Notification System Performance TODO:
                             - Limit maximum number of toast notifications

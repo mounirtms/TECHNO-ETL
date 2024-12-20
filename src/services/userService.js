@@ -1,6 +1,6 @@
 import { ref, set, get, update, onValue } from 'firebase/database';
 import { database } from '../config/firebase';
-
+import { languages } from '../contexts/LanguageContext';
 // Default user settings
 const defaultUserSettings = {
     personalInfo: {
@@ -18,9 +18,9 @@ const defaultUserSettings = {
     apiSettings: {
         magento: {
             url: import.meta.env.VITE_MAGENTO_URL || '',
-            username:  import.meta.env.VITE_MAGENTO_USERNAME || '',
-            password:  import.meta.env.VITE_MAGENTO_PASSWORD || '',
-            authMode:  import.meta.env.VITE_MAGENTO_AUTH_TYPE || 'basic'
+            username: import.meta.env.VITE_MAGENTO_USERNAME || '',
+            password: import.meta.env.VITE_MAGENTO_PASSWORD || '',
+            authMode: import.meta.env.VITE_MAGENTO_AUTH_TYPE || 'basic'
         },
         cegid: {
             url: '',
@@ -42,9 +42,9 @@ export const saveUserSettings = async (userId, settings) => {
 
         // Save all settings as a single object
         await set(userRef, {
-            personalInfo: settings.personalInfo || defaultUserSettings.personalInfo,
-            apiSettings: settings.apiSettings || defaultUserSettings.apiSettings,
-            preferences: settings.preferences || defaultUserSettings.preferences,
+            personalInfo: Object.assign(defaultUserSettings.personalInfo, settings.personalInfo),
+            apiSettings: Object.assign(defaultUserSettings.apiSettings, settings.apiSettings),
+            preferences: Object.assign(defaultUserSettings.preferences, settings.preferences),
             updatedAt: new Date().toISOString()
         });
 
@@ -66,16 +66,20 @@ export const saveUserSettings = async (userId, settings) => {
 };
 
 // Reintroducing the applyUserPreferences function
-export const applyUserPreferences = (data, { setLanguage, setThemeMode }) => {
+export const applyUserPreferences = (data, { setLanguage, toggleTheme, setFontSize }) => {
     if (data?.preferences) {
-        if (data.preferences.language && setLanguage) {
-            setLanguage(data.preferences.language);
-        }
-        if (data.preferences.theme && setThemeMode) {
-            setThemeMode(data.preferences.theme);
-        }
+      if (data.preferences.language) {
+        setLanguage(data.preferences.language);
+        document.documentElement.setAttribute('lang', languages[data.preferences.language].code);
+      }
+      if (data.preferences.fontSize) {
+        setFontSize(data.preferences.fontSize);
+      }
+      if (data.preferences.theme) {
+        toggleTheme(data.preferences.theme);
+      }
     }
-};
+  };
 
 // Function to get user profile data from Firebase
 export const getUserProfileData = (userId, callback) => {
@@ -95,10 +99,10 @@ export const getUserProfileData = (userId, callback) => {
 
 // Helper function to encrypt sensitive data
 const encryptValue = (value) => {
-  return `encrypted_${value}`;
+    return `encrypted_${value}`;
 };
 
 // Helper function to decrypt sensitive data
 const decryptValue = (value) => {
-  return value.replace('encrypted_', '');
+    return value.replace('encrypted_', '');
 };

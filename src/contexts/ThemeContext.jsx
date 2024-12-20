@@ -203,9 +203,18 @@ export const ThemeProvider = ({ children }) => {
     return savedMode || 'light';
   });
 
+  const [fontSize, setFontSize] = useState(() => {
+    const savedFontSize = localStorage.getItem('fontSize');
+    return savedFontSize || 'medium';
+  });
+
   useEffect(() => {
     localStorage.setItem('themeMode', mode);
   }, [mode]);
+
+  useEffect(() => {
+    localStorage.setItem('fontSize', fontSize);
+  }, [fontSize]);
 
   const theme = useMemo(() => createCustomTheme(mode), [mode]);
 
@@ -216,7 +225,9 @@ export const ThemeProvider = ({ children }) => {
   const value = {
     mode,
     toggleTheme,
-    isDark: mode === 'dark'
+    isDark: mode === 'dark',
+    fontSize,
+    setFontSize
   };
 
   return (

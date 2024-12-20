@@ -37,7 +37,9 @@ const ProductsGrid = () => {
         { value: 'simple', label: 'Simple Products' },
         { value: 'configurable', label: 'Configurable Products' },
         { value: 'virtual', label: 'Virtual Products' },
-        { value: 'downloadable', label: 'Downloadable Products' }
+        { value: 'downloadable', label: 'Downloadable Products' },
+        { value: 'last7d', label: 'Added Last 7 Days' },
+        { value: 'last30d', label: 'Added Last 30 Days' }
     ];
 
     // Handle filter change
@@ -45,27 +47,37 @@ const ProductsGrid = () => {
         setCurrentFilter(filter);
 
         let filterParams = {};
-        switch (filter) {
+        const now = new Date();
+
+        switch(filter) {
             case 'inStock':
-                filterParams = { 'qty[gt]': 0 };
+                filterParams = { stock: 'IN_STOCK' };
                 break;
             case 'outOfStock':
-                filterParams = { 'qty[eq]': 0 };
+                filterParams = { stock: 'OUT_OF_STOCK' };
                 break;
             case 'lowStock':
-                filterParams = { 'qty[gt]': 0, 'qty[lt]': 10 };
+                filterParams = { stock: 'LOW_STOCK' };
                 break;
             case 'simple':
-                filterParams = { 'type_id[eq]': 'simple' };
+                filterParams = { type: 'simple' };
                 break;
             case 'configurable':
-                filterParams = { 'type_id[eq]': 'configurable' };
+                filterParams = { type: 'configurable' };
                 break;
             case 'virtual':
-                filterParams = { 'type_id[eq]': 'virtual' };
+                filterParams = { type: 'virtual' };
                 break;
             case 'downloadable':
-                filterParams = { 'type_id[eq]': 'downloadable' };
+                filterParams = { type: 'downloadable' };
+                break;
+            case 'last7d':
+                const last7d = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
+                filterParams = { created_at: { gt: last7d.toISOString() } };
+                break;
+            case 'last30d':
+                const last30d = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+                filterParams = { created_at: { gt: last30d.toISOString() } };
                 break;
             default:
                 filterParams = {};
@@ -75,58 +87,91 @@ const ProductsGrid = () => {
     }, []);
 
     // Fetch products with filters
-    const fetchProducts = useCallback(async (filterParams = {}) => {
-        setLoading(true);
+    const fetchProducts = useCallback(async (filterParams = {}, page = 0, pageSize = 10) => {
         try {
-            const response = await magentoApi.getProducts(filterParams);
-            setData(response.items || []);
+            setLoading(true);
+            const searchCriteria = {
+                filterGroups: [],
+                pageSize: pageSize,
+                currentPage: page + 1
+            };
 
-            // Update stats
-            const inStockCount = response.items.filter(item => item.qty > 0).length;
-            setStats({
-                total: response.total_count || 0,
-                inStock: inStockCount,
-                outOfStock: (response.total_count || 0) - inStockCount
-            });
+            // Handle stock filters
+            if (filterParams.stock) {
+                searchCriteria.filterGroups.push({
+                    filters: [{
+                        field: 'quantity_and_stock_status',
+                        value: filterParams.stock,
+                        conditionType: 'eq'
+                    }]
+                });
+            }
+
+            // Handle type filters
+            if (filterParams.type) {
+                searchCriteria.filterGroups.push({
+                    filters: [{
+                        field: 'type_id',
+                        value: filterParams.type,
+                        conditionType: 'eq'
+                    }]
+                });
+            }
+
+            // Handle date filters
+            if (filterParams.created_at) {
+                searchCriteria.filterGroups.push({
+                    filters: [{
+                        field: 'created_at',
+                        value: filterParams.created_at,
+                        conditionType: 'gt'
+                    }]
+                });
+            }
+
+            const response = await magentoApi.getProducts(searchCriteria);
+            const products = response?.items || [];
+            setData(products);
+            updateStats(products);
         } catch (error) {
             console.error('Error fetching products:', error);
-            toast.error('Failed to fetch products');
+            toast.error('Failed to fetch products. Using local data.');
+            // Use local data as fallback
+            const localProducts = magentoApi.getLocalData('products');
+            setData(localProducts);
+            updateStats(localProducts);
         } finally {
             setLoading(false);
         }
     }, []);
 
+    // Handle pagination change
+    const handlePaginationChange = useCallback(({ page, pageSize }) => {
+        fetchProducts(filters, page, pageSize);
+    }, [filters, fetchProducts]);
+
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const response = await magentoApi.getProducts(filters);
-                setData(response.data.items);
+        fetchProducts(filters);
+    }, [filters, fetchProducts]);
 
-                const totalCount = response.data.total_count;
-                const inStockCount = response.data.items.filter(item => item.qty > 0).length;
-                const outOfStockCount = response.data.items.filter(item => item.qty === 0).length;
-                const lowStockCount = response.data.items.filter(item => item.qty < 10).length;
-                const averagePrice = totalCount > 0
-                    ? response.data.items.reduce((acc, item) => acc + item.price, 0) / totalCount
-                    : 0; // Default to 0 if no products
+    // Update stats
+    const updateStats = (products) => {
+        const totalCount = products.length;
+        const inStockCount = products.filter(item => item.qty > 0).length;
+        const outOfStockCount = products.filter(item => item.qty === 0).length;
+        const lowStockCount = products.filter(item => item.qty > 0 && item.qty < 10).length;
+        const averagePrice = totalCount > 0
+            ? products.reduce((acc, item) => acc + parseFloat(item.price || 0), 0) / totalCount
+            : 0;
 
-                setStats({
-                    total: totalCount,
-                    inStock: inStockCount,
-                    outOfStock: outOfStockCount,
-                    lowStock: lowStockCount,
-                    averagePrice: averagePrice // Ensure this is a number
-                });
-            } catch (error) {
-                toast.error('Failed to fetch products');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [filters]);
+        setStats({
+            total: totalCount,
+            inStock: inStockCount,
+            outOfStock: outOfStockCount,
+            lowStock: lowStockCount,
+            averagePrice: averagePrice
+        });
+    };
 
     // Grid columns configuration
     const columns = [
@@ -160,17 +205,57 @@ const ProductsGrid = () => {
 
     return (
         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
-         
+            <StatsCards 
+                cards={[
+                    {
+                        title: 'Total Products',
+                        value: stats.total,
+                        icon: InventoryIcon,
+                        color: 'primary'
+                    },
+                    {
+                        title: 'In Stock',
+                        value: stats.inStock,
+                        icon: CheckCircleIcon,
+                        color: 'success'
+                    },
+                    {
+                        title: 'Out of Stock',
+                        value: stats.outOfStock,
+                        icon: ErrorIcon,
+                        color: 'error'
+                    },
+                    {
+                        title: 'Low Stock',
+                        value: stats.lowStock,
+                        icon: TrendingDownIcon,
+                        color: 'warning'
+                    },
+                    {
+                        title: 'Average Price',
+                        value: new Intl.NumberFormat('fr-DZ', {
+                            style: 'currency',
+                            currency: 'DZD'
+                        }).format(stats.averagePrice),
+                        icon: AttachMoneyIcon,
+                        color: 'info'
+                    }
+                ]}
+            />
 
             <BaseGrid
                 gridName="ProductsGrid"
                 columns={columns}
                 data={data}
                 loading={loading}
-                onRefresh={() => fetchProducts(filters)}
+                onRefresh={handlePaginationChange}
                 customFilters={filterOptions}
                 currentCustomFilter={currentFilter}
                 onCustomFilterChange={handleFilterChange}
+                totalCount={stats.total}
+                defaultSortField="created_at"
+                defaultSortDirection="desc"
+                defaultPageSize={10}
             />
         </Box>
     );

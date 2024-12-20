@@ -15,9 +15,11 @@ import {
 import { styled } from '@mui/material/styles';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import SaveIcon from '@mui/icons-material/Save';
+import SyncIcon from '@mui/icons-material/Sync';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { useAuth } from '../../../contexts/AuthContext';
+import { useProfileController } from '../ProfileController';
 
 const StyledAvatar = styled(Avatar)(({ theme }) => ({
   width: 100,
@@ -83,62 +85,49 @@ const SaveButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const PersonalInfoTab = ({ onSave, loading, userData }) => {
+const PersonalInfoTab = () => {
+  const { userData, updateUserData, loading } = useProfileController();
   const { translate } = useLanguage();
   const { mode } = useTheme();
   const { currentUser } = useAuth();
   const [formData, setFormData] = useState({
-    firstName: userData?.firstName || '',
-    lastName: userData?.lastName || '',
-    email: userData?.email || '',
-    phone: userData?.phone || '',
-    address: userData?.address || '',
-    city: userData?.city || '',
-    country: userData?.country || '',
-    postalCode: userData?.postalCode || '',
-    birthDate: userData?.birthDate || '',
-    gender: userData?.gender || '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    country: '',
+    postalCode: '',
+    birthDate: '',
+    gender: ''
   });
-  const [isEdited, setIsEdited] = useState(false);
 
+  // Load data only once on mount
   useEffect(() => {
-    if (currentUser) {
-      // Load user data from currentUser
-      setFormData(prevData => ({
-        ...prevData,
-        email: currentUser.email || '',
-        firstName: currentUser.displayName?.split(' ')[0] || '',
-        lastName: currentUser.displayName?.split(' ')[1] || '',
-        // Add other fields from your user data
-      }));
+    const remoteSettings = userData?.personalInfo;
+    if (remoteSettings) {
+      setFormData(remoteSettings);
     }
-  }, [currentUser]);
+  }, []);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    setIsEdited(true);
+  const handleInputChange = (field, value) => {
+    const updatedFormData = {
+      ...formData,
+      [field]: value
+    };
+    setFormData(updatedFormData);
+    
+    // Only update local storage
+    localStorage.setItem('userPersonalInfo', JSON.stringify(updatedFormData));
   };
 
-  const handleSave = async () => {
-    if (onSave) {
-      await onSave({
-        type: 'personalInfo',
-        data: formData
-      });
-      setIsEdited(false);
-    }
-  };
-
-  const handleAvatarChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // Handle avatar upload
-      console.log('Avatar file:', file);
-    }
+  const handleSyncToFirebase = () => {
+    updateUserData({
+      personalInfo: formData,
+      apiSettings: JSON.parse(localStorage.getItem('userApiSettings')),
+      preferences: JSON.parse(localStorage.getItem('userPreferences'))
+    });
   };
 
   return (
@@ -168,7 +157,7 @@ const PersonalInfoTab = ({ onSave, loading, userData }) => {
                   style={{ display: 'none' }}
                   id="avatar-upload"
                   type="file"
-                  onChange={handleAvatarChange}
+                  onChange={(event) => console.log('Avatar file:', event.target.files[0])}
                 />
                 <label htmlFor="avatar-upload">
                   <UploadButton
@@ -190,18 +179,15 @@ const PersonalInfoTab = ({ onSave, loading, userData }) => {
                 </Typography>
               </Stack>
             </Stack>
-            {isEdited && (
-              <SaveButton
-                variant="contained"
-                color="primary"
-                onClick={handleSave}
-                disabled={loading}
-                startIcon={<SaveIcon />}
-                size="small"
-              >
-                {translate('common.save')}
-              </SaveButton>
-            )}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSyncToFirebase}
+              startIcon={<SyncIcon />}
+              disabled={loading}
+            >
+              {translate('profile.syncToCloud')}
+            </Button>
           </Stack>
           <Divider sx={{ my: 2 }} />
         </Grid>
@@ -216,7 +202,7 @@ const PersonalInfoTab = ({ onSave, loading, userData }) => {
                 label={translate('profile.personalInfo.firstName')}
                 name="firstName"
                 value={formData.firstName}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange('firstName', e.target.value)}
                 disabled={loading}
               />
             </Grid>
@@ -227,7 +213,7 @@ const PersonalInfoTab = ({ onSave, loading, userData }) => {
                 label={translate('profile.personalInfo.lastName')}
                 name="lastName"
                 value={formData.lastName}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange('lastName', e.target.value)}
                 disabled={loading}
               />
             </Grid>
@@ -238,7 +224,7 @@ const PersonalInfoTab = ({ onSave, loading, userData }) => {
                 label={translate('profile.personalInfo.phone')}
                 name="phone"
                 value={formData.phone}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange('phone', e.target.value)}
                 disabled={loading}
               />
             </Grid>
@@ -250,7 +236,7 @@ const PersonalInfoTab = ({ onSave, loading, userData }) => {
                 name="birthDate"
                 type="date"
                 value={formData.birthDate}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange('birthDate', e.target.value)}
                 disabled={loading}
                 InputLabelProps={{ shrink: true }}
               />
@@ -263,7 +249,7 @@ const PersonalInfoTab = ({ onSave, loading, userData }) => {
                 label={translate('profile.personalInfo.gender')}
                 name="gender"
                 value={formData.gender}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange('gender', e.target.value)}
                 disabled={loading}
               >
                 <option value="male">{translate('profile.personalInfo.male')}</option>
@@ -278,7 +264,7 @@ const PersonalInfoTab = ({ onSave, loading, userData }) => {
                 label={translate('profile.personalInfo.address')}
                 name="address"
                 value={formData.address}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange('address', e.target.value)}
                 disabled={loading}
               />
             </Grid>
@@ -289,7 +275,7 @@ const PersonalInfoTab = ({ onSave, loading, userData }) => {
                 label={translate('profile.personalInfo.city')}
                 name="city"
                 value={formData.city}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange('city', e.target.value)}
                 disabled={loading}
               />
             </Grid>
@@ -300,7 +286,7 @@ const PersonalInfoTab = ({ onSave, loading, userData }) => {
                 label={translate('profile.personalInfo.country')}
                 name="country"
                 value={formData.country}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange('country', e.target.value)}
                 disabled={loading}
               />
             </Grid>
@@ -311,7 +297,7 @@ const PersonalInfoTab = ({ onSave, loading, userData }) => {
                 label={translate('profile.personalInfo.postalCode')}
                 name="postalCode"
                 value={formData.postalCode}
-                onChange={handleInputChange}
+                onChange={(e) => handleInputChange('postalCode', e.target.value)}
                 disabled={loading}
               />
             </Grid>

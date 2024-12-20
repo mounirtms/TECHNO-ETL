@@ -14,35 +14,23 @@ const TabPanel = ({ sidebarOpen }) => {
     const { tabs, activeTab, openTab, getActiveComponent } = useTab();
     const [tabPanelHeight, setTabPanelHeight] = useState('100%');
 
-    // Calculate dynamic height
     useEffect(() => {
         const calculateHeight = () => {
             const windowHeight = window.innerHeight;
-            
             const calculatedHeight = windowHeight - HEADER_HEIGHT - FOOTER_HEIGHT;
             setTabPanelHeight(`${calculatedHeight}px`);
         };
 
-        // Calculate initial height
         calculateHeight();
-
-        // Recalculate on window resize
         window.addEventListener('resize', calculateHeight);
-
-        // Cleanup listener
         return () => window.removeEventListener('resize', calculateHeight);
     }, []);
-
-    console.log('Current Tabs:', tabs);
-    console.log('Active Tab:', activeTab);
-    console.log('Tab Panel Height:', tabPanelHeight);
 
     const handleChange = (event, newValue) => {
         openTab(newValue);
     };
 
     const ActiveComponent = getActiveComponent();
-    console.log('Active Component:', ActiveComponent);
 
     return (
         <Box sx={{
@@ -88,5 +76,4 @@ const TabPanel = ({ sidebarOpen }) => {
         </Box>
     );
 };
-
 export default TabPanel;

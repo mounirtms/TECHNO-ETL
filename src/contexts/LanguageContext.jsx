@@ -49,6 +49,10 @@ export const LanguageProvider = ({ children }) => {
   const setLanguage = (lang) => {
     if (languages[lang]) {
       setCurrentLanguage(lang);
+      localStorage.setItem('language', lang);
+    document.documentElement.setAttribute('dir', languages[lang].dir);
+    document.documentElement.setAttribute('lang', languages[lang].code);
+
     }
   };
 
