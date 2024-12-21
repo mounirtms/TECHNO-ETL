@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Box } from '@mui/material';
 import BaseGrid from '../common/BaseGrid';
 import { StatsCards } from '../common/StatsCards';
-import magentoApi from '../../services/magentoService';
+import magentoApi from '../../services/magentoApi';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -93,40 +93,45 @@ const OrdersGrid = () => {
     }, []);
 
     const fetchOrders = useCallback(async ({ page = 0, pageSize = 25 } = {}) => {
+        setLoading(true);
         try {
-            setLoading(true);
-            const searchCriteria = {
-                filterGroups: [],
+            const params = {
                 pageSize: pageSize,
                 currentPage: page + 1,
-                filters: [{
-                    field: 'created_at',
-                    value: filters.created_at,
-                    conditionType: 'gt'
-                }]
+                sortOrders: [
+                    {
+                        field: 'created_at',
+                        direction: 'DESC'
+                    }
+                ],
+                filterGroups: []
             };
 
             if (filters.status) {
-                searchCriteria.filterGroups.push({
-                    filters: [{
-                        field: 'status',
-                        value: filters.status,
-                        conditionType: 'eq'
-                    }]
+                params.filterGroups.push({
+                    filters: [
+                        {
+                            field: 'status',
+                            value: filters.status,
+                            conditionType: 'eq'
+                        }
+                    ]
                 });
             }
 
             if (filters.created_at) {
-                searchCriteria.filterGroups.push({
-                    filters: [{
-                        field: 'created_at',
-                        value: filters.created_at,
-                        conditionType: 'gt'
-                    }]
+                params.filterGroups.push({
+                    filters: [
+                        {
+                            field: 'created_at',
+                            value: filters.created_at,
+                            conditionType: 'gt'
+                        }
+                    ]
                 });
             }
 
-            const response = await magentoApi.getOrders(searchCriteria);
+            const response = await magentoApi.getOrders(params);
             const orders = response?.items || [];
             setData(orders);
             updateStats(orders);
@@ -142,7 +147,7 @@ const OrdersGrid = () => {
         setCurrentFilter(filter);
         let filterParams = {};
         const now = new Date();
-        
+
         switch(filter) {
             case 'pending':
                 filterParams = { status: 'pending' };

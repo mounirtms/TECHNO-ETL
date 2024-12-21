@@ -9,9 +9,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import StorefrontIcon from '@mui/icons-material/Storefront';
-
-
-// src/components/Layout/Constants.js
+import DescriptionIcon from '@mui/icons-material/Description';
 
 // Drawer (Sidebar) Widths
 export const DRAWER_WIDTH = 240;  // Full sidebar width
@@ -20,15 +18,11 @@ export const COLLAPSED_WIDTH = 64;  // Collapsed/minimized sidebar width
 // Header and Footer Heights
 export const HEADER_HEIGHT = 64;
 export const FOOTER_HEIGHT = 28;
-export const DASHBOARD_TAB_HEIGHT = 80; // Set to 80 as requested
-// Existing constants...
-export const STATS_CARD_ZINDEX = 1200; // High z-index for stat cards
-
-// Additional layout constants can be added here
+export const DASHBOARD_TAB_HEIGHT = 80;
+export const STATS_CARD_ZINDEX = 1200;
 export const STATS_CARD_HEIGHT = 80;
+export const TRANSITION_DURATION = 225;
 
-// You can also add other global constants related to layout
-export const TRANSITION_DURATION = 225; // ms
 /**
  * Menu Items Configuration
  * 
@@ -39,59 +33,88 @@ export const MENU_ITEMS = [
         id: 'Dashboard',
         label: 'Dashboard',
         icon: DashboardIcon,
-        path: '/dashboard'
+        path: '/dashboard',
+        hidden: false,
+        licensed: true
     },
     {
         id: 'ProductsGrid',
         label: 'Products',
         icon: InventoryIcon,
-        path: '/products'
+        path: '/products',
+        hidden: false,
+        licensed: true
     },
     {
         id: 'CegidProductsGrid',
         label: 'Cegid Products',
         icon: StorefrontIcon,
-        path: '/cegid-products'
+        path: '/cegid-products',
+        hidden: false,
+        licensed: true
     },
     {
         id: 'CustomersGrid',
         label: 'Customers',
         icon: PeopleIcon,
-        path: '/customers'
+        path: '/customers',
+        hidden: false,
+        licensed: true
     },
     {
         id: 'OrdersGrid',
         label: 'Orders',
         icon: ShoppingCartIcon,
-        path: '/orders'
+        path: '/orders',
+        hidden: false,
+        licensed: true
     },
     {
         id: 'InvoicesGrid',
         label: 'Invoices',
         icon: ReceiptIcon,
-        path: '/invoices'
+        path: '/invoices',
+        hidden: false,
+        licensed: true
     },
     {
         id: 'CategoryTree',
         label: 'Categories',
         icon: CategoryIcon,
-        path: '/categories'
+        path: '/categories',
+        hidden: false,
+        licensed: true
     },
     {
         id: 'StocksGrid',
         label: 'Stocks',
         icon: Inventory2Icon,
-        path: '/stocks'
+        path: '/stocks',
+        hidden: false,
+        licensed: true
     },
     {
         id: 'SourcesGrid',
         label: 'Sources',
         icon: WarehouseIcon,
-        path: '/sources'
+        path: '/sources',
+        hidden: false,
+        licensed: true
+    },
+    {
+        id: 'CmsPageManager',
+        label: 'CMS Pages',
+        icon: DescriptionIcon,
+        path: '/cms-pages',
+        hidden: false,
+        licensed: true
     },
     {
         id: 'UserProfile',
-        label: 'Profile',
+        label: 'User Profile',
         icon: AccountCircleIcon,
-        path: '/profile'
-    }];
+        path: '/profile',
+        hidden: false,
+        licensed: true
+    }
+];

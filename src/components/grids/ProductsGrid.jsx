@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Box } from '@mui/material';
 import BaseGrid from '../common/BaseGrid';
 import { StatsCards } from '../common/StatsCards';
-import magentoApi from '../../services/magentoService';
+import magentoApi from '../../services/magentoApi';
 import { toast } from 'react-toastify';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';

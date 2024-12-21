@@ -1,9 +1,10 @@
 import React, { createContext, useState, useContext } from 'react';
 import { Box } from '@mui/material'; // Add Box import for error rendering
-import { MENU_ITEMS } from '../components/layout/Constants';
+import { MENU_ITEMS } from '../components/Layout/Constants';
 
 // Import all components dynamically
 import Dashboard from '../pages/Dashboard';
+import CmsPageManager from '../pages/cmsManager';
 import ProductsGrid from '../components/grids/ProductsGrid';
 import CustomersGrid from '../components/grids/CustomersGrid';
 import OrdersGrid from '../components/grids/OrdersGrid';
@@ -25,7 +26,8 @@ const COMPONENT_MAP = {
     CategoryTree: CategoryTree,
     StocksGrid: StocksGrid,
     SourcesGrid: SourcesGrid,
-    CegidProductsGrid: CegidGrid
+    CegidProductsGrid: CegidGrid,
+    CmsPageManager:CmsPageManager
 };
 
 const TabContext = createContext();

@@ -4,7 +4,7 @@ import {
     List,
     ListItem,
     ListItemIcon,
-    ListItemText, 
+    ListItemText,
     Tooltip,
     Box,
     useTheme,
@@ -49,7 +49,9 @@ const StyledDrawer = styled(Drawer, {
     },
 }));
 
-const StyledListItem = styled(ListItem)(({ theme, isRTL, open }) => ({
+const StyledListItem = styled(ListItem, {
+    shouldForwardProp: (prop) => !['isRTL', 'open'].includes(prop),
+})(({ theme, isRTL, open }) => ({
     minHeight: 40,
     padding: theme.spacing(1),
     marginBottom: theme.spacing(0.25),
@@ -116,32 +118,35 @@ const Sidebar = ({ open, toggleDrawer, isRTL = false }) => {
             </LogoContainer>
             <List sx={{ mt: 1 }}>
                 {MENU_ITEMS.map((item) => (
-                    <Tooltip 
-                        key={item.id}
-                        title={!open ? item.label : ''}
-                        placement={isRTL ? "left" : "right"}
-                    >
-                        <StyledListItem
-                            button
-                            selected={activeTab === item.id}
-                            onClick={() => handleTabClick(item.id)}
-                            isRTL={isRTL}
-                            open={open}
+                    (!item.hidden && !!item.licensed) && (
+                        <Tooltip
+                            key={item.id}
+                            title={!open ? item.label : ''}
+                            placement={isRTL ? "left" : "right"}
                         >
-                            <ListItemIcon>
-                                <item.icon />
-                            </ListItemIcon>
-                            <ListItemText 
-                                primary={item.label}
-                                sx={{ 
-                                    opacity: open ? 1 : 0,
-                                    transition: theme.transitions.create('opacity'),
-                                    marginLeft: isRTL ? 0 : 'inherit',
-                                    marginRight: isRTL ? 'inherit' : 0,
-                                }}
-                            />
-                        </StyledListItem>
-                    </Tooltip>
+                            <StyledListItem
+                                component="div"
+                                selected={activeTab === item.id}
+                                onClick={() => handleTabClick(item.id)}
+                                isRTL={isRTL}
+                                open={open}
+                                sx={{ cursor: 'pointer' }}
+                            >
+                                <ListItemIcon>
+                                    <item.icon />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={item.label}
+                                    sx={{
+                                        opacity: open ? 1 : 0,
+                                        transition: theme.transitions.create('opacity'),
+                                        marginLeft: isRTL ? 0 : 'inherit',
+                                        marginRight: isRTL ? 'inherit' : 0,
+                                    }}
+                                />
+                            </StyledListItem>
+                        </Tooltip>
+                    )
                 ))}
             </List>
         </StyledDrawer>

@@ -7,7 +7,7 @@ import {
     useTheme
 } from '@mui/material';
 import { useTab } from '../../contexts/TabContext';
-import { DRAWER_WIDTH, COLLAPSED_WIDTH, HEADER_HEIGHT, FOOTER_HEIGHT } from './Constants';
+import { HEADER_HEIGHT, FOOTER_HEIGHT } from './Constants';
 
 const TabPanel = ({ sidebarOpen }) => {
     const theme = useTheme();
@@ -46,24 +46,26 @@ const TabPanel = ({ sidebarOpen }) => {
                 borderColor: 'divider',
                 backgroundColor: theme.palette.background.paper
             }}>
-                <Tabs 
-                    value={activeTab} 
+                <Tabs
+                    value={activeTab}
                     onChange={handleChange}
                     variant="scrollable"
                     scrollButtons="auto"
                 >
                     {tabs.map((tab) => (
-                        <Tab 
-                            key={tab.id} 
-                            label={tab.label} 
+
+                        <Tab
+                            key={tab.id}
+                            label={tab.label}
                             value={tab.id}
                         />
+
                     ))}
                 </Tabs>
             </Box>
-            <Box sx={{ 
-                flexGrow: 1, 
-                overflow: 'auto', 
+            <Box sx={{
+                flexGrow: 1,
+                overflow: 'auto',
                 p: 2,
                 height: `calc(${tabPanelHeight} - 48px)` // Subtract tab header height
             }}>

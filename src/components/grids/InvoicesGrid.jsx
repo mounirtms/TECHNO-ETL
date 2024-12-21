@@ -2,18 +2,18 @@ import React, { useState, useCallback } from 'react';
 import { Box } from '@mui/material';
 import BaseGrid from '../common/BaseGrid';
 import { StatsCards } from '../common/StatsCards';
-import magentoApi from '../../services/magentoService';
-import { toast } from 'react-toastify';
+import { formatCurrency, formatDateTime } from '../../utils/formatters';
+import magentoApi from '../../services/magentoApi';
 import ReceiptIcon from '@mui/icons-material/Receipt';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import PaidIcon from '@mui/icons-material/Paid';
 import PendingIcon from '@mui/icons-material/Pending';
-import { getStatusColumn } from '../../utils/gridUtils';
+import { toast } from 'react-toastify';
 
 /**
  * InvoiceGrid Component
  * Displays invoice data in a grid format with status cards
  */
-const InvoiceGrid = ({ orderId }) => {
+const InvoicesGrid = ({ orderId }) => {
     // State management
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
@@ -29,20 +29,39 @@ const InvoiceGrid = ({ orderId }) => {
         { 
             field: 'increment_id', 
             headerName: 'Invoice #', 
-            width: 130 ,
-            hide:true
+            width: 130 
         },
         { 
-            field: 'entity_id', 
+            field: 'order_id', 
             headerName: 'Order #', 
             width: 130 
         }, 
+        { 
+            field: 'grand_total', 
+            headerName: 'Total', 
+            width: 130,
+            valueFormatter: (params) => formatCurrency(params.value)
+        },
+        { 
+            field: 'state', 
+            headerName: 'Status', 
+            width: 130,
+            valueFormatter: (params) => params.value?.toUpperCase() || ''
+        },
+        { 
+            field: 'invoice_date', 
+            headerName: 'Invoice Date', 
+            width: 180,
+            valueGetter: (params) => params.row.created_at,
+            valueFormatter: (params) => formatDateTime(params.value)
+        }
     ];
 
     // Data fetching handler
     const handleRefresh = useCallback(async ({ page, pageSize, filter }) => {
         try {
             setLoading(true);
+            
             const searchCriteria = {
                 filterGroups: [],
                 pageSize,
@@ -59,20 +78,19 @@ const InvoiceGrid = ({ orderId }) => {
                 });
             }
 
-            if (filter?.status) {
+            if (filter?.state) {
                 searchCriteria.filterGroups.push({
                     filters: [{
-                        field: 'status',
-                        value: filter.status,
+                        field: 'state',
+                        value: filter.state,
                         condition_type: 'eq'
                     }]
                 });
             }
 
             const response = await magentoApi.getInvoices(searchCriteria);
-            const invoices = response?.items || [];
-            setData(invoices);
-            updateStats(invoices);
+            setData(response.items || []);
+            updateStats(response.items || []);
         } catch (error) {
             toast.error(error.message || 'Failed to load invoices');
             throw error;
@@ -85,8 +103,8 @@ const InvoiceGrid = ({ orderId }) => {
     const updateStats = useCallback((invoices) => {
         const newStats = invoices.reduce((acc, invoice) => ({
             total: acc.total + 1,
-            paid: acc.paid + (invoice.status === 'paid' ? 1 : 0),
-            pending: acc.pending + (invoice.status === 'pending' ? 1 : 0)
+            paid: acc.paid + (invoice.state === 'paid' ? 1 : 0),
+            pending: acc.pending + (invoice.state === 'pending' ? 1 : 0)
         }), {
             total: 0,
             paid: 0,
@@ -102,24 +120,24 @@ const InvoiceGrid = ({ orderId }) => {
             value: stats.total,
             icon: ReceiptIcon,
             color: "primary",
-            active: !filters.status,
+            active: !filters.state,
             onClick: () => setFilters({})
         },
         {
             title: "Paid",
             value: stats.paid,
-            icon: CheckCircleIcon,
+            icon: PaidIcon,
             color: "success",
-            active: filters.status === 'paid',
-            onClick: () => setFilters({ status: 'paid' })
+            active: filters.state === 'paid',
+            onClick: () => setFilters({ state: 'paid' })
         },
         {
             title: "Pending",
             value: stats.pending,
             icon: PendingIcon,
             color: "warning",
-            active: filters.status === 'pending',
-            onClick: () => setFilters({ status: 'pending' })
+            active: filters.state === 'pending',
+            onClick: () => setFilters({ state: 'pending' })
         }
     ];
 
@@ -127,17 +145,22 @@ const InvoiceGrid = ({ orderId }) => {
         <Box>
             <StatsCards cards={statCards} />
             <BaseGrid
-               gridName="InvoicesGrid"
+                gridName="InvoicesGrid"
                 columns={columns}
                 data={data}
                 loading={loading}
                 onRefresh={handleRefresh}
                 currentFilter={filters}
                 onFilterChange={setFilters}
-                onError={(error) => toast.error(error.message)}
+                getRowId={(row) => row.entity_id}
+                defaultSortModel={[
+                    { field: 'invoice_date', sort: 'desc' }
+                ]}
+                defaultPageSize={10}
+                pageSizeOptions={[10, 25, 50, 100]}
             />
         </Box>
     );
 };
 
-export default InvoiceGrid;
+export default InvoicesGrid;
