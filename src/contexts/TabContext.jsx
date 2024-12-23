@@ -3,8 +3,10 @@ import { Box } from '@mui/material'; // Add Box import for error rendering
 import { MENU_ITEMS } from '../components/Layout/Constants';
 
 // Import all components dynamically
-import Dashboard from '../pages/Dashboard';
-import CmsPageManager from '../pages/cmsManager';
+import Dashboard from '../pages/Dashboard'; 
+
+import CmsPageGrid from '../components/grids/CmsPagesGrid'; 
+
 import ProductsGrid from '../components/grids/ProductsGrid';
 import CustomersGrid from '../components/grids/CustomersGrid';
 import OrdersGrid from '../components/grids/OrdersGrid';
@@ -27,7 +29,7 @@ const COMPONENT_MAP = {
     StocksGrid: StocksGrid,
     SourcesGrid: SourcesGrid,
     CegidProductsGrid: CegidGrid,
-    CmsPageManager:CmsPageManager
+    CmsPageGrid:CmsPageGrid
 };
 
 const TabContext = createContext();

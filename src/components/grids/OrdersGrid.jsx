@@ -6,7 +6,8 @@ import magentoApi from '../../services/magentoApi';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { getStatusColumn } from '../../utils/gridUtils';
+import { generateColumns, getStatusColumn } from '../../utils/gridUtils';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
 
 const OrdersGrid = () => {
     const [loading, setLoading] = useState(false);
@@ -19,6 +20,8 @@ const OrdersGrid = () => {
         completedOrders: 0,
         canceledOrders: 0
     });
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState(null);
 
     const filterOptions = [
         { value: 'all', label: 'All Orders' },
@@ -32,7 +35,27 @@ const OrdersGrid = () => {
         { value: 'holded', label: 'On Hold' }
     ];
 
-    const columns = [
+    const handleEditClick = (order) => {
+        setSelectedOrder(order);
+        setEditDialogOpen(true);
+    };
+
+    const handleEditDialogClose = () => {
+        setEditDialogOpen(false);
+        setSelectedOrder(null);
+    };
+
+    const handleOrderUpdate = async () => {
+        try {
+            await magentoApi.updateOrder(selectedOrder.id, selectedOrder);
+            toast.success('Order updated successfully');
+            handleEditDialogClose();
+        } catch (error) {
+            toast.error('Failed to update order');
+        }
+    };
+
+    const columns = generateColumns(data[0] || {}, [
         {
             field: 'increment_id',
             headerName: 'Order #',
@@ -52,13 +75,7 @@ const OrdersGrid = () => {
             headerName: 'Total',
             width: 130,
             id: 'grand_total',
-            type: 'number',
-            valueFormatter: (params) => {
-                return new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'USD'
-                }).format(params.value);
-            }
+            type: 'money',
         },
         getStatusColumn('status', {
             pending: 'warning',
@@ -68,14 +85,12 @@ const OrdersGrid = () => {
             holded: 'default'
         }),
         {
-            field: 'created_at',
+            field: 'created_at_order',
             headerName: 'Order Date',
             width: 180,
-            id: 'created_at',
-            valueFormatter: (params) =>
-                new Date(params.value).toLocaleString()
+            id: 'created_at_order'
         }
-    ];
+    ]);
 
     const updateStats = useCallback((orders) => {
         const newStats = orders.reduce((acc, order) => ({
@@ -182,14 +197,6 @@ const OrdersGrid = () => {
         setFilters(filterParams);
     }, []);
 
-    // Set initial filter
-    useEffect(() => {
-        const now = new Date();
-        const last7d = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
-        const initialFilters = { created_at: last7d.toISOString() };
-        setFilters(initialFilters);
-    }, []);
-
     // Initial data fetch when filters change
     useEffect(() => {
         fetchOrders();
@@ -228,8 +235,35 @@ const OrdersGrid = () => {
                 filterOptions={filterOptions}
                 currentFilter={currentFilter}
                 onFilterChange={handleFilterChange}
-                totalCount={stats.totalOrders}
+                getRowId={(row) => row.increment_id}
+                onEdit={handleEditClick}
             />
+            <Dialog open={editDialogOpen} onClose={handleEditDialogClose}>
+                <DialogTitle>Edit Order</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        label="Order #"
+                        value={selectedOrder?.increment_id || ''}
+                        fullWidth
+                        disabled
+                    />
+                    <TextField
+                        label="Customer Name"
+                        value={`${selectedOrder?.customer_firstname || ''} ${selectedOrder?.customer_lastname || ''}`}
+                        fullWidth
+                        disabled
+                    />
+                    {/* Add more fields as necessary for editing */}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleEditDialogClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleOrderUpdate} color="primary">
+                        Save
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };

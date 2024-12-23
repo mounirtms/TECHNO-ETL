@@ -1,8 +1,9 @@
 import React from 'react';
 import BaseGrid from '../common/BaseGrid';
 import { formatDateTime, formatNumber } from '../../utils/formatters';
+import { generateColumns } from '../../utils/gridUtils';
 
-const columns = [
+const columns = generateColumns({}, [
     { field: 'product_id', headerName: 'Product ID', width: 130 },
     { field: 'sku', headerName: 'SKU', width: 150 },
     { field: 'name', headerName: 'Name', width: 200 },
@@ -26,7 +27,7 @@ const columns = [
         valueGetter: (params) => params.row.updated_at,
         valueFormatter: (params) => formatDateTime(params.value)
     }
-];
+]);
 
 const StocksGrid = ({ 
     data = [], 

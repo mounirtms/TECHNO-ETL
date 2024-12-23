@@ -102,18 +102,18 @@ export const MENU_ITEMS = [
         licensed: true
     },
     {
-        id: 'CmsPageManager',
-        label: 'CMS Pages',
-        icon: DescriptionIcon,
-        path: '/cms-pages',
-        hidden: false,
-        licensed: true
-    },
-    {
         id: 'UserProfile',
         label: 'User Profile',
         icon: AccountCircleIcon,
         path: '/profile',
+        hidden: true,
+        licensed: true
+    },
+    {
+        id: 'CmsPageGrid',
+        label: 'CMS Pages',
+        icon: DescriptionIcon,
+        path: '/cms-pages',
         hidden: false,
         licensed: true
     }

@@ -17,7 +17,7 @@ import { styled } from '@mui/material/styles';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTab } from '../../contexts/TabContext'; // Add this import
-
+import { toast } from 'react-toastify'; // Add this import
 
 const StyledMenu = styled(Menu)(({ theme }) => ({
     '& .MuiPaper-root': {
@@ -56,20 +56,17 @@ const UserMenu = () => {
     };
 
     const handleOpenProfile = () => {
-        if (currentUser) { 
-            openTab('UserProfile');
-        }
+        openTab('UserProfile');
         handleClose();
     };
- 
 
     const handleLogout = async () => {
         try {
             await logout();
             handleClose();
-            onLogout();
         } catch (error) {
             console.error('Error logging out:', error);
+            toast.error('Failed to logout. Please try again.');
         }
     };
 
@@ -77,7 +74,7 @@ const UserMenu = () => {
         <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Typography variant="subtitle1" sx={{ display: { xs: 'none', sm: 'block' } }}>
-                    {currentUser?.displayName || 'User'}
+                    {currentUser?.displayName || currentUser?.email || 'User'}
                 </Typography>
                 <IconButton
                     onClick={handleMenu}
@@ -102,18 +99,18 @@ const UserMenu = () => {
                 id="user-menu"
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
-                onClick={handleClose}
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
          
-         
+               
                 <MenuItem onClick={handleOpenProfile}>
                     <ListItemIcon>
                         <SettingsIcon fontSize="small" />
                     </ListItemIcon>
                     <ListItemText primary={translate('common.settings')} />
                 </MenuItem>
+                <Divider />
                 <MenuItem onClick={handleLogout}>
                     <ListItemIcon>
                         <LogoutIcon fontSize="small" />

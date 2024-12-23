@@ -157,6 +157,7 @@ const CategoryGrid = ({ productId }) => {
         
         // Ensure proper column configuration
         return mergedColumns.map(col => ({
+
             ...col,
             // Keep visible columns as is, hide generated ones
             hide: visibleColumns.some(vc => vc.field === col.field) ? false : true
@@ -222,47 +223,44 @@ const CategoryGrid = ({ productId }) => {
         setStats(newStats);
     }, []);
 
-    // Stats cards configuration
-    const statCards = [
-        {
-            title: "All Categories",
-            value: stats.total,
-            icon: CategoryIcon,
-            color: "primary",
-            active: !filters.is_active,
-            onClick: () => setFilters({})
-        },
-        {
-            title: "Active",
-            value: stats.active,
-            icon: VisibilityIcon,
-            color: "success",
-            active: filters.is_active === true,
-            onClick: () => setFilters({ is_active: true })
-        },
-        {
-            title: "Inactive",
-            value: stats.inactive,
-            icon: VisibilityOffIcon,
-            color: "error",
-            active: filters.is_active === false,
-            onClick: () => setFilters({ is_active: false })
-        }
-    ];
-
     return (
-        <Box>
-            <StatsCards cards={statCards} />
+        <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <StatsCards
+                cards={[
+                    {
+                        title: 'Total Categories',
+                        value: stats.total,
+                        icon: CategoryIcon,
+                        color: 'primary'
+                    },
+                    {
+                        title: 'Active',
+                        value: stats.active,
+                        icon: VisibilityIcon,
+                        color: 'success'
+                    },
+                    {
+                        title: 'Inactive',
+                        value: stats.inactive,
+                        icon: VisibilityOffIcon,
+                        color: 'error'
+                    }
+                ]}
+            />
             <BaseGrid
                 gridName="CategoryGrid"
-                columns={allColumns}
+                columns={visibleColumns}
                 data={data}
                 loading={loading}
                 onRefresh={handleRefresh}
                 currentFilter={filters}
                 onFilterChange={setFilters}
-                onError={(error) => toast.error(error.message)}
                 getRowId={(row) => row.id}
+                defaultSortModel={[
+                    { field: 'name', sort: 'asc' }
+                ]}
+                defaultPageSize={10}
+                pageSizeOptions={[10, 25, 50, 100]}
             />
         </Box>
     );

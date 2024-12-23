@@ -17,6 +17,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import arLocale from 'date-fns/locale/ar-SA';
 import { StatsCards } from '../components/common/StatsCards';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis as BarXAxis, YAxis as BarYAxis, CartesianGrid as BarCartesianGrid, Tooltip as BarTooltip, Legend as BarLegend, ResponsiveContainer as BarResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell } from 'recharts';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PeopleIcon from '@mui/icons-material/People';
 import InventoryIcon from '@mui/icons-material/Inventory';
@@ -85,7 +87,7 @@ const formatTooltipDate = (date) => {
 // Smart tick formatter for X axis
 const formatXAxis = (tickItem, days) => {
     if (!tickItem) return '';
-    
+
     // If we have more than 14 days, only show every other day
     if (days > 14) {
         const date = tickItem.split('/');
@@ -113,6 +115,8 @@ const getDefaultDateRange = () => {
     return { start, end };
 };
 
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6699', '#FF33CC'];
+
 const Dashboard = () => {
     const theme = useTheme();
     const defaultRange = getDefaultDateRange();
@@ -123,14 +127,19 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
     const [error, setError] = useState(null);
+    const [productData, setProductData] = useState([]);
+    const [countryData, setCountryData] = useState([]);
+    const [productCountData, setProductCountData] = useState([]);
 
     const fetchDashboardData = useCallback(async () => {
         setLoading(true);
         setError(null);
         try {
-            // Format dates for API
-            const formattedStartDate = startDate.toISOString().split('T')[0];
-            const formattedEndDate = endDate.toISOString().split('T')[0];
+            // Format dates for API with time
+            const formattedStartDate = startDate.toISOString();
+            const formattedEndDate = endDate.toISOString();
+
+            console.log('Fetching data with date range:', { formattedStartDate, formattedEndDate });
 
             // Fetch orders with date range
             const ordersParams = {
@@ -159,30 +168,65 @@ const Dashboard = () => {
                 magentoApi.getProducts({ pageSize: 1 })
             ]);
 
-            // Process orders data
+            console.log('Orders response:', ordersResponse);
+            console.log('Customers response:', customersResponse);
+            console.log('Products response:', productsResponse);
+
+            // Process orders data with exact timestamps
             const orders = ordersResponse?.items || [];
-            const ordersByDate = {};
+            const ordersByTime = {};
             let totalRevenue = 0;
 
-            orders.forEach(order => {
-                const date = new Date(order.created_at).toLocaleDateString();
-                if (!ordersByDate[date]) {
-                    ordersByDate[date] = {
+            // Create initial data points for start and end dates
+            const startTimestamp = startDate.setHours(0, 0, 0, 0);
+            const endTimestamp = endDate.setHours(0, 0, 0, 0);
+            ordersByTime[startTimestamp] = { count: 0, revenue: 0, key: `day-${startTimestamp}` };
+            ordersByTime[endTimestamp] = { count: 0, revenue: 0, key: `day-${endTimestamp}` };
+
+            // Add intermediate points every day
+            let currentDate = new Date(startDate);
+            while (currentDate <= endDate) {
+                const timestamp = currentDate.setHours(0, 0, 0, 0);
+                if (!ordersByTime[timestamp]) {
+                    ordersByTime[timestamp] = {
                         count: 0,
-                        revenue: 0
+                        revenue: 0,
+                        key: `day-${timestamp}`
                     };
                 }
-                ordersByDate[date].count++;
-                ordersByDate[date].revenue += parseFloat(order.grand_total || 0);
-                totalRevenue += parseFloat(order.grand_total || 0);
+                currentDate = new Date(currentDate.getTime() + 86400000); // Add one day
+            }
+
+            orders.forEach(order => {
+                const orderDate = new Date(order.created_at);
+                // Only process orders within the date range
+                if (orderDate >= startDate && orderDate <= endDate) {
+                    const timestamp = orderDate.setHours(0, 0, 0, 0); // Group by day
+                    if (!ordersByTime[timestamp]) {
+                        ordersByTime[timestamp] = {
+                            count: 0,
+                            revenue: 0,
+                            key: `day-${timestamp}`
+                        };
+                    }
+                    ordersByTime[timestamp].count++;
+                    const orderTotal = parseFloat(order.grand_total || 0);
+                    ordersByTime[timestamp].revenue += orderTotal;
+                    totalRevenue += orderTotal;
+                }
             });
 
-            // Create chart data
-            const chartData = Object.keys(ordersByDate).map(date => ({
-                date: new Date(date),
-                orders: ordersByDate[date].count,
-                revenue: ordersByDate[date].revenue
-            })).sort((a, b) => a.date - b.date);
+            // Create chart data with exact timestamps and unique keys
+            const chartData = Object.entries(ordersByTime)
+                .map(([timestamp, data]) => ({
+                    date: parseInt(timestamp),
+                    orders: data.count || 0,
+                    revenue: data.revenue || 0,
+                    key: data.key
+                }))
+                .sort((a, b) => a.date - b.date);
+
+            console.log('Processed chart data:', chartData);
 
             setChartData(chartData);
             setStats({
@@ -194,13 +238,14 @@ const Dashboard = () => {
             });
 
         } catch (error) {
-            console.error('API fetch failed, attempting to load from local data:', error);
+            console.error('Failed to fetch dashboard data:', error);
+            // Try to get local data if API fails
             const localData = await magentoApi.getLocalData('orders');
             if (localData) {
                 processLocalData(localData);
             } else {
                 setError('Failed to fetch dashboard data');
-                toast.error('Error loading dashboard data');
+                toast.error('Failed to fetch dashboard data');
             }
         } finally {
             setLoading(false);
@@ -213,27 +258,54 @@ const Dashboard = () => {
             return orderDate >= startDate && orderDate <= endDate;
         });
 
-        const ordersByDate = {};
+        const ordersByTime = {};
         let totalRevenue = 0;
 
-        filteredData.forEach(order => {
-            const date = new Date(order.created_at).toLocaleDateString();
-            if (!ordersByDate[date]) {
-                ordersByDate[date] = {
+        // Create initial data points for start and end dates
+        const startTimestamp = startDate.setHours(0, 0, 0, 0);
+        const endTimestamp = endDate.setHours(0, 0, 0, 0);
+        ordersByTime[startTimestamp] = { count: 0, revenue: 0, key: `day-${startTimestamp}` };
+        ordersByTime[endTimestamp] = { count: 0, revenue: 0, key: `day-${endTimestamp}` };
+
+        // Add intermediate points every day
+        let currentDate = new Date(startDate);
+        while (currentDate <= endDate) {
+            const timestamp = currentDate.setHours(0, 0, 0, 0);
+            if (!ordersByTime[timestamp]) {
+                ordersByTime[timestamp] = {
                     count: 0,
-                    revenue: 0
+                    revenue: 0,
+                    key: `day-${timestamp}`
                 };
             }
-            ordersByDate[date].count++;
-            ordersByDate[date].revenue += parseFloat(order.grand_total || 0);
-            totalRevenue += parseFloat(order.grand_total || 0);
+            currentDate = new Date(currentDate.getTime() + 86400000); // Add one day
+        }
+
+        filteredData.forEach(order => {
+            const orderDate = new Date(order.created_at);
+            const timestamp = orderDate.setHours(0, 0, 0, 0); // Group by day
+            if (!ordersByTime[timestamp]) {
+                ordersByTime[timestamp] = {
+                    count: 0,
+                    revenue: 0,
+                    key: `day-${timestamp}`
+                };
+            }
+            ordersByTime[timestamp].count++;
+            const orderTotal = parseFloat(order.grand_total || 0);
+            ordersByTime[timestamp].revenue += orderTotal;
+            totalRevenue += orderTotal;
         });
 
-        const chartData = Object.keys(ordersByDate).map(date => ({
-            date: new Date(date),
-            orders: ordersByDate[date].count,
-            revenue: ordersByDate[date].revenue
-        })).sort((a, b) => a.date - b.date);
+        // Create chart data with exact timestamps and unique keys
+        const chartData = Object.entries(ordersByTime)
+            .map(([timestamp, data]) => ({
+                date: parseInt(timestamp),
+                orders: data.count || 0,
+                revenue: data.revenue || 0,
+                key: data.key
+            }))
+            .sort((a, b) => a.date - b.date);
 
         setChartData(chartData);
         setStats({
@@ -245,23 +317,73 @@ const Dashboard = () => {
         });
     };
 
+    const fetchProductData = async () => {
+        try {
+            const response = await magentoApi.getProducts({
+                pageSize: 100,
+            });
+            setProductData(response.items);
+            processCountryData(response.items);
+            processProductCountData(response.items);
+        } catch (error) {
+            console.error('Failed to fetch product data:', error);
+        }
+    };
+
+    const processCountryData = (products) => {
+        const countryCount = {};
+        products.forEach(product => {
+            const customAttributes = product.custom_attributes || [];
+            const countryAttr = customAttributes.find(attr => attr.attribute_code === 'country_of_manufacture');
+            const country = countryAttr ? countryAttr.value : null;
+            if (country) {
+                countryCount[country] = (countryCount[country] || 0) + 1;
+            }
+        });
+        const formattedData = Object.entries(countryCount).map(([country, count]) => ({
+            country_of_manufacture: country,
+            count: count
+        }));
+        setCountryData(formattedData);
+    };
+
+
+
+    const processProductCountData = (products) => {
+        const typeCount = {};
+
+        products.forEach(product => {
+            const name = product.type_id; // Adjust according to actual field
+            if (name) {
+                typeCount[name] = (typeCount[name] || 0) + 1;
+            }
+        });
+        const formattedData = Object.entries(typeCount).map(([name, value]) => ({
+            name: name,
+            value: value
+        }));
+
+        setProductCountData(formattedData);
+    };
+
     const handleRefresh = () => {
         setRefreshKey(prev => prev + 1);
     };
 
     useEffect(() => {
         fetchDashboardData();
+        fetchProductData();
     }, [fetchDashboardData, refreshKey]);
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={arLocale}>
             <Box sx={{ p: 3, height: '100%' }}>
                 {/* Date Range and Controls */}
-                <Paper 
-                    sx={{ 
-                        p: 2, 
-                        mb: 3, 
-                        display: 'flex', 
+                <Paper
+                    sx={{
+                        p: 2,
+                        mb: 3,
+                        display: 'flex',
                         alignItems: 'center',
                         gap: 2
                     }}
@@ -290,7 +412,7 @@ const Dashboard = () => {
                             }
                         }}
                     />
-                    <IconButton 
+                    <IconButton
                         onClick={handleRefresh}
                         disabled={loading}
                         sx={{ ml: 'auto' }}
@@ -353,7 +475,7 @@ const Dashboard = () => {
                         <ResponsiveContainer>
                             <LineChart data={chartData}>
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis 
+                                <XAxis
                                     dataKey="date"
                                     tickFormatter={(date) => formatChartDate(date)}
                                     interval="preserveStartEnd"
@@ -361,16 +483,16 @@ const Dashboard = () => {
                                     textAnchor="end"
                                     height={60}
                                 />
-                                <YAxis 
-                                    yAxisId="left" 
+                                <YAxis
+                                    yAxisId="left"
                                     tickFormatter={(value) => Math.round(value)}
                                 />
-                                <YAxis 
-                                    yAxisId="right" 
+                                <YAxis
+                                    yAxisId="right"
                                     orientation="right"
                                     tickFormatter={(value) => formatCurrency(value)}
                                 />
-                                <Tooltip 
+                                <Tooltip
                                     labelFormatter={(date) => formatTooltipDate(date)}
                                     formatter={(value, name) => [
                                         name === 'revenue' ? formatCurrency(value) : Math.round(value),
@@ -400,6 +522,52 @@ const Dashboard = () => {
                         </ResponsiveContainer>
                     </Paper>
                 </Grid>
+
+                {/* Enhanced Bar Charts for Country of Manufacture and Product Counts */}
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Box sx={{ flex: 1 }}>
+                        <Box sx={{ mb: 3, boxShadow: 3, borderRadius: 2, overflow: 'hidden' }}>
+                            <Typography variant="h6" sx={{ p: 2 }}>
+                                Country of Manufacture</Typography>
+                            <ResponsiveContainer width="100%" height={400}>
+                                <BarChart data={countryData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="country_of_manufacture" />
+                                    <YAxis />
+                                    <Tooltip cursor={{ fill: 'rgba(0, 0, 0, 0.1)' }} />
+                                    <Legend verticalAlign="top" height={36} />
+                                    <Bar dataKey="count" fill="#8884d8" barSize={30} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </Box>
+                    </Box>
+                    <Box sx={{ flex: 1, gap: 1 }}>
+                        <Box sx={{ mb: 3, boxShadow: 3, borderRadius: 2, overflow: 'hidden' }}>
+                            <Typography variant="h6" sx={{ p: 2 }}>Product Types</Typography>
+                            <ResponsiveContainer width="100%" height={400}>
+                                <PieChart>
+                                    <Pie
+                                        data={productCountData}
+                                        cx="50%"
+                                        cy="50%"
+                                        outerRadius={80}
+                                        fill="#8884d8"
+                                        dataKey="value"
+                                        label
+                                    >
+                                        {productCountData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </Box>
+                    </Box>
+                </Box>
+
+                {/* Pie Chart for Product Types */}
+
             </Box>
         </LocalizationProvider>
     );

@@ -7,9 +7,10 @@ import { toast } from 'react-toastify';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
-import { getStatusColumn } from '../../utils/gridUtils';
+import { generateColumns, getStatusColumn } from '../../utils/gridUtils';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+
 /**
  * ProductsGrid Component
  * Displays product data in a grid format with status cards
@@ -174,10 +175,21 @@ const ProductsGrid = () => {
     };
 
     // Grid columns configuration
-    const columns = [
-        { field: 'sku', headerName: 'SKU', width: 130 },
-        { field: 'name', headerName: 'Product Name', flex: 1 },
-        { field: 'type_id', headerName: 'Product Type' },
+    const columns = generateColumns(data[0] || {}, [
+        {
+            field: 'sku',
+            headerName: 'SKU',
+            width: 150
+        },
+        {
+            field: 'name',
+            headerName: 'Name',
+            width: 200
+        },
+        {
+            field: 'type_id',
+            headerName: 'Product Type'
+        },
         {
             field: 'price',
             headerName: 'Price',
@@ -201,10 +213,10 @@ const ProductsGrid = () => {
             'Out of Stock': 'error',
             'Low Stock': 'warning'
         })
-    ];
+    ]);
 
     return (
-        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 1 }}>
             <StatsCards 
                 cards={[
                     {
@@ -243,21 +255,19 @@ const ProductsGrid = () => {
                 ]}
             />
 
-            <BaseGrid
-                gridName="ProductsGrid"
-                columns={columns}
-                data={data}
-                loading={loading}
-                onRefresh={handlePaginationChange}
-                customFilters={filterOptions}
-                currentCustomFilter={currentFilter}
-                onCustomFilterChange={handleFilterChange}
-                totalCount={stats.total}
-                defaultSortField="created_at"
-                defaultSortDirection="desc"
-                defaultPageSize={10}
-            />
-        </Box>
+        <BaseGrid
+            gridName="ProductsGrid"
+            columns={columns}
+            data={data}
+            loading={loading}
+            onRefresh={handlePaginationChange}
+            filterOptions={filterOptions}
+            currentFilter={currentFilter}
+            onFilterChange={handleFilterChange}
+            totalCount={stats.total}
+            defaultPageSize={10}
+        />
+          </Box>
     );
 };
 

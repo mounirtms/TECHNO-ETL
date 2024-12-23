@@ -8,6 +8,7 @@ import productsData from '../assets/data/products.json';
 import ordersData from '../assets/data/orders.json';
 import invoicesData from '../assets/data/invoices.json';
 import categoryData from '../assets/data/category.json';
+import cmsPagesData from '../assets/data/cmsPages.json'; // Import local CMS pages data
 
 const API_URL = import.meta.env.VITE_MAGENTO_API_URL;
 
@@ -248,8 +249,51 @@ class MagentoApi {
     return this.put(`/products/${encodeURIComponent(productSku)}/stockItems/${stockItem.item_id}`, stockItem);
   }
 
-  async getCmsPages() {
-    return this.get('/cmsPage');
+  async getCmsPages(params = {}) {
+    try {
+      const cacheKey = this.getCacheKey('/cmsPage/search', params);
+      const cachedData = this.getCachedData(cacheKey);
+      if (cachedData) {
+        console.log('Using cached CMS pages data');
+        return cachedData;
+      } 
+      const searchCriteria = this.buildSearchCriteria(params);
+      console.log('Fetching products with criteria:', searchCriteria);
+      
+      const response = await this.get('/cmsPage/search', searchCriteria);
+
+      if (response && response.items) {
+        this.setCachedData(cacheKey, response);
+        return response;
+      }
+
+      throw new Error('No data returned from API');
+    } catch (error) {
+      console.error('Failed to fetch CMS pages:', error);
+      const localData = this.getLocalResponse('cmsPages');
+      console.log('Using local CMS pages data:', localData);
+      return localData;
+    }
+  }
+
+  async getCmsBlocks(searchCriteria = {}) {
+    try {
+      // Ensure that searchCriteria includes required fields
+      const params = {
+        searchCriteria: {
+          filterGroups: searchCriteria.filterGroups || [],
+          pageSize: searchCriteria.pageSize || 10,
+          currentPage: searchCriteria.currentPage || 1
+        }
+      };
+      const response = await this.get('/cmsBlock/search', { params });
+      return {
+        items: response.items || [],
+        total_count: response.total_count || 0,
+      };
+    } catch (error) {
+      throw new Error(`Failed to fetch CMS blocks: ${error.message}`);
+    }
   }
 
   async getCmsPage(id) {
@@ -275,7 +319,7 @@ class MagentoApi {
   async getInvoices(searchCriteria = {}) {
     try {
       const params = this.formatSearchCriteria(searchCriteria);
-      const response = await this.get('/rest/V1/invoices', { params });
+      const response = await this.get('/invoices', { params });
       return {
         items: response.items || [],
         total_count: response.total_count || 0,
@@ -336,6 +380,8 @@ class MagentoApi {
         return invoicesData;
       case 'categories':
         return categoryData;
+      case 'cmsPages':
+        return cmsPagesData; // Return local CMS pages data
       default:
         return null;
     }
@@ -415,6 +461,16 @@ class MagentoApi {
       search_criteria: response?.search_criteria || this.buildSearchCriteria()
     };
   }
+
+  async updateOrder(orderId, orderData) {
+    try {
+      const response = await this.put(`/orders/${orderId}`, { order: orderData });
+      return response.data;
+    } catch (error) {
+      console.error('Failed to update order:', error);
+      throw error;
+    }
+  }
 }
 
 // Create a single instance
@@ -438,6 +494,7 @@ export const {
   getStockItems,
   updateStockItem,
   getCmsPages,
+  getCmsBlocks,
   getCmsPage,
   createCmsPage,
   updateCmsPage,
@@ -447,5 +504,6 @@ export const {
   getToken,
   magentoServiceException,
   getLocalData,
-  getInvoices
+  getInvoices,
+  updateOrder
 } = magentoApi;

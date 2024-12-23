@@ -59,14 +59,14 @@ class MagentoService {
             const response = await this.instance.get(url);
             console.log('GET response:', response);
             
-            if (response.status === 200) {
+            if (response?.status === 200) {
                 return {
                     data: response.data,
                     status: response.status
                 };
             }
-
-            throw new Error('Request failed');
+            return this.handleApiError(response);
+            //throw new Error('Request failed');
         } catch (error) {
             console.error('GET request error:', error);
             return this.handleApiError(error);

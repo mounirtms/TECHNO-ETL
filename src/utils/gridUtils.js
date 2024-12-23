@@ -2,11 +2,14 @@ import React from 'react';
 import { format } from 'date-fns';
 import { Chip } from '@mui/material';
 import { StatusCell } from '../components/common/BaseGrid';
+import { ref, set, get } from 'firebase/database';
+import { database } from '../config/firebase';
 
 // Constants
 export const CURRENCY = 'DZD';
 export const LOCALE = 'fr-DZ';
 export const DATE_FORMAT = 'PPp';
+
 
 export const STATUS_COLORS = {
     // Custom Order statuses
@@ -257,4 +260,49 @@ export const mergeColumns = (visibleColumns, generatedColumns) => {
     });
 
     return Array.from(columnMap.values());
+};
+
+// Utility function to apply saved column settings
+export const applySavedColumnSettings = (gridName, columns) => {
+    const savedSettings = localStorage.getItem(`${gridName}-columns`);
+    if (savedSettings) {
+        const parsedSettings = JSON.parse(savedSettings);
+        return columns.map(col => ({
+            ...col,
+            width: parsedSettings.find(setting => setting.field === col.field)?.width || col.width,
+            hide: parsedSettings.find(setting => setting.field === col.field)?.hide || col.hide,
+            index: parsedSettings.find(setting => setting.field === col.field)?.index || col.index
+        }));
+    }
+    return columns;
+};
+
+// Utility functions to handle remote saving and retrieval of grid settings
+export const saveGridSettings = async (gridName, settings) => {
+    try {
+        localStorage.setItem(`gridSettings/${gridName}`, JSON.stringify(settings));
+        const settingsRef = ref(database, `gridSettings/${gridName}`);
+        await set(settingsRef, settings);
+        console.log('Grid settings saved remotely:', settings);
+    } catch (error) {
+        console.error('Error saving settings remotely:', error);
+    }
+};
+
+export const getGridSettings = async (gridName) => {
+    let settings  = localStorage.getItem(`gridSettings/${gridName}`);
+    if(settings) {
+        return JSON.parse(settings);
+    }
+    try {
+        const settingsRef = ref(database, `gridSettings/${gridName}`);
+        const snapshot = await get(settingsRef);
+        if (snapshot.exists()) {
+            console.log('Grid settings retrieved:', snapshot.val());
+            return snapshot.val();
+        }
+    } catch (error) {
+        console.error('Error retrieving settings:', error);
+    }
+    return null;
 };

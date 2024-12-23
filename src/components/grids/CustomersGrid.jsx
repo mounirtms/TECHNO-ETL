@@ -1,9 +1,12 @@
 import React from 'react';
 import BaseGrid from '../common/BaseGrid';
-import { getStatusColumn } from '../../utils/gridUtils';
+import { generateColumns, getStatusColumn } from '../../utils/gridUtils';
 import { formatDateTime } from '../../utils/formatters';
+import { Box } from '@mui/material';
+import { StatsCards } from '../common/StatsCards';
+import PersonIcon from '@mui/icons-material/Person';
 
-const columns = [
+const columns = generateColumns({}, [
     { field: 'entity_id', headerName: 'ID', width: 90 },
     { field: 'email', headerName: 'Email', width: 200 },
     { 
@@ -33,7 +36,7 @@ const columns = [
         1: 'Active',
         0: 'Inactive'
     })
-];
+]);
 
 const CustomersGrid = ({ 
     data = [], 
@@ -43,21 +46,33 @@ const CustomersGrid = ({
     onFilterChange 
 }) => {
     return (
-        <BaseGrid
-            gridName="CustomersGrid"
-            columns={columns}
-            data={data}
-            loading={loading}
-            onRefresh={onRefresh}
-            currentFilter={currentFilter}
-            onFilterChange={onFilterChange}
-            getRowId={(row) => row.entity_id}
-            defaultSortModel={[
-                { field: 'registration_date', sort: 'desc' }
-            ]}
-            defaultPageSize={10}
-            pageSizeOptions={[10, 25, 50, 100]}
-        />
+        <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <StatsCards
+                cards={[
+                    {
+                        title: 'Total Customers',
+                        value: data.length,
+                        icon: PersonIcon,
+                        color: 'primary'
+                    }
+                ]}
+            />
+            <BaseGrid
+                gridName="CustomersGrid"
+                columns={columns}
+                data={data}
+                loading={loading}
+                onRefresh={onRefresh}
+                currentFilter={currentFilter}
+                onFilterChange={onFilterChange}
+                getRowId={(row) => row.entity_id}
+                defaultSortModel={[
+                    { field: 'registration_date', sort: 'desc' }
+                ]}
+                defaultPageSize={10}
+                pageSizeOptions={[10, 25, 50, 100]}
+            />
+        </Box>
     );
 };
 

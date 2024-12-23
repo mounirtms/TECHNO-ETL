@@ -1,0 +1,234 @@
+{
+    "items": [
+        {
+            "id": 1,
+            "identifier": "footer4_contact_us",
+            "title": "Footer 4 Contact Us",
+            "content": "<div data-content-type=\"html\" data-appearance=\"default\" data-element=\"main\">&lt;div class=\"margin-bottom25\"&gt;&lt;a href=\"{{store url=\"\"}}\"&gt;&lt;img src=\"http://claue.magesolution.com/pub/media/logo/stores/12/claue_furniture.png\" alt=\"Claue\" width=\"96\" height=\"27\" /&gt;&lt;/a&gt;&lt;/div&gt;\r\n&lt;ul class=\"list-icon\"&gt;\r\n&lt;li&gt;&lt;span class=\"icon pe-7s-map-marker\"&gt;&amp;nbsp;&lt;/span&gt;184 Main Rd E, St Albans &lt;br /&gt;VIC 3021, Australia&lt;/li&gt;\r\n&lt;li&gt;&lt;span class=\"icon pe-7s-mail\"&gt;&amp;nbsp;&lt;/span&gt;&lt;a href=\"mailto:contact@company.com\"&gt;contact@company.com&lt;/a&gt;&lt;/li&gt;\r\n&lt;li&gt;&lt;span class=\"icon pe-7s-call\"&gt;&amp;nbsp;&lt;/span&gt; &lt;a href=\"tel:+0012233456\"&gt;+001 2233 456&lt;/a&gt;&lt;/li&gt;\r\n&lt;/ul&gt;</div>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2022-03-29 12:20:25",
+            "active": false
+        },
+        {
+            "id": 2,
+            "identifier": "footer_block_image_map",
+            "title": "Footer Block Image Map",
+            "content": "<script type=\"text/javascript\" src=\"https://maps.googleapis.com/maps/api/js?key=AIzaSyDpxmpFLGKh6Ad23IS_ZP1rpxdagVhZnjQ&amp;libraries=places&amp;sensor=false\"></script><script type=\"text/javascript\">\n\t\trequire([\n\t\t'jquery'\n\t], function(jQuery){\n\t\t(function($) {\n\t\t\tvar address = '70 Cedar Street, New York';\n\t\t\tvar html = '<h4>Claue Store</h4><span>New York</span><br>NY, United States <br>+0123456789<p></p>';\n\t\t\tvar image = 'http://claue.magesolution.com/pub/media/map/default/claue_pin.png';\n\t\t\t$.ajax({\n\t\t\t\ttype: \"GET\",\n\t\t\t\tdataType: \"json\",\n\t\t\t\turl: \"http://maps.googleapis.com/maps/api/geocode/json\",\n\t\t\t\tdata: {'address': address,'sensor':false},\n\t\t\t\tsuccess: function(data){\n\t\t\t\t\tif(data.results.length){\n\t\t\t\t\t\tlatitude = data.results[0].geometry.location.lat;\n\t\t\t\t\t\tlongitude = data.results[0].geometry.location.lng;\n\t\t\t\t\t\t\n\t\t\t\t\t\tvar locations = [\n\t\t\t\t\t[html, latitude, longitude, 2]\n\t\t\t\t\t];\n\t\t\t\t\n\t\t\t\t\tvar map = new google.maps.Map(document.getElementById('footer-map'), {\n\t\t\t\t\t\tzoom: 14,\n\t\t\t\t\t\tscrollwheel: false,\n\t\t\t\t\t\tnavigationControl: true,\n\t\t\t\t\t\tmapTypeControl: false,\n\t\t\t\t\t\tscaleControl: false,\n\t\t\t\t\t\tdraggable: true,\n\t\t\t\t\t\tcenter: new google.maps.LatLng(latitude, longitude),\n\t\t\t\t\t\tmapTypeId: google.maps.MapTypeId.ROADMAP\n\t\t\t\t\t});\n\t\t\t\t\n\t\t\t\t\tvar infowindow = new google.maps.InfoWindow();\n\t\t\t\t\n\t\t\t\t\tvar marker, i;\n\t\t\t\t\n\t\t\t\t\tfor (i = 0; i < locations.length; i++) {  \n\t\t\t\t  \n\t\t\t\t\t\tmarker = new google.maps.Marker({ \n\t\t\t\t\t\tposition: new google.maps.LatLng(locations[i][1], locations[i][2]), \n\t\t\t\t\t\tmap: map ,\n\t\t\t\t\t\ticon: image\n\t\t\t\t\t\t});\n\t\t\t\t\n\t\t\t\t\n\t\t\t\t\t  google.maps.event.addListener(marker, 'click', (function(marker, i) {\n\t\t\t\t\t\treturn function() {\n\t\t\t\t\t\t  infowindow.setContent(locations[i][0]);\n\t\t\t\t\t\t  infowindow.open(map, marker);\n\t\t\t\t\t\t}\n\t\t\t\t\t  })(marker, i));\n\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t});\n\t\t})(jQuery);\n\t});\n\t</script>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2021-12-12 06:58:47",
+            "active": false
+        },
+        {
+            "id": 4,
+            "identifier": "footer_logo_and_social",
+            "title": "Footer 3 Logo And Social",
+            "content": "<div class=\"text-center\"><img src=\"http://claue.magesolution.com/pub/media/logo/default/logo.png\" alt=\"\" /></div>\n<ul class=\"social-link margin-top25\">\n<li><a href=\"#\">&nbsp;<span class=\"fa fa-facebook\">&nbsp;</span></a></li>\n<li><a href=\"#\">&nbsp;<span class=\"fa fa-twitter\">&nbsp;</span></a></li>\n<li><a href=\"#\">&nbsp;<span class=\"fa fa-google-plus\">&nbsp;</span></a></li>\n<li><a href=\"#\">&nbsp;<span class=\"fa fa-instagram\">&nbsp;</span></a></li>\n<li><a href=\"#\">&nbsp;<span class=\"fa fa-pinterest-p\">&nbsp;</span></a></li>\n</ul>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2021-12-12 06:58:47",
+            "active": false
+        },
+        {
+            "id": 6,
+            "identifier": "footer_block_instagram",
+            "title": "Footer 2 Instagram Block",
+            "content": "<h6 class=\"margin-bottom30\">Instagram Feed</h6>\n<div>{{block class=\"MGS\\Social\\Block\\Panel\\Widget\" mgs_panel_title=\"\" mgs_panel_note=\"\" limit=\"6\" resolution=\"low_resolution\" link=\"1\" perrow=\"3\" use_slider=\"0\" like=\"0\" comment=\"0\" template=\"widget/instagram.phtml\"}}</div>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2021-12-12 06:58:47",
+            "active": false
+        },
+        {
+            "id": 7,
+            "identifier": "footer_block_menu_bottom",
+            "title": "Footer 1 Menu Bottom",
+            "content": "<ul>\r\n<li><a href=\"/\"> Accueil </a></li>\r\n<li><a href=\"/a-propos\">A Propos</a></li>\r\n<li><a href=\"/contact\">Contact</a></li>\r\n</ul>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2021-12-12 06:58:47",
+            "active": false
+        },
+        {
+            "id": 8,
+            "identifier": "footer_contact_us",
+            "title": "Footer 1 Contact Us",
+            "content": "<div data-content-type=\"html\" data-appearance=\"default\" data-element=\"main\">&lt;div class=\"margin-bottom25\"&gt;&lt;a href=\"{{store url=&amp;quot;&amp;quot;}}\"&gt;&lt;img src=\"{{media url=wysiwyg/logo-techno-wt.png}}\" alt=\"Claue\" width=\"170\" height=\"39\"&gt;&lt;/a&gt;&lt;/div&gt;\r\n&lt;ul class=\"list-icon\"&gt;\r\n&lt;li&gt;&lt;a href=\"https://goo.gl/maps/aX5G5PTTh7Mn1APz8\"&gt;&lt;span class=\"icon pe-7s-map-marker\"&gt;&amp;nbsp;&lt;/span&gt;Cite les Mandarines lot N 280&lt;br&gt;pins maritime, Alger&lt;/a&gt;&lt;/li&gt;\r\n&lt;li&gt;&lt;a href=\"https://goo.gl/maps/aX5G5PTTh7Mn1APz8\"&gt;&lt;span class=\"icon pe-7s-mail\"&gt;&amp;nbsp;&lt;/span&gt;&lt;/a&gt;&lt;a href=\"mailto:contact@TechnoStationery.com\"&gt;contact@TechnoStationery.com&lt;/a&gt;&lt;/li&gt;\r\n&lt;li&gt;&lt;span class=\"icon pe-7s-call\"&gt;&amp;nbsp;&lt;/span&gt; &lt;a href=\"tel:00213550101012\"&gt;0550101012&lt;/a&gt;&lt;/li&gt;\r\n&lt;/ul&gt;\r\n&lt;ul class=\"social-link margin-top15\"&gt;\r\n&lt;li&gt;&lt;a href=\"https://www.facebook.com/TechnoTMS\"&gt;&amp;nbsp;&lt;span class=\"fa fa-facebook\"&gt;&amp;nbsp;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;\r\n&lt;li&gt;&lt;a href=\"https://www.linkedin.com/company/techno-stationery\"&gt;&amp;nbsp;&lt;span class=\"fa fa-linkedin\"&gt;&amp;nbsp;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;\r\n&lt;li&gt;&lt;a href=\"https://www.instagram.com/techno.stationery\"&gt;&amp;nbsp;&lt;span class=\"fa fa-instagram\"&gt;&amp;nbsp;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;\r\n&lt;li&gt;&lt;a href=\"https://www.youtube.com/c/TechnoAlgeriedz\"&gt;&amp;nbsp;&lt;span class=\"fa fa-youtube\"&gt;&amp;nbsp;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;\r\n&lt;/ul&gt;</div>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2022-03-29 12:10:32",
+            "active": true
+        },
+        {
+            "id": 9,
+            "identifier": "footer_block_categories",
+            "title": "Footer 1 Categories Menu",
+            "content": "<div data-content-type=\"html\" data-appearance=\"default\" data-element=\"main\">&lt;h6 class=\"margin-bottom30\"&gt;Mon compte&lt;/h6&gt;\r\n&lt;ul class=\"menu\"&gt;\r\n&lt;li&gt;&lt;a href=\"/customer/account/\"&gt;Mon compte&lt;/a&gt;&lt;/li&gt;\r\n&lt;li&gt;&lt;a href=\"/sales/order/history/\"&gt;Mes Commandes&lt;/a&gt;&lt;/li&gt;\r\n&lt;/ul&gt;</div>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2021-12-12 13:29:54",
+            "active": false
+        },
+        {
+            "id": 10,
+            "identifier": "header_8_top_left_link",
+            "title": "Header 8 Contact Block",
+            "content": "<ul>\r\n<li><a href=\"tel:00213550070708 \"><span class=\"icon pe-7s-call\"> </span>0550070708</a></li>\r\n<li><a href=\"{{store url=\"\"}}storelocator\"><span class=\"pe-7s-map-marker\"> </span>Vos points de vente</a></li>\r\n</ul>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2021-09-09 12:34:43",
+            "active": false
+        },
+        {
+            "id": 12,
+            "identifier": "footer_block_quick_link",
+            "title": "Footer 1 Quick Link",
+            "content": "<h6 class=\"margin-bottom30\">Liens Rapides</h6>\r\n<ul class=\"menu\">\r\n<li><a href=\"/storelocator\">Vos points de vente</a></li>\r\n</ul>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2021-12-12 06:58:47",
+            "active": false
+        },
+        {
+            "id": 13,
+            "identifier": "footer_block_subscribe",
+            "title": "Footer 1 Subscribe Block",
+            "content": "<h6 class=\"margin-bottom30\">Conditions &amp; Politiques</h6>\r\n<ul class=\"menu\">\r\n<li><a href=\"/conditions-generales-de-vente\">Conditions Générales de Vente</a></li>\r\n<li><a href=\"/conditions-generales-de-d-utilisation\">Conditions Générales d'utilisation</a></li>\r\n</ul>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2021-12-12 06:58:47",
+            "active": false
+        },
+        {
+            "id": 14,
+            "identifier": "footer_block_infomation",
+            "title": "Footer 1 Information Menu",
+            "content": "<h6 class=\"margin-bottom30\">Catégories</h6>\r\n<ul class=\"menu\">\r\n<li><a href=\"/par-domaine/scolaire.html\"> SCOLAIRE </a></li>\r\n<li><a href=\"/par-domaine/bureautique.html\"> BUREAUTIQUE </a></li>\r\n</ul>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2021-12-12 06:58:47",
+            "active": false
+        },
+        {
+            "id": 15,
+            "identifier": "header_1_top_left_link",
+            "title": "Header 1 Contact Block",
+            "content": "<div data-content-type=\"html\" data-appearance=\"default\" data-element=\"main\">&lt;ul&gt;\r\n&lt;li&gt;&lt;a href=\"tel:+213550070708 \"&gt;&lt;span class=\"icon pe-7s-call\"&gt;&amp;nbsp;&lt;/span&gt;0550 07 07 08&lt;/a&gt;&lt;/li&gt;\r\n&lt;li&gt;&lt;a href=\"mailto:contact@TechnoStationery.com\"&gt;&lt;span class=\"icon pe-7s-mail\"&gt;&amp;nbsp;&lt;/span&gt;contact@TechnoStationery.com&lt;/a&gt;&lt;/li&gt;\r\n&lt;/ul&gt;</div>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2023-11-12 14:57:14",
+            "active": false
+        },
+        {
+            "id": 16,
+            "identifier": "header_1_top_middle_block",
+            "title": "vos points de vente",
+            "content": "<div data-content-type=\"html\" data-appearance=\"default\" data-element=\"main\">&lt;div class=\"stores_header\"&gt;&lt;a href=\"https://technostationery.com/storelocator\"&gt;Vos points de vente&lt;/a&gt;&lt;/div&gt;</div>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2021-09-10 14:26:27",
+            "active": false
+        },
+        {
+            "id": 17,
+            "identifier": "header_1_social_block",
+            "title": "Header 1 Social Block",
+            "content": "<div data-content-type=\"html\" data-appearance=\"default\" data-element=\"main\">&lt;ul class=\"social-link\"&gt;\r\n&lt;li&gt;&lt;a href=\"#\"&gt;&amp;nbsp;&lt;span class=\"fa fa-facebook\"&gt;&amp;nbsp;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;\r\n&lt;li&gt;&lt;a href=\"#\"&gt;&amp;nbsp;&lt;span class=\"fa fa-twitter\"&gt;&amp;nbsp;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;\r\n&lt;li&gt;&lt;a href=\"#\"&gt;&amp;nbsp;&lt;span class=\"fa fa-google-plus\"&gt;&amp;nbsp;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;\r\n&lt;li&gt;&lt;a href=\"#\"&gt;&amp;nbsp;&lt;span class=\"fa fa-instagram\"&gt;&amp;nbsp;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;\r\n&lt;li&gt;&lt;a href=\"#\"&gt;&amp;nbsp;&lt;span class=\"fa fa-pinterest-p\"&gt;&amp;nbsp;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;\r\n&lt;/ul&gt;</div>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2022-01-16 16:07:37",
+            "active": false
+        },
+        {
+            "id": 19,
+            "identifier": "mpanel_default_sidebar_block",
+            "title": "Mpanel Default Sidebar Block",
+            "content": "<div class=\"block\">\r\n<div class=\"block-title\"><strong class=\"title\">Sale Products</strong></div>\r\n<div>{{block class=\"MGS\\Mpanel\\Block\\Products\\Category\" limit=\"3\" ratio=\"4\" category_ids=\"6\" use_slider=\"0\" loadmore=\"0\" template=\"products/category_products/list.phtml\" numbercol=\"1\" percol=\"3\"}}</div>\r\n</div>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2021-04-21 14:40:33",
+            "active": false
+        },
+        {
+            "id": 20,
+            "identifier": "mpanel_product_detail_top_block",
+            "title": "Mpanel Product Detail Top Block",
+            "content": "<div class=\"margin-top25 extra-link\"><a href=\"javascript:void(0)\" data-toggle=\"modal\" data-target=\"#side_guilde_modal\">Size Guilde</a> <a class=\"margin-left20\" href=\"javascript:void(0)\" data-toggle=\"modal\" data-target=\"#delivery_return_modal\">Delivery &amp; Return</a></div>\r\n<div id=\"side_guilde_modal\" class=\"modal fade\">\r\n<div class=\"modal-dialog\">\r\n<div class=\"modal-content\"><button class=\"close\" type=\"button\" data-dismiss=\"modal\">x</button>\r\n<div class=\"modal-body\"><img class=\"img-responsive\" src=\"{{media url=\"wysiwyg/sizecharts.png\"}}\" alt=\"\" /></div>\r\n</div>\r\n</div>\r\n</div>\r\n<div id=\"delivery_return_modal\" class=\"modal fade\">\r\n<div class=\"modal-dialog\">\r\n<div class=\"modal-content\"><button class=\"close\" type=\"button\" data-dismiss=\"modal\">x</button>\r\n<div class=\"modal-body\">\r\n<h6 class=\"margin-bottom10\">Delivery</h6>\r\n<p>All orders shipped with UPS Express.</p>\r\n<p>Always free shipping for orders over US $250.</p>\r\n<p>All orders are shipped with a UPS tracking number.</p>\r\n<h6 class=\"margin-bottom10\">Returns</h6>\r\n<p>Items returned within 14 days of their original shipment date in same as new condition will be eligible for a full refund or store credit.</p>\r\n<p>Refunds will be charged back to the original form of payment used for purchase.</p>\r\n<p>Customer is responsible for shipping charges when making returns and shipping/handling fees of original purchase is non-refundable.</p>\r\n<p>All sale items are final purchases.</p>\r\n<h6 class=\"margin-bottom10\">Help</h6>\r\n<p>Give us a shout if you have any other questions and/or concerns.</p>\r\n<p>Email: <a href=\"mailto:contact@domain.com\">contact@domain.com</a></p>\r\n<p>Phone: +1 (23) 456 789</p>\r\n</div>\r\n</div>\r\n</div>\r\n</div>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2021-04-21 14:37:41",
+            "active": false
+        },
+        {
+            "id": 21,
+            "identifier": "mpanel_product_detail_bottom_block",
+            "title": "Mpanel Product Detail Bottom Block",
+            "content": "<div class=\"margin-top60\">\n<div class=\"content-heading\">\n<h3 class=\"title\">DELIVERY &amp; RETURNS</h3>\n<div class=\"block-note\">Custom static block for product detail</div>\n</div>\n<section style=\"padding-top: 10px; padding-bottom: 2px;\">\n<div class=\"row\">\n<div class=\"col-lg-3 col-md-3 col-sm-6 col-xs-12 margin-bottom30\">\n<div class=\"row\">\n<div class=\"panel-block-row col-md-12 col-xs-12\">\n<div class=\"icon-service\">\n<div class=\"icon\"><i class=\"pe-7s-car\">&nbsp;</i></div>\n<div class=\"text\">\n<h6 class=\"margin-bottom5\">FREE SHIPPING</h6>\n<p class=\"no-margin\">Free shipping on all US order or order above $200</p>\n</div>\n</div>\n</div>\n</div>\n</div>\n<div class=\"col-lg-3 col-md-3 col-sm-6 col-xs-12 margin-bottom30\">\n<div class=\"row\">\n<div class=\"panel-block-row col-md-12 col-xs-12\">\n<div class=\"icon-service\">\n<div class=\"icon\"><i class=\"pe-7s-help2\">&nbsp;</i></div>\n<div class=\"text\">\n<h6 class=\"margin-bottom5\">SUPPORT 24/7</h6>\n<p class=\"no-margin\">Contact us 24 hours a day, 7 days a week</p>\n</div>\n</div>\n</div>\n</div>\n</div>\n<div class=\"col-lg-3 col-md-3 col-sm-6 col-xs-12 margin-bottom30\">\n<div class=\"row\">\n<div class=\"panel-block-row col-md-12 col-xs-12\">\n<div class=\"icon-service\">\n<div class=\"icon\"><i class=\"pe-7s-refresh\">&nbsp;</i></div>\n<div class=\"text\">\n<h6 class=\"margin-bottom5\">30 DAYS RETURN</h6>\n<p class=\"no-margin\">Simply return it within 30 days for an exchange.</p>\n</div>\n</div>\n</div>\n</div>\n</div>\n<div class=\"col-lg-3 col-md-3 col-sm-6 col-xs-12 margin-bottom30\">\n<div class=\"row\">\n<div class=\"panel-block-row col-md-12 col-xs-12\">\n<div class=\"icon-service\">\n<div class=\"icon\"><i class=\"pe-7s-door-lock\">&nbsp;</i></div>\n<div class=\"text\">\n<h6 class=\"margin-bottom5\">100% PAYMENT SECURE</h6>\n<p class=\"no-margin\">We ensure secure payment with PEV</p>\n</div>\n</div>\n</div>\n</div>\n</div>\n</div>\n</section></div>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2021-04-21 14:42:13",
+            "active": false
+        },
+        {
+            "id": 22,
+            "identifier": "claue_product_detail_tab",
+            "title": "Static Block On Product Detail Tab",
+            "content": "<div class=\"text-center\"><img src=\"{{media url=\"wysiwyg/care-icon.png\"}}\" alt=\"\" />\r\n<p class=\"margin-top20\">LT01: 70% wool, 15% polyester, 10% polyamide, 5% acrylic 900 Grms/mt</p>\r\n</div>",
+            "creation_time": "2021-04-17 20:17:26",
+            "update_time": "2021-04-21 14:10:12",
+            "active": false
+        },
+        {
+            "id": 23,
+            "identifier": "empty-search-results-by-amasty",
+            "title": "Empty Search Results by Amasty",
+            "content": "<div class=\"amsearch-emptysearch-cms\">\n    <div class=\"amsearch-content amsearch-item\">\n        <h2 class=\"amsearch-title\">Oops...</h2>\n        <p class=\"amsearch-text\">We can't seem to find <br/> the product you're looking for.</p>\n        <div class=\"amsearch-contacts-block\">\n            <p class=\"amsearch-title\">Need help? Email Us.</p>\n            <a class=\"amsearch-value\" href=\"mailto:{{config path='trans_email/ident_general/email'}}\">\n                {{config path=\"trans_email/ident_general/email\"}}\n            </a>\n        </div>\n    </div>\n    <div class=\"amsearch-image-block amsearch-item\">\n        <img src=\"{{media url='amasty/xsearch/empty-search.png'}}\" alt=\"Empty search\" />\n    </div>\n</div>",
+            "creation_time": "2021-08-19 08:00:29",
+            "update_time": "2021-08-19 08:00:29",
+            "active": true
+        },
+        {
+            "id": 24,
+            "identifier": "curbside_pickup_banner",
+            "title": "Pickup Option Banner",
+            "content": "<div class=\"ampickup-curbside-banner\"><img src=\"{{view url=Amasty_StorePickupWithLocator::images/banner.svg}}\" alt=\"Curbside Pickup\" class=\"ampickup-curbside-banner-img\"></div>",
+            "creation_time": "2021-08-19 08:00:39",
+            "update_time": "2021-10-27 08:54:46",
+            "active": false
+        },
+        {
+            "id": 25,
+            "identifier": "megamenu-horizontal",
+            "title": "Theme - Megamenu Horizontal Config",
+            "content": "<div class=\"horizontal-menu\">{{block class=\"Sm\\MegaMenu\\Block\\MegaMenu\\View\" template=\"Sm_MegaMenu::horizontal.phtml\" theme=\"1\" group_id=\"1\"}}</div>",
+            "creation_time": "2021-12-11 19:36:29",
+            "update_time": "2021-12-11 19:36:29",
+            "active": true
+        },
+        {
+            "id": 26,
+            "identifier": "megamenu-vertical",
+            "title": "Theme - Megamenu Vertical Config",
+            "content": "<div data-content-type=\"html\" data-appearance=\"default\" data-element=\"main\">&lt;div class=\"vertical-menu\"&gt;{{block class=\"Sm\\MegaMenu\\Block\\MegaMenu\\View\" template=\"Sm_MegaMenu::vertical.phtml\" theme=\"2\" group_id=\"2\" title=\"Toutes les catégories\"}}&lt;/div&gt;</div>",
+            "creation_time": "2021-12-11 19:36:29",
+            "update_time": "2023-12-12 09:02:50",
+            "active": true
+        },
+        {
+            "id": 27,
+            "identifier": "location-link-header",
+            "title": "Market - Location Link Header",
+            "content": "<div data-content-type=\"html\" data-appearance=\"default\" data-element=\"main\">&lt;div class=\"button-mobile-top mb-phone\" style=\"position: relative; top:4px; font-size:16px;\"&gt;\r\n&lt;a href=\"tel:+213550070708\"&gt;&lt;span class=\"icon-phone-call\"&gt;: 0550 07 07 08&lt;/span&gt;&lt;/a&gt; \r\n&lt;/div&gt;</div>",
+            "creation_time": "2021-12-11 19:36:29",
+            "update_time": "2023-11-12 14:55:06",
+            "active": true
+        },
+        {
+            "id": 28,
+            "identifier": "footer-1-content",
+            "title": "Market , Footer 1 Address",
+            "content": "<div data-content-type=\"html\" data-appearance=\"default\" data-element=\"main\">&lt;div class=\"footer-head\"&gt;\r\n    &lt;div class=\"container\"&gt;\r\n        &lt;div class=\"row\"&gt;\r\n            &lt;div class=\"col-lg-4 col-sm-6\"&gt;\r\n                &lt;div class=\"social-footer\"&gt;\r\n                    &lt;ul&gt;\r\n                        &lt;li&gt;\r\n                            &lt;a href=\"https://www.facebook.com/TechnoTMS\" target=\"_blank\"&gt;\r\n                                &lt;img src=\"{{media url=wysiwyg/facebook4.png}}\" alt=\"Facebook\"&gt;\r\n                            &lt;/a&gt;\r\n                        &lt;/li&gt;\r\n\r\n                        &lt;li&gt;\r\n                            &lt;a href=\"https://www.linkedin.com/company/techno-stationery\" target=\"_blank\"&gt;\r\n                                &lt;img src=\"{{media url=wysiwyg/linkedin2.png}}\" alt=\"Linkedin\"&gt;\r\n                            &lt;/a&gt;\r\n                        &lt;/li&gt;\r\n\r\n                        &lt;li&gt;\r\n                            &lt;a href=\"https://www.instagram.com/techno.stationery\" target=\"_blank\"&gt;\r\n                                &lt;img src=\"{{media url=wysiwyg/instagram3.png}}\" alt=\"Instagram\"&gt;\r\n                            &lt;/a&gt;\r\n                        &lt;/li&gt;\r\n\r\n                        &lt;li&gt;\r\n                            &lt;a href=\"https://www.youtube.com/c/TechnoAlgeriedz\" target=\"_blank\"&gt;\r\n                                &lt;img src=\"{{media url=wysiwyg/youtube3.png}}\" alt=\"Youtube\"&gt;\r\n                            &lt;/a&gt;\r\n                        &lt;/li&gt;\r\n                        &lt;li&gt;\r\n                            &lt;a href=\"https://t.me/Techno_Stationery\" target=\"_blank\"&gt;\r\n                                &lt;img src=\"{{media url=wysiwyg/telegram5.png}}\" alt=\"Telegram\"&gt;\r\n                            &lt;/a&gt;\r\n                        &lt;/li&gt;\r\n                        &lt;li&gt;\r\n                            &lt;a href=\"https://wa.me/+213550070708\" target=\"_blank\"&gt;\r\n                                &lt;img src=\"{{media url=wysiwyg/whatsapp6.png}}\" alt=\"Whatsapp\"&gt;\r\n                            &lt;/a&gt;\r\n                        &lt;/li&gt;\r\n                    &lt;/ul&gt;\r\n                &lt;/div&gt;\r\n            &lt;/div&gt;\r\n            &lt;!--\r\n            &lt;div class=\"col-lg-8 col-sm-6\"&gt;\r\n                &lt;div class=\"newsletter-footer\"&gt;\r\n                    &lt;div class=\"newsletter-title\"&gt;S'INSCRIRE AUX NEWSLETTERS&lt;/div&gt;\r\n                    &lt;div class=\"newsletter-form\"&gt;\r\n                        {{block class=\"Magento\\Newsletter\\Block\\Subscribe\" template=\"subscribe-footer.phtml\"}}\r\n                    &lt;/div&gt;\r\n                &lt;/div&gt;\r\n            &lt;/div&gt;\r\n--&gt;\r\n        &lt;/div&gt;\r\n    &lt;/div&gt;\r\n&lt;/div&gt;\r\n\r\n&lt;div class=\"footer-top\"&gt;\r\n    &lt;div class=\"container\"&gt;\r\n        &lt;div class=\"row\"&gt;\r\n            &lt;div class=\"col-lg-4\"&gt;\r\n                &lt;div class=\"footer-block footer-contact\"&gt;\r\n                    &lt;div class=\"footer-block-title\"&gt;NOUS CONTACTER&lt;/div&gt;\r\n\r\n                    &lt;div class=\"footer-block-content\"&gt;\r\n                        &lt;ul class=\"contact-info\"&gt;\r\n                            &lt;li class=\"address\"&gt;Adresse: Cité les Mandarines lot N 280&lt;br&gt;\r\n\r\n                                pins maritime, Alger\r\n                            &lt;/li&gt;\r\n\r\n                            &lt;li class=\"email\"&gt;contact@TechnoStationery.com&lt;/li&gt;\r\n\r\n                            &lt;li class=\"phone\"&gt;Tel: O550070708\r\n                            &lt;/li&gt;\r\n                        &lt;/ul&gt;\r\n                    &lt;/div&gt;\r\n                &lt;/div&gt;\r\n            &lt;/div&gt;\r\n\r\n            &lt;div class=\"col-lg-8\"&gt;\r\n                &lt;div class=\"row\"&gt;\r\n                    &lt;div class=\"col-lg-4 col-sm-4\"&gt;\r\n                        &lt;div class=\"footer-block\"&gt;\r\n                            &lt;div class=\"footer-block-title\"&gt;À PROPOS DE TECHNO&lt;/div&gt;\r\n                            &lt;div class=\"footer-block-content\"&gt;\r\n                                &lt;ul class=\"links-footer\"&gt;\r\n                                    &lt;li&gt;&lt;a href=\"/\"&gt;Accueil&lt;/a&gt;&lt;/li&gt;\r\n                                    &lt;li&gt;&lt;a href=\"/a-propos\"&gt;À Propos&lt;/a&gt;&lt;/li&gt;\r\n                                    &lt;li&gt;&lt;a href=\"/amblog\"&gt;Blog&lt;/a&gt;&lt;/li&gt;\r\n                                &lt;/ul&gt;\r\n                            &lt;/div&gt;\r\n                        &lt;/div&gt;\r\n                    &lt;/div&gt;\r\n\r\n                    &lt;div class=\"col-lg-4 col-sm-4\"&gt;\r\n                        &lt;div class=\"footer-block\"&gt;\r\n                            &lt;div class=\"footer-block-title\"&gt;SERVICE CLIENTS&lt;/div&gt;\r\n\r\n                            &lt;div class=\"footer-block-content\"&gt;\r\n                                &lt;ul class=\"links-footer\"&gt;\r\n                                    &lt;li&gt;&lt;a href=\"/customer/account/\"&gt;Mon compte&lt;/a&gt;&lt;/li&gt;\r\n                                    &lt;li&gt;&lt;a href=\"/sales/order/history/\"&gt;Mes Commandes&lt;/a&gt;&lt;/li&gt;\r\n                                &lt;/ul&gt;\r\n                            &lt;/div&gt;\r\n                        &lt;/div&gt;\r\n                    &lt;/div&gt;\r\n\r\n                    &lt;div class=\"col-lg-4 col-sm-4\"&gt;\r\n                        &lt;div class=\"footer-block\"&gt;\r\n                            &lt;div class=\"footer-block-title\"&gt;Conditions &amp; Politiques&lt;/div&gt;\r\n\r\n                            &lt;div class=\"footer-block-content\"&gt;\r\n                                &lt;ul class=\"links-footer\"&gt;\r\n                                    &lt;li&gt;&lt;a href=\"/conditions-generales-de-vente\"&gt;Conditions Générales de Vente&lt;/a&gt;&lt;/li&gt;\r\n                                    &lt;li&gt;&lt;a href=\"/conditions-generales-de-d-utilisation\"&gt;Conditions Générales d'utilisation&lt;/a&gt;&lt;/li&gt;\r\n                                &lt;/ul&gt;\r\n                            &lt;/div&gt;\r\n                        &lt;/div&gt;\r\n                    &lt;/div&gt;\r\n                &lt;/div&gt;\r\n\r\n            &lt;/div&gt;\r\n        &lt;/div&gt;\r\n    &lt;/div&gt;\r\n&lt;/div&gt;</div>",
+            "creation_time": "2021-12-11 19:36:29",
+            "update_time": "2024-10-21 10:17:09",
+            "active": true
+        },
+        {
+            "id": 29,
+            "identifier": "payment-footer",
+            "title": "Market - Payment Footer",
+            "content": "<div class=\"payment-footer\"><img class=\"mark-lazy\" src=\"{{media url=\"wysiwyg/payment/payment.png\"}}\" alt=\"Payment\" width=\"263\" height=\"24\"></div>",
+            "creation_time": "2021-12-11 19:36:29",
+            "update_time": "2021-12-12 06:58:47",
+            "active": false
+        }
+    ],
+    "search_criteria": {
+        "filter_groups": [],
+        "page_size": 25
+    },
+    "total_count": 99
+}

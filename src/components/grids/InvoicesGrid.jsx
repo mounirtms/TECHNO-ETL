@@ -8,6 +8,7 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import PaidIcon from '@mui/icons-material/Paid';
 import PendingIcon from '@mui/icons-material/Pending';
 import { toast } from 'react-toastify';
+import { generateColumns } from '../../utils/gridUtils';
 
 /**
  * InvoiceGrid Component
@@ -25,7 +26,7 @@ const InvoicesGrid = ({ orderId }) => {
     });
 
     // Grid columns configuration
-    const columns = [
+    const columns = generateColumns(data[0] || {}, [
         { 
             field: 'increment_id', 
             headerName: 'Invoice #', 
@@ -55,7 +56,7 @@ const InvoicesGrid = ({ orderId }) => {
             valueGetter: (params) => params.row.created_at,
             valueFormatter: (params) => formatDateTime(params.value)
         }
-    ];
+    ]);
 
     // Data fetching handler
     const handleRefresh = useCallback(async ({ page, pageSize, filter }) => {
@@ -113,37 +114,30 @@ const InvoicesGrid = ({ orderId }) => {
         setStats(newStats);
     }, []);
 
-    // Stats cards configuration
-    const statCards = [
-        {
-            title: "All Invoices",
-            value: stats.total,
-            icon: ReceiptIcon,
-            color: "primary",
-            active: !filters.state,
-            onClick: () => setFilters({})
-        },
-        {
-            title: "Paid",
-            value: stats.paid,
-            icon: PaidIcon,
-            color: "success",
-            active: filters.state === 'paid',
-            onClick: () => setFilters({ state: 'paid' })
-        },
-        {
-            title: "Pending",
-            value: stats.pending,
-            icon: PendingIcon,
-            color: "warning",
-            active: filters.state === 'pending',
-            onClick: () => setFilters({ state: 'pending' })
-        }
-    ];
-
     return (
-        <Box>
-            <StatsCards cards={statCards} />
+        <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <StatsCards
+                cards={[
+                    {
+                        title: 'Total Invoices',
+                        value: stats.total,
+                        icon: ReceiptIcon,
+                        color: 'primary'
+                    },
+                    {
+                        title: 'Paid',
+                        value: stats.paid,
+                        icon: PaidIcon,
+                        color: 'success'
+                    },
+                    {
+                        title: 'Pending',
+                        value: stats.pending,
+                        icon: PendingIcon,
+                        color: 'warning'
+                    }
+                ]}
+            />
             <BaseGrid
                 gridName="InvoicesGrid"
                 columns={columns}
@@ -152,7 +146,7 @@ const InvoicesGrid = ({ orderId }) => {
                 onRefresh={handleRefresh}
                 currentFilter={filters}
                 onFilterChange={setFilters}
-                getRowId={(row) => row.entity_id}
+                getRowId={(row) => row.increment_id}
                 defaultSortModel={[
                     { field: 'invoice_date', sort: 'desc' }
                 ]}

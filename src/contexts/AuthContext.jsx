@@ -152,30 +152,25 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logout = useCallback(async () => {
+    const logout = async () => {
         try {
-            // Sign out from Firebase if using Firebase auth
-            if (currentUser) {
+            if (currentUser?.isMagentoUser) {
+                // Clear Magento token
+                setMagentoToken(null);
+                localStorage.removeItem('magentoToken');
+            } else {
+                // Sign out from Firebase
                 await signOut(auth);
             }
-
-            // Clear Magento token
-            setMagentoToken(null);
-            localStorage.removeItem('magentoToken');
-
-            // Clear Firebase user
             setCurrentUser(null);
-
-            // Clear any other authentication-related data
-            setIsUsingLocalData(false);
-
-            // Redirect to login page
-            window.location.href = '/login';
+            toast.success('Successfully logged out');
+            window.location.href = '/login';  // Force a full page reload to clear all states
         } catch (error) {
-            toast.error('Logout failed. Please try again.');
             console.error('Logout error:', error);
+            toast.error('Failed to logout');
+            throw error;
         }
-    }, [currentUser]);
+    };
 
     // Check Magento token validity
     useEffect(() => {
@@ -209,14 +204,13 @@ export const AuthProvider = ({ children }) => {
 
     const value = {
         currentUser,
+        loading,
         signInWithGoogle,
         signInWithMagento,
-        magentoToken,
-        loading,
         logout,
+        magentoToken,
         isUsingLocalData,
-        // Add isAuthenticated for backwards compatibility
-        isAuthenticated: !!currentUser
+        validateMagentoToken
     };
 
     return (

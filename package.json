@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "bunx --bun vite",
-    "prod": "node updateVersion.js && vite build",
-    "deploy": "firebase deploy --only hosting",
+    "prod": " vite build",
+    "dep": "firebase deploy --only hosting",
     "clean": "rm -rf node_modules/.vite && rm -rf dist && bun install && bun run dev",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "bunx --bun vite preview"
@@ -36,6 +36,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
+    "react-quill": "^2.0.0",
     "react-router-dom": "^6.15.0",
     "react-toastify": "^10.0.6",
     "recharts": "^2.8.0",

@@ -24,7 +24,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { ref, set, get } from 'firebase/database';
 import { database } from '../../config/firebase';
 import {
-    generateColumns, mergeColumns
+    generateColumns, mergeColumns,applySavedColumnSettings,getGridSettings
 } from '../../utils/gridUtils';
 import InvoiceGrid from '../grids/InvoicesGrid';
 import CategoryGrid from '../grids/CategoryGrid';
@@ -489,20 +489,20 @@ const SettingsDialog = ({ open, onClose, columns, gridName, onSave }) => {
                         <Typography>Loading settings...</Typography>
                     </Box>
                 ) : (
-                    <List>
-                        {columns.map((column) => (
-                            <ListItem key={column.field}>
-                                <ListItemIcon>
-                                    <Checkbox
-                                        edge="start"
-                                        checked={columnSettings[column.field]?.visible ?? true}
-                                        onChange={() => handleToggleColumn(column.field)}
-                                    />
-                                </ListItemIcon>
-                                <ListItemText primary={column.headerName || column.field} />
-                            </ListItem>
-                        ))}
-                    </List>
+                <List>
+                    {columns.map((column) => (
+                        <ListItem key={column.field}>
+                            <ListItemIcon>
+                                <Checkbox
+                                    edge="start"
+                                    checked={columnSettings[column.field]?.visible ?? true}
+                                    onChange={() => handleToggleColumn(column.field)}
+                                />
+                            </ListItemIcon>
+                            <ListItemText primary={column.headerName || column.field} />
+                        </ListItem>
+                    ))}
+                </List>
                 )}
             </DialogContent>
             <DialogActions>
@@ -519,10 +519,6 @@ const SettingsDialog = ({ open, onClose, columns, gridName, onSave }) => {
     );
 };
 
-/**
- * Base Grid Component
- * Provides core grid functionality with customizable features
- */
 const BaseGrid = ({
     gridName,
     columns: userColumns,
@@ -552,6 +548,10 @@ const BaseGrid = ({
     defaultPageSize = 25,
     ...props
 }) => {
+    const [columns, setColumns] = useState(() => {
+        const initialColumns = applySavedColumnSettings(gridName, userColumns);
+        return Array.isArray(initialColumns) ? initialColumns : [];
+    });
     // State management
     const [sortModel, setSortModel] = useState([{ 
         field: defaultSortField, 
@@ -572,11 +572,34 @@ const BaseGrid = ({
     const commonPageSizes = [10, 25, 50, 100];
 
     // Process and enhance columns
+    const handleSave = (updatedColumns) => {
+        const importantConfigs = updatedColumns.map(col => ({
+            field: col.field,
+            width: col.width,
+            hide: col.hide,
+            index: col.index
+        }));
+        setColumns(updatedColumns);
+        localStorage.setItem(`${gridName}-columns`, JSON.stringify(importantConfigs));
+        console.log('Updated columns saved to localStorage:', importantConfigs);
+        saveGridSettings(gridName, importantConfigs);
+    };
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            const remoteSettings = await getGridSettings(gridName);
+            if (remoteSettings) {
+                const appliedColumns = applySavedColumnSettings(gridName, remoteSettings);
+                setColumns(Array.isArray(appliedColumns) ? appliedColumns : []);
+            }
+        };
+        fetchSettings();
+    }, [gridName]);
+
     const finalColumns = useMemo(() => {
         try {
-            let baseColumns = [...preColumns, ...userColumns, ...endColumns];
+            let baseColumns = [...preColumns, ...columns, ...endColumns];
             
-            // Ensure created_at is always present and sorted by default
             if (!baseColumns.find(col => col.field === 'created_at')) {
                 baseColumns.push({
                     field: 'created_at',
@@ -688,10 +711,10 @@ const BaseGrid = ({
                 flexDirection: 'column'
             }}>
 
-            <StyledBox>
-                <DataGrid
+        <StyledBox>
+            <DataGrid
                     rows={safeData}
-                    columns={finalColumns}
+                columns={finalColumns}
                     loading={internalLoading || externalLoading}
                     paginationMode="server"
                     sortingMode="server"
@@ -710,8 +733,8 @@ const BaseGrid = ({
                         sorting: {
                             sortModel: [{ field: defaultSortField, sort: defaultSortDirection }]
                         }
-                    }}
-                    components={{
+                }}
+                components={{
                         Toolbar: () => (
                             <CustomGridToolbar
                                 onRefresh={handleRefresh}
@@ -729,9 +752,9 @@ const BaseGrid = ({
                             />
                         )
                     }}
-                    {...props}
-                />
-            </StyledBox>
+                {...props}
+            />
+        </StyledBox>
 
             <RecordDetailsDialog
                 open={detailsDialogOpen}
