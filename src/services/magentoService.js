@@ -48,7 +48,6 @@ class MagentoService {
         try {
             console.log('Making GET request to:', endpoint, 'with params:', params);
             
-            // Convert searchCriteria object to URL parameters
             let url = endpoint;
             if (params.searchCriteria) {
                 const queryParams = new URLSearchParams();
@@ -56,19 +55,34 @@ class MagentoService {
                 url += `?${queryParams.toString()}`;
             }
 
+            const cachedResponse = await this.getCachedResponse({ method: 'GET', url, params });
+            if (cachedResponse) {
+                return cachedResponse;
+            }
+
             const response = await this.instance.get(url);
             console.log('GET response:', response);
             
             if (response?.status === 200) {
+                await this.setCachedResponse({ method: 'GET', url, params }, response.data);
                 return {
                     data: response.data,
                     status: response.status
                 };
             }
             return this.handleApiError(response);
-            //throw new Error('Request failed');
         } catch (error) {
             console.error('GET request error:', error);
+            // If there's a quota exceeded error or any other cache error, use local fallback data
+            const fallbackData = this.getLocalFallbackData(endpoint);
+            if (fallbackData) {
+                console.log('Using local fallback data for:', endpoint);
+                return {
+                    data: fallbackData,
+                    status: 200,
+                    fromFallback: true
+                };
+            }
             return this.handleApiError(error);
         }
     }
@@ -126,18 +140,33 @@ class MagentoService {
         }
     }
 
+    // Get local fallback data based on endpoint
+    getLocalFallbackData(endpoint) {
+        if (endpoint.includes('/customers')) return customersData;
+        if (endpoint.includes('/products')) return productsData;
+        if (endpoint.includes('/orders')) return ordersData;
+        if (endpoint.includes('/invoices')) return invoicesData;
+        if (endpoint.includes('/categories')) return categoryData;
+        return null;
+    }
+
     // Authentication
-    async login(username, password) {
+    async login(username, password, customBaseURL = null) {
         try {
+            if (customBaseURL) {
+                this.setBaseURL(customBaseURL);
+            }
+            
             const response = await this.post('/integration/admin/token', { username, password });
             if (response.data) {
-                this.setToken(response.data);
+                localStorage.setItem('adminToken', response.data);
+                // Clear any existing cache when logging in
+                this.clearCache();
                 return response.data;
             }
-            throw new Error('Login failed: No token received');
+            throw new Error('Invalid response from authentication server');
         } catch (error) {
-            console.error('Login error:', error);
-            throw error;
+            throw this.handleApiError(error);
         }
     }
 
@@ -155,76 +184,114 @@ class MagentoService {
         localStorage.setItem('adminToken', token);
     }
 
+    // Base URL management
+    setBaseURL(newBaseURL) {
+        if (!newBaseURL) {
+            throw new Error('Base URL cannot be empty');
+        }
+        this.baseURL = newBaseURL;
+        this.instance.defaults.baseURL = newBaseURL;
+    }
+
+    getBaseURL() {
+        return this.baseURL;
+    }
+
+    // Cache management
+    async getCachedResponse(config) {
+        try {
+            const cacheKey = `${config.method}:${config.url}:${JSON.stringify(config.params)}`;
+            const cache = await caches.open('magento-api-cache');
+            const cachedResponse = await cache.match(cacheKey);
+            
+            if (cachedResponse) {
+                const { data, timestamp } = await cachedResponse.json();
+                const now = Date.now();
+                if (now - timestamp < 5 * 60 * 1000) { // 5 minutes cache
+                    return { data, status: 200, fromCache: true };
+                }
+                await cache.delete(cacheKey); // Remove expired cache
+            }
+            return null;
+        } catch (error) {
+            console.warn('Cache read error:', error);
+            return null;
+        }
+    }
+
+    async setCachedResponse(config, data) {
+        try {
+            const cacheKey = `${config.method}:${config.url}:${JSON.stringify(config.params)}`;
+            const cache = await caches.open('magento-api-cache');
+            const cacheData = {
+                data,
+                timestamp: Date.now()
+            };
+            await cache.put(cacheKey, new Response(JSON.stringify(cacheData)));
+        } catch (error) {
+            console.warn('Cache write error:', error);
+        }
+    }
+
+    clearCache() {
+        Object.keys(localStorage).forEach(key => {
+            if (key.includes(':')) { // Only clear API cache entries
+                localStorage.removeItem(key);
+            }
+        });
+    }
+
     // Error Handler
     handleApiError(error) {
-        console.log('Handling API error:', error);
         let errorMessage = 'An unexpected error occurred';
+        let errorCode = 'UNKNOWN_ERROR';
 
         if (error.response) {
             const { status, data } = error.response;
-            console.log('Error response status:', status);
-
             switch (status) {
                 case 400:
-                    errorMessage = data.message || 'Invalid request';
+                    errorMessage = 'Invalid request. Please check your input.';
+                    errorCode = 'INVALID_REQUEST';
                     break;
                 case 401:
-                    toast.warn('Authentication required. Using local data.');
-                    return this.handleApi401Error(error);
+                    errorMessage = 'Authentication failed. Please log in again.';
+                    errorCode = 'AUTH_ERROR';
+                    this.handleAuthError();
+                    break;
                 case 403:
-                    errorMessage = 'Access forbidden';
+                    errorMessage = 'You do not have permission to perform this action.';
+                    errorCode = 'PERMISSION_ERROR';
                     break;
                 case 404:
-                    errorMessage = 'Resource not found';
+                    errorMessage = 'The requested resource was not found.';
+                    errorCode = 'NOT_FOUND';
+                    break;
+                case 429:
+                    errorMessage = 'Too many requests. Please try again later.';
+                    errorCode = 'RATE_LIMIT';
                     break;
                 case 500:
-                    errorMessage = 'Internal server error';
+                    errorMessage = 'Server error. Please try again later.';
+                    errorCode = 'SERVER_ERROR';
                     break;
                 default:
-                    errorMessage = data.message || 'Server error';
+                    errorMessage = data?.message || 'An error occurred with the request.';
+                    errorCode = `HTTP_${status}`;
             }
         } else if (error.request) {
-            console.log('No response received from server');
-            errorMessage = 'No response from server';
+            errorMessage = 'Network error. Please check your connection.';
+            errorCode = 'NETWORK_ERROR';
         }
 
-        console.error('API Error:', errorMessage);
         toast.error(errorMessage);
-
-        // Return null to trigger local data fallback
-        return null;
+        return Promise.reject({ message: errorMessage, code: errorCode, originalError: error });
     }
 
-    // Error handling function with fallback to local data
-    handleApi401Error = async (error) => {
-        console.log('Handling 401 error with local data fallback');
-        let entityType;
-        const url = error.config?.url || '';
-
-        if (url.includes('orders')) {
-            entityType = 'orders';
-        } else if (url.includes('products')) {
-            entityType = 'products';
-        } else if (url.includes('customers')) {
-            entityType = 'customers';
-        } else if (url.includes('invoice')) {
-            entityType = 'invoices';
-        } else if (url.includes('categories')) {
-            entityType = 'categories';
-        }
-
-        console.log('Entity type for local data:', entityType);
-        const localData = this.getLocalData(entityType);
-        console.log('Retrieved local data:', localData);
-
-        return {
-            data: {
-                items: localData,
-                total_count: localData.length,
-                search_criteria: {}
-            }
-        };
-    };
+    handleAuthError() {
+        //localStorage.removeItem('adminToken');
+        //localStorage.removeItem('user');
+        //window.location.href = '/login';
+    }
 
     // Utility function to get local data
     getLocalData(entityType) {

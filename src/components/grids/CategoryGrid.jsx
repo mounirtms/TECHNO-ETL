@@ -37,7 +37,7 @@ const CategoryGrid = ({ productId }) => {
         categories.forEach((category, index) => {
             // Create a unique path-based identifier
             const currentPath = parentPath ? `${parentPath}-${category.id}` : `${category.id}`;
-            
+
             const processedCategory = {
                 ...category,
                 // Use the path-based identifier to ensure uniqueness
@@ -53,10 +53,10 @@ const CategoryGrid = ({ productId }) => {
 
             if (category.children_data?.length > 0) {
                 processCategories(
-                    category.children_data, 
-                    level + 1, 
-                    category.id, 
-                    result, 
+                    category.children_data,
+                    level + 1,
+                    category.id,
+                    result,
                     currentPath
                 );
             }
@@ -80,26 +80,26 @@ const CategoryGrid = ({ productId }) => {
 
     // Grid columns configuration
     const visibleColumns = [
-        { 
-            field: 'name', 
-            headerName: 'Category Name', 
+        {
+            field: 'name',
+            headerName: 'Category Name',
             flex: 1,
             renderCell: (params) => {
                 const isExpanded = expandedRows.has(params.row.id);
                 return (
-                    <Box sx={{ 
-                        display: 'flex', 
+                    <Box sx={{
+                        display: 'flex',
                         alignItems: 'center',
                         pl: params.row.level * 4 // Indent based on level
                     }}>
                         {params.row.has_children && (
-                            <Box 
-                                component="span" 
+                            <Box
+                                component="span"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleRowExpand(params.row.id);
                                 }}
-                                sx={{ 
+                                sx={{
                                     display: 'flex',
                                     alignItems: 'center',
                                     cursor: 'pointer',
@@ -109,8 +109,8 @@ const CategoryGrid = ({ productId }) => {
                                     }
                                 }}
                             >
-                                {isExpanded ? 
-                                    <KeyboardArrowDownIcon color="action" /> : 
+                                {isExpanded ?
+                                    <KeyboardArrowDownIcon color="action" /> :
                                     <KeyboardArrowRightIcon color="action" />
                                 }
                             </Box>
@@ -120,20 +120,20 @@ const CategoryGrid = ({ productId }) => {
                 );
             }
         },
-        { 
-            field: 'product_count', 
-            headerName: 'Products', 
+        {
+            field: 'product_count',
+            headerName: 'Products',
             width: 120,
             type: 'number'
         },
-        { 
-            field: 'position', 
-            headerName: 'Position', 
+        {
+            field: 'position',
+            headerName: 'Position',
             width: 100,
             type: 'number'
         },
-        { 
-            field: 'is_active', 
+        {
+            field: 'is_active',
             headerName: 'Status',
             width: 120,
             type: 'singleSelect',
@@ -148,13 +148,13 @@ const CategoryGrid = ({ productId }) => {
     // Generate additional hidden columns
     const allColumns = useMemo(() => {
         if (!data.length) return visibleColumns;
-        
+
         // Generate additional columns from the first data item
         const generatedColumns = generateColumns(data[0], visibleColumns);
-        
+
         // Merge visible and generated columns, marking generated ones as hidden
         const mergedColumns = mergeColumns(visibleColumns, generatedColumns);
-        
+
         // Ensure proper column configuration
         return mergedColumns.map(col => ({
 
@@ -168,7 +168,7 @@ const CategoryGrid = ({ productId }) => {
     const handleRefresh = useCallback(async ({ page, pageSize, filter }) => {
         try {
             setLoading(true);
-            
+
             const searchCriteria = {
                 filterGroups: [],
                 pageSize,
@@ -224,45 +224,42 @@ const CategoryGrid = ({ productId }) => {
     }, []);
 
     return (
-        <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <StatsCards
-                cards={[
-                    {
-                        title: 'Total Categories',
-                        value: stats.total,
-                        icon: CategoryIcon,
-                        color: 'primary'
-                    },
-                    {
-                        title: 'Active',
-                        value: stats.active,
-                        icon: VisibilityIcon,
-                        color: 'success'
-                    },
-                    {
-                        title: 'Inactive',
-                        value: stats.inactive,
-                        icon: VisibilityOffIcon,
-                        color: 'error'
-                    }
-                ]}
-            />
-            <BaseGrid
-                gridName="CategoryGrid"
-                columns={visibleColumns}
-                data={data}
-                loading={loading}
-                onRefresh={handleRefresh}
-                currentFilter={filters}
-                onFilterChange={setFilters}
-                getRowId={(row) => row.id}
-                defaultSortModel={[
-                    { field: 'name', sort: 'asc' }
-                ]}
-                defaultPageSize={10}
-                pageSizeOptions={[10, 25, 50, 100]}
-            />
-        </Box>
+        <BaseGrid
+            gridName="CategoryGrid"
+            columns={visibleColumns}
+            data={data}
+            loading={loading}
+            onRefresh={handleRefresh}
+            gridCards={[
+                {
+                    title: 'Total Categories',
+                    value: stats.total,
+                    icon: CategoryIcon,
+                    color: 'primary'
+                },
+                {
+                    title: 'Active',
+                    value: stats.active,
+                    icon: VisibilityIcon,
+                    color: 'success'
+                },
+                {
+                    title: 'Inactive',
+                    value: stats.inactive,
+                    icon: VisibilityOffIcon,
+                    color: 'error'
+                }
+            ]}
+            currentFilter={filters}
+            onFilterChange={setFilters}
+            getRowId={(row) => row.id}
+            defaultSortModel={[
+                { field: 'name', sort: 'asc' }
+            ]}
+            defaultPageSize={10}
+            pageSizeOptions={[10, 25, 50, 100]}
+        />
+
     );
 };
 

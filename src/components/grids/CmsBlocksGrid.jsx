@@ -50,7 +50,6 @@ const CmsBlocksGrid = () => {
     }, []);
 
     return (
-        <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', gap: 1 }}>
             <BaseGrid
                 gridName="CmsBlocksGrid"
                 columns={columns}
@@ -70,7 +69,7 @@ const CmsBlocksGrid = () => {
                     window.alert(`Viewing details for: ${params.row.title}`);
                 }}
             />
-        </Box>
+    
     );
 };
 

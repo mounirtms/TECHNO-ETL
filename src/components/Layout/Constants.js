@@ -28,6 +28,15 @@ export const TRANSITION_DURATION = 225;
  * 
  * Defines the main navigation items for the admin dashboard
  */
+
+export const staticPrimaryKeys = {
+    OrdersGrid: 'increment_id',
+    InvoicesGrid: 'entity_id',
+    ProductsGrid: 'sku',
+    CustomersGrid: 'id',
+    CategoryGrid: 'id', // Example for CategoryGrid
+};
+
 export const MENU_ITEMS = [
     {
         id: 'Dashboard',

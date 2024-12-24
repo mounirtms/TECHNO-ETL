@@ -1,16 +1,17 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { Chip } from '@mui/material';
-import { StatusCell } from '../components/common/BaseGrid';
+import { StatusCell } from '../components/common/StatusCell';
 import { ref, set, get } from 'firebase/database';
 import { database } from '../config/firebase';
+import { column } from 'stylis';
 
 // Constants
 export const CURRENCY = 'DZD';
 export const LOCALE = 'fr-DZ';
 export const DATE_FORMAT = 'PPp';
 
-
+// Custom Order statuses
 export const STATUS_COLORS = {
     // Custom Order statuses
     'processing': 'info',
@@ -25,7 +26,7 @@ export const STATUS_COLORS = {
     'Commande_en_livraison_prestataire': 'info',
     'Livraison_Confirmee': 'success',
     'CMD_Done': 'success',
-    
+
     // Other existing statuses remain unchanged
     shipped: 'info',
     active: 'success',
@@ -79,19 +80,19 @@ export const STATUS_CLASSES = {
 const isDate = (value) => {
     if (!value) return false;
     const date = new Date(value);
-    return !isNaN(date) && 
-        typeof value === 'string' && 
-        (value.match(/^\d{4}-\d{2}-\d{2}/) || 
-         value.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/));
+    return !isNaN(date) &&
+        typeof value === 'string' &&
+        (value.match(/^\d{4}-\d{2}-\d{2}/) ||
+            value.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/));
 };
 
 const isCurrency = (key, value) => {
-    return isNumeric(value) && 
-        (key.includes('price') || 
-         key.includes('total') || 
-         key.includes('amount') ||
-         key.includes('cost') ||
-         key.includes('revenue'));
+    return isNumeric(value) &&
+        (key.includes('price') ||
+            key.includes('total') ||
+            key.includes('amount') ||
+            key.includes('cost') ||
+            key.includes('revenue'));
 };
 
 const isNumeric = (value) => {
@@ -103,18 +104,18 @@ const isBoolean = (value) => {
 };
 
 const isStatus = (key, value) => {
-    return (typeof value === 'string' || typeof value === 'boolean') && 
-        (key.includes('status') || 
-         key.includes('state') || 
-         key.includes('active') ||
-         key.includes('enabled'));
+    return (typeof value === 'string' || typeof value === 'boolean') &&
+        (key.includes('status') ||
+            key.includes('state') ||
+            key.includes('active') ||
+            key.includes('enabled'));
 };
 
 // Column Generators
 export const getDateColumn = (field, options = {}) => ({
     field,
     type: 'date',
-    valueFormatter: (params) => 
+    valueFormatter: (params) =>
         params.value ? format(new Date(params.value), DATE_FORMAT) : '',
     width: 180,
     ...options
@@ -123,7 +124,7 @@ export const getDateColumn = (field, options = {}) => ({
 export const getCurrencyColumn = (field, options = {}) => ({
     field,
     type: 'number',
-    valueFormatter: (params) => 
+    valueFormatter: (params) =>
         params.value ? new Intl.NumberFormat(LOCALE, {
             style: 'currency',
             currency: CURRENCY
@@ -140,8 +141,8 @@ export const getStatusColumn = (field = 'status', options = {}) => ({
         const value = params.value;
         const statusClass = STATUS_CLASSES[value] || value;
         const statusColor = STATUS_COLORS[value] || 'default';
-        
-        return StatusCell({ 
+
+        return StatusCell({
             value,
             statusColors: options.statusColors || STATUS_COLORS,
             className: statusClass
@@ -156,7 +157,7 @@ export const getBooleanColumn = (field, options = {}) => ({
     field,
     type: 'boolean',
     width: 120,
-    renderCell: (params) => StatusCell({ 
+    renderCell: (params) => StatusCell({
         value: params.value ? 'true' : 'false',
         statusColors: STATUS_COLORS
     }),
@@ -170,139 +171,194 @@ export const getTreeColumn = (field, options = {}) => ({
     ...options
 });
 
-// Main Column Generator
-export const generateColumns = (firstRecord, childColumns = []) => {
-    if (!firstRecord) return childColumns;
-    
-    const existingFields = new Set(childColumns.map(col => col.field));
-    const generatedColumns = [];
+// Cache management for grid data
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-    // Process record fields
-    Object.entries(firstRecord).forEach(([key, value]) => {
-        // Skip if column already exists or value is complex
-        if (existingFields.has(key) || 
-            Array.isArray(value) || 
-            (typeof value === 'object' && value !== null)) {
-            return;
+export const getLocalData = (gridName) => {
+    try {
+        const cachedData = localStorage.getItem(`grid_${gridName}_data`);
+        if (cachedData) {
+            const { data, timestamp } = JSON.parse(cachedData);
+            if (Date.now() - timestamp < CACHE_DURATION) {
+                return data;
+            }
         }
-
-        let baseColumn = {
-            field: key,
-            headerName: key.split('_')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' '),
-            width: 150,
-            filterable: true,
-            hideable: true,  // Allow column to be hidden/shown
-            hide: true      // Hidden by default
-        };
-
-        // Apply specific column types
-        if (isDate(value)) {
-            baseColumn = { 
-                ...baseColumn, 
-                ...getDateColumn(key),
-                hide: true,
-                type: 'date'
-            };
-        } else if (isCurrency(key, value)) {
-            baseColumn = { 
-                ...baseColumn, 
-                ...getCurrencyColumn(key),
-                hide: true,
-                type: 'money'
-            };
-        } else if (isBoolean(value)) {
-            baseColumn = { 
-                ...baseColumn, 
-                ...getBooleanColumn(key),
-                hide: true,
-                type: 'boolean'
-            };
-        } else if (isStatus(key, value)) {
-            baseColumn = { 
-                ...baseColumn, 
-                ...getStatusColumn(key),
-                hide: true,
-                type: 'status'
-            };
-        } else if (isNumeric(value)) {
-            baseColumn = { 
-                ...baseColumn, 
-                type: 'number',
-                width: 120,
-                hide: true
-            };
-        }
-
-        generatedColumns.push(baseColumn);
-    });
-
-    return generatedColumns;
+        // If cache is expired or not found, return default data from assets
+        return require(`../assets/data/${gridName.toLowerCase()}.json`);
+    } catch (error) {
+        console.error(`Error getting local data for ${gridName}:`, error);
+        return [];
+    }
 };
 
-// Helper function to merge and deduplicate columns
-export const mergeColumns = (visibleColumns, generatedColumns) => {
-    // Create a map of existing columns by field
-    const columnMap = new Map(
-        visibleColumns.map(col => [col.field, { ...col, hide: false }])
-    );
+export const setLocalData = (gridName, data) => {
+    try {
+        localStorage.setItem(`grid_${gridName}_data`, JSON.stringify({
+            data,
+            timestamp: Date.now()
+        }));
+    } catch (error) {
+        console.error(`Error caching data for ${gridName}:`, error);
+    }
+};
+
+// Default grid columns storage
+const defaultGridColumns = {};
+
+export const saveDefaultColumns = (gridName, columns) => {
+    defaultGridColumns[gridName] = [...columns];
+};
+
+export const getDefaultColumns = (gridName) => {
+    return defaultGridColumns[gridName] || [];
+};
+
+export const resetToDefaultColumns = (gridName) => {
+    const defaultColumns = getDefaultColumns(gridName);
+    saveGridSettings(gridName, defaultColumns);
+    return defaultColumns;
+};
+
+// Enhanced column generation with better type detection
+export const generateColumns = (firstRecord = {}, childColumns = []) => {
+    if (!firstRecord || typeof firstRecord !== 'object') {
+        return childColumns;
+    }
+
+    const autoColumns = Object.keys(firstRecord).map(field => {
+        const value = firstRecord[field];
+        const baseColumn = {
+            field,
+            headerName: field.split('_').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' '),
+            width: 150,
+            sortable: true,
+            filterable: true
+        };
+
+        if (isDate(value)) {
+            return getDateColumn(field);
+        } else if (isCurrency(field, value)) {
+            return getCurrencyColumn(field);
+        } else if (isStatus(field, value)) {
+            return getStatusColumn(field);
+        } else if (typeof value === 'boolean') {
+            return getBooleanColumn(field);
+        }
+
+        return baseColumn;
+    });
+
+    // Merge and deduplicate columns
+    const mergedColumns = mergeColumns(childColumns, autoColumns);
     
-    // Add generated columns only if they don't exist
-    generatedColumns.forEach(col => {
+    // Save as default columns for this grid
+    if (childColumns.length > 0) {
+        const gridName = childColumns[0]?.gridName;
+        if (gridName) {
+            saveDefaultColumns(gridName, mergedColumns);
+        }
+    }
+
+    return mergedColumns;
+};
+
+// Enhanced column settings management
+export const applySavedColumnSettings = (gridName, columns) => {
+    if (!gridName || !columns) return columns;
+
+    try {
+        const savedSettings = getGridSettings(gridName);
+        if (!savedSettings) {
+            // Save current columns as default if no settings exist
+            saveDefaultColumns(gridName, columns);
+            return columns;
+        }
+
+        const mergedColumns = columns.map(column => {
+            const savedColumn = savedSettings.find(sc => sc.field === column.field);
+            if (savedColumn) {
+                return {
+                    ...column,
+                    width: savedColumn.width || column.width,
+                    hide: savedColumn.hide || false,
+                    order: savedColumn.order
+                };
+            }
+            return column;
+        });
+
+        // Sort columns based on saved order
+        return mergedColumns.sort((a, b) => (a.order || 0) - (b.order || 0));
+    } catch (error) {
+        console.error(`Error applying saved settings for ${gridName}:`, error);
+        return columns;
+    }
+};
+
+// Merging dynamic columns with user columns
+export const mergeColumns = (userColumns, dynamicColumns) => {
+    const columnMap = new Map();
+
+    // Add user columns to the column map
+    userColumns.forEach(col => {
+        columnMap.set(col.field, { ...col, hide: false });
+    });
+
+    // Add dynamic columns if they don't exist in user columns
+    dynamicColumns.forEach(col => {
         if (!columnMap.has(col.field)) {
-            columnMap.set(col.field, {
-                ...col,
-                hide: true,
-                hideable: true
-            });
+            columnMap.set(col.field, { ...col, hide: true });  // Set hide: true for dynamic columns by default
         }
     });
 
     return Array.from(columnMap.values());
 };
 
-// Utility function to apply saved column settings
-export const applySavedColumnSettings = (gridName, columns) => {
-    const savedSettings = localStorage.getItem(`${gridName}-columns`);
-    if (savedSettings) {
-        const parsedSettings = JSON.parse(savedSettings);
-        return columns.map(col => ({
-            ...col,
-            width: parsedSettings.find(setting => setting.field === col.field)?.width || col.width,
-            hide: parsedSettings.find(setting => setting.field === col.field)?.hide || col.hide,
-            index: parsedSettings.find(setting => setting.field === col.field)?.index || col.index
-        }));
-    }
-    return columns;
-};
-
-// Utility functions to handle remote saving and retrieval of grid settings
-export const saveGridSettings = async (gridName, settings) => {
+// Utility function to save grid settings
+export const saveGridSettings = async (gridName, columns) => {
     try {
-        localStorage.setItem(`gridSettings/${gridName}`, JSON.stringify(settings));
+        const settings = [];
+        Object.keys(columns).forEach(key => (
+            settings.push({
+                field: key,
+                headerName: key,
+                width: columns[key].width,
+                hide: columns[key].hide || false,
+                index: columns[key].index || 0
+            })));
+
+        localStorage.setItem(`${gridName}-columns`, JSON.stringify(settings));
         const settingsRef = ref(database, `gridSettings/${gridName}`);
         await set(settingsRef, settings);
-        console.log('Grid settings saved remotely:', settings);
+        return true;
     } catch (error) {
-        console.error('Error saving settings remotely:', error);
+        console.error('Error saving grid settings:', error);
+        return false;
     }
 };
 
+// Utility function to get grid settings
 export const getGridSettings = async (gridName) => {
-    let settings  = localStorage.getItem(`gridSettings/${gridName}`);
-    if(settings) {
-        return JSON.parse(settings);
-    }
     try {
+        // First try to get from localStorage
+        const localSettings = localStorage.getItem(`${gridName}-columns`);
+        if (localSettings) {
+            return JSON.parse(localSettings);
+        }
+
+        // If not in localStorage, try Firebase
         const settingsRef = ref(database, `gridSettings/${gridName}`);
         const snapshot = await get(settingsRef);
         if (snapshot.exists()) {
-            console.log('Grid settings retrieved:', snapshot.val());
-            return snapshot.val();
+            const settings = snapshot.val();
+            // Cache in localStorage for future use
+            localStorage.setItem(`${gridName}-columns`, JSON.stringify(settings));
+            return settings;
         }
     } catch (error) {
-        console.error('Error retrieving settings:', error);
+        console.error('Error retrieving grid settings:', error);
     }
     return null;
 };

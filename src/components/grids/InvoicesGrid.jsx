@@ -115,9 +115,11 @@ const InvoicesGrid = ({ orderId }) => {
     }, []);
 
     return (
-        <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <StatsCards
-                cards={[
+             <BaseGrid
+                gridName="InvoicesGrid"
+                columns={columns}
+                data={data}
+                gridCards={[
                     {
                         title: 'Total Invoices',
                         value: stats.total,
@@ -137,11 +139,6 @@ const InvoicesGrid = ({ orderId }) => {
                         color: 'warning'
                     }
                 ]}
-            />
-            <BaseGrid
-                gridName="InvoicesGrid"
-                columns={columns}
-                data={data}
                 loading={loading}
                 onRefresh={handleRefresh}
                 currentFilter={filters}
@@ -153,7 +150,7 @@ const InvoicesGrid = ({ orderId }) => {
                 defaultPageSize={10}
                 pageSizeOptions={[10, 25, 50, 100]}
             />
-        </Box>
+       
     );
 };
 

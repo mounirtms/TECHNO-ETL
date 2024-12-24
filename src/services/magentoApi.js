@@ -29,6 +29,18 @@ class MagentoApi {
     this.CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
   }
 
+  setBaseURL(newBaseURL) {
+    if (!newBaseURL) {
+      throw new Error('Base URL cannot be empty');
+    }
+    this.baseURL = newBaseURL;
+    magentoService.setBaseURL(newBaseURL);
+  }
+
+  getBaseURL() {
+    return this.baseURL;
+  }
+
   buildSearchCriteria(params = {}) {
     const {
       pageSize = DEFAULT_PARAMS.pageSize,
@@ -37,11 +49,10 @@ class MagentoApi {
       filterGroups = []
     } = params;
 
-    // Create the search criteria object according to Magento's API format
-    const searchCriteria = {
+    return {
       searchCriteria: {
-        pageSize: pageSize,
-        currentPage: currentPage,
+        pageSize,
+        currentPage,
         sortOrders: sortOrders.map(sort => ({
           field: sort.field,
           direction: sort.direction
@@ -50,13 +61,11 @@ class MagentoApi {
           filters: group.filters.map(filter => ({
             field: filter.field,
             value: filter.value,
-            conditionType: filter.conditionType
+            conditionType: filter.conditionType || 'eq'
           }))
         }))
       }
     };
-
-    return searchCriteria;
   }
 
   // Cache management
@@ -83,21 +92,81 @@ class MagentoApi {
     this.cache.clear();
   }
 
-  // API Methods
+  // API Methods with error handling and caching
   async get(endpoint, config = {}) {
-    return magentoService.get(endpoint, config);
+    try {
+      const response = await magentoService.get(endpoint, config);
+      return response;
+    } catch (error) {
+      // If there's an error and we have local data available, use it
+      if (this.shouldUseLocalData(endpoint)) {
+        toast.warning('Using local data due to API error');
+        return this.getLocalDataResponse(endpoint);
+      }
+      throw error;
+    }
   }
 
   async post(endpoint, data = {}, config = {}) {
-    return magentoService.post(endpoint, data, config);
+    try {
+      const response = await magentoService.post(endpoint, data, config);
+      return response;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async put(endpoint, data = {}, config = {}) {
-    return magentoService.put(endpoint, data, config);
+    try {
+      const response = await magentoService.put(endpoint, data, config);
+      return response;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async delete(endpoint, config = {}) {
-    return magentoService.delete(endpoint, config);
+    try {
+      const response = await magentoService.delete(endpoint, config);
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Local data fallback helpers
+  shouldUseLocalData(endpoint) {
+    return endpoint.includes('products') || 
+           endpoint.includes('customers') || 
+           endpoint.includes('orders') ||
+           endpoint.includes('invoices') ||
+           endpoint.includes('categories') ||
+           endpoint.includes('cms');
+  }
+
+  getLocalDataResponse(endpoint) {
+    let localData;
+    if (endpoint.includes('products')) {
+      localData = productsData;
+    } else if (endpoint.includes('customers')) {
+      localData = customersData;
+    } else if (endpoint.includes('orders')) {
+      localData = ordersData;
+    } else if (endpoint.includes('invoices')) {
+      localData = invoicesData;
+    } else if (endpoint.includes('categories')) {
+      localData = categoryData;
+    } else if (endpoint.includes('cms')) {
+      localData = cmsPagesData;
+    }
+
+    return {
+      data: {
+        items: localData,
+        total_count: localData.length,
+        search_criteria: {}
+      }
+    };
   }
 
   async getOrders(params = {}) {

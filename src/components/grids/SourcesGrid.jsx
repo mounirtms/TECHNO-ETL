@@ -20,33 +20,33 @@ const SourcesGrid = ({ productId }) => {
 
     // Grid columns configuration
     const columns = [
-        { 
-            field: 'source_code', 
-            headerName: 'Source Code', 
-            width: 150 
+        {
+            field: 'source_code',
+            headerName: 'Source Code',
+            width: 150
         },
-        { 
-            field: 'name', 
-            headerName: 'Name', 
-            flex: 1 
+        {
+            field: 'name',
+            headerName: 'Name',
+            flex: 1
         },
-        { 
-            field: 'country_id', 
-            headerName: 'Country', 
-            width: 120 
+        {
+            field: 'country_id',
+            headerName: 'Country',
+            width: 120
         },
-        { 
-            field: 'city', 
-            headerName: 'City', 
-            width: 150 
+        {
+            field: 'city',
+            headerName: 'City',
+            width: 150
         },
-        { 
-            field: 'postcode', 
-            headerName: 'Postcode', 
-            width: 120 
+        {
+            field: 'postcode',
+            headerName: 'Postcode',
+            width: 120
         },
-        { 
-            field: 'enabled', 
+        {
+            field: 'enabled',
             headerName: 'Status',
             width: 120,
             type: 'singleSelect',
@@ -62,7 +62,7 @@ const SourcesGrid = ({ productId }) => {
     const handleRefresh = useCallback(async ({ page, pageSize, filter }) => {
         try {
             setLoading(true);
-            
+
             const searchCriteria = {
                 filterGroups: [],
                 pageSize,
@@ -144,19 +144,19 @@ const SourcesGrid = ({ productId }) => {
     ];
 
     return (
-        <Box>
-            <StatsCards cards={statCards} />
-            <BaseGrid
-                columns={columns}
-                data={data}
-                loading={loading}
-                onRefresh={handleRefresh}
-                currentFilter={filters}
-                onFilterChange={setFilters}
-                onError={(error) => toast.error(error.message)}
-                getRowId={(row) => row.source_code}
-            />
-        </Box>
+
+        <BaseGrid
+            columns={columns}
+            data={data}
+            loading={loading}
+            gridCards={statCards}
+            onRefresh={handleRefresh}
+            currentFilter={filters}
+            onFilterChange={setFilters}
+            onError={(error) => toast.error(error.message)}
+            getRowId={(row) => row.source_code}
+        />
+
     );
 };
 

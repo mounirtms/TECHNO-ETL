@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Box } from '@mui/material';
 import BaseGrid from '../common/BaseGrid';
 import { StatsCards } from '../common/StatsCards';
@@ -35,6 +35,44 @@ const OrdersGrid = () => {
         { value: 'holded', label: 'On Hold' }
     ];
 
+    const columns = useMemo(() => generateColumns(data[0] || {}, [
+        {
+            field: 'increment_id',
+            headerName: 'Order #',
+            width: 130,
+            hideable: false
+        },
+        {
+            field: 'customer_firstname',
+            headerName: 'Customer Name',
+            width: 200,
+            hideable: false,
+            valueGetter: (params) =>
+                `${params.row.customer_firstname || ''} ${params.row.customer_lastname || ''}`
+        },
+        {
+            field: 'grand_total',
+            headerName: 'Total',
+            width: 130,
+            type: 'money',
+            hideable: false
+        },
+        getStatusColumn('status', {
+            pending: 'warning',
+            processing: 'info',
+            complete: 'success',
+            canceled: 'error',
+            holded: 'default'
+        }),
+        {
+            field: 'created_at',
+            headerName: 'Order Date',
+            width: 180,
+            type: 'date',
+            hideable: false
+        }
+    ]), [data]);
+
     const handleEditClick = (order) => {
         setSelectedOrder(order);
         setEditDialogOpen(true);
@@ -45,201 +83,143 @@ const OrdersGrid = () => {
         setSelectedOrder(null);
     };
 
-    const handleOrderUpdate = async () => {
-        try {
-            await magentoApi.updateOrder(selectedOrder.id, selectedOrder);
-            toast.success('Order updated successfully');
-            handleEditDialogClose();
-        } catch (error) {
-            toast.error('Failed to update order');
-        }
-    };
-
-    const columns = generateColumns(data[0] || {}, [
-        {
-            field: 'increment_id',
-            headerName: 'Order #',
-            width: 130,
-            id: 'increment_id'
-        },
-        {
-            field: 'customer_firstname',
-            headerName: 'Customer Name',
-            width: 200,
-            id: 'customer_name',
-            valueGetter: (params) =>
-                `${params.row.customer_firstname || ''} ${params.row.customer_lastname || ''}`
-        },
-        {
-            field: 'grand_total',
-            headerName: 'Total',
-            width: 130,
-            id: 'grand_total',
-            type: 'money',
-        },
-        getStatusColumn('status', {
-            pending: 'warning',
-            processing: 'info',
-            complete: 'success',
-            canceled: 'error',
-            holded: 'default'
-        }),
-        {
-            field: 'created_at_order',
-            headerName: 'Order Date',
-            width: 180,
-            id: 'created_at_order'
-        }
-    ]);
-
-    const updateStats = useCallback((orders) => {
-        const newStats = orders.reduce((acc, order) => ({
-            totalOrders: acc.totalOrders + 1,
-            processingOrders: acc.processingOrders + (order.status === 'processing' ? 1 : 0),
-            completedOrders: acc.completedOrders + (order.status === 'complete' ? 1 : 0),
-            canceledOrders: acc.canceledOrders + (order.status === 'canceled' ? 1 : 0)
-        }), {
-            totalOrders: 0,
-            processingOrders: 0,
-            completedOrders: 0,
-            canceledOrders: 0
-        });
-        setStats(newStats);
-    }, []);
-
-    const fetchOrders = useCallback(async ({ page = 0, pageSize = 25 } = {}) => {
-        setLoading(true);
-        try {
-            const params = {
-                pageSize: pageSize,
-                currentPage: page + 1,
-                sortOrders: [
-                    {
-                        field: 'created_at',
-                        direction: 'DESC'
-                    }
-                ],
-                filterGroups: []
-            };
-
-            if (filters.status) {
-                params.filterGroups.push({
-                    filters: [
-                        {
-                            field: 'status',
-                            value: filters.status,
-                            conditionType: 'eq'
-                        }
-                    ]
-                });
-            }
-
-            if (filters.created_at) {
-                params.filterGroups.push({
-                    filters: [
-                        {
-                            field: 'created_at',
-                            value: filters.created_at,
-                            conditionType: 'gt'
-                        }
-                    ]
-                });
-            }
-
-            const response = await magentoApi.getOrders(params);
-            const orders = response?.items || [];
-            setData(orders);
-            updateStats(orders);
-        } catch (error) {
-            console.error('Error fetching orders:', error);
-            toast.error('Failed to fetch orders');
-        } finally {
-            setLoading(false);
-        }
-    }, [filters, updateStats]);
-
     const handleFilterChange = useCallback((filter) => {
         setCurrentFilter(filter);
-        let filterParams = {};
+        setLoading(true);
+
+        const filterParams = [];
         const now = new Date();
 
-        switch(filter) {
-            case 'pending':
-                filterParams = { status: 'pending' };
-                break;
-            case 'processing':
-                filterParams = { status: 'processing' };
-                break;
-            case 'complete':
-                filterParams = { status: 'complete' };
-                break;
-            case 'canceled':
-                filterParams = { status: 'canceled' };
-                break;
-            case 'holded':
-                filterParams = { status: 'holded' };
-                break;
+        switch (filter) {
             case 'last24h':
-                const last24h = new Date(now.getTime() - (24 * 60 * 60 * 1000));
-                filterParams = { created_at: last24h.toISOString() };
+                filterParams.push({
+                    field: 'created_at',
+                    value: new Date(now - 24 * 60 * 60 * 1000).toISOString(),
+                    operator: 'gt'
+                });
                 break;
             case 'last7d':
-                const last7d = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
-                filterParams = { created_at: last7d.toISOString() };
+                filterParams.push({
+                    field: 'created_at',
+                    value: new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString(),
+                    operator: 'gt'
+                });
                 break;
             case 'last30d':
-                const last30d = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
-                filterParams = { created_at: last30d.toISOString() };
+                filterParams.push({
+                    field: 'created_at',
+                    value: new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString(),
+                    operator: 'gt'
+                });
                 break;
             default:
-                filterParams = {};
+                if (['pending', 'processing', 'complete', 'canceled', 'holded'].includes(filter)) {
+                    filterParams.push({
+                        field: 'status',
+                        value: filter,
+                        operator: 'equals'
+                    });
+                }
         }
+
         setFilters(filterParams);
     }, []);
 
-    // Initial data fetch when filters change
+    const fetchOrders = useCallback(async ({ page = 0, pageSize = 10 }) => {
+        try {
+            setLoading(true);
+            const response = await magentoApi.getOrders({
+                currentPage: page + 1,
+                pageSize,
+                filterGroups: filters.length > 0 ? [{ filters }] : []
+            });
+
+            if (response?.data?.items) {
+                const orders = response.data.items;
+                setData(orders);
+
+                // Calculate stats
+                const newStats = orders.reduce((acc, order) => ({
+                    totalOrders: acc.totalOrders + 1,
+                    processingOrders: acc.processingOrders + (order.status === 'processing' ? 1 : 0),
+                    completedOrders: acc.completedOrders + (order.status === 'complete' ? 1 : 0),
+                    canceledOrders: acc.canceledOrders + (order.status === 'canceled' ? 1 : 0)
+                }), {
+                    totalOrders: 0,
+                    processingOrders: 0,
+                    completedOrders: 0,
+                    canceledOrders: 0
+                });
+
+                setStats(newStats);
+            }
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+        } finally {
+            setLoading(false);
+        }
+    }, [filters]);
+
+    const handleOrderUpdate = async () => {
+        try {
+            setLoading(true);
+            await magentoApi.updateOrder(selectedOrder.id, selectedOrder);
+            toast.success('Order updated successfully');
+            handleEditDialogClose();
+            fetchOrders({ page: 0, pageSize: 10 }); // Refresh after update
+        } catch (error) {
+            toast.error('Failed to update order');
+            console.error('Error updating order:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const cards = [
+        {
+            title: 'Total Orders',
+            value: stats.totalOrders,
+            icon: ShoppingCartIcon,
+            color: 'primary'
+        },
+        {
+            title: 'Processing',
+            value: stats.processingOrders,
+            icon: LocalShippingIcon,
+            color: 'info'
+        },
+        {
+            title: 'Canceled',
+            value: stats.canceledOrders,
+            icon: CancelIcon,
+            color: 'error'
+        }
+    ];
+
     useEffect(() => {
-        fetchOrders();
+        fetchOrders({ page: 0, pageSize: 10 });
     }, [filters, fetchOrders]);
 
     return (
-        <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <StatsCards
-                cards={[
-                    {
-                        title: 'Total Orders',
-                        value: stats.totalOrders,
-                        icon: ShoppingCartIcon,
-                        color: 'primary'
-                    },
-                    {
-                        title: 'Processing',
-                        value: stats.processingOrders,
-                        icon: LocalShippingIcon,
-                        color: 'info'
-                    },
-                    {
-                        title: 'Canceled',
-                        value: stats.canceledOrders,
-                        icon: CancelIcon,
-                        color: 'error'
-                    }
-                ]}
-            />
+        <>
             <BaseGrid
                 gridName="OrdersGrid"
                 columns={columns}
                 data={data}
                 loading={loading}
+                gridCards={cards}
                 onRefresh={fetchOrders}
                 filterOptions={filterOptions}
                 currentFilter={currentFilter}
                 onFilterChange={handleFilterChange}
-                getRowId={(row) => row.increment_id}
+                totalCount={stats.totalOrders}
+                defaultPageSize={10}
+                onError={(error) => toast.error(error.message)}
                 onEdit={handleEditClick}
             />
+
             <Dialog open={editDialogOpen} onClose={handleEditDialogClose}>
-                <DialogTitle>Edit Order</DialogTitle>
+                <DialogTitle>Edit Order #{selectedOrder?.increment_id}</DialogTitle>
                 <DialogContent>
                     <TextField
                         label="Order #"
@@ -256,15 +236,13 @@ const OrdersGrid = () => {
                     {/* Add more fields as necessary for editing */}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleEditDialogClose} color="primary">
-                        Cancel
-                    </Button>
+                    <Button onClick={handleEditDialogClose}>Cancel</Button>
                     <Button onClick={handleOrderUpdate} color="primary">
-                        Save
+                        Save Changes
                     </Button>
                 </DialogActions>
             </Dialog>
-        </Box>
+        </>
     );
 };
 

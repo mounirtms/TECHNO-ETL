@@ -147,7 +147,7 @@ const CmsPage = () => {
     };
 
     return (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 1 }}>
             <BaseGrid
                 gridName="CmsPagesGrid"
                 columns={[
