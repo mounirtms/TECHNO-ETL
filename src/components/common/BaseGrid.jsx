@@ -24,45 +24,61 @@ const BaseGrid = ({
     currentFilter,
     onFilterChange,
     totalCount,
-    defaultPageSize,
+    defaultPageSize = 25,
     totalItemsCount = 0,
     preColumns = [],
     endColumns = [],
     gridCards = [],  // Default to an empty array if gridCards is not passed
     initialVisibleColumns = [],
     onError,
-    getRowId = (row) => {
-        return row[staticPrimaryKeys[gridName]];
-    },
+    getRowId = (row) => row.id || row.entity_id,
     ...props
 }) => {
-    const [columns, setColumns] = useState(() => applySavedColumnSettings(gridName, gridColumns));
+    const [columns, setColumns] = useState(gridColumns);
     const [sortModel, setSortModel] = useState([{ field: 'created_at', sort: 'desc' }]);
-    const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 25 });
+    const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: defaultPageSize });
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
-    const safeData = Array.isArray(data) ? data : [];
-    const [pageSize, setPageSize] = useState(defaultPageSize);  // Page size state
     const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
     const [gridHeight, setGridHeight] = useState('100%');
+    const [localLoading, setLocalLoading] = useState(false);
 
-    const finalColumns = useMemo(() => {
-        return [...preColumns, ...gridColumns, ...endColumns];
-    }, [preColumns, gridColumns, endColumns, data]);
+    const safeData = useMemo(() => {
+        return Array.isArray(data) ? data : [];
+    }, [data]);
 
+    // Handle refresh with loading state
     const handleRefresh = async () => {
         if (!onRefresh) return;
+
         try {
-            await onRefresh({ page: paginationModel.page, pageSize: paginationModel.pageSize });
+            setLocalLoading(true);
+            await onRefresh({
+                page: paginationModel.page,
+                pageSize: paginationModel.pageSize,
+                sortModel,
+                filterModel: {
+                    items: currentFilter ? [{
+                        field: 'name',
+                        operator: 'contains',
+                        value: currentFilter
+                    }] : []
+                }
+            });
         } catch (err) {
+            console.error('Error refreshing grid:', err);
             onError?.(err);
+        } finally {
+            setLocalLoading(false);
         }
     };
 
     const handleFilterChange = (newFilter) => {
-        onFilterChange?.(newFilter);
-        setPaginationModel((prev) => ({ ...prev, page: 0 }));
-        handleRefresh();
+        if (onFilterChange) {
+            onFilterChange(newFilter);
+            setPaginationModel(prev => ({ ...prev, page: 0 }));
+            handleRefresh();
+        }
     };
 
     const handlePaginationModelChange = (newModel) => {
@@ -75,6 +91,52 @@ const BaseGrid = ({
         handleRefresh();
     };
 
+    // Initial data load
+    useEffect(() => {
+        handleRefresh();
+    }, [currentFilter]); // Refresh when filter changes
+
+    // Load saved column settings
+    useEffect(() => {
+        const loadColumnSettings = async () => {
+            try {
+                const savedColumns = await applySavedColumnSettings(gridName, gridColumns);
+                if (savedColumns && Array.isArray(savedColumns)) {
+                    setColumns(savedColumns);
+                }
+            } catch (error) {
+                console.error('Error loading column settings:', error);
+                setColumns(gridColumns);
+            }
+        };
+        loadColumnSettings();
+    }, [gridName, gridColumns]);
+
+    const finalColumns = useMemo(() => {
+        return [...preColumns, ...columns, ...endColumns].map(col => ({
+            ...col,
+            flex: col.flex || undefined,
+            width: col.width || 150,
+            minWidth: col.minWidth || 100
+        }));
+    }, [preColumns, columns, endColumns]);
+
+    const handleSettingsSave = async (newSettings) => {
+        try {
+            const updatedColumns = columns.map(col => ({
+                ...col,
+                hide: !newSettings[col.field]?.visible,
+                width: newSettings[col.field]?.width || col.width,
+                index: newSettings[col.field]?.index
+            })).sort((a, b) => (a.index || 0) - (b.index || 0));
+
+            setColumns(updatedColumns);
+            setSettingsDialogOpen(false);
+        } catch (error) {
+            console.error('Error applying column settings:', error);
+        }
+    };
+
     const handleRowDoubleClick = (params) => {
         setSelectedRecord(params.row);
         setDetailsDialogOpen(true);
@@ -82,10 +144,6 @@ const BaseGrid = ({
 
     const handleOpenSettingsDialog = () => {
         setSettingsDialogOpen(true);
-    };
-
-    const handleSelectionModelChange = (newSelectionModel) => {
-        setSelectionModel(newSelectionModel);
     };
 
     useEffect(() => {
@@ -126,24 +184,12 @@ const BaseGrid = ({
             gap: 1
         }}>
 
+
             <DataGrid
-                pageSize={defaultPageSize}
-                loading={loading}
-                rowCount={totalCount}
-                onPageChange={(newPage) => onRefresh({ page: newPage, pageSize: defaultPageSize })}
-                pagination
-                filterModel={{
-                    items: [
-                        {
-                            field: 'name',
-                            operator: 'contains',
-                            value: currentFilter,
-                            id: 'name-filter'
-                        }
-                    ]
-                }}
                 rows={safeData}
                 columns={finalColumns}
+                loading={loading || localLoading}
+                rowCount={totalCount || safeData.length}
                 paginationMode="server"
                 sortingMode="server"
                 filterMode="server"
@@ -169,14 +215,10 @@ const BaseGrid = ({
                 }}
                 {...props}
             />
-
-            {/* Conditionally render StatsCards */}
+            {/* Conditionally render StatsCards at the top */}
             {gridCards && gridCards.length > 0 && (
-                <StatsCards
-                    cards={gridCards}
-                />
+                <StatsCards cards={gridCards} />
             )}
-
             <RecordDetailsDialog
                 open={detailsDialogOpen}
                 onClose={() => setDetailsDialogOpen(false)}
@@ -189,14 +231,7 @@ const BaseGrid = ({
                 columns={finalColumns}
                 gridName={gridName}
                 defaultColumns={gridColumns}
-                onSave={(newSettings) => {
-                    setColumns(prevColumns =>
-                        prevColumns.map(col => ({
-                            ...col,
-                            visible: newSettings[col.field]?.visible ?? true,
-                        }))
-                    );
-                }}
+                onSave={handleSettingsSave}
             />
         </Box>
     );

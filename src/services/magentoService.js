@@ -55,32 +55,47 @@ class MagentoService {
                 url += `?${queryParams.toString()}`;
             }
 
-            const cachedResponse = await this.getCachedResponse({ method: 'GET', url, params });
-            if (cachedResponse) {
-                return cachedResponse;
+            // Try to get from cache first
+            const cachedData = await this.getCachedResponse(url);
+            if (cachedData) {
+                console.log('Retrieved from cache:', url);
+                return cachedData;
             }
 
             const response = await this.instance.get(url);
             console.log('GET response:', response);
             
             if (response?.status === 200) {
-                await this.setCachedResponse({ method: 'GET', url, params }, response.data);
+                // Cache the successful response
+                await this.setCachedResponse(url, response.data);
                 return {
                     data: response.data,
                     status: response.status
                 };
             }
+
+            // If response is not 200, try to get local data
+            const localData = this.getLocalData(endpoint);
+            if (localData) {
+                console.log('Using local data for:', endpoint);
+                return {
+                    data: localData,
+                    status: 200,
+                    fromLocal: true
+                };
+            }
+
             return this.handleApiError(response);
         } catch (error) {
             console.error('GET request error:', error);
-            // If there's a quota exceeded error or any other cache error, use local fallback data
-            const fallbackData = this.getLocalFallbackData(endpoint);
-            if (fallbackData) {
-                console.log('Using local fallback data for:', endpoint);
+            // On error, try to get local data
+            const localData = this.getLocalData(endpoint);
+            if (localData) {
+                console.log('Using local data after error for:', endpoint);
                 return {
-                    data: fallbackData,
+                    data: localData,
                     status: 200,
-                    fromFallback: true
+                    fromLocal: true
                 };
             }
             return this.handleApiError(error);
@@ -140,14 +155,76 @@ class MagentoService {
         }
     }
 
-    // Get local fallback data based on endpoint
-    getLocalFallbackData(endpoint) {
-        if (endpoint.includes('/customers')) return customersData;
-        if (endpoint.includes('/products')) return productsData;
-        if (endpoint.includes('/orders')) return ordersData;
-        if (endpoint.includes('/invoices')) return invoicesData;
-        if (endpoint.includes('/categories')) return categoryData;
-        return null;
+    // Cache management
+    async getCachedResponse(url) {
+        try {
+            const cacheKey = this.generateCacheKey(url);
+            const cachedData = localStorage.getItem(cacheKey);
+            
+            if (cachedData) {
+                const { data, timestamp } = JSON.parse(cachedData);
+                const now = Date.now();
+                // Cache for 5 minutes
+                if (now - timestamp < 5 * 60 * 1000) {
+                    return { data, status: 200, fromCache: true };
+                }
+                localStorage.removeItem(cacheKey);
+            }
+            return null;
+        } catch (error) {
+            console.warn('Cache read error:', error);
+            return null;
+        }
+    }
+
+    async setCachedResponse(url, data) {
+        try {
+            const cacheKey = this.generateCacheKey(url);
+            localStorage.setItem(cacheKey, JSON.stringify({
+                data,
+                timestamp: Date.now()
+            }));
+        } catch (error) {
+            console.warn('Cache write error:', error);
+        }
+    }
+
+    generateCacheKey(url) {
+        // Remove API base URL and clean up the URL for caching
+        const cleanUrl = url.replace(this.baseURL, '').replace(/^\/+/, '');
+        return `magento_cache_${cleanUrl}`;
+    }
+
+    getLocalData(endpoint) {
+        try {
+            // Extract the entity type from the endpoint
+            const entityType = endpoint.split('/')[1]; // e.g., 'products', 'orders', etc.
+            const localDataMap = {
+                products: productsData,
+                orders: ordersData,
+                customers: customersData,
+                invoices: invoicesData,
+                categories: categoryData
+            };
+
+            return localDataMap[entityType] || null;
+        } catch (error) {
+            console.error('Error getting local data:', error);
+            return null;
+        }
+    }
+
+    clearCache() {
+        try {
+            // Clear only Magento-related cache items
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('magento_cache_')) {
+                    localStorage.removeItem(key);
+                }
+            });
+        } catch (error) {
+            console.error('Error clearing cache:', error);
+        }
     }
 
     // Authentication
@@ -195,50 +272,6 @@ class MagentoService {
 
     getBaseURL() {
         return this.baseURL;
-    }
-
-    // Cache management
-    async getCachedResponse(config) {
-        try {
-            const cacheKey = `${config.method}:${config.url}:${JSON.stringify(config.params)}`;
-            const cache = await caches.open('magento-api-cache');
-            const cachedResponse = await cache.match(cacheKey);
-            
-            if (cachedResponse) {
-                const { data, timestamp } = await cachedResponse.json();
-                const now = Date.now();
-                if (now - timestamp < 5 * 60 * 1000) { // 5 minutes cache
-                    return { data, status: 200, fromCache: true };
-                }
-                await cache.delete(cacheKey); // Remove expired cache
-            }
-            return null;
-        } catch (error) {
-            console.warn('Cache read error:', error);
-            return null;
-        }
-    }
-
-    async setCachedResponse(config, data) {
-        try {
-            const cacheKey = `${config.method}:${config.url}:${JSON.stringify(config.params)}`;
-            const cache = await caches.open('magento-api-cache');
-            const cacheData = {
-                data,
-                timestamp: Date.now()
-            };
-            await cache.put(cacheKey, new Response(JSON.stringify(cacheData)));
-        } catch (error) {
-            console.warn('Cache write error:', error);
-        }
-    }
-
-    clearCache() {
-        Object.keys(localStorage).forEach(key => {
-            if (key.includes(':')) { // Only clear API cache entries
-                localStorage.removeItem(key);
-            }
-        });
     }
 
     // Error Handler
@@ -291,18 +324,6 @@ class MagentoService {
         //localStorage.removeItem('adminToken');
         //localStorage.removeItem('user');
         //window.location.href = '/login';
-    }
-
-    // Utility function to get local data
-    getLocalData(entityType) {
-        const dataMap = {
-            customers: customersData,
-            products: productsData,
-            orders: ordersData,
-            invoices: invoicesData,
-            categories: categoryData
-        };
-        return dataMap[entityType] || [];
     }
 }
 

@@ -70,6 +70,25 @@ const ProductsGrid = () => {
             type: 'number',
             hideable: false
         },
+        {
+            field: 'visibility',
+            headerName: 'Visibility',
+            width: 120,
+            type: 'singleSelect',
+            valueOptions: ['1', '2', '3', '4']
+        },
+        {
+            field: 'special_price',
+            headerName: 'Special Price',
+            width: 120,
+            type: 'money'
+        },
+        {
+            field: 'weight',
+            headerName: 'Weight',
+            width: 100,
+            type: 'number'
+        },
         getStatusColumn('status', {
             enabled: 'success',
             disabled: 'error'
@@ -80,6 +99,18 @@ const ProductsGrid = () => {
             width: 130,
             type: 'singleSelect',
             valueOptions: ['simple', 'configurable', 'virtual', 'downloadable']
+        },
+        {
+            field: 'created_at',
+            headerName: 'Created At',
+            width: 180,
+            type: 'date'
+        },
+        {
+            field: 'updated_at',
+            headerName: 'Updated At',
+            width: 180,
+            type: 'date'
         }
     ]), [data]);
 
@@ -141,36 +172,58 @@ const ProductsGrid = () => {
     }, []);
 
     // Optimized data fetching
-    const fetchProducts = useCallback(async ({ page = 0, pageSize = 10 }) => {
+    const fetchProducts = useCallback(async ({ page = 0, pageSize = 25, sortModel, filterModel }) => {
         try {
             setLoading(true);
             const response = await magentoApi.getProducts({
                 currentPage: page + 1,
                 pageSize,
-                filterGroups: filters.length > 0 ? [{ filters }] : []
+                filterGroups: filters.length > 0 ? [{ filters }] : [],
+                sortOrders: sortModel?.map(sort => ({
+                    field: sort.field,
+                    direction: sort.sort.toUpperCase()
+                }))
             });
 
             if (response?.data?.items) {
-                const products = response.data.items;
+                const products = response.data.items.map(product => ({
+                    ...product,
+                    id: product.id || product.entity_id,
+                    qty: product.extension_attributes?.stock_item?.qty || 0,
+                    status: product.status === 1 ? 'enabled' : 'disabled'
+                }));
                 setData(products);
                 
                 // Calculate stats
-                const stats = products.reduce((acc, product) => ({
-                    total: acc.total + 1,
-                    inStock: acc.inStock + (product.quantity_and_stock_status === 'IN_STOCK' ? 1 : 0),
-                    outOfStock: acc.outOfStock + (product.quantity_and_stock_status === 'OUT_OF_STOCK' ? 1 : 0),
-                    lowStock: acc.lowStock + (product.qty < 10 ? 1 : 0),
-                    totalPrice: acc.totalPrice + (parseFloat(product.price) || 0)
-                }), { total: 0, inStock: 0, outOfStock: 0, lowStock: 0, totalPrice: 0 });
+                const stats = {
+                    total: response.data.total_count || products.length,
+                    inStock: 0,
+                    outOfStock: 0,
+                    lowStock: 0,
+                    totalPrice: 0
+                };
+
+                products.forEach(product => {
+                    stats.inStock += product.qty > 0 ? 1 : 0;
+                    stats.outOfStock += product.qty <= 0 ? 1 : 0;
+                    stats.lowStock += (product.qty > 0 && product.qty < 10) ? 1 : 0;
+                    stats.totalPrice += parseFloat(product.price) || 0;
+                });
 
                 setStats({
                     ...stats,
                     averagePrice: stats.total ? stats.totalPrice / stats.total : 0
                 });
+
+                return {
+                    data: products,
+                    total: response.data.total_count
+                };
             }
         } catch (error) {
             toast.error('Error fetching products');
             console.error('Error fetching products:', error);
+            return { data: [], total: 0 };
         } finally {
             setLoading(false);
         }
@@ -178,10 +231,10 @@ const ProductsGrid = () => {
 
     // Reset page when filters change
     useEffect(() => {
-        fetchProducts({ page: 0, pageSize: 10 });
+        fetchProducts({ page: 0, pageSize: 25 });
     }, [filters, fetchProducts]);
 
-    const gridCards = [
+    const gridCards = useMemo(() => [
         {
             title: 'Total Products',
             value: stats.total,
@@ -215,7 +268,7 @@ const ProductsGrid = () => {
             icon: AttachMoneyIcon,
             color: 'info'
         }
-    ];
+    ], [stats]);
 
     return (
         <BaseGrid
@@ -229,7 +282,7 @@ const ProductsGrid = () => {
             currentFilter={currentFilter}
             onFilterChange={handleFilterChange}
             totalCount={stats.total}
-            defaultPageSize={10}
+            defaultPageSize={25}
             onError={(error) => toast.error(error.message)}
         />
     );

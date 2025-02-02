@@ -322,9 +322,9 @@ const Dashboard = () => {
             const response = await magentoApi.getProducts({
                 pageSize: 100,
             });
-            setProductData(response.items);
-            processCountryData(response.items);
-            processProductCountData(response.items);
+            setProductData(response);
+            processCountryData(response);
+            processProductCountData(response);
         } catch (error) {
             console.error('Failed to fetch product data:', error);
         }

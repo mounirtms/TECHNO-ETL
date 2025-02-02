@@ -88,28 +88,28 @@ const Footer = ({ sidebarOpen, isLoginScreen = false }) => {
                 <Typography variant="body2">
                     {currentYear} 
                     <AnimatedLink 
-                        href="https://technostationary.com" 
+                        href="https://technostationery.com" 
                         target="_blank" 
                         rel="noopener noreferrer"
                     >
-                        Technostationary.com
-                    </AnimatedLink>
+                        Techno Stationery
+                    </AnimatedLink> 
                 </Typography>
             </Box>
 
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Typography variant="body2">
-                    {isUsingLocalData && 'Local Data Mode: '}
-                    Developed by 
+                 
                     <AnimatedLink 
-                        href="https://technostationary.com/team" 
+                        href="/assets/docs/index.html" 
                         target="_blank" 
                         rel="noopener noreferrer"
                     >
-                        Technostationary Team
+                        Documentation
                     </AnimatedLink>
                 </Typography>
             </Box>
+           
 
             <Box>
                 <Typography variant="body2">

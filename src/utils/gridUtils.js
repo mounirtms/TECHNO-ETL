@@ -265,73 +265,65 @@ export const generateColumns = (firstRecord = {}, childColumns = []) => {
 };
 
 // Enhanced column settings management
-export const applySavedColumnSettings = (gridName, columns) => {
-    if (!gridName || !columns) return columns;
+export const applySavedColumnSettings = async (gridName, columns) => {
+    if (!gridName || !columns || !Array.isArray(columns)) {
+        return columns;
+    }
 
     try {
-        const savedSettings = getGridSettings(gridName);
-        if (!savedSettings) {
-            // Save current columns as default if no settings exist
-            saveDefaultColumns(gridName, columns);
-            return columns;
+        // Get saved settings from local storage first
+        const savedSettingsStr = localStorage.getItem(`grid_${gridName}_settings`);
+        if (savedSettingsStr) {
+            const savedSettings = JSON.parse(savedSettingsStr);
+            return columns.map(column => ({
+                ...column,
+                hide: !savedSettings[column.field]?.visible,
+                width: savedSettings[column.field]?.width || column.width || 150,
+                index: savedSettings[column.field]?.index || columns.findIndex(col => col.field === column.field)
+            })).sort((a, b) => (a.index || 0) - (b.index || 0));
         }
 
-        const mergedColumns = columns.map(column => {
-            const savedColumn = savedSettings.find(sc => sc.field === column.field);
-            if (savedColumn) {
-                return {
-                    ...column,
-                    width: savedColumn.width || column.width,
-                    hide: savedColumn.hide || false,
-                    order: savedColumn.order
-                };
-            }
-            return column;
-        });
+        // If no local storage settings, try to get from database
+        const dbSettings = await getGridSettings(gridName);
+        if (dbSettings && typeof dbSettings === 'object') {
+            return columns.map(column => ({
+                ...column,
+                hide: !dbSettings[column.field]?.visible,
+                width: dbSettings[column.field]?.width || column.width || 150,
+                index: dbSettings[column.field]?.index || columns.findIndex(col => col.field === column.field)
+            })).sort((a, b) => (a.index || 0) - (b.index || 0));
+        }
 
-        // Sort columns based on saved order
-        return mergedColumns.sort((a, b) => (a.order || 0) - (b.order || 0));
+        // If no settings found, return original columns with default settings
+        return columns.map((column, index) => ({
+            ...column,
+            hide: false,
+            width: column.width || 150,
+            index
+        }));
     } catch (error) {
-        console.error(`Error applying saved settings for ${gridName}:`, error);
-        return columns;
+        console.error('Error applying saved column settings:', error);
+        return columns.map((column, index) => ({
+            ...column,
+            hide: false,
+            width: column.width || 150,
+            index
+        }));
     }
 };
 
-// Merging dynamic columns with user columns
-export const mergeColumns = (userColumns, dynamicColumns) => {
-    const columnMap = new Map();
-
-    // Add user columns to the column map
-    userColumns.forEach(col => {
-        columnMap.set(col.field, { ...col, hide: false });
-    });
-
-    // Add dynamic columns if they don't exist in user columns
-    dynamicColumns.forEach(col => {
-        if (!columnMap.has(col.field)) {
-            columnMap.set(col.field, { ...col, hide: true });  // Set hide: true for dynamic columns by default
-        }
-    });
-
-    return Array.from(columnMap.values());
-};
-
 // Utility function to save grid settings
-export const saveGridSettings = async (gridName, columns) => {
-    try {
-        const settings = [];
-        Object.keys(columns).forEach(key => (
-            settings.push({
-                field: key,
-                headerName: key,
-                width: columns[key].width,
-                hide: columns[key].hide || false,
-                index: columns[key].index || 0
-            })));
+export const saveGridSettings = async (gridName, settings) => {
+    if (!gridName || !settings) return;
 
-        localStorage.setItem(`${gridName}-columns`, JSON.stringify(settings));
+    try {
+        // Save to local storage
+        localStorage.setItem(`grid_${gridName}_settings`, JSON.stringify(settings));
+
+        // Save to database
         const settingsRef = ref(database, `gridSettings/${gridName}`);
         await set(settingsRef, settings);
+
         return true;
     } catch (error) {
         console.error('Error saving grid settings:', error);
@@ -361,4 +353,23 @@ export const getGridSettings = async (gridName) => {
         console.error('Error retrieving grid settings:', error);
     }
     return null;
+};
+
+// Merging dynamic columns with user columns
+export const mergeColumns = (userColumns, dynamicColumns) => {
+    const columnMap = new Map();
+
+    // Add user columns to the column map
+    userColumns.forEach(col => {
+        columnMap.set(col.field, { ...col, hide: false });
+    });
+
+    // Add dynamic columns if they don't exist in user columns
+    dynamicColumns.forEach(col => {
+        if (!columnMap.has(col.field)) {
+            columnMap.set(col.field, { ...col, hide: true });  // Set hide: true for dynamic columns by default
+        }
+    });
+
+    return Array.from(columnMap.values());
 };
