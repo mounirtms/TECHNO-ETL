@@ -1,0 +1,611 @@
+[
+  {
+    "category": {
+      "parent_id": 2,
+      "name": "الأدوات المكتبية",
+      "is_active": true,
+      "position": 1,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "stationery-ar" },
+        { "attribute_code": "name_fr", "value": "Fournitures de Bureau" },
+        { "attribute_code": "name_en", "value": "Stationery" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Fournitures de Bureau",
+            "2": "Stationery"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 2,
+      "name": "أقلام",
+      "is_active": true,
+      "position": 1,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "pens-ar" },
+        { "attribute_code": "name_fr", "value": "Stylos" },
+        { "attribute_code": "name_en", "value": "Pens" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Stylos",
+            "2": "Pens"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 3,
+      "name": "أقلام حبر",
+      "is_active": true,
+      "position": 1,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "ink-pens-ar" },
+        { "attribute_code": "name_fr", "value": "Stylos à Encre" },
+        { "attribute_code": "name_en", "value": "Ink Pens" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Stylos à Encre",
+            "2": "Ink Pens"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 3,
+      "name": "أقلام جاف",
+      "is_active": true,
+      "position": 2,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "ballpoint-pens-ar" },
+        { "attribute_code": "name_fr", "value": "Stylos à Bille" },
+        { "attribute_code": "name_en", "value": "Ballpoint Pens" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Stylos à Bille",
+            "2": "Ballpoint Pens"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 2,
+      "name": "أقلام رصاص",
+      "is_active": true,
+      "position": 2,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "pencils-ar" },
+        { "attribute_code": "name_fr", "value": "Crayons" },
+        { "attribute_code": "name_en", "value": "Pencils" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Crayons",
+            "2": "Pencils"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 5,
+      "name": "رصاص خشبي",
+      "is_active": true,
+      "position": 1,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "wooden-pencils-ar" },
+        { "attribute_code": "name_fr", "value": "Crayons en Bois" },
+        { "attribute_code": "name_en", "value": "Wooden Pencils" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Crayons en Bois",
+            "2": "Wooden Pencils"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 5,
+      "name": "رصاص ميكانيكي",
+      "is_active": true,
+      "position": 2,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "mechanical-pencils-ar" },
+        { "attribute_code": "name_fr", "value": "Portemines" },
+        { "attribute_code": "name_en", "value": "Mechanical Pencils" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Portemines",
+            "2": "Mechanical Pencils"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 2,
+      "name": "أدوات هندسية",
+      "is_active": true,
+      "position": 3,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "geometry-tools-ar" },
+        { "attribute_code": "name_fr", "value": "Outils de Géométrie" },
+        { "attribute_code": "name_en", "value": "Geometry Tools" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Outils de Géométrie",
+            "2": "Geometry Tools"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 8,
+      "name": "مساطر",
+      "is_active": true,
+      "position": 1,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "rulers-ar" },
+        { "attribute_code": "name_fr", "value": "Règles" },
+        { "attribute_code": "name_en", "value": "Rulers" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Règles",
+            "2": "Rulers"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 8,
+      "name": "منقلة",
+      "is_active": true,
+      "position": 2,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "protractors-ar" },
+        { "attribute_code": "name_fr", "value": "Rapporteurs" },
+        { "attribute_code": "name_en", "value": "Protractors" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Rapporteurs",
+            "2": "Protractors"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 2,
+      "name": "الأوراق والدفاتر",
+      "is_active": true,
+      "position": 2,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "paper-notebooks-ar" },
+        { "attribute_code": "name_fr", "value": "Papier et Cahiers" },
+        { "attribute_code": "name_en", "value": "Paper & Notebooks" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Papier et Cahiers",
+            "2": "Paper & Notebooks"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 11,
+      "name": "دفاتر مدرسية",
+      "is_active": true,
+      "position": 1,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "school-notebooks-ar" },
+        { "attribute_code": "name_fr", "value": "Cahiers Scolaires" },
+        { "attribute_code": "name_en", "value": "School Notebooks" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Cahiers Scolaires",
+            "2": "School Notebooks"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 2,
+      "name": "الفنون والرسم",
+      "is_active": true,
+      "position": 3,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "art-drawing-ar" },
+        { "attribute_code": "name_fr", "value": "Art et Dessin" },
+        { "attribute_code": "name_en", "value": "Art & Drawing" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Art et Dessin",
+            "2": "Art & Drawing"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 2,
+      "name": "المدرسة والمكتب",
+      "is_active": true,
+      "position": 4,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "school-office-ar" },
+        { "attribute_code": "name_fr", "value": "École et Bureau" },
+        { "attribute_code": "name_en", "value": "School & Office" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "École et Bureau",
+            "2": "School & Office"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 2,
+      "name": "الحرف والإبداع",
+      "is_active": true,
+      "position": 5,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "crafts-creativity-ar" },
+        { "attribute_code": "name_fr", "value": "Artisanat et Créativité" },
+        { "attribute_code": "name_en", "value": "Crafts & Creativity" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Artisanat et Créativité",
+            "2": "Crafts & Creativity"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 8,
+      "name": "فرجار",
+      "is_active": true,
+      "position": 3,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "compass-ar" },
+        { "attribute_code": "name_fr", "value": "Compas" },
+        { "attribute_code": "name_en", "value": "Compass" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Compas",
+            "2": "Compass"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 8,
+      "name": "مثلثات",
+      "is_active": true,
+      "position": 4,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "triangles-ar" },
+        { "attribute_code": "name_fr", "value": "Équerres" },
+        { "attribute_code": "name_en", "value": "Triangles" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Équerres",
+            "2": "Triangles"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 11,
+      "name": "دفتر 48 صفحة",
+      "is_active": true,
+      "position": 1,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "notebook-48-pages-ar" },
+        { "attribute_code": "name_fr", "value": "Cahier 48 Pages" },
+        { "attribute_code": "name_en", "value": "48 Pages Notebook" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Cahier 48 Pages",
+            "2": "48 Pages Notebook"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 11,
+      "name": "دفتر 96 صفحة",
+      "is_active": true,
+      "position": 2,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "notebook-96-pages-ar" },
+        { "attribute_code": "name_fr", "value": "Cahier 96 Pages" },
+        { "attribute_code": "name_en", "value": "96 Pages Notebook" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Cahier 96 Pages",
+            "2": "96 Pages Notebook"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 11,
+      "name": "دفتر 192 صفحة",
+      "is_active": true,
+      "position": 3,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "notebook-192-pages-ar" },
+        { "attribute_code": "name_fr", "value": "Cahier 192 Pages" },
+        { "attribute_code": "name_en", "value": "192 Pages Notebook" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Cahier 192 Pages",
+            "2": "192 Pages Notebook"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 13,
+      "name": "ألوان مائية",
+      "is_active": true,
+      "position": 1,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "watercolors-ar" },
+        { "attribute_code": "name_fr", "value": "Aquarelles" },
+        { "attribute_code": "name_en", "value": "Watercolors" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Aquarelles",
+            "2": "Watercolors"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 13,
+      "name": "أقلام تلوين",
+      "is_active": true,
+      "position": 2,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "coloring-pens-ar" },
+        { "attribute_code": "name_fr", "value": "Feutres" },
+        { "attribute_code": "name_en", "value": "Coloring Pens" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Feutres",
+            "2": "Coloring Pens"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 18,
+      "name": "علب 12 لون",
+      "is_active": true,
+      "position": 1,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "12-colors-set-ar" },
+        { "attribute_code": "name_fr", "value": "Boîte 12 Couleurs" },
+        { "attribute_code": "name_en", "value": "12 Colors Set" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Boîte 12 Couleurs",
+            "2": "12 Colors Set"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 18,
+      "name": "علب 24 لون",
+      "is_active": true,
+      "position": 2,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "24-colors-set-ar" },
+        { "attribute_code": "name_fr", "value": "Boîte 24 Couleurs" },
+        { "attribute_code": "name_en", "value": "24 Colors Set" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Boîte 24 Couleurs",
+            "2": "24 Colors Set"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 19,
+      "name": "أقلام لباد",
+      "is_active": true,
+      "position": 1,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "felt-tips-ar" },
+        { "attribute_code": "name_fr", "value": "Feutres" },
+        { "attribute_code": "name_en", "value": "Felt Tips" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Feutres",
+            "2": "Felt Tips"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 19,
+      "name": "أقلام خشبية",
+      "is_active": true,
+      "position": 2,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "wooden-colors-ar" },
+        { "attribute_code": "name_fr", "value": "Crayons de Couleur" },
+        { "attribute_code": "name_en", "value": "Wooden Colors" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Crayons de Couleur",
+            "2": "Wooden Colors"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 14,
+      "name": "حقائب مدرسية",
+      "is_active": true,
+      "position": 1,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "school-bags-ar" },
+        { "attribute_code": "name_fr", "value": "Cartables" },
+        { "attribute_code": "name_en", "value": "School Bags" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Cartables",
+            "2": "School Bags"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 24,
+      "name": "حقائب ظهر",
+      "is_active": true,
+      "position": 1,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "backpacks-ar" },
+        { "attribute_code": "name_fr", "value": "Sacs à Dos" },
+        { "attribute_code": "name_en", "value": "Backpacks" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Sacs à Dos",
+            "2": "Backpacks"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "category": {
+      "parent_id": 24,
+      "name": "حقائب جر",
+      "is_active": true,
+      "position": 2,
+      "include_in_menu": true,
+      "custom_attributes": [
+        { "attribute_code": "url_key", "value": "trolley-bags-ar" },
+        { "attribute_code": "name_fr", "value": "Cartables à Roulettes" },
+        { "attribute_code": "name_en", "value": "Trolley Bags" },
+        { 
+          "attribute_code": "store_labels",
+          "value": {
+            "1": "Cartables à Roulettes",
+            "2": "Trolley Bags"
+          }
+        }
+      ]
+    }
+  }
+]

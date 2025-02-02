@@ -1,0 +1,757 @@
+{
+	"items": [
+		{
+			"is_wysiwyg_enabled": false,
+			"is_html_allowed_on_front": false,
+			"used_for_sort_by": false,
+			"is_filterable": false,
+			"is_filterable_in_search": false,
+			"is_used_in_grid": false,
+			"is_visible_in_grid": false,
+			"is_filterable_in_grid": false,
+			"position": 0,
+			"apply_to": [],
+			"is_searchable": "1",
+			"is_visible_in_advanced_search": "0",
+			"is_comparable": "0",
+			"is_used_for_promo_rules": "0",
+			"is_visible_on_front": "0",
+			"used_in_product_listing": "0",
+			"is_visible": true,
+			"scope": "store",
+			"attribute_id": 45,
+			"attribute_code": "name",
+			"frontend_input": "text",
+			"entity_type_id": "3",
+			"is_required": true,
+			"options": [],
+			"is_user_defined": false,
+			"default_frontend_label": "Name",
+			"frontend_labels": [],
+			"backend_type": "varchar",
+			"is_unique": "0",
+			"validation_rules": []
+		},
+		{
+			"is_wysiwyg_enabled": false,
+			"is_html_allowed_on_front": false,
+			"used_for_sort_by": false,
+			"is_filterable": false,
+			"is_filterable_in_search": false,
+			"is_used_in_grid": false,
+			"is_visible_in_grid": false,
+			"is_filterable_in_grid": false,
+			"position": 0,
+			"apply_to": [],
+			"is_searchable": "0",
+			"is_visible_in_advanced_search": "0",
+			"is_comparable": "0",
+			"is_used_for_promo_rules": "0",
+			"is_visible_on_front": "0",
+			"used_in_product_listing": "0",
+			"is_visible": true,
+			"scope": "store",
+			"attribute_id": 46,
+			"attribute_code": "is_active",
+			"frontend_input": "select",
+			"entity_type_id": "3",
+			"is_required": true,
+			"options": [
+				{
+					"label": "Oui",
+					"value": "1"
+				},
+				{
+					"label": "Non",
+					"value": "0"
+				}
+			],
+			"is_user_defined": false,
+			"default_frontend_label": "Is Active",
+			"frontend_labels": [],
+			"backend_type": "int",
+			"source_model": "Magento\\Eav\\Model\\Entity\\Attribute\\Source\\Boolean",
+			"is_unique": "0",
+			"validation_rules": []
+		},
+		{
+			"is_wysiwyg_enabled": true,
+			"is_html_allowed_on_front": true,
+			"used_for_sort_by": false,
+			"is_filterable": false,
+			"is_filterable_in_search": false,
+			"is_used_in_grid": false,
+			"is_visible_in_grid": false,
+			"is_filterable_in_grid": false,
+			"position": 0,
+			"apply_to": [],
+			"is_searchable": "1",
+			"is_visible_in_advanced_search": "0",
+			"is_comparable": "0",
+			"is_used_for_promo_rules": "0",
+			"is_visible_on_front": "0",
+			"used_in_product_listing": "0",
+			"is_visible": true,
+			"scope": "store",
+			"attribute_id": 47,
+			"attribute_code": "description",
+			"frontend_input": "textarea",
+			"entity_type_id": "3",
+			"is_required": false,
+			"options": [],
+			"is_user_defined": false,
+			"default_frontend_label": "Description",
+			"frontend_labels": [],
+			"backend_type": "text",
+			"is_unique": "0",
+			"validation_rules": []
+		},
+		{
+			"is_wysiwyg_enabled": false,
+			"is_html_allowed_on_front": false,
+			"used_for_sort_by": false,
+			"is_filterable": false,
+			"is_filterable_in_search": false,
+			"is_used_in_grid": false,
+			"is_visible_in_grid": false,
+			"is_filterable_in_grid": false,
+			"position": 0,
+			"apply_to": [],
+			"is_searchable": "0",
+			"is_visible_in_advanced_search": "0",
+			"is_comparable": "0",
+			"is_used_for_promo_rules": "0",
+			"is_visible_on_front": "0",
+			"used_in_product_listing": "0",
+			"is_visible": true,
+			"scope": "store",
+			"attribute_id": 48,
+			"attribute_code": "image",
+			"frontend_input": "image",
+			"entity_type_id": "3",
+			"is_required": false,
+			"options": [],
+			"is_user_defined": false,
+			"default_frontend_label": "Image",
+			"frontend_labels": [],
+			"backend_type": "varchar",
+			"backend_model": "Magento\\Catalog\\Model\\Category\\Attribute\\Backend\\Image",
+			"is_unique": "0",
+			"validation_rules": []
+		},
+		{
+			"is_wysiwyg_enabled": false,
+			"is_html_allowed_on_front": false,
+			"used_for_sort_by": false,
+			"is_filterable": false,
+			"is_filterable_in_search": false,
+			"is_used_in_grid": false,
+			"is_visible_in_grid": false,
+			"is_filterable_in_grid": false,
+			"position": 0,
+			"apply_to": [],
+			"is_searchable": "0",
+			"is_visible_in_advanced_search": "0",
+			"is_comparable": "0",
+			"is_used_for_promo_rules": "0",
+			"is_visible_on_front": "0",
+			"used_in_product_listing": "0",
+			"is_visible": true,
+			"scope": "store",
+			"attribute_id": 49,
+			"attribute_code": "meta_title",
+			"frontend_input": "text",
+			"entity_type_id": "3",
+			"is_required": false,
+			"options": [],
+			"is_user_defined": false,
+			"default_frontend_label": "Page Title",
+			"frontend_labels": [],
+			"backend_type": "varchar",
+			"is_unique": "0",
+			"validation_rules": []
+		},
+		{
+			"is_wysiwyg_enabled": false,
+			"is_html_allowed_on_front": false,
+			"used_for_sort_by": false,
+			"is_filterable": false,
+			"is_filterable_in_search": false,
+			"is_used_in_grid": false,
+			"is_visible_in_grid": false,
+			"is_filterable_in_grid": false,
+			"position": 0,
+			"apply_to": [],
+			"is_searchable": "0",
+			"is_visible_in_advanced_search": "0",
+			"is_comparable": "0",
+			"is_used_for_promo_rules": "0",
+			"is_visible_on_front": "0",
+			"used_in_product_listing": "0",
+			"is_visible": true,
+			"scope": "store",
+			"attribute_id": 50,
+			"attribute_code": "meta_keywords",
+			"frontend_input": "textarea",
+			"entity_type_id": "3",
+			"is_required": false,
+			"options": [],
+			"is_user_defined": false,
+			"default_frontend_label": "Meta Keywords",
+			"frontend_labels": [],
+			"backend_type": "text",
+			"is_unique": "0",
+			"validation_rules": []
+		},
+		{
+			"is_wysiwyg_enabled": false,
+			"is_html_allowed_on_front": false,
+			"used_for_sort_by": false,
+			"is_filterable": false,
+			"is_filterable_in_search": false,
+			"is_used_in_grid": false,
+			"is_visible_in_grid": false,
+			"is_filterable_in_grid": false,
+			"position": 0,
+			"apply_to": [],
+			"is_searchable": "0",
+			"is_visible_in_advanced_search": "0",
+			"is_comparable": "0",
+			"is_used_for_promo_rules": "0",
+			"is_visible_on_front": "0",
+			"used_in_product_listing": "0",
+			"is_visible": true,
+			"scope": "store",
+			"attribute_id": 51,
+			"attribute_code": "meta_description",
+			"frontend_input": "textarea",
+			"entity_type_id": "3",
+			"is_required": false,
+			"options": [],
+			"is_user_defined": false,
+			"default_frontend_label": "Meta Description",
+			"frontend_labels": [],
+			"backend_type": "text",
+			"is_unique": "0",
+			"validation_rules": []
+		},
+		{
+			"is_wysiwyg_enabled": false,
+			"is_html_allowed_on_front": false,
+			"used_for_sort_by": false,
+			"is_filterable": false,
+			"is_filterable_in_search": false,
+			"is_used_in_grid": false,
+			"is_visible_in_grid": false,
+			"is_filterable_in_grid": false,
+			"position": 0,
+			"apply_to": [],
+			"is_searchable": "0",
+			"is_visible_in_advanced_search": "0",
+			"is_comparable": "0",
+			"is_used_for_promo_rules": "0",
+			"is_visible_on_front": "0",
+			"used_in_product_listing": "0",
+			"is_visible": true,
+			"scope": "store",
+			"attribute_id": 52,
+			"attribute_code": "display_mode",
+			"frontend_input": "select",
+			"entity_type_id": "3",
+			"is_required": false,
+			"options": [
+				{
+					"label": "Produits seulement",
+					"value": "PRODUCTS"
+				},
+				{
+					"label": "Bloc statique seulement",
+					"value": "PAGE"
+				},
+				{
+					"label": "Bloc statique et produits",
+					"value": "PRODUCTS_AND_PAGE"
+				}
+			],
+			"is_user_defined": false,
+			"default_frontend_label": "Display Mode",
+			"frontend_labels": [],
+			"backend_type": "varchar",
+			"source_model": "Magento\\Catalog\\Model\\Category\\Attribute\\Source\\Mode",
+			"is_unique": "0",
+			"validation_rules": []
+		},
+		{
+			"is_wysiwyg_enabled": false,
+			"is_html_allowed_on_front": false,
+			"used_for_sort_by": false,
+			"is_filterable": false,
+			"is_filterable_in_search": false,
+			"is_used_in_grid": false,
+			"is_visible_in_grid": false,
+			"is_filterable_in_grid": false,
+			"position": 0,
+			"apply_to": [],
+			"is_searchable": "0",
+			"is_visible_in_advanced_search": "0",
+			"is_comparable": "0",
+			"is_used_for_promo_rules": "0",
+			"is_visible_on_front": "0",
+			"used_in_product_listing": "0",
+			"is_visible": true,
+			"scope": "store",
+			"attribute_id": 53,
+			"attribute_code": "landing_page",
+			"frontend_input": "select",
+			"entity_type_id": "3",
+			"is_required": false,
+			"options": [
+				{
+					"label": "Veuillez sélectionner un bloc statique.",
+					"value": ""
+				},
+				{
+					"label": "Footer 4 Contact Us",
+					"value": "1"
+				},
+				{
+					"label": "Footer Block Image Map",
+					"value": "2"
+				},
+				{
+					"label": "Footer 3 Logo And Social",
+					"value": "4"
+				},
+				{
+					"label": "Footer 2 Instagram Block",
+					"value": "6"
+				},
+				{
+					"label": "Footer 1 Menu Bottom",
+					"value": "7"
+				},
+				{
+					"label": "Footer 1 Contact Us",
+					"value": "8"
+				},
+				{
+					"label": "Footer 1 Categories Menu",
+					"value": "9"
+				},
+				{
+					"label": "Header 8 Contact Block",
+					"value": "10"
+				},
+				{
+					"label": "Footer 1 Quick Link",
+					"value": "12"
+				},
+				{
+					"label": "Footer 1 Subscribe Block",
+					"value": "13"
+				},
+				{
+					"label": "Footer 1 Information Menu",
+					"value": "14"
+				},
+				{
+					"label": "Header 1 Contact Block",
+					"value": "15"
+				},
+				{
+					"label": "vos points de vente",
+					"value": "16"
+				},
+				{
+					"label": "Header 1 Social Block",
+					"value": "17"
+				},
+				{
+					"label": "Mpanel Default Sidebar Block",
+					"value": "19"
+				},
+				{
+					"label": "Mpanel Product Detail Top Block",
+					"value": "20"
+				},
+				{
+					"label": "Mpanel Product Detail Bottom Block",
+					"value": "21"
+				},
+				{
+					"label": "Static Block On Product Detail Tab",
+					"value": "22"
+				},
+				{
+					"label": "Empty Search Results by Amasty",
+					"value": "23"
+				},
+				{
+					"label": "Pickup Option Banner",
+					"value": "24"
+				},
+				{
+					"label": "Theme - Megamenu Horizontal Config",
+					"value": "25"
+				},
+				{
+					"label": "Theme - Megamenu Vertical Config",
+					"value": "26"
+				},
+				{
+					"label": "Market - Location Link Header",
+					"value": "27"
+				},
+				{
+					"label": "Market , Footer 1 Address",
+					"value": "28"
+				},
+				{
+					"label": "Market - Payment Footer",
+					"value": "29"
+				},
+				{
+					"label": "Market - Product Megamenu",
+					"value": "30"
+				},
+				{
+					"label": "Market - Product Sidebar",
+					"value": "31"
+				},
+				{
+					"label": "Market - CMS Top Sidebar Product Page",
+					"value": "32"
+				},
+				{
+					"label": "Market - Google map",
+					"value": "33"
+				},
+				{
+					"label": "Market - Contact Us Info",
+					"value": "34"
+				},
+				{
+					"label": "Market - Banner Extend Page",
+					"value": "35"
+				},
+				{
+					"label": "Market - Mobile Layout Menu Bottom",
+					"value": "36"
+				},
+				{
+					"label": "Market - Footer Mobile",
+					"value": "37"
+				},
+				{
+					"label": "Market - Megamenu Mobile",
+					"value": "38"
+				},
+				{
+					"label": "Market - Mobile Header Phone Icon",
+					"value": "39"
+				},
+				{
+					"label": "Market - Header Support Call",
+					"value": "40"
+				},
+				{
+					"label": "Market - Header Support Email",
+					"value": "41"
+				},
+				{
+					"label": "Market - Cms Header Call - Header 3",
+					"value": "42"
+				},
+				{
+					"label": "Market - Cms Header Call Email - Header 4",
+					"value": "43"
+				},
+				{
+					"label": "Market - Header Slidershow - Index 5",
+					"value": "44"
+				},
+				{
+					"label": "Market - Tab CMS 1",
+					"value": "45"
+				},
+				{
+					"label": "Market - Tab CMS 2",
+					"value": "46"
+				},
+				{
+					"label": "Market - Tab CMS 3",
+					"value": "47"
+				},
+				{
+					"label": "Market - Tab CMS 4",
+					"value": "48"
+				},
+				{
+					"label": "Market - Footer 2 Content",
+					"value": "49"
+				},
+				{
+					"label": "Market - Footer 3 Content",
+					"value": "50"
+				},
+				{
+					"label": "Header - Services Index 10",
+					"value": "51"
+				},
+				{
+					"label": "Market - Footer 4 Content",
+					"value": "52"
+				},
+				{
+					"label": "Market - Footer 5 Content",
+					"value": "53"
+				},
+				{
+					"label": "Market - Header - Navigation Custom Items",
+					"value": "54"
+				},
+				{
+					"label": "Market - Footer 6 Content",
+					"value": "55"
+				},
+				{
+					"label": "Market - Footer 7 Content",
+					"value": "56"
+				},
+				{
+					"label": "Market - Payment Footer 3",
+					"value": "57"
+				},
+				{
+					"label": "Market - Footer 8 Content",
+					"value": "58"
+				},
+				{
+					"label": "Market - Header Slider Categories - Header 16",
+					"value": "59"
+				},
+				{
+					"label": "Market - Footer 9 Content",
+					"value": "60"
+				},
+				{
+					"label": "Market - Footer 10 Content",
+					"value": "61"
+				},
+				{
+					"label": "Market - Footer 11 Content",
+					"value": "62"
+				},
+				{
+					"label": "Market - Menu Home Dropdown",
+					"value": "63"
+				},
+				{
+					"label": "Market - Menu Features Dropdown",
+					"value": "64"
+				},
+				{
+					"label": "Market - Social Block",
+					"value": "65"
+				},
+				{
+					"label": "Market - Footer 12 Content",
+					"value": "66"
+				},
+				{
+					"label": "Market - Footer 13 Content",
+					"value": "67"
+				},
+				{
+					"label": "Market - Size Chart Example",
+					"value": "68"
+				},
+				{
+					"label": "Market - Footer 14 Content",
+					"value": "69"
+				},
+				{
+					"label": "Market - Footer Address",
+					"value": "70"
+				},
+				{
+					"label": "Market - Email - Phone",
+					"value": "71"
+				},
+				{
+					"label": "Market - Footer 15 Content",
+					"value": "72"
+				},
+				{
+					"label": "Market - Description Deal Block",
+					"value": "73"
+				},
+				{
+					"label": "Market - Footer 16 Content",
+					"value": "74"
+				},
+				{
+					"label": "Market - Footer 16 - Newsletter - Socials",
+					"value": "75"
+				},
+				{
+					"label": "Market - Header Call Free",
+					"value": "76"
+				},
+				{
+					"label": "Market - Footer 17 Content",
+					"value": "77"
+				},
+				{
+					"label": "Market - Footer Links Bottom",
+					"value": "78"
+				},
+				{
+					"label": "Market - Tab CMS 5",
+					"value": "79"
+				},
+				{
+					"label": "Market - Tab CMS 6",
+					"value": "80"
+				},
+				{
+					"label": "Market - Phone Free",
+					"value": "81"
+				},
+				{
+					"label": "Market - Top Header Text",
+					"value": "82"
+				},
+				{
+					"label": "Market - Footer 18 Content",
+					"value": "83"
+				},
+				{
+					"label": "Market - Live Chat Demo",
+					"value": "84"
+				},
+				{
+					"label": "Market - Footer 19 Content",
+					"value": "85"
+				},
+				{
+					"label": "Market - Support Header 27",
+					"value": "86"
+				},
+				{
+					"label": "Market - Note Medicine",
+					"value": "87"
+				},
+				{
+					"label": "Market - Footer 20 Content",
+					"value": "88"
+				},
+				{
+					"label": "Market - Payment Footer 20",
+					"value": "89"
+				},
+				{
+					"label": "Market - Footer 21 Content",
+					"value": "90"
+				},
+				{
+					"label": "Market - Footer 22 Content",
+					"value": "91"
+				},
+				{
+					"label": "Market - Payment Footer 30",
+					"value": "92"
+				},
+				{
+					"label": "Market - Footer 23 Content",
+					"value": "93"
+				},
+				{
+					"label": "Market - Footer 24 Content",
+					"value": "94"
+				},
+				{
+					"label": "Market - Hotline header 32",
+					"value": "95"
+				},
+				{
+					"label": "Market - Footer 25 Content",
+					"value": "96"
+				},
+				{
+					"label": "Market - Promotion Header 33",
+					"value": "97"
+				},
+				{
+					"label": "Market - Sale off header 33 ",
+					"value": "98"
+				},
+				{
+					"label": "Market - support header 33",
+					"value": "99"
+				},
+				{
+					"label": "Market - Footer 26 Content",
+					"value": "100"
+				},
+				{
+					"label": "Market - Payment Footer 34",
+					"value": "101"
+				},
+				{
+					"label": "Market - Promotion Header 34",
+					"value": "102"
+				},
+				{
+					"label": "popup ",
+					"value": "103"
+				}
+			],
+			"is_user_defined": false,
+			"default_frontend_label": "CMS Block",
+			"frontend_labels": [],
+			"backend_type": "int",
+			"source_model": "Magento\\Catalog\\Model\\Category\\Attribute\\Source\\Page",
+			"is_unique": "0",
+			"validation_rules": []
+		},
+		{
+			"is_wysiwyg_enabled": false,
+			"is_html_allowed_on_front": false,
+			"used_for_sort_by": false,
+			"is_filterable": false,
+			"is_filterable_in_search": false,
+			"is_used_in_grid": false,
+			"is_visible_in_grid": false,
+			"is_filterable_in_grid": false,
+			"position": 0,
+			"apply_to": [],
+			"is_searchable": "0",
+			"is_visible_in_advanced_search": "0",
+			"is_comparable": "0",
+			"is_used_for_promo_rules": "0",
+			"is_visible_on_front": "0",
+			"used_in_product_listing": "0",
+			"is_visible": true,
+			"scope": "global",
+			"attribute_id": 54,
+			"attribute_code": "is_anchor",
+			"frontend_input": "hidden",
+			"entity_type_id": "3",
+			"is_required": false,
+			"options": [],
+			"is_user_defined": false,
+			"default_frontend_label": "Is Anchor",
+			"frontend_labels": [],
+			"backend_type": "int",
+			"default_value": "1",
+			"is_unique": "0",
+			"validation_rules": []
+		}
+	],
+	"search_criteria": {
+		"filter_groups": [],
+		"page_size": 10
+	},
+	"total_count": 46
+}
