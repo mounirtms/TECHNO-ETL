@@ -1,0 +1,186 @@
+<main class="main-content">
+  <section class="doc-section">
+    <h1>Magento Integration</h1>
+    <p class="lead">
+      Comprehensive guide to integrating Magento with JD Edwards and Cegid
+      systems, including API references, data synchronization, and best
+      practices.
+    </p>
+
+    <div class="integration-grid">
+      <div class="integration-card">
+        <h2>REST API Integration</h2>
+        <div class="code-block">
+          <h3>Authentication</h3>
+          <pre><code>
+POST /rest/V1/integration/admin/token
+{
+    "username": "admin",
+    "password": "admin123"
+}
+                        </code></pre>
+          <p>Use the returned token in the Authorization header:</p>
+          <pre><code>
+Authorization: Bearer &lt;token&gt;
+                        </code></pre>
+        </div>
+
+        <div class="api-endpoints">
+          <h3>Key Endpoints</h3>
+          <ul>
+            <li>
+              <strong>Products API</strong>
+              <pre><code>
+GET /rest/V1/products
+POST /rest/V1/products
+PUT /rest/V1/products/:sku
+                                </code></pre>
+            </li>
+            <li>
+              <strong>Inventory API</strong>
+              <pre><code>
+GET /rest/V1/inventory/source-items
+POST /rest/V1/inventory/source-items
+                                </code></pre>
+            </li>
+            <li>
+              <strong>Orders API</strong>
+              <pre><code>
+GET /rest/V1/orders
+POST /rest/V1/orders
+                                </code></pre>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="integration-card">
+        <h2>Data Synchronization</h2>
+        <div class="sync-flows">
+          <h3>Product Sync</h3>
+          <pre><code>
+// Example Product Sync Request
+POST /rest/V1/products
+{
+    "product": {
+        "sku": "JDE-12345",
+        "name": "Product Name",
+        "price": 99.99,
+        "status": 1,
+        "visibility": 4,
+        "type_id": "simple",
+        "attribute_set_id": 4,
+        "custom_attributes": [
+            {
+                "attribute_code": "jde_item_number",
+                "value": "12345"
+            }
+        ]
+    }
+}
+                        </code></pre>
+        </div>
+
+        <div class="sync-flows">
+          <h3>Inventory Sync</h3>
+          <pre><code>
+// Example Inventory Update
+POST /rest/V1/inventory/source-items
+{
+    "sourceItems": [
+        {
+            "sku": "JDE-12345",
+            "source_code": "default",
+            "quantity": 100,
+            "status": 1
+        }
+    ]
+}
+                        </code></pre>
+        </div>
+      </div>
+
+      <div class="integration-card">
+        <h2>Error Handling</h2>
+        <div class="error-examples">
+          <h3>Common Error Responses</h3>
+          <pre><code>
+{
+    "message": "Invalid product data",
+    "errors": [
+        {
+            "field": "sku",
+            "message": "SKU length should be 64 characters maximum"
+        }
+    ]
+}
+                        </code></pre>
+          <h4>Error Resolution Steps</h4>
+          <ul>
+            <li>Validate data before sending</li>
+            <li>Implement retry logic</li>
+            <li>Log errors for monitoring</li>
+            <li>Handle rate limiting</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="integration-card">
+        <h2>Webhooks Configuration</h2>
+        <div class="webhook-setup">
+          <h3>Event Subscriptions</h3>
+          <pre><code>
+POST /rest/V1/integrations/webhook/subscribe
+{
+    "event": "catalog_product_save_after",
+    "endpoint": "https://your-endpoint.com/webhook",
+    "fields": ["sku", "price", "stock"]
+}
+                        </code></pre>
+          <h4>Supported Events</h4>
+          <ul>
+            <li>catalog_product_save_after</li>
+            <li>sales_order_save_after</li>
+            <li>customer_save_after</li>
+            <li>inventory_source_item_save_after</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <h2>Integration Best Practices</h2>
+    <div class="best-practices">
+      <div class="practice-card">
+        <h3>Performance Optimization</h3>
+        <ul>
+          <li>Use bulk APIs for large datasets</li>
+          <li>Implement caching strategies</li>
+          <li>Optimize database queries</li>
+          <li>Monitor API response times</li>
+        </ul>
+      </div>
+
+      <div class="practice-card">
+        <h3>Security Measures</h3>
+        <ul>
+          <li>Implement OAuth authentication</li>
+          <li>Use HTTPS for all requests</li>
+          <li>Rotate access tokens regularly</li>
+          <li>Validate all input data</li>
+        </ul>
+      </div>
+
+      <div class="practice-card">
+        <h3>Data Consistency</h3>
+        <ul>
+          <li>Implement transaction management</li>
+          <li>Use versioning for product updates</li>
+          <li>Maintain audit logs</li>
+          <li>Regular data validation checks</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>

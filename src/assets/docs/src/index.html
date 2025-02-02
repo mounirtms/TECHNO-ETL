@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Integration Documentation - Overview</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="header-container">
+        <div class="logo-container">
+          <img src="images/logo_techno.png" alt="Company Logo" class="logo" />
+        </div>
+        <nav class="nav-menu">
+          <a href="index.html" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Overview</span>
+          </a>
+          <a href="magento-integration.html" class="nav-item">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Magento</span>
+          </a>
+          <a href="jde-integration.html" class="nav-item">
+            <i class="fas fa-industry"></i>
+            <span>JD Edwards</span>
+          </a>
+          <a href="cegid-integration.html" class="nav-item">
+            <i class="fas fa-store"></i>
+            <span>Cegid</span>
+          </a>
+          <a href="ETL-integration.html" class="nav-item">
+            <i class="fas fa-exchange-alt"></i>
+            <span>ETL Process</span>
+          </a>
+        </nav>
+      </div>
+      <div class="progress-container">
+        <div class="progress-bar"></div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="doc-section">
+        <h2>System Overview</h2>
+        <p>
+          Our integration platform connects Magento, JD Edwards, and Cegid
+          systems to provide seamless data synchronization and business process
+          automation.
+        </p>
+
+        <div class="diagram-section">
+          <h3>System Architecture</h3>
+          <img
+            src="images/system-architecture.svg"
+            alt="System Architecture Diagram"
+            class="diagram"
+          />
+          <div class="feature-list">
+            <h4>Core Components:</h4>
+            <ul>
+              <li>
+                <strong>Magento:</strong> E-commerce and customer management
+              </li>
+              <li><strong>JD Edwards:</strong> ERP and inventory control</li>
+              <li><strong>Cegid:</strong> Retail operations and POS</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="diagram-section">
+          <h3>Data Integration Flow</h3>
+          <img
+            src="images/etl-flow.svg"
+            alt="ETL Process Flow"
+            class="diagram"
+          />
+          <div class="feature-list">
+            <h4>Key Processes:</h4>
+            <ul>
+              <li>
+                <strong>Extract:</strong> Real-time data collection from all
+                systems
+              </li>
+              <li>
+                <strong>Transform:</strong> Data validation and business rule
+                application
+              </li>
+              <li>
+                <strong>Load:</strong> Synchronized updates across platforms
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="diagram-section">
+          <h3>Inventory Management</h3>
+          <img
+            src="images/inventory-lifecycle.svg"
+            alt="Inventory Management Lifecycle"
+            class="diagram"
+          />
+          <div class="feature-list">
+            <h4>Core Features:</h4>
+            <ul>
+              <li>
+                <strong>Real-time Sync:</strong> Instant inventory updates
+                across all systems
+              </li>
+              <li>
+                <strong>Automated Pricing:</strong> Synchronized price
+                management
+              </li>
+              <li>
+                <strong>Error Handling:</strong> Automated error detection and
+                recovery
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./js/main.js"></script>
+    <footer class="footer">
+      <p>&copy; 2025 Integration Documentation</p>
+    </footer>
+    <button class="theme-toggle" onclick="toggleTheme()">
+      <i class="fas fa-moon"></i>
+    </button>
+  </body>
+</html>

@@ -1,0 +1,259 @@
+<main class="main-content">
+  <div class="content-wrapper">
+    <section id="overview" class="card">
+      <h2>JD Edwards EnterpriseOne Integration Overview</h2>
+      <p>
+        JD Edwards EnterpriseOne is a comprehensive ERP solution that can be
+        integrated with Magento for seamless business operations. This guide
+        covers the integration approaches and best practices.
+      </p>
+
+      <h3>Key Integration Points</h3>
+      <ul>
+        <li>Product Master Data Synchronization</li>
+        <li>Inventory Management</li>
+        <li>Order Processing</li>
+        <li>Customer Data Management</li>
+        <li>Financial Data Integration</li>
+      </ul>
+    </section>
+
+    <section id="integration" class="card">
+      <h2>Integration Architecture</h2>
+
+      <h3>Data Integration Methods</h3>
+      <ul>
+        <li><strong>Real-time Integration:</strong> Using JDE's REST APIs</li>
+        <li><strong>Batch Processing:</strong> Using ETL processes</li>
+        <li><strong>Message Queue:</strong> Using JDE's event system</li>
+      </ul>
+
+      <h3>JDE Table Structure</h3>
+      <table>
+        <tr>
+          <th>Table Name</th>
+          <th>Description</th>
+          <th>Usage</th>
+        </tr>
+        <tr>
+          <td>F4101</td>
+          <td>Item Master</td>
+          <td>Product information synchronization</td>
+        </tr>
+        <tr>
+          <td>F4102</td>
+          <td>Item Branch</td>
+          <td>Location-specific product data</td>
+        </tr>
+        <tr>
+          <td>F4211</td>
+          <td>Sales Order Detail</td>
+          <td>Order processing</td>
+        </tr>
+        <tr>
+          <td>F41021</td>
+          <td>Item Location</td>
+          <td>Inventory management</td>
+        </tr>
+      </table>
+    </section>
+
+    <section id="etl-process" class="card">
+      <h2>ETL Process with JDE</h2>
+
+      <h3>Product Data ETL Example</h3>
+      <div class="code-section">
+        <h2><i class="fas fa-code"></i> Integration Examples</h2>
+
+        <div class="code-container">
+          <div class="code-header">
+            <span>JDE Product Integration</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <i class="fas fa-copy"></i>
+              <span>Copy</span>
+            </button>
+          </div>
+          <pre
+            class="code-block javascript"
+          ><span class="keyword">const</span> <span class="variable">axios</span> <span class="operator">=</span> <span class="function">require</span>(<span class="string">'axios'</span>);
+<span class="keyword">const</span> { <span class="variable">JDEConnection</span> } <span class="operator">=</span> <span class="function">require</span>(<span class="string">'./utils/jde-connection'</span>);
+
+<span class="keyword">class</span> <span class="class">JDEProductSync</span> {
+    <span class="function">constructor</span>(<span class="variable">config</span>) {
+        <span class="keyword">this</span>.<span class="property">jdeApi</span> <span class="operator">=</span> <span class="variable">axios</span>.<span class="function">create</span>({
+            <span class="property">baseURL</span>: <span class="variable">config</span>.<span class="property">jdeBaseUrl</span>,
+            <span class="property">headers</span>: {
+                <span class="string">'Authorization'</span>: <span class="string">`Bearer ${config.jdeToken}`</span>,
+                <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span>
+            }
+        });
+    }
+
+    <span class="keyword">async</span> <span class="function">getProductData</span>(<span class="variable">itemNumber</span>) {
+        <span class="keyword">try</span> {
+            <span class="keyword">const</span> <span class="variable">response</span> <span class="operator">=</span> <span class="keyword">await</span> <span class="keyword">this</span>.<span class="property">jdeApi</span>.<span class="function">get</span>(<span class="string">`/itemMaster/${itemNumber}`</span>);
+            <span class="keyword">return</span> <span class="keyword">this</span>.<span class="function">transformProductData</span>(<span class="variable">response</span>.<span class="property">data</span>);
+        } <span class="keyword">catch</span> (<span class="variable">error</span>) {
+            <span class="variable">console</span>.<span class="function">error</span>(<span class="string">`Error fetching product ${itemNumber}:`</span>, <span class="variable">error</span>);
+            <span class="keyword">throw</span> <span class="variable">error</span>;
+        }
+    }
+
+    <span class="function">transformProductData</span>(<span class="variable">jdeProduct</span>) {
+        <span class="keyword">return</span> {
+            <span class="property">sku</span>: <span class="variable">jdeProduct</span>.<span class="property">IMITM</span>,
+            <span class="property">name</span>: <span class="variable">jdeProduct</span>.<span class="property">IMDSC1</span>,
+            <span class="property">price</span>: <span class="function">parseFloat</span>(<span class="variable">jdeProduct</span>.<span class="property">UPRC</span>) <span class="operator">||</span> <span class="number">0</span>,
+            <span class="property">stock</span>: <span class="function">parseInt</span>(<span class="variable">jdeProduct</span>.<span class="property">QOH</span>) <span class="operator">||</span> <span class="number">0</span>,
+            <span class="property">attributes</span>: {
+                <span class="property">uom</span>: <span class="variable">jdeProduct</span>.<span class="property">IMUOM1</span>,
+                <span class="property">category</span>: <span class="variable">jdeProduct</span>.<span class="property">IMSRP1</span>,
+                <span class="property">weight</span>: <span class="variable">jdeProduct</span>.<span class="property">IMSRP2</span>
+            }
+        };
+    }
+}
+
+<span class="keyword">module</span>.<span class="property">exports</span> <span class="operator">=</span> <span class="class">JDEProductSync</span>;</pre>
+        </div>
+
+        <div class="code-container">
+          <div class="code-header">
+            <span>JDE Connection Utility</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <i class="fas fa-copy"></i>
+              <span>Copy</span>
+            </button>
+          </div>
+          <pre
+            class="code-block javascript"
+          ><span class="comment">// utils/jde-connection.js</span>
+<span class="keyword">const</span> { <span class="variable">Pool</span> } <span class="operator">=</span> <span class="function">require</span>(<span class="string">'mssql'</span>);
+
+<span class="keyword">class</span> <span class="class">JDEConnection</span> {
+    <span class="function">constructor</span>(<span class="variable">config</span>) {
+        <span class="keyword">this</span>.<span class="property">pool</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="class">Pool</span>({
+            <span class="property">server</span>: <span class="variable">config</span>.<span class="property">server</span>,
+            <span class="property">database</span>: <span class="variable">config</span>.<span class="property">database</span>,
+            <span class="property">user</span>: <span class="variable">config</span>.<span class="property">username</span>,
+            <span class="property">password</span>: <span class="variable">config</span>.<span class="property">password</span>,
+            <span class="property">options</span>: {
+                <span class="property">encrypt</span>: <span class="keyword">true</span>,
+                <span class="property">trustServerCertificate</span>: <span class="keyword">true</span>
+            }
+        });
+    }
+
+    <span class="keyword">async</span> <span class="function">connect</span>() {
+        <span class="keyword">try</span> {
+            <span class="keyword">await</span> <span class="keyword">this</span>.<span class="property">pool</span>.<span class="function">connect</span>();
+            <span class="variable">console</span>.<span class="function">log</span>(<span class="string">'Connected to JDE database'</span>);
+        } <span class="keyword">catch</span> (<span class="variable">error</span>) {
+            <span class="variable">console</span>.<span class="function">error</span>(<span class="string">'Error connecting to JDE:'</span>, <span class="variable">error</span>);
+            <span class="keyword">throw</span> <span class="variable">error</span>;
+        }
+    }
+
+    <span class="keyword">async</span> <span class="function">close</span>() {
+        <span class="keyword">try</span> {
+            <span class="keyword">await</span> <span class="keyword">this</span>.<span class="property">pool</span>.<span class="function">close</span>();
+            <span class="variable">console</span>.<span class="function">log</span>(<span class="string">'Connection closed'</span>);
+        } <span class="keyword">catch</span> (<span class="variable">error</span>) {
+            <span class="variable">console</span>.<span class="function">error</span>(<span class="string">'Error closing connection:'</span>, <span class="variable">error</span>);
+        }
+    }
+}
+
+<span class="keyword">module</span>.<span class="property">exports</span> <span class="operator">=</span> { <span class="variable">JDEConnection</span> };</pre>
+        </div>
+      </div>
+
+      <h3>Inventory Sync Process</h3>
+      <div class="code-section">
+        <h2><i class="fas fa-code"></i> Integration Examples</h2>
+
+        <div class="code-container">
+          <div class="code-header">
+            <span>JDE Inventory Sync</span>
+            <button class="copy-btn" onclick="copyCode(this)">
+              <i class="fas fa-copy"></i>
+              <span>Copy</span>
+            </button>
+          </div>
+          <pre
+            class="code-block javascript"
+          ><span class="keyword">async</span> <span class="function">syncInventory</span>() {
+    <span class="keyword">try</span> {
+        <span class="comment">// 1. Extract from JDE F41021 table</span>
+        <span class="keyword">const</span> <span class="variable">jdeResponse</span> <span class="operator">=</span> <span class="keyword">await</span> <span class="variable">axios</span>.<span class="function">get</span>(<span class="string">'/itemLocation'</span>, {
+            <span class="property">baseURL</span>: <span class="variable">jdeConfig</span>.<span class="property">baseURL</span>,
+            <span class="property">auth</span>: <span class="variable">jdeConfig</span>.<span class="property">auth</span>,
+            <span class="property">params</span>: {
+                <span class="property">table</span>: <span class="string">'F41021'</span>,
+                <span class="property">fields</span>: [<span class="string">'LIITM'</span>, <span class="string">'LIMCU'</span>, <span class="string">'LIPQOH'</span>]
+            }
+        });
+
+        <span class="comment">// 2. Transform inventory data</span>
+        <span class="keyword">const</span> <span class="variable">transformedInventory</span> <span class="operator">=</span> <span class="variable">jdeResponse</span>.<span class="property">data</span>.<span class="function">map</span>(<span class="variable">item</span> <span class="operator">=></span> ({
+            <span class="property">sku</span>: <span class="variable">item</span>.<span class="property">LIITM</span>,
+            <span class="property">location</span>: <span class="variable">item</span>.<span class="property">LIMCU</span>,
+            <span class="property">quantity</span>: <span class="function">parseFloat</span>(<span class="variable">item</span>.<span class="property">LIPQOH</span>)
+        }));
+
+        <span class="comment">// 3. Update Magento inventory</span>
+        <span class="keyword">const</span> <span class="variable">magentoApi</span> <span class="operator">=</span> <span class="variable">axios</span>.<span class="function">create</span>({
+            <span class="property">baseURL</span>: <span class="string">'https://your-magento-store/rest/V1'</span>,
+            <span class="property">headers</span>: {
+                <span class="string">'Authorization'</span>: <span class="string">'Bearer your_token'</span>
+            }
+        });
+
+        <span class="keyword">await</span> <span class="function">Promise</span>.<span class="property">all</span>(<span class="variable">transformedInventory</span>.<span class="function">map</span>(<span class="keyword">async</span> <span class="variable">item</span> <span class="operator">=></span> {
+            <span class="keyword">try</span> {
+                <span class="keyword">await</span> <span class="variable">magentoApi</span>.<span class="function">put</span>(<span class="string">'/inventory/source-items'</span>, {
+                    <span class="property">sourceItems</span>: [{
+                        <span class="property">sku</span>: <span class="variable">item</span>.<span class="property">sku</span>,
+                        <span class="property">source_code</span>: <span class="variable">item</span>.<span class="property">location</span>,
+                        <span class="property">quantity</span>: <span class="variable">item</span>.<span class="property">quantity</span>,
+                        <span class="property">status</span>: <span class="variable">item</span>.<span class="property">quantity</span> <span class="operator">></span> <span class="number">0</span> <span class="operator">?</span> <span class="number">1</span> <span class="operator">:</span> <span class="number">0</span>
+                    }]
+                });
+            } <span class="keyword">catch</span> (<span class="variable">error</span>) {
+                <span class="variable">console</span>.<span class="function">error</span>(<span class="string">`Failed to update inventory for SKU ${item.sku}:`</span>, <span class="variable">error</span>);
+            }
+        }));
+
+        <span class="variable">console</span>.<span class="function">log</span>(<span class="string">'Inventory sync completed successfully'</span>);
+    } <span class="keyword">catch</span> (<span class="variable">error</span>) {
+        <span class="variable">console</span>.<span class="function">error</span>(<span class="string">'Inventory sync failed:'</span>, <span class="variable">error</span>);
+        <span class="keyword">throw</span> <span class="variable">error</span>;
+    }
+}</pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="best-practices" class="card">
+      <h2>Integration Best Practices</h2>
+      <ul>
+        <li>
+          <strong>Error Handling:</strong> Implement robust error handling and
+          logging
+        </li>
+        <li>
+          <strong>Data Validation:</strong> Validate data before synchronization
+        </li>
+        <li>
+          <strong>Batch Processing:</strong> Use batch processing for large
+          datasets
+        </li>
+        <li><strong>Monitoring:</strong> Implement monitoring and alerting</li>
+        <li>
+          <strong>Recovery:</strong> Implement retry mechanisms and rollback
+          procedures
+        </li>
+      </ul>
+    </section>
+  </div>
+</main>

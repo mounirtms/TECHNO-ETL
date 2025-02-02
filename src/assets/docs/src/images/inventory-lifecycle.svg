@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="900" height="700" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <!-- Gradient Definitions -->
+        <linearGradient id="setupGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ee5253;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="syncGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#4834d4;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#686de0;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="monitorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#20bf6b;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#26de81;stop-opacity:1" />
+        </linearGradient>
+
+        <!-- Drop Shadow Filter -->
+        <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#2d3436" flood-opacity="0.3" />
+        </filter>
+
+        <!-- Arrow Markers -->
+        <marker id="flowArrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#0984e3"/>
+        </marker>
+        <marker id="processArrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#e17055"/>
+        </marker>
+    </defs>
+
+    <!-- Background -->
+    <rect width="900" height="700" fill="#f5f6fa"/>
+
+    <!-- Title -->
+    <text x="450" y="50" text-anchor="middle" font-family="Roboto" font-size="28" font-weight="bold" fill="#2d3436">
+        Inventory Lifecycle
+    </text>
+
+    <!-- Initial Setup Phase -->
+    <g transform="translate(100,150)" filter="url(#shadow)">
+        <rect width="200" height="150" rx="12" fill="url(#setupGrad)"/>
+        <text x="100" y="40" text-anchor="middle" font-family="Roboto" font-size="18" fill="white">Initial Setup</text>
+        <text x="100" y="70" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">Configuration:</text>
+        <text x="100" y="90" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• System Integration</text>
+        <text x="100" y="110" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• Data Mapping</text>
+        <text x="100" y="130" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• Initial Data Load</text>
+    </g>
+
+    <!-- Synchronization Phase -->
+    <g transform="translate(350,150)" filter="url(#shadow)">
+        <rect width="200" height="150" rx="12" fill="url(#syncGrad)"/>
+        <text x="100" y="40" text-anchor="middle" font-family="Roboto" font-size="18" fill="white">Synchronization</text>
+        <text x="100" y="70" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">Processes:</text>
+        <text x="100" y="90" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• Real-time Updates</text>
+        <text x="100" y="110" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• Batch Processing</text>
+        <text x="100" y="130" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• Error Resolution</text>
+    </g>
+
+    <!-- Monitoring Phase -->
+    <g transform="translate(600,150)" filter="url(#shadow)">
+        <rect width="200" height="150" rx="12" fill="url(#monitorGrad)"/>
+        <text x="100" y="40" text-anchor="middle" font-family="Roboto" font-size="18" fill="white">Monitoring</text>
+        <text x="100" y="70" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">Activities:</text>
+        <text x="100" y="90" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• Performance Tracking</text>
+        <text x="100" y="110" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• Error Detection</text>
+        <text x="100" y="130" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• System Health</text>
+    </g>
+
+    <!-- White background for arrows -->
+    <g stroke="white" stroke-width="6" fill="none">
+        <path d="M 300,225 L 350,225"/>
+        <path d="M 550,225 L 600,225"/>
+    </g>
+
+    <!-- Process Flow Arrows -->
+    <g stroke="#0984e3" stroke-width="2" fill="none" marker-end="url(#flowArrow)">
+        <path d="M 300,225 L 350,225"/>
+        <path d="M 550,225 L 600,225"/>
+    </g>
+
+    <!-- Process Details Box -->
+    <g transform="translate(50,350)">
+        <rect width="800" height="300" rx="8" fill="white" stroke="#2d3436" filter="url(#shadow)"/>
+        
+        <!-- Section Title -->
+        <text x="20" y="30" font-family="Roboto" font-size="16" font-weight="bold" fill="#2d3436">Phase Details:</text>
+        
+        <!-- Initial Setup Details -->
+        <g transform="translate(20,50)">
+            <text x="0" y="0" font-family="Roboto" font-size="14" font-weight="bold" fill="#ff6b6b">Initial Setup:</text>
+            <text x="0" y="20" font-family="Roboto" font-size="12">• Configure system integration parameters</text>
+            <text x="0" y="40" font-family="Roboto" font-size="12">• Set up data mapping rules</text>
+            <text x="0" y="60" font-family="Roboto" font-size="12">• Perform initial data validation</text>
+            <text x="0" y="80" font-family="Roboto" font-size="12">• Test system connectivity</text>
+        </g>
+        
+        <!-- Synchronization Details -->
+        <g transform="translate(280,50)">
+            <text x="0" y="0" font-family="Roboto" font-size="14" font-weight="bold" fill="#4834d4">Synchronization:</text>
+            <text x="0" y="20" font-family="Roboto" font-size="12">• Real-time inventory updates</text>
+            <text x="0" y="40" font-family="Roboto" font-size="12">• Scheduled batch processing</text>
+            <text x="0" y="60" font-family="Roboto" font-size="12">• Error handling and retries</text>
+            <text x="0" y="80" font-family="Roboto" font-size="12">• Data consistency checks</text>
+        </g>
+        
+        <!-- Monitoring Details -->
+        <g transform="translate(540,50)">
+            <text x="0" y="0" font-family="Roboto" font-size="14" font-weight="bold" fill="#20bf6b">Monitoring:</text>
+            <text x="0" y="20" font-family="Roboto" font-size="12">• System performance metrics</text>
+            <text x="0" y="40" font-family="Roboto" font-size="12">• Error rate monitoring</text>
+            <text x="0" y="60" font-family="Roboto" font-size="12">• Data quality assessment</text>
+            <text x="0" y="80" font-family="Roboto" font-size="12">• Health check automation</text>
+        </g>
+
+        <!-- Key Features -->
+        <text x="20" y="160" font-family="Roboto" font-size="16" font-weight="bold" fill="#2d3436">Key Features:</text>
+        <g transform="translate(20,180)">
+            <text x="0" y="0" font-family="Roboto" font-size="12">• Automated error detection and resolution</text>
+            <text x="0" y="20" font-family="Roboto" font-size="12">• Real-time synchronization capabilities</text>
+            <text x="0" y="40" font-family="Roboto" font-size="12">• Comprehensive monitoring dashboard</text>
+            
+            <text x="280" y="0" font-family="Roboto" font-size="12">• Data validation and integrity checks</text>
+            <text x="280" y="20" font-family="Roboto" font-size="12">• Performance optimization tools</text>
+            <text x="280" y="40" font-family="Roboto" font-size="12">• Detailed audit logging</text>
+            
+            <text x="540" y="0" font-family="Roboto" font-size="12">• System health notifications</text>
+            <text x="540" y="20" font-family="Roboto" font-size="12">• Historical data analysis</text>
+            <text x="540" y="40" font-family="Roboto" font-size="12">• Customizable alert thresholds</text>
+        </g>
+
+        <!-- Flow Types -->
+        <text x="20" y="250" font-family="Roboto" font-size="16" font-weight="bold" fill="#2d3436">Flow Types:</text>
+        <g transform="translate(20,270)">
+            <!-- Flow arrows with labels -->
+            <line x1="0" y1="0" x2="30" y2="0" stroke="#0984e3" stroke-width="2" marker-end="url(#flowArrow)"/>
+            <text x="40" y="4" font-family="Roboto" font-size="12">Process Flow</text>
+            
+            <line x1="160" y1="0" x2="190" y2="0" stroke="#e17055" stroke-width="2" marker-end="url(#processArrow)"/>
+            <text x="200" y="4" font-family="Roboto" font-size="12">Data Flow</text>
+        </g>
+    </g>
+</svg>
