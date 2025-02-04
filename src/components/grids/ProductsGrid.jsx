@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
-import { generateColumns, getStatusColumn } from '../../utils/gridUtils';
+import { getStatusColumn } from '../../utils/gridUtils';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 
@@ -42,7 +42,7 @@ const ProductsGrid = () => {
     ];
 
     // Memoize columns to prevent unnecessary re-renders
-    const columns = useMemo(() => generateColumns(data[0] || {}, [
+    const columns = useMemo(() => [
         {
             field: 'sku',
             headerName: 'SKU',
@@ -60,7 +60,11 @@ const ProductsGrid = () => {
             field: 'price',
             headerName: 'Price',
             width: 120,
-            type: 'money',
+            type: 'number',
+            valueFormatter: (params) => {
+                if (params.value == null) return '';
+                return `$${params.value.toFixed(2)}`;
+            },
             hideable: false
         },
         {
@@ -81,7 +85,11 @@ const ProductsGrid = () => {
             field: 'special_price',
             headerName: 'Special Price',
             width: 120,
-            type: 'money'
+            type: 'number',
+            valueFormatter: (params) => {
+                if (params.value == null) return '';
+                return `$${params.value.toFixed(2)}`;
+            }
         },
         {
             field: 'weight',
@@ -104,15 +112,21 @@ const ProductsGrid = () => {
             field: 'created_at',
             headerName: 'Created At',
             width: 180,
-            type: 'date'
+            type: 'date',
+            valueGetter: (params) => {
+                return params.value ? new Date(params.value) : null;
+            }
         },
         {
             field: 'updated_at',
             headerName: 'Updated At',
             width: 180,
-            type: 'date'
+            type: 'date',
+            valueGetter: (params) => {
+                return params.value ? new Date(params.value) : null;
+            }
         }
-    ]), [data]);
+    ], []);
 
     // Optimized filter change handler
     const handleFilterChange = useCallback((filter) => {
@@ -189,41 +203,40 @@ const ProductsGrid = () => {
                 const products = response.data.items.map(product => ({
                     ...product,
                     id: product.id || product.entity_id,
-                    qty: product.extension_attributes?.stock_item?.qty || 0,
-                    status: product.status === 1 ? 'enabled' : 'disabled'
+                    qty: product.qty || 0,
+                    is_in_stock: product.is_in_stock || false,
+                    status: product.status === 1 ? 'enabled' : 'disabled',
+                    price: parseFloat(product.price) || 0,
+                    special_price: product.special_price ? parseFloat(product.special_price) : null,
+                    created_at: product.created_at ? new Date(product.created_at).toISOString() : null,
+                    updated_at: product.updated_at ? new Date(product.updated_at).toISOString() : null
                 }));
+
                 setData(products);
                 
                 // Calculate stats
                 const stats = {
                     total: response.data.total_count || products.length,
+                    inStock: products.filter(p => p.is_in_stock && p.qty > 0).length,
+                    outOfStock: products.filter(p => !p.is_in_stock || p.qty <= 0).length,
+                    lowStock: products.filter(p => p.is_in_stock && p.qty > 0 && p.qty < 10).length,
+                    averagePrice: products.reduce((acc, p) => acc + p.price, 0) / products.length || 0
+                };
+
+                setStats(stats);
+            } else {
+                setData([]);
+                setStats({
+                    total: 0,
                     inStock: 0,
                     outOfStock: 0,
                     lowStock: 0,
-                    totalPrice: 0
-                };
-
-                products.forEach(product => {
-                    stats.inStock += product.qty > 0 ? 1 : 0;
-                    stats.outOfStock += product.qty <= 0 ? 1 : 0;
-                    stats.lowStock += (product.qty > 0 && product.qty < 10) ? 1 : 0;
-                    stats.totalPrice += parseFloat(product.price) || 0;
+                    averagePrice: 0
                 });
-
-                setStats({
-                    ...stats,
-                    averagePrice: stats.total ? stats.totalPrice / stats.total : 0
-                });
-
-                return {
-                    data: products,
-                    total: response.data.total_count
-                };
             }
         } catch (error) {
-            toast.error('Error fetching products');
             console.error('Error fetching products:', error);
-            return { data: [], total: 0 };
+            toast.error('Failed to fetch products. Using local data.');
         } finally {
             setLoading(false);
         }
@@ -234,7 +247,8 @@ const ProductsGrid = () => {
         fetchProducts({ page: 0, pageSize: 25 });
     }, [filters, fetchProducts]);
 
-    const gridCards = useMemo(() => [
+    // Status cards data
+    const statusCards = [
         {
             title: 'Total Products',
             value: stats.total,
@@ -260,22 +274,19 @@ const ProductsGrid = () => {
             color: 'warning'
         },
         {
-            title: 'Average Price',
-            value: new Intl.NumberFormat('fr-DZ', {
-                style: 'currency',
-                currency: 'DZD'
-            }).format(stats.averagePrice),
+            title: 'Total Value',
+            value: stats.averagePrice.toFixed(2),
             icon: AttachMoneyIcon,
             color: 'info'
         }
-    ], [stats]);
+    ];
 
     return (
         <BaseGrid
             gridName="ProductsGrid"
             columns={columns}
             data={data}
-            gridCards={gridCards}
+            gridCards={statusCards}
             loading={loading}
             onRefresh={fetchProducts}
             filterOptions={filterOptions}

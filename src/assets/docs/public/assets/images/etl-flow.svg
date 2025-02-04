@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="900" height="600" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <!-- Gradient Definitions -->
+        <linearGradient id="extractGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ee5253;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="transformGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#4834d4;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#686de0;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="loadGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#20bf6b;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#26de81;stop-opacity:1" />
+        </linearGradient>
+
+        <!-- Drop Shadow Filter -->
+        <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+            <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#2d3436" flood-opacity="0.3" />
+        </filter>
+
+        <!-- Arrow Marker -->
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#2d3436"/>
+        </marker>
+    </defs>
+
+    <!-- Background -->
+    <rect width="900" height="600" fill="#f5f6fa"/>
+
+    <!-- Title -->
+    <text x="450" y="50" text-anchor="middle" font-family="Roboto" font-size="28" font-weight="bold" fill="#2d3436">
+        ETL Process Flow
+    </text>
+
+    <!-- Extract Phase -->
+    <g transform="translate(100,150)" filter="url(#shadow)">
+        <rect width="200" height="150" rx="12" fill="url(#extractGrad)"/>
+        <text x="100" y="40" text-anchor="middle" font-family="Roboto" font-size="18" fill="white">Extract</text>
+        <text x="100" y="70" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">Data Sources:</text>
+        <text x="100" y="90" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• Magento REST API</text>
+        <text x="100" y="110" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• JDE Database</text>
+        <text x="100" y="130" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• Cegid Web Services</text>
+    </g>
+
+    <!-- Transform Phase -->
+    <g transform="translate(350,150)" filter="url(#shadow)">
+        <rect width="200" height="150" rx="12" fill="url(#transformGrad)"/>
+        <text x="100" y="40" text-anchor="middle" font-family="Roboto" font-size="18" fill="white">Transform</text>
+        <text x="100" y="70" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">Processes:</text>
+        <text x="100" y="90" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• Data Cleaning</text>
+        <text x="100" y="110" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• Format Conversion</text>
+        <text x="100" y="130" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• Data Validation</text>
+    </g>
+
+    <!-- Load Phase -->
+    <g transform="translate(600,150)" filter="url(#shadow)">
+        <rect width="200" height="150" rx="12" fill="url(#loadGrad)"/>
+        <text x="100" y="40" text-anchor="middle" font-family="Roboto" font-size="18" fill="white">Load</text>
+        <text x="100" y="70" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">Destinations:</text>
+        <text x="100" y="90" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• SQL Server Database</text>
+        <text x="100" y="110" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• Message Queue</text>
+        <text x="100" y="130" text-anchor="middle" font-family="Roboto" font-size="12" fill="white">• API Endpoints</text>
+    </g>
+
+    <!-- Process Flow Arrows -->
+    <g stroke="#2d3436" stroke-width="2" fill="none" marker-end="url(#arrow)">
+        <path d="M 300,225 L 350,225"/>
+        <path d="M 550,225 L 600,225"/>
+    </g>
+
+    <!-- Process Details -->
+    <g transform="translate(50,350)">
+        <rect width="800" height="200" rx="8" fill="white" stroke="#2d3436" filter="url(#shadow)"/>
+        <text x="20" y="30" font-family="Roboto" font-size="16" font-weight="bold" fill="#2d3436">Process Details:</text>
+        
+        <g transform="translate(20,50)">
+            <text x="0" y="0" font-family="Roboto" font-size="14" font-weight="bold" fill="#ff6b6b">Extract:</text>
+            <text x="0" y="20" font-family="Roboto" font-size="12">• Scheduled data extraction from multiple sources</text>
+            <text x="0" y="40" font-family="Roboto" font-size="12">• Real-time event-based extraction</text>
+        </g>
+        
+        <g transform="translate(280,50)">
+            <text x="0" y="0" font-family="Roboto" font-size="14" font-weight="bold" fill="#4834d4">Transform:</text>
+            <text x="0" y="20" font-family="Roboto" font-size="12">• Data mapping and standardization</text>
+            <text x="0" y="40" font-family="Roboto" font-size="12">• Business rule application</text>
+        </g>
+        
+        <g transform="translate(540,50)">
+            <text x="0" y="0" font-family="Roboto" font-size="14" font-weight="bold" fill="#20bf6b">Load:</text>
+            <text x="0" y="20" font-family="Roboto" font-size="12">• Batch loading with error handling</text>
+            <text x="0" y="40" font-family="Roboto" font-size="12">• Transaction management</text>
+        </g>
+
+        <text x="20" y="120" font-family="Roboto" font-size="16" font-weight="bold" fill="#2d3436">Key Features:</text>
+        <text x="20" y="140" font-family="Roboto" font-size="12">• Error logging and monitoring</text>
+        <text x="20" y="160" font-family="Roboto" font-size="12">• Data quality checks</text>
+        <text x="280" y="140" font-family="Roboto" font-size="12">• Automated retry mechanism</text>
+        <text x="280" y="160" font-family="Roboto" font-size="12">• Performance optimization</text>
+        <text x="540" y="140" font-family="Roboto" font-size="12">• Audit logging</text>
+        <text x="540" y="160" font-family="Roboto" font-size="12">• Rollback capability</text>
+    </g>
+</svg>

@@ -92,11 +92,15 @@ const StatCard = ({ title, value, icon: Icon, color = 'primary', active, onClick
                     alignItems: 'center',
                     width: '100%'
                 }}>
-                    <Icon sx={{ 
-                        fontSize: 32,  
-                        color: theme.palette[color].main,
-                        mr: 2
-                    }} />
+                    {Icon && (
+                        <Icon 
+                            sx={{ 
+                                fontSize: 32,  
+                                color: theme.palette[color].main,
+                                mr: 2
+                            }} 
+                        />
+                    )}
                     <Box sx={{ 
                         display: 'flex', 
                         flexDirection: 'column', 
@@ -144,12 +148,14 @@ const StatsCards = ({ cards }) => {
                     const Icon = card.icon;
                     return (
                         <StatsCard key={index}>
-                            <Icon 
-                                sx={{ 
-                                    fontSize: 40, 
-                                    color: theme.palette[card.color || 'primary'].main 
-                                }} 
-                            />
+                            {Icon && (
+                                <Icon 
+                                    sx={{ 
+                                        fontSize: 40, 
+                                        color: theme.palette[card.color || 'primary'].main 
+                                    }} 
+                                />
+                            )}
                             <StatsCardContent>
                                 <Typography 
                                     variant="body2" 

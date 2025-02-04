@@ -49,11 +49,15 @@ class MagentoService {
             console.log('Making GET request to:', endpoint, 'with params:', params);
             
             let url = endpoint;
-            if (params.searchCriteria) {
+            if (params.params) {
                 const queryParams = new URLSearchParams();
-                this.flattenObject(params.searchCriteria, queryParams, 'searchCriteria');
+                Object.entries(params.params).forEach(([key, value]) => {
+                    queryParams.append(key, value);
+                });
                 url += `?${queryParams.toString()}`;
             }
+
+            console.log('Final URL:', url);
 
             // Try to get from cache first
             const cachedData = await this.getCachedResponse(url);
@@ -62,7 +66,14 @@ class MagentoService {
                 return cachedData;
             }
 
-            const response = await this.instance.get(url);
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${this.getToken()}`,
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            const response = await this.instance.get(url, config);
             console.log('GET response:', response);
             
             if (response?.status === 200) {
@@ -88,6 +99,11 @@ class MagentoService {
             return this.handleApiError(response);
         } catch (error) {
             console.error('GET request error:', error);
+            if (error.response?.status === 401) {
+                toast.error('Authentication failed. Please log in again.');
+                this.handleAuthError();
+                return null;
+            }
             // On error, try to get local data
             const localData = this.getLocalData(endpoint);
             if (localData) {
@@ -98,7 +114,11 @@ class MagentoService {
                     fromLocal: true
                 };
             }
-            return this.handleApiError(error);
+            throw {
+                message: 'Invalid request. Please check your input.',
+                code: 'INVALID_REQUEST',
+                originalError: error
+            };
         }
     }
 
@@ -276,48 +296,57 @@ class MagentoService {
 
     // Error Handler
     handleApiError(error) {
-        let errorMessage = 'An unexpected error occurred';
-        let errorCode = 'UNKNOWN_ERROR';
-
+        console.error('API Error:', error);
+        
         if (error.response) {
-            const { status, data } = error.response;
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            const status = error.response.status;
+            const data = error.response.data;
+
             switch (status) {
                 case 400:
-                    errorMessage = 'Invalid request. Please check your input.';
-                    errorCode = 'INVALID_REQUEST';
+                    toast.error('Invalid request. Please check your input.');
                     break;
                 case 401:
-                    errorMessage = 'Authentication failed. Please log in again.';
-                    errorCode = 'AUTH_ERROR';
+                    toast.error('Authentication failed. Please log in again.');
                     this.handleAuthError();
                     break;
                 case 403:
-                    errorMessage = 'You do not have permission to perform this action.';
-                    errorCode = 'PERMISSION_ERROR';
+                    toast.error('Access denied. You do not have permission to perform this action.');
                     break;
                 case 404:
-                    errorMessage = 'The requested resource was not found.';
-                    errorCode = 'NOT_FOUND';
-                    break;
-                case 429:
-                    errorMessage = 'Too many requests. Please try again later.';
-                    errorCode = 'RATE_LIMIT';
+                    toast.error('Resource not found.');
                     break;
                 case 500:
-                    errorMessage = 'Server error. Please try again later.';
-                    errorCode = 'SERVER_ERROR';
+                    toast.error('Server error. Please try again later.');
                     break;
                 default:
-                    errorMessage = data?.message || 'An error occurred with the request.';
-                    errorCode = `HTTP_${status}`;
+                    toast.error('An error occurred. Please try again.');
             }
-        } else if (error.request) {
-            errorMessage = 'Network error. Please check your connection.';
-            errorCode = 'NETWORK_ERROR';
-        }
 
-        toast.error(errorMessage);
-        return Promise.reject({ message: errorMessage, code: errorCode, originalError: error });
+            throw {
+                message: data.message || 'An error occurred',
+                code: data.code || 'API_ERROR',
+                originalError: error
+            };
+        } else if (error.request) {
+            // The request was made but no response was received
+            toast.error('No response from server. Please check your connection.');
+            throw {
+                message: 'No response from server',
+                code: 'NETWORK_ERROR',
+                originalError: error
+            };
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            toast.error('Request configuration error.');
+            throw {
+                message: error.message || 'Request setup error',
+                code: 'REQUEST_ERROR',
+                originalError: error
+            };
+        }
     }
 
     handleAuthError() {

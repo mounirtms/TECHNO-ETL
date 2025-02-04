@@ -93,17 +93,26 @@ export default defineConfig({
           charts: ['recharts']
         },
         assetFileNames: ({ name }) => {
+          // Handle documentation files
+          if (name && name.includes('src/assets/docs/dist/')) {
+            return name.replace('src/assets/docs/dist/', 'assets/docs/');
+          }
+          // Handle other assets
           if (/\.(gif|jpe?g|png|svg)$/i.test(name ?? '')) {
-            return 'assets/images/[name][extname]'
+            return 'assets/images/[name][extname]';
           }
-          if (/\.(json|csv|xml)$/i.test(name ?? '')) {
-            return 'assets/data/[name][extname]'
-          }
-          return 'assets/[name][extname]'
+          return 'assets/[name]-[hash][extname]';
         }
       }
     },
-    assetsInclude: ['**/*.jpg', '**/*.png', '**/*.gif', '**/*.svg', '**/*.json', '**/*.csv', '**/*.xml'],
+    assetsInclude: [
+      '**/*.jpg', '**/*.png', '**/*.gif', '**/*.svg', 
+      '**/*.json', '**/*.csv', '**/*.xml',
+      'src/assets/docs/dist/**/*.html',
+      'src/assets/docs/dist/**/*.css',
+      'src/assets/docs/dist/**/*.js',
+      'src/assets/docs/dist/assets/**/*'
+    ],
     copyPublicDir: true,
     chunkSizeWarningLimit: 1000
   },

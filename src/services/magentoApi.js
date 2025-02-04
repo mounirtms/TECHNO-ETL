@@ -49,23 +49,27 @@ class MagentoApi {
       filterGroups = []
     } = params;
 
-    return {
-      searchCriteria: {
-        pageSize,
-        currentPage,
-        sortOrders: sortOrders.map(sort => ({
-          field: sort.field,
-          direction: sort.direction
-        })),
-        filterGroups: filterGroups.map(group => ({
-          filters: group.filters.map(filter => ({
-            field: filter.field,
-            value: filter.value,
-            conditionType: filter.conditionType || 'eq'
-          }))
-        }))
-      }
+    const searchCriteria = {
+      'searchCriteria[pageSize]': pageSize,
+      'searchCriteria[currentPage]': currentPage
     };
+
+    // Add sort orders
+    sortOrders.forEach((sort, index) => {
+      searchCriteria[`searchCriteria[sortOrders][${index}][field]`] = sort.field;
+      searchCriteria[`searchCriteria[sortOrders][${index}][direction]`] = sort.direction;
+    });
+
+    // Add filter groups
+    filterGroups.forEach((group, groupIndex) => {
+      group.filters.forEach((filter, filterIndex) => {
+        searchCriteria[`searchCriteria[filterGroups][${groupIndex}][filters][${filterIndex}][field]`] = filter.field;
+        searchCriteria[`searchCriteria[filterGroups][${groupIndex}][filters][${filterIndex}][value]`] = filter.value;
+        searchCriteria[`searchCriteria[filterGroups][${groupIndex}][filters][${filterIndex}][condition_type]`] = filter.conditionType || 'eq';
+      });
+    });
+
+    return searchCriteria;
   }
 
   // Cache management
@@ -160,10 +164,13 @@ class MagentoApi {
       localData = cmsPagesData;
     }
 
+    // Apply basic filtering if params are provided
+    const items = Array.isArray(localData) ? localData : [];
+    
     return {
       data: {
-        items: localData,
-        total_count: localData.length,
+        items: items,
+        total_count: items.length,
         search_criteria: {}
       }
     };
@@ -179,15 +186,37 @@ class MagentoApi {
         return cachedData;
       }
 
-      const searchCriteria = this.buildSearchCriteria(params);
+      const searchCriteria = this.buildSearchCriteria({
+        ...params,
+        sortOrders: params.sortOrders || [
+          { field: 'created_at', direction: 'DESC' }
+        ],
+        pageSize: params.pageSize || 20,
+        currentPage: params.currentPage || 1
+      });
+
       console.log('Fetching orders with criteria:', searchCriteria);
       
-      const response = await this.get('/orders', searchCriteria);
+      const response = await this.get('/orders', {
+        params: searchCriteria
+      });
 
-      if (response && response.data) {
-        this.setCachedData(cacheKey, response.data);
-        console.log('Fetched orders from API:', response.data);
-        return response.data;
+      if (response?.data?.items) {
+        const enrichedResponse = {
+          items: response.data.items.map(order => ({
+            ...order,
+            id: order.entity_id || order.id,
+            status: order.status || 'pending',
+            customer_name: order.customer_firstname 
+              ? `${order.customer_firstname} ${order.customer_lastname}`.trim()
+              : 'Guest Customer'
+          })),
+          total_count: response.data.total_count || response.data.items.length,
+          search_criteria: response.data.search_criteria
+        };
+
+        this.setCachedData(cacheKey, enrichedResponse);
+        return enrichedResponse;
       }
 
       throw new Error('Failed to fetch orders');
@@ -201,7 +230,7 @@ class MagentoApi {
 
   async getCustomers(params = {}) {
     try {
-      const cacheKey = this.getCacheKey('/customers', params);
+      const cacheKey = this.getCacheKey('/customers/search', params);
       const cachedData = this.getCachedData(cacheKey);
       
       if (cachedData) {
@@ -209,15 +238,37 @@ class MagentoApi {
         return cachedData;
       }
 
-      const searchCriteria = this.buildSearchCriteria(params);
+      const searchCriteria = this.buildSearchCriteria({
+        ...params,
+        sortOrders: params.sortOrders || [
+          { field: 'created_at', direction: 'DESC' }
+        ],
+        pageSize: params.pageSize || 20,
+        currentPage: params.currentPage || 1
+      });
+
       console.log('Fetching customers with criteria:', searchCriteria);
       
-      const response = await this.get('/customers/search', searchCriteria);
+      const response = await this.get('/customers/search', {
+        params: searchCriteria
+      });
 
-      if (response && response.data) {
-        this.setCachedData(cacheKey, response.data);
-        console.log('Fetched customers from API:', response.data);
-        return response.data;
+      if (response?.data?.items) {
+        const enrichedResponse = {
+          items: response.data.items.map(customer => ({
+            ...customer,
+            id: customer.id || customer.entity_id,
+            name: customer.firstname 
+              ? `${customer.firstname} ${customer.lastname}`.trim()
+              : 'Unknown',
+            email: customer.email || 'No email'
+          })),
+          total_count: response.data.total_count || response.data.items.length,
+          search_criteria: response.data.search_criteria
+        };
+
+        this.setCachedData(cacheKey, enrichedResponse);
+        return enrichedResponse;
       }
 
       throw new Error('Failed to fetch customers');
@@ -235,27 +286,38 @@ class MagentoApi {
       const cachedData = this.getCachedData(cacheKey);
       
       if (cachedData) {
-        console.log('Using cached products data');
         return cachedData;
       }
 
-      const searchCriteria = this.buildSearchCriteria(params);
-      console.log('Fetching products with criteria:', searchCriteria);
-      
-      const response = await this.get('/products', searchCriteria);
+      const searchCriteria = this.buildSearchCriteria({
+        ...params,
+        sortOrders: params.sortOrders || [
+          { field: 'created_at', direction: 'DESC' }
+        ],
+        pageSize: params.pageSize || 20,
+        currentPage: params.currentPage || 1
+      });
 
-      if (response && response.data) {
-        this.setCachedData(cacheKey, response.data);
-        console.log('Fetched products from API:', response.data);
-        return response.data;
-      }
+      const response = await this.get('/products', {
+        params: searchCriteria
+      });
 
-      throw new Error('Failed to fetch products');
+      // Format the response data
+      const formattedResponse = {
+        data: {
+          items: response?.data?.items || [],
+          total_count: response?.data?.total_count || 0,
+          search_criteria: response?.data?.search_criteria || {}
+        }
+      };
+
+      this.setCachedData(cacheKey, formattedResponse);
+      return formattedResponse;
     } catch (error) {
       console.error('Error fetching products:', error);
-      const localData = this.getLocalResponse('products');
-      console.log('Using local products data:', localData);
-      return localData;
+      // Use local data as fallback
+      const localResponse = this.getLocalDataResponse('/products');
+      return localResponse;
     }
   }
 
@@ -310,12 +372,44 @@ class MagentoApi {
   }
 
   async getStockItems(params = {}) {
-    const searchCriteria = this.buildSearchCriteria(params);
-    return this.get('/stockItems', searchCriteria);
+    try {
+      const searchCriteria = this.buildSearchCriteria(params);
+      const response = await this.get('/stockItems', {
+        params: searchCriteria
+      });
+
+      if (response?.data) {
+        return response.data;
+      }
+
+      throw new Error('Failed to fetch stock items');
+    } catch (error) {
+      console.error('Error fetching stock items:', error);
+      throw error;
+    }
   }
 
   async updateStockItem(productSku, stockItem) {
-    return this.put(`/products/${encodeURIComponent(productSku)}/stockItems/${stockItem.item_id}`, stockItem);
+    try {
+      const response = await this.put(`/products/${productSku}/stockItems/${stockItem.item_id}`, {
+        stockItem: {
+          ...stockItem,
+          qty: parseFloat(stockItem.qty),
+          is_in_stock: stockItem.qty > 0
+        }
+      });
+
+      if (response?.data) {
+        // Clear product cache to ensure fresh data
+        this.cache.delete(this.getCacheKey('/products', {}));
+        return response.data;
+      }
+
+      throw new Error('Failed to update stock item');
+    } catch (error) {
+      console.error('Error updating stock item:', error);
+      throw error;
+    }
   }
 
   async getCmsPages(params = {}) {

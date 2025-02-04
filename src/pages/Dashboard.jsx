@@ -105,7 +105,8 @@ const initialStats = {
     totalCustomers: 0,
     totalProducts: 0,
     totalRevenue: 0,
-    averageOrderValue: 0
+    averageOrderValue: 0,
+    totalValue: 0
 };
 
 const getDefaultDateRange = () => {
@@ -129,7 +130,7 @@ const Dashboard = () => {
     const [error, setError] = useState(null);
     const [productData, setProductData] = useState([]);
     const [countryData, setCountryData] = useState([]);
-    const [productCountData, setProductCountData] = useState([]);
+    const [productTypeData, setProductTypeData] = useState([]);
 
     const fetchDashboardData = useCallback(async () => {
         setLoading(true);
@@ -321,49 +322,95 @@ const Dashboard = () => {
         try {
             const response = await magentoApi.getProducts({
                 pageSize: 100,
+                currentPage: 1
             });
-            setProductData(response);
-            processCountryData(response);
-            processProductCountData(response);
+            
+            if (response?.data?.items) {
+                const products = response.data.items.map(product => ({
+                    ...product,
+                    id: product.id || product.entity_id,
+                    qty: product.qty || 0,
+                    is_in_stock: product.is_in_stock || false,
+                    status: product.status === 1 ? 'enabled' : 'disabled',
+                    price: parseFloat(product.price) || 0,
+                    special_price: product.special_price ? parseFloat(product.special_price) : null,
+                    created_at: product.created_at ? new Date(product.created_at).toISOString() : null,
+                    updated_at: product.updated_at ? new Date(product.updated_at).toISOString() : null
+                }));
+                setProductData(products);
+                processCountryData(products);
+                processProductCountData(products);
+                
+                // Update stats with product data
+                setStats(prevStats => ({
+                    ...prevStats,
+                    totalProducts: products.length,
+                    totalValue: products.reduce((acc, p) => acc + (p.price * (p.qty || 0)), 0)
+                }));
+            } else {
+                throw new Error('Invalid product data format');
+            }
         } catch (error) {
             console.error('Failed to fetch product data:', error);
+            toast.error('Failed to load product data');
+            // Set default values on error
+            setProductData([]);
+            setStats(prevStats => ({
+                ...prevStats,
+                totalProducts: 0,
+                totalValue: 0
+            }));
         }
     };
 
     const processCountryData = (products) => {
+        if (!Array.isArray(products)) {
+            console.error('Products data is not an array:', products);
+            return;
+        }
+
         const countryCount = {};
         products.forEach(product => {
-            const customAttributes = product.custom_attributes || [];
-            const countryAttr = customAttributes.find(attr => attr.attribute_code === 'country_of_manufacture');
-            const country = countryAttr ? countryAttr.value : null;
-            if (country) {
+            if (product && Array.isArray(product.custom_attributes)) {
+                const countryAttr = product.custom_attributes.find(
+                    attr => attr && attr.attribute_code === 'country_of_manufacture'
+                );
+                const country = countryAttr?.value || 'Unknown';
                 countryCount[country] = (countryCount[country] || 0) + 1;
             }
         });
-        const formattedData = Object.entries(countryCount).map(([country, count]) => ({
-            country_of_manufacture: country,
-            count: count
-        }));
+
+        const formattedData = Object.entries(countryCount)
+            .map(([country, count]) => ({
+                country_of_manufacture: country,
+                count: count
+            }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 5); // Only take top 5 countries
+
         setCountryData(formattedData);
     };
 
-
-
     const processProductCountData = (products) => {
+        if (!Array.isArray(products)) {
+            console.error('Products data is not an array:', products);
+            return;
+        }
+
         const typeCount = {};
-
         products.forEach(product => {
-            const name = product.type_id; // Adjust according to actual field
-            if (name) {
-                typeCount[name] = (typeCount[name] || 0) + 1;
-            }
+            const type = product?.type_id || 'unknown';
+            typeCount[type] = (typeCount[type] || 0) + 1;
         });
-        const formattedData = Object.entries(typeCount).map(([name, value]) => ({
-            name: name,
-            value: value
-        }));
 
-        setProductCountData(formattedData);
+        const formattedData = Object.entries(typeCount)
+            .map(([type, count]) => ({
+                name: type.charAt(0).toUpperCase() + type.slice(1),
+                value: count
+            }))
+            .sort((a, b) => b.value - a.value);
+
+        setProductTypeData(formattedData);
     };
 
     const handleRefresh = () => {
@@ -464,6 +511,12 @@ const Dashboard = () => {
                                 value: formatCurrency(stats.averageOrderValue),
                                 icon: TrendingUpIcon,
                                 color: 'secondary'
+                            },
+                            {
+                                title: 'Total Value',
+                                value: formatCurrency(stats.totalValue),
+                                icon: AttachMoneyIcon,
+                                color: 'warning'
                             }
                         ]}
                     />
@@ -547,7 +600,7 @@ const Dashboard = () => {
                             <ResponsiveContainer width="100%" height={400}>
                                 <PieChart>
                                     <Pie
-                                        data={productCountData}
+                                        data={productTypeData}
                                         cx="50%"
                                         cy="50%"
                                         outerRadius={80}
@@ -555,7 +608,7 @@ const Dashboard = () => {
                                         dataKey="value"
                                         label
                                     >
-                                        {productCountData.map((entry, index) => (
+                                        {productTypeData.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                         ))}
                                     </Pie>

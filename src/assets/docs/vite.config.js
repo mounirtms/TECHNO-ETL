@@ -1,26 +1,18 @@
 import { defineConfig } from 'vite';
-import autoprefixer from 'autoprefixer';
-import cssnano from 'cssnano';
-import { resolve } from 'path';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig({
-  root: resolve(__dirname, 'src'),
-  base: '',
-  
+  plugins: [react()],
+  base: '/assets/docs/',
+  publicDir: 'public',
   build: {
-    outDir: resolve(__dirname, 'dist'),
+    outDir: path.resolve(__dirname, 'dist'),
     emptyOutDir: true,
     minify: 'esbuild',
     cssMinify: true,
     assetsDir: 'assets',
     rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'src/index.html'),
-        etl: resolve(__dirname, 'src/ETL-integration.html'),
-        jde: resolve(__dirname, 'src/jde-integration.html'),
-        magento: resolve(__dirname, 'src/magento-integration.html'),
-        cegid: resolve(__dirname, 'src/cegid-integration.html')
-      },
       output: {
         assetFileNames: (assetInfo) => {
           const info = assetInfo.name.split('.');
@@ -34,46 +26,24 @@ export default defineConfig({
           else if (/\.(woff2?|eot|ttf|otf)(\?.*)?$/i.test(assetInfo.name)) {
             return `assets/fonts/[name].[hash][extname]`;
           }
-          else if (/\.css$/i.test(assetInfo.name)) {
-            return `assets/css/[name].[hash][extname]`;
-          }
-          else if (/\.js$/i.test(assetInfo.name)) {
-            return `assets/js/[name].[hash][extname]`;
-          }
           return `assets/[name].[hash][extname]`;
         },
-        entryFileNames: 'assets/js/[name].[hash].js',
-        chunkFileNames: 'assets/js/[name].[hash].js'
+        chunkFileNames: 'assets/js/[name].[hash].js',
+        entryFileNames: 'assets/js/[name].[hash].js'
       }
     }
   },
-  
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
-      '@assets': resolve(__dirname, 'src/assets'),
-      '@images': resolve(__dirname, 'src/assets/images'),
-      '@styles': resolve(__dirname, 'src/assets/styles'),
-      '@scripts': resolve(__dirname, 'src/assets/scripts')
+      '@': path.resolve(__dirname, './src'),
+      '@components': path.resolve(__dirname, './src/components'),
+      '@pages': path.resolve(__dirname, './src/pages'),
+      '@styles': path.resolve(__dirname, './src/styles'),
+      '@assets': path.resolve(__dirname, './src/assets')
     }
   },
-  
-  css: {
-    postcss: {
-      plugins: [
-        autoprefixer(),
-        cssnano({
-          preset: ['default', {
-            discardComments: { removeAll: true }
-          }]
-        })
-      ]
-    }
-  },
-  
   server: {
     port: 3000,
-    open: true,
-    cors: true
+    open: true
   }
 });
