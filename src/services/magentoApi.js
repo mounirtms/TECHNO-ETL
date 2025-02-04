@@ -20,6 +20,90 @@ const DEFAULT_PARAMS = {
   ]
 };
 
+// Mock data for development
+const mockData = {
+  sources: [
+    {
+      source_code: 'default',
+      name: 'Default Source',
+      enabled: true,
+      description: 'Default source for the store',
+      latitude: 0,
+      longitude: 0,
+      country_id: 'US',
+      region_id: 0,
+      region: 'California',
+      city: 'San Francisco',
+      street: '123 Main St',
+      postcode: '94105',
+      contact_name: 'John Doe',
+      email: 'john@example.com',
+      phone: '(555) 123-4567',
+      priority: 1
+    },
+    {
+      source_code: 'warehouse1',
+      name: 'Warehouse 1',
+      enabled: true,
+      description: 'Main warehouse facility',
+      latitude: 37.7749,
+      longitude: -122.4194,
+      country_id: 'US',
+      region_id: 5,
+      region: 'California',
+      city: 'Los Angeles',
+      street: '456 Warehouse Ave',
+      postcode: '90001',
+      contact_name: 'Jane Smith',
+      email: 'jane@example.com',
+      phone: '(555) 987-6543',
+      priority: 2
+    }
+  ],
+  stocks: [
+    {
+      stock_id: 1,
+      name: 'Default Stock',
+      sales_channels: [
+        { type: 'website', code: 'base' }
+      ],
+      source_codes: ['default']
+    },
+    {
+      stock_id: 2,
+      name: 'East Coast Stock',
+      sales_channels: [
+        { type: 'website', code: 'east_store' }
+      ],
+      source_codes: ['warehouse1']
+    }
+  ],
+  sourceItems: [
+    {
+      sku: 'TEST-1',
+      source_code: 'default',
+      quantity: 100,
+      status: 1
+    },
+    {
+      sku: 'TEST-2',
+      source_code: 'warehouse1',
+      quantity: 50,
+      status: 1
+    }
+  ]
+};
+
+const formatResponse = (response, mockDataKey) => {
+  if (process.env.NODE_ENV === 'development' && (!response || !response.items)) {
+    return {
+      items: mockData[mockDataKey] || [],
+      total_count: mockData[mockDataKey]?.length || 0
+    };
+  }
+  return response;
+};
+
 class MagentoApi {
   constructor() {
     this.baseURL = API_URL;
@@ -530,6 +614,39 @@ class MagentoApi {
     return formattedCriteria;
   }
 
+  async getSources(params = {}) {
+    try {
+      const searchCriteria = this.buildSearchCriteria(params);
+      const response = await this.get('/inventory/sources', searchCriteria);
+      return formatResponse(response.data, 'sources');
+    } catch (error) {
+      console.error('Error fetching sources:', error);
+      return formatResponse(null, 'sources');
+    }
+  }
+
+  async getStocks(params = {}) {
+    try {
+      const searchCriteria = this.buildSearchCriteria(params);
+      const response = await this.get('/inventory/stocks', searchCriteria);
+      return formatResponse(response.data, 'stocks');
+    } catch (error) {
+      console.error('Error fetching stocks:', error);
+      return formatResponse(null, 'stocks');
+    }
+  }
+
+  async getSourceItems(params = {}) {
+    try {
+      const searchCriteria = this.buildSearchCriteria(params);
+      const response = await this.get('/inventory/source-items', searchCriteria);
+      return formatResponse(response.data, 'sourceItems');
+    } catch (error) {
+      console.error('Error fetching source items:', error);
+      return formatResponse(null, 'sourceItems');
+    }
+  }
+
   // Local data utilities
   getLocalData(type) {
     switch (type) {
@@ -668,5 +785,8 @@ export const {
   magentoServiceException,
   getLocalData,
   getInvoices,
-  updateOrder
+  updateOrder,
+  getSources,
+  getStocks,
+  getSourceItems
 } = magentoApi;
