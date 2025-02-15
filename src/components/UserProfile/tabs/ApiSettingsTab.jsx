@@ -14,6 +14,7 @@ import {
     Alert,
     CircularProgress
 } from '@mui/material';
+import axios from 'axios';
 import { useProfileController } from '../ProfileController';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { toast } from 'react-toastify';
@@ -24,6 +25,8 @@ const ApiSettingsTab = () => {
     const { userData, updateUserData, loading } = useProfileController();
     const [testingMagentoConnection, setTestingMagentoConnection] = useState(false);
     const [testingCegidConnection, setTestingCegidConnection] = useState(false);
+    const [testingCegidDbConnection, setTestingCegidDbConnection] = useState(false);
+    const [testingMdmDbConnection, setTestingMdmDbConnection] = useState(false);
 
     const { translate } = useLanguage();
     const [formData, setFormData] = useState({
@@ -42,6 +45,32 @@ const ApiSettingsTab = () => {
             username: '',
             password: '',
             database: ''
+        },
+        DB: {
+            CEGID: {
+                server: '',
+                username: '',
+                password: '',
+                database: '',
+                options: {
+                    trustServerCertificate: true,
+                    trustedConnection: true,
+                    enableArithAbort: true,
+                    instancename: ''
+                }
+            },
+            MDM: {
+                server: '',
+                username: '',
+                password: '',
+                database: '',
+                options: {
+                    trustServerCertificate: true,
+                    trustedConnection: true,
+                    enableArithAbort: true,
+                    instancename: ''
+                }
+            }
         }
     });
 
@@ -65,6 +94,32 @@ const ApiSettingsTab = () => {
                     username: remoteSettings?.cegid?.username || import.meta.env.VITE_Cegid_ADMIN_USERNAME || '',
                     password: remoteSettings?.cegid?.password || import.meta.env.VITE_Cegid_ADMIN_PASSWORD || '',
                     database: remoteSettings?.cegid?.database || import.meta.env.VITE_Cegid_ADMIN_DATABASE || ''
+                },
+                DB: {
+                    CEGID: {
+                        server: remoteSettings?.DB?.server || import.meta.env.VITE_SQL_CEGID_SERVER || '',
+                        username: remoteSettings?.DB?.username || import.meta.env.VITE_SQL_CEGID_SERVER_USER || '',
+                        password: remoteSettings?.DB?.password || import.meta.env.VITE_SQL_CEGID_SERVER_PASSWORD || '',
+                        database: remoteSettings?.DB?.database || import.meta.env.VITE_SQL_CEGID_SERVER_DATABASE || '',
+                        options: {
+                            trustServerCertificate: true,
+                            trustedConnection: true,
+                            enableArithAbort: true,
+                            instancename: remoteSettings?.DB?.options?.instancename || import.meta.env.VITE_SQL_CEGID_SERVER_INSTANCE || ''
+                        }
+                    },
+                    MDM: {
+                        server: remoteSettings?.DB?.server || import.meta.env.VITE_SQL_MDM_SERVER || '',
+                        username: remoteSettings?.DB?.username || import.meta.env.VITE_SQL_MDM_SERVER_USER || '',
+                        password: remoteSettings?.DB?.password || import.meta.env.VITE_SQL_MDM_SERVER_PASSWORD || '',
+                        database: remoteSettings?.DB?.database || import.meta.env.VITE_SQL_MDM_SERVER_DATABASE || '',
+                        options: {
+                            trustServerCertificate: true,
+                            trustedConnection: true,
+                            enableArithAbort: true,
+                            instancename: remoteSettings?.DB?.options?.instancename || import.meta.env.VITE_SQL_MDM_SERVER_INSTANCE || ''
+                        }
+                    }
                 }
             });
         }
@@ -79,7 +134,7 @@ const ApiSettingsTab = () => {
             }
         };
         setFormData(updatedFormData);
-        
+
         // Only update local storage
         localStorage.setItem('userApiSettings', JSON.stringify(updatedFormData));
     };
@@ -139,6 +194,79 @@ const ApiSettingsTab = () => {
             toast.error(error.message || translate('profile.apiSettings.cegid.testError'));
         } finally {
             setTestingCegidConnection(false);
+        }
+    };
+
+    const handleTestCegidDbConnection = async () => {
+        try {
+            setTestingCegidDbConnection(true);
+            // Here you would implement your SQL Server connection test logic for CEGID
+            // This might involve using a library like 'mssql' or a custom API call.
+
+ 
+            try {
+                // Send DB config from frontend to backend
+                const dbConfig = {
+                    server: formData.DB.CEGID.server,
+                    user: formData.DB.CEGID.username,
+                    password: formData.DB.CEGID.password,
+                    database: formData.DB.CEGID.database,
+                    options: {
+                        encrypt: true,
+                        trustServerCertificate: true
+                    }
+                };
+               
+                const response = await axios.post('http://localhost:5000/api/cegid/connect', dbConfig); // POST request to backend
+                console.log("Testing CEGID DB Connection:", formData.DB.CEGID);  // Placeholder
+                toast.success(translate('profile.apiSettings.cegidDb.testSuccess'));
+                console.log('CEGID DB Tables:', response.data);
+            } catch (error) {
+                console.error('CEGID DB Test Failed:', error);
+            } finally {
+                setTestingCegidDbConnection(false);
+            }
+
+
+        } catch (error) {
+            console.error('CEGID DB connection error:', error);
+            toast.error(error.message || translate('profile.apiSettings.cegidDb.testError'));
+        } finally {
+            setTestingCegidDbConnection(false);
+        }
+    };
+
+    const handleTestMdmDbConnection = async () => {
+        try {
+            debugger
+            setTestingMdmDbConnection(true);
+            try {
+                // Send DB config from frontend to backend
+                const dbConfig = {
+                    server: formData.DB.MDM.server,
+                    user: formData.DB.MDM.username,
+                    password: formData.DB.MDM.password,
+                    database: formData.DB.MDM.database,
+                    options: {
+                        encrypt: true,
+                        trustServerCertificate: true
+                    }
+                };
+
+                const response = await axios.post('http://localhost:5000/api/mdm/connect', dbConfig); // POST request to backend
+                console.log("Testing MDM DB Connection:", formData.DB.MDM);  // Placeholder
+                toast.success(translate('profile.apiSettings.mdmDb.testSuccess'));
+                console.log('MDM DB Tables:', response.data);
+            } catch (error) {
+                console.error('MDM DB Test Failed:', error);
+            } finally {
+                setTestingMdmDbConnection(false);
+            }
+        } catch (error) {
+            console.error('MDM DB connection error:', error);
+            toast.error(error.message || translate('profile.apiSettings.mdmDb.testError'));
+        } finally {
+            setTestingMdmDbConnection(false);
         }
     };
 
@@ -264,7 +392,7 @@ const ApiSettingsTab = () => {
                             </Button>
                         </Grid>
                     </Grid>
-                </Collapse> 
+                </Collapse>
             </Grid>
 
             <Divider sx={{ my: 2 }} />
@@ -328,6 +456,90 @@ const ApiSettingsTab = () => {
                     </Button>
                 </Grid>
             </Grid>
+
+            {/* SQL Server Settings */}
+            <Typography variant="subtitle1" sx={{ mb: 1, mt: 2, fontWeight: 'medium' }}>
+                SQL Server Settings
+            </Typography>
+
+            {/* CEGID DB Settings */}
+            <Typography variant="subtitle2" sx={{ mb: 1, mt: 1, fontWeight: 'medium' }}>
+                CEGID Database
+            </Typography>
+            <Grid container spacing={2}>
+            <Grid item xs={12} sm={6} md={3}>
+                    <TextField size="small" fullWidth label="Server"
+                        value={formData.DB.CEGID.server}
+                        onChange={(e) => handleDbInputChange('CEGID', 'server', e.target.value)} />
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={3}>
+                    <TextField size="small" fullWidth label="Username"
+                        value={formData.DB.CEGID.username}
+                        onChange={(e) => handleDbInputChange('CEGID', 'username', e.target.value)} />
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                    <TextField size="small" fullWidth type="password" label="Password"
+                        value={formData.DB.CEGID.password}
+                        onChange={(e) => handleDbInputChange('CEGID', 'password', e.target.value)} />
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                    <TextField size="small" fullWidth label="Database"
+                        value={formData.DB.CEGID.database}
+                        onChange={(e) => handleDbInputChange('CEGID', 'database', e.target.value)} />
+                </Grid>
+              
+                <Grid item xs={12}>
+                    <Button variant="contained" color="primary"
+                        onClick={handleTestCegidDbConnection}
+                        disabled={testingCegidDbConnection || !formData.DB.CEGID.username || !formData.DB.CEGID.password || !formData.DB.CEGID.database}
+                        startIcon={testingCegidDbConnection ? <CircularProgress size={20} color="inherit" /> : null}
+                        sx={{ mt: 2 }}>
+                        {testingCegidDbConnection ? "Testing..." : "Test CEGID DB Connection"}
+                    </Button>
+                </Grid>
+            </Grid>
+
+            {/* MDM DB Settings */}
+            <Typography variant="subtitle2" sx={{ mb: 1, mt: 2, fontWeight: 'medium' }}>
+                MDM Database
+            </Typography>
+            <Grid container spacing={2}>
+                {/* Similar structure as CEGID DB settings */}
+
+                <Grid item xs={12} sm={6} md={3}>
+                    <TextField size="small" fullWidth label="Server"
+                        value={formData.DB.MDM.server}
+                        onChange={(e) => handleDbInputChange('MDM', 'server', e.target.value)} />
+                </Grid>
+
+                <Grid item xs={12} sm={6} md={3}>
+                    <TextField size="small" fullWidth label="Username"
+                        value={formData.DB.MDM.username}
+                        onChange={(e) => handleDbInputChange('MDM', 'username', e.target.value)} />
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                    <TextField size="small" fullWidth type="password" label="Password"
+                        value={formData.DB.MDM.password}
+                        onChange={(e) => handleDbInputChange('MDM', 'password', e.target.value)} />
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                    <TextField size="small" fullWidth label="Database"
+                        value={formData.DB.MDM.database}
+                        onChange={(e) => handleDbInputChange('MDM', 'database', e.target.value)} />
+                </Grid>
+                
+                <Grid item xs={12}>
+                    <Button variant="contained" color="primary"
+                        onClick={handleTestMdmDbConnection}
+                        disabled={testingMdmDbConnection || !formData.DB.MDM.username || !formData.DB.MDM.password || !formData.DB.MDM.database}
+                        startIcon={testingMdmDbConnection ? <CircularProgress size={20} color="inherit" /> : null}
+                        sx={{ mt: 2 }}>
+                        {testingMdmDbConnection ? "Testing..." : "Test MDM DB Connection"}
+                    </Button>
+                </Grid>
+            </Grid>
+
         </Box>
     );
 };

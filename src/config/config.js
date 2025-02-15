@@ -9,8 +9,25 @@ const config = {
             }
         }
     },
+    database: {
+        sqlServer: {
+            server: process.env.SQL_SERVER_HOST || 'localhost',
+            port: parseInt(process.env.SQL_SERVER_PORT) || 1433,
+            database: process.env.SQL_SERVER_DATABASE || 'master',
+            options: {
+                encrypt: process.env.SQL_SERVER_ENCRYPT === 'true',
+                trustServerCertificate: true,
+                enableArithAbort: true
+            },
+            authentication: {
+                type: 'default',
+                options: {
+                    trustedConnection: true
+                }
+            }
+        }
+    },
     version: '1.0.0',
-    // Add other configuration as needed
 };
 
 export default config;

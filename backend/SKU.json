@@ -1,0 +1,55 @@
+[
+  {
+    "Code_MDM": 288.0,
+    "Sku_Conf": 111826612.0,
+    "Code_JDE": null,
+    "TypeProd": "V",
+    "Remarque": "",
+    "ForAppro": "0",
+    "Active": "1",
+    "Catalog": "0",
+    "TypeConfHomog": "0",
+    "TypePresentoir": "0",
+    "DateCreation": "2022-09-14T11:15:35.43"
+  },
+  {
+    "Code_MDM": 289.0,
+    "Sku_Conf": 111826612.0,
+    "Code_JDE": null,
+    "TypeProd": "V",
+    "Remarque": "",
+    "ForAppro": "0",
+    "Active": "1",
+    "Catalog": "0",
+    "TypeConfHomog": "0",
+    "TypePresentoir": "0",
+    "DateCreation": "2022-09-14T11:15:35.43"
+  },
+  {
+    "Code_MDM": 290.0,
+    "Sku_Conf": 111826612.0,
+    "Code_JDE": null,
+    "TypeProd": "V",
+    "Remarque": null,
+    "ForAppro": "0",
+    "Active": "1",
+    "Catalog": "0",
+    "TypeConfHomog": null,
+    "TypePresentoir": null,
+    "DateCreation": "2022-09-14T11:15:35.43"
+  },
+  I dont want to see this object but only the object above I just need to take the price of this oject and apply it to the objects above
+  {
+    "Code_MDM": 111826612.0,
+    "Sku_Conf": 111826612.0,
+    "Code_JDE": 12842.0,
+    "TypeProd": "C",
+    "Remarque": "",
+    "ForAppro": "1",
+    "Active": "1",
+    "Catalog": "0",
+    "TypeConfHomog": "1",
+    "TypePresentoir": "0",
+    "DateCreation": "2022-09-14T11:15:35.43"
+  }
+]

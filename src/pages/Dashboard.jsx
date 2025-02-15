@@ -25,10 +25,13 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import SyncIcon from '@mui/icons-material/SyncAlt';
 import SettingsIcon from '@mui/icons-material/Settings';
 import magentoApi from '../services/magentoApi';
 import { toast } from 'react-toastify';
 import { DRAWER_WIDTH, COLLAPSED_WIDTH, HEADER_HEIGHT, FOOTER_HEIGHT, DASHBOARD_TAB_HEIGHT } from '../components/Layout/Constants';
+import { sync } from 'framer-motion';
+import axios from 'axios';
 
 // Format currency in DZD
 const formatCurrency = (amount) => {
@@ -318,13 +321,32 @@ const Dashboard = () => {
         });
     };
 
+    const syncPrices = async () => {
+        try {
+             const response = await axios.get('/api/mdm/prices');
+            console.log(response.data);
+            const priceData = response.data.map(row => ({
+                sku: row.Code_MDM,
+                price: row.Tarif
+            }));
+            console.log('Price data:', priceData);
+
+
+            toast.success('Prices synced successfully');
+        } catch (error) {
+
+            console.error('Failed to sync prices:', error);
+            toast.error('Failed to sync prices');
+        }
+    };
+
     const fetchProductData = async () => {
         try {
             const response = await magentoApi.getProducts({
                 pageSize: 100,
                 currentPage: 1
             });
-            
+
             if (response?.data?.items) {
                 const products = response.data.items.map(product => ({
                     ...product,
@@ -340,7 +362,7 @@ const Dashboard = () => {
                 setProductData(products);
                 processCountryData(products);
                 processProductCountData(products);
-                
+
                 // Update stats with product data
                 setStats(prevStats => ({
                     ...prevStats,
@@ -460,12 +482,19 @@ const Dashboard = () => {
                         }}
                     />
                     <IconButton
+                        onClick={syncPrices}
+                        sx={{ ml: 'auto' }}
+                    >
+                       Sync Prices <SyncIcon />
+                    </IconButton>
+                    <IconButton
                         onClick={handleRefresh}
                         disabled={loading}
                         sx={{ ml: 'auto' }}
                     >
                         <RefreshIcon />
                     </IconButton>
+
                     <IconButton>
                         <SettingsIcon />
                     </IconButton>

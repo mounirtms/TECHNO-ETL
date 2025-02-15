@@ -1,0 +1,34 @@
+[
+  {
+    "Code_MDM": 1781007.0,
+    "Sku_Conf": null,
+    "Designation_Francais_Produit": "FEUTRE COLOR'PEPS MAXI COLOR'PEPS MAXI 12 COULEURS \"MAPED\" REF: 846020",
+    "Tarif": 1750.00,
+    "TypeProd": "S",
+    "TypeConfHomog": "0"
+  },
+  {
+    "Code_MDM": 1140616844.0,
+    "Sku_Conf": null,
+    "Designation_Francais_Produit": "SURLIGNEUR COULEUR PASTEL ASSORT X6 POCH \"MAPED\" REF: 742558",
+    "Tarif": 1050.00,
+    "TypeProd": "S",
+    "TypeConfHomog": null
+  },
+  {
+    "Code_MDM": 111823075.0,
+    "Sku_Conf": 592.0,
+    "Designation_Francais_Produit": "AGRAFEUSE ESSENTIALS FULL STRIP 24/6-26/6 \"MAPED\" REF: 354411",
+    "Tarif": 1700.00,
+    "TypeProd": "V",
+    "TypeConfHomog": "0"
+  },
+  {
+    "Code_MDM": 111826612.0,
+    "Sku_Conf": 111826612.0,
+    "Designation_Francais_Produit": "COMPAS STUDY STOP A BAGUE \"MAPED\" REF: 195210",
+    "Tarif": 680.00,
+    "TypeProd": "C",
+    "TypeConfHomog": "1"
+  }
+]
