@@ -11,6 +11,8 @@ async function createMdmPool(dbConfig) { // Accepts the dbconfig
             mdmPool = new sql.ConnectionPool(dbConfig);
             await mdmPool.connect();
             console.log("Connected to MDM DB successfully");
+
+            
         }
         return mdmPool;
     }catch (error) {

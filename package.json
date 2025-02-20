@@ -8,7 +8,7 @@
     "server": "node backend/server.js",
     "build": "vite build && npm run copy-docs",
     "copy-docs": "xcopy /E /I /Y src\\assets\\docs\\dist dist\\assets\\docs",
-    "dep": "firebase deploy --only hosting",
+    "deploy": "firebase deploy --only hosting",
     "clean": "rm -rf node_modules/.vite && rm -rf dist && npm install && npm run dev",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"

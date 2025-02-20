@@ -2,10 +2,11 @@
 const stores = ["Techno Ghardaia", "Techno Laghouat", "Techno Setif", "Techno Ain Benian", "Techno Annaba", "Techno Draria", "Techno Cheraga"];
 let mdmDbPool;
 
- // Route to test MDM DB connection
+// Route to test MDM DB connection
 app.post('/api/mdm/test-connection', async (req, res) => {
-  
+
     const dbConfig = req.body; // Get MDM DB config from frontend
+   
     try {
         // Test connection by querying some basic data
         // Connect to MDM Database
