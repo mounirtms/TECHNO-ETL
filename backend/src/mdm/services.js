@@ -1,4 +1,4 @@
-const { mdmPool } = require('../../database');  // Import from database.js
+const { mdmPool } = require('../utils/database');  // Import from database.js
 
 
 async function getUpdatedPrices(daysSinceModified) {

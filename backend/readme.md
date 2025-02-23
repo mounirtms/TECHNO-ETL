@@ -13,3 +13,9 @@
                 AND T.DateModif >= DATEADD(DAY, -14, GETDATE())
           
                 ORDER BY PE.Sku_Conf ,  PE.TypeConfHomog DESC
+
+
+https://github.com/WebDevSimplified/JWT-Authentication 
+https://github.com/debugmodedotnet/sqlservernodejsrestapi
+create token 
+require('crypto').randomBytes(64).toString('hex') 

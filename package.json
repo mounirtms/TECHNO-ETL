@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "server": "node backend/server.js",
+    "server": "nodemon backend/server.js",
+    "authServer": "nodemon backend/authServer.js",
     "build": "vite build && npm run copy-docs",
     "copy-docs": "xcopy /E /I /Y src\\assets\\docs\\dist dist\\assets\\docs",
     "deploy": "firebase deploy --only hosting",

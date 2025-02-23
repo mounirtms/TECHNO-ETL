@@ -1,6 +1,6 @@
 // src/routes.js
 const express = require('express');
-const apiController = require('./controllers/apiController');
+const apiController = require('../controllers/apiController');
 
 const router = express.Router();
 

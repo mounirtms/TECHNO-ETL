@@ -1,6 +1,6 @@
 // src/controllers/apiController.js
-const mdmQueries = require('../mdm'); // Adjust the path as necessary
-const cegidQueries = require('../cegid'); // Adjust the path as necessary
+const mdmQueries = require('../mdm/mdm'); // Adjust the path as necessary
+const cegidQueries = require('../cegid/cegid'); // Adjust the path as necessary
 
 exports.getMdmData = async (req, res) => {
     try {
