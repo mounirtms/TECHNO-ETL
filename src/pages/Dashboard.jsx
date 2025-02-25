@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
     Box,
-    Grid,
     Paper,
     TextField,
     Button,
@@ -10,6 +9,7 @@ import {
     IconButton,
     CircularProgress
 } from '@mui/material';
+
 import { useTheme } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -32,6 +32,8 @@ import { toast } from 'react-toastify';
 import { DRAWER_WIDTH, COLLAPSED_WIDTH, HEADER_HEIGHT, FOOTER_HEIGHT, DASHBOARD_TAB_HEIGHT } from '../components/Layout/Constants';
 import { sync } from 'framer-motion';
 import axios from 'axios';
+import { useDropzone } from 'react-dropzone';
+import * as XLSX from 'xlsx';
 
 // Format currency in DZD
 const formatCurrency = (amount) => {
@@ -134,6 +136,31 @@ const Dashboard = () => {
     const [productData, setProductData] = useState([]);
     const [countryData, setCountryData] = useState([]);
     const [productTypeData, setProductTypeData] = useState([]);
+    const [excelData, setExcelData] = useState(null);
+
+    const onDrop = useCallback((acceptedFiles) => {
+        const file = acceptedFiles[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const json = XLSX.utils.sheet_to_json(worksheet);
+            setExcelData(json);
+            // Send data to the server
+            axios.post('/api/mdm/excel', json)
+                .then(response => {
+                    toast.success('Excel file uploaded successfully');
+                })
+                .catch(error => {
+                    toast.error('Failed to upload Excel file');
+                });
+        };
+        reader.readAsArrayBuffer(file);
+    }, []);
+
+    const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
     const fetchDashboardData = useCallback(async () => {
         setLoading(true);
@@ -323,7 +350,7 @@ const Dashboard = () => {
 
     const syncPrices = async () => {
         try {
-             const response = await axios.get('/api/mdm/prices');
+            const response = await axios.get('/api/mdm/prices');
             console.log(response.data);
             const priceData = response.data.map(row => ({
                 sku: row.Code_MDM,
@@ -444,8 +471,11 @@ const Dashboard = () => {
         fetchProductData();
     }, [fetchDashboardData, refreshKey]);
 
+
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={arLocale}>
+
+
             <Box sx={{ p: 3, height: '100%' }}>
                 {/* Date Range and Controls */}
                 <Paper
@@ -481,17 +511,8 @@ const Dashboard = () => {
                             }
                         }}
                     />
-                    <IconButton
-                        onClick={syncPrices}
-                        sx={{ ml: 'auto' }}
-                    >
-                       Sync Prices <SyncIcon />
-                    </IconButton>
-                    <IconButton
-                        onClick={handleRefresh}
-                        disabled={loading}
-                        sx={{ ml: 'auto' }}
-                    >
+
+                    <IconButton onClick={handleRefresh} disabled={loading} sx={{ ml: 'auto' }}>
                         <RefreshIcon />
                     </IconButton>
 
@@ -499,6 +520,29 @@ const Dashboard = () => {
                         <SettingsIcon />
                     </IconButton>
                 </Paper>
+
+                {/* Replacing Grid with Box (Flexbox) */}
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
+                    {/* Excel Import Component (Half Width) */}
+                    <Box sx={{ flex: 1, minWidth: 300 }}>
+                        <Paper sx={{ p: 2 }}>
+                            <div {...getRootProps()} style={{ border: '2px dashed #ccc', padding: '20px', textAlign: 'center' }}>
+                                <input {...getInputProps()} />
+                                <p>MDM report Drag & drop an Excel file here, or click to select one</p>
+                            </div>
+                            {excelData && console.log(JSON.stringify(excelData, null, 2))}
+                        </Paper>
+                    </Box>
+
+                    {/* Other Content (Half Width) */}
+                    <Box sx={{ flex: 1, minWidth: 300 }}>
+                        <Paper sx={{ p: 2 }}>
+                            <IconButton onClick={syncPrices} sx={{ ml: 'auto' }}>
+                                Sync Prices <SyncIcon />
+                            </IconButton>
+                        </Paper>
+                    </Box>
+                </Box>
 
                 {/* Loading Indicator */}
                 {loading && (
@@ -508,109 +552,42 @@ const Dashboard = () => {
                 )}
 
                 {/* Stats Cards */}
-                <Grid item xs={12}>
+                <Box sx={{ mt: 3 }}>
                     <StatsCards
                         cards={[
-                            {
-                                title: 'Total Orders',
-                                value: stats.totalOrders,
-                                icon: ShoppingCartIcon,
-                                color: 'primary'
-                            },
-                            {
-                                title: 'Total Customers',
-                                value: stats.totalCustomers,
-                                icon: PeopleIcon,
-                                color: 'success'
-                            },
-                            {
-                                title: 'Total Products',
-                                value: stats.totalProducts,
-                                icon: InventoryIcon,
-                                color: 'info'
-                            },
-                            {
-                                title: 'Total Revenue',
-                                value: formatCurrency(stats.totalRevenue),
-                                icon: AttachMoneyIcon,
-                                color: 'warning'
-                            },
-                            {
-                                title: 'Average Order Value',
-                                value: formatCurrency(stats.averageOrderValue),
-                                icon: TrendingUpIcon,
-                                color: 'secondary'
-                            },
-                            {
-                                title: 'Total Value',
-                                value: formatCurrency(stats.totalValue),
-                                icon: AttachMoneyIcon,
-                                color: 'warning'
-                            }
+                            { title: 'Total Orders', value: stats.totalOrders, icon: ShoppingCartIcon, color: 'primary' },
+                            { title: 'Total Customers', value: stats.totalCustomers, icon: PeopleIcon, color: 'success' },
+                            { title: 'Total Products', value: stats.totalProducts, icon: InventoryIcon, color: 'info' },
+                            { title: 'Total Revenue', value: formatCurrency(stats.totalRevenue), icon: AttachMoneyIcon, color: 'warning' },
+                            { title: 'Average Order Value', value: formatCurrency(stats.averageOrderValue), icon: TrendingUpIcon, color: 'secondary' },
+                            { title: 'Total Value', value: formatCurrency(stats.totalValue), icon: AttachMoneyIcon, color: 'warning' }
                         ]}
                     />
-                </Grid>
+                </Box>
 
                 {/* Charts */}
-                <Grid item xs={12}>
+                <Box sx={{ mt: 3 }}>
                     <Paper sx={{ p: 2, height: '400px' }}>
                         <ResponsiveContainer>
                             <LineChart data={chartData}>
                                 <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis
-                                    dataKey="date"
-                                    tickFormatter={(date) => formatChartDate(date)}
-                                    interval="preserveStartEnd"
-                                    angle={-45}
-                                    textAnchor="end"
-                                    height={60}
-                                />
-                                <YAxis
-                                    yAxisId="left"
-                                    tickFormatter={(value) => Math.round(value)}
-                                />
-                                <YAxis
-                                    yAxisId="right"
-                                    orientation="right"
-                                    tickFormatter={(value) => formatCurrency(value)}
-                                />
-                                <Tooltip
-                                    labelFormatter={(date) => formatTooltipDate(date)}
-                                    formatter={(value, name) => [
-                                        name === 'revenue' ? formatCurrency(value) : Math.round(value),
-                                        name === 'revenue' ? 'Revenue' : 'Orders'
-                                    ]}
-                                />
+                                <XAxis dataKey="date" tickFormatter={(date) => formatChartDate(date)} interval="preserveStartEnd" angle={-45} textAnchor="end" height={60} />
+                                <YAxis yAxisId="left" tickFormatter={(value) => Math.round(value)} />
+                                <YAxis yAxisId="right" orientation="right" tickFormatter={(value) => formatCurrency(value)} />
+                                <Tooltip labelFormatter={(date) => formatTooltipDate(date)} formatter={(value, name) => [name === 'revenue' ? formatCurrency(value) : Math.round(value), name === 'revenue' ? 'Revenue' : 'Orders']} />
                                 <Legend />
-                                <Line
-                                    yAxisId="left"
-                                    type="monotone"
-                                    dataKey="orders"
-                                    stroke={theme.palette.primary.main}
-                                    name="Orders"
-                                    dot={false}
-                                    activeDot={{ r: 8 }}
-                                />
-                                <Line
-                                    yAxisId="right"
-                                    type="monotone"
-                                    dataKey="revenue"
-                                    stroke={theme.palette.secondary.main}
-                                    name="Revenue"
-                                    dot={false}
-                                    activeDot={{ r: 8 }}
-                                />
+                                <Line yAxisId="left" type="monotone" dataKey="orders" stroke={theme.palette.primary.main} name="Orders" dot={false} activeDot={{ r: 8 }} />
+                                <Line yAxisId="right" type="monotone" dataKey="revenue" stroke={theme.palette.secondary.main} name="Revenue" dot={false} activeDot={{ r: 8 }} />
                             </LineChart>
                         </ResponsiveContainer>
                     </Paper>
-                </Grid>
+                </Box>
 
                 {/* Enhanced Bar Charts for Country of Manufacture and Product Counts */}
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                    <Box sx={{ flex: 1 }}>
-                        <Box sx={{ mb: 3, boxShadow: 3, borderRadius: 2, overflow: 'hidden' }}>
-                            <Typography variant="h6" sx={{ p: 2 }}>
-                                Country of Manufacture</Typography>
+                <Box sx={{ display: 'flex', flexWrap: "wrap", gap: 3, mt: 3 }}>
+                    <Box sx={{ flex: 1, minWidth: 300 }}>
+                        <Paper sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
+                            <Typography variant="h6">Country of Manufacture</Typography>
                             <ResponsiveContainer width="100%" height={400}>
                                 <BarChart data={countryData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                                     <CartesianGrid strokeDasharray="3 3" />
@@ -621,22 +598,15 @@ const Dashboard = () => {
                                     <Bar dataKey="count" fill="#8884d8" barSize={30} />
                                 </BarChart>
                             </ResponsiveContainer>
-                        </Box>
+                        </Paper>
                     </Box>
-                    <Box sx={{ flex: 1, gap: 1 }}>
-                        <Box sx={{ mb: 3, boxShadow: 3, borderRadius: 2, overflow: 'hidden' }}>
-                            <Typography variant="h6" sx={{ p: 2 }}>Product Types</Typography>
+
+                    <Box sx={{ flex: 1, minWidth: 300 }}>
+                        <Paper sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
+                            <Typography variant="h6">Product Types</Typography>
                             <ResponsiveContainer width="100%" height={400}>
                                 <PieChart>
-                                    <Pie
-                                        data={productTypeData}
-                                        cx="50%"
-                                        cy="50%"
-                                        outerRadius={80}
-                                        fill="#8884d8"
-                                        dataKey="value"
-                                        label
-                                    >
+                                    <Pie data={productTypeData} cx="50%" cy="50%" outerRadius={80} fill="#8884d8" dataKey="value" label>
                                         {productTypeData.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                         ))}
@@ -644,13 +614,11 @@ const Dashboard = () => {
                                     <Tooltip />
                                 </PieChart>
                             </ResponsiveContainer>
-                        </Box>
+                        </Paper>
                     </Box>
                 </Box>
-
-                {/* Pie Chart for Product Types */}
-
             </Box>
+
         </LocalizationProvider>
     );
 };
