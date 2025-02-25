@@ -96,6 +96,7 @@ const ApiSettingsTab = () => {
                     database: remoteSettings?.cegid?.database || import.meta.env.VITE_Cegid_ADMIN_DATABASE || ''
                 },
                 DB: {
+                    Backend_Server:remoteSettings?.server ||import.meta.VITE_BACKEND_SERVER,
                     CEGID: {
                         server: remoteSettings?.DB?.server || import.meta.env.VITE_SQL_CEGID_SERVER || '',
                         username: remoteSettings?.DB?.username || import.meta.env.VITE_SQL_CEGID_SERVER_USER || '',
@@ -197,7 +198,7 @@ const ApiSettingsTab = () => {
         }
     };
 
-    const handleTestCegidDbConnection = async () => {
+    const handleCegidDbConnection = async () => {
         try {
             setTestingCegidDbConnection(true);
             // Here you would implement your SQL Server connection test logic for CEGID
@@ -217,7 +218,7 @@ const ApiSettingsTab = () => {
                     }
                 };
                
-                const response = await axios.post('http://localhost:5000/api/cegid/connect', dbConfig); // POST request to backend
+                const response = await axios.post(formData.DB.Backend_Server+'/api/cegid/connect', dbConfig); // POST request to backend
                 console.log("Testing CEGID DB Connection:", formData.DB.CEGID);  // Placeholder
                 toast.success(translate('profile.apiSettings.cegidDb.testSuccess'));
                 console.log('CEGID DB Tables:', response.data);
@@ -236,7 +237,7 @@ const ApiSettingsTab = () => {
         }
     };
 
-    const handleTestMdmDbConnection = async () => {
+    const handleMdmDbConnection = async () => {
         try {
             debugger
             setTestingMdmDbConnection(true);
@@ -253,7 +254,7 @@ const ApiSettingsTab = () => {
                     }
                 };
 
-                const response = await axios.post('http://localhost:5000/api/mdm/connect', dbConfig); // POST request to backend
+                const response = await axios.post(formData.DB.Backend_Server+'/api/mdm/connect', dbConfig); // POST request to backend
                 console.log("Testing MDM DB Connection:", formData.DB.MDM);  // Placeholder
                 toast.success(translate('profile.apiSettings.mdmDb.testSuccess'));
                 console.log('MDM DB Tables:', response.data);
@@ -491,7 +492,7 @@ const ApiSettingsTab = () => {
               
                 <Grid item xs={12}>
                     <Button variant="contained" color="primary"
-                        onClick={handleTestCegidDbConnection}
+                        onClick={handleCegidDbConnection}
                         disabled={testingCegidDbConnection || !formData.DB.CEGID.username || !formData.DB.CEGID.password || !formData.DB.CEGID.database}
                         startIcon={testingCegidDbConnection ? <CircularProgress size={20} color="inherit" /> : null}
                         sx={{ mt: 2 }}>
@@ -531,7 +532,7 @@ const ApiSettingsTab = () => {
                 
                 <Grid item xs={12}>
                     <Button variant="contained" color="primary"
-                        onClick={handleTestMdmDbConnection}
+                        onClick={handleMdmDbConnection}
                         disabled={testingMdmDbConnection || !formData.DB.MDM.username || !formData.DB.MDM.password || !formData.DB.MDM.database}
                         startIcon={testingMdmDbConnection ? <CircularProgress size={20} color="inherit" /> : null}
                         sx={{ mt: 2 }}>

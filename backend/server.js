@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const routes = require('./utils/routes');
+const router = require('./utils/routes');
 const cron = require('node-cron');
 const { createMdmPool, createCegidPool, getPool } = require('./utils/database');
 const jwt = require('jsonwebtoken');
@@ -9,10 +9,8 @@ const app = express();
 
 app.use(express.json()); // Enable parsing JSON request bodies
 app.use(express.urlencoded({ extended: true })); // Enable parsing URL-encoded request bodies
-app.use(routes);
+app.use(router);
 app.use(cors());
-
-
 
 // Connection endpoints
 app.post('/api/mdm/connect', authenticateToken, async (req, res) => {
@@ -54,8 +52,21 @@ app.post('/api/cegid/connect', authenticateToken, async (req, res) => {
     }
 });
 
+app.post('/api/mdm/excel', authenticateToken, async (req, res) => {
+    const data = req.body;
+    debugger
+    try {
+      
+        res.json({ message: 'CEGID connection successful' })
+    } catch (error) {
+        console.error('CEGID connection failed', error);
+        res.status(500).json({ error: "CEGID Connection failed" })
+    }
+});
+
 
 function authenticateToken(req, res, next) {
+    next()
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
     if (token == null) return res.sendStatus(401)
