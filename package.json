@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "server": "nodemon backend/server.js",
-    "authServer": "nodemon backend/authServer.js",
+    "server": "nodemon backend/server.js && nodemon backend/authServer.js",
     "build": "vite build && npm run copy-docs",
     "copy-docs": "xcopy /E /I /Y src\\assets\\docs\\dist dist\\assets\\docs",
     "deploy": "firebase deploy --only hosting",
@@ -37,9 +36,11 @@
     "msnodesqlv8": "^4.5.0",
     "mssql": "^11.0.1",
     "node-cron": "^3.0.3",
+    "nodemon": "^3.1.9",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.3.8",
     "react-hot-toast": "^2.4.1",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.15.0",
@@ -48,6 +49,7 @@
     "sass": "^1.81.0",
     "stylis": "^4.3.0",
     "stylis-plugin-rtl": "^2.1.1",
+    "xlsx": "^0.18.5",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
