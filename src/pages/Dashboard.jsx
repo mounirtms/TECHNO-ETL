@@ -348,24 +348,37 @@ const Dashboard = () => {
         });
     };
 
-    const syncPrices = async () => {
+    const getPrices = async () => {
         try {
-            const response = await axios.get('/api/mdm/prices');
-            console.log(response.data);
-            const priceData = response.data.map(row => ({
-                sku: row.Code_MDM,
-                price: row.Tarif
+            const response = await axios.get('http://localhost:5000/api/mdm/prices');
+
+            // Convert data into Magento bulk format
+            const priceData = response.data.map(({ sku, price }) => ({
+                product: {
+                    sku,
+                    price: parseFloat(price) // Ensure it's a valid number
+                }
             }));
-            console.log('Price data:', priceData);
 
-
+            console.log('📊 Price data:', priceData);
+            await syncPrices(priceData);
             toast.success('Prices synced successfully');
         } catch (error) {
-
-            console.error('Failed to sync prices:', error);
+            console.error('❌ Failed to fetch prices:', error);
+            toast.error('Failed to fetch prices');
+        }
+    };
+    const syncPrices = async (prices) => {
+        try {
+            const response = await axios.post('http://localhost:5000/api/techno/prices-sync', prices);
+            console.log('📦 Sync response:', response.data);
+            toast.success('Prices synced successfully');
+        } catch (error) {
+            console.error('❌ Failed to sync prices:', error);
             toast.error('Failed to sync prices');
         }
     };
+
 
     const fetchProductData = async () => {
         try {
@@ -537,7 +550,18 @@ const Dashboard = () => {
                     {/* Other Content (Half Width) */}
                     <Box sx={{ flex: 1, minWidth: 300 }}>
                         <Paper sx={{ p: 2 }}>
-                            <IconButton onClick={syncPrices} sx={{ ml: 'auto' }}>
+                            <DatePicker
+                                label="Sync Date"
+                                
+                               
+                                slotProps={{
+                                    textField: {
+                                        size: "small",
+                                        sx: { width: 150, mr: 2 } // Add margin to the right
+                                    }
+                                }}
+                            />
+                            <IconButton onClick={getPrices} sx={{ ml: 'auto', bgcolor: 'primary.main', color: 'white', '&:hover': { bgcolor: 'primary.dark' } }}>
                                 Sync Prices <SyncIcon />
                             </IconButton>
                         </Paper>
