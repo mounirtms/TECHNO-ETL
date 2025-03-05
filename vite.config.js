@@ -94,9 +94,7 @@ export default defineConfig({
         },
         assetFileNames: ({ name }) => {
           // Handle documentation files
-          if (name && name.includes('docs/dist/')) {
-            return name.replace('docs/dist/', 'assets/docs/');
-          }
+          
           // Handle other assets
           if (/\.(gif|jpe?g|png|svg)$/i.test(name ?? '')) {
             return 'assets/images/[name][extname]';

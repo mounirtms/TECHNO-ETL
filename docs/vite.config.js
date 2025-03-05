@@ -4,46 +4,39 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  base: 'docs',
-  publicDir: 'public',
+  base: '', // Use relative paths
+  publicDir: 'public', // Directory for public assets
   build: {
-    outDir: path.resolve(__dirname, 'dist'),
-    emptyOutDir: true,
-    minify: 'esbuild',
-    cssMinify: true,
-    assetsDir: 'assets',
+    outDir: path.resolve(__dirname, 'dist'), // Output directory for build files
+    emptyOutDir: true, // Clear the output directory before building
+    minify: 'esbuild', // Minification method
+    cssMinify: true, // Minify CSS
+    assetsDir: '', // No specific assets directory since we only have images
     rollupOptions: {
       output: {
         assetFileNames: (assetInfo) => {
           const info = assetInfo.name.split('.');
           const extType = info[info.length - 1];
-          if (/\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/i.test(assetInfo.name)) {
-            return `assets/media/[name].[hash][extname]`;
+          if (/\.(png|jpe?g|gif|svg|ico|webp)(\?.*)?$/i.test(assetInfo.name)) {
+            return `images/[name].[hash][extname]`; // Image files
           }
-          else if (/\.(png|jpe?g|gif|svg|ico|webp)(\?.*)?$/i.test(assetInfo.name)) {
-            return `assets/images/[name].[hash][extname]`;
-          }
-          else if (/\.(woff2?|eot|ttf|otf)(\?.*)?$/i.test(assetInfo.name)) {
-            return `assets/fonts/[name].[hash][extname]`;
-          }
-          return `assets/[name].[hash][extname]`;
+          return `[name].[hash][extname]`; // Default
         },
-        chunkFileNames: 'assets/js/[name].[hash].js',
-        entryFileNames: 'assets/js/[name].[hash].js'
+        chunkFileNames: 'js/[name].[hash].js', // Chunk file names
+        entryFileNames: 'js/[name].[hash].js' // Entry file names
       }
     }
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
       '@components': path.resolve(__dirname, './src/components'),
       '@pages': path.resolve(__dirname, './src/pages'),
       '@styles': path.resolve(__dirname, './src/styles'),
-      '@assets': path.resolve(__dirname, './src/assets')
+      '@assets': path.resolve(__dirname, './src/assets') // This can be removed if not used
     }
   },
   server: {
-    port: 3000,
-    open: true
+    port: 3000, // Development server port
+    open: true // Open the browser on server start
   }
 });

@@ -47,7 +47,7 @@ const ETLIntegration = () => {
             </Typography>
             <Box sx={{ my: 2 }}>
               <img
-                src="public/assets/images/etl-flow.svg"
+                src="images/etl-flow.svg"
                 alt="ETL Flow Diagram"
                 style={{ width: '100%', maxWidth: '100%', height: 'auto', margin: '0 auto', display: 'block' }}
               />

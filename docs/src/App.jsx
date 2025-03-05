@@ -13,13 +13,13 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router basename="/assets/docs">
+      <Router basename="/">
         <Box sx={{ display: 'flex' }}>
           <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
             <Toolbar>
               <Box sx={{ display: 'flex', alignItems: 'left', flexGrow: 1 }}>
                 <img
-                  src="public/assets/images/logo_techno.png"
+                  src="images/logo_techno.png"
                   alt="Techno Logo"
                   style={{ height: 40, marginLeft: 10 }}
                 />

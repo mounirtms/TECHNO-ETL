@@ -112,7 +112,7 @@ const Home = () => {
             </Typography>
             <Box sx={{ my: 2 }}>
               <img
-                src="public/assets/images/system-architecture.svg"
+                src="images/system-architecture.svg"
                 alt="System Architecture"
                 style={{ width: '100%', maxWidth: '100%', height: 'auto', margin: '0 auto', display: 'block' }}
               />
