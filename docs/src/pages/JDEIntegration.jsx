@@ -47,7 +47,7 @@ const JDEIntegration = () => {
             </Typography>
             <Box sx={{ my: 2 }}>
               <img 
-                src="/assets/docs/assets/images/system-architecture.svg" 
+                src="/assets/images/system-architecture.svg" 
                 alt="System Architecture"
                 style={{ maxWidth: '100%', height: 'auto' }}
               />
@@ -118,7 +118,7 @@ const JDEIntegration = () => {
             </Typography>
             <Box sx={{ my: 2 }}>
               <img 
-                src="/assets/docs/assets/images/inventory-lifecycle.svg" 
+                src="/assets/images/inventory-lifecycle.svg" 
                 alt="Inventory Lifecycle"
                 style={{ maxWidth: '100%', height: 'auto' }}
               />

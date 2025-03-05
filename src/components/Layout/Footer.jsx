@@ -101,7 +101,7 @@ const Footer = ({ sidebarOpen, isLoginScreen = false }) => {
                 <Typography variant="body2">
                  
                     <AnimatedLink 
-                        href="/assets/docs/index.html" 
+                        href="docs/index.html" 
                         target="_blank" 
                         rel="noopener noreferrer"
                     >

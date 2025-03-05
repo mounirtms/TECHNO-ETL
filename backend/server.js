@@ -116,7 +116,7 @@ const readSQLQuery = (filePath) => {
 // Fetch product prices from MDM
 app.get('/api/mdm/prices', async (req, res) => {
     try {
-        const sqlQuery = readSQLQuery('./src/queries/prices.sql');
+        const sqlQuery = readSQLQuery('./queries/prices.sql');
         const pool = getPool('mdm');
         const result = await pool.request().query(sqlQuery);
         res.json(result.recordset);
@@ -175,7 +175,7 @@ async function connectToDatabases() {
 async function getMDMPrices() {
     try {
         // Read query from prices.sql
-        const sqlQuery = readSQLQuery('./src/queries/prices.sql');
+        const sqlQuery = readSQLQuery('./queries/prices.sql');
 
         const pool = getPool('mdm');
         const result = await pool.request().query(sqlQuery);
@@ -197,7 +197,7 @@ async function main() {
     //const mockData = generateMockData(schema);
     //console.log(mockData);
 
-     console.log(getMDMPrices())
+     //console.log(getMDMPrices())
 
     // Grant permissions to a specific user on the Objectifs_Agents table
     //await grantPermissions('YourUserName', 'Objectifs_Agents');

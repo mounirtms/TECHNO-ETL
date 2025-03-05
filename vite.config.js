@@ -94,8 +94,8 @@ export default defineConfig({
         },
         assetFileNames: ({ name }) => {
           // Handle documentation files
-          if (name && name.includes('src/assets/docs/dist/')) {
-            return name.replace('src/assets/docs/dist/', 'assets/docs/');
+          if (name && name.includes('docs/dist/')) {
+            return name.replace('docs/dist/', 'assets/docs/');
           }
           // Handle other assets
           if (/\.(gif|jpe?g|png|svg)$/i.test(name ?? '')) {
@@ -108,10 +108,10 @@ export default defineConfig({
     assetsInclude: [
       '**/*.jpg', '**/*.png', '**/*.gif', '**/*.svg', 
       '**/*.json', '**/*.csv', '**/*.xml',
-      'src/assets/docs/dist/**/*.html',
-      'src/assets/docs/dist/**/*.css',
-      'src/assets/docs/dist/**/*.js',
-      'src/assets/docs/dist/assets/**/*'
+      'docs/dist/**/*.html',
+      'docs/dist/**/*.css',
+      'docs/dist/**/*.js',
+      'docs/dist/assets/**/*'
     ],
     copyPublicDir: true,
     chunkSizeWarningLimit: 1000
