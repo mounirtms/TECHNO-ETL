@@ -182,7 +182,7 @@ class MagentoApi {
 
   // API Methods with error handling and caching
   async get(endpoint, config = {}) {
-    try {
+    try { 
       const response = await magentoService.get(endpoint, config);
       return response;
     } catch (error) {

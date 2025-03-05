@@ -87,8 +87,9 @@ const ProductsGrid = () => {
             width: 120,
             type: 'number',
             valueFormatter: (params) => {
-                if (params.value == null) return '';
-                return `$${params.value.toFixed(2)}`;
+
+                const value = Number(params?.value);
+                return isNaN(value) ? '-' : value.toFixed(2);
             }
         },
         {
@@ -213,7 +214,7 @@ const ProductsGrid = () => {
                 }));
 
                 setData(products);
-                
+
                 // Calculate stats
                 const stats = {
                     total: response.data.total_count || products.length,

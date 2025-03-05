@@ -218,7 +218,7 @@ const ApiSettingsTab = () => {
                     }
                 };
                
-                const response = await axios.post(formData.DB.Backend_Server+'/api/cegid/connect', dbConfig); // POST request to backend
+                const response = await axios.post('http://localhost:5000/api/cegid/connect', dbConfig); // POST request to backend
                 console.log("Testing CEGID DB Connection:", formData.DB.CEGID);  // Placeholder
                 toast.success(translate('profile.apiSettings.cegidDb.testSuccess'));
                 console.log('CEGID DB Tables:', response.data);
@@ -254,7 +254,7 @@ const ApiSettingsTab = () => {
                     }
                 };
 
-                const response = await axios.post(formData.DB.Backend_Server+'/api/mdm/connect', dbConfig); // POST request to backend
+                const response = await axios.post('http://localhost:5000/api/mdm/connect', dbConfig); // POST request to backend
                 console.log("Testing MDM DB Connection:", formData.DB.MDM);  // Placeholder
                 toast.success(translate('profile.apiSettings.mdmDb.testSuccess'));
                 console.log('MDM DB Tables:', response.data);

@@ -9,7 +9,34 @@ import invoicesData from '../assets/data/invoices.json';
 import categoryData from '../assets/data/category.json';
 
 class MagentoService {
-    constructor() {
+     constructor() {
+        this.baseURL = 'http://localhost:5000/api/magento';	 // Your backend API URL
+        this.instance = axios.create({
+            baseURL: this.baseURL,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    }
+
+    async get(endpoint, params = {}) { 
+        return this.instance.get(endpoint, params );
+    }
+
+
+    async post(endpoint, data = {}) {
+        return this.instance.post(endpoint, data);
+    }
+
+    async put(endpoint, data = {}) {
+        return this.instance.put(endpoint, data);
+    }
+
+    async delete(endpoint) {
+        return this.instance.delete(endpoint);
+    }
+
+  /*  constructor() {
         this.baseURL = import.meta.env.VITE_MAGENTO_API_URL;
         this.instance = axios.create({
             baseURL: this.baseURL,
@@ -42,7 +69,7 @@ class MagentoService {
             }
         );
     }
-
+ 
     // HTTP Methods
     async get(endpoint, params = {}) {
         try {
@@ -148,7 +175,7 @@ class MagentoService {
             throw this.handleApiError(error);
         }
     }
-
+*/
     // Utility to flatten nested object into URL parameters
     flattenObject(obj, urlParams, prefix = '') {
         for (const key in obj) {

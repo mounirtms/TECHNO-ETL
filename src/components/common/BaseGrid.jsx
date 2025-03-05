@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { 
-    ToggleButton, 
-    ToggleButtonGroup, 
+import {
+    ToggleButton,
+    ToggleButtonGroup,
     Tooltip,
     IconButton
 } from '@mui/material';
@@ -169,9 +169,9 @@ const BaseGrid = ({
 
     const toolbarComponents = {
         toolbar: () => (
-            <Box sx={{ 
-                p: 1, 
-                display: 'flex', 
+            <Box sx={{
+                p: 1,
+                display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center'
             }}>
@@ -216,10 +216,7 @@ const BaseGrid = ({
             flexDirection: 'column',
             gap: 1
         }}>
-            {gridCards && gridCards.length > 0 && (
-                <StatsCards cards={gridCards} />
-            )}
-
+            {toolbarComponents.toolbar()}
             {viewMode === 'list' ? (
                 <DataGrid
                     rows={safeData}
@@ -240,10 +237,9 @@ const BaseGrid = ({
                 />
             ) : (
                 <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                    {toolbarComponents.toolbar()}
-                    <Box sx={{ flexGrow: 1, overflow: 'auto', p: 2 }}>
-                        <GridCardView 
-                            data={safeData} 
+                   <Box sx={{ flexGrow: 1, overflow: 'auto', p: 1 }}>
+                        <GridCardView
+                            data={safeData}
                             type={gridName}
                             loading={loading || localLoading}
                         />
@@ -256,7 +252,9 @@ const BaseGrid = ({
                 onClose={() => setDetailsDialogOpen(false)}
                 record={selectedRecord}
             />
-
+            {gridCards && gridCards.length > 0 && (
+                <StatsCards cards={gridCards} />
+            )}
             <SettingsDialog
                 open={settingsDialogOpen}
                 onClose={() => setSettingsDialogOpen(false)}

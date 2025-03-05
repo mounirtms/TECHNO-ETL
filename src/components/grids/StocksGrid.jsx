@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import BaseGrid from '../common/BaseGrid';
-import  magentoApi  from '../../services/magentoApi';
+import magentoApi from '../../services/magentoApi';
+import { toast } from 'react-toastify';
 
 const columns = [
     {
@@ -21,10 +22,9 @@ const columns = [
         width: 300,
         flex: 1,
         valueGetter: (params) => {
-            if (!params.row.sales_channels) return 'None';
-            return params.row.sales_channels
-                .map(channel => channel.type + ': ' + channel.code)
-                .join(', ');
+            return params?.row?.sales_channels?.length
+                ? params.row.sales_channels.map(channel => `${channel?.type ?? 'Unknown'}: ${channel?.code ?? 'N/A'}`).join(', ')
+                : 'None';
         }
     },
     {
@@ -33,10 +33,9 @@ const columns = [
         width: 300,
         flex: 1,
         valueGetter: (params) => {
-            if (!params.row.source_codes || params.row.source_codes.length === 0) {
-                return 'No sources assigned';
-            }
-            return params.row.source_codes.join(', ');
+            return params?.row?.source_codes?.length
+                ? params.row.source_codes.join(', ')
+                : 'No sources assigned';
         }
     }
 ];
@@ -45,16 +44,25 @@ const StocksGrid = () => {
     const [loading, setLoading] = useState(false);
     const [totalCount, setTotalCount] = useState(0);
     const [data, setData] = useState([]);
+    const [error, setError] = useState(null); // Error state
 
     const handleRefresh = useCallback(async (params) => {
         try {
             setLoading(true);
+            setError(null); // Reset error on new request
+
             const response = await magentoApi.getStocks(params);
-            setData(response.items || []);
-            setTotalCount(response.total_count || 0);
+            
+            if (!response) {
+                throw new Error('No response received from the server.');
+            }
+
+            setData(response?.items ?? []);
+            setTotalCount(response?.total_count ?? 0);
         } catch (error) {
             console.error('Error fetching stocks:', error);
-            // You might want to show an error message to the user here
+            setError('Failed to load stocks. Please try again.');
+            toast.error('Error loading stocks.');
         } finally {
             setLoading(false);
         }
@@ -63,32 +71,35 @@ const StocksGrid = () => {
     const gridCards = [
         {
             title: 'Total Stocks',
-            value: totalCount,
+            value: totalCount ?? 0,
             color: 'primary'
         },
         {
             title: 'Stocks with Sources',
-            value: data.filter(stock => stock.source_codes?.length > 0).length,
+            value: data?.filter(stock => stock?.source_codes?.length > 0)?.length ?? 0,
             color: 'success'
         },
         {
             title: 'Stocks without Sources',
-            value: data.filter(stock => !stock.source_codes?.length).length,
+            value: data?.filter(stock => !stock?.source_codes?.length)?.length ?? 0,
             color: 'warning'
         }
     ];
 
     return (
-        <BaseGrid
-            gridName="stocks"
-            columns={columns}
-            data={data}
-            loading={loading}
-            onRefresh={handleRefresh}
-            totalCount={totalCount}
-            gridCards={gridCards}
-            getRowId={(row) => row.stock_id}
-        />
+        <>
+            {error && <div style={{ color: 'red', fontWeight: 'bold', marginBottom: '10px' }}>{error}</div>}
+            <BaseGrid
+                gridName="stocks"
+                columns={columns}
+                data={data}
+                loading={loading}
+                onRefresh={handleRefresh}
+                totalCount={totalCount}
+                gridCards={gridCards}
+                getRowId={(row) => row?.stock_id ?? Math.random().toString(36).substr(2, 9)}
+            />
+        </>
     );
 };
 

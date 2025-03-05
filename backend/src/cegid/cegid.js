@@ -1,7 +1,7 @@
 let cegidDbPool;
 
-
-
+/*
+use router ..
 // Route to test CEGID DB connection
 app.post('/api/cegid/test-connection', async (req, res) => {
     console.log(req.body);
@@ -18,3 +18,5 @@ app.post('/api/cegid/test-connection', async (req, res) => {
 
 
 export default cegidDbPool;
+
+*/

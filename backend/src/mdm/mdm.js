@@ -1,26 +1,12 @@
-
+const app = require('../../server');
 const stores = ["Techno Ghardaia", "Techno Laghouat", "Techno Setif", "Techno Ain Benian", "Techno Annaba", "Techno Draria", "Techno Cheraga"];
 let mdmDbPool;
 
-// Route to test MDM DB connection
-app.post('/api/mdm/test-connection', async (req, res) => {
+ 
 
-    const dbConfig = req.body; // Get MDM DB config from frontend
-   
-    try {
-        // Test connection by querying some basic data
-        // Connect to MDM Database
-        mdmDbPool = await sql.connect(dbConfig);
-        console.log('Connected to MDM DB successfully');
-        getStockData();
-        res.status(200).json({ message: 'Connection successful' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+/*
 
-
-
+use router ..
 
 async function getStockData() {
     try {
@@ -96,9 +82,17 @@ app.get('/api/mdm/products/:sku', async (req, res) => {
     }
 });
 
+// Read SQL query from file
+const readSQLQuery = (filePath) => {
+    return fs.readFileSync(path.resolve(__dirname, filePath), 'utf-8');
+};
+
 // Get updated prices from MDM
 app.get('/api/mdm/prices', async (req, res) => {
     try {
+        // Read query from prices.sql
+        const sqlQuery = readSQLQuery('prices.sql');
+    
         const pool = await poolPromise;
         const result = await pool.request().query(`
             SELECT Code_MDM, Tarif 
@@ -156,3 +150,4 @@ cron.schedule('0 2 * * *', async () => {
 });
 
 export default mdmDbPool;   
+*/

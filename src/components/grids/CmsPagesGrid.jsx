@@ -21,97 +21,72 @@ const CmsPage = () => {
     const [loading, setLoading] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedPage, setSelectedPage] = useState(null);
+    const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
         title: '',
         identifier: '',
         content: '',
         is_active: true
     });
-    const [hasFetched, setHasFetched] = useState(false); // New flag to prevent repeated fetches
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     const loadLocalData = async () => {
         try {
-            const pagesResponse = await fetch('/assets/data/cmsPages.json');
-            const pagesData = await pagesResponse.json();
-
-            setPages(pagesData.items);
+            const response = await fetch('/assets/data/cmsPages.json');
+            const data = await response.json();
+            setPages(data?.items ?? []);
         } catch (error) {
             console.error('Failed to load local data:', error);
         }
     };
 
-
     const fetchData = async () => {
-        if (hasFetched) return; // Prevent multiple fetches
-        setHasFetched(true);
+        setLoading(true);
+        setError(null);
+
         try {
             const response = await magentoApi.getCmsPages({
                 searchCriteria: {
                     pageSize: 10,
-                    sortOrders: [{
-                        field: 'creation_time', // Correct field name
-                        direction: 'DESC'
-                    }],
-                    filterGroups: [
-                        {
-                            filters: [
-                                {
-                                    field: 'is_active',
-                                    value: '1',
-                                    condition_type: 'eq'
-                                }
-                            ]
-                        }
-                    ]
+                    sortOrders: [{ field: 'creation_time', direction: 'DESC' }],
+                    filterGroups: [{
+                        filters: [{ field: 'is_active', value: '1', condition_type: 'eq' }]
+                    }]
                 }
             });
 
-            if (response.items.items.length === 0) {
+            if (!response || !response.items || response.items.length === 0) {
                 await loadLocalData();
             } else {
-                setPages(response.items.items);
+                setPages(response.items);
             }
         } catch (error) {
             console.error('Failed to fetch CMS pages:', error);
+            setError('Failed to load CMS pages. Please try again.');
             await loadLocalData();
         } finally {
             setLoading(false);
         }
     };
 
-
-
-
     const handleOpenDialog = (page = null) => {
-        if (page) {
-            setSelectedPage(page);
-            setFormData({
-                title: page.title,
-                identifier: page.identifier,
-                content: page.content,
-                is_active: page.is_active
-            });
-        } else {
-            setSelectedPage(null);
-            setFormData({
-                title: '',
-                identifier: '',
-                content: '',
-                is_active: true
-            });
-        }
+        setSelectedPage(page);
+        setFormData({
+            title: page?.title ?? '',
+            identifier: page?.identifier ?? '',
+            content: page?.content ?? '',
+            is_active: page?.is_active ?? true
+        });
         setOpenDialog(true);
     };
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
         setSelectedPage(null);
-        setFormData({
-            title: '',
-            identifier: '',
-            content: '',
-            is_active: true
-        });
+        setFormData({ title: '', identifier: '', content: '', is_active: true });
     };
 
     const handleFormChange = (field, value) => {
@@ -121,33 +96,37 @@ const CmsPage = () => {
     const handleSubmit = async () => {
         try {
             if (selectedPage) {
-                await magentoApi.updateCmsPage(selectedPage.id,{page: formData});
+                await magentoApi.updateCmsPage(selectedPage.id, { page: formData });
                 toast.success('CMS page updated successfully');
             } else {
-                await magentoApi.createCmsPage({page: formData});
+                await magentoApi.createCmsPage({ page: formData });
                 toast.success('CMS page created successfully');
             }
             handleCloseDialog();
-            fetchPages();
+            fetchData();
         } catch (error) {
+            console.error('Error submitting CMS page:', error);
             toast.error(selectedPage ? 'Failed to update CMS page' : 'Failed to create CMS page');
         }
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm('Are you sure you want to delete this page?')) {
-            try {
-                await magentoApi.deleteCmsPage(id);
-                toast.success('CMS page deleted successfully');
-                fetchPages();
-            } catch (error) {
-                toast.error('Failed to delete CMS page');
-            }
+        if (!window.confirm('Are you sure you want to delete this page?')) return;
+
+        try {
+            await magentoApi.deleteCmsPage(id);
+            toast.success('CMS page deleted successfully');
+            fetchData();
+        } catch (error) {
+            console.error('Error deleting CMS page:', error);
+            toast.error('Failed to delete CMS page');
         }
     };
 
     return (
         <Box sx={{ p: 1 }}>
+            {error && <Typography color="error">{error}</Typography>}
+
             <BaseGrid
                 gridName="CmsPagesGrid"
                 columns={[
@@ -156,19 +135,15 @@ const CmsPage = () => {
                         field: 'creation_time',
                         headerName: 'Creation Date',
                         width: 180,
-                        valueGetter: (params) => params.row.creation_time,
-                        valueFormatter: (params) => new Date(params.value).toLocaleString()
+                        valueGetter: (params) => params.row?.creation_time,
+                        valueFormatter: (params) => params.value ? new Date(params.value).toLocaleString() : 'N/A'
                     }
                 ]}
                 data={pages}
                 loading={loading}
-                onRefresh={fetchData} // Allow refresh to trigger a new fetch
-                currentFilter={{ is_active: true }}
-                onFilterChange={(filter) => setFormData({ ...formData, ...filter })}
-                getRowId={(row) => row.identifier}
-                defaultSortModel={[
-                    { field: 'creation_time', sort: 'desc' }
-                ]}
+                onRefresh={fetchData}
+                getRowId={(row) => row?.identifier ?? Math.random().toString(36).substr(2, 9)}
+                defaultSortModel={[{ field: 'creation_time', sort: 'desc' }]}
                 defaultPageSize={10}
                 pageSizeOptions={[10, 25, 50, 100]}
                 onRowDoubleClick={(params) => handleOpenDialog(params.row)}
@@ -183,14 +158,12 @@ const CmsPage = () => {
                             value={formData.title}
                             onChange={(e) => handleFormChange('title', e.target.value)}
                             fullWidth
-                            margin="normal"
                         />
                         <TextField
                             label="Identifier"
                             value={formData.identifier}
                             onChange={(e) => handleFormChange('identifier', e.target.value)}
                             fullWidth
-                            margin="normal"
                         />
                         <ReactQuill
                             value={formData.content}

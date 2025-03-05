@@ -362,7 +362,6 @@ const Dashboard = () => {
 
             console.log('📊 Price data:', priceData);
             await syncPrices(priceData);
-            toast.success('Prices synced successfully');
         } catch (error) {
             console.error('❌ Failed to fetch prices:', error);
             toast.error('Failed to fetch prices');
@@ -525,6 +524,16 @@ const Dashboard = () => {
                         }}
                     />
 
+
+               
+                       
+                        <IconButton onClick={getPrices} sx={{ ml: 'auto' }}>
+                            Sync Prices <SyncIcon />
+                        </IconButton>
+                  
+
+
+
                     <IconButton onClick={handleRefresh} disabled={loading} sx={{ ml: 'auto' }}>
                         <RefreshIcon />
                     </IconButton>
@@ -534,39 +543,7 @@ const Dashboard = () => {
                     </IconButton>
                 </Paper>
 
-                {/* Replacing Grid with Box (Flexbox) */}
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
-                    {/* Excel Import Component (Half Width) */}
-                    <Box sx={{ flex: 1, minWidth: 300 }}>
-                        <Paper sx={{ p: 2 }}>
-                            <div {...getRootProps()} style={{ border: '2px dashed #ccc', padding: '20px', textAlign: 'center' }}>
-                                <input {...getInputProps()} />
-                                <p>MDM report Drag & drop an Excel file here, or click to select one</p>
-                            </div>
-                            {excelData && console.log(JSON.stringify(excelData, null, 2))}
-                        </Paper>
-                    </Box>
 
-                    {/* Other Content (Half Width) */}
-                    <Box sx={{ flex: 1, minWidth: 300 }}>
-                        <Paper sx={{ p: 2 }}>
-                            <DatePicker
-                                label="Sync Date"
-                                
-                               
-                                slotProps={{
-                                    textField: {
-                                        size: "small",
-                                        sx: { width: 150, mr: 2 } // Add margin to the right
-                                    }
-                                }}
-                            />
-                            <IconButton onClick={getPrices} sx={{ ml: 'auto', bgcolor: 'primary.main', color: 'white', '&:hover': { bgcolor: 'primary.dark' } }}>
-                                Sync Prices <SyncIcon />
-                            </IconButton>
-                        </Paper>
-                    </Box>
-                </Box>
 
                 {/* Loading Indicator */}
                 {loading && (
