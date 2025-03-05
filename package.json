@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite && npm run server",
     "server": "nodemon backend/server.js && nodemon backend/authServer.js",
-    "build": "vite build && npm run copy-docs",
+    "build": "vite build && npm run copy-backend && npm run copy-docs",
+    "copy-backend": "xcopy /E /I /Y backend dist\\backend",
     "copy-docs": "xcopy /E /I /Y src\\assets\\docs\\dist dist\\assets\\docs",
     "deploy": "firebase deploy --only hosting",
     "clean": "rm -rf node_modules/.vite && rm -rf dist && npm install && npm run dev",
