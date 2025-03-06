@@ -139,7 +139,7 @@ curl -X GET \\
             </Typography>
             <Box sx={{ my: 2 }}>
               <img
-                src="/assets/images/inventory-lifecycle.svg"
+                src="/docs/images/inventory-lifecycle.svg"
                 alt="Inventory Lifecycle"
                 style={{ width: '100%', maxWidth: '100%', height: 'auto', margin: '0 auto', display: 'block' }}
               />
