@@ -5,7 +5,7 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
   base: '', // Use relative paths
-  publicDir: 'public', // Directory for public assets
+  publicDir: 'assets', // Directory for public assets
   build: {
     outDir: path.resolve(__dirname, 'dist'), // Output directory for build files
     emptyOutDir: true, // Clear the output directory before building
@@ -17,8 +17,11 @@ export default defineConfig({
         assetFileNames: (assetInfo) => {
           const info = assetInfo.name.split('.');
           const extType = info[info.length - 1];
-          if (/\.(png|jpe?g|gif|svg|ico|webp)(\?.*)?$/i.test(assetInfo.name)) {
-            return `images/[name].[hash][extname]`; // Image files
+           if (/\.(woff2?|eot|ttf|otf)(\?.*)?$/i.test(assetInfo.name)) {
+            return `fonts/[name].[hash][extname]`;
+          }
+          else if (/\.css$/i.test(assetInfo.name)) {
+            return `css/[name].[hash][extname]`;
           }
           return `[name].[hash][extname]`; // Default
         },

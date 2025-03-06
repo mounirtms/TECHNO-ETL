@@ -55,6 +55,8 @@ const ETLIntegration = () => {
           </Paper>
         </motion.div>
 
+        <Divider sx={{ my: 4 }} />
+
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
             <motion.div variants={itemVariants}>
