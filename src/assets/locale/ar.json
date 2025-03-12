@@ -30,8 +30,8 @@
         "noRecentOrders": "لا توجد طلبات حديثة",
         "lastWeek": "الأسبوع الماضي",
         "lastMonth": "الشهر الماضي",
-        "lastYear": "العام الماضي",
-        "salesOverTime": "المبيعات على مر الزمن"
+        "lastYear": "العام الماضي"
+
     },
     "products": "المنتجات",
     "orders": "الطلبات",

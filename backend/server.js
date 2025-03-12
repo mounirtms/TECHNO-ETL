@@ -9,6 +9,8 @@ const mdm360dbConfig = require('./src/config/mdm360');
 const mdmdbConfig = require('./src/config/mdm');
 const cegiddbConfig = require('./src/config/cegid');
 const jwt = require('jsonwebtoken');
+const {fetchMDMProducts, getMDMPrices} = require('./src/mdm/services');
+const sql = require('mssql');
 const app = express();
 const fs = require('fs');
 const path = require('path');
@@ -23,35 +25,16 @@ app.use(cors({
 
 app.use(express.json()); // Middleware to parse JSON requests
 
-/*
-// Serve static files from React build
-//app.use(express.static(path.join(__dirname, '../dist')));
-
-// API Routes (Add your API endpoints here)
-app.get('/api/hello', (req, res) => {
-    res.json({ message: 'Hello from the backend!' });
-});
-
-// Handle React routing (For SPA support)
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../dist', 'index.html'));
-});
-*/
-
 const {
     cloudConfig,
     betaConfig,
     getMagentoToken
 } = require('./src/config/magento');
 
-
-
-
-
 app.use(express.json()); // Enable parsing JSON request bodies
 app.use(express.urlencoded({ extended: true })); // Enable parsing URL-encoded request bodies
 app.use(router);
-app.use(cors());
+
 
 // Connection endpoints
 app.post('/api/mdm/connect', authenticateToken, async (req, res) => {
@@ -94,19 +77,6 @@ app.post('/api/cegid/connect', authenticateToken, async (req, res) => {
         res.status(500).json({ error: "CEGID Connection failed" })
     }
 });
-
-app.post('/api/mdm/excel', authenticateToken, async (req, res) => {
-    const data = req.body;
-    debugger
-    try {
-
-        res.json({ message: 'CEGID connection successful' })
-    } catch (error) {
-        console.error('CEGID connection failed', error);
-        res.status(500).json({ error: "CEGID Connection failed" })
-    }
-});
-
 
 // Read SQL query from file
 const readSQLQuery = (filePath) => {
@@ -163,27 +133,68 @@ async function connectToDatabases() {
     try {
 
         await createMdmPool(mdmdbConfig); // Call createMdmPool with config
-        await createMdm360Pool(mdm360dbConfig); // Call createMdmPool with config
-        await createCegidPool(cegiddbConfig) // Pass dbConfig to createCegidPool
-        const token = await getMagentoToken(cloudConfig);
+        //await createMdm360Pool(mdm360dbConfig); // Call createMdmPool with config
+        //await createCegidPool(cegiddbConfig) // Pass dbConfig to createCegidPool
+        getMagentoToken(cloudConfig);
 
     } catch (err) {
         console.error('Database connection failed:', err);
     }
 }
+ 
 
-async function getMDMPrices() {
-    try {
-        // Read query from prices.sql
-        const sqlQuery = readSQLQuery('./queries/prices.sql');
 
-        const pool = getPool('mdm');
-        const result = await pool.request().query(sqlQuery);
-        return (result.recordset);
-    } catch (error) {
-        return ({ error: error.message });
+
+// Function to get records with dynamic limit and source
+app.get('/api/mdm/inventory', async (req, res) => {
+    console.log(req.query)
+    let limit = req.query.limit ? parseInt(req.query.limit) : 100;
+    let sourceCode = req.query.sourceCode ? parseInt(req.query.sourceCode) : null;
+    let succursale = req.query.succursale ? parseInt(req.query.succursale) : null; 
+
+    // Validate limit
+    if (isNaN(limit) || limit <= 0) {
+        limit = 100;
     }
-}
+
+    try {
+        // Connect to database
+        const pool = getPool('mdm');
+        const request = pool.request();
+
+        // Add SQL parameters
+        request.input('limit', sql.Int, limit);
+        if (!isNaN(sourceCode)) {
+            request.input('sourceCode', sql.Int, sourceCode);
+        }
+        if (!isNaN(succursale)) {
+            request.input('succursale', sql.Int, succursale);
+        }
+
+        // SQL query with dynamic filtering
+        const sqlQuery = `
+            SELECT TOP (@limit)
+             *
+            FROM [MDM_REPORT].[EComm].[ApprovisionnementProduits]
+            WHERE 
+            ${!isNaN(sourceCode) ? 'AND Code_Source = @sourceCode' : ''}
+            ORDER BY DateDernierMaJ DESC
+        `;
+
+        // Execute query
+        const result = await request.query(sqlQuery);
+
+        // Return data as JSON
+        res.json(result.recordset);
+    } catch (error) {
+        console.error('Database Fetch Error:', error);
+        res.status(500).json({
+            error: 'Database Fetch Error',
+            details: error.message
+        });
+    }
+});
+
 
 // Main function to run the operations
 async function main() {
@@ -197,7 +208,7 @@ async function main() {
     //const mockData = generateMockData(schema);
     //console.log(mockData);
 
-     //console.log(getMDMPrices())
+    //console.log(getMDMPrices())
 
     // Grant permissions to a specific user on the Objectifs_Agents table
     //await grantPermissions('YourUserName', 'Objectifs_Agents');
@@ -205,6 +216,8 @@ async function main() {
     //const permissions = await displayUserPermissions('Reporting_MDM', 'Objectifs_Agents');
     ///console.log("Fetched permissions:", permissions)
 
+
+    //fetchMDMProducts({ limit: 10, offset: 0, sourceCode: 16})
 
 }
 

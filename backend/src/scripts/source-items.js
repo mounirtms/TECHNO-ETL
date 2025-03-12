@@ -1,42 +1,12 @@
-
 const axios = require('axios');
 
+const magentoUrl = "https://your-magento-url.com/rest/V1/inventory/source-items";
+const token = "your_admin_token";
 
 // Define SKUs
 const skus = [
     "1120413", "1140605921", "2204103", "2204303", "1985504",
-    "2203903", "2204403", "2413811", "111823822", "111823934",
-    "1120413",
-    "1140605921",
-    "2204103",
-    "2204303",
-    "1985504",
-    "2203903",
-    "2204403",
-    "2413811",
-    "111823822",
-    "111823934",
-    "1140610573",
-    "2204503",
-    "2651212",
-    "2081109",
-    "2204603",
-    "1140592729",
-    "1140592730",
-    "2204703",
-    "2230203",
-    "1140599348",
-    "1140599349",
-    "1140601437",
-    "1140600554",
-    "2218103",
-    "2204803",
-    "2204903",
-    "2208203",
-    "110436201",
-    "110479501",
-    "110466501"
-
+    "2203903", "2204403", "2413811", "111823822", "111823934"
 ];
 
 // Define Sources
@@ -86,11 +56,9 @@ axios.post(magentoUrl, { sourceItems: stockUpdates }, {
         "Authorization": `Bearer ${token}`
     }
 })
-    .then(response => {
-        console.log("Stock Updated:", response.data);
-    })
-    .catch(error => {
-        console.error("Error updating stock:", error.response ? error.response.data : error.message);
-    });
-
- 
+.then(response => {
+    console.log("Stock Updated:", response.data);
+})
+.catch(error => {
+    console.error("Error updating stock:", error.response ? error.response.data : error.message);
+});

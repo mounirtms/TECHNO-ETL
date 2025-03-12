@@ -34,6 +34,8 @@ export const staticPrimaryKeys = {
     InvoicesGrid: 'entity_id',
     ProductsGrid: 'sku',
     CustomersGrid: 'id',
+    MDMProductsGrid: 'sku',
+    CegidProductsGrid: 'sku',
     CategoryGrid: 'id', // Example for CategoryGrid
 };
 
@@ -51,6 +53,14 @@ export const MENU_ITEMS = [
         label: 'Products',
         icon: InventoryIcon,
         path: '/products',
+        hidden: false,
+        licensed: true
+    },
+    {
+        id: 'MDMProductsGrid',
+        label: 'MDM Products',
+        icon: InventoryIcon,
+        path: '/mdmproducts',
         hidden: false,
         licensed: true
     },

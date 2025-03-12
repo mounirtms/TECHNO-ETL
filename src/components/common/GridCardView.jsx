@@ -17,6 +17,7 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { formatDistanceToNow } from 'date-fns';
 
+// Styled components
 const StyledCard = styled(Card)(({ theme }) => ({
     height: '100%',
     display: 'flex',
@@ -52,7 +53,7 @@ const InfoRow = styled(Box)(({ theme }) => ({
     }
 }));
 
-const GridCardView = ({ data, type = 'product' }) => {
+const GridCardView = ({ data = [], type = 'product' }) => {
     const getStatusColor = (status) => {
         switch (status?.toLowerCase()) {
             case 'enabled':
@@ -67,18 +68,22 @@ const GridCardView = ({ data, type = 'product' }) => {
     };
 
     const renderProductCard = (item) => (
-        <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
+        <Grid item xs={12} sm={6} md={4} lg={3} key={item.id || item.sku}>
             <StyledCard>
-                <StyledCardMedia
-                    image={item.image || 'https://via.placeholder.com/300x400?text=No+Image'}
-                    title={item.name}
-                >
-                    <StyledChip
-                        label={item.status}
-                        color={getStatusColor(item.status)}
-                        size="small"
+                <Box sx={{ position: 'relative' }}>
+                    <StyledCardMedia
+                        image={item.image || 'https://via.placeholder.com/300x400?text=No+Image'}
+                        title={item.name}
                     />
-                </StyledCardMedia>
+                    {item.status && (
+                        <StyledChip
+                            key={item.id || item.sku}
+                            label={item.status}
+                            color={getStatusColor(item.status)}
+                            size="small"
+                        />
+                    )}
+                </Box>
                 <CardContent>
                     <Typography variant="h6" noWrap title={item.name}>
                         {item.name}
@@ -91,7 +96,7 @@ const GridCardView = ({ data, type = 'product' }) => {
                         <InfoRow>
                             <LocalOfferIcon />
                             <Typography variant="body2">
-                                ${parseFloat(item.price).toFixed(2)}
+                                {item.price ? `$${parseFloat(item.price).toFixed(2)}` : 'N/A'}
                                 {item.special_price && (
                                     <Typography component="span" color="error.main" sx={{ ml: 1 }}>
                                         ${parseFloat(item.special_price).toFixed(2)}
@@ -108,7 +113,7 @@ const GridCardView = ({ data, type = 'product' }) => {
                         <InfoRow>
                             <CalendarTodayIcon />
                             <Typography variant="body2">
-                                Added {formatDistanceToNow(new Date(item.created_at), { addSuffix: true })}
+                                Added {item.created_at ? formatDistanceToNow(new Date(item.created_at), { addSuffix: true }) : 'Unknown'}
                             </Typography>
                         </InfoRow>
                     </Stack>
@@ -119,7 +124,7 @@ const GridCardView = ({ data, type = 'product' }) => {
 
     return (
         <Box sx={{ p: 2 }}>
-            <Grid container spacing={3}>
+                <Grid container spacing={3}>
                 {data.map(item => {
                     switch (type) {
                         case 'product':
@@ -129,7 +134,7 @@ const GridCardView = ({ data, type = 'product' }) => {
                             return renderProductCard(item);
                     }
                 })}
-            </Grid>
+                </Grid>
         </Box>
     );
 };

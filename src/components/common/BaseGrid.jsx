@@ -38,8 +38,10 @@ const BaseGrid = ({
     preColumns = [],
     endColumns = [],
     gridCards = [],
+    showCardView = true,
     initialVisibleColumns = [],
     onError,
+    toolbarProps,
     getRowId = (row) => row.id || row.entity_id,
     ...props
 }) => {
@@ -184,26 +186,38 @@ const BaseGrid = ({
                     gridName={gridName}
                     columns={finalColumns}
                     onOpenSettings={() => setSettingsDialogOpen(true)}
+                    succursaleOptions={toolbarProps?.succursaleOptions}
+                    currentSuccursale={toolbarProps?.currentSuccursale}
+                    onSuccursaleChange={toolbarProps?.onSuccursaleChange}
+                    sourceOptions={toolbarProps?.sourceOptions}
+                    currentSource={toolbarProps?.currentSource}
+                    onSourceChange={toolbarProps?.onSourceChange}
                 />
-                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                    <ToggleButtonGroup
-                        value={viewMode}
-                        exclusive
-                        onChange={handleViewModeChange}
-                        size="small"
-                    >
-                        <ToggleButton value="list" aria-label="list view">
-                            <Tooltip title="List View">
-                                <ViewListIcon />
-                            </Tooltip>
-                        </ToggleButton>
-                        <ToggleButton value="grid" aria-label="grid view">
-                            <Tooltip title="Grid View">
-                                <GridViewIcon />
-                            </Tooltip>
-                        </ToggleButton>
-                    </ToggleButtonGroup>
-                </Box>
+
+               
+                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                        <ToggleButtonGroup
+                            value={viewMode}
+                            exclusive
+                            onChange={handleViewModeChange}
+                            size="small"
+                        >
+
+                            <ToggleButton value="list" aria-label="list view">
+                                <Tooltip title="List View">
+                                    <ViewListIcon />
+                                </Tooltip>
+                            </ToggleButton>
+
+                            <ToggleButton value="grid" aria-label="grid view">
+                                <Tooltip title="Grid View">
+                                    <GridViewIcon />
+                                </Tooltip>
+                            </ToggleButton>
+
+                        </ToggleButtonGroup>
+                    </Box>
+              
             </Box>
         )
     };
@@ -237,13 +251,24 @@ const BaseGrid = ({
                 />
             ) : (
                 <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                   <Box sx={{ flexGrow: 1, overflow: 'auto', p: 1 }}>
-                        <GridCardView
-                            data={safeData}
-                            type={gridName}
-                            loading={loading || localLoading}
-                        />
-                    </Box>
+                    {!showCardView ? (
+                        <Box sx={{ flexGrow: 1, overflow: 'auto', p: 1 }}>
+                            <GridCardView
+                                data={safeData}
+                                type={gridName}
+                                loading={loading || localLoading}
+                            />
+                        </Box>
+                    ) : (
+                        <Box sx={{ flexGrow: 1, overflow: 'auto', p: 1 }}>
+                            {safeData.map((row, index) => (
+                                <Box key={getRowId(row) || index}>
+                                    {JSON.stringify(row)}
+                                </Box>
+                            ))}
+                        </Box>
+                    )}
+
                 </Box>
             )}
 

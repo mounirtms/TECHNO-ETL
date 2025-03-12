@@ -13,13 +13,19 @@ const CustomGridToolbar = ({
   onEdit,
   onDelete,
   selectedCount,
-  filterModel = { items: [] },  // Default filterModel to avoid undefined issues
+  filterModel = { items: [] },
   columns,
   gridName,
   customFilters = [],
   onCustomFilterChange,
   currentCustomFilter,
-  onError
+  onError,
+  succursaleOptions,
+  currentSuccursale,
+  onSuccursaleChange,
+  sourceOptions,
+  currentSource,
+  onSourceChange
 }) => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -108,6 +114,52 @@ const CustomGridToolbar = ({
             Refresh
           </Button>
         </Tooltip>
+
+        {/* Succursale Filter */}
+        {succursaleOptions && succursaleOptions.length > 0 && (
+          <FormControl
+            variant="outlined"
+            size="small"
+            sx={{ minWidth: 120 }}
+          >
+            <InputLabel>Succursale</InputLabel>
+            <Select
+              value={currentSuccursale}
+              onChange={(e) => onSuccursaleChange?.(e.target.value)}
+              label="Succursale"
+              sx={toolbarButtonStyle}
+            >
+              {succursaleOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
+
+        {/* Source Filter */}
+        {sourceOptions && sourceOptions.length > 0 && (
+          <FormControl
+            variant="outlined"
+            size="small"
+            sx={{ minWidth: 120 }}
+          >
+            <InputLabel>Source</InputLabel>
+            <Select
+              value={currentSource}
+              onChange={(e) => onSourceChange?.(e.target.value)}
+              label="Source"
+              sx={toolbarButtonStyle}
+            >
+              {sourceOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
 
         {/* Custom Filter Dropdown */}
         {customFilters && customFilters.length > 0 && (

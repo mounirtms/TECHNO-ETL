@@ -6,8 +6,8 @@ import { MENU_ITEMS } from '../components/Layout/Constants';
 import Dashboard from '../pages/Dashboard'; 
 
 import CmsPageGrid from '../components/grids/CmsPagesGrid'; 
-
 import ProductsGrid from '../components/grids/ProductsGrid';
+import MDMProductsGrid from '../components/grids/MDMProductsGrid';
 import CustomersGrid from '../components/grids/CustomersGrid';
 import OrdersGrid from '../components/grids/OrdersGrid';
 import InvoicesGrid from '../components/grids/InvoicesGrid';
@@ -21,6 +21,7 @@ import CegidGrid from '../components/grids/CegidGrid';
 const COMPONENT_MAP = {
     Dashboard: Dashboard,
     ProductsGrid: ProductsGrid,
+    MDMProductsGrid: MDMProductsGrid,
     CustomersGrid: CustomersGrid,
     OrdersGrid: OrdersGrid,
     InvoicesGrid: InvoicesGrid,

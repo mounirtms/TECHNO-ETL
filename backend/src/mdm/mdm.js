@@ -1,5 +1,34 @@
 const app = require('../../server');
-const stores = ["Techno Ghardaia", "Techno Laghouat", "Techno Setif", "Techno Ain Benian", "Techno Annaba", "Techno Draria", "Techno Cheraga"];
+const stores =  
+[
+
+    "TechnoStationeryAinBenian",
+    "TechnoStationeryAnnaba",
+    "TechnoStationeryBatna",
+    "TechnoStationeryBéjaia",
+    "TechnoStationeryBirElDjir",
+    "TechnoStationeryBlida",
+    "TechnoStationeryBordjBouArreridj",
+    "TechnoStationeryBoumerdes",
+    "TechnoStationeryCheraga",
+    "TechnoStationeryConstantine",
+    "TechnoStationeryDelyIbrahim",
+    "TechnoStationeryDjelfa",
+    "TechnoStationeryDraria",
+    "TechnoStationeryGhardaia",
+    "TechnoStationeryHydra",
+    "TechnoStationeryLaghouat",
+    "TechnoStationeryMostaganem",
+    "TechnoStationeryOran",
+    "TechnoStationeryOuargla",
+    "TechnoStationeryOuledFayet",
+    "TechnoStationeryPinsMaritimes",
+    "TechnoStationeryRouiba",
+    "TechnoStationerySetif",
+    "TechnoStationerySidiBelabes",
+    "TechnoStationeryTiaret"
+]
+
 let mdmDbPool;
 
  
