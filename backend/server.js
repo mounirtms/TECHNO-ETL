@@ -15,7 +15,7 @@ const app = express();
 const fs = require('fs');
 const path = require('path');
 const MagentoService = require('./src/services/magentoService');
-
+const sqlQueryBuilder = require('./src/utils/sqlQueryBuilder');
 
 app.use(cors({
     origin: ['http://localhost:82', 'https://techno-webapp.web.app', 'https://dashboard.technostationery.com'], // Replace with your frontend URL
@@ -135,65 +135,69 @@ async function connectToDatabases() {
         await createMdmPool(mdmdbConfig); // Call createMdmPool with config
         //await createMdm360Pool(mdm360dbConfig); // Call createMdmPool with config
         //await createCegidPool(cegiddbConfig) // Pass dbConfig to createCegidPool
-        getMagentoToken(cloudConfig);
+        //getMagentoToken(cloudConfig);
 
     } catch (err) {
         console.error('Database connection failed:', err);
     }
 }
  
-
-
-
-// Function to get records with dynamic limit and source
 app.get('/api/mdm/inventory', async (req, res) => {
-    console.log(req.query)
-    let limit = req.query.limit ? parseInt(req.query.limit) : 100;
-    let sourceCode = req.query.sourceCode ? parseInt(req.query.sourceCode) : null;
-    let succursale = req.query.succursale ? parseInt(req.query.succursale) : null; 
-
-    // Validate limit
-    if (isNaN(limit) || limit <= 0) {
-        limit = 100;
-    }
-
     try {
-        // Connect to database
-        const pool = getPool('mdm');
+        console.log('Received Query Params:', req.query);
+
+        // ✅ Parse and Validate Parameters
+        const params = {
+            succursale: req.query.succursale ? parseInt(req.query.succursale) : null,
+            sourceCode: req.query.sourceCode ? parseInt(req.query.sourceCode) : null,
+            stockQuantity: req.query.stockQuantity ? parseInt(req.query.stockQuantity) : null,
+            minStockQuantity: req.query.minStockQuantity ? parseInt(req.query.minStockQuantity) : null,
+            maxStockQuantity: req.query.maxStockQuantity ? parseInt(req.query.maxStockQuantity) : null,
+            startDate: req.query.startDate || null,
+            endDate: req.query.endDate || null,
+            codeMDM: req.query.codeMDM || null,
+            codeJDE: req.query.codeJDE || null
+        };
+
+        // ✅ Remove Invalid Parameters (null, empty string)
+        Object.keys(params).forEach(key => {
+            if (params[key] === null || params[key] === '') {
+                delete params[key];
+            }
+        });
+
+        // ✅ Parse Sorting Model
+        const sortModel = req.query.sortModel ? JSON.parse(req.query.sortModel) : [];
+        const page = req.query.page ? parseInt(req.query.page) : 0;
+        const pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 25;
+
+        // ✅ Build SQL Query
+        const { query, inputs } = sqlQueryBuilder.buildQuery(params, sortModel, page, pageSize);
+
+        // ✅ Execute SQL Query
+        const pool = await getPool('mdm');
         const request = pool.request();
 
-        // Add SQL parameters
-        request.input('limit', sql.Int, limit);
-        if (!isNaN(sourceCode)) {
-            request.input('sourceCode', sql.Int, sourceCode);
-        }
-        if (!isNaN(succursale)) {
-            request.input('succursale', sql.Int, succursale);
-        }
-
-        // SQL query with dynamic filtering
-        const sqlQuery = `
-            SELECT TOP (@limit)
-             *
-            FROM [MDM_REPORT].[EComm].[ApprovisionnementProduits]
-            WHERE 
-            ${!isNaN(sourceCode) ? 'AND Code_Source = @sourceCode' : ''}
-            ORDER BY DateDernierMaJ DESC
-        `;
-
-        // Execute query
-        const result = await request.query(sqlQuery);
-
-        // Return data as JSON
-        res.json(result.recordset);
-    } catch (error) {
-        console.error('Database Fetch Error:', error);
-        res.status(500).json({
-            error: 'Database Fetch Error',
-            details: error.message
+        Object.keys(inputs).forEach((key) => {
+            request.input(key, inputs[key].type, inputs[key].value);
         });
+ 
+
+        const result = await request.query(query);
+
+        // ✅ Extract Total Count
+        const totalCount = result.recordset.length > 0 ? result.recordset[0].TotalCount : 0;
+
+        res.json({
+            data: result.recordset,
+            totalCount
+        });
+    } catch (error) {
+        console.error('Error fetching inventory:', error);
+        res.status(500).json({ error: 'Failed to fetch inventory data' });
     }
 });
+
 
 
 // Main function to run the operations

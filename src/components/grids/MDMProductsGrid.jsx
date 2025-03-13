@@ -11,7 +11,8 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import sourceMapping, { getSourceInfo, getAllSources } from '../../utils/sources';
 import axios from 'axios';
-
+import { cancelSync } from 'framer-motion';
+    
 /**
  * ProductsGrid Component
  * Displays product data in a grid format with status cards
@@ -22,7 +23,7 @@ const MDMProductsGrid = () => {
     const [succursaleFilter, setSuccursaleFilter] = useState('16');
     const [sourceFilter, setSourceFilter] = useState('all');
     const isMounted = useRef(false);
-    const [stats, setStats] = useState({
+    const [stats, setStats] = useState({    
         total: 0,
         inStock: 0,
         outOfStock: 0,
@@ -78,7 +79,7 @@ const MDMProductsGrid = () => {
     const columns = useMemo(() => [
         {
             field: 'Code_MDM',
-            headerName: 'MDM Code',
+            headerName: 'SKU',
             width: 150,
             type: 'number'
         },
@@ -198,32 +199,55 @@ const MDMProductsGrid = () => {
     ], []);
 
 
-
-    // Update fetch function to use both filters
-    const fetchProducts = useCallback(async ({ page = 0, pageSize = 25, sortModel, filterModel }) => {
+    const fetchProducts = useCallback(async ({ page = 0, pageSize = 25, sortModel = [], filterModel = { items: [] } }) => {
         if (isMounted.current) return;
         isMounted.current = true;
-
+    
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:5000/api/mdm/inventory', {
-                params: {
-          
-                    sourceCode: sourceFilter === 'all' ? '' : sourceFilter,
-                    limit: 100
+    
+            // Extract sorting parameters (field & order)
+            const sortParam = sortModel.length > 0 ? sortModel[0].field : null;
+            const sortOrder = sortModel.length > 0 ? sortModel[0].sort : null;
+    
+            // Extract filtering parameters
+            const filterParams = filterModel.items.reduce((acc, filter) => {
+                if (filter.value) {
+                    acc[filter.columnField] = filter.value;
                 }
-            });
-            setData(response.data);
-
+                return acc;
+            }, {});
+    
+            // Construct API request parameters
+            const params = {
+                page,
+                pageSize,
+                sourceCode: sourceFilter === 'all' ? '' : sourceFilter,
+                succursale: succursaleFilter === 'all' ? 16 : succursaleFilter,
+                sortField: sortParam,
+                sortOrder: sortOrder,
+                ...filterParams // Add filter values dynamically
+            };
+            if(params.sourceCode) params.succursale = null;
+    
+            const response = await axios.get('http://localhost:5000/api/mdm/inventory', { params });
+    
+            // Ensure API response has a totalCount field
+            const totalCount = response.data.totalCount ?? response.data.data.length; 
+    
+            setData(response.data.data);
+    
             // Update stats
             const newStats = {
-                total: response.data.length,
-                inStock: response.data.filter(item => item.StockQuantity > 0).length,
-                outOfStock: response.data.filter(item => item.StockQuantity === 0).length,
-                lowStock: response.data.filter(item => item.StockQuantity > 0 && item.StockQuantity < 10).length,
-                averagePrice: response.data.reduce((acc, curr) => acc + (curr.Price || 0), 0) / response.data.length || 0
+                total: totalCount,
+                inStock: response.data.data.filter(item => item.QteStock > 0).length,
+                outOfStock: response.data.data.filter(item => item.QteStock === 0).length,
+                lowStock: response.data.data.filter(item => item.QteStock > 0 && item.QteStock < 10).length,
+                averagePrice: response.data.data.reduce((acc, curr) => acc + (curr.Price || 0), 0) / (response.data.data.length || 1)
             };
+    
             setStats(newStats);
+    
         } catch (error) {
             console.error('Error fetching inventory:', error);
             toast.error('Failed to fetch inventory data');
@@ -231,6 +255,8 @@ const MDMProductsGrid = () => {
             setLoading(false);
         }
     }, [succursaleFilter, sourceFilter]);
+    
+    
 
     useEffect(() => {
         fetchProducts({ page: 0, pageSize: 25 });
@@ -272,26 +298,29 @@ const MDMProductsGrid = () => {
 
     return (
         <BaseGrid
-            gridName="MDMProductsGrid"
-            columns={columns}
-            data={data}
-            gridCards={statusCards}
-            getRowId={(row) => row.Code_MDM}
-            loading={loading}
-            onRefresh={fetchProducts}
-            toolbarProps={{
-                succursaleOptions,
-                currentSuccursale: succursaleFilter,
-                onSuccursaleChange: handleSuccursaleChange,
-                sourceOptions: sourceFilterOptions,
-                currentSource: sourceFilter,
-                onSourceChange: handleSourceChange
-            }}
-            showCardView={false}
-            totalCount={stats.total}
-            defaultPageSize={25}
-            onError={(error) => toast.error(error.message)}
-        />
+        gridName="MDMProductsGrid"
+        columns={columns}
+        data={data}
+        gridCards={statusCards}
+        getRowId={(row) => `${row.Source}-${row.Code_MDM}`}
+        loading={loading}
+        onRefresh={fetchProducts} // This will now include sorting & filtering
+        toolbarProps={{
+            succursaleOptions,
+            currentSuccursale: succursaleFilter,
+            onSuccursaleChange: handleSuccursaleChange,
+            sourceOptions: sourceFilterOptions,
+            currentSource: sourceFilter,
+            onSourceChange: handleSourceChange,
+            canSync:true
+        }}
+        showCardView={false}
+        totalCount={stats.total}
+        defaultPageSize={25}
+        onError={(error) => toast.error(error.message)}
+        onSortModelChange={(newModel) => fetchProducts({ sortModel: newModel })} // Sorting event
+        onFilterModelChange={(newModel) => fetchProducts({ filterModel: newModel })} // Filtering event
+    />
     );
 };
 

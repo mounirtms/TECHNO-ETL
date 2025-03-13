@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 import { Box, Button, Tooltip, IconButton, Menu, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import SyncIcon from '@mui/icons-material/Sync';
+
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useTheme } from '@mui/material/styles';
-import SettingsDialog from './CustomGridLyoutSettings';  
+import SettingsDialog from './CustomGridLyoutSettings';
 import { staticPrimaryKeys } from '../Layout/Constants';
 
 const CustomGridToolbar = ({
   onRefresh,
   onFilter,
+  canAdd,
+  canEdit,
+  canSync,
+  canDelete,
   onAdd,
   onEdit,
   onDelete,
@@ -71,6 +77,16 @@ const CustomGridToolbar = ({
     }
   };
 
+  const onSync = async () => {
+    try {
+      console.log('Syncing magento data ...');
+    } catch (error) {
+      console.error('Error applying filter:', error);
+      onError?.(error);
+    }
+  };
+
+
   // Dynamically get the primary key for the grid based on gridName
   const primaryKey = staticPrimaryKeys[gridName] || 'id'; // Default to 'id' if not found
 
@@ -79,10 +95,10 @@ const CustomGridToolbar = ({
     ...filterModel,
     items: (filterModel.items || []).map((filterItem) => {
       // Ensure the columnField is set (use primaryKey if missing)
-      const columnField = filterItem.columnField || primaryKey; 
+      const columnField = filterItem.columnField || primaryKey;
 
       // Ensure the operator is set (default to 'equals' if not provided)
-      const operator = filterItem.operator || 'equals'; 
+      const operator = filterItem.operator || 'equals';
 
       return {
         ...filterItem,
@@ -187,41 +203,59 @@ const CustomGridToolbar = ({
 
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         {/* Add, Edit, Delete Buttons */}
-        <Tooltip title="Add Row">
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={onAdd}
-            sx={toolbarButtonStyle}
-          >
-            Add
-          </Button>
-        </Tooltip>
+        {canAdd && (
+          <Tooltip title="Add Row">
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={onAdd}
+              sx={toolbarButtonStyle}
+            >
+              Add
+            </Button>
+          </Tooltip>
+        )}
 
-        <Tooltip title="Edit Row">
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={onEdit}
-            sx={toolbarButtonStyle}
-            disabled={selectedCount === 0}
-          >
-            Edit
-          </Button>
-        </Tooltip>
-
-        <Tooltip title="Delete Row">
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={onDelete}
-            sx={toolbarButtonStyle}
-            disabled={selectedCount === 0}
-          >
-            Delete
-          </Button>
-        </Tooltip>
-
+        {canEdit && (
+          <Tooltip title="Edit Row">
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={onEdit}
+              sx={toolbarButtonStyle}
+              disabled={selectedCount === 0}
+            >
+              Edit
+            </Button>
+          </Tooltip>
+        )}
+        {canDelete && (
+          <Tooltip title="Delete Row">
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={onDelete}
+              sx={toolbarButtonStyle}
+              disabled={selectedCount === 0}
+            >
+              Delete
+            </Button>
+          </Tooltip>
+        )}
+        {canSync && (
+          <Tooltip title="Sync Data">
+            <IconButton
+              variant="outlined"
+              size="small"
+              onClick={onSync}
+              sx={toolbarButtonStyle}
+              disabled={selectedCount === 0}
+            >
+              Sync
+              <SyncIcon />
+            </IconButton>
+          </Tooltip>
+        )}  
         {/* Grid Settings Icon */}
         <Tooltip title="Grid Settings">
           <IconButton

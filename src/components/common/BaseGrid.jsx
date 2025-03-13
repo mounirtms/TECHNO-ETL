@@ -29,6 +29,7 @@ const BaseGrid = ({
     data,
     loading,
     onRefresh,
+    childFilterModel,
     filterOptions,
     currentFilter,
     onFilterChange,
@@ -51,8 +52,11 @@ const BaseGrid = ({
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
     const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
+    const [filterModel, setFilterModel] = useState({ items: [] });
     const [gridHeight, setGridHeight] = useState('100%');
     const [localLoading, setLocalLoading] = useState(false);
+    const [pageSize, setPageSize] = useState(25);
+    const [page, setPage] = useState(0);
     const [viewMode, setViewMode] = useState(() => {
         try {
             return localStorage.getItem(`${gridName}_viewMode`) || 'list';
@@ -80,13 +84,7 @@ const BaseGrid = ({
                 page: paginationModel.page,
                 pageSize: paginationModel.pageSize,
                 sortModel,
-                filterModel: {
-                    items: currentFilter ? [{
-                        field: 'name',
-                        operator: 'contains',
-                        value: currentFilter
-                    }] : []
-                }
+                filterModel
             });
         } catch (err) {
             console.error('Error refreshing grid:', err);
@@ -96,22 +94,28 @@ const BaseGrid = ({
         }
     };
 
-    const handleFilterChange = (newFilter) => {
-        if (onFilterChange) {
-            onFilterChange(newFilter);
-            setPaginationModel(prev => ({ ...prev, page: 0 }));
-            handleRefresh();
-        }
-    };
-
-    const handlePaginationModelChange = (newModel) => {
-        setPaginationModel(newModel);
+    const handleFilterChange = (newFilterModel) => {
+        setPaginationModel(prev => ({ ...prev, page: 0 }));
+        setFilterModel(newFilterModel);
         handleRefresh();
     };
 
     const handleSortModelChange = (newSortModel) => {
         setSortModel(newSortModel);
         handleRefresh();
+    };
+
+    const handlePaginationModelChange = (newModel) => {
+        console.log("Pagination Changed:", newModel);
+        setPaginationModel(newModel);
+
+        // 🔹 Call API with updated pagination
+        onRefresh({
+            page: newModel.page,
+            pageSize: newModel.pageSize,
+            sortModel,
+            filterModel
+        });
     };
 
     const handleViewModeChange = (event, newMode) => {
@@ -124,6 +128,19 @@ const BaseGrid = ({
             }
         }
     };
+
+
+    // 🔹 Detect filter changes in the base grid
+    useEffect(() => {
+        console.log("Base Filter Model Changed:", filterModel);
+        handleRefresh();
+    }, [filterModel]);
+
+    // 🔹 Detect changes in the child filter model
+    useEffect(() => {
+        console.log("Child Filter Model Changed:", childFilterModel);
+        handleRefresh();
+    }, [childFilterModel]);
 
     const handleRowDoubleClick = (params) => {
         setSelectedRecord(params.row);
@@ -186,38 +203,32 @@ const BaseGrid = ({
                     gridName={gridName}
                     columns={finalColumns}
                     onOpenSettings={() => setSettingsDialogOpen(true)}
-                    succursaleOptions={toolbarProps?.succursaleOptions}
-                    currentSuccursale={toolbarProps?.currentSuccursale}
-                    onSuccursaleChange={toolbarProps?.onSuccursaleChange}
-                    sourceOptions={toolbarProps?.sourceOptions}
-                    currentSource={toolbarProps?.currentSource}
-                    onSourceChange={toolbarProps?.onSourceChange}
+                    {...toolbarProps}
                 />
 
-               
-                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                        <ToggleButtonGroup
-                            value={viewMode}
-                            exclusive
-                            onChange={handleViewModeChange}
-                            size="small"
-                        >
 
-                            <ToggleButton value="list" aria-label="list view">
-                                <Tooltip title="List View">
-                                    <ViewListIcon />
-                                </Tooltip>
-                            </ToggleButton>
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                    <ToggleButtonGroup
+                        value={viewMode}
+                        exclusive
+                        onChange={handleViewModeChange}
+                        size="small"
+                    >
 
-                            <ToggleButton value="grid" aria-label="grid view">
-                                <Tooltip title="Grid View">
-                                    <GridViewIcon />
-                                </Tooltip>
-                            </ToggleButton>
+                        <ToggleButton value="list" aria-label="list view">
+                            <Tooltip title="List View">
+                                <ViewListIcon />
+                            </Tooltip>
+                        </ToggleButton>
 
-                        </ToggleButtonGroup>
-                    </Box>
-              
+                        <ToggleButton value="grid" aria-label="grid view">
+                            <Tooltip title="Grid View">
+                                <GridViewIcon />
+                            </Tooltip>
+                        </ToggleButton>
+                    </ToggleButtonGroup>
+                </Box>
+
             </Box>
         )
     };
@@ -243,6 +254,8 @@ const BaseGrid = ({
                     paginationModel={paginationModel}
                     onPaginationModelChange={handlePaginationModelChange}
                     sortModel={sortModel}
+                    filterModel={filterModel}
+                    onFilterModelChange={handleFilterChange}
                     onSortModelChange={handleSortModelChange}
                     getRowId={getRowId}
                     onRowDoubleClick={handleRowDoubleClick}
