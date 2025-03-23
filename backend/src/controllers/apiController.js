@@ -1,7 +1,7 @@
 // src/controllers/apiController.js
 const mdmQueries = require('../mdm/mdm'); // Adjust the path as necessary
 const cegidQueries = require('../cegid/cegid'); // Adjust the path as necessary
-const { cloudConfig } = require('../config/magento'); // Import Magento config
+const { cloudConfig,betaConfig } = require('../config/magento'); // Import Magento config
 const MagentoService = require('../services/magentoService'); // Import Magento service
 
 const magentoService = new MagentoService(cloudConfig);

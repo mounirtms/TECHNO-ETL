@@ -4,18 +4,13 @@ const cors = require('cors');
 const axios = require('axios');
 const router = require('./src/utils/routes');
 const cron = require('node-cron');
-const { createMdmPool, createCegidPool, createMdm360Pool, getPool } = require('./src/utils/database');
-const mdm360dbConfig = require('./src/config/mdm360');
-const mdmdbConfig = require('./src/config/mdm');
-const cegiddbConfig = require('./src/config/cegid');
+const { createMdmPool, createCegidPool, createMdm360Pool, getPool } = require('./src/utils/database'); 
+const mdmdbConfig = require('./src/config/mdm'); 
 const jwt = require('jsonwebtoken');
-const {fetchMDMProducts, getMDMPrices} = require('./src/mdm/services');
-const sql = require('mssql');
+const { fetchInventoryData, syncInventoryToMagento, getMDMPrices } = require('./src/mdm/services'); 
 const app = express();
 const fs = require('fs');
 const path = require('path');
-const MagentoService = require('./src/services/magentoService');
-const sqlQueryBuilder = require('./src/utils/sqlQueryBuilder');
 
 app.use(cors({
     origin: ['http://localhost:82', 'https://techno-webapp.web.app', 'https://dashboard.technostationery.com'], // Replace with your frontend URL
@@ -30,6 +25,7 @@ const {
     betaConfig,
     getMagentoToken
 } = require('./src/config/magento');
+const sourceMapping = require('./src/config/sources');
 
 app.use(express.json()); // Enable parsing JSON request bodies
 app.use(express.urlencoded({ extended: true })); // Enable parsing URL-encoded request bodies
@@ -56,7 +52,7 @@ app.post('/api/mdm/connect', authenticateToken, async (req, res) => {
         }
     });
     try {
-        console.log(dbConfig)
+
         await createMdmPool(dbConfig); // Call createMdmPool with config
         res.json({ message: 'MDM connection successful' });
     } catch (error) {
@@ -68,7 +64,7 @@ app.post('/api/mdm/connect', authenticateToken, async (req, res) => {
 
 app.post('/api/cegid/connect', authenticateToken, async (req, res) => {
     const dbConfig = req.body;
-    console.log(dbConfig)
+
     try {
         await createCegidPool(dbConfig) // Pass dbConfig to createCegidPool
         res.json({ message: 'CEGID connection successful' })
@@ -135,63 +131,19 @@ async function connectToDatabases() {
         await createMdmPool(mdmdbConfig); // Call createMdmPool with config
         //await createMdm360Pool(mdm360dbConfig); // Call createMdmPool with config
         //await createCegidPool(cegiddbConfig) // Pass dbConfig to createCegidPool
-        //getMagentoToken(cloudConfig);
+       // getMagentoToken(cloudConfig);
+        //syncStocks();
+
 
     } catch (err) {
         console.error('Database connection failed:', err);
     }
 }
- 
+
 app.get('/api/mdm/inventory', async (req, res) => {
-    try {
-        console.log('Received Query Params:', req.query);
-
-        // ✅ Parse and Validate Parameters
-        const params = {
-            succursale: req.query.succursale ? parseInt(req.query.succursale) : null,
-            sourceCode: req.query.sourceCode ? parseInt(req.query.sourceCode) : null,
-            stockQuantity: req.query.stockQuantity ? parseInt(req.query.stockQuantity) : null,
-            minStockQuantity: req.query.minStockQuantity ? parseInt(req.query.minStockQuantity) : null,
-            maxStockQuantity: req.query.maxStockQuantity ? parseInt(req.query.maxStockQuantity) : null,
-            startDate: req.query.startDate || null,
-            endDate: req.query.endDate || null,
-            codeMDM: req.query.codeMDM || null,
-            codeJDE: req.query.codeJDE || null
-        };
-
-        // ✅ Remove Invalid Parameters (null, empty string)
-        Object.keys(params).forEach(key => {
-            if (params[key] === null || params[key] === '') {
-                delete params[key];
-            }
-        });
-
-        // ✅ Parse Sorting Model
-        const sortModel = req.query.sortModel ? JSON.parse(req.query.sortModel) : [];
-        const page = req.query.page ? parseInt(req.query.page) : 0;
-        const pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : 25;
-
-        // ✅ Build SQL Query
-        const { query, inputs } = sqlQueryBuilder.buildQuery(params, sortModel, page, pageSize);
-
-        // ✅ Execute SQL Query
-        const pool = await getPool('mdm');
-        const request = pool.request();
-
-        Object.keys(inputs).forEach((key) => {
-            request.input(key, inputs[key].type, inputs[key].value);
-        });
- 
-
-        const result = await request.query(query);
-
-        // ✅ Extract Total Count
-        const totalCount = result.recordset.length > 0 ? result.recordset[0].TotalCount : 0;
-
-        res.json({
-            data: result.recordset,
-            totalCount
-        });
+    try { 
+        let data = await fetchInventoryData(req);
+        res.json(data);
     } catch (error) {
         console.error('Error fetching inventory:', error);
         res.status(500).json({ error: 'Failed to fetch inventory data' });
@@ -199,10 +151,51 @@ app.get('/api/mdm/inventory', async (req, res) => {
 });
 
 
+async function syncStocks() {
+    cron.schedule('0 2 * * *', async () => {
+      console.log('Running nightly stock sync...');
+      try {
+        for (const source of sourceMapping.getAllSources()) {
+          console.log(`🔄 Syncing inventory for source: ${source.magentoSource}`);
+          await setTimeout(2000); // Timeout per source to prevent flooding
+          await syncInventoryToMagento({
+            query: {
+              TypeProd: 'V',
+              page: 0,
+              pageSize: 100,
+              sortField: 'QteStock',
+              sortOrder: 'desc',
+              sourceCode: source.code_source
+            }
+          });
+  
+          await setTimeout(2000); // Timeout before next sync
+          await syncInventoryToMagento({
+            query: {
+              TypeProd: 'C',
+              page: 0,
+              pageSize: 100,
+              sortField: 'QteStock',
+              sortOrder: 'desc',
+              sourceCode: source.code_source
+            }
+          });
+  
+          console.log(`✅ Finished syncing for ${source.magentoSource}`);
+        }
+      } catch (error) {
+        console.error('❌ Error syncing all sources:', error);
+      }
+    });
+  }
+  
 
 // Main function to run the operations
 async function main() {
     await connectToDatabases();
+
+
+
     //const allSchemas = await getAllTableSchemas();
     //console.log("Fetched all table schemas:", allSchemas);
     //const schema = await getTableSchema();

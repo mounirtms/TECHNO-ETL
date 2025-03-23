@@ -1,85 +1,108 @@
-const { mdmPool, getPool } = require('../utils/database');  // Import from database.js
-const sql = require('mssql'); // Import mssql
+const { getPool } = require('../utils/database');
+const sqlQueryBuilder = require('../utils/sqlQueryBuilder');
+const MagentoService = require('../services/magentoService'); // Magento API wrapper
+const sourceMapping = require('../config/sources');
+const { cloudConfig } = require('../config/magento');
 
+const magento = new MagentoService(cloudConfig); // ✅ Create an instance
 
-async function getUpdatedPrices(daysSinceModified) {
+async function syncInventoryToMagento(req, res) {
   try {
-    // Establish database connection (ideally, use a connection pool)
+    let page = 0;
+    const pageSize = parseInt(req.query.pageSize, 10) || 100; // Default batch size
 
+ 
 
-    const request = mdmPool.request();
-    const query = `
-      SELECT *
-      FROM Tarif
-      WHERE Code_TarifType = 9 
-      AND DateModif >= DATEADD(DAY, -${daysSinceModified}, GETDATE());
-    `;
-    const result = await request.query(query);
+    let { data, totalCount } = await fetchInventoryData({ ...req, query: { ...req.query, page, pageSize } });
 
-    // Close the connection (or return it to the pool)
-    await pool.close();
+    if (!totalCount) {
+      console.log("✅ No inventory data to sync.");
+      return res.json({ message: 'No inventory data to sync' });
+    }
 
-    return result.recordset; // Return the data
+    let totalSynced = 0;
+
+    while (data.length) { 
+
+      const sourceItems = data
+        .map(item => {
+          const sourceInfo = sourceMapping.getAllSources().find(s => s.code_source === item.Code_Source);
+          return {
+            sku: item.Code_MDM.toString(),
+            source_code: sourceInfo?.magentoSource || '',
+            quantity: Math.max(0, Number(item.QteStock) || 0),
+            status: (Number(item.QteStock) || 0) > 0 ? 1 : 0
+          };
+        })
+        .filter(item => item.source_code); // Remove items with invalid source codes
+
+      if (sourceItems.length) {
+        const batchSize = 300;
+        for (let i = 0; i < sourceItems.length; i += batchSize) {
+          const batch = sourceItems.slice(i, i + batchSize);
+          console.log(`🚀 Syncing batch (${i + 1}-${Math.min(i + batchSize, sourceItems.length)})...`);
+          console.log("📤 Sending Data:", JSON.stringify(batch, null, 2));
+
+          try {
+            const response = await magento.post('V1/inventory/source-items', { sourceItems: batch }); // ✅ Use the instance
+            console.log("✅ Batch Synced Successfully:", response);
+            totalSynced += batch.length;
+          } catch (error) {
+            console.error('❌ Error syncing batch:', error.response?.data || error.message);
+          }
+        }
+      }
+
+      page++;
+      const nextBatch = await fetchInventoryData({ ...req, query: { ...req.query, page, pageSize } });
+      data = nextBatch.data;
+    }
+
+    console.log(`🎉 Successfully synced ${totalSynced} items. to Source ` + req.query.sourceCode);
+    res.json({ message: `Successfully synced ${totalSynced} items.` });
+
   } catch (error) {
-    console.error("Error executing query:", error); // Log the error
-    throw error; // Re-throw the error to be handled by the route
+    console.error('❌ Error syncing inventory:', error);
+    res.status(500).json({ error: 'Failed to sync inventory' });
   }
 }
 
-async function fetchMDMProducts({ limit = 100, offset = 0, sourceCode = '' }) {
-
-  // Connect to database
-  const pool = getPool('mdm')
-  const request = pool.request();
- 
- 
-
-  // Validate limit
-  if (isNaN(limit) || limit <= 0) {
-    limit = 100;
-  }
-
+async function fetchInventoryData(req) {
   try {
-    // Connect to database
+    let params = { ...req.query };
+    Object.keys(params).forEach(key => {
+      if (params[key] === null || params[key] === '') {
+        delete params[key];
+      }
+    });
 
+    const sortModel = params.sortModel ? JSON.parse(params.sortModel) : [];
+    const page = params.page ? parseInt(params.page, 10) : 0;
+    const pageSize = params.pageSize ? parseInt(params.pageSize, 10) : 25;
+
+    //console.log(`📊 Fetching inventory data (page: ${page}, pageSize: ${pageSize})`);
+
+    const { query, inputs } = sqlQueryBuilder.buildQuery(params, sortModel, page, pageSize);
+    const pool = await getPool('mdm');
     const request = pool.request();
 
-    // Add SQL parameters
-    request.input('limit', sql.Int, limit);
-    if (!isNaN(sourceCode)) {
-      request.input('sourceCode', sql.Int, sourceCode);
-    }
-
-    // SQL query with dynamic filtering
-    const sqlQuery = `
-            SELECT TOP (@limit)
-                Code_MDM, Code_JDE, TypeProd, Code_Source, Source, Succursale, 
-                CAST(QteStock AS INT) AS StockQuantity, 
-                CAST(QteReceptionner AS INT) AS ReceivedQuantity, 
-                CAST(VenteMoyen AS FLOAT) AS AverageSales, 
-                DateDernierMaJ AS LastUpdateDate, 
-                CAST(Tarif AS DECIMAL(10,2)) AS Price, 
-                TypeConfHomog AS ConfigType
-            FROM [MDM_REPORT].[EComm].[ApprovisionnementProduits]
-            WHERE QteStock > 0
-            ${!isNaN(sourceCode) ? 'AND Code_Source = @sourceCode' : ''}
-            ORDER BY DateDernierMaJ DESC
-        `;
-    const result = await request.query(sqlQuery);
-    // Return data as JSON
-    console.log(result)
-
-  } catch (error) {
-    console.error('Database Fetch Error:', error);
-    res.status(500).json({
-      error: 'Database Fetch Error',
-      details: error.message
+    Object.keys(inputs).forEach(key => {
+      request.input(key, inputs[key].type, inputs[key].value);
     });
+
+    const result = await request.query(query);
+    const totalCount = result.recordset.length > 0 ? result.recordset[0].TotalCount : 0;
+
+    //console.log(`🔍 Retrieved ${result.recordset.length} records (Total: ${totalCount})`);
+
+    return { data: result.recordset, totalCount };
+  } catch (error) {
+    console.error('❌ Error fetching inventory:', error);
+    throw new Error('Failed to fetch inventory data');
   }
 }
 
 module.exports = {
-  getUpdatedPrices,
-  fetchMDMProducts
+  fetchInventoryData,
+  syncInventoryToMagento
 };
-

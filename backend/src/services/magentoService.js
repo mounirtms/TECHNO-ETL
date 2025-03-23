@@ -1,9 +1,10 @@
 const axios = require('axios');
-
 const NodeCache = require('node-cache');
+
 let isRefreshingToken = false;
 let requestQueue = [];
 const tokenCache = new NodeCache({ stdTTL: 1440000 });
+
 class MagentoService {
     constructor(config) {
         this.config = config;
@@ -17,26 +18,27 @@ class MagentoService {
         if (!forceRefresh) {
             const cachedToken = tokenCache.get(this.config.url);
             if (cachedToken) {
+                console.log("✅ Using cached Magento token");
                 return cachedToken;
             }
         }
 
         if (isRefreshingToken) {
             console.log("⏳ Waiting for token refresh...");
-            return new Promise((resolve) => {
-                requestQueue.push(resolve);
-            });
+            return new Promise(resolve => requestQueue.push(resolve));
         }
 
         isRefreshingToken = true;
 
         const authEndpoint = `${this.config.url}V1/integration/admin/token`;
         try {
+            console.log(`🔑 Requesting new Magento token from: ${authEndpoint}`);
             const response = await axios.post(authEndpoint, {
                 username: this.config.username,
                 password: this.config.password
             });
 
+            console.log("✅ Magento token received:", response.data);
             tokenCache.set(this.config.url, response.data);
             isRefreshingToken = false;
 
@@ -47,31 +49,33 @@ class MagentoService {
             return response.data;
         } catch (error) {
             isRefreshingToken = false;
-            console.error("Magento authentication failed:", error.response?.data || error.message);
+            console.error("❌ Magento authentication failed:", error.response?.data || error.message);
             throw new Error("Magento authentication failed");
         }
     }
 
     clearTokenCache() {
         tokenCache.del(this.config.url);
-        console.log("🗑️ Magento token cache cleared");  
+        console.log("🗑️ Magento token cache cleared");
     }
 
     async request(method, endpoint, data = {}, params = {}) {
+        let token = await this.getMagentoToken(); 
         try {
-         
-            let token = await this.getMagentoToken(),
-             response = await this.instance.request({
+            const response = await this.instance.request({
                 method,
                 url: this.config.url + endpoint,
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'User-Agent': 'Magento API Client',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'Accept': '*/*',
+                    'User-Agent': 'Magento Techno API Client',
+                    'Connection': 'keep-alive',
                     'Authorization': `Bearer ${token}`
                 },
                 ...(method === 'get' ? { params } : { data })
             });
+
+    
 
             return response.data;
         } catch (error) {
@@ -83,8 +87,6 @@ class MagentoService {
                 return new Promise(async (resolve, reject) => {
                     try {
                         const newToken = await this.getMagentoToken(true);
-
-                        // Wait a short time before retrying (prevents flooding Magento with retries)
                         await new Promise(res => setTimeout(res, 1000));
 
                         let retryResponse = await this.instance.request({
@@ -99,20 +101,22 @@ class MagentoService {
                             ...(method === 'get' ? { params } : { data })
                         });
 
+                        console.log("✅ Retried Request Success:", retryResponse.status);
                         resolve(retryResponse.data);
                     } catch (retryError) {
+                        console.error("❌ Retried Request Failed:", retryError.response?.data || retryError.message);
                         reject(retryError);
                     }
                 });
             }
 
-            console.error(`Magento API ${method.toUpperCase()} error:`, error.response?.data || error.message);
+            console.error(`❌ Magento API ${method.toUpperCase()} Error:`, error.response?.data || error.message);
             throw error;
         }
     }
 
     async get(endpoint, params = {}) {
-        return this.request('get', endpoint, params);
+        return this.request('get', endpoint, {}, params);
     }
 
     async post(endpoint, data) {

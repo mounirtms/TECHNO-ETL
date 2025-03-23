@@ -1,28 +1,15 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Box } from '@mui/material';
+import React, { useState, useCallback, useEffect, useMemo, useRef, forwardRef, useImperativeHandle } from 'react';
+import { Box, Tooltip, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import {
-    ToggleButton,
-    ToggleButtonGroup,
-    Tooltip,
-    IconButton
-} from '@mui/material';
 import GridViewIcon from '@mui/icons-material/GridView';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import CustomGridToolbar from './CustomGridToolbar';
 import RecordDetailsDialog from './RecordDetailsDialog';
 import SettingsDialog from './CustomGridLyoutSettings';
-import { generateColumns, mergeColumns, applySavedColumnSettings } from '../../utils/gridUtils';
-import {
-    HEADER_HEIGHT,
-    FOOTER_HEIGHT,
-    DASHBOARD_TAB_HEIGHT,
-    STATS_CARD_HEIGHT,
-    staticPrimaryKeys
-} from '../Layout/Constants';
+import { generateColumns, applySavedColumnSettings, rowNumberColumn } from '../../utils/gridUtils';
+import { HEADER_HEIGHT, FOOTER_HEIGHT, STATS_CARD_HEIGHT } from '../Layout/Constants';
 import { StatsCards } from './StatsCards';
 import GridCardView from './GridCardView';
-
 const BaseGrid = ({
     gridName,
     columns: gridColumns,
@@ -43,6 +30,7 @@ const BaseGrid = ({
     initialVisibleColumns = [],
     onError,
     toolbarProps,
+    onSelectionChange,
     getRowId = (row) => row.id || row.entity_id,
     ...props
 }) => {
@@ -57,6 +45,8 @@ const BaseGrid = ({
     const [localLoading, setLocalLoading] = useState(false);
     const [pageSize, setPageSize] = useState(25);
     const [page, setPage] = useState(0);
+    const isMounted = useRef(false);
+    const [selectedRows, setSelectedRows] = useState([]);
     const [viewMode, setViewMode] = useState(() => {
         try {
             return localStorage.getItem(`${gridName}_viewMode`) || 'list';
@@ -77,9 +67,11 @@ const BaseGrid = ({
 
     const handleRefresh = async () => {
         if (!onRefresh) return;
-
+        if (isMounted.current) return;
+        isMounted.current = true;
         try {
             setLocalLoading(true);
+            isMounted.current = false;
             await onRefresh({
                 page: paginationModel.page,
                 pageSize: paginationModel.pageSize,
@@ -91,31 +83,29 @@ const BaseGrid = ({
             onError?.(err);
         } finally {
             setLocalLoading(false);
+            isMounted.current = false;
         }
     };
-
     const handleFilterChange = (newFilterModel) => {
         setPaginationModel(prev => ({ ...prev, page: 0 }));
         setFilterModel(newFilterModel);
-        handleRefresh();
     };
-
+    
     const handleSortModelChange = (newSortModel) => {
-        setSortModel(newSortModel);
-        handleRefresh();
+        setSortModel((prevSortModel) => {
+            // Check if new sort model is different from the previous one
+            const isSame = JSON.stringify(prevSortModel) === JSON.stringify(newSortModel);
+            if (isSame) return prevSortModel; // Prevent unnecessary re-renders
+    
+            return [...newSortModel]; // Only update state if different
+        });
     };
+    
+    
 
     const handlePaginationModelChange = (newModel) => {
         console.log("Pagination Changed:", newModel);
         setPaginationModel(newModel);
-
-        // 🔹 Call API with updated pagination
-        onRefresh({
-            page: newModel.page,
-            pageSize: newModel.pageSize,
-            sortModel,
-            filterModel
-        });
     };
 
     const handleViewModeChange = (event, newMode) => {
@@ -129,22 +119,25 @@ const BaseGrid = ({
         }
     };
 
-
-    // 🔹 Detect filter changes in the base grid
-    useEffect(() => {
-        console.log("Base Filter Model Changed:", filterModel);
-        handleRefresh();
-    }, [filterModel]);
-
-    // 🔹 Detect changes in the child filter model
-    useEffect(() => {
-        console.log("Child Filter Model Changed:", childFilterModel);
-        handleRefresh();
-    }, [childFilterModel]);
+    const handleSelectionChange = useCallback((newSelection) => {
+        const selectedSet = new Set(newSelection);
+        setSelectedRows(selectedSet);
+        onSelectionChange?.(Array.from(selectedSet)); // Pass as an array
+    }, [onSelectionChange]);
+ 
+    const getSelectedData = useCallback(() => {
+        return safeData.filter(row => selectedRows.includes(getRowId(row)));
+    }, [safeData, selectedRows, getRowId]);
 
     const handleRowDoubleClick = (params) => {
         setSelectedRecord(params.row);
         setDetailsDialogOpen(true);
+    };
+
+    const gridMethods = {
+        getSelectedData,
+        selectedRows,
+        setSelectedRows
     };
 
     useEffect(() => {
@@ -152,7 +145,7 @@ const BaseGrid = ({
             try {
                 const savedColumns = await applySavedColumnSettings(gridName, gridColumns);
                 if (savedColumns && Array.isArray(savedColumns)) {
-                    setColumns(savedColumns);
+                    setColumns(savedColumns || gridColumns);
                 }
             } catch (error) {
                 console.error('Error loading column settings:', error);
@@ -162,14 +155,16 @@ const BaseGrid = ({
         loadColumnSettings();
     }, [gridName, gridColumns]);
 
+
+    rowNumberColumn.renderCell = (params) => {
+        return params.api.getRowIndexRelativeToVisibleRows(params.id) + 1;
+    };
+
+
     const finalColumns = useMemo(() => {
-        return [...preColumns, ...columns, ...endColumns].map(col => ({
-            ...col,
-            flex: col.flex || undefined,
-            width: col.width || 150,
-            minWidth: col.minWidth || 100
-        }));
-    }, [preColumns, columns, endColumns]);
+
+        return [rowNumberColumn, ...preColumns, ...columns, ...endColumns];
+    }, [columns, preColumns, endColumns, selectedRows]);
 
     useEffect(() => {
         const calculateGridHeight = () => {
@@ -185,6 +180,7 @@ const BaseGrid = ({
         window.addEventListener('resize', calculateGridHeight);
         return () => window.removeEventListener('resize', calculateGridHeight);
     }, [gridCards]);
+
 
     const toolbarComponents = {
         toolbar: () => (
@@ -203,6 +199,8 @@ const BaseGrid = ({
                     gridName={gridName}
                     columns={finalColumns}
                     onOpenSettings={() => setSettingsDialogOpen(true)}
+                    selectedCount={selectedRows.length}
+                    gridMethods={gridMethods}
                     {...toolbarProps}
                 />
 
@@ -256,10 +254,20 @@ const BaseGrid = ({
                     sortModel={sortModel}
                     filterModel={filterModel}
                     onFilterModelChange={handleFilterChange}
+                    checkboxSelection
+                    onRowSelectionModelChange={(newSelection) => handleSelectionChange(newSelection)}
+                    sortingOrder={['asc', 'desc']}  // Allows sorting in both directions
+                    disableMultipleColumnsSorting={false} // Enable multi-column sorting
                     onSortModelChange={handleSortModelChange}
                     getRowId={getRowId}
                     onRowDoubleClick={handleRowDoubleClick}
                     components={toolbarComponents}
+                    slotProps={{
+                        toolbar: {
+                          showQuickFilter: true,
+                        },
+                      }}
+                    {...childFilterModel}
                     {...props}
                 />
             ) : (

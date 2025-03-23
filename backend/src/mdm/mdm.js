@@ -1,35 +1,7 @@
 const app = require('../../server');
-const stores =  
-[
+const { createMdmPool, createCegidPool, createMdm360Pool, getPool } = require('../utils/database');
+const sqlQueryBuilder = require('../utils/sqlQueryBuilder');  
 
-    "TechnoStationeryAinBenian",
-    "TechnoStationeryAnnaba",
-    "TechnoStationeryBatna",
-    "TechnoStationeryBéjaia",
-    "TechnoStationeryBirElDjir",
-    "TechnoStationeryBlida",
-    "TechnoStationeryBordjBouArreridj",
-    "TechnoStationeryBoumerdes",
-    "TechnoStationeryCheraga",
-    "TechnoStationeryConstantine",
-    "TechnoStationeryDelyIbrahim",
-    "TechnoStationeryDjelfa",
-    "TechnoStationeryDraria",
-    "TechnoStationeryGhardaia",
-    "TechnoStationeryHydra",
-    "TechnoStationeryLaghouat",
-    "TechnoStationeryMostaganem",
-    "TechnoStationeryOran",
-    "TechnoStationeryOuargla",
-    "TechnoStationeryOuledFayet",
-    "TechnoStationeryPinsMaritimes",
-    "TechnoStationeryRouiba",
-    "TechnoStationerySetif",
-    "TechnoStationerySidiBelabes",
-    "TechnoStationeryTiaret"
-]
-
-let mdmDbPool;
 
  
 

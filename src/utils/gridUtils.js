@@ -4,7 +4,19 @@ import { Chip } from '@mui/material';
 import { StatusCell } from '../components/common/StatusCell';
 import { ref, set, get } from 'firebase/database';
 import { database } from '../config/firebase';
-import { column } from 'stylis';
+import { column } from 'stylis'; 
+
+// Row Number Column
+export const rowNumberColumn = {
+    field: 'rowNumber',
+    headerName: '#',
+    disableColumnMenu: true,
+    width: 30,
+    sortable: false,
+    filterable: false,
+    pinned: 'left'
+};
+
 
 // Constants
 export const CURRENCY = 'DZD';
@@ -229,7 +241,7 @@ export const generateColumns = (firstRecord = {}, childColumns = []) => {
         const value = firstRecord[field];
         const baseColumn = {
             field,
-            headerName: field.split('_').map(word => 
+            headerName: field.split('_').map(word =>
                 word.charAt(0).toUpperCase() + word.slice(1)
             ).join(' '),
             width: 150,
@@ -252,7 +264,7 @@ export const generateColumns = (firstRecord = {}, childColumns = []) => {
 
     // Merge and deduplicate columns
     const mergedColumns = mergeColumns(childColumns, autoColumns);
-    
+
     // Save as default columns for this grid
     if (childColumns.length > 0) {
         const gridName = childColumns[0]?.gridName;

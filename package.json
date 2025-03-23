@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite && npm run server",
+    "backend":"node --inspect-brk backend/server.js",
     "server": "node backend/server.js && nodemon backend/authServer.js",
     "build": "vite build && npm run copy-backend && npm run copy-docs",
     "copy-backend": "xcopy /E /I /Y backend\\dist dist\\backend",
