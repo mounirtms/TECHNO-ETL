@@ -15,6 +15,7 @@ class MagentoService {
     }
 
     async getMagentoToken(forceRefresh = false) {
+        debugger
         if (!forceRefresh) {
             const cachedToken = tokenCache.get(this.config.url);
             if (cachedToken) {
@@ -60,7 +61,7 @@ class MagentoService {
     }
 
     async request(method, endpoint, data = {}, params = {}) {
-        let token = await this.getMagentoToken(); 
+        let token = await this.getMagentoToken();
         try {
             const response = await this.instance.request({
                 method,
@@ -75,7 +76,7 @@ class MagentoService {
                 ...(method === 'get' ? { params } : { data })
             });
 
-    
+
 
             return response.data;
         } catch (error) {

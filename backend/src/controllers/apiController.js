@@ -1,10 +1,10 @@
 // src/controllers/apiController.js
 const mdmQueries = require('../mdm/mdm'); // Adjust the path as necessary
 const cegidQueries = require('../cegid/cegid'); // Adjust the path as necessary
-const { cloudConfig,betaConfig } = require('../config/magento'); // Import Magento config
+const { cloudConfig, betaConfig } = require('../config/magento'); // Import Magento config
 const MagentoService = require('../services/magentoService'); // Import Magento service
 
-const magentoService = new MagentoService(cloudConfig);
+
 
 exports.getMdmData = async (req, res) => {
     try {
@@ -59,17 +59,37 @@ function buildSearchParams(params = {}) {
 
     return searchParams.toString();
 }
-
 exports.proxyMagentoRequest = async (req, res) => {
     try {
         const { method, query, body } = req;
 
-        const endpoint = req.originalUrl.replace('/api/magento', 'V1'); // Extract Magento API path
- 
-        const formattedParams = buildSearchParams(req.query)
+        // Extract Magento API path
+        const endpoint = req.originalUrl.replace('/api/magento', '');
 
-        console.log("endpoint ",endpoint)
         let response;
+        const formattedParams = buildSearchParams(query);
+
+        // Handle token endpoint separately
+        if (endpoint === '/V1/integration/admin/token') {
+            let username = body.username.replace('@techno-dz.com', '');
+            const magentoService = new MagentoService({
+                url: body.url || cloudConfig.url,
+                username: username,
+                password: body.password
+            });
+
+            // Force a new token refresh
+            response = await magentoService.getMagentoToken(true);
+            return res.json(response);
+        }
+
+        // Initialize MagentoService with cloudConfig for other endpoints
+        const magentoService = new MagentoService(cloudConfig);
+
+        console.log("Endpoint:", endpoint);
+        console.log("Formatted Params:", formattedParams);
+
+        // Handle different HTTP methods
         switch (method.toLowerCase()) {
             case 'get':
                 response = await magentoService.get(endpoint, formattedParams);
@@ -87,9 +107,11 @@ exports.proxyMagentoRequest = async (req, res) => {
                 return res.status(405).json({ error: 'Method not allowed' });
         }
 
+        // Return the response from Magento API
         res.json(response);
     } catch (error) {
         console.error(`❌ Magento Proxy Error: ${error.message}`);
+        console.error(error.stack); // Log the full error stack for debugging
         res.status(500).json({ error: error.message });
     }
 };

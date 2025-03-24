@@ -1,14 +1,15 @@
+
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
-import { 
-    GoogleAuthProvider, 
+import {
+    GoogleAuthProvider,
     signInWithPopup,
     signOut,
     onAuthStateChanged
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
 import { useNavigate } from 'react-router-dom';
-
+import magentoApi from '../services/magentoService';
 const AuthContext = createContext();
 const MAGENTO_API_URL = import.meta.env.VITE_MAGENTO_API_URL;
 
@@ -18,7 +19,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(() => {
-        const token = localStorage.getItem('magentoToken');
+        const token = localStorage.getItem('adminToken');
         if (token) {
             return {
                 uid: 'magento-user',
@@ -28,8 +29,9 @@ export const AuthProvider = ({ children }) => {
         }
         return null;
     });
-    const [loading, setLoading] = useState(true);
-    const [magentoToken, setMagentoToken] = useState(() => localStorage.getItem('magentoToken'));
+    const navigate = useNavigate(); // Add this line
+    const [loading, setLoading] = useState(true);     
+    const [adminToken, setMagentoToken] = useState(() => localStorage.getItem('adminToken'));
     const [isUsingLocalData, setIsUsingLocalData] = useState(false);
 
     // Monitor Firebase auth state
@@ -55,16 +57,10 @@ export const AuthProvider = ({ children }) => {
             toast.error('No authentication token found');
             return false;
         }
-        
+
         try {
-            const response = await fetch(`${MAGENTO_API_URL}/store/storeConfigs`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-            });
-    
+            const response =   await magentoApi.get('/store/storeConfigs')
+
             if (!response.ok) {
                 if (response.status === 401) {
                     toast.warning('Session expired. Using local cached data.', {
@@ -72,14 +68,14 @@ export const AuthProvider = ({ children }) => {
                         style: { backgroundColor: '#FFA500', color: '#FFFFFF' }
                     });
                     setIsUsingLocalData(true);
-                    setMagentoToken(null);
-                    localStorage.removeItem('magentoToken');
+                    setadminToken(null);
+                    localStorage.removeItem('adminToken');
                     return true; // Allow using local data
                 }
                 toast.warning('Connection issues. Using cached session.');
                 return true;
             }
-    
+
             // Reset local data flag if token is valid
             setIsUsingLocalData(false);
             return true;
@@ -93,14 +89,16 @@ export const AuthProvider = ({ children }) => {
 
     const signInWithGoogle = async () => {
         try {
+              
             const provider = new GoogleAuthProvider();
             provider.setCustomParameters({
                 prompt: 'select_account'
             });
             const result = await signInWithPopup(auth, provider);
-            
+
             // User data will be set by the auth state observer
             toast.success('Successfully logged in with Google!');
+            navigate('/'); // Redirect to home after login
             return result;
         } catch (error) {
             console.error('Google sign-in error:', error);
@@ -111,39 +109,22 @@ export const AuthProvider = ({ children }) => {
 
     const signInWithMagento = async (username, password) => {
         try {
-            const response = await fetch(`${MAGENTO_API_URL}/integration/admin/token`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password })
-            });
-    
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || 'Authentication failed');
-            }
-    
-            const token = await response.json();
-            
-            if (!token) {
-                throw new Error('No token received from server');
-            }
-    
-            setMagentoToken(token);
-    
+            const response = await magentoApi.login(username, password);
+ debugger
+ 
+
             const magentoUser = {
                 uid: username,
                 email: username,
                 displayName: username,
                 isMagentoUser: true,
-                token
+                token:response
             };
-    
+
             setCurrentUser(magentoUser);
-            localStorage.setItem('magentoToken', token);
+ 
             toast.success('Successfully logged in!');
-            
+
             return magentoUser;
         } catch (error) {
             console.error('Magento login error:', error);
@@ -157,7 +138,7 @@ export const AuthProvider = ({ children }) => {
             if (currentUser?.isMagentoUser) {
                 // Clear Magento token
                 setMagentoToken(null);
-                localStorage.removeItem('magentoToken');
+                localStorage.removeItem('adminToken');
             } else {
                 // Sign out from Firebase
                 await signOut(auth);
@@ -178,12 +159,13 @@ export const AuthProvider = ({ children }) => {
 
         const initializeAuth = async () => {
             try {
-                if (magentoToken) {
-                    const isValid = await validateMagentoToken(magentoToken);
+                if (adminToken) {
+                    const isValid = await validateMagentoToken(adminToken);
+                
                     if (!isValid && mounted) {
                         setMagentoToken(null);
                         setCurrentUser(null);
-                        localStorage.removeItem('magentoToken');
+                        localStorage.removeItem('adminToken');
                     }
                 }
             } catch (error) {
@@ -200,7 +182,7 @@ export const AuthProvider = ({ children }) => {
         return () => {
             mounted = false;
         };
-    }, [magentoToken]);
+    }, [adminToken]);
 
     const value = {
         currentUser,
@@ -208,7 +190,7 @@ export const AuthProvider = ({ children }) => {
         signInWithGoogle,
         signInWithMagento,
         logout,
-        magentoToken,
+        adminToken,
         isUsingLocalData,
         validateMagentoToken
     };

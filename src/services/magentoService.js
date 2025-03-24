@@ -280,13 +280,13 @@ class MagentoService {
             if (customBaseURL) {
                 this.setBaseURL(customBaseURL);
             }
-            
+        
             const response = await this.post('/integration/admin/token', { username, password });
-            if (response.data) {
-                localStorage.setItem('adminToken', response.data);
+            if (response) {
                 // Clear any existing cache when logging in
                 this.clearCache();
-                return response.data;
+                localStorage.setItem('adminToken', response);
+                return response;
             }
             throw new Error('Invalid response from authentication server');
         } catch (error) {
