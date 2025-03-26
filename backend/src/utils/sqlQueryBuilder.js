@@ -63,7 +63,7 @@ class SQLQueryBuilder {
         if (params.sortField) {
             orderBy = `${params.sortField} ${params.sortOrder === 'desc' ? 'DESC' : 'ASC'}`;
         }
-        console.log(conditions);
+  
         
         const sqlQuery = `
             WITH OrderedResults AS (

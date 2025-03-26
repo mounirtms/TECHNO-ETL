@@ -4,10 +4,10 @@ const cors = require('cors');
 const axios = require('axios');
 const router = require('./src/utils/routes');
 const cron = require('node-cron');
-const { createMdmPool, createCegidPool, createMdm360Pool, getPool } = require('./src/utils/database'); 
-const mdmdbConfig = require('./src/config/mdm'); 
+const { createMdmPool, createCegidPool, createMdm360Pool, getPool } = require('./src/utils/database');
+const mdmdbConfig = require('./src/config/mdm');
 const jwt = require('jsonwebtoken');
-const { fetchInventoryData, syncInventoryToMagento, getMDMPrices } = require('./src/mdm/services'); 
+const { fetchInventoryData, syncInventoryToMagento, syncPricesToMagento } = require('./src/mdm/services');
 const app = express();
 const fs = require('fs');
 const path = require('path');
@@ -82,28 +82,42 @@ const readSQLQuery = (filePath) => {
 // Fetch product prices from MDM
 app.get('/api/mdm/prices', async (req, res) => {
     try {
-        const sqlQuery = readSQLQuery('./queries/prices.sql');
-        const pool = getPool('mdm');
-        const result = await pool.request().query(sqlQuery);
+        let result = await fetchMdmPrices(req, res);
         res.json(result.recordset);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
+fetchMdmPrices = async (req, res) => {
+    try {
+        // Read the SQL query template
+        let sqlQuery = readSQLQuery('./queries/prices.sql');
+
+        // Only modify the query if startDate parameter exists
+        if (req?.params?.startDate) {
+            const startDate = `CAST('${req.params.startDate}' AS DATE)`;
+
+            // Replace the @d1 declaration in the SQL query
+            sqlQuery = sqlQuery.replace(
+                /DECLARE @d1 AS DATE\s+SET @d1 = DATEADD\(DAY, -7, CAST\(GETDATE\(\) AS DATE\)\);/,
+                `DECLARE @d1 AS DATE\nSET @d1 = ${startDate};`
+            );
+        }
+
+        const pool = getPool('mdm');
+        const result = await pool.request().query(sqlQuery);
+        return result;
+    } catch (error) {
+        console.error('Error fetching MDM prices:', error);
+        throw error;
+    }
+}
+
 // Sync Prices to Magento (Bulk)
 app.post('/api/techno/prices-sync', async (req, res) => {
     try {
-        const priceData = req.body; // Expecting formatted price data
-        const endpoint = '/async/bulk/V1/products';
-        const magentoToken = await getMagentoToken(cloudConfig);
-
-        console.log("📦 Sending bulk price update...");
-
-        const response = await axios.post(cloudConfig.url + endpoint, priceData, {
-            headers: { Authorization: `Bearer ${magentoToken}`, 'Content-Type': 'application/json' }
-        });
-
+        let response = await syncPricesToMagento(req);
         res.json({ success: true, response: response.data });
     } catch (error) {
         console.error("❌ Failed to sync prices:", error.response?.data || error.message);
@@ -131,9 +145,7 @@ async function connectToDatabases() {
         await createMdmPool(mdmdbConfig); // Call createMdmPool with config
         //await createMdm360Pool(mdm360dbConfig); // Call createMdmPool with config
         //await createCegidPool(cegiddbConfig) // Pass dbConfig to createCegidPool
-       // getMagentoToken(cloudConfig);
-        //syncStocks();
-
+        await getMagentoToken(cloudConfig);
 
     } catch (err) {
         console.error('Database connection failed:', err);
@@ -141,7 +153,7 @@ async function connectToDatabases() {
 }
 
 app.get('/api/mdm/inventory', async (req, res) => {
-    try { 
+    try {
         let data = await fetchInventoryData(req);
         res.json(data);
     } catch (error) {
@@ -151,49 +163,76 @@ app.get('/api/mdm/inventory', async (req, res) => {
 });
 
 
+
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function syncStocks() {
-    cron.schedule('0 2 * * *', async () => {
-      console.log('Running nightly stock sync...');
-      try {
+    try {
         for (const source of sourceMapping.getAllSources()) {
-          console.log(`🔄 Syncing inventory for source: ${source.magentoSource}`);
-          await setTimeout(2000); // Timeout per source to prevent flooding
-          await syncInventoryToMagento({
-            query: {
-              TypeProd: 'V',
-              page: 0,
-              pageSize: 100,
-              sortField: 'QteStock',
-              sortOrder: 'desc',
-              sourceCode: source.code_source
-            }
-          });
-  
-          await setTimeout(2000); // Timeout before next sync
-          await syncInventoryToMagento({
-            query: {
-              TypeProd: 'C',
-              page: 0,
-              pageSize: 100,
-              sortField: 'QteStock',
-              sortOrder: 'desc',
-              sourceCode: source.code_source
-            }
-          });
-  
-          console.log(`✅ Finished syncing for ${source.magentoSource}`);
+            console.log(`🔄 Syncing inventory for source: ${source.magentoSource}`);
+
+            await delay(2000); // ✅ Corrected timeout usage
+            await syncInventoryToMagento({
+                query: {
+                    page: 0,
+                    pageSize: 300,
+                    sortField: 'QteStock',
+                    sortOrder: 'desc',
+                    sourceCode: source.code_source
+                }
+            });
+
+            /*await delay(2000); // ✅ Corrected timeout usage
+            await syncInventoryToMagento({
+                query: {
+                    TypeProd: 'C',
+                    page: 0,
+                    pageSize: 300,
+                    sortField: 'QteStock',
+                    sortOrder: 'desc',
+                    sourceCode: source.code_source
+                }
+            });
+*/
+            console.log(`✅ Finished syncing for ${source.magentoSource}`);
         }
-      } catch (error) {
+    } catch (error) {
         console.error('❌ Error syncing all sources:', error);
-      }
-    });
-  }
-  
+    }
+}
+
+
+
+async function syncPrices() {
+    // Calculate yesterday's date (YYYY-MM-DD format)
+
+
+    // Fetch prices with yesterday as default startDate
+    let prices = await fetchMdmPrices();
+    // Transform the data for Magento
+    let priceData = prices.recordset.map(({ sku, price }) => ({
+        product: {
+            sku,
+            price: parseFloat(price) // Ensure it's a valid number
+        }
+    }));
+
+    // Sync to Magento
+    await syncPricesToMagento({ body: priceData });
+
+}
 
 // Main function to run the operations
 async function main() {
     await connectToDatabases();
 
+    cron.schedule('0 2 * * *', async () => {
+        await syncPrices();
+        await syncStocks();
+    });
 
 
     //const allSchemas = await getAllTableSchemas();

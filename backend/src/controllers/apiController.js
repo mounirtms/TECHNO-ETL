@@ -59,59 +59,50 @@ function buildSearchParams(params = {}) {
 
     return searchParams.toString();
 }
+
+let magentoService = null;
+
 exports.proxyMagentoRequest = async (req, res) => {
     try {
         const { method, query, body } = req;
+        const endpoint = req.originalUrl.replace("/api/magento", "");
 
-        // Extract Magento API path
-        const endpoint = req.originalUrl.replace('/api/magento', '');
+        if (!magentoService) {
+            magentoService = new MagentoService(cloudConfig);
+        }
 
         let response;
         const formattedParams = buildSearchParams(query);
 
-        // Handle token endpoint separately
-        if (endpoint === '/V1/integration/admin/token') {
-            let username = body.username.replace('@techno-dz.com', '');
-            const magentoService = new MagentoService({
-                url: body.url || cloudConfig.url,
-                username: username,
-                password: body.password
-            });
-
-            // Force a new token refresh
+        if (endpoint === "/V1/integration/admin/token") {
+            let username = body.username.replace("@techno-dz.com", "");
             response = await magentoService.getMagentoToken(true);
             return res.json(response);
         }
 
-        // Initialize MagentoService with cloudConfig for other endpoints
-        const magentoService = new MagentoService(cloudConfig);
-
         console.log("Endpoint:", endpoint);
         console.log("Formatted Params:", formattedParams);
 
-        // Handle different HTTP methods
         switch (method.toLowerCase()) {
-            case 'get':
+            case "get":
                 response = await magentoService.get(endpoint, formattedParams);
                 break;
-            case 'post':
+            case "post":
                 response = await magentoService.post(endpoint, body);
                 break;
-            case 'put':
+            case "put":
                 response = await magentoService.put(endpoint, body);
                 break;
-            case 'delete':
+            case "delete":
                 response = await magentoService.delete(endpoint);
                 break;
             default:
-                return res.status(405).json({ error: 'Method not allowed' });
+                return res.status(405).json({ error: "Method not allowed" });
         }
 
-        // Return the response from Magento API
         res.json(response);
     } catch (error) {
         console.error(`❌ Magento Proxy Error: ${error.message}`);
-        console.error(error.stack); // Log the full error stack for debugging
         res.status(500).json({ error: error.message });
     }
 };
