@@ -17,14 +17,9 @@ const App = () => {
         <Box sx={{ display: 'flex' }}>
           <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
             <Toolbar>
-              <Box sx={{ display: 'flex', alignItems: 'left', flexGrow: 1 }}>
-                <img
-                  src="images/logo_techno.png"
-                  alt="Techno Logo"
-                  style={{ height: 40, marginLeft: 10 }}
-                />
-                
-              </Box>
+              <Typography variant="h6" noWrap component="div">
+                Techno Stationery Integrations Documentation 
+              </Typography>
             </Toolbar>
           </AppBar>
           <Layout>
