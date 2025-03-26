@@ -109,7 +109,8 @@ export default defineConfig({
       'docs/dist/**/*.html',
       'docs/dist/**/*.css',
       'docs/dist/**/*.js',
-      'docs/dist/assets/**/*'
+      'docs/dist/assets/**/*',
+      '**/*.json'
     ],
     copyPublicDir: true,
     chunkSizeWarningLimit: 1000

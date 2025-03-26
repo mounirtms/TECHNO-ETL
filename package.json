@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite && npm run server",
-    "backend":"node --inspect-brk backend/server.js",
+    "backend": "node --inspect-brk backend/server.js",
     "server": "node backend/server.js && nodemon backend/authServer.js",
     "build": "vite build && npm run copy-backend && npm run copy-docs",
+    "prebuild": "node scripts/updateVersion.js",
     "copy-backend": "xcopy /E /I /Y backend\\dist dist\\backend",
     "copy-docs": "xcopy /E /I /Y docs\\dist dist\\docs",
     "deploy": "firebase deploy --only hosting",
