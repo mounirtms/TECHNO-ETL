@@ -1,7 +1,6 @@
 const axios = require('axios');
 const NodeCache = require('node-cache');
-
-  
+const { user } = require('../config/mdm');
 
 class MagentoService {
     static instance = null;
@@ -46,8 +45,12 @@ class MagentoService {
         }
 
         const headers = {
+            Accept: "*/*",
             Authorization: `Bearer ${MagentoService.token}`,
-            "Content-Type": "application/json"
+            "User-Agent": "Techno-ETL",
+            "Content-Type": "application/json",
+            connection: "keep-alive",
+            "Accept-Encoding": "gzip, deflate, br",
         };
 
         try {
@@ -82,4 +85,4 @@ class MagentoService {
 }
 
 module.exports = MagentoService;
- 
+

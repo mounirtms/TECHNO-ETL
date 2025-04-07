@@ -74,7 +74,7 @@ exports.proxyMagentoRequest = async (req, res) => {
         let response;
         const formattedParams = buildSearchParams(query);
 
-        if (endpoint === "/V1/integration/admin/token") {
+        if (endpoint.includes('admin/token')) {
             let username = body.username.replace("@techno-dz.com", "");
             response = await magentoService.getMagentoToken(true);
             return res.json(response);

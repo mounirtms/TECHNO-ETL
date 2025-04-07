@@ -13,7 +13,7 @@ const fs = require('fs');
 const path = require('path');
 
 app.use(cors({
-    origin: ['http://localhost:82', 'https://techno-webapp.web.app', 'https://dashboard.technostationery.com'], // Replace with your frontend URL
+    origin: ['http://localhost:4173','http://localhost:82', 'https://techno-webapp.web.app', 'https://dashboard.technostationery.com'], // Replace with your frontend URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -145,7 +145,7 @@ async function connectToDatabases() {
         await createMdmPool(mdmdbConfig); // Call createMdmPool with config
         //await createMdm360Pool(mdm360dbConfig); // Call createMdmPool with config
         //await createCegidPool(cegiddbConfig) // Pass dbConfig to createCegidPool
-        await getMagentoToken(cloudConfig);
+        // await getMagentoToken(cloudConfig);
 
     } catch (err) {
         console.error('Database connection failed:', err);
