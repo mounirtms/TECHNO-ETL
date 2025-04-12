@@ -145,7 +145,7 @@ async function connectToDatabases() {
         await createMdmPool(mdmdbConfig); // Call createMdmPool with config
         //await createMdm360Pool(mdm360dbConfig); // Call createMdmPool with config
         //await createCegidPool(cegiddbConfig) // Pass dbConfig to createCegidPool
-        // await getMagentoToken(cloudConfig);
+         await getMagentoToken(cloudConfig);
 
     } catch (err) {
         console.error('Database connection failed:', err);
@@ -174,7 +174,7 @@ async function syncStocks() {
         for (const source of sourceMapping.getAllSources()) {
             console.log(`🔄 Syncing inventory for source: ${source.magentoSource}`);
 
-            await delay(2000); // ✅ Corrected timeout usage
+            await delay(1000); // ✅ Corrected timeout usage
             await syncInventoryToMagento({
                 query: {
                     page: 0,
@@ -229,10 +229,10 @@ async function syncPrices() {
 async function main() {
     await connectToDatabases();
 
-    cron.schedule('0 2 * * *', async () => {
-        await syncPrices();
-        await syncStocks();
-    });
+    //cron.schedule('0 2 * * *', async () => {
+       // await syncPrices();
+        //await syncStocks();
+    //});
 
 
     //const allSchemas = await getAllTableSchemas();

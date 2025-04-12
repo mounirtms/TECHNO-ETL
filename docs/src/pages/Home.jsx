@@ -80,10 +80,16 @@ const Home = () => {
       description: 'Access the web application interface'
     },
     {
+      title: 'Techno Magento API Documentation',
+      url: '    https://doc.echoapi.com/docs/43c070988402000?locale=en&target_id=14e6b4ecb9a468',
+      description: 'Explore our API documentation on Postman'
+    },
+    {
       title: 'API Documentation',
       url: 'https://www.postman.com/techno-e-commerce/techno-e-commerce-workspace/overview',
       description: 'Explore our API documentation on Postman'
     }
+
   ];
 
   return (
