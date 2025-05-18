@@ -301,13 +301,7 @@ const LoginPage = () => {
                         </GoogleButton>
                     </Box>
 
-                    {/* Sign Up Link */}
-                    <Typography variant="body2" sx={{ mt: 2 }}>
-                        Don't have an account?{' '}
-                        <Link href="/signup" color="primary">
-                            Sign Up
-                        </Link>
-                    </Typography>
+                    
                 </LoginCard>
             </LoginContainer>
 

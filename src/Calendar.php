@@ -66,37 +66,92 @@ class Calendar extends \Magento\Framework\View\Element\Template
     protected function _toHtml()
     {
         $localeData = (new DataBundle())->get($this->_localeResolver->getLocale());
-    
+       
         // get days names
-        $daysData = $localeData['calendar']['gregorian']['dayNames'] ?? null;
+        $daysData = $localeData['calendar']['gregorian']['dayNames'];
         $this->assign(
             'days',
             [
-                'wide' => $daysData && isset($daysData['format']['wide']) 
-                    ? $this->encoder->encode(array_values(iterator_to_array($daysData['format']['wide'])))
-                    : $this->encoder->encode([]), // Fallback to empty array if null
-                'abbreviated' => $daysData && isset($daysData['format']['abbreviated']) 
-                    ? $this->encoder->encode(array_values(iterator_to_array($daysData['format']['abbreviated'])))
-                    : $this->encoder->encode([]), // Fallback to empty array if null
+                'wide' => $this->encoder->encode(array_values(iterator_to_array($daysData['format']['wide'] ?? []))),
+                'abbreviated' => $this->encoder->encode(array_values(iterator_to_array($daysData['format']['abbreviated'] ?? []))),
             ]
         );
-    
-        // Month names
-        $monthsData = $localeData['calendar']['gregorian']['monthNames'] ?? null;
+
+        /**
+         * Month names in abbreviated format values was added to ICU Data tables
+         * starting ICU library version 52.1. For some OS, like CentOS, default
+         * installation version of ICU library is 50.1.2, which not contain
+         * 'abbreviated' key, and that may cause a PHP fatal error when passing
+         * as an argument of function 'iterator_to_array'. This issue affects
+         * locales like ja_JP, ko_KR etc.
+         *
+         * @see http://source.icu-project.org/repos/icu/tags/release-50-1-2/icu4c/source/data/locales/ja.txt
+         * @see http://source.icu-project.org/repos/icu/tags/release-52-1/icu4c/source/data/locales/ja.txt
+         * @var \ResourceBundle $monthsData
+         */
+        $monthsData = $localeData['calendar']['gregorian']['monthNames'];
         $this->assign(
             'months',
             [
-                'wide' => $monthsData && isset($monthsData['format']['wide']) 
-                    ? $this->encoder->encode(array_values(iterator_to_array($monthsData['format']['wide'])))
-                    : $this->encoder->encode([]), // Fallback to empty array if null
-                'abbreviated' => $monthsData && isset($monthsData['format']['abbreviated']) 
-                    ? $this->encoder->encode(array_values(iterator_to_array($monthsData['format']['abbreviated'])))
-                    : $this->encoder->encode([]), // Fallback to empty array if null
+                'wide' => $this->encoder->encode(array_values(iterator_to_array($monthsData['format']['wide'] ?? []))),
+                'abbreviated' => $this->encoder->encode(
+                    array_values(
+                        iterator_to_array(
+                            null !== $monthsData->get('format')->get('abbreviated')
+                            ? $monthsData['format']['abbreviated']
+                            : $monthsData['format']['wide']
+                        )
+                    )
+                ),
             ]
         );
-    
-        // Other assignments remain unchanged...
-    
+
+        $this->assignFieldsValues($localeData);
+
+        // get "am" & "pm" words
+        $this->assign('am', $this->encoder->encode($localeData['calendar']['gregorian']['AmPmMarkers']['0'] ?? 'AM'));
+    $this->assign('pm', $this->encoder->encode($localeData['calendar']['gregorian']['AmPmMarkers']['1'] ?? 'PM'));
+
+        // get first day of week and weekend days
+        $this->assign(
+            'firstDay',
+            (int)$this->_scopeConfig->getValue(
+                'general/locale/firstday',
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            )
+        );
+        $this->assign(
+            'weekendDays',
+            $this->encoder->encode(
+                (string)$this->_scopeConfig->getValue(
+                    'general/locale/weekend',
+                    \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+                )
+            )
+        );
+
+        // define default format and tooltip format
+        $this->assign(
+            'defaultFormat',
+            $this->encoder->encode(
+                $this->_localeDate->getDateFormat(\IntlDateFormatter::MEDIUM)
+            )
+        );
+        $this->assign(
+            'toolTipFormat',
+            $this->encoder->encode(
+                $this->_localeDate->getDateFormat(\IntlDateFormatter::LONG)
+            )
+        );
+
+        // get days and months for en_US locale - calendar will parse exactly in this locale
+        $englishMonths = (new DataBundle())->get('en_US')['calendar']['gregorian']['monthNames'];
+        $enUS = new \stdClass();
+        $enUS->m = new \stdClass();
+        $enUS->m->wide = array_values(iterator_to_array($englishMonths['format']['wide']));
+        $enUS->m->abbr = array_values(iterator_to_array($englishMonths['format']['abbreviated']));
+        $this->assign('enUS', $this->encoder->encode($enUS));
+
         return parent::_toHtml();
     }
 

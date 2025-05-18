@@ -1,6 +1,5 @@
 const axios = require('axios');
-const NodeCache = require('node-cache');
-const { user } = require('../config/mdm');
+const NodeCache = require('node-cache'); 
 
 class MagentoService {
     static instance = null;

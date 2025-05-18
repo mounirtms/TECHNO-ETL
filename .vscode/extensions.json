@@ -1,0 +1,23 @@
+{
+  "recommendations": [
+     "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "ritwickdey.liveserver",
+    "xabikos.JavaScriptSnippets",
+    "ms-vscode.vscode-typescript-next",
+    "formulahendry.auto-rename-tag",
+    "formulahendry.auto-close-tag",
+    "christian-kohler.path-intellisense",
+    "natizyskunk.sftp",
+    "PKief.material-icon-theme",
+    "eamodio.gitlens",
+    "GitHub.copilot",
+    "ms-vscode.js-debug",
+    "ms-azuretools.vscode-docker",
+    "redhat.vscode-yaml"
+  ],
+  "unwantedRecommendations": [
+  
+
+  ]
+}
