@@ -229,10 +229,10 @@ async function syncPrices() {
 async function main() {
     await connectToDatabases();
 
-    //cron.schedule('0 2 * * *', async () => {
-    await syncPrices();
-   // await syncStocks();
-    //});
+    cron.schedule('0 2 * * *', async () => {
+        await syncPrices();
+        await syncStocks();
+    });
 
 
     //const allSchemas = await getAllTableSchemas();

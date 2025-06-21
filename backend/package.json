@@ -7,6 +7,7 @@
   "license": "ISC",
   "dependencies": {
     "activedirectory2": "^2.2.0",
+    "axios": "^1.9.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -17,7 +18,9 @@
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "mssql": "^11.0.1"
+    "mssql": "^11.0.1",
+    "node-cache": "^5.1.2",
+    "node-cron": "^4.0.5"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^13.0.0",

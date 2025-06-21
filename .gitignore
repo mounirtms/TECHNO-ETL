@@ -6,7 +6,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-package-lock.json
+
 # Dependencies
 node_modules
 dist
@@ -16,8 +16,7 @@ dist-ssr
 backend/.env
 backend/src/config/*
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
+
 .idea
 .DS_Store
 *.suo
@@ -27,17 +26,3 @@ backend/src/config/*
 *.sw?
 .env
 
-
-<!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/67d57f848f5fbb190d35c7db/1imcvk7mf';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
-<!--End of Tawk.to Script-->

@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Clean and Start Dev",
+      "type": "shell",
+      "command": "npm run clean",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint Code",
+      "type": "shell",
+      "command": "npm run lint",
+      "group": "test",
+      "problemMatcher": ["$eslint-stylish"]
+    }
+  ]
+}

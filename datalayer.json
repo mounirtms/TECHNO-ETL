@@ -1,0 +1,118 @@
+[
+    {
+        "event": "dataLayer_ready",
+        "status_code": "200",
+        "full_url": "https://technostationery.com/checkout/onepage/success/",
+        "gtm.uniqueEventId": 3
+    },
+    {
+        "gtm.start": 1748357660780,
+        "event": "gtm.js",
+        "gtm.uniqueEventId": 4
+    },
+    {
+        "gtm.start": 1748357660953,
+        "event": "gtm.js",
+        "gtm.uniqueEventId": 6
+    },
+    {
+        "event": "gtm.dom",
+        "gtm.uniqueEventId": 7
+    },
+    {
+        "event": "gtm.scrollDepth",
+        "gtm.scrollThreshold": 90,
+        "gtm.scrollUnits": "percent",
+        "gtm.scrollDirection": "vertical",
+        "gtm.triggers": "10",
+        "gtm.uniqueEventId": 12
+    },
+    {
+        "version": "3.10.0",
+        "page_type": "checkout/onepage/success",
+        "page_path": "https://technostationery.com/checkout/onepage/success/",
+        "page_title": "Commande #000005896",
+        "virtual_page": "/checkout/onepage/success",
+        "breadcrumb": [],
+        "user": {
+            "has_transacted": false
+        },
+        "sha256_email_address": "be404d8fa072c93ce445c7afa4a985ea23dbaa87a18145fad4078ab1d408e9fa",
+        "sha256_customer_telephone": "e9b40fd5b5a151e65872fe5502b166452a31b9b2353092eaefac9cb427a22547",
+        "sha256_customer_firstname": "9203c50aad14bb767393ab0b688df8ab108cc72d0930d40feb9491d74c89ec23",
+        "sha256_customer_lastname": "8910b19727e6f16d7a2d6f26affefc976c415c7323a6be1d0678e93c12fd38e9",
+        "sha256_customer_street": "18e69c862d0c475730e16d3567733e789b406ebe350e5c29ab2099bd31c79b3d",
+        "sha256_customer_city": "9ae8f9c165b9efa320e6fcf1e9da96ebc5b29f79496a0cfa0600822b52e6f15b",
+        "sha256_customer_region": "2f01379d33b37959a55870eee6f6654e3d2663eab29ee2d0152bb94848451e48",
+        "sha256_customer_country": "2a92270185a50d8020949f2cfb2125d1af1c2bd3dd92eada9210fcdb5c4310bf",
+        "sha256_customer_postcode": "3973e022e93220f9212c18d0d0c543ae7c309e46640da93a4a0314de999f5112"
+    },
+    {
+        "ecommerce": null
+    },
+    {
+        "event": "purchase",
+        "ecommerce": {
+            "transaction_id": "000005896",
+            "affiliation": "Techno Stationery",
+            "currency": "DZD",
+            "value": 9540,
+            "tax": 0,
+            "shipping": 0,
+            "coupon": null,
+            "payment_method": "cashondelivery",
+            "items": [
+                {
+                    "item_id": "1140613705",
+                    "item_sku": "1140613705",
+                    "magento_sku": "1140613705",
+                    "magento_id": "287",
+                    "item_name": "STYLO FEUTRE EFFACABLE FRIXION FINELINER 1.3mm BLEU \"PILOT\" REF: SW-FF-L",
+                    "item_thumb_degree_image": "no_selection",
+                    "item_list_id": "74",
+                    "item_list_name": "FEUTRE POINTE FINE",
+                    "price": 280,
+                    "item_category": "FEUTRE POINTE FINE",
+                    "item_category2": "Tous les produits",
+                    "item_category3": "SCOLAIRE",
+                    "item_category4": "LOISIRS CREATIFS",
+                    "item_category5": "BEAUX ARTS",
+                    "index": 0,
+                    "discount": 0,
+                    "quantity": 1
+                },
+                {
+                    "item_id": "1140612959",
+                    "item_sku": "1140612959",
+                    "magento_sku": "1140612959",
+                    "magento_id": "2580",
+                    "item_name": "CALCULATRICE SCIENTIFIQUE 552 FONCTIONS CLASSWIZ \"CASIO\" REF: FX-991EX",
+                    "item_list_id": "334",
+                    "item_list_name": "CALCULATRICES SCIENTIFIQUES",
+                    "price": 9260,
+                    "item_category": "Tous les produits",
+                    "item_category2": "SCOLAIRE",
+                    "item_category3": "CALCULATRICES SCIENTIFIQUES",
+                    "item_category4": "BUREAUTIQUE & INFORMATIQUE",
+                    "item_category5": "CALCULATRICES",
+                    "index": 1,
+                    "discount": 0,
+                    "quantity": 1
+                }
+            ]
+        },
+        "gtm.uniqueEventId": 13
+    },
+    {
+        "customerLoggedIn": 1,
+        "customerId": "108804",
+        "customerGroupId": "1",
+        "customerGroupCode": "GENERAL",
+        "id": "108804",
+        "firstname": "Mounir"
+    },
+    {
+        "event": "gtm.load",
+        "gtm.uniqueEventId": 14
+    }
+]
