@@ -169,7 +169,7 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function syncStocks() {
+async function syncSources() {
     try {
         for (const source of sourceMapping.getAllSources()) {
             console.log(`🔄 Syncing inventory for source: ${source.magentoSource}`);
@@ -229,10 +229,10 @@ async function syncPrices() {
 async function main() {
     await connectToDatabases();
 
-    cron.schedule('0 2 * * *', async () => {
+    //cron.schedule('0 2 * * *', async () => {
         await syncPrices();
-        await syncStocks();
-    });
+        //await syncSources();
+    //});
 
 
     //const allSchemas = await getAllTableSchemas();
