@@ -105,10 +105,10 @@ async function fetchInventoryData(req) {
     //console.log(`🔍 Retrieved ${result.recordset.length} records (Total: ${totalCount})`);
 
     return { data: result.recordset, totalCount };
-  } catch (error) {
+    } catch (error) {
     console.error('❌ Error fetching inventory:', error);
     throw new Error('Failed to fetch inventory data');
-  }
+    }
 }
 
 module.exports = {

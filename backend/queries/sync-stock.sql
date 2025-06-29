@@ -1,26 +1,30 @@
--- This query synchronizes stock from the source table to the target table.
--- It handles both new products (INSERT) and existing products (UPDATE).
+-- sync-stock.sql
 
--- IMPORTANT: Ensure 'CodeArticle' is the correct name of your product identifier
--- column (e.g., SKU, Code_MDM, etc.) in both tables.
+-- NOTE: Ensure the [MDM_REPORT].[EComm].[StockChanges] table has a 'changed' column of type BIT.
+-- You can add it with a command like:
+-- ALTER TABLE [MDM_REPORT].[EComm].[StockChanges] ADD changed BIT NOT NULL DEFAULT 0;
 
-MERGE [MDM_REPORT].[EComm].[StockSourcesProduits] AS Target
+MERGE [MDM_REPORT].[EComm].[StockChanges] AS Target
 USING (
     SELECT
-        CodeArticle,
+        Code_MDM,
         QteStock,
-        DateDernierMaJ
+        DateDernierMaJ,
+        Code_Source
     FROM
         [MDM_REPORT].[EComm].[ApprovisionnementProduits]
-    WHERE
-        -- This condition selects records updated since the beginning of the current day.
-        -- Adjust this if your update schedule is different.
-        DateDernierMaJ >= CAST(GETDATE() AS DATE)
 ) AS Source
-ON (Target.CodeArticle = Source.CodeArticle)
-WHEN MATCHED THEN
-    -- If the product SKU exists, update its stock quantity and last update date.
-    UPDATE SET Target.QteStock = Source.QteStock, Target.DateDernierMaJ = Source.DateDernierMaJ
+ON (Target.Code_MDM = Source.Code_MDM AND Target.Code_Source = Source.Code_Source)
+
+-- Update the record if it exists and the stock quantity has changed.
+-- The `NOT EXISTS...INTERSECT` clause is a robust way to compare values, as it correctly handles NULLs.
+WHEN MATCHED AND NOT EXISTS (SELECT Target.QteStock INTERSECT SELECT Source.QteStock) THEN
+    UPDATE SET
+        Target.QteStock = Source.QteStock,
+        Target.DateDernierMaJ = Source.DateDernierMaJ,
+        Target.changed = 1 -- Mark record as changed
+
+-- Insert a new record if it doesn't exist in the target table.
 WHEN NOT MATCHED BY TARGET THEN
-    -- If the product SKU is new, insert it into the target table.
-    INSERT (CodeArticle, QteStock, DateDernierMaJ) VALUES (Source.CodeArticle, Source.QteStock, Source.DateDernierMaJ);
+    INSERT (Code_MDM, QteStock, DateDernierMaJ, Code_Source, changed)
+    VALUES (Source.Code_MDM, Source.QteStock, Source.DateDernierMaJ, Source.Code_Source, 1); -- Mark new record as changed

@@ -1,5 +1,9 @@
 const sql = require('mssql');
 
+/**
+ * A robust builder class for creating and executing dynamic SQL SELECT queries.
+ * It supports filtering, sorting, and pagination.
+ */
 class SQLQueryBuilder {
     getSQLType(value) {
         if (typeof value === 'number' && Number.isInteger(value)) return sql.Int;
@@ -10,11 +14,11 @@ class SQLQueryBuilder {
     }
 
     buildConditions(params) {
-       // console.log("🔍 Received Params:", params); // Check what params are received
+        // console.log("🔍 Received Params:", params); // Check what params are received
 
         const conditions = ['1=1']; // Ensures WHERE clause is always valid
         const inputs = {};
-
+        
         const addCondition = (key, sqlType, sqlCondition, transform = (v) => v) => {
             //console.log(`🔎 Checking param: ${key} ->`, params[key]); // Debug each key
 
@@ -23,7 +27,7 @@ class SQLQueryBuilder {
                 inputs[key] = { type: sqlType, value: transform(params[key]) };
                 //console.log(`✅ Added condition: ${sqlCondition} with value:`, transform(params[key]));
             } else {
-               // console.log(`⚠️ Skipped condition: ${key}, value was:`, params[key]);
+                // console.log(`⚠️ Skipped condition: ${key}, value was:`, params[key]);
             }
         };
 
@@ -37,9 +41,11 @@ class SQLQueryBuilder {
         addCondition('categorie', sql.NVarChar, 'Categorie = @categorie');
         addCondition('dateMin', sql.DateTime, 'DateDernierMaJ >= @dateMin', (v) => new Date(v));
         addCondition('dateMax', sql.DateTime, 'DateDernierMaJ <= @dateMax', (v) => new Date(v));
-
-       // console.log("🛠 Final Conditions:", conditions.join(' AND '));
-       // console.log("📥 Input Parameters:", inputs);
+        if (params.changed ) {
+            conditions.push('changed = 1');
+        }
+        // console.log("🛠 Final Conditions:", conditions.join(' AND '));
+        // console.log("📥 Input Parameters:", inputs);
 
         return { conditions: conditions.join(' AND '), inputs };
     }
@@ -63,13 +69,13 @@ class SQLQueryBuilder {
         if (params.sortField) {
             orderBy = `${params.sortField} ${params.sortOrder === 'desc' ? 'DESC' : 'ASC'}`;
         }
-  
-        
+
+
         const sqlQuery = `
             WITH OrderedResults AS (
                 SELECT *, COUNT(*) OVER() AS TotalCount,
                        ROW_NUMBER() OVER (ORDER BY ${orderBy}) AS RowNum
-                FROM [MDM_REPORT].[EComm].[ApprovisionnementProduits]
+                FROM [MDM_REPORT].[EComm].[StockChanges]
                 WHERE ${conditions}
             )
             SELECT * FROM OrderedResults

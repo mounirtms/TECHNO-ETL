@@ -145,7 +145,7 @@ async function connectToDatabases() {
         await createMdmPool(mdmdbConfig); // Call createMdmPool with config
         //await createMdm360Pool(mdm360dbConfig); // Call createMdmPool with config
         //await createCegidPool(cegiddbConfig) // Pass dbConfig to createCegidPool
-        await getMagentoToken(cloudConfig);
+        // await getMagentoToken(cloudConfig);
 
     } catch (err) {
         console.error('Database connection failed:', err);
@@ -169,6 +169,22 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+async function syncStocks() {
+    try {
+        // Load the merge query from the query file
+
+        const mergeQuery = readSQLQuery('./queries/sync-stock.sql');
+        const pool = getPool('mdm');
+        // Execute the merge query
+        await pool.request().query(mergeQuery);
+
+        console.log('Stock changes synced successfully');
+    } catch (error) {
+        console.error('Error syncing stock changes:', error);
+    }
+}
+
+
 async function syncSources() {
     try {
         for (const source of sourceMapping.getAllSources()) {
@@ -177,6 +193,7 @@ async function syncSources() {
             await delay(1000); // ✅ Corrected timeout usage
             await syncInventoryToMagento({
                 query: {
+                    changed: 1,
                     page: 0,
                     pageSize: 300,
                     sortField: 'QteStock',
@@ -185,18 +202,7 @@ async function syncSources() {
                 }
             });
 
-            /*await delay(2000); // ✅ Corrected timeout usage
-            await syncInventoryToMagento({
-                query: {
-                    TypeProd: 'C',
-                    page: 0,
-                    pageSize: 300,
-                    sortField: 'QteStock',
-                    sortOrder: 'desc',
-                    sourceCode: source.code_source
-                }
-            });
-*/
+
             console.log(`✅ Finished syncing for ${source.magentoSource}`);
         }
     } catch (error) {
@@ -230,8 +236,10 @@ async function main() {
     await connectToDatabases();
 
     //cron.schedule('0 2 * * *', async () => {
-        await syncPrices();
-        //await syncSources();
+    await syncPrices();
+    await syncStocks();
+    await syncSources();
+    await syncSuccess();
     //});
 
 
