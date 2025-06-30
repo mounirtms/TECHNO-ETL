@@ -145,7 +145,7 @@ async function connectToDatabases() {
         await createMdmPool(mdmdbConfig); // Call createMdmPool with config
         //await createMdm360Pool(mdm360dbConfig); // Call createMdmPool with config
         //await createCegidPool(cegiddbConfig) // Pass dbConfig to createCegidPool
-        // await getMagentoToken(cloudConfig);
+        await getMagentoToken(cloudConfig);
 
     } catch (err) {
         console.error('Database connection failed:', err);
@@ -263,6 +263,21 @@ async function main() {
 
     //fetchMDMProducts({ limit: 10, offset: 0, sourceCode: 16})
 
+}
+
+async function syncSuccess() {
+    try {
+        // Load the merge query from the query file
+
+        const resetQuery = readSQLQuery('./queries/sync-success.sql');
+        const pool = getPool('mdm');
+        // Execute the reset query
+        await pool.request().query(resetQuery);
+
+        console.log('Success changes synced successfully');
+    } catch (error) {
+        console.error('Error syncing success changes:', error);
+    }
 }
 
 // Start the process
