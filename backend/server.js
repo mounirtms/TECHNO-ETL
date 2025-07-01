@@ -5,6 +5,7 @@ const axios = require('axios');
 const router = require('./src/utils/routes');
 const cron = require('node-cron');
 const { createMdmPool, createCegidPool, createMdm360Pool, getPool } = require('./src/utils/database');
+const sql = require('mssql'); // Required for SQL parameter types
 const mdmdbConfig = require('./src/config/mdm');
 const jwt = require('jsonwebtoken');
 const { fetchInventoryData, syncInventoryToMagento, syncPricesToMagento } = require('./src/mdm/services');
@@ -32,7 +33,154 @@ app.use(express.urlencoded({ extended: true })); // Enable parsing URL-encoded r
 app.use(router);
 
 
-// Connection endpoints
+
+// =========================
+// 1. Helper Functions
+// =========================
+
+/**
+ * Reads a SQL query from a file.
+ * @param {string} filePath - Path to the SQL file.
+ * @returns {string} The SQL query as a string.
+ */
+const readSQLQuery = (filePath) => {
+    return fs.readFileSync(path.resolve(__dirname, filePath), 'utf-8');
+};
+
+/**
+ * Delays execution for a given number of milliseconds.
+ * @param {number} ms - Milliseconds to delay.
+ * @returns {Promise<void>}
+ */
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Express middleware to authenticate JWT tokens (currently bypassed).
+ */
+function authenticateToken(req, res, next) {
+    next()
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+    if (token == null) return res.sendStatus(401)
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        console.log(err)
+        if (err) return res.sendStatus(403)
+        req.user = user
+        next()
+    })
+}
+
+// =========================
+// 2. Service Functions (Business Logic)
+// =========================
+
+/**
+ * Marks products as 'changed' by merging from the source of truth table.
+ * This can be scoped to a specific source or run for all sources.
+ * @param {string} [sourceCode] - The optional source code to update. If not provided, all sources are processed.
+ */
+async function syncStocks(sourceCode) {
+    const logIdentifier = sourceCode ? `source: ${sourceCode}` : 'all sources';
+    try {
+        const mergeQuery = readSQLQuery('./queries/sync-stock.sql');
+        const pool = getPool('mdm');
+
+        // Execute the merge query. If sourceCode is null/undefined, it will be passed as NULL,
+        // which the SQL query is designed to handle.
+        await pool.request()
+            .input('sourceCode', sql.NVarChar, sourceCode || null)
+            .query(mergeQuery);
+
+        console.log(`Stock changes synced successfully for ${logIdentifier}`);
+    } catch (error) {
+        console.error(`Error syncing stock changes for ${logIdentifier}:`, error);
+        // Re-throw the error so the calling process (like a BullMQ worker) can handle it
+        throw error;
+    }
+}
+
+/**
+ * Updates the sync status (changed=0, syncedDate) after a successful sync.
+ * This can be scoped to a specific source or run for all sources.
+ * @param {string} [sourceCode] - The optional source code to update. If not provided, all sources are processed.
+ */
+async function syncSuccess(sourceCode) {
+    const logIdentifier = sourceCode ? `source: ${sourceCode}` : 'all sources';
+    try {
+        const resetQuery = readSQLQuery('./queries/sync-success.sql');
+        const pool = getPool('mdm');
+
+        // Execute the reset query. If sourceCode is null/undefined, it will be passed as NULL.
+        await pool.request()
+            .input('sourceCode', sql.NVarChar, sourceCode || null)
+            .query(resetQuery);
+
+        console.log(`Success flags updated successfully for ${logIdentifier}`);
+    } catch (error) {
+        console.error(`Error updating success flags for ${logIdentifier}:`, error);
+        // Re-throw for the caller to handle
+        throw error;
+    }
+}
+
+/**
+ * Syncs inventory to Magento for all sources, one by one.
+ */
+async function syncSources() {
+    try {
+        for (const source of sourceMapping.getAllSources()) {
+            console.log(`🔄 Syncing inventory for source: ${source.magentoSource}`);
+
+            await delay(1000); // ✅ Corrected timeout usage
+            await syncInventoryToMagento({
+                query: {
+                    changed: 1,
+                    page: 0,
+                    pageSize: 300,
+                    sortField: 'QteStock',
+                    sortOrder: 'desc',
+                    sourceCode: source.code_source
+                }
+            });
+
+            console.log(`✅ Finished syncing for ${source.magentoSource}`);
+        }
+    } catch (error) {
+        console.error('❌ Error syncing all sources:', error);
+    }
+}
+
+/**
+ * Syncs prices to Magento for all products.
+ */
+async function syncPrices() {
+    // Calculate yesterday's date (YYYY-MM-DD format)
+    // Fetch prices with yesterday as default startDate
+    let prices = await fetchMdmPrices();
+    // Transform the data for Magento
+    let priceData = prices.recordset.map(({ sku, price }) => ({
+        product: {
+            sku,
+            price: parseFloat(price) // Ensure it's a valid number
+        }
+    }));
+
+    // Sync to Magento
+    await syncPricesToMagento({ body: priceData });
+}
+
+// =========================
+// 3. Route Handlers (API Endpoints)
+// =========================
+
+// --- Connection Endpoints ---
+
+/**
+ * Connect to MDM database.
+ */
 app.post('/api/mdm/connect', authenticateToken, async (req, res) => {
     const dbConfig = req.body;
     Object.assign(dbConfig, {
@@ -52,7 +200,6 @@ app.post('/api/mdm/connect', authenticateToken, async (req, res) => {
         }
     });
     try {
-
         await createMdmPool(dbConfig); // Call createMdmPool with config
         res.json({ message: 'MDM connection successful' });
     } catch (error) {
@@ -61,10 +208,11 @@ app.post('/api/mdm/connect', authenticateToken, async (req, res) => {
     }
 });
 
-
+/**
+ * Connect to CEGID database.
+ */
 app.post('/api/cegid/connect', authenticateToken, async (req, res) => {
     const dbConfig = req.body;
-
     try {
         await createCegidPool(dbConfig) // Pass dbConfig to createCegidPool
         res.json({ message: 'CEGID connection successful' })
@@ -74,12 +222,32 @@ app.post('/api/cegid/connect', authenticateToken, async (req, res) => {
     }
 });
 
-// Read SQL query from file
-const readSQLQuery = (filePath) => {
-    return fs.readFileSync(path.resolve(__dirname, filePath), 'utf-8');
-};
+// --- Inventory & Sync Endpoints ---
 
-// Fetch product prices from MDM
+/**
+ * Endpoint to mark changed stocks for a given source code.
+ * Triggers the syncStocks service for the provided sourceCode.
+ */
+app.get('/api/mdm/inventory/sync-stocks', async (req, res) => {
+    const { sourceCode } = req.query;
+    if (!sourceCode) {
+        return res.status(400).json({ message: 'sourceCode is required.' });
+    }
+    try {
+        await syncStocks(sourceCode);
+        res.status(200).json({ message: `Changed stocks for source ${sourceCode} marked for sync.` });
+    } catch (error) {
+        console.error('Error marking changed stocks:', error);
+        res.status(500).json({ error: 'Failed to mark changed stocks.' });
+    }
+});
+
+
+// --- Price Endpoints ---
+
+/**
+ * Fetch product prices from MDM.
+ */
 app.get('/api/mdm/prices', async (req, res) => {
     try {
         let result = await fetchMdmPrices(req, res);
@@ -89,6 +257,12 @@ app.get('/api/mdm/prices', async (req, res) => {
     }
 });
 
+/**
+ * Fetches MDM prices from the database, optionally filtered by startDate.
+ * @param {object} req - Express request object
+ * @param {object} res - Express response object
+ * @returns {Promise<object>} SQL result
+ */
 fetchMdmPrices = async (req, res) => {
     try {
         // Read the SQL query template
@@ -114,7 +288,9 @@ fetchMdmPrices = async (req, res) => {
     }
 }
 
-// Sync Prices to Magento (Bulk)
+/**
+ * Sync prices to Magento (bulk operation).
+ */
 app.post('/api/techno/prices-sync', async (req, res) => {
     try {
         let response = await syncPricesToMagento(req);
@@ -145,7 +321,7 @@ async function connectToDatabases() {
         await createMdmPool(mdmdbConfig); // Call createMdmPool with config
         //await createMdm360Pool(mdm360dbConfig); // Call createMdmPool with config
         //await createCegidPool(cegiddbConfig) // Pass dbConfig to createCegidPool
-        await getMagentoToken(cloudConfig);
+        //await getMagentoToken(cloudConfig);
 
     } catch (err) {
         console.error('Database connection failed:', err);
@@ -162,6 +338,32 @@ app.get('/api/mdm/inventory', async (req, res) => {
     }
 });
 
+router.post('/sync-all-source', async (req, res) => {
+    const { sourceCode } = req.body;
+
+    if (!sourceCode) {
+        return res.status(400).json({ message: 'sourceCode is required.' });
+    }
+
+    // 1. Immediately respond to the client to avoid HTTP timeouts.
+    res.status(202).json({ message: `Sync process initiated for source ${sourceCode}. This will run in the background.` });
+    try {
+        await syncStocks(sourceCode);
+        await syncInventoryToMagento({
+            query: {
+                changed: 1,
+                page: 0,
+                pageSize: 300,
+                sortField: 'QteStock',
+                sortOrder: 'desc',
+                sourceCode: sourceCode
+            }
+        });
+        await syncSuccess(sourceCode);
+    } catch (error) {
+
+    }
+});
 
 
 
@@ -169,18 +371,28 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function syncStocks() {
+/**
+ * Marks products as 'changed' by merging from the source of truth table.
+ * This can be scoped to a specific source or run for all sources.
+ * @param {string} [sourceCode] - The optional source code to update. If not provided, all sources are processed.
+ */
+async function syncStocks(sourceCode) {
+    const logIdentifier = sourceCode ? `source: ${sourceCode}` : 'all sources';
     try {
-        // Load the merge query from the query file
-
         const mergeQuery = readSQLQuery('./queries/sync-stock.sql');
         const pool = getPool('mdm');
-        // Execute the merge query
-        await pool.request().query(mergeQuery);
 
-        console.log('Stock changes synced successfully');
+        // Execute the merge query. If sourceCode is null/undefined, it will be passed as NULL,
+        // which the SQL query is designed to handle.
+        await pool.request()
+            .input('sourceCode', sql.NVarChar, sourceCode || null)
+            .query(mergeQuery);
+
+        console.log(`Stock changes synced successfully for ${logIdentifier}`);
     } catch (error) {
-        console.error('Error syncing stock changes:', error);
+        console.error(`Error syncing stock changes for ${logIdentifier}:`, error);
+        // Re-throw the error so the calling process (like a BullMQ worker) can handle it
+        throw error;
     }
 }
 
@@ -235,11 +447,12 @@ async function syncPrices() {
 async function main() {
     await connectToDatabases();
 
-    //cron.schedule('0 2 * * *', async () => {
-    await syncPrices();
-    await syncStocks();
-    await syncSources();
-    await syncSuccess();
+   // cron.schedule('0 2 * * *', async () => {
+        await syncPrices();
+        await syncStocks();
+        await syncSources();
+        
+        await syncSuccess();
     //});
 
 
@@ -265,18 +478,32 @@ async function main() {
 
 }
 
-async function syncSuccess() {
+/**
+ * Updates the sync status (changed=0, syncedDate) for a given source after a successful sync.
+ * This is the final step in the sync lifecycle.
+ * @param {string} sourceCode The source code to update.
+ */
+/**
+ * Updates the sync status (changed=0, syncedDate) after a successful sync.
+ * This can be scoped to a specific source or run for all sources.
+ * @param {string} [sourceCode] - The optional source code to update. If not provided, all sources are processed.
+ */
+async function syncSuccess(sourceCode) {
+    const logIdentifier = sourceCode ? `source: ${sourceCode}` : 'all sources';
     try {
-        // Load the merge query from the query file
-
         const resetQuery = readSQLQuery('./queries/sync-success.sql');
         const pool = getPool('mdm');
-        // Execute the reset query
-        await pool.request().query(resetQuery);
 
-        console.log('Success changes synced successfully');
+        // Execute the reset query. If sourceCode is null/undefined, it will be passed as NULL.
+        await pool.request()
+            .input('sourceCode', sql.NVarChar, sourceCode || null)
+            .query(resetQuery);
+
+        console.log(`Success flags updated successfully for ${logIdentifier}`);
     } catch (error) {
-        console.error('Error syncing success changes:', error);
+        console.error(`Error updating success flags for ${logIdentifier}:`, error);
+        // Re-throw for the caller to handle
+        throw error;
     }
 }
 

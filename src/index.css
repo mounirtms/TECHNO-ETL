@@ -20,3 +20,12 @@ body {
   width: 100vw;
   overflow: hidden;
 }
+.row-changed {
+  background-color: #fff3cd !important; /* A light yellow, good for highlighting */
+  font-weight: 500;
+}
+
+/* Optional: Style for changed rows on hover */
+.row-changed:hover {
+  background-color: #ffeeba !important;
+}

@@ -6,8 +6,12 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import magentoApi from '../../services/magentoApi';
+import SyncIcon from '@mui/icons-material/Sync';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import NewReleasesIcon from '@mui/icons-material/NewReleases';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+import magentoApi from '../../services/magentoApi';
 import sourceMapping from '../../utils/sources';
 import axios from 'axios';
 
@@ -21,6 +25,7 @@ const MDMProductsGrid = () => {
     const [data, setData] = useState([]);
     const [succursaleFilter, setSuccursaleFilter] = useState('16');
     const [sourceFilter, setSourceFilter] = useState('all');
+    const [showChangedOnly, setShowChangedOnly] = useState(true); // New state for changed filter
     const isMounted = useRef(false);
 
     const [stats, setStats] = useState({
@@ -28,6 +33,10 @@ const MDMProductsGrid = () => {
         inStock: 0,
         outOfStock: 0,
         lowStock: 0,
+        emptyStock: 0,
+        zeroCount: 0,
+        newChanges: 0,
+        synced: 0,
         averagePrice: 0,
         totalValue: 0
     });
@@ -84,6 +93,7 @@ const MDMProductsGrid = () => {
         { field: 'Code_Fil_JDE', headerName: 'JDE Fil.', width: 120, type: 'number' },
         { field: 'TypeProd', headerName: 'Type', width: 80, sortable: true },
         { field: 'Source', headerName: 'Source', width: 150, sortable: true },
+        { field: 'syncedDate', headerName: 'Sync Date', width: 160, type: 'date', valueFormatter: (value) => value && new Date(value).toLocaleString('fr-DZ') },
         { field: 'Succursale', headerName: 'Branch', width: 100, type: 'number' },
         { field: 'QteStock', headerName: 'Stock', width: 100, type: 'number', sortable: true },
         { field: 'QteReceptionner', headerName: 'Received', width: 100, type: 'number' },
@@ -99,7 +109,10 @@ const MDMProductsGrid = () => {
         { field: 'Catalogue', headerName: 'Catalog', width: 100, type: 'boolean' }
     ], []);
 
+    // NOTE: To style changed rows, add a CSS rule like: .row-changed { background-color: #fff3cd; }
+    const getRowClassName = (params) => (params.row.changed ? 'row-changed' : '');
 
+    // Fetch grid data and stats for the current filter/page
     const fetchProducts = useCallback(async ({ page = 0, pageSize = 25, sortModel = [], filterModel = { items: [] } }) => {
         try {
             setLoading(true);
@@ -119,36 +132,60 @@ const MDMProductsGrid = () => {
                 succursale: succursaleFilter === 'all' ? '' : succursaleFilter || 16,
                 sortField: sortParam,
                 sortOrder: sortOrder,
-                ...filterParams
+                ...filterParams,
+                ...(showChangedOnly ? { changed: 1 } : {}) // Add changed:1 if enabled
             };
             if (params.sourceCode) params.succursale = null;
 
+            // Fetch paged grid data
             const response = await axios.get('http://localhost:5000/api/mdm/inventory', { params });
             const totalCount = response.data.totalCount ?? response.data.data.length;
             setData(response.data.data);
 
-            const newStats = {
-                total: totalCount,
-                inStock: response.data.data.filter(item => item.QteStock > 0).length,
-                outOfStock: response.data.data.filter(item => item.QteStock === 0).length,
-                lowStock: response.data.data.filter(item => item.QteStock > 0 && item.QteStock < 10).length,
-                totalValue: response.data.data.reduce((acc, curr) => acc + ((curr.Tarif || 0) * (curr.QteStock || 0)), 0),
-                averagePrice: response.data.data.reduce((acc, curr) => acc + ((curr.Tarif || 0) * (curr.QteStock || 0)), 0) / (response.data.data.length || 1)
-            };
-            setStats(newStats);
+            // --- Fetch stats for the whole source (not just current page) ---
+            let statsParams = { sourceCode: sourceFilter === 'all' ? '' : sourceFilter || 7 };
+            // Remove paging, sorting, filtering for stats
+            const statsResp = await axios.get('http://localhost:5000/api/mdm/inventory', { params: statsParams });
+            const all = statsResp.data.data;
+            const total = statsResp.data.totalCount ?? all.length;
+            const inStock = all.filter(item => item.QteStock > 0).length;
+            const outOfStock = all.filter(item => item.QteStock === 0).length;
+            const lowStock = all.filter(item => item.QteStock > 0 && item.QteStock < 2).length;
+            const emptyStock = all.filter(item => item.QteStock === 0).length;
+            const zeroCount = all.filter(item => item.QteStock === 0).length;
+            const newChanges = all.filter(item => item.changed === 1).length;
+            const synced = all.filter(item => item.changed === 0).length;
+            const totalValue = all.reduce((acc, curr) => acc + ((curr.Tarif || 0) * (curr.QteStock || 0)), 0);
+            const averagePrice = all.reduce((acc, curr) => acc + ((curr.Tarif || 0) * (curr.QteStock || 0)), 0) / (all.length || 1);
+
+            setStats({
+                total,
+                inStock,
+                outOfStock,
+                lowStock,
+                emptyStock,
+                zeroCount,
+                newChanges,
+                synced,
+                totalValue,
+                averagePrice
+            });
         } catch (error) {
             console.error('Error fetching inventory:', error);
             toast.error('Failed to fetch inventory data');
         } finally {
             setLoading(false);
         }
-    }, [succursaleFilter, sourceFilter]);
+    }, [succursaleFilter, sourceFilter, showChangedOnly]);
 
+    // --- Enhanced Status Cards ---
     const statusCards = [
         { title: 'Total Products', value: stats.total, icon: InventoryIcon, color: 'primary' },
         { title: 'In Stock', value: stats.inStock, icon: CheckCircleIcon, color: 'success' },
-        { title: 'Out of Stock', value: stats.outOfStock, icon: ErrorIcon, color: 'error' },
+        { title: 'Empty Stock', value: stats.emptyStock, icon: HighlightOffIcon, color: 'error' },
         { title: 'Low Stock', value: stats.lowStock, icon: TrendingDownIcon, color: 'warning' },
+        { title: 'New Changes', value: stats.newChanges, icon: NewReleasesIcon, color: 'secondary' },
+        { title: 'Synced', value: stats.synced, icon: DoneAllIcon, color: 'info' },
         { title: 'Average Value', value: stats.averagePrice.toFixed(2), icon: AttachMoneyIcon, color: 'info' },
         { title: 'Total Value', value: stats.totalValue.toFixed(2), icon: AttachMoneyIcon, color: 'info' }
     ];
@@ -204,11 +241,31 @@ const MDMProductsGrid = () => {
             console.error('Batch processing error:', error);
             throw error;
         }
-
-        return results;
     };
 
+    const onSyncAllHandler = async () => {
+        if (sourceFilter === 'all' || !sourceFilter) {
+            toast.warning('Please select a specific source to sync all items.');
+            return;
+        }
 
+        try {
+            setLoading(true);
+            toast.info(`Initiating sync for all items from source: ${sourceFilter}. This may take a while...`);
+
+            // This endpoint triggers a background job on the server to sync all items for a given source
+            await axios.post('http://localhost:5000/api/mdm/inventory/sync-all-source', {
+                sourceCode: sourceFilter
+            });
+
+            toast.success(`Sync for source ${sourceFilter} initiated. The process is running in the background.`);
+        } catch (error) {
+            console.error('Sync all failed:', error);
+            toast.error(`Failed to initiate sync for source ${sourceFilter}.`);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const onSyncHandler = async () => {
         try {
@@ -233,7 +290,7 @@ const MDMProductsGrid = () => {
             });
 
 
-            processBatch(payload.sourceItems, 100)
+            await processBatch(payload.sourceItems);
 
 
 
@@ -258,6 +315,28 @@ const MDMProductsGrid = () => {
         </Box>
     );
 
+    // Handler for Sync Stocks (mark changed stocks for the selected source)
+    const onSyncStocksHandler = async () => {
+        if (sourceFilter === 'all' || !sourceFilter) {
+            toast.warning('Please select a specific source to sync stocks.');
+            return;
+        }
+        try {
+            setLoading(true);
+            toast.info(`Marking changed stocks for source: ${sourceFilter}...`);
+            // Call backend endpoint to mark changed stocks for the selected source
+            await axios.get('http://localhost:5000/api/mdm/inventory/sync-stocks', {
+                params: { sourceCode: sourceFilter }
+            });
+            toast.success(`Changed stocks for source ${sourceFilter} marked for sync.`);
+        } catch (error) {
+            console.error('Sync stocks failed:', error);
+            toast.error(`Failed to mark changed stocks for source ${sourceFilter}.`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <BaseGrid
             gridName="MDMProductsGrid"
@@ -266,6 +345,7 @@ const MDMProductsGrid = () => {
             gridCards={statusCards}
             getRowId={(row) => `${row.Source}-${row.Code_MDM}`}
             loading={loading}
+            getRowClassName={getRowClassName}
             onRefresh={fetchProducts} // This will now include sorting & filtering
             toolbarProps={{
                 succursaleOptions,
@@ -275,14 +355,18 @@ const MDMProductsGrid = () => {
                 currentSource: sourceFilter,
                 onSourceChange: handleSourceChange,
                 canSync: true,
-                onSyncHandler: onSyncHandler
+                onSyncHandler: onSyncHandler,
+                canSyncAll: sourceFilter !== 'all',
+                onSyncAllHandler: onSyncAllHandler,
+                onSyncStocksHandler, // Pass the new handler to the toolbar
+                showChangedOnly,
+                setShowChangedOnly
             }}
             onSelectionChange={handleBaseGridSelectionChange}
             showCardView={false}
             totalCount={stats.total}
             defaultPageSize={25}
             onError={(error) => toast.error(error.message)}
-
         />
     );
 };

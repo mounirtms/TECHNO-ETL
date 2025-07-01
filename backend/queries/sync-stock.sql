@@ -4,15 +4,22 @@
 -- You can add it with a command like:
 -- ALTER TABLE [MDM_REPORT].[EComm].[StockChanges] ADD changed BIT NOT NULL DEFAULT 0;
 
-MERGE [MDM_REPORT].[EComm].[StockChanges] AS Target
-USING (
+
+WITH DedupedSource AS (
     SELECT
         Code_MDM,
         QteStock,
         DateDernierMaJ,
-        Code_Source
-    FROM
-        [MDM_REPORT].[EComm].[ApprovisionnementProduits]
+        Code_Source,
+        ROW_NUMBER() OVER (PARTITION BY Code_MDM, Code_Source ORDER BY DateDernierMaJ DESC) AS rn
+    FROM [MDM_REPORT].[EComm].[ApprovisionnementProduits]
+    WHERE (@sourceCode IS NULL OR Code_Source = @sourceCode)
+)
+MERGE [MDM_REPORT].[EComm].[StockChanges] AS Target
+USING (
+    SELECT Code_MDM, QteStock, DateDernierMaJ, Code_Source
+    FROM DedupedSource
+    WHERE rn = 1
 ) AS Source
 ON (Target.Code_MDM = Source.Code_MDM AND Target.Code_Source = Source.Code_Source)
 

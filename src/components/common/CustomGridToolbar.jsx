@@ -1,18 +1,34 @@
 import React, { useState } from 'react';
-import { Box, Button, Tooltip, IconButton, Menu, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { Box, Button, Tooltip, IconButton, Menu, MenuItem, Select, FormControl, InputLabel, Checkbox, Typography } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import SyncIcon from '@mui/icons-material/Sync';
 import SettingsIcon from '@mui/icons-material/Settings';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { useTheme } from '@mui/material/styles';
 import SettingsDialog from './CustomGridLyoutSettings';
 import { staticPrimaryKeys } from '../Layout/Constants';
 
+/**
+ * CustomGridToolbar
+ * A reusable toolbar for data grids, supporting refresh, filtering, sync, and settings.
+ * Props:
+ * - onRefresh: function to refresh grid data
+ * - canAdd, canEdit, canDelete, canSync, canSyncAll: booleans to enable/disable actions
+ * - onAdd, onEdit, onDelete, onSyncHandler, onSyncAllHandler: action handlers
+ * - selectedCount: number of selected rows
+ * - filterModel, customFilters, onCustomFilterChange, currentCustomFilter: filter controls
+ * - succursaleOptions, sourceOptions: dropdown filter options
+ * - showChangedOnly, setShowChangedOnly: inventory changes only filter
+ * - columns, gridName: grid info for settings
+ * - onError: error handler
+ */
 const CustomGridToolbar = ({
   onRefresh,
   onFilter,
   canAdd,
   canEdit,
   canSync,
+  canSyncAll,
   canDelete,
   onAdd,
   onEdit,
@@ -22,6 +38,7 @@ const CustomGridToolbar = ({
   columns,
   gridName,
   customFilters = [],
+  onSyncAllHandler,
   onCustomFilterChange,
   currentCustomFilter,
   onError,
@@ -31,12 +48,16 @@ const CustomGridToolbar = ({
   sourceOptions,
   currentSource,
   onSourceChange,
-  onSyncHandler, // Ensure this prop is passed
+  onSyncHandler,
+  showChangedOnly,
+  setShowChangedOnly,
+  onSyncStocksHandler // New handler for Sync Stocks
 }) => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
 
+  // Style for toolbar buttons
   const toolbarButtonStyle = {
     color: theme.palette.text.secondary,
     borderColor: theme.palette.divider,
@@ -46,19 +67,21 @@ const CustomGridToolbar = ({
     },
   };
 
+
+  // Open settings menu
   const handleSettingsClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
+  // Close settings menu
   const handleSettingsClose = () => {
     setAnchorEl(null);
   };
-
+  // Open settings dialog
   const handleSettingsDialogOpen = () => {
     setSettingsDialogOpen(true);
     handleSettingsClose();
   };
-
+  // Refresh grid data
   const handleRefresh = async () => {
     try {
       await onRefresh?.();
@@ -67,7 +90,7 @@ const CustomGridToolbar = ({
       onError?.(error);
     }
   };
-
+  // Handle custom filter change
   const handleCustomFilterChange = async (event) => {
     try {
       await onCustomFilterChange?.(event.target.value);
@@ -77,6 +100,9 @@ const CustomGridToolbar = ({
     }
   };
 
+
+
+  // --- Toolbar Layout ---
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', p: 1 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -86,6 +112,9 @@ const CustomGridToolbar = ({
             Refresh
           </Button>
         </Tooltip>
+
+      
+
 
         {/* Succursale Filter */}
         {succursaleOptions?.length > 0 && (
@@ -100,8 +129,7 @@ const CustomGridToolbar = ({
             </Select>
           </FormControl>
         )}
-
-        {/* Source Filter */}
+          {/* Source Filter */}
         {sourceOptions?.length > 0 && (
           <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
             <InputLabel>Source</InputLabel>
@@ -115,6 +143,23 @@ const CustomGridToolbar = ({
           </FormControl>
         )}
 
+        {/* Inventory Changes Only Checkbox - right after Source filter */}
+        {typeof showChangedOnly !== 'undefined' && typeof setShowChangedOnly === 'function' && canSyncAll && (
+          <Tooltip title="Show only products with inventory changes">
+            <Box sx={{ display: 'flex', alignItems: 'center', pl: 1 }}>
+              <Checkbox
+                checked={showChangedOnly}
+                onChange={e => setShowChangedOnly(e.target.checked)}
+                color="primary"
+                size="small"
+                inputProps={{ 'aria-label': 'Show only products with inventory changes' }}
+              />
+              <Typography variant="body2" sx={{ whiteSpace: 'nowrap' }}>
+                Inventory Changes Only
+              </Typography>
+            </Box>
+          </Tooltip>
+        )}
         {/* Custom Filter Dropdown */}
         {customFilters?.length > 0 && (
           <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
@@ -130,8 +175,9 @@ const CustomGridToolbar = ({
         )}
       </Box>
 
+      {/* --- Action Buttons: Add, Edit, Delete, Sync Stocks, Sync, Settings --- */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        {/* Add, Edit, Delete Buttons */}
+        {/* Add Row Button */}
         {canAdd && (
           <Tooltip title="Add Row">
             <Button variant="outlined" size="small" onClick={onAdd} sx={toolbarButtonStyle}>
@@ -139,7 +185,7 @@ const CustomGridToolbar = ({
             </Button>
           </Tooltip>
         )}
-
+        {/* Edit Row Button */}
         {canEdit && (
           <Tooltip title="Edit Row">
             <Button variant="outlined" size="small" onClick={onEdit} sx={toolbarButtonStyle} disabled={selectedCount === 0}>
@@ -147,7 +193,7 @@ const CustomGridToolbar = ({
             </Button>
           </Tooltip>
         )}
-
+        {/* Delete Row Button */}
         {canDelete && (
           <Tooltip title="Delete Row">
             <Button variant="outlined" size="small" onClick={onDelete} sx={toolbarButtonStyle} disabled={selectedCount === 0}>
@@ -155,23 +201,50 @@ const CustomGridToolbar = ({
             </Button>
           </Tooltip>
         )}
-
-        {/* Sync Button */}
+        {/* Sync Stocks Button (before Sync) */}
+        {typeof onSyncStocksHandler === 'function' && canSyncAll && (
+          <Tooltip title="Sync Stocks (mark changed)">
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={onSyncStocksHandler}
+              sx={toolbarButtonStyle}
+              startIcon={<AutorenewIcon />}
+            >
+              Sync Stocks
+            </Button>
+          </Tooltip>
+        )}
+        {/* Sync Selected Button */}
         {canSync && (
-          <Tooltip title="Sync Data">
+          <Tooltip title="Sync Selected Rows">
             <Button
               variant="outlined"
               size="small"
               onClick={onSyncHandler}
               sx={toolbarButtonStyle}
-              disabled={selectedCount === 0} // Ensure this logic is correct
+              disabled={selectedCount === 0}
               startIcon={<SyncIcon />}
             >
               Sync
             </Button>
           </Tooltip>
         )}
-
+        {/* Sync All Button */}
+        {canSyncAll && (
+          <Tooltip title="Sync All Items for Source">
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={onSyncAllHandler}
+              sx={toolbarButtonStyle}
+              startIcon={<SyncIcon />}
+            >
+              Sync All
+            </Button>
+          </Tooltip>
+        )}
         {/* Grid Settings Icon */}
         <Tooltip title="Grid Settings">
           <IconButton size="small" onClick={handleSettingsClick} sx={{ color: theme.palette.text.secondary, '&:hover': { backgroundColor: theme.palette.action.hover } }}>
@@ -180,18 +253,17 @@ const CustomGridToolbar = ({
         </Tooltip>
       </Box>
 
-      {/* Settings Dialog */}
+      {/* --- Settings Dialog and Menu --- */}
       <SettingsDialog
         open={settingsDialogOpen}
         onClose={() => setSettingsDialogOpen(false)}
         columns={columns}
         gridName={gridName}
         onSave={(newSettings) => {
+          // Optionally handle settings save
           console.log('Saved Settings:', newSettings);
         }}
       />
-
-      {/* Menu for settings */}
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleSettingsClose}>
         <MenuItem onClick={handleSettingsDialogOpen}>Customize Columns</MenuItem>
       </Menu>
