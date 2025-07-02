@@ -16,8 +16,8 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import arLocale from 'date-fns/locale/ar-SA';
 import { StatsCards } from '../components/common/StatsCards';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { BarChart, Bar, XAxis as BarXAxis, YAxis as BarYAxis, CartesianGrid as BarCartesianGrid, Tooltip as BarTooltip, Legend as BarLegend, ResponsiveContainer as BarResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
+    const [chartType, setChartType] = useState('line'); // 'line' or 'bar'
 import { PieChart, Pie, Cell } from 'recharts';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PeopleIcon from '@mui/icons-material/People';
@@ -530,6 +530,16 @@ const Dashboard = () => {
                         <IconButton onClick={getPrices} sx={{ ml: 'auto' }}>
                             Sync Prices <SyncIcon />
                         </IconButton>
+                        <IconButton onClick={async () => {
+                            try {
+                                await axios.post('http://localhost:5000/api/mdm/inventory/sync-all-stocks-sources');
+                                toast.success('Sync all sources operation started.');
+                            } catch (error) {
+                                toast.error('Failed to sync all sources.');
+                            }
+                        }}>
+                            Sync Sources <SyncIcon />
+                        </IconButton>
                   
 
 
@@ -560,7 +570,7 @@ const Dashboard = () => {
                             { title: 'Total Customers', value: stats.totalCustomers, icon: PeopleIcon, color: 'success' },
                             { title: 'Total Products', value: stats.totalProducts, icon: InventoryIcon, color: 'info' },
                             { title: 'Total Revenue', value: formatCurrency(stats.totalRevenue), icon: AttachMoneyIcon, color: 'warning' },
-                            { title: 'Average Order Value', value: formatCurrency(stats.averageOrderValue), icon: TrendingUpIcon, color: 'secondary' },
+                            { title: 'Avg. Order Value', value: formatCurrency(stats.averageOrderValue), icon: TrendingUpIcon, color: 'secondary' },
                             { title: 'Total Value', value: formatCurrency(stats.totalValue), icon: AttachMoneyIcon, color: 'warning' }
                         ]}
                     />
@@ -568,18 +578,59 @@ const Dashboard = () => {
 
                 {/* Charts */}
                 <Box sx={{ mt: 3 }}>
-                    <Paper sx={{ p: 2, height: '400px' }}>
+                    <Paper sx={{ p: 2, height: '420px', background: 'linear-gradient(120deg, #e3f2fd 0%, #fce4ec 100%)', boxShadow: 6, borderRadius: 3 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+                            <Button
+                                variant={chartType === 'line' ? 'contained' : 'outlined'}
+                                color="primary"
+                                size="small"
+                                sx={{ mr: 1, borderRadius: 2, fontWeight: 700 }}
+                                onClick={() => setChartType('line')}
+                            >
+                                Line Chart
+                            </Button>
+                            <Button
+                                variant={chartType === 'bar' ? 'contained' : 'outlined'}
+                                color="secondary"
+                                size="small"
+                                sx={{ borderRadius: 2, fontWeight: 700 }}
+                                onClick={() => setChartType('bar')}
+                            >
+                                Bar Chart
+                            </Button>
+                        </Box>
                         <ResponsiveContainer>
-                            <LineChart data={chartData}>
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="date" tickFormatter={(date) => formatChartDate(date)} interval="preserveStartEnd" angle={-45} textAnchor="end" height={60} />
-                                <YAxis yAxisId="left" tickFormatter={(value) => Math.round(value)} />
-                                <YAxis yAxisId="right" orientation="right" tickFormatter={(value) => formatCurrency(value)} />
-                                <Tooltip labelFormatter={(date) => formatTooltipDate(date)} formatter={(value, name) => [name === 'revenue' ? formatCurrency(value) : Math.round(value), name === 'revenue' ? 'Revenue' : 'Orders']} />
-                                <Legend />
-                                <Line yAxisId="left" type="monotone" dataKey="orders" stroke={theme.palette.primary.main} name="Orders" dot={false} activeDot={{ r: 8 }} />
-                                <Line yAxisId="right" type="monotone" dataKey="revenue" stroke={theme.palette.secondary.main} name="Revenue" dot={false} activeDot={{ r: 8 }} />
-                            </LineChart>
+                            {chartType === 'line' ? (
+                                <LineChart data={chartData} margin={{ top: 30, right: 40, left: 10, bottom: 30 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#bdbdbd" />
+                                    <XAxis dataKey="date" tickFormatter={(date) => formatChartDate(date)} interval="preserveStartEnd" angle={-35} textAnchor="end" height={60} stroke="#1976d2" fontSize={13} />
+                                    <YAxis yAxisId="left" tickFormatter={(value) => Math.round(value)} stroke="#1976d2" fontSize={13} />
+                                    <YAxis yAxisId="right" orientation="right" tickFormatter={(value) => formatCurrency(value)} stroke="#d32f2f" fontSize={13} />
+                                    <Tooltip 
+                                        contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }}
+                                        labelFormatter={(date) => formatTooltipDate(date)}
+                                        formatter={(value, name) => [name === 'revenue' ? formatCurrency(value) : Math.round(value), name === 'revenue' ? 'Revenue' : 'Orders']}
+                                    />
+                                    <Legend iconType="circle" verticalAlign="top" height={36} />
+                                    <Line yAxisId="left" type="monotone" dataKey="orders" stroke="#1976d2" name="Orders" dot={{ r: 5, fill: '#fff', stroke: '#1976d2', strokeWidth: 2 }} activeDot={{ r: 8, fill: '#1976d2', stroke: '#fff', strokeWidth: 2 }} strokeWidth={3} />
+                                    <Line yAxisId="right" type="monotone" dataKey="revenue" stroke="#d32f2f" name="Revenue" dot={{ r: 5, fill: '#fff', stroke: '#d32f2f', strokeWidth: 2 }} activeDot={{ r: 8, fill: '#d32f2f', stroke: '#fff', strokeWidth: 2 }} strokeWidth={3} />
+                                </LineChart>
+                            ) : (
+                                <BarChart data={chartData} margin={{ top: 30, right: 40, left: 10, bottom: 30 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#bdbdbd" />
+                                    <XAxis dataKey="date" tickFormatter={(date) => formatChartDate(date)} interval="preserveStartEnd" angle={-35} textAnchor="end" height={60} stroke="#1976d2" fontSize={13} />
+                                    <YAxis yAxisId="left" tickFormatter={(value) => Math.round(value)} stroke="#1976d2" fontSize={13} />
+                                    <YAxis yAxisId="right" orientation="right" tickFormatter={(value) => formatCurrency(value)} stroke="#d32f2f" fontSize={13} />
+                                    <Tooltip 
+                                        contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }}
+                                        labelFormatter={(date) => formatTooltipDate(date)}
+                                        formatter={(value, name) => [name === 'revenue' ? formatCurrency(value) : Math.round(value), name === 'revenue' ? 'Revenue' : 'Orders']}
+                                    />
+                                    <Legend iconType="circle" verticalAlign="top" height={36} />
+                                    <Bar yAxisId="left" dataKey="orders" name="Orders" fill="#1976d2" radius={[8, 8, 0, 0]} barSize={24} />
+                                    <Bar yAxisId="right" dataKey="revenue" name="Revenue" fill="#d32f2f" radius={[8, 8, 0, 0]} barSize={24} />
+                                </BarChart>
+                            )}
                         </ResponsiveContainer>
                     </Paper>
                 </Box>
@@ -587,32 +638,36 @@ const Dashboard = () => {
                 {/* Enhanced Bar Charts for Country of Manufacture and Product Counts */}
                 <Box sx={{ display: 'flex', flexWrap: "wrap", gap: 3, mt: 3 }}>
                     <Box sx={{ flex: 1, minWidth: 300 }}>
-                        <Paper sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
-                            <Typography variant="h6">Country of Manufacture</Typography>
+                        <Paper sx={{ p: 2, boxShadow: 6, borderRadius: 3, background: 'linear-gradient(120deg, #e3f2fd 0%, #fce4ec 100%)' }}>
+                            <Typography variant="h6" sx={{ fontWeight: 700, color: '#1976d2', mb: 2 }}>Country of Manufacture</Typography>
                             <ResponsiveContainer width="100%" height={400}>
                                 <BarChart data={countryData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                                    <CartesianGrid strokeDasharray="3 3" />
-                                    <XAxis dataKey="country_of_manufacture" />
-                                    <YAxis />
-                                    <Tooltip cursor={{ fill: 'rgba(0, 0, 0, 0.1)' }} />
-                                    <Legend verticalAlign="top" height={36} />
-                                    <Bar dataKey="count" fill="#8884d8" barSize={30} />
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#bdbdbd" />
+                                    <XAxis dataKey="country_of_manufacture" stroke="#1976d2" fontSize={13} />
+                                    <YAxis stroke="#1976d2" fontSize={13} />
+                                    <Tooltip cursor={{ fill: 'rgba(25, 118, 210, 0.08)' }} contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }} />
+                                    <Legend verticalAlign="top" height={36} iconType="circle" />
+                                    <Bar dataKey="count" fill="#1976d2" barSize={30} radius={[8, 8, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>
                         </Paper>
                     </Box>
 
                     <Box sx={{ flex: 1, minWidth: 300 }}>
-                        <Paper sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
-                            <Typography variant="h6">Product Types</Typography>
+                        <Paper sx={{ p: 2, boxShadow: 6, borderRadius: 3, background: 'linear-gradient(120deg, #fce4ec 0%, #e3f2fd 100%)' }}>
+                            <Typography variant="h6" sx={{ fontWeight: 700, color: '#d32f2f', mb: 2 }}>Product Types</Typography>
                             <ResponsiveContainer width="100%" height={400}>
                                 <PieChart>
-                                    <Pie data={productTypeData} cx="50%" cy="50%" outerRadius={80} fill="#8884d8" dataKey="value" label>
+                                    <Pie data={productTypeData} cx="50%" cy="50%" outerRadius={90} fill="#d32f2f" dataKey="value" label={entry => entry.name}
+                                        labelLine={false}
+                                        style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.10))' }}
+                                    >
                                         {productTypeData.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                         ))}
                                     </Pie>
-                                    <Tooltip />
+                                    <Tooltip contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }} />
+                                    <Legend verticalAlign="top" height={36} iconType="circle" />
                                 </PieChart>
                             </ResponsiveContainer>
                         </Paper>

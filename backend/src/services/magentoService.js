@@ -1,87 +1,157 @@
-const axios = require('axios');
-const NodeCache = require('node-cache'); 
 
+// Unified MagentoService using shared node-cache from config/magento.js
+
+const { getMagentoToken } = require('../config/magento');
+let gotPromise = null;
+
+// Helper to dynamically import got (ESM in CommonJS)
+async function getGot() {
+    if (!gotPromise) {
+        gotPromise = import('got').then(mod => mod.default);
+    }
+    return gotPromise;
+}
+
+/**
+ * MagentoService using got for robust, high-performance HTTP requests.
+ * - Native retry, timeout, and hook support
+ * - Handles token-based Magento auth (admin/user tokens)
+ * - Works with REST and GraphQL endpoints
+ * - Supports streams and form data
+ */
 class MagentoService {
-    static instance = null;
-    static token = null;
-
     constructor(config) {
-        if (MagentoService.instance) {
-            return MagentoService.instance;
-        }
-
+        this.config = config;
         this.url = config.url;
-        this.username = config.username;
-        this.password = config.password;
-        this.token = MagentoService.token; // Reuse token if available
-
-        MagentoService.instance = this;
     }
 
-    async getMagentoToken(forceRefresh = false) {
-        if (MagentoService.token && !forceRefresh) {
-            console.log("✅ Using existing Magento token.");
-            return MagentoService.token;
-        }
+    // Always use the shared node-cache for Magento token
 
-        console.log("🔑 Fetching new Magento token...");
-        try {
-            const response = await axios.post(`${this.url}/V1/integration/admin/token`, {
-                username: this.username,
-                password: this.password
-            });
-            MagentoService.token = response.data;
-            return response.data;
-        } catch (error) {
-            console.error("❌ Error fetching Magento token:", error.response?.data || error.message);
-            throw error;
-        }
+    async getToken(forceRefresh = false) {
+        // Always use the shared node-cache for Magento token
+        return getMagentoToken(this.config);
     }
 
-    async request(method, endpoint, data = null) {
-        if (!MagentoService.token) {
-            await this.getMagentoToken();
-        }
-
+    /**
+     * Generic request method using got
+     * @param {string} method - HTTP method (get, post, put, delete)
+     * @param {string} endpoint - Magento REST/GraphQL endpoint (with query string if needed)
+     * @param {object} [data] - Body data for POST/PUT
+     * @param {object} [customHeaders] - Additional headers
+     * @param {object} [options] - Additional got options (timeout, retry, hooks, etc)
+     */
+    async request(method, endpoint, data = null, customHeaders = {}, options = {}) {
+        const token = await this.getToken();
         const headers = {
-            Accept: "*/*",
-            Authorization: `Bearer ${MagentoService.token}`,
-            "User-Agent": "Techno-ETL",
-            "Content-Type": "application/json",
-            connection: "keep-alive",
-            "Accept-Encoding": "gzip, deflate, br",
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'User-Agent': 'Techno',
+            ...customHeaders
         };
-
+        const got = await getGot();
+        // Remove all hooks and retry logic, keep it simple
+        let baseUrl = this.url;
+        let path = endpoint;
+        if (baseUrl.endsWith('/')) baseUrl = baseUrl.slice(0, -1);
+        if (path.startsWith('/')) path = path.slice(1);
+        if (!/^V1\b|^rest\/V1\b|^async\//.test(path)) {
+            path = 'V1/' + path;
+        }
+        const url = `${baseUrl}/${path}`;
+        const gotOptions = {
+            method,
+            headers,
+            throwHttpErrors: false,
+            ...options
+        };
+        if (data) {
+            gotOptions.json = data;
+        }
+        let response;
         try {
-            const response = await axios({
-                method,
-                url: `${this.url}${endpoint}`,
-                data,
-                headers
-            });
-            return response.data;
+            response = await got(url, gotOptions);
         } catch (error) {
-            console.error(`❌ Magento API Error (${method} ${endpoint}):`, error.response?.data || error.message);
+            // Network or got error
             throw error;
+        }
+        // If Magento returns an error status, throw with message
+        if (response.statusCode >= 400) {
+            let magentoError;
+            try {
+                magentoError = typeof response.body === 'string' ? JSON.parse(response.body) : response.body;
+            } catch (e) {
+                magentoError = response.body;
+            }
+            throw new Error((magentoError && magentoError.message) || `Magento API Error: ${response.statusCode}`);
+        }
+        try {
+            return typeof response.body === 'string' ? JSON.parse(response.body) : response.body;
+        } catch (e) {
+            return response.body;
         }
     }
 
-    async get(endpoint, params = {}) {
-        return this.request("get", endpoint, { params });
+    // Logging hooks (can be extended or replaced)
+    logRequest(options) {
+        if (!options) return options;
+        const { method, url, headers } = options;
+        console.log(`[MagentoService] ${method} ${url} - Request`, headers);
+        return options;
+    }
+    logResponse(response) {
+        if (!response) return response;
+        const { statusCode, url } = response;
+        console.log(`[MagentoService] ${statusCode} ${url} - Response`);
+        return response;
+    }
+    logError(error, method, endpoint, statusCode) {
+        if (!error) return;
+        // Log full error object for debugging
+        console.error(`[MagentoService][LOG_ERROR]`, {
+            method,
+            endpoint,
+            statusCode,
+            errorMessage: error.message || error,
+            errorObject: error,
+            stack: error.stack
+        });
+    }
+    logSuccess(method, endpoint, ms, statusCode) {
+        console.log(`[MagentoService] SUCCESS ${method} ${endpoint} (${statusCode}) - ${ms}ms`);
     }
 
-    async post(endpoint, data) {
-        return this.request("post", endpoint, data);
+    /**
+     * GET request (endpoint should include query string if needed)
+     * @param {string} endpointWithQuery
+     * @param {object} [options] - got options
+     */
+    async get(endpointWithQuery, options = {}) {
+        return this.request('GET', endpointWithQuery, null, {}, options);
     }
 
-    async put(endpoint, data) {
-        return this.request("put", endpoint, data);
+    /**
+     * POST request
+     */
+    async post(endpoint, data, options = {}) {
+        return this.request('POST', endpoint, data, {}, options);
     }
 
-    async delete(endpoint) {
-        return this.request("delete", endpoint);
+    /**
+     * PUT request
+     */
+    async put(endpoint, data, options = {}) {
+        return this.request('PUT', endpoint, data, {}, options);
+    }
+
+    /**
+     * DELETE request
+     */
+    async delete(endpoint, options = {}) {
+        return this.request('DELETE', endpoint, null, {}, options);
     }
 }
 
+// Export the unified service
 module.exports = MagentoService;
 

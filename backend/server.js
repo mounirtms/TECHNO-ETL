@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const axios = require('axios');
 const router = require('./src/utils/routes');
 const cron = require('node-cron');
 const { createMdmPool, createCegidPool, createMdm360Pool, getPool } = require('./src/utils/database');
@@ -21,11 +20,14 @@ app.use(cors({
 
 app.use(express.json()); // Middleware to parse JSON requests
 
+// Magento config and token cache utilities
 const {
     cloudConfig,
     betaConfig,
     getMagentoToken
 } = require('./src/config/magento');
+
+// Always use getMagentoToken for token retrieval in backend services
 const sourceMapping = require('./src/config/sources');
 
 app.use(express.json()); // Enable parsing JSON request bodies
@@ -315,14 +317,14 @@ function authenticateToken(req, res, next) {
     })
 }
 
+// Connect to all required databases and prefetch Magento token (cached)
 async function connectToDatabases() {
     try {
-
         await createMdmPool(mdmdbConfig); // Call createMdmPool with config
         //await createMdm360Pool(mdm360dbConfig); // Call createMdmPool with config
         //await createCegidPool(cegiddbConfig) // Pass dbConfig to createCegidPool
-        //await getMagentoToken(cloudConfig);
-
+        // Prefetch Magento token and store in cache for later use
+        await getMagentoToken(cloudConfig);
     } catch (err) {
         console.error('Database connection failed:', err);
     }
@@ -365,6 +367,13 @@ router.post('/sync-all-source', async (req, res) => {
     }
 });
 
+router.post('api/mdm/inventory/sync-all-stocks-sources', async (req, res) => {
+    try {
+        await inventorySync();
+    } catch (error) {
+
+    }
+});
 
 
 function delay(ms) {
@@ -443,17 +452,20 @@ async function syncPrices() {
 
 }
 
+async function inventorySync() {
+    await syncStocks();
+    await syncSources();
+    await syncSuccess();
+}
+
 // Main function to run the operations
 async function main() {
     await connectToDatabases();
 
-   // cron.schedule('0 2 * * *', async () => {
+    cron.schedule('0 2 * * *', async () => {
         await syncPrices();
-        await syncStocks();
-        await syncSources();
-        
-        await syncSuccess();
-    //});
+        await inventorySync();
+    });
 
 
     //const allSchemas = await getAllTableSchemas();

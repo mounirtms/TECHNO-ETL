@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite && npm run server",
     "backend": "node --inspect-brk backend/server.js",
-    "server": "node backend/server.js",
+    "server": "nodemon backend/server.js",
     "authServer": "nodemon backend/authServer.js",
     "build": "vite build && npm run copy-backend && npm run copy-docs",
     "prebuild": "node scripts/updateVersion.js",

@@ -243,25 +243,41 @@ const MDMProductsGrid = () => {
         }
     };
 
+    // Sync all for a specific source (prices)
     const onSyncAllHandler = async () => {
         if (sourceFilter === 'all' || !sourceFilter) {
             toast.warning('Please select a specific source to sync all items.');
             return;
         }
-
         try {
             setLoading(true);
-            toast.info(`Initiating sync for all items from source: ${sourceFilter}. This may take a while...`);
-
-            // This endpoint triggers a background job on the server to sync all items for a given source
+            toast.info(<SyncProgressToast current={0} total={0} />, { autoClose: false, closeOnClick: false, draggable: false });
             await axios.post('http://localhost:5000/api/mdm/inventory/sync-all-source', {
                 sourceCode: sourceFilter
             });
-
+            toast.dismiss();
             toast.success(`Sync for source ${sourceFilter} initiated. The process is running in the background.`);
         } catch (error) {
+            toast.dismiss();
             console.error('Sync all failed:', error);
             toast.error(`Failed to initiate sync for source ${sourceFilter}.`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Sync all stock (no sourceCode param)
+    const onSyncAllStockHandler = async () => {
+        try {
+            setLoading(true);
+            toast.info(<SyncProgressToast current={0} total={0} />, { autoClose: false, closeOnClick: false, draggable: false });
+            await axios.post('http://localhost:5000/api/mdm/inventory/sync-all-source');
+            toast.dismiss();
+            toast.success('Sync for all stock initiated. The process is running in the background.');
+        } catch (error) {
+            toast.dismiss();
+            console.error('Sync all stock failed:', error);
+            toast.error('Failed to initiate sync for all stock.');
         } finally {
             setLoading(false);
         }
@@ -346,7 +362,7 @@ const MDMProductsGrid = () => {
             getRowId={(row) => `${row.Source}-${row.Code_MDM}`}
             loading={loading}
             getRowClassName={getRowClassName}
-            onRefresh={fetchProducts} // This will now include sorting & filtering
+            onRefresh={fetchProducts}
             toolbarProps={{
                 succursaleOptions,
                 currentSuccursale: succursaleFilter,
@@ -358,7 +374,8 @@ const MDMProductsGrid = () => {
                 onSyncHandler: onSyncHandler,
                 canSyncAll: sourceFilter !== 'all',
                 onSyncAllHandler: onSyncAllHandler,
-                onSyncStocksHandler, // Pass the new handler to the toolbar
+                onSyncAllStockHandler: onSyncAllStockHandler, // NEW: pass handler for all stock
+                onSyncStocksHandler,
                 showChangedOnly,
                 setShowChangedOnly
             }}

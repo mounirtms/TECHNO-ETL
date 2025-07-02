@@ -4,7 +4,14 @@ const MagentoService = require('../services/magentoService'); // Magento API wra
 const sourceMapping = require('../config/sources');
 const { cloudConfig } = require('../config/magento');
 
+
 let magento = new MagentoService(cloudConfig); // ✅ Reuse Singleton Instance
+
+// Helper: Only add searchCriteria for endpoints that support it
+function shouldAddSearchCriteria(endpoint) {
+  // Add more endpoints as needed
+  return /V1\/(products|orders|customers|categories|cms|stockItems|inventory\/source-items)/.test(endpoint);
+}
 
 async function syncInventoryToMagento(req) {
   try {
@@ -24,10 +31,10 @@ async function syncInventoryToMagento(req) {
         .map(item => {
           const sourceInfo = sourceMapping.getAllSources().find(s => s.code_source === item.Code_Source);
           return {
-          sku: item.Code_MDM.toString(),
+            sku: item.Code_MDM.toString(),
             source_code: sourceInfo?.magentoSource || '',
-          quantity: Math.max(0, Number(item.QteStock) || 0),
-          status: (Number(item.QteStock) || 0) > 0 ? 1 : 0
+            quantity: Math.max(0, Number(item.QteStock) || 0),
+            status: (Number(item.QteStock) || 0) > 0 ? 1 : 0
           };
         })
         .filter(item => item.source_code); // Remove items with invalid source codes
@@ -37,9 +44,9 @@ async function syncInventoryToMagento(req) {
         for (let i = 0; i < sourceItems.length; i += batchSize) {
           const batch = sourceItems.slice(i, i + batchSize);
           console.log(`🚀 Syncing batch (${i + 1}-${Math.min(i + batchSize, sourceItems.length)})...`);
-
           try {
-            const response = await magento.post("V1/inventory/source-items", { sourceItems: batch });
+            // Bulk endpoint, no searchCriteria
+            const response = await magento.post("V1/inventory/source-items", { sourceItems: batch }); // Remove leading slash from endpoint
             console.log("✅ Batch Synced Successfully:", response);
             totalSynced += batch.length;
           } catch (error) {
@@ -53,8 +60,8 @@ async function syncInventoryToMagento(req) {
       data = nextBatch.data;
     }
 
-    console.log(`🎉 Successfully synced ${totalSynced} items.`); 
-  }  catch (error) {  
+    console.log(`🎉 Successfully synced ${totalSynced} items.`);
+  } catch (error) {
     console.error("❌ Error syncing inventory:", error);
     throw error;
   }
@@ -63,15 +70,14 @@ async function syncInventoryToMagento(req) {
 async function syncPricesToMagento(req) {
   try {
     const priceData = req.body;
-    const endpoint = "/async/bulk/V1/products";
-
+    // Use Magento's async bulk endpoint for prices
+    const endpoint = "async/bulk/V1/products"; // Remove leading slash from endpoint
     console.log("📦 Sending bulk price update...");
     const response = await magento.post(endpoint, priceData);
     console.log("✅ Prices Synced Successfully:", response);
-
     return response.data;
   } catch (error) {
-    console.error("❌ Error syncing prices:", error);
+    console.error("❌ Error syncing prices:", error.response?.data || error.message);
     throw error;
   }
 }

@@ -5,6 +5,7 @@ import {
     Typography,
     Button,
     CircularProgress,
+    Backdrop,
     Alert,
     TextField,
     useTheme,
@@ -275,7 +276,7 @@ const LoginPage = () => {
                             sx={{ mt: 2, mb: 2 }}
                             disabled={loading}
                         >
-                            {loading ? <CircularProgress size={24} /> : 'Sign In'}
+                            Sign In
                         </Button>
                     </Box>
 
@@ -304,6 +305,19 @@ const LoginPage = () => {
                     
                 </LoginCard>
             </LoginContainer>
+
+            {/* Full-screen loading spinner backdrop */}
+            <Backdrop
+                sx={{
+                    color: '#fff',
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                    backdropFilter: 'blur(3px)',
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
 
             <Footer isLoginScreen={true} />
         </Box>

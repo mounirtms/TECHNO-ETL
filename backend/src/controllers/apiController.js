@@ -24,40 +24,36 @@ exports.getCegiData = async (req, res) => {
     }
 };
 
-function buildSearchParams(params = {}) {
-    const searchParams = new URLSearchParams();
 
-    // Ensure searchCriteria is present
-    searchParams.append("searchCriteria", "");
 
-    // Pagination
-    if (params.pageSize) {
-        searchParams.append("searchCriteria[pageSize]", params.pageSize);
-    }
-    if (params.currentPage) {
-        searchParams.append("searchCriteria[currentPage]", params.currentPage);
-    }
-
-    // Sorting
-    if (params.sortOrders) {
-        params.sortOrders.forEach((sort, index) => {
-            searchParams.append(`searchCriteria[sortOrders][${index}][field]`, sort.field);
-            searchParams.append(`searchCriteria[sortOrders][${index}][direction]`, sort.direction);
-        });
-    }
-
-    // Filters
-    if (params.filterGroups) {
-        params.filterGroups.forEach((group, groupIndex) => {
-            group.filters.forEach((filter, filterIndex) => {
-                searchParams.append(`searchCriteria[filterGroups][${groupIndex}][filters][${filterIndex}][field]`, filter.field);
-                searchParams.append(`searchCriteria[filterGroups][${groupIndex}][filters][${filterIndex}][value]`, filter.value);
-                searchParams.append(`searchCriteria[filterGroups][${groupIndex}][filters][${filterIndex}][condition_type]`, filter.conditionType || 'eq');
+// Helper: Recursively flatten params for Magento (searchCriteria, arrays, objects)
+function flattenMagentoParams(obj, urlParams, prefix = '') {
+    for (const key in obj) {
+        if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
+        const value = obj[key];
+        const paramKey = prefix ? `${prefix}[${key}]` : key;
+        if (value === undefined || value === null || value === '') continue;
+        if (typeof value === 'object' && !Array.isArray(value)) {
+            flattenMagentoParams(value, urlParams, paramKey);
+        } else if (Array.isArray(value)) {
+            value.forEach((item, idx) => {
+                if (typeof item === 'object') {
+                    flattenMagentoParams(item, urlParams, `${paramKey}[${idx}]`);
+                } else {
+                    urlParams.append(`${paramKey}[${idx}]`, item);
+                }
             });
-        });
+        } else {
+            urlParams.append(paramKey, value);
+        }
     }
+}
 
-    return searchParams.toString();
+function buildMagentoQueryString(query = {}) {
+    if (typeof query === 'string') return query;
+    const params = new URLSearchParams();
+    flattenMagentoParams(query, params);
+    return params.toString();
 }
 
 let magentoService = null;
@@ -65,27 +61,33 @@ let magentoService = null;
 exports.proxyMagentoRequest = async (req, res) => {
     try {
         const { method, query, body } = req;
-        const endpoint = req.originalUrl.replace("/api/magento", "");
+        // Remove any double slashes in the endpoint path
+        let endpoint = req.originalUrl.replace("/api/magento", "").replace(/\/+/g, "/");
 
         if (!magentoService) {
             magentoService = new MagentoService(cloudConfig);
         }
 
         let response;
-        const formattedParams = buildSearchParams(query);
-
-        if (endpoint.includes('admin/token')) {
-            let username = body.username.replace("@techno-dz.com", "");
-            response = await magentoService.getMagentoToken(true);
-            return res.json(response);
+        let endpointWithQuery = endpoint;
+        // Only build query string if not already present in endpoint
+        if (method.toLowerCase() === 'get' && Object.keys(query).length > 0 && !endpoint.includes('?')) {
+            const queryString = buildMagentoQueryString(query);
+            endpointWithQuery = endpoint + (queryString ? '?' + queryString : '');
         }
 
-        console.log("Endpoint:", endpoint);
-        console.log("Formatted Params:", formattedParams);
+        if (endpoint.includes('admin/token')) {
+            response = await magentoService.getToken(true);
+            return res.json(response);
+        }else{
+            debugger
+        }
+
+        console.log("Endpoint:", endpointWithQuery);
 
         switch (method.toLowerCase()) {
             case "get":
-                response = await magentoService.get(endpoint, formattedParams);
+                response = await magentoService.get(endpointWithQuery);
                 break;
             case "post":
                 response = await magentoService.post(endpoint, body);

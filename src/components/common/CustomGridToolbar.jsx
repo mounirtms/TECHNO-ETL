@@ -201,9 +201,9 @@ const CustomGridToolbar = ({
             </Button>
           </Tooltip>
         )}
-        {/* Sync Stocks Button (before Sync) */}
+        {/* Sync Stocks Button (mark changed) */}
         {typeof onSyncStocksHandler === 'function' && canSyncAll && (
-          <Tooltip title="Sync Stocks (mark changed)">
+          <Tooltip title="Mark changed stocks for sync (selected source)">
             <Button
               variant="outlined"
               size="small"
@@ -211,7 +211,23 @@ const CustomGridToolbar = ({
               sx={toolbarButtonStyle}
               startIcon={<AutorenewIcon />}
             >
-              Sync Stocks
+              Mark Changed Stocks
+            </Button>
+          </Tooltip>
+        )}
+
+        {/* Sync All Stock Button (no source) */}
+        {typeof onSyncAllStockHandler === 'function' && (
+          <Tooltip title="Sync all stock (all sources)">
+            <Button
+              variant="contained"
+              color="secondary"
+              size="small"
+              onClick={onSyncAllStockHandler}
+              sx={toolbarButtonStyle}
+              startIcon={<SyncIcon />}
+            >
+              Sync All Stock
             </Button>
           </Tooltip>
         )}
