@@ -7,13 +7,13 @@ const columns = [
     {
         field: 'source_code',
         headerName: 'Source Code',
-        width: 150,
+        width: 250,
         flex: 1
     },
     {
         field: 'name',
         headerName: 'Name',
-        width: 200,
+        width: 400,
         flex: 1
     },
     {

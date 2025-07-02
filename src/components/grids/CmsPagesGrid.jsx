@@ -53,7 +53,7 @@ const CmsPage = () => {
                     pageSize: 10,
                     sortOrders: [{ field: 'creation_time', direction: 'DESC' }],
                     filterGroups: [{
-                        filters: [{ field: 'is_active', value: '1', condition_type: 'eq' }]
+                        filters: [{ field: 'is_active', value: '1', conditionType: 'eq' }]
                     }]
                 }
             });

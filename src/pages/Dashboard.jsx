@@ -17,7 +17,6 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import arLocale from 'date-fns/locale/ar-SA';
 import { StatsCards } from '../components/common/StatsCards';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
-    const [chartType, setChartType] = useState('line'); // 'line' or 'bar'
 import { PieChart, Pie, Cell } from 'recharts';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PeopleIcon from '@mui/icons-material/People';
@@ -123,6 +122,7 @@ const getDefaultDateRange = () => {
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6699', '#FF33CC'];
 
+
 const Dashboard = () => {
     const theme = useTheme();
     const defaultRange = getDefaultDateRange();
@@ -137,6 +137,7 @@ const Dashboard = () => {
     const [countryData, setCountryData] = useState([]);
     const [productTypeData, setProductTypeData] = useState([]);
     const [excelData, setExcelData] = useState(null);
+    const [chartType, setChartType] = useState('line'); // 'line' or 'bar'
 
     const onDrop = useCallback((acceptedFiles) => {
         const file = acceptedFiles[0];

@@ -141,7 +141,11 @@ const CategoryGrid = ({ productId }) => {
                 { value: true, label: 'Active' },
                 { value: false, label: 'Inactive' }
             ],
-            valueFormatter: (params) => params.value ? 'Active' : 'Inactive'
+            valueFormatter: (params) => {
+                // Defensive: handle undefined params or params.value
+                if (!params || typeof params.value === 'undefined' || params.value === null) return '';
+                return params.value ? 'Active' : 'Inactive';
+            }
         }
     ];
 

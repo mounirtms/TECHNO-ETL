@@ -262,8 +262,34 @@ export const generateColumns = (firstRecord = {}, childColumns = []) => {
         return baseColumn;
     });
 
-    // Merge and deduplicate columns
-    const mergedColumns = mergeColumns(childColumns, autoColumns);
+    // Add a column to show full object for any object cell (like in OrdersGrid)
+    const objectColumns = Object.keys(firstRecord)
+        .filter(key => typeof firstRecord[key] === 'object' && firstRecord[key] !== null)
+        .map(key => ({
+            field: key,
+            headerName: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+            width: 120,
+            renderCell: (params) => {
+                const value = params.value;
+                if (typeof value === 'object' && value !== null) {
+                    return (
+                        <span
+                            style={{ color: '#1976d2', cursor: 'pointer', textDecoration: 'underline' }}
+                            onClick={e => {
+                                e.stopPropagation();
+                                window.alert(JSON.stringify(value, null, 2));
+                            }}
+                        >
+                            [View]
+                        </span>
+                    );
+                }
+                return String(value);
+            }
+        }));
+
+    // Merge and deduplicate columns, including objectColumns
+    const mergedColumns = mergeColumns(childColumns, [...autoColumns, ...objectColumns]);
 
     // Save as default columns for this grid
     if (childColumns.length > 0) {

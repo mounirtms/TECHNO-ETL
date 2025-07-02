@@ -12,7 +12,8 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } 
 const OrdersGrid = () => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
-    const [filters, setFilters] = useState({});
+    // Use an array for filters to match Magento API expectations
+    const [filters, setFilters] = useState([]);
     const [currentFilter, setCurrentFilter] = useState('last7d');
     const [stats, setStats] = useState({
         totalOrders: 0,
@@ -35,43 +36,46 @@ const OrdersGrid = () => {
         { value: 'holded', label: 'On Hold' }
     ];
 
-    const columns = useMemo(() => generateColumns(data[0] || {}, [
-        {
-            field: 'increment_id',
-            headerName: 'Order #',
-            width: 130,
-            hideable: false
-        },
-        {
-            field: 'customer_firstname',
-            headerName: 'Customer Name',
-            width: 200,
-            hideable: false,
-            valueGetter: (params) =>
-                `${params.row.customer_firstname || ''} ${params.row.customer_lastname || ''}`
-        },
-        {
-            field: 'grand_total',
-            headerName: 'Total',
-            width: 130,
-            type: 'money',
-            hideable: false
-        },
-        getStatusColumn('status', {
-            pending: 'warning',
-            processing: 'info',
-            complete: 'success',
-            canceled: 'error',
-            holded: 'default'
-        }),
-        {
-            field: 'created_at',
-            headerName: 'Order Date',
-            width: 180,
-            type: 'date',
-            hideable: false
-        }
-    ]), [data]);
+    const columns = useMemo(() => {
+        // Always provide a fallback columns array for empty data
+        const baseColumns = [
+            {
+                field: 'increment_id',
+                headerName: 'Order #',
+                width: 120,
+                hideable: false
+            },
+          
+            
+            {
+                field: 'grand_total',
+                headerName: 'Total',
+                width: 110,
+                type: 'money',
+                hideable: false
+            },
+            getStatusColumn('status', {
+                pending: 'warning',
+                processing: 'info',
+                complete: 'success',
+                canceled: 'error',
+                holded: 'default'
+            }),
+            {
+                field: 'created_at',
+                headerName: 'Order Date',
+                width: 160,
+                type: 'date',
+                hideable: false,
+                valueGetter: (params) => {
+                    const value = params?.row?.created_at;
+                    return value ? new Date(value) : null;
+                }
+            },
+        
+        ];
+        return generateColumns(data && data.length > 0 ? data[0] : {}, baseColumns);
+    }, [data]);
 
     const handleEditClick = (order) => {
         setSelectedOrder(order);
@@ -125,34 +129,44 @@ const OrdersGrid = () => {
         setFilters(filterParams);
     }, []);
 
-    const fetchOrders = useCallback(async ({ page = 0, pageSize = 10 }) => {
+    const fetchOrders = useCallback(async ({ page = 0, pageSize = 10 } = {}) => {
         try {
             setLoading(true);
             const response = await magentoApi.getOrders({
                 currentPage: page + 1,
                 pageSize,
-                filterGroups: filters.length > 0 ? [{ filters }] : []
+                filterGroups: filters.length > 0 ? [{ filters: filters.map(f => ({
+                    field: f.field,
+                    value: f.value,
+                    conditionType: f.operator === 'equals' ? 'eq' : (f.operator === 'gt' ? 'gt' : 'eq')
+                })) }] : []
             });
 
-            if (response?.data?.items) {
-                const orders = response.data.items;
-                setData(orders);
-
-                // Calculate stats
-                const newStats = orders.reduce((acc, order) => ({
-                    totalOrders: acc.totalOrders + 1,
-                    processingOrders: acc.processingOrders + (order.status === 'processing' ? 1 : 0),
-                    completedOrders: acc.completedOrders + (order.status === 'complete' ? 1 : 0),
-                    canceledOrders: acc.canceledOrders + (order.status === 'canceled' ? 1 : 0)
-                }), {
-                    totalOrders: 0,
-                    processingOrders: 0,
-                    completedOrders: 0,
-                    canceledOrders: 0
-                });
-
-                setStats(newStats);
+            // Accept both response.items and response.data.items
+            let orders = [];
+            if (Array.isArray(response?.items)) {
+                orders = response.items;
+            } else if (Array.isArray(response?.data?.items)) {
+                orders = response.data.items;
+            } else if (Array.isArray(response)) {
+                orders = response;
             }
+            setData(Array.isArray(orders) ? orders : []);
+
+            // Calculate stats
+            const newStats = orders.reduce((acc, order) => ({
+                totalOrders: acc.totalOrders + 1,
+                processingOrders: acc.processingOrders + (order.status === 'processing' ? 1 : 0),
+                completedOrders: acc.completedOrders + (order.status === 'complete' ? 1 : 0),
+                canceledOrders: acc.canceledOrders + (order.status === 'canceled' ? 1 : 0)
+            }), {
+                totalOrders: 0,
+                processingOrders: 0,
+                completedOrders: 0,
+                canceledOrders: 0
+            });
+
+            setStats(newStats);
         } catch (error) {
             console.error('Error fetching orders:', error);
         } finally {
@@ -196,12 +210,24 @@ const OrdersGrid = () => {
         }
     ];
 
+    // Default filter: last 7 days
     useEffect(() => {
-        fetchOrders({ page: 0, pageSize: 10 });
+        if (filters.length === 0) {
+            const now = new Date();
+            setFilters([
+                {
+                    field: 'created_at',
+                    value: new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString(),
+                    operator: 'gt'
+                }
+            ]);
+        } else {
+            fetchOrders({ page: 0, pageSize: 10 });
+        }
     }, [filters, fetchOrders]);
 
     return (
-        <>
+        <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'column' }}>
             <BaseGrid
                 gridName="OrdersGrid"
                 columns={columns}
@@ -242,7 +268,7 @@ const OrdersGrid = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </>
+        </Box>
     );
 };
 

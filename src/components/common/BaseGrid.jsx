@@ -197,6 +197,7 @@ const BaseGrid = ({
                     currentCustomFilter={currentFilter}
                     onCustomFilterChange={handleFilterChange}
                     gridName={gridName}
+                    
                     columns={finalColumns}
                     onOpenSettings={() => setSettingsDialogOpen(true)}
                     selectedCount={selectedRows.length}
