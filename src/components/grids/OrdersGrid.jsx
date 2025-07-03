@@ -45,8 +45,6 @@ const OrdersGrid = () => {
                 width: 120,
                 hideable: false
             },
-          
-            
             {
                 field: 'grand_total',
                 headerName: 'Total',
@@ -60,21 +58,18 @@ const OrdersGrid = () => {
                 complete: 'success',
                 canceled: 'error',
                 holded: 'default'
-            }),
-            {
-                field: 'created_at',
-                headerName: 'Order Date',
-                width: 160,
-                type: 'date',
-                hideable: false,
-                valueGetter: (params) => {
-                    const value = params?.row?.created_at;
-                    return value ? new Date(value) : null;
-                }
-            },
-        
+            })
         ];
-        return generateColumns(data && data.length > 0 ? data[0] : {}, baseColumns);
+        try {
+            return generateColumns(data && data.length > 0 ? data[0] : {}, baseColumns);
+        } catch (err) {
+            // Defensive: log error and fallback to baseColumns
+            // eslint-disable-next-line no-console
+            if (process.env.NODE_ENV !== 'production') {
+                console.error('Error generating columns for OrdersGrid:', err);
+            }
+            return baseColumns;
+        }
     }, [data]);
 
     const handleEditClick = (order) => {
@@ -168,7 +163,10 @@ const OrdersGrid = () => {
 
             setStats(newStats);
         } catch (error) {
-            console.error('Error fetching orders:', error);
+            // Defensive: log error only in development
+            if (process.env.NODE_ENV !== 'production') {
+                console.error('Error fetching orders:', error);
+            }
         } finally {
             setLoading(false);
         }

@@ -11,23 +11,14 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 const columns = (data = []) => generateColumns(data[0] || {}, [
   
     { field: 'email', headerName: 'Email', width: 200 },
- 
-   
-   
-    getStatusColumn('is_active', {
-        1: 'success',
-        0: 'error'
-    }, {
-        1: 'Active',
-        0: 'Inactive'
-    })
-    // You can add more columns for addresses, custom_attributes, etc.
+  
 ]);
+
 
 const CustomersGrid = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [filters, setFilters] = useState([]);
+    const [filterModel, setFilterModel] = useState({ items: [] });
     const [currentFilter, setCurrentFilter] = useState('all');
 
     const filterOptions = [
@@ -38,36 +29,46 @@ const CustomersGrid = () => {
         { value: 'last30d', label: 'Registered Last 30 Days' }
     ];
 
+    // Map filterModel.items to API filters
+    const getApiFilters = (items) => {
+        return (items || []).map(f => ({
+            field: f.field,
+            value: f.value,
+            operator: f.operator
+        }));
+    };
+
     const handleFilterChange = useCallback((filter) => {
         setCurrentFilter(filter);
-        let filterParams = [];
+        let items = [];
         const now = new Date();
         switch (filter) {
             case 'active':
-                filterParams.push({ field: 'is_active', operator: 'equals', value: 1 });
+                items.push({ field: 'is_active', operator: 'equals', value: 1 });
                 break;
             case 'inactive':
-                filterParams.push({ field: 'is_active', operator: 'equals', value: 0 });
+                items.push({ field: 'is_active', operator: 'equals', value: 0 });
                 break;
             case 'last7d':
-                filterParams.push({ field: 'created_at', operator: 'gt', value: new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString() });
+                items.push({ field: 'created_at', operator: 'gt', value: new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString() });
                 break;
             case 'last30d':
-                filterParams.push({ field: 'created_at', operator: 'gt', value: new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString() });
+                items.push({ field: 'created_at', operator: 'gt', value: new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString() });
                 break;
             default:
                 break;
         }
-        setFilters(filterParams);
+        setFilterModel({ items });
     }, []);
 
     const fetchCustomers = useCallback(async ({ page = 0, pageSize = 10 } = {}) => {
         try {
             setLoading(true);
+            const apiFilters = getApiFilters(filterModel.items);
             const response = await magentoApi.getCustomers({
                 currentPage: page + 1,
                 pageSize,
-                filterGroups: filters.length > 0 ? [{ filters: filters.map(f => ({
+                filterGroups: apiFilters.length > 0 ? [{ filters: apiFilters.map(f => ({
                     field: f.field,
                     value: f.value,
                     conditionType: f.operator === 'equals' ? 'eq' : (f.operator === 'gt' ? 'gt' : 'eq')
@@ -79,15 +80,15 @@ const CustomersGrid = () => {
         } finally {
             setLoading(false);
         }
-    }, [filters]);
+    }, [filterModel]);
 
     useEffect(() => {
-        if (filters.length === 0 && currentFilter === 'all') {
-            setFilters([]);
+        if (filterModel.items.length === 0 && currentFilter === 'all') {
+            setFilterModel({ items: [] });
         } else {
             fetchCustomers({ page: 0, pageSize: 10 });
         }
-    }, [filters, fetchCustomers, currentFilter]);
+    }, [filterModel, fetchCustomers, currentFilter]);
 
     // Stats
     const activeCustomers = data.filter(customer => customer.is_active === 1).length;
@@ -131,6 +132,7 @@ const CustomersGrid = () => {
             filterOptions={filterOptions}
             currentFilter={currentFilter}
             onFilterChange={handleFilterChange}
+            filterModel={filterModel}
             getRowId={(row) => row.entity_id || row.id}
             defaultSortModel={[
                 { field: 'registration_date', sort: 'desc' }

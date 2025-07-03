@@ -127,8 +127,8 @@ const isStatus = (key, value) => {
 export const getDateColumn = (field, options = {}) => ({
     field,
     type: 'date',
-    valueFormatter: (params) =>
-        params.value ? format(new Date(params.value), DATE_FORMAT) : '',
+    valueFormatter: (date) =>
+        date ? format(new Date(date), DATE_FORMAT) : '',
     width: 180,
     ...options
 });
@@ -236,8 +236,12 @@ export const generateColumns = (firstRecord = {}, childColumns = []) => {
     if (!firstRecord || typeof firstRecord !== 'object') {
         return childColumns;
     }
+    // Build autoColumns and objectColumns, but ensure objectColumns override autoColumns for object fields
+    const objectFieldSet = new Set(Object.keys(firstRecord).filter(key => typeof firstRecord[key] === 'object' && firstRecord[key] !== null));
 
     const autoColumns = Object.keys(firstRecord).map(field => {
+        // If this is an object field, skip it here (will be handled by objectColumns)
+        if (objectFieldSet.has(field)) return null;
         const value = firstRecord[field];
         const baseColumn = {
             field,
@@ -260,35 +264,46 @@ export const generateColumns = (firstRecord = {}, childColumns = []) => {
         }
 
         return baseColumn;
-    });
+    }).filter(Boolean);
 
-    // Add a column to show full object for any object cell (like in OrdersGrid)
-    const objectColumns = Object.keys(firstRecord)
-        .filter(key => typeof firstRecord[key] === 'object' && firstRecord[key] !== null)
-        .map(key => ({
-            field: key,
-            headerName: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-            width: 120,
-            renderCell: (params) => {
-                const value = params.value;
-                if (typeof value === 'object' && value !== null) {
-                    return (
-                        <span
-                            style={{ color: '#1976d2', cursor: 'pointer', textDecoration: 'underline' }}
-                            onClick={e => {
-                                e.stopPropagation();
-                                window.alert(JSON.stringify(value, null, 2));
-                            }}
-                        >
-                            [View]
-                        </span>
-                    );
+    // Object columns: always override for object fields
+    const objectColumns = Array.from(objectFieldSet).map(key => ({
+        field: key,
+        headerName: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+        width: 120,
+        renderCell: (params) => {
+            const value = params.value;
+            if (value === null || value === undefined) return '';
+            if (typeof value === 'object') {
+                if (value instanceof Date) {
+                    return value.toLocaleString();
                 }
-                return String(value);
+                return React.createElement(
+                    'button',
+                    {
+                        style: { color: '#1976d2', cursor: 'pointer', textDecoration: 'underline', background: 'none', border: 'none', padding: 0 },
+                        onClick: (e) => {
+                            e.stopPropagation();
+                            const dialog = document.createElement('dialog');
+                            dialog.style.padding = '20px';
+                            dialog.style.maxWidth = '600px';
+                            dialog.innerHTML = `<pre style="white-space:pre-wrap;word-break:break-all;max-height:60vh;overflow:auto;">${
+                                JSON.stringify(value, null, 2)
+                            }</pre><button style="margin-top:10px;float:right;">Close</button>`;
+                            document.body.appendChild(dialog);
+                            const closeBtn = dialog.querySelector('button');
+                            closeBtn.onclick = () => { dialog.close(); dialog.remove(); };
+                            dialog.showModal();
+                        }
+                    },
+                    '[View]'
+                );
             }
-        }));
+            return String(value);
+        }
+    }));
 
-    // Merge and deduplicate columns, including objectColumns
+    // Merge and deduplicate columns, objectColumns take precedence for object fields
     const mergedColumns = mergeColumns(childColumns, [...autoColumns, ...objectColumns]);
 
     // Save as default columns for this grid
