@@ -7,7 +7,14 @@ import {
     Typography,
     useMediaQuery,
     IconButton,
-    CircularProgress
+    CircularProgress,
+    Tooltip,
+    Menu,
+    MenuItem,
+    ListItemIcon,
+    ListItemText,
+    Divider,
+    Chip
 } from '@mui/material';
 
 import { useTheme } from '@mui/material/styles';
@@ -16,8 +23,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import arLocale from 'date-fns/locale/ar-SA';
 import { StatsCards } from '../components/common/StatsCards';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PeopleIcon from '@mui/icons-material/People';
 import InventoryIcon from '@mui/icons-material/Inventory';
@@ -26,6 +32,10 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import SyncIcon from '@mui/icons-material/SyncAlt';
 import SettingsIcon from '@mui/icons-material/Settings';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import PieChartIcon from '@mui/icons-material/PieChart';
+import TableChartIcon from '@mui/icons-material/TableChart';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
 import magentoApi from '../services/magentoApi';
 import { toast } from 'react-toastify';
 import { DRAWER_WIDTH, COLLAPSED_WIDTH, HEADER_HEIGHT, FOOTER_HEIGHT, DASHBOARD_TAB_HEIGHT } from '../components/Layout/Constants';
@@ -35,6 +45,7 @@ import { useDropzone } from 'react-dropzone';
 import * as XLSX from 'xlsx';
 
 // Format currency in DZD
+
 const formatCurrency = (amount) => {
     return new Intl.NumberFormat('ar-DZ', {
         style: 'currency',
@@ -137,7 +148,33 @@ const Dashboard = () => {
     const [countryData, setCountryData] = useState([]);
     const [productTypeData, setProductTypeData] = useState([]);
     const [excelData, setExcelData] = useState(null);
-    const [chartType, setChartType] = useState('line'); // 'line' or 'bar'
+    const [chartType, setChartType] = useState('line'); // 'line', 'bar', 'pie', 'table'
+    const [settingsAnchorEl, setSettingsAnchorEl] = useState(null);
+    const [visibleCharts, setVisibleCharts] = useState({
+        orders: true,
+        customers: false,
+        products: true,
+        attributes: true
+    });
+
+    // Chart type options for menu and toolbar
+    const chartTypeOptions = [
+        { value: 'line', label: 'Line', icon: <ShowChartIcon color="primary" /> },
+        { value: 'bar', label: 'Bar', icon: <BarChartIcon color="info" /> },
+        { value: 'pie', label: 'Pie', icon: <PieChartIcon color="secondary" /> },
+        { value: 'table', label: 'Table', icon: <TableChartIcon color="action" /> }
+    ];
+
+    // Settings menu handlers
+    const handleSettingsOpen = (event) => {
+        setSettingsAnchorEl(event.currentTarget);
+    };
+    const handleSettingsClose = () => {
+        setSettingsAnchorEl(null);
+    };
+    const handleToggleChart = (chartKey) => {
+        setVisibleCharts(prev => ({ ...prev, [chartKey]: !prev[chartKey] }));
+    };
 
     const onDrop = useCallback((acceptedFiles) => {
         const file = acceptedFiles[0];
@@ -497,7 +534,10 @@ const Dashboard = () => {
                         mb: 3,
                         display: 'flex',
                         alignItems: 'center',
-                        gap: 2
+                        gap: 2,
+                        background: 'linear-gradient(90deg, #f5f7fa 0%, #c3cfe2 100%)',
+                        boxShadow: 8,
+                        borderRadius: 3
                     }}
                 >
                     <DatePicker
@@ -508,7 +548,7 @@ const Dashboard = () => {
                         slotProps={{
                             textField: {
                                 size: "small",
-                                sx: { width: 150 }
+                                sx: { width: 150, background: '#fff', borderRadius: 2 }
                             }
                         }}
                     />
@@ -520,38 +560,94 @@ const Dashboard = () => {
                         slotProps={{
                             textField: {
                                 size: "small",
-                                sx: { width: 150 }
+                                sx: { width: 150, background: '#fff', borderRadius: 2 }
                             }
                         }}
                     />
 
+                    {/* Slick Sync Buttons */}
+                    <Box sx={{ display: 'flex', gap: 1, ml: 3 }}>
+                        <Button
+                            onClick={getPrices}
+                            startIcon={<SyncIcon />}
+                            variant="contained"
+                            color="primary"
+                            sx={{
+                                px: 2.5,
+                                py: 1,
+                                borderRadius: 3,
+                                fontWeight: 700,
+                                boxShadow: '0 2px 8px rgba(25,118,210,0.10)',
+                                textTransform: 'none',
+                                background: 'linear-gradient(90deg, #1976d2 0%, #64b5f6 100%)',
+                                '&:hover': { background: 'linear-gradient(90deg, #1565c0 0%, #42a5f5 100%)' }
+                            }}
+                        >
+                            Sync Prices
+                        </Button>
+                        <Button
+                            onClick={async () => {
+                                try {
+                                    await axios.post('http://localhost:5000/api/mdm/inventory/sync-all-stocks-sources');
+                                    toast.success('Sync all sources operation started.');
+                                } catch (error) {
+                                    toast.error('Failed to sync all sources.');
+                                }
+                            }}
+                            startIcon={<SyncIcon />}
+                            variant="contained"
+                            color="success"
+                            sx={{
+                                px: 2.5,
+                                py: 1,
+                                borderRadius: 3,
+                                fontWeight: 700,
+                                boxShadow: '0 2px 8px rgba(76,175,80,0.10)',
+                                textTransform: 'none',
+                                background: 'linear-gradient(90deg, #43a047 0%, #a5d6a7 100%)',
+                                '&:hover': { background: 'linear-gradient(90deg, #388e3c 0%, #81c784 100%)' }
+                            }}
+                        >
+                            Sync Stocks
+                        </Button>
+                    </Box>
 
-               
-                       
-                        <IconButton onClick={getPrices} sx={{ ml: 'auto' }}>
-                            Sync Prices <SyncIcon />
-                        </IconButton>
-                        <IconButton onClick={async () => {
-                            try {
-                                await axios.post('http://localhost:5000/api/mdm/inventory/sync-all-stocks-sources');
-                                toast.success('Sync all sources operation started.');
-                            } catch (error) {
-                                toast.error('Failed to sync all sources.');
-                            }
-                        }}>
-                            Sync Sources <SyncIcon />
-                        </IconButton>
-                  
-
-
-
-                    <IconButton onClick={handleRefresh} disabled={loading} sx={{ ml: 'auto' }}>
-                        <RefreshIcon />
+                    {/* Refresh Button */}
+                    <IconButton
+                        onClick={handleRefresh}
+                        disabled={loading}
+                        sx={{ ml: 2, background: '#fff', borderRadius: 2, boxShadow: 2, '&:hover': { background: '#e3f2fd' } }}
+                    >
+                        <RefreshIcon color="primary" />
                     </IconButton>
 
-                    <IconButton>
-                        <SettingsIcon />
-                    </IconButton>
+                    {/* Settings Button with Menu */}
+                    <Tooltip title="Dashboard Settings" arrow>
+                        <IconButton onClick={handleSettingsOpen} sx={{ ml: 2, background: '#fff', borderRadius: 2, boxShadow: 2, '&:hover': { background: '#fce4ec' } }}>
+                            <SettingsIcon color="action" />
+                        </IconButton>
+                    </Tooltip>
+                    <Menu
+                        anchorEl={settingsAnchorEl}
+                        open={Boolean(settingsAnchorEl)}
+                        onClose={handleSettingsClose}
+                        PaperProps={{ sx: { minWidth: 240, borderRadius: 2, boxShadow: 6 } }}
+                    >
+                        <Typography variant="subtitle2" sx={{ px: 2, pt: 1, fontWeight: 700 }}>Show/Hide Charts</Typography>
+                        <MenuItem onClick={() => handleToggleChart('orders')}> <ListItemIcon><BarChartIcon color={visibleCharts.orders ? 'primary' : 'disabled'} /></ListItemIcon> <ListItemText>Orders Chart</ListItemText> {visibleCharts.orders && <Chip size="small" label="On" color="primary" />} </MenuItem>
+                        <MenuItem onClick={() => handleToggleChart('customers')}> <ListItemIcon><PeopleIcon color={visibleCharts.customers ? 'success' : 'disabled'} /></ListItemIcon> <ListItemText>Customers Chart</ListItemText> {visibleCharts.customers && <Chip size="small" label="On" color="success" />} </MenuItem>
+                        <MenuItem onClick={() => handleToggleChart('products')}> <ListItemIcon><InventoryIcon color={visibleCharts.products ? 'info' : 'disabled'} /></ListItemIcon> <ListItemText>Products Chart</ListItemText> {visibleCharts.products && <Chip size="small" label="On" color="info" />} </MenuItem>
+                        <MenuItem onClick={() => handleToggleChart('attributes')}> <ListItemIcon><SettingsIcon color={visibleCharts.attributes ? 'secondary' : 'disabled'} /></ListItemIcon> <ListItemText>Attributes Chart</ListItemText> {visibleCharts.attributes && <Chip size="small" label="On" color="secondary" />} </MenuItem>
+                        <Divider sx={{ my: 1 }} />
+                        <Typography variant="subtitle2" sx={{ px: 2, pt: 1, fontWeight: 700 }}>Chart Type</Typography>
+                        {chartTypeOptions.map(opt => (
+                            <MenuItem key={opt.value} onClick={() => { setChartType(opt.value); handleSettingsClose(); }} selected={chartType === opt.value}>
+                                <ListItemIcon>{opt.icon}</ListItemIcon>
+                                <ListItemText>{opt.label}</ListItemText>
+                                {chartType === opt.value && <Chip size="small" label="Active" color="primary" />}
+                            </MenuItem>
+                        ))}
+                    </Menu>
                 </Paper>
 
 
@@ -578,104 +674,142 @@ const Dashboard = () => {
                 </Box>
 
                 {/* Charts */}
-                <Box sx={{ mt: 3 }}>
-                    <Paper sx={{ p: 2, height: '420px', background: 'linear-gradient(120deg, #e3f2fd 0%, #fce4ec 100%)', boxShadow: 6, borderRadius: 3 }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
-                            <Button
-                                variant={chartType === 'line' ? 'contained' : 'outlined'}
-                                color="primary"
-                                size="small"
-                                sx={{ mr: 1, borderRadius: 2, fontWeight: 700 }}
-                                onClick={() => setChartType('line')}
-                            >
-                                Line Chart
-                            </Button>
-                            <Button
-                                variant={chartType === 'bar' ? 'contained' : 'outlined'}
-                                color="secondary"
-                                size="small"
-                                sx={{ borderRadius: 2, fontWeight: 700 }}
-                                onClick={() => setChartType('bar')}
-                            >
-                                Bar Chart
-                            </Button>
-                        </Box>
-                        <ResponsiveContainer>
-                            {chartType === 'line' ? (
-                                <LineChart data={chartData} margin={{ top: 30, right: 40, left: 10, bottom: 30 }}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#bdbdbd" />
-                                    <XAxis dataKey="date" tickFormatter={(date) => formatChartDate(date)} interval="preserveStartEnd" angle={-35} textAnchor="end" height={60} stroke="#1976d2" fontSize={13} />
-                                    <YAxis yAxisId="left" tickFormatter={(value) => Math.round(value)} stroke="#1976d2" fontSize={13} />
-                                    <YAxis yAxisId="right" orientation="right" tickFormatter={(value) => formatCurrency(value)} stroke="#d32f2f" fontSize={13} />
-                                    <Tooltip 
-                                        contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }}
-                                        labelFormatter={(date) => formatTooltipDate(date)}
-                                        formatter={(value, name) => [name === 'revenue' ? formatCurrency(value) : Math.round(value), name === 'revenue' ? 'Revenue' : 'Orders']}
-                                    />
-                                    <Legend iconType="circle" verticalAlign="top" height={36} />
-                                    <Line yAxisId="left" type="monotone" dataKey="orders" stroke="#1976d2" name="Orders" dot={{ r: 5, fill: '#fff', stroke: '#1976d2', strokeWidth: 2 }} activeDot={{ r: 8, fill: '#1976d2', stroke: '#fff', strokeWidth: 2 }} strokeWidth={3} />
-                                    <Line yAxisId="right" type="monotone" dataKey="revenue" stroke="#d32f2f" name="Revenue" dot={{ r: 5, fill: '#fff', stroke: '#d32f2f', strokeWidth: 2 }} activeDot={{ r: 8, fill: '#d32f2f', stroke: '#fff', strokeWidth: 2 }} strokeWidth={3} />
-                                </LineChart>
-                            ) : (
-                                <BarChart data={chartData} margin={{ top: 30, right: 40, left: 10, bottom: 30 }}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#bdbdbd" />
-                                    <XAxis dataKey="date" tickFormatter={(date) => formatChartDate(date)} interval="preserveStartEnd" angle={-35} textAnchor="end" height={60} stroke="#1976d2" fontSize={13} />
-                                    <YAxis yAxisId="left" tickFormatter={(value) => Math.round(value)} stroke="#1976d2" fontSize={13} />
-                                    <YAxis yAxisId="right" orientation="right" tickFormatter={(value) => formatCurrency(value)} stroke="#d32f2f" fontSize={13} />
-                                    <Tooltip 
-                                        contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }}
-                                        labelFormatter={(date) => formatTooltipDate(date)}
-                                        formatter={(value, name) => [name === 'revenue' ? formatCurrency(value) : Math.round(value), name === 'revenue' ? 'Revenue' : 'Orders']}
-                                    />
-                                    <Legend iconType="circle" verticalAlign="top" height={36} />
-                                    <Bar yAxisId="left" dataKey="orders" name="Orders" fill="#1976d2" radius={[8, 8, 0, 0]} barSize={24} />
-                                    <Bar yAxisId="right" dataKey="revenue" name="Revenue" fill="#d32f2f" radius={[8, 8, 0, 0]} barSize={24} />
-                                </BarChart>
-                            )}
-                        </ResponsiveContainer>
-                    </Paper>
-                </Box>
-
+                {visibleCharts.orders && (
+                    <Box sx={{ mt: 3 }}>
+                        <Paper sx={{ p: 2, height: '420px', background: 'linear-gradient(120deg, #e3f2fd 0%, #fce4ec 100%)', boxShadow: 6, borderRadius: 3 }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+                                {chartTypeOptions.map(opt => (
+                                    <Tooltip key={opt.value} title={opt.label + ' Chart'} arrow>
+                                        <IconButton
+                                            onClick={() => setChartType(opt.value)}
+                                            color={chartType === opt.value ? 'primary' : 'default'}
+                                            sx={{
+                                                mx: 0.5,
+                                                border: chartType === opt.value ? '2px solid #1976d2' : '1px solid #e0e0e0',
+                                                background: chartType === opt.value ? '#e3f2fd' : '#fff',
+                                                borderRadius: 2,
+                                                boxShadow: chartType === opt.value ? 2 : 0
+                                            }}
+                                        >
+                                            {opt.icon}
+                                        </IconButton>
+                                    </Tooltip>
+                                ))}
+                            </Box>
+                            <ResponsiveContainer>
+                                {chartType === 'line' && (
+                                    <LineChart data={chartData} margin={{ top: 30, right: 40, left: 10, bottom: 30 }}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#bdbdbd" />
+                                        <XAxis dataKey="date" tickFormatter={formatChartDate} interval="preserveStartEnd" angle={-35} textAnchor="end" height={60} stroke="#1976d2" fontSize={13} />
+                                        <YAxis yAxisId="left" tickFormatter={value => Math.round(value)} stroke="#1976d2" fontSize={13} />
+                                        <YAxis yAxisId="right" orientation="right" tickFormatter={formatCurrency} stroke="#d32f2f" fontSize={13} />
+                                        <RechartsTooltip 
+                                            contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }}
+                                            labelFormatter={formatTooltipDate}
+                                            formatter={(value, name) => [name === 'revenue' ? formatCurrency(value) : Math.round(value), name === 'revenue' ? 'Revenue' : 'Orders']}
+                                        />
+                                        <Legend iconType="circle" verticalAlign="top" height={36} />
+                                        <Line yAxisId="left" type="monotone" dataKey="orders" stroke="#1976d2" name="Orders" dot={{ r: 5, fill: '#fff', stroke: '#1976d2', strokeWidth: 2 }} activeDot={{ r: 8, fill: '#1976d2', stroke: '#fff', strokeWidth: 2 }} strokeWidth={3} />
+                                        <Line yAxisId="right" type="monotone" dataKey="revenue" stroke="#d32f2f" name="Revenue" dot={{ r: 5, fill: '#fff', stroke: '#d32f2f', strokeWidth: 2 }} activeDot={{ r: 8, fill: '#d32f2f', stroke: '#fff', strokeWidth: 2 }} strokeWidth={3} />
+                                    </LineChart>
+                                )}
+                                {chartType === 'bar' && (
+                                    <BarChart data={chartData} margin={{ top: 30, right: 40, left: 10, bottom: 30 }}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#bdbdbd" />
+                                        <XAxis dataKey="date" tickFormatter={formatChartDate} interval="preserveStartEnd" angle={-35} textAnchor="end" height={60} stroke="#1976d2" fontSize={13} />
+                                        <YAxis yAxisId="left" tickFormatter={value => Math.round(value)} stroke="#1976d2" fontSize={13} />
+                                        <YAxis yAxisId="right" orientation="right" tickFormatter={formatCurrency} stroke="#d32f2f" fontSize={13} />
+                                        <RechartsTooltip 
+                                            contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }}
+                                            labelFormatter={formatTooltipDate}
+                                            formatter={(value, name) => [name === 'revenue' ? formatCurrency(value) : Math.round(value), name === 'revenue' ? 'Revenue' : 'Orders']}
+                                        />
+                                        <Legend iconType="circle" verticalAlign="top" height={36} />
+                                        <Bar yAxisId="left" dataKey="orders" name="Orders" fill="#1976d2" radius={[8, 8, 0, 0]} barSize={24} />
+                                        <Bar yAxisId="right" dataKey="revenue" name="Revenue" fill="#d32f2f" radius={[8, 8, 0, 0]} barSize={24} />
+                                    </BarChart>
+                                )}
+                                {chartType === 'pie' && (
+                                    <PieChart>
+                                        <Pie data={chartData} dataKey="orders" nameKey="date" cx="50%" cy="50%" outerRadius={120} fill="#1976d2" label={entry => formatChartDate(entry.date)}>
+                                            {chartData.map((entry, idx) => (
+                                                <Cell key={`cell-${idx}`} fill={COLORS[idx % COLORS.length]} />
+                                            ))}
+                                        </Pie>
+                                        <RechartsTooltip contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }} />
+                                        <Legend verticalAlign="top" height={36} iconType="circle" />
+                                    </PieChart>
+                                )}
+                                {chartType === 'table' && (
+                                    <Box sx={{ p: 2, overflow: 'auto', maxHeight: 340 }}>
+                                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+                                            <thead>
+                                                <tr style={{ background: '#e3f2fd' }}>
+                                                    <th style={{ padding: 8, border: '1px solid #bdbdbd' }}>Date</th>
+                                                    <th style={{ padding: 8, border: '1px solid #bdbdbd' }}>Orders</th>
+                                                    <th style={{ padding: 8, border: '1px solid #bdbdbd' }}>Revenue</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {chartData.map(row => (
+                                                    <tr key={row.key}>
+                                                        <td style={{ padding: 8, border: '1px solid #bdbdbd' }}>{formatChartDate(row.date)}</td>
+                                                        <td style={{ padding: 8, border: '1px solid #bdbdbd' }}>{row.orders}</td>
+                                                        <td style={{ padding: 8, border: '1px solid #bdbdbd' }}>{formatCurrency(row.revenue)}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </Box>
+                                )}
+                            </ResponsiveContainer>
+                        </Paper>
+                    </Box>
+                )}
                 {/* Enhanced Bar Charts for Country of Manufacture and Product Counts */}
-                <Box sx={{ display: 'flex', flexWrap: "wrap", gap: 3, mt: 3 }}>
-                    <Box sx={{ flex: 1, minWidth: 300 }}>
+                {(visibleCharts.products || visibleCharts.attributes) && (
+                  <Box sx={{ display: 'flex', flexWrap: "wrap", gap: 3, mt: 3 }}>
+                    {visibleCharts.products && (
+                      <Box sx={{ flex: 1, minWidth: 300 }}>
                         <Paper sx={{ p: 2, boxShadow: 6, borderRadius: 3, background: 'linear-gradient(120deg, #e3f2fd 0%, #fce4ec 100%)' }}>
-                            <Typography variant="h6" sx={{ fontWeight: 700, color: '#1976d2', mb: 2 }}>Country of Manufacture</Typography>
-                            <ResponsiveContainer width="100%" height={400}>
-                                <BarChart data={countryData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#bdbdbd" />
-                                    <XAxis dataKey="country_of_manufacture" stroke="#1976d2" fontSize={13} />
-                                    <YAxis stroke="#1976d2" fontSize={13} />
-                                    <Tooltip cursor={{ fill: 'rgba(25, 118, 210, 0.08)' }} contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }} />
-                                    <Legend verticalAlign="top" height={36} iconType="circle" />
-                                    <Bar dataKey="count" fill="#1976d2" barSize={30} radius={[8, 8, 0, 0]} />
-                                </BarChart>
-                            </ResponsiveContainer>
+                          <Typography variant="h6" sx={{ fontWeight: 700, color: '#1976d2', mb: 2 }}>Country of Manufacture</Typography>
+                          <ResponsiveContainer width="100%" height={400}>
+                            <BarChart data={countryData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                              <CartesianGrid strokeDasharray="3 3" stroke="#bdbdbd" />
+                              <XAxis dataKey="country_of_manufacture" stroke="#1976d2" fontSize={13} />
+                              <YAxis stroke="#1976d2" fontSize={13} />
+                              <RechartsTooltip cursor={{ fill: 'rgba(25, 118, 210, 0.08)' }} contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }} />
+                              <Legend verticalAlign="top" height={36} iconType="circle" />
+                              <Bar dataKey="count" fill="#1976d2" barSize={30} radius={[8, 8, 0, 0]} />
+                            </BarChart>
+                          </ResponsiveContainer>
                         </Paper>
-                    </Box>
-
-                    <Box sx={{ flex: 1, minWidth: 300 }}>
+                      </Box>
+                    )}
+                    {visibleCharts.attributes && (
+                      <Box sx={{ flex: 1, minWidth: 300 }}>
                         <Paper sx={{ p: 2, boxShadow: 6, borderRadius: 3, background: 'linear-gradient(120deg, #fce4ec 0%, #e3f2fd 100%)' }}>
-                            <Typography variant="h6" sx={{ fontWeight: 700, color: '#d32f2f', mb: 2 }}>Product Types</Typography>
-                            <ResponsiveContainer width="100%" height={400}>
-                                <PieChart>
-                                    <Pie data={productTypeData} cx="50%" cy="50%" outerRadius={90} fill="#d32f2f" dataKey="value" label={entry => entry.name}
-                                        labelLine={false}
-                                        style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.10))' }}
-                                    >
-                                        {productTypeData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                        ))}
-                                    </Pie>
-                                    <Tooltip contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }} />
-                                    <Legend verticalAlign="top" height={36} iconType="circle" />
-                                </PieChart>
-                            </ResponsiveContainer>
+                          <Typography variant="h6" sx={{ fontWeight: 700, color: '#d32f2f', mb: 2 }}>Product Types</Typography>
+                          <ResponsiveContainer width="100%" height={400}>
+                            <PieChart>
+                              <Pie data={productTypeData} cx="50%" cy="50%" outerRadius={90} fill="#d32f2f" dataKey="value" label={entry => entry.name}
+                                labelLine={false}
+                                style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.10))' }}
+                              >
+                                {productTypeData.map((entry, index) => (
+                                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                              </Pie>
+                              <RechartsTooltip contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }} />
+                              <Legend verticalAlign="top" height={36} iconType="circle" />
+                            </PieChart>
+                          </ResponsiveContainer>
                         </Paper>
-                    </Box>
-                </Box>
+                      </Box>
+                    )}
+                  </Box>
+                )}
             </Box>
-
         </LocalizationProvider>
     );
 };
