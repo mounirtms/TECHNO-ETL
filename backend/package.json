@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Node.js project",
   "main": "server.js",
-  "type": "module",
   "author": "Mounir Abderrahmani",
   "license": "ISC",
   "dependencies": {

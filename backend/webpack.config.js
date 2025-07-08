@@ -28,9 +28,9 @@ export default {
       ],
     }),
   ],
-  stats: {
-    warningsFilter: [
-      /Critical dependency: the request of a dependency is an expression/
-    ]
-  }
+  ignoreWarnings: [
+    {
+      message: /Critical dependency: the request of a dependency is an expression/
+    }
+  ]
 };
