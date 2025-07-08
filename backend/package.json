@@ -1,9 +1,10 @@
 {
-  "name": "Server",
+  "name": "Techno ETL",
   "version": "1.0.0",
   "description": "Node.js project",
   "main": "server.js",
-  "author": "",
+  "type": "module",
+  "author": "Mounir Abderrahmani",
   "license": "ISC",
   "dependencies": {
     "activedirectory2": "^2.2.0",

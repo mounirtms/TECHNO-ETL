@@ -1,4 +1,4 @@
-const sql = require('mssql');
+import sql from 'mssql';
 
 /**
  * A robust builder class for creating and executing dynamic SQL SELECT queries.
@@ -87,4 +87,4 @@ class SQLQueryBuilder {
 }
 
 const sqlQueryBuilder = new SQLQueryBuilder();
-module.exports = sqlQueryBuilder;
+export default sqlQueryBuilder;

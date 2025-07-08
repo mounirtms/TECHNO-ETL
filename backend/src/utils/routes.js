@@ -1,6 +1,5 @@
-// src/routes.js
-const express = require('express');
-const apiController = require('../controllers/apiController');
+import express from 'express';
+import apiController from '../controllers/apiController.js';
 
 const router = express.Router();
 
@@ -14,4 +13,4 @@ router.get('/api/cegid', apiController.getCegiData);
 router.all('/api/magento/*', apiController.proxyMagentoRequest);
 
 
-module.exports = router;
+export default router;

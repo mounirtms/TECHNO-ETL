@@ -1,8 +1,8 @@
-const { getPool } = require('../utils/database');
-const sqlQueryBuilder = require('../utils/sqlQueryBuilder');
-const MagentoService = require('../services/magentoService'); // Magento API wrapper
-const sourceMapping = require('../config/sources');
-const { cloudConfig } = require('../config/magento');
+import { getPool } from '../utils/database.js';
+import sqlQueryBuilder from '../utils/sqlQueryBuilder.js';
+import MagentoService from '../services/magentoService.js';
+import { sourceMapping, getAllSources } from '../config/sources.js';
+import { cloudConfig } from '../config/magento.js';
 
 
 let magento = new MagentoService(cloudConfig); // ✅ Reuse Singleton Instance
@@ -29,7 +29,7 @@ async function syncInventoryToMagento(req) {
     while (data.length) {
       const sourceItems = data
         .map(item => {
-          const sourceInfo = sourceMapping.getAllSources().find(s => s.code_source === item.Code_Source);
+          const sourceInfo = getAllSources().find(s => s.code_source === item.Code_Source);
           return {
             sku: item.Code_MDM.toString(),
             source_code: sourceInfo?.magentoSource || '',
@@ -117,7 +117,7 @@ async function fetchInventoryData(req) {
     }
 }
 
-module.exports = {
+export {
   fetchInventoryData,
   syncInventoryToMagento,
   syncPricesToMagento

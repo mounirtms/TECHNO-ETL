@@ -1,27 +1,36 @@
-const path = require('path');
-const TerserPlugin = require('terser-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import TerserPlugin from 'terser-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
   mode: 'production',
-  entry: './server.js', // Your main entry point
+  entry: './server.js',
   output: {
-    filename: 'index.js', // Output file name
-    path: path.resolve(__dirname, 'dist'), // Output directory
+    filename: 'index.js',
+    path: path.resolve(__dirname, 'dist'),
   },
   optimization: {
     minimize: true,
     minimizer: [new TerserPlugin()],
   },
-  target: 'node', // Since this is a Node.js application
+  target: 'node',
   resolve: {
-    extensions: ['.js'], // Resolve .js files
+    extensions: ['.js'],
   },
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
-        { from: 'queries/*.sql', to: 'queries/[name][ext]', context: path.resolve(__dirname) } // Copy all SQL files
+        { from: 'queries/*.sql', to: 'queries/[name][ext]', context: path.resolve(__dirname) }
       ],
     }),
   ],
+  stats: {
+    warningsFilter: [
+      /Critical dependency: the request of a dependency is an expression/
+    ]
+  }
 };

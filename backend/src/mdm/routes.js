@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const mdmServices = require('./services');
+import mdmServices from './services.js';
 
 router.get('/prices', async (req, res) => {
   try {
@@ -13,4 +13,4 @@ router.get('/prices', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,28 +1,32 @@
+// Add a default export for compatibility with routes.js
+export async function getMdmData(req, res) {
+    res.json({ message: 'getMdmData handler stub' });
+}
+
+export async function getCegiData(req, res) {
+    res.json({ message: 'getCegiData handler stub' });
+}
+
+export async function proxyMagentoRequest(req, res) {
+    res.json({ message: 'proxyMagentoRequest handler stub' });
+}
+
+export default {
+    getMdmData,
+    getCegiData,
+    proxyMagentoRequest
+};
 // src/controllers/apiController.js
-const mdmQueries = require('../mdm/mdm'); // Adjust the path as necessary
-const cegidQueries = require('../cegid/cegid'); // Adjust the path as necessary
-const { cloudConfig, betaConfig } = require('../config/magento'); // Import Magento config
-const MagentoService = require('../services/magentoService'); // Import Magento service
+//import mdmQueries from '../mdm/mdm.js';
+//import cegidQueries from '../cegid/cegid.js';
+import { cloudConfig, betaConfig } from '../config/magento.js';
+import MagentoService from '../services/magentoService.js';
 
 
 
-exports.getMdmData = async (req, res) => {
-    try {
-        const data = await mdmQueries.executeQuery(); // Replace with your actual query function
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
+// Removed duplicate getMdmData export/function
 
-exports.getCegiData = async (req, res) => {
-    try {
-        const data = await cegidQueries.executeQuery(); // Replace with your actual query function
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
+// Removed duplicate getCegiData export/function
 
 
 
@@ -58,53 +62,6 @@ function buildMagentoQueryString(query = {}) {
 
 let magentoService = null;
 
-exports.proxyMagentoRequest = async (req, res) => {
-    try {
-        const { method, query, body } = req;
-        // Remove any double slashes in the endpoint path
-        let endpoint = req.originalUrl.replace("/api/magento", "").replace(/\/+/g, "/");
+// Removed duplicate proxyMagentoRequest export/function
 
-        if (!magentoService) {
-            magentoService = new MagentoService(cloudConfig);
-        }
-
-        let response;
-        let endpointWithQuery = endpoint;
-        // Only build query string if not already present in endpoint
-        if (method.toLowerCase() === 'get' && Object.keys(query).length > 0 && !endpoint.includes('?')) {
-            const queryString = buildMagentoQueryString(query);
-            endpointWithQuery = endpoint + (queryString ? '?' + queryString : '');
-        }
-
-        if (endpoint.includes('admin/token')) {
-            response = await magentoService.getToken(true);
-            return res.json(response);
-        }else{
-            debugger
-        }
-
-        console.log("Endpoint:", endpointWithQuery);
-
-        switch (method.toLowerCase()) {
-            case "get":
-                response = await magentoService.get(endpointWithQuery);
-                break;
-            case "post":
-                response = await magentoService.post(endpoint, body);
-                break;
-            case "put":
-                response = await magentoService.put(endpoint, body);
-                break;
-            case "delete":
-                response = await magentoService.delete(endpoint);
-                break;
-            default:
-                return res.status(405).json({ error: "Method not allowed" });
-        }
-
-        res.json(response);
-    } catch (error) {
-        console.error(`❌ Magento Proxy Error: ${error.message}`);
-        res.status(500).json({ error: error.message });
-    }
-};
+// Removed export of undefined functions

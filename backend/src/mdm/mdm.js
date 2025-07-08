@@ -1,6 +1,6 @@
-const app = require('../../server');
-const { createMdmPool, createCegidPool, createMdm360Pool, getPool } = require('../utils/database');
-const sqlQueryBuilder = require('../utils/sqlQueryBuilder');  
+import { createMdmPool, createCegidPool, createMdm360Pool, getPool } from '../utils/database.js';
+import sqlQueryBuilder from '../utils/sqlQueryBuilder.js';
+// Remove require('../../server') as it causes circular dependency
 
 
  

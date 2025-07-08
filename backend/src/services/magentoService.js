@@ -1,7 +1,6 @@
-
 // Unified MagentoService using shared node-cache from config/magento.js
 
-const { getMagentoToken } = require('../config/magento');
+import { getMagentoToken } from '../config/magento.js';
 let gotPromise = null;
 
 // Helper to dynamically import got (ESM in CommonJS)
@@ -153,5 +152,5 @@ class MagentoService {
 }
 
 // Export the unified service
-module.exports = MagentoService;
+export default MagentoService;
 

@@ -1,4 +1,4 @@
-const sql = require('mssql');
+import sql from 'mssql';
 
 // Functions to create pools (now accepting dbConfig as argument)
 const getPool = (dbName) => {
@@ -68,4 +68,4 @@ async function createCegidPool(dbConfig) {
   }
 }
 
-module.exports = { createMdmPool, createCegidPool, createMdm360Pool, getPool };
+export { createMdmPool, createCegidPool, createMdm360Pool, getPool };
