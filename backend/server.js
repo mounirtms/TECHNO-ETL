@@ -48,8 +48,7 @@ const readSQLQuery = (filePath) => {
  * Delays execution for a given number of milliseconds.
  * @param {number} ms - Milliseconds to delay.
  * @returns {Promise<void>}
- */
-function delay(ms) {
+ */function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -99,6 +98,7 @@ async function syncStocks(sourceCode) {
     }
 }
 
+
 /**
  * Updates the sync status (changed=0, syncedDate) after a successful sync.
  * This can be scoped to a specific source or run for all sources.
@@ -126,25 +126,23 @@ async function syncSuccess(sourceCode) {
 /**
  * Syncs inventory to Magento for all sources, one by one.
  */
-async function syncSources() {
+async function syncSource(source) {
     try {
-        for (const source of getAllSources()) {
-            console.log(`🔄 Syncing inventory for source: ${source.magentoSource}`);
+        await syncStocks(source);
+        await syncSuccess(source);
+        await syncInventoryToMagento({
+            query: {
+                changed: 1,
+                page: 0,
+                pageSize: 300,
+                sortField: 'QteStock',
+                sortOrder: 'desc',
+                sourceCode: source
+            }
+        });
 
-            await delay(1000); // ✅ Corrected timeout usage
-            await syncInventoryToMagento({
-                query: {
-                    changed: 1,
-                    page: 0,
-                    pageSize: 300,
-                    sortField: 'QteStock',
-                    sortOrder: 'desc',
-                    sourceCode: source.code_source
-                }
-            });
+        console.log(`✅ Finished syncing for ${source}`);
 
-            console.log(`✅ Finished syncing for ${source.magentoSource}`);
-        }
     } catch (error) {
         console.error('❌ Error syncing all sources:', error);
     }
@@ -181,24 +179,7 @@ async function fetchMdmPrices(req, res) {
         throw error;
     }
 }
-/**
- * Syncs prices to Magento for all products.
- */
-async function syncPrices() {
-    // Calculate yesterday's date (YYYY-MM-DD format)
-    // Fetch prices with yesterday as default startDate
-    let prices = await fetchMdmPrices();
-    // Transform the data for Magento
-    let priceData = prices.recordset.map(({ sku, price }) => ({
-        product: {
-            sku,
-            price: parseFloat(price) // Ensure it's a valid number
-        }
-    }));
 
-    // Sync to Magento
-    await syncPricesToMagento({ body: priceData });
-}
 
 // =========================
 // 3. Route Handlers (API Endpoints)
@@ -323,7 +304,7 @@ app.get('/api/mdm/inventory', async (req, res) => {
     }
 });
 
-router.post('/sync-all-source', async (req, res) => {
+router.post('/api/mdm/inventory/sync-all-source', async (req, res) => {
     const { sourceCode } = req.body;
 
     if (!sourceCode) {
@@ -351,18 +332,73 @@ router.post('/sync-all-source', async (req, res) => {
 });
 
 router.post('api/mdm/inventory/sync-all-stocks-sources', async (req, res) => {
+    debugger
     try {
         await inventorySync();
+        res.status(202).json({ message: 'Sync process initiated for all sources. This will run in the background.' });
     } catch (error) {
-
+        res.status(500).json({ error: 'Failed to initiate sync for all sources.' });
     }
 });
 
 
-// REMOVE ALL DUPLICATE FUNCTION DEFINITIONS BELOW THIS LINE
-// (syncStocks, syncSources, syncPrices, syncSuccess, etc.)
 
-// ...existing code...
+async function syncSources() {
+    try {
+        for (const source of sourceMapping.getAllSources()) {
+            console.log(`🔄 Syncing inventory for source: ${source.magentoSource}`);
+
+            await delay(1000); // ✅ Corrected timeout usage
+            await syncInventoryToMagento({
+                query: {
+                    changed: 1,
+                    page: 0,
+                    pageSize: 300,
+                    sortField: 'QteStock',
+                    sortOrder: 'desc',
+                    sourceCode: source.code_source
+                }
+            });
+
+
+            console.log(`✅ Finished syncing for ${source.magentoSource}`);
+        }
+    } catch (error) {
+        console.error('❌ Error syncing all sources:', error);
+    }
+}
+
+
+
+async function syncPrices() {
+    // Calculate yesterday's date (YYYY-MM-DD format)
+
+
+    // Fetch prices with yesterday as default startDate
+    let prices = await fetchMdmPrices();
+    // Transform the data for Magento
+    let priceData = prices.recordset.map(({ sku, price }) => ({
+        product: {
+            sku,
+            price: parseFloat(price) // Ensure it's a valid number
+        }
+    }));
+
+    // Sync to Magento
+    await syncPricesToMagento({ body: priceData });
+
+}
+
+
+
+async function inventorySync() {
+    await syncStocks();
+    await syncSources();
+    await syncSuccess();
+}
+
+
+
 
 // Main function to run the operations
 async function main() {

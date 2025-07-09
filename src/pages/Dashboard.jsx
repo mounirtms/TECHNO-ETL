@@ -43,6 +43,7 @@ import { sync } from 'framer-motion';
 import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
 import * as XLSX from 'xlsx';
+import StarIcon from '@mui/icons-material/Star';
 
 // Format currency in DZD
 
@@ -148,13 +149,20 @@ const Dashboard = () => {
     const [countryData, setCountryData] = useState([]);
     const [productTypeData, setProductTypeData] = useState([]);
     const [excelData, setExcelData] = useState(null);
-    const [chartType, setChartType] = useState('line'); // 'line', 'bar', 'pie', 'table'
+    const [chartType, setChartType] = useState('line');
     const [settingsAnchorEl, setSettingsAnchorEl] = useState(null);
+
+    // Add state for recent orders and best sellers
+    const [recentOrders, setRecentOrders] = useState([]);
+    const [bestSellers, setBestSellers] = useState([]);
+
     const [visibleCharts, setVisibleCharts] = useState({
         orders: true,
         customers: false,
         products: true,
-        attributes: true
+        attributes: true,
+        recentOrders: true,
+        bestSellers: true
     });
 
     // Chart type options for menu and toolbar
@@ -204,13 +212,11 @@ const Dashboard = () => {
         setLoading(true);
         setError(null);
         try {
-            // Format dates for API with time
             const formattedStartDate = startDate.toISOString();
             const formattedEndDate = endDate.toISOString();
 
             console.log('Fetching data with date range:', { formattedStartDate, formattedEndDate });
 
-            // Fetch orders with date range
             const ordersParams = {
                 filterGroups: [{
                     filters: [{
@@ -241,7 +247,6 @@ const Dashboard = () => {
             console.log('Customers response:', customersResponse);
             console.log('Products response:', productsResponse);
 
-            // Process orders data with exact timestamps
             const orders = ordersResponse?.items || [];
             const ordersByTime = {};
             let totalRevenue = 0;
@@ -285,7 +290,6 @@ const Dashboard = () => {
                 }
             });
 
-            // Create chart data with exact timestamps and unique keys
             const chartData = Object.entries(ordersByTime)
                 .map(([timestamp, data]) => ({
                     date: parseInt(timestamp),
@@ -306,6 +310,10 @@ const Dashboard = () => {
                 averageOrderValue: orders.length > 0 ? totalRevenue / orders.length : 0
             });
 
+            // Process new charts
+            processRecentOrders(orders);
+            processBestSellers(orders);
+
         } catch (error) {
             console.error('Failed to fetch dashboard data:', error);
             // Try to get local data if API fails
@@ -321,69 +329,24 @@ const Dashboard = () => {
         }
     }, [startDate, endDate]);
 
-    const processLocalData = (localData) => {
-        const filteredData = localData.filter(order => {
-            const orderDate = new Date(order.created_at);
-            return orderDate >= startDate && orderDate <= endDate;
+    // ...existing code...
+
+    // Add processing for recent orders and best sellers
+    const processRecentOrders = (orders) => {
+        setRecentOrders([...orders].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 10));
+    };
+
+    const processBestSellers = (orders) => {
+        const productMap = {};
+        orders.forEach(order => {
+            (order.items || []).forEach(item => {
+                if (!productMap[item.sku]) {
+                    productMap[item.sku] = { sku: item.sku, name: item.name, qty: 0 };
+                }
+                productMap[item.sku].qty += item.qty_ordered || 0;
+            });
         });
-
-        const ordersByTime = {};
-        let totalRevenue = 0;
-
-        // Create initial data points for start and end dates
-        const startTimestamp = startDate.setHours(0, 0, 0, 0);
-        const endTimestamp = endDate.setHours(0, 0, 0, 0);
-        ordersByTime[startTimestamp] = { count: 0, revenue: 0, key: `day-${startTimestamp}` };
-        ordersByTime[endTimestamp] = { count: 0, revenue: 0, key: `day-${endTimestamp}` };
-
-        // Add intermediate points every day
-        let currentDate = new Date(startDate);
-        while (currentDate <= endDate) {
-            const timestamp = currentDate.setHours(0, 0, 0, 0);
-            if (!ordersByTime[timestamp]) {
-                ordersByTime[timestamp] = {
-                    count: 0,
-                    revenue: 0,
-                    key: `day-${timestamp}`
-                };
-            }
-            currentDate = new Date(currentDate.getTime() + 86400000); // Add one day
-        }
-
-        filteredData.forEach(order => {
-            const orderDate = new Date(order.created_at);
-            const timestamp = orderDate.setHours(0, 0, 0, 0); // Group by day
-            if (!ordersByTime[timestamp]) {
-                ordersByTime[timestamp] = {
-                    count: 0,
-                    revenue: 0,
-                    key: `day-${timestamp}`
-                };
-            }
-            ordersByTime[timestamp].count++;
-            const orderTotal = parseFloat(order.grand_total || 0);
-            ordersByTime[timestamp].revenue += orderTotal;
-            totalRevenue += orderTotal;
-        });
-
-        // Create chart data with exact timestamps and unique keys
-        const chartData = Object.entries(ordersByTime)
-            .map(([timestamp, data]) => ({
-                date: parseInt(timestamp),
-                orders: data.count || 0,
-                revenue: data.revenue || 0,
-                key: data.key
-            }))
-            .sort((a, b) => a.date - b.date);
-
-        setChartData(chartData);
-        setStats({
-            totalOrders: filteredData.length,
-            totalCustomers: 0, // Set to 0 or fetch from local data
-            totalProducts: 0, // Set to 0 or fetch from local data
-            totalRevenue: totalRevenue,
-            averageOrderValue: filteredData.length > 0 ? totalRevenue / filteredData.length : 0
-        });
+        setBestSellers(Object.values(productMap).sort((a, b) => b.qty - a.qty).slice(0, 10));
     };
 
     const getPrices = async () => {
@@ -405,17 +368,41 @@ const Dashboard = () => {
             toast.error('Failed to fetch prices');
         }
     };
+       // ...existing code...
     const syncPrices = async (prices) => {
         try {
             const response = await axios.post('http://localhost:5000/api/techno/prices-sync', prices);
             console.log('📦 Sync response:', response.data);
-            toast.success('Prices synced successfully');
+    
+            // Check if all items were accepted
+            const requestItems = response.data?.request_items || [];
+            const acceptedCount = requestItems.filter(item => item.status === 'accepted').length;
+    
+            if (acceptedCount === prices.length) {
+                toast.success(`Prices synced successfully (${acceptedCount} items accepted)`);
+            } else {
+                toast.warn(
+                    `Partial sync: ${acceptedCount} of ${prices.length} items accepted`
+                );
+            }
         } catch (error) {
             console.error('❌ Failed to sync prices:', error);
             toast.error('Failed to sync prices');
         }
     };
+    //
+ 
 
+    const syncAllStocks = async () => {
+        try {
+            const response = await axios.post('http://localhost:5000/api/mdm/inventory/sync-all-stocks-sources');
+            console.log('📦 Sync all stocks response:', response.data);
+            toast.success('Sync all stocks operation started.');
+        } catch (error) {
+            console.error('❌ Failed to sync all stocks:', error);
+            toast.error('Failed to sync all stocks');   
+            }
+        };
 
     const fetchProductData = async () => {
         try {
@@ -586,14 +573,7 @@ const Dashboard = () => {
                             Sync Prices
                         </Button>
                         <Button
-                            onClick={async () => {
-                                try {
-                                    await axios.post('http://localhost:5000/api/mdm/inventory/sync-all-stocks-sources');
-                                    toast.success('Sync all sources operation started.');
-                                } catch (error) {
-                                    toast.error('Failed to sync all sources.');
-                                }
-                            }}
+                            onClick={syncAllStocks}
                             startIcon={<SyncIcon />}
                             variant="contained"
                             color="success"
@@ -638,6 +618,9 @@ const Dashboard = () => {
                         <MenuItem onClick={() => handleToggleChart('customers')}> <ListItemIcon><PeopleIcon color={visibleCharts.customers ? 'success' : 'disabled'} /></ListItemIcon> <ListItemText>Customers Chart</ListItemText> {visibleCharts.customers && <Chip size="small" label="On" color="success" />} </MenuItem>
                         <MenuItem onClick={() => handleToggleChart('products')}> <ListItemIcon><InventoryIcon color={visibleCharts.products ? 'info' : 'disabled'} /></ListItemIcon> <ListItemText>Products Chart</ListItemText> {visibleCharts.products && <Chip size="small" label="On" color="info" />} </MenuItem>
                         <MenuItem onClick={() => handleToggleChart('attributes')}> <ListItemIcon><SettingsIcon color={visibleCharts.attributes ? 'secondary' : 'disabled'} /></ListItemIcon> <ListItemText>Attributes Chart</ListItemText> {visibleCharts.attributes && <Chip size="small" label="On" color="secondary" />} </MenuItem>
+                        {/* New: Recent Orders and Best Sellers */}
+                        <MenuItem onClick={() => handleToggleChart('recentOrders')}> <ListItemIcon><ShoppingCartIcon color={visibleCharts.recentOrders ? 'primary' : 'disabled'} /></ListItemIcon> <ListItemText>Recent Orders</ListItemText> {visibleCharts.recentOrders && <Chip size="small" label="On" color="primary" />} </MenuItem>
+                        <MenuItem onClick={() => handleToggleChart('bestSellers')}> <ListItemIcon><StarIcon color={visibleCharts.bestSellers ? 'warning' : 'disabled'} /></ListItemIcon> <ListItemText>Best Sellers</ListItemText> {visibleCharts.bestSellers && <Chip size="small" label="On" color="warning" />} </MenuItem>
                         <Divider sx={{ my: 1 }} />
                         <Typography variant="subtitle2" sx={{ px: 2, pt: 1, fontWeight: 700 }}>Chart Type</Typography>
                         {chartTypeOptions.map(opt => (
@@ -808,6 +791,55 @@ const Dashboard = () => {
                       </Box>
                     )}
                   </Box>
+                )}
+
+                {/* Recent Orders Table */}
+                {visibleCharts.recentOrders && (
+                    <Box sx={{ mt: 3 }}>
+                        <Paper sx={{ p: 2, boxShadow: 6, borderRadius: 3 }}>
+                            <Typography variant="h6" sx={{ fontWeight: 700, color: '#1976d2', mb: 2 }}>Recent Orders</Typography>
+                            <Box sx={{ overflow: 'auto', maxHeight: 300 }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Order #</th>
+                                            <th>Customer</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {recentOrders.map(order => (
+                                            <tr key={order.entity_id}>
+                                                <td>{formatDate(order.created_at)}</td>
+                                                <td>{order.increment_id}</td>
+                                                <td>{order.customer_firstname} {order.customer_lastname}</td>
+                                                <td>{formatCurrency(order.grand_total)}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </Box>
+                        </Paper>
+                    </Box>
+                )}
+
+                {/* Best Sellers Bar Chart */}
+                {visibleCharts.bestSellers && (
+                    <Box sx={{ mt: 3 }}>
+                        <Paper sx={{ p: 2, boxShadow: 6, borderRadius: 3 }}>
+                            <Typography variant="h6" sx={{ fontWeight: 700, color: '#d32f2f', mb: 2 }}>Best Sellers</Typography>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <BarChart data={bestSellers}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <RechartsTooltip />
+                                    <Bar dataKey="qty" fill="#1976d2" />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </Paper>
+                    </Box>
                 )}
             </Box>
         </LocalizationProvider>
