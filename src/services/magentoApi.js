@@ -791,3 +791,4 @@ export const {
   getStocks,
   getSourceItems
 } = magentoApi;
+

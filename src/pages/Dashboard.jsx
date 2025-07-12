@@ -1,22 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-    Box,
-    Paper,
-    TextField,
-    Button,
-    Typography,
-    useMediaQuery,
-    IconButton,
-    CircularProgress,
-    Tooltip,
-    Menu,
-    MenuItem,
-    ListItemIcon,
-    ListItemText,
-    Divider,
-    Chip
-} from '@mui/material';
-
+import React, { useState } from 'react';
+import { Box, Paper, Button, Typography, IconButton, CircularProgress, Tooltip, Menu, MenuItem, ListItemIcon, ListItemText, Divider, Chip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -36,94 +19,10 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
-import magentoApi from '../services/magentoApi';
-import { toast } from 'react-toastify';
-import { DRAWER_WIDTH, COLLAPSED_WIDTH, HEADER_HEIGHT, FOOTER_HEIGHT, DASHBOARD_TAB_HEIGHT } from '../components/Layout/Constants';
-import { sync } from 'framer-motion';
-import axios from 'axios';
-import { useDropzone } from 'react-dropzone';
-import * as XLSX from 'xlsx';
 import StarIcon from '@mui/icons-material/Star';
-
-// Format currency in DZD
-
-const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('ar-DZ', {
-        style: 'currency',
-        currency: 'DZD',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    }).format(amount);
-};
-
-// Format date in Arabic
-const formatDate = (date) => {
-    if (!date) return '';
-
-    try {
-        const dateObj = typeof date === 'string' ? new Date(date) : date;
-
-        // Check if date is valid
-        if (isNaN(dateObj.getTime())) {
-            return '';
-        }
-
-        return new Intl.DateTimeFormat('ar', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        }).format(dateObj);
-    } catch (error) {
-        console.warn('Date formatting error:', error);
-        return '';
-    }
-};
-
-// Format date for chart display
-const formatChartDate = (date) => {
-    if (!date) return '';
-    const dateObj = new Date(date);
-    return new Intl.DateTimeFormat('en-US', {
-        month: 'short',
-        day: 'numeric'
-    }).format(dateObj);
-};
-
-// Format date for tooltip
-const formatTooltipDate = (date) => {
-    if (!date) return '';
-    const dateObj = new Date(date);
-    return new Intl.DateTimeFormat('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-    }).format(dateObj);
-};
-
-// Smart tick formatter for X axis
-const formatXAxis = (tickItem, days) => {
-    if (!tickItem) return '';
-
-    // If we have more than 14 days, only show every other day
-    if (days > 14) {
-        const date = tickItem.split('/');
-        const dayNum = parseInt(date[0]);
-        // Only show even numbered days
-        if (dayNum % 2 !== 0) {
-            return '';
-        }
-    }
-    return tickItem;
-};
-
-const initialStats = {
-    totalOrders: 0,
-    totalCustomers: 0,
-    totalProducts: 0,
-    totalRevenue: 0,
-    averageOrderValue: 0,
-    totalValue: 0
-};
+import GroupIcon from '@mui/icons-material/Group';
+import { useDashboardController } from '../services/DashboardController';
+import { formatCurrency, formatDate, prepareCustomerChartData, formatChartDate, formatTooltipDate } from '../services/dashboardService';
 
 const getDefaultDateRange = () => {
     const end = new Date();
@@ -134,44 +33,46 @@ const getDefaultDateRange = () => {
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF6699', '#FF33CC'];
 
+const chartTypeOptions = [
+    { value: 'line', label: 'Line', icon: <ShowChartIcon /> },
+    { value: 'bar', label: 'Bar', icon: <BarChartIcon /> },
+    { value: 'pie', label: 'Pie', icon: <PieChartIcon /> },
+    { value: 'table', label: 'Table', icon: <TableChartIcon /> }
+];
 
 const Dashboard = () => {
     const theme = useTheme();
     const defaultRange = getDefaultDateRange();
     const [startDate, setStartDate] = useState(defaultRange.start);
     const [endDate, setEndDate] = useState(defaultRange.end);
-    const [stats, setStats] = useState(initialStats);
-    const [chartData, setChartData] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
-    const [error, setError] = useState(null);
-    const [productData, setProductData] = useState([]);
-    const [countryData, setCountryData] = useState([]);
-    const [productTypeData, setProductTypeData] = useState([]);
-    const [excelData, setExcelData] = useState(null);
     const [chartType, setChartType] = useState('line');
     const [settingsAnchorEl, setSettingsAnchorEl] = useState(null);
 
-    // Add state for recent orders and best sellers
-    const [recentOrders, setRecentOrders] = useState([]);
-    const [bestSellers, setBestSellers] = useState([]);
-
+    // FIX: Add visibleCharts state
     const [visibleCharts, setVisibleCharts] = useState({
         orders: true,
-        customers: false,
+        customers: true,
         products: true,
         attributes: true,
         recentOrders: true,
         bestSellers: true
     });
 
-    // Chart type options for menu and toolbar
-    const chartTypeOptions = [
-        { value: 'line', label: 'Line', icon: <ShowChartIcon color="primary" /> },
-        { value: 'bar', label: 'Bar', icon: <BarChartIcon color="info" /> },
-        { value: 'pie', label: 'Pie', icon: <PieChartIcon color="secondary" /> },
-        { value: 'table', label: 'Table', icon: <TableChartIcon color="action" /> }
-    ];
+    const {
+        stats,
+        chartData,
+        recentOrders,
+        bestSellers,
+        customerData,
+        countryData,
+        productTypeData,
+        loading,
+        error,
+        getPrices,
+        syncAllStocks,
+        fetchDashboardData
+    } = useDashboardController(startDate, endDate, refreshKey);
 
     // Settings menu handlers
     const handleSettingsOpen = (event) => {
@@ -184,335 +85,12 @@ const Dashboard = () => {
         setVisibleCharts(prev => ({ ...prev, [chartKey]: !prev[chartKey] }));
     };
 
-    const onDrop = useCallback((acceptedFiles) => {
-        const file = acceptedFiles[0];
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, { type: 'array' });
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-            const json = XLSX.utils.sheet_to_json(worksheet);
-            setExcelData(json);
-            // Send data to the server
-            axios.post('/api/mdm/excel', json)
-                .then(response => {
-                    toast.success('Excel file uploaded successfully');
-                })
-                .catch(error => {
-                    toast.error('Failed to upload Excel file');
-                });
-        };
-        reader.readAsArrayBuffer(file);
-    }, []);
-
-    const { getRootProps, getInputProps } = useDropzone({ onDrop });
-
-    const fetchDashboardData = useCallback(async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const formattedStartDate = startDate.toISOString();
-            const formattedEndDate = endDate.toISOString();
-
-            console.log('Fetching data with date range:', { formattedStartDate, formattedEndDate });
-
-            const ordersParams = {
-                filterGroups: [{
-                    filters: [{
-                        field: 'created_at',
-                        value: formattedStartDate,
-                        conditionType: 'gteq'
-                    }, {
-                        field: 'created_at',
-                        value: formattedEndDate,
-                        conditionType: 'lteq'
-                    }]
-                }],
-                pageSize: 100,
-                currentPage: 1,
-                sortOrders: [{
-                    field: 'created_at',
-                    direction: 'DESC'
-                }]
-            };
-
-            const [ordersResponse, customersResponse, productsResponse] = await Promise.all([
-                magentoApi.getOrders(ordersParams),
-                magentoApi.getCustomers({ pageSize: 1 }),
-                magentoApi.getProducts({ pageSize: 1 })
-            ]);
-
-            console.log('Orders response:', ordersResponse);
-            console.log('Customers response:', customersResponse);
-            console.log('Products response:', productsResponse);
-
-            const orders = ordersResponse?.items || [];
-            const ordersByTime = {};
-            let totalRevenue = 0;
-
-            // Create initial data points for start and end dates
-            const startTimestamp = startDate.setHours(0, 0, 0, 0);
-            const endTimestamp = endDate.setHours(0, 0, 0, 0);
-            ordersByTime[startTimestamp] = { count: 0, revenue: 0, key: `day-${startTimestamp}` };
-            ordersByTime[endTimestamp] = { count: 0, revenue: 0, key: `day-${endTimestamp}` };
-
-            // Add intermediate points every day
-            let currentDate = new Date(startDate);
-            while (currentDate <= endDate) {
-                const timestamp = currentDate.setHours(0, 0, 0, 0);
-                if (!ordersByTime[timestamp]) {
-                    ordersByTime[timestamp] = {
-                        count: 0,
-                        revenue: 0,
-                        key: `day-${timestamp}`
-                    };
-                }
-                currentDate = new Date(currentDate.getTime() + 86400000); // Add one day
-            }
-
-            orders.forEach(order => {
-                const orderDate = new Date(order.created_at);
-                // Only process orders within the date range
-                if (orderDate >= startDate && orderDate <= endDate) {
-                    const timestamp = orderDate.setHours(0, 0, 0, 0); // Group by day
-                    if (!ordersByTime[timestamp]) {
-                        ordersByTime[timestamp] = {
-                            count: 0,
-                            revenue: 0,
-                            key: `day-${timestamp}`
-                        };
-                    }
-                    ordersByTime[timestamp].count++;
-                    const orderTotal = parseFloat(order.grand_total || 0);
-                    ordersByTime[timestamp].revenue += orderTotal;
-                    totalRevenue += orderTotal;
-                }
-            });
-
-            const chartData = Object.entries(ordersByTime)
-                .map(([timestamp, data]) => ({
-                    date: parseInt(timestamp),
-                    orders: data.count || 0,
-                    revenue: data.revenue || 0,
-                    key: data.key
-                }))
-                .sort((a, b) => a.date - b.date);
-
-            console.log('Processed chart data:', chartData);
-
-            setChartData(chartData);
-            setStats({
-                totalOrders: orders.length,
-                totalCustomers: customersResponse?.total_count || 0,
-                totalProducts: productsResponse?.total_count || 0,
-                totalRevenue: totalRevenue,
-                averageOrderValue: orders.length > 0 ? totalRevenue / orders.length : 0
-            });
-
-            // Process new charts
-            processRecentOrders(orders);
-            processBestSellers(orders);
-
-        } catch (error) {
-            console.error('Failed to fetch dashboard data:', error);
-            // Try to get local data if API fails
-            const localData = await magentoApi.getLocalData('orders');
-            if (localData) {
-                processLocalData(localData);
-            } else {
-                setError('Failed to fetch dashboard data');
-                toast.error('Failed to fetch dashboard data');
-            }
-        } finally {
-            setLoading(false);
-        }
-    }, [startDate, endDate]);
-
-    // ...existing code...
-
-    // Add processing for recent orders and best sellers
-    const processRecentOrders = (orders) => {
-        setRecentOrders([...orders].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 10));
-    };
-
-    const processBestSellers = (orders) => {
-        const productMap = {};
-        orders.forEach(order => {
-            (order.items || []).forEach(item => {
-                if (!productMap[item.sku]) {
-                    productMap[item.sku] = { sku: item.sku, name: item.name, qty: 0 };
-                }
-                productMap[item.sku].qty += item.qty_ordered || 0;
-            });
-        });
-        setBestSellers(Object.values(productMap).sort((a, b) => b.qty - a.qty).slice(0, 10));
-    };
-
-    const getPrices = async () => {
-        try {
-            const response = await axios.get('http://localhost:5000/api/mdm/prices');
-
-            // Convert data into Magento bulk format
-            const priceData = response.data.map(({ sku, price }) => ({
-                product: {
-                    sku,
-                    price: parseFloat(price) // Ensure it's a valid number
-                }
-            }));
-
-            console.log('📊 Price data:', priceData);
-            await syncPrices(priceData);
-        } catch (error) {
-            console.error('❌ Failed to fetch prices:', error);
-            toast.error('Failed to fetch prices');
-        }
-    };
-       // ...existing code...
-    const syncPrices = async (prices) => {
-        try {
-            const response = await axios.post('http://localhost:5000/api/techno/prices-sync', prices);
-            console.log('📦 Sync response:', response.data);
-    
-            // Check if all items were accepted
-            const requestItems = response.data?.request_items || [];
-            const acceptedCount = requestItems.filter(item => item.status === 'accepted').length;
-    
-            if (acceptedCount === prices.length) {
-                toast.success(`Prices synced successfully (${acceptedCount} items accepted)`);
-            } else {
-                toast.warn(
-                    `Partial sync: ${acceptedCount} of ${prices.length} items accepted`
-                );
-            }
-        } catch (error) {
-            console.error('❌ Failed to sync prices:', error);
-            toast.error('Failed to sync prices');
-        }
-    };
-    //
- 
-
-    const syncAllStocks = async () => {
-        try {
-            const response = await axios.post('http://localhost:5000/api/mdm/inventory/sync-all-stocks-sources');
-            console.log('📦 Sync all stocks response:', response.data);
-            toast.success('Sync all stocks operation started.');
-        } catch (error) {
-            console.error('❌ Failed to sync all stocks:', error);
-            toast.error('Failed to sync all stocks');   
-            }
-        };
-
-    const fetchProductData = async () => {
-        try {
-            const response = await magentoApi.getProducts({
-                pageSize: 100,
-                currentPage: 1
-            });
-
-            if (response?.data?.items) {
-                const products = response.data.items.map(product => ({
-                    ...product,
-                    id: product.id || product.entity_id,
-                    qty: product.qty || 0,
-                    is_in_stock: product.is_in_stock || false,
-                    status: product.status === 1 ? 'enabled' : 'disabled',
-                    price: parseFloat(product.price) || 0,
-                    special_price: product.special_price ? parseFloat(product.special_price) : null,
-                    created_at: product.created_at ? new Date(product.created_at).toISOString() : null,
-                    updated_at: product.updated_at ? new Date(product.updated_at).toISOString() : null
-                }));
-                setProductData(products);
-                processCountryData(products);
-                processProductCountData(products);
-
-                // Update stats with product data
-                setStats(prevStats => ({
-                    ...prevStats,
-                    totalProducts: products.length,
-                    totalValue: products.reduce((acc, p) => acc + (p.price * (p.qty || 0)), 0)
-                }));
-            } else {
-                throw new Error('Invalid product data format');
-            }
-        } catch (error) {
-            console.error('Failed to fetch product data:', error);
-            toast.error('Failed to load product data');
-            // Set default values on error
-            setProductData([]);
-            setStats(prevStats => ({
-                ...prevStats,
-                totalProducts: 0,
-                totalValue: 0
-            }));
-        }
-    };
-
-    const processCountryData = (products) => {
-        if (!Array.isArray(products)) {
-            console.error('Products data is not an array:', products);
-            return;
-        }
-
-        const countryCount = {};
-        products.forEach(product => {
-            if (product && Array.isArray(product.custom_attributes)) {
-                const countryAttr = product.custom_attributes.find(
-                    attr => attr && attr.attribute_code === 'country_of_manufacture'
-                );
-                const country = countryAttr?.value || 'Unknown';
-                countryCount[country] = (countryCount[country] || 0) + 1;
-            }
-        });
-
-        const formattedData = Object.entries(countryCount)
-            .map(([country, count]) => ({
-                country_of_manufacture: country,
-                count: count
-            }))
-            .sort((a, b) => b.count - a.count)
-            .slice(0, 5); // Only take top 5 countries
-
-        setCountryData(formattedData);
-    };
-
-    const processProductCountData = (products) => {
-        if (!Array.isArray(products)) {
-            console.error('Products data is not an array:', products);
-            return;
-        }
-
-        const typeCount = {};
-        products.forEach(product => {
-            const type = product?.type_id || 'unknown';
-            typeCount[type] = (typeCount[type] || 0) + 1;
-        });
-
-        const formattedData = Object.entries(typeCount)
-            .map(([type, count]) => ({
-                name: type.charAt(0).toUpperCase() + type.slice(1),
-                value: count
-            }))
-            .sort((a, b) => b.value - a.value);
-
-        setProductTypeData(formattedData);
-    };
-
     const handleRefresh = () => {
         setRefreshKey(prev => prev + 1);
     };
 
-    useEffect(() => {
-        fetchDashboardData();
-        fetchProductData();
-    }, [fetchDashboardData, refreshKey]);
-
-
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={arLocale}>
-
-
             <Box sx={{ p: 3, height: '100%' }}>
                 {/* Date Range and Controls */}
                 <Paper
@@ -651,7 +229,8 @@ const Dashboard = () => {
                             { title: 'Total Products', value: stats.totalProducts, icon: InventoryIcon, color: 'info' },
                             { title: 'Total Revenue', value: formatCurrency(stats.totalRevenue), icon: AttachMoneyIcon, color: 'warning' },
                             { title: 'Avg. Order Value', value: formatCurrency(stats.averageOrderValue), icon: TrendingUpIcon, color: 'secondary' },
-                            { title: 'Total Value', value: formatCurrency(stats.totalValue), icon: AttachMoneyIcon, color: 'warning' }
+                            { title: 'Total Value', value: formatCurrency(stats.totalValue), icon: AttachMoneyIcon, color: 'warning' },
+                            { title: 'New Customers', value: stats.newCustomers, icon: GroupIcon, color: 'info' },
                         ]}
                     />
                 </Box>
@@ -660,25 +239,7 @@ const Dashboard = () => {
                 {visibleCharts.orders && (
                     <Box sx={{ mt: 3 }}>
                         <Paper sx={{ p: 2, height: '420px', background: 'linear-gradient(120deg, #e3f2fd 0%, #fce4ec 100%)', boxShadow: 6, borderRadius: 3 }}>
-                            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
-                                {chartTypeOptions.map(opt => (
-                                    <Tooltip key={opt.value} title={opt.label + ' Chart'} arrow>
-                                        <IconButton
-                                            onClick={() => setChartType(opt.value)}
-                                            color={chartType === opt.value ? 'primary' : 'default'}
-                                            sx={{
-                                                mx: 0.5,
-                                                border: chartType === opt.value ? '2px solid #1976d2' : '1px solid #e0e0e0',
-                                                background: chartType === opt.value ? '#e3f2fd' : '#fff',
-                                                borderRadius: 2,
-                                                boxShadow: chartType === opt.value ? 2 : 0
-                                            }}
-                                        >
-                                            {opt.icon}
-                                        </IconButton>
-                                    </Tooltip>
-                                ))}
-                            </Box>
+                             
                             <ResponsiveContainer>
                                 {chartType === 'line' && (
                                     <LineChart data={chartData} margin={{ top: 30, right: 40, left: 10, bottom: 30 }}>
@@ -836,6 +397,24 @@ const Dashboard = () => {
                                     <YAxis />
                                     <RechartsTooltip />
                                     <Bar dataKey="qty" fill="#1976d2" />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </Paper>
+                    </Box>
+                )}
+
+                {/* Customer Chart */}
+                {visibleCharts.customers && (
+                    <Box sx={{ mt: 3 }}>
+                        <Paper sx={{ p: 2, boxShadow: 6, borderRadius: 3 }}>
+                            <Typography variant="h6" sx={{ fontWeight: 700, color: '#388e3c', mb: 2 }}>New Customers</Typography>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <BarChart data={prepareCustomerChartData(customerData, startDate, endDate)}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="date" />
+                                    <YAxis />
+                                    <RechartsTooltip />
+                                    <Bar dataKey="count" fill="#388e3c" />
                                 </BarChart>
                             </ResponsiveContainer>
                         </Paper>

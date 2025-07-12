@@ -1,9 +1,4 @@
-import { subDays, parseISO, isWithinInterval, startOfDay, endOfDay } from 'date-fns';
-import { getOrders } from './dataService';
-// dashboardService.js (in prepareChartData)
-import { format } from 'date-fns'; // Import format
-// ...
-const date = format(parseISO(order.created_at), 'yyyy-MM-dd'); 
+import { subDays, parseISO, isWithinInterval, startOfDay, endOfDay, format } from 'date-fns';
 export const DATE_RANGES = {
     LAST_WEEK: 'last_week',
     LAST_MONTH: 'last_month',
@@ -25,46 +20,45 @@ const getDateRange = (range) => {
     };
 };
 
-export const getFilteredOrders = (dateRange = DATE_RANGES.LAST_WEEK) => {
-    const orders = getOrders();
-    const { start, end } = getDateRange(dateRange);
-    
-    return orders.filter(order => {
-        const orderDate = parseISO(order.created_at);
-        return isWithinInterval(orderDate, { start, end });
-    });
-};
+// Removed getFilteredOrders: getOrders is not exported from dataService.js and not used in dashboard
 
-export const calculateOrderStats = (orders) => {
-    return orders.reduce((stats, order) => {
-        stats.total += 1;
-        stats[order.status] = (stats[order.status] || 0) + 1;
-        stats.revenue += parseFloat(order.grand_total) || 0;
-        return stats;
-    }, {
-        total: 0,
-        revenue: 0,
-        processing: 0,
-        pending: 0,
-        completed: 0,
-        canceled: 0
-    });
-};
+// Removed calculateOrderStats: not used in dashboard
 
-export const prepareChartData = (orders) => {
-    const dailyData = orders.reduce((acc, order) => {
-        const date = order.created_at.split('T')[0];
-        if (!acc[date]) {
-            acc[date] = {
-                date,
-                orders: 0,
-                revenue: 0
-            };
-        }
-        acc[date].orders += 1;
-        acc[date].revenue += parseFloat(order.grand_total) || 0;
-        return acc;
-    }, {});
+// Removed prepareChartData: not used in dashboard
 
-    return Object.values(dailyData).sort((a, b) => a.date.localeCompare(b.date));
-};
+// --- Dashboard-specific helpers ---
+export function formatCurrency(value) {
+  if (typeof value !== 'number' || isNaN(value)) return '-';
+  return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 });
+}
+
+export function formatDate(date) {
+  if (!date) return '';
+  const d = typeof date === 'number' ? new Date(date) : new Date(date);
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+export function prepareCustomerChartData(customers, start, end) {
+  const daily = {};
+  customers.forEach(c => {
+    const date = c.created_at?.split('T')[0];
+    if (!date) return;
+    if (new Date(c.created_at) < start || new Date(c.created_at) > end) return;
+    daily[date] = (daily[date] || 0) + 1;
+  });
+  return Object.entries(daily).map(([date, count]) => ({ date, count }));
+}
+
+export function formatChartDate(date) {
+  // Accepts timestamp or yyyy-mm-dd
+  if (!date) return '';
+  if (typeof date === 'number') return format(new Date(date), 'MMM d');
+  return format(parseISO(date), 'MMM d');
+}
+
+export function formatTooltipDate(date) {
+  if (!date) return '';
+  if (typeof date === 'number') return format(new Date(date), 'MMM d, yyyy');
+  return format(parseISO(date), 'MMM d, yyyy');
+}
+     

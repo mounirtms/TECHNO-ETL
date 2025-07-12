@@ -272,13 +272,15 @@ app.get('/api/mdm/prices', async (req, res) => {
  * Sync prices to Magento (bulk operation).
  */
 app.post('/api/techno/prices-sync', async (req, res) => {
-    try {
-        let response = await syncPricesToMagento(req);
-        res.json({ success: true, response: response.data });
-    } catch (error) {
-        console.error("❌ Failed to sync prices:", error.response?.data || error.message);
-        res.status(500).json({ error: error.message });
-    }
+    res.status(202).json({ message: 'Price sync started in background.' });
+    setImmediate(async () => {
+        try {
+            await syncPricesToMagento(req);
+            console.log('✅ Price sync completed.');
+        } catch (error) {
+            console.error('❌ Price sync failed:', error);
+        }
+    });
 });
 
 // Connect to all required databases and prefetch Magento token (cached)
@@ -304,7 +306,7 @@ app.get('/api/mdm/inventory', async (req, res) => {
     }
 });
 
-router.post('/api/mdm/inventory/sync-all-source', async (req, res) => {
+app.post('/api/mdm/inventory/sync-all-source', async (req, res) => {
     const { sourceCode } = req.body;
 
     if (!sourceCode) {
@@ -331,14 +333,16 @@ router.post('/api/mdm/inventory/sync-all-source', async (req, res) => {
     }
 });
 
-router.post('api/mdm/inventory/sync-all-stocks-sources', async (req, res) => {
-    debugger
-    try {
-        await inventorySync();
-        res.status(202).json({ message: 'Sync process initiated for all sources. This will run in the background.' });
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to initiate sync for all sources.' });
-    }
+app.post('/api/mdm/inventory/sync-all-stocks-sources', async (req, res) => {
+    res.status(202).json({ message: 'Sync process initiated for all sources. This will run in the background.' });
+    setImmediate(async () => {
+        try {
+            await inventorySync();
+            console.log('✅ Inventory sync completed.');
+        } catch (error) {
+            console.error('❌ Inventory sync failed:', error);
+        }
+    });
 });
 
 
@@ -396,9 +400,6 @@ async function inventorySync() {
     await syncSources();
     await syncSuccess();
 }
-
-
-
 
 // Main function to run the operations
 async function main() {

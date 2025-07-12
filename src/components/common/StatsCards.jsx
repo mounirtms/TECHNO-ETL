@@ -164,18 +164,33 @@ const StatsCards = ({ cards }) => {
                                         letterSpacing: 0.5,
                                         opacity: 0.9,
                                         textTransform: 'uppercase',
-                                        fontSize: 12
+                                        fontSize: 13,
+                                        lineHeight: 1.2,
+                                        minHeight: 24,
+                                        mb: 0.5,
+                                        textAlign: 'left',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
                                     }}
                                 >
                                     {card.title}
                                 </Typography>
                                 <Typography
-                                    variant="h6"
+                                    variant="h5"
                                     sx={{
-                                        fontWeight: 800,
-                                        fontSize: 18,
+                                        fontWeight: 900,
+                                        fontSize: 24,
                                         letterSpacing: 0.5,
-                                        mt: 0.5
+                                        lineHeight: 1.1,
+                                        mt: 0.5,
+                                        textAlign: 'left',
+                                        minHeight: 28,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
                                     }}
                                 >
                                     {card.value}

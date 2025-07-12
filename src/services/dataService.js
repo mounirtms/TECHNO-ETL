@@ -16,25 +16,36 @@ import salesRulesData from '../assets/data/salesRules.json';
  */
 
 const paginateAndSort = (data, params = {}) => {  // Utility function
-  const { 
-    pageSize = 10, 
-    currentPage = 1, 
-    sortField = 'created_at', 
-    sortDirection = 'DESC' 
-  } = params;
+  try {
+    const { 
+      pageSize = 10, 
+      currentPage = 1, 
+      sortField = 'created_at', 
+      sortDirection = 'DESC' 
+    } = params;
 
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
 
-  const sortedData = data.sort((a, b) => { //... (same sorting logic)
-  });
+    const sortedData = [...data].sort((a, b) => {
+      if (!a[sortField] || !b[sortField]) return 0;
+      if (sortDirection === 'DESC') {
+        return a[sortField] < b[sortField] ? 1 : -1;
+      } else {
+        return a[sortField] > b[sortField] ? 1 : -1;
+      }
+    });
 
-  return {
-    data: sortedData.slice(startIndex, endIndex),
-    total: data.length,  // Total count
-    page: currentPage,
-    pageSize: pageSize
-  };
+    return {
+      data: sortedData.slice(startIndex, endIndex),
+      total: data.length,  // Total count
+      page: currentPage,
+      pageSize: pageSize
+    };
+  } catch (err) {
+    console.error('paginateAndSort error:', err);
+    return { data: [], total: 0, page: 1, pageSize: 10 };
+  }
 };
 class DataService {
   /**
@@ -46,9 +57,14 @@ class DataService {
 
 
 
-static async getOrders(params = {}) {
-  return paginateAndSort(ordersData, params);
-}
+  static async getOrders(params = {}) {
+    try {
+      return paginateAndSort(ordersData, params);
+    } catch (err) {
+      console.error('getOrders error:', err);
+      return { data: [], total: 0, page: 1, pageSize: 10 };
+    }
+  }
  
 
   /**
@@ -57,7 +73,12 @@ static async getOrders(params = {}) {
    * @returns {Promise<Object>} Paginated customers data
    */
   static async getCustomers(params = {}) {
-    return paginateAndSort(ordersData, params);
+    try {
+      return paginateAndSort(customersData, params);
+    } catch (err) {
+      console.error('getCustomers error:', err);
+      return { data: [], total: 0, page: 1, pageSize: 10 };
+    }
   }
 
   /**
@@ -66,7 +87,12 @@ static async getOrders(params = {}) {
    * @returns {Promise<Object>} Paginated invoices data
    */
   static async getInvoices(params = {}) {
-    return paginateAndSort(ordersData, params);
+    try {
+      return paginateAndSort(invoicesData, params);
+    } catch (err) {
+      console.error('getInvoices error:', err);
+      return { data: [], total: 0, page: 1, pageSize: 10 };
+    }
   }
 
   /**
@@ -75,14 +101,24 @@ static async getOrders(params = {}) {
    * @returns {Promise<Object>} Paginated products data
    */
   static async getProducts(params = {}) {
-    return paginateAndSort(ordersData, params);
-  };
+    try {
+      return paginateAndSort(productsData, params);
+    } catch (err) {
+      console.error('getProducts error:', err);
+      return { data: [], total: 0, page: 1, pageSize: 10 };
+    }
+  }
   /**
    * Get category tree
    * @returns {Promise<Array>} Category tree data
    */
   static async getCategoryTree() {
-    return categoriesData;
+    try {
+      return categoriesData;
+    } catch (err) {
+      console.error('getCategoryTree error:', err);
+      return [];
+    }
   }
 
   /**
@@ -90,7 +126,12 @@ static async getOrders(params = {}) {
    * @returns {Promise<Array>} Sales rules data
    */
   static async getSalesRules() {
-    return salesRulesData;
+    try {
+      return salesRulesData;
+    } catch (err) {
+      console.error('getSalesRules error:', err);
+      return [];
+    }
   }
 }
 
