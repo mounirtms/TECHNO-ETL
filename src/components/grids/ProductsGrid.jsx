@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import BaseGrid from '../common/BaseGrid';
+import ProductInfoDialog from '../common/ProductInfoDialog';
 import GridCardView from '../common/GridCardView';
 import magentoApi from '../../services/magentoApi';
 import { toast } from 'react-toastify';
@@ -26,6 +27,21 @@ const ProductsGrid = () => {
         lowStock: 0,
         averagePrice: 0
     });
+    const [infoOpen, setInfoOpen] = useState(false);
+    const [infoSku, setInfoSku] = useState(null);
+    const [selectedRows, setSelectedRows] = useState([]);
+    // Info button handler
+    const [infoProduct, setInfoProduct] = useState(null);
+    const handleInfo = () => {
+        if (selectedRows.length === 1) {
+            const row = data.find(r => r.id === selectedRows[0] || r.sku === selectedRows[0]);
+            if (row) {
+                setInfoSku(row.sku);
+                setInfoProduct(row);
+                setInfoOpen(true);
+            }
+        }
+    };
 
     // Custom filter options for products
     const filterOptions = [
@@ -302,22 +318,30 @@ const ProductsGrid = () => {
     );
 
     return (
-        <BaseGrid
-            gridName="ProductsGrid"
-            columns={columns}
-            data={data}
-            gridCards={statusCards}
-            loading={loading}
-            onRefresh={fetchProducts}
-            filterOptions={filterOptions}
-            currentFilter={currentFilter}
-            onFilterChange={handleFilterChange}
-            totalCount={stats.total}
-            defaultPageSize={25}
-            showCardView={false}
-            cardViewRenderer={renderProductCards}
-            onError={(error) => toast.error(error.message)}
-        />
+        <>
+            <BaseGrid
+                gridName="ProductsGrid"
+                columns={columns}
+                data={data}
+                gridCards={statusCards}
+                loading={loading}
+                onRefresh={fetchProducts}
+                filterOptions={filterOptions}
+                currentFilter={currentFilter}
+                onFilterChange={handleFilterChange}
+                totalCount={stats.total}
+                defaultPageSize={25}
+                showCardView={false}
+                cardViewRenderer={renderProductCards}
+                onError={(error) => toast.error(error.message)}
+                toolbarProps={{
+                    canInfo: selectedRows.length === 1,
+                    onInfo: handleInfo
+                }}
+                onSelectionChange={setSelectedRows}
+            />
+            <ProductInfoDialog open={infoOpen} onClose={() => setInfoOpen(false)} sku={infoSku} product={infoProduct} />
+        </>
     );
 };
 

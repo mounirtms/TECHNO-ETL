@@ -51,7 +51,9 @@ const CustomGridToolbar = ({
   onSyncHandler,
   showChangedOnly,
   setShowChangedOnly,
-  onSyncStocksHandler // New handler for Sync Stocks
+  onSyncStocksHandler, // New handler for Sync Stocks
+  canInfo,
+  onInfo
 }) => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -267,6 +269,14 @@ const CustomGridToolbar = ({
             <SettingsIcon />
           </IconButton>
         </Tooltip>
+        {/* Info Button - rightmost */}
+        {canInfo && (
+          <Tooltip title="Product Info">
+            <Button variant="outlined" size="small" onClick={onInfo} sx={{ ...toolbarButtonStyle, minWidth: 40, px: 1.5, ml: 1 }}>
+              Info
+            </Button>
+          </Tooltip>
+        )}
       </Box>
 
       {/* --- Settings Dialog and Menu --- */}

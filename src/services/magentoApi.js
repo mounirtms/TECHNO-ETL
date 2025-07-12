@@ -1,3 +1,4 @@
+ 
 import axios from 'axios';
 import magentoService from './magentoService';
 import { toast } from 'react-toastify';
@@ -107,11 +108,25 @@ const formatResponse = (response, mockDataKey) => {
 class MagentoApi {
   constructor() {
     this.baseURL = API_URL;
-
     // Initialize cache
     this.cache = new Map();
     this.CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
   }
+
+  // Get product media gallery by SKU (uses backend proxy)
+  async getProductMedia(sku) {
+    try {
+      // Use magentoService to ensure proxy and token usage
+      const response = await magentoService.get(`/products/${sku}/media`);
+      // magentoService returns { data: ... }
+      return response?.data || [];
+    } catch (error) {
+      console.error('Failed to fetch product media:', error);
+      throw error;
+    }
+  }
+
+  // Deprecated: getProductDetails (use local row data in grid instead)
 
   setBaseURL(newBaseURL) {
     if (!newBaseURL) {

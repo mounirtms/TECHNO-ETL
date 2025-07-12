@@ -48,6 +48,8 @@
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.3.8",
     "react-hot-toast": "^2.4.1",
+    "react-image-magnify": "^2.7.4",
+    "react-material-ui-carousel": "^3.4.2",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.15.0",
     "react-toastify": "^10.0.6",
