@@ -96,7 +96,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             setError(err);
             setLoading(false);
         }
-    }, [currentUser, setLanguage, setThemeMode]);
+    }, [currentUser, setLanguage, themeCtx]);
     
     // Fetch dashboard data
     const fetchDashboardData = useCallback(async () => {
