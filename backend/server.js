@@ -14,7 +14,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 
 import { cloudConfig, betaConfig, getMagentoToken } from './src/config/magento.js';
-import { sourceMapping, getAllSources } from './src/config/sources.js';
+import * as sourcesModule from './src/config/sources.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -349,7 +349,8 @@ app.post('/api/mdm/inventory/sync-all-stocks-sources', async (req, res) => {
 
 async function syncSources() {
     try {
-        for (const source of sourceMapping.getAllSources()) {
+        const allSources = typeof sourcesModule.getAllSources === 'function' ? sourcesModule.getAllSources() : [];
+        for (const source of allSources) {
             console.log(`🔄 Syncing inventory for source: ${source.magentoSource}`);
 
             await delay(1000); // ✅ Corrected timeout usage
@@ -363,7 +364,6 @@ async function syncSources() {
                     sourceCode: source.code_source
                 }
             });
-
 
             console.log(`✅ Finished syncing for ${source.magentoSource}`);
         }
@@ -409,6 +409,7 @@ async function main() {
         await syncPrices();
         await inventorySync();
     });
+
 
 
     //const allSchemas = await getAllTableSchemas();
