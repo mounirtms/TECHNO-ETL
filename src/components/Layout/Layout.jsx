@@ -15,7 +15,15 @@ import { DRAWER_WIDTH, COLLAPSED_WIDTH, FOOTER_HEIGHT } from './Constants';
 const Layout = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isTablet = useMediaQuery(theme.breakpoints.down('md'));
     const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
+
+    // Auto-collapse sidebar on mobile/tablet
+    React.useEffect(() => {
+        if (isMobile) {
+            setSidebarOpen(false);
+        }
+    }, [isMobile]);
 
     return (
         <LanguageProvider>
@@ -38,15 +46,53 @@ const Layout = () => {
                             open={sidebarOpen} 
                             toggleDrawer={() => setSidebarOpen(prev => !prev)} 
                         />
-                        <Box 
-                            component="main" 
-                            sx={{ 
-                                flexGrow: 1, 
-                                width: `calc(100% - ${sidebarOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH}px)`,
-                                overflow: 'hidden'
+                        <Box
+                            component="main"
+                            sx={{
+                                flexGrow: 1,
+                                width: {
+                                    xs: '100%', // Full width on mobile
+                                    sm: `calc(100% - ${sidebarOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH}px)`
+                                },
+                                overflow: 'hidden',
+                                transition: theme.transitions.create(['width', 'margin'], {
+                                    easing: theme.transitions.easing.sharp,
+                                    duration: theme.transitions.duration.leavingScreen,
+                                }),
+                                marginLeft: {
+                                    xs: 0, // No margin on mobile
+                                    sm: sidebarOpen ? 0 : `-${COLLAPSED_WIDTH}px`
+                                },
+                                padding: {
+                                    xs: theme.spacing(0.5), // Reduced padding on mobile
+                                    sm: theme.spacing(1),
+                                    md: theme.spacing(1.5)
+                                },
+                                // Modern background with subtle gradient
+                                background: `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.grey[50]} 100%)`,
+                                position: 'relative',
+                                // Glass morphism effect
+                                '&::before': {
+                                    content: '""',
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    background: 'radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.08) 0%, transparent 50%)',
+                                    pointerEvents: 'none',
+                                    zIndex: 0
+                                },
+                                // Enhanced mobile styles
+                                [theme.breakpoints.down('sm')]: {
+                                    minHeight: `calc(100vh - 56px - ${FOOTER_HEIGHT}px)`,
+                                },
+                                [theme.breakpoints.up('sm')]: {
+                                    minHeight: `calc(100vh - 64px - ${FOOTER_HEIGHT}px)`,
+                                }
                             }}
                         >
-                            <TabPanel sidebarOpen={sidebarOpen} />
+                            <TabPanel sidebarOpen={sidebarOpen} isMobile={isMobile} isTablet={isTablet} />
                         </Box>
                     </Box>
                     <Footer sidebarOpen={sidebarOpen} />

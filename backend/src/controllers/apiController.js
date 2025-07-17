@@ -48,6 +48,17 @@ export async function proxyMagentoRequest(req, res) {
         // Remove any double slashes in the endpoint path
         let endpoint = req.originalUrl.replace("/api/magento", "").replace(/\/+/g, "/");
 
+        // Set CORS headers for production
+        res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+        res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, User-Agent, X-Requested-With');
+        res.header('Access-Control-Allow-Credentials', 'true');
+
+        // Handle preflight requests
+        if (method.toLowerCase() === 'options') {
+            return res.status(200).end();
+        }
+
         if (!magentoService) {
             magentoService = new MagentoService(cloudConfig);
         }
@@ -66,7 +77,7 @@ export async function proxyMagentoRequest(req, res) {
             return res.json(response);
         }
 
-        console.log(`[MagentoProxy] ${method.toUpperCase()} ${endpointWithQuery}`);
+        console.log(`🚀 [MagentoProxy] ${method.toUpperCase()} ${endpointWithQuery}`);
 
         switch (method.toLowerCase()) {
             case "get":
@@ -82,8 +93,17 @@ export async function proxyMagentoRequest(req, res) {
                 response = await magentoService.delete(endpoint);
                 break;
             default:
+                console.error(`❌ [MagentoProxy] Method not allowed: ${method}`);
                 return res.status(405).json({ error: "Method not allowed" });
         }
+
+        console.log(`✅ [MagentoProxy] Response ready:`, {
+            responseType: typeof response,
+            hasItems: response && 'items' in response,
+            itemsCount: response?.items?.length || 0,
+            totalCount: response?.total_count || 0,
+            responseKeys: response ? Object.keys(response) : []
+        });
 
         res.json(response);
     } catch (error) {

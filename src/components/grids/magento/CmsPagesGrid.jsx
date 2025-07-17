@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Box,
     Typography,
     Button,
     Dialog,
@@ -8,13 +7,14 @@ import {
     DialogContent,
     DialogActions,
     TextField,
-    CircularProgress
+    CircularProgress,
+    Box
 } from '@mui/material';
 import { toast } from 'react-toastify';
-import magentoApi from '../../services/magentoApi';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import BaseGrid from '../common/BaseGrid';
+import UnifiedGrid from '../../common/UnifiedGrid';
+import magentoApi from '../../../services/magentoApi';
 
 const CmsPage = () => {
     const [pages, setPages] = useState([]);
@@ -58,10 +58,14 @@ const CmsPage = () => {
                 }
             });
 
-            if (!response || !response.items || response.items.length === 0) {
+            // Handle {data: {items: []}} response structure
+            const cmsData = response?.data || response;
+            const items = cmsData?.items || [];
+
+            if (!items || items.length === 0) {
                 await loadLocalData();
             } else {
-                setPages(response.items);
+                setPages(items);
             }
         } catch (error) {
             console.error('Failed to fetch CMS pages:', error);
@@ -124,10 +128,10 @@ const CmsPage = () => {
     };
 
     return (
-        <Box sx={{ p: 1 }}>
+        <>
             {error && <Typography color="error">{error}</Typography>}
 
-            <BaseGrid
+            <UnifiedGrid
                 gridName="CmsPagesGrid"
                 columns={[
                     { field: 'title', headerName: 'Title', width: 200 },
@@ -141,12 +145,93 @@ const CmsPage = () => {
                 ]}
                 data={pages}
                 loading={loading}
-                onRefresh={fetchData}
-                getRowId={(row) => row?.identifier ?? Math.random().toString(36).substr(2, 9)}
-                defaultSortModel={[{ field: 'creation_time', sort: 'desc' }]}
+
+                // Feature toggles
+                enableCache={true}
+                enableI18n={true}
+                enableRTL={true}
+                enableSelection={true}
+                enableSorting={true}
+                enableFiltering={true}
+
+                // View options
                 defaultPageSize={10}
                 pageSizeOptions={[10, 25, 50, 100]}
+
+                // Toolbar configuration
+                toolbarConfig={{
+                    showRefresh: true,
+                    showAdd: true,
+                    showEdit: true,
+                    showDelete: true,
+                    showExport: true,
+                    showSearch: true,
+                    showSettings: true
+                }}
+
+                // Context menu
+                contextMenuActions={{
+                    edit: {
+                        enabled: true,
+                        onClick: (rowData) => handleOpenDialog(rowData)
+                    },
+                    delete: {
+                        enabled: true,
+                        onClick: (rowData) => handleDelete(rowData.id)
+                    },
+                    view: {
+                        enabled: true,
+                        onClick: (rowData) => handleOpenDialog(rowData)
+                    }
+                }}
+
+                // Floating actions (disabled by default)
+                enableFloatingActions={false}
+                floatingActions={{
+                    add: {
+                        enabled: true,
+                        priority: 1
+                    },
+                    edit: {
+                        enabled: (selectedRows) => selectedRows.length === 1,
+                        priority: 2
+                    },
+                    export: {
+                        enabled: true,
+                        priority: 3
+                    }
+                }}
+
+                // Event handlers
+                onRefresh={fetchData}
+                onAdd={() => handleOpenDialog()}
+                onEdit={(rowData) => handleOpenDialog(rowData)}
+                onDelete={(selectedRows) => {
+                    selectedRows.forEach(id => {
+                        const page = pages.find(p => p.identifier === id);
+                        if (page) handleDelete(page.id);
+                    });
+                }}
                 onRowDoubleClick={(params) => handleOpenDialog(params.row)}
+                onExport={(selectedRows) => {
+                    const exportData = selectedRows.length > 0
+                        ? pages.filter(page => selectedRows.includes(page.identifier))
+                        : pages;
+                    console.log('Exporting CMS pages:', exportData);
+                    toast.success(`Exported ${exportData.length} CMS pages`);
+                }}
+
+                // Row configuration
+                getRowId={(row) => row?.identifier ?? Math.random().toString(36).substr(2, 9)}
+
+                // Sorting
+                sortModel={[{ field: 'creation_time', sort: 'desc' }]}
+
+                // Error handling
+                onError={(error) => {
+                    console.error('CMS Pages Grid Error:', error);
+                    toast.error('Error loading CMS pages');
+                }}
             />
 
             <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth maxWidth="md">
@@ -172,11 +257,11 @@ const CmsPage = () => {
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseDialog} color="secondary">Cancel</Button>
+                    <Button onClick={handleCloseDialog}>Cancel</Button>
                     <Button onClick={handleSubmit} color="primary">{selectedPage ? 'Update' : 'Create'}</Button>
                 </DialogActions>
             </Dialog>
-        </Box>
+        </>
     );
 };
 

@@ -1,14 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import { Box } from '@mui/material';
-import BaseGrid from '../common/BaseGrid';
-import { StatsCards } from '../common/StatsCards';
-import { formatCurrency, formatDateTime } from '../../utils/formatters';
-import magentoApi from '../../services/magentoApi';
+import UnifiedGrid from '../../common/UnifiedGrid';
+import { StatsCards } from '../../common/StatsCards';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import PaidIcon from '@mui/icons-material/Paid';
+import { formatCurrency, formatDateTime } from '../../../utils/formatters';
+import magentoApi from '../../../services/magentoApi';
 import PendingIcon from '@mui/icons-material/Pending';
 import { toast } from 'react-toastify';
-import { generateColumns } from '../../utils/gridUtils';
+import { generateColumns } from '../../../utils/gridUtils';
 
 /**
  * InvoiceGrid Component
@@ -90,8 +90,11 @@ const InvoicesGrid = ({ orderId }) => {
             }
 
             const response = await magentoApi.getInvoices(searchCriteria);
-            setData(response.items || []);
-            updateStats(response.items || []);
+            // Handle {data: {items: []}} response structure
+            const invoicesData = response?.data || response;
+            const items = invoicesData?.items || [];
+            setData(items);
+            updateStats(items);
         } catch (error) {
             toast.error(error.message || 'Failed to load invoices');
             throw error;
@@ -115,10 +118,22 @@ const InvoicesGrid = ({ orderId }) => {
     }, []);
 
     return (
-             <BaseGrid
+         <UnifiedGrid
                 gridName="InvoicesGrid"
                 columns={columns}
                 data={data}
+                loading={loading}
+
+                // Feature toggles
+                enableCache={true}
+                enableI18n={true}
+                enableRTL={true}
+                enableSelection={true}
+                enableSorting={true}
+                enableFiltering={true}
+
+                // View options
+                showStatsCards={true}
                 gridCards={[
                     {
                         title: 'Total Invoices',
@@ -139,18 +154,68 @@ const InvoicesGrid = ({ orderId }) => {
                         color: 'warning'
                     }
                 ]}
-                loading={loading}
-                onRefresh={handleRefresh}
-                currentFilter={filters}
-                onFilterChange={setFilters}
-                getRowId={(row) => row.increment_id}
-                defaultSortModel={[
-                    { field: 'invoice_date', sort: 'desc' }
-                ]}
                 defaultPageSize={10}
                 pageSizeOptions={[10, 25, 50, 100]}
+
+                // Toolbar configuration
+                toolbarConfig={{
+                    showRefresh: true,
+                    showExport: true,
+                    showSearch: true,
+                    showFilters: true,
+                    showSettings: true
+                }}
+
+                // Context menu
+                contextMenuActions={{
+                    view: {
+                        enabled: true,
+                        onClick: (rowData) => {
+                            console.log('Viewing invoice:', rowData);
+                            toast.info(`Viewing invoice: ${rowData.increment_id}`);
+                        }
+                    }
+                }}
+
+                // Floating actions (disabled by default)
+                enableFloatingActions={false}
+                floatingActions={{
+                    export: {
+                        enabled: true,
+                        priority: 1
+                    },
+                    refresh: {
+                        enabled: true,
+                        priority: 2
+                    }
+                }}
+
+                // Event handlers
+                onRefresh={handleRefresh}
+                onExport={(selectedRows) => {
+                    const exportData = selectedRows.length > 0
+                        ? data.filter(invoice => selectedRows.includes(invoice.increment_id))
+                        : data;
+                    console.log('Exporting invoices:', exportData);
+                    toast.success(`Exported ${exportData.length} invoices`);
+                }}
+
+                // Filter configuration
+                currentFilter={filters}
+                onFilterChange={setFilters}
+
+                // Row configuration
+                getRowId={(row) => row.increment_id}
+
+                // Sorting
+                sortModel={[{ field: 'invoice_date', sort: 'desc' }]}
+
+                // Error handling
+                onError={(error) => {
+                    console.error('Invoices Grid Error:', error);
+                    toast.error('Error loading invoices');
+                }}
             />
-       
     );
 };
 

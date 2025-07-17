@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react({
@@ -34,19 +33,35 @@ export default defineConfig({
       include: ['src/**', 'index.html']
     },
     proxy: {
+      '/api': {
+        target: process.env.NODE_ENV === 'production'
+          ? 'https://api.techno-dz.com'
+          : 'http://localhost:5000',
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            const origin = process.env.NODE_ENV === 'production'
+              ? 'https://etl.techno-dz.com'
+              : 'http://localhost:82';
+            proxyReq.setHeader('Origin', origin);
+            proxyReq.setHeader('User-Agent', 'Techno-ETL/1.0.0 (etl.techno-dz.com)');
+          });
+        }
+      },
       '/magento-api': {
         target: 'https://technostationery.com',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/magento-api/, '/rest/V1'),
-        configure: (proxy, _options) => {
-          proxy.on('error', (err, _req, _res) => {
+        configure: (proxy) => {
+          proxy.on('error', (err) => {
             console.log('proxy error', err);
           });
-          proxy.on('proxyReq', (proxyReq, req, _res) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
             console.log('Sending Request to the Target:', req.method, req.url);
           });
-          proxy.on('proxyRes', (proxyRes, req, _res) => {
+          proxy.on('proxyRes', (proxyRes, req) => {
             console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
           });
         }
@@ -54,14 +69,13 @@ export default defineConfig({
       '/cegid-api': {
         target: 'http://10.0.2.58/Y2_LAB',
         changeOrigin: true,
-        secure: false,  // Disable SSL verification
+        secure: false,
         rewrite: (path) => path.replace(/^\/cegid-api/, ''),
-        configure: (proxy, _options) => {
-          proxy.on('error', (err, _req, _res) => {
+        configure: (proxy) => {
+          proxy.on('error', (err) => {
             console.log('Cegid proxy error:', err);
           });
-          proxy.on('proxyReq', (proxyReq, req, _res) => {
-            // Remove origin and referer headers for development
+          proxy.on('proxyReq', (proxyReq, req) => {
             proxyReq.removeHeader('origin');
             proxyReq.removeHeader('referer');
             console.log('Cegid request:', req.method, req.url);
@@ -77,11 +91,11 @@ export default defineConfig({
     }
   },
   build: {
-    target: 'esnext',
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: process.env.NODE_ENV !== 'production',
-    minify: process.env.NODE_ENV === 'production',
+    minify: process.env.NODE_ENV === 'production' ? 'terser' : false,
+    target: 'es2015',
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html')
@@ -89,13 +103,11 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
-          ui: ['@mui/material', '@emotion/react', '@emotion/styled'],
-          charts: ['recharts']
+          mui: ['@mui/material', '@mui/icons-material', '@mui/x-data-grid'],
+          charts: ['recharts'],
+          utils: ['axios', 'date-fns'],
         },
         assetFileNames: ({ name }) => {
-          // Handle documentation files
-          
-          // Handle other assets
           if (/\.(gif|jpe?g|png|svg)$/i.test(name ?? '')) {
             return 'assets/images/[name][extname]';
           }
@@ -103,17 +115,25 @@ export default defineConfig({
         }
       }
     },
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
+    chunkSizeWarningLimit: 1000,
     assetsInclude: [
-      '**/*.jpg', '**/*.png', '**/*.gif', '**/*.svg', 
+      '**/*.jpg', '**/*.png', '**/*.gif', '**/*.svg',
       '**/*.json', '**/*.csv', '**/*.xml',
       'docs/dist/**/*.html',
       'docs/dist/**/*.css',
       'docs/dist/**/*.js',
-      'docs/dist/assets/**/*',
-      '**/*.json'
+      'docs/dist/assets/**/*'
     ],
-    copyPublicDir: true,
-    chunkSizeWarningLimit: 1000
+    copyPublicDir: true
+  },
+  define: {
+    global: 'globalThis',
   },
   optimizeDeps: {
     include: [
@@ -131,4 +151,4 @@ export default defineConfig({
     force: true
   },
   publicDir: 'public'
-})
+});

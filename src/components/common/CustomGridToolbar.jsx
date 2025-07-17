@@ -5,7 +5,7 @@ import SyncIcon from '@mui/icons-material/Sync';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { useTheme } from '@mui/material/styles';
-import SettingsDialog from './CustomGridLyoutSettings';
+// import SettingsDialog from './CustomGridLayoutSettings'; // Temporarily disabled
 import { staticPrimaryKeys } from '../Layout/Constants';
 
 /**
@@ -280,18 +280,9 @@ const CustomGridToolbar = ({
       </Box>
 
       {/* --- Settings Dialog and Menu --- */}
-      <SettingsDialog
-        open={settingsDialogOpen}
-        onClose={() => setSettingsDialogOpen(false)}
-        columns={columns}
-        gridName={gridName}
-        onSave={(newSettings) => {
-          // Optionally handle settings save
-          console.log('Saved Settings:', newSettings);
-        }}
-      />
+      {/* Settings Dialog temporarily disabled */}
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleSettingsClose}>
-        <MenuItem onClick={handleSettingsDialogOpen}>Customize Columns</MenuItem>
+        <MenuItem onClick={() => console.log('Settings temporarily disabled')}>Customize Columns (Disabled)</MenuItem>
       </Menu>
     </Box>
   );

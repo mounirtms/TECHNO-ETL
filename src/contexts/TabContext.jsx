@@ -5,17 +5,18 @@ import { MENU_ITEMS } from '../components/Layout/Constants';
 // Import all components dynamically
 import Dashboard from '../pages/Dashboard'; 
 
-import CmsPageGrid from '../components/grids/CmsPagesGrid'; 
-import ProductsGrid from '../components/grids/ProductsGrid';
+import CmsPageGrid from '../components/grids/magento/CmsPagesGrid'; 
+import ProductsGrid from '../components/grids/magento/ProductsGrid';
 import MDMProductsGrid from '../components/grids/MDMProductsGrid';
-import CustomersGrid from '../components/grids/CustomersGrid';
-import OrdersGrid from '../components/grids/OrdersGrid';
-import InvoicesGrid from '../components/grids/InvoicesGrid';
+import CustomersGrid from '../components/grids/magento/CustomersGrid';
+import OrdersGrid from '../components/grids/magento/OrdersGrid';
+import InvoicesGrid from '../components/grids/magento/InvoicesGrid';
 import UserProfile from '../components/UserProfile';
-import CategoryTree from '../components/grids/CategoryGrid';
-import StocksGrid from '../components/grids/StocksGrid';
-import SourcesGrid from '../components/grids/SourcesGrid';
+import CategoryTree from '../components/grids/magento/CategoryGrid';
+import StocksGrid from '../components/grids/magento/StocksGrid';
+import SourcesGrid from '../components/grids/magento/SourcesGrid';
 import CegidGrid from '../components/grids/CegidGrid';
+import GridTestPage from '../pages/GridTestPage';
 
 // Component mapping
 const COMPONENT_MAP = {
@@ -30,7 +31,8 @@ const COMPONENT_MAP = {
     StocksGrid: StocksGrid,
     SourcesGrid: SourcesGrid,
     CegidProductsGrid: CegidGrid,
-    CmsPageGrid:CmsPageGrid
+    CmsPageGrid: CmsPageGrid,
+    GridTestPage: GridTestPage
 };
 
 const TabContext = createContext();

@@ -231,6 +231,47 @@ export const resetToDefaultColumns = (gridName) => {
     return defaultColumns;
 };
 
+// Enhanced column processing for existing columns
+export const enhanceColumns = (columns = [], options = {}) => {
+    const {
+        enableI18n = false,
+        translate = (key, fallback) => fallback,
+        enableSorting = true,
+        enableFiltering = true
+    } = options;
+
+    // Ensure columns is an array
+    if (!Array.isArray(columns)) {
+        console.warn('enhanceColumns: columns parameter must be an array, received:', typeof columns);
+        return [];
+    }
+
+    return columns.map(column => {
+        if (!column || typeof column !== 'object') {
+            console.warn('enhanceColumns: Invalid column object:', column);
+            return column;
+        }
+
+        const enhancedColumn = { ...column };
+
+        // Apply translations if enabled
+        if (enableI18n && translate && column.headerName) {
+            const translationKey = `grid.columns.${column.field}`;
+            enhancedColumn.headerName = translate(translationKey, column.headerName);
+        }
+
+        // Apply sorting and filtering settings
+        if (enableSorting !== undefined) {
+            enhancedColumn.sortable = enableSorting;
+        }
+        if (enableFiltering !== undefined) {
+            enhancedColumn.filterable = enableFiltering;
+        }
+
+        return enhancedColumn;
+    });
+};
+
 // Enhanced column generation with better type detection
 export const generateColumns = (firstRecord = {}, childColumns = []) => {
     if (!firstRecord || typeof firstRecord !== 'object') {
@@ -303,8 +344,10 @@ export const generateColumns = (firstRecord = {}, childColumns = []) => {
         }
     }));
 
-    // Merge and deduplicate columns, objectColumns take precedence for object fields
-    const mergedColumns = mergeColumns(childColumns, [...autoColumns, ...objectColumns]);
+    // Filter out null values and merge columns
+    const validAutoColumns = autoColumns.filter(col => col !== null);
+    const validObjectColumns = objectColumns.filter(col => col !== null);
+    const mergedColumns = mergeColumns(childColumns, [...validAutoColumns, ...validObjectColumns]);
 
     // Save as default columns for this grid
     if (childColumns.length > 0) {
@@ -314,7 +357,8 @@ export const generateColumns = (firstRecord = {}, childColumns = []) => {
         }
     }
 
-    return mergedColumns;
+    // Ensure we always return an array
+    return Array.isArray(mergedColumns) ? mergedColumns : childColumns;
 };
 
 // Enhanced column settings management
@@ -365,6 +409,27 @@ export const applySavedColumnSettings = async (gridName, columns) => {
     }
 };
 
+// Utility function to save column settings specifically
+export const saveColumnSettings = async (gridName, columns) => {
+    if (!gridName || !columns || !Array.isArray(columns)) return false;
+
+    try {
+        // Save to local storage
+        localStorage.setItem(`${gridName}-columns`, JSON.stringify(columns));
+
+        // Save to database if available
+        if (typeof database !== 'undefined') {
+            const settingsRef = ref(database, `gridSettings/${gridName}/columns`);
+            await set(settingsRef, columns);
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Error saving column settings:', error);
+        return false;
+    }
+};
+
 // Utility function to save grid settings
 export const saveGridSettings = async (gridName, settings) => {
     if (!gridName || !settings) return;
@@ -412,13 +477,19 @@ export const getGridSettings = async (gridName) => {
 export const mergeColumns = (userColumns, dynamicColumns) => {
     const columnMap = new Map();
 
+    // Ensure userColumns and dynamicColumns are arrays
+    const safeUserColumns = Array.isArray(userColumns) ? userColumns : [];
+    const safeDynamicColumns = Array.isArray(dynamicColumns) ? dynamicColumns : [];
+
     // Add user columns to the column map
-    userColumns.forEach(col => {
-        columnMap.set(col.field, { ...col, hide: false });
+    safeUserColumns.forEach(col => {
+        if (col && col.field) {
+            columnMap.set(col.field, { ...col, hide: false });
+        }
     });
 
     // Add dynamic columns if they don't exist in user columns
-    dynamicColumns.forEach(col => {
+    safeDynamicColumns.forEach(col => {
         if (!columnMap.has(col.field)) {
             columnMap.set(col.field, { ...col, hide: true });  // Set hide: true for dynamic columns by default
         }

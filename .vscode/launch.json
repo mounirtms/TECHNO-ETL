@@ -2,7 +2,14 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run Dev (vite + server)",
+      "name": "Launch Chrome against localhost",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "url": "http://localhost:82",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Run Dev ",
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "npm",

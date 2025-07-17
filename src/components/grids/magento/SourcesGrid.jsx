@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import BaseGrid from '../common/BaseGrid';
-import magentoApi from '../../services/magentoApi';
+import UnifiedGrid from '../../common/UnifiedGrid';
+import magentoApi from '../../../services/magentoApi';
 import { toast } from 'react-toastify';
 
 const columns = [
@@ -22,7 +22,7 @@ const columns = [
         width: 120,
         valueGetter: (params) => params?.row?.enabled ? 'Enabled' : 'Disabled',
         renderCell: (params) => (
-            <div style={{ 
+                <div style={{ 
                 color: params?.row?.enabled ? 'green' : 'red',
                 fontWeight: 'bold'
             }}>
@@ -100,8 +100,8 @@ const SourcesGrid = ({ productId }) => {
     const [error, setError] = useState(null); // Store error message
 
     const handleRefresh = useCallback(async (params) => {
-        try {
-            setLoading(true);
+      try {
+        setLoading(true);
             setError(null); // Reset error on new request
 
             const searchCriteria = {
@@ -132,7 +132,7 @@ const SourcesGrid = ({ productId }) => {
             }
 
             const response = await magentoApi.getSources(searchCriteria);
-            
+          
             if (!response) {
                 throw new Error('No response received from the server.');
             }
@@ -169,18 +169,84 @@ const SourcesGrid = ({ productId }) => {
     return (
         <>
             {error && <div style={{ color: 'red', fontWeight: 'bold', marginBottom: '10px' }}>{error}</div>}
-            <BaseGrid
+          
+            <UnifiedGrid
                 gridName="sources"
                 columns={columns}
                 data={data}
                 loading={loading}
-                onRefresh={handleRefresh}
-                totalCount={totalCount}
+
+                // Feature toggles
+                enableCache={true}
+                enableI18n={true}
+                enableRTL={true}
+                enableSelection={true}
+                enableSorting={true}
+                enableFiltering={true}
+
+                // View options
+                showStatsCards={true}
                 gridCards={gridCards}
+                totalCount={totalCount}
+                defaultPageSize={25}
+
+                // Toolbar configuration
+                toolbarConfig={{
+                    showRefresh: true,
+                    showExport: true,
+                    showSearch: true,
+                    showFilters: true,
+                    showSettings: true
+                }}
+
+                // Context menu
+                contextMenuActions={{
+                    view: {
+                        enabled: true,
+                        onClick: (rowData) => {
+                            console.log('Viewing source:', rowData);
+                            toast.info(`Viewing source: ${rowData.source_code}`);
+                        }
+                    }
+                }}
+
+                // Floating actions (disabled by default)
+                enableFloatingActions={false}
+                floatingActions={{
+                    export: {
+                        enabled: true,
+                        priority: 1
+                    },
+                    refresh: {
+                        enabled: true,
+                        priority: 2
+                    }
+                }}
+
+                // Event handlers
+                onRefresh={handleRefresh}
+                onExport={(selectedRows) => {
+                    const exportData = selectedRows.length > 0
+                        ? data.filter(source => selectedRows.includes(source.source_code))
+                        : data;
+                    console.log('Exporting sources:', exportData);
+                    toast.success(`Exported ${exportData.length} sources`);
+                }}
+
+                // Filter configuration
                 currentFilter={filters}
                 onFilterChange={setFilters}
+
+                // Row configuration
                 getRowId={(row) => row?.source_code ?? Math.random().toString(36).substr(2, 9)}
+
+                // Error handling
+                onError={(error) => {
+                    console.error('Sources Grid Error:', error);
+                    toast.error('Error loading sources');
+                }}
             />
+          
         </>
     );
 };

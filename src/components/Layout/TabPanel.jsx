@@ -9,7 +9,7 @@ import {
 import { useTab } from '../../contexts/TabContext';
 import { HEADER_HEIGHT, FOOTER_HEIGHT } from './Constants';
 
-const TabPanel = ({ sidebarOpen }) => {
+const TabPanel = ({ sidebarOpen, isMobile = false, isTablet = false }) => {
     const theme = useTheme();
     const { tabs, activeTab, openTab, getActiveComponent } = useTab();
     const [tabPanelHeight, setTabPanelHeight] = useState('100%');
@@ -49,25 +49,47 @@ const TabPanel = ({ sidebarOpen }) => {
                 <Tabs
                     value={activeTab}
                     onChange={handleChange}
-                    variant="scrollable"
-                    scrollButtons="auto"
+                    variant={isMobile ? "scrollable" : "scrollable"}
+                    scrollButtons={isMobile ? "auto" : "auto"}
+                    allowScrollButtonsMobile
+                    sx={{
+                        '& .MuiTab-root': {
+                            minWidth: isMobile ? 80 : 120,
+                            fontSize: isMobile ? '0.75rem' : '0.875rem',
+                            padding: isMobile ? '4px 6px' : '8px 12px' // Reduced padding
+                        }
+                    }}
                 >
                     {tabs.map((tab) => (
-
                         <Tab
                             key={tab.id}
-                            label={tab.label}
+                            label={isMobile ? tab.label.substring(0, 8) + (tab.label.length > 8 ? '...' : '') : tab.label}
                             value={tab.id}
                         />
-
                     ))}
                 </Tabs>
             </Box>
             <Box sx={{
                 flexGrow: 1,
                 overflow: 'auto',
-                p: 2,
-                height: `calc(${tabPanelHeight} - 48px)` // Subtract tab header height
+                p: {
+                    xs: 0.25, // Further reduced padding on mobile
+                    sm: 0.5,
+                    md: 1
+                },
+                height: `calc(${tabPanelHeight} - ${isMobile ? '40px' : '48px'})`, // Responsive tab header height
+                '& .MuiDataGrid-root': {
+                    '& .MuiDataGrid-toolbarContainer': {
+                        padding: isMobile ? '4px' : '8px',
+                        minHeight: isMobile ? '40px' : '56px'
+                    },
+                    '& .MuiDataGrid-columnHeaders': {
+                        minHeight: isMobile ? '40px' : '56px'
+                    },
+                    '& .MuiDataGrid-row': {
+                        minHeight: isMobile ? '36px' : '52px'
+                    }
+                }
             }}>
                 {ActiveComponent ? <ActiveComponent /> : (
                     <Typography variant="body1" color="error">

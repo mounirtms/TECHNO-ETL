@@ -2,6 +2,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
 import router from './src/utils/routes.js';
 import cron from 'node-cron';
 import { createMdmPool, createCegidPool, createMdm360Pool, getPool } from './src/utils/database.js';
@@ -9,9 +11,11 @@ import sql from 'mssql';
 import mdmdbConfig from './src/config/mdm.js';
 import jwt from 'jsonwebtoken';
 import { fetchInventoryData, syncInventoryToMagento, syncPricesToMagento } from './src/mdm/services.js';
+import { proxyMagentoRequest } from './src/controllers/apiController.js';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import { productionConfig } from './production.config.js';
 
 import { cloudConfig, betaConfig, getMagentoToken } from './src/config/magento.js';
 import * as sourcesModule from './src/config/sources.js';
@@ -21,14 +25,36 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-app.use(cors({
-    origin: ['http://localhost:4173', 'http://localhost:82', 'https://techno-webapp.web.app', 'https://dashboard.technostationery.com'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// Use production CORS configuration
+app.use(cors(productionConfig.cors));
+
+// Add security headers
+app.use(helmet(productionConfig.security.helmet));
+
+// Add compression
+app.use(compression(productionConfig.compression));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Add user-agent middleware for Magento compatibility
+app.use((req, res, next) => {
+    // Set a proper user-agent for Techno ETL system
+    req.headers['user-agent'] = req.headers['user-agent'] || productionConfig.magento.userAgent;
+
+    // Add additional headers for Magento API compatibility
+    if (req.path.includes('/api/magento')) {
+        Object.assign(req.headers, productionConfig.magento.headers);
+    }
+
+    // Add CORS headers for all requests
+    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', productionConfig.cors.allowedHeaders.join(', '));
+    res.header('Access-Control-Allow-Credentials', 'true');
+
+    next();
+});
 app.use(router);
 
 // =========================
@@ -296,8 +322,12 @@ async function connectToDatabases() {
     }
 }
 
+// Magento API Proxy
+app.all('/api/magento/*', proxyMagentoRequest);
+
 app.get('/api/mdm/inventory', async (req, res) => {
     try {
+
         let data = await fetchInventoryData(req);
         res.json(data);
     } catch (error) {
@@ -392,7 +422,6 @@ async function syncPrices() {
     await syncPricesToMagento({ body: priceData });
 
 }
-
 
 
 async function inventorySync() {

@@ -7,11 +7,11 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import arLocale from 'date-fns/locale/ar-SA';
 import { StatsCards } from '../components/common/StatsCards';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import PeopleIcon from '@mui/icons-material/People';
-import InventoryIcon from '@mui/icons-material/Inventory';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+// Stylish and fancy dashboard icons - smaller and more professional
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import CategoryIcon from '@mui/icons-material/Category';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import SyncIcon from '@mui/icons-material/SyncAlt';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -19,8 +19,16 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
-import StarIcon from '@mui/icons-material/Star';
-import GroupIcon from '@mui/icons-material/Group';
+import DiamondIcon from '@mui/icons-material/Diamond';
+import GroupsIcon from '@mui/icons-material/Groups';
+// Enhanced stylish dashboard icons
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import InsightsIcon from '@mui/icons-material/Insights';
+import PaidIcon from '@mui/icons-material/Paid';
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import StoreIcon from '@mui/icons-material/Store';
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import { useDashboardController } from '../services/DashboardController';
 import { formatCurrency, formatDate, prepareCustomerChartData, formatChartDate, formatTooltipDate } from '../services/dashboardService';
 
@@ -131,7 +139,9 @@ const Dashboard = () => {
                     />
 
                     {/* Slick Sync Buttons */}
-                    <Box sx={{ display: 'flex', gap: 1, ml: 3 }}>
+
+                    {/* Slick Sync Buttons */}
+                    <Box sx={{ display: 'flex', gap: 1 }}>
                         <Button
                             onClick={getPrices}
                             startIcon={<SyncIcon />}
@@ -145,7 +155,9 @@ const Dashboard = () => {
                                 boxShadow: '0 2px 8px rgba(25,118,210,0.10)',
                                 textTransform: 'none',
                                 background: 'linear-gradient(90deg, #1976d2 0%, #64b5f6 100%)',
-                                '&:hover': { background: 'linear-gradient(90deg, #1565c0 0%, #42a5f5 100%)' }
+                                '&:hover': {
+                                    background: 'linear-gradient(90deg, #1565c0 0%, #42a5f5 100%)'
+                                }
                             }}
                         >
                             Sync Prices
@@ -163,18 +175,29 @@ const Dashboard = () => {
                                 boxShadow: '0 2px 8px rgba(76,175,80,0.10)',
                                 textTransform: 'none',
                                 background: 'linear-gradient(90deg, #43a047 0%, #a5d6a7 100%)',
-                                '&:hover': { background: 'linear-gradient(90deg, #388e3c 0%, #81c784 100%)' }
+                                '&:hover': {
+                                    background: 'linear-gradient(90deg, #388e3c 0%, #81c784 100%)'
+                                }
                             }}
                         >
                             Sync Stocks
                         </Button>
                     </Box>
 
+                    {/* Space filler */}
+                    <Box sx={{ flexGrow: 1 }} />
+
                     {/* Refresh Button */}
                     <IconButton
                         onClick={handleRefresh}
                         disabled={loading}
-                        sx={{ ml: 2, background: '#fff', borderRadius: 2, boxShadow: 2, '&:hover': { background: '#e3f2fd' } }}
+                        sx={{
+                            ml: 2,
+                            background: '#fff',
+                            borderRadius: 2,
+                            boxShadow: 2,
+                            '&:hover': { background: '#e3f2fd' }
+                        }}
                     >
                         <RefreshIcon color="primary" />
                     </IconButton>
@@ -224,14 +247,71 @@ const Dashboard = () => {
                 <Box sx={{ mt: 3 }}>
                     <StatsCards
                         cards={[
-                            { title: 'Total Orders', value: stats.totalOrders, icon: ShoppingCartIcon, color: 'primary' },
-                            { title: 'Total Customers', value: stats.totalCustomers, icon: PeopleIcon, color: 'success' },
-                            { title: 'Total Products', value: stats.totalProducts, icon: InventoryIcon, color: 'info' },
-                            { title: 'Total Revenue', value: formatCurrency(stats.totalRevenue), icon: AttachMoneyIcon, color: 'warning' },
-                            { title: 'Avg. Order Value', value: formatCurrency(stats.averageOrderValue), icon: TrendingUpIcon, color: 'secondary' },
-                            { title: 'Total Value', value: formatCurrency(stats.totalValue), icon: AttachMoneyIcon, color: 'warning' },
-                            { title: 'New Customers', value: stats.newCustomers, icon: GroupIcon, color: 'info' },
-                        ]}
+                            {
+                                title: 'Total Orders',
+                                value: stats.totalOrders,
+                                icon: ShoppingBagIcon,
+                                color: 'primary',
+                                gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                description: 'All time orders'
+                            },
+                            {
+                                title: 'Active Customers',
+                                value: stats.totalCustomers,
+                                icon: SupervisorAccountIcon,
+                                color: 'success',
+                                gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                                description: 'Registered users'
+                            },
+                            {
+                                title: 'Products',
+                                value: stats.totalProducts,
+                                icon: CategoryIcon,
+                                color: 'info',
+                                gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                                description: 'In inventory'
+                            },
+                            {
+                                title: 'Revenue',
+                                value: formatCurrency(stats.totalRevenue),
+                                icon: PaidIcon,
+                                color: 'warning',
+                                gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                                description: 'Total earnings'
+                            },
+                            {
+                                title: 'Avg Order',
+                                value: formatCurrency(stats.averageOrderValue),
+                                icon: InsightsIcon,
+                                color: 'secondary',
+                                gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+                                description: 'Per order value'
+                            },
+                            {
+                                title: 'Portfolio Value',
+                                value: formatCurrency(stats.totalValue),
+                                icon: AccountBalanceIcon,
+                                color: 'error',
+                                gradient: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+                                description: 'Total assets'
+                            },
+                            {
+                                title: 'New Customers',
+                                value: stats.newCustomers,
+                                icon: PersonAddAltIcon,
+                                color: 'info',
+                                gradient: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
+                                description: 'This period'
+                            },
+                            {
+                                title: 'Growth Rate',
+                                value: `${((stats.totalOrders / Math.max(stats.totalCustomers, 1)) * 100).toFixed(1)}%`,
+                                icon: RocketLaunchIcon,
+                                color: 'success',
+                                gradient: 'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)',
+                                description: 'Monthly growth'
+                            }
+                        ].slice(0, 8)} // Ensure max 8 cards
                     />
                 </Box>
 
@@ -239,7 +319,7 @@ const Dashboard = () => {
                 {visibleCharts.orders && (
                     <Box sx={{ mt: 3 }}>
                         <Paper sx={{ p: 2, height: '420px', background: 'linear-gradient(120deg, #e3f2fd 0%, #fce4ec 100%)', boxShadow: 6, borderRadius: 3 }}>
-                             
+
                             <ResponsiveContainer>
                                 {chartType === 'line' && (
                                     <LineChart data={chartData} margin={{ top: 30, right: 40, left: 10, bottom: 30 }}>
@@ -247,7 +327,7 @@ const Dashboard = () => {
                                         <XAxis dataKey="date" tickFormatter={formatChartDate} interval="preserveStartEnd" angle={-35} textAnchor="end" height={60} stroke="#1976d2" fontSize={13} />
                                         <YAxis yAxisId="left" tickFormatter={value => Math.round(value)} stroke="#1976d2" fontSize={13} />
                                         <YAxis yAxisId="right" orientation="right" tickFormatter={formatCurrency} stroke="#d32f2f" fontSize={13} />
-                                        <RechartsTooltip 
+                                        <RechartsTooltip
                                             contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }}
                                             labelFormatter={formatTooltipDate}
                                             formatter={(value, name) => [name === 'revenue' ? formatCurrency(value) : Math.round(value), name === 'revenue' ? 'Revenue' : 'Orders']}
@@ -263,7 +343,7 @@ const Dashboard = () => {
                                         <XAxis dataKey="date" tickFormatter={formatChartDate} interval="preserveStartEnd" angle={-35} textAnchor="end" height={60} stroke="#1976d2" fontSize={13} />
                                         <YAxis yAxisId="left" tickFormatter={value => Math.round(value)} stroke="#1976d2" fontSize={13} />
                                         <YAxis yAxisId="right" orientation="right" tickFormatter={formatCurrency} stroke="#d32f2f" fontSize={13} />
-                                        <RechartsTooltip 
+                                        <RechartsTooltip
                                             contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }}
                                             labelFormatter={formatTooltipDate}
                                             formatter={(value, name) => [name === 'revenue' ? formatCurrency(value) : Math.round(value), name === 'revenue' ? 'Revenue' : 'Orders']}
@@ -312,46 +392,46 @@ const Dashboard = () => {
                 )}
                 {/* Enhanced Bar Charts for Country of Manufacture and Product Counts */}
                 {(visibleCharts.products || visibleCharts.attributes) && (
-                  <Box sx={{ display: 'flex', flexWrap: "wrap", gap: 3, mt: 3 }}>
-                    {visibleCharts.products && (
-                      <Box sx={{ flex: 1, minWidth: 300 }}>
-                        <Paper sx={{ p: 2, boxShadow: 6, borderRadius: 3, background: 'linear-gradient(120deg, #e3f2fd 0%, #fce4ec 100%)' }}>
-                          <Typography variant="h6" sx={{ fontWeight: 700, color: '#1976d2', mb: 2 }}>Country of Manufacture</Typography>
-                          <ResponsiveContainer width="100%" height={400}>
-                            <BarChart data={countryData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                              <CartesianGrid strokeDasharray="3 3" stroke="#bdbdbd" />
-                              <XAxis dataKey="country_of_manufacture" stroke="#1976d2" fontSize={13} />
-                              <YAxis stroke="#1976d2" fontSize={13} />
-                              <RechartsTooltip cursor={{ fill: 'rgba(25, 118, 210, 0.08)' }} contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }} />
-                              <Legend verticalAlign="top" height={36} iconType="circle" />
-                              <Bar dataKey="count" fill="#1976d2" barSize={30} radius={[8, 8, 0, 0]} />
-                            </BarChart>
-                          </ResponsiveContainer>
-                        </Paper>
-                      </Box>
-                    )}
-                    {visibleCharts.attributes && (
-                      <Box sx={{ flex: 1, minWidth: 300 }}>
-                        <Paper sx={{ p: 2, boxShadow: 6, borderRadius: 3, background: 'linear-gradient(120deg, #fce4ec 0%, #e3f2fd 100%)' }}>
-                          <Typography variant="h6" sx={{ fontWeight: 700, color: '#d32f2f', mb: 2 }}>Product Types</Typography>
-                          <ResponsiveContainer width="100%" height={400}>
-                            <PieChart>
-                              <Pie data={productTypeData} cx="50%" cy="50%" outerRadius={90} fill="#d32f2f" dataKey="value" label={entry => entry.name}
-                                labelLine={false}
-                                style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.10))' }}
-                              >
-                                {productTypeData.map((entry, index) => (
-                                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                ))}
-                              </Pie>
-                              <RechartsTooltip contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }} />
-                              <Legend verticalAlign="top" height={36} iconType="circle" />
-                            </PieChart>
-                          </ResponsiveContainer>
-                        </Paper>
-                      </Box>
-                    )}
-                  </Box>
+                    <Box sx={{ display: 'flex', flexWrap: "wrap", gap: 3, mt: 3 }}>
+                        {visibleCharts.products && (
+                            <Box sx={{ flex: 1, minWidth: 300 }}>
+                                <Paper sx={{ p: 2, boxShadow: 6, borderRadius: 3, background: 'linear-gradient(120deg, #e3f2fd 0%, #fce4ec 100%)' }}>
+                                    <Typography variant="h6" sx={{ fontWeight: 700, color: '#1976d2', mb: 2 }}>Country of Manufacture</Typography>
+                                    <ResponsiveContainer width="100%" height={400}>
+                                        <BarChart data={countryData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#bdbdbd" />
+                                            <XAxis dataKey="country_of_manufacture" stroke="#1976d2" fontSize={13} />
+                                            <YAxis stroke="#1976d2" fontSize={13} />
+                                            <RechartsTooltip cursor={{ fill: 'rgba(25, 118, 210, 0.08)' }} contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }} />
+                                            <Legend verticalAlign="top" height={36} iconType="circle" />
+                                            <Bar dataKey="count" fill="#1976d2" barSize={30} radius={[8, 8, 0, 0]} />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </Paper>
+                            </Box>
+                        )}
+                        {visibleCharts.attributes && (
+                            <Box sx={{ flex: 1, minWidth: 300 }}>
+                                <Paper sx={{ p: 2, boxShadow: 6, borderRadius: 3, background: 'linear-gradient(120deg, #fce4ec 0%, #e3f2fd 100%)' }}>
+                                    <Typography variant="h6" sx={{ fontWeight: 700, color: '#d32f2f', mb: 2 }}>Product Types</Typography>
+                                    <ResponsiveContainer width="100%" height={400}>
+                                        <PieChart>
+                                            <Pie data={productTypeData} cx="50%" cy="50%" outerRadius={90} fill="#d32f2f" dataKey="value" label={entry => entry.name}
+                                                labelLine={false}
+                                                style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.10))' }}
+                                            >
+                                                {productTypeData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                ))}
+                                            </Pie>
+                                            <RechartsTooltip contentStyle={{ background: '#fff', borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }} />
+                                            <Legend verticalAlign="top" height={36} iconType="circle" />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </Paper>
+                            </Box>
+                        )}
+                    </Box>
                 )}
 
                 {/* Recent Orders Table */}

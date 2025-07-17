@@ -126,6 +126,49 @@ class MagentoApi {
     }
   }
 
+  // Create a new product
+  async createProduct(productData) {
+    try {
+      const payload = { product: productData };
+      const response = await magentoService.post('/products', payload);
+      // Clear cache after creating a product to ensure lists are updated
+      this.clearCache();
+      return response.data;
+    } catch (error) {
+      console.error('Failed to create product:', error);
+      toast.error(error.response?.data?.message || 'An error occurred while creating the product.');
+      throw error;
+    }
+  }
+
+  // Create multiple products in bulk
+  async createProductsBulk(products) {
+    const results = {
+      success: [],
+      errors: [],
+    };
+
+    for (let i = 0; i < products.length; i++) {
+      const productData = products[i];
+      const toastId = toast.loading(`Creating product ${i + 1} of ${products.length}: ${productData.sku || ''}`);
+      
+      try {
+        // We don't use this.createProduct here to avoid the double toast on error
+        const payload = { product: productData };
+        const createdProduct = await magentoService.post('/products', payload);
+        results.success.push(createdProduct.data);
+        toast.update(toastId, { render: `Successfully created ${productData.sku}`, type: 'success', isLoading: false, autoClose: 5000 });
+      } catch (error) {
+        const errorMessage = error.response?.data?.message || 'An unknown error occurred';
+        results.errors.push({ product: productData, error: errorMessage });
+        toast.update(toastId, { render: `Failed to create ${productData.sku}: ${errorMessage}`, type: 'error', isLoading: false, autoClose: 10000 });
+      }
+    }
+
+    this.clearCache(); // Clear cache once all operations are complete
+    return results;
+  }
+
   // Deprecated: getProductDetails (use local row data in grid instead)
 
   setBaseURL(newBaseURL) {

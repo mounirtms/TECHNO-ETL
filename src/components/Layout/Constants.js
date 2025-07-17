@@ -10,6 +10,7 @@ import WarehouseIcon from '@mui/icons-material/Warehouse';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import DescriptionIcon from '@mui/icons-material/Description';
+import BugReportIcon from '@mui/icons-material/BugReport';
 
 // Drawer (Sidebar) Widths
 export const DRAWER_WIDTH = 240;  // Full sidebar width
@@ -133,6 +134,14 @@ export const MENU_ITEMS = [
         label: 'CMS Pages',
         icon: DescriptionIcon,
         path: '/cms-pages',
+        hidden: false,
+        licensed: true
+    },
+    {
+        id: 'GridTestPage',
+        label: 'Grid Test',
+        icon: BugReportIcon,
+        path: '/grid-test',
         hidden: false,
         licensed: true
     }

@@ -10,7 +10,7 @@ import categoryData from '../assets/data/category.json';
 
 class MagentoService {
      constructor() {
-        this.baseURL = 'http://localhost:5000/api/magento';	 // Your backend API URL
+        this.baseURL = '/api/magento';	 // Your backend API URL
         this.instance = axios.create({
             baseURL: this.baseURL,
             headers: {
@@ -380,6 +380,32 @@ class MagentoService {
         //localStorage.removeItem('adminToken');
         //localStorage.removeItem('user');
         //window.location.href = '/login';
+    }
+
+    async getProducts({ currentPage = 1, pageSize = 20, sortOrders = [], filters = [] } = {}) {
+        try {
+            // Build query parameters
+            const params = {
+                currentPage,
+                pageSize,
+            };
+
+            // Add sort orders if any
+            if (sortOrders.length > 0) {
+                params.sortOrders = JSON.stringify(sortOrders);
+            }
+
+            // Add filters if any
+            if (filters.length > 0) {
+                params.filters = JSON.stringify(filters);
+            }
+
+            const response = await this.get('/products', { params });
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching products:', error);
+            throw error;
+        }
     }
 }
 

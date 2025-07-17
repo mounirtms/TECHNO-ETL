@@ -16,9 +16,11 @@ import {
 } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { I18nextProvider } from 'react-i18next';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import i18n from './config/i18n';
 import './index.css';
 
 // Lazy Load Components for Performance
@@ -70,12 +72,13 @@ const LoginRoute = () => {
 // Render Application
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-        <Router>
-            <AuthProvider>
-                <LanguageProvider>
-                    <ThemeProvider>
-                        <CssBaseline />
-                        <ToastContainer position="bottom-left" autoClose={3000} limit={3} />
+        <I18nextProvider i18n={i18n}>
+            <Router>
+                <AuthProvider>
+                    <LanguageProvider>
+                        <ThemeProvider>
+                            <CssBaseline />
+                            <ToastContainer position="bottom-left" autoClose={3000} limit={3} />
 
                         <Suspense fallback={<LoadingFallback />}>
                             <Routes>
@@ -98,5 +101,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 </LanguageProvider>
             </AuthProvider>
         </Router>
+    </I18nextProvider>
     </React.StrictMode>
 );

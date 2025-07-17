@@ -7,6 +7,7 @@ const createAxiosInstance = (baseURL) => {
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
+            'User-Agent': import.meta.env.VITE_USER_AGENT || 'Techno-ETL/1.0.0 (etl.techno-dz.com)',
         },
         // Disable withCredentials as it can cause CORS preflight issues
         withCredentials: false,
@@ -29,6 +30,12 @@ const createAxiosInstance = (baseURL) => {
                 config.headers['Origin'] = 'https://technostationery.com';
                 // Add any required Magento API authentication headers here
                 // config.headers['Authorization'] = `Bearer ${token}`;
+            }
+
+            // Add production-specific headers
+            if (import.meta.env.PROD) {
+                config.headers['X-Requested-With'] = 'XMLHttpRequest';
+                config.headers['X-App-Domain'] = import.meta.env.VITE_APP_DOMAIN || 'etl.techno-dz.com';
             }
 
             return config;

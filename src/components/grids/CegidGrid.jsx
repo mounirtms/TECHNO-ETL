@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Box } from '@mui/material';
-import BaseGrid from '../common/BaseGrid';
+import UnifiedGrid from '../common/UnifiedGrid';
 import CegidToolbar from './CegidToolbar';
 import cegidApi from '../../services/cegidService';
 import { toast } from 'react-toastify';
@@ -43,18 +43,69 @@ const CegidGrid = () => {
                 onSearch={handleSearch}
                 loading={loading}
             />
-            <BaseGrid
-            gridName="CegidProducts"
-            data={products} // Make sure this is always an array
-            columns={columns}
-            loading={loading}
-            getRowId={(row) => row?.reference || `row-${Math.random()}`}
-            // Add error boundary
-            onError={(error) => {
-                console.error('Grid Error:', error);
-                toast.error('Error loading grid data');
-            }}
-        />
+            <UnifiedGrid
+                gridName="CegidProducts"
+                data={products} // Make sure this is always an array
+                columns={columns}
+                loading={loading}
+
+                // Feature toggles
+                enableCache={true}
+                enableI18n={true}
+                enableRTL={true}
+                enableSelection={true}
+                enableSorting={true}
+                enableFiltering={true}
+
+                // Toolbar configuration
+                toolbarConfig={{
+                    showRefresh: true,
+                    showExport: true,
+                    showSearch: true,
+                    showSettings: true
+                }}
+
+                // Context menu
+                contextMenuActions={{
+                    view: {
+                        enabled: true,
+                        onClick: (rowData) => {
+                            console.log('Viewing Cegid product:', rowData);
+                            toast.info(`Viewing product: ${rowData.reference}`);
+                        }
+                    }
+                }}
+
+                // Floating actions
+                floatingActions={{
+                    export: {
+                        enabled: true,
+                        priority: 1
+                    },
+                    refresh: {
+                        enabled: true,
+                        priority: 2
+                    }
+                }}
+
+                // Event handlers
+                onExport={(selectedRows) => {
+                    const exportData = selectedRows.length > 0
+                        ? products.filter(product => selectedRows.includes(product.reference))
+                        : products;
+                    console.log('Exporting Cegid products:', exportData);
+                    toast.success(`Exported ${exportData.length} products`);
+                }}
+
+                // Row configuration
+                getRowId={(row) => row?.reference || `row-${Math.random()}`}
+
+                // Error handling
+                onError={(error) => {
+                    console.error('Grid Error:', error);
+                    toast.error('Error loading grid data');
+                }}
+            />
         </Box>
     );
 

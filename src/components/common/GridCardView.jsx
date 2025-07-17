@@ -12,6 +12,9 @@ import {
     Stack
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import PersonIcon from '@mui/icons-material/Person';
+import ReceiptIcon from '@mui/icons-material/Receipt';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -122,16 +125,80 @@ const GridCardView = ({ data = [], type = 'product' }) => {
         </Grid>
     );
 
+    const renderOrderCard = (item) => (
+        <Grid item xs={12} sm={6} md={4} lg={3} key={item.entity_id || item.increment_id}>
+            <StyledCard>
+                <CardContent>
+                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                        <Typography variant="h6" noWrap>
+                            Order #{item.increment_id}
+                        </Typography>
+                        <Chip label={item.status} color={getStatusColor(item.status)} size="small" />
+                    </Stack>
+                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                        {item.customer_firstname} {item.customer_lastname}
+                    </Typography>
+                    <Stack spacing={1} mt={2}>
+                        <InfoRow>
+                            <LocalOfferIcon />
+                            <Typography variant="body2">
+                                {item.grand_total ? `$${parseFloat(item.grand_total).toFixed(2)}` : 'N/A'}
+                            </Typography>
+                        </InfoRow>
+                        <InfoRow>
+                            <CalendarTodayIcon />
+                            <Typography variant="body2">
+                                Placed {item.created_at ? formatDistanceToNow(new Date(item.created_at), { addSuffix: true }) : 'Unknown'}
+                            </Typography>
+                        </InfoRow>
+                    </Stack>
+                </CardContent>
+            </StyledCard>
+        </Grid>
+    );
+
+    const renderCustomerCard = (item) => (
+        <Grid item xs={12} sm={6} md={4} lg={3} key={item.id || item.email}>
+            <StyledCard>
+                <CardContent>
+                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                        <Typography variant="h6" noWrap>
+                            {item.firstname} {item.lastname}
+                        </Typography>
+                        <Chip label={item.is_active ? 'Active' : 'Inactive'} color={item.is_active ? 'success' : 'default'} size="small" />
+                    </Stack>
+                    <Typography variant="subtitle2" color="text.secondary" gutterBottom noWrap>
+                        {item.email}
+                    </Typography>
+                </CardContent>
+            </StyledCard>
+        </Grid>
+    );
+
+    const renderGenericCard = (item, index) => (
+        <Grid item xs={12} sm={6} md={4} lg={3} key={item.id || index}>
+            <StyledCard>
+                <CardContent>
+                    <Typography variant="h6">Item {item.id || index}</Typography>
+                    <pre>{JSON.stringify(item, null, 2).substring(0, 200)}...</pre>
+                </CardContent>
+            </StyledCard>
+        </Grid>
+    );
+
     return (
         <Box sx={{ p: 2 }}>
                 <Grid container spacing={3}>
-                {data.map(item => {
+                {data.map((item, index) => {
                     switch (type) {
-                        case 'product':
+                        case 'ProductsGrid':
                             return renderProductCard(item);
-                        // Add more card types here as needed
+                        case 'OrdersGrid':
+                            return renderOrderCard(item);
+                        case 'CustomersGrid':
+                            return renderCustomerCard(item);
                         default:
-                            return renderProductCard(item);
+                            return renderGenericCard(item, index);
                     }
                 })}
                 </Grid>

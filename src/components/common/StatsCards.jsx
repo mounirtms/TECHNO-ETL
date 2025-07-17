@@ -5,19 +5,29 @@ import { DRAWER_WIDTH, COLLAPSED_WIDTH, STATS_CARD_HEIGHT, STATS_CARD_ZINDEX } f
 
 const StyledCard = styled(Card)(({ theme, active, color = 'primary' }) => ({
     cursor: 'pointer',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
     backgroundColor: theme.palette.background.paper,
-    borderRadius: theme.shape.borderRadius,
-    boxShadow: theme.shadows[1],
+    borderRadius: theme.shape.borderRadius * 1.5,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
     height: '100%',
-    minWidth: 200,  
-    width: 200,     
+    minWidth: 160, // More compact
+    width: 160,    // More compact
     position: 'relative',
     overflow: 'hidden',
+    // Enhanced responsive design
+    [theme.breakpoints.down('md')]: {
+        minWidth: 140,
+        width: 140,
+    },
+    [theme.breakpoints.down('sm')]: {
+        minWidth: '100%',
+        width: '100%',
+        maxWidth: 300,
+    },
     '&:hover': {
         backgroundColor: theme.palette.action.hover,
-        transform: 'scale(1.02)',
-        boxShadow: theme.shadows[4],
+        transform: 'translateY(-2px)',
+        boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
     }
 }));
 
@@ -26,25 +36,35 @@ const StatsCardContainer = styled(Box)(({ theme }) => ({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    height: `${STATS_CARD_HEIGHT}px`,
+    minHeight: 80, // More compact height
     backgroundColor: 'transparent',
-    overflow: 'hidden', 
+    padding: theme.spacing(0.5, 1), // Compact padding
+    overflow: 'hidden',
     zIndex: STATS_CARD_ZINDEX,
     transition: theme.transitions.create(['width'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
-    }),
-    padding: theme.spacing(0, 1) 
+    })
 }));
 
 const StatsCardWrapper = styled(Box)(({ theme }) => ({
     display: 'flex',
-    gap: theme.spacing(2),
+    gap: theme.spacing(1.5), // Reduced gap
     width: '100%',
     height: '100%',
     alignItems: 'center',
-    justifyContent: 'space-between', 
-    overflow: 'hidden' 
+    justifyContent: 'center', // Changed to center for better layout
+    overflow: 'hidden',
+    flexWrap: 'wrap',
+    // Enhanced responsive design
+    [theme.breakpoints.down('md')]: {
+        gap: theme.spacing(1),
+    },
+    [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column',
+        gap: theme.spacing(0.5),
+        justifyContent: 'flex-start'
+    }
 }));
 
 const StatsCard = styled(Box)(({ theme, color = 'primary' }) => ({
@@ -53,10 +73,11 @@ const StatsCard = styled(Box)(({ theme, color = 'primary' }) => ({
     justifyContent: 'space-between',
     background: `linear-gradient(120deg, ${theme.palette[color].light} 0%, ${theme.palette[color].main} 100%)`,
     color: theme.palette.getContrastText(theme.palette[color].main),
-    borderRadius: theme.shape.borderRadius * 2,
-    padding: theme.spacing(0.5, 2),
+    borderRadius: theme.shape.borderRadius * 1.5, // Slightly reduced
+    padding: theme.spacing(0.75, 1.5), // More compact padding
     flex: 1,
-    minWidth: 0,
+    minWidth: 140, // More compact minimum width
+    maxWidth: 200, // Limit maximum width
     height: `calc(${STATS_CARD_HEIGHT}px - ${theme.spacing(2)})`,
     boxShadow: theme.shadows[3],
     transition: 'transform 0.3s, box-shadow 0.3s',
@@ -144,53 +165,105 @@ const StatCard = ({ title, value, icon: Icon, color = 'primary', active, onClick
 
 const StatsCards = ({ cards }) => {
     const theme = useTheme();
+
+    // Ensure cards is an array
+    if (!Array.isArray(cards)) {
+        console.warn('StatsCards: cards prop is not an array:', cards);
+        return null;
+    }
+
     return (
         <StatsCardContainer>
             <StatsCardWrapper>
                 {cards.map((card, index) => {
                     const Icon = card.icon;
+
+                    // Compact and responsive icon rendering
+                    const renderIcon = () => {
+                        // Handle Material-UI icon components (functions)
+                        if (typeof Icon === 'function') {
+                            return <Icon sx={{
+                                fontSize: { xs: 12, sm: 14, md: 16 },
+                                opacity: 0.85,
+                                color: 'inherit'
+                            }} />;
+                        }
+
+                        // Handle React elements
+                        if (React.isValidElement(Icon)) {
+                            return React.cloneElement(Icon, {
+                                sx: {
+                                    fontSize: { xs: 12, sm: 14, md: 16 },
+                                    opacity: 0.85,
+                                    color: 'inherit'
+                                }
+                            });
+                        }
+
+                        // Fallback for any other type
+                        return (
+                            <Box sx={{
+                                fontSize: { xs: 12, sm: 14, md: 16 },
+                                opacity: 0.85,
+                                color: 'inherit'
+                            }}>
+                                📊
+                            </Box>
+                        );
+                    };
+
                     return (
                         <StatsCard key={index} color={card.color || 'primary'}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 56 }}>
-                                {Icon && (
-                                    <Icon sx={{ fontSize: 44, opacity: 0.85, filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.10))' }} />
-                                )}
+                            <Box sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                minWidth: { xs: 24, sm: 28, md: 32 },
+                                height: { xs: 24, sm: 28, md: 32 },
+                                borderRadius: '50%',
+                                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                                backdropFilter: 'blur(8px)',
+                                flexShrink: 0,
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                transition: 'all 0.3s ease'
+                            }}>
+                                {renderIcon()}
                             </Box>
                             <StatsCardContent>
                                 <Typography
-                                    variant="subtitle2"
+                                    variant="caption"
                                     sx={{
-                                        fontWeight: 700,
-                                        letterSpacing: 0.5,
-                                        opacity: 0.9,
+                                        fontWeight: 500,
+                                        letterSpacing: 0.2,
+                                        opacity: 0.8,
                                         textTransform: 'uppercase',
-                                        fontSize: 13,
-                                        lineHeight: 1.2,
-                                        minHeight: 24,
-                                        mb: 0.5,
+                                        fontSize: { xs: 9, sm: 10, md: 11 },
+                                        lineHeight: 1.1,
+                                        mb: 0.25,
                                         textAlign: 'left',
                                         whiteSpace: 'nowrap',
                                         overflow: 'hidden',
                                         textOverflow: 'ellipsis',
+                                        color: 'inherit'
                                     }}
                                 >
                                     {card.title}
                                 </Typography>
                                 <Typography
-                                    variant="h5"
+                                    variant="h6"
                                     sx={{
-                                        fontWeight: 900,
-                                        fontSize: 24,
-                                        letterSpacing: 0.5,
-                                        lineHeight: 1.1,
-                                        mt: 0.5,
+                                        fontWeight: 700,
+                                        fontSize: 16, // Fixed 16px as requested
+                                        letterSpacing: 0.2,
+                                        lineHeight: 1.2,
                                         textAlign: 'left',
-                                        minHeight: 28,
                                         display: 'flex',
                                         alignItems: 'center',
                                         whiteSpace: 'nowrap',
                                         overflow: 'hidden',
                                         textOverflow: 'ellipsis',
+                                        color: 'inherit'
                                     }}
                                 >
                                     {card.value}
@@ -204,4 +277,5 @@ const StatsCards = ({ cards }) => {
     );
 };
 
-export { StatsCards, StatCard };
+export { StatsCards, StatsCard };
+export default StatsCards;

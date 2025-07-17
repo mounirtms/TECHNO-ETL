@@ -1,11 +1,11 @@
 import { getPool } from '../utils/database.js';
 import sqlQueryBuilder from '../utils/sqlQueryBuilder.js';
 import MagentoService from '../services/magentoService.js';
-import { sourceMapping, getAllSources } from '../config/sources.js';
 import { cloudConfig } from '../config/magento.js';
 
+import { sourceMapping, getAllSources } from '../config/sources.js';
 
-let magento = new MagentoService(cloudConfig); // ✅ Reuse Singleton Instance
+const magento = new MagentoService(cloudConfig);
 
 // Helper: Only add searchCriteria for endpoints that support it
 function shouldAddSearchCriteria(endpoint) {
@@ -73,7 +73,7 @@ async function syncPricesToMagento(req) {
     // Use Magento's async bulk endpoint for prices
     const endpoint = "async/bulk/V1/products"; // Remove leading slash from endpoint
     console.log("📦 Sending bulk price update...");
-    const response = await magento.post(endpoint, priceData);
+    const response = await magento.post(endpoint, { prices: priceData });
     console.log("✅ Prices Synced Successfully:", response);
     return response.data;
   } catch (error) {
@@ -83,37 +83,65 @@ async function syncPricesToMagento(req) {
 }
 
 async function fetchInventoryData(req) {
-  try {
-    let params = { ...req.query };
-    Object.keys(params).forEach(key => {
-      if (params[key] === null || params[key] === '') {
-        delete params[key];
-      }
-    });
+    try {
+        console.log('🚀 [MDM Service] Starting inventory data fetch');
 
-    const sortModel = params.sortModel ? JSON.parse(params.sortModel) : [];
-    const page = params.page ? parseInt(params.page, 10) : 0;
-    const pageSize = params.pageSize ? parseInt(params.pageSize, 10) : 25;
+        let params = { ...req.query };
+        console.log('📋 [MDM Service] Original params:', params);
 
-    //console.log(`📊 Fetching inventory data (page: ${page}, pageSize: ${pageSize})`);
+        Object.keys(params).forEach(key => {
+            if (params[key] === null || params[key] === '') {
+                delete params[key];
+            }
+        });
 
-    const { query, inputs } = sqlQueryBuilder.buildQuery(params, sortModel, page, pageSize);
-    const pool = await getPool('mdm');
-    const request = pool.request();
+        const sortModel = params.sortModel ? JSON.parse(params.sortModel) : [];
+        const page = params.page ? parseInt(params.page, 10) : 0;
+        const pageSize = params.pageSize ? parseInt(params.pageSize, 10) : 25;
 
-    Object.keys(inputs).forEach(key => {
-      request.input(key, inputs[key].type, inputs[key].value);
-    });
+        console.log('📊 [MDM Service] Processed params:', {
+            page,
+            pageSize,
+            sortModel,
+            cleanedParams: params,
+            paramCount: Object.keys(params).length
+        });
 
-    const result = await request.query(query);
-    const totalCount = result.recordset.length > 0 ? result.recordset[0].TotalCount : 0;
+        const { query, inputs } = sqlQueryBuilder.buildQuery(params, sortModel, page, pageSize);
 
-    //console.log(`🔍 Retrieved ${result.recordset.length} records (Total: ${totalCount})`);
+        console.log('🔍 [MDM Service] SQL Query built:', {
+            queryLength: query.length,
+            inputsCount: Object.keys(inputs).length,
+            inputKeys: Object.keys(inputs)
+        });
 
-    return { data: result.recordset, totalCount };
+        const pool = await getPool('mdm');
+        const request = pool.request();
+
+        Object.keys(inputs).forEach(key => {
+            request.input(key, inputs[key].type, inputs[key].value);
+        });
+
+        console.log('📡 [MDM Service] Executing SQL query...');
+        const result = await request.query(query);
+        const totalCount = result.recordset.length > 0 ? result.recordset[0].TotalCount : 0;
+
+        console.log('✅ [MDM Service] Query executed successfully:', {
+            recordsReturned: result.recordset.length,
+            totalCount,
+            sampleRecord: result.recordset[0] || null,
+            recordFields: result.recordset.length > 0 ? Object.keys(result.recordset[0]) : []
+        });
+
+        return { data: result.recordset, totalCount };
     } catch (error) {
-    console.error('❌ Error fetching inventory:', error);
-    throw new Error('Failed to fetch inventory data');
+        console.error('❌ [MDM Service] Error fetching inventory:', {
+            message: error.message,
+            stack: error.stack,
+            sqlState: error.state,
+            sqlNumber: error.number
+        });
+        throw new Error('Failed to fetch inventory data');
     }
 }
 
