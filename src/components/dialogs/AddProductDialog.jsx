@@ -10,8 +10,16 @@ import {
     FormControl,
     InputLabel,
     Select,
-    MenuItem
+    MenuItem,
+    Chip,
+    Box,
+    Typography,
+    Divider,
+    Switch,
+    FormControlLabel
 } from '@mui/material';
+import { toast } from 'react-toastify';
+import ProductService from '../../services/ProductService';
 
 const AddProductDialog = ({ open, onClose, onSave }) => {
     const [productData, setProductData] = useState({
@@ -19,16 +27,21 @@ const AddProductDialog = ({ open, onClose, onSave }) => {
         name: '',
         price: '',
         description: '',
+        short_description: '',
+        weight: '',
         status: 1, // Default to Enabled
         type_id: 'simple', // Default to Simple Product
-        attribute_set_id: 4, // Default attribute set, adjust as needed
-        extension_attributes: {
-            stock_item: {
-                qty: '0',
-                is_in_stock: true
-            }
-        }
+        attribute_set_id: 4, // Default attribute set
+        visibility: 4, // Catalog, Search
+        country_of_manufacture: '',
+        categories: [],
+        qty: '0',
+        manage_stock: true,
+        additional_attributes: {}
     });
+
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
         const { name, value } = e.target;
