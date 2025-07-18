@@ -24,6 +24,7 @@ import magentoApi from '../../../services/magentoApi';
 import { toast } from 'react-toastify';
 // Removed gridDataHandlers import - skipping validation for now
 import CSVImportDialog from '../../dialogs/CSVImportDialog';
+import CatalogProcessorDialog from '../../dialogs/CatalogProcessorDialog';
 
 /**
  * Optimized Magento Products Grid Component
@@ -50,6 +51,7 @@ const ProductsGrid = () => {
   // Dialog states
   const [infoDialogOpen, setInfoDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [catalogProcessorOpen, setCatalogProcessorOpen] = useState(false);
 
   // ===== 2. DATA FETCHING =====
   const fetchProducts = useCallback(async (filterParams = {}) => {
@@ -192,6 +194,17 @@ const ProductsGrid = () => {
     fetchProducts(filterParams);
   }, [fetchProducts]);
 
+  const handleCatalogProcessor = useCallback(() => {
+    setCatalogProcessorOpen(true);
+  }, []);
+
+  const handleCatalogProcessComplete = useCallback((result) => {
+    toast.success(`Processed ${result.totalProducts} products in ${result.batches} batch(es)`);
+    setCatalogProcessorOpen(false);
+    // Refresh the grid to show any newly imported products
+    fetchProducts();
+  }, [fetchProducts]);
+
   // ===== 4. MEMOIZED COMPONENTS =====
   const columns = useMemo(() => [
     {
@@ -293,11 +306,12 @@ const ProductsGrid = () => {
       variant: 'contained'
     },
     {
-      label: 'Bulk Import',
-      onClick: () => toast.info('Bulk import coming soon'),
+      label: 'Process Catalog',
+      onClick: handleCatalogProcessor,
       icon: <ImportIcon />,
       color: 'secondary',
-      variant: 'outlined'
+      variant: 'outlined',
+      tooltip: 'Process full catalog CSV and generate import-ready files'
     },
     {
       label: 'Sync Products',
@@ -306,7 +320,7 @@ const ProductsGrid = () => {
       color: 'secondary',
       variant: 'outlined'
     }
-  ], [handleSync]);
+  ], [handleSync, handleCatalogProcessor]);
 
   const contextMenuActions = useMemo(() => ({
     view: {
@@ -431,6 +445,12 @@ const ProductsGrid = () => {
         open={infoDialogOpen}
         onClose={() => setInfoDialogOpen(false)}
         product={selectedProduct}
+      />
+
+      <CatalogProcessorDialog
+        open={catalogProcessorOpen}
+        onClose={() => setCatalogProcessorOpen(false)}
+        onProcessComplete={handleCatalogProcessComplete}
       />
     </Box>
   );
