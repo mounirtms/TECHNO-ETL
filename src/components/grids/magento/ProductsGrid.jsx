@@ -23,6 +23,7 @@ import ProductInfoDialog from '../../common/ProductInfoDialog';
 import magentoApi from '../../../services/magentoApi';
 import { toast } from 'react-toastify';
 // Removed gridDataHandlers import - skipping validation for now
+import CSVImportDialog from '../../dialogs/CSVImportDialog';
 
 /**
  * Optimized Magento Products Grid Component
