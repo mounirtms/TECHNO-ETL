@@ -2,12 +2,11 @@
 // Merges the best features from BaseGrid and EnhancedBaseGrid
 import React, { useState, useCallback, useMemo, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { 
-  Box, 
-  Paper, 
-  Fade, 
-  useTheme, 
-  Skeleton, 
+import {
+  Box,
+  Paper,
+  Fade,
+  Skeleton,
   Alert,
   ToggleButton,
   ToggleButtonGroup,
@@ -17,8 +16,9 @@ import {
   GridView as GridViewIcon,
   ViewList as ViewListIcon 
 } from '@mui/icons-material';
-import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { useSafeTranslate } from '../../hooks/useOptimizedTranslation';
+import { useOptimizedGridTheme } from '../../hooks/useOptimizedTheme';
 
 // Unified Grid Components
 import UnifiedGridToolbar from './UnifiedGridToolbar';
@@ -126,18 +126,9 @@ const UnifiedGrid = forwardRef(({
 
   ...props
 }, ref) => {
-  const theme = useTheme();
-  const { t } = useTranslation();
-  
-  // Safe translation hook with fallback
-  const safeTranslate = useCallback((key, fallback) => {
-    try {
-      return enableI18n ? t(key, fallback) : fallback;
-    } catch (error) {
-      console.warn(`Translation failed for key: ${key}`, error);
-      return fallback;
-    }
-  }, [t, enableI18n]);
+  // Optimized theme and translation hooks
+  const gridTheme = useOptimizedGridTheme();
+  const safeTranslate = useSafeTranslate(enableI18n);
 
   // Grid state management
   const {
@@ -373,15 +364,13 @@ const UnifiedGrid = forwardRef(({
         direction: enableRTL ? 'rtl' : 'ltr',
         overflow: 'hidden',
         // Modern design with glass morphism
-        background: theme.palette.mode === 'light'
+        background: gridTheme.palette.mode === 'light'
           ? 'rgba(255, 255, 255, 0.9)'
           : 'rgba(18, 18, 18, 0.9)',
         backdropFilter: 'blur(20px)',
-        borderRadius: 3,
-        boxShadow: theme.palette.mode === 'light'
-          ? '0 8px 32px rgba(0,0,0,0.08)'
-          : '0 8px 32px rgba(0,0,0,0.3)',
-        border: `1px solid ${theme.palette.divider}`,
+        borderRadius: gridTheme.borderRadius,
+        boxShadow: gridTheme.elevation,
+        border: `1px solid ${gridTheme.borderColor}`,
         // Enhanced responsive design
         '@media (max-width: 768px)': {
           height: 'calc(100% - 8px)',
@@ -535,7 +524,7 @@ const UnifiedGrid = forwardRef(({
                     outline: 'none'
                   },
                   '& .MuiDataGrid-row:hover': {
-                    backgroundColor: theme.palette.action.hover
+                    backgroundColor: gridTheme.rowHoverColor
                   }
                 }}
                 
@@ -550,7 +539,7 @@ const UnifiedGrid = forwardRef(({
         </Fade>
              {/* Stats Cards */}
       {showStatsCards && gridCards.length > 0 && (
-        <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
+        <Box sx={{ p: 2, borderBottom: `1px solid ${gridTheme.borderColor}` }}>
           <StatsCards cards={gridCards} />
         </Box>
       )}

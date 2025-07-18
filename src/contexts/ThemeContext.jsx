@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { createTheme, ThemeProvider as MuiThemeProvider } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 
@@ -216,19 +216,27 @@ export const ThemeProvider = ({ children }) => {
     localStorage.setItem('fontSize', fontSize);
   }, [fontSize]);
 
+  // Memoized theme creation to prevent unnecessary re-renders
   const theme = useMemo(() => createCustomTheme(mode), [mode]);
 
-  const toggleTheme = () => {
+  // Memoized toggle function to prevent re-renders
+  const toggleTheme = useCallback(() => {
     setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-  };
+  }, []);
 
-  const value = {
+  // Memoized setFontSize to prevent re-renders
+  const memoizedSetFontSize = useCallback((newFontSize) => {
+    setFontSize(newFontSize);
+  }, []);
+
+  // Memoized context value to prevent unnecessary re-renders
+  const value = useMemo(() => ({
     mode,
     toggleTheme,
     isDark: mode === 'dark',
     fontSize,
-    setFontSize
-  };
+    setFontSize: memoizedSetFontSize
+  }), [mode, toggleTheme, fontSize, memoizedSetFontSize]);
 
   return (
     <ThemeContext.Provider value={value}>
