@@ -1,6 +1,17 @@
 // ProductsGrid - Optimized Magento Products Grid
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { Box, Chip, Typography, Button } from '@mui/material';
+import {
+  Box,
+  Chip,
+  Typography,
+  Button,
+  ButtonGroup,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Divider
+} from '@mui/material';
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -16,7 +27,9 @@ import {
   ReportProblem as ReportProblemIcon,
   SyncAlt as SyncAltIcon,
   Info as InfoIcon,
-  Refresh as RefreshIcon
+  Refresh as RefreshIcon,
+  ArrowDropDown as ArrowDropDownIcon,
+  PostAdd as PostAddIcon
 } from '@mui/icons-material';
 import UnifiedGrid from '../../common/UnifiedGrid';
 import ProductInfoDialog from '../../common/ProductInfoDialog';
@@ -52,6 +65,11 @@ const ProductsGrid = () => {
   const [infoDialogOpen, setInfoDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [catalogProcessorOpen, setCatalogProcessorOpen] = useState(false);
+  const [csvImportOpen, setCsvImportOpen] = useState(false);
+
+  // Add menu state
+  const [addMenuAnchor, setAddMenuAnchor] = useState(null);
+  const addMenuOpen = Boolean(addMenuAnchor);
 
   // ===== 2. DATA FETCHING =====
   const fetchProducts = useCallback(async (filterParams = {}) => {
@@ -205,6 +223,30 @@ const ProductsGrid = () => {
     fetchProducts();
   }, [fetchProducts]);
 
+  // Add menu handlers
+  const handleAddMenuOpen = useCallback((event) => {
+    setAddMenuAnchor(event.currentTarget);
+  }, []);
+
+  const handleAddMenuClose = useCallback(() => {
+    setAddMenuAnchor(null);
+  }, []);
+
+  const handleAddSingle = useCallback(() => {
+    handleAddMenuClose();
+    handleAdd();
+  }, [handleAdd, handleAddMenuClose]);
+
+  const handleCsvImport = useCallback(() => {
+    handleAddMenuClose();
+    setCsvImportOpen(true);
+  }, [handleAddMenuClose]);
+
+  const handleCatalogProcessorFromMenu = useCallback(() => {
+    handleAddMenuClose();
+    handleCatalogProcessor();
+  }, [handleAddMenuClose, handleCatalogProcessor]);
+
   // ===== 4. MEMOIZED COMPONENTS =====
   const columns = useMemo(() => [
     {
@@ -285,7 +327,7 @@ const ProductsGrid = () => {
 
   const toolbarConfig = useMemo(() => ({
     showRefresh: true,
-    showAdd: true,
+    showAdd: false, // Disabled - using custom segmented add button
     showEdit: true,
     showDelete: true,
     showExport: true,
@@ -294,25 +336,78 @@ const ProductsGrid = () => {
     showSettings: true,
     showViewToggle: true,
     compact: false,
-    size: 'medium'
-  }), []);
+    size: 'medium',
+    customLeftActions: [SegmentedAddButton] // Add our custom segmented button
+  }), [SegmentedAddButton]);
+
+  // Custom segmented add button component
+  const SegmentedAddButton = useMemo(() => (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <ButtonGroup variant="contained" color="primary">
+        <Button
+          onClick={handleAddSingle}
+          startIcon={<AddIcon />}
+          sx={{ minWidth: 120 }}
+        >
+          Add Product
+        </Button>
+        <Button
+          size="small"
+          onClick={handleAddMenuOpen}
+          sx={{ px: 1, minWidth: 32 }}
+        >
+          <ArrowDropDownIcon />
+        </Button>
+      </ButtonGroup>
+
+      <Menu
+        anchorEl={addMenuAnchor}
+        open={addMenuOpen}
+        onClose={handleAddMenuClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        <MenuItem onClick={handleAddSingle}>
+          <ListItemIcon>
+            <AddIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary="Add Single Product" secondary="Create one product manually" />
+        </MenuItem>
+
+        <MenuItem onClick={handleCsvImport}>
+          <ListItemIcon>
+            <PostAddIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary="CSV Import" secondary="Import from CSV file" />
+        </MenuItem>
+
+        <Divider />
+
+        <MenuItem onClick={handleCatalogProcessorFromMenu}>
+          <ListItemIcon>
+            <ImportIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary="Process Full Catalog" secondary="Process 20MB catalog file" />
+        </MenuItem>
+      </Menu>
+    </Box>
+  ), [
+    handleAddSingle,
+    handleAddMenuOpen,
+    addMenuAnchor,
+    addMenuOpen,
+    handleAddMenuClose,
+    handleCsvImport,
+    handleCatalogProcessorFromMenu
+  ]);
 
   const customActions = useMemo(() => [
-    {
-      label: 'Add Product',
-      onClick: handleAdd,
-      icon: <AddIcon />,
-      color: 'primary',
-      variant: 'contained'
-    },
-    {
-      label: 'Process Catalog',
-      onClick: handleCatalogProcessor,
-      icon: <ImportIcon />,
-      color: 'secondary',
-      variant: 'outlined',
-      tooltip: 'Process full catalog CSV and generate import-ready files'
-    },
     {
       label: 'Sync Products',
       onClick: handleSync,
@@ -320,7 +415,7 @@ const ProductsGrid = () => {
       color: 'secondary',
       variant: 'outlined'
     }
-  ], [handleSync, handleCatalogProcessor]);
+  ], [handleSync]);
 
   const contextMenuActions = useMemo(() => ({
     view: {
@@ -445,6 +540,15 @@ const ProductsGrid = () => {
         open={infoDialogOpen}
         onClose={() => setInfoDialogOpen(false)}
         product={selectedProduct}
+      />
+
+      <CSVImportDialog
+        open={csvImportOpen}
+        onClose={() => setCsvImportOpen(false)}
+        onImportComplete={() => {
+          setCsvImportOpen(false);
+          fetchProducts(); // Refresh grid after import
+        }}
       />
 
       <CatalogProcessorDialog

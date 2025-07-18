@@ -41,7 +41,7 @@ import {
   Clear as ClearIcon,
   Info as InfoIcon
 } from '@mui/icons-material';
-import { useTranslation } from 'react-i18next';
+import { useSafeTranslate } from '../../hooks/useOptimizedTranslation';
 
 // Toolbar sub-components
 import GridToolbarActions from './GridToolbarActions';
@@ -63,6 +63,7 @@ const UnifiedGridToolbar = ({
   gridName,
   config = {},
   customActions = [],
+  customLeftActions = [],
   selectedRows = [],
   onRefresh,
   onAdd,
@@ -106,16 +107,8 @@ const UnifiedGridToolbar = ({
   onInfo
 }) => {
   const theme = useTheme();
-  const { t } = useTranslation();
-  
-  // Safe translation with fallback
-  const translate = useCallback((key, fallback) => {
-    try {
-      return enableI18n ? t(key, fallback) : fallback;
-    } catch (error) {
-      return fallback;
-    }
-  }, [t, enableI18n]);
+  // Optimized translation hook to prevent excessive logging
+  const translate = useSafeTranslate(enableI18n);
 
   // Local state
   const [searchText, setSearchText] = useState(searchValue);
@@ -229,7 +222,21 @@ const UnifiedGridToolbar = ({
 
         <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
 
-        {/* Section 2: Action Buttons */}
+        {/* Section 2a: Custom Left Actions */}
+        {customLeftActions.length > 0 && (
+          <>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              {customLeftActions.map((action, index) => (
+                <Box key={index}>
+                  {action}
+                </Box>
+              ))}
+            </Box>
+            <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+          </>
+        )}
+
+        {/* Section 2b: Action Buttons */}
         <GridToolbarActions
           config={toolbarConfig}
           selectedCount={selectedCount}

@@ -128,7 +128,7 @@ const UnifiedGrid = forwardRef(({
 }, ref) => {
   // Optimized theme and translation hooks
   const gridTheme = useOptimizedGridTheme();
-  const safeTranslate = useSafeTranslate(enableI18n);
+  const safeTranslate = useMemo(() => useSafeTranslate(enableI18n), [enableI18n]);
 
   // Grid state management
   const {
