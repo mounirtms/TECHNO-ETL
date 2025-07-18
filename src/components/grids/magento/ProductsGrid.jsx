@@ -198,7 +198,11 @@ const ProductsGrid = () => {
       headerName: 'ID',
       width: 80,
       sortable: true,
-      valueGetter: (params) => params.row.id || params.row.sku || params.row.entity_id
+      valueGetter: (params) => {
+        // Safe access to row data - handle undefined during grid initialization
+        if (!params.row) return '';
+        return params.row.id || params.row.sku || params.row.entity_id || '';
+      }
     },
     {
       field: 'sku',
@@ -227,7 +231,9 @@ const ProductsGrid = () => {
       width: 100,
       type: 'number',
       valueGetter: (params) => {
-        // Handle different stock quantity field names
+        // Safe access to row data - handle undefined during grid initialization
+        if (!params.row) return 0;
+        // Handle different stock quantity field names from Magento API
         return params.row.quantity || params.row.qty ||
                params.row.extension_attributes?.stock_item?.qty || 0;
       },

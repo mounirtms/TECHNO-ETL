@@ -1,7 +1,7 @@
 import NodeCache from 'node-cache';
 import Redis from 'ioredis';
 
-const memoryCache = new NodeCache({ stdTTL: 3600*5, checkperiod: 120 }); // In-memory
+const memoryCache = new NodeCache({ stdTTL: 3600*24, checkperiod: 120 }); // In-memory
 
 class CacheClient {
     /**
@@ -11,7 +11,7 @@ class CacheClient {
      * @param {object} [options.redisOptions] Redis config for ioredis
      */
     constructor(options = {}) {
-        this.ttl = options.ttl || 3600*5;
+        this.ttl = options.ttl || 3600*15;
         this.useRedis = options.enableRedis || false;
         this.prefix = options.prefix || 'cache';
 

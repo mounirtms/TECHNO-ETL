@@ -211,31 +211,90 @@ const UnifiedGrid = forwardRef(({
   const gridRef = useRef(null);
   const isMounted = useRef(false);
 
-  // Enhanced column processing
-  const processedColumns = useMemo(() => {
+  // ===== COLUMN SETUP PROCESS =====
+  // Professional column handling with proper async/sync separation
+  //
+  // STEPS TO FOLLOW:
+  // 1. Build base columns synchronously (gridColumns + pre/end columns + row numbers)
+  // 2. Apply saved column settings asynchronously (width, visibility, order)
+  // 3. Enhance columns with translations and feature flags synchronously
+  // 4. Always ensure columns is an array to prevent grid crashes
+
+  const [processedColumns, setProcessedColumns] = useState([]);
+
+  // Step 1: Build base columns synchronously
+  const baseColumns = useMemo(() => {
+    // Ensure gridColumns is always an array
+    if (!Array.isArray(gridColumns)) {
+      console.warn('UnifiedGrid: gridColumns is not an array, using empty array');
+      return [];
+    }
+
     let columns = [...gridColumns];
-    
+
     // Add row number column if needed
     if (toolbarConfig.showRowNumbers) {
       columns = [rowNumberColumn, ...columns];
     }
-    
+
     // Add pre and end columns
     columns = [...preColumns, ...columns, ...endColumns];
-    
-    // Apply saved column settings
-    columns = applySavedColumnSettings(gridName, columns);
-    
-    // Enhance columns with translations and settings
-    columns = enhanceColumns(columns, {
-      enableI18n,
-      translate: safeTranslate,
-      enableSorting,
-      enableFiltering
-    });
-    
+
     return columns;
-  }, [gridColumns, preColumns, endColumns, gridName, enableI18n, safeTranslate, enableSorting, enableFiltering, toolbarConfig.showRowNumbers]);
+  }, [gridColumns, preColumns, endColumns, toolbarConfig.showRowNumbers]);
+
+  // Step 2: Apply async column settings and enhancements
+  // This effect handles the async column processing pipeline
+  useEffect(() => {
+    const processColumns = async () => {
+      try {
+        // Start with base columns from Step 1
+        let columns = baseColumns;
+
+        // Apply saved column settings (ASYNC - loads from localStorage/database)
+        // This handles: width, visibility, order, pinning
+        if (gridName && columns.length > 0) {
+          columns = await applySavedColumnSettings(gridName, columns);
+        }
+
+        // Enhance columns with translations and feature flags (SYNC)
+        // This handles: i18n translations, sorting, filtering, resizing
+        columns = enhanceColumns(columns, {
+          enableI18n,
+          translate: safeTranslate,
+          enableSorting,
+          enableFiltering
+        });
+
+        // CRITICAL: Always ensure columns is an array to prevent grid crashes
+        if (!Array.isArray(columns)) {
+          console.warn('UnifiedGrid: processColumns resulted in non-array, using base columns');
+          columns = baseColumns;
+        }
+
+        // Step 3: Set final processed columns for grid rendering
+        setProcessedColumns(columns);
+      } catch (error) {
+        console.error('UnifiedGrid: Error processing columns:', error);
+        // FALLBACK: Use enhanced base columns without saved settings
+        const fallbackColumns = enhanceColumns(baseColumns, {
+          enableI18n,
+          translate: safeTranslate,
+          enableSorting,
+          enableFiltering
+        });
+        setProcessedColumns(fallbackColumns);
+      }
+    };
+
+    // Only process if we have base columns
+    if (baseColumns.length > 0) {
+      processColumns();
+    } else {
+      // Handle empty columns case
+      setProcessedColumns([]);
+    }
+  }, [baseColumns, gridName, enableI18n, safeTranslate, enableSorting, enableFiltering]);
 
   // Calculate grid height
   const gridHeight = useMemo(() => {
@@ -346,12 +405,7 @@ const UnifiedGrid = forwardRef(({
         </Alert>
       )}
 
-      {/* Stats Cards */}
-      {showStatsCards && gridCards.length > 0 && (
-        <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
-          <StatsCards cards={gridCards} />
-        </Box>
-      )}
+ 
 
       {/* Unified Toolbar */}
       <UnifiedGridToolbar
@@ -494,6 +548,12 @@ const UnifiedGrid = forwardRef(({
             )}
           </Box>
         </Fade>
+             {/* Stats Cards */}
+      {showStatsCards && gridCards.length > 0 && (
+        <Box sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
+          <StatsCards cards={gridCards} />
+        </Box>
+      )}
       </Box>
 
       {/* Context Menu */}
