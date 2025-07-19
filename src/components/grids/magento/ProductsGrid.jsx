@@ -1,33 +1,43 @@
-// ProductsGrid - Optimized Magento Products Grid
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+/**
+ * ProductsGrid - Professional Magento Products Management Grid
+ *
+ * Features:
+ * - Local products management with sync functionality
+ * - Segmented add button with multiple import options
+ * - Smart sync button (enabled only when local products exist)
+ * - Professional UI with proper state management
+ * - Optimized performance with memoization
+ *
+ * @author Techno-ETL Team
+ * @version 2.0.0
+ */
+
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   Box,
   Chip,
-  Typography,
   Button,
   ButtonGroup,
   Menu,
   MenuItem,
   ListItemIcon,
   ListItemText,
-  Divider
+  Divider,
+  Badge,
+  Tooltip
 } from '@mui/material';
 import {
   Add as AddIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
   Visibility as ViewIcon,
-  GetApp as ExportIcon,
   FileUpload as ImportIcon,
-  Category as CategoryIcon,
   CheckCircleOutline as CheckCircleOutlineIcon,
   ErrorOutline as ErrorOutlineIcon,
   AttachMoney as AttachMoneyIcon,
-  TrendingDown as TrendingDownIcon,
   ReportProblem as ReportProblemIcon,
   SyncAlt as SyncAltIcon,
   Info as InfoIcon,
-  Refresh as RefreshIcon,
   ArrowDropDown as ArrowDropDownIcon,
   PostAdd as PostAddIcon
 } from '@mui/icons-material';
@@ -58,8 +68,20 @@ const ProductsGrid = () => {
     inStock: 0,
     outOfStock: 0,
     lowStock: 0,
-    averagePrice: 0
+    averagePrice: 0,
+    localProducts: 0 // Track local products count
   });
+
+  // Local products management (products added locally but not synced to Magento)
+  const [localProducts, setLocalProducts] = useState([]);
+  const [syncLoading, setSyncLoading] = useState(false);
+
+  // Computed values
+  const hasLocalProducts = localProducts.length > 0;
+  const selectedLocalProducts = selectedRows.filter(sku =>
+    localProducts.some(product => product.sku === sku)
+  );
+  const canSync = hasLocalProducts || selectedLocalProducts.length > 0;
 
   // Dialog states
   const [infoDialogOpen, setInfoDialogOpen] = useState(false);
@@ -161,7 +183,7 @@ const ProductsGrid = () => {
     if (records.length === 1) {
       const product = data.find(p => p.sku === records[0]);
       setSelectedProduct(product);
-      setEditDialogOpen(true);
+      setInfoDialogOpen(true); // Using info dialog for now - edit dialog can be added later
     } else {
       toast.warning('Please select exactly one product to edit');
     }
@@ -247,6 +269,152 @@ const ProductsGrid = () => {
     handleCatalogProcessor();
   }, [handleAddMenuClose, handleCatalogProcessor]);
 
+  // ===== LOCAL PRODUCTS MANAGEMENT =====
+
+  /**
+   * Add a product to local storage (not synced to Magento yet)
+   * @param {Object} product - Product data
+   */
+  const addLocalProduct = useCallback((product) => {
+    const localProduct = {
+      ...product,
+      isLocal: true,
+      localId: `local_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
+      createdAt: new Date().toISOString(),
+      status: 'pending_sync'
+    };
+
+    setLocalProducts(prev => [...prev, localProduct]);
+
+    // Add to grid data with special styling
+    setData(prev => [...prev, localProduct]);
+
+    // Update stats
+    setStats(prev => ({
+      ...prev,
+      total: prev.total + 1,
+      localProducts: prev.localProducts + 1
+    }));
+
+    toast.success(`Product "${product.name}" added locally. Use sync to upload to Magento.`);
+  }, []);
+
+  /**
+   * Handle CSV import completion - add products as local
+   * @param {Array} importedProducts - Products from CSV import
+   */
+  const handleCsvImportComplete = useCallback((importedProducts) => {
+    if (importedProducts && importedProducts.length > 0) {
+      const localProductsToAdd = importedProducts.map(product => ({
+        ...product,
+        isLocal: true,
+        localId: `local_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
+        createdAt: new Date().toISOString(),
+        status: 'pending_sync'
+      }));
+
+      setLocalProducts(prev => [...prev, ...localProductsToAdd]);
+      setData(prev => [...prev, ...localProductsToAdd]);
+
+      setStats(prev => ({
+        ...prev,
+        total: prev.total + localProductsToAdd.length,
+        localProducts: prev.localProducts + localProductsToAdd.length
+      }));
+
+      toast.success(`${localProductsToAdd.length} products imported locally. Use sync to upload to Magento.`);
+    }
+    setCsvImportOpen(false);
+  }, []);
+
+  /**
+   * Sync local products to Magento
+   * @param {Array} productsToSync - Specific products to sync, or all local products if empty
+   */
+  const handleSyncProducts = useCallback(async (productsToSync = null) => {
+    const products = productsToSync || localProducts;
+
+    if (products.length === 0) {
+      toast.warning('No local products to sync');
+      return;
+    }
+
+    setSyncLoading(true);
+
+    try {
+      let successCount = 0;
+      let errorCount = 0;
+      const errors = [];
+
+      // Process products in batches for better performance
+      const batchSize = 5;
+      for (let i = 0; i < products.length; i += batchSize) {
+        const batch = products.slice(i, i + batchSize);
+
+        await Promise.all(batch.map(async (product) => {
+          try {
+            // Remove local-specific fields before sending to Magento
+            const { isLocal, localId, createdAt, status, ...magentoProduct } = product;
+
+            const result = await magentoApi.createProduct(magentoProduct);
+
+            if (result.success) {
+              successCount++;
+
+              // Update product in grid data (remove isLocal flag)
+              setData(prev => prev.map(p =>
+                p.localId === product.localId
+                  ? { ...p, isLocal: false, status: 'synced', magentoId: result.data.id }
+                  : p
+              ));
+
+              // Remove from local products
+              setLocalProducts(prev => prev.filter(p => p.localId !== product.localId));
+
+            } else {
+              errorCount++;
+              errors.push(`${product.sku}: ${result.error}`);
+            }
+          } catch (error) {
+            errorCount++;
+            errors.push(`${product.sku}: ${error.message}`);
+          }
+        }));
+
+        // Small delay between batches
+        if (i + batchSize < products.length) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      }
+
+      // Update stats
+      setStats(prev => ({
+        ...prev,
+        localProducts: prev.localProducts - successCount,
+        syncedProducts: prev.syncedProducts + successCount
+      }));
+
+      // Show results
+      if (successCount > 0) {
+        toast.success(`Successfully synced ${successCount} product(s) to Magento`);
+      }
+
+      if (errorCount > 0) {
+        toast.error(`Failed to sync ${errorCount} product(s). Check console for details.`);
+        console.error('Sync errors:', errors);
+      }
+
+      // Refresh grid to get latest data from Magento
+      fetchProducts();
+
+    } catch (error) {
+      console.error('Sync operation failed:', error);
+      toast.error(`Sync failed: ${error.message}`);
+    } finally {
+      setSyncLoading(false);
+    }
+  }, [localProducts, fetchProducts]);
+
   // ===== 4. MEMOIZED COMPONENTS =====
   const columns = useMemo(() => [
     {
@@ -325,21 +493,6 @@ const ProductsGrid = () => {
     }
   ], []);
 
-  const toolbarConfig = useMemo(() => ({
-    showRefresh: true,
-    showAdd: false, // Disabled - using custom segmented add button
-    showEdit: true,
-    showDelete: true,
-    showExport: true,
-    showSearch: true,
-    showFilters: true,
-    showSettings: true,
-    showViewToggle: true,
-    compact: false,
-    size: 'medium',
-    customLeftActions: [SegmentedAddButton] // Add our custom segmented button
-  }), [SegmentedAddButton]);
-
   // Custom segmented add button component
   const SegmentedAddButton = useMemo(() => (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -407,15 +560,72 @@ const ProductsGrid = () => {
     handleCatalogProcessorFromMenu
   ]);
 
-  const customActions = useMemo(() => [
-    {
-      label: 'Sync Products',
-      onClick: handleSync,
-      icon: <SyncAltIcon />,
-      color: 'secondary',
-      variant: 'outlined'
+  // Toolbar configuration with custom segmented add button
+  const toolbarConfig = useMemo(() => ({
+    showRefresh: true,
+    showAdd: false, // Disabled - using custom segmented add button
+    showEdit: true,
+    showDelete: true,
+    showExport: true,
+    showSearch: true,
+    showFilters: true,
+    showSettings: true,
+    showViewToggle: true,
+    compact: false,
+    size: 'medium',
+    customLeftActions: [SegmentedAddButton] // Add our custom segmented button
+  }), [SegmentedAddButton]);
+
+  // Smart sync button - only enabled when local products exist
+  const SyncButton = useMemo(() => {
+    if (!canSync) return null;
+
+    const syncCount = selectedLocalProducts.length > 0 ? selectedLocalProducts.length : localProducts.length;
+    const buttonText = selectedLocalProducts.length > 0
+      ? `Sync Selected (${selectedLocalProducts.length})`
+      : `Sync All Local (${localProducts.length})`;
+
+    return (
+      <Tooltip title={`Sync ${syncCount} local product(s) to Magento`}>
+        <Badge badgeContent={localProducts.length} color="warning" max={99}>
+          <Button
+            onClick={() => handleSyncProducts(
+              selectedLocalProducts.length > 0
+                ? localProducts.filter(p => selectedLocalProducts.includes(p.sku))
+                : null
+            )}
+            startIcon={<SyncAltIcon />}
+            variant="contained"
+            color="success"
+            disabled={syncLoading}
+            sx={{
+              minWidth: 140,
+              '& .MuiBadge-badge': {
+                right: -8,
+                top: -8
+              }
+            }}
+          >
+            {syncLoading ? 'Syncing...' : buttonText}
+          </Button>
+        </Badge>
+      </Tooltip>
+    );
+  }, [canSync, selectedLocalProducts, localProducts, handleSyncProducts, syncLoading]);
+
+  const customActions = useMemo(() => {
+    const actions = [];
+
+    // Add sync button if there are local products
+    if (SyncButton) {
+      actions.push({
+        component: SyncButton,
+        key: 'sync-local-products'
+      });
     }
-  ], [handleSync]);
+
+    return actions;
+  }, [SyncButton]);
 
   const contextMenuActions = useMemo(() => ({
     view: {
@@ -431,7 +641,7 @@ const ProductsGrid = () => {
       icon: <EditIcon />,
       onClick: (row) => {
         setSelectedProduct(row);
-        setEditDialogOpen(true);
+        setInfoDialogOpen(true); // Using info dialog for now - edit dialog can be added later
       }
     },
     info: {
@@ -488,8 +698,18 @@ const ProductsGrid = () => {
     { key: 'active', label: 'Active Only', value: '1' },
     { key: 'inactive', label: 'Inactive Only', value: '0' },
     { key: 'instock', label: 'In Stock', value: 'instock' },
-    { key: 'outofstock', label: 'Out of Stock', value: 'outofstock' }
+    { key: 'outofstock', label: 'Out of Stock', value: 'outofstock' },
+    { key: 'local', label: 'Local Products', value: 'local' },
+    { key: 'synced', label: 'Synced Products', value: 'synced' }
   ], []);
+
+  // Custom row styling for local products
+  const getRowClassName = useCallback((params) => {
+    if (params.row?.isLocal) {
+      return 'local-product-row';
+    }
+    return '';
+  }, []);
 
   // ===== 5. RENDER =====
   return (
@@ -534,6 +754,21 @@ const ProductsGrid = () => {
         
         // Row configuration
         getRowId={(row) => row.sku}
+        getRowClassName={getRowClassName}
+
+        // Custom styling for local products
+        sx={{
+          '& .local-product-row': {
+            backgroundColor: 'rgba(255, 193, 7, 0.1)', // Light amber background
+            borderLeft: '4px solid #ffc107', // Amber left border
+            '&:hover': {
+              backgroundColor: 'rgba(255, 193, 7, 0.2)',
+            },
+            '& .MuiDataGrid-cell': {
+              borderBottom: '1px solid rgba(255, 193, 7, 0.3)',
+            }
+          }
+        }}
       />
 
       <ProductInfoDialog
@@ -545,10 +780,7 @@ const ProductsGrid = () => {
       <CSVImportDialog
         open={csvImportOpen}
         onClose={() => setCsvImportOpen(false)}
-        onImportComplete={() => {
-          setCsvImportOpen(false);
-          fetchProducts(); // Refresh grid after import
-        }}
+        onImportComplete={handleCsvImportComplete}
       />
 
       <CatalogProcessorDialog

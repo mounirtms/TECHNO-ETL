@@ -191,7 +191,7 @@ const Dashboard = () => {
                             }
                         }}
                     />
-
+                    <Box sx={{ flexGrow: 1 }} />        
                     <Box sx={{ display: 'flex', gap: 1 }}>
                         <Button
                             onClick={getPrices}
