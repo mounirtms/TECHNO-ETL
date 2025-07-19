@@ -2,8 +2,8 @@ import { getPool } from '../utils/database.js';
 import sqlQueryBuilder from '../utils/sqlQueryBuilder.js';
 import MagentoService from '../services/magentoService.js';
 import { cloudConfig } from '../config/magento.js';
-
 import { sourceMapping, getAllSources } from '../config/sources.js';
+import { MDM } from '../queries/index.js';
 
 const magento = new MagentoService(cloudConfig);
 

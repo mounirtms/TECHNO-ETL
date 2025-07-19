@@ -499,12 +499,12 @@ const UnifiedGrid = forwardRef(({
                   initialState: { pagination: { paginationModel: { page: 0, pageSize: defaultPageSize } } }
                 } : {})}
 
-                // Pagination - client-side pagination without rowCount to prevent MUI warnings
+                // Pagination - client-side pagination with proper rowCount
                 paginationModel={paginationModel || { page: 0, pageSize: defaultPageSize }}
                 onPaginationModelChange={setPaginationModel}
                 pageSizeOptions={[10, 25, 50, 100]}
                 paginationMode="client"
-                // rowCount is not needed for client-side pagination and causes MUI warnings
+                rowCount={totalCount || memoizedData.length} // Provide proper rowCount
                 
                 // Sorting
                 sortModel={sortModel}

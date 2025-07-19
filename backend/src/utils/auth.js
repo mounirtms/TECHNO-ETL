@@ -1,7 +1,7 @@
-// Add these requires at the top of your file
-const ActiveDirectory = require('activedirectory2');
-const session = require('express-session');
-const os = require('os');
+// Add these imports at the top of your file
+import ActiveDirectory from 'activedirectory2';
+import session from 'express-session';
+import os from 'os';
 
 // Get current domain
 const domain = os.hostname().split('.').slice(1).join('.');

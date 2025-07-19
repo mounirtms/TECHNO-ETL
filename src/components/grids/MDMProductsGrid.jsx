@@ -183,8 +183,8 @@ const MDMProductsGrid = () => {
       field: 'DateDernierMaJ',
       headerName: 'Last Update',
       width: 160,
-      type: 'date',
-      renderCell: (params) => {
+      type: 'string', // Changed from 'date' to 'string' to avoid Date object requirement
+      valueGetter: (params) => {
         if (!params.value) return '';
         try {
           return new Date(params.value).toLocaleDateString('fr-DZ');

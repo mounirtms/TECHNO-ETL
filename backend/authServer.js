@@ -1,8 +1,10 @@
-require('dotenv').config()
+import dotenv from 'dotenv';
+dotenv.config();
 
-const express = require('express')
-const app = express()
-const jwt = require('jsonwebtoken')
+import express from 'express';
+import jwt from 'jsonwebtoken';
+
+const app = express();
 
 app.use(express.json())
 
