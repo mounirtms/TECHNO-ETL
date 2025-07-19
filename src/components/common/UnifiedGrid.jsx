@@ -1,22 +1,15 @@
 // UnifiedGrid - Optimized Grid System
 // Merges the best features from BaseGrid and EnhancedBaseGrid
-import React, { useState, useCallback, useMemo, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useState, useCallback, useMemo, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import {
   Box,
   Paper,
   Fade,
   Skeleton,
-  Alert,
-  ToggleButton,
-  ToggleButtonGroup,
-  Tooltip
+  Alert
 } from '@mui/material';
-import { 
-  GridView as GridViewIcon,
-  ViewList as ViewListIcon 
-} from '@mui/icons-material';
-import { toast } from 'react-toastify';
+// Removed unused toast import
 import { useSafeTranslate } from '../../hooks/useOptimizedTranslation';
 import { useOptimizedGridTheme } from '../../hooks/useOptimizedTheme';
 
@@ -128,7 +121,7 @@ const UnifiedGrid = forwardRef(({
 }, ref) => {
   // Optimized theme and translation hooks
   const gridTheme = useOptimizedGridTheme();
-  const safeTranslate = useMemo(() => useSafeTranslate(enableI18n), [enableI18n]);
+  const safeTranslate = useSafeTranslate(enableI18n);
 
   // Grid state management
   const {
@@ -162,12 +155,11 @@ const UnifiedGrid = forwardRef(({
   });
 
   // Cache management
-  const { 
-    cacheData, 
-    setCacheData, 
-    clearCache, 
+  const {
+    setCacheData,
+    clearCache,
     invalidateCache,
-    cacheStats 
+    cacheStats
   } = useGridCache(gridName, enableCache);
 
   // Grid actions hook
@@ -192,15 +184,13 @@ const UnifiedGrid = forwardRef(({
 
   // Local state
   const [contextMenu, setContextMenu] = useState(null);
-  const [hoveredRow, setHoveredRow] = useState(null);
   const [viewMode, setViewMode] = useState(defaultViewMode);
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [filtersVisible, setFiltersVisible] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  
+
   const gridRef = useRef(null);
-  const isMounted = useRef(false);
 
   // ===== COLUMN SETUP PROCESS =====
   // Professional column handling with proper async/sync separation
@@ -330,7 +320,7 @@ const UnifiedGrid = forwardRef(({
   }, []);
 
   // View mode toggle
-  const handleViewModeChange = useCallback((event, newMode) => {
+  const handleViewModeChange = useCallback((_event, newMode) => {
     if (newMode !== null) {
       setViewMode(newMode);
     }

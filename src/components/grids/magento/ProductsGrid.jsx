@@ -48,7 +48,8 @@ import { toast } from 'react-toastify';
 // Removed gridDataHandlers import - skipping validation for now
 import CSVImportDialog from '../../dialogs/CSVImportDialog';
 import CatalogProcessorDialog from '../../dialogs/CatalogProcessorDialog';
-
+import ProductService from '../../../services/ProductService';
+import CategoryIcon from '@mui/icons-material/Category';
 /**
  * Optimized Magento Products Grid Component
  * Features:
@@ -356,7 +357,7 @@ const ProductsGrid = () => {
             // Remove local-specific fields before sending to Magento
             const { isLocal, localId, createdAt, status, ...magentoProduct } = product;
 
-            const result = await magentoApi.createProduct(magentoProduct);
+            const result = await ProductService.createProduct(magentoProduct);
 
             if (result.success) {
               successCount++;
