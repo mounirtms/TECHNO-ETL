@@ -221,50 +221,13 @@ const MDMProductsGrid = () => {
     });
   }, [data]);
 
-  // ===== EVENT HANDLERS (moved up to avoid initialization issues) =====
-  const handleManualRefresh = useCallback(() => {
-    fetchProducts({});
-    toast.info('Refreshing data...');
-  }, [fetchProducts]);
-
-  // Use new modular toolbar configuration
-  const toolbarConfig = useMDMToolbarConfig({
-    onRefresh: handleManualRefresh,
-    onSync: onSyncHandler,
-    onExport: (format) => {
-      const exportData = selectedBaseGridRows.length > 0
-        ? validatedData.filter(product => selectedBaseGridRows.includes(`${product.Source}-${product.Code_MDM}`))
-        : validatedData;
-      toast.success(`Exported ${exportData.length} products to ${format.toUpperCase()}`);
-    },
-    loading,
-    selectedCount: selectedBaseGridRows.length
-  });
-
-  // Use new modular custom actions
-  const customActions = useMDMCustomActions({
-    onRefresh: handleManualRefresh,
-    onSync: onSyncHandler,
-    loading,
-    selectedCount: selectedBaseGridRows.length
-  });
-
-  // Use new modular context menu actions
-  const contextMenuActions = useMDMContextMenuActions({
-    onSync: onSyncHandler,
-    onView: (rowData) => console.log('View details:', rowData),
-    onEdit: (rowData) => console.log('Edit product:', rowData)
-  });
-
-  // Toolbar configuration is now handled by useMDMToolbarConfig above
-
-  // ===== DATA FETCHING =====
+  // ===== DATA FETCHING (moved up to avoid initialization issues) =====
   const fetchProducts = useCallback(async ({ page = 0, pageSize = 25, sortModel = [], filterModel = { items: [] } }) => {
     setLoading(true);
     try {
       const sortParam = sortModel[0]?.field;
       const sortOrder = sortModel[0]?.sort;
-      
+
       const params = {
         page,
         pageSize,
@@ -312,7 +275,7 @@ const MDMProductsGrid = () => {
       const lowStock = processedData.filter(item => item.QteStock > 0 && item.QteStock < 2).length;
       const newChanges = processedData.filter(item => item.changed === 1).length;
       const synced = processedData.filter(item => item.changed === 0).length;
-      const totalValue = processedData.reduce((acc, curr) => 
+      const totalValue = processedData.reduce((acc, curr) =>
         acc + ((curr.Tarif || 0) * (curr.QteStock || 0)), 0);
       const averagePrice = processedData.length > 0 ? totalValue / processedData.length : 0;
 
@@ -349,6 +312,44 @@ const MDMProductsGrid = () => {
       setLoading(false);
     }
   }, [sourceFilter, succursaleFilter, showChangedOnly]);
+
+  // ===== EVENT HANDLERS (moved up to avoid initialization issues) =====
+  const handleManualRefresh = useCallback(() => {
+    fetchProducts({});
+    toast.info('Refreshing data...');
+  }, [fetchProducts]);
+
+  // Use new modular toolbar configuration
+  const toolbarConfig = useMDMToolbarConfig({
+    onRefresh: handleManualRefresh,
+    onSync: onSyncHandler,
+    onExport: (format) => {
+      const exportData = selectedBaseGridRows.length > 0
+        ? validatedData.filter(product => selectedBaseGridRows.includes(`${product.Source}-${product.Code_MDM}`))
+        : validatedData;
+      toast.success(`Exported ${exportData.length} products to ${format.toUpperCase()}`);
+    },
+    loading,
+    selectedCount: selectedBaseGridRows.length
+  });
+
+  // Use new modular custom actions
+  const customActions = useMDMCustomActions({
+    onRefresh: handleManualRefresh,
+    onSync: onSyncHandler,
+    loading,
+    selectedCount: selectedBaseGridRows.length
+  });
+
+  // Use new modular context menu actions
+  const contextMenuActions = useMDMContextMenuActions({
+    onSync: onSyncHandler,
+    onView: (rowData) => console.log('View details:', rowData),
+    onEdit: (rowData) => console.log('Edit product:', rowData)
+  });
+
+  // Toolbar configuration is now handled by useMDMToolbarConfig above
+  // fetchProducts is now defined above to avoid initialization issues
 
   // ===== EVENT HANDLERS =====
   const handleSourceChange = useCallback((value) => {

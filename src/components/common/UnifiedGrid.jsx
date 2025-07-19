@@ -386,30 +386,31 @@ const UnifiedGrid = forwardRef(({
     <Paper
       elevation={1}
       sx={{
-        height: '100%',
+        height: '90%',
         display: 'flex',
         flexDirection: 'column',
         direction: enableRTL ? 'rtl' : 'ltr',
         overflow: 'hidden',
+   
         // Modern design with glass morphism
         background: gridTheme.palette.mode === 'light'
           ? 'rgba(255, 255, 255, 0.9)'
           : 'rgba(18, 18, 18, 0.9)',
         backdropFilter: 'blur(20px)',
-        borderRadius: gridTheme.borderRadius,
+   
         boxShadow: gridTheme.elevation,
         border: `1px solid ${gridTheme.borderColor}`,
         // Enhanced responsive design
         '@media (max-width: 768px)': {
           height: 'calc(100% - 8px)',
-          margin: '4px 0',
-          borderRadius: 2,
-          boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+          margin: '1px 0',
+      
+          boxShadow: '0 4px 1px rgba(0,0,0,0.1)',
         },
         '@media (max-width: 480px)': {
           height: 'calc(100% - 4px)',
           margin: '2px 0',
-          borderRadius: 1,
+         
           boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         },
         ...sx
