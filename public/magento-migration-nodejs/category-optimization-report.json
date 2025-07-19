@@ -1,0 +1,484 @@
+{
+  "timestamp": "2025-07-19T11:28:57.083Z",
+  "summary": {
+    "totalProducts": 191,
+    "categoriesMapped": 191,
+    "categoriesOptimized": 0,
+    "validationErrors": 0
+  },
+  "currentCategories": [
+    "Default Category/Tous les produits/BEAUX ARTS/COULEURS ACRYLIQUES/ACRYLIQUE STUDIO",
+    "Default Category/Tous les produits/BEAUX ARTS/COULEURS ACRYLIQUES",
+    "Default Category/Tous les produits/BEAUX ARTS",
+    "Default Category/Tous les produits",
+    "Default Category/Tous les produits/LOISIRS CREATIFS/COULEURS ACRYLIQUES/ACRYLIQUE STUDIO",
+    "Default Category/Tous les produits/LOISIRS CREATIFS/COULEURS ACRYLIQUES",
+    "Default Category/Tous les produits/LOISIRS CREATIFS",
+    "Default Category/Tous les produits/BRICOLAGE/COULEURS ACRYLIQUES/ACRYLIQUE STUDIO",
+    "Default Category/Tous les produits/BRICOLAGE/COULEURS ACRYLIQUES",
+    "Default Category/Tous les produits/BRICOLAGE",
+    "Default Category/Tous les produits/SCOLAIRE/CALCULATRICES/CALCULATRICES SCIENTIFIQUES",
+    "Default Category/Tous les produits/SCOLAIRE/CALCULATRICES",
+    "Default Category/Tous les produits/SCOLAIRE",
+    "Default Category/Tous les produits/BUREAUTIQUE/CALCULATRICES",
+    "Default Category/Tous les produits/BUREAUTIQUE",
+    "Default Category/Tous les produits/BUREAUTIQUE/CALCULATRICES/CALCULATRICES DE POCHE",
+    "Default Category/Tous les produits/SCOLAIRE/CALCULATRICES/CALCULATRICES DE POCHE",
+    "Default Category/Tous les produits/BUREAUTIQUE/CALCULATRICES/CALCULATRICES DE BUREAU",
+    "Default Category/Tous les produits/BUREAUTIQUE/CALCULATRICES/CALCULATRICES IMPRIMANTES & RUBANS",
+    "Default Category/Tous les produits/BUREAUTIQUE/EQUIPEMENT ELECTRONIQUE/ETIQUETEUSE ELECTRONIQUES",
+    "Default Category/Tous les produits/BUREAUTIQUE/EQUIPEMENT ELECTRONIQUE",
+    "Default Category/Tous les produits/BRICOLAGE/EQUIPEMENT ELECTRONIQUE/ETIQUETEUSE ELECTRONIQUES",
+    "Default Category/Tous les produits/BRICOLAGE/EQUIPEMENT ELECTRONIQUE",
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION/STYLOS ENCRE GEL",
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION",
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE",
+    "Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION/STYLOS ENCRE GEL",
+    "Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION",
+    "Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION/STYLOS ENCRE GEL",
+    "Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION",
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/COLORIAGE/FEUTRE POINTE FINE",
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/COLORIAGE",
+    "Default Category/Tous les produits/SCOLAIRE/COLORIAGE/FEUTRE POINTE FINE",
+    "Default Category/Tous les produits/SCOLAIRE/COLORIAGE",
+    "Default Category/Tous les produits/LOISIRS CREATIFS/COLORIAGE/FEUTRE POINTE FINE",
+    "Default Category/Tous les produits/LOISIRS CREATIFS/COLORIAGE",
+    "Default Category/Tous les produits/BEAUX ARTS/COLORIAGE/FEUTRE POINTE FINE",
+    "Default Category/Tous les produits/BEAUX ARTS/COLORIAGE",
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/COLORIAGE/FEUTRES DE COLORIAGE",
+    "Default Category/Tous les produits/SCOLAIRE/COLORIAGE/FEUTRES DE COLORIAGE",
+    "Default Category/Tous les produits/LOISIRS CREATIFS/COLORIAGE/FEUTRES DE COLORIAGE",
+    "Default Category/Tous les produits/BEAUX ARTS/COLORIAGE/FEUTRES DE COLORIAGE",
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION/SURLIGNEUR",
+    "Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION/SURLIGNEUR",
+    "Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION/SURLIGNEUR",
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION/STYLOS ENCRE LIQUIDE",
+    "Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION/STYLOS ENCRE LIQUIDE",
+    "Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION/STYLOS ENCRE LIQUIDE",
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION/STYLOS ENCRE VISQUEUSE",
+    "Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION/STYLOS ENCRE VISQUEUSE",
+    "Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION/STYLOS ENCRE VISQUEUSE",
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION/MARQUEURS PERMANENTS",
+    "Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION/MARQUEURS PERMANENTS",
+    "Default Category/Tous les produits/BRICOLAGE/ECRITURE & CORRECTION/MARQUEURS PERMANENTS",
+    "Default Category/Tous les produits/BRICOLAGE/ECRITURE & CORRECTION",
+    "Default Category/Tous les produits/LOISIRS CREATIFS/ECRITURE & CORRECTION/MARQUEURS PERMANENTS",
+    "Default Category/Tous les produits/LOISIRS CREATIFS/ECRITURE & CORRECTION",
+    "Default Category/Tous les produits/BEAUX ARTS/ECRITURE & CORRECTION/MARQUEURS PERMANENTS",
+    "Default Category/Tous les produits/BEAUX ARTS/ECRITURE & CORRECTION",
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION/PORTES MINES",
+    "Default Category/Tous les produits/TECHNIQUE/ECRITURE & CORRECTION/PORTES MINES",
+    "Default Category/Tous les produits/TECHNIQUE/ECRITURE & CORRECTION",
+    "Default Category/Tous les produits/TECHNIQUE",
+    "Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION/PORTES MINES",
+    "Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION/PORTES MINES",
+    "Default Category/Tous les produits/LOISIRS CREATIFS/ECRITURE & CORRECTION/PORTES MINES",
+    "Default Category/Tous les produits/BEAUX ARTS/ECRITURE & CORRECTION/PORTES MINES",
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION/CARTOUCHES",
+    "Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION/CARTOUCHES",
+    "Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION/CARTOUCHES",
+    "Default Category/Tous les produits/BRICOLAGE/ECRITURE & CORRECTION/CARTOUCHES",
+    "Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION/GOMMES",
+    "Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION/GOMMES",
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION/GOMMES",
+    "Default Category/Tous les produits/LOISIRS CREATIFS/ECRITURE & CORRECTION/GOMMES",
+    "Default Category/Tous les produits/TECHNIQUE/ECRITURE & CORRECTION/GOMMES",
+    "Default Category/Tous les produits/BEAUX ARTS/ECRITURE & CORRECTION/GOMMES"
+  ],
+  "optimizedCategories": [
+    {
+      "key": "BUREAUTIQUE_INFORMATIQUE",
+      "name": "BUREAUTIQUE & INFORMATIQUE",
+      "path": "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "level": 0
+    },
+    {
+      "key": "CALCULATRICES",
+      "name": "CALCULATRICES",
+      "path": "Default Category/BUREAUTIQUE & INFORMATIQUE/CALCULATRICES",
+      "level": 1
+    },
+    {
+      "key": "SCIENTIFIQUES",
+      "name": "CALCULATRICES SCIENTIFIQUES",
+      "path": "Default Category/BUREAUTIQUE & INFORMATIQUE/CALCULATRICES/SCIENTIFIQUES",
+      "level": 2
+    },
+    {
+      "key": "GRAPHIQUES",
+      "name": "CALCULATRICES GRAPHIQUES",
+      "path": "Default Category/BUREAUTIQUE & INFORMATIQUE/CALCULATRICES/GRAPHIQUES",
+      "level": 2
+    },
+    {
+      "key": "DE_POCHE",
+      "name": "CALCULATRICES DE POCHE",
+      "path": "Default Category/BUREAUTIQUE & INFORMATIQUE/CALCULATRICES/DE POCHE",
+      "level": 2
+    },
+    {
+      "key": "DE_BUREAU",
+      "name": "CALCULATRICES DE BUREAU",
+      "path": "Default Category/BUREAUTIQUE & INFORMATIQUE/CALCULATRICES/DE BUREAU",
+      "level": 2
+    },
+    {
+      "key": "IMPRIMANTES",
+      "name": "CALCULATRICES IMPRIMANTES",
+      "path": "Default Category/BUREAUTIQUE & INFORMATIQUE/CALCULATRICES/IMPRIMANTES",
+      "level": 2
+    },
+    {
+      "key": "EQUIPEMENT",
+      "name": "EQUIPEMENT ELECTRONIQUE",
+      "path": "Default Category/BUREAUTIQUE & INFORMATIQUE/EQUIPEMENT",
+      "level": 1
+    },
+    {
+      "key": "ETIQUETEUSES",
+      "name": "ETIQUETEUSES",
+      "path": "Default Category/BUREAUTIQUE & INFORMATIQUE/EQUIPEMENT/ETIQUETEUSES",
+      "level": 2
+    },
+    {
+      "key": "PLASTIFIEUSES",
+      "name": "PLASTIFIEUSES",
+      "path": "Default Category/BUREAUTIQUE & INFORMATIQUE/EQUIPEMENT/PLASTIFIEUSES",
+      "level": 2
+    },
+    {
+      "key": "ECRITURE_COLORIAGE",
+      "name": "ECRITURE & COLORIAGE",
+      "path": "Default Category/ECRITURE & COLORIAGE",
+      "level": 0
+    },
+    {
+      "key": "STYLOS",
+      "name": "STYLOS",
+      "path": "Default Category/ECRITURE & COLORIAGE/STYLOS",
+      "level": 1
+    },
+    {
+      "key": "ENCRE_GEL",
+      "name": "STYLOS ENCRE GEL",
+      "path": "Default Category/ECRITURE & COLORIAGE/STYLOS/ENCRE GEL",
+      "level": 2
+    },
+    {
+      "key": "ENCRE_LIQUIDE",
+      "name": "STYLOS ENCRE LIQUIDE",
+      "path": "Default Category/ECRITURE & COLORIAGE/STYLOS/ENCRE LIQUIDE",
+      "level": 2
+    },
+    {
+      "key": "BILLE",
+      "name": "STYLOS BILLE",
+      "path": "Default Category/ECRITURE & COLORIAGE/STYLOS/BILLE",
+      "level": 2
+    },
+    {
+      "key": "FEUTRES",
+      "name": "FEUTRES & MARQUEURS",
+      "path": "Default Category/ECRITURE & COLORIAGE/FEUTRES",
+      "level": 1
+    },
+    {
+      "key": "POINTE_FINE",
+      "name": "FEUTRES POINTE FINE",
+      "path": "Default Category/ECRITURE & COLORIAGE/FEUTRES/POINTE FINE",
+      "level": 2
+    },
+    {
+      "key": "COLORIAGE",
+      "name": "FEUTRES COLORIAGE",
+      "path": "Default Category/ECRITURE & COLORIAGE/FEUTRES/COLORIAGE",
+      "level": 2
+    },
+    {
+      "key": "SURLIGNEUR",
+      "name": "SURLIGNEURS",
+      "path": "Default Category/ECRITURE & COLORIAGE/SURLIGNEURS",
+      "level": 1
+    },
+    {
+      "key": "SCOLAIRE",
+      "name": "SCOLAIRE",
+      "path": "Default Category/SCOLAIRE",
+      "level": 0
+    },
+    {
+      "key": "CAHIERS",
+      "name": "CAHIERS & CARNETS",
+      "path": "Default Category/SCOLAIRE/CAHIERS",
+      "level": 1
+    },
+    {
+      "key": "CLASSEURS",
+      "name": "CLASSEURS & RANGEMENT",
+      "path": "Default Category/SCOLAIRE/CLASSEURS",
+      "level": 1
+    },
+    {
+      "key": "FOURNITURES",
+      "name": "FOURNITURES DIVERSES",
+      "path": "Default Category/SCOLAIRE/FOURNITURES",
+      "level": 1
+    },
+    {
+      "key": "BEAUX_ARTS",
+      "name": "BEAUX ARTS",
+      "path": "Default Category/BEAUX ARTS",
+      "level": 0
+    },
+    {
+      "key": "COULEURS",
+      "name": "COULEURS & PEINTURES",
+      "path": "Default Category/BEAUX ARTS/COULEURS",
+      "level": 1
+    },
+    {
+      "key": "ACRYLIQUE",
+      "name": "PEINTURE ACRYLIQUE",
+      "path": "Default Category/BEAUX ARTS/COULEURS/ACRYLIQUE",
+      "level": 2
+    }
+  ],
+  "categoryMappings": {
+    "Default Category/Tous les produits/BEAUX ARTS/COULEURS ACRYLIQUES/ACRYLIQUE STUDIO,Default Category/Tous les produits/BEAUX ARTS/COULEURS ACRYLIQUES,Default Category/Tous les produits/BEAUX ARTS,Default Category/Tous les produits,Default Category/Tous les produits/LOISIRS CREATIFS/COULEURS ACRYLIQUES/ACRYLIQUE STUDIO,Default Category/Tous les produits/LOISIRS CREATIFS/COULEURS ACRYLIQUES,Default Category/Tous les produits/LOISIRS CREATIFS,Default Category/Tous les produits/BRICOLAGE/COULEURS ACRYLIQUES/ACRYLIQUE STUDIO,Default Category/Tous les produits/BRICOLAGE/COULEURS ACRYLIQUES,Default Category/Tous les produits/BRICOLAGE": [
+      "Default Category/SCOLAIRE"
+    ],
+    "Default Category/Tous les produits/SCOLAIRE/CALCULATRICES/CALCULATRICES SCIENTIFIQUES,Default Category/Tous les produits/SCOLAIRE/CALCULATRICES,Default Category/Tous les produits/SCOLAIRE,Default Category/Tous les produits,Default Category/Tous les produits/BUREAUTIQUE/CALCULATRICES,Default Category/Tous les produits/BUREAUTIQUE": [
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE"
+    ],
+    "Default Category/Tous les produits/BUREAUTIQUE/CALCULATRICES/CALCULATRICES DE POCHE,Default Category/Tous les produits/BUREAUTIQUE/CALCULATRICES,Default Category/Tous les produits/BUREAUTIQUE,Default Category/Tous les produits,Default Category/Tous les produits/SCOLAIRE/CALCULATRICES/CALCULATRICES DE POCHE,Default Category/Tous les produits/SCOLAIRE/CALCULATRICES,Default Category/Tous les produits/SCOLAIRE": [
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE"
+    ],
+    "Default Category/Tous les produits/BUREAUTIQUE/CALCULATRICES/CALCULATRICES DE BUREAU,Default Category/Tous les produits/BUREAUTIQUE/CALCULATRICES,Default Category/Tous les produits/BUREAUTIQUE,Default Category/Tous les produits": [
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE",
+      "Default Category/BUREAUTIQUE & INFORMATIQUE"
+    ],
+    "Default Category/Tous les produits/BUREAUTIQUE/CALCULATRICES/CALCULATRICES IMPRIMANTES & RUBANS,Default Category/Tous les produits/BUREAUTIQUE/CALCULATRICES,Default Category/Tous les produits/BUREAUTIQUE,Default Category/Tous les produits": [
+      "Default Category/BUREAUTIQUE & INFORMATIQUE"
+    ],
+    "Default Category/Tous les produits/BUREAUTIQUE/EQUIPEMENT ELECTRONIQUE/ETIQUETEUSE ELECTRONIQUES,Default Category/Tous les produits/BUREAUTIQUE/EQUIPEMENT ELECTRONIQUE,Default Category/Tous les produits/BUREAUTIQUE,Default Category/Tous les produits,Default Category/Tous les produits/BRICOLAGE/EQUIPEMENT ELECTRONIQUE/ETIQUETEUSE ELECTRONIQUES,Default Category/Tous les produits/BRICOLAGE/EQUIPEMENT ELECTRONIQUE,Default Category/Tous les produits/BRICOLAGE": [
+      "Default Category/BUREAUTIQUE & INFORMATIQUE"
+    ],
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION/STYLOS ENCRE GEL,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE,Default Category/Tous les produits,Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION/STYLOS ENCRE GEL,Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION,Default Category/Tous les produits/BUREAUTIQUE,Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION/STYLOS ENCRE GEL,Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION,Default Category/Tous les produits/SCOLAIRE": [
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE"
+    ],
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/COLORIAGE/FEUTRE POINTE FINE,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/COLORIAGE,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE,Default Category/Tous les produits,Default Category/Tous les produits/SCOLAIRE/COLORIAGE/FEUTRE POINTE FINE,Default Category/Tous les produits/SCOLAIRE/COLORIAGE,Default Category/Tous les produits/SCOLAIRE,Default Category/Tous les produits/LOISIRS CREATIFS/COLORIAGE/FEUTRE POINTE FINE,Default Category/Tous les produits/LOISIRS CREATIFS/COLORIAGE,Default Category/Tous les produits/LOISIRS CREATIFS,Default Category/Tous les produits/BEAUX ARTS/COLORIAGE/FEUTRE POINTE FINE,Default Category/Tous les produits/BEAUX ARTS/COLORIAGE,Default Category/Tous les produits/BEAUX ARTS": [
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE"
+    ],
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/COLORIAGE/FEUTRES DE COLORIAGE,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/COLORIAGE,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE,Default Category/Tous les produits,Default Category/Tous les produits/SCOLAIRE/COLORIAGE/FEUTRES DE COLORIAGE,Default Category/Tous les produits/SCOLAIRE/COLORIAGE,Default Category/Tous les produits/SCOLAIRE,Default Category/Tous les produits/LOISIRS CREATIFS/COLORIAGE/FEUTRES DE COLORIAGE,Default Category/Tous les produits/LOISIRS CREATIFS/COLORIAGE,Default Category/Tous les produits/LOISIRS CREATIFS,Default Category/Tous les produits/BEAUX ARTS/COLORIAGE/FEUTRES DE COLORIAGE,Default Category/Tous les produits/BEAUX ARTS/COLORIAGE,Default Category/Tous les produits/BEAUX ARTS": [
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE"
+    ],
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION/SURLIGNEUR,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE,Default Category/Tous les produits,Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION/SURLIGNEUR,Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION,Default Category/Tous les produits/BUREAUTIQUE,Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION/SURLIGNEUR,Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION,Default Category/Tous les produits/SCOLAIRE": [
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE"
+    ],
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION/STYLOS ENCRE LIQUIDE,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE,Default Category/Tous les produits,Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION/STYLOS ENCRE LIQUIDE,Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION,Default Category/Tous les produits/BUREAUTIQUE,Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION/STYLOS ENCRE LIQUIDE,Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION,Default Category/Tous les produits/SCOLAIRE": [
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE"
+    ],
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION/STYLOS ENCRE VISQUEUSE,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE,Default Category/Tous les produits,Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION/STYLOS ENCRE VISQUEUSE,Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION,Default Category/Tous les produits/BUREAUTIQUE,Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION/STYLOS ENCRE VISQUEUSE,Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION,Default Category/Tous les produits/SCOLAIRE": [
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE"
+    ],
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION/MARQUEURS PERMANENTS,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE,Default Category/Tous les produits,Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION/MARQUEURS PERMANENTS,Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION,Default Category/Tous les produits/BUREAUTIQUE,Default Category/Tous les produits/BRICOLAGE/ECRITURE & CORRECTION/MARQUEURS PERMANENTS,Default Category/Tous les produits/BRICOLAGE/ECRITURE & CORRECTION,Default Category/Tous les produits/BRICOLAGE,Default Category/Tous les produits/LOISIRS CREATIFS/ECRITURE & CORRECTION/MARQUEURS PERMANENTS,Default Category/Tous les produits/LOISIRS CREATIFS/ECRITURE & CORRECTION,Default Category/Tous les produits/LOISIRS CREATIFS,Default Category/Tous les produits/BEAUX ARTS/ECRITURE & CORRECTION/MARQUEURS PERMANENTS,Default Category/Tous les produits/BEAUX ARTS/ECRITURE & CORRECTION,Default Category/Tous les produits/BEAUX ARTS": [
+      "Default Category/BEAUX ARTS",
+      "Default Category",
+      "Default Category",
+      "Default Category",
+      "Default Category",
+      "Default Category"
+    ],
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION/PORTES MINES,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE,Default Category/Tous les produits,Default Category/Tous les produits/TECHNIQUE/ECRITURE & CORRECTION/PORTES MINES,Default Category/Tous les produits/TECHNIQUE/ECRITURE & CORRECTION,Default Category/Tous les produits/TECHNIQUE,Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION/PORTES MINES,Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION,Default Category/Tous les produits/BUREAUTIQUE,Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION/PORTES MINES,Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION,Default Category/Tous les produits/SCOLAIRE,Default Category/Tous les produits/LOISIRS CREATIFS/ECRITURE & CORRECTION/PORTES MINES,Default Category/Tous les produits/LOISIRS CREATIFS/ECRITURE & CORRECTION,Default Category/Tous les produits/LOISIRS CREATIFS,Default Category/Tous les produits/BEAUX ARTS/ECRITURE & CORRECTION/PORTES MINES,Default Category/Tous les produits/BEAUX ARTS/ECRITURE & CORRECTION,Default Category/Tous les produits/BEAUX ARTS": [
+      "Default Category",
+      "Default Category",
+      "Default Category",
+      "Default Category",
+      "Default Category",
+      "Default Category"
+    ],
+    "Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION/CARTOUCHES,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE,Default Category/Tous les produits,Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION/CARTOUCHES,Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION,Default Category/Tous les produits/SCOLAIRE,Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION/CARTOUCHES,Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION,Default Category/Tous les produits/BUREAUTIQUE,Default Category/Tous les produits/BRICOLAGE/ECRITURE & CORRECTION/CARTOUCHES,Default Category/Tous les produits/BRICOLAGE/ECRITURE & CORRECTION,Default Category/Tous les produits/BRICOLAGE": [
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE",
+      "Default Category/ECRITURE & COLORIAGE"
+    ],
+    "Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION/GOMMES,Default Category/Tous les produits/SCOLAIRE/ECRITURE & CORRECTION,Default Category/Tous les produits/SCOLAIRE,Default Category/Tous les produits,Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION/GOMMES,Default Category/Tous les produits/BUREAUTIQUE/ECRITURE & CORRECTION,Default Category/Tous les produits/BUREAUTIQUE,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION/GOMMES,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE/ECRITURE & CORRECTION,Default Category/Tous les produits/ECRITURE CORRECTION & COLORIAGE,Default Category/Tous les produits/LOISIRS CREATIFS/ECRITURE & CORRECTION/GOMMES,Default Category/Tous les produits/LOISIRS CREATIFS/ECRITURE & CORRECTION,Default Category/Tous les produits/LOISIRS CREATIFS,Default Category/Tous les produits/TECHNIQUE/ECRITURE & CORRECTION/GOMMES,Default Category/Tous les produits/TECHNIQUE/ECRITURE & CORRECTION,Default Category/Tous les produits/TECHNIQUE,Default Category/Tous les produits/BEAUX ARTS/ECRITURE & CORRECTION/GOMMES,Default Category/Tous les produits/BEAUX ARTS/ECRITURE & CORRECTION,Default Category/Tous les produits/BEAUX ARTS": [
+      "Default Category"
+    ]
+  },
+  "errors": [],
+  "recommendations": [
+    {
+      "issue": "Category structure optimized",
+      "description": "Categories have been optimized to max 3-4 levels as recommended in audit",
+      "action": "Create the optimized categories in Magento before importing products"
+    },
+    {
+      "issue": "Product categorization improved",
+      "description": "Products have been mapped to more logical category structure",
+      "action": "Review product-category mappings and adjust if needed"
+    }
+  ]
+}

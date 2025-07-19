@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { Box } from '@mui/material';
 import UnifiedGrid from '../../common/UnifiedGrid';
 import magentoApi from '../../../services/magentoApi';
 import { toast } from 'react-toastify';
@@ -89,9 +90,36 @@ const StocksGrid = () => {
     ];
 
     return (
-        <>
-            {error && <div style={{ color: 'red', fontWeight: 'bold', marginBottom: '10px' }}>{error}</div>}
-            <UnifiedGrid
+        <Box sx={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            height: 'calc(100vh - 120px)', // Dynamic height calculation
+            overflow: 'hidden'
+        }}>
+            {error && (
+                <Box sx={{
+                    color: 'error.main',
+                    fontWeight: 'bold',
+                    mb: 1,
+                    p: 1,
+                    backgroundColor: 'error.light',
+                    borderRadius: 1
+                }}>
+                    {error}
+                </Box>
+            )}
+
+            {/* Grid Area with Proper Scrolling */}
+            <Box sx={{
+                flex: 1,
+                minHeight: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                overflow: 'hidden',
+                mb: 1
+            }}>
+                <UnifiedGrid
                 gridName="stocks"
                 columns={columns}
                 data={data}
@@ -100,7 +128,7 @@ const StocksGrid = () => {
                 // Feature toggles
                 enableCache={true}
                 enableI18n={true}
-                enableRTL={true}
+    
                 enableSelection={true}
                 enableSorting={true}
                 enableFiltering={true}
@@ -163,7 +191,8 @@ const StocksGrid = () => {
                     toast.error('Error loading stocks');
                 }}
             />
-        </>
+            </Box>
+        </Box>
     );
 };
 

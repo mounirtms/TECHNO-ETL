@@ -28,8 +28,12 @@ const getDateRange = (range) => {
 
 // --- Dashboard-specific helpers ---
 export function formatCurrency(value) {
-  if (typeof value !== 'number' || isNaN(value)) return '-';
-  return value.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 });
+  if (typeof value !== 'number' || isNaN(value)) return '0.00 DZD';
+  // Format for Algerian Dinar (DZD) without $ symbol
+  return `${value.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })} DZD`;
 }
 
 export function formatDate(date) {
@@ -58,7 +62,32 @@ export function formatChartDate(date) {
 
 export function formatTooltipDate(date) {
   if (!date) return '';
-  if (typeof date === 'number') return format(new Date(date), 'MMM d, yyyy');
-  return format(parseISO(date), 'MMM d, yyyy');
+
+  try {
+    // Handle timestamp numbers
+    if (typeof date === 'number') {
+      const dateObj = new Date(date);
+      if (isNaN(dateObj.getTime())) return '';
+      return format(dateObj, 'MMM d, yyyy');
+    }
+
+    // Handle string dates
+    if (typeof date === 'string') {
+      const dateObj = parseISO(date);
+      if (isNaN(dateObj.getTime())) return '';
+      return format(dateObj, 'MMM d, yyyy');
+    }
+
+    // Handle Date objects
+    if (date instanceof Date) {
+      if (isNaN(date.getTime())) return '';
+      return format(date, 'MMM d, yyyy');
+    }
+
+    return '';
+  } catch (error) {
+    console.warn('Invalid date format:', date, error);
+    return '';
+  }
 }
      

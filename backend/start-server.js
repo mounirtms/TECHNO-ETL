@@ -17,7 +17,7 @@ const __dirname = path.dirname(__filename);
 // Configuration
 const config = {
     development: {
-        port: 5001,
+        port: 5000,
         env: 'development',
         script: 'server.js',
         watch: true
@@ -25,7 +25,7 @@ const config = {
     production: {
         port: 5000,
         env: 'production',
-        script: 'server.js',
+        script: 'index.js',
         watch: false
     }
 };

@@ -261,7 +261,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
     // Sync Prices
     const syncPrices = async (prices) => {
         try {
-            const response = await axios.post('http://localhost:5000/api/techno/prices-sync', prices);
+            const response = await axios.post('/api/techno/prices-sync', prices);
             const requestItems = response.data?.request_items || [];
             const acceptedCount = requestItems.filter(item => item.status === 'accepted').length;
             if (acceptedCount === prices.length) {
@@ -274,29 +274,55 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
         }
     };
 
-    // Sync Stocks
+    // Sync Stocks from MDM
     const syncAllStocks = async () => {
         try {
-            const response = await axios.post('http://localhost:5000/api/mdm/inventory/sync-all-stocks-sources');
-            toast.success('Sync all stocks operation started.');
+            console.log('🔄 Starting stock sync from MDM...');
+            const response = await axios.post('/api/mdm/sync/stocks', {
+                syncAll: true,
+                sources: 'all'
+            });
+
+            console.log('✅ Stock sync response:', response.data);
+            toast.success('✅ Stock sync operation completed successfully');
+
+            // Refresh dashboard data after sync
+            setTimeout(() => {
+                fetchDashboardData();
+            }, 2000);
+
+            return response.data;
         } catch (error) {
-            toast.error('Failed to sync all stocks');
+            console.error('❌ Stock sync error:', error);
+            const errorMessage = error.response?.data?.message || error.message || 'Unknown error';
+            toast.error(`❌ Failed to sync stocks: ${errorMessage}`);
+            throw error;
         }
     };
 
-    // Fetch Prices
+    // Sync Prices from MDM
     const getPrices = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/mdm/prices');
-            const priceData = response.data.map(({ sku, price }) => ({
-                product: {
-                    sku,
-                    price: parseFloat(price)
-                }
-            }));
-            await syncPrices(priceData);
+            console.log('🔄 Starting price sync from MDM...');
+            const response = await axios.post('/api/mdm/sync/prices', {
+                syncAll: true,
+                updateMagento: true
+            });
+
+            console.log('✅ Price sync response:', response.data);
+            toast.success('✅ Price sync operation completed successfully');
+
+            // Refresh dashboard data after sync
+            setTimeout(() => {
+                fetchDashboardData();
+            }, 2000);
+
+            return response.data;
         } catch (error) {
-            toast.error('Failed to fetch prices');
+            console.error('❌ Price sync error:', error);
+            const errorMessage = error.response?.data?.message || error.message || 'Unknown error';
+            toast.error(`❌ Failed to sync prices: ${errorMessage}`);
+            throw error;
         }
     };
 

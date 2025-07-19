@@ -183,20 +183,41 @@ const GridToolbarActions = ({
       )}
 
       {/* Custom Actions */}
-      {customActions.map((action, index) => (
-        <Tooltip key={index} title={action.tooltip || action.label}>
-          <Button
-            startIcon={action.icon}
-            onClick={action.onClick}
-            variant={action.variant || 'outlined'}
-            color={action.color || 'primary'}
-            size={buttonSize}
-            disabled={action.disabled || loading}
-          >
-            {config.compact ? '' : action.label}
-          </Button>
-        </Tooltip>
-      ))}
+      {customActions.map((action, index) => {
+        // Safely render icon - ensure it's a valid React element
+        const renderIcon = () => {
+          if (!action.icon) return null;
+
+          // Handle Material-UI icon components (functions)
+          if (typeof action.icon === 'function') {
+            const IconComponent = action.icon;
+            return <IconComponent />;
+          }
+
+          // Handle React elements
+          if (React.isValidElement(action.icon)) {
+            return action.icon;
+          }
+
+          // Invalid icon type - return null to avoid prop type warning
+          return null;
+        };
+
+        return (
+          <Tooltip key={index} title={action.tooltip || action.label}>
+            <Button
+              startIcon={renderIcon()}
+              onClick={action.onClick}
+              variant={action.variant || 'outlined'}
+              color={action.color || 'primary'}
+              size={buttonSize}
+              disabled={action.disabled || loading}
+            >
+              {config.compact ? '' : action.label}
+            </Button>
+          </Tooltip>
+        );
+      })}
     </Box>
   );
 };

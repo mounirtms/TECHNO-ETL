@@ -181,6 +181,15 @@ const StatsCards = ({ cards }) => {
 
                     // Compact and responsive icon rendering
                     const renderIcon = () => {
+                        // Debug logging
+                        console.log('StatsCards renderIcon:', {
+                            cardTitle: card.title,
+                            iconType: typeof Icon,
+                            iconValue: Icon,
+                            isFunction: typeof Icon === 'function',
+                            isValidElement: React.isValidElement(Icon)
+                        });
+
                         // Handle Material-UI icon components (functions)
                         if (typeof Icon === 'function') {
                             return <Icon sx={{
@@ -201,7 +210,8 @@ const StatsCards = ({ cards }) => {
                             });
                         }
 
-                        // Fallback for any other type
+                        // Enhanced fallback with proper icon
+                        console.warn('StatsCards: Using fallback icon for', card.title, 'Icon type:', typeof Icon);
                         return (
                             <Box sx={{
                                 fontSize: { xs: 14, sm: 16, md: 18 },
