@@ -499,12 +499,12 @@ const UnifiedGrid = forwardRef(({
                   initialState: { pagination: { paginationModel: { page: 0, pageSize: defaultPageSize } } }
                 } : {})}
 
-                // Pagination - client-side pagination with proper rowCount
+                // Pagination - client-side pagination (rowCount not needed for client mode)
                 paginationModel={paginationModel || { page: 0, pageSize: defaultPageSize }}
                 onPaginationModelChange={setPaginationModel}
                 pageSizeOptions={[10, 25, 50, 100]}
                 paginationMode="client"
-                rowCount={totalCount || memoizedData.length} // Provide proper rowCount
+                // rowCount is not used with client-side pagination
                 
                 // Sorting
                 sortModel={sortModel}
@@ -555,6 +555,7 @@ const UnifiedGrid = forwardRef(({
                   },
                   '& .MuiDataGrid-cell': {
                     borderBottom: '1px solid rgba(224, 224, 224, 0.5)',
+                    borderRadius: 0, // ✅ NO ROUNDED EDGES
                     '&:focus': {
                       outline: 'none'
                     }
@@ -565,11 +566,13 @@ const UnifiedGrid = forwardRef(({
                     borderRadius: 0
                   },
                   '& .MuiDataGrid-row': {
+                    borderRadius: 0, // ✅ NO ROUNDED EDGES
                     '&:hover': {
                       backgroundColor: gridTheme.rowHoverColor
                     },
                     '&.Mui-selected': {
                       backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                      borderRadius: 0, // ✅ NO ROUNDED EDGES
                       '&:hover': {
                         backgroundColor: 'rgba(25, 118, 210, 0.12)'
                       }
@@ -577,7 +580,22 @@ const UnifiedGrid = forwardRef(({
                   },
                   '& .MuiDataGrid-footerContainer': {
                     borderTop: '2px solid rgba(224, 224, 224, 1)',
-                    borderRadius: 0
+                    borderRadius: 0 // ✅ NO ROUNDED EDGES
+                  },
+                  '& .MuiDataGrid-panel': {
+                    borderRadius: 0 // ✅ NO ROUNDED EDGES
+                  },
+                  '& .MuiDataGrid-menu': {
+                    borderRadius: 0 // ✅ NO ROUNDED EDGES
+                  },
+                  '& .MuiDataGrid-columnHeader': {
+                    borderRadius: 0 // ✅ NO ROUNDED EDGES
+                  },
+                  '& .MuiDataGrid-container--top': {
+                    borderRadius: 0 // ✅ NO ROUNDED EDGES
+                  },
+                  '& .MuiDataGrid-container--bottom': {
+                    borderRadius: 0 // ✅ NO ROUNDED EDGES
                   },
                   // Ensure proper scrolling
                   height: '100%',

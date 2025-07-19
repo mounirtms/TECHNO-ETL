@@ -221,6 +221,12 @@ const MDMProductsGrid = () => {
     });
   }, [data]);
 
+  // ===== EVENT HANDLERS (moved up to avoid initialization issues) =====
+  const handleManualRefresh = useCallback(() => {
+    fetchProducts({});
+    toast.info('Refreshing data...');
+  }, [fetchProducts]);
+
   // Use new modular toolbar configuration
   const toolbarConfig = useMDMToolbarConfig({
     onRefresh: handleManualRefresh,
@@ -345,11 +351,6 @@ const MDMProductsGrid = () => {
   }, [sourceFilter, succursaleFilter, showChangedOnly]);
 
   // ===== EVENT HANDLERS =====
-  const handleManualRefresh = useCallback(() => {
-    fetchProducts({});
-    toast.info('Refreshing data...');
-  }, [fetchProducts]);
-
   const handleSourceChange = useCallback((value) => {
     setSourceFilter(value);
   }, []);

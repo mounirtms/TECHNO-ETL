@@ -1,0 +1,28 @@
+{
+  "timestamp": "2025-07-19T09:56:11.037Z",
+  "summary": {
+    "totalProcessed": 191,
+    "brandsFixed": 382,
+    "colorsFixed": 272,
+    "pricesFixed": 0,
+    "dimensionsFixed": 0,
+    "weightsAdded": 0,
+    "descriptionsAdded": 0,
+    "defaultsApplied": 382,
+    "validationErrors": 0
+  },
+  "errors": [],
+  "recommendations": [
+    {
+      "issue": "Brand values were corrected to match Magento options",
+      "count": 382,
+      "solution": "Verify brand values match your Magento attribute configuration"
+    },
+    {
+      "issue": "Color values were corrected to match Magento options",
+      "count": 272,
+      "solution": "Verify color values match your Magento attribute configuration"
+    }
+  ],
+  "validationStatus": "PASSED"
+}
