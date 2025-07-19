@@ -322,6 +322,18 @@ async function connectToDatabases() {
     }
 }
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV || 'development',
+        port: productionConfig.server.port,
+        version: '1.0.0'
+    });
+});
+
 // Magento API Proxy
 app.all('/api/magento/*', proxyMagentoRequest);
 
@@ -469,8 +481,47 @@ async function main() {
 main();
 
 
-app.listen(5000, () => {
-    console.log(`Server is running ..... `);
+// Use production config for port and host
+const PORT = productionConfig.server.port;
+const HOST = productionConfig.server.host;
+
+// Start server with proper error handling
+const server = app.listen(PORT, HOST, () => {
+    console.log(`🚀 Techno ETL Backend Server running on ${HOST}:${PORT}`);
+    console.log(`📊 Environment: ${productionConfig.server.environment}`);
+    console.log(`🌐 CORS Origins: ${productionConfig.cors.origin.join(', ')}`);
+    console.log(`📡 Server ready to handle requests...`);
+});
+
+// Handle server errors
+server.on('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+        console.error(`❌ Port ${PORT} is already in use. Please:`);
+        console.error(`   1. Kill the process using: taskkill /PID <PID> /F`);
+        console.error(`   2. Or set a different PORT environment variable`);
+        console.error(`   3. Or wait for the port to be released`);
+        process.exit(1);
+    } else {
+        console.error('❌ Server error:', error);
+        process.exit(1);
+    }
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('🔄 SIGTERM received, shutting down gracefully...');
+    server.close(() => {
+        console.log('✅ Server closed');
+        process.exit(0);
+    });
+});
+
+process.on('SIGINT', () => {
+    console.log('🔄 SIGINT received, shutting down gracefully...');
+    server.close(() => {
+        console.log('✅ Server closed');
+        process.exit(0);
+    });
 });
 
 

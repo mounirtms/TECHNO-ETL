@@ -40,12 +40,17 @@
     "webpack-cli": "^4.10.0"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "node start-server.js development",
+    "start:dev": "nodemon server.js",
+    "start:prod": "node start-server.js production",
     "build": "npm run clean && webpack",
+    "build:prod": "npm run clean && NODE_ENV=production webpack",
     "clean": "rimraf dist",
-    "dev": "nodemon server.js",
+    "dev": "NODE_ENV=development PORT=5001 nodemon server.js",
     "worker": "node worker.js",
-    "flush": "redis-cli --scan --pattern 'cache:*' | xargs -r redis-cli del"
-
+    "flush": "redis-cli --scan --pattern 'cache:*' | xargs -r redis-cli del",
+    "test": "echo 'Backend server test' && curl http://localhost:5001/api/health || echo 'Server not running'",
+    "health": "curl http://localhost:5001/api/health",
+    "stop": "taskkill /F /IM node.exe /FI \"WINDOWTITLE eq Techno ETL Backend*\" 2>nul || echo 'No server process found'"
   }
 }
