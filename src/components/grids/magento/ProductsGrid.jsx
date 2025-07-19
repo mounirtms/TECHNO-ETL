@@ -511,6 +511,7 @@ const ProductsGrid = () => {
           sx={{ px: 1, minWidth: 32 }}
         >
           <ArrowDropDownIcon />
+          
         </Button>
       </ButtonGroup>
 

@@ -10,7 +10,6 @@ import {
   Alert
 } from '@mui/material';
 // Removed unused toast import
-import { useSafeTranslate } from '../../hooks/useOptimizedTranslation';
 import { useOptimizedGridTheme } from '../../hooks/useOptimizedTheme';
 
 // Unified Grid Components
@@ -121,7 +120,16 @@ const UnifiedGrid = forwardRef(({
 }, ref) => {
   // Optimized theme and translation hooks
   const gridTheme = useOptimizedGridTheme();
-  const safeTranslate = useSafeTranslate(enableI18n);
+
+  // Stable translation function that doesn't change on every render
+  const safeTranslate = useCallback((key, fallback = key) => {
+    try {
+      // Simple fallback translation without excessive dependencies
+      return enableI18n ? (fallback || key) : (fallback || key);
+    } catch (error) {
+      return fallback || key;
+    }
+  }, [enableI18n]);
 
   // Grid state management
   const {
@@ -192,6 +200,16 @@ const UnifiedGrid = forwardRef(({
 
   const gridRef = useRef(null);
 
+  // Memoize data to prevent unnecessary re-renders
+  const memoizedData = useMemo(() => {
+    // Ensure data is always an array
+    if (!Array.isArray(data)) {
+      console.warn('UnifiedGrid: data prop is not an array, using empty array');
+      return [];
+    }
+    return data;
+  }, [data]);
+
   // ===== COLUMN SETUP PROCESS =====
   // Professional column handling with proper async/sync separation
   //
@@ -224,10 +242,24 @@ const UnifiedGrid = forwardRef(({
     return columns;
   }, [gridColumns, preColumns, endColumns, toolbarConfig.showRowNumbers]);
 
+  // Processing state to prevent excessive re-renders
+  const processingRef = useRef(false);
+  const lastProcessedRef = useRef('');
+
   // Step 2: Apply async column settings and enhancements
   // This effect handles the async column processing pipeline
   useEffect(() => {
+    // Create a stable key for this processing request
+    const processingKey = `${baseColumns.length}-${gridName}-${enableI18n}-${enableSorting}-${enableFiltering}`;
+
+    // Skip if already processing the same configuration
+    if (processingRef.current || lastProcessedRef.current === processingKey) {
+      return;
+    }
+
     const processColumns = async () => {
+      processingRef.current = true;
+
       try {
         // Start with base columns from Step 1
         let columns = baseColumns;
@@ -255,6 +287,8 @@ const UnifiedGrid = forwardRef(({
 
         // Step 3: Set final processed columns for grid rendering
         setProcessedColumns(columns);
+        lastProcessedRef.current = processingKey;
+
       } catch (error) {
         console.error('UnifiedGrid: Error processing columns:', error);
         // FALLBACK: Use enhanced base columns without saved settings
@@ -265,6 +299,9 @@ const UnifiedGrid = forwardRef(({
           enableFiltering
         });
         setProcessedColumns(fallbackColumns);
+        lastProcessedRef.current = processingKey;
+      } finally {
+        processingRef.current = false;
       }
     };
 
@@ -274,8 +311,9 @@ const UnifiedGrid = forwardRef(({
     } else {
       // Handle empty columns case
       setProcessedColumns([]);
+      lastProcessedRef.current = processingKey;
     }
-  }, [baseColumns, gridName, enableI18n, safeTranslate, enableSorting, enableFiltering]);
+  }, [baseColumns, gridName, enableI18n, enableSorting, enableFiltering]);
 
   // Calculate grid height
   const gridHeight = useMemo(() => {
@@ -287,15 +325,15 @@ const UnifiedGrid = forwardRef(({
 
   // Cache management effect
   useEffect(() => {
-    if (enableCache && data.length > 0) {
-      setCacheData(data, {
+    if (enableCache && memoizedData.length > 0) {
+      setCacheData(memoizedData, {
         pagination: paginationModel,
         sort: sortModel,
         filter: filterModel,
         timestamp: Date.now()
       });
     }
-  }, [data, paginationModel, sortModel, filterModel, enableCache, setCacheData]);
+  }, [memoizedData, paginationModel, sortModel, filterModel, enableCache, setCacheData]);
 
   // Selection change handler
   const handleSelectionChange = useCallback((newSelection) => {
@@ -451,12 +489,12 @@ const UnifiedGrid = forwardRef(({
             ) : (
               <DataGrid
                 ref={gridRef}
-                rows={Array.isArray(data) ? data : []}
+                rows={memoizedData}
                 columns={processedColumns}
                 loading={loading}
 
                 // Ensure we have valid data before rendering
-                {...((!Array.isArray(data) || data.length === 0) ? {
+                {...((memoizedData.length === 0) ? {
                   initialState: { pagination: { paginationModel: { page: 0, pageSize: defaultPageSize } } }
                 } : {})}
 

@@ -1,0 +1,17 @@
+attribute_code,attribute_label,attribute_type,possible_values,is_required,is_filterable
+mgs_brand,Brand,select,"ARK,CASIO,PILOT,CALLIGRAPHE",Yes,Yes
+techno_ref,Technical Reference,text,,Yes,No
+color,Color,select,"ROUGE,BLEU,BLANC,ROSE,NOIR",No,Yes
+dimension,Dimensions,text,,No,No
+capacity,Capacity,text,,No,No
+a_la_une,Featured,boolean,"Yes,No",No,Yes
+trending,Trending,boolean,"Yes,No",No,Yes
+best_seller,Best Seller,boolean,"Yes,No",No,Yes
+rma_allowed,Return Allowed,boolean,"Yes,No",No,No
+am_available_for_wrapping,Gift Wrapping Available,boolean,"Yes,No",No,No
+hide_quote_buy_button,Hide Quote Button,boolean,"Yes,No",No,No
+amrolepermissions_owner,Role Permissions Owner,text,,No,No
+amtoolkit_robots,Robots,text,"Default",No,No
+am_offer_item_condition,Item Condition,select,"NewCondition",No,No
+amxnotif_hide_alert,Hide Alert,boolean,"Yes,No",No,No
+sm_featured,SM Featured,boolean,"Yes,No",No,No

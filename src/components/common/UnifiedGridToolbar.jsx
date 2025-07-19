@@ -41,7 +41,7 @@ import {
   Clear as ClearIcon,
   Info as InfoIcon
 } from '@mui/icons-material';
-import { useSafeTranslate } from '../../hooks/useOptimizedTranslation';
+// Removed useSafeTranslate import - using stable local translation function
 
 // Toolbar sub-components
 import GridToolbarActions from './GridToolbarActions';
@@ -107,8 +107,15 @@ const UnifiedGridToolbar = ({
   onInfo
 }) => {
   const theme = useTheme();
-  // Optimized translation hook to prevent excessive logging
-  const translate = useSafeTranslate(enableI18n);
+  // Stable translation function that doesn't change on every render
+  const translate = useCallback((key, fallback = key) => {
+    try {
+      // Simple fallback translation without excessive dependencies
+      return enableI18n ? (fallback || key) : (fallback || key);
+    } catch (error) {
+      return fallback || key;
+    }
+  }, [enableI18n]);
 
   // Local state
   const [searchText, setSearchText] = useState(searchValue);
