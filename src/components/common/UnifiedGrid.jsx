@@ -66,7 +66,9 @@ const UnifiedGrid = forwardRef(({
   gridCards = [],
   totalCount = 0,
   defaultPageSize = 25,
-  
+  paginationMode = "client", // "client" or "server"
+  onPaginationModelChange, // For server-side pagination
+
   // Toolbar configuration
   toolbarConfig = {},
   customActions = [],
@@ -386,11 +388,11 @@ const UnifiedGrid = forwardRef(({
     <Paper
       elevation={1}
       sx={{
-        height: '90%',
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
         direction: enableRTL ? 'rtl' : 'ltr',
-        overflow: 'hidden',
+       
    
         // Modern design with glass morphism
         background: gridTheme.palette.mode === 'light'
@@ -500,12 +502,19 @@ const UnifiedGrid = forwardRef(({
                   initialState: { pagination: { paginationModel: { page: 0, pageSize: defaultPageSize } } }
                 } : {})}
 
-                // Pagination - client-side pagination (rowCount not needed for client mode)
+                // Pagination - supports both client and server-side pagination
                 paginationModel={paginationModel || { page: 0, pageSize: defaultPageSize }}
-                onPaginationModelChange={setPaginationModel}
+                onPaginationModelChange={(model) => {
+                  setPaginationModel(model);
+                  // Call parent pagination handler if provided (for server-side pagination)
+                  if (onPaginationModelChange) {
+                    onPaginationModelChange(model);
+                  }
+                }}
                 pageSizeOptions={[10, 25, 50, 100]}
-                paginationMode="client"
-                // rowCount is not used with client-side pagination
+                paginationMode={paginationMode || "client"}
+                // rowCount is required for server-side pagination
+                {...(paginationMode === "server" && totalCount !== undefined ? { rowCount: totalCount } : {})}
                 
                 // Sorting
                 sortModel={sortModel}

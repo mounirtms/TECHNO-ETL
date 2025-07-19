@@ -56,6 +56,82 @@ const MDMProductsGrid = () => {
     totalValue: 0
   });
 
+  // ===== UTILITY FUNCTIONS (moved up to avoid initialization issues) =====
+  const SyncProgressToast = useCallback(({ current, total }) => (
+    <Box sx={{ width: '100%', p: 1 }}>
+      <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>
+        {`Syncing ${current}/${total} items...`}
+      </Typography>
+      <LinearProgress
+        variant="determinate"
+        value={(current / total) * 100}
+        sx={{ height: 8, borderRadius: 4 }}
+      />
+    </Box>
+  ), []);
+
+  const prepareSourceItemsPayload = useCallback((gridData, sourceMappings) => {
+    return {
+      sourceItems: gridData
+        .filter(item => item.Code_MDM && item.QteStock !== null && item.Code_Source)
+        .map(item => {
+          const sourceInfo = sourceMappings.find(s => s.code_source === item.Code_Source);
+          return {
+            sku: item.Code_MDM.toString(),
+            source_code: sourceInfo?.magentoSource || '',
+            quantity: Math.max(0, Number(item.QteStock) || 0),
+            status: (Number(item.QteStock) || 0) > 0 ? 1 : 0
+          };
+        })
+    };
+  }, []);
+
+  const processBatch = useCallback(async (items) => {
+    try {
+      const response = await magentoApi.post('inventory/source-items', { sourceItems: items });
+      toast.success('Items synced successfully.');
+      return response.data;
+    } catch (error) {
+      console.error('Batch sync error:', error);
+      toast.error(`Sync failed: ${error.message}`);
+      throw error;
+    }
+  }, []);
+
+  // ===== EVENT HANDLERS =====
+  const onSyncHandler = useCallback(async () => {
+    if (!selectedBaseGridRows?.length) {
+      toast.warning('Please select items to sync');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const selectedData = data.filter(row => 
+        selectedBaseGridRows.includes(`${row.Source}-${row.Code_MDM}`)
+      );
+      
+      const payload = prepareSourceItemsPayload(selectedData, sourceMapping);
+      if (!payload.sourceItems.length) {
+        toast.warning('No valid items to sync.');
+        return;
+      }
+
+      toast.info(<SyncProgressToast current={0} total={payload.sourceItems.length} />, {
+        autoClose: true,
+        closeOnClick: true,
+        draggable: false
+      });
+
+      await processBatch(payload.sourceItems);
+    } catch (error) {
+      console.error('Sync failed:', error);
+      toast.error('Failed to sync selected items.');
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedBaseGridRows, data, prepareSourceItemsPayload, processBatch, SyncProgressToast]);
+
   // ===== MEMOIZED VALUES =====
   const succursaleOptions = useMemo(() => {
     const uniqueSuccursales = [...new Set(sourceMapping.map(s => s.succursale))];
@@ -356,80 +432,13 @@ const MDMProductsGrid = () => {
     setSourceFilter(value);
   }, []);
 
-  const SyncProgressToast = useCallback(({ current, total }) => (
-    <Box sx={{ width: '100%', p: 1 }}>
-      <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>
-        {`Syncing ${current}/${total} items...`}
-      </Typography>
-      <LinearProgress
-        variant="determinate"
-        value={(current / total) * 100}
-        sx={{ height: 8, borderRadius: 4 }}
-      />
-    </Box>
-  ), []);
+  // SyncProgressToast is now defined above to avoid initialization issues
 
-  const prepareSourceItemsPayload = useCallback((gridData, sourceMappings) => {
-    return {
-      sourceItems: gridData
-        .filter(item => item.Code_MDM && item.QteStock !== null && item.Code_Source)
-        .map(item => {
-          const sourceInfo = sourceMappings.find(s => s.code_source === item.Code_Source);
-          return {
-            sku: item.Code_MDM.toString(),
-            source_code: sourceInfo?.magentoSource || '',
-            quantity: Math.max(0, Number(item.QteStock) || 0),
-            status: (Number(item.QteStock) || 0) > 0 ? 1 : 0
-          };
-        })
-        .filter(item => item.source_code)
-    };
-  }, []);
+  // prepareSourceItemsPayload is now defined above to avoid initialization issues
 
-  const processBatch = useCallback(async (items) => {
-    try {
-      const response = await magentoApi.post('inventory/source-items', { sourceItems: items });
-      toast.success('Items synced successfully.');
-      return response.data;
-    } catch (error) {
-      console.error('Batch processing error:', error);
-      throw error;
-    }
-  }, []);
+  // processBatch is now defined above to avoid initialization issues
 
-  const onSyncHandler = useCallback(async () => {
-    if (!selectedBaseGridRows?.length) {
-      toast.warning('Please select items to sync');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const selectedData = data.filter(row => 
-        selectedBaseGridRows.includes(`${row.Source}-${row.Code_MDM}`)
-      );
-      
-      const payload = prepareSourceItemsPayload(selectedData, sourceMapping);
-      if (!payload.sourceItems.length) {
-        toast.warning('No valid items to sync.');
-        return;
-      }
-
-      toast.info(<SyncProgressToast current={0} total={payload.sourceItems.length} />, {
-        autoClose: true,
-        closeOnClick: true,
-        draggable: false
-      });
-
-      await processBatch(payload.sourceItems);
-    } catch (error) {
-      console.error('Sync failed:', error);
-      toast.error('Failed to sync selected items.');
-    } finally {
-      setLoading(false);
-    }
-  }, [selectedBaseGridRows, data, prepareSourceItemsPayload, processBatch, SyncProgressToast]);
-
+  
   const onSyncAllHandler = useCallback(async () => {
     if (sourceFilter === 'all' || !sourceFilter) {
       toast.warning('Please select a specific source to sync all items.');
@@ -545,6 +554,14 @@ const MDMProductsGrid = () => {
             onViewModeChange={setViewMode}
             totalCount={stats.total}
             defaultPageSize={25}
+            paginationMode="server" // Server-side pagination for remote data
+            onPaginationModelChange={(model) => {
+              console.log('Pagination model changed:', model);
+              fetchProducts({
+                page: model.page,
+                pageSize: model.pageSize
+              });
+            }}
             columnVisibility={columnVisibility}
             onColumnVisibilityChange={setColumnVisibility}
             sx={{
