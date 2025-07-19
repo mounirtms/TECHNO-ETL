@@ -1,15 +1,21 @@
 import { useState, useCallback, useMemo } from 'react';
 import { Box, LinearProgress, Typography } from '@mui/material';
-import UnifiedGrid from '../common/UnifiedGrid';
+import UnifiedGrid from '../../common/UnifiedGrid';
 import MDMFilterPanel from './MDMFilterPanel';
-import MDMStatsCards from './MDMProductsGrid/MDMStatsCards';
-import MDMFilters, { defaultSources, defaultBranches } from './MDMProductsGrid/MDMFilters';
-import { useMDMToolbarConfig, useMDMCustomActions, useMDMContextMenuActions } from './MDMProductsGrid/MDMToolbar';
+import MDMStatsCards from './MDMStatsCards';
+import MDMFilters, { defaultSources, defaultBranches } from './MDMFilters';
+import { useMDMToolbarConfig, useMDMCustomActions, useMDMContextMenuActions } from './MDMToolbar';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import magentoApi from '../../services/magentoApi';
-import sourceMapping from '../../utils/sources';
+import magentoApi from '../../../services/magentoApi';
+import sourceMapping from '../../../utils/sources';
 import { Refresh as RefreshIcon } from '@mui/icons-material';
+import {
+  getStandardGridProps,
+  STANDARD_GRID_CONTAINER_STYLES,
+  STANDARD_GRID_AREA_STYLES,
+  STANDARD_STATS_CONTAINER_STYLES
+} from '../../../config/standardGridConfig';
 
 /**
  * Optimized MDM Products Grid Component
@@ -520,48 +526,29 @@ const MDMProductsGrid = () => {
         />
       </Box>
 
-      {/* Main Grid Container with Optimized Layout */}
-      <Box sx={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        height: 'calc(100vh - 120px)', // Dynamic height calculation
-        overflow: 'hidden'
-      }}>
+      {/* Main Grid Container with Standard Layout */}
+      <Box sx={STANDARD_GRID_CONTAINER_STYLES}>
         {/* Grid Area with Proper Scrolling */}
-        <Box sx={{
-          flex: 1,
-          minHeight: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-          mb: 1
-        }}>
+        <Box sx={STANDARD_GRID_AREA_STYLES}>
           <UnifiedGrid
-            gridName="MDMProductsGrid"
-            columns={columns}
-            data={validatedData}
-            loading={loading}
-            onRefresh={handleManualRefresh}
-            enableCache={true}
-            enableSelection={true}
-            enableSorting={true}
-            enableFiltering={true}
-            enableColumnReordering={true}
-            showStatsCards={false} // Moved to separate container
-            showCardView={true}
-            defaultViewMode={viewMode}
-            onViewModeChange={setViewMode}
-            totalCount={stats.total}
-            defaultPageSize={25}
-            paginationMode="server" // Server-side pagination for remote data
-            onPaginationModelChange={(model) => {
-              console.log('Pagination model changed:', model);
-              fetchProducts({
-                page: model.page,
-                pageSize: model.pageSize
-              });
-            }}
+            {...getStandardGridProps('mdm', {
+              gridName: "MDMProductsGrid",
+              columns: columns,
+              data: validatedData,
+              loading: loading,
+              onRefresh: handleManualRefresh,
+              showStatsCards: false, // Moved to separate container
+              defaultViewMode: viewMode,
+              onViewModeChange: setViewMode,
+              totalCount: stats.total,
+              onPaginationModelChange: (model) => {
+                console.log('Pagination model changed:', model);
+                fetchProducts({
+                  page: model.page,
+                  pageSize: model.pageSize
+                });
+              }
+            })}
             columnVisibility={columnVisibility}
             onColumnVisibilityChange={setColumnVisibility}
             sx={{
@@ -597,12 +584,7 @@ const MDMProductsGrid = () => {
         </Box>
 
         {/* Stats Cards at Bottom - Always Visible */}
-        <Box sx={{
-          flexShrink: 0,
-          borderTop: '1px solid rgba(224, 224, 224, 1)',
-          pt: 1,
-          backgroundColor: 'background.paper'
-        }}>
+        <Box sx={STANDARD_STATS_CONTAINER_STYLES}>
           <MDMStatsCards stats={stats} />
         </Box>
       </Box>

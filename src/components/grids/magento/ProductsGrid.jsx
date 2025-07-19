@@ -50,6 +50,12 @@ import CSVImportDialog from '../../dialogs/CSVImportDialog';
 import CatalogProcessorDialog from '../../dialogs/CatalogProcessorDialog';
 import ProductService from '../../../services/ProductService';
 import CategoryIcon from '@mui/icons-material/Category';
+import {
+  getStandardGridProps,
+  STANDARD_GRID_CONTAINER_STYLES,
+  STANDARD_GRID_AREA_STYLES,
+  STANDARD_STATS_CONTAINER_STYLES
+} from '../../../config/standardGridConfig';
 /**
  * Optimized Magento Products Grid Component
  * Features:
@@ -715,63 +721,68 @@ const ProductsGrid = () => {
 
   // ===== 5. RENDER =====
   return (
-    <Box sx={{ height: '100%', width: '100%' }}>
-      <UnifiedGrid
-        gridName="ProductsGrid"
-        columns={columns}
-        data={data}
-        loading={loading}
-        
-        // Feature toggles
-        enableCache={true}
-        enableSelection={true}
-        enableSorting={true}
-        enableFiltering={true}
-        
-        // View options
-        showStatsCards={true}
-        gridCards={statusCards}
-        defaultPageSize={25}
-        
-        // Toolbar configuration
-        toolbarConfig={toolbarConfig}
-        customActions={customActions}
-        
-        // Context menu
-        contextMenuActions={contextMenuActions}
-        
-        // Filter configuration
-        filterOptions={filterOptions}
-        currentFilter={currentFilter}
-        onFilterChange={handleFilterChange}
-        
-        // Event handlers
-        onRefresh={fetchProducts}
-        onAdd={handleAdd}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onSync={handleSync}
-        onSelectionChange={setSelectedRows}
-        onExport={() => toast.info('Export functionality coming soon')}
-        
-        // Row configuration
-        getRowId={(row) => row.sku}
-        getRowClassName={getRowClassName}
+    <Box sx={STANDARD_GRID_CONTAINER_STYLES}>
+      {/* Grid Area with Proper Scrolling */}
+      <Box sx={STANDARD_GRID_AREA_STYLES}>
+        <UnifiedGrid
+          {...getStandardGridProps('magento', {
+            gridName: "ProductsGrid",
+            columns: columns,
+            data: data,
+            loading: loading,
 
-        // Custom styling for local products
-        sx={{
-          '& .local-product-row': {
-            backgroundColor: 'rgba(255, 193, 7, 0.1)', // Light amber background
-            borderLeft: '4px solid #ffc107', // Amber left border
-            '&:hover': {
-              backgroundColor: 'rgba(255, 193, 7, 0.2)',
-            },
-            '& .MuiDataGrid-cell': {
-              borderBottom: '1px solid rgba(255, 193, 7, 0.3)',
+            // View options
+            showStatsCards: false, // Will be moved to separate container
+            gridCards: statusCards,
+
+            // Toolbar configuration
+            toolbarConfig: toolbarConfig,
+            customActions: customActions,
+
+            // Context menu
+            contextMenuActions: contextMenuActions,
+
+            // Filter configuration
+            filterOptions: filterOptions,
+            currentFilter: currentFilter,
+            onFilterChange: handleFilterChange,
+
+            // Event handlers
+            onRefresh: fetchProducts,
+            onAdd: handleAdd,
+            onEdit: handleEdit,
+            onDelete: handleDelete,
+            onSync: handleSync,
+            onSelectionChange: setSelectedRows,
+            onExport: () => toast.info('Export functionality coming soon'),
+
+            // Row configuration
+            getRowId: (row) => row.sku,
+            getRowClassName: getRowClassName,
+
+            // Custom styling for local products
+            sx: {
+              '& .local-product-row': {
+                backgroundColor: 'rgba(255, 193, 7, 0.1)', // Light amber background
+                borderLeft: '4px solid #ffc107', // Amber left border
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 193, 7, 0.2)',
+                },
+                '& .MuiDataGrid-cell': {
+                  borderBottom: '1px solid rgba(255, 193, 7, 0.3)',
+                }
+              }
             }
-          }
-        }}
-      />
+          })}
+        />
+      </Box>
+
+      {/* Stats Cards at Bottom - Always Visible */}
+      <Box sx={STANDARD_STATS_CONTAINER_STYLES}>
+        {/* Add stats cards here if needed */}
+      </Box>
+
+      {/* Dialogs */}
 
       <ProductInfoDialog
         open={infoDialogOpen}

@@ -46,7 +46,7 @@ const useMDMToolbarConfig = ({
     compact: false,
     size: 'medium',
     spacing: 2,
-    maxWidth: '70%',
+    maxWidth: '90%',
     actionAreaWidth: '30%',
     
     // Export options in settings menu
@@ -73,14 +73,7 @@ const useMDMToolbarConfig = ({
 
     // Custom actions for MDM-specific operations
     customActions: [
-      {
-        id: 'refresh',
-        label: 'Refresh Data',
-        icon: RefreshIcon,
-        onClick: onRefresh,
-        disabled: loading,
-        tooltip: 'Refresh inventory data from MDM system'
-      },
+  
       {
         id: 'sync',
         label: selectedCount > 0 ? `Sync Selected (${selectedCount})` : 'Sync All',
@@ -115,16 +108,7 @@ const useMDMCustomActions = ({
   selectedCount = 0 
 }) => {
   return useMemo(() => [
-    {
-      id: 'refresh-mdm',
-      label: 'Refresh',
-      icon: RefreshIcon,
-      onClick: onRefresh,
-      disabled: loading,
-      tooltip: 'Refresh inventory data from MDM system',
-      variant: 'outlined',
-      size: 'small'
-    },
+  
     {
       id: 'sync-mdm',
       label: selectedCount > 0 ? `Sync (${selectedCount})` : 'Sync All',

@@ -3,6 +3,12 @@ import { Box } from '@mui/material';
 import UnifiedGrid from '../../common/UnifiedGrid';
 import magentoApi from '../../../services/magentoApi';
 import { toast } from 'react-toastify';
+import {
+  getStandardGridProps,
+  STANDARD_GRID_CONTAINER_STYLES,
+  STANDARD_GRID_AREA_STYLES,
+  STANDARD_STATS_CONTAINER_STYLES
+} from '../../../config/standardGridConfig';
 
 const columns = [
     {
@@ -120,77 +126,60 @@ const StocksGrid = () => {
                 mb: 1
             }}>
                 <UnifiedGrid
-                gridName="stocks"
-                columns={columns}
-                data={data}
-                loading={loading}
+                {...getStandardGridProps('magento', {
+                  gridName: "StocksGrid",
+                  columns: columns,
+                  data: data,
+                  loading: loading,
+                  showStatsCards: false, // Moved to separate container
+                  gridCards: gridCards,
+                  totalCount: totalCount,
 
-                // Feature toggles
-                enableCache={true}
-                enableI18n={true}
-    
-                enableSelection={true}
-                enableSorting={true}
-                enableFiltering={true}
-
-                // View options
-                showStatsCards={true}
-                gridCards={gridCards}
-                totalCount={totalCount}
-                defaultPageSize={25}
-
-                // Toolbar configuration
-                toolbarConfig={{
+                  // Toolbar configuration
+                  toolbarConfig: {
                     showRefresh: true,
                     showExport: true,
                     showSearch: true,
                     showFilters: true,
                     showSettings: true
-                }}
+                  },
 
-                // Context menu
-                contextMenuActions={{
+                  // Context menu
+                  contextMenuActions: {
                     view: {
-                        enabled: true,
-                        onClick: (rowData) => {
-                            console.log('Viewing stock:', rowData);
-                            toast.info(`Viewing stock: ${rowData.stock_id}`);
-                        }
+                      enabled: true,
+                      onClick: (rowData) => {
+                        console.log('Viewing stock:', rowData);
+                        toast.info(`Viewing stock: ${rowData.stock_id}`);
+                      }
                     }
-                }}
+                  },
 
-                // Floating actions (disabled by default)
-                enableFloatingActions={false}
-                floatingActions={{
-                    export: {
-                        enabled: true,
-                        priority: 1
-                    },
-                    refresh: {
-                        enabled: true,
-                        priority: 2
-                    }
-                }}
-
-                // Event handlers
-                onRefresh={handleRefresh}
-                onExport={(selectedRows) => {
+                  // Event handlers
+                  onRefresh: handleRefresh,
+                  onExport: (selectedRows) => {
                     const exportData = selectedRows.length > 0
-                        ? data.filter(stock => selectedRows.includes(stock.stock_id))
-                        : data;
+                      ? data.filter(stock => selectedRows.includes(stock.stock_id))
+                      : data;
                     console.log('Exporting stocks:', exportData);
                     toast.success(`Exported ${exportData.length} stocks`);
-                }}
+                  },
 
-                // Row configuration
-                getRowId={(row) => row?.stock_id ?? Math.random().toString(36).substr(2, 9)}
+                  // Row configuration
+                  getRowId: (row) => row?.stock_id ?? Math.random().toString(36).substr(2, 9),
 
-                // Error handling
-                onError={(error) => {
+                  // Error handling
+                  onError: (error) => {
                     console.error('Stocks Grid Error:', error);
                     toast.error('Error loading stocks');
-                }}
+                  }
+                })}
             />
+            </Box>
+
+            {/* Stats Cards at Bottom - Always Visible */}
+            <Box sx={STANDARD_STATS_CONTAINER_STYLES}>
+              {/* Add stats cards here if needed */}
             </Box>
         </Box>
     );

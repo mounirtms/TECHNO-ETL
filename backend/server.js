@@ -446,10 +446,10 @@ async function inventorySync() {
 async function main() {
     await connectToDatabases();
 
-    cron.schedule('0 2 * * *', async () => {
-        await syncPrices();
+   // cron.schedule('0 2 * * *', async () => {
+       // await syncPrices();
         await inventorySync();
-    });
+   // });
 
 
 
