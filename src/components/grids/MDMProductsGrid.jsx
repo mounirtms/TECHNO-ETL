@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { Box, LinearProgress, Typography, Button } from '@mui/material';
+import { useState, useCallback, useMemo } from 'react';
+import { Box, LinearProgress, Typography } from '@mui/material';
 import UnifiedGrid from '../common/UnifiedGrid';
 import MDMFilterPanel from './MDMFilterPanel';
 import { StatsCards } from '../common/StatsCards';
@@ -96,41 +96,47 @@ const MDMProductsGrid = () => {
       width: 150,
       type: 'string',
       sortable: true,
-      filterable: true
+      filterable: true,
+      renderCell: (params) => params.value || ''
     },
     {
       field: 'Code_JDE',
       headerName: 'JDE Code',
       width: 120,
       type: 'string',
-      sortable: true
+      sortable: true,
+      renderCell: (params) => params.value || ''
     },
     {
       field: 'Code_Fil_JDE',
       headerName: 'JDE Fil.',
       width: 120,
-      type: 'string'
+      type: 'string',
+      renderCell: (params) => params.value || ''
     },
     {
       field: 'TypeProd',
       headerName: 'Type',
       width: 120,
       sortable: true,
-      filterable: true
+      filterable: true,
+      renderCell: (params) => params.value || ''
     },
     {
       field: 'Source',
       headerName: 'Source',
       width: 150,
       sortable: true,
-      filterable: true
+      filterable: true,
+      renderCell: (params) => params.value || ''
     },
     {
       field: 'Succursale',
       headerName: 'Branch',
       width: 100,
       type: 'number',
-      sortable: true
+      sortable: true,
+      renderCell: (params) => params.value?.toString() || '0'
     },
     {
       field: 'QteStock',
@@ -139,7 +145,7 @@ const MDMProductsGrid = () => {
       type: 'number',
       sortable: true,
       filterable: true,
-      valueFormatter: (params) => params.value?.toString() || '0'
+      renderCell: (params) => params.value?.toString() || '0'
     },
     {
       field: 'Tarif',
@@ -147,34 +153,45 @@ const MDMProductsGrid = () => {
       width: 120,
       type: 'number',
       sortable: true,
-      valueFormatter: (params) => {
+      renderCell: (params) => {
         if (!params.value || isNaN(params.value)) return '0.00 DZD';
-        return new Intl.NumberFormat('fr-DZ', {
-          style: 'currency',
-          currency: 'DZD'
-        }).format(params.value);
+        try {
+          return new Intl.NumberFormat('fr-DZ', {
+            style: 'currency',
+            currency: 'DZD'
+          }).format(params.value);
+        } catch (error) {
+          return `${params.value || 0} DZD`;
+        }
       }
     },
     {
       field: 'QteReceptionner',
       headerName: 'Received',
       width: 100,
-      type: 'number'
+      type: 'number',
+      renderCell: (params) => params.value?.toString() || '0'
     },
     {
       field: 'VenteMoyen',
       headerName: 'Avg Sales',
       width: 110,
       type: 'number',
-      valueFormatter: (params) => (params.value || 0).toFixed(2)
+      renderCell: (params) => (params.value || 0).toFixed(2)
     },
     {
       field: 'DateDernierMaJ',
       headerName: 'Last Update',
       width: 160,
       type: 'date',
-      valueFormatter: (params) => 
-        params.value ? new Date(params.value).toLocaleDateString('fr-DZ') : ''
+      renderCell: (params) => {
+        if (!params.value) return '';
+        try {
+          return new Date(params.value).toLocaleDateString('fr-DZ');
+        } catch (error) {
+          return params.value?.toString() || '';
+        }
+      }
     },
     {
       field: 'changed',
@@ -185,15 +202,42 @@ const MDMProductsGrid = () => {
     }
   ].filter(col => columnVisibility[col.field] !== false), [columnVisibility]);
 
+  // Add data validation to prevent grid crashes
+  const validatedData = useMemo(() => {
+    if (!Array.isArray(data)) {
+      console.warn('MDMProductsGrid: data is not an array, using empty array');
+      return [];
+    }
+
+    return data.map((item, index) => {
+      // Ensure each item has required fields and valid data types
+      return {
+        ...item,
+        Code_MDM: item.Code_MDM || `unknown-${index}`,
+        Code_JDE: item.Code_JDE || '',
+        Code_Fil_JDE: item.Code_Fil_JDE || '',
+        TypeProd: item.TypeProd || '',
+        Source: item.Source || '',
+        Succursale: typeof item.Succursale === 'number' ? item.Succursale : 0,
+        QteStock: typeof item.QteStock === 'number' ? item.QteStock : 0,
+        Tarif: typeof item.Tarif === 'number' ? item.Tarif : 0,
+        QteReceptionner: typeof item.QteReceptionner === 'number' ? item.QteReceptionner : 0,
+        VenteMoyen: typeof item.VenteMoyen === 'number' ? item.VenteMoyen : 0,
+        DateDernierMaJ: item.DateDernierMaJ || null,
+        changed: Boolean(item.changed)
+      };
+    });
+  }, [data]);
+
   const statusCards = useMemo(() => [
     { title: 'Total Products', value: stats.total, icon: CategoryIcon, color: 'primary' },
     { title: 'In Stock', value: stats.inStock, icon: CheckCircleOutlineIcon, color: 'success' },
     { title: 'Out of Stock', value: stats.outOfStock, icon: ErrorOutlineIcon, color: 'error' },
     { title: 'Low Stock', value: stats.lowStock, icon: ReportProblemIcon, color: 'warning' },
-    { title: 'New Changes', value: stats.newChanges, icon: SyncAltIcon, color: 'secondary' },
-    { title: 'Synced Items', value: stats.synced, icon: TrendingUpIcon, color: 'info' },
-    { title: 'Avg Price', value: `${stats.averagePrice.toFixed(2)} DZD`, icon: AttachMoneyIcon, color: 'info' },
-    { title: 'Total Value', value: `${(stats.totalValue / 1000).toFixed(1)}K DZD`, icon: AccountBalanceIcon, color: 'success' }
+    { title: 'New Changes', value: stats.newChanges, icon: SyncAltIcon, color: 'info' },
+    { title: 'Synced Items', value: stats.synced, icon: TrendingUpIcon, color: 'success' },
+    { title: 'Avg Price', value: `${stats.averagePrice.toFixed(2)} DZD`, icon: AttachMoneyIcon, color: 'secondary' },
+    { title: 'Total Value', value: `${(stats.totalValue / 1000).toFixed(1)}K DZD`, icon: AccountBalanceIcon, color: 'primary' }
   ].slice(0, 8), [stats]);
 
   const toolbarConfig = useMemo(() => ({
@@ -527,7 +571,7 @@ const MDMProductsGrid = () => {
         <UnifiedGrid
           gridName="MDMProductsGrid"
           columns={columns}
-          data={data}
+          data={validatedData}
           loading={loading}
           onRefresh={handleManualRefresh}
           enableCache={true}

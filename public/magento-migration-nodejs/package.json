@@ -1,0 +1,60 @@
+{
+  "name": "magento-migration-nodejs",
+  "version": "1.0.0",
+  "description": "Node.js-based Magento migration system with web services architecture for French office supplies store",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "migrate": "node services/orchestrator.js",
+    "migrate:products": "node services/product-migration.js",
+    "migrate:attributes": "node services/attribute-migration.js",
+    "migrate:categories": "node services/category-migration.js",
+    "test": "jest",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "keywords": [
+    "magento",
+    "migration",
+    "nodejs",
+    "ecommerce",
+    "api",
+    "web-services"
+  ],
+  "author": "Magento Migration Tool",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.0",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0",
+    "winston": "^3.11.0",
+    "dotenv": "^16.3.1",
+    "joi": "^17.11.0",
+    "csv-parser": "^3.0.0",
+    "multer": "^1.4.5-lts.1",
+    "compression": "^1.7.4",
+    "rate-limiter-flexible": "^4.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "jest": "^29.7.0",
+    "eslint": "^8.54.0",
+    "prettier": "^3.1.0",
+    "supertest": "^6.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/magento-migration-nodejs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/magento-migration-nodejs/issues"
+  },
+  "homepage": "https://github.com/your-org/magento-migration-nodejs#readme"
+}

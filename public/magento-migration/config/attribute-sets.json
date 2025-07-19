@@ -1,0 +1,141 @@
+{
+  "attribute_sets": {
+    "description": "Attribute sets configuration for French office supplies store",
+    "sets": {
+      "office_supplies_general": {
+        "attribute_set_name": "Office Supplies General",
+        "based_on": "Default",
+        "sort_order": 1,
+        "groups": {
+          "general": {
+            "attribute_group_name": "General",
+            "sort_order": 1,
+            "attributes": [
+              "sku",
+              "name",
+              "price",
+              "weight",
+              "status",
+              "visibility",
+              "tax_class_id",
+              "description",
+              "short_description",
+              "meta_title",
+              "meta_keyword",
+              "meta_description"
+            ]
+          },
+          "brand_info": {
+            "attribute_group_name": "Brand Information",
+            "sort_order": 2,
+            "attributes": [
+              "mgs_brand",
+              "techno_ref"
+            ]
+          },
+          "product_details": {
+            "attribute_group_name": "Product Details",
+            "sort_order": 3,
+            "attributes": [
+              "color",
+              "dimension",
+              "capacity",
+              "diameter"
+            ]
+          },
+          "images": {
+            "attribute_group_name": "Images",
+            "sort_order": 4,
+            "attributes": [
+              "image",
+              "small_image",
+              "thumbnail",
+              "media_gallery"
+            ]
+          },
+          "design": {
+            "attribute_group_name": "Design",
+            "sort_order": 5,
+            "attributes": [
+              "page_layout",
+              "options_container",
+              "custom_layout_update"
+            ]
+          },
+          "schedule_design_update": {
+            "attribute_group_name": "Schedule Design Update",
+            "sort_order": 6,
+            "attributes": [
+              "custom_design_from",
+              "custom_design_to",
+              "custom_design",
+              "custom_layout_update_file"
+            ]
+          }
+        }
+      },
+      "calculators": {
+        "attribute_set_name": "Calculators",
+        "based_on": "Office Supplies General",
+        "sort_order": 2,
+        "groups": {
+          "calculator_specs": {
+            "attribute_group_name": "Calculator Specifications",
+            "sort_order": 7,
+            "attributes": [
+              "capacity",
+              "dimension"
+            ]
+          }
+        }
+      },
+      "writing_instruments": {
+        "attribute_set_name": "Writing Instruments",
+        "based_on": "Office Supplies General",
+        "sort_order": 3,
+        "groups": {
+          "writing_specs": {
+            "attribute_group_name": "Writing Specifications",
+            "sort_order": 7,
+            "attributes": [
+              "color",
+              "diameter",
+              "capacity"
+            ]
+          }
+        }
+      },
+      "art_supplies": {
+        "attribute_set_name": "Art Supplies",
+        "based_on": "Office Supplies General",
+        "sort_order": 4,
+        "groups": {
+          "art_specs": {
+            "attribute_group_name": "Art Specifications",
+            "sort_order": 7,
+            "attributes": [
+              "color",
+              "dimension",
+              "capacity"
+            ]
+          }
+        }
+      },
+      "electronic_equipment": {
+        "attribute_set_name": "Electronic Equipment",
+        "based_on": "Office Supplies General",
+        "sort_order": 5,
+        "groups": {
+          "electronic_specs": {
+            "attribute_group_name": "Electronic Specifications",
+            "sort_order": 7,
+            "attributes": [
+              "dimension",
+              "capacity"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

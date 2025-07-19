@@ -429,6 +429,7 @@ const UnifiedGrid = forwardRef(({
         gridName={gridName}
         config={toolbarConfig}
         customActions={customActions}
+        customLeftActions={toolbarConfig.customLeftActions || []}
         selectedRows={selectedRows}
         onRefresh={handleRefresh}
         onAdd={handleAdd}
@@ -542,18 +543,46 @@ const UnifiedGrid = forwardRef(({
                 }}
                 onRowContextMenu={(params, event) => handleContextMenu(event, params.row)}
                 
-                // Styling
+                // Professional styling with sharp corners
                 sx={{
-                  border: 'none',
+                  border: '1px solid rgba(224, 224, 224, 1)',
+                  borderRadius: 0, // Sharp corners
                   '& .MuiDataGrid-main': {
                     borderRadius: 0
                   },
-                  '& .MuiDataGrid-cell:focus': {
-                    outline: 'none'
+                  '& .MuiDataGrid-root': {
+                    borderRadius: 0
                   },
-                  '& .MuiDataGrid-row:hover': {
-                    backgroundColor: gridTheme.rowHoverColor
-                  }
+                  '& .MuiDataGrid-cell': {
+                    borderBottom: '1px solid rgba(224, 224, 224, 0.5)',
+                    '&:focus': {
+                      outline: 'none'
+                    }
+                  },
+                  '& .MuiDataGrid-columnHeaders': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                    borderBottom: '2px solid rgba(224, 224, 224, 1)',
+                    borderRadius: 0
+                  },
+                  '& .MuiDataGrid-row': {
+                    '&:hover': {
+                      backgroundColor: gridTheme.rowHoverColor
+                    },
+                    '&.Mui-selected': {
+                      backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                      '&:hover': {
+                        backgroundColor: 'rgba(25, 118, 210, 0.12)'
+                      }
+                    }
+                  },
+                  '& .MuiDataGrid-footerContainer': {
+                    borderTop: '2px solid rgba(224, 224, 224, 1)',
+                    borderRadius: 0
+                  },
+                  // Ensure proper scrolling
+                  height: '100%',
+                  overflow: 'hidden',
+                  ...sx
                 }}
                 
                 // Disable default toolbar

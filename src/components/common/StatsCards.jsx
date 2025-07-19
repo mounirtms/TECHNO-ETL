@@ -118,12 +118,13 @@ const StatCard = ({ title, value, icon: Icon, color = 'primary', active, onClick
                     width: '100%'
                 }}>
                     {Icon && (
-                        <Icon 
-                            sx={{ 
-                                fontSize: 32,  
+                        <Icon
+                            sx={{
+                                fontSize: 20, // Smaller, more professional
                                 color: theme.palette[color].main,
-                                mr: 2
-                            }} 
+                                mr: 1.5,
+                                opacity: 0.8
+                            }}
                         />
                     )}
                     <Box sx={{ 
@@ -183,8 +184,8 @@ const StatsCards = ({ cards }) => {
                         // Handle Material-UI icon components (functions)
                         if (typeof Icon === 'function') {
                             return <Icon sx={{
-                                fontSize: { xs: 12, sm: 14, md: 16 },
-                                opacity: 0.85,
+                                fontSize: { xs: 14, sm: 16, md: 18 }, // Slightly larger but still professional
+                                opacity: 0.9,
                                 color: 'inherit'
                             }} />;
                         }
@@ -193,8 +194,8 @@ const StatsCards = ({ cards }) => {
                         if (React.isValidElement(Icon)) {
                             return React.cloneElement(Icon, {
                                 sx: {
-                                    fontSize: { xs: 12, sm: 14, md: 16 },
-                                    opacity: 0.85,
+                                    fontSize: { xs: 14, sm: 16, md: 18 }, // Professional sizing
+                                    opacity: 0.9,
                                     color: 'inherit'
                                 }
                             });
@@ -203,8 +204,8 @@ const StatsCards = ({ cards }) => {
                         // Fallback for any other type
                         return (
                             <Box sx={{
-                                fontSize: { xs: 12, sm: 14, md: 16 },
-                                opacity: 0.85,
+                                fontSize: { xs: 14, sm: 16, md: 18 },
+                                opacity: 0.9,
                                 color: 'inherit'
                             }}>
                                 📊
