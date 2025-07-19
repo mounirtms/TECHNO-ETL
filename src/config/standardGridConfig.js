@@ -17,7 +17,7 @@ export const STANDARD_PAGINATION_CONFIG = {
   paginationMode: "server",
   defaultPageSize: 25,
   pageSizeOptions: [10, 25, 50, 100],
-  rowCount: undefined // Will be set by individual grids
+  rowCount: 0 // Default to 0, will be overridden by individual grids
 };
 
 /**
@@ -109,19 +109,21 @@ export const getStandardGridConfig = (overrides = {}) => {
   return {
     // Core features
     ...STANDARD_FEATURES,
-    
-    // Pagination
+
+    // Pagination with proper rowCount handling
     ...STANDARD_PAGINATION_CONFIG,
-    
+    // Ensure totalCount is properly set for server pagination
+    totalCount: overrides.totalCount || 0,
+
     // Toolbar
     toolbarConfig: {
       ...STANDARD_TOOLBAR_CONFIG,
       ...overrides.toolbarConfig
     },
-    
+
     // View options
     ...STANDARD_VIEW_OPTIONS,
-    
+
     // Custom overrides
     ...overrides
   };

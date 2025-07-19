@@ -419,6 +419,7 @@ const MDMProductsGrid = () => {
   const customActions = useMDMCustomActions({
     onRefresh: handleManualRefresh,
     onSync: onSyncHandler,
+       
     loading,
     selectedCount: selectedBaseGridRows.length
   });

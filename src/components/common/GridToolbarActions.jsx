@@ -35,6 +35,7 @@ const GridToolbarActions = ({
   buttonSize = 'medium',
   spacing = 1,
   translate,
+  mdmStocks,
   
   // Custom action handlers from CustomGridToolbar
   onSyncStocksHandler,
@@ -106,20 +107,7 @@ const GridToolbarActions = ({
         </Tooltip>
       )}
 
-      {/* Export Button */}
-      {config.showExport && (
-        <Tooltip title={translate('export', 'Export Data')}>
-          <Button
-            startIcon={<ExportIcon />}
-            onClick={onExport}
-            variant="outlined"
-            size={buttonSize}
-            disabled={loading}
-          >
-            {config.compact ? '' : translate('export', 'Export')}
-          </Button>
-        </Tooltip>
-      )}
+       
 
       {/* Import Button */}
       {config.showImport && (
@@ -152,7 +140,7 @@ const GridToolbarActions = ({
       )}
 
       {/* Sync Stocks Button (from CustomGridToolbar) */}
-      {typeof onSyncStocksHandler === 'function' && (
+      {mdmStocks && (
         <Tooltip title={translate('syncStocks', 'Mark changed stocks for sync')}>
           <Button
             variant="outlined"
@@ -167,7 +155,7 @@ const GridToolbarActions = ({
       )}
 
       {/* Sync All Handler (from CustomGridToolbar) */}
-      {typeof onSyncAllHandler === 'function' && (
+      {(
         <Tooltip title={translate('syncAll', 'Sync all data')}>
           <Button
             variant="contained"

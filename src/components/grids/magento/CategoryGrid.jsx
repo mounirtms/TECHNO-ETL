@@ -239,7 +239,7 @@ const CategoryGrid = ({ productId }) => {
             // Feature toggles
             enableCache={true}
             enableI18n={true}
-            enableRTL={true}
+        
             enableSelection={true}
             enableSorting={true}
             enableFiltering={true}

@@ -321,8 +321,8 @@ const UnifiedGrid = forwardRef(({
   const gridHeight = useMemo(() => {
     const baseHeight = window.innerHeight - HEADER_HEIGHT - FOOTER_HEIGHT;
     const statsHeight = showStatsCards ? STATS_CARD_HEIGHT : 0;
-    const toolbarHeight = 56; // Toolbar height
-    return baseHeight - statsHeight - toolbarHeight - 32; // 32px for padding
+    const toolbarHeight = 100; // Toolbar height
+    return baseHeight - statsHeight - toolbarHeight; // 32px for padding
   }, [showStatsCards]);
 
   // Cache management effect
@@ -392,40 +392,31 @@ const UnifiedGrid = forwardRef(({
         display: 'flex',
         flexDirection: 'column',
         direction: enableRTL ? 'rtl' : 'ltr',
-       
-   
+        overflow: 'hidden', // Prevent main container from scrolling
+
         // Modern design with glass morphism
         background: gridTheme.palette.mode === 'light'
           ? 'rgba(255, 255, 255, 0.9)'
           : 'rgba(18, 18, 18, 0.9)',
         backdropFilter: 'blur(20px)',
-   
+
         boxShadow: gridTheme.elevation,
         border: `1px solid ${gridTheme.borderColor}`,
         // Enhanced responsive design
         '@media (max-width: 768px)': {
           height: 'calc(100% - 8px)',
           margin: '1px 0',
-      
           boxShadow: '0 4px 1px rgba(0,0,0,0.1)',
         },
         '@media (max-width: 480px)': {
           height: 'calc(100% - 4px)',
           margin: '2px 0',
-         
           boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         },
         ...sx
       }}
     >
-      {/* Error Message - Show above grid but keep grid visible */}
-      {hasError && (
-        <Alert severity="error" sx={{ m: 1, borderRadius: 1 }}>
-          {safeTranslate('grid.common.error', 'Error loading data')} - Grid columns are shown below
-        </Alert>
-      )}
 
- 
 
       {/* Unified Toolbar */}
       <UnifiedGridToolbar
@@ -454,7 +445,7 @@ const UnifiedGrid = forwardRef(({
         viewMode={viewMode}
         onViewModeChange={handleViewModeChange}
         showCardView={showCardView}
-
+ 
         // Custom filter props
         succursaleOptions={succursaleOptions}
         currentSuccursale={currentSuccursale}
@@ -479,7 +470,13 @@ const UnifiedGrid = forwardRef(({
         )}
 
         <Fade in={!loading} timeout={300}>
-          <Box sx={{ height: '100%' }}>
+          <Box sx={{
+            flex: 1,
+            minHeight: 0,
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
             {viewMode === 'card' && showCardView ? (
               <GridCardView
                 data={data}
@@ -514,7 +511,9 @@ const UnifiedGrid = forwardRef(({
                 pageSizeOptions={[10, 25, 50, 100]}
                 paginationMode={paginationMode || "client"}
                 // rowCount is required for server-side pagination
-                {...(paginationMode === "server" && totalCount !== undefined ? { rowCount: totalCount } : {})}
+                {...(paginationMode === "server" ? {
+                  rowCount: totalCount || data.length || 0
+                } : {})}
                 
                 // Sorting
                 sortModel={sortModel}
@@ -607,9 +606,15 @@ const UnifiedGrid = forwardRef(({
                   '& .MuiDataGrid-container--bottom': {
                     borderRadius: 0 // ✅ NO ROUNDED EDGES
                   },
-                  // Ensure proper scrolling
-                  height: '100%',
-                  overflow: 'hidden',
+                  // Ensure proper scrolling - only grid content scrolls
+                  height: gridHeight,
+                  overflow: 'auto', // Allow scrolling within grid area only
+                  '& .MuiDataGrid-virtualScroller': {
+                    overflow: 'auto' // Enable both horizontal and vertical scrolling
+                  },
+                  '& .MuiDataGrid-main': {
+                    overflow: 'hidden' // Prevent main container from scrolling
+                  },
                   ...sx
                 }}
                 

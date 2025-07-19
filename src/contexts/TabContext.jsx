@@ -7,7 +7,7 @@ import Dashboard from '../pages/Dashboard';
 
 import CmsPageGrid from '../components/grids/magento/CmsPagesGrid'; 
 import ProductsGrid from '../components/grids/magento/ProductsGrid';
-import MDMProductsGrid from '../components/grids/MDMProductsGrid';
+import MDMProductsGrid from '../components/grids/MDMProductsGrid/MDMProductsGrid';
 import CustomersGrid from '../components/grids/magento/CustomersGrid';
 import OrdersGrid from '../components/grids/magento/OrdersGrid';
 import InvoicesGrid from '../components/grids/magento/InvoicesGrid';
