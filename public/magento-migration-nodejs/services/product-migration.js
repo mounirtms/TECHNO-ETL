@@ -30,16 +30,48 @@ const logger = createOperationLogger('product-migration');
 
 // Validation schemas
 const simpleProductSchema = Joi.object({
-  sku: Joi.string().required().pattern(/^[a-zA-Z0-9_-]+$/),
-  name: Joi.string().required().max(255),
-  price: Joi.number().min(0).required(),
-  weight: Joi.number().min(0).default(1.0),
-  description: Joi.string().allow('').max(2000),
-  short_description: Joi.string().allow('').max(500),
-  qty: Joi.number().integer().min(0).default(100),
-  status: Joi.number().valid(1, 2).default(1), // 1 = enabled, 2 = disabled
-  visibility: Joi.number().valid(1, 2, 3, 4).default(4), // 4 = catalog, search
-  tax_class_id: Joi.number().default(2)
+  sku: Joi.string().required().pattern(/^[a-zA-Z0-9_-]+$/).messages({
+    'string.pattern.base': 'SKU must contain only alphanumeric characters, hyphens, and underscores',
+    'any.required': 'SKU is required'
+  }),
+  name: Joi.string().required().max(255).messages({
+    'string.max': 'Product name must not exceed 255 characters',
+    'any.required': 'Product name is required'
+  }),
+  price: Joi.number().min(0).required().messages({
+    'number.min': 'Price must be 0 or greater',
+    'any.required': 'Price is required and cannot be empty'
+  }),
+  weight: Joi.number().min(0).default(1.0).messages({
+    'number.min': 'Weight must be 0 or greater'
+  }),
+  description: Joi.string().allow('').max(2000).messages({
+    'string.max': 'Description must not exceed 2000 characters'
+  }),
+  short_description: Joi.string().allow('').max(500).messages({
+    'string.max': 'Short description must not exceed 500 characters'
+  }),
+  qty: Joi.number().integer().min(0).default(100).messages({
+    'number.min': 'Quantity must be 0 or greater',
+    'number.integer': 'Quantity must be a whole number'
+  }),
+  status: Joi.number().valid(1, 2).default(1).messages({
+    'any.only': 'Status must be 1 (enabled) or 2 (disabled)'
+  }),
+  visibility: Joi.number().valid(1, 2, 3, 4).default(4).messages({
+    'any.only': 'Visibility must be 1, 2, 3, or 4'
+  }),
+  tax_class_id: Joi.number().default(2),
+  // Additional attributes for French office supplies
+  mgs_brand: Joi.string().valid('casio', 'pilot', 'ark', 'calligraphe', 'stabilo', 'maped', 'bic', 'faber_castell', 'staedtler', 'pentel').messages({
+    'any.only': 'Brand must be one of: casio, pilot, ark, calligraphe, stabilo, maped, bic, faber_castell, staedtler, pentel'
+  }),
+  color: Joi.string().valid('noir', 'bleu', 'rouge', 'vert', 'jaune', 'orange', 'violet', 'rose', 'marron', 'gris', 'blanc', 'transparent', 'multicolore', 'assortis').messages({
+    'any.only': 'Color must be a valid French color name'
+  }),
+  techno_ref: Joi.string().allow(''),
+  dimension: Joi.string().allow(''),
+  capacity: Joi.string().allow('')
 });
 
 const batchProductSchema = Joi.object({
@@ -167,6 +199,239 @@ router.post('/simple', async (req, res) => {
     });
   }
 });
+
+/**
+ * POST /api/products/validate-csv
+ * Validate CSV data before migration
+ *
+ * This endpoint validates CSV data and provides detailed error reports
+ * for fixing data issues before attempting migration.
+ */
+router.post('/validate-csv', async (req, res) => {
+  try {
+    logger.info('Starting CSV validation');
+
+    const { csvData, options = {} } = req.body;
+
+    if (!csvData || !Array.isArray(csvData)) {
+      return res.status(400).json({
+        error: 'Validation Error',
+        message: 'csvData must be an array of product objects'
+      });
+    }
+
+    const validationResults = [];
+    const errors = [];
+
+    for (let i = 0; i < csvData.length; i++) {
+      const rowIndex = i + 1; // 1-based row numbering
+      const product = csvData[i];
+
+      try {
+        // Parse additional attributes if present
+        const processedProduct = processAdditionalAttributes(product);
+
+        // Validate against schema
+        const { error, value } = simpleProductSchema.validate(processedProduct, {
+          abortEarly: false,
+          allowUnknown: true
+        });
+
+        if (error) {
+          const rowErrors = error.details.map(detail => ({
+            field: detail.path.join('.'),
+            message: detail.message,
+            value: detail.context?.value
+          }));
+
+          errors.push({
+            row: rowIndex,
+            sku: product.sku || 'N/A',
+            errors: rowErrors
+          });
+
+          validationResults.push({
+            row: rowIndex,
+            sku: product.sku || 'N/A',
+            valid: false,
+            errors: rowErrors
+          });
+        } else {
+          validationResults.push({
+            row: rowIndex,
+            sku: value.sku,
+            valid: true
+          });
+        }
+
+      } catch (parseError) {
+        errors.push({
+          row: rowIndex,
+          sku: product.sku || 'N/A',
+          errors: [{
+            field: 'parsing',
+            message: parseError.message,
+            value: null
+          }]
+        });
+
+        validationResults.push({
+          row: rowIndex,
+          sku: product.sku || 'N/A',
+          valid: false,
+          errors: [{
+            field: 'parsing',
+            message: parseError.message
+          }]
+        });
+      }
+    }
+
+    const summary = {
+      totalRows: csvData.length,
+      validRows: validationResults.filter(r => r.valid).length,
+      invalidRows: validationResults.filter(r => !r.valid).length,
+      errorCount: errors.length
+    };
+
+    // Group errors by type for better reporting
+    const errorsByType = {};
+    errors.forEach(error => {
+      error.errors.forEach(err => {
+        if (!errorsByType[err.field]) {
+          errorsByType[err.field] = [];
+        }
+        errorsByType[err.field].push({
+          row: error.row,
+          sku: error.sku,
+          message: err.message,
+          value: err.value
+        });
+      });
+    });
+
+    res.json({
+      success: true,
+      message: 'CSV validation completed',
+      summary,
+      validationResults: options.includeDetails ? validationResults : undefined,
+      errors: errors.length > 0 ? errors : undefined,
+      errorsByType: Object.keys(errorsByType).length > 0 ? errorsByType : undefined,
+      recommendations: generateValidationRecommendations(errorsByType),
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logError('csv-validation', error);
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+/**
+ * Process additional attributes from CSV format
+ * @param {Object} product - Raw product data from CSV
+ * @returns {Object} Processed product data
+ */
+function processAdditionalAttributes(product) {
+  const processed = { ...product };
+
+  // Parse additional_attributes field if present
+  if (product.additional_attributes) {
+    const attributes = parseAdditionalAttributes(product.additional_attributes);
+    Object.assign(processed, attributes);
+  }
+
+  // Ensure price is a number
+  if (processed.price !== undefined && processed.price !== '') {
+    processed.price = parseFloat(processed.price);
+  }
+
+  // Ensure weight is a number
+  if (processed.weight !== undefined && processed.weight !== '') {
+    processed.weight = parseFloat(processed.weight);
+  }
+
+  // Ensure qty is a number
+  if (processed.qty !== undefined && processed.qty !== '') {
+    processed.qty = parseInt(processed.qty);
+  }
+
+  return processed;
+}
+
+/**
+ * Parse additional attributes string
+ * @param {string} attributesString - Comma-separated key=value pairs
+ * @returns {Object} Parsed attributes
+ */
+function parseAdditionalAttributes(attributesString) {
+  const attributes = {};
+
+  if (!attributesString) return attributes;
+
+  const pairs = attributesString.split(',');
+  pairs.forEach(pair => {
+    const [key, value] = pair.split('=');
+    if (key && value) {
+      attributes[key.trim()] = value.trim();
+    }
+  });
+
+  return attributes;
+}
+
+/**
+ * Generate validation recommendations
+ * @param {Object} errorsByType - Errors grouped by type
+ * @returns {Array} Recommendations
+ */
+function generateValidationRecommendations(errorsByType) {
+  const recommendations = [];
+
+  if (errorsByType.price) {
+    recommendations.push({
+      issue: 'Missing or invalid prices',
+      solution: 'Ensure all products have valid numeric prices. Empty price fields must be filled.',
+      affectedRows: errorsByType.price.length,
+      example: 'price: 15.99'
+    });
+  }
+
+  if (errorsByType.mgs_brand) {
+    recommendations.push({
+      issue: 'Invalid brand values',
+      solution: 'Brand values must be lowercase and match predefined options.',
+      affectedRows: errorsByType.mgs_brand.length,
+      validValues: ['casio', 'pilot', 'ark', 'calligraphe', 'stabilo', 'maped', 'bic', 'faber_castell', 'staedtler', 'pentel'],
+      example: 'mgs_brand=casio (not CASIO)'
+    });
+  }
+
+  if (errorsByType.color) {
+    recommendations.push({
+      issue: 'Invalid color values',
+      solution: 'Color values must be in French and lowercase.',
+      affectedRows: errorsByType.color.length,
+      validValues: ['noir', 'bleu', 'rouge', 'vert', 'jaune', 'orange', 'violet', 'rose', 'marron', 'gris', 'blanc', 'transparent', 'multicolore', 'assortis'],
+      example: 'color=bleu (not BLEU or blue)'
+    });
+  }
+
+  if (errorsByType.sku) {
+    recommendations.push({
+      issue: 'Invalid SKU format',
+      solution: 'SKUs must contain only alphanumeric characters, hyphens, and underscores.',
+      affectedRows: errorsByType.sku.length,
+      example: 'sku: CASIO-FX-82MS-2'
+    });
+  }
+
+  return recommendations;
+}
 
 /**
  * Process a batch of products

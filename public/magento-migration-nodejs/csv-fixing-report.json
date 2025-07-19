@@ -1,0 +1,21 @@
+{
+  "timestamp": "2025-07-19T09:41:22.693Z",
+  "summary": {
+    "totalProcessed": 191,
+    "brandsFixed": 191,
+    "colorsFixed": 140,
+    "pricesAdded": 191,
+    "dimensionsFixed": 2,
+    "weightsAdded": 31,
+    "descriptionsAdded": 190,
+    "validationErrors": 0
+  },
+  "errors": [],
+  "recommendations": [
+    {
+      "issue": "Default prices were added",
+      "count": 191,
+      "solution": "Review and adjust prices based on actual product values"
+    }
+  ]
+}

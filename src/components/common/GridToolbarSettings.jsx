@@ -19,7 +19,11 @@ import {
   TableRows as DensityIcon,
   Settings as SettingsIcon,
   Visibility as VisibilityIcon,
-  VisibilityOff as VisibilityOffIcon
+  VisibilityOff as VisibilityOffIcon,
+  FileDownload as ExportIcon,
+  TableChart as ExcelIcon,
+  Description as CsvIcon,
+  Code as JsonIcon
 } from '@mui/icons-material';
 
 /**
@@ -35,7 +39,9 @@ const GridToolbarSettings = ({
   density = 'standard',
   onDensityChange,
   gridName,
-  translate
+  translate,
+  exportOptions = {},
+  onExport
 }) => {
   const handleDensityChange = (newDensity) => {
     onDensityChange?.(newDensity);
@@ -122,6 +128,45 @@ const GridToolbarSettings = ({
 
       <Divider />
 
+      {/* Export Options */}
+      {exportOptions.excel && (
+        <MenuItem onClick={() => {
+          onExport?.('excel');
+          onClose();
+        }}>
+          <ListItemIcon>
+            <ExcelIcon />
+          </ListItemIcon>
+          <ListItemText primary={translate('exportExcel', 'Export to Excel')} />
+        </MenuItem>
+      )}
+
+      {exportOptions.csv && (
+        <MenuItem onClick={() => {
+          onExport?.('csv');
+          onClose();
+        }}>
+          <ListItemIcon>
+            <CsvIcon />
+          </ListItemIcon>
+          <ListItemText primary={translate('exportCsv', 'Export to CSV')} />
+        </MenuItem>
+      )}
+
+      {exportOptions.json && (
+        <MenuItem onClick={() => {
+          onExport?.('json');
+          onClose();
+        }}>
+          <ListItemIcon>
+            <JsonIcon />
+          </ListItemIcon>
+          <ListItemText primary={translate('exportJson', 'Export to JSON')} />
+        </MenuItem>
+      )}
+
+      {(exportOptions.excel || exportOptions.csv || exportOptions.json) && <Divider />}
+
       {/* Additional Settings */}
       <MenuItem onClick={onClose}>
         <ListItemIcon>
@@ -129,6 +174,8 @@ const GridToolbarSettings = ({
         </ListItemIcon>
         <ListItemText primary={translate('moreSettings', 'More Settings')} />
       </MenuItem>
+
+      <Divider />
 
       {/* Reset to Defaults */}
       <MenuItem onClick={() => {

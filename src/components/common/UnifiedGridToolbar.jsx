@@ -394,6 +394,8 @@ const UnifiedGridToolbar = ({
         onDensityChange={onDensityChange}
         gridName={gridName}
         translate={translate}
+        exportOptions={toolbarConfig.exportOptions || {}}
+        onExport={onExport}
       />
 
       {/* More Menu */}

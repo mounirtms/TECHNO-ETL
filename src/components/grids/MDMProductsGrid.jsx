@@ -2,22 +2,14 @@ import { useState, useCallback, useMemo } from 'react';
 import { Box, LinearProgress, Typography } from '@mui/material';
 import UnifiedGrid from '../common/UnifiedGrid';
 import MDMFilterPanel from './MDMFilterPanel';
-import { StatsCards } from '../common/StatsCards';
+import MDMStatsCards from './MDMProductsGrid/MDMStatsCards';
+import MDMFilters, { defaultSources, defaultBranches } from './MDMProductsGrid/MDMFilters';
+import { useMDMToolbarConfig, useMDMCustomActions, useMDMContextMenuActions } from './MDMProductsGrid/MDMToolbar';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import magentoApi from '../../services/magentoApi';
 import sourceMapping from '../../utils/sources';
-import {
-  Category as CategoryIcon,
-  CheckCircleOutline as CheckCircleOutlineIcon,
-  ErrorOutline as ErrorOutlineIcon,
-  ReportProblem as ReportProblemIcon,
-  SyncAlt as SyncAltIcon,
-  TrendingUp as TrendingUpIcon,
-  AttachMoney as AttachMoneyIcon,
-  AccountBalance as AccountBalanceIcon,
-  Refresh as RefreshIcon
-} from '@mui/icons-material';
+import { Refresh as RefreshIcon } from '@mui/icons-material';
 
 /**
  * Optimized MDM Products Grid Component
@@ -229,34 +221,36 @@ const MDMProductsGrid = () => {
     });
   }, [data]);
 
-  const statusCards = useMemo(() => [
-    { title: 'Total Products', value: stats.total, icon: CategoryIcon, color: 'primary' },
-    { title: 'In Stock', value: stats.inStock, icon: CheckCircleOutlineIcon, color: 'success' },
-    { title: 'Out of Stock', value: stats.outOfStock, icon: ErrorOutlineIcon, color: 'error' },
-    { title: 'Low Stock', value: stats.lowStock, icon: ReportProblemIcon, color: 'warning' },
-    { title: 'New Changes', value: stats.newChanges, icon: SyncAltIcon, color: 'info' },
-    { title: 'Synced Items', value: stats.synced, icon: TrendingUpIcon, color: 'success' },
-    { title: 'Avg Price', value: `${stats.averagePrice.toFixed(2)} DZD`, icon: AttachMoneyIcon, color: 'secondary' },
-    { title: 'Total Value', value: `${(stats.totalValue / 1000).toFixed(1)}K DZD`, icon: AccountBalanceIcon, color: 'primary' }
-  ].slice(0, 8), [stats]);
+  // Use new modular toolbar configuration
+  const toolbarConfig = useMDMToolbarConfig({
+    onRefresh: handleManualRefresh,
+    onSync: onSyncHandler,
+    onExport: (format) => {
+      const exportData = selectedBaseGridRows.length > 0
+        ? validatedData.filter(product => selectedBaseGridRows.includes(`${product.Source}-${product.Code_MDM}`))
+        : validatedData;
+      toast.success(`Exported ${exportData.length} products to ${format.toUpperCase()}`);
+    },
+    loading,
+    selectedCount: selectedBaseGridRows.length
+  });
 
-  const toolbarConfig = useMemo(() => ({
-    showRefresh: true,
-    showSync: false,
-    showExport: true,
-    showSearch: false,
-    showFilters: false,
-    showSettings: true,
-    showAdd: false,
-    showEdit: false,
-    showDelete: false,
-    showViewToggle: true,
-    compact: false,
-    size: 'medium',
-    spacing: 2,
-    maxWidth: '70%',
-    actionAreaWidth: '30%'
-  }), []);
+  // Use new modular custom actions
+  const customActions = useMDMCustomActions({
+    onRefresh: handleManualRefresh,
+    onSync: onSyncHandler,
+    loading,
+    selectedCount: selectedBaseGridRows.length
+  });
+
+  // Use new modular context menu actions
+  const contextMenuActions = useMDMContextMenuActions({
+    onSync: onSyncHandler,
+    onView: (rowData) => console.log('View details:', rowData),
+    onEdit: (rowData) => console.log('Edit product:', rowData)
+  });
+
+  // Toolbar configuration is now handled by useMDMToolbarConfig above
 
   // ===== DATA FETCHING =====
   const fetchProducts = useCallback(async ({ page = 0, pageSize = 25, sortModel = [], filterModel = { items: [] } }) => {
@@ -480,54 +474,9 @@ const MDMProductsGrid = () => {
     }
   }, [sourceFilter]);
 
-  const customActions = useMemo(() => [
-    {
-      label: 'Refresh Data',
-      icon: <RefreshIcon />,
-      onClick: handleManualRefresh,
-      tooltip: 'Manually refresh grid data with current filters',
-      variant: 'contained',
-      color: 'info',
-      size: 'small',
-      priority: 0
-    },
-    {
-      label: 'Sync All Products',
-      icon: <SyncAltIcon />,
-      onClick: onSyncAllHandler,
-      tooltip: 'Synchronize all products from selected source',
-      variant: 'contained',
-      color: 'primary',
-      size: 'small',
-      disabled: sourceFilter === 'all',
-      priority: 1
-    },
-    {
-      label: 'Sync Stocks',
-      icon: <AttachMoneyIcon />,
-      onClick: onSyncStocksHandler,
-      tooltip: 'Synchronize stock levels and pricing',
-      variant: 'outlined',
-      color: 'secondary',
-      size: 'small',
-      priority: 2
-    }
-  ], [handleManualRefresh, onSyncAllHandler, onSyncStocksHandler, sourceFilter]);
+  // Custom actions are now handled by useMDMCustomActions above
 
-  const contextMenuActions = useMemo(() => ({
-    sync: {
-      icon: SyncAltIcon,
-      label: 'Sync Product',
-      enabled: true,
-      onClick: (rowData) => onSyncHandler(rowData)
-    },
-    view: {
-      enabled: true,
-      onClick: (rowData) => {
-        toast.info(`Viewing product: ${rowData.Code_MDM}`);
-      }
-    }
-  }), [onSyncHandler]);
+  // Context menu actions are now handled by useMDMContextMenuActions above
 
   const getRowClassName = useCallback((params) => 
     params.row.changed ? 'row-changed' : '', []);
@@ -560,59 +509,82 @@ const MDMProductsGrid = () => {
         />
       </Box>
 
-      {/* Main Grid Container */}
+      {/* Main Grid Container with Optimized Layout */}
       <Box sx={{
         flex: 1,
         display: 'flex',
         flexDirection: 'column',
-        minHeight: 0,
+        height: 'calc(100vh - 120px)', // Dynamic height calculation
         overflow: 'hidden'
       }}>
-        <UnifiedGrid
-          gridName="MDMProductsGrid"
-          columns={columns}
-          data={validatedData}
-          loading={loading}
-          onRefresh={handleManualRefresh}
-          enableCache={true}
-          enableSelection={true}
-          enableSorting={true}
-          enableFiltering={true}
-          enableColumnReordering={true}
-          showStatsCards={false}
-          showCardView={true}
-          defaultViewMode={viewMode}
-          onViewModeChange={setViewMode}
-          totalCount={stats.total}
-          defaultPageSize={25}
-          columnVisibility={columnVisibility}
-          onColumnVisibilityChange={setColumnVisibility}
-          sx={{
-            height: '100%',
-            '& .MuiDataGrid-root': {
-              height: '100%'
-            }
-          }}
-          toolbarConfig={toolbarConfig}
-          customActions={customActions}
-          contextMenuActions={contextMenuActions}
-          enableFloatingActions={false}
-          onSync={onSyncHandler}
-          onSelectionChange={setSelectedBaseGridRows}
-          onExport={(selectedRows) => {
-            const exportData = selectedRows.length > 0
-              ? data.filter(product => selectedRows.includes(`${product.Source}-${product.Code_MDM}`))
-              : data;
-            toast.success(`Exported ${exportData.length} products`);
-          }}
-          getRowId={(row) => `${row.Source}-${row.Code_MDM}`}
-          getRowClassName={getRowClassName}
-          onError={(error) => toast.error(error.message)}
-        />
+        {/* Grid Area with Proper Scrolling */}
+        <Box sx={{
+          flex: 1,
+          minHeight: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          mb: 1
+        }}>
+          <UnifiedGrid
+            gridName="MDMProductsGrid"
+            columns={columns}
+            data={validatedData}
+            loading={loading}
+            onRefresh={handleManualRefresh}
+            enableCache={true}
+            enableSelection={true}
+            enableSorting={true}
+            enableFiltering={true}
+            enableColumnReordering={true}
+            showStatsCards={false} // Moved to separate container
+            showCardView={true}
+            defaultViewMode={viewMode}
+            onViewModeChange={setViewMode}
+            totalCount={stats.total}
+            defaultPageSize={25}
+            columnVisibility={columnVisibility}
+            onColumnVisibilityChange={setColumnVisibility}
+            sx={{
+              height: '100%',
+              '& .MuiDataGrid-root': {
+                height: '100%',
+                border: '1px solid rgba(224, 224, 224, 1)',
+                borderRadius: 0
+              },
+              '& .MuiDataGrid-main': {
+                overflow: 'auto' // Ensure proper scrolling
+              },
+              '& .MuiDataGrid-virtualScroller': {
+                overflow: 'auto'
+              }
+            }}
+            toolbarConfig={toolbarConfig}
+            customActions={customActions}
+            contextMenuActions={contextMenuActions}
+            enableFloatingActions={false}
+            onSync={onSyncHandler}
+            onSelectionChange={setSelectedBaseGridRows}
+            onExport={(selectedRows) => {
+              const exportData = selectedRows.length > 0
+                ? validatedData.filter(product => selectedRows.includes(`${product.Source}-${product.Code_MDM}`))
+                : validatedData;
+              toast.success(`Exported ${exportData.length} products`);
+            }}
+            getRowId={(row) => `${row.Source}-${row.Code_MDM}`}
+            getRowClassName={getRowClassName}
+            onError={(error) => toast.error(error.message)}
+          />
+        </Box>
 
-        {/* Stats Cards at Bottom */}
-        <Box sx={{ flexShrink: 0, mt: 1 }}>
-          <StatsCards cards={statusCards} />
+        {/* Stats Cards at Bottom - Always Visible */}
+        <Box sx={{
+          flexShrink: 0,
+          borderTop: '1px solid rgba(224, 224, 224, 1)',
+          pt: 1,
+          backgroundColor: 'background.paper'
+        }}>
+          <MDMStatsCards stats={stats} />
         </Box>
       </Box>
     </Box>
