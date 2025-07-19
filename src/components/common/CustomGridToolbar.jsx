@@ -9,18 +9,11 @@ import { useTheme } from '@mui/material/styles';
 import { staticPrimaryKeys } from '../Layout/Constants';
 
 /**
- * CustomGridToolbar
- * A reusable toolbar for data grids, supporting refresh, filtering, sync, and settings.
- * Props:
- * - onRefresh: function to refresh grid data
- * - canAdd, canEdit, canDelete, canSync, canSyncAll: booleans to enable/disable actions
- * - onAdd, onEdit, onDelete, onSyncHandler, onSyncAllHandler: action handlers
- * - selectedCount: number of selected rows
- * - filterModel, customFilters, onCustomFilterChange, currentCustomFilter: filter controls
- * - succursaleOptions, sourceOptions: dropdown filter options
- * - showChangedOnly, setShowChangedOnly: inventory changes only filter
- * - columns, gridName: grid info for settings
- * - onError: error handler
+ * CustomGridToolbar - DEPRECATED
+ * This component is being phased out in favor of UnifiedGridToolbar
+ * Use UnifiedGridToolbar for new implementations
+ *
+ * @deprecated Use UnifiedGridToolbar instead
  */
 const CustomGridToolbar = ({
   onRefresh,

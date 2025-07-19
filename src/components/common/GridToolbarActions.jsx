@@ -139,11 +139,27 @@ const GridToolbarActions = ({
         </Tooltip>
       )}
 
-      {/* Sync Stocks Button (from CustomGridToolbar) */}
-      {mdmStocks && (
+      {/* Export Button */}
+      {config.showExport && (
+        <Tooltip title={translate('export', 'Export Data')}>
+          <Button
+            startIcon={<ExportIcon />}
+            onClick={onExport}
+            variant="outlined"
+            size={buttonSize}
+            disabled={loading}
+          >
+            {config.compact ? '' : translate('export', 'Export')}
+          </Button>
+        </Tooltip>
+      )}
+
+      {/* Sync Stocks Button - Only for MDM grids */}
+      {mdmStocks && typeof onSyncStocksHandler === 'function' && (
         <Tooltip title={translate('syncStocks', 'Mark changed stocks for sync')}>
           <Button
             variant="outlined"
+            color="warning"
             size={buttonSize}
             onClick={onSyncStocksHandler}
             startIcon={<AutorenewIcon />}
@@ -154,11 +170,11 @@ const GridToolbarActions = ({
         </Tooltip>
       )}
 
-      {/* Sync All Handler (from CustomGridToolbar) */}
-      {(
+      {/* Sync All Handler - Only for MDM grids */}
+      {mdmStocks && typeof onSyncAllHandler === 'function' && (
         <Tooltip title={translate('syncAll', 'Sync all data')}>
           <Button
-            variant="contained"
+            variant="outlined"
             color="secondary"
             size={buttonSize}
             onClick={onSyncAllHandler}

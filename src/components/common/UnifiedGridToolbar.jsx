@@ -48,6 +48,9 @@ import GridToolbarActions from './GridToolbarActions';
 import GridToolbarFilters from './GridToolbarFilters';
 import GridToolbarSettings from './GridToolbarSettings';
 
+// Standard configurations
+import { getStandardToolbarConfig } from '../../config/standardToolbarConfig';
+
 /**
  * UnifiedGridToolbar - The ultimate grid toolbar
  * Features:
@@ -61,6 +64,7 @@ import GridToolbarSettings from './GridToolbarSettings';
  */
 const UnifiedGridToolbar = ({
   gridName,
+  gridType = 'magento', // Default grid type
   config = {},
   customActions = [],
   customLeftActions = [],
@@ -87,7 +91,7 @@ const UnifiedGridToolbar = ({
   viewMode = 'grid',
   onViewModeChange,
   showCardView = true,
-  
+
   // Custom filter props (from CustomGridToolbar)
   filterModel = { items: [] },
   customFilters = [],
@@ -104,6 +108,7 @@ const UnifiedGridToolbar = ({
   onSyncStocksHandler,
   onSyncAllHandler,
   canInfo,
+  mdmStocks,
   onInfo
 }) => {
   const theme = useTheme();
@@ -122,24 +127,12 @@ const UnifiedGridToolbar = ({
   const [moreMenuAnchor, setMoreMenuAnchor] = useState(null);
   const [settingsMenuAnchor, setSettingsMenuAnchor] = useState(null);
 
-  // Configuration with defaults
+  // Configuration with standard defaults based on grid type
+  const standardConfig = getStandardToolbarConfig(gridType, config);
   const toolbarConfig = {
-    showRefresh: true,
-    showAdd: false,
-    showEdit: false,
-    showDelete: false,
-    showExport: true,
-    showImport: false,
-    showSync: false,
-    showSearch: true,
-    showFilters: true,
-    showSettings: true,
-    showSelection: true,
-    showViewToggle: true,
-    showCustomFilters: false,
-    compact: false,
-    size: 'medium',
-    ...config
+    ...standardConfig,
+    // Ensure mdmStocks is properly set
+    mdmStocks: mdmStocks || standardConfig.mdmStocks || false
   };
 
   const selectedCount = selectedRows.length;
@@ -259,7 +252,7 @@ const UnifiedGridToolbar = ({
           buttonSize={buttonSize}
           spacing={spacing}
           translate={translate}
-          
+          mdmStocks={mdmStocks}
           // Custom action handlers
           onSyncStocksHandler={onSyncStocksHandler}
           onSyncAllHandler={onSyncAllHandler}

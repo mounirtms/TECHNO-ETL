@@ -572,6 +572,7 @@ const MDMProductsGrid = () => {
             enableFloatingActions={false}
             onSync={onSyncHandler}
             onSelectionChange={setSelectedBaseGridRows}
+            mdmStocks={true}
             onExport={(selectedRows) => {
               const exportData = selectedRows.length > 0
                 ? validatedData.filter(product => selectedRows.includes(`${product.Source}-${product.Code_MDM}`))

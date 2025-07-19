@@ -384,6 +384,14 @@ const UnifiedGrid = forwardRef(({
   // Show error message but keep grid visible
   const hasError = onError && data.length === 0 && !loading;
 
+  // Helper function to determine grid type from grid name
+  const getGridType = (name) => {
+    if (name.toLowerCase().includes('mdm')) return 'mdm';
+    if (name.toLowerCase().includes('cegid')) return 'cegid';
+    if (name.toLowerCase().includes('dashboard')) return 'dashboard';
+    return 'magento'; // Default to magento
+  };
+
   return (
     <Paper
       elevation={1}
@@ -421,6 +429,7 @@ const UnifiedGrid = forwardRef(({
       {/* Unified Toolbar */}
       <UnifiedGridToolbar
         gridName={gridName}
+        gridType={getGridType(gridName)}
         config={toolbarConfig}
         customActions={customActions}
         customLeftActions={toolbarConfig.customLeftActions || []}
@@ -445,6 +454,7 @@ const UnifiedGrid = forwardRef(({
         viewMode={viewMode}
         onViewModeChange={handleViewModeChange}
         showCardView={showCardView}
+        mdmStocks={mdmStocks}
  
         // Custom filter props
         succursaleOptions={succursaleOptions}

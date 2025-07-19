@@ -304,7 +304,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
     const getPrices = async () => {
         try {
             console.log('🔄 Starting price sync from MDM...');
-            const response = await axios.post('/api/mdm/sync/prices', {
+            const response = await axios.post('/api/mdm/prices', {
                 syncAll: true,
                 updateMagento: true
             });
