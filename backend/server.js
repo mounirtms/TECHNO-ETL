@@ -199,6 +199,7 @@ async function fetchMdmPrices(req, res) {
 
         const pool = getPool('mdm');
         const result = await pool.request().query(sqlQuery);
+        console.log('Fetched MDM prices successfully', result.recordset.length, 'records');
         return result;
     } catch (error) {
         console.error('Error fetching MDM prices:', error);
@@ -283,7 +284,7 @@ app.get('/api/mdm/inventory/sync-stocks', async (req, res) => {
 /**
  * Fetch product prices from MDM.
  */
-app.get('/api/mdm/prices', async (req, res) => {
+app.get('/api/mdm/sync/prices', async (req, res) => {
     try {
         let result = await fetchMdmPrices(req, res);
         res.json(result.recordset);
@@ -418,8 +419,6 @@ async function syncSources() {
 
 async function syncPrices() {
     // Calculate yesterday's date (YYYY-MM-DD format)
-
-
     // Fetch prices with yesterday as default startDate
     let prices = await fetchMdmPrices();
     // Transform the data for Magento
@@ -446,10 +445,10 @@ async function inventorySync() {
 async function main() {
     await connectToDatabases();
 
-   // cron.schedule('0 2 * * *', async () => {
-       // await syncPrices();
+    cron.schedule('0 2 * * *', async () => {
+        await syncPrices();
         await inventorySync();
-   // });
+    });
 
 
 

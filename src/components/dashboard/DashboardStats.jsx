@@ -8,8 +8,7 @@ import { Box } from '@mui/material';
 import { StatsCards } from '../common/StatsCards';
 import {
     ShoppingBag, SupervisorAccount, Category, CurrencyExchange,
-    PersonAddAlt, RocketLaunch, Store, AutoGraph,  Category as CategoryIcon,
-    
+    PersonAddAlt, RocketLaunch, Store, AutoGraph
 } from '@mui/icons-material';
 import { formatCurrency } from '../../services/dashboardService';
 
@@ -26,7 +25,7 @@ const DashboardStats = ({ stats, loading }) => {
         {
             title: 'Total Orders',
             value: stats.totalOrders || 0,
-            icon: <ShoppingBag/>,
+            icon: ShoppingBag,
             color: 'primary',
             gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             description: 'All time orders'
@@ -42,7 +41,7 @@ const DashboardStats = ({ stats, loading }) => {
         {
             title: 'Products',
             value: stats.totalProducts || 0,
-            icon: <Category/>,
+            icon: Category,
             color: 'info',
             gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
             description: 'In inventory'
@@ -50,7 +49,7 @@ const DashboardStats = ({ stats, loading }) => {
         {
             title: 'Revenue',
             value: formatCurrency(stats.totalRevenue || 0),
-            icon: <CurrencyExchange/>,
+            icon: CurrencyExchange,
             color: 'warning',
             gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
             description: 'Total revenue (DZD)'
@@ -74,7 +73,7 @@ const DashboardStats = ({ stats, loading }) => {
         {
             title: 'Growth Rate',
             value: `${((stats.totalOrders / Math.max(stats.totalCustomers, 1)) * 100).toFixed(1)}%`,
-             icon: <CategoryIcon/>,
+            icon: RocketLaunch,
             color: 'success',
             gradient: 'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)',
             description: 'Monthly growth'
@@ -82,7 +81,7 @@ const DashboardStats = ({ stats, loading }) => {
         {
             title: 'Active Stores',
             value: stats.activeStores || 0,
-            icon: <Store/>,
+            icon: Store,
             color: 'primary',
             gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             description: 'Operating locations'

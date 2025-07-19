@@ -48,6 +48,7 @@ const CmsPage = () => {
         setError(null);
 
         try {
+            console.log('🔍 CmsPagesGrid: Fetching CMS pages...');
             const response = await magentoApi.getCmsPages({
                 searchCriteria: {
                     pageSize: 10,
@@ -58,18 +59,27 @@ const CmsPage = () => {
                 }
             });
 
+            console.log('📦 CmsPagesGrid: API response:', response);
+
             // Handle {data: {items: []}} response structure
             const cmsData = response?.data || response;
             const items = cmsData?.items || [];
 
+            console.log('✅ CmsPagesGrid: Processed items:', items.length);
+
             if (!items || items.length === 0) {
+                console.warn('No CMS pages found - loading local data as fallback');
                 await loadLocalData();
             } else {
                 setPages(items);
             }
         } catch (error) {
             console.error('Failed to fetch CMS pages:', error);
-            setError('Failed to load CMS pages. Please try again.');
+            // Don't set error state for empty data - it's normal
+            if (error.message !== 'No data returned from API') {
+                setError('Failed to load CMS pages. Please try again.');
+            }
+            console.log('Loading local CMS data as fallback...');
             await loadLocalData();
         } finally {
             setLoading(false);

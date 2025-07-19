@@ -200,7 +200,16 @@ const createCustomTheme = (mode) => {
 export const ThemeProvider = ({ children }) => {
   const [mode, setMode] = useState(() => {
     const savedMode = localStorage.getItem('themeMode');
-    return savedMode || 'light';
+    if (savedMode) {
+      return savedMode;
+    }
+
+    // Use system preference as default
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark';
+    }
+
+    return 'light';
   });
 
   const [fontSize, setFontSize] = useState(() => {

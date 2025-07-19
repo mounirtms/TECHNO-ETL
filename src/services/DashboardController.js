@@ -278,10 +278,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
     const syncAllStocks = async () => {
         try {
             console.log('🔄 Starting stock sync from MDM...');
-            const response = await axios.post('/api/mdm/sync/stocks', {
-                syncAll: true,
-                sources: 'all'
-            });
+            const response = await axios.post('/api/mdm/inventory/sync-all-stocks-sources');
 
             console.log('✅ Stock sync response:', response.data);
             toast.success('✅ Stock sync operation completed successfully');
@@ -304,10 +301,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
     const getPrices = async () => {
         try {
             console.log('🔄 Starting price sync from MDM...');
-            const response = await axios.post('/api/mdm/prices', {
-                syncAll: true,
-                updateMagento: true
-            });
+            const response = await axios.get('/api/mdm/sync/prices');
 
             console.log('✅ Price sync response:', response.data);
             toast.success('✅ Price sync operation completed successfully');

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { 
-    Box, Paper, Button, Typography, IconButton, CircularProgress, 
-    Tooltip, Menu, MenuItem, ListItemIcon, ListItemText, Divider, Chip 
+import {
+    Box, Paper, Button, Typography, IconButton, CircularProgress,
+    Tooltip, Menu, MenuItem, ListItemIcon, ListItemText, Divider, Chip,
+    Collapse
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -22,13 +23,14 @@ import {
     Inventory, Receipt, AccountCircle, LocationOn, Warehouse,
     Inventory2, Storefront, Description, BugReport, Star,
     AccountBalance, PersonAddAlt, Insights, Paid,
-    RocketLaunch, Store, AutoGraph
+    RocketLaunch, Store, AutoGraph, ExpandMore, ExpandLess
 } from '@mui/icons-material';
 import { useDashboardController } from '../services/DashboardController';
-import { 
-    formatCurrency, formatDate, prepareCustomerChartData, 
-    formatChartDate, formatTooltipDate 
+import {
+    formatCurrency, formatDate, prepareCustomerChartData,
+    formatChartDate, formatTooltipDate
 } from '../services/dashboardService';
+import { calculateDashboardHeight, createHeightStyles } from '../utils/heightCalculator';
 
 const getDefaultDateRange = () => {
     const end = new Date();
@@ -69,6 +71,12 @@ const Dashboard = () => {
         bestSellers: true
     });
 
+    // Collapsible state for chart sections
+    const [collapsedSections, setCollapsedSections] = useState({
+        charts: false,
+        recentData: false
+    });
+
     const {
         stats,
         chartData,
@@ -94,6 +102,10 @@ const Dashboard = () => {
 
     const handleToggleChart = (chartKey) => {
         setVisibleCharts(prev => ({ ...prev, [chartKey]: !prev[chartKey] }));
+    };
+
+    const handleToggleSection = (sectionKey) => {
+        setCollapsedSections(prev => ({ ...prev, [sectionKey]: !prev[sectionKey] }));
     };
 
     const handleRefresh = () => {
@@ -122,7 +134,7 @@ const Dashboard = () => {
                         }}>
                             <Box sx={{
                                 width: 12,
-                                height: 12,
+                                height: 8,
                                 bgcolor: item.color,
                                 borderRadius: '50%',
                                 mr: 1
@@ -140,16 +152,27 @@ const Dashboard = () => {
         return null;
     };
 
+    // Calculate dashboard height to avoid touching footer
+    const dashboardHeight = calculateDashboardHeight();
+    const containerStyles = createHeightStyles('dashboard', {
+        extraPadding: 2,
+        overflow: 'auto'
+    });
+
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={arLocale}>
-            <Box sx={{ p: 3, height: '100%' }}>
+            <Box sx={{
+                p: 1,
+                ...containerStyles,
+                height: dashboardHeight
+            }}>
                 {/* Header with Date Range and Controls */}
                 <Paper sx={{
                     p: 2,
                     mb: 3,
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 2,
+                    gap: 1,
                     background: theme.palette.background.paper,
                     boxShadow: theme.shadows[2],
                     borderRadius: 2,
@@ -429,8 +452,42 @@ const Dashboard = () => {
                             />
                         </Box>
 
-                        {/* Main Orders Chart */}
-                        {visibleCharts.orders && (
+                        {/* Charts Section Header */}
+                        <Box sx={{
+                            mt: 3,
+                            mb: 2,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            p: 2,
+                            backgroundColor: theme.palette.background.paper,
+                            borderRadius: 1,
+                            border: `1px solid ${theme.palette.divider}`
+                        }}>
+                            <Typography variant="h6" sx={{
+                                fontWeight: 600,
+                                color: theme.palette.text.primary
+                            }}>
+                                📊 Analytics Charts
+                            </Typography>
+                            <IconButton
+                                onClick={() => handleToggleSection('charts')}
+                                size="small"
+                                sx={{
+                                    color: theme.palette.text.secondary,
+                                    '&:hover': {
+                                        backgroundColor: theme.palette.action.hover
+                                    }
+                                }}
+                            >
+                                {collapsedSections.charts ? <ExpandMore /> : <ExpandLess />}
+                            </IconButton>
+                        </Box>
+
+                        {/* Collapsible Charts Section */}
+                        <Collapse in={!collapsedSections.charts}>
+                            {/* Main Orders Chart */}
+                            {visibleCharts.orders && (
                             <Box sx={{ mt: 3 }}>
                                 <Paper sx={{ 
                                     p: 3, 
@@ -1262,6 +1319,7 @@ const Dashboard = () => {
                                 </Paper>
                             </Box>
                         )}
+                        </Collapse>
                     </>
                 )}
             </Box>

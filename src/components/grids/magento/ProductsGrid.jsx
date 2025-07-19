@@ -56,6 +56,7 @@ import {
   STANDARD_GRID_AREA_STYLES,
   STANDARD_STATS_CONTAINER_STYLES
 } from '../../../config/standardGridConfig';
+
 /**
  * Optimized Magento Products Grid Component
  * Features:
@@ -106,9 +107,31 @@ const ProductsGrid = () => {
     try {
       setLoading(true);
 
+      // Build search criteria for Magento API
+      const searchParams = { ...filterParams };
+
+      // Handle search query - search across multiple fields
+      if (filterParams.search && filterParams.search.trim()) {
+        const searchTerm = filterParams.search.trim();
+        console.log('🔍 Products Grid: Adding search criteria:', searchTerm);
+
+        // Add Magento search criteria for multiple fields
+        searchParams['searchCriteria[filterGroups][0][filters][0][field]'] = 'sku';
+        searchParams['searchCriteria[filterGroups][0][filters][0][value]'] = `%${searchTerm}%`;
+        searchParams['searchCriteria[filterGroups][0][filters][0][conditionType]'] = 'like';
+
+        searchParams['searchCriteria[filterGroups][0][filters][1][field]'] = 'name';
+        searchParams['searchCriteria[filterGroups][0][filters][1][value]'] = `%${searchTerm}%`;
+        searchParams['searchCriteria[filterGroups][0][filters][1][conditionType]'] = 'like';
+
+        searchParams['searchCriteria[filterGroups][0][filters][2][field]'] = 'description';
+        searchParams['searchCriteria[filterGroups][0][filters][2][value]'] = `%${searchTerm}%`;
+        searchParams['searchCriteria[filterGroups][0][filters][2][conditionType]'] = 'like';
+      }
+
       // Direct Magento API call with enhanced logging
-      console.log('📡 Products Grid: Calling magentoApi.getProducts...');
-      const response = await magentoApi.getProducts(filterParams);
+      console.log('📡 Products Grid: Calling magentoApi.getProducts with params:', searchParams);
+      const response = await magentoApi.getProducts(searchParams);
       
       console.log('📦 Products Grid: Raw Magento API response:', {
         responseType: typeof response,
@@ -425,17 +448,6 @@ const ProductsGrid = () => {
   // ===== 4. MEMOIZED COMPONENTS =====
   const columns = useMemo(() => [
     {
-      field: 'id',
-      headerName: 'ID',
-      width: 80,
-      sortable: true,
-      valueGetter: (params) => {
-        // Safe access to row data - handle undefined during grid initialization
-        if (!params.row) return '';
-        return params.row.id || params.row.sku || params.row.entity_id || '';
-      }
-    },
-    {
       field: 'sku',
       headerName: 'SKU',
       width: 150,
@@ -574,7 +586,7 @@ const ProductsGrid = () => {
     showAdd: false, // Disabled - using custom segmented add button
     showEdit: true,
     showDelete: true,
-    showExport: true,
+    showExport: false,
     showSearch: true,
     showFilters: true,
     showSettings: true,
@@ -755,6 +767,10 @@ const ProductsGrid = () => {
             onSync: handleSync,
             onSelectionChange: setSelectedRows,
             onExport: () => toast.info('Export functionality coming soon'),
+            onSearch: (searchTerm) => {
+              console.log('🔍 ProductsGrid: Search triggered:', searchTerm);
+              fetchProducts({ search: searchTerm });
+            },
 
             // Row configuration
             getRowId: (row) => row.sku,

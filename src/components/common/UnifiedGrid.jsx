@@ -117,6 +117,7 @@ const UnifiedGrid = forwardRef(({
   onSyncAllHandler,
   canInfo,
   onInfo,
+  mdmStocks = false, // Default value to prevent undefined error
 
   ...props
 }, ref) => {
@@ -400,7 +401,7 @@ const UnifiedGrid = forwardRef(({
         display: 'flex',
         flexDirection: 'column',
         direction: enableRTL ? 'rtl' : 'ltr',
-        overflow: 'hidden', // Prevent main container from scrolling
+      
 
         // Modern design with glass morphism
         background: gridTheme.palette.mode === 'light'
