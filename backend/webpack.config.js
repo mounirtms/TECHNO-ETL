@@ -24,7 +24,9 @@ export default {
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
-        { from: 'queries/*.sql', to: 'queries/[name][ext]', context: path.resolve(__dirname) }
+        { from: 'queries/*.sql', to: 'queries/[name][ext]', context: path.resolve(__dirname) },
+        { from: 'start-server.js', to: 'start-server.js', context: path.resolve(__dirname) },
+        { from: 'package.json', to: 'package.json', context: path.resolve(__dirname) }
       ],
     }),
   ],
