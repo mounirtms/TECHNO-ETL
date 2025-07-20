@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { Box, LinearProgress, Typography } from '@mui/material';
-import UnifiedGrid from '../../common/UnifiedGrid';
+import ProductionGrid from '../../common/ProductionGrid';
 import MDMFilterPanel from './MDMFilterPanel';
 import MDMStatsCards from './MDMStatsCards';
 import MDMFilters, { defaultSources, defaultBranches } from './MDMFilters';
@@ -10,6 +10,7 @@ import axios from 'axios';
 import magentoApi from '../../../services/magentoApi';
 import sourceMapping from '../../../utils/sources';
 import { Refresh as RefreshIcon } from '@mui/icons-material';
+import UnifiedGrid from '../../common/UnifiedGrid';
 import {
   getStandardGridProps,
   STANDARD_GRID_CONTAINER_STYLES,
@@ -552,20 +553,6 @@ const MDMProductsGrid = () => {
             })}
             columnVisibility={columnVisibility}
             onColumnVisibilityChange={setColumnVisibility}
-            sx={{
-              height: '100%',
-              '& .MuiDataGrid-root': {
-                height: '100%',
-                border: '1px solid rgba(224, 224, 224, 1)',
-                borderRadius: 0
-              },
-              '& .MuiDataGrid-main': {
-                overflow: 'auto' // Ensure proper scrolling
-              },
-              '& .MuiDataGrid-virtualScroller': {
-                overflow: 'auto'
-              }
-            }}
             toolbarConfig={toolbarConfig}
             customActions={customActions}
             contextMenuActions={contextMenuActions}

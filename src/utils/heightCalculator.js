@@ -44,10 +44,47 @@ export const calculateContentHeight = (options = {}) => {
   if (hasTabHeader) totalHeight += LAYOUT_DIMENSIONS.TAB_HEADER_HEIGHT;
   if (hasToolbar) totalHeight += LAYOUT_DIMENSIONS.TOOLBAR_HEIGHT;
   if (hasStatsCards) totalHeight += LAYOUT_DIMENSIONS.STATS_CARDS_HEIGHT;
- 
- 
 
   return `calc(100vh - ${totalHeight}px)`;
+};
+
+/**
+ * Create flexible container styles that use remaining height
+ * @param {Object} options - Configuration options
+ * @returns {Object} CSS styles for flexible height container
+ */
+export const createFlexibleHeightStyles = (options = {}) => {
+  const {
+    hasStatsCards = false,
+    minHeight = '400px'
+  } = options;
+
+  return {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    minHeight,
+    overflow: 'hidden',
+
+    // Grid container takes remaining space
+    '& .grid-container': {
+      flex: 1,
+      minHeight: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden'
+    },
+
+    // Stats cards at bottom if present
+    ...(hasStatsCards && {
+      '& .stats-container': {
+        flexShrink: 0,
+        borderTop: '1px solid rgba(224, 224, 224, 1)',
+        pt: 1,
+        backgroundColor: 'background.paper'
+      }
+    })
+  };
 };
 
 /**

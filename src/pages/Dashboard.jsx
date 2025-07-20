@@ -71,10 +71,12 @@ const Dashboard = () => {
         bestSellers: true
     });
 
-    // Collapsible state for chart sections
-    const [collapsedSections, setCollapsedSections] = useState({
-        charts: false,
-        recentData: false
+    // Individual chart collapse state
+    const [collapsedCharts, setCollapsedCharts] = useState({
+        orders: false,
+        customers: false,
+        products: false,
+        attributes: false
     });
 
     const {
@@ -104,8 +106,8 @@ const Dashboard = () => {
         setVisibleCharts(prev => ({ ...prev, [chartKey]: !prev[chartKey] }));
     };
 
-    const handleToggleSection = (sectionKey) => {
-        setCollapsedSections(prev => ({ ...prev, [sectionKey]: !prev[sectionKey] }));
+    const handleCollapseChart = (chartKey) => {
+        setCollapsedCharts(prev => ({ ...prev, [chartKey]: !prev[chartKey] }));
     };
 
     const handleRefresh = () => {
@@ -152,19 +154,14 @@ const Dashboard = () => {
         return null;
     };
 
-    // Calculate dashboard height to avoid touching footer
-    const dashboardHeight = calculateDashboardHeight();
-    const containerStyles = createHeightStyles('dashboard', {
-        extraPadding: 2,
-        overflow: 'auto'
-    });
-
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={arLocale}>
             <Box sx={{
                 p: 1,
-                ...containerStyles,
-                height: dashboardHeight
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                overflow: 'auto'
             }}>
                 {/* Header with Date Range and Controls */}
                 <Paper sx={{
@@ -452,42 +449,8 @@ const Dashboard = () => {
                             />
                         </Box>
 
-                        {/* Charts Section Header */}
-                        <Box sx={{
-                            mt: 3,
-                            mb: 2,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                            p: 2,
-                            backgroundColor: theme.palette.background.paper,
-                            borderRadius: 1,
-                            border: `1px solid ${theme.palette.divider}`
-                        }}>
-                            <Typography variant="h6" sx={{
-                                fontWeight: 600,
-                                color: theme.palette.text.primary
-                            }}>
-                                📊 Analytics Charts
-                            </Typography>
-                            <IconButton
-                                onClick={() => handleToggleSection('charts')}
-                                size="small"
-                                sx={{
-                                    color: theme.palette.text.secondary,
-                                    '&:hover': {
-                                        backgroundColor: theme.palette.action.hover
-                                    }
-                                }}
-                            >
-                                {collapsedSections.charts ? <ExpandMore /> : <ExpandLess />}
-                            </IconButton>
-                        </Box>
-
-                        {/* Collapsible Charts Section */}
-                        <Collapse in={!collapsedSections.charts}>
-                            {/* Main Orders Chart */}
-                            {visibleCharts.orders && (
+                        {/* Main Orders Chart */}
+                        {visibleCharts.orders && (
                             <Box sx={{ mt: 3 }}>
                                 <Paper sx={{ 
                                     p: 3, 
@@ -1319,7 +1282,6 @@ const Dashboard = () => {
                                 </Paper>
                             </Box>
                         )}
-                        </Collapse>
                     </>
                 )}
             </Box>

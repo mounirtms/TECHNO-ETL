@@ -4,6 +4,7 @@ import { Box, Chip, Typography } from '@mui/material';
 import {
   ShoppingBag as ShoppingBagIcon,
   LocalShipping as LocalShippingIcon,
+  GetApp as  SyncIcon,
   Cancel as CancelIcon,
   Edit as EditIcon,
   Visibility as ViewIcon,
@@ -198,11 +199,11 @@ const OrdersGrid = () => {
     showAdd: false, // Orders are not typically added manually
     showEdit: true,
     showDelete: false, // Orders are cancelled, not deleted
-    showExport: true,
-    showSearch: true,
+    showExport: false,
+    showSearch: false,
     showFilters: true,
     showSettings: true,
-    showViewToggle: true,
+    showViewToggle: false,
     compact: false,
     size: 'medium'
   };

@@ -48,7 +48,7 @@ const UnifiedGrid = forwardRef(({
   loading = false,
   onRefresh,
   getRowId = (row) => row.id || row.entity_id,
-  
+
   // Feature toggles
   enableCache = true,
   enableI18n = true,
@@ -58,9 +58,9 @@ const UnifiedGrid = forwardRef(({
   enableFiltering = true,
   enableColumnReordering = true,
   enableColumnResizing = true,
-  
+
   // View options
-  showStatsCards = false,
+  showStatsCards = true,
   showCardView = true,
   defaultViewMode = 'grid', // 'grid' or 'card'
   gridCards = [],
@@ -72,22 +72,22 @@ const UnifiedGrid = forwardRef(({
   // Toolbar configuration
   toolbarConfig = {},
   customActions = [],
-  
+
   // Context menu configuration
   contextMenuActions = {},
-  
+
   // Floating actions configuration
   floatingActions = {},
   floatingPosition = 'bottom-right',
   floatingVariant = 'speedDial',
   enableFloatingActions = false,
-  
+
   // Filter configuration
   filterOptions = [],
   currentFilter = 'all',
   onFilterChange,
   childFilterModel,
-  
+
   // Event handlers
   onSelectionChange,
   onError,
@@ -96,7 +96,7 @@ const UnifiedGrid = forwardRef(({
   onEdit,
   onDelete,
   onSync,
-  
+
   // Advanced props
   preColumns = [],
   endColumns = [],
@@ -322,7 +322,7 @@ const UnifiedGrid = forwardRef(({
   const gridHeight = useMemo(() => {
     const baseHeight = window.innerHeight - HEADER_HEIGHT - FOOTER_HEIGHT;
     const statsHeight = showStatsCards ? STATS_CARD_HEIGHT : 0;
-    const toolbarHeight = 100; // Toolbar height
+    const toolbarHeight = 150; // Toolbar height
     return baseHeight - statsHeight - toolbarHeight; // 32px for padding
   }, [showStatsCards]);
 
@@ -347,7 +347,7 @@ const UnifiedGrid = forwardRef(({
   // Context menu handlers
   const handleContextMenu = useCallback((event, row) => {
     if (Object.keys(contextMenuActions).length === 0) return;
-    
+
     event.preventDefault();
     setContextMenu({
       mouseX: event.clientX - 2,
@@ -394,39 +394,9 @@ const UnifiedGrid = forwardRef(({
   };
 
   return (
-    <Paper
-      elevation={1}
-      sx={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        direction: enableRTL ? 'rtl' : 'ltr',
-      
-
-        // Modern design with glass morphism
-        background: gridTheme.palette.mode === 'light'
-          ? 'rgba(255, 255, 255, 0.9)'
-          : 'rgba(18, 18, 18, 0.9)',
-        backdropFilter: 'blur(20px)',
-
-        boxShadow: gridTheme.elevation,
-        border: `1px solid ${gridTheme.borderColor}`,
-        // Enhanced responsive design
-        '@media (max-width: 768px)': {
-          height: 'calc(100% - 8px)',
-          margin: '1px 0',
-          boxShadow: '0 4px 1px rgba(0,0,0,0.1)',
-        },
-        '@media (max-width: 480px)': {
-          height: 'calc(100% - 4px)',
-          margin: '2px 0',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        },
-        ...sx
-      }}
-    >
 
 
+    <>
       {/* Unified Toolbar */}
       <UnifiedGridToolbar
         gridName={gridName}
@@ -456,7 +426,8 @@ const UnifiedGrid = forwardRef(({
         onViewModeChange={handleViewModeChange}
         showCardView={showCardView}
         mdmStocks={mdmStocks}
- 
+
+
         // Custom filter props
         succursaleOptions={succursaleOptions}
         currentSuccursale={currentSuccursale}
@@ -473,178 +444,127 @@ const UnifiedGrid = forwardRef(({
       />
 
       {/* Main Content Area */}
-      <Box sx={{ flex: 1, position: 'relative' }}>
-        {loading && (
-          <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}>
-            <Skeleton variant="rectangular" height={4} />
-          </Box>
-        )}
+      {loading && (
+        <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}>
+          <Skeleton variant="rectangular" height={4} />
+        </Box>
+      )}
 
-        <Fade in={!loading} timeout={300}>
-          <Box sx={{
+      <Fade in={!loading} timeout={300}>
+        <Box
+          sx={{
             flex: 1,
             minHeight: 0,
+            maxHeight: gridHeight,
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
             overflow: 'hidden',
             display: 'flex',
             flexDirection: 'column'
           }}>
-            {viewMode === 'card' && showCardView ? (
-              <GridCardView
-                data={data}
-                columns={processedColumns}
-                onRowClick={(row) => {
-                  setSelectedRecord(row);
-                  setDetailsDialogOpen(true);
-                }}
-                loading={loading}
-              />
-            ) : (
-              <DataGrid
-                ref={gridRef}
-                rows={memoizedData}
-                columns={processedColumns}
-                loading={loading}
+          {viewMode === 'card' && showCardView ? (
+            <GridCardView
+              data={data}
+              columns={processedColumns}
+              onRowClick={(row) => {
+                setSelectedRecord(row);
+                setDetailsDialogOpen(true);
+              }}
+              loading={loading}
+            />
+          ) : (
 
-                // Ensure we have valid data before rendering
-                {...((memoizedData.length === 0) ? {
-                  initialState: { pagination: { paginationModel: { page: 0, pageSize: defaultPageSize } } }
-                } : {})}
+            <DataGrid
+              ref={gridRef}
+              rows={memoizedData}
+              columns={processedColumns}
+              loading={loading}
 
-                // Pagination - supports both client and server-side pagination
-                paginationModel={paginationModel || { page: 0, pageSize: defaultPageSize }}
-                onPaginationModelChange={(model) => {
-                  setPaginationModel(model);
-                  // Call parent pagination handler if provided (for server-side pagination)
-                  if (onPaginationModelChange) {
-                    onPaginationModelChange(model);
-                  }
-                }}
-                pageSizeOptions={[10, 25, 50, 100]}
-                paginationMode={paginationMode || "client"}
-                // rowCount is required for server-side pagination
-                {...(paginationMode === "server" ? {
-                  rowCount: totalCount || data.length || 0
-                } : {})}
-                
-                // Sorting
-                sortModel={sortModel}
-                onSortModelChange={setSortModel}
-                sortingOrder={['asc', 'desc']}
-                
-                // Filtering
-                filterModel={filterModel}
-                onFilterModelChange={setFilterModel}
-                
-                // Selection
-                checkboxSelection={enableSelection}
-                rowSelectionModel={selectedRows}
-                onRowSelectionModelChange={handleSelectionChange}
-                
-                // Column management
-                columnVisibilityModel={columnVisibility}
-                onColumnVisibilityModelChange={setColumnVisibility}
-                columnOrderModel={columnOrder}
-                onColumnOrderModelChange={setColumnOrder}
-                pinnedColumns={pinnedColumns}
-                onPinnedColumnsChange={setPinnedColumns}
-                
-                // Density
-                density={density}
-                
-                // Features
-                disableColumnReorder={!enableColumnReordering}
-                disableColumnResize={!enableColumnResizing}
-                
-                // Row configuration
-                getRowId={getRowId}
-                onRowClick={(params) => {
-                  setSelectedRecord(params.row);
-                  setDetailsDialogOpen(true);
-                }}
-                onRowContextMenu={(params, event) => handleContextMenu(event, params.row)}
-                
-                // Professional styling with sharp corners
-                sx={{
-                  border: '1px solid rgba(224, 224, 224, 1)',
-                  borderRadius: 0, // Sharp corners
-                  '& .MuiDataGrid-main': {
-                    borderRadius: 0
-                  },
-                  '& .MuiDataGrid-root': {
-                    borderRadius: 0
-                  },
-                  '& .MuiDataGrid-cell': {
-                    borderBottom: '1px solid rgba(224, 224, 224, 0.5)',
-                    borderRadius: 0, // ✅ NO ROUNDED EDGES
-                    '&:focus': {
-                      outline: 'none'
-                    }
-                  },
-                  '& .MuiDataGrid-columnHeaders': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                    borderBottom: '2px solid rgba(224, 224, 224, 1)',
-                    borderRadius: 0
-                  },
-                  '& .MuiDataGrid-row': {
-                    borderRadius: 0, // ✅ NO ROUNDED EDGES
-                    '&:hover': {
-                      backgroundColor: gridTheme.rowHoverColor
-                    },
-                    '&.Mui-selected': {
-                      backgroundColor: 'rgba(25, 118, 210, 0.08)',
-                      borderRadius: 0, // ✅ NO ROUNDED EDGES
-                      '&:hover': {
-                        backgroundColor: 'rgba(25, 118, 210, 0.12)'
-                      }
-                    }
-                  },
-                  '& .MuiDataGrid-footerContainer': {
-                    borderTop: '2px solid rgba(224, 224, 224, 1)',
-                    borderRadius: 0 // ✅ NO ROUNDED EDGES
-                  },
-                  '& .MuiDataGrid-panel': {
-                    borderRadius: 0 // ✅ NO ROUNDED EDGES
-                  },
-                  '& .MuiDataGrid-menu': {
-                    borderRadius: 0 // ✅ NO ROUNDED EDGES
-                  },
-                  '& .MuiDataGrid-columnHeader': {
-                    borderRadius: 0 // ✅ NO ROUNDED EDGES
-                  },
-                  '& .MuiDataGrid-container--top': {
-                    borderRadius: 0 // ✅ NO ROUNDED EDGES
-                  },
-                  '& .MuiDataGrid-container--bottom': {
-                    borderRadius: 0 // ✅ NO ROUNDED EDGES
-                  },
-                  // Ensure proper scrolling - only grid content scrolls
-                  height: gridHeight,
-                  overflow: 'auto', // Allow scrolling within grid area only
-                  '& .MuiDataGrid-virtualScroller': {
-                    overflow: 'auto' // Enable both horizontal and vertical scrolling
-                  },
-                  '& .MuiDataGrid-main': {
-                    overflow: 'hidden' // Prevent main container from scrolling
-                  },
-                  ...sx
-                }}
-                
-                // Disable default toolbar
-                hideFooter={false}
-                disableColumnMenu={false}
-                
-                {...props}
-              />
-            )}
-          </Box>
-        </Fade>
-             {/* Stats Cards */}
+              // Ensure we have valid data before rendering
+              {...((memoizedData.length === 0) ? {
+                initialState: { pagination: { paginationModel: { page: 0, pageSize: defaultPageSize } } }
+              } : {})}
+
+              // Pagination - supports both client and server-side pagination
+              paginationModel={paginationModel || { page: 0, pageSize: defaultPageSize }}
+              onPaginationModelChange={(model) => {
+                setPaginationModel(model);
+                // Call parent pagination handler if provided (for server-side pagination)
+                if (onPaginationModelChange) {
+                  onPaginationModelChange(model);
+                }
+              }}
+              pageSizeOptions={[10, 25, 50, 100]}
+              paginationMode={paginationMode || "client"}
+              // rowCount is required for server-side pagination
+              {...(paginationMode === "server" ? {
+                rowCount: totalCount || data.length || 0
+              } : {})}
+
+              // Sorting
+              sortModel={sortModel}
+              onSortModelChange={setSortModel}
+              sortingOrder={['asc', 'desc']}
+
+              // Filtering
+              filterModel={filterModel}
+              onFilterModelChange={setFilterModel}
+
+              // Selection
+              checkboxSelection={enableSelection}
+              rowSelectionModel={selectedRows}
+              onRowSelectionModelChange={handleSelectionChange}
+
+              // Column management
+              columnVisibilityModel={columnVisibility}
+              onColumnVisibilityModelChange={setColumnVisibility}
+              columnOrderModel={columnOrder}
+              onColumnOrderModelChange={setColumnOrder}
+              pinnedColumns={pinnedColumns}
+              onPinnedColumnsChange={setPinnedColumns}
+
+              // Density
+              density={density}
+
+              // Features
+              disableColumnReorder={!enableColumnReordering}
+              disableColumnResize={!enableColumnResizing}
+
+              // Row configuration
+              getRowId={getRowId}
+              onRowClick={(params) => {
+                setSelectedRecord(params.row);
+                setDetailsDialogOpen(true);
+              }}
+              onRowContextMenu={(params, event) => handleContextMenu(event, params.row)}
+
+
+
+              // Disable default toolbar
+              hideFooter={false}
+              disableColumnMenu={false}
+
+              {...props}
+            />
+
+          )}
+        </Box>
+      </Fade>
+      {/* Stats Cards */}
       {showStatsCards && gridCards.length > 0 && (
-        <Box sx={{ p: 2, borderBottom: `1px solid ${gridTheme.borderColor}` }}>
+        <Box
+          className="stats-container"
+          sx={{
+            flexShrink: 0,
+            borderTop: `1px solid ${gridTheme.borderColor}`,
+            p: 2,
+            backgroundColor: 'background.paper'
+          }}
+        >
           <StatsCards cards={gridCards} />
         </Box>
       )}
-      </Box>
 
       {/* Context Menu */}
       {contextMenu && (
@@ -673,7 +593,7 @@ const UnifiedGrid = forwardRef(({
         columns={processedColumns}
         title={safeTranslate('grid.common.recordDetails', 'Record Details')}
       />
-    </Paper>
+    </>
   );
 });
 

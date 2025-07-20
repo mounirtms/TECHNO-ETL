@@ -10,6 +10,8 @@
     "authServer": "nodemon backend/authServer.js",
     "build": "vite build && npm run copy-backend && npm run copy-docs",
     "build:prod": "vite build --mode production && npm run build:backend && npm run copy-docs",
+    "build:production": "node scripts/production-build.js",
+    "build:analyze": "npm run build && npx vite-bundle-analyzer dist",
     "build:backend": "cd backend && npm run build && cd .. && xcopy /E /I /Y backend\\dist dist\\backend",
     "prebuild": "node scripts/updateVersion.js",
     "copy-backend": "xcopy /E /I /Y backend\\dist dist\\backend",

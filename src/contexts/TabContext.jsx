@@ -16,7 +16,7 @@ import CategoryTree from '../components/grids/magento/CategoryGrid';
 import StocksGrid from '../components/grids/magento/StocksGrid';
 import SourcesGrid from '../components/grids/magento/SourcesGrid';
 import CegidGrid from '../components/grids/CegidGrid';
-import GridTestPage from '../pages/GridTestPage';
+//import GridTestPage from '../pages/GridTestPage';
 
 // Component mapping
 const COMPONENT_MAP = {
@@ -31,8 +31,7 @@ const COMPONENT_MAP = {
     StocksGrid: StocksGrid,
     SourcesGrid: SourcesGrid,
     CegidProductsGrid: CegidGrid,
-    CmsPageGrid: CmsPageGrid,
-    GridTestPage: GridTestPage
+    CmsPageGrid: CmsPageGrid
 };
 
 const TabContext = createContext();

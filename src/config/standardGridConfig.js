@@ -59,7 +59,7 @@ export const STANDARD_FEATURES = {
  * Consistent view configuration
  */
 export const STANDARD_VIEW_OPTIONS = {
-  showStatsCards: true,
+  showStatsCards: false, // Default to false, grids can override
   showCardView: true,
   defaultViewMode: "grid"
 };
