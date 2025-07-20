@@ -615,12 +615,109 @@ class MagentoApi {
         fieldName: params.fieldName || 'name'
       };
       const response = await this.get('/categories', requestParams);
-      return this.formatResponse(response);
+
+      // Format the response to ensure proper structure
+      const formattedResponse = this.formatResponse(response);
+
+      // If the response has the expected structure, add IDs if missing
+      if (formattedResponse && formattedResponse.data) {
+        formattedResponse.data = this.addCategoryIds(formattedResponse.data);
+      }
+
+      return formattedResponse;
     } catch (error) {
       console.error('Error fetching categories:', error);
       toast.warn('Using local data: Unable to fetch from API');
-      return this.getLocalResponse('categories');
+      return this.getLocalCategoriesResponse();
     }
+  }
+
+  // Helper method to add IDs to categories if missing
+  addCategoryIds(categoryData, startId = 1) {
+    let currentId = startId;
+
+    const addIds = (categories) => {
+      if (Array.isArray(categories)) {
+        return categories.map(category => {
+          const categoryWithId = {
+            ...category,
+            id: category.id || currentId++
+          };
+
+          if (category.children_data && category.children_data.length > 0) {
+            categoryWithId.children_data = addIds(category.children_data);
+          }
+
+          return categoryWithId;
+        });
+      } else if (categoryData && typeof categoryData === 'object') {
+        // Handle single category object
+        const categoryWithId = {
+          ...categoryData,
+          id: categoryData.id || currentId++
+        };
+
+        if (categoryData.children_data && categoryData.children_data.length > 0) {
+          categoryWithId.children_data = addIds(categoryData.children_data);
+        }
+
+        return categoryWithId;
+      }
+
+      return categories;
+    };
+
+    return addIds(categoryData);
+  }
+
+  // Get local categories with proper formatting
+  getLocalCategoriesResponse() {
+    try {
+      const localData = this.getLocalResponse('categories');
+
+      // Format the local category data to match expected structure
+      if (localData && localData.data) {
+        const formattedData = this.addCategoryIds(localData.data);
+
+        // Ensure it's in the expected array format
+        const categoriesArray = Array.isArray(formattedData) ? formattedData : [formattedData];
+
+        return {
+          data: {
+            items: categoriesArray,
+            total_count: categoriesArray.length
+          },
+          success: true
+        };
+      }
+
+      return localData;
+    } catch (error) {
+      console.error('Error formatting local categories:', error);
+      return this.getMockCategoriesResponse();
+    }
+  }
+
+  // Fallback mock categories
+  getMockCategoriesResponse() {
+    return {
+      data: {
+        items: [
+          {
+            id: 1,
+            name: 'Root Category',
+            level: 0,
+            children_data: [
+              { id: 2, name: 'Electronics', level: 1, children_data: [] },
+              { id: 3, name: 'Clothing', level: 1, children_data: [] },
+              { id: 4, name: 'Home & Garden', level: 1, children_data: [] }
+            ]
+          }
+        ],
+        total_count: 1
+      },
+      success: true
+    };
   }
 
   async getCategory(categoryId) {
