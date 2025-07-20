@@ -322,7 +322,7 @@ const MDMProductsGrid = () => {
           if (filter.value) acc[filter.field] = filter.value;
           return acc;
         }, {}),
-        ...(showChangedOnly ? { changed: 1 } : {})
+        ...(showChangedOnly ? { changed: 0 } : {})
       };
 
       if (params.sourceCode) params.succursale = null;
@@ -402,26 +402,32 @@ const MDMProductsGrid = () => {
     toast.info('Refreshing data...');
   }, [fetchProducts]);
 
+  // Check if data has changed (you can implement your own logic here)
+  const hasChangedData = useMemo(() => {
+    // For now, we'll check if there are any items with changed=true
+    return data.some(item => item.changed === true);
+  }, [data]);
+
   // Use new modular toolbar configuration
   const toolbarConfig = useMDMToolbarConfig({
     onRefresh: handleManualRefresh,
     onSync: onSyncHandler,
-    onExport: (format) => {
-      const exportData = selectedBaseGridRows.length > 0
-        ? validatedData.filter(product => selectedBaseGridRows.includes(`${product.Source}-${product.Code_MDM}`))
-        : validatedData;
-      toast.success(`Exported ${exportData.length} products to ${format.toUpperCase()}`);
-    },
+    onSyncStocks: onSyncStocksHandler,
+    onSyncAll: onSyncAllHandler,
     loading,
-    selectedCount: selectedBaseGridRows.length
+    selectedCount: selectedBaseGridRows.length,
+    hasChangedData
   });
 
   // Use new modular custom actions
   const customActions = useMDMCustomActions({
     onRefresh: handleManualRefresh,
     onSync: onSyncHandler,
+    onSyncStocks: onSyncStocksHandler,
+    onSyncAll: onSyncAllHandler,
     loading,
-    selectedCount: selectedBaseGridRows.length
+    selectedCount: selectedBaseGridRows.length,
+    hasChangedData
   });
 
   // Use new modular context menu actions

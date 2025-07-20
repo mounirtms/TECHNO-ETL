@@ -6,8 +6,9 @@ import {
     Tabs, Tab, Paper, Grid, Card, CardContent, CardHeader, Divider
 } from '@mui/material';
 import {
-    Visibility, Edit, Delete, Add, Publish, Draft, Save, Cancel,
-    Preview, Seo, Schedule, Analytics, Hierarchy, ContentCopy
+    Visibility, Edit, Delete, Add, Publish, Save, Cancel,
+    Preview, Seo, Schedule, Analytics, Hierarchy, ContentCopy,
+    Article as Draft
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import ReactQuill from 'react-quill';

@@ -25,16 +25,21 @@ import {
  * @param {number} props.selectedCount - Number of selected items
  * @returns {Object} Toolbar configuration object
  */
-const useMDMToolbarConfig = ({ 
-  onRefresh, 
-  onSync, 
-  onExport, 
-  loading = false, 
-  selectedCount = 0 
+const useMDMToolbarConfig = ({
+  onRefresh,
+  onSync,
+  onSyncStocks,
+  onSyncAll,
+  onExport,
+  loading = false,
+  selectedCount = 0,
+  hasChangedData = false
 }) => {
   return useMemo(() => ({
     showRefresh: true,
     showSync: true,
+    showSyncStocks: true, // Always enabled for stock sync
+    showSyncAll: hasChangedData, // Only enabled when data has changed
     showExport: false, // Moved to settings menu
     showSearch: false,
     showFilters: false,
@@ -73,21 +78,40 @@ const useMDMToolbarConfig = ({
 
     // Custom actions for MDM-specific operations
     customActions: [
-  
       {
         id: 'sync',
-        label: selectedCount > 0 ? `Sync Selected (${selectedCount})` : 'Sync All',
+        label: selectedCount > 0 ? `Sync Selected (${selectedCount})` : 'Sync',
         icon: SyncIcon,
         onClick: onSync,
         disabled: loading,
-        tooltip: selectedCount > 0 
+        tooltip: selectedCount > 0
           ? `Sync ${selectedCount} selected items to Magento`
-          : 'Sync all items to Magento',
+          : 'Sync selected items to Magento',
         variant: 'contained',
         color: 'primary'
-      }
+      },
+      {
+        id: 'syncStocks',
+        label: 'Sync Stocks',
+        icon: SyncIcon,
+        onClick: onSyncStocks,
+        disabled: loading,
+        tooltip: 'Sync stock quantities from selected source',
+        variant: 'outlined',
+        color: 'secondary'
+      },
+      ...(hasChangedData ? [{
+        id: 'syncAll',
+        label: 'Sync All',
+        icon: SyncIcon,
+        onClick: onSyncAll,
+        disabled: loading,
+        tooltip: 'Sync all changed data to Magento',
+        variant: 'contained',
+        color: 'success'
+      }] : [])
     ]
-  }), [onRefresh, onSync, onExport, loading, selectedCount]);
+  }), [onRefresh, onSync, onSyncStocks, onSyncAll, onExport, loading, selectedCount, hasChangedData]);
 };
 
 /**
@@ -101,28 +125,52 @@ const useMDMToolbarConfig = ({
  * @param {number} props.selectedCount - Number of selected items
  * @returns {Array} Array of custom action configurations
  */
-const useMDMCustomActions = ({ 
-  onRefresh, 
-  onSync, 
-  loading = false, 
-  selectedCount = 0 
+const useMDMCustomActions = ({
+  onRefresh,
+  onSync,
+  onSyncStocks,
+  onSyncAll,
+  loading = false,
+  selectedCount = 0,
+  hasChangedData = false
 }) => {
   return useMemo(() => [
-  
     {
-      id: 'sync-mdm',
-      label: selectedCount > 0 ? `Sync (${selectedCount})` : 'Sync All',
+      id: 'sync-selected',
+      label: selectedCount > 0 ? `Sync (${selectedCount})` : 'Sync',
       icon: SyncIcon,
       onClick: onSync,
-      disabled: loading,
-      tooltip: selectedCount > 0 
+      disabled: loading || selectedCount === 0,
+      tooltip: selectedCount > 0
         ? `Sync ${selectedCount} selected items to Magento`
-        : 'Sync all items to Magento',
+        : 'Select items to sync to Magento',
       variant: 'contained',
       color: 'primary',
       size: 'small'
-    }
-  ], [onRefresh, onSync, loading, selectedCount]);
+    },
+    {
+      id: 'sync-stocks',
+      label: 'Sync Stocks',
+      icon: SyncIcon,
+      onClick: onSyncStocks,
+      disabled: loading,
+      tooltip: 'Sync stock quantities from selected source',
+      variant: 'outlined',
+      color: 'secondary',
+      size: 'small'
+    },
+    ...(hasChangedData ? [{
+      id: 'sync-all',
+      label: 'Sync All',
+      icon: SyncIcon,
+      onClick: onSyncAll,
+      disabled: loading,
+      tooltip: 'Sync all changed data to Magento',
+      variant: 'contained',
+      color: 'success',
+      size: 'small'
+    }] : [])
+  ], [onRefresh, onSync, onSyncStocks, onSyncAll, loading, selectedCount, hasChangedData]);
 };
 
 /**
