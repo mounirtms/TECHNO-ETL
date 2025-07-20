@@ -522,9 +522,7 @@ const UnifiedGrid = forwardRef(({
               pageSizeOptions={[10, 25, 50, 100]}
               paginationMode={paginationMode || "client"}
               // rowCount is required for server-side pagination
-              {...(paginationMode === "server" ? {
-                rowCount: totalCount || data.length || 0
-              } : {})}
+              rowCount={totalCount || data.length || 0}
 
               // Sorting with performance optimization
               sortModel={sortModel}

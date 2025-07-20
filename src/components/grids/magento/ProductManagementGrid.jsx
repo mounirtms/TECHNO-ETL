@@ -25,7 +25,15 @@ import {
   CardContent,
   CardActions,
   Autocomplete,
-  Stack
+  Stack,
+  Fab,
+  Popover,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  CircularProgress,
+  LinearProgress
 } from '@mui/material';
 import {
   Inventory as ProductIcon,
@@ -38,7 +46,15 @@ import {
   BrandingWatermark as BrandIcon,
   FilterList as FilterIcon,
   Clear as ClearIcon,
-  Refresh as RefreshIcon
+  Refresh as RefreshIcon,
+  Add as AddIcon,
+  Upload as UploadIcon,
+  Download as DownloadIcon,
+  Sync as SyncIcon,
+  Close as CloseIcon,
+  ViewColumn as ColumnIcon,
+  CheckCircle as ActivateIcon,
+  Cancel as DeactivateIcon
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
@@ -80,6 +96,74 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
     type: '',
     priceRange: { min: '', max: '' }
   });
+
+  // ===== FLOATING WINDOWS STATE =====
+  const [floatingWindows, setFloatingWindows] = useState({
+    quickActions: { open: false, anchorEl: null },
+    bulkOperations: { open: false, anchorEl: null },
+    dataManagement: { open: false, anchorEl: null },
+    settings: { open: false, anchorEl: null }
+  });
+
+  // ===== MANUAL REFRESH STATE =====
+  const [refreshing, setRefreshing] = useState({
+    attributes: false,
+    categories: false,
+    brands: false
+  });
+
+  // ===== FLOATING WINDOW HANDLERS =====
+  const openFloatingWindow = useCallback((windowType, event) => {
+    setFloatingWindows(prev => ({
+      ...prev,
+      [windowType]: { open: true, anchorEl: event.currentTarget }
+    }));
+  }, []);
+
+  const closeFloatingWindow = useCallback((windowType) => {
+    setFloatingWindows(prev => ({
+      ...prev,
+      [windowType]: { open: false, anchorEl: null }
+    }));
+  }, []);
+
+  const closeAllFloatingWindows = useCallback(() => {
+    setFloatingWindows({
+      quickActions: { open: false, anchorEl: null },
+      bulkOperations: { open: false, anchorEl: null },
+      dataManagement: { open: false, anchorEl: null },
+      settings: { open: false, anchorEl: null }
+    });
+  }, []);
+
+  // ===== MANUAL REFRESH HANDLERS =====
+  const handleManualRefresh = useCallback(async (type) => {
+    setRefreshing(prev => ({ ...prev, [type]: true }));
+
+    try {
+      switch (type) {
+        case 'attributes':
+          await magentoApi.getProductAttributes();
+          toast.success('Attributes refreshed successfully');
+          break;
+        case 'categories':
+          await magentoApi.getCategories();
+          toast.success('Categories refreshed successfully');
+          break;
+        case 'brands':
+          await magentoApi.getBrands();
+          toast.success('Brands refreshed successfully');
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error(`Error refreshing ${type}:`, error);
+      toast.error(`Failed to refresh ${type}`);
+    } finally {
+      setRefreshing(prev => ({ ...prev, [type]: false }));
+    }
+  }, []);
   const [brands, setBrands] = useState([]);
   const [brandsLoading, setBrandsLoading] = useState(false);
 
@@ -728,6 +812,173 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
         onClose={() => setBrandManagementOpen(false)}
         onBrandsUpdated={handleBrandsUpdated}
       />
+
+      {/* Floating Action Buttons */}
+      <Box sx={{ position: 'fixed', bottom: 24, right: 24, zIndex: 1000 }}>
+        <Stack spacing={2}>
+          {/* Quick Actions FAB */}
+          <Tooltip title="Quick Actions" placement="left">
+            <Fab
+              color="primary"
+              size="medium"
+              onClick={(e) => openFloatingWindow('quickActions', e)}
+            >
+              <AddIcon />
+            </Fab>
+          </Tooltip>
+
+          {/* Bulk Operations FAB */}
+          <Tooltip title="Bulk Operations" placement="left">
+            <Fab
+              color="secondary"
+              size="medium"
+              onClick={(e) => openFloatingWindow('bulkOperations', e)}
+              disabled={selectedProducts.length === 0}
+            >
+              <SettingsIcon />
+            </Fab>
+          </Tooltip>
+
+          {/* Data Management FAB */}
+          <Tooltip title="Data Management" placement="left">
+            <Fab
+              color="info"
+              size="medium"
+              onClick={(e) => openFloatingWindow('dataManagement', e)}
+            >
+              <RefreshIcon />
+            </Fab>
+          </Tooltip>
+        </Stack>
+      </Box>
+
+      {/* Quick Actions Popover */}
+      <Popover
+        open={floatingWindows.quickActions.open}
+        anchorEl={floatingWindows.quickActions.anchorEl}
+        onClose={() => closeFloatingWindow('quickActions')}
+        anchorOrigin={{ vertical: 'center', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'center', horizontal: 'right' }}
+      >
+        <Paper sx={{ p: 2, minWidth: 250 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+            <Typography variant="h6">Quick Actions</Typography>
+            <IconButton size="small" onClick={() => closeFloatingWindow('quickActions')}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <List dense>
+            <ListItem button onClick={() => { /* Add Product */ closeFloatingWindow('quickActions'); }}>
+              <ListItemIcon><AddIcon /></ListItemIcon>
+              <ListItemText primary="Add Product" />
+            </ListItem>
+            <ListItem button onClick={() => { /* Import CSV */ closeFloatingWindow('quickActions'); }}>
+              <ListItemIcon><UploadIcon /></ListItemIcon>
+              <ListItemText primary="Import CSV" />
+            </ListItem>
+            <ListItem button onClick={() => { /* Export Data */ closeFloatingWindow('quickActions'); }}>
+              <ListItemIcon><DownloadIcon /></ListItemIcon>
+              <ListItemText primary="Export Data" />
+            </ListItem>
+            <ListItem button onClick={() => { /* Sync All */ closeFloatingWindow('quickActions'); }}>
+              <ListItemIcon><SyncIcon /></ListItemIcon>
+              <ListItemText primary="Sync All" />
+            </ListItem>
+          </List>
+        </Paper>
+      </Popover>
+
+      {/* Bulk Operations Popover */}
+      <Popover
+        open={floatingWindows.bulkOperations.open}
+        anchorEl={floatingWindows.bulkOperations.anchorEl}
+        onClose={() => closeFloatingWindow('bulkOperations')}
+        anchorOrigin={{ vertical: 'center', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'center', horizontal: 'right' }}
+      >
+        <Paper sx={{ p: 2, minWidth: 250 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+            <Typography variant="h6">Bulk Operations</Typography>
+            <IconButton size="small" onClick={() => closeFloatingWindow('bulkOperations')}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Alert severity="info" sx={{ mb: 2 }}>
+            {selectedProducts.length} products selected
+          </Alert>
+          <List dense>
+            <ListItem button onClick={() => { /* Bulk Activate */ closeFloatingWindow('bulkOperations'); }}>
+              <ListItemIcon><ActivateIcon color="success" /></ListItemIcon>
+              <ListItemText primary="Activate Selected" />
+            </ListItem>
+            <ListItem button onClick={() => { /* Bulk Deactivate */ closeFloatingWindow('bulkOperations'); }}>
+              <ListItemIcon><DeactivateIcon color="error" /></ListItemIcon>
+              <ListItemText primary="Deactivate Selected" />
+            </ListItem>
+            <ListItem button onClick={() => { /* Assign Categories */ closeFloatingWindow('bulkOperations'); }}>
+              <ListItemIcon><CategoryIcon /></ListItemIcon>
+              <ListItemText primary="Assign Categories" />
+            </ListItem>
+            <ListItem button onClick={() => { /* Update Attributes */ closeFloatingWindow('bulkOperations'); }}>
+              <ListItemIcon><AttributeIcon /></ListItemIcon>
+              <ListItemText primary="Update Attributes" />
+            </ListItem>
+          </List>
+        </Paper>
+      </Popover>
+
+      {/* Data Management Popover */}
+      <Popover
+        open={floatingWindows.dataManagement.open}
+        anchorEl={floatingWindows.dataManagement.anchorEl}
+        onClose={() => closeFloatingWindow('dataManagement')}
+        anchorOrigin={{ vertical: 'center', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'center', horizontal: 'right' }}
+      >
+        <Paper sx={{ p: 2, minWidth: 280 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+            <Typography variant="h6">Data Management</Typography>
+            <IconButton size="small" onClick={() => closeFloatingWindow('dataManagement')}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Manually refresh data from Magento
+          </Typography>
+          <List dense>
+            <ListItem
+              button
+              onClick={() => { handleManualRefresh('attributes'); closeFloatingWindow('dataManagement'); }}
+              disabled={refreshing.attributes}
+            >
+              <ListItemIcon>
+                {refreshing.attributes ? <CircularProgress size={20} /> : <AttributeIcon />}
+              </ListItemIcon>
+              <ListItemText primary="Refresh Attributes" />
+            </ListItem>
+            <ListItem
+              button
+              onClick={() => { handleManualRefresh('categories'); closeFloatingWindow('dataManagement'); }}
+              disabled={refreshing.categories}
+            >
+              <ListItemIcon>
+                {refreshing.categories ? <CircularProgress size={20} /> : <CategoryIcon />}
+              </ListItemIcon>
+              <ListItemText primary="Refresh Categories" />
+            </ListItem>
+            <ListItem
+              button
+              onClick={() => { handleManualRefresh('brands'); closeFloatingWindow('dataManagement'); }}
+              disabled={refreshing.brands}
+            >
+              <ListItemIcon>
+                {refreshing.brands ? <CircularProgress size={20} /> : <BrandIcon />}
+              </ListItemIcon>
+              <ListItemText primary="Refresh Brands" />
+            </ListItem>
+          </List>
+        </Paper>
+      </Popover>
     </Box>
   );
 };

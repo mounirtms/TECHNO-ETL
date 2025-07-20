@@ -14,7 +14,6 @@
 
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { Box, Skeleton, Fade } from '@mui/material';
 
 // Unified Grid System
 import UnifiedGrid from '../../common/UnifiedGrid';
@@ -31,7 +30,6 @@ import ProductService from '../../../services/ProductService';
 import CSVImportDialog from '../../dialogs/CSVImportDialog';
 import CatalogProcessorDialog from '../../dialogs/CatalogProcessorDialog';
 import ProductInfoDialog from '../../common/ProductInfoDialog';
-import BulkCategoryAssignmentDialog from '../../dialogs/BulkCategoryAssignmentDialog';
 
 /**
  * Optimized Magento Products Grid Component
@@ -117,82 +115,7 @@ const ProductsGrid = () => {
     }
   }, [localProducts.length]);
 
-  // ===== BULK OPERATIONS STATE =====
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [bulkOperationOpen, setBulkOperationOpen] = useState(false);
-  const [categoryAssignmentOpen, setCategoryAssignmentOpen] = useState(false);
-  const [selectedProductForCategories, setSelectedProductForCategories] = useState(null);
 
-  // ===== CATEGORY ASSIGNMENT HANDLER =====
-  const handleCategoryAssignment = useCallback((product) => {
-    setSelectedProductForCategories(product);
-    setCategoryAssignmentOpen(true);
-  }, []);
-
-  const handleBulkOperation = useCallback((operation) => {
-    if (selectedRows.length === 0) {
-      toast.warning('Please select products first');
-      return;
-    }
-
-    switch (operation) {
-      case 'activate':
-        handleBulkStatusChange(1);
-        break;
-      case 'deactivate':
-        handleBulkStatusChange(0);
-        break;
-      case 'delete':
-        handleBulkDelete();
-        break;
-      case 'categories':
-        setCategoryAssignmentOpen(true);
-        break;
-      default:
-        break;
-    }
-  }, [selectedRows]);
-
-  const handleBulkStatusChange = useCallback(async (status) => {
-    try {
-      setLoading(true);
-      const statusText = status === 1 ? 'activated' : 'deactivated';
-
-      // Here you would call the bulk update API
-      // await magentoApi.bulkUpdateProducts(selectedRows, { status });
-
-      toast.success(`${selectedRows.length} products ${statusText}`);
-      setSelectedRows([]);
-      fetchProducts();
-    } catch (error) {
-      console.error('Bulk status update error:', error);
-      toast.error('Failed to update product status');
-    } finally {
-      setLoading(false);
-    }
-  }, [selectedRows, fetchProducts]);
-
-  const handleBulkDelete = useCallback(async () => {
-    if (!window.confirm(`Are you sure you want to delete ${selectedRows.length} products?`)) {
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      // Here you would call the bulk delete API
-      // await magentoApi.bulkDeleteProducts(selectedRows);
-
-      toast.success(`${selectedRows.length} products deleted`);
-      setSelectedRows([]);
-      fetchProducts();
-    } catch (error) {
-      console.error('Bulk delete error:', error);
-      toast.error('Failed to delete products');
-    } finally {
-      setLoading(false);
-    }
-  }, [selectedRows, fetchProducts]);
 
   useEffect(() => {
     fetchProducts();
@@ -295,43 +218,15 @@ const ProductsGrid = () => {
     { title: 'Local Products', value: stats.localProducts, color: 'info' }
   ], [stats]);
 
-  // ===== CUSTOM ACTIONS =====
+  // ===== COMPACT CUSTOM ACTIONS =====
   const customActions = useMemo(() => [
     {
-      label: 'Import CSV',
-      icon: 'upload',
-      onClick: () => setCsvImportOpen(true)
-    },
-    {
-      label: 'Process Catalog',
-      icon: 'settings',
-      onClick: () => setCatalogProcessorOpen(true)
-    },
-    {
-      label: 'Sync All',
+      label: 'Sync',
       icon: 'sync',
       onClick: handleSync,
       disabled: localProducts.length === 0
-    },
-    {
-      label: 'Bulk Activate',
-      icon: 'check_circle',
-      onClick: () => handleBulkOperation('activate'),
-      disabled: selectedRows.length === 0
-    },
-    {
-      label: 'Bulk Deactivate',
-      icon: 'cancel',
-      onClick: () => handleBulkOperation('deactivate'),
-      disabled: selectedRows.length === 0
-    },
-    {
-      label: 'Bulk Categories',
-      icon: 'category',
-      onClick: () => handleBulkOperation('categories'),
-      disabled: selectedRows.length === 0
     }
-  ], [handleSync, localProducts.length, selectedRows.length, handleBulkOperation]);
+  ], [handleSync, localProducts.length]);
 
   return (
     <>
@@ -386,17 +281,7 @@ const ProductsGrid = () => {
         onProcessComplete={() => fetchProducts()}
       />
 
-      {/* Bulk Category Assignment Dialog */}
-      <BulkCategoryAssignmentDialog
-        open={categoryAssignmentOpen}
-        onClose={() => setCategoryAssignmentOpen(false)}
-        selectedProducts={selectedRows.map(sku => data.find(p => p.sku === sku)).filter(Boolean)}
-        onAssignmentComplete={() => {
-          setCategoryAssignmentOpen(false);
-          setSelectedRows([]);
-          fetchProducts();
-        }}
-      />
+
 
     </>
   );
