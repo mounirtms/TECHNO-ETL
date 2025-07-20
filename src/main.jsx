@@ -27,6 +27,7 @@ import './index.css';
 const Layout = lazy(() => import('./components/Layout/Layout'));
 const Login = lazy(() => import('./pages/Login'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
+const ProductManagementPage = lazy(() => import('./pages/ProductManagementPage'));
 
 // Loading Fallback Component
 const LoadingFallback = () => (
@@ -90,6 +91,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                                     <Route path="/" element={<Layout />}>
                                         <Route index element={<Navigate to="/dashboard" replace />} />
                                         <Route path="dashboard" element={<Dashboard />} />
+                                        <Route path="products" element={<ProductManagementPage />} />
                                     </Route>
                                 </Route>
 

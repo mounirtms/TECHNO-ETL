@@ -13,7 +13,12 @@ import {
   GetApp as ExportIcon,
   Sync as SyncIcon
 } from '@mui/icons-material';
+// Unified Grid System
 import UnifiedGrid from '../../common/UnifiedGrid';
+import { getStandardGridProps, getStandardToolbarConfig } from '../../../config/gridConfig';
+import { ColumnFactory } from '../../../utils/ColumnFactory.jsx';
+
+// Services
 import magentoApi from '../../../services/magentoApi';
 import { toast } from 'react-toastify';
 
@@ -128,66 +133,34 @@ const CustomersGrid = () => {
 
   // ===== 4. COLUMN DEFINITIONS =====
   const columns = useMemo(() => [
-    {
-      field: 'id',
+    ColumnFactory.number('id', {
       headerName: 'ID',
-      width: 80,
-      sortable: true
-    },
-    {
-      field: 'firstname',
+      width: 80
+    }),
+    ColumnFactory.text('firstname', {
       headerName: 'First Name',
-      width: 150,
-      sortable: true,
-      filterable: true
-    },
-    {
-      field: 'lastname',
+      width: 150
+    }),
+    ColumnFactory.text('lastname', {
       headerName: 'Last Name',
-      width: 150,
-      sortable: true,
-      filterable: true
-    },
-    {
-      field: 'email',
+      width: 150
+    }),
+    ColumnFactory.text('email', {
       headerName: 'Email',
-      width: 250,
-      sortable: true,
-      filterable: true
-    },
-    {
-      field: 'is_active',
+      width: 250
+    }),
+    ColumnFactory.boolean('is_active', {
       headerName: 'Status',
-      width: 120,
-      renderCell: (params) => (
-        <Chip
-          label={params.value === 1 ? 'Active' : 'Inactive'}
-          color={params.value === 1 ? 'success' : 'default'}
-          size="small"
-          icon={params.value === 1 ? <ActiveIcon /> : <InactiveIcon />}
-        />
-      )
-    },
-    {
-      field: 'orders_count',
+      width: 120
+    }),
+    ColumnFactory.number('orders_count', {
       headerName: 'Orders',
-      width: 100,
-      type: 'number',
-      renderCell: (params) => (
-        <Chip
-          label={params.value || 0}
-          color={params.value > 0 ? 'primary' : 'default'}
-          size="small"
-        />
-      )
-    },
-    {
-      field: 'created_at',
+      width: 100
+    }),
+    ColumnFactory.dateTime('created_at', {
       headerName: 'Registered',
-      width: 180,
-      valueFormatter: (params) => 
-        params.value ? new Date(params.value).toLocaleString() : 'N/A'
-    }
+      width: 180
+    })
   ], []);
 
   // ===== 5. TOOLBAR CONFIGURATION =====
@@ -224,30 +197,33 @@ const CustomersGrid = () => {
   ];
 
   // ===== 6. CONTEXT MENU ACTIONS =====
-  const contextMenuActions = {
+  const contextMenuActions = useMemo(() => ({
     view: {
+      enabled: true,
       label: 'View Customer',
-      icon: <ViewIcon />,
+      icon: 'visibility',
       onClick: (row) => {
         setSelectedCustomer(row);
         setViewDialogOpen(true);
       }
     },
     edit: {
+      enabled: true,
       label: 'Edit Customer',
-      icon: <EditIcon />,
+      icon: 'edit',
       onClick: (row) => {
         setSelectedCustomer(row);
         setEditDialogOpen(true);
       }
     },
     delete: {
+      enabled: true,
       label: 'Delete Customer',
-      icon: <DeleteIcon />,
+      icon: 'delete',
       onClick: (row) => handleDelete([row.id]),
       color: 'error'
     }
-  };
+  }), [handleDelete]);
 
   // ===== 7. STATS CARDS =====
   const statusCards = [
@@ -293,56 +269,43 @@ const CustomersGrid = () => {
   return (
     <Box sx={{ height: '100%', width: '100%' }}>
       <UnifiedGrid
-        gridName="CustomersGrid"
-        columns={columns}
-        data={data}
-        loading={loading}
-        
-        // Feature toggles
-        enableCache={true}
-        enableI18n={true}
-        enableRTL={false}
-        enableSelection={true}
-        enableSorting={true}
-        enableFiltering={true}
-        enableColumnReordering={true}
-        enableColumnResizing={true}
-        
-        // View options
-        showStatsCards={true}
-        showCardView={true}
-        defaultViewMode="grid"
-        gridCards={statusCards}
-        totalCount={stats.totalCustomers}
-        defaultPageSize={25}
-        
-        // Toolbar configuration
-        toolbarConfig={toolbarConfig}
-        customActions={customActions}
-        
-        // Context menu
-        contextMenuActions={contextMenuActions}
-        
-        // Filter configuration
-        filterOptions={filterOptions}
-        currentFilter={currentFilter}
-        onFilterChange={handleFilterChange}
-        
-        // Event handlers
-        onRefresh={fetchCustomers}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onSelectionChange={setSelectedRows}
-        onExport={(exportData, selectedRows) => {
-          console.log('Exporting customers:', exportData);
-          toast.success(`Exported ${exportData.length} customers`);
-        }}
-        
-        // Row configuration
-        getRowId={(row) => row.id}
-        
-        // Error handling
-        onError={(error) => toast.error(error.message)}
+        {...getStandardGridProps('magentoCustomers', {
+          gridName: "CustomersGrid",
+          columns,
+          data,
+          loading,
+          totalCount: stats.totalCustomers,
+
+          // Event handlers
+          onRefresh: fetchCustomers,
+          onRowDoubleClick: handleEdit,
+          onEdit: handleEdit,
+          onDelete: handleDelete,
+          onSelectionChange: setSelectedRows,
+          onExport: (exportData, selectedRows) => {
+            console.log('Exporting customers:', exportData);
+            toast.success(`Exported ${exportData.length} customers`);
+          },
+
+          // Configuration
+          toolbarConfig: getStandardToolbarConfig('magentoCustomers'),
+          contextMenuActions,
+
+          // Stats
+          showStatsCards: true,
+          gridCards: statusCards,
+
+          // Filter configuration
+          filterOptions,
+          currentFilter,
+          onFilterChange: handleFilterChange,
+
+          // Row configuration
+          getRowId: (row) => row.id,
+
+          // Error handling
+          onError: (error) => toast.error(error.message)
+        })}
       />
 
       {/* Add dialogs here when needed */}

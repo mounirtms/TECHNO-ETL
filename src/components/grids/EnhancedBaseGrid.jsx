@@ -1,5 +1,37 @@
+/**
+ * DEPRECATED: EnhancedBaseGrid Component
+ *
+ * This component is deprecated and will be removed in a future version.
+ * Please use UnifiedGrid from '../common/UnifiedGrid' instead.
+ *
+ * UnifiedGrid already includes all the features from EnhancedBaseGrid:
+ * - Advanced caching with useGridCache
+ * - Comprehensive state management with useGridState
+ * - i18n and RTL support
+ * - Context menus and floating actions
+ * - Performance optimizations
+ *
+ * @deprecated Use UnifiedGrid instead
+ */
+
 // Enhanced BaseGrid with comprehensive features, caching, i18n, RTL support
 import React, { useState, useCallback, useMemo, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+
+// Show deprecation warning in development
+if (process.env.NODE_ENV === 'development') {
+  console.warn(
+    'EnhancedBaseGrid is deprecated. Please use UnifiedGrid instead. ' +
+    'UnifiedGrid already includes all EnhancedBaseGrid features.'
+  );
+}
+
+// Throw error in production to prevent usage
+if (process.env.NODE_ENV === 'production') {
+  throw new Error(
+    'EnhancedBaseGrid is deprecated and disabled in production. ' +
+    'Please migrate to UnifiedGrid from ../common/UnifiedGrid'
+  );
+}
 import { DataGrid } from '@mui/x-data-grid';
 import { 
   Box, 

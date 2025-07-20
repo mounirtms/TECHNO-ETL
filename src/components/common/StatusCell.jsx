@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Chip } from '@mui/material';
 
-// Define the StatusCell component
-export const StatusCell = ({ value, statusColors = {}, className }) => {
+// Define the StatusCell component with React.memo for performance
+export const StatusCell = memo(({ value, statusColors = {}, className }) => {
     // Get the Material-UI theme
     const theme = useTheme();
 
@@ -42,4 +42,9 @@ export const StatusCell = ({ value, statusColors = {}, className }) => {
             }}
         />
     );
-};
+}, (prevProps, nextProps) => {
+    // Custom comparison for better performance
+    return prevProps.value === nextProps.value &&
+           prevProps.className === nextProps.className &&
+           JSON.stringify(prevProps.statusColors) === JSON.stringify(nextProps.statusColors);
+});

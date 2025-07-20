@@ -17,11 +17,13 @@ import StocksGrid from '../components/grids/magento/StocksGrid';
 import SourcesGrid from '../components/grids/magento/SourcesGrid';
 import CegidGrid from '../components/grids/CegidGrid';
 import GridTestPage from '../pages/GridTestPage';
+import ProductManagementPage from '../pages/ProductManagementPage';
 
 // Component mapping
 const COMPONENT_MAP = {
     Dashboard: Dashboard,
     ProductsGrid: ProductsGrid,
+    ProductCatalog: ProductManagementPage,
     MDMProductsGrid: MDMProductsGrid,
     CustomersGrid: CustomersGrid,
     OrdersGrid: OrdersGrid,

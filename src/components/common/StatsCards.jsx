@@ -179,44 +179,68 @@ const StatsCards = ({ cards }) => {
                 {cards.map((card, index) => {
                     const Icon = card.icon;
 
-                    // Compact and responsive icon rendering
+                    // Professional and responsive icon rendering
                     const renderIcon = () => {
-                        // Debug logging
-                        console.log('StatsCards renderIcon:', {
-                            cardTitle: card.title,
-                            iconType: typeof Icon,
-                            iconValue: Icon,
-                            isFunction: typeof Icon === 'function',
-                            isValidElement: React.isValidElement(Icon)
-                        });
-
                         // Handle Material-UI icon components (functions)
                         if (typeof Icon === 'function') {
                             return <Icon sx={{
-                                fontSize: { xs: 14, sm: 16, md: 18 }, // Slightly larger but still professional
+                                fontSize: { xs: 16, sm: 18, md: 20 }, // Professional sizing
                                 opacity: 0.9,
                                 color: 'inherit'
                             }} />;
                         }
 
-                        // Handle React elements
+                        // Handle React elements (JSX icons)
                         if (React.isValidElement(Icon)) {
                             return React.cloneElement(Icon, {
                                 sx: {
-                                    fontSize: { xs: 14, sm: 16, md: 18 }, // Professional sizing
+                                    fontSize: { xs: 16, sm: 18, md: 20 },
                                     opacity: 0.9,
-                                    color: 'inherit'
+                                    color: 'inherit',
+                                    ...Icon.props?.sx
                                 }
                             });
                         }
 
-                        // Enhanced fallback with proper icon
-                        console.warn('StatsCards: Using fallback icon for', card.title, 'Icon type:', typeof Icon);
+                        // Handle icon objects (like {type: 'TrendingUp'})
+                        if (Icon && typeof Icon === 'object' && Icon.type) {
+                            // Try to render the icon type as a string
+                            return (
+                                <Box sx={{
+                                    fontSize: { xs: 16, sm: 18, md: 20 },
+                                    opacity: 0.9,
+                                    color: 'inherit',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}>
+                                    📊
+                                </Box>
+                            );
+                        }
+
+                        // Handle string icons (emoji or text)
+                        if (typeof Icon === 'string') {
+                            return (
+                                <Box sx={{
+                                    fontSize: { xs: 16, sm: 18, md: 20 },
+                                    opacity: 0.9,
+                                    color: 'inherit'
+                                }}>
+                                    {Icon}
+                                </Box>
+                            );
+                        }
+
+                        // Professional fallback icon
                         return (
                             <Box sx={{
-                                fontSize: { xs: 14, sm: 16, md: 18 },
+                                fontSize: { xs: 16, sm: 18, md: 20 },
                                 opacity: 0.9,
-                                color: 'inherit'
+                                color: 'inherit',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
                             }}>
                                 📊
                             </Box>

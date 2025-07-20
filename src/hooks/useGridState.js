@@ -1,8 +1,8 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 
 /**
- * Enhanced Grid State Management Hook
- * Manages all grid state with persistence and synchronization
+ * Enhanced Grid State Management Hook with Performance Optimizations
+ * Manages all grid state with persistence, synchronization, and memoization
  */
 export const useGridState = (gridName, options = {}) => {
   const {
@@ -11,6 +11,18 @@ export const useGridState = (gridName, options = {}) => {
     onStateChange,
     initialState = {}
   } = options;
+
+  // Performance optimization: memoize options to prevent unnecessary re-renders
+  const memoizedOptions = useMemo(() => ({
+    enablePersistence,
+    serverSide,
+    onStateChange,
+    initialState
+  }), [enablePersistence, serverSide, onStateChange, initialState]);
+
+  // Debounce timer for state persistence
+  const persistenceTimerRef = useRef(null);
+  const lastPersistedStateRef = useRef(null);
 
   // Enhanced state management with better defaults
   const [paginationModel, setPaginationModelState] = useState(
@@ -80,13 +92,31 @@ export const useGridState = (gridName, options = {}) => {
   // Persistence helpers
   const getStorageKey = useCallback((key) => `grid_${gridName}_${key}`, [gridName]);
 
+  // Debounced save to storage for performance
   const saveToStorage = useCallback((key, value) => {
     if (!enablePersistence || !gridName) return;
-    try {
-      localStorage.setItem(getStorageKey(key), JSON.stringify(value));
-    } catch (error) {
-      console.warn(`Failed to save grid state for ${key}:`, error);
+
+    // Clear existing timer
+    if (persistenceTimerRef.current) {
+      clearTimeout(persistenceTimerRef.current);
     }
+
+    // Debounce the save operation
+    persistenceTimerRef.current = setTimeout(() => {
+      try {
+        const serializedValue = JSON.stringify(value);
+        // Only save if value actually changed
+        if (lastPersistedStateRef.current?.[key] !== serializedValue) {
+          localStorage.setItem(getStorageKey(key), serializedValue);
+          if (!lastPersistedStateRef.current) {
+            lastPersistedStateRef.current = {};
+          }
+          lastPersistedStateRef.current[key] = serializedValue;
+        }
+      } catch (error) {
+        console.warn(`Failed to save grid state for ${key}:`, error);
+      }
+    }, 300); // 300ms debounce
   }, [enablePersistence, gridName, getStorageKey]);
 
   const loadFromStorage = useCallback((key, defaultValue) => {

@@ -391,10 +391,14 @@ class MagentoApi {
       });
 
       console.log('Fetching customers with criteria:', searchCriteria);
-      
-      const response = await this.get('/customers/search', {
-        params: searchCriteria
-      });
+
+      // Add required fieldName parameter for Magento API
+      const requestParams = {
+        params: searchCriteria,
+        fieldName: params.fieldName || 'email'
+      };
+
+      const response = await this.get('/customers/search', requestParams);
 
       if (response?.data?.items) {
         const enrichedResponse = {
@@ -498,10 +502,119 @@ class MagentoApi {
     }
   }
 
+  // ===== PRODUCT ATTRIBUTES MANAGEMENT =====
+
+  async getProductAttributes(params = {}) {
+    try {
+      const searchCriteria = this.buildSearchCriteria(params);
+      const requestParams = {
+        ...searchCriteria,
+        fieldName: params.fieldName || 'attribute_code'
+      };
+      const response = await this.get('/products/attributes', requestParams);
+      return this.formatResponse(response);
+    } catch (error) {
+      console.error('Error fetching product attributes:', error);
+      toast.warn('Using mock data: Unable to fetch attributes from API');
+      return this.getMockProductAttributes();
+    }
+  }
+
+  async getProductAttribute(attributeCode) {
+    try {
+      const response = await this.get(`/products/attributes/${attributeCode}`);
+      return this.formatResponse(response);
+    } catch (error) {
+      console.error('Error fetching product attribute:', error);
+      return this.getMockProductAttribute(attributeCode);
+    }
+  }
+
+  async updateProductAttribute(attributeCode, attributeData) {
+    try {
+      const response = await this.put(`/products/attributes/${attributeCode}`, attributeData);
+      toast.success(`Attribute ${attributeCode} updated successfully`);
+      return this.formatResponse(response);
+    } catch (error) {
+      console.error('Error updating product attribute:', error);
+      toast.error(`Failed to update attribute ${attributeCode}`);
+      throw error;
+    }
+  }
+
+  async createProductAttribute(attributeData) {
+    try {
+      const response = await this.post('/products/attributes', attributeData);
+      toast.success(`Attribute ${attributeData.attribute_code} created successfully`);
+      return this.formatResponse(response);
+    } catch (error) {
+      console.error('Error creating product attribute:', error);
+      toast.error('Failed to create attribute');
+      throw error;
+    }
+  }
+
+  // ===== PRODUCT CATEGORIES MANAGEMENT =====
+
+  async getProductCategories(productId) {
+    try {
+      const response = await this.get(`/products/${productId}/categories`);
+      return this.formatResponse(response);
+    } catch (error) {
+      console.error('Error fetching product categories:', error);
+      return this.getMockProductCategories(productId);
+    }
+  }
+
+  async assignProductToCategories(productId, categoryIds) {
+    try {
+      const response = await this.put(`/products/${productId}/categories`, {
+        categoryIds: categoryIds
+      });
+      toast.success('Product categories updated successfully');
+      return this.formatResponse(response);
+    } catch (error) {
+      console.error('Error assigning product to categories:', error);
+      toast.error('Failed to update product categories');
+      throw error;
+    }
+  }
+
+  // ===== PRODUCT ATTRIBUTE VALUES =====
+
+  async getProductAttributeValues(productId, attributeCode) {
+    try {
+      const response = await this.get(`/products/${productId}/attributes/${attributeCode}`);
+      return this.formatResponse(response);
+    } catch (error) {
+      console.error('Error fetching product attribute values:', error);
+      return this.getMockAttributeValue(productId, attributeCode);
+    }
+  }
+
+  async updateProductAttributeValue(productId, attributeCode, value) {
+    try {
+      const response = await this.put(`/products/${productId}/attributes/${attributeCode}`, {
+        value: value
+      });
+      toast.success(`Product attribute ${attributeCode} updated`);
+      return this.formatResponse(response);
+    } catch (error) {
+      console.error('Error updating product attribute value:', error);
+      toast.error(`Failed to update ${attributeCode}`);
+      throw error;
+    }
+  }
+
   async getCategories(params = {}) {
     try {
       const searchCriteria = this.buildSearchCriteria(params);
-      const response = await this.get('/categories/list', searchCriteria);
+      // Add required fieldName parameter for Magento API
+      const requestParams = {
+        ...searchCriteria,
+        fieldName: params.fieldName || 'name'
+      };
+      const response = await this.get('/categories', requestParams);
       return this.formatResponse(response);
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -562,11 +675,40 @@ class MagentoApi {
       if (cachedData) {
         console.log('Using cached CMS pages data');
         return cachedData;
-      } 
-      const searchCriteria = this.buildSearchCriteria(params);
-      console.log('Fetching products with criteria:', searchCriteria);
-      
-      const response = await this.get('/cmsPage/search', searchCriteria);
+      }
+
+      // Build proper search criteria to fix "%fieldName" error
+      const searchCriteria = params.searchCriteria || {
+        filterGroups: [],
+        pageSize: 25,
+        currentPage: 1,
+        sortOrders: [{ field: 'creation_time', direction: 'DESC' }]
+      };
+
+      // Ensure all filter groups have proper field names
+      if (searchCriteria.filterGroups) {
+        searchCriteria.filterGroups.forEach(group => {
+          if (group.filters) {
+            group.filters.forEach(filter => {
+              // Ensure field name is properly set and not a template variable
+              if (!filter.field || filter.field.includes('%') || filter.field.includes('fieldName')) {
+                console.warn('⚠️ Invalid field name detected:', filter.field);
+                filter.field = 'title'; // Default to title field
+              }
+            });
+          }
+        });
+      }
+
+      console.log('🔍 Fetching CMS pages with criteria:', searchCriteria);
+
+      // Add required fieldName parameter for Magento API
+      const requestParams = {
+        searchCriteria,
+        fieldName: params.fieldName || 'title'
+      };
+
+      const response = await this.get('/cmsPage/search', requestParams);
 
       if (response && response.items) {
         this.setCachedData(cacheKey, response);
@@ -575,30 +717,67 @@ class MagentoApi {
 
       throw new Error('No data returned from API');
     } catch (error) {
-      console.error('Failed to fetch CMS pages:', error);
+      console.error('❌ Failed to fetch CMS pages:', error);
       const localData = this.getLocalResponse('cmsPages');
-      console.log('Using local CMS pages data:', localData);
+      console.log('📦 Using local CMS pages data:', localData);
       return localData;
     }
   }
 
-  async getCmsBlocks(searchCriteria = {}) {
+  async getCmsBlocks(params = {}) {
     try {
-      // Ensure that searchCriteria includes required fields
-      const params = {
-        searchCriteria: {
-          filterGroups: searchCriteria.filterGroups || [],
-          pageSize: searchCriteria.pageSize || 10,
-          currentPage: searchCriteria.currentPage || 1
-        }
+      const cacheKey = this.getCacheKey('/cmsBlock/search', params);
+      const cachedData = this.getCachedData(cacheKey);
+      if (cachedData) {
+        console.log('Using cached CMS blocks data');
+        return cachedData;
+      }
+
+      // Build proper search criteria to fix "%fieldName" error
+      const searchCriteria = params.searchCriteria || {
+        filterGroups: [],
+        pageSize: 25,
+        currentPage: 1,
+        sortOrders: [{ field: 'creation_time', direction: 'DESC' }]
       };
-      const response = await this.get('/cmsBlock/search', { params });
-      return {
+
+      // Ensure all filter groups have proper field names
+      if (searchCriteria.filterGroups) {
+        searchCriteria.filterGroups.forEach(group => {
+          if (group.filters) {
+            group.filters.forEach(filter => {
+              // Ensure field name is properly set and not a template variable
+              if (!filter.field || filter.field.includes('%') || filter.field.includes('fieldName')) {
+                console.warn('⚠️ Invalid field name detected:', filter.field);
+                filter.field = 'title'; // Default to title field
+              }
+            });
+          }
+        });
+      }
+
+      console.log('🔍 Fetching CMS blocks with criteria:', searchCriteria);
+
+      // Add required fieldName parameter for Magento API
+      const requestParams = {
+        searchCriteria,
+        fieldName: params.fieldName || 'title'
+      };
+
+      const response = await this.get('/cmsBlock/search', requestParams);
+
+      const result = {
         items: response.items || [],
         total_count: response.total_count || 0,
       };
+
+      this.setCachedData(cacheKey, result);
+      return result;
     } catch (error) {
-      throw new Error(`Failed to fetch CMS blocks: ${error.message}`);
+      console.error('❌ Failed to fetch CMS blocks:', error);
+      const localData = this.getLocalResponse('cmsBlocks');
+      console.log('📦 Using local CMS blocks data:', localData);
+      return localData;
     }
   }
 
@@ -735,6 +914,343 @@ class MagentoApi {
     };
   }
 
+  // ===== BRANDS MANAGEMENT =====
+
+  async getBrands(useCache = true) {
+    const cacheKey = 'brands_mgs_brand';
+
+    if (useCache) {
+      const cachedBrands = this.getCachedData(cacheKey);
+      if (cachedBrands) {
+        console.log('📦 Using cached brands data');
+        return cachedBrands;
+      }
+    }
+
+    try {
+      console.log('🔄 Fetching brands from additional_attributes...');
+
+      // Try to get brands from additional_attributes with code 'mgs_brand'
+      const response = await this.get('/products/attributes/mgs_brand/options');
+      const brands = this.formatResponse(response);
+
+      // Cache the brands data
+      this.setCachedData(cacheKey, brands);
+      console.log('✅ Brands cached successfully');
+
+      return brands;
+    } catch (error) {
+      console.error('❌ Error fetching brands:', error);
+      console.log('📦 Using mock brands data');
+
+      const mockBrands = this.getMockBrands();
+      this.setCachedData(cacheKey, mockBrands);
+      return mockBrands;
+    }
+  }
+
+  async addBrand(brandData) {
+    try {
+      console.log('➕ Adding new brand:', brandData);
+
+      const response = await this.post('/products/attributes/mgs_brand/options', {
+        option: {
+          label: brandData.label,
+          value: brandData.value || brandData.label.toLowerCase().replace(/\s+/g, '_'),
+          sort_order: brandData.sort_order || 0
+        }
+      });
+
+      // Clear cache to force refresh
+      this.clearCachedData('brands_mgs_brand');
+
+      toast.success(`Brand "${brandData.label}" added successfully`);
+      return this.formatResponse(response);
+    } catch (error) {
+      console.error('❌ Error adding brand:', error);
+      toast.error('Failed to add brand');
+      throw error;
+    }
+  }
+
+  async updateBrand(brandId, brandData) {
+    try {
+      console.log('✏️ Updating brand:', brandId, brandData);
+
+      const response = await this.put(`/products/attributes/mgs_brand/options/${brandId}`, {
+        option: brandData
+      });
+
+      // Clear cache to force refresh
+      this.clearCachedData('brands_mgs_brand');
+
+      toast.success(`Brand updated successfully`);
+      return this.formatResponse(response);
+    } catch (error) {
+      console.error('❌ Error updating brand:', error);
+      toast.error('Failed to update brand');
+      throw error;
+    }
+  }
+
+  async deleteBrand(brandId) {
+    try {
+      console.log('🗑️ Deleting brand:', brandId);
+
+      await this.delete(`/products/attributes/mgs_brand/options/${brandId}`);
+
+      // Clear cache to force refresh
+      this.clearCachedData('brands_mgs_brand');
+
+      toast.success('Brand deleted successfully');
+    } catch (error) {
+      console.error('❌ Error deleting brand:', error);
+      toast.error('Failed to delete brand');
+      throw error;
+    }
+  }
+
+  // ===== ADDITIONAL ATTRIBUTES MANAGEMENT =====
+
+  async getAdditionalAttributes(productId) {
+    try {
+      console.log('🔄 Fetching additional attributes for product:', productId);
+
+      const response = await this.get(`/products/${productId}/additional-attributes`);
+      return this.formatResponse(response);
+    } catch (error) {
+      console.error('❌ Error fetching additional attributes:', error);
+      return this.getMockAdditionalAttributes(productId);
+    }
+  }
+
+  async updateAdditionalAttribute(productId, attributeCode, value) {
+    try {
+      console.log('✏️ Updating additional attribute:', { productId, attributeCode, value });
+
+      const response = await this.put(`/products/${productId}/additional-attributes/${attributeCode}`, {
+        value: value
+      });
+
+      toast.success(`Additional attribute ${attributeCode} updated`);
+      return this.formatResponse(response);
+    } catch (error) {
+      console.error('❌ Error updating additional attribute:', error);
+      toast.error(`Failed to update ${attributeCode}`);
+      throw error;
+    }
+  }
+
+  // ===== MOCK DATA FOR PRODUCT ATTRIBUTES =====
+
+  getMockProductAttributes() {
+    return {
+      items: [
+        {
+          attribute_id: 1,
+          attribute_code: 'name',
+          frontend_label: 'Product Name',
+          frontend_input: 'text',
+          is_required: true,
+          is_user_defined: false,
+          is_system: true,
+          is_visible: true,
+          scope: 'store'
+        },
+        {
+          attribute_id: 2,
+          attribute_code: 'description',
+          frontend_label: 'Description',
+          frontend_input: 'textarea',
+          is_required: false,
+          is_user_defined: false,
+          is_system: true,
+          is_visible: true,
+          scope: 'store'
+        },
+        {
+          attribute_id: 3,
+          attribute_code: 'price',
+          frontend_label: 'Price',
+          frontend_input: 'price',
+          is_required: true,
+          is_user_defined: false,
+          is_system: true,
+          is_visible: true,
+          scope: 'global'
+        },
+        {
+          attribute_id: 4,
+          attribute_code: 'color',
+          frontend_label: 'Color',
+          frontend_input: 'select',
+          is_required: false,
+          is_user_defined: true,
+          is_system: false,
+          is_visible: true,
+          scope: 'global',
+          options: [
+            { value: '1', label: 'Red' },
+            { value: '2', label: 'Blue' },
+            { value: '3', label: 'Green' },
+            { value: '4', label: 'Black' },
+            { value: '5', label: 'White' }
+          ]
+        },
+        {
+          attribute_id: 5,
+          attribute_code: 'size',
+          frontend_label: 'Size',
+          frontend_input: 'select',
+          is_required: false,
+          is_user_defined: true,
+          is_system: false,
+          is_visible: true,
+          scope: 'global',
+          options: [
+            { value: '10', label: 'XS' },
+            { value: '11', label: 'S' },
+            { value: '12', label: 'M' },
+            { value: '13', label: 'L' },
+            { value: '14', label: 'XL' },
+            { value: '15', label: 'XXL' }
+          ]
+        }
+      ],
+      total_count: 5
+    };
+  }
+
+  getMockProductAttribute(attributeCode) {
+    const attributes = this.getMockProductAttributes().items;
+    return attributes.find(attr => attr.attribute_code === attributeCode) || null;
+  }
+
+  getMockProductCategories(productId) {
+    return {
+      categories: [
+        { id: 1, name: 'Electronics', level: 1, path: '1/2' },
+        { id: 3, name: 'Smartphones', level: 2, path: '1/2/3' },
+        { id: 5, name: 'Clothing', level: 1, path: '1/5' }
+      ]
+    };
+  }
+
+  getMockAttributeValue(productId, attributeCode) {
+    const mockValues = {
+      name: `Product ${productId}`,
+      description: `Description for product ${productId}`,
+      price: Math.floor(Math.random() * 1000) + 10,
+      color: Math.floor(Math.random() * 5) + 1,
+      size: Math.floor(Math.random() * 6) + 10
+    };
+
+    return {
+      attribute_code: attributeCode,
+      value: mockValues[attributeCode] || `Value for ${attributeCode}`
+    };
+  }
+
+  // ===== MOCK DATA FOR BRANDS =====
+
+  getMockBrands() {
+    return {
+      items: [
+        {
+          value: 'nike',
+          label: 'Nike',
+          sort_order: 1,
+          is_default: false
+        },
+        {
+          value: 'adidas',
+          label: 'Adidas',
+          sort_order: 2,
+          is_default: false
+        },
+        {
+          value: 'puma',
+          label: 'Puma',
+          sort_order: 3,
+          is_default: false
+        },
+        {
+          value: 'under_armour',
+          label: 'Under Armour',
+          sort_order: 4,
+          is_default: false
+        },
+        {
+          value: 'reebok',
+          label: 'Reebok',
+          sort_order: 5,
+          is_default: false
+        },
+        {
+          value: 'new_balance',
+          label: 'New Balance',
+          sort_order: 6,
+          is_default: false
+        },
+        {
+          value: 'converse',
+          label: 'Converse',
+          sort_order: 7,
+          is_default: false
+        },
+        {
+          value: 'vans',
+          label: 'Vans',
+          sort_order: 8,
+          is_default: false
+        },
+        {
+          value: 'asics',
+          label: 'ASICS',
+          sort_order: 9,
+          is_default: false
+        },
+        {
+          value: 'jordan',
+          label: 'Jordan',
+          sort_order: 10,
+          is_default: false
+        }
+      ],
+      total_count: 10
+    };
+  }
+
+  getMockAdditionalAttributes(productId) {
+    const brands = this.getMockBrands().items;
+    const randomBrand = brands[Math.floor(Math.random() * brands.length)];
+
+    return {
+      additional_attributes: [
+        {
+          attribute_code: 'mgs_brand',
+          value: randomBrand.value,
+          label: randomBrand.label
+        },
+        {
+          attribute_code: 'manufacturer',
+          value: randomBrand.label,
+          label: randomBrand.label
+        },
+        {
+          attribute_code: 'country_of_manufacture',
+          value: 'US',
+          label: 'United States'
+        },
+        {
+          attribute_code: 'warranty',
+          value: '1_year',
+          label: '1 Year'
+        }
+      ]
+    };
+  }
+
   // Error handling
   handleApiError(error) {
     if (error.response) {
@@ -828,6 +1344,20 @@ export const {
   createCustomer,
   getProducts,
   getProduct,
+  getProductAttributes,
+  getProductAttribute,
+  updateProductAttribute,
+  createProductAttribute,
+  getProductCategories,
+  assignProductToCategories,
+  getProductAttributeValues,
+  updateProductAttributeValue,
+  getBrands,
+  addBrand,
+  updateBrand,
+  deleteBrand,
+  getAdditionalAttributes,
+  updateAdditionalAttribute,
   getCategories,
   getCategory,
   getStockItems,

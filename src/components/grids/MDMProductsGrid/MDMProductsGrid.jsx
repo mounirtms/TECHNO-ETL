@@ -1,22 +1,20 @@
 import { useState, useCallback, useMemo } from 'react';
 import { Box, LinearProgress, Typography } from '@mui/material';
-import ProductionGrid from '../../common/ProductionGrid';
-import MDMFilterPanel from './MDMFilterPanel';
-import MDMStatsCards from './MDMStatsCards';
-import MDMFilters, { defaultSources, defaultBranches } from './MDMFilters';
-import { useMDMToolbarConfig, useMDMCustomActions, useMDMContextMenuActions } from './MDMToolbar';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+
+// MDM Components
+import MDMFilterPanel from './MDMFilterPanel';
+import MDMStatsCards from './MDMStatsCards';
+import { useMDMCustomActions, useMDMContextMenuActions } from './MDMToolbar';
+
+// Unified Grid System
+import UnifiedGrid from '../../common/UnifiedGrid';
+import { getStandardGridProps, getStandardToolbarConfig } from '../../../config/gridConfig';
+
+// Services and Utils
 import magentoApi from '../../../services/magentoApi';
 import sourceMapping from '../../../utils/sources';
-import { Refresh as RefreshIcon } from '@mui/icons-material';
-import UnifiedGrid from '../../common/UnifiedGrid';
-import {
-  getStandardGridProps,
-  STANDARD_GRID_CONTAINER_STYLES,
-  STANDARD_GRID_AREA_STYLES,
-  STANDARD_STATS_CONTAINER_STYLES
-} from '../../../config/standardGridConfig';
 
 /**
  * Optimized MDM Products Grid Component
@@ -408,26 +406,11 @@ const MDMProductsGrid = () => {
     return data.some(item => item.changed === true);
   }, [data]);
 
-  // Use new modular toolbar configuration
-  const toolbarConfig = useMDMToolbarConfig({
-    onRefresh: handleManualRefresh,
-    onSync: onSyncHandler,
-    onSyncStocks: onSyncStocksHandler,
-    onSyncAll: onSyncAllHandler,
-    loading,
-    selectedCount: selectedBaseGridRows.length,
-    hasChangedData
-  });
-
-  // Use new modular custom actions
-  const customActions = useMDMCustomActions({
-    onRefresh: handleManualRefresh,
-    onSync: onSyncHandler,
-    onSyncStocks: onSyncStocksHandler,
-    onSyncAll: onSyncAllHandler,
-    loading,
-    selectedCount: selectedBaseGridRows.length,
-    hasChangedData
+  // Use standard toolbar configuration with MDM-specific overrides
+  const toolbarConfig = getStandardToolbarConfig('mdm', {
+    // MDM-specific toolbar overrides can be added here if needed
+    showSyncStocks: true,
+    showSyncAll: hasChangedData
   });
 
   // Use new modular context menu actions
@@ -498,10 +481,18 @@ const MDMProductsGrid = () => {
     }
   }, [sourceFilter]);
 
-  // Custom actions are now handled by useMDMCustomActions above
+  // Use MDM-specific custom actions (these are unique to MDM and not standardized)
+  const customActions = useMDMCustomActions({
+    onRefresh: handleManualRefresh,
+    onSync: onSyncHandler,
+    onSyncStocks: onSyncStocksHandler,
+    onSyncAll: onSyncAllHandler,
+    loading,
+    selectedCount: selectedBaseGridRows.length,
+    hasChangedData
+  });
 
-  // Context menu actions are now handled by useMDMContextMenuActions above
-
+ 
   const getRowClassName = useCallback((params) =>
     params.row.changed ? 'row-changed' : '', []);
 
@@ -532,7 +523,11 @@ const MDMProductsGrid = () => {
           data: validatedData,
           loading: loading,
           onRefresh: handleManualRefresh,
-          showStatsCards: true, // Moved to separate container
+          onRowDoubleClick: (params) => {
+            console.log('Row double-clicked for details:', params.row);
+            // Handle row double-click for detailed view
+          },
+          showStatsCards: true,
           defaultViewMode: viewMode,
           onViewModeChange: setViewMode,
           gridCards: MDMStatsCards,
@@ -543,13 +538,14 @@ const MDMProductsGrid = () => {
               page: model.page,
               pageSize: model.pageSize
             });
-          }
+          },
+          // Override toolbar config with MDM-specific configuration
+          toolbarConfig: toolbarConfig,
+          customActions: customActions,
+          contextMenuActions: contextMenuActions
         })}
         columnVisibility={columnVisibility}
         onColumnVisibilityChange={setColumnVisibility}
-        toolbarConfig={toolbarConfig}
-        customActions={customActions}
-        contextMenuActions={contextMenuActions}
         enableFloatingActions={false}
         onSync={onSyncHandler}
         onSelectionChange={setSelectedBaseGridRows}

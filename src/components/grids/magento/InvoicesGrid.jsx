@@ -1,13 +1,20 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Box } from '@mui/material';
-import UnifiedGrid from '../../common/UnifiedGrid';
-import { StatsCards } from '../../common/StatsCards';
+import { toast } from 'react-toastify';
+
+// Icons
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import PaidIcon from '@mui/icons-material/Paid';
-import { formatCurrency, formatDateTime } from '../../../utils/formatters';
-import magentoApi from '../../../services/magentoApi';
 import PendingIcon from '@mui/icons-material/Pending';
-import { toast } from 'react-toastify';
+
+// Unified Grid System
+import UnifiedGrid from '../../common/UnifiedGrid';
+import { getStandardGridProps, getStandardToolbarConfig, getStandardContextMenuActions } from '../../../config/gridConfig';
+import { ColumnFactory } from '../../../utils/ColumnFactory.jsx';
+
+// Services and Utils
+import magentoApi from '../../../services/magentoApi';
+import { formatCurrency, formatDateTime } from '../../../utils/formatters';
 import { generateColumns } from '../../../utils/gridUtils';
 
 /**
@@ -26,37 +33,35 @@ const InvoicesGrid = ({ orderId }) => {
     });
 
     // Grid columns configuration
-    const columns = generateColumns(data[0] || {}, [
-        { 
-            field: 'increment_id', 
-            headerName: 'Invoice #', 
-            width: 130 
-        },
-        { 
-            field: 'order_id', 
-            headerName: 'Order #', 
-            width: 130 
-        }, 
-        { 
-            field: 'grand_total', 
-            headerName: 'Total', 
+    const columns = useMemo(() => [
+        ColumnFactory.text('increment_id', {
+            headerName: 'Invoice #',
+            width: 130
+        }),
+        ColumnFactory.text('order_id', {
+            headerName: 'Order #',
+            width: 130
+        }),
+        ColumnFactory.currency('grand_total', {
+            headerName: 'Total',
             width: 130,
-            valueFormatter: (params) => formatCurrency(params.value)
-        },
-        { 
-            field: 'state', 
-            headerName: 'Status', 
+            currency: 'USD'
+        }),
+        ColumnFactory.status('state', {
+            headerName: 'Status',
             width: 130,
-            valueFormatter: (params) => params.value?.toUpperCase() || ''
-        },
-        { 
-            field: 'invoice_date', 
-            headerName: 'Invoice Date', 
-            width: 180,
-            valueGetter: (params) => params.row.created_at,
-            valueFormatter: (params) => formatDateTime(params.value)
-        }
-    ]);
+            valueOptions: ['paid', 'pending', 'canceled'],
+            statusColors: {
+                paid: 'success',
+                pending: 'warning',
+                canceled: 'error'
+            }
+        }),
+        ColumnFactory.dateTime('created_at', {
+            headerName: 'Invoice Date',
+            width: 180
+        })
+    ], []);
 
     // Data fetching handler
     const handleRefresh = useCallback(async ({ page, pageSize, filter }) => {
@@ -119,102 +124,97 @@ const InvoicesGrid = ({ orderId }) => {
 
     return (
          <UnifiedGrid
-                gridName="InvoicesGrid"
-                columns={columns}
-                data={data}
-                loading={loading}
+                {...getStandardGridProps('magentoOrders', {
+                    gridName: "InvoicesGrid",
+                    columns,
+                    data,
+                    loading,
 
-                // Feature toggles
-                enableCache={true}
-                enableI18n={true}
-                enableSelection={true}
-                enableSorting={true}
-                enableFiltering={true}
-
-                // View options
-                showStatsCards={true}
-                gridCards={[
-                    {
-                        title: 'Total Invoices',
-                        value: stats.total,
-                        icon: ReceiptIcon,
-                        color: 'primary'
+                    // Event handlers
+                    onRowDoubleClick: (params) => {
+                        console.log('Invoice double-clicked:', params.row);
                     },
-                    {
-                        title: 'Paid',
-                        value: stats.paid,
-                        icon: PaidIcon,
-                        color: 'success'
-                    },
-                    {
-                        title: 'Pending',
-                        value: stats.pending,
-                        icon: PendingIcon,
-                        color: 'warning'
-                    }
-                ]}
-                defaultPageSize={10}
-                pageSizeOptions={[10, 25, 50, 100]}
 
-                // Toolbar configuration
-                toolbarConfig={{
-                    showRefresh: true,
-                    showExport: true,
-                    showSearch: true,
-                    showFilters: true,
-                    showSettings: true
-                }}
+                    // Configuration
+                    toolbarConfig: getStandardToolbarConfig('magentoOrders'),
 
-                // Context menu
-                contextMenuActions={{
-                    view: {
-                        enabled: true,
-                        onClick: (rowData) => {
-                            console.log('Viewing invoice:', rowData);
-                            toast.info(`Viewing invoice: ${rowData.increment_id}`);
+                    // Stats
+                    showStatsCards: true,
+                    gridCards: [
+                        {
+                            title: 'Total Invoices',
+                            value: stats.total,
+                            icon: ReceiptIcon,
+                            color: 'primary'
+                        },
+                        {
+                            title: 'Paid',
+                            value: stats.paid,
+                            icon: PaidIcon,
+                            color: 'success'
+                        },
+                        {
+                            title: 'Pending',
+                            value: stats.pending,
+                            icon: PendingIcon,
+                            color: 'warning'
                         }
-                    }
-                }}
+                    ],
 
-                // Floating actions (disabled by default)
-                enableFloatingActions={false}
-                floatingActions={{
-                    export: {
-                        enabled: true,
-                        priority: 1
+                    // Configuration
+                    contextMenuActions: getStandardContextMenuActions('magentoOrders', {
+                        view: {
+                            enabled: true,
+                            onClick: (rowData) => {
+                                console.log('Viewing invoice:', rowData);
+                                toast.info(`Viewing invoice: ${rowData.increment_id}`);
+                            }
+                        }
+                    }),
+
+                    // Event handlers
+                    onRefresh: () => {
+                        console.log('Refreshing invoices...');
+                        toast.info('Refreshing invoices...');
                     },
-                    refresh: {
-                        enabled: true,
-                        priority: 2
+                    onExport: (selectedRows) => {
+                        const exportData = selectedRows.length > 0
+                            ? data.filter(invoice => selectedRows.includes(invoice.increment_id))
+                            : data;
+                        console.log('Exporting invoices:', exportData);
+                        toast.success(`Exported ${exportData.length} invoices`);
+                    },
+
+                    // Floating actions
+                    enableFloatingActions: false,
+                    floatingActions: {
+                        export: {
+                            enabled: true,
+                            priority: 1
+                        },
+                        refresh: {
+                            enabled: true,
+                            priority: 2
+                        }
+                    },
+
+                    // Filter configuration
+                    currentFilter: filters,
+                    onFilterChange: setFilters,
+
+                    // Row configuration
+                    getRowId: (row) => row.increment_id,
+
+                    // Sorting
+                    sortModel: [{ field: 'invoice_date', sort: 'desc' }],
+
+                    // Error handling
+                    onError: (error) => {
+                        console.error('Invoices Grid Error:', error);
+                        toast.error('Error loading invoices');
                     }
-                }}
-
-                // Event handlers
-                onRefresh={handleRefresh}
-                onExport={(selectedRows) => {
-                    const exportData = selectedRows.length > 0
-                        ? data.filter(invoice => selectedRows.includes(invoice.increment_id))
-                        : data;
-                    console.log('Exporting invoices:', exportData);
-                    toast.success(`Exported ${exportData.length} invoices`);
-                }}
-
-                // Filter configuration
-                currentFilter={filters}
-                onFilterChange={setFilters}
-
-                // Row configuration
-                getRowId={(row) => row.increment_id}
-
-                // Sorting
-                sortModel={[{ field: 'invoice_date', sort: 'desc' }]}
-
-                // Error handling
-                onError={(error) => {
-                    console.error('Invoices Grid Error:', error);
-                    toast.error('Error loading invoices');
-                }}
-            />
+                })}
+        />
     );
 };
 

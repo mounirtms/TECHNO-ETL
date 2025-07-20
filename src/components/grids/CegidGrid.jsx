@@ -1,33 +1,35 @@
 import { useState } from 'react';
 import { Box } from '@mui/material';
-import UnifiedGrid from '../common/UnifiedGrid';
-import CegidToolbar from './CegidToolbar';
-import cegidApi from '../../services/cegidService';
 import { toast } from 'react-toastify';
+
+// Unified Grid System
+import UnifiedGrid from '../common/UnifiedGrid';
+import { getStandardGridProps, getStandardToolbarConfig } from '../../config/gridConfig';
+
+// Cegid Components and Services
+import cegidApi from '../../services/cegidService';
 const CegidGrid = () => {
     const [loading, setLoading] = useState(false);
-    const [data, setData] = useState([]);
-    const [barcode, setBarcode] = useState('');
     const [products, setProducts] = useState([]);
-    const [error, setError] = useState(null);
+    const [searchParams, setSearchParams] = useState({ reference: '', store: '218' });
 
-
-
-
-    const handleSearch = async (searchParams) => {
+    const handleSearch = async (params = searchParams) => {
         setLoading(true);
-        setError(null);
         try {
-            const results = await cegidApi.searchProducts(searchParams);
+            const results = await cegidApi.searchProducts(params);
             setProducts(results || []); // Ensure we always set an array
+            toast.success(`Found ${results?.length || 0} products`);
         } catch (error) {
             console.error('Search failed:', error);
-            setError(error);
             setProducts([]); // Reset to empty array on error
             toast.error('Failed to search products');
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleRefresh = () => {
+        handleSearch();
     };
 
     const columns = [
@@ -38,136 +40,70 @@ const CegidGrid = () => {
     ];
 
     return (
-        <Box sx={{ height: '100%', width: '100%' }}>
-            <CegidToolbar
-                onSearch={handleSearch}
-                loading={loading}
-            />
-            <UnifiedGrid
-                gridName="CegidProducts"
-                data={products} // Make sure this is always an array
-                columns={columns}
-                loading={loading}
+        <UnifiedGrid
+                {...getStandardGridProps('cegid', {
+                    gridName: "CegidProducts",
+                    columns,
+                    data: products,
+                    loading,
 
-                // Feature toggles
-                enableCache={true}
-                enableI18n={true}
-                enableRTL={true}
-                enableSelection={true}
-                enableSorting={true}
-                enableFiltering={true}
-
-                // Toolbar configuration
-                toolbarConfig={{
-                    showRefresh: true,
-                    showExport: true,
-                    showSearch: true,
-                    showSettings: true
-                }}
-
-                // Context menu
-                contextMenuActions={{
-                    view: {
-                        enabled: true,
-                        onClick: (rowData) => {
-                            console.log('Viewing Cegid product:', rowData);
-                            toast.info(`Viewing product: ${rowData.reference}`);
-                        }
-                    }
-                }}
-
-                // Floating actions
-                floatingActions={{
-                    export: {
-                        enabled: true,
-                        priority: 1
+                    // Event handlers
+                    onRefresh: handleSearch,
+                    onRowDoubleClick: (params) => {
+                        console.log('Viewing Cegid product:', params.row);
+                        toast.info(`Viewing product: ${params.row.reference}`);
                     },
-                    refresh: {
-                        enabled: true,
-                        priority: 2
+                    onExport: (selectedRows) => {
+                        const exportData = selectedRows.length > 0
+                            ? products.filter(product => selectedRows.includes(product.reference))
+                            : products;
+                        console.log('Exporting Cegid products:', exportData);
+                        toast.success(`Exported ${exportData.length} products`);
+                    },
+
+                    // Configuration
+                    toolbarConfig: getStandardToolbarConfig('cegid', {
+                        showSearch: true,
+                        customSearchFields: [
+                            {
+                                name: 'reference',
+                                label: 'Reference',
+                                value: searchParams.reference,
+                                onChange: (value) => setSearchParams(prev => ({ ...prev, reference: value }))
+                            },
+                            {
+                                name: 'store',
+                                label: 'Store',
+                                value: searchParams.store,
+                                onChange: (value) => setSearchParams(prev => ({ ...prev, store: value }))
+                            }
+                        ],
+                        onCustomSearch: handleSearch
+                    }),
+
+                    // Floating actions
+                    floatingActions: {
+                        export: {
+                            enabled: true,
+                            priority: 1
+                        },
+                        refresh: {
+                            enabled: true,
+                            priority: 2
+                        }
+                    },
+
+                    // Row configuration
+                    getRowId: (row) => row?.reference || `row-${Math.random()}`,
+
+                    // Error handling
+                    onError: (error) => {
+                        console.error('Grid Error:', error);
+                        toast.error('Error loading grid data');
                     }
-                }}
-
-                // Event handlers
-                onExport={(selectedRows) => {
-                    const exportData = selectedRows.length > 0
-                        ? products.filter(product => selectedRows.includes(product.reference))
-                        : products;
-                    console.log('Exporting Cegid products:', exportData);
-                    toast.success(`Exported ${exportData.length} products`);
-                }}
-
-                // Row configuration
-                getRowId={(row) => row?.reference || `row-${Math.random()}`}
-
-                // Error handling
-                onError={(error) => {
-                    console.error('Grid Error:', error);
-                    toast.error('Error loading grid data');
-                }}
-            />
-        </Box>
+                })}
+        />
     );
-
-    /* const columns = [
-         { field: 'itemCode', headerName: 'Item Code', width: 150 },
-         { field: 'description', headerName: 'Description', flex: 1 },
-         { field: 'price', headerName: 'Price', width: 120 },
-         { field: 'stock', headerName: 'Stock', width: 100 },
-         { field: 'store', headerName: 'Store', width: 100 },
-         { field: 'status', headerName: 'Status', width: 120 }
-     ];
- 
-    const handleSearch = useCallback(async () => {
-         setLoading(true);
-         try {
-             const products = await getProductsFromCegid();
-             setData(products);
-             toast.success('Products loaded successfully');
-         } catch (error) {
-             console.error('Search error:', error);
-             toast.error('Error loading products');
-             setData([]);
-         } finally {
-             setLoading(false);
-         }
-     }, []);
- 
-     return (
-         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
-             <Paper sx={{ p: 2 }}>
-                 <Typography variant="h6" gutterBottom>
-                     Cegid Product Search
-                 </Typography>
-                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                     <TextField
-                         label="Barcode"
-                         value={barcode}
-                         onChange={(e) => setBarcode(e.target.value)}
-                         size="small"
-                         placeholder="Enter barcode..."
-                         sx={{ minWidth: 200 }}
-                     />
-                     <Button
-                         variant="contained"
-                         onClick={handleSearch}
-                         disabled={loading}
-                     >
-                         {loading ? 'Loading...' : 'Load Products'}
-                     </Button>
-                 </Box>
-             </Paper>
- 
-             <BaseGrid
-                 gridName="CegidProductsGrid"
-                 columns={columns}
-                 data={data}
-                 loading={loading}
-                 onRefresh={handleSearch}
-             />
-         </Box>
-     );
-     */
 };
 
 export default CegidGrid;

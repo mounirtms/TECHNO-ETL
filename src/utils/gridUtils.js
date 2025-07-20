@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { format } from 'date-fns';
 import { Chip } from '@mui/material';
 import { StatusCell } from '../components/common/StatusCell';
 import { ref, set, get } from 'firebase/database';
 import { database } from '../config/firebase';
-import { column } from 'stylis'; 
+import { column } from 'stylis';
 
 // Row Number Column
 export const rowNumberColumn = {
@@ -127,8 +127,8 @@ const isStatus = (key, value) => {
 export const getDateColumn = (field, options = {}) => ({
     field,
     type: 'date',
-    valueFormatter: (date) =>
-        date ? format(new Date(date), DATE_FORMAT) : '',
+    valueFormatter: (params) =>
+        params.value ? format(new Date(params.value), DATE_FORMAT) : '',
     width: 180,
     ...options
 });
@@ -152,7 +152,6 @@ export const getStatusColumn = (field = 'status', options = {}) => ({
     renderCell: (params) => {
         const value = params.value;
         const statusClass = STATUS_CLASSES[value] || value;
-        const statusColor = STATUS_COLORS[value] || 'default';
 
         return StatusCell({
             value,

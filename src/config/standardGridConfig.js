@@ -1,72 +1,44 @@
 /**
- * Standard Grid Configuration
- * Provides consistent configuration across all grid components
+ * DEPRECATED: Standard Grid Configuration
+ *
+ * This file is deprecated and will be removed in a future version.
+ * Please use src/config/gridConfig.js instead for all grid configurations.
+ *
+ * This file now re-exports from the unified gridConfig.js to maintain
+ * backward compatibility during the transition period.
  */
 
-/**
- * Standard grid height configuration
- * Uses fixed height calculation for consistent layout
- */
+// Import from the unified configuration
+import {
+  STANDARD_PAGINATION_CONFIG as _STANDARD_PAGINATION_CONFIG,
+  STANDARD_TOOLBAR_CONFIG as _STANDARD_TOOLBAR_CONFIG,
+  STANDARD_FEATURES as _STANDARD_FEATURES,
+  GRID_TOOLBAR_CONFIGS as _GRID_TOOLBAR_CONFIGS,
+  getStandardGridProps as _getStandardGridProps,
+  getStandardToolbarConfig as _getStandardToolbarConfig,
+  getGridConfig as _getGridConfig,
+  STANDARD_CONTEXT_MENU_ACTIONS as _STANDARD_CONTEXT_MENU_ACTIONS
+} from './gridConfig.js';
 
-/**
- * Standard pagination configuration
- * Server-side pagination with consistent page sizes
- */
+// Re-export for backward compatibility
 export const STANDARD_PAGINATION_CONFIG = {
-  paginationMode: "server",
-  defaultPageSize: 25,
-  pageSizeOptions: [10, 25, 50, 100],
+  ..._STANDARD_PAGINATION_CONFIG,
+  paginationMode: "server", // Override default for backward compatibility
   rowCount: 0 // Default to 0, will be overridden by individual grids
 };
 
-/**
- * Standard toolbar configuration
- * Consistent toolbar across all grids
- */
-export const STANDARD_TOOLBAR_CONFIG = {
-  showRefresh: true,
-  showExport: false, // Export moved to settings menu
-  showSearch: true,
-  showFilters: true,
-  showSettings: true,
-  showDensity: true,
-  showColumns: true,
-  exportOptions: {
-    excel: true,
-    csv: true,
-    json: true
-  }
-};
+export const STANDARD_TOOLBAR_CONFIG = _STANDARD_TOOLBAR_CONFIG;
+export const STANDARD_FEATURES = _STANDARD_FEATURES;
+export const GRID_TOOLBAR_CONFIGS = _GRID_TOOLBAR_CONFIGS;
+export const STANDARD_CONTEXT_MENU_ACTIONS = _STANDARD_CONTEXT_MENU_ACTIONS;
 
-/**
- * Standard feature toggles
- * Consistent features across all grids
- */
-export const STANDARD_FEATURES = {
-  enableCache: true,
-  enableI18n: true,
-  enableRTL: false, // Disabled by default, can be overridden
-  enableSelection: true,
-  enableSorting: true,
-  enableFiltering: true,
-  enableColumnReordering: true,
-  enableColumnResizing: true
-};
-
-/**
- * Standard view options
- * Consistent view configuration
- */
+// Additional backward compatibility exports
 export const STANDARD_VIEW_OPTIONS = {
-  showStatsCards: false, // Default to false, grids can override
+  showStatsCards: false,
   showCardView: true,
   defaultViewMode: "grid"
 };
 
-/**
- * Standard grid container styling
- * Consistent layout and scrolling behavior
- */
 export const STANDARD_GRID_CONTAINER_STYLES = {
   flex: 1,
   display: 'flex',
@@ -74,10 +46,6 @@ export const STANDARD_GRID_CONTAINER_STYLES = {
   overflow: 'hidden'
 };
 
-/**
- * Standard grid area styling
- * Ensures only grid content scrolls
- */
 export const STANDARD_GRID_AREA_STYLES = {
   flex: 1,
   minHeight: 0,
@@ -87,10 +55,6 @@ export const STANDARD_GRID_AREA_STYLES = {
   mb: 1
 };
 
-/**
- * Standard stats cards container styling
- * Always visible at bottom
- */
 export const STANDARD_STATS_CONTAINER_STYLES = {
   flexShrink: 0,
   borderTop: '1px solid rgba(224, 224, 224, 1)',
@@ -98,8 +62,21 @@ export const STANDARD_STATS_CONTAINER_STYLES = {
   backgroundColor: 'background.paper'
 };
 
+export const STANDARD_ERROR_CONFIG = {
+  showErrorBoundary: true,
+  errorFallback: 'Failed to load data',
+  retryEnabled: true,
+  maxRetries: 3
+};
+
+export const STANDARD_LOADING_CONFIG = {
+  showLoadingOverlay: true,
+  loadingMessage: 'Loading data...',
+  skeletonRows: 10
+};
+
 /**
- * Get standard grid configuration
+ * Get standard grid configuration (backward compatibility)
  * @param {Object} overrides - Configuration overrides
  * @returns {Object} Complete grid configuration
  */
@@ -128,85 +105,47 @@ export const getStandardGridConfig = (overrides = {}) => {
 };
 
 /**
- * Standard context menu actions
- * Common actions across all grids
+ * Get standard toolbar configuration for a specific grid type (backward compatibility)
+ * @param {string} gridType - Type of grid (mdm, magentoProducts, etc.)
+ * @param {Object} overrides - Optional overrides for specific toolbar props
+ * @returns {Object} Toolbar configuration
  */
-export const STANDARD_CONTEXT_MENU_ACTIONS = {
-  view: {
-    enabled: true,
-    label: 'View Details',
-    icon: 'visibility'
-  },
-  edit: {
-    enabled: true,
-    label: 'Edit',
-    icon: 'edit'
-  },
-  delete: {
-    enabled: true,
-    label: 'Delete',
-    icon: 'delete',
-    confirmRequired: true
-  }
+export const getStandardToolbarConfig = (gridType = 'default', overrides = {}) => {
+  return _getStandardToolbarConfig(gridType, overrides);
 };
 
 /**
- * Standard error handling configuration
- */
-export const STANDARD_ERROR_CONFIG = {
-  showErrorBoundary: true,
-  errorFallback: 'Failed to load data',
-  retryEnabled: true,
-  maxRetries: 3
-};
-
-/**
- * Standard loading configuration
- */
-export const STANDARD_LOADING_CONFIG = {
-  showLoadingOverlay: true,
-  loadingMessage: 'Loading data...',
-  skeletonRows: 10
-};
-
-/**
- * Get standard grid props for a specific grid type
+ * Get standard grid props for a specific grid type (backward compatibility)
  * @param {string} gridType - Type of grid (mdm, magento, cegid, etc.)
  * @param {Object} customConfig - Custom configuration
  * @returns {Object} Standard grid props
  */
 export const getStandardGridProps = (gridType, customConfig = {}) => {
-  const baseConfig = getStandardGridConfig(customConfig);
-  
-  // Grid-specific configurations
-  const gridSpecificConfig = {
-    mdm: {
-      enableRTL: false,
-      paginationMode: "server",
-      defaultPageSize: 25
-    },
-    magento: {
-      enableRTL: false,
-      paginationMode: "server",
-      defaultPageSize: 25
-    },
-    cegid: {
-      enableRTL: false,
-      paginationMode: "client",
-      defaultPageSize: 50
-    }
+  // Map legacy grid types to new ones
+  const gridTypeMapping = {
+    'magento': 'magentoProducts',
+    'customers': 'magentoCustomers',
+    'orders': 'magentoOrders'
   };
-  
+
+  const mappedGridType = gridTypeMapping[gridType] || gridType;
+
+  // Use the unified configuration with server-side pagination override for backward compatibility
+  const props = _getStandardGridProps(mappedGridType, customConfig);
+
+  // Override pagination mode for backward compatibility
   return {
-    ...baseConfig,
-    ...gridSpecificConfig[gridType],
-    ...customConfig
+    ...props,
+    paginationMode: "server",
+    totalCount: customConfig.totalCount || 0
   };
 };
 
+// Default export for backward compatibility
 export default {
   STANDARD_PAGINATION_CONFIG,
   STANDARD_TOOLBAR_CONFIG,
+  GRID_TOOLBAR_CONFIGS,
   STANDARD_FEATURES,
   STANDARD_VIEW_OPTIONS,
   STANDARD_GRID_CONTAINER_STYLES,
@@ -214,6 +153,7 @@ export default {
   STANDARD_STATS_CONTAINER_STYLES,
   getStandardGridConfig,
   getStandardGridProps,
+  getStandardToolbarConfig,
   STANDARD_CONTEXT_MENU_ACTIONS,
   STANDARD_ERROR_CONFIG,
   STANDARD_LOADING_CONFIG

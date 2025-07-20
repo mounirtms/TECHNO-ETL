@@ -11,7 +11,8 @@ import {
   Analytics, Memory, Timer
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
-import ProductionGrid from '../components/common/ProductionGrid';
+import UnifiedGrid from '../components/common/UnifiedGrid';
+import { getStandardGridProps, getStandardToolbarConfig } from '../config/gridConfig';
 import { createProductionGridConfig } from '../config/productionGridConfig';
 
 const GridTestPage = () => {
@@ -492,40 +493,41 @@ const GridTestPage = () => {
               }
             />
             <CardContent sx={{ height: 'calc(100% - 80px)', p: 1 }}>
-              <ProductionGrid
-                gridType={selectedGridType}
-                gridName={`Test${selectedGridType}Grid`}
-                data={currentGridData.sampleData}
-                columns={currentGridData.columns}
-                loading={isRunningTest}
-                totalCount={currentGridData.sampleData.length}
-                
-                // Configuration from test panel
-                enableStats={gridConfig.showStatsCards}
-                enableToolbar={gridConfig.enableToolbar}
-                enablePagination={gridConfig.enablePagination}
-                enableSelection={gridConfig.enableSelection}
-                
-                // Custom configuration
-                customConfig={{
-                  features: {
-                    enableVirtualization: gridConfig.enableVirtualization,
-                    enableSearch: gridConfig.enableSearch
+              <UnifiedGrid
+                {...getStandardGridProps(selectedGridType, {
+                  data: currentGridData.sampleData,
+                  columns: currentGridData.columns,
+                  gridName: `Test${selectedGridType}Grid`,
+                  loading: isRunningTest,
+                  totalCount: currentGridData.sampleData.length,
+
+                  // Configuration from test panel
+                  enableStats: gridConfig.showStatsCards,
+                  enableToolbar: gridConfig.enableToolbar,
+                  enablePagination: gridConfig.enablePagination,
+                  enableSelection: gridConfig.enableSelection,
+
+                  // Custom configuration
+                  customConfig: {
+                    features: {
+                      enableVirtualization: gridConfig.enableVirtualization,
+                      enableSearch: gridConfig.enableSearch
+                    },
+                    performance: {
+                      DEFAULT_PAGE_SIZE: gridConfig.pageSize
+                    },
+                    theme: {
+                      density: gridConfig.density
+                    }
                   },
-                  performance: {
-                    DEFAULT_PAGE_SIZE: gridConfig.pageSize
-                  },
-                  theme: {
-                    density: gridConfig.density
-                  }
-                }}
-                
-                // Event handlers for testing
-                onRowClick={(params) => console.log('Row clicked:', params)}
-                onSelectionChange={(selection) => console.log('Selection changed:', selection)}
-                onSortChange={(sort) => console.log('Sort changed:', sort)}
-                onFilterChange={(filter) => console.log('Filter changed:', filter)}
-                onRefresh={() => console.log('Refresh triggered')}
+
+                  // Event handlers for testing
+                  onRowClick: (params) => console.log('Row clicked:', params),
+                  onSelectionChange: (selection) => console.log('Selection changed:', selection),
+                  onSortChange: (sort) => console.log('Sort changed:', sort),
+                  onFilterChange: (filter) => console.log('Filter changed:', filter),
+                  onRefresh: () => console.log('Refresh triggered')
+                })}
               />
             </CardContent>
           </Card>

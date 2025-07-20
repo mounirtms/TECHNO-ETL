@@ -1,5 +1,19 @@
+/**
+ * DEPRECATED: BaseGrid Component
+ *
+ * This component is deprecated and will be removed in a future version.
+ * Please use UnifiedGrid from '../common/UnifiedGrid' instead.
+ *
+ * Migration Guide:
+ * 1. Replace import: import UnifiedGrid from '../common/UnifiedGrid'
+ * 2. Use getStandardGridProps() from '../config/gridConfig' for configuration
+ * 3. Update prop names to match UnifiedGrid API
+ *
+ * @deprecated Use UnifiedGrid instead
+ */
+
 import React, { useState, useCallback, useEffect, useMemo, useRef, forwardRef, useImperativeHandle } from 'react';
-import { Box, Tooltip, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Box, Tooltip, ToggleButton, ToggleButtonGroup, Alert } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import GridViewIcon from '@mui/icons-material/GridView';
 import ViewListIcon from '@mui/icons-material/ViewList';
@@ -10,6 +24,22 @@ import { generateColumns, applySavedColumnSettings, rowNumberColumn } from '../.
 import { HEADER_HEIGHT, FOOTER_HEIGHT, STATS_CARD_HEIGHT } from '../Layout/Constants';
 import { StatsCards } from './StatsCards';
 import GridCardView from './GridCardView';
+
+// Show deprecation warning in development
+if (process.env.NODE_ENV === 'development') {
+  console.warn(
+    'BaseGrid is deprecated. Please use UnifiedGrid instead. ' +
+    'See migration guide in the component documentation.'
+  );
+}
+
+// Throw error in production to prevent usage
+if (process.env.NODE_ENV === 'production') {
+  throw new Error(
+    'BaseGrid is deprecated and disabled in production. ' +
+    'Please migrate to UnifiedGrid from ../common/UnifiedGrid'
+  );
+}
 const BaseGrid = ({
     gridName,
     columns: gridColumns,

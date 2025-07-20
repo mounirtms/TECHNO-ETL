@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import './StatusRenderer.css';
 
+// Memoized status mapping for better performance
 const statusMap = {
     'processing': 'inProgress',
     'Commande_a_livrer': 'inProgress',
@@ -16,14 +17,20 @@ const statusMap = {
     'CMD_Done': 'orderCompleted'
 };
 
-const StatusRenderer = ({ value }) => {
+// Optimized StatusRenderer with React.memo
+const StatusRenderer = memo(({ value }) => {
     const statusClass = statusMap[value] || 'unknown';
-    
+
     return (
         <div className={`status ${statusClass}`}>
             {value?.replace(/_/g, ' ')}
         </div>
     );
-};
+}, (prevProps, nextProps) => {
+    // Only re-render if value actually changed
+    return prevProps.value === nextProps.value;
+});
+
+StatusRenderer.displayName = 'StatusRenderer';
 
 export default StatusRenderer;

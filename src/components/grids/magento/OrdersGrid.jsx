@@ -4,12 +4,11 @@ import { Box, Chip, Typography } from '@mui/material';
 import {
   ShoppingBag as ShoppingBagIcon,
   LocalShipping as LocalShippingIcon,
-  GetApp as SyncIcon,
+  Sync as SyncIcon,
   Cancel as CancelIcon,
   Edit as EditIcon,
   Visibility as ViewIcon,
   GetApp as ExportIcon,
-  SyncAlt as SyncAltIcon,
   Paid as PaidIcon,
   TrendingUp as TrendingUpIcon,
   HourglassEmpty as HourglassEmptyIcon,
@@ -18,7 +17,11 @@ import {
 import UnifiedGrid from '../../common/UnifiedGrid';
 import magentoApi from '../../../services/magentoApi';
 import { toast } from 'react-toastify';
-
+import {
+  getStandardGridProps,
+  getStandardToolbarConfig
+} from '../../../config/gridConfig';
+import { ColumnFactory } from '../../../utils/ColumnFactory.jsx';
 /**
  * OrdersGrid - Optimized Magento Orders Grid Component
  * Follows standardized structure for consistency across all grids
@@ -136,77 +139,43 @@ const OrdersGrid = () => {
 
   // ===== 4. COLUMN DEFINITIONS =====
   const columns = useMemo(() => [
-    {
-      field: 'increment_id',
+    ColumnFactory.text('increment_id', {
       headerName: 'Order #',
-      width: 120,
-      sortable: true,
-      filterable: true
-    },
-    {
-      field: 'customer_email',
+      width: 120
+    }),
+    ColumnFactory.text('customer_email', {
       headerName: 'Customer Email',
-      width: 200,
-      sortable: true,
-      filterable: true
-    },
-    {
-      field: 'status',
+      width: 200
+    }),
+    ColumnFactory.status('status', {
       headerName: 'Status',
       width: 120,
-      renderCell: (params) => {
-        const statusColors = {
-          pending: 'warning',
-          processing: 'info',
-          complete: 'success',
-          canceled: 'error',
-          closed: 'default'
-        };
-        return (
-          <Chip
-            label={params.value}
-            color={statusColors[params.value] || 'default'}
-            size="small"
-          />
-        );
+      valueOptions: ['pending', 'processing', 'complete', 'canceled', 'closed'],
+      statusColors: {
+        pending: 'warning',
+        processing: 'info',
+        complete: 'success',
+        canceled: 'error',
+        closed: 'default'
       }
-    },
-    {
-      field: 'grand_total',
+    }),
+    ColumnFactory.currency('grand_total', {
       headerName: 'Total',
       width: 120,
-      type: 'number',
-      valueFormatter: (params) => params.value ? `$${parseFloat(params.value).toFixed(2)}` : 'N/A'
-    },
-    {
-      field: 'total_qty_ordered',
+      currency: 'USD'
+    }),
+    ColumnFactory.number('total_qty_ordered', {
       headerName: 'Items',
-      width: 80,
-      type: 'number'
-    },
-    {
-      field: 'created_at',
+      width: 80
+    }),
+    ColumnFactory.dateTime('created_at', {
       headerName: 'Order Date',
-      width: 180,
-      valueFormatter: (params) =>
-        params.value ? new Date(params.value).toLocaleString() : 'N/A'
-    }
+      width: 180
+    })
   ], []);
 
-  // ===== 5. TOOLBAR CONFIGURATION =====
-  const toolbarConfig = {
-    showRefresh: true,
-    showAdd: false, // Orders are not typically added manually
-    showEdit: true,
-    showDelete: false, // Orders are cancelled, not deleted
-    showExport: false,
-    showSearch: false,
-    showFilters: true,
-    showSettings: true,
-    showViewToggle: false,
-    compact: false,
-    size: 'medium'
-  };
+  // ===== 5. CUSTOM ACTIONS (Grid-specific actions not covered by standard config) =====
+  // Toolbar configuration is now handled by getStandardGridProps('magentoOrders')
 
   const customActions = [
     {
@@ -235,30 +204,33 @@ const OrdersGrid = () => {
   ];
 
   // ===== 6. CONTEXT MENU ACTIONS =====
-  const contextMenuActions = {
+  const contextMenuActions = useMemo(() => ({
     view: {
+      enabled: true,
       label: 'View Order',
-      icon: <ViewIcon />,
+      icon: 'visibility',
       onClick: (row) => {
         setSelectedOrder(row);
         setViewDialogOpen(true);
       }
     },
     edit: {
+      enabled: true,
       label: 'Edit Order',
-      icon: <EditIcon />,
+      icon: 'edit',
       onClick: (row) => {
         setSelectedOrder(row);
         setEditDialogOpen(true);
       }
     },
     cancel: {
+      enabled: true,
       label: 'Cancel Order',
-      icon: <CancelIcon />,
+      icon: 'cancel',
       onClick: (row) => handleCancel([row.entity_id]),
       color: 'error'
     }
-  };
+  }), [handleCancel]);
 
   // ===== 7. STATS CARDS =====
   const statusCards = [
@@ -316,34 +288,42 @@ const OrdersGrid = () => {
 
   // ===== 10. RENDER =====
   return (
-
     <UnifiedGrid
-      {...getStandardGridProps('magento', {
+      {...getStandardGridProps('magentoOrders', {
         gridName: "OrdersGrid",
-        columns: columns,
-        data: data,
-        loading: loading,
-
-        gridCards: statusCards,
+        columns,
+        data,
+        loading,
         totalCount: stats.totalOrders,
-
-        // Toolbar configuration
-        toolbarConfig: toolbarConfig,
-        customActions: customActions,
-
-        // Context menu
-        contextMenuActions: contextMenuActions,
-
-        // Filter configuration
-        filterOptions: filterOptions,
-        currentFilter: currentFilter,
-        onFilterChange: handleFilterChange,
 
         // Event handlers
         onRefresh: fetchOrders,
+        onRowDoubleClick: handleEdit,
         onEdit: handleEdit,
- 
-       
+        onCancel: handleCancel,
+        onSync: handleSync,
+
+        // Configuration
+        toolbarConfig: getStandardToolbarConfig('magentoOrders'),
+        contextMenuActions,
+
+        // Stats
+        showStatsCards: true,
+        gridCards: statusCards,
+
+        // Filter configuration
+        filterOptions,
+        currentFilter,
+        onFilterChange: handleFilterChange,
+
+        // Row configuration
+        getRowId: (row) => row.increment_id || row.id,
+
+        // Error handling
+        onError: (error) => {
+          console.error('Orders Grid Error:', error);
+          toast.error('Error loading orders');
+        }
       })}
     />
   );

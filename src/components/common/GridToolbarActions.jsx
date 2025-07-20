@@ -63,15 +63,17 @@ const GridToolbarActions = ({
       {/* Edit Button */}
       {config.showEdit && (
         <Tooltip title={translate('edit', 'Edit Selected')}>
-          <Button
-            startIcon={<EditIcon />}
-            onClick={onEdit}
-            variant="outlined"
-            size={buttonSize}
-            disabled={!hasSelection || loading}
-          >
-            {config.compact ? '' : translate('edit', 'Edit')}
-          </Button>
+          <span>
+            <Button
+              startIcon={<EditIcon />}
+              onClick={onEdit}
+              variant="outlined"
+              size={buttonSize}
+              disabled={!hasSelection || loading}
+            >
+              {config.compact ? '' : translate('edit', 'Edit')}
+            </Button>
+          </span>
         </Tooltip>
       )}
 
@@ -209,16 +211,18 @@ const GridToolbarActions = ({
 
         return (
           <Tooltip key={index} title={action.tooltip || action.label}>
-            <Button
-              startIcon={renderIcon()}
-              onClick={action.onClick}
-              variant={action.variant || 'outlined'}
-              color={action.color || 'primary'}
-              size={buttonSize}
-              disabled={action.disabled || loading}
-            >
-              {config.compact ? '' : action.label}
-            </Button>
+            <span>
+              <Button
+                startIcon={renderIcon()}
+                onClick={action.onClick}
+                variant={action.variant || 'outlined'}
+                color={action.color || 'primary'}
+                size={buttonSize}
+                disabled={action.disabled || loading}
+              >
+                {config.compact ? '' : action.label}
+              </Button>
+            </span>
           </Tooltip>
         );
       })}

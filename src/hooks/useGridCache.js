@@ -1,19 +1,25 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 
 /**
- * Advanced Grid Caching Hook
- * Provides intelligent caching with memory management and cache invalidation
+ * Advanced Grid Caching Hook with Enhanced Performance
+ * Provides intelligent caching with memory management, cache invalidation, and compression
  */
 export const useGridCache = (gridName, enableCache = true) => {
   const [cacheData, setCacheDataState] = useState(null);
   const [cacheMetadata, setCacheMetadata] = useState({});
   const cacheRef = useRef(new Map());
   const lastAccessRef = useRef(new Map());
-  
-  // Cache configuration
-  const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-  const MAX_CACHE_SIZE = 50; // Maximum number of cached grids
-  const MEMORY_THRESHOLD = 100 * 1024 * 1024; // 100MB memory threshold
+  const compressionRef = useRef(new Map()); // For compressed cache entries
+
+  // Memoized cache configuration for performance
+  const cacheConfig = useMemo(() => ({
+    CACHE_DURATION: 5 * 60 * 1000, // 5 minutes
+    MAX_CACHE_SIZE: 50, // Maximum number of cached grids
+    MEMORY_THRESHOLD: 100 * 1024 * 1024, // 100MB memory threshold
+    COMPRESSION_THRESHOLD: 10000 // Compress data larger than 10KB
+  }), []);
+
+  const { CACHE_DURATION, MAX_CACHE_SIZE, MEMORY_THRESHOLD, COMPRESSION_THRESHOLD } = cacheConfig;
 
   // Memory management
   const estimateMemoryUsage = useCallback((data) => {

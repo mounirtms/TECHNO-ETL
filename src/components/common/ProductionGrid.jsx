@@ -1,5 +1,19 @@
+/**
+ * DEPRECATED: ProductionGrid Component
+ *
+ * This component is deprecated and will be removed in a future version.
+ * Please use UnifiedGrid from '../common/UnifiedGrid' instead.
+ *
+ * Migration Guide:
+ * 1. Replace import: import UnifiedGrid from '../common/UnifiedGrid'
+ * 2. Use getStandardGridProps() from '../config/gridConfig' for configuration
+ * 3. UnifiedGrid includes all ProductionGrid performance optimizations
+ *
+ * @deprecated Use UnifiedGrid instead
+ */
+
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
-import { Box, Paper, useTheme, alpha } from '@mui/material';
+import { Box, Paper, useTheme, alpha, Alert } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 //import { UnifiedGridToolbar } from './UnifiedGridToolbar';
 import { StatsCards } from './StatsCards';
@@ -7,8 +21,24 @@ import { createProductionGridConfig } from '../../config/productionGridConfig';
 import { useGridPerformance } from '../../hooks/useGridPerformance';
 import { useGridCache } from '../../hooks/useGridCache';
 
+// Show deprecation warning in development
+if (process.env.NODE_ENV === 'development') {
+  console.warn(
+    'ProductionGrid is deprecated. Please use UnifiedGrid instead. ' +
+    'See migration guide in the component documentation.'
+  );
+}
+
+// Throw error in production to prevent usage
+if (process.env.NODE_ENV === 'production') {
+  throw new Error(
+    'ProductionGrid is deprecated and disabled in production. ' +
+    'Please migrate to UnifiedGrid from ../common/UnifiedGrid'
+  );
+}
+
 /**
- * Production-Ready Grid Component
+ * Production-Ready Grid Component (DEPRECATED)
  * Standardized, optimized, and consistent grid for all use cases
  */
 const ProductionGrid = ({

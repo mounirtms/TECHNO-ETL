@@ -5,6 +5,7 @@ import magentoApi from '../../../services/magentoApi';
 import { toast } from 'react-toastify';
 import {
     getStandardGridProps,
+    getStandardToolbarConfig,
     STANDARD_GRID_CONTAINER_STYLES,
     STANDARD_GRID_AREA_STYLES,
     STANDARD_STATS_CONTAINER_STYLES
@@ -98,23 +99,24 @@ const StocksGrid = () => {
     return (
 
         <UnifiedGrid
-            {...getStandardGridProps('magento', {
+            {...getStandardGridProps('stocks', {
                 gridName: "StocksGrid",
                 columns: columns,
                 data: data,
                 loading: loading,
-                showStatsCards: true, // Moved to separate container
+                showStatsCards: true,
                 gridCards: gridCards,
                 totalCount: totalCount,
 
                 // Event handlers
                 onRefresh: handleRefresh,
-
+                onRowDoubleClick: (params) => {
+                    console.log('Stock double-clicked for details:', params.row);
+                    // Handle stock details view
+                },
 
                 // Row configuration
-                getRowId: (row) => row?.stock_id ?? Math.random().toString(36).substr(2, 9),
-
-
+                getRowId: (row) => row?.stock_id ?? Math.random().toString(36).substr(2, 9)
             })}
         />
 

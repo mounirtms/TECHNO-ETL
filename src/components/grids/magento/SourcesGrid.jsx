@@ -2,6 +2,11 @@ import React, { useState, useCallback } from 'react';
 import UnifiedGrid from '../../common/UnifiedGrid';
 import magentoApi from '../../../services/magentoApi';
 import { toast } from 'react-toastify';
+import {
+    getStandardGridProps,
+    getStandardToolbarConfig,
+    getStandardContextMenuActions
+} from '../../../config/gridConfig';
 
 const columns = [
     {
@@ -167,32 +172,31 @@ const SourcesGrid = ({ productId }) => {
     ];
 
     return (
-        <>
+        <UnifiedGrid
+            {...getStandardGridProps('sources', {
+                gridName: "SourcesGrid",
+                columns,
+                data,
+                loading,
+                totalCount,
 
+                // Event handlers
+                onRefresh: handleRefresh,
+                onRowDoubleClick: (params) => {
+                    console.log('Source double-clicked for details:', params.row);
+                    // Handle source details view
+                },
+                onExport: (selectedRows) => {
+                    const exportData = selectedRows.length > 0
+                        ? data.filter(source => selectedRows.includes(source.source_code))
+                        : data;
+                    console.log('Exporting sources:', exportData);
+                    toast.success(`Exported ${exportData.length} sources`);
+                },
 
-            <UnifiedGrid
-                gridName="sources"
-                columns={columns}
-                data={data}
-                loading={loading}
-
-                // Feature toggles
-                enableCache={true}
-                enableI18n={true}
-
-                enableSelection={true}
-                enableSorting={true}
-                enableFiltering={true}
-
-                // View options
-                showStatsCards={true}
-                gridCards={gridCards}
-                totalCount={totalCount}
-                defaultPageSize={25}
-
-
-                // Context menu
-                contextMenuActions={{
+                // Configuration
+                toolbarConfig: getStandardToolbarConfig('sources'),
+                contextMenuActions: getStandardContextMenuActions('sources', {
                     view: {
                         enabled: true,
                         onClick: (rowData) => {
@@ -200,46 +204,26 @@ const SourcesGrid = ({ productId }) => {
                             toast.info(`Viewing source: ${rowData.source_code}`);
                         }
                     }
-                }}
+                }),
 
-                // Floating actions (disabled by default)
-                enableFloatingActions={false}
-                floatingActions={{
-                    export: {
-                        enabled: true,
-                        priority: 1
-                    },
-                    refresh: {
-                        enabled: true,
-                        priority: 2
-                    }
-                }}
-
-                // Event handlers
-                onRefresh={handleRefresh}
-                onExport={(selectedRows) => {
-                    const exportData = selectedRows.length > 0
-                        ? data.filter(source => selectedRows.includes(source.source_code))
-                        : data;
-                    console.log('Exporting sources:', exportData);
-                    toast.success(`Exported ${exportData.length} sources`);
-                }}
+                // Stats
+                showStatsCards: true,
+                gridCards,
 
                 // Filter configuration
-                currentFilter={filters}
-                onFilterChange={setFilters}
+                currentFilter: filters,
+                onFilterChange: setFilters,
 
                 // Row configuration
-                getRowId={(row) => row?.source_code ?? Math.random().toString(36).substr(2, 9)}
+                getRowId: (row) => row?.source_code ?? Math.random().toString(36).substr(2, 9),
 
                 // Error handling
-                onError={(error) => {
+                onError: (error) => {
                     console.error('Sources Grid Error:', error);
                     toast.error('Error loading sources');
-                }}
-            />
-
-        </>
+                }
+            })}
+        />
     );
 };
 

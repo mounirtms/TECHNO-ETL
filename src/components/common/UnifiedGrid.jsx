@@ -1,6 +1,6 @@
 // UnifiedGrid - Optimized Grid System
-// Merges the best features from BaseGrid and EnhancedBaseGrid
-import { useState, useCallback, useMemo, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+// Merges the best features from BaseGrid and EnhancedBaseGrid with performance optimizations
+import { useState, useCallback, useMemo, useRef, useEffect, forwardRef, useImperativeHandle, memo } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import {
   Box,
@@ -59,6 +59,14 @@ const UnifiedGrid = forwardRef(({
   enableColumnReordering = true,
   enableColumnResizing = true,
 
+  // Performance options
+  virtualizationThreshold = 1000,
+  enableVirtualization = true,
+  rowBuffer = 10,
+  columnBuffer = 2,
+  rowThreshold = 3,
+  columnThreshold = 3,
+
   // View options
   showStatsCards = true,
   showCardView = true,
@@ -96,6 +104,10 @@ const UnifiedGrid = forwardRef(({
   onEdit,
   onDelete,
   onSync,
+  onSortChange,
+  onFilterModelChange,
+  onRowClick,
+  onRowDoubleClick,
 
   // Advanced props
   preColumns = [],
@@ -203,15 +215,22 @@ const UnifiedGrid = forwardRef(({
 
   const gridRef = useRef(null);
 
-  // Memoize data to prevent unnecessary re-renders
+  // Memoize data with performance optimizations
   const memoizedData = useMemo(() => {
     // Ensure data is always an array
     if (!Array.isArray(data)) {
       console.warn('UnifiedGrid: data prop is not an array, using empty array');
       return [];
     }
+
+    // For large datasets, enable virtualization automatically
+    if (data.length > (virtualizationThreshold || 1000)) {
+      console.info(`UnifiedGrid: Large dataset detected (${data.length} rows), virtualization enabled`);
+    }
+
+    // Return data with performance metadata
     return data;
-  }, [data]);
+  }, [data, virtualizationThreshold]);
 
   // ===== COLUMN SETUP PROCESS =====
   // Professional column handling with proper async/sync separation
@@ -459,9 +478,7 @@ const UnifiedGrid = forwardRef(({
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            overflow: 'hidden',
-            display: 'flex',
-            flexDirection: 'column'
+            overflow: 'hidden'
           }}>
           {viewMode === 'card' && showCardView ? (
             <GridCardView
@@ -481,6 +498,13 @@ const UnifiedGrid = forwardRef(({
               columns={processedColumns}
               loading={loading}
 
+              // Performance optimizations
+              disableVirtualization={!enableVirtualization || memoizedData.length < virtualizationThreshold}
+              rowBuffer={rowBuffer}
+              columnBuffer={columnBuffer}
+              rowThreshold={rowThreshold}
+              columnThreshold={columnThreshold}
+
               // Ensure we have valid data before rendering
               {...((memoizedData.length === 0) ? {
                 initialState: { pagination: { paginationModel: { page: 0, pageSize: defaultPageSize } } }
@@ -488,13 +512,13 @@ const UnifiedGrid = forwardRef(({
 
               // Pagination - supports both client and server-side pagination
               paginationModel={paginationModel || { page: 0, pageSize: defaultPageSize }}
-              onPaginationModelChange={(model) => {
+              onPaginationModelChange={useCallback((model) => {
                 setPaginationModel(model);
                 // Call parent pagination handler if provided (for server-side pagination)
                 if (onPaginationModelChange) {
                   onPaginationModelChange(model);
                 }
-              }}
+              }, [onPaginationModelChange])}
               pageSizeOptions={[10, 25, 50, 100]}
               paginationMode={paginationMode || "client"}
               // rowCount is required for server-side pagination
@@ -502,14 +526,21 @@ const UnifiedGrid = forwardRef(({
                 rowCount: totalCount || data.length || 0
               } : {})}
 
-              // Sorting
+              // Sorting with performance optimization
               sortModel={sortModel}
-              onSortModelChange={setSortModel}
+              onSortModelChange={useCallback((model) => {
+                setSortModel(model);
+                onSortChange?.(model);
+              }, [onSortChange])}
               sortingOrder={['asc', 'desc']}
 
-              // Filtering
+              // Filtering with performance optimization
               filterModel={filterModel}
-              onFilterModelChange={setFilterModel}
+              onFilterModelChange={useCallback((model) => {
+                setFilterModel(model);
+                onFilterChange?.(model);
+                onFilterModelChange?.(model);
+              }, [onFilterChange, onFilterModelChange])}
 
               // Selection
               checkboxSelection={enableSelection}
@@ -534,8 +565,12 @@ const UnifiedGrid = forwardRef(({
               // Row configuration
               getRowId={getRowId}
               onRowClick={(params) => {
+                onRowClick?.(params);
                 setSelectedRecord(params.row);
                 setDetailsDialogOpen(true);
+              }}
+              onRowDoubleClick={(params) => {
+                onRowDoubleClick?.(params);
               }}
               onRowContextMenu={(params, event) => handleContextMenu(event, params.row)}
 
@@ -599,4 +634,35 @@ const UnifiedGrid = forwardRef(({
 
 UnifiedGrid.displayName = 'UnifiedGrid';
 
-export default UnifiedGrid;
+// Memoize the component for performance optimization
+const MemoizedUnifiedGrid = memo(UnifiedGrid, (prevProps, nextProps) => {
+  // Custom comparison function for better performance
+  // Only re-render if critical props have changed
+  const criticalProps = ['data', 'loading', 'columns', 'totalCount'];
+
+  for (const prop of criticalProps) {
+    if (prevProps[prop] !== nextProps[prop]) {
+      return false; // Props changed, re-render
+    }
+  }
+
+  // Check if data array contents changed (shallow comparison)
+  if (Array.isArray(prevProps.data) && Array.isArray(nextProps.data)) {
+    if (prevProps.data.length !== nextProps.data.length) {
+      return false;
+    }
+    // For performance, only check first few items for changes
+    const checkCount = Math.min(5, prevProps.data.length);
+    for (let i = 0; i < checkCount; i++) {
+      if (prevProps.data[i] !== nextProps.data[i]) {
+        return false;
+      }
+    }
+  }
+
+  return true; // Props haven't changed significantly, skip re-render
+});
+
+MemoizedUnifiedGrid.displayName = 'MemoizedUnifiedGrid';
+
+export default MemoizedUnifiedGrid;

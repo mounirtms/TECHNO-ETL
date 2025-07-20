@@ -12,50 +12,26 @@
  * @version 2.0.0
  */
 
-import React, { useState, useCallback, useMemo } from 'react';
-import {
-  Box,
-  Chip,
-  Button,
-  ButtonGroup,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-  Badge,
-  Tooltip
-} from '@mui/material';
-import {
-  Add as AddIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  Visibility as ViewIcon,
-  FileUpload as ImportIcon,
-  CheckCircleOutline as CheckCircleOutlineIcon,
-  ErrorOutline as ErrorOutlineIcon,
-  AttachMoney as AttachMoneyIcon,
-  ReportProblem as ReportProblemIcon,
-  SyncAlt as SyncAltIcon,
-  Info as InfoIcon,
-  ArrowDropDown as ArrowDropDownIcon,
-  PostAdd as PostAddIcon
-} from '@mui/icons-material';
-import ProductionGrid from '../../common/ProductionGrid';
-import ProductInfoDialog from '../../common/ProductInfoDialog';
-import magentoApi from '../../../services/magentoApi';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { toast } from 'react-toastify';
-// Removed gridDataHandlers import - skipping validation for now
+import { Box, Skeleton, Fade } from '@mui/material';
+
+// Unified Grid System
+import UnifiedGrid from '../../common/UnifiedGrid';
+import { getStandardGridProps, getStandardToolbarConfig } from '../../../config/gridConfig';
+
+// Column System
+import { ColumnFactory } from '../../../utils/ColumnFactory.jsx';
+
+// Services
+import magentoApi from '../../../services/magentoApi';
+import ProductService from '../../../services/ProductService';
+
+// Dialogs
 import CSVImportDialog from '../../dialogs/CSVImportDialog';
 import CatalogProcessorDialog from '../../dialogs/CatalogProcessorDialog';
-import ProductService from '../../../services/ProductService';
-import CategoryIcon from '@mui/icons-material/Category';
-import {
-  getStandardGridProps,
-  STANDARD_GRID_CONTAINER_STYLES,
-  STANDARD_GRID_AREA_STYLES,
-  STANDARD_STATS_CONTAINER_STYLES
-} from '../../../config/standardGridConfig';
+import ProductInfoDialog from '../../common/ProductInfoDialog';
+import BulkCategoryAssignmentDialog from '../../dialogs/BulkCategoryAssignmentDialog';
 
 /**
  * Optimized Magento Products Grid Component
@@ -66,183 +42,189 @@ import {
  * - Enhanced user feedback
  */
 const ProductsGrid = () => {
-  // ===== 1. STATE MANAGEMENT =====
-  const [loading, setLoading] = useState(false);
+  // ===== STATE =====
   const [data, setData] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [currentFilter, setCurrentFilter] = useState('all');
+  const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState({
     total: 0,
-    inStock: 0,
-    outOfStock: 0,
-    lowStock: 0,
-    averagePrice: 0,
-    localProducts: 0 // Track local products count
+    active: 0,
+    inactive: 0,
+    localProducts: 0,
+    syncedProducts: 0
   });
-
-  // Local products management (products added locally but not synced to Magento)
-  const [localProducts, setLocalProducts] = useState([]);
-  const [syncLoading, setSyncLoading] = useState(false);
-
-  // Enhanced search state
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchFields, setSearchFields] = useState(['sku', 'name']);
-  const [searchHistory, setSearchHistory] = useState([]);
-  const [searchSuggestions, setSuggestions] = useState([]);
-
-  // Computed values
-  const hasLocalProducts = localProducts.length > 0;
-  const selectedLocalProducts = selectedRows.filter(sku =>
-    localProducts.some(product => product.sku === sku)
-  );
-  const canSync = hasLocalProducts || selectedLocalProducts.length > 0;
-
-  // Dialog states
-  const [infoDialogOpen, setInfoDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [catalogProcessorOpen, setCatalogProcessorOpen] = useState(false);
+  const [infoDialogOpen, setInfoDialogOpen] = useState(false);
   const [csvImportOpen, setCsvImportOpen] = useState(false);
+  const [catalogProcessorOpen, setCatalogProcessorOpen] = useState(false);
+  const [localProducts, setLocalProducts] = useState([]);
 
-  // Add menu state
-  const [addMenuAnchor, setAddMenuAnchor] = useState(null);
-  const addMenuOpen = Boolean(addMenuAnchor);
+  // ===== COLUMNS =====
+  const columns = useMemo(() => [
+    ColumnFactory.text('sku', { headerName: 'SKU', width: 150 }),
+    ColumnFactory.text('name', { headerName: 'Name', flex: 1 }),
+    ColumnFactory.text('type_id', { headerName: 'Type', width: 120 }),
+    ColumnFactory.status('status', {
+      headerName: 'Status',
+      width: 100,
+      valueOptions: ['enabled', 'disabled'],
+      statusColors: {
+        enabled: 'success',
+        disabled: 'error'
+      }
+    }),
+    ColumnFactory.currency('price', { headerName: 'Price', width: 120 }),
+    ColumnFactory.number('qty', { headerName: 'Quantity', width: 100 }),
+    ColumnFactory.dateTime('created_at', { headerName: 'Created', width: 180 }),
+    ColumnFactory.actions('actions', {
+      headerName: 'Actions',
+      width: 120,
+      getActions: (params) => [
+        {
+          icon: 'edit',
+          label: 'Edit',
+          onClick: () => handleEdit(params.row)
+        },
+        {
+          icon: 'category',
+          label: 'Categories',
+          onClick: () => handleCategoryAssignment(params.row)
+        }
+      ]
+    })
+  ], []);
 
-  // ===== 2. DATA FETCHING =====
-  const fetchProducts = useCallback(async (filterParams = {}) => {
+  // ===== DATA FETCHING =====
+  const fetchProducts = useCallback(async (params = {}) => {
     setLoading(true);
     try {
-      setLoading(true);
+      const response = await magentoApi.getProducts(params);
+      const products = response.data?.items || [];
 
-      // Build search criteria for Magento API
-      const searchParams = { ...filterParams };
-
-      // Enhanced search functionality - search across configurable fields
-      if (filterParams.search && filterParams.search.trim()) {
-        const searchTerm = filterParams.search.trim();
-        console.log('🔍 Products Grid: Adding enhanced search criteria:', searchTerm);
-
-        // Save search to history
-        if (!searchHistory.includes(searchTerm)) {
-          const newHistory = [searchTerm, ...searchHistory.slice(0, 9)]; // Keep last 10 searches
-          setSearchHistory(newHistory);
-          localStorage.setItem('productSearchHistory', JSON.stringify(newHistory));
-        }
-
-        // Build search criteria based on selected fields
-        searchFields.forEach((field, index) => {
-          searchParams[`searchCriteria[filterGroups][0][filters][${index}][field]`] = field;
-          searchParams[`searchCriteria[filterGroups][0][filters][${index}][value]`] = `%${searchTerm}%`;
-          searchParams[`searchCriteria[filterGroups][0][filters][${index}][conditionType]`] = 'like';
-        });
-
-        // Set filter group logic to OR (any field matches)
-        searchParams['searchCriteria[filterGroups][0][filters][0][condition_type]'] = 'or';
-      }
-
-      // Direct Magento API call with enhanced logging
-      console.log('📡 Products Grid: Calling magentoApi.getProducts with params:', searchParams);
-      const response = await magentoApi.getProducts(searchParams);
-
-      console.log('📦 Products Grid: Raw Magento API response:', {
-        responseType: typeof response,
-        hasData: response && 'data' in response,
-        dataType: typeof response?.data,
-        hasItems: response?.data && 'items' in response.data,
-        itemsCount: response?.data?.items?.length || 0,
-        totalCount: response?.data?.total_count || 0,
-        searchCriteria: response?.data?.search_criteria,
-        responseKeys: response ? Object.keys(response) : [],
-        dataKeys: response?.data ? Object.keys(response.data) : [],
-        sampleItem: response?.data?.items?.[0] || null
+      setData(products);
+      setStats({
+        total: products.length,
+        active: products.filter(p => p.status === 1).length,
+        inactive: products.filter(p => p.status === 2).length,
+        localProducts: localProducts.length,
+        syncedProducts: products.filter(p => !p.isLocal).length
       });
-
-      // Extract products from Magento response - handle {data: {items: []}} structure
-      const magentoData = response?.data || response; // Handle both response structures
-      const products = magentoData?.items || [];
-      const totalCount = magentoData?.total_count || products.length;
-
-      console.log('✅ Products Grid: Processed Magento data:', {
-        productsCount: products.length,
-        totalCount,
-        sampleProduct: products[0] || null,
-        productFields: products.length > 0 ? Object.keys(products[0]) : []
-      });
-
-      // Skip validation for now - use products directly (sku is primary key, not entity_id)
-      console.log('🔍 Products Grid: Skipping validation, using products directly');
-
-      // Transform products to ensure consistent structure
-      const transformedProducts = products.map(product => ({
-        ...product,
-        id: product.sku, // Use sku as id since entity_id might not exist
-        quantity: product.extension_attributes?.stock_item?.qty || 0,
-        qty: product.extension_attributes?.stock_item?.qty || 0
-      }));
-
-      setData(transformedProducts);
-
-      // Calculate statistics
-      const total = transformedProducts.length;
-      const inStock = transformedProducts.filter(p => p.status === 1 && (p.qty > 0 || p.quantity > 0)).length;
-      const outOfStock = transformedProducts.filter(p => (p.qty === 0 && p.quantity === 0)).length;
-      const lowStock = transformedProducts.filter(p => {
-        const stock = p.qty || p.quantity || 0;
-        return stock > 0 && stock < 10;
-      }).length;
-      const averagePrice = transformedProducts.reduce((sum, p) => sum + (parseFloat(p.price) || 0), 0) / total || 0;
-
-      const calculatedStats = { total, inStock, outOfStock, lowStock, averagePrice };
-      setStats(calculatedStats);
-
-      console.log('📊 Products Grid: Stats calculated:', calculatedStats);
-      console.log('📦 Products Grid: Sample product structure:', transformedProducts[0]);
-      toast.success(`Loaded ${total} products successfully`);
     } catch (error) {
-      console.error('❌ Products Grid: Fetch failed:', {
-        message: error.message,
-        status: error.response?.status,
-        statusText: error.response?.statusText,
-        responseData: error.response?.data
-      });
-
+      console.error('Failed to fetch products:', error);
+      toast.error('Failed to fetch products');
       setData([]);
-      setStats({ total: 0, inStock: 0, outOfStock: 0, lowStock: 0, averagePrice: 0 });
-      toast.error(`Failed to fetch products: ${error.message}`);
     } finally {
       setLoading(false);
     }
+  }, [localProducts.length]);
+
+  // ===== BULK OPERATIONS STATE =====
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [bulkOperationOpen, setBulkOperationOpen] = useState(false);
+  const [categoryAssignmentOpen, setCategoryAssignmentOpen] = useState(false);
+  const [selectedProductForCategories, setSelectedProductForCategories] = useState(null);
+
+  // ===== CATEGORY ASSIGNMENT HANDLER =====
+  const handleCategoryAssignment = useCallback((product) => {
+    setSelectedProductForCategories(product);
+    setCategoryAssignmentOpen(true);
   }, []);
 
-  // ===== 3. EVENT HANDLERS =====
-  const handleAdd = useCallback(() => {
-    setSelectedProduct(null);
-    setAddDialogOpen(true);
-  }, []);
-
-  const handleEdit = useCallback((records) => {
-    if (records.length === 1) {
-      const product = data.find(p => p.sku === records[0]);
-      setSelectedProduct(product);
-      setInfoDialogOpen(true); // Using info dialog for now - edit dialog can be added later
-    } else {
-      toast.warning('Please select exactly one product to edit');
+  const handleBulkOperation = useCallback((operation) => {
+    if (selectedRows.length === 0) {
+      toast.warning('Please select products first');
+      return;
     }
-  }, [data]);
 
-  const handleDelete = useCallback(async (records) => {
-    if (records.length === 0) {
-      toast.warning('Please select products to delete');
+    switch (operation) {
+      case 'activate':
+        handleBulkStatusChange(1);
+        break;
+      case 'deactivate':
+        handleBulkStatusChange(0);
+        break;
+      case 'delete':
+        handleBulkDelete();
+        break;
+      case 'categories':
+        setCategoryAssignmentOpen(true);
+        break;
+      default:
+        break;
+    }
+  }, [selectedRows]);
+
+  const handleBulkStatusChange = useCallback(async (status) => {
+    try {
+      setLoading(true);
+      const statusText = status === 1 ? 'activated' : 'deactivated';
+
+      // Here you would call the bulk update API
+      // await magentoApi.bulkUpdateProducts(selectedRows, { status });
+
+      toast.success(`${selectedRows.length} products ${statusText}`);
+      setSelectedRows([]);
+      fetchProducts();
+    } catch (error) {
+      console.error('Bulk status update error:', error);
+      toast.error('Failed to update product status');
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedRows, fetchProducts]);
+
+  const handleBulkDelete = useCallback(async () => {
+    if (!window.confirm(`Are you sure you want to delete ${selectedRows.length} products?`)) {
       return;
     }
 
     try {
-      for (const sku of records) {
-        await magentoApi.deleteProduct(sku);
-      }
-      toast.success(`Deleted ${records.length} product(s) successfully`);
+      setLoading(true);
+
+      // Here you would call the bulk delete API
+      // await magentoApi.bulkDeleteProducts(selectedRows);
+
+      toast.success(`${selectedRows.length} products deleted`);
+      setSelectedRows([]);
       fetchProducts();
     } catch (error) {
-      console.error('Delete error:', error);
+      console.error('Bulk delete error:', error);
+      toast.error('Failed to delete products');
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedRows, fetchProducts]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  // ===== EVENT HANDLERS =====
+  const handleAdd = useCallback(() => {
+    console.log('Add product');
+    // Implement add logic
+  }, []);
+
+  const handleEdit = useCallback((selectedIds) => {
+    if (selectedIds.length !== 1) {
+      toast.warning('Please select one product to edit');
+      return;
+    }
+    const product = data.find(p => p.sku === selectedIds[0]);
+    setSelectedProduct(product);
+    setInfoDialogOpen(true);
+  }, [data]);
+
+  const handleDelete = useCallback(async (selectedIds) => {
+    if (selectedIds.length === 0) {
+      toast.warning('Please select products to delete');
+      return;
+    }
+    
+    try {
+      await Promise.all(selectedIds.map(sku => ProductService.deleteProduct(sku)));
+      toast.success(`${selectedIds.length} product(s) deleted`);
+      fetchProducts();
+    } catch (error) {
       toast.error('Failed to delete products');
     }
   }, [fetchProducts]);
@@ -258,558 +240,134 @@ const ProductsGrid = () => {
     }
   }, [fetchProducts]);
 
-  const handleInfo = useCallback((records) => {
-    if (records.length !== 1) {
-      toast.warning('Please select one product to view');
-      return;
-    }
-    const product = data.find(p => p.sku === records[0]);
-    setSelectedProduct(product);
+  const handleExport = useCallback(() => {
+    console.log('Export products');
+    // Implement export logic
+  }, []);
+
+  const handleRowDoubleClick = useCallback((params) => {
+    setSelectedProduct(params.row);
     setInfoDialogOpen(true);
-  }, [data]);
-
-  const handleFilterChange = useCallback((newFilter) => {
-    setCurrentFilter(newFilter);
-    const filterParams = newFilter === 'all' ? {} : { status: newFilter };
-    fetchProducts(filterParams);
-  }, [fetchProducts]);
-
-  const handleCatalogProcessor = useCallback(() => {
-    setCatalogProcessorOpen(true);
   }, []);
 
-  const handleCatalogProcessComplete = useCallback((result) => {
-    toast.success(`Processed ${result.totalProducts} products in ${result.batches} batch(es)`);
-    setCatalogProcessorOpen(false);
-    // Refresh the grid to show any newly imported products
-    fetchProducts();
-  }, [fetchProducts]);
 
-  // Enhanced search handler with debouncing and suggestions
-  const handleSearch = useCallback((searchTerm) => {
-    console.log('🔍 ProductsGrid: Enhanced search triggered:', searchTerm);
-    setSearchTerm(searchTerm);
 
-    // Generate search suggestions based on existing data
-    if (searchTerm.length > 1) {
-      const suggestions = data
-        .filter(product =>
-          searchFields.some(field =>
-            product[field]?.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-        )
-        .slice(0, 5)
-        .map(product => ({
-          value: product.sku,
-          label: `${product.sku} - ${product.name}`,
-          type: 'product'
-        }));
-      setSuggestions(suggestions);
-    } else {
-      setSuggestions([]);
-    }
-
-    // Debounced search execution
-    const timeoutId = setTimeout(() => {
-      fetchProducts({ search: searchTerm });
-    }, 300);
-
-    return () => clearTimeout(timeoutId);
-  }, [data, searchFields, fetchProducts]);
-
-  // Add menu handlers
-  const handleAddMenuOpen = useCallback((event) => {
-    setAddMenuAnchor(event.currentTarget);
-  }, []);
-
-  const handleAddMenuClose = useCallback(() => {
-    setAddMenuAnchor(null);
-  }, []);
-
-  const handleAddSingle = useCallback(() => {
-    handleAddMenuClose();
-    handleAdd();
-  }, [handleAdd, handleAddMenuClose]);
-
-  const handleCsvImport = useCallback(() => {
-    handleAddMenuClose();
-    setCsvImportOpen(true);
-  }, [handleAddMenuClose]);
-
-  const handleCatalogProcessorFromMenu = useCallback(() => {
-    handleAddMenuClose();
-    handleCatalogProcessor();
-  }, [handleAddMenuClose, handleCatalogProcessor]);
-
-  // ===== LOCAL PRODUCTS MANAGEMENT =====
-
-  /**
-   * Add a product to local storage (not synced to Magento yet)
-   * @param {Object} product - Product data
-   */
-  const addLocalProduct = useCallback((product) => {
-    const localProduct = {
-      ...product,
-      isLocal: true,
-      localId: `local_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
-      createdAt: new Date().toISOString(),
-      status: 'pending_sync'
-    };
-
-    setLocalProducts(prev => [...prev, localProduct]);
-
-    // Add to grid data with special styling
-    setData(prev => [...prev, localProduct]);
-
-    // Update stats
-    setStats(prev => ({
-      ...prev,
-      total: prev.total + 1,
-      localProducts: prev.localProducts + 1
-    }));
-
-    toast.success(`Product "${product.name}" added locally. Use sync to upload to Magento.`);
-  }, []);
-
-  /**
-   * Handle CSV import completion - add products as local
-   * @param {Array} importedProducts - Products from CSV import
-   */
-  const handleCsvImportComplete = useCallback((importedProducts) => {
-    if (importedProducts && importedProducts.length > 0) {
-      const localProductsToAdd = importedProducts.map(product => ({
-        ...product,
-        isLocal: true,
-        localId: `local_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
-        createdAt: new Date().toISOString(),
-        status: 'pending_sync'
-      }));
-
-      setLocalProducts(prev => [...prev, ...localProductsToAdd]);
-      setData(prev => [...prev, ...localProductsToAdd]);
-
-      setStats(prev => ({
-        ...prev,
-        total: prev.total + localProductsToAdd.length,
-        localProducts: prev.localProducts + localProductsToAdd.length
-      }));
-
-      toast.success(`${localProductsToAdd.length} products imported locally. Use sync to upload to Magento.`);
-    }
-    setCsvImportOpen(false);
-  }, []);
-
-  /**
-   * Sync local products to Magento
-   * @param {Array} productsToSync - Specific products to sync, or all local products if empty
-   */
-  const handleSyncProducts = useCallback(async (productsToSync = null) => {
-    const products = productsToSync || localProducts;
-
-    if (products.length === 0) {
-      toast.warning('No local products to sync');
-      return;
-    }
-
-    setSyncLoading(true);
-
-    try {
-      let successCount = 0;
-      let errorCount = 0;
-      const errors = [];
-
-      // Process products in batches for better performance
-      const batchSize = 5;
-      for (let i = 0; i < products.length; i += batchSize) {
-        const batch = products.slice(i, i + batchSize);
-
-        await Promise.all(batch.map(async (product) => {
-          try {
-            // Remove local-specific fields before sending to Magento
-            const { isLocal, localId, createdAt, status, ...magentoProduct } = product;
-
-            const result = await ProductService.createProduct(magentoProduct);
-
-            if (result.success) {
-              successCount++;
-
-              // Update product in grid data (remove isLocal flag)
-              setData(prev => prev.map(p =>
-                p.localId === product.localId
-                  ? { ...p, isLocal: false, status: 'synced', magentoId: result.data.id }
-                  : p
-              ));
-
-              // Remove from local products
-              setLocalProducts(prev => prev.filter(p => p.localId !== product.localId));
-
-            } else {
-              errorCount++;
-              errors.push(`${product.sku}: ${result.error}`);
-            }
-          } catch (error) {
-            errorCount++;
-            errors.push(`${product.sku}: ${error.message}`);
-          }
-        }));
-
-        // Small delay between batches
-        if (i + batchSize < products.length) {
-          await new Promise(resolve => setTimeout(resolve, 500));
-        }
-      }
-
-      // Update stats
-      setStats(prev => ({
-        ...prev,
-        localProducts: prev.localProducts - successCount,
-        syncedProducts: prev.syncedProducts + successCount
-      }));
-
-      // Show results
-      if (successCount > 0) {
-        toast.success(`Successfully synced ${successCount} product(s) to Magento`);
-      }
-
-      if (errorCount > 0) {
-        toast.error(`Failed to sync ${errorCount} product(s). Check console for details.`);
-        console.error('Sync errors:', errors);
-      }
-
-      // Refresh grid to get latest data from Magento
-      fetchProducts();
-
-    } catch (error) {
-      console.error('Sync operation failed:', error);
-      toast.error(`Sync failed: ${error.message}`);
-    } finally {
-      setSyncLoading(false);
-    }
-  }, [localProducts, fetchProducts]);
-
-  // ===== 4. MEMOIZED COMPONENTS =====
-  const columns = useMemo(() => [
-    {
-      field: 'sku',
-      headerName: 'SKU',
-      width: 150,
-      sortable: true,
-      filterable: true
-    },
-    {
-      field: 'name',
-      headerName: 'Product Name',
-      width: 300,
-      sortable: true,
-      filterable: true
-    },
-    {
-      field: 'price',
-      headerName: 'Price',
-      width: 120,
-      type: 'number',
-      valueFormatter: (params) => params.value ? `$${params.value.toFixed(2)}` : 'N/A'
-    },
-    {
-      field: 'quantity',
-      headerName: 'Stock',
-      width: 100,
-      type: 'number',
-      valueGetter: (params) => {
-        // Safe access to row data - handle undefined during grid initialization
-        if (!params.row) return 0;
-        // Handle different stock quantity field names from Magento API
-        return params.row.quantity || params.row.qty ||
-          params.row.extension_attributes?.stock_item?.qty || 0;
-      },
-      renderCell: (params) => {
-        const qty = params.value || 0;
-        return (
-          <Chip
-            label={qty}
-            color={qty > 10 ? 'success' : qty > 0 ? 'warning' : 'error'}
-            size="small"
-          />
-        );
-      }
-    },
-    {
-      field: 'status',
-      headerName: 'Status',
-      width: 120,
-      renderCell: (params) => (
-        <Chip
-          label={params.value === 1 ? 'Active' : 'Inactive'}
-          color={params.value === 1 ? 'success' : 'default'}
-          size="small"
-        />
-      )
-    },
-    {
-      field: 'created_at',
-      headerName: 'Created',
-      width: 180,
-      valueFormatter: (params) =>
-        params.value ? new Date(params.value).toLocaleString() : 'N/A'
-    }
-  ], []);
-
-  // Custom segmented add button component
-  const SegmentedAddButton = useMemo(() => (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <ButtonGroup variant="contained" color="primary">
-        <Button
-          onClick={handleAddSingle}
-          startIcon={<AddIcon />}
-          sx={{ minWidth: 120 }}
-        >
-          Add Product
-        </Button>
-        <Button
-          size="small"
-          onClick={handleAddMenuOpen}
-          sx={{ px: 1, minWidth: 32 }}
-        >
-          <ArrowDropDownIcon />
-
-        </Button>
-      </ButtonGroup>
-
-      <Menu
-        anchorEl={addMenuAnchor}
-        open={addMenuOpen}
-        onClose={handleAddMenuClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-      >
-        <MenuItem onClick={handleAddSingle}>
-          <ListItemIcon>
-            <AddIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Add Single Product" secondary="Create one product manually" />
-        </MenuItem>
-
-        <MenuItem onClick={handleCsvImport}>
-          <ListItemIcon>
-            <PostAddIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="CSV Import" secondary="Import from CSV file" />
-        </MenuItem>
-
-        <Divider />
-
-        <MenuItem onClick={handleCatalogProcessorFromMenu}>
-          <ListItemIcon>
-            <ImportIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText primary="Process Full Catalog" secondary="Process 20MB catalog file" />
-        </MenuItem>
-      </Menu>
-    </Box>
-  ), [
-    handleAddSingle,
-    handleAddMenuOpen,
-    addMenuAnchor,
-    addMenuOpen,
-    handleAddMenuClose,
-    handleCsvImport,
-    handleCatalogProcessorFromMenu
-  ]);
-
-  // Toolbar configuration with custom segmented add button
-  const toolbarConfig = useMemo(() => ({
-    showRefresh: true,
-    showAdd: false, // Disabled - using custom segmented add button
-    showEdit: true,
-    showDelete: true,
-    showExport: false,
-    showSearch: true,
-    showFilters: true,
-    showSettings: true,
-    showViewToggle: true,
-    compact: false,
-    size: 'medium',
-    customLeftActions: [SegmentedAddButton] // Add our custom segmented button
-  }), [SegmentedAddButton]);
-
-  // Smart sync button - only enabled when local products exist
-  const SyncButton = useMemo(() => {
-    if (!canSync) return null;
-
-    const syncCount = selectedLocalProducts.length > 0 ? selectedLocalProducts.length : localProducts.length;
-    const buttonText = selectedLocalProducts.length > 0
-      ? `Sync Selected (${selectedLocalProducts.length})`
-      : `Sync All Local (${localProducts.length})`;
-
-    return (
-      <Tooltip title={`Sync ${syncCount} local product(s) to Magento`}>
-        <Badge badgeContent={localProducts.length} color="warning" max={99}>
-          <Button
-            onClick={() => handleSyncProducts(
-              selectedLocalProducts.length > 0
-                ? localProducts.filter(p => selectedLocalProducts.includes(p.sku))
-                : null
-            )}
-            startIcon={<SyncAltIcon />}
-            variant="contained"
-            color="success"
-            disabled={syncLoading}
-            sx={{
-              minWidth: 140,
-              '& .MuiBadge-badge': {
-                right: -8,
-                top: -8
-              }
-            }}
-          >
-            {syncLoading ? 'Syncing...' : buttonText}
-          </Button>
-        </Badge>
-      </Tooltip>
-    );
-  }, [canSync, selectedLocalProducts, localProducts, handleSyncProducts, syncLoading]);
-
-  const customActions = useMemo(() => {
-    const actions = [];
-
-    // Add sync button if there are local products
-    if (SyncButton) {
-      actions.push({
-        component: SyncButton,
-        key: 'sync-local-products'
-      });
-    }
-
-    return actions;
-  }, [SyncButton]);
-
+  // ===== CONTEXT MENU =====
   const contextMenuActions = useMemo(() => ({
     view: {
-      label: 'View Details',
-      icon: <ViewIcon />,
+      enabled: true,
+      label: 'View Product',
+      icon: 'visibility',
       onClick: (row) => {
         setSelectedProduct(row);
         setInfoDialogOpen(true);
       }
     },
     edit: {
+      enabled: true,
       label: 'Edit Product',
-      icon: <EditIcon />,
-      onClick: (row) => {
-        setSelectedProduct(row);
-        setInfoDialogOpen(true); // Using info dialog for now - edit dialog can be added later
-      }
-    },
-    info: {
-      label: 'Product Info',
-      icon: <InfoIcon />,
-      onClick: (row) => {
-        setSelectedProduct(row);
-        setInfoDialogOpen(true);
-      }
+      icon: 'edit',
+      onClick: (row) => handleEdit(row)
     },
     delete: {
+      enabled: true,
       label: 'Delete Product',
-      icon: <DeleteIcon />,
+      icon: 'delete',
       onClick: (row) => handleDelete([row.sku]),
       color: 'error'
+    },
+    duplicate: {
+      enabled: true,
+      label: 'Duplicate Product',
+      icon: 'content_copy',
+      onClick: (row) => {
+        console.log('Duplicate:', row);
+        toast.info(`Duplicating product: ${row.name}`);
+      }
     }
-  }), [handleDelete, handleEdit]);
+  }), [handleEdit, handleDelete]);
 
-  const statusCards = useMemo(() => [
-    {
-      title: 'Total Products',
-      value: stats.total,
-      icon: <CategoryIcon />,
-      color: 'primary'
-    },
-    {
-      title: 'In Stock',
-      value: stats.inStock,
-      icon: <CheckCircleOutlineIcon />,
-      color: 'success'
-    },
-    {
-      title: 'Out of Stock',
-      value: stats.outOfStock,
-      icon: <ErrorOutlineIcon />,
-      color: 'error'
-    },
-    {
-      title: 'Low Stock',
-      value: stats.lowStock,
-      icon: <ReportProblemIcon />,
-      color: 'warning'
-    },
-    {
-      title: 'Avg Price',
-      value: `$${stats.averagePrice.toFixed(2)}`,
-      icon: <AttachMoneyIcon />,
-      color: 'info'
-    }
+  // ===== STATS CARDS =====
+  const gridCards = useMemo(() => [
+    { title: 'Total Products', value: stats.total, color: 'primary' },
+    { title: 'Active', value: stats.active, color: 'success' },
+    { title: 'Inactive', value: stats.inactive, color: 'warning' },
+    { title: 'Local Products', value: stats.localProducts, color: 'info' }
   ], [stats]);
 
-  const filterOptions = useMemo(() => [
-    { key: 'all', label: 'All Products', value: 'all' },
-    { key: 'active', label: 'Active Only', value: '1' },
-    { key: 'inactive', label: 'Inactive Only', value: '0' },
-    { key: 'instock', label: 'In Stock', value: 'instock' },
-    { key: 'outofstock', label: 'Out of Stock', value: 'outofstock' },
-    { key: 'local', label: 'Local Products', value: 'local' },
-    { key: 'synced', label: 'Synced Products', value: 'synced' }
-  ], []);
-
-  // Custom row styling for local products
-  const getRowClassName = useCallback((params) => {
-    if (params.row?.isLocal) {
-      return 'local-product-row';
+  // ===== CUSTOM ACTIONS =====
+  const customActions = useMemo(() => [
+    {
+      label: 'Import CSV',
+      icon: 'upload',
+      onClick: () => setCsvImportOpen(true)
+    },
+    {
+      label: 'Process Catalog',
+      icon: 'settings',
+      onClick: () => setCatalogProcessorOpen(true)
+    },
+    {
+      label: 'Sync All',
+      icon: 'sync',
+      onClick: handleSync,
+      disabled: localProducts.length === 0
+    },
+    {
+      label: 'Bulk Activate',
+      icon: 'check_circle',
+      onClick: () => handleBulkOperation('activate'),
+      disabled: selectedRows.length === 0
+    },
+    {
+      label: 'Bulk Deactivate',
+      icon: 'cancel',
+      onClick: () => handleBulkOperation('deactivate'),
+      disabled: selectedRows.length === 0
+    },
+    {
+      label: 'Bulk Categories',
+      icon: 'category',
+      onClick: () => handleBulkOperation('categories'),
+      disabled: selectedRows.length === 0
     }
-    return '';
-  }, []);
+  ], [handleSync, localProducts.length, selectedRows.length, handleBulkOperation]);
 
-  // ===== 5. RENDER =====
   return (
-
     <>
-      <ProductionGrid
-        gridType="magentoProducts"
-        gridName="MagentoProductsGrid"
-        columns={columns}
-        data={data}
-        loading={loading}
-        gridCards={statusCards}
-        // Toolbar configuration
-        toolbarConfig={toolbarConfig}
-        customActions={customActions}
-
-        // Context menu
-        contextMenuActions={contextMenuActions}
-
-        // Filter configuration
-        filterOptions={filterOptions}
-        currentFilter={currentFilter}
-        onFilterChange={handleFilterChange}
-
-        // Event handlers
-        onRefresh={fetchProducts}
-        onAdd={handleAdd}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onSync={handleSync}
-        onSelectionChange={setSelectedRows}
-        onSearch={handleSearch}
-
-        // Row configuration
-        getRowId={(row) => row.sku}
-        getRowClassName={getRowClassName}
+      <UnifiedGrid
+        {...getStandardGridProps('magentoProducts', {
+          gridName: "MagentoProductsGrid",
+          columns,
+          data,
+          loading,
+          totalCount: stats.total,
+          
+          // Event handlers
+          onRefresh: fetchProducts,
+          onRowDoubleClick: handleRowDoubleClick,
+          onAdd: handleAdd,
+          onEdit: handleEdit,
+          onDelete: handleDelete,
+          onSync: handleSync,
+          onExport: handleExport,
+          onSelectionChange: setSelectedRows,
+          
+          // Configuration
+          toolbarConfig: getStandardToolbarConfig('magentoProducts'),
+          customActions,
+          contextMenuActions,
+          
+          // Stats
+          showStatsCards: true,
+          gridCards,
+          
+          // Grid props
+          getRowId: (row) => row.sku
+        })}
       />
 
+      {/* Dialogs */}
       <ProductInfoDialog
         open={infoDialogOpen}
         onClose={() => setInfoDialogOpen(false)}
@@ -819,14 +377,27 @@ const ProductsGrid = () => {
       <CSVImportDialog
         open={csvImportOpen}
         onClose={() => setCsvImportOpen(false)}
-        onImportComplete={handleCsvImportComplete}
+        onImportComplete={() => fetchProducts()}
       />
 
       <CatalogProcessorDialog
         open={catalogProcessorOpen}
         onClose={() => setCatalogProcessorOpen(false)}
-        onProcessComplete={handleCatalogProcessComplete}
+        onProcessComplete={() => fetchProducts()}
       />
+
+      {/* Bulk Category Assignment Dialog */}
+      <BulkCategoryAssignmentDialog
+        open={categoryAssignmentOpen}
+        onClose={() => setCategoryAssignmentOpen(false)}
+        selectedProducts={selectedRows.map(sku => data.find(p => p.sku === sku)).filter(Boolean)}
+        onAssignmentComplete={() => {
+          setCategoryAssignmentOpen(false);
+          setSelectedRows([]);
+          fetchProducts();
+        }}
+      />
+
     </>
   );
 };

@@ -11,6 +11,7 @@ import Inventory2Icon from '@mui/icons-material/Inventory2';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import DescriptionIcon from '@mui/icons-material/Description';
 import BugReportIcon from '@mui/icons-material/BugReport';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 // Drawer (Sidebar) Widths
 export const DRAWER_WIDTH = 240;  // Full sidebar width
@@ -34,6 +35,7 @@ export const staticPrimaryKeys = {
     OrdersGrid: 'increment_id',
     InvoicesGrid: 'entity_id',
     ProductsGrid: 'sku',
+    ProductCatalog: 'id',
     CustomersGrid: 'id',
     MDMProductsGrid: 'sku',
     CegidProductsGrid: 'sku',
@@ -49,11 +51,19 @@ export const MENU_ITEMS = [
         hidden: false,
         licensed: true
     },
-    {
+     {
         id: 'ProductsGrid',
         label: 'Products',
         icon: InventoryIcon,
         path: '/products',
+        hidden: false,
+        licensed: true
+    },
+    {
+        id: 'ProductCatalog',
+        label: 'Products Catalog',
+        icon: SettingsIcon,
+        path: '/productsManagement',
         hidden: false,
         licensed: true
     },

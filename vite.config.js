@@ -94,7 +94,7 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: process.env.NODE_ENV !== 'production',
-    minify: process.env.NODE_ENV === 'production' ? 'terser' : false,
+    minify: 'terser', // Always use terser for consistency
     target: 'es2015',
     rollupOptions: {
       input: {
