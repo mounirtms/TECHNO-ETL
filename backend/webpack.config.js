@@ -12,6 +12,12 @@ export default {
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
+    library: {
+      type: 'commonjs2'
+    },
+    environment: {
+      module: false
+    }
   },
   optimization: {
     minimize: true,
