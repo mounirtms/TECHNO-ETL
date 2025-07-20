@@ -80,6 +80,48 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "deploy"],
       "console": "integratedTerminal"
+    },
+    {
+      "name": "Run Production Backend (dist/backend)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/dist/backend/index.js",
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": "5000"
+      },
+      "cwd": "${workspaceFolder}/dist/backend"
+    },
+    {
+      "name": "Run Production Backend with Startup Script",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/dist/backend/start-server.js",
+      "args": ["production"],
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": "5000"
+      },
+      "cwd": "${workspaceFolder}/dist/backend"
+    },
+    {
+      "name": "Test Production Build",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "build"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Serve Production Frontend",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-s", "dist", "-l", "82"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}"
     }
   ]
 }
