@@ -65,11 +65,69 @@ const ProductionGrid = ({
     [gridType, customConfig]
   );
   
-  // Performance monitoring
-  const { trackPerformance, getMetrics } = useGridPerformance(gridName);
-  
-  // Data caching
-  const { getCachedData, setCachedData, clearCache } = useGridCache(gridName);
+  // Performance monitoring with error handling
+  const performanceHook = useGridPerformance({
+    data,
+    pageSize: config?.performance?.DEFAULT_PAGE_SIZE || 25
+  });
+
+  const trackPerformance = useCallback((operation, dataSize = 0) => {
+    try {
+      if (performanceHook?.trackPerformance) {
+        return performanceHook.trackPerformance(operation, dataSize);
+      }
+      // Fallback performance tracking
+      console.log(`📊 [${gridName}] Performance: ${operation} (${dataSize} items)`);
+      return () => {}; // No-op cleanup function
+    } catch (error) {
+      console.warn(`⚠️ [${gridName}] Performance tracking failed:`, error);
+      return () => {};
+    }
+  }, [performanceHook, gridName]);
+
+  const getMetrics = useCallback(() => {
+    try {
+      if (performanceHook?.getMetrics) {
+        return performanceHook.getMetrics();
+      }
+      return {
+        renderTime: 0,
+        totalOperations: 0,
+        gridName
+      };
+    } catch (error) {
+      console.warn(`⚠️ [${gridName}] Metrics retrieval failed:`, error);
+      return { renderTime: 0, totalOperations: 0, gridName };
+    }
+  }, [performanceHook, gridName]);
+
+  // Data caching with error handling
+  const cacheHook = useGridCache(gridName);
+
+  const getCachedData = useCallback((params) => {
+    try {
+      return cacheHook?.getCacheData?.(params) || null;
+    } catch (error) {
+      console.warn(`⚠️ [${gridName}] Cache retrieval failed:`, error);
+      return null;
+    }
+  }, [cacheHook, gridName]);
+
+  const setCachedData = useCallback((params, data, ttl) => {
+    try {
+      cacheHook?.setCacheData?.(data, params);
+    } catch (error) {
+      console.warn(`⚠️ [${gridName}] Cache storage failed:`, error);
+    }
+  }, [cacheHook, gridName]);
+
+  const clearCache = useCallback(() => {
+    try {
+      cacheHook?.clearCache?.();
+    } catch (error) {
+      console.warn(`⚠️ [${gridName}] Cache clearing failed:`, error);
+    }
+  }, [cacheHook, gridName]);
   
   // Grid state
   const [paginationModel, setPaginationModel] = useState({

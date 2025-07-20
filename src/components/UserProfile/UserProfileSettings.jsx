@@ -3,14 +3,17 @@ import {
   Box, Paper, Typography, Switch, FormControlLabel, Select, MenuItem,
   FormControl, InputLabel, Divider, Button, Alert, Snackbar,
   Grid, Card, CardContent, CardHeader, Slider, TextField,
-  Accordion, AccordionSummary, AccordionDetails, Chip
+  Accordion, AccordionSummary, AccordionDetails, Chip, Tabs, Tab
 } from '@mui/material';
 import {
   Settings, Palette, Language, Notifications, Security,
   Dashboard, GridView, Speed, Accessibility, ExpandMore,
-  Save, RestoreFromTrash, Brightness4, Brightness7
+  Save, RestoreFromTrash, Brightness4, Brightness7, ViewColumn, FilterList
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
+import GridColumnSettings from './GridColumnSettings';
+import GridFilterSettings from './GridFilterSettings';
+import FeatureFlags from './FeatureFlags';
 
 const UserProfileSettings = ({ user, onSettingsChange }) => {
   const theme = useTheme();
@@ -53,6 +56,7 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
     // Load user settings from localStorage or API
@@ -150,6 +154,18 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
     </Grid>
   );
 
+  const TabPanel = ({ children, value, index, ...other }) => (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`settings-tabpanel-${index}`}
+      aria-labelledby={`settings-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ py: 3 }}>{children}</Box>}
+    </div>
+  );
+
   return (
     <Box sx={{ p: 3, maxWidth: 1200, mx: 'auto' }}>
       {/* Header */}
@@ -162,8 +178,44 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
         </Typography>
       </Box>
 
-      {/* Settings Sections */}
-      <Box sx={{ mb: 3 }}>
+      {/* Tab Navigation */}
+      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+        <Tabs
+          value={activeTab}
+          onChange={(e, newValue) => setActiveTab(newValue)}
+          aria-label="settings tabs"
+        >
+          <Tab
+            icon={<Settings />}
+            label="General"
+            id="settings-tab-0"
+            aria-controls="settings-tabpanel-0"
+          />
+          <Tab
+            icon={<ViewColumn />}
+            label="Grid Columns"
+            id="settings-tab-1"
+            aria-controls="settings-tabpanel-1"
+          />
+          <Tab
+            icon={<FilterList />}
+            label="Filters"
+            id="settings-tab-2"
+            aria-controls="settings-tabpanel-2"
+          />
+          <Tab
+            icon={<Settings />}
+            label="Features"
+            id="settings-tab-3"
+            aria-controls="settings-tabpanel-3"
+          />
+        </Tabs>
+      </Box>
+
+      {/* Tab Panels */}
+      <TabPanel value={activeTab} index={0}>
+        {/* General Settings */}
+        <Box sx={{ mb: 3 }}>
         {/* Appearance Settings */}
         <SettingsSection title="Appearance" icon={<Palette />}>
           <SettingItem 
@@ -540,32 +592,47 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
             />
           </SettingItem>
         </SettingsSection>
-      </Box>
 
-      {/* Action Buttons */}
-      <Box sx={{ 
-        display: 'flex', 
-        gap: 2, 
-        justifyContent: 'flex-end',
-        pt: 3,
-        borderTop: `1px solid ${theme.palette.divider}`
-      }}>
-        <Button
-          variant="outlined"
-          startIcon={<RestoreFromTrash />}
-          onClick={handleReset}
-        >
-          Reset to Defaults
-        </Button>
-        <Button
-          variant="contained"
-          startIcon={<Save />}
-          onClick={handleSave}
-          disabled={!isDirty}
-        >
-          Save Settings
-        </Button>
-      </Box>
+        {/* Action Buttons */}
+        <Box sx={{
+          display: 'flex',
+          gap: 2,
+          justifyContent: 'flex-end',
+          pt: 3,
+          borderTop: `1px solid ${theme.palette.divider}`
+        }}>
+          <Button
+            variant="outlined"
+            startIcon={<RestoreFromTrash />}
+            onClick={handleReset}
+          >
+            Reset to Defaults
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<Save />}
+            onClick={handleSave}
+            disabled={!isDirty}
+          >
+            Save Settings
+          </Button>
+        </Box>
+      </TabPanel>
+
+      {/* Grid Columns Tab */}
+      <TabPanel value={activeTab} index={1}>
+        <GridColumnSettings user={user} onSettingsChange={onSettingsChange} />
+      </TabPanel>
+
+      {/* Filters Tab */}
+      <TabPanel value={activeTab} index={2}>
+        <GridFilterSettings user={user} onSettingsChange={onSettingsChange} />
+      </TabPanel>
+
+      {/* Feature Flags Tab */}
+      <TabPanel value={activeTab} index={3}>
+        <FeatureFlags user={user} onSettingsChange={onSettingsChange} />
+      </TabPanel>
 
       {/* Success/Error Notifications */}
       <Snackbar

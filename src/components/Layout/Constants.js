@@ -17,8 +17,8 @@ export const DRAWER_WIDTH = 240;  // Full sidebar width
 export const COLLAPSED_WIDTH = 64;  // Collapsed/minimized sidebar width
 
 // Header and Footer Heights
-export const HEADER_HEIGHT = 64;
-export const FOOTER_HEIGHT = 28;
+export const HEADER_HEIGHT = 55;
+export const FOOTER_HEIGHT = 26;
 export const DASHBOARD_TAB_HEIGHT = 80;
 export const STATS_CARD_ZINDEX = 1200;
 export const STATS_CARD_HEIGHT = 80;

@@ -114,10 +114,10 @@ const MDMProductsGrid = () => {
 
     try {
       setLoading(true);
-      const selectedData = data.filter(row => 
+      const selectedData = data.filter(row =>
         selectedBaseGridRows.includes(`${row.Source}-${row.Code_MDM}`)
       );
-      
+
       const payload = prepareSourceItemsPayload(selectedData, sourceMapping);
       if (!payload.sourceItems.length) {
         toast.warning('No valid items to sync.');
@@ -155,7 +155,7 @@ const MDMProductsGrid = () => {
 
     return [
       { value: 'all', label: 'All Sources' },
-      ...filteredSources.sort((a, b) => 
+      ...filteredSources.sort((a, b) =>
         a.code_source.toString().localeCompare(b.code_source.toString())
       ).map(source => ({
         value: source.code_source.toString(),
@@ -420,7 +420,6 @@ const MDMProductsGrid = () => {
   const customActions = useMDMCustomActions({
     onRefresh: handleManualRefresh,
     onSync: onSyncHandler,
-       
     loading,
     selectedCount: selectedBaseGridRows.length
   });
@@ -446,7 +445,7 @@ const MDMProductsGrid = () => {
 
   // processBatch is now defined above to avoid initialization issues
 
-  
+
   const onSyncAllHandler = useCallback(async () => {
     if (sourceFilter === 'all' || !sourceFilter) {
       toast.warning('Please select a specific source to sync all items.');
@@ -454,10 +453,10 @@ const MDMProductsGrid = () => {
     }
     try {
       setLoading(true);
-      toast.info(<SyncProgressToast current={0} total={0} />, { 
-        autoClose: false, 
-        closeOnClick: false, 
-        draggable: false 
+      toast.info(<SyncProgressToast current={0} total={0} />, {
+        autoClose: false,
+        closeOnClick: false,
+        draggable: false
       });
       await axios.post('/api/mdm/inventory/sync-all-source', {
         sourceCode: sourceFilter
@@ -497,22 +496,12 @@ const MDMProductsGrid = () => {
 
   // Context menu actions are now handled by useMDMContextMenuActions above
 
-  const getRowClassName = useCallback((params) => 
+  const getRowClassName = useCallback((params) =>
     params.row.changed ? 'row-changed' : '', []);
 
   // ===== RENDER =====
   return (
-    <Box sx={{
-      height: '100vh',
-      width: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      overflow: 'hidden',
-      '@media (max-width: 768px)': {
-        height: 'calc(100vh - 64px)'
-      }
-    }}>
-      {/* Filter Panel */}
+    <>
       <Box sx={{ flexShrink: 0, mb: 0.5 }}>
         <MDMFilterPanel
           succursaleOptions={succursaleOptions}
@@ -529,55 +518,41 @@ const MDMProductsGrid = () => {
       </Box>
 
       {/* Main Grid Container with Standard Layout */}
-      <Box sx={STANDARD_GRID_CONTAINER_STYLES}>
-        {/* Grid Area with Proper Scrolling */}
-        <Box sx={STANDARD_GRID_AREA_STYLES}>
-          <UnifiedGrid
-            {...getStandardGridProps('mdm', {
-              gridName: "MDMProductsGrid",
-              columns: columns,
-              data: validatedData,
-              loading: loading,
-              onRefresh: handleManualRefresh,
-              showStatsCards: false, // Moved to separate container
-              defaultViewMode: viewMode,
-              onViewModeChange: setViewMode,
-              totalCount: stats.total,
-              onPaginationModelChange: (model) => {
-                console.log('Pagination model changed:', model);
-                fetchProducts({
-                  page: model.page,
-                  pageSize: model.pageSize
-                });
-              }
-            })}
-            columnVisibility={columnVisibility}
-            onColumnVisibilityChange={setColumnVisibility}
-            toolbarConfig={toolbarConfig}
-            customActions={customActions}
-            contextMenuActions={contextMenuActions}
-            enableFloatingActions={false}
-            onSync={onSyncHandler}
-            onSelectionChange={setSelectedBaseGridRows}
-            mdmStocks={true}
-            onExport={(selectedRows) => {
-              const exportData = selectedRows.length > 0
-                ? validatedData.filter(product => selectedRows.includes(`${product.Source}-${product.Code_MDM}`))
-                : validatedData;
-              toast.success(`Exported ${exportData.length} products`);
-            }}
-            getRowId={(row) => `${row.Source}-${row.Code_MDM}`}
-            getRowClassName={getRowClassName}
-            onError={(error) => toast.error(error.message)}
-          />
-        </Box>
 
-        {/* Stats Cards at Bottom - Always Visible */}
-        <Box sx={STANDARD_STATS_CONTAINER_STYLES}>
-          <MDMStatsCards stats={stats} />
-        </Box>
-      </Box>
-    </Box>
+      <UnifiedGrid
+        {...getStandardGridProps('mdm', {
+          gridName: "MDMProductsGrid",
+          columns: columns,
+          data: validatedData,
+          loading: loading,
+          onRefresh: handleManualRefresh,
+          showStatsCards: true, // Moved to separate container
+          defaultViewMode: viewMode,
+          onViewModeChange: setViewMode,
+          gridCards: MDMStatsCards,
+          totalCount: stats.total,
+          onPaginationModelChange: (model) => {
+            console.log('Pagination model changed:', model);
+            fetchProducts({
+              page: model.page,
+              pageSize: model.pageSize
+            });
+          }
+        })}
+        columnVisibility={columnVisibility}
+        onColumnVisibilityChange={setColumnVisibility}
+        toolbarConfig={toolbarConfig}
+        customActions={customActions}
+        contextMenuActions={contextMenuActions}
+        enableFloatingActions={false}
+        onSync={onSyncHandler}
+        onSelectionChange={setSelectedBaseGridRows}
+    
+        getRowId={(row) => `${row.Source}-${row.Code_MDM}`}
+        getRowClassName={getRowClassName}
+        onError={(error) => toast.error(error.message)}
+      />
+    </>
   );
 };
 

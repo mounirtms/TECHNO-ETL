@@ -22,7 +22,7 @@ const columns = [
         width: 120,
         valueGetter: (params) => params?.row?.enabled ? 'Enabled' : 'Disabled',
         renderCell: (params) => (
-                <div style={{ 
+            <div style={{
                 color: params?.row?.enabled ? 'green' : 'red',
                 fontWeight: 'bold'
             }}>
@@ -100,8 +100,8 @@ const SourcesGrid = ({ productId }) => {
     const [error, setError] = useState(null); // Store error message
 
     const handleRefresh = useCallback(async (params) => {
-      try {
-        setLoading(true);
+        try {
+            setLoading(true);
             setError(null); // Reset error on new request
 
             const searchCriteria = {
@@ -132,7 +132,7 @@ const SourcesGrid = ({ productId }) => {
             }
 
             const response = await magentoApi.getSources(searchCriteria);
-          
+
             if (!response) {
                 throw new Error('No response received from the server.');
             }
@@ -168,8 +168,8 @@ const SourcesGrid = ({ productId }) => {
 
     return (
         <>
-            {error && <div style={{ color: 'red', fontWeight: 'bold', marginBottom: '10px' }}>{error}</div>}
-          
+
+
             <UnifiedGrid
                 gridName="sources"
                 columns={columns}
@@ -179,7 +179,7 @@ const SourcesGrid = ({ productId }) => {
                 // Feature toggles
                 enableCache={true}
                 enableI18n={true}
-           
+
                 enableSelection={true}
                 enableSorting={true}
                 enableFiltering={true}
@@ -190,14 +190,6 @@ const SourcesGrid = ({ productId }) => {
                 totalCount={totalCount}
                 defaultPageSize={25}
 
-                // Toolbar configuration
-                toolbarConfig={{
-                    showRefresh: true,
-                    showExport: true,
-                    showSearch: true,
-                    showFilters: true,
-                    showSettings: true
-                }}
 
                 // Context menu
                 contextMenuActions={{
@@ -246,7 +238,7 @@ const SourcesGrid = ({ productId }) => {
                     toast.error('Error loading sources');
                 }}
             />
-          
+
         </>
     );
 };

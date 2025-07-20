@@ -34,7 +34,7 @@ const useMDMToolbarConfig = ({
 }) => {
   return useMemo(() => ({
     showRefresh: true,
-    showSync: false,
+    showSync: true,
     showExport: false, // Moved to settings menu
     showSearch: false,
     showFilters: false,
@@ -45,7 +45,7 @@ const useMDMToolbarConfig = ({
     showViewToggle: true,
     compact: false,
     size: 'medium',
-    spacing: 2,
+    spacing: 1,
     maxWidth: '90%',
     actionAreaWidth: '30%',
     

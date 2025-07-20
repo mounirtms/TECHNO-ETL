@@ -4,7 +4,7 @@ import { Box, Chip, Typography } from '@mui/material';
 import {
   ShoppingBag as ShoppingBagIcon,
   LocalShipping as LocalShippingIcon,
-  GetApp as  SyncIcon,
+  GetApp as SyncIcon,
   Cancel as CancelIcon,
   Edit as EditIcon,
   Visibility as ViewIcon,
@@ -52,7 +52,7 @@ const OrdersGrid = () => {
       const ordersData = response?.data || response;
       const orders = ordersData?.items || [];
       setData(orders);
-      
+
       // Calculate stats
       const totalOrders = orders.length;
       const pendingOrders = orders.filter(o => o.status === 'pending').length;
@@ -60,7 +60,7 @@ const OrdersGrid = () => {
       const completedOrders = orders.filter(o => o.status === 'complete').length;
       const cancelledOrders = orders.filter(o => o.status === 'canceled').length;
       const totalRevenue = orders.reduce((sum, o) => sum + (parseFloat(o.grand_total) || 0), 0);
-      
+
       setStats({
         totalOrders,
         pendingOrders,
@@ -188,7 +188,7 @@ const OrdersGrid = () => {
       field: 'created_at',
       headerName: 'Order Date',
       width: 180,
-      valueFormatter: (params) => 
+      valueFormatter: (params) =>
         params.value ? new Date(params.value).toLocaleString() : 'N/A'
     }
   ], []);
@@ -316,61 +316,36 @@ const OrdersGrid = () => {
 
   // ===== 10. RENDER =====
   return (
-    <Box sx={{ height: '100%', width: '100%' }}>
-      <UnifiedGrid
-        gridName="OrdersGrid"
-        columns={columns}
-        data={data}
-        loading={loading}
-        
-        // Feature toggles
-        enableCache={true}
-        enableI18n={true}
-        enableRTL={false}
-        enableSelection={true}
-        enableSorting={true}
-        enableFiltering={true}
-        enableColumnReordering={true}
-        enableColumnResizing={true}
-        
-        // View options
-        showStatsCards={true}
-        showCardView={true}
-        defaultViewMode="grid"
-        gridCards={statusCards}
-        totalCount={stats.totalOrders}
-        defaultPageSize={25}
-        
-        // Toolbar configuration
-        toolbarConfig={toolbarConfig}
-        customActions={customActions}
-        
-        // Context menu
-        contextMenuActions={contextMenuActions}
-        
-        // Filter configuration
-        filterOptions={filterOptions}
-        currentFilter={currentFilter}
-        onFilterChange={handleFilterChange}
-        
-        // Event handlers
-        onRefresh={fetchOrders}
-        onEdit={handleEdit}
-        onSelectionChange={setSelectedRows}
-        onExport={(exportData, selectedRows) => {
-          console.log('Exporting orders:', exportData);
-          toast.success(`Exported ${exportData.length} orders`);
-        }}
-        
-        // Row configuration
-        getRowId={(row) => row.entity_id}
-        
-        // Error handling
-        onError={(error) => toast.error(error.message)}
-      />
 
-      {/* Add dialogs here when needed */}
-    </Box>
+    <UnifiedGrid
+      {...getStandardGridProps('magento', {
+        gridName: "OrdersGrid",
+        columns: columns,
+        data: data,
+        loading: loading,
+
+        gridCards: statusCards,
+        totalCount: stats.totalOrders,
+
+        // Toolbar configuration
+        toolbarConfig: toolbarConfig,
+        customActions: customActions,
+
+        // Context menu
+        contextMenuActions: contextMenuActions,
+
+        // Filter configuration
+        filterOptions: filterOptions,
+        currentFilter: currentFilter,
+        onFilterChange: handleFilterChange,
+
+        // Event handlers
+        onRefresh: fetchOrders,
+        onEdit: handleEdit,
+ 
+       
+      })}
+    />
   );
 };
 

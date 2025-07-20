@@ -4,10 +4,10 @@ import UnifiedGrid from '../../common/UnifiedGrid';
 import magentoApi from '../../../services/magentoApi';
 import { toast } from 'react-toastify';
 import {
-  getStandardGridProps,
-  STANDARD_GRID_CONTAINER_STYLES,
-  STANDARD_GRID_AREA_STYLES,
-  STANDARD_STATS_CONTAINER_STYLES
+    getStandardGridProps,
+    STANDARD_GRID_CONTAINER_STYLES,
+    STANDARD_GRID_AREA_STYLES,
+    STANDARD_STATS_CONTAINER_STYLES
 } from '../../../config/standardGridConfig';
 
 const columns = [
@@ -59,7 +59,7 @@ const StocksGrid = () => {
             setError(null); // Reset error on new request
 
             const response = await magentoApi.getStocks(params);
-            
+
             if (!response) {
                 throw new Error('No response received from the server.');
             }
@@ -96,92 +96,28 @@ const StocksGrid = () => {
     ];
 
     return (
-        <Box sx={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            height: 'calc(100vh - 120px)', // Dynamic height calculation
-            overflow: 'hidden'
-        }}>
-            {error && (
-                <Box sx={{
-                    color: 'error.main',
-                    fontWeight: 'bold',
-                    mb: 1,
-                    p: 1,
-                    backgroundColor: 'error.light',
-                    borderRadius: 1
-                }}>
-                    {error}
-                </Box>
-            )}
 
-            {/* Grid Area with Proper Scrolling */}
-            <Box sx={{
-                flex: 1,
-                minHeight: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden',
-                mb: 1
-            }}>
-                <UnifiedGrid
-                {...getStandardGridProps('magento', {
-                  gridName: "StocksGrid",
-                  columns: columns,
-                  data: data,
-                  loading: loading,
-                  showStatsCards: false, // Moved to separate container
-                  gridCards: gridCards,
-                  totalCount: totalCount,
+        <UnifiedGrid
+            {...getStandardGridProps('magento', {
+                gridName: "StocksGrid",
+                columns: columns,
+                data: data,
+                loading: loading,
+                showStatsCards: true, // Moved to separate container
+                gridCards: gridCards,
+                totalCount: totalCount,
 
-                  // Toolbar configuration
-                  toolbarConfig: {
-                    showRefresh: true,
-                    showExport: true,
-                    showSearch: true,
-                    showFilters: true,
-                    showSettings: true
-                  },
+                // Event handlers
+                onRefresh: handleRefresh,
 
-                  // Context menu
-                  contextMenuActions: {
-                    view: {
-                      enabled: true,
-                      onClick: (rowData) => {
-                        console.log('Viewing stock:', rowData);
-                        toast.info(`Viewing stock: ${rowData.stock_id}`);
-                      }
-                    }
-                  },
 
-                  // Event handlers
-                  onRefresh: handleRefresh,
-                  onExport: (selectedRows) => {
-                    const exportData = selectedRows.length > 0
-                      ? data.filter(stock => selectedRows.includes(stock.stock_id))
-                      : data;
-                    console.log('Exporting stocks:', exportData);
-                    toast.success(`Exported ${exportData.length} stocks`);
-                  },
+                // Row configuration
+                getRowId: (row) => row?.stock_id ?? Math.random().toString(36).substr(2, 9),
 
-                  // Row configuration
-                  getRowId: (row) => row?.stock_id ?? Math.random().toString(36).substr(2, 9),
 
-                  // Error handling
-                  onError: (error) => {
-                    console.error('Stocks Grid Error:', error);
-                    toast.error('Error loading stocks');
-                  }
-                })}
-            />
-            </Box>
+            })}
+        />
 
-            {/* Stats Cards at Bottom - Always Visible */}
-            <Box sx={STANDARD_STATS_CONTAINER_STYLES}>
-              {/* Add stats cards here if needed */}
-            </Box>
-        </Box>
     );
 };
 

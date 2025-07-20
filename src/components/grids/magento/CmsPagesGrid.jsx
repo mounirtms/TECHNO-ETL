@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
-    Typography,
-    Button,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    TextField,
-    CircularProgress,
-    Box
+    Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions,
+    TextField, CircularProgress, Box, Chip, IconButton, Tooltip, Alert,
+    FormControl, InputLabel, Select, MenuItem, Switch, FormControlLabel,
+    Tabs, Tab, Paper, Grid, Card, CardContent, CardHeader, Divider
 } from '@mui/material';
+import {
+    Visibility, Edit, Delete, Add, Publish, Draft, Save, Cancel,
+    Preview, Seo, Schedule, Analytics, Hierarchy, ContentCopy
+} from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import UnifiedGrid from '../../common/UnifiedGrid';
+import ProductionGrid from '../../common/ProductionGrid';
 import magentoApi from '../../../services/magentoApi';
+import { formatDate } from '../../../utils/formatters';
 
 const CmsPage = () => {
     const [pages, setPages] = useState([]);
@@ -22,11 +22,32 @@ const CmsPage = () => {
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedPage, setSelectedPage] = useState(null);
     const [error, setError] = useState(null);
+    const [activeTab, setActiveTab] = useState(0);
+    const [previewMode, setPreviewMode] = useState(false);
+
+    // Enhanced form data with SEO and scheduling
     const [formData, setFormData] = useState({
         title: '',
         identifier: '',
         content: '',
-        is_active: true
+        is_active: true,
+        meta_title: '',
+        meta_description: '',
+        meta_keywords: '',
+        url_key: '',
+        parent_id: null,
+        sort_order: 0,
+        publish_date: null,
+        status: 'draft' // draft, published, scheduled
+    });
+
+    // Stats for cards
+    const [stats, setStats] = useState({
+        total: 0,
+        published: 0,
+        draft: 0,
+        scheduled: 0,
+        recentlyModified: 0
     });
 
     useEffect(() => {

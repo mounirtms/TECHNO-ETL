@@ -41,7 +41,7 @@ import {
   ArrowDropDown as ArrowDropDownIcon,
   PostAdd as PostAddIcon
 } from '@mui/icons-material';
-import UnifiedGrid from '../../common/UnifiedGrid';
+import ProductionGrid from '../../common/ProductionGrid';
 import ProductInfoDialog from '../../common/ProductInfoDialog';
 import magentoApi from '../../../services/magentoApi';
 import { toast } from 'react-toastify';
@@ -84,6 +84,12 @@ const ProductsGrid = () => {
   const [localProducts, setLocalProducts] = useState([]);
   const [syncLoading, setSyncLoading] = useState(false);
 
+  // Enhanced search state
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchFields, setSearchFields] = useState(['sku', 'name']);
+  const [searchHistory, setSearchHistory] = useState([]);
+  const [searchSuggestions, setSuggestions] = useState([]);
+
   // Computed values
   const hasLocalProducts = localProducts.length > 0;
   const selectedLocalProducts = selectedRows.filter(sku =>
@@ -110,29 +116,33 @@ const ProductsGrid = () => {
       // Build search criteria for Magento API
       const searchParams = { ...filterParams };
 
-      // Handle search query - search across multiple fields
+      // Enhanced search functionality - search across configurable fields
       if (filterParams.search && filterParams.search.trim()) {
         const searchTerm = filterParams.search.trim();
-        console.log('🔍 Products Grid: Adding search criteria:', searchTerm);
+        console.log('🔍 Products Grid: Adding enhanced search criteria:', searchTerm);
 
-        // Add Magento search criteria for multiple fields
-        searchParams['searchCriteria[filterGroups][0][filters][0][field]'] = 'sku';
-        searchParams['searchCriteria[filterGroups][0][filters][0][value]'] = `%${searchTerm}%`;
-        searchParams['searchCriteria[filterGroups][0][filters][0][conditionType]'] = 'like';
+        // Save search to history
+        if (!searchHistory.includes(searchTerm)) {
+          const newHistory = [searchTerm, ...searchHistory.slice(0, 9)]; // Keep last 10 searches
+          setSearchHistory(newHistory);
+          localStorage.setItem('productSearchHistory', JSON.stringify(newHistory));
+        }
 
-        searchParams['searchCriteria[filterGroups][0][filters][1][field]'] = 'name';
-        searchParams['searchCriteria[filterGroups][0][filters][1][value]'] = `%${searchTerm}%`;
-        searchParams['searchCriteria[filterGroups][0][filters][1][conditionType]'] = 'like';
+        // Build search criteria based on selected fields
+        searchFields.forEach((field, index) => {
+          searchParams[`searchCriteria[filterGroups][0][filters][${index}][field]`] = field;
+          searchParams[`searchCriteria[filterGroups][0][filters][${index}][value]`] = `%${searchTerm}%`;
+          searchParams[`searchCriteria[filterGroups][0][filters][${index}][conditionType]`] = 'like';
+        });
 
-        searchParams['searchCriteria[filterGroups][0][filters][2][field]'] = 'description';
-        searchParams['searchCriteria[filterGroups][0][filters][2][value]'] = `%${searchTerm}%`;
-        searchParams['searchCriteria[filterGroups][0][filters][2][conditionType]'] = 'like';
+        // Set filter group logic to OR (any field matches)
+        searchParams['searchCriteria[filterGroups][0][filters][0][condition_type]'] = 'or';
       }
 
       // Direct Magento API call with enhanced logging
       console.log('📡 Products Grid: Calling magentoApi.getProducts with params:', searchParams);
       const response = await magentoApi.getProducts(searchParams);
-      
+
       console.log('📦 Products Grid: Raw Magento API response:', {
         responseType: typeof response,
         hasData: response && 'data' in response,
@@ -274,6 +284,38 @@ const ProductsGrid = () => {
     // Refresh the grid to show any newly imported products
     fetchProducts();
   }, [fetchProducts]);
+
+  // Enhanced search handler with debouncing and suggestions
+  const handleSearch = useCallback((searchTerm) => {
+    console.log('🔍 ProductsGrid: Enhanced search triggered:', searchTerm);
+    setSearchTerm(searchTerm);
+
+    // Generate search suggestions based on existing data
+    if (searchTerm.length > 1) {
+      const suggestions = data
+        .filter(product =>
+          searchFields.some(field =>
+            product[field]?.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        )
+        .slice(0, 5)
+        .map(product => ({
+          value: product.sku,
+          label: `${product.sku} - ${product.name}`,
+          type: 'product'
+        }));
+      setSuggestions(suggestions);
+    } else {
+      setSuggestions([]);
+    }
+
+    // Debounced search execution
+    const timeoutId = setTimeout(() => {
+      fetchProducts({ search: searchTerm });
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [data, searchFields, fetchProducts]);
 
   // Add menu handlers
   const handleAddMenuOpen = useCallback((event) => {
@@ -478,7 +520,7 @@ const ProductsGrid = () => {
         if (!params.row) return 0;
         // Handle different stock quantity field names from Magento API
         return params.row.quantity || params.row.qty ||
-               params.row.extension_attributes?.stock_item?.qty || 0;
+          params.row.extension_attributes?.stock_item?.qty || 0;
       },
       renderCell: (params) => {
         const qty = params.value || 0;
@@ -507,7 +549,7 @@ const ProductsGrid = () => {
       field: 'created_at',
       headerName: 'Created',
       width: 180,
-      valueFormatter: (params) => 
+      valueFormatter: (params) =>
         params.value ? new Date(params.value).toLocaleString() : 'N/A'
     }
   ], []);
@@ -529,7 +571,7 @@ const ProductsGrid = () => {
           sx={{ px: 1, minWidth: 32 }}
         >
           <ArrowDropDownIcon />
-          
+
         </Button>
       </ButtonGroup>
 
@@ -733,72 +775,40 @@ const ProductsGrid = () => {
 
   // ===== 5. RENDER =====
   return (
-    <Box sx={STANDARD_GRID_CONTAINER_STYLES}>
-      {/* Grid Area with Proper Scrolling */}
-      <Box sx={STANDARD_GRID_AREA_STYLES}>
-        <UnifiedGrid
-          {...getStandardGridProps('magento', {
-            gridName: "ProductsGrid",
-            columns: columns,
-            data: data,
-            loading: loading,
 
-            // View options
-            showStatsCards: false, // Will be moved to separate container
-            gridCards: statusCards,
+    <>
+      <ProductionGrid
+        gridType="magentoProducts"
+        gridName="MagentoProductsGrid"
+        columns={columns}
+        data={data}
+        loading={loading}
+        gridCards={statusCards}
+        // Toolbar configuration
+        toolbarConfig={toolbarConfig}
+        customActions={customActions}
 
-            // Toolbar configuration
-            toolbarConfig: toolbarConfig,
-            customActions: customActions,
+        // Context menu
+        contextMenuActions={contextMenuActions}
 
-            // Context menu
-            contextMenuActions: contextMenuActions,
+        // Filter configuration
+        filterOptions={filterOptions}
+        currentFilter={currentFilter}
+        onFilterChange={handleFilterChange}
 
-            // Filter configuration
-            filterOptions: filterOptions,
-            currentFilter: currentFilter,
-            onFilterChange: handleFilterChange,
+        // Event handlers
+        onRefresh={fetchProducts}
+        onAdd={handleAdd}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onSync={handleSync}
+        onSelectionChange={setSelectedRows}
+        onSearch={handleSearch}
 
-            // Event handlers
-            onRefresh: fetchProducts,
-            onAdd: handleAdd,
-            onEdit: handleEdit,
-            onDelete: handleDelete,
-            onSync: handleSync,
-            onSelectionChange: setSelectedRows,
-            onExport: () => toast.info('Export functionality coming soon'),
-            onSearch: (searchTerm) => {
-              console.log('🔍 ProductsGrid: Search triggered:', searchTerm);
-              fetchProducts({ search: searchTerm });
-            },
-
-            // Row configuration
-            getRowId: (row) => row.sku,
-            getRowClassName: getRowClassName,
-
-            // Custom styling for local products
-            sx: {
-              '& .local-product-row': {
-                backgroundColor: 'rgba(255, 193, 7, 0.1)', // Light amber background
-                borderLeft: '4px solid #ffc107', // Amber left border
-                '&:hover': {
-                  backgroundColor: 'rgba(255, 193, 7, 0.2)',
-                },
-                '& .MuiDataGrid-cell': {
-                  borderBottom: '1px solid rgba(255, 193, 7, 0.3)',
-                }
-              }
-            }
-          })}
-        />
-      </Box>
-
-      {/* Stats Cards at Bottom - Always Visible */}
-      <Box sx={STANDARD_STATS_CONTAINER_STYLES}>
-        {/* Add stats cards here if needed */}
-      </Box>
-
-      {/* Dialogs */}
+        // Row configuration
+        getRowId={(row) => row.sku}
+        getRowClassName={getRowClassName}
+      />
 
       <ProductInfoDialog
         open={infoDialogOpen}
@@ -817,7 +827,7 @@ const ProductsGrid = () => {
         onClose={() => setCatalogProcessorOpen(false)}
         onProcessComplete={handleCatalogProcessComplete}
       />
-    </Box>
+    </>
   );
 };
 

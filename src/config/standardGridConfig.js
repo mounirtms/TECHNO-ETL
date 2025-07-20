@@ -7,7 +7,6 @@
  * Standard grid height configuration
  * Uses fixed height calculation for consistent layout
  */
-export const STANDARD_GRID_HEIGHT = 'calc(100vh - 200px)';
 
 /**
  * Standard pagination configuration
@@ -72,7 +71,6 @@ export const STANDARD_GRID_CONTAINER_STYLES = {
   flex: 1,
   display: 'flex',
   flexDirection: 'column',
-  height: STANDARD_GRID_HEIGHT,
   overflow: 'hidden'
 };
 
@@ -207,7 +205,6 @@ export const getStandardGridProps = (gridType, customConfig = {}) => {
 };
 
 export default {
-  STANDARD_GRID_HEIGHT,
   STANDARD_PAGINATION_CONFIG,
   STANDARD_TOOLBAR_CONFIG,
   STANDARD_FEATURES,

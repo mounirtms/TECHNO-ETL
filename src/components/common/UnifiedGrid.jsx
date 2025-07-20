@@ -322,7 +322,7 @@ const UnifiedGrid = forwardRef(({
   const gridHeight = useMemo(() => {
     const baseHeight = window.innerHeight - HEADER_HEIGHT - FOOTER_HEIGHT;
     const statsHeight = showStatsCards ? STATS_CARD_HEIGHT : 0;
-    const toolbarHeight = 150; // Toolbar height
+    const toolbarHeight = 155; // Toolbar height
     return baseHeight - statsHeight - toolbarHeight; // 32px for padding
   }, [showStatsCards]);
 
