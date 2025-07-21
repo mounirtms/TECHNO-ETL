@@ -43,6 +43,8 @@ const CategoryTreeChart = ({ data, title = "Category Distribution" }) => {
 
   // Custom content renderer for treemap cells
   const CustomContent = ({ root, depth, x, y, width, height, index, payload, colors, rank, name }) => {
+    if (!payload || depth > 2) return null;
+
     if (depth === 1) {
       return (
         <g>
@@ -78,7 +80,7 @@ const CategoryTreeChart = ({ data, title = "Category Distribution" }) => {
               fill="#fff"
               fontSize={Math.min(width / 12, height / 6, 10)}
             >
-              {payload.value} products
+              {payload?.value || 0} products
             </text>
           )}
         </g>

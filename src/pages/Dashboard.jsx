@@ -56,6 +56,8 @@ import {
 // Import dashboard components
 import DashboardOverview from '../components/dashboard/DashboardOverview';
 import QuickActions from '../components/dashboard/QuickActions';
+import EnhancedStatsCards from '../components/dashboard/EnhancedStatsCards';
+import DashboardSettings from '../components/dashboard/DashboardSettings';
 
 // Import chart components
 import {
@@ -109,6 +111,37 @@ const Dashboard = () => {
     inventoryStatus: []
   });
   const [enhancedLoading, setEnhancedLoading] = useState(false);
+
+  // Dashboard settings
+  const [dashboardSettings, setDashboardSettings] = useState({
+    statCards: {
+      revenue: true,
+      orders: true,
+      products: true,
+      customers: true,
+      categories: true,
+      brands: true,
+      lowStock: true,
+      pendingOrders: true
+    },
+    charts: {
+      orders: true,
+      customers: true,
+      productStats: true,
+      brandDistribution: true,
+      categoryTree: true,
+      salesPerformance: true,
+      inventoryStatus: true,
+      productAttributes: true
+    },
+    general: {
+      autoRefresh: false,
+      animations: true,
+      compactMode: false,
+      showTooltips: true
+    }
+  });
+  const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   
   // Dashboard controller
   const {
@@ -173,6 +206,58 @@ const Dashboard = () => {
   const toggleChartVisibility = (chartKey) => {
     setVisibleCharts(prev => ({ ...prev, [chartKey]: !prev[chartKey] }));
   };
+
+  // Handle dashboard settings
+  const handleSettingsChange = (newSettings) => {
+    setDashboardSettings(newSettings);
+    // Save to localStorage
+    localStorage.setItem('dashboardSettings', JSON.stringify(newSettings));
+  };
+
+  const handleResetSettings = () => {
+    const defaultSettings = {
+      statCards: {
+        revenue: true,
+        orders: true,
+        products: true,
+        customers: true,
+        categories: true,
+        brands: true,
+        lowStock: true,
+        pendingOrders: true
+      },
+      charts: {
+        orders: true,
+        customers: true,
+        productStats: true,
+        brandDistribution: true,
+        categoryTree: true,
+        salesPerformance: true,
+        inventoryStatus: true,
+        productAttributes: true
+      },
+      general: {
+        autoRefresh: false,
+        animations: true,
+        compactMode: false,
+        showTooltips: true
+      }
+    };
+    setDashboardSettings(defaultSettings);
+    localStorage.removeItem('dashboardSettings');
+  };
+
+  // Load settings from localStorage on mount
+  useEffect(() => {
+    const savedSettings = localStorage.getItem('dashboardSettings');
+    if (savedSettings) {
+      try {
+        setDashboardSettings(JSON.parse(savedSettings));
+      } catch (error) {
+        console.error('Error loading dashboard settings:', error);
+      }
+    }
+  }, []);
 
   // Handle settings menu
   const handleSettingsOpen = (event) => {
@@ -349,14 +434,21 @@ const Dashboard = () => {
           onClose={handleSettingsClose}
           slotProps={{
             paper: {
-              sx: { 
-                minWidth: 240, 
-                borderRadius: 2, 
-                boxShadow: theme.shadows[8] 
+              sx: {
+                minWidth: 240,
+                borderRadius: 2,
+                boxShadow: theme.shadows[8]
               }
             }
           }}
         >
+          <MenuItem onClick={() => {
+            setSettingsDialogOpen(true);
+            handleSettingsClose();
+          }}>
+            <ListItemIcon><SettingsIcon /></ListItemIcon>
+            <ListItemText>Dashboard Settings</ListItemText>
+          </MenuItem>
           <MenuItem onClick={() => navigate('/charts')}>
             <ListItemIcon><AnalyticsIcon /></ListItemIcon>
             <ListItemText>Analytics Dashboard</ListItemText>
@@ -389,39 +481,17 @@ const Dashboard = () => {
 
         {!loading && !error && (
           <>
-            {/* Stats Cards */}
-            <Box sx={{ mb: 3 }}>
-              <StatsCards
-                cards={[
-                  {
-                    title: 'Total Orders',
-                    value: stats.totalOrders || '0',
-                    icon: ShoppingCart,
-                    color: 'primary',
-                    description: 'All time orders'
-                  },
-                  {
-                    title: 'Active Customers',
-                    value: stats.totalCustomers || '0',
-                    icon: People,
-                    color: 'success',
-                    description: 'Registered users'
-                  },
-                  {
-                    title: 'Products',
-                    value: stats.total || '0',
-                    icon: Category,
-                    color: 'info',
-                    description: 'In catalog'
-                  },
-                  {
-                    title: 'Revenue',
-                    value: formatCurrency(stats.totalRevenue || 0),
-                    icon: TrendingUp,
-                    color: 'warning',
-                    description: 'Total sales'
-                  }
-                ]}
+            {/* Enhanced Stats Cards */}
+            <Box sx={{ mb: 4 }}>
+              <EnhancedStatsCards
+                stats={stats}
+                settings={dashboardSettings}
+                loading={loading}
+                onNavigate={handleNavigate}
+                onCardAction={(cardKey, action) => {
+                  console.log('Card action:', cardKey, action);
+                  // Handle card-specific actions
+                }}
               />
             </Box>
 
@@ -434,18 +504,18 @@ const Dashboard = () => {
                 />
 
                 {/* Charts Section */}
-                {visibleCharts.orders && (
+                {dashboardSettings.charts.orders && (
                   <Card sx={{ mt: 3, borderRadius: 3 }}>
                     <CardContent>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                         <Typography variant="h6" fontWeight={600}>
-                          Orders Overview
+                          📈 Orders Overview
                         </Typography>
                         <IconButton onClick={() => toggleChartVisibility('orders')}>
                           <ExpandLess />
                         </IconButton>
                       </Box>
-                      <ResponsiveContainer width="100%" height={300}>
+                      <ResponsiveContainer width="100%" height={dashboardSettings.general.compactMode ? 250 : 300}>
                         <LineChart data={chartData}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis dataKey="date" />
@@ -459,18 +529,18 @@ const Dashboard = () => {
                   </Card>
                 )}
 
-                {visibleCharts.customers && (
+                {dashboardSettings.charts.customers && (
                   <Card sx={{ mt: 3, borderRadius: 3 }}>
                     <CardContent>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                         <Typography variant="h6" fontWeight={600}>
-                          Customer Growth
+                          👥 Customer Growth
                         </Typography>
                         <IconButton onClick={() => toggleChartVisibility('customers')}>
                           <ExpandLess />
                         </IconButton>
                       </Box>
-                      <ResponsiveContainer width="100%" height={300}>
+                      <ResponsiveContainer width="100%" height={dashboardSettings.general.compactMode ? 250 : 300}>
                         <BarChart data={customerData}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis dataKey="month" />
@@ -494,89 +564,103 @@ const Dashboard = () => {
             </Grid>
 
             {/* Enhanced Analytics Section */}
-            {visibleCharts.enhanced && (
-              <Box sx={{ mt: 4 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                  <Typography variant="h5" fontWeight={600}>
-                    Enhanced Analytics
-                  </Typography>
-                  <Button
-                    variant="outlined"
-                    onClick={() => toggleChartVisibility('enhanced')}
-                    startIcon={visibleCharts.enhanced ? <ExpandLess /> : <ExpandMore />}
-                  >
-                    {visibleCharts.enhanced ? 'Hide' : 'Show'} Analytics
-                  </Button>
-                </Box>
-
-                <Collapse in={visibleCharts.enhanced}>
-                  <Grid container spacing={3}>
-                    {/* Product Statistics */}
-                    <Grid item xs={12} md={6} lg={4}>
-                      <ProductStatsChart
-                        data={enhancedData.productStats}
-                        title="Product Status Distribution"
-                        loading={enhancedLoading}
-                      />
-                    </Grid>
-
-                    {/* Brand Distribution */}
-                    <Grid item xs={12} md={6} lg={4}>
-                      <BrandDistributionChart
-                        data={enhancedData.brandDistribution}
-                        title="Top Brands"
-                        loading={enhancedLoading}
-                      />
-                    </Grid>
-
-                    {/* Product Attributes */}
-                    <Grid item xs={12} md={6} lg={4}>
-                      <ProductAttributesChart
-                        data={enhancedData.productAttributes}
-                        title="Product Features"
-                        loading={enhancedLoading}
-                      />
-                    </Grid>
-
-                    {/* Category Tree */}
-                    <Grid item xs={12} md={6}>
-                      <CategoryTreeChart
-                        data={enhancedData.categoryDistribution}
-                        title="Category Distribution"
-                        loading={enhancedLoading}
-                      />
-                    </Grid>
-
-                    {/* Sales Performance */}
-                    <Grid item xs={12} md={6}>
-                      <SalesPerformanceChart
-                        data={enhancedData.salesPerformance}
-                        title="Sales Trends"
-                        type="area"
-                        loading={enhancedLoading}
-                      />
-                    </Grid>
-
-                    {/* Inventory Status */}
-                    <Grid item xs={12}>
-                      <InventoryStatusChart
-                        data={enhancedData.inventoryStatus}
-                        title="Inventory Overview"
-                        loading={enhancedLoading}
-                      />
-                    </Grid>
-                  </Grid>
-                </Collapse>
+            <Box sx={{ mt: 4 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                <Typography variant="h5" fontWeight={600}>
+                  🚀 Enhanced Analytics
+                </Typography>
+                <Button
+                  variant="outlined"
+                  onClick={() => setSettingsDialogOpen(true)}
+                  startIcon={<SettingsIcon />}
+                >
+                  Customize Charts
+                </Button>
               </Box>
-            )}
+
+              <Grid container spacing={3}>
+                {/* Product Statistics */}
+                {dashboardSettings.charts.productStats && (
+                  <Grid item xs={12} md={6} lg={4}>
+                    <ProductStatsChart
+                      data={enhancedData.productStats}
+                      title="📊 Product Status Distribution"
+                      loading={enhancedLoading}
+                      compact={dashboardSettings.general.compactMode}
+                    />
+                  </Grid>
+                )}
+
+                {/* Brand Distribution */}
+                {dashboardSettings.charts.brandDistribution && (
+                  <Grid item xs={12} md={6} lg={4}>
+                    <BrandDistributionChart
+                      data={enhancedData.brandDistribution}
+                      title="🏷️ Top Brands"
+                      loading={enhancedLoading}
+                      compact={dashboardSettings.general.compactMode}
+                    />
+                  </Grid>
+                )}
+
+                {/* Product Attributes */}
+                {dashboardSettings.charts.productAttributes && (
+                  <Grid item xs={12} md={6} lg={4}>
+                    <ProductAttributesChart
+                      data={enhancedData.productAttributes}
+                      title="🔧 Product Features"
+                      loading={enhancedLoading}
+                      compact={dashboardSettings.general.compactMode}
+                    />
+                  </Grid>
+                )}
+
+                {/* Category Tree */}
+                {dashboardSettings.charts.categoryTree && (
+                  <Grid item xs={12} md={6}>
+                    <CategoryTreeChart
+                      data={enhancedData.categoryDistribution}
+                      title="🌳 Category Distribution"
+                      loading={enhancedLoading}
+                      compact={dashboardSettings.general.compactMode}
+                    />
+                  </Grid>
+                )}
+
+                {/* Sales Performance */}
+                {dashboardSettings.charts.salesPerformance && (
+                  <Grid item xs={12} md={6}>
+                    <SalesPerformanceChart
+                      data={enhancedData.salesPerformance}
+                      title="💹 Sales Trends"
+                      type="area"
+                      loading={enhancedLoading}
+                      compact={dashboardSettings.general.compactMode}
+                    />
+                  </Grid>
+                )}
+
+                {/* Inventory Status */}
+                {dashboardSettings.charts.inventoryStatus && (
+                  <Grid item xs={12}>
+                    <InventoryStatusChart
+                      data={enhancedData.inventoryStatus}
+                      title="📦 Inventory Overview"
+                      loading={enhancedLoading}
+                      compact={dashboardSettings.general.compactMode}
+                    />
+                  </Grid>
+                )}
+              </Grid>
+            </Box>
           </>
         )}
 
         {/* Footer */}
-        <Box sx={{ 
-          mt: 4, 
-          pt: 3, 
-          borderTop: 1, 
+        <Box sx={{
+          mt: 4,
+          pt: 3,
+          borderTop: 1,
           borderColor: 'divider',
           textAlign: 'center'
         }}>
@@ -587,6 +671,15 @@ const Dashboard = () => {
             Last updated: {new Date().toLocaleString()}
           </Typography>
         </Box>
+
+        {/* Dashboard Settings Dialog */}
+        <DashboardSettings
+          open={settingsDialogOpen}
+          onClose={() => setSettingsDialogOpen(false)}
+          settings={dashboardSettings}
+          onSettingsChange={handleSettingsChange}
+          onResetSettings={handleResetSettings}
+        />
       </Box>
     </LocalizationProvider>
   );
