@@ -32,6 +32,7 @@ import CSVImportDialog from '../../dialogs/CSVImportDialog';
 import CatalogProcessorDialog from '../../dialogs/CatalogProcessorDialog';
 import ProductInfoDialog from '../../common/ProductInfoDialog';
 import ProductEditDialog from '../../dialogs/ProductEditDialog';
+import BulkMediaUploadDialog from '../../dialogs/BulkMediaUploadDialog';
 
 /**
  * Optimized Magento Products Grid Component
@@ -56,6 +57,7 @@ const ProductsGrid = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [infoDialogOpen, setInfoDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [bulkMediaDialogOpen, setBulkMediaDialogOpen] = useState(false);
   const [csvImportOpen, setCsvImportOpen] = useState(false);
   const [catalogProcessorOpen, setCatalogProcessorOpen] = useState(false);
   const [localProducts, setLocalProducts] = useState([]);
@@ -581,6 +583,22 @@ const ProductsGrid = () => {
       icon: 'sync',
       onClick: handleSync,
       disabled: localProducts.length === 0
+    },
+    {
+      label: 'Import CSV',
+      icon: 'upload',
+      onClick: () => setCsvImportOpen(true)
+    },
+    {
+      label: 'Bulk Media Upload',
+      icon: 'image',
+      onClick: () => setBulkMediaDialogOpen(true),
+      color: 'info'
+    },
+    {
+      label: 'Catalog Processor',
+      icon: 'settings',
+      onClick: () => setCatalogProcessorOpen(true)
     }
   ], [handleSync, localProducts.length]);
 
@@ -695,6 +713,16 @@ const ProductsGrid = () => {
         open={catalogProcessorOpen}
         onClose={() => setCatalogProcessorOpen(false)}
         onProcessComplete={() => fetchProducts()}
+      />
+
+      <BulkMediaUploadDialog
+        open={bulkMediaDialogOpen}
+        onClose={() => setBulkMediaDialogOpen(false)}
+        onComplete={(results) => {
+          console.log('Bulk media upload completed:', results);
+          toast.success(`Media upload completed: ${results.filter(r => r.status === 'success').length} successful`);
+          setBulkMediaDialogOpen(false);
+        }}
       />
 
 

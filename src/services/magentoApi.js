@@ -427,6 +427,61 @@ class MagentoApi {
     }
   }
 
+  // ===== PRODUCT MEDIA OPERATIONS =====
+  async uploadProductMedia(sku, formData) {
+    try {
+      console.log(`🖼️ Uploading media for product: ${sku}`);
+
+      const response = await this.makeRequest(
+        `/products/${encodeURIComponent(sku)}/media`,
+        'POST',
+        formData,
+        {
+          'Content-Type': 'multipart/form-data'
+        }
+      );
+
+      console.log('✅ Media upload successful:', response);
+      return response;
+    } catch (error) {
+      console.error('❌ Media upload failed:', error);
+      throw new Error(`Failed to upload media for ${sku}: ${error.message}`);
+    }
+  }
+
+  async getProductMedia(sku) {
+    try {
+      console.log(`🖼️ Getting media for product: ${sku}`);
+
+      const response = await this.makeRequest(
+        `/products/${encodeURIComponent(sku)}/media`
+      );
+
+      console.log('✅ Media retrieved successfully:', response);
+      return response;
+    } catch (error) {
+      console.error('❌ Failed to get product media:', error);
+      throw new Error(`Failed to get media for ${sku}: ${error.message}`);
+    }
+  }
+
+  async deleteProductMedia(sku, entryId) {
+    try {
+      console.log(`🗑️ Deleting media ${entryId} for product: ${sku}`);
+
+      const response = await this.makeRequest(
+        `/products/${encodeURIComponent(sku)}/media/${entryId}`,
+        'DELETE'
+      );
+
+      console.log('✅ Media deleted successfully');
+      return response;
+    } catch (error) {
+      console.error('❌ Failed to delete product media:', error);
+      throw new Error(`Failed to delete media for ${sku}: ${error.message}`);
+    }
+  }
+
   async getProducts(params = {}) {
     try {
       const cacheKey = this.getCacheKey('/products', params);

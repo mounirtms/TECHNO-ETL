@@ -14,12 +14,14 @@ import {
   Inventory as ProductIcon,
   Add as AddIcon,
   Clear as ClearIcon,
-  Search as SearchIcon
+  Search as SearchIcon,
+  Image as ImageIcon
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
 // Components
 import ProductManagementGrid from '../components/grids/magento/ProductManagementGrid';
+import BulkMediaUploadDialog from '../components/dialogs/BulkMediaUploadDialog';
 
 /**
  * ProductManagementPage - Main page for comprehensive product management
@@ -30,6 +32,7 @@ const ProductManagementPage = () => {
   const [productIds, setProductIds] = useState([  ]); // Pre-populated with your provided IDs
   const [inputValue, setInputValue] = useState('');
   const [showAllProducts, setShowAllProducts] = useState(false);
+  const [bulkMediaDialogOpen, setBulkMediaDialogOpen] = useState(false);
 
   // ===== EVENT HANDLERS =====
   const handleAddProductId = () => {
@@ -140,6 +143,14 @@ const ProductManagementPage = () => {
                 >
                   Clear All
                 </Button>
+                <Button
+                  variant="contained"
+                  onClick={() => setBulkMediaDialogOpen(true)}
+                  startIcon={<ImageIcon />}
+                  color="info"
+                >
+                  Bulk Media Upload
+                </Button>
               </Box>
 
               {/* Current Product IDs */}
@@ -195,6 +206,17 @@ const ProductManagementPage = () => {
           Double-click any product to view details, or use the action buttons for specific operations.
         </Typography>
       </Paper>
+
+      {/* Bulk Media Upload Dialog */}
+      <BulkMediaUploadDialog
+        open={bulkMediaDialogOpen}
+        onClose={() => setBulkMediaDialogOpen(false)}
+        onComplete={(results) => {
+          console.log('Bulk media upload completed:', results);
+          toast.success(`Media upload completed: ${results.filter(r => r.status === 'success').length} successful`);
+          setBulkMediaDialogOpen(false);
+        }}
+      />
     </Box>
   );
 };

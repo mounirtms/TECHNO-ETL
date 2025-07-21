@@ -29,11 +29,13 @@ import {
   Inventory as ProductIcon,
   Category as CategoryIcon,
   LocalOffer as BrandingIcon,
-  Settings as SettingsIcon
+  Settings as SettingsIcon,
+  Image as ImageIcon
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import categoryService from '../../services/categoryService';
 import magentoApi from '../../services/magentoApi';
+import ProductMediaUpload from '../media/ProductMediaUpload';
 
 /**
  * Enhanced Product Edit Dialog
@@ -73,6 +75,9 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
   
   // Selected categories
   const [selectedCategories, setSelectedCategories] = useState([]);
+
+  // Product images
+  const [productImages, setProductImages] = useState([]);
   
   // Initialize form data when product changes
   useEffect(() => {
@@ -234,14 +239,15 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
       </DialogTitle>
       
       <DialogContent dividers>
-        <Tabs 
-          value={activeTab} 
+        <Tabs
+          value={activeTab}
           onChange={(e, newValue) => setActiveTab(newValue)}
           sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}
         >
           <Tab icon={<ProductIcon />} label="Basic Info" />
           <Tab icon={<CategoryIcon />} label="Categories" />
           <Tab icon={<BrandingIcon />} label="Attributes" />
+          <Tab icon={<ImageIcon />} label="Images" />
           <Tab icon={<SettingsIcon />} label="SEO & Meta" />
         </Tabs>
         
@@ -483,9 +489,22 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
             </Grid>
           </Grid>
         </TabPanel>
-        
-        {/* SEO & Meta Tab */}
+
+        {/* Images Tab */}
         <TabPanel value={activeTab} index={3}>
+          <Alert severity="info" sx={{ mb: 2 }}>
+            Upload and manage product images. The first image will be used as the main product image.
+          </Alert>
+
+          <ProductMediaUpload
+            sku={formData.sku}
+            existingImages={productImages}
+            onImagesChange={setProductImages}
+          />
+        </TabPanel>
+
+        {/* SEO & Meta Tab */}
+        <TabPanel value={activeTab} index={4}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
