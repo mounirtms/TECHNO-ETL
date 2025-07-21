@@ -475,7 +475,7 @@ async function main() {
 
     cron.schedule('0 2 * * *', async () => {
         await syncPrices();
-          await inventorySync();
+        await inventorySync();
     });
 
 
