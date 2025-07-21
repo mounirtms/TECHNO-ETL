@@ -58,6 +58,7 @@ import DashboardOverview from '../components/dashboard/DashboardOverview';
 import QuickActions from '../components/dashboard/QuickActions';
 import EnhancedStatsCards from '../components/dashboard/EnhancedStatsCards';
 import DashboardSettings from '../components/dashboard/DashboardSettings';
+import PriceSyncDialog from '../components/dashboard/PriceSyncDialog';
 
 // Import chart components
 import {
@@ -142,6 +143,10 @@ const Dashboard = () => {
     }
   });
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
+
+  // Price sync dialog state
+  const [priceSyncDialogOpen, setPriceSyncDialogOpen] = useState(false);
+  const [priceData, setPriceData] = useState([]);
   
   // Dashboard controller
   const {
@@ -259,6 +264,29 @@ const Dashboard = () => {
     }
   }, []);
 
+  // Handle price sync
+  const handlePriceSync = async () => {
+    try {
+      setLoading(true);
+      console.log('🚀 Fetching prices for sync...');
+
+      const response = await api.get('/mdm/sync/prices');
+      console.log('📊 Price data received:', response.data);
+
+      if (response.data && response.data.length > 0) {
+        setPriceData(response.data);
+        setPriceSyncDialogOpen(true);
+      } else {
+        alert('No price data available for sync');
+      }
+    } catch (error) {
+      console.error('❌ Failed to fetch price data:', error);
+      alert('Failed to fetch price data: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Handle settings menu
   const handleSettingsOpen = (event) => {
     setSettingsAnchorEl(event.currentTarget);
@@ -363,15 +391,16 @@ const Dashboard = () => {
               </Box>
 
               {/* Sync Buttons */}
-              <Tooltip title="Sync Prices">
+              <Tooltip title="Sync Prices to Magento">
                 <Button
                   variant="outlined"
                   size="small"
-                  onClick={handleSyncPrices}
+                  onClick={handlePriceSync}
                   startIcon={<PriceIcon />}
                   sx={{ mr: 1 }}
+                  disabled={loading}
                 >
-                  Prices
+                  Sync Prices
                 </Button>
               </Tooltip>
 
@@ -681,6 +710,13 @@ const Dashboard = () => {
           settings={dashboardSettings}
           onSettingsChange={handleSettingsChange}
           onResetSettings={handleResetSettings}
+        />
+
+        {/* Price Sync Dialog */}
+        <PriceSyncDialog
+          open={priceSyncDialogOpen}
+          onClose={() => setPriceSyncDialogOpen(false)}
+          priceData={priceData}
         />
       </Box>
     </LocalizationProvider>

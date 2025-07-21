@@ -305,7 +305,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
 
             console.log('✅ Price sync response:', response.data);
             toast.success('✅ Price sync operation completed successfully');
-
+debugger
             // Refresh dashboard data after sync
             setTimeout(() => {
                 fetchDashboardData();

@@ -300,15 +300,29 @@ app.get('/api/mdm/sync/prices', async (req, res) => {
  * Sync prices to Magento (bulk operation).
  */
 app.post('/api/techno/prices-sync', async (req, res) => {
-    res.status(202).json({ message: 'Price sync started in background.' });
-    setImmediate(async () => {
-        try {
-            await syncPricesToMagento(req);
-            console.log('✅ Price sync completed.');
-        } catch (error) {
-            console.error('❌ Price sync failed:', error);
-        }
-    });
+    try {
+        console.log('🚀 Price sync request received with', req.body.length, 'products');
+
+        // Start the sync process
+        const syncResult = await syncPricesToMagento(req);
+
+        console.log('✅ Price sync completed:', syncResult);
+
+        // Return the results immediately
+        res.status(200).json({
+            success: true,
+            message: 'Price sync completed successfully',
+            ...syncResult
+        });
+
+    } catch (error) {
+        console.error('❌ Price sync failed:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Price sync failed',
+            error: error.message
+        });
+    }
 });
 
 // Connect to all required databases and prefetch Magento token (cached)
@@ -459,10 +473,10 @@ async function inventorySync() {
 async function main() {
     await connectToDatabases();
 
-   // cron.schedule('0 2 * * *', async () => {
+    cron.schedule('0 2 * * *', async () => {
         await syncPrices();
-      //  await inventorySync();
-    //});
+          await inventorySync();
+    });
 
 
 
