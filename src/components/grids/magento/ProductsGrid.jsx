@@ -178,7 +178,7 @@ const ProductsGrid = () => {
     }),
 
     // Categories (Multi-select display)
-    ColumnFactory.custom('categories', {
+    ColumnFactory.text('categories', {
       headerName: 'Categories',
       width: 200,
       valueGetter: (params) => {

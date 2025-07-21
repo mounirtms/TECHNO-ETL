@@ -13,25 +13,62 @@ import {
   Chip,
   Divider,
   Fab,
-  Tooltip
+  Tooltip,
+  Button,
+  Card,
+  CardContent,
+  Collapse
 } from '@mui/material';
 import {
   Settings as SettingsIcon,
   Refresh as RefreshIcon,
   Analytics as AnalyticsIcon,
-  Dashboard as DashboardIcon
+  Dashboard as DashboardIcon,
+  Sync as SyncIcon,
+  AttachMoney as PriceIcon,
+  Inventory as StockIcon,
+  ExpandMore,
+  ExpandLess,
+  TrendingUp,
+  ShoppingCart,
+  People,
+  Category
 } from '@mui/icons-material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { StatsCards } from '../components/common/StatsCards';
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
+  Legend, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell
+} from 'recharts';
 
 // Import dashboard controller and services
 import { useDashboardController } from '../services/DashboardController';
+import {
+  formatCurrency, formatDate, prepareCustomerChartData,
+  formatChartDate, formatTooltipDate
+} from '../services/dashboardService';
 
 // Import dashboard components
 import DashboardOverview from '../components/dashboard/DashboardOverview';
 import QuickActions from '../components/dashboard/QuickActions';
+
+// Import chart components
+import {
+  ProductStatsChart,
+  BrandDistributionChart,
+  CategoryTreeChart,
+  ProductAttributesChart,
+  SalesPerformanceChart,
+  InventoryStatusChart
+} from '../components/charts';
+
+// Import dashboard data service
+import dashboardDataService from '../services/dashboardDataService';
 
 /**
  * Modern, Clean Dashboard Component
@@ -49,20 +86,92 @@ const Dashboard = () => {
   });
   const [endDate, setEndDate] = useState(new Date());
   const [refreshKey, setRefreshKey] = useState(0);
-  
+
   // Settings menu state
   const [settingsAnchorEl, setSettingsAnchorEl] = useState(null);
+
+  // Chart visibility state
+  const [visibleCharts, setVisibleCharts] = useState({
+    orders: true,
+    customers: true,
+    products: true,
+    analytics: true,
+    enhanced: true
+  });
+
+  // Enhanced dashboard data
+  const [enhancedData, setEnhancedData] = useState({
+    productStats: [],
+    brandDistribution: [],
+    categoryDistribution: [],
+    productAttributes: [],
+    salesPerformance: [],
+    inventoryStatus: []
+  });
+  const [enhancedLoading, setEnhancedLoading] = useState(false);
   
   // Dashboard controller
   const {
     stats,
+    chartData,
+    recentOrders,
+    bestSellers,
+    customerData,
+    countryData,
+    productTypeData,
     loading,
-    error
+    error,
+    getPrices,
+    syncAllStocks,
+    fetchDashboardData
   } = useDashboardController(startDate, endDate, refreshKey);
+
+  // Load enhanced dashboard data
+  const loadEnhancedData = async () => {
+    try {
+      setEnhancedLoading(true);
+      const data = await dashboardDataService.getAllDashboardData();
+      setEnhancedData(data);
+    } catch (error) {
+      console.error('Error loading enhanced dashboard data:', error);
+    } finally {
+      setEnhancedLoading(false);
+    }
+  };
+
+  // Load enhanced data on mount and refresh
+  useEffect(() => {
+    loadEnhancedData();
+  }, [refreshKey]);
 
   // Handle refresh
   const handleRefresh = () => {
     setRefreshKey(prev => prev + 1);
+    loadEnhancedData();
+  };
+
+  // Handle sync operations
+  const handleSyncPrices = async () => {
+    try {
+      await getPrices();
+      toast.success('Prices synced successfully');
+    } catch (error) {
+      toast.error('Failed to sync prices');
+    }
+  };
+
+  const handleSyncStocks = async () => {
+    try {
+      await syncAllStocks();
+      toast.success('Stocks synced successfully');
+    } catch (error) {
+      toast.error('Failed to sync stocks');
+    }
+  };
+
+  // Handle chart visibility toggle
+  const toggleChartVisibility = (chartKey) => {
+    setVisibleCharts(prev => ({ ...prev, [chartKey]: !prev[chartKey] }));
   };
 
   // Handle settings menu
@@ -151,7 +260,49 @@ const Dashboard = () => {
               </Box>
             </Box>
             
-            <Box sx={{ display: 'flex', gap: 1 }}>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
+              {/* Date Range Pickers */}
+              <Box sx={{ display: 'flex', gap: 1, mr: 2 }}>
+                <DatePicker
+                  label="Start Date"
+                  value={startDate}
+                  onChange={setStartDate}
+                  slotProps={{ textField: { size: 'small', sx: { width: 140 } } }}
+                />
+                <DatePicker
+                  label="End Date"
+                  value={endDate}
+                  onChange={setEndDate}
+                  slotProps={{ textField: { size: 'small', sx: { width: 140 } } }}
+                />
+              </Box>
+
+              {/* Sync Buttons */}
+              <Tooltip title="Sync Prices">
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={handleSyncPrices}
+                  startIcon={<PriceIcon />}
+                  sx={{ mr: 1 }}
+                >
+                  Prices
+                </Button>
+              </Tooltip>
+
+              <Tooltip title="Sync Stocks">
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={handleSyncStocks}
+                  startIcon={<StockIcon />}
+                  sx={{ mr: 1 }}
+                >
+                  Stocks
+                </Button>
+              </Tooltip>
+
+              {/* Action Buttons */}
               <Tooltip title="View Analytics">
                 <Fab
                   size="medium"
@@ -162,7 +313,7 @@ const Dashboard = () => {
                   <AnalyticsIcon />
                 </Fab>
               </Tooltip>
-              
+
               <Tooltip title="Refresh Data">
                 <Fab
                   size="medium"
@@ -174,11 +325,11 @@ const Dashboard = () => {
                   {loading ? <CircularProgress size={24} color="inherit" /> : <RefreshIcon />}
                 </Fab>
               </Tooltip>
-              
+
               <Tooltip title="Settings">
                 <IconButton
                   onClick={handleSettingsOpen}
-                  sx={{ 
+                  sx={{
                     bgcolor: 'background.paper',
                     boxShadow: 2,
                     '&:hover': { boxShadow: 4 }
@@ -237,22 +388,188 @@ const Dashboard = () => {
         )}
 
         {!loading && !error && (
-          <Grid container spacing={3}>
-            {/* Main Dashboard Overview */}
-            <Grid item xs={12} lg={8}>
-              <DashboardOverview 
-                stats={stats}
-                onNavigate={handleNavigate}
+          <>
+            {/* Stats Cards */}
+            <Box sx={{ mb: 3 }}>
+              <StatsCards
+                cards={[
+                  {
+                    title: 'Total Orders',
+                    value: stats.totalOrders || '0',
+                    icon: ShoppingCart,
+                    color: 'primary',
+                    description: 'All time orders'
+                  },
+                  {
+                    title: 'Active Customers',
+                    value: stats.totalCustomers || '0',
+                    icon: People,
+                    color: 'success',
+                    description: 'Registered users'
+                  },
+                  {
+                    title: 'Products',
+                    value: stats.total || '0',
+                    icon: Category,
+                    color: 'info',
+                    description: 'In catalog'
+                  },
+                  {
+                    title: 'Revenue',
+                    value: formatCurrency(stats.totalRevenue || 0),
+                    icon: TrendingUp,
+                    color: 'warning',
+                    description: 'Total sales'
+                  }
+                ]}
               />
+            </Box>
+
+            <Grid container spacing={3}>
+              {/* Main Dashboard Overview */}
+              <Grid item xs={12} lg={8}>
+                <DashboardOverview
+                  stats={stats}
+                  onNavigate={handleNavigate}
+                />
+
+                {/* Charts Section */}
+                {visibleCharts.orders && (
+                  <Card sx={{ mt: 3, borderRadius: 3 }}>
+                    <CardContent>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                        <Typography variant="h6" fontWeight={600}>
+                          Orders Overview
+                        </Typography>
+                        <IconButton onClick={() => toggleChartVisibility('orders')}>
+                          <ExpandLess />
+                        </IconButton>
+                      </Box>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <LineChart data={chartData}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="date" />
+                          <YAxis />
+                          <RechartsTooltip />
+                          <Legend />
+                          <Line type="monotone" dataKey="orders" stroke="#8884d8" strokeWidth={2} />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {visibleCharts.customers && (
+                  <Card sx={{ mt: 3, borderRadius: 3 }}>
+                    <CardContent>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                        <Typography variant="h6" fontWeight={600}>
+                          Customer Growth
+                        </Typography>
+                        <IconButton onClick={() => toggleChartVisibility('customers')}>
+                          <ExpandLess />
+                        </IconButton>
+                      </Box>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={customerData}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="month" />
+                          <YAxis />
+                          <RechartsTooltip />
+                          <Legend />
+                          <Bar dataKey="customers" fill="#82ca9d" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+                )}
+              </Grid>
+
+              {/* Quick Actions Sidebar */}
+              <Grid item xs={12} lg={4}>
+                <QuickActions
+                  onAction={handleAction}
+                />
+              </Grid>
             </Grid>
-            
-            {/* Quick Actions Sidebar */}
-            <Grid item xs={12} lg={4}>
-              <QuickActions 
-                onAction={handleAction}
-              />
-            </Grid>
-          </Grid>
+
+            {/* Enhanced Analytics Section */}
+            {visibleCharts.enhanced && (
+              <Box sx={{ mt: 4 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                  <Typography variant="h5" fontWeight={600}>
+                    Enhanced Analytics
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    onClick={() => toggleChartVisibility('enhanced')}
+                    startIcon={visibleCharts.enhanced ? <ExpandLess /> : <ExpandMore />}
+                  >
+                    {visibleCharts.enhanced ? 'Hide' : 'Show'} Analytics
+                  </Button>
+                </Box>
+
+                <Collapse in={visibleCharts.enhanced}>
+                  <Grid container spacing={3}>
+                    {/* Product Statistics */}
+                    <Grid item xs={12} md={6} lg={4}>
+                      <ProductStatsChart
+                        data={enhancedData.productStats}
+                        title="Product Status Distribution"
+                        loading={enhancedLoading}
+                      />
+                    </Grid>
+
+                    {/* Brand Distribution */}
+                    <Grid item xs={12} md={6} lg={4}>
+                      <BrandDistributionChart
+                        data={enhancedData.brandDistribution}
+                        title="Top Brands"
+                        loading={enhancedLoading}
+                      />
+                    </Grid>
+
+                    {/* Product Attributes */}
+                    <Grid item xs={12} md={6} lg={4}>
+                      <ProductAttributesChart
+                        data={enhancedData.productAttributes}
+                        title="Product Features"
+                        loading={enhancedLoading}
+                      />
+                    </Grid>
+
+                    {/* Category Tree */}
+                    <Grid item xs={12} md={6}>
+                      <CategoryTreeChart
+                        data={enhancedData.categoryDistribution}
+                        title="Category Distribution"
+                        loading={enhancedLoading}
+                      />
+                    </Grid>
+
+                    {/* Sales Performance */}
+                    <Grid item xs={12} md={6}>
+                      <SalesPerformanceChart
+                        data={enhancedData.salesPerformance}
+                        title="Sales Trends"
+                        type="area"
+                        loading={enhancedLoading}
+                      />
+                    </Grid>
+
+                    {/* Inventory Status */}
+                    <Grid item xs={12}>
+                      <InventoryStatusChart
+                        data={enhancedData.inventoryStatus}
+                        title="Inventory Overview"
+                        loading={enhancedLoading}
+                      />
+                    </Grid>
+                  </Grid>
+                </Collapse>
+              </Box>
+            )}
+          </>
         )}
 
         {/* Footer */}
