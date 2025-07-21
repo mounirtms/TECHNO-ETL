@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Dialog,
     DialogTitle,
@@ -8,10 +8,38 @@ import {
     Box,
     Typography,
     Grid,
-    Divider
+    Divider,
+    Tabs,
+    Tab,
+    Chip,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    Card,
+    CardContent,
+    List,
+    ListItem,
+    ListItemText,
+    ListItemIcon,
+    IconButton,
+    Tooltip
 } from '@mui/material';
+import {
+    Info as InfoIcon,
+    Category as CategoryIcon,
+    Inventory as InventoryIcon,
+    Settings as SettingsIcon,
+    Image as ImageIcon,
+    Edit as EditIcon,
+    ContentCopy as CopyIcon
+} from '@mui/icons-material';
 import Carousel from 'react-material-ui-carousel';
 import ReactImageMagnify from 'react-image-magnify';
+import { toast } from 'react-toastify';
 
 const MEDIA_PREFIX = 'https://technostationery.com/pub/media/catalog/product';
 

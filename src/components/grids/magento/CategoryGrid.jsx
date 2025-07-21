@@ -2,7 +2,7 @@ import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Box } from '@mui/material';
 import UnifiedGrid from '../../common/UnifiedGrid';
 import { StatsCards } from '../../common/StatsCards';
-import magentoApi from '../../../services/magentoApi';
+import categoryService from '../../../services/categoryService';
 import { toast } from 'react-toastify';
 import CategoryIcon from '@mui/icons-material/Category';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -12,6 +12,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { generateColumns, mergeColumns } from '../../../utils/gridUtils';
 import { ColumnFactory } from '../../../utils/ColumnFactory.jsx';
+import CategoryEditDialog from '../../dialogs/CategoryEditDialog';
 
 /**
  * CategoryGrid Component
@@ -23,12 +24,16 @@ const CategoryGrid = ({ productId }) => {
     const [data, setData] = useState([]);
     const [allCategories, setAllCategories] = useState([]); // Store all processed categories
     const [filters, setFilters] = useState({});
-    const [expandedRows, setExpandedRows] = useState(new Set([1])); // Expand root by default
+    const [expandedRows, setExpandedRows] = useState(new Set([2, 3])); // Expand root categories by default
     const [stats, setStats] = useState({
         total: 0,
         active: 0,
         inactive: 0
     });
+
+    // Edit dialog state
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState(null);
 
     // Process categories into flat structure with levels and visibility
     const processCategories = (categories, level = 0, parentId = null, result = [], parentPath = '') => {
@@ -258,162 +263,45 @@ const CategoryGrid = ({ productId }) => {
         }));
     }, [data, visibleColumns]);
 
-    // Data fetching handler
+    // Data fetching handler - Updated to use local category service
     const handleRefresh = useCallback(async (params = {}) => {
         try {
             setLoading(true);
-            console.log('🔄 Fetching categories...', params);
+            console.log('🔄 Fetching categories from local data...', params);
 
-            // Handle both direct calls and grid calls with parameters
-            const { page = 0, pageSize = 25, filter = {} } = params;
+            // Get categories from local service
+            const categoryStats = categoryService.getCategoryStats();
+            let visibleCategories = categoryService.getVisibleCategories(expandedRows);
 
-            const searchCriteria = {
-                filterGroups: [],
-                pageSize,
-                currentPage: page + 1,
-                // Add required fieldName parameter for Magento API
-                fieldName: 'name' // Default field name for categories
-            };
-
-            if (productId) {
-                searchCriteria.filterGroups.push({
-                    filters: [{
-                        field: 'product_id',
-                        value: productId,
-                        condition_type: 'eq'
-                    }]
-                });
-            }
-
+            // Apply filters if provided
+            const { filter = {} } = params;
             if (filter?.is_active !== undefined) {
                 const isActive = filter.is_active === 'true' || filter.is_active === true;
-                searchCriteria.filterGroups.push({
-                    filters: [{
-                        field: 'is_active',
-                        value: isActive,
-                        condition_type: 'eq'
-                    }]
-                });
+                visibleCategories = visibleCategories.filter(cat => cat.is_active === isActive);
             }
 
-            // Try to get categories with fallback to mock data
-            let response;
-            try {
-                response = await magentoApi.getCategories(searchCriteria);
-            } catch (apiError) {
-                console.warn('🚨 Categories API failed, using mock data:', apiError.message);
-                // Provide mock category data for development
-                response = {
-                    data: {
-                        items: [
-                            {
-                                id: 1,
-                                name: 'Root Category',
-                                level: 0,
-                                is_active: true,
-                                position: 0,
-                                product_count: 0,
-                                children_data: [
-                                    {
-                                        id: 2,
-                                        name: 'Electronics',
-                                        level: 1,
-                                        is_active: true,
-                                        position: 1,
-                                        product_count: 25,
-                                        children_data: [
-                                            {
-                                                id: 3,
-                                                name: 'Smartphones',
-                                                level: 2,
-                                                is_active: true,
-                                                position: 1,
-                                                product_count: 10,
-                                                children_data: []
-                                            },
-                                            {
-                                                id: 4,
-                                                name: 'Laptops',
-                                                level: 2,
-                                                is_active: true,
-                                                position: 2,
-                                                product_count: 15,
-                                                children_data: []
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        id: 5,
-                                        name: 'Clothing',
-                                        level: 1,
-                                        is_active: true,
-                                        position: 2,
-                                        product_count: 30,
-                                        children_data: [
-                                            {
-                                                id: 6,
-                                                name: 'Men\'s Clothing',
-                                                level: 2,
-                                                is_active: true,
-                                                position: 1,
-                                                product_count: 15,
-                                                children_data: []
-                                            },
-                                            {
-                                                id: 7,
-                                                name: 'Women\'s Clothing',
-                                                level: 2,
-                                                is_active: true,
-                                                position: 2,
-                                                product_count: 15,
-                                                children_data: []
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                };
-            }
-            console.log('📦 Raw categories response:', response);
-
-            // Handle {data: {items: []}} response structure
-            const categoriesData = response?.data || response;
-            console.log('📂 Categories data structure:', categoriesData);
-
-            // Check if we have items array or direct category data
-            let categories = categoriesData?.items || categoriesData || [];
-            console.log('🌳 Categories to process:', categories);
-
-            // If we don't have a proper tree structure, create a default root
-            if (Array.isArray(categories) && categories.length > 0 && !categories.some(cat => cat.level === 0)) {
-                console.log('🌱 Creating default root category structure');
-                categories = [{
-                    id: 1,
-                    name: 'Root Category',
-                    level: 0,
-                    is_active: true,
-                    position: 0,
-                    product_count: 0,
-                    children_data: categories
-                }];
+            // Apply search filter if provided
+            if (filter?.search) {
+                visibleCategories = categoryService.searchCategories(filter.search)
+                    .filter(cat => categoryService.getVisibleCategories(expandedRows).includes(cat));
             }
 
-            const flatCategories = processCategories(categories);
-            console.log('📋 Processed flat categories:', flatCategories);
+            // Format categories for grid display
+            const formattedCategories = visibleCategories.map(category =>
+                categoryService.formatCategoryForGrid(category)
+            );
 
-            // Store all categories
-            setAllCategories(flatCategories);
-            updateStats(flatCategories);
+            console.log('📋 Formatted categories:', formattedCategories);
+            // Store all categories and update stats
+            setAllCategories(categoryService.getAllCategories());
+            setStats(categoryStats);
+            setData(formattedCategories);
 
-            // Initial visible categories (root + expanded children)
-            const initialVisible = flatCategories.filter(cat => {
-                if (cat.level === 0) return true;
-                return expandedRows.has(cat.parentId);
+            console.log('✅ Categories loaded successfully:', {
+                total: categoryStats.total,
+                visible: formattedCategories.length,
+                expanded: Array.from(expandedRows)
             });
-            console.log('👁️ Initial visible categories:', initialVisible);
-            setData(initialVisible);
         } catch (error) {
             toast.error(error.message || 'Failed to load categories');
             throw error;
@@ -437,7 +325,8 @@ const CategoryGrid = ({ productId }) => {
     }, []);
 
     return (
-        <UnifiedGrid
+        <Box>
+            <UnifiedGrid
             gridName="CategoryGrid"
             columns={visibleColumns}
             data={data}
@@ -494,21 +383,25 @@ const CategoryGrid = ({ productId }) => {
                     enabled: true,
                     onClick: (rowData) => {
                         console.log('Editing category:', rowData);
-                        toast.info(`Editing category: ${rowData.name}`);
+                        const category = categoryService.findCategoryById(rowData.id);
+                        setSelectedCategory(category);
+                        setEditDialogOpen(true);
                     }
                 },
                 delete: {
                     enabled: (rowData) => rowData.level > 1, // Don't allow deleting root categories
                     onClick: (rowData) => {
                         console.log('Deleting category:', rowData);
-                        toast.info(`Deleting category: ${rowData.name}`);
+                        toast.info(`Deleting category: ${rowData.name} (Not implemented yet)`);
                     }
                 },
                 view: {
                     enabled: true,
                     onClick: (rowData) => {
                         console.log('Viewing category:', rowData);
-                        toast.info(`Viewing category: ${rowData.name}`);
+                        const category = categoryService.findCategoryById(rowData.id);
+                        setSelectedCategory(category);
+                        setEditDialogOpen(true);
                     }
                 }
             }}
@@ -538,7 +431,9 @@ const CategoryGrid = ({ productId }) => {
             }}
             onEdit={(rowData) => {
                 console.log('Editing category:', rowData);
-                toast.info(`Editing category: ${rowData.name}`);
+                const category = categoryService.findCategoryById(rowData.id);
+                setSelectedCategory(category);
+                setEditDialogOpen(true);
             }}
             onDelete={(selectedRows) => {
                 console.log('Deleting categories:', selectedRows);
@@ -568,6 +463,24 @@ const CategoryGrid = ({ productId }) => {
                 toast.error('Error loading categories');
             }}
         />
+
+        {/* Category Edit Dialog */}
+        <CategoryEditDialog
+            open={editDialogOpen}
+            onClose={() => {
+                setEditDialogOpen(false);
+                setSelectedCategory(null);
+            }}
+            category={selectedCategory}
+            onSave={(updatedCategory) => {
+                console.log('💾 Saving category:', updatedCategory);
+                toast.success(`Category "${updatedCategory.name}" saved successfully`);
+                handleRefresh(); // Refresh the grid
+                setEditDialogOpen(false);
+                setSelectedCategory(null);
+            }}
+        />
+        </Box>
     );
 };
 
