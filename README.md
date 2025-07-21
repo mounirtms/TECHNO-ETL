@@ -58,7 +58,7 @@ npm install --legacy-peer-deps
 **Frontend (React):**
 ```bash
 npm run dev
-# Runs on http://localhost:82
+# Runs on http://localhost:80
 ```
 
 **Backend (Node.js):**
@@ -84,7 +84,7 @@ node start-server.js production
 
 3. **Serve frontend:**
 ```bash
-npx serve -s dist -l 82
+npx serve -s dist -l 80
 ```
 
 ## 📁 Project Structure
@@ -290,7 +290,7 @@ pm2 start index.js --name "techno-etl-backend"
 5. **Serve frontend files:**
 ```bash
 # Using serve package
-npx serve -s /path/to/app/dist -l 82
+npx serve -s /path/to/app/dist -l 80
 
 # Or configure Nginx to serve static files
 ```

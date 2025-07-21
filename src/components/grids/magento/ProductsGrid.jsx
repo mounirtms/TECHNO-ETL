@@ -51,10 +51,12 @@ const ProductsGrid = () => {
     syncedProducts: 0
   });
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedRows, setSelectedRows] = useState([]);
   const [infoDialogOpen, setInfoDialogOpen] = useState(false);
   const [csvImportOpen, setCsvImportOpen] = useState(false);
   const [catalogProcessorOpen, setCatalogProcessorOpen] = useState(false);
   const [localProducts, setLocalProducts] = useState([]);
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 25 });
 
   // ===== COLUMNS =====
   const columns = useMemo(() => [
@@ -95,12 +97,20 @@ const ProductsGrid = () => {
   const fetchProducts = useCallback(async (params = {}) => {
     setLoading(true);
     try {
-      const response = await magentoApi.getProducts(params);
+      // Merge pagination parameters
+      const requestParams = {
+        pageSize: paginationModel.pageSize,
+        currentPage: paginationModel.page + 1, // MUI uses 0-based, Magento uses 1-based
+        ...params
+      };
+
+      const response = await magentoApi.getProducts(requestParams);
       const products = response.data?.items || [];
+      const totalCount = response.data?.total_count || products.length;
 
       setData(products);
       setStats({
-        total: products.length,
+        total: totalCount,
         active: products.filter(p => p.status === 1).length,
         inactive: products.filter(p => p.status === 2).length,
         localProducts: localProducts.length,
@@ -110,16 +120,32 @@ const ProductsGrid = () => {
       console.error('Failed to fetch products:', error);
       toast.error('Failed to fetch products');
       setData([]);
+      setStats({ total: 0, active: 0, inactive: 0, localProducts: 0, syncedProducts: 0 });
     } finally {
       setLoading(false);
     }
-  }, [localProducts.length]);
+  }, [localProducts.length, paginationModel]);
 
-
-
-  useEffect(() => {
+  // ===== PAGINATION HANDLER =====
+  const handlePaginationChange = useCallback((newPaginationModel) => {
+    setPaginationModel(newPaginationModel);
+    // Fetch new data when pagination changes
     fetchProducts();
   }, [fetchProducts]);
+
+
+
+  // Initial data fetch
+  useEffect(() => {
+    fetchProducts();
+  }, []); // Only run on mount
+
+  // Fetch data when pagination changes
+  useEffect(() => {
+    if (paginationModel.page > 0 || paginationModel.pageSize !== 25) {
+      fetchProducts();
+    }
+  }, [paginationModel, fetchProducts]);
 
   // ===== EVENT HANDLERS =====
   const handleAdd = useCallback(() => {
@@ -237,7 +263,13 @@ const ProductsGrid = () => {
           data,
           loading,
           totalCount: stats.total,
-          
+
+          // Pagination configuration
+          paginationMode: "server",
+          paginationModel,
+          onPaginationModelChange: handlePaginationChange,
+          defaultPageSize: 25,
+
           // Event handlers
           onRefresh: fetchProducts,
           onRowDoubleClick: handleRowDoubleClick,
@@ -247,16 +279,16 @@ const ProductsGrid = () => {
           onSync: handleSync,
           onExport: handleExport,
           onSelectionChange: setSelectedRows,
-          
+
           // Configuration
           toolbarConfig: getStandardToolbarConfig('magentoProducts'),
           customActions,
           contextMenuActions,
-          
+
           // Stats
           showStatsCards: true,
           gridCards,
-          
+
           // Grid props
           getRowId: (row) => row.sku
         })}

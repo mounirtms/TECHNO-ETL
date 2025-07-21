@@ -3,7 +3,7 @@
 ## 1. Data Structure Analysis
 
 ### Column Headers Analysis
-Based on the export file, I've identified 82 columns with the following data types:
+Based on the export file, I've identified 80 columns with the following data types:
 
 **Core Product Fields:**
 - `sku` (string) - Product identifier

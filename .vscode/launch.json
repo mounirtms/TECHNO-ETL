@@ -5,7 +5,7 @@
       "name": "Launch Chrome against localhost",
       "type": "pwa-chrome",
       "request": "launch",
-      "url": "http://localhost:82",
+      "url": "http://localhost:80",
       "webRoot": "${workspaceFolder}"
     },
     {
@@ -119,7 +119,7 @@
       "type": "node",
       "request": "launch",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["serve", "-s", "dist", "-l", "82"],
+      "runtimeArgs": ["serve", "-s", "dist", "-l", "80"],
       "console": "integratedTerminal",
       "cwd": "${workspaceFolder}"
     }

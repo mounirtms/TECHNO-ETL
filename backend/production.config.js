@@ -18,7 +18,7 @@ export const productionConfig = {
             'https://techno-webapp.web.app',
             'https://dashboard.technostationery.com',
             // Add development origins for testing
-            'http://localhost:82',
+            'http://localhost:80',
             'http://localhost:4173'
         ],
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

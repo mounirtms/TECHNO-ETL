@@ -14,7 +14,7 @@ start "Frontend Dev" cmd /k "npm run dev"
 echo.
 echo Both servers are starting...
 echo Backend: http://localhost:5000
-echo Frontend: http://localhost:82
+echo Frontend: http://localhost:80
 echo.
 echo Press any key to exit...
 pause >nul

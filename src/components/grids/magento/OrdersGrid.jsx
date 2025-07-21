@@ -45,6 +45,7 @@ const OrdersGrid = () => {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 25 });
 
   // ===== 2. DATA FETCHING =====
   const fetchOrders = useCallback(async (filterParams = {}) => {
@@ -135,6 +136,14 @@ const OrdersGrid = () => {
     setCurrentFilter(newFilter);
     const filterParams = newFilter === 'all' ? {} : { status: newFilter };
     fetchOrders(filterParams);
+  }, [fetchOrders]);
+
+  const handlePaginationChange = useCallback((newPaginationModel) => {
+    setPaginationModel(newPaginationModel);
+    fetchOrders({
+      pageSize: newPaginationModel.pageSize,
+      currentPage: newPaginationModel.page + 1
+    });
   }, [fetchOrders]);
 
   // ===== 4. COLUMN DEFINITIONS =====
@@ -295,6 +304,12 @@ const OrdersGrid = () => {
         data,
         loading,
         totalCount: stats.totalOrders,
+
+        // Pagination configuration
+        paginationMode: "server",
+        paginationModel,
+        onPaginationModelChange: handlePaginationChange,
+        defaultPageSize: 25,
 
         // Event handlers
         onRefresh: fetchOrders,

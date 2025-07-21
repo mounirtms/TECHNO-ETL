@@ -532,6 +532,10 @@ const MDMProductsGrid = () => {
           onViewModeChange: setViewMode,
           gridCards: MDMStatsCards,
           totalCount: stats.total,
+
+          // Server-side pagination configuration
+          paginationMode: "server",
+          defaultPageSize: 25,
           onPaginationModelChange: (model) => {
             console.log('Pagination model changed:', model);
             fetchProducts({

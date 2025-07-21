@@ -16,6 +16,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { productionConfig } from './production.config.js';
+import { logger } from './src/utils/logger.js';
 
 import { cloudConfig, betaConfig, getMagentoToken } from './src/config/magento.js';
 import * as sourcesModule from './src/config/sources.js';
@@ -116,9 +117,9 @@ async function syncStocks(sourceCode) {
             .input('sourceCode', sql.NVarChar, sourceCode || null)
             .query(mergeQuery);
 
-        console.log(`Stock changes synced successfully for ${logIdentifier}`);
+        logger.sync('stock changes', logIdentifier, 'success');
     } catch (error) {
-        console.error(`Error syncing stock changes for ${logIdentifier}:`, error);
+        logger.sync('stock changes', logIdentifier, 'error', { error: error.message });
         // Re-throw the error so the calling process (like a BullMQ worker) can handle it
         throw error;
     }
@@ -141,9 +142,9 @@ async function syncSuccess(sourceCode) {
             .input('sourceCode', sql.NVarChar, sourceCode || null)
             .query(resetQuery);
 
-        console.log(`Success flags updated successfully for ${logIdentifier}`);
+        logger.sync('success flags', logIdentifier, 'success');
     } catch (error) {
-        console.error(`Error updating success flags for ${logIdentifier}:`, error);
+        logger.sync('success flags', logIdentifier, 'error', { error: error.message });
         // Re-throw for the caller to handle
         throw error;
     }
@@ -167,10 +168,10 @@ async function syncSource(source) {
             }
         });
 
-        console.log(`✅ Finished syncing for ${source}`);
+        logger.sync('inventory', source, 'success');
 
     } catch (error) {
-        console.error('❌ Error syncing all sources:', error);
+        logger.sync('inventory', 'all sources', 'error', { error: error.message });
     }
 }
 
@@ -199,10 +200,10 @@ async function fetchMdmPrices(req, res) {
 
         const pool = getPool('mdm');
         const result = await pool.request().query(sqlQuery);
-        console.log('Fetched MDM prices successfully', result.recordset.length, 'records');
+        logger.database('fetch', 'MDM prices', { records: result.recordset.length });
         return result;
     } catch (error) {
-        console.error('Error fetching MDM prices:', error);
+        logger.error('Error fetching MDM prices', { error: error.message });
         throw error;
     }
 }
@@ -486,10 +487,12 @@ const HOST = productionConfig.server.host;
 
 // Start server with proper error handling
 const server = app.listen(PORT, HOST, () => {
-    console.log(`🚀 Techno ETL Backend Server running on ${HOST}:${PORT}`);
-    console.log(`📊 Environment: ${productionConfig.server.environment}`);
-    console.log(`🌐 CORS Origins: ${productionConfig.cors.origin.join(', ')}`);
-    console.log(`📡 Server ready to handle requests...`);
+    logger.startup(`Techno ETL Backend Server running on ${HOST}:${PORT}`, {
+        environment: productionConfig.server.environment,
+        corsOrigins: productionConfig.cors.origin,
+        port: PORT,
+        host: HOST
+    });
 });
 
 // Handle server errors
