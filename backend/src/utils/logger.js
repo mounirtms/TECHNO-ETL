@@ -153,9 +153,12 @@ class Logger {
 const logger = new Logger();
 
 // Export logger and utilities
-module.exports = {
+export {
     logger,
     isProduction,
     logLevel,
     LOG_LEVELS
 };
+
+// Default export
+export default logger;
