@@ -90,17 +90,22 @@ const ProductsGrid = () => {
     }),
 
     // Techno Reference (from custom_attributes)
-    {
-      field: 'techno_ref',
+    ColumnFactory.text('techno_ref', {
       headerName: 'Techno Ref',
       width: 120,
       valueGetter: (params) => {
-        const technoRef = params.row.custom_attributes?.find(
-          attr => attr.attribute_code === 'techno_ref'
-        );
-        return technoRef?.value || '-';
+        try {
+          if (!params?.row?.custom_attributes) return '-';
+          const technoRef = params.row.custom_attributes.find(
+            attr => attr.attribute_code === 'techno_ref'
+          );
+          return technoRef?.value || '-';
+        } catch (error) {
+          console.warn('Error getting techno_ref:', error);
+          return '-';
+        }
       }
-    },
+    }),
 
     // Status with proper mapping
     ColumnFactory.status('status', {
@@ -135,140 +140,186 @@ const ProductsGrid = () => {
     }),
 
     // Brand (from custom_attributes)
-    {
-      field: 'brand',
+    ColumnFactory.text('brand', {
       headerName: 'Brand',
       width: 120,
       valueGetter: (params) => {
-        const brand = params.row.custom_attributes?.find(
-          attr => attr.attribute_code === 'mgs_brand'
-        );
-        return brand?.value || '-';
+        try {
+          if (!params?.row?.custom_attributes) return '-';
+          const brand = params.row.custom_attributes.find(
+            attr => attr.attribute_code === 'mgs_brand'
+          );
+          return brand?.value || '-';
+        } catch (error) {
+          console.warn('Error getting brand:', error);
+          return '-';
+        }
       }
-    },
+    }),
 
     // Country of Manufacture
-    {
-      field: 'country',
+    ColumnFactory.text('country', {
       headerName: 'Country',
       width: 80,
       valueGetter: (params) => {
-        const country = params.row.custom_attributes?.find(
-          attr => attr.attribute_code === 'country_of_manufacture'
-        );
-        return country?.value || '-';
+        try {
+          if (!params?.row?.custom_attributes) return '-';
+          const country = params.row.custom_attributes.find(
+            attr => attr.attribute_code === 'country_of_manufacture'
+          );
+          return country?.value || '-';
+        } catch (error) {
+          console.warn('Error getting country:', error);
+          return '-';
+        }
       }
-    },
+    }),
 
     // Categories (Multi-select display)
-    {
-      field: 'categories',
+    ColumnFactory.custom('categories', {
       headerName: 'Categories',
       width: 200,
-      renderCell: (params) => {
-        const categoryIds = params.row.custom_attributes?.find(
-          attr => attr.attribute_code === 'category_ids'
-        )?.value || [];
+      valueGetter: (params) => {
+        try {
+          if (!params?.row?.custom_attributes) return [];
 
-        if (!Array.isArray(categoryIds) || categoryIds.length === 0) {
-          return <span style={{ color: '#999' }}>No categories</span>;
+          const categoryIds = params.row.custom_attributes.find(
+            attr => attr.attribute_code === 'category_ids'
+          )?.value || [];
+
+          return Array.isArray(categoryIds) ? categoryIds : [];
+        } catch (error) {
+          console.warn('Error getting category IDs:', error);
+          return [];
         }
+      },
+      renderCell: (params) => {
+        try {
+          const categoryIds = params.value || [];
 
-        const categoryNames = categoryIds.slice(0, 2).map(id => {
-          const category = categories.find(cat => cat.id.toString() === id.toString());
-          return category ? category.name : `ID:${id}`;
-        });
+          if (!Array.isArray(categoryIds) || categoryIds.length === 0) {
+            return <span style={{ color: '#999', fontSize: '0.75rem' }}>No categories</span>;
+          }
 
-        return (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2px' }}>
-            {categoryNames.map((name, index) => (
-              <span
-                key={index}
-                style={{
-                  fontSize: '0.75rem',
-                  backgroundColor: '#e3f2fd',
-                  color: '#1976d2',
-                  padding: '2px 6px',
-                  borderRadius: '4px',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                {name}
-              </span>
-            ))}
-            {categoryIds.length > 2 && (
-              <span style={{ fontSize: '0.75rem', color: '#666' }}>
-                +{categoryIds.length - 2} more
-              </span>
-            )}
-          </div>
-        );
+          const categoryNames = categoryIds.slice(0, 2).map(id => {
+            try {
+              const category = categories.find(cat => cat.id.toString() === id.toString());
+              return category ? category.name : `ID:${id}`;
+            } catch (error) {
+              console.warn('Error finding category:', error);
+              return `ID:${id}`;
+            }
+          });
+
+          return (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2px' }}>
+              {categoryNames.map((name, index) => (
+                <span
+                  key={index}
+                  style={{
+                    fontSize: '0.75rem',
+                    backgroundColor: '#e3f2fd',
+                    color: '#1976d2',
+                    padding: '2px 6px',
+                    borderRadius: '4px',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  {name}
+                </span>
+              ))}
+              {categoryIds.length > 2 && (
+                <span style={{ fontSize: '0.75rem', color: '#666' }}>
+                  +{categoryIds.length - 2} more
+                </span>
+              )}
+            </div>
+          );
+        } catch (error) {
+          console.warn('Error rendering categories:', error);
+          return <span style={{ color: '#f44336', fontSize: '0.75rem' }}>Error</span>;
+        }
       }
-    },
+    }),
 
-    // Boolean Attributes
-    {
-      field: 'trending',
+    // Boolean Attributes with standardized renderers
+    ColumnFactory.boolean('trending', {
       headerName: 'Trending',
       width: 90,
-      type: 'boolean',
       valueGetter: (params) => {
-        const trending = params.row.custom_attributes?.find(
-          attr => attr.attribute_code === 'trending'
-        );
-        return trending?.value === '1' || trending?.value === true;
+        try {
+          if (!params?.row?.custom_attributes) return false;
+          const trending = params.row.custom_attributes.find(
+            attr => attr.attribute_code === 'trending'
+          );
+          return trending?.value === '1' || trending?.value === true;
+        } catch (error) {
+          console.warn('Error getting trending value:', error);
+          return false;
+        }
       },
       renderCell: (params) => (
         <span style={{
           color: params.value ? '#4caf50' : '#999',
-          fontWeight: params.value ? 'bold' : 'normal'
+          fontWeight: params.value ? 'bold' : 'normal',
+          fontSize: '0.875rem'
         }}>
           {params.value ? '✓' : '✗'}
         </span>
       )
-    },
+    }),
 
-    {
-      field: 'best_seller',
+    ColumnFactory.boolean('best_seller', {
       headerName: 'Best Seller',
       width: 100,
-      type: 'boolean',
       valueGetter: (params) => {
-        const bestSeller = params.row.custom_attributes?.find(
-          attr => attr.attribute_code === 'best_seller'
-        );
-        return bestSeller?.value === '1' || bestSeller?.value === true;
+        try {
+          if (!params?.row?.custom_attributes) return false;
+          const bestSeller = params.row.custom_attributes.find(
+            attr => attr.attribute_code === 'best_seller'
+          );
+          return bestSeller?.value === '1' || bestSeller?.value === true;
+        } catch (error) {
+          console.warn('Error getting best_seller value:', error);
+          return false;
+        }
       },
       renderCell: (params) => (
         <span style={{
           color: params.value ? '#ff9800' : '#999',
-          fontWeight: params.value ? 'bold' : 'normal'
+          fontWeight: params.value ? 'bold' : 'normal',
+          fontSize: '0.875rem'
         }}>
           {params.value ? '⭐' : '✗'}
         </span>
       )
-    },
+    }),
 
-    {
-      field: 'a_la_une',
+    ColumnFactory.boolean('a_la_une', {
       headerName: 'À la Une',
       width: 90,
-      type: 'boolean',
       valueGetter: (params) => {
-        const alaune = params.row.custom_attributes?.find(
-          attr => attr.attribute_code === 'a_la_une'
-        );
-        return alaune?.value === '1' || alaune?.value === true;
+        try {
+          if (!params?.row?.custom_attributes) return false;
+          const alaune = params.row.custom_attributes.find(
+            attr => attr.attribute_code === 'a_la_une'
+          );
+          return alaune?.value === '1' || alaune?.value === true;
+        } catch (error) {
+          console.warn('Error getting a_la_une value:', error);
+          return false;
+        }
       },
       renderCell: (params) => (
         <span style={{
           color: params.value ? '#e91e63' : '#999',
-          fontWeight: params.value ? 'bold' : 'normal'
+          fontWeight: params.value ? 'bold' : 'normal',
+          fontSize: '0.875rem'
         }}>
           {params.value ? '🔥' : '✗'}
         </span>
       )
-    },
+    }),
 
     // Created Date
     ColumnFactory.dateTime('created_at', {

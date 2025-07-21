@@ -32,6 +32,19 @@ import {
 } from '../services/dashboardService';
 import { calculateDashboardHeight, createHeightStyles } from '../utils/heightCalculator';
 
+// Import new chart components
+import {
+    ProductStatsChart,
+    BrandDistributionChart,
+    CategoryTreeChart,
+    ProductAttributesChart,
+    SalesPerformanceChart,
+    InventoryStatusChart
+} from '../components/charts';
+
+// Import dashboard data service
+import dashboardDataService from '../services/dashboardDataService';
+
 const getDefaultDateRange = () => {
     const end = new Date();
     const start = new Date();
@@ -68,8 +81,26 @@ const Dashboard = () => {
         products: true,
         attributes: true,
         recentOrders: true,
-        bestSellers: true
+        bestSellers: true,
+        // New enhanced charts
+        productStats: true,
+        brandDistribution: true,
+        categoryTree: true,
+        productAttributes: true,
+        salesPerformance: true,
+        inventoryStatus: true
     });
+
+    // State for new dashboard data
+    const [enhancedData, setEnhancedData] = useState({
+        productStats: [],
+        brandDistribution: [],
+        categoryDistribution: [],
+        productAttributes: [],
+        salesPerformance: [],
+        inventoryStatus: []
+    });
+    const [enhancedLoading, setEnhancedLoading] = useState(false);
 
     // Individual chart collapse state
     const [collapsedCharts, setCollapsedCharts] = useState({
@@ -93,6 +124,24 @@ const Dashboard = () => {
         syncAllStocks,
         fetchDashboardData
     } = useDashboardController(startDate, endDate, refreshKey);
+
+    // Load enhanced dashboard data
+    const loadEnhancedData = async () => {
+        try {
+            setEnhancedLoading(true);
+            const data = await dashboardDataService.getAllDashboardData();
+            setEnhancedData(data);
+        } catch (error) {
+            console.error('Error loading enhanced dashboard data:', error);
+        } finally {
+            setEnhancedLoading(false);
+        }
+    };
+
+    // Load enhanced data on component mount and when refresh key changes
+    React.useEffect(() => {
+        loadEnhancedData();
+    }, [refreshKey]);
 
     const handleSettingsOpen = (event) => {
         setSettingsAnchorEl(event.currentTarget);
@@ -334,6 +383,54 @@ const Dashboard = () => {
                             <ListItemIcon><Star color={visibleCharts.bestSellers ? 'warning' : 'disabled'} /></ListItemIcon>
                             <ListItemText>Best Sellers</ListItemText>
                             {visibleCharts.bestSellers && <Chip size="small" label="On" color="warning" />}
+                        </MenuItem>
+
+                        <Divider sx={{ my: 1 }} />
+
+                        <Typography variant="caption" sx={{
+                            px: 2,
+                            py: 1,
+                            display: 'block',
+                            fontWeight: 600,
+                            color: theme.palette.text.secondary
+                        }}>
+                            Enhanced Analytics
+                        </Typography>
+
+                        <MenuItem onClick={() => handleToggleChart('productStats')}>
+                            <ListItemIcon><PieChartIcon color={visibleCharts.productStats ? 'primary' : 'disabled'} /></ListItemIcon>
+                            <ListItemText>Product Statistics</ListItemText>
+                            {visibleCharts.productStats && <Chip size="small" label="On" color="primary" />}
+                        </MenuItem>
+
+                        <MenuItem onClick={() => handleToggleChart('brandDistribution')}>
+                            <ListItemIcon><BarChartIcon color={visibleCharts.brandDistribution ? 'info' : 'disabled'} /></ListItemIcon>
+                            <ListItemText>Brand Distribution</ListItemText>
+                            {visibleCharts.brandDistribution && <Chip size="small" label="On" color="info" />}
+                        </MenuItem>
+
+                        <MenuItem onClick={() => handleToggleChart('categoryTree')}>
+                            <ListItemIcon><Category color={visibleCharts.categoryTree ? 'success' : 'disabled'} /></ListItemIcon>
+                            <ListItemText>Category Tree</ListItemText>
+                            {visibleCharts.categoryTree && <Chip size="small" label="On" color="success" />}
+                        </MenuItem>
+
+                        <MenuItem onClick={() => handleToggleChart('productAttributes')}>
+                            <ListItemIcon><Diamond color={visibleCharts.productAttributes ? 'secondary' : 'disabled'} /></ListItemIcon>
+                            <ListItemText>Product Attributes</ListItemText>
+                            {visibleCharts.productAttributes && <Chip size="small" label="On" color="secondary" />}
+                        </MenuItem>
+
+                        <MenuItem onClick={() => handleToggleChart('salesPerformance')}>
+                            <ListItemIcon><ShowChart color={visibleCharts.salesPerformance ? 'primary' : 'disabled'} /></ListItemIcon>
+                            <ListItemText>Sales Performance</ListItemText>
+                            {visibleCharts.salesPerformance && <Chip size="small" label="On" color="primary" />}
+                        </MenuItem>
+
+                        <MenuItem onClick={() => handleToggleChart('inventoryStatus')}>
+                            <ListItemIcon><Warehouse color={visibleCharts.inventoryStatus ? 'warning' : 'disabled'} /></ListItemIcon>
+                            <ListItemText>Inventory Status</ListItemText>
+                            {visibleCharts.inventoryStatus && <Chip size="small" label="On" color="warning" />}
                         </MenuItem>
                         
                         <Divider sx={{ my: 1 }} />
@@ -1282,6 +1379,95 @@ const Dashboard = () => {
                                 </Paper>
                             </Box>
                         )}
+
+                        {/* Enhanced Analytics Charts */}
+                        <Box sx={{ mt: 4 }}>
+                            <Typography variant="h5" sx={{
+                                mb: 3,
+                                fontWeight: 600,
+                                color: theme.palette.text.primary,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 1
+                            }}>
+                                <Analytics />
+                                Enhanced Analytics
+                            </Typography>
+
+                            {/* Enhanced Charts Grid */}
+                            <Box sx={{
+                                display: 'grid',
+                                gridTemplateColumns: {
+                                    xs: '1fr',
+                                    md: '1fr 1fr',
+                                    lg: '1fr 1fr 1fr'
+                                },
+                                gap: 3
+                            }}>
+                                {/* Product Statistics */}
+                                {visibleCharts.productStats && (
+                                    <ProductStatsChart
+                                        data={enhancedData.productStats}
+                                        title="Product Status Distribution"
+                                    />
+                                )}
+
+                                {/* Brand Distribution */}
+                                {visibleCharts.brandDistribution && (
+                                    <BrandDistributionChart
+                                        data={enhancedData.brandDistribution}
+                                        title="Top Brands"
+                                    />
+                                )}
+
+                                {/* Product Attributes */}
+                                {visibleCharts.productAttributes && (
+                                    <ProductAttributesChart
+                                        data={enhancedData.productAttributes}
+                                        title="Product Features"
+                                    />
+                                )}
+                            </Box>
+
+                            {/* Second Row of Enhanced Charts */}
+                            <Box sx={{
+                                display: 'grid',
+                                gridTemplateColumns: {
+                                    xs: '1fr',
+                                    md: '1fr 1fr'
+                                },
+                                gap: 3,
+                                mt: 3
+                            }}>
+                                {/* Category Tree */}
+                                {visibleCharts.categoryTree && (
+                                    <CategoryTreeChart
+                                        data={enhancedData.categoryDistribution}
+                                        title="Category Distribution"
+                                    />
+                                )}
+
+                                {/* Sales Performance */}
+                                {visibleCharts.salesPerformance && (
+                                    <SalesPerformanceChart
+                                        data={enhancedData.salesPerformance}
+                                        title="Sales Trends"
+                                        type="area"
+                                    />
+                                )}
+                            </Box>
+
+                            {/* Full Width Charts */}
+                            <Box sx={{ mt: 3 }}>
+                                {/* Inventory Status */}
+                                {visibleCharts.inventoryStatus && (
+                                    <InventoryStatusChart
+                                        data={enhancedData.inventoryStatus}
+                                        title="Inventory Overview"
+                                    />
+                                )}
+                            </Box>
+                        </Box>
                     </>
                 )}
             </Box>
