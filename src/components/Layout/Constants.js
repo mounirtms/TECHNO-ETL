@@ -1,4 +1,5 @@
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PeopleIcon from '@mui/icons-material/People';
 import InventoryIcon from '@mui/icons-material/Inventory';
@@ -48,6 +49,14 @@ export const MENU_ITEMS = [
         label: 'Dashboard',
         icon: DashboardIcon,
         path: '/dashboard',
+        hidden: false,
+        licensed: true
+    },
+    {
+        id: 'Charts',
+        label: 'Analytics & Charts',
+        icon: AnalyticsIcon,
+        path: '/charts',
         hidden: false,
         licensed: true
     },
