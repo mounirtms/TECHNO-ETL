@@ -1,13 +1,14 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
   plugins: [react()],
   base: '/docs/', // Use relative paths
   publicDir: 'assets', // Directory for public assets
   build: {
-    outDir: path.resolve(__dirname, 'dist'), // Output directory for build files
+    outDir: 'dist', // Output directory for build files
     emptyOutDir: true, // Clear the output directory before building
     minify: 'esbuild', // Minification method
     cssMinify: true, // Minify CSS
@@ -32,10 +33,11 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@components': path.resolve(__dirname, './src/components'),
-      '@pages': path.resolve(__dirname, './src/pages'),
-      '@styles': path.resolve(__dirname, './src/styles'),
-      '@assets': path.resolve(__dirname, './src/assets') // This can be removed if not used
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@components': fileURLToPath(new URL('./src/components', import.meta.url)),
+      '@pages': fileURLToPath(new URL('./src/pages', import.meta.url)),
+      '@styles': fileURLToPath(new URL('./src/styles', import.meta.url)),
+      '@assets': fileURLToPath(new URL('./src/assets', import.meta.url))
     }
   },
   server: {

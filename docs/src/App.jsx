@@ -7,7 +7,7 @@ import Home from './pages/Home';
 import MagentoIntegration from './pages/MagentoIntegration';
 import ETLIntegration from './pages/ETLIntegration';
 import JDEIntegration from './pages/JDEIntegration';
-import CEGIDIntegration from './pages/CEGIDIntegration';
+import CegidIntegration from './pages/CegidIntegration';
 
 const App = () => {
   return (
@@ -28,7 +28,7 @@ const App = () => {
               <Route path="/magento-integration" element={<MagentoIntegration />} />
               <Route path="/etl-integration" element={<ETLIntegration />} />
               <Route path="/jde-integration" element={<JDEIntegration />} />
-              <Route path="/cegid-integration" element={<CEGIDIntegration />} />
+              <Route path="/cegid-integration" element={<CegidIntegration />} />
             </Routes>
           </Layout>
         </Box>
