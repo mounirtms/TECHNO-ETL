@@ -446,10 +446,10 @@ async function inventorySync() {
 async function main() {
     await connectToDatabases();
 
-    cron.schedule('0 2 * * *', async () => {
+   // cron.schedule('0 2 * * *', async () => {
         await syncPrices();
-        await inventorySync();
-    });
+      //  await inventorySync();
+    //});
 
 
 
@@ -459,8 +459,8 @@ async function main() {
     //console.log(schema);
     //const last10Records = await getLast10Records();
     //console.log("Fetched last 10 records:", last10Records);
-    //const mockData = generateMockData(schema);
     //console.log(mockData);
+    //const mockData = generateMockData(schema);
 
     //console.log(getMDMPrices())
 
