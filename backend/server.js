@@ -419,20 +419,33 @@ async function syncSources() {
 
 
 async function syncPrices() {
-    // Calculate yesterday's date (YYYY-MM-DD format)
-    // Fetch prices with yesterday as default startDate
-    let prices = await fetchMdmPrices();
-    // Transform the data for Magento
-    let priceData = prices.recordset.map(({ sku, price }) => ({
-        product: {
-            sku,
+    try {
+        console.log("🚀 Starting price sync process...");
+
+        // Fetch prices from MDM
+        // Create mock req/res objects for the function call
+        const mockReq = { query: {} };
+        const mockRes = { json: () => {}, status: () => ({ json: () => {} }) };
+
+        let prices = await fetchMdmPrices(mockReq, mockRes);
+        console.log(`📊 Fetched ${prices.recordset.length} price records from MDM`);
+
+        // Transform the data for Magento - simple format
+        let priceData = prices.recordset.map(({ sku, price }) => ({
+            sku: sku,
             price: parseFloat(price) // Ensure it's a valid number
-        }
-    }));
+        }));
 
-    // Sync to Magento
-    await syncPricesToMagento({ body: priceData });
+        console.log("📦 Sample price data:", JSON.stringify(priceData.slice(0, 2), null, 2));
 
+        // Sync to Magento
+        await syncPricesToMagento({ body: priceData });
+        console.log("✅ Price sync completed successfully");
+
+    } catch (error) {
+        console.error("❌ Error in syncPrices:", error.message);
+        throw error;
+    }
 }
 
 

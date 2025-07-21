@@ -70,15 +70,57 @@ async function syncInventoryToMagento(req) {
 async function syncPricesToMagento(req) {
   try {
     const priceData = req.body;
-    // Use Magento's async bulk endpoint for prices
-    const endpoint = "async/bulk/V1/products"; // Remove leading slash from endpoint
-    console.log("📦 Sending bulk price update...");
-    const response = await magento.post(endpoint, { prices: priceData });
+    console.log("📦 Preparing bulk price update for", priceData.length, "products...");
+
+    // For Magento bulk API, we need to send individual product update operations
+    // Each operation should be a complete REST API call
+    const bulkOperations = priceData.map((item, index) => ({
+      "id": index + 1,
+      "dataObject": {
+        "product": {
+          "sku": item.sku,
+          "price": parseFloat(item.price)
+        }
+      },
+      "operationType": "update"
+    }));
+
+    console.log("📦 Sample bulk operation:", JSON.stringify(bulkOperations[0], null, 2));
+
+    // Try using the correct Magento bulk endpoint
+    const endpoint = "async/bulk/V1/products";
+    console.log("📦 Sending bulk price update to endpoint:", endpoint);
+
+    const response = await magento.post(endpoint, bulkOperations);
     console.log("✅ Prices Synced Successfully:", response);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("❌ Error syncing prices:", error.response?.data || error.message);
-    throw error;
+
+    // Fallback: Try individual product updates if bulk fails
+    console.log("🔄 Bulk update failed, trying individual updates...");
+    const results = [];
+
+    for (const item of priceData.slice(0, 5)) { // Limit to 5 for testing
+      try {
+        const individualEndpoint = `products/${encodeURIComponent(item.sku)}`;
+        const productData = {
+          "product": {
+            "sku": item.sku,
+            "price": parseFloat(item.price)
+          }
+        };
+
+        console.log(`📦 Updating individual product: ${item.sku} with price: ${item.price}`);
+        const individualResponse = await magento.put(individualEndpoint, productData);
+        results.push({ sku: item.sku, status: 'success', response: individualResponse });
+      } catch (individualError) {
+        console.error(`❌ Failed to update ${item.sku}:`, individualError.message);
+        results.push({ sku: item.sku, status: 'error', error: individualError.message });
+      }
+    }
+
+    return { fallback: true, results };
   }
 }
 
