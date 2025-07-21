@@ -206,25 +206,7 @@ const ProductManagementPage = () => {
   return (
     <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', p: 2 }}>
       {/* Enhanced Header */}
-      <Paper sx={{
-        p: 3,
-        mb: 3,
-        borderRadius: 3,
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white'
-      }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Box>
-            <Typography variant="h4" fontWeight={700} gutterBottom>
-              Product Catalog Management
-            </Typography>
-            <Typography variant="body1" sx={{ opacity: 0.9 }}>
-              Professional product management with advanced image processing and catalog tools
-            </Typography>
-          </Box>
-          <ProductIcon sx={{ fontSize: 48, opacity: 0.7 }} />
-        </Box>
-      </Paper>
+      
 
       {/* Enhanced Tabs */}
       <Paper sx={{ borderRadius: 3, overflow: 'hidden', mb: 3 }}>

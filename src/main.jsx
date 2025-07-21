@@ -75,7 +75,12 @@ const LoginRoute = () => {
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <I18nextProvider i18n={i18n}>
-            <Router>
+            <Router
+                future={{
+                    v7_startTransition: true,
+                    v7_relativeSplatPath: true
+                }}
+            >
                 <AuthProvider>
                     <LanguageProvider>
                         <ThemeProvider>

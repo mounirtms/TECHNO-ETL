@@ -260,30 +260,34 @@ const EnhancedStatsCards = ({
                   }}
                 >
                   <Tooltip title={`View ${card.title.toLowerCase()}`}>
-                    <IconButton 
-                      size="small" 
-                      onClick={() => onNavigate?.(card.key)}
-                      sx={{ 
-                        bgcolor: 'background.paper',
-                        boxShadow: 1,
-                        '&:hover': { boxShadow: 2 }
-                      }}
-                    >
-                      <LaunchIcon fontSize="small" />
-                    </IconButton>
+                    <span>
+                      <IconButton
+                        size="small"
+                        onClick={() => onNavigate?.(card.key)}
+                        sx={{
+                          bgcolor: 'background.paper',
+                          boxShadow: 1,
+                          '&:hover': { boxShadow: 2 }
+                        }}
+                      >
+                        <LaunchIcon fontSize="small" />
+                      </IconButton>
+                    </span>
                   </Tooltip>
                   <Tooltip title="More options">
-                    <IconButton 
-                      size="small"
-                      onClick={() => onCardAction?.(card.key, 'menu')}
-                      sx={{ 
-                        bgcolor: 'background.paper',
-                        boxShadow: 1,
-                        '&:hover': { boxShadow: 2 }
-                      }}
-                    >
-                      <MoreIcon fontSize="small" />
-                    </IconButton>
+                    <span>
+                      <IconButton
+                        size="small"
+                        onClick={() => onCardAction?.(card.key, 'menu')}
+                        sx={{
+                          bgcolor: 'background.paper',
+                          boxShadow: 1,
+                          '&:hover': { boxShadow: 2 }
+                        }}
+                      >
+                        <MoreIcon fontSize="small" />
+                      </IconButton>
+                    </span>
                   </Tooltip>
                 </Box>
               </Box>

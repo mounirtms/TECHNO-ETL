@@ -399,16 +399,18 @@ const Dashboard = () => {
                 </Fab>
               </Tooltip>
 
-              <Tooltip title="Refresh Data">
-                <Fab
-                  size="medium"
-                  color="primary"
-                  onClick={handleRefresh}
-                  disabled={loading}
-                  sx={{ boxShadow: 3 }}
-                >
-                  {loading ? <CircularProgress size={24} color="inherit" /> : <RefreshIcon />}
-                </Fab>
+              <Tooltip title={loading ? "Refreshing..." : "Refresh Data"}>
+                <span>
+                  <Fab
+                    size="medium"
+                    color="primary"
+                    onClick={handleRefresh}
+                    disabled={loading}
+                    sx={{ boxShadow: 3 }}
+                  >
+                    {loading ? <CircularProgress size={24} color="inherit" /> : <RefreshIcon />}
+                  </Fab>
+                </span>
               </Tooltip>
 
               <Tooltip title="Settings">

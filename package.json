@@ -7,6 +7,7 @@
     "dev": "vite",
     "backend": "node --inspect-brk backend/server.js",
     "server": "nodemon backend/server.js",
+    "server:production": "node backend/dist/index.js",
     "authServer": "nodemon backend/authServer.js",
     "build": "vite build && npm run copy-backend && npm run copy-docs",
     "build:prod": "vite build --mode production && npm run build:backend && npm run copy-docs",
