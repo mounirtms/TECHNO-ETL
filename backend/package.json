@@ -1,8 +1,8 @@
 {
-  "name": "Techno ETL",
+  "name": "Techno ETL Backend",
   "version": "1.0.0",
   "description": "Node.js project",
-  "type": "module",
+ 
   "main": "server.js",
   "author": "Mounir Abderrahmani",
   "license": "ISC",

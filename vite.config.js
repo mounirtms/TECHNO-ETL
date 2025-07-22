@@ -36,16 +36,8 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:5000',
         changeOrigin: true,
-        secure: false,
-        configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
-            const origin = process.env.NODE_ENV === 'production'
-              ? 'https://etl.techno-dz.com'
-              : 'http://localhost:80';
-            proxyReq.setHeader('Origin', origin);
-            proxyReq.setHeader('User-Agent', 'Techno-ETL/1.0.0 (etl.techno-dz.com)');
-          });
-        }
+        secure: false
+        
       },
       '/magento-api': {
         target: 'https://technostationery.com',

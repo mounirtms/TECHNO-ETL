@@ -255,7 +255,6 @@ class MagentoApi {
 
   async post(endpoint, data = {}, config = {}) {
     try {
-      debugger
       const response = await magentoService.post(endpoint, data, config);
       return response;
     } catch (error) {
@@ -1527,4 +1526,3 @@ export const {
   getStocks,
   getSourceItems
 } = magentoApi;
-

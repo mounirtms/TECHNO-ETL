@@ -57,7 +57,6 @@ app.use((req, res, next) => {
 
     next();
 });
-app.use(router);
 
 // =========================
 // 1. Helper Functions
@@ -404,6 +403,9 @@ app.post('/api/mdm/inventory/sync-all-stocks-sources', async (req, res) => {
     });
 });
 
+// Use the main router after all other specific routes have been defined.
+// This ensures that specific routes are matched before falling back to the general router.
+app.use(router);
 
 
 async function syncSources() {
