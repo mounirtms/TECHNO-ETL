@@ -146,14 +146,26 @@ const UnifiedGridToolbar = ({
 
   const handleSearchChange = useCallback((event) => {
     const value = event.target.value;
-    handleSearch(value);
-  }, [handleSearch]);
+    setSearchText(value);
+    // Don't trigger search on every keystroke, only on Enter or when cleared
+  }, []);
+
+  const handleSearchKeyPress = useCallback((event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      onSearch?.(searchText);
+    }
+  }, [onSearch, searchText]);
+
+  const handleSearchSubmit = useCallback(() => {
+    onSearch?.(searchText);
+  }, [onSearch, searchText]);
 
   const handleClearSearch = useCallback(() => {
     setSearchText('');
-    handleSearch('');
+    onSearch?.('');
     onClearSearch?.();
-  }, [handleSearch, onClearSearch]);
+  }, [onSearch, onClearSearch]);
 
   const handleMoreMenuOpen = useCallback((event) => {
     setMoreMenuAnchor(event.currentTarget);
@@ -264,12 +276,14 @@ const UnifiedGridToolbar = ({
 
         {/* Section 3: Search */}
         {toolbarConfig.showSearch && (
-          <Box sx={{ minWidth: 200, maxWidth: 300 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 200, maxWidth: 350 }}>
             <TextField
               size="small"
-              placeholder={translate('search', 'Search...')}
+              placeholder={translate('search', 'Search SKU, Name...')}
               value={searchText}
               onChange={handleSearchChange}
+              onKeyPress={handleSearchKeyPress}
+              sx={{ flex: 1 }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -285,6 +299,15 @@ const UnifiedGridToolbar = ({
                 )
               }}
             />
+            <Button
+              size="small"
+              variant="outlined"
+              onClick={handleSearchSubmit}
+              disabled={!searchText.trim()}
+              sx={{ minWidth: 'auto', px: 1 }}
+            >
+              Search
+            </Button>
           </Box>
         )}
 
@@ -365,7 +388,7 @@ const UnifiedGridToolbar = ({
           </Tooltip>
         )}
 
-        {/* Section 9: More Menu */}
+        {/* Section 9: More Menu  
         <Tooltip title={translate('more', 'More Options')}>
           <IconButton
             onClick={handleMoreMenuOpen}
@@ -374,6 +397,7 @@ const UnifiedGridToolbar = ({
             <MoreIcon />
           </IconButton>
         </Tooltip>
+        */}
       </Toolbar>
 
       {/* Settings Menu */}

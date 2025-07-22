@@ -34,9 +34,7 @@ export default defineConfig({
     },
     proxy: {
       '/api': {
-        target: process.env.NODE_ENV === 'production'
-          ? 'https://api.techno-dz.com'
-          : 'http://localhost:5000',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
         configure: (proxy) => {

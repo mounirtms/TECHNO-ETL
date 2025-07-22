@@ -428,17 +428,14 @@ class MagentoApi {
   }
 
   // ===== PRODUCT MEDIA OPERATIONS =====
-  async uploadProductMedia(sku, formData) {
+  async uploadProductMedia(sku, entryData) {
     try {
       console.log(`🖼️ Uploading media for product: ${sku}`);
+      console.log('Entry data:', entryData);
 
-      const response = await this.makeRequest(
+      const response = await this.post(
         `/products/${encodeURIComponent(sku)}/media`,
-        'POST',
-        formData,
-        {
-          'Content-Type': 'multipart/form-data'
-        }
+        entryData
       );
 
       console.log('✅ Media upload successful:', response);
@@ -453,7 +450,7 @@ class MagentoApi {
     try {
       console.log(`🖼️ Getting media for product: ${sku}`);
 
-      const response = await this.makeRequest(
+      const response = await this.get(
         `/products/${encodeURIComponent(sku)}/media`
       );
 
@@ -469,9 +466,8 @@ class MagentoApi {
     try {
       console.log(`🗑️ Deleting media ${entryId} for product: ${sku}`);
 
-      const response = await this.makeRequest(
-        `/products/${encodeURIComponent(sku)}/media/${entryId}`,
-        'DELETE'
+      const response = await this.delete(
+        `/products/${encodeURIComponent(sku)}/media/${entryId}`
       );
 
       console.log('✅ Media deleted successfully');

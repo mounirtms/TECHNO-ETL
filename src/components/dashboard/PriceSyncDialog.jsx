@@ -40,22 +40,30 @@ import axios from 'axios';
  * Price Sync Dialog Component
  * Displays price sync operations with real-time progress and results
  */
-const PriceSyncDialog = ({ open, onClose, priceData = [] }) => {
-  const [syncStatus, setSyncStatus] = useState('idle'); // idle, loading, success, error
-  const [syncResults, setSyncResults] = useState(null);
-  const [showDetails, setShowDetails] = useState(false);
-  const [progress, setProgress] = useState(0);
+const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncStatus, syncResults: propSyncResults, progress: propProgress, setSyncStatus: propSetSyncStatus, setSyncResults: propSetSyncResults, setProgress: propSetProgress, onSync }) => {
+  // Use props if provided, otherwise fallback to internal state
+  const [internalSyncStatus, internalSetSyncStatus] = useState('idle');
+  const [internalSyncResults, internalSetSyncResults] = useState(null);
+  const [internalShowDetails, setShowDetails] = useState(false);
+  const [internalProgress, internalSetProgress] = useState(0);
 
+  const syncStatus = propSyncStatus !== undefined ? propSyncStatus : internalSyncStatus;
+  const setSyncStatus = propSetSyncStatus || internalSetSyncStatus;
+  const syncResults = propSyncResults !== undefined ? propSyncResults : internalSyncResults;
+  const setSyncResults = propSetSyncResults || internalSetSyncResults;
+  const progress = propProgress !== undefined ? propProgress : internalProgress;
+  const setProgress = propSetProgress || internalSetProgress;
+
+  // Only use internal handleSync if onSync is not provided
   const handleSync = async () => {
+    if (onSync) return onSync();
     if (!priceData || priceData.length === 0) {
       alert('No price data to sync');
       return;
     }
-
     setSyncStatus('loading');
     setProgress(0);
     setSyncResults(null);
-
     try {
       console.log('🚀 Starting price sync with data:', priceData.slice(0, 2));
       
@@ -63,14 +71,9 @@ const PriceSyncDialog = ({ open, onClose, priceData = [] }) => {
       const progressInterval = setInterval(() => {
         setProgress(prev => Math.min(prev + 10, 90));
       }, 500);
-
-      const response = await axios.post('http://localhost:5000/api/techno/prices-sync', priceData);
-      
+      const response = await axios.post('/api/techno/prices-sync', priceData);
       clearInterval(progressInterval);
       setProgress(100);
-      
-      console.log('📦 Sync response:', response.data);
-      
       setSyncResults({
         success: true,
         method: response.data.method || 'bulk',
@@ -81,11 +84,8 @@ const PriceSyncDialog = ({ open, onClose, priceData = [] }) => {
         results: response.data.results || [],
         message: response.data.message || 'Sync completed successfully'
       });
-      
       setSyncStatus('success');
-      
     } catch (error) {
-      console.error('❌ Failed to sync prices:', error);
       setSyncStatus('error');
       setSyncResults({
         success: false,
@@ -273,14 +273,14 @@ const PriceSyncDialog = ({ open, onClose, priceData = [] }) => {
                 Sync Results
               </Typography>
               <IconButton
-                onClick={() => setShowDetails(!showDetails)}
+                onClick={() => setShowDetails(!internalShowDetails)}
                 sx={{ ml: 1 }}
               >
-                {showDetails ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                {internalShowDetails ? <ExpandLessIcon /> : <ExpandMoreIcon />}
               </IconButton>
             </Box>
             
-            <Collapse in={showDetails}>
+            <Collapse in={internalShowDetails}>
               <TableContainer component={Paper} variant="outlined">
                 <Table size="small">
                   <TableHead>

@@ -24,16 +24,16 @@ class MagentoService {
     }
 
 
-    async post(endpoint, data = {}) {
-        return this.instance.post(endpoint, data);
+    async post(endpoint, data = {}, config = {}) {
+        return this.instance.post(endpoint, data, config);
     }
 
-    async put(endpoint, data = {}) {
-        return this.instance.put(endpoint, data);
+    async put(endpoint, data = {}, config = {}) {
+        return this.instance.put(endpoint, data, config);
     }
 
-    async delete(endpoint) {
-        return this.instance.delete(endpoint);
+    async delete(endpoint, config = {}) {
+        return this.instance.delete(endpoint, config);
     }
 
   /*  constructor() {

@@ -45,7 +45,7 @@ export const STANDARD_TOOLBAR_CONFIG = {
   showDensity: true,
   showColumns: true,
   showViewToggle: true,
-  showSelection: true,
+  showSelection: false,
   compact: false,
   size: 'medium',
   spacing: 1,

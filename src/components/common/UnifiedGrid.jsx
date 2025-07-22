@@ -95,6 +95,7 @@ const UnifiedGrid = forwardRef(({
   currentFilter = 'all',
   onFilterChange,
   childFilterModel,
+  searchableFields = ['sku', 'name', 'Code_MDM', 'reference'],
 
   // Event handlers
   onSelectionChange,
@@ -104,6 +105,7 @@ const UnifiedGrid = forwardRef(({
   onEdit,
   onDelete,
   onSync,
+  onSearch,
   onSortChange,
   onFilterModelChange,
   onRowClick,
@@ -192,7 +194,8 @@ const UnifiedGrid = forwardRef(({
     handleEdit,
     handleDelete,
     handleSync,
-    handleExport
+    handleExport,
+    handleSearch
   } = useGridActions({
     onRefresh,
     onAdd,
@@ -200,9 +203,11 @@ const UnifiedGrid = forwardRef(({
     onDelete,
     onSync,
     onExport,
+    onSearch,
     selectedRows,
     data,
-    gridName
+    gridName,
+    searchableFields
   });
 
   // Local state
@@ -430,7 +435,7 @@ const UnifiedGrid = forwardRef(({
         onDelete={handleDelete}
         onSync={handleSync}
         onExport={handleExport}
-        onSearch={setSearchValue}
+        onSearch={handleSearch}
         searchValue={searchValue}
         onFiltersToggle={() => setFiltersVisible(!filtersVisible)}
         filtersVisible={filtersVisible}

@@ -302,8 +302,17 @@ const MDMProductsGrid = () => {
     });
   }, [data]);
 
+  // ===== SEARCH FUNCTIONALITY =====
+  const [searchValue, setSearchValue] = useState('');
+
   // ===== DATA FETCHING (moved up to avoid initialization issues) =====
-  const fetchProducts = useCallback(async ({ page = 0, pageSize = 25, sortModel = [], filterModel = { items: [] } }) => {
+  const fetchProducts = useCallback(async ({
+    page = 0,
+    pageSize = 25,
+    sortModel = [],
+    filterModel = { items: [] },
+    search = searchValue
+  }) => {
     setLoading(true);
     try {
       const sortParam = sortModel[0]?.field;
@@ -320,7 +329,9 @@ const MDMProductsGrid = () => {
           if (filter.value) acc[filter.field] = filter.value;
           return acc;
         }, {}),
-        ...(showChangedOnly ? { changed: 0 } : {})
+        ...(showChangedOnly ? { changed: 0 } : {}),
+        // Add search parameter
+        ...(search && search.trim() ? { search: search.trim() } : {})
       };
 
       if (params.sourceCode) params.succursale = null;
@@ -392,7 +403,20 @@ const MDMProductsGrid = () => {
     } finally {
       setLoading(false);
     }
-  }, [sourceFilter, succursaleFilter, showChangedOnly]);
+  }, [sourceFilter, succursaleFilter, showChangedOnly, searchValue]);
+
+  // ===== SEARCH HANDLER =====
+  const handleSearch = useCallback(async (searchTerm) => {
+    console.log('🔍 MDM Grid Search triggered:', searchTerm);
+    setSearchValue(searchTerm);
+
+    // Reset to first page when searching
+    await fetchProducts({
+      page: 0,
+      pageSize: 25,
+      search: searchTerm
+    });
+  }, [fetchProducts]);
 
   // ===== EVENT HANDLERS (moved up to avoid initialization issues) =====
   const handleManualRefresh = useCallback(() => {
@@ -553,7 +577,11 @@ const MDMProductsGrid = () => {
         enableFloatingActions={false}
         onSync={onSyncHandler}
         onSelectionChange={setSelectedBaseGridRows}
-    
+
+        // Search configuration
+        onSearch={handleSearch}
+        searchableFields={['Code_MDM', 'Code_JDE', 'TypeProd', 'Source']}
+
         getRowId={(row) => `${row.Source}-${row.Code_MDM}`}
         getRowClassName={getRowClassName}
         onError={(error) => toast.error(error.message)}

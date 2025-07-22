@@ -99,10 +99,11 @@ export async function proxyMagentoRequest(req, res) {
 
         console.log(`✅ [MagentoProxy] Response ready:`, {
             responseType: typeof response,
-            hasItems: response && 'items' in response,
+            hasItems: response && typeof response === 'object' && response !== null && 'items' in response,
             itemsCount: response?.items?.length || 0,
             totalCount: response?.total_count || 0,
-            responseKeys: response ? Object.keys(response) : []
+            responseKeys: response && typeof response === 'object' && response !== null ? Object.keys(response) : [],
+            responseValue: typeof response !== 'object' ? response : '[object]'
         });
 
         res.json(response);

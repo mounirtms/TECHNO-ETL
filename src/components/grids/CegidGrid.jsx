@@ -81,6 +81,15 @@ const CegidGrid = () => {
                         onCustomSearch: handleSearch
                     }),
 
+                    // Search configuration
+                    onSearch: (searchTerm) => {
+                        console.log('🔍 Cegid Grid Search:', searchTerm);
+                        // Update search params and trigger search
+                        setSearchParams(prev => ({ ...prev, reference: searchTerm }));
+                        handleSearch({ ...searchParams, reference: searchTerm });
+                    },
+                    searchableFields: ['reference', 'designation', 'codeBarre'],
+
                     // Floating actions
                     floatingActions: {
                         export: {

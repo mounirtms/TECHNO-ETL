@@ -91,13 +91,27 @@ class SQLQueryBuilder {
 
         addCondition('sourceCode', sql.Int, 'Code_Source = @sourceCode', Number);
         addCondition('succursale', sql.Int, 'Succursale = @succursale', Number);
-        addCondition('Code_MDM', sql.Int, 'Code_MDM = @Code_MDM', Number); // 🔥  
-        addCondition('TypeProd', sql.NVarChar, 'TypeProd = @TypeProd'); // 🔥 
+        addCondition('Code_MDM', sql.Int, 'Code_MDM = @Code_MDM', Number); // 🔥
+        addCondition('TypeProd', sql.NVarChar, 'TypeProd = @TypeProd'); // 🔥
         addCondition('refArticle', sql.NVarChar, 'Ref_Article = @refArticle');
         addCondition('description', sql.NVarChar, 'Description LIKE @description', (v) => `%${v}%`);
         addCondition('categorie', sql.NVarChar, 'Categorie = @categorie');
         addCondition('dateMin', sql.DateTime, 'DateDernierMaJ >= @dateMin', (v) => new Date(v));
         addCondition('dateMax', sql.DateTime, 'DateDernierMaJ <= @dateMax', (v) => new Date(v));
+
+        // Search functionality - search across multiple fields
+        if (params.search && params.search.trim()) {
+            const searchTerm = `%${params.search.trim()}%`;
+            conditions.push(`(
+                Code_MDM LIKE @search
+                OR Code_JDE LIKE @search
+                OR TypeProd LIKE @search
+                OR Source LIKE @search
+                OR CAST(Code_MDM AS NVARCHAR) LIKE @search
+            )`);
+            inputs.search = { type: sql.NVarChar, value: searchTerm };
+        }
+
         if (params.changed ) {
             conditions.push('changed = 1');
         }

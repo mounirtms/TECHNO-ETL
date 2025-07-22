@@ -10,30 +10,93 @@ import magentoApi from './magentoApi';
 import { toast } from 'react-toastify';
 
 /**
+ * Compress and resize image if needed
+ */
+const compressImage = (file, maxWidth = 1920, maxHeight = 1920, quality = 0.8) => {
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+
+    img.onload = () => {
+      // Calculate new dimensions
+      let { width, height } = img;
+
+      if (width > maxWidth || height > maxHeight) {
+        const ratio = Math.min(maxWidth / width, maxHeight / height);
+        width *= ratio;
+        height *= ratio;
+      }
+
+      // Set canvas dimensions
+      canvas.width = width;
+      canvas.height = height;
+
+      // Draw and compress
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // Convert to blob with compression
+      canvas.toBlob(resolve, file.type, quality);
+    };
+
+    img.src = URL.createObjectURL(file);
+  });
+};
+
+/**
+ * Convert file to base64
+ */
+const fileToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      // Remove the data:image/jpeg;base64, prefix
+      const base64 = reader.result.split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = error => reject(error);
+  });
+};
+
+/**
  * Upload single image for a product
  */
 export const uploadProductImage = async (sku, imageFile, imageData = {}) => {
   try {
-    const formData = new FormData();
-    formData.append('entry', imageFile);
-    
-    // Add image metadata
-    const metadata = {
-      position: imageData.position || 0,
+    // Compress image if it's too large (over 3MB)
+    let processedFile = imageFile;
+    if (imageFile.size > 3 * 1024 * 1024) {
+      console.log(`🗜️ Compressing large image: ${imageFile.name} (${(imageFile.size / 1024 / 1024).toFixed(2)}MB)`);
+      processedFile = await compressImage(imageFile, 1920, 1920, 0.8);
+      console.log(`✅ Compressed to: ${(processedFile.size / 1024 / 1024).toFixed(2)}MB`);
+    }
+
+    // Convert image file to base64
+    const base64Content = await fileToBase64(processedFile);
+
+    // Log final payload size for debugging
+    const estimatedPayloadSize = (base64Content.length * 0.75) / 1024 / 1024; // Rough estimate in MB
+    console.log(`📦 Final payload size estimate: ${estimatedPayloadSize.toFixed(2)}MB`);
+
+    // Prepare the entry object as expected by Magento API
+    const entry = {
       media_type: 'image',
-      label: imageData.label || imageFile.name,
+      label: imageData.label || imageFile.name.replace(/\.[^/.]+$/, ""),
+      position: imageData.position || 0,
       disabled: imageData.disabled || false,
       types: imageData.types || ['image'],
+      content: {
+        base64_encoded_data: base64Content,
+        type: processedFile.type || imageFile.type,
+        name: imageFile.name
+      },
       ...imageData
     };
-    
-    Object.keys(metadata).forEach(key => {
-      formData.append(key, metadata[key]);
-    });
-    
-    // Upload to Magento API
-    const response = await magentoApi.uploadProductMedia(sku, formData);
-    
+
+    // Upload to Magento API with entry wrapper
+    const response = await magentoApi.uploadProductMedia(sku, { entry });
+
     return {
       success: true,
       data: response,
@@ -286,23 +349,25 @@ export const bulkUploadImages = async (matches, progressCallback) => {
  * Validate image file
  */
 export const validateImageFile = (file) => {
-  const maxSize = 10 * 1024 * 1024; // 10MB
+  // Reduced max size to account for base64 encoding overhead (~33% increase)
+  // and server payload limits. Large files will be compressed automatically.
+  const maxSize = 8 * 1024 * 1024; // 8MB (will be ~10.6MB as base64)
   const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-  
+
   if (!allowedTypes.includes(file.type)) {
     return {
       valid: false,
       error: `Invalid file type. Allowed types: ${allowedTypes.join(', ')}`
     };
   }
-  
+
   if (file.size > maxSize) {
     return {
       valid: false,
-      error: `File size too large. Maximum size: ${maxSize / 1024 / 1024}MB`
+      error: `File size too large. Maximum size: ${maxSize / 1024 / 1024}MB (large images will be compressed automatically)`
     };
   }
-  
+
   return { valid: true };
 };
 

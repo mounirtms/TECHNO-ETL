@@ -12,9 +12,11 @@ export const useGridActions = ({
   onDelete,
   onSync,
   onExport,
+  onSearch,
   selectedRows = [],
   data = [],
-  gridName
+  gridName,
+  searchableFields = ['sku', 'name', 'Code_MDM', 'reference']
 }) => {
   // Refresh handler with error handling
   const handleRefresh = useCallback(async () => {
@@ -82,10 +84,10 @@ export const useGridActions = ({
   // Export handler
   const handleExport = useCallback(async () => {
     try {
-      const exportData = selectedRows.length > 0 
+      const exportData = selectedRows.length > 0
         ? data.filter(item => selectedRows.includes(item.id || item.entity_id))
         : data;
-      
+
       await onExport?.(exportData, selectedRows);
       toast.success(`Exported ${exportData.length} record(s)`);
     } catch (error) {
@@ -94,12 +96,31 @@ export const useGridActions = ({
     }
   }, [onExport, selectedRows, data]);
 
+  // Search handler
+  const handleSearch = useCallback(async (searchValue) => {
+    try {
+      if (onSearch) {
+        // Use custom search logic if provided
+        await onSearch(searchValue);
+      } else if (searchValue.trim()) {
+        // Default search behavior - show info about what would be searched
+        const fieldsText = searchableFields.join(', ');
+        toast.info(`Searching in: ${fieldsText}`);
+        console.log(`Search "${searchValue}" in fields:`, searchableFields);
+      }
+    } catch (error) {
+      console.error('Error searching data:', error);
+      toast.error('Search failed');
+    }
+  }, [onSearch, searchableFields]);
+
   return {
     handleRefresh,
     handleAdd,
     handleEdit,
     handleDelete,
     handleSync,
-    handleExport
+    handleExport,
+    handleSearch
   };
 };

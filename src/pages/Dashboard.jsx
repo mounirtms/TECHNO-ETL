@@ -267,23 +267,19 @@ const Dashboard = () => {
   // Handle price sync
   const handlePriceSync = async () => {
     try {
-      setLoading(true);
-      console.log('🚀 Fetching prices for sync...');
+      // Use getPrices from the controller, which manages loading
+      const data = await getPrices();
+      console.log('📊 Price data received:', data);
 
-      const response = await api.get('/mdm/sync/prices');
-      console.log('📊 Price data received:', response.data);
-
-      if (response.data && response.data.length > 0) {
-        setPriceData(response.data);
+      if (data && data.length > 0) {
+        setPriceData(data);
         setPriceSyncDialogOpen(true);
-      } else {
+      } else {p
         alert('No price data available for sync');
       }
     } catch (error) {
       console.error('❌ Failed to fetch price data:', error);
       alert('Failed to fetch price data: ' + error.message);
-    } finally {
-      setLoading(false);
     }
   };
 
