@@ -10,9 +10,13 @@ import { logger } from './logger.js';
 
 export async function connectToDatabases() {
     try {
+        console.log('Connecting to MDM DB...');
         await createMdmPool(mdmdbConfig);
+        console.log('Connected to MDM DB successfully!');
         // Prefetch Magento token and store in cache for later use
+        console.log('Fetching Magento token...');
         await getMagentoToken(cloudConfig);
+        console.log('Magento token fetched successfully!');
         logger.info('✅ All database connections and tokens initialized successfully.');
     } catch (err) {
         logger.error('❌ Initial database or token connection failed. Server may not function correctly.', { error: err.message });

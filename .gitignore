@@ -28,3 +28,4 @@ backend/queries
 .env
 odoo_module
 
+package-lock.json

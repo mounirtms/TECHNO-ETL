@@ -1,0 +1,75 @@
+import React from 'react';
+import { Box, Typography, Button, Container } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import HomeIcon from '@mui/icons-material/Home';
+
+const NotFoundPage = () => {
+  const navigate = useNavigate();
+
+  const handleGoHome = () => {
+    navigate('/dashboard');
+  };
+
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
+  return (
+    <Container maxWidth="md">
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '60vh',
+          textAlign: 'center',
+          gap: 3
+        }}
+      >
+        <ErrorOutlineIcon 
+          sx={{ 
+            fontSize: 120, 
+            color: 'text.secondary',
+            opacity: 0.6
+          }} 
+        />
+        
+        <Typography variant="h1" component="h1" sx={{ fontSize: '6rem', fontWeight: 'bold', color: 'text.secondary' }}>
+          404
+        </Typography>
+        
+        <Typography variant="h4" component="h2" gutterBottom>
+          Page Not Found
+        </Typography>
+        
+        <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 500 }}>
+          The page you're looking for doesn't exist or has been moved. 
+          Please check the URL or navigate back to a safe location.
+        </Typography>
+        
+        <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+          <Button
+            variant="contained"
+            startIcon={<HomeIcon />}
+            onClick={handleGoHome}
+            size="large"
+          >
+            Go to Dashboard
+          </Button>
+          
+          <Button
+            variant="outlined"
+            onClick={handleGoBack}
+            size="large"
+          >
+            Go Back
+          </Button>
+        </Box>
+      </Box>
+    </Container>
+  );
+};
+
+export default NotFoundPage;

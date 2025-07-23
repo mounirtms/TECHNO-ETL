@@ -116,32 +116,77 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     sourcemap: process.env.NODE_ENV !== 'production',
-    minify: 'terser', // Always use terser for consistency
-    target: 'es2015',
+    minify: 'terser',
+    target: 'es2020',
+    cssTarget: 'chrome80',
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'index.html')
       },
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom'],
-          mui: ['@mui/material', '@mui/icons-material', '@mui/x-data-grid'],
-          charts: ['recharts'],
-          utils: ['axios', 'date-fns'],
+        manualChunks: (id) => {
+          // Vendor chunks
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              return 'react-vendor';
+            }
+            if (id.includes('@mui')) {
+              return 'mui-vendor';
+            }
+            if (id.includes('recharts') || id.includes('d3-')) {
+              return 'charts-vendor';
+            }
+            if (id.includes('axios') || id.includes('date-fns')) {
+              return 'utils-vendor';
+            }
+            if (id.includes('framer-motion')) {
+              return 'animation-vendor';
+            }
+            return 'vendor';
+          }
+
+          // App chunks
+          if (id.includes('/src/pages/')) {
+            return 'pages';
+          }
+          if (id.includes('/src/components/')) {
+            return 'components';
+          }
+          if (id.includes('/src/services/')) {
+            return 'services';
+          }
         },
         assetFileNames: ({ name }) => {
           if (/\.(gif|jpe?g|png|svg)$/i.test(name ?? '')) {
-            return 'assets/images/[name][extname]';
+            return 'assets/images/[name]-[hash][extname]';
+          }
+          if (/\.(woff2?|eot|ttf|otf)$/i.test(name ?? '')) {
+            return 'assets/fonts/[name]-[hash][extname]';
           }
           return 'assets/[name]-[hash][extname]';
-        }
+        },
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js'
+      },
+      treeshake: {
+        moduleSideEffects: false,
+        propertyReadSideEffects: false,
+        tryCatchDeoptimization: false
       }
     },
     terserOptions: {
       compress: {
-        drop_console: true,
+        drop_console: process.env.NODE_ENV === 'production',
         drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug'],
+        passes: 2
       },
+      mangle: {
+        safari10: true
+      },
+      format: {
+        comments: false
+      }
     },
     chunkSizeWarningLimit: 1000,
     assetsInclude: [
@@ -152,7 +197,9 @@ export default defineConfig({
       'docs/dist/**/*.js',
       'docs/dist/assets/**/*'
     ],
-    copyPublicDir: true
+    copyPublicDir: true,
+    reportCompressedSize: false,
+    emptyOutDir: true
   },
   define: {
     global: 'globalThis',
@@ -164,13 +211,25 @@ export default defineConfig({
       'react-router-dom',
       '@mui/material',
       '@mui/icons-material',
-      'recharts'
+      '@mui/x-data-grid',
+      'recharts',
+      'axios',
+      'date-fns',
+      'framer-motion'
     ],
     exclude: ['@assets/*'],
     esbuildOptions: {
-      target: 'esnext'
+      target: 'esnext',
+      supported: {
+        'top-level-await': true
+      }
     },
-    force: true
+    force: false,
+    entries: [
+      'src/main.jsx',
+      'src/pages/**/*.jsx',
+      'src/components/**/*.jsx'
+    ]
   },
   publicDir: 'public'
 });

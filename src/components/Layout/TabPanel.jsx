@@ -8,11 +8,17 @@ import {
 } from '@mui/material';
 import { useTab } from '../../contexts/TabContext';
 import { HEADER_HEIGHT, FOOTER_HEIGHT } from './Constants';
+import Breadcrumbs from '../Navigation/Breadcrumbs';
+import { useRoutePerformance, useDocumentTitle } from '../../hooks/useRoutePerformance';
 
 const TabPanel = ({ sidebarOpen, isMobile = false, isTablet = false }) => {
     const theme = useTheme();
     const { tabs, activeTab, openTab, getActiveComponent } = useTab();
     const [tabPanelHeight, setTabPanelHeight] = useState('100%');
+
+    // Add route performance monitoring
+    const routePerformance = useRoutePerformance();
+    useDocumentTitle();
 
     useEffect(() => {
         const calculateHeight = () => {
@@ -41,6 +47,11 @@ const TabPanel = ({ sidebarOpen, isMobile = false, isTablet = false }) => {
             flexDirection: 'column',
             overflow: 'hidden'
         }}>
+            {/* Breadcrumbs */}
+            <Box sx={{ px: 2, py: 1, backgroundColor: theme.palette.background.paper }}>
+                <Breadcrumbs />
+            </Box>
+
             <Box sx={{
                 borderBottom: 1,
                 borderColor: 'divider',

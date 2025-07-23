@@ -20,6 +20,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import VotingGrid from '../components/grids/VotingGrid';
+import EnhancedVotingGrid from '../components/grids/EnhancedVotingGrid';
 import RoadmapGrid from '../components/grids/RoadmapGrid';
 
 /**
@@ -109,7 +110,7 @@ const VotingPage = () => {
 
       {/* Tab Panels */}
       <TabPanel value={activeTab} index={0}>
-        <VotingGrid userId="current_user" />
+        <EnhancedVotingGrid userId="current_user" />
       </TabPanel>
       
       <TabPanel value={activeTab} index={1}>

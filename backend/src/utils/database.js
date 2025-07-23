@@ -1,4 +1,10 @@
 import sql from 'mssql';
+import { logger } from './logger.js';
+
+// Global pool variables
+let mdmPool = null;
+let cegidPool = null;
+let mdm360Pool = null;
 
 // Functions to create pools (now accepting dbConfig as argument)
 const getPool = (dbName) => {
@@ -59,13 +65,19 @@ async function createPool(name, dbConfig) {
 async function createMdm360Pool(dbConfig) { // Accepts the dbconfig
   try {
     if (!mdm360Pool) { // only initializes if no pool exists
-      mdm360Pool = new sql.ConnectionPool(dbConfig);
+      mdm360Pool = new sql.ConnectionPool({
+        ...DEFAULT_POOL_CONFIG,
+        ...dbConfig
+      });
       await mdm360Pool.connect();
-      console.log("✅  Connected to MDM360 DB successfully");
+      mdm360Pool.on('error', err => {
+        logger.error('MDM360 Database connection error', { error: err.message });
+      });
+      logger.info("✅ Connected to MDM360 DB successfully");
     }
     return mdm360Pool;
   } catch (error) {
-    console.error('Error MDM360 connection error:', error);
+    logger.error('MDM360 connection failed', { error: error.message, stack: error.stack });
     throw error;
   }
 }
@@ -73,16 +85,46 @@ async function createMdm360Pool(dbConfig) { // Accepts the dbconfig
 async function createCegidPool(dbConfig) {
   try {
     if (!cegidPool) { //only initializes if no pool exists
-      cegidPool = new sql.ConnectionPool(dbConfig);
+      cegidPool = new sql.ConnectionPool({
+        ...DEFAULT_POOL_CONFIG,
+        ...dbConfig
+      });
       await cegidPool.connect();
-      console.log('✅  connected to CEGID successfully');
+      cegidPool.on('error', err => {
+        logger.error('CEGID Database connection error', { error: err.message });
+      });
+      logger.info('✅ Connected to CEGID DB successfully');
     }
     return cegidPool;
   } catch (error) {
-    console.error('CEGID connection failed', error);
+    logger.error('CEGID connection failed', { error: error.message, stack: error.stack });
     throw error;
   }
 }
 
-  
-export { createPool as createMdmPool, getPool };
+// Create MDM Pool function
+async function createMdmPool(dbConfig) {
+  try {
+    if (!mdmPool) {
+      mdmPool = new sql.ConnectionPool({
+        ...DEFAULT_POOL_CONFIG,
+        ...dbConfig
+      });
+
+      await mdmPool.connect();
+      mdmPool.on('error', err => {
+        logger.error('MDM Database connection error', { error: err.message });
+      });
+      logger.info('✅ Connected to MDM DB successfully');
+    }
+    return mdmPool;
+  } catch (error) {
+    logger.error('MDM Database connection failed', {
+      error: error.message,
+      stack: error.stack
+    });
+    throw error;
+  }
+}
+
+export { createPool, createMdmPool, createCegidPool, createMdm360Pool, getPool };
