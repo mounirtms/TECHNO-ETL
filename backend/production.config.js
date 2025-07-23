@@ -14,9 +14,9 @@ export const productionConfig = {
     // CORS Configuration for Production
     cors: {
         origin: [
-            'https://etl.techno-dz.com',
-            'https://techno-webapp.web.app',
-            'https://dashboard.technostationery.com',
+            'http://etl.techno-dz.com',
+            'http://techno-webapp.web.app',
+            'http://dashboard.technostationery.com',
             // Add development origins for testing
             'http://localhost:80',
             'http://localhost:4173'
@@ -46,7 +46,7 @@ export const productionConfig = {
                     fontSrc: ["'self'", "https://fonts.gstatic.com"],
                     imgSrc: ["'self'", "data:", "https:"],
                     scriptSrc: ["'self'"],
-                    connectSrc: ["'self'", "https://api.techno-dz.com", "https://technostationery.com"]
+                    connectSrc: ["'self'", "http://etl.techno-dz.com", "https://technostationery.com"]
                 }
             },
             crossOriginEmbedderPolicy: false

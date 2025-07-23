@@ -1,8 +1,8 @@
 // Unified MagentoService using shared node-cache from config/magento.js
 
 import { getMagentoToken } from '../config/magento.js';
-import CacheClient from './CacheClient.js'; // Assuming this is your cache wrapper
-
+import { logger } from '../utils/logger.js';
+import { getFromCache, setInCache } from './cacheService.js';
 let gotPromise = null;
 
 async function getGot() {
@@ -13,10 +13,9 @@ async function getGot() {
 }
 
 class MagentoService {
-    constructor(config, cache = new CacheClient()) {
+    constructor(config) {
         this.config = config;
         this.url = config.url.replace(/\/$/, ''); // ensure no trailing slash
-        this.cache = cache;
         this.defaultCacheTTL = config.cacheTTL || 3600*5; // seconds
     }
 
@@ -43,6 +42,15 @@ class MagentoService {
             'User-Agent': 'Techno',
             ...customHeaders
         };
+        
+        const retryOptions = {
+            limit: this.config.retries || 3,
+            methods: ['GET', 'PUT', 'HEAD', 'DELETE', 'OPTIONS', 'TRACE'],
+            statusCodes: [408, 413, 429, 500, 502, 503, 504],
+            calculateDelay: ({ attemptCount }) => {
+                return attemptCount > 1 ? Math.min(Math.pow(2, attemptCount) * 200, 5000) : 0; // Exponential backoff
+            }
+        };
 
         const gotOptions = {
             method,
@@ -50,6 +58,7 @@ class MagentoService {
             throwHttpErrors: false,
             ...options
         };
+        if (options.retry !== false) gotOptions.retry = retryOptions;
         if (data) {
             gotOptions.json = data;
         }
@@ -60,8 +69,7 @@ class MagentoService {
             const response = await got(url, gotOptions);
             const elapsed = Date.now() - startTime;
 
-            this.logSuccess(method, endpoint, elapsed, response.statusCode);
-            this.logResponse(response);
+            this.logSuccess(method, endpoint, elapsed, response.statusCode, response.retryCount);
 
             if (response.statusCode >= 400) {
                 const body = typeof response.body === 'string' ? JSON.parse(response.body) : response.body;
@@ -86,35 +94,33 @@ class MagentoService {
         const ttl = cache.ttl ?? this.defaultCacheTTL;
 
         if (!cache.forceRefresh) {
-            const cached = await this.cache.get(cacheKey);
+            const cached = await getFromCache(cacheKey);
             if (cached) {
-                console.log(`🎯 [MagentoService] Cache HIT: ${cacheKey}`, {
+                logger.debug(`[MagentoService] Cache HIT`, {
+                    key: cacheKey,
                     dataType: typeof cached,
-                    hasItems: cached && 'items' in cached,
-                    itemsCount: cached?.items?.length || 0,
-                    totalCount: cached?.total_count || 0
+                    hasItems: cached && typeof cached === 'object' && 'items' in cached,
                 });
                 return cached;
             } else {
-                console.log(`❌ [MagentoService] Cache MISS: ${cacheKey}`);
+                logger.debug(`[MagentoService] Cache MISS`, { key: cacheKey });
             }
         } else {
-            console.log(`🔄 [MagentoService] Cache FORCE REFRESH: ${cacheKey}`);
+            logger.info(`[MagentoService] Cache FORCE REFRESH`, { key: cacheKey });
         }
 
         const response = await this.request('GET', endpointWithQuery, null, {}, options);
 
-        console.log(`📦 [MagentoService] API Response received:`, {
-            endpoint: endpointWithQuery,
-            responseType: typeof response,
-            hasItems: response && 'items' in response,
-            itemsCount: response?.items?.length || 0,
-            totalCount: response?.total_count || 0,
-            responseKeys: response ? Object.keys(response) : []
-        });
+        if (response && typeof response === 'object' && response !== null) {
+            await setInCache(cacheKey, response, ttl * 1000); // cacheService uses ms
+            logger.debug(`[MagentoService] Cache SET`, { key: cacheKey, ttl: `${ttl}s` });
+        } else {
+            logger.warn(`[MagentoService] Did not cache non-object response`, {
+                key: cacheKey,
+                responseType: typeof response
+            });
+        }
 
-        await this.cache.set(cacheKey, response, ttl);
-        console.log(`💾 [MagentoService] Cache SET: ${cacheKey} (TTL: ${ttl}s)`);
         return response;
     }
 
@@ -130,28 +136,21 @@ class MagentoService {
         return this.request('DELETE', endpoint, null, {}, options);
     }
 
-    logRequest(options) {
-        if (!options) return;
-        const { method, url, headers } = options;
-        console.log(`[MagentoService] ${method} ${url} - Request`, headers);
-    }
-
-    logResponse(response) {
-        const { statusCode, url } = response;
-        console.log(`[MagentoService] ${statusCode} ${url} - Response`);
-    }
-
     logError(error, method, endpoint) {
-        console.error(`[MagentoService][ERROR]`, {
+        logger.error(`[MagentoService] Request failed`, {
             method,
             endpoint,
             message: error.message,
-            stack: error.stack
+            // stack: error.stack // Stack can be too verbose for regular logs
         });
     }
 
-    logSuccess(method, endpoint, ms, statusCode) {
-        console.log(`[MagentoService] SUCCESS ${method} ${endpoint} (${statusCode}) - ${ms}ms`);
+    logSuccess(method, endpoint, ms, statusCode, retryCount) {
+        const meta = { method, endpoint, statusCode, durationMs: ms, component: 'MagentoService' };
+        if (retryCount > 0) {
+            meta.retries = retryCount;
+        }
+        logger.info(`[MagentoService] Request successful`, meta);
     }
 }
 

@@ -34,10 +34,21 @@ export default defineConfig({
     },
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        target: process.env.NODE_ENV === 'production'
+          ? 'http://etl.techno-dz.com'
+          : 'http://localhost:5000',
         changeOrigin: true,
-        secure: false
-        
+        secure: false,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            const origin = process.env.NODE_ENV === 'production'
+              ? 'http://etl.techno-dz.com'
+              : 'http://localhost:80';
+            proxyReq.setHeader('Origin', origin);
+            proxyReq.setHeader('User-Agent', 'Techno-ETL/1.0.0 (etl.techno-dz.com)');
+          });
+        }
+
       },
       '/magento-api': {
         target: 'https://technostationery.com',
@@ -78,6 +89,27 @@ export default defineConfig({
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
       credentials: true
+    }
+  },
+  preview: {
+    port: 80, // Use the standard HTTP port
+    strictPort: true,
+    proxy: {
+      '/api': {
+        // This MUST point to your backend server.
+        // Since it's on the same machine, localhost:5000 is correct.
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        secure: false,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            // Ensure the correct origin is passed to the backend for CORS validation
+            const origin = 'http://etl.techno-dz.com';
+            proxyReq.setHeader('Origin', origin);
+            proxyReq.setHeader('User-Agent', 'Techno-ETL/1.0.0 (etl.techno-dz.com)');
+          });
+        }
+      }
     }
   },
   build: {

@@ -15,6 +15,7 @@ dist-ssr
 .env
 backend/.env
 backend/src/config/*
+backend/queries
 # Editor directories and files
 
 .idea
@@ -25,4 +26,5 @@ backend/src/config/*
 *.sln
 *.sw?
 .env
+odoo_module
 

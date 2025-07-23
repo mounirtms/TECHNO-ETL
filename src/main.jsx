@@ -29,6 +29,7 @@ const Login = lazy(() => import('./pages/Login'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const ChartsPage = lazy(() => import('./pages/ChartsPage'));
 const ProductManagementPage = lazy(() => import('./pages/ProductManagementPage'));
+const VotingPage = lazy(() => import('./pages/VotingPage'));
 
 // Loading Fallback Component
 const LoadingFallback = () => (
@@ -99,6 +100,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                                         <Route path="dashboard" element={<Dashboard />} />
                                         <Route path="charts" element={<ChartsPage />} />
                                         <Route path="products" element={<ProductManagementPage />} />
+                                        <Route path="voting" element={<VotingPage />} />
                                     </Route>
                                 </Route>
 

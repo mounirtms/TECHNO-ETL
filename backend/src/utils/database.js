@@ -22,20 +22,36 @@ const getPool = (dbName) => {
   }
 };
 
-let mdmPool = null;
-let mdm360Pool = null;
-let cegidPool = null;
+const pools = new Map();
+const DEFAULT_POOL_CONFIG = {
+  min: 2,
+  max: 10,
+  idleTimeoutMillis: 30000,
+  acquireTimeoutMillis: 5000
+};
 
-async function createMdmPool(dbConfig) { // Accepts the dbconfig
+async function createPool(name, dbConfig) {
   try {
-    if (!mdmPool) { // only initializes if no pool exists
-      mdmPool = new sql.ConnectionPool(dbConfig);
-      await mdmPool.connect();
-      console.log("✅  Connected to MDM DB successfully !");
+    if (!pools.has(name)) {
+      const pool = new sql.ConnectionPool({
+        ...DEFAULT_POOL_CONFIG,
+        ...dbConfig
+      });
+      
+      await pool.connect();
+      pool.on('error', err => {
+        logger.error('Database connection error', { pool: name, error: err.message });
+      });
+      pools.set(name, pool);
+      logger.database('connect', name, { config: dbConfig });
     }
-    return mdmPool;
+    return pools.get(name);
   } catch (error) {
-    console.error('Error MDM connection error:', error);
+    logger.error('Database connection failed', {
+      pool: name,
+      error: error.message,
+      stack: error.stack
+    });
     throw error;
   }
 }
@@ -68,4 +84,5 @@ async function createCegidPool(dbConfig) {
   }
 }
 
-export { createMdmPool, createCegidPool, createMdm360Pool, getPool };
+  
+export { createPool as createMdmPool, getPool };

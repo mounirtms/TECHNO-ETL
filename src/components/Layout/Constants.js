@@ -13,6 +13,7 @@ import StorefrontIcon from '@mui/icons-material/Storefront';
 import DescriptionIcon from '@mui/icons-material/Description';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import SettingsIcon from '@mui/icons-material/Settings';
+import HowToVoteIcon from '@mui/icons-material/HowToVote';
 
 // Drawer (Sidebar) Widths
 export const DRAWER_WIDTH = 240;  // Full sidebar width
@@ -57,6 +58,14 @@ export const MENU_ITEMS = [
         label: 'Analytics & Charts',
         icon: AnalyticsIcon,
         path: '/charts',
+        hidden: false,
+        licensed: true
+    },
+    {
+        id: 'Voting',
+        label: 'Feature Voting',
+        icon: HowToVoteIcon,
+        path: '/voting',
         hidden: false,
         licensed: true
     },

@@ -1,0 +1,122 @@
+/**
+ * VotingPage - Main page for feature voting and roadmap
+ */
+import React, { useState } from 'react';
+import {
+  Box,
+  Container,
+  Tabs,
+  Tab,
+  Paper,
+  Typography,
+  Breadcrumbs,
+  Link
+} from '@mui/material';
+import {
+  HowToVote,
+  Timeline,
+  Home
+} from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
+import VotingGrid from '../components/grids/VotingGrid';
+import RoadmapGrid from '../components/grids/RoadmapGrid';
+
+/**
+ * Tab panel component
+ */
+function TabPanel({ children, value, index, ...other }) {
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`voting-tabpanel-${index}`}
+      aria-labelledby={`voting-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box>
+          {children}
+        </Box>
+      )}
+    </div>
+  );
+}
+
+/**
+ * VotingPage Component
+ */
+const VotingPage = () => {
+  const { t } = useTranslation();
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(0);
+
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
+
+  return (
+    <Container maxWidth="xl" sx={{ py: 3 }}>
+      {/* Breadcrumbs */}
+      <Breadcrumbs sx={{ mb: 3 }}>
+        <Link
+          component={RouterLink}
+          to="/"
+          color="inherit"
+          sx={{ display: 'flex', alignItems: 'center' }}
+        >
+          <Home sx={{ mr: 0.5 }} fontSize="inherit" />
+          Dashboard
+        </Link>
+        <Typography color="text.primary">
+          Feature Voting
+        </Typography>
+      </Breadcrumbs>
+
+      {/* Page Header */}
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h3" component="h1" gutterBottom>
+          Feature Voting & Roadmap
+        </Typography>
+        <Typography variant="h6" color="text.secondary">
+          Help shape the future of our platform by voting on features and tracking development progress
+        </Typography>
+      </Box>
+
+      {/* Tabs */}
+      <Paper sx={{ mb: 3 }}>
+        <Tabs 
+          value={activeTab} 
+          onChange={handleTabChange}
+          sx={{ borderBottom: 1, borderColor: 'divider' }}
+        >
+          <Tab 
+            icon={<HowToVote />} 
+            label="Feature Voting" 
+            id="voting-tab-0"
+            aria-controls="voting-tabpanel-0"
+            sx={{ minHeight: 64 }}
+          />
+          <Tab 
+            icon={<Timeline />} 
+            label="Development Roadmap" 
+            id="voting-tab-1"
+            aria-controls="voting-tabpanel-1"
+            sx={{ minHeight: 64 }}
+          />
+        </Tabs>
+      </Paper>
+
+      {/* Tab Panels */}
+      <TabPanel value={activeTab} index={0}>
+        <VotingGrid userId="current_user" />
+      </TabPanel>
+      
+      <TabPanel value={activeTab} index={1}>
+        <RoadmapGrid />
+      </TabPanel>
+    </Container>
+  );
+};
+
+export default VotingPage;

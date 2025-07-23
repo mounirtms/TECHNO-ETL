@@ -1,44 +1,64 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
-import TerserPlugin from 'terser-webpack-plugin';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
+const path = require('path');
+const TerserPlugin = require('terser-webpack-plugin');
+const nodeExternals = require('webpack-node-externals');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+module.exports = (env, argv) => {
+  const isProduction = argv.mode === 'production';
 
-export default {
-  mode: 'production',
-  entry: './server.js',
-  output: {
-    filename: 'index.js',
-    path: path.resolve(__dirname, 'dist'),
-    library: {
-      type: 'commonjs2'
+  return {
+    entry: './server.js',
+    output: {
+      filename: 'index.js',
+      path: path.resolve(__dirname, 'dist'),
+      library: {
+        type: 'commonjs2'
+      },
+      environment: {
+        module: false
+      }
     },
-    environment: {
-      module: false
+    ignoreWarnings: [
+      {
+        message: /Critical dependency/
+      }
+    ],
+    optimization: {
+      moduleIds: 'deterministic',
+      minimize: isProduction,
+      minimizer: isProduction ? [
+        new TerserPlugin({
+          parallel: true,
+          terserOptions: {
+            ecma: 2020,
+            compress: { drop_console: true },
+            format: { comments: false }
+          }
+        })
+      ] : [],
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\/]node_modules[\/]/,
+            name: 'vendors',
+            chunks: 'all'
+          }
+        }
+      },
+      runtimeChunk: 'single'
+    },
+    target: 'node',
+    resolve: {
+      extensions: ['.js']
+    },
+    mode: isProduction ? 'production' : 'development',
+    devtool: isProduction ? false : 'source-map',
+    externals: [nodeExternals()],
+    cache: {
+      type: 'filesystem',
+      buildDependencies: {
+        config: [__filename]
+      }
     }
-  },
-  optimization: {
-    minimize: true,
-    minimizer: [new TerserPlugin()],
-  },
-  target: 'node',
-  resolve: {
-    extensions: ['.js'],
-  },
-  plugins: [
-    new CopyWebpackPlugin({
-      patterns: [
-        { from: 'queries/*.sql', to: 'queries/[name][ext]', context: path.resolve(__dirname) },
-        { from: 'start-server.js', to: 'start-server.js', context: path.resolve(__dirname) },
-        { from: 'package.json', to: 'package.json', context: path.resolve(__dirname) }
-      ],
-    }),
-  ],
-  ignoreWarnings: [
-    {
-      message: /Critical dependency: the request of a dependency is an expression/
-    }
-  ]
+  };
 };

@@ -1,30 +1,31 @@
 import dotenv from 'dotenv';
-dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
-import router from './src/utils/routes.js';
-import cron from 'node-cron';
-import { createMdmPool, createCegidPool, createMdm360Pool, getPool } from './src/utils/database.js';
-import sql from 'mssql';
-import mdmdbConfig from './src/config/mdm.js';
-import jwt from 'jsonwebtoken';
-import { fetchInventoryData, syncInventoryToMagento, syncPricesToMagento } from './src/mdm/services.js';
-import { proxyMagentoRequest } from './src/controllers/apiController.js';
-import * as fs from 'fs';
-import * as path from 'path';
-import { fileURLToPath } from 'url';
-import { productionConfig } from './production.config.js';
+import timeout from 'connect-timeout';
+import rateLimit from 'express-rate-limit';
 import { logger } from './src/utils/logger.js';
-
-import { cloudConfig, betaConfig, getMagentoToken } from './src/config/magento.js';
-import * as sourcesModule from './src/config/sources.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+import { SQL_QUERIES } from './src/constants/sqlQueries.js';
+import { connectToDatabases } from './src/utils/database-setup.js';
+import { quitRedisClient } from './src/utils/redisClient.js';
+import { productionConfig } from './production.config.js';
+// No ESM export, use CommonJS if needed
+import router from './utils/routes.js';
+app.use('/api', router);
+const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+dotenv.config({ path: `../${envFile}` });
 const app = express();
+
+// Set a global request timeout to prevent requests from hanging
+app.use(timeout('30s'));
+
+// Rate limiting to protect against brute-force attacks and API abuse
+const apiLimiter = rateLimit({
+    ...productionConfig.rateLimit,
+    message: { error: productionConfig.rateLimit.message }
+});
+app.use('/api/', apiLimiter);
 
 // Use production CORS configuration
 app.use(cors(productionConfig.cors));
@@ -32,12 +33,33 @@ app.use(cors(productionConfig.cors));
 // Add security headers
 app.use(helmet(productionConfig.security.helmet));
 
-// Add compression
-app.use(compression(productionConfig.compression));
+// Add compression with threshold
+app.use(compression({
+    threshold: 1024, // Only compress responses larger than 1KB
+    level: 9, // Maximum compression level
+    filter: (req, res) => {
+        if (req.headers['x-no-compression']) {
+            return false;
+        }
+        return compression.filter(req, res);
+    }
+}));
 
-// Increase payload limits for media uploads (base64 encoded images can be large)
-app.use(express.json({ limit: '15mb' }));
-app.use(express.urlencoded({ extended: true, limit: '15mb' }));
+// Increase payload limits and optimize parsing
+app.use(express.json({
+    limit: '15mb',
+    verify: (req, res, buf, encoding) => {
+        if (buf.length > 15 * 1024 * 1024) {
+            throw new Error('Payload too large');
+        }
+    }
+}));
+
+app.use(express.urlencoded({
+    extended: true,
+    limit: '15mb',
+    parameterLimit: 10000
+}));
 
 // Add user-agent middleware for Magento compatibility
 app.use((req, res, next) => {
@@ -63,498 +85,107 @@ app.use((req, res, next) => {
 // =========================
 
 /**
- * Reads a SQL query from a file.
- * @param {string} filePath - Path to the SQL file.
+ * Gets a SQL query by key.
+ * @param {string} queryKey - The key of the SQL query to retrieve.
  * @returns {string} The SQL query as a string.
  */
-const readSQLQuery = (filePath) => {
-    return fs.readFileSync(path.resolve(__dirname, filePath), 'utf-8');
+const getSQLQuery = (queryKey) => {
+    const query = SQL_QUERIES[queryKey];
+    if (!query) {
+        throw new Error(`SQL query not found for key: ${queryKey}`);
+    }
+    return query;
 };
 
-/**
- * Delays execution for a given number of milliseconds.
- * @param {number} ms - Milliseconds to delay.
- * @returns {Promise<void>}
- */function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-/**
- * Express middleware to authenticate JWT tokens (currently bypassed).
- */
-function authenticateToken(req, res, next) {
-    next()
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
-    if (token == null) return res.sendStatus(401)
-
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        console.log(err)
-        if (err) return res.sendStatus(403)
-        req.user = user
-        next()
-    })
-}
-
-// =========================
-// 2. Service Functions (Business Logic)
-// =========================
-
-/**
- * Marks products as 'changed' by merging from the source of truth table.
- * This can be scoped to a specific source or run for all sources.
- * @param {string} [sourceCode] - The optional source code to update. If not provided, all sources are processed.
- */
-async function syncStocks(sourceCode) {
-    const logIdentifier = sourceCode ? `source: ${sourceCode}` : 'all sources';
-    try {
-        const mergeQuery = readSQLQuery('./queries/sync-stock.sql');
-        const pool = getPool('mdm');
-
-        // Execute the merge query. If sourceCode is null/undefined, it will be passed as NULL,
-        // which the SQL query is designed to handle.
-        await pool.request()
-            .input('sourceCode', sql.NVarChar, sourceCode || null)
-            .query(mergeQuery);
-
-        logger.sync('stock changes', logIdentifier, 'success');
-    } catch (error) {
-        logger.sync('stock changes', logIdentifier, 'error', { error: error.message });
-        // Re-throw the error so the calling process (like a BullMQ worker) can handle it
-        throw error;
-    }
-}
-
-
-/**
- * Updates the sync status (changed=0, syncedDate) after a successful sync.
- * This can be scoped to a specific source or run for all sources.
- * @param {string} [sourceCode] - The optional source code to update. If not provided, all sources are processed.
- */
-async function syncSuccess(sourceCode) {
-    const logIdentifier = sourceCode ? `source: ${sourceCode}` : 'all sources';
-    try {
-        const resetQuery = readSQLQuery('./queries/sync-success.sql');
-        const pool = getPool('mdm');
-
-        // Execute the reset query. If sourceCode is null/undefined, it will be passed as NULL.
-        await pool.request()
-            .input('sourceCode', sql.NVarChar, sourceCode || null)
-            .query(resetQuery);
-
-        logger.sync('success flags', logIdentifier, 'success');
-    } catch (error) {
-        logger.sync('success flags', logIdentifier, 'error', { error: error.message });
-        // Re-throw for the caller to handle
-        throw error;
-    }
-}
-
-/**
- * Syncs inventory to Magento for all sources, one by one.
- */
-async function syncSource(source) {
-    try {
-        await syncStocks(source);
-        await syncSuccess(source);
-        await syncInventoryToMagento({
-            query: {
-                changed: 1,
-                page: 0,
-                pageSize: 300,
-                sortField: 'QteStock',
-                sortOrder: 'desc',
-                sourceCode: source
-            }
-        });
-
-        logger.sync('inventory', source, 'success');
-
-    } catch (error) {
-        logger.sync('inventory', 'all sources', 'error', { error: error.message });
-    }
-}
-
-
-/**
- * Fetches MDM prices from the database, optionally filtered by startDate.
- * @param {object} req - Express request object
- * @param {object} res - Express response object
- * @returns {Promise<object>} SQL result
- */
-async function fetchMdmPrices(req, res) {
-    try {
-        // Read the SQL query template
-        let sqlQuery = readSQLQuery('./queries/prices.sql');
-
-        // Only modify the query if startDate parameter exists
-        if (req?.params?.startDate) {
-            const startDate = `CAST('${req.params.startDate}' AS DATE)`;
-
-            // Replace the @d1 declaration in the SQL query
-            sqlQuery = sqlQuery.replace(
-                /DECLARE @d1 AS DATE\s+SET @d1 = DATEADD\(DAY, -7, CAST\(GETDATE\(\) AS DATE\)\);/,
-                `DECLARE @d1 AS DATE\nSET @d1 = ${startDate};`
-            );
-        }
-
-        const pool = getPool('mdm');
-        const result = await pool.request().query(sqlQuery);
-        logger.database('fetch', 'MDM prices', { records: result.recordset.length });
-        return result;
-    } catch (error) {
-        logger.error('Error fetching MDM prices', { error: error.message });
-        throw error;
-    }
-}
-
-
-// =========================
-// 3. Route Handlers (API Endpoints)
-// =========================
-
-// --- Connection Endpoints ---
-
-/**
- * Connect to MDM database.
- */
-app.post('/api/mdm/connect', authenticateToken, async (req, res) => {
-    const dbConfig = req.body;
-    Object.assign(dbConfig, {
-        options: {
-            encrypt: false, // Disable encryption
-            trustServerCertificate: true, // Trust self-signed certificates
-            cryptoCredentialsDetails: {
-                minVersion: 'TLSv1.2'
-            },
-            enableArithAbort: true,
-            connectionTimeout: 30000
-        },
-        pool: {
-            max: 10,
-            min: 0,
-            idleTimeoutMillis: 30000
-        }
-    });
-    try {
-        await createMdmPool(dbConfig); // Call createMdmPool with config
-        res.json({ message: 'MDM connection successful' });
-    } catch (error) {
-        console.error('MDM connection failed:', error);
-        res.status(500).json({ error: "MDM Connection failed" })
-    }
-});
-
-/**
- * Connect to CEGID database.
- */
-app.post('/api/cegid/connect', authenticateToken, async (req, res) => {
-    const dbConfig = req.body;
-    try {
-        await createCegidPool(dbConfig) // Pass dbConfig to createCegidPool
-        res.json({ message: 'CEGID connection successful' })
-    } catch (error) {
-        console.error('CEGID connection failed', error);
-        res.status(500).json({ error: "CEGID Connection failed" })
-    }
-});
-
-// --- Inventory & Sync Endpoints ---
-
-/**
- * Endpoint to mark changed stocks for a given source code.
- * Triggers the syncStocks service for the provided sourceCode.
- */
-app.get('/api/mdm/inventory/sync-stocks', async (req, res) => {
-    const { sourceCode } = req.query;
-    if (!sourceCode) {
-        return res.status(400).json({ message: 'sourceCode is required.' });
-    }
-    try {
-        await syncStocks(sourceCode);
-        res.status(200).json({ message: `Changed stocks for source ${sourceCode} marked for sync.` });
-    } catch (error) {
-        console.error('Error marking changed stocks:', error);
-        res.status(500).json({ error: 'Failed to mark changed stocks.' });
-    }
-});
-
-
-// --- Price Endpoints ---
-
-/**
- * Fetch product prices from MDM.
- */
-app.get('/api/mdm/sync/prices', async (req, res) => {
-    try {
-        let result = await fetchMdmPrices(req, res);
-        res.json(result.recordset);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-
-
-/**
- * Sync prices to Magento (bulk operation).
- */
-app.post('/api/techno/prices-sync', async (req, res) => {
-    try {
-        console.log('🚀 Price sync request received with', req.body.length, 'products');
-
-        // Start the sync process
-        const syncResult = await syncPricesToMagento(req);
-
-        console.log('✅ Price sync completed:', syncResult);
-
-        // Return the results immediately
-        res.status(200).json({
-            success: true,
-            message: 'Price sync completed successfully',
-            ...syncResult
-        });
-
-    } catch (error) {
-        console.error('❌ Price sync failed:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Price sync failed',
-            error: error.message
-        });
-    }
-});
-
-// Connect to all required databases and prefetch Magento token (cached)
-async function connectToDatabases() {
-    try {
-        await createMdmPool(mdmdbConfig); // Call createMdmPool with config
-        //await createMdm360Pool(mdm360dbConfig); // Call createMdmPool with config
-        //await createCegidPool(cegiddbConfig) // Pass dbConfig to createCegidPool
-        // Prefetch Magento token and store in cache for later use
-        await getMagentoToken(cloudConfig);
-    } catch (err) {
-        console.error('Database connection failed:', err);
-    }
-}
+ 
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-    res.json({
-        status: 'healthy',
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime(),
-        environment: process.env.NODE_ENV || 'development',
+    try {
+        res.json({
+            status: 'healthy',
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime(),
+               environment: process.env.NODE_ENV || 'development',
         port: productionConfig.server.port,
         version: '1.0.0'
-    });
-});
-
-// Magento API Proxy
-app.all('/api/magento/*', proxyMagentoRequest);
-
-app.get('/api/mdm/inventory', async (req, res) => {
-    try {
-
-        let data = await fetchInventoryData(req);
-        res.json(data);
-    } catch (error) {
-        console.error('Error fetching inventory:', error);
-        res.status(500).json({ error: 'Failed to fetch inventory data' });
-    }
-});
-
-app.post('/api/mdm/inventory/sync-all-source', async (req, res) => {
-    const { sourceCode } = req.body;
-
-    if (!sourceCode) {
-        return res.status(400).json({ message: 'sourceCode is required.' });
-    }
-
-    // 1. Immediately respond to the client to avoid HTTP timeouts.
-    res.status(202).json({ message: `Sync process initiated for source ${sourceCode}. This will run in the background.` });
-    try {
-        await syncStocks(sourceCode);
-        await syncInventoryToMagento({
-            query: {
-                changed: 1,
-                page: 0,
-                pageSize: 300,
-                sortField: 'QteStock',
-                sortOrder: 'desc',
-                sourceCode: sourceCode
-            }
         });
-        await syncSuccess(sourceCode);
     } catch (error) {
-
+        console.error('Error during health check:', error);
+        res.status(500).json({ error: 'Health check failed' });
     }
 });
 
-app.post('/api/mdm/inventory/sync-all-stocks-sources', async (req, res) => {
-    res.status(202).json({ message: 'Sync process initiated for all sources. This will run in the background.' });
-    setImmediate(async () => {
-        try {
-            await inventorySync();
-            console.log('✅ Inventory sync completed.');
-        } catch (error) {
-            console.error('❌ Inventory sync failed:', error);
-        }
+// Import and use the main router
+import router from './src/routes/index.js';
+app.use('/api', router);
+
+// =========================
+// 4. Error Handling
+// =========================
+app.use((err, req, res, next) => {
+    // Handle timeout errors specifically
+    if (req.timedout) {
+        logger.error('Request Timeout', { path: req.originalUrl, method: req.method });
+        return res.status(503).json({ error: 'Service Unavailable: Request Timed Out' });
+    }
+
+    logger.error('An unhandled error occurred', { 
+        error: err.message, 
+        stack: err.stack,
+        path: req.path,
+        method: req.method
     });
+
+    res.status(500).json({ error: 'An internal server error occurred.' });
 });
-
-// Use the main router after all other specific routes have been defined.
-// This ensures that specific routes are matched before falling back to the general router.
-app.use(router);
-
-
-async function syncSources() {
-    try {
-        const allSources = typeof sourcesModule.getAllSources === 'function' ? sourcesModule.getAllSources() : [];
-        for (const source of allSources) {
-            console.log(`🔄 Syncing inventory for source: ${source.magentoSource}`);
-
-            await delay(1000); // ✅ Corrected timeout usage
-            await syncInventoryToMagento({
-                query: {
-                    changed: 1,
-                    page: 0,
-                    pageSize: 300,
-                    sortField: 'QteStock',
-                    sortOrder: 'desc',
-                    sourceCode: source.code_source
-                }
-            });
-
-            console.log(`✅ Finished syncing for ${source.magentoSource}`);
-        }
-    } catch (error) {
-        console.error('❌ Error syncing all sources:', error);
-    }
-}
-
-
-
-async function syncPrices() {
-    try {
-        console.log("🚀 Starting price sync process...");
-
-        // Fetch prices from MDM
-        // Create mock req/res objects for the function call
-        const mockReq = { query: {} };
-        const mockRes = { json: () => {}, status: () => ({ json: () => {} }) };
-
-        let prices = await fetchMdmPrices(mockReq, mockRes);
-        console.log(`📊 Fetched ${prices.recordset.length} price records from MDM`);
-
-        // Transform the data for Magento - simple format
-        let priceData = prices.recordset.map(({ sku, price }) => ({
-            sku: sku,
-            price: parseFloat(price) // Ensure it's a valid number
-        }));
-
-        console.log("📦 Sample price data:", JSON.stringify(priceData.slice(0, 2), null, 2));
-
-        // Sync to Magento
-        await syncPricesToMagento({ body: priceData });
-        console.log("✅ Price sync completed successfully");
-
-    } catch (error) {
-        console.error("❌ Error in syncPrices:", error.message);
-        throw error;
-    }
-}
-
-
-async function inventorySync() {
-    await syncStocks();
-    await syncSources();
-    await syncSuccess();
-}
 
 // Main function to run the operations
 async function main() {
     await connectToDatabases();
-
-    cron.schedule('0 2 * * *', async () => {
-        await syncPrices();
-        await inventorySync();
-    });
-
-
-
-    //const allSchemas = await getAllTableSchemas();
-    //console.log("Fetched all table schemas:", allSchemas);
-    //const schema = await getTableSchema();
-    //console.log(schema);
-    //const last10Records = await getLast10Records();
-    //console.log("Fetched last 10 records:", last10Records);
-    //console.log(mockData);
-    //const mockData = generateMockData(schema);
-
-    //console.log(getMDMPrices())
-
-    // Grant permissions to a specific user on the Objectifs_Agents table
-    //await grantPermissions('YourUserName', 'Objectifs_Agents');
-
-    //const permissions = await displayUserPermissions('Reporting_MDM', 'Objectifs_Agents');
-    ///console.log("Fetched permissions:", permissions)
-
-
-    //fetchMDMProducts({ limit: 10, offset: 0, sourceCode: 16})
-
 }
-
-// ...existing code...
 
 // Start the process
 main();
-
 
 // Use production config for port and host
 const PORT = productionConfig.server.port;
 const HOST = productionConfig.server.host;
 
-// Start server with proper error handling
 const server = app.listen(PORT, HOST, () => {
-    logger.startup(`Techno ETL Backend Server running on ${HOST}:${PORT}`, {
+    // In a clustered environment (like with PM2), this will run for each worker.
+    // The `process.pid` helps identify which worker is logging.
+    logger.startup(`Worker ${process.pid} started. Server running on ${HOST}:${PORT}`, {
         environment: productionConfig.server.environment,
-        corsOrigins: productionConfig.cors.origin,
         port: PORT,
         host: HOST
     });
 });
 
-// Handle server errors
-server.on('error', (error) => {
-    if (error.code === 'EADDRINUSE') {
-        console.error(`❌ Port ${PORT} is already in use. Please:`);
-        console.error(`   1. Kill the process using: taskkill /PID <PID> /F`);
-        console.error(`   2. Or set a different PORT environment variable`);
-        console.error(`   3. Or wait for the port to be released`);
-        process.exit(1);
-    } else {
-        console.error('❌ Server error:', error);
-        process.exit(1);
-    }
+// Graceful shutdown and error handling
+process.on('unhandledRejection', (reason, p) => {
+    console.error('Unhandled Rejection at:', p, 'reason:', reason);
+    // Consider a more robust logging and alerting mechanism here
 });
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-    console.log('🔄 SIGTERM received, shutting down gracefully...');
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+    // It's often recommended to gracefully shut down the process on an uncaught exception
+    server.close(() => process.exit(1));
+});
+
+const shutdown = (signal) => {
+    console.log(`🔄 ${signal} received, shutting down gracefully...`);
     server.close(() => {
-        console.log('✅ Server closed');
+        logger.info(`Worker ${process.pid} closed`);
+        // Close database connections, etc.
+        quitRedisClient();
         process.exit(0);
     });
-});
+};
 
-process.on('SIGINT', () => {
-    console.log('🔄 SIGINT received, shutting down gracefully...');
-    server.close(() => {
-        console.log('✅ Server closed');
-        process.exit(0);
-    });
-});
-
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
 
 // No ESM export, use CommonJS if needed
+

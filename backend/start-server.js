@@ -1,92 +1,49 @@
 #!/usr/bin/env node
 
 /**
- * Techno ETL Backend Server Startup Script
- * Handles environment setup, port management, and graceful startup
+ * Techno ETL Backend Server Startup Script using PM2
+ * This script programmatically starts the application using the ecosystem file.
+ * It ensures a consistent startup process for production environments.
  */
 
-import { spawn } from 'child_process';
-import { createRequire } from 'module';
+import pm2 from 'pm2';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const require = createRequire(import.meta.url);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configuration
-const config = {
-    development: {
-        port: 5000,
-        env: 'development',
-        script: 'server.js',
-        watch: true
-    },
-    production: {
-        port: 5000,
-        env: 'production',
-        script: 'index.js',
-        watch: false
-    }
-};
+const environment = process.argv[2] || 'production';
 
-// Get environment from command line args or default to development
-const environment = process.argv[2] || 'development';
-const serverConfig = config[environment];
-
-if (!serverConfig) {
+if (environment !== 'production') {
     console.error(`❌ Invalid environment: ${environment}`);
-    console.error(`Available environments: ${Object.keys(config).join(', ')}`);
+    console.log('For development, please use: npm run backend');
     process.exit(1);
 }
 
-console.log(`🚀 Starting Techno ETL Backend Server...`);
-console.log(`📊 Environment: ${serverConfig.env}`);
-console.log(`🌐 Port: ${serverConfig.port}`);
-console.log(`📁 Script: ${serverConfig.script}`);
+const ecosystemConfig = path.join(__dirname, 'ecosystem.config.js');
 
-// Set environment variables
-process.env.NODE_ENV = serverConfig.env;
-process.env.PORT = serverConfig.port.toString();
+console.log(`🚀 Starting Techno ETL Backend in [${environment}] mode using PM2...`);
+console.log(`📝 Using configuration: ${ecosystemConfig}`);
 
-// Start the server
-const serverProcess = spawn('node', [serverConfig.script], {
-    cwd: __dirname,
-    stdio: 'inherit',
-    env: {
-        ...process.env,
-        NODE_ENV: serverConfig.env,
-        PORT: serverConfig.port.toString()
+pm2.connect((err) => {
+    if (err) {
+        console.error('❌ PM2 connection failed:', err);
+        process.exit(2);
     }
-});
 
-// Handle server process events
-serverProcess.on('error', (error) => {
-    console.error('❌ Failed to start server:', error);
-    process.exit(1);
-});
+    pm2.start(ecosystemConfig, (err, apps) => {
+        if (err) {
+            console.error('❌ PM2 failed to start application:', err);
+            pm2.disconnect();
+            process.exit(2);
+        }
 
-serverProcess.on('close', (code) => {
-    if (code !== 0) {
-        console.error(`❌ Server process exited with code ${code}`);
-        process.exit(code);
-    } else {
-        console.log('✅ Server stopped gracefully');
-    }
-});
+        console.log('✅ Application started successfully with PM2.');
+        console.log('Use "pm2 list" to see the status of your applications.');
+        console.log('Use "pm2 logs" to view logs.');
 
-// Handle graceful shutdown
-process.on('SIGTERM', () => {
-    console.log('🔄 SIGTERM received, stopping server...');
-    serverProcess.kill('SIGTERM');
+        // Disconnect from the PM2 daemon. The processes will continue to run.
+        pm2.disconnect();
+    });
 });
-
-process.on('SIGINT', () => {
-    console.log('🔄 SIGINT received, stopping server...');
-    serverProcess.kill('SIGINT');
-});
-
-console.log(`✅ Server startup script initialized`);
-console.log(`🔗 Backend will be available at: http://localhost:${serverConfig.port}`);
-console.log(`📡 API endpoints: http://localhost:${serverConfig.port}/api/*`);
-console.log(`🏥 Health check: http://localhost:${serverConfig.port}/api/health`);
