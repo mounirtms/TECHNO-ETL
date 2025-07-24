@@ -590,7 +590,6 @@ const PreferencesTab = () => {
                     </Grid>
                 </AccordionDetails>
             </Accordion>
-            </Grid>
         </Box>
     );
 };
