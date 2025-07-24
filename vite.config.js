@@ -19,7 +19,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 80,
+    port: 82,
     strictPort: true,
     open: true,
     hmr: {
@@ -43,7 +43,7 @@ export default defineConfig({
           proxy.on('proxyReq', (proxyReq, req) => {
             const origin = process.env.NODE_ENV === 'production'
               ? 'http://etl.techno-dz.com'
-              : 'http://localhost:80';
+              : 'http://localhost:82';
             proxyReq.setHeader('Origin', origin);
             proxyReq.setHeader('User-Agent', 'Techno-ETL/1.0.0 (etl.techno-dz.com)');
           });
@@ -92,7 +92,7 @@ export default defineConfig({
     }
   },
   preview: {
-    port: 80, // Use the standard HTTP port
+    port: 82, // Use the standard HTTP port
     strictPort: true,
     proxy: {
       '/api': {

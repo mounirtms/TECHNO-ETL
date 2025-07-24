@@ -93,7 +93,7 @@ class RouteErrorBoundary extends React.Component {
                         Something went wrong
                     </Box>
                     <Box sx={{ color: 'text.secondary', textAlign: 'center' }}>
-                        Please refresh the page or contact support if the problem persists.
+                        Please refresh the page or contact Mounir for support if the problem persists.
                     </Box>
                     <Box sx={{ mt: 2 }}>
                         <button

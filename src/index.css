@@ -100,3 +100,140 @@ body {
 .density-comfortable {
   --spacing-unit: 12px;
 }
+
+/* RTL Support */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiDrawer-paperAnchorLeft {
+  right: 0;
+  left: auto;
+}
+
+[dir="rtl"] .MuiDrawer-paperAnchorDockedLeft {
+  border-right: none;
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[dir="rtl"] .MuiAppBar-root {
+  padding-left: 0;
+  padding-right: 240px;
+}
+
+[dir="rtl"] .MuiListItemIcon-root {
+  margin-right: 0;
+  margin-left: 16px;
+  min-width: auto;
+}
+
+[dir="rtl"] .MuiListItemText-root {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiChip-root {
+  margin-left: 8px;
+  margin-right: 0;
+}
+
+[dir="rtl"] .MuiButton-startIcon {
+  margin-left: 8px;
+  margin-right: -4px;
+}
+
+[dir="rtl"] .MuiButton-endIcon {
+  margin-right: 8px;
+  margin-left: -4px;
+}
+
+[dir="rtl"] .MuiAccordionSummary-expandIconWrapper {
+  transform: rotate(-90deg);
+}
+
+[dir="rtl"] .MuiAccordionSummary-expandIconWrapper.Mui-expanded {
+  transform: rotate(90deg);
+}
+
+/* RTL Typography */
+[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4, [dir="rtl"] h5, [dir="rtl"] h6 {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiTypography-body1,
+[dir="rtl"] .MuiTypography-body2,
+[dir="rtl"] .MuiTypography-caption,
+[dir="rtl"] .MuiTypography-subtitle1,
+[dir="rtl"] .MuiTypography-subtitle2 {
+  text-align: right;
+}
+
+/* RTL Form Controls */
+[dir="rtl"] .MuiFormControlLabel-root {
+  margin-left: 0;
+  margin-right: -11px;
+}
+
+[dir="rtl"] .MuiFormControlLabel-labelPlacementStart {
+  flex-direction: row;
+}
+
+[dir="rtl"] .MuiInputAdornment-positionStart {
+  margin-left: 8px;
+  margin-right: 0;
+}
+
+[dir="rtl"] .MuiInputAdornment-positionEnd {
+  margin-right: 8px;
+  margin-left: 0;
+}
+
+/* RTL Grid and Layout */
+[dir="rtl"] .MuiGrid-container {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiStack-root {
+  direction: rtl;
+}
+
+/* RTL Menu and Navigation */
+[dir="rtl"] .MuiMenu-paper {
+  transform-origin: top right;
+}
+
+[dir="rtl"] .MuiMenuItem-root {
+  text-align: right;
+  justify-content: flex-end;
+}
+
+[dir="rtl"] .MuiListItem-root {
+  text-align: right;
+}
+
+/* RTL Tabs */
+[dir="rtl"] .MuiTabs-root {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiTab-root {
+  text-align: right;
+}
+
+/* RTL Data Grid */
+[dir="rtl"] .MuiDataGrid-root {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiDataGrid-columnHeaders {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiDataGrid-row {
+  direction: rtl;
+}
+
+/* RTL Floating Action Button */
+[dir="rtl"] .MuiFab-root {
+  left: 16px;
+  right: auto;
+}

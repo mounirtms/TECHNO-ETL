@@ -1,6 +1,6 @@
 import { useAuth } from '../../contexts/AuthContext';
 import { useSettings } from '../../contexts/SettingsContext';
-import { getUserProfileData, saveUserSettings } from '../../services/userService';
+import { getUserProfileData, saveUserSettings, getDefaultSettings } from '../../services/userService';
 import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
 
@@ -20,7 +20,7 @@ export const useProfileController = () => {
     // Sync with Firebase when component mounts
     useEffect(() => {
         if (!currentUser) {
-            setUserDataState(defaultUserSettings);
+            setUserDataState(getDefaultSettings());
             setLoading(false);
             return;
         }
@@ -29,10 +29,11 @@ export const useProfileController = () => {
             try {
                 if (data) {
                     // Merge with defaults to ensure all fields exist
+                    const defaults = getDefaultSettings();
                     const mergedData = {
-                        personalInfo: { ...defaultUserSettings.personalInfo, ...data.personalInfo },
-                        apiSettings: { ...defaultUserSettings.apiSettings, ...data.apiSettings },
-                        preferences: { ...defaultUserSettings.preferences, ...data.preferences }
+                        personalInfo: { ...defaults.personalInfo, ...data.personalInfo },
+                        apiSettings: { ...defaults.apiSettings, ...data.apiSettings },
+                        preferences: { ...defaults.preferences, ...data.preferences }
                     };
 
                     // Only update if data is newer than local storage

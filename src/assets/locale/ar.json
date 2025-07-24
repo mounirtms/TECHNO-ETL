@@ -54,48 +54,132 @@
         },
         "preferences": {
             "title": "تفضيلات المستخدم",
-            "language": {
-                "title": "لغة الواجهة",
-                "description": "اختر اللغة المفضلة للوحة المعلومات",
-                "availableLanguages": {
-                    "en": "الإنجليزية (الولايات المتحدة)",
-                    "fr": "الفرنسية (فرنسا)",
-                    "ar": "العربية (الشرق الأوسط)"
-                },
-                "systemDefault": "الإعداد الافتراضي للنظام",
-                "currentLanguage": "اللغة الحالية",
-                "changeLanguage": "تغيير اللغة",
-                "languageChanged": "تم تغيير اللغة بنجاح",
-                "languageChangeError": "فشل تغيير اللغة"
-            },
-            "theme": {
+            "description": "خصص تجربتك وإدارة إعدادات التطبيق",
+            "unsavedChanges": "تغييرات غير محفوظة",
+            "export": "تصدير",
+            "import": "استيراد",
+            "reset": "إعادة تعيين",
+            "save": "حفظ",
+            "appearance": {
                 "title": "المظهر",
-                "description": "خصص مظهر لوحة المعلومات",
-                "lightMode": "الوضع الفاتح",
-                "darkMode": "الوضع الداكن",
-                "systemDefault": "الإعداد الافتراضي للنظام"
-            },
-            "accessibility": {
-                "title": "إمكانية الوصول",
+                "language": {
+                    "title": "اللغة",
+                    "description": "اختر اللغة المفضلة للواجهة",
+                    "availableLanguages": {
+                        "en": "الإنجليزية (الولايات المتحدة)",
+                        "fr": "الفرنسية (فرنسا)",
+                        "ar": "العربية (الشرق الأوسط)"
+                    }
+                },
+                "theme": {
+                    "title": "السمة",
+                    "description": "اختر مظهر التطبيق",
+                    "light": "فاتح",
+                    "dark": "داكن",
+                    "system": "النظام"
+                },
                 "fontSize": {
                     "title": "حجم الخط",
+                    "description": "اضبط حجم النص",
                     "small": "صغير",
-                    "medium": "متوسط", 
-                    "large": "كبير",
-                    "description": "اضبط حجم النص لتحسين سهولة القراءة"
+                    "medium": "متوسط",
+                    "large": "كبير"
                 },
-                "highContrast": {
-                    "title": "وضع التباين العالي",
-                    "description": "تحسين الرؤية للمستخدمين ذوي الإعاقة البصرية"
+                "density": {
+                    "title": "كثافة الواجهة",
+                    "description": "اضبط تباعد العناصر",
+                    "compact": "مضغوط",
+                    "standard": "قياسي",
+                    "comfortable": "مريح"
+                },
+                "animations": {
+                    "title": "تفعيل الحركات والانتقالات",
+                    "description": "إظهار الحركات المتحركة في الواجهة"
+                }
+            },
+            "performance": {
+                "title": "الأداء",
+                "defaultPageSize": {
+                    "title": "حجم الصفحة الافتراضي",
+                    "description": "عدد العناصر المعروضة في كل صفحة"
+                },
+                "refreshInterval": {
+                    "title": "فترة التحديث التلقائي (ثواني)",
+                    "description": "معدل تحديث البيانات تلقائياً"
+                },
+                "enableVirtualization": {
+                    "title": "تفعيل المحاكاة الافتراضية للشبكة لأداء أفضل",
+                    "description": "يحسن الأداء مع البيانات الكبيرة"
+                },
+                "cacheEnabled": {
+                    "title": "تفعيل تخزين البيانات مؤقتاً",
+                    "description": "حفظ البيانات محلياً لتحميل أسرع"
+                },
+                "autoRefresh": {
+                    "title": "التحديث التلقائي للبيانات",
+                    "description": "تحديث البيانات بشكل دوري"
+                },
+                "lazyLoading": {
+                    "title": "تفعيل التحميل التدريجي",
+                    "description": "تحميل البيانات عند الحاجة فقط"
                 }
             },
             "notifications": {
-                "title": "تفضيلات الإشعارات",
-                "description": "التحكم في كيفية ووقت استلام الإشعارات",
-                "email": "إشعارات البريد الإلكتروني",
-                "sms": "إشعارات الرسائل النصية",
-                "push": "الإشعارات الفورية",
-                "marketing": "التواصل التسويقي"
+                "title": "الإشعارات",
+                "emailNotifications": {
+                    "title": "إشعارات البريد الإلكتروني",
+                    "description": "استقبال الإشعارات عبر البريد الإلكتروني"
+                },
+                "pushNotifications": {
+                    "title": "الإشعارات الفورية",
+                    "description": "إشعارات فورية في المتصفح"
+                },
+                "soundEnabled": {
+                    "title": "إشعارات صوتية",
+                    "description": "تشغيل أصوات مع الإشعارات"
+                }
+            },
+            "accessibility": {
+                "title": "إمكانية الوصول",
+                "highContrast": {
+                    "title": "وضع التباين العالي",
+                    "description": "زيادة التباين لرؤية أفضل"
+                },
+                "largeText": {
+                    "title": "نص كبير",
+                    "description": "زيادة حجم النص في جميع أنحاء التطبيق"
+                },
+                "keyboardNavigation": {
+                    "title": "التنقل بلوحة المفاتيح",
+                    "description": "دعم محسن للتنقل بلوحة المفاتيح"
+                },
+                "screenReader": {
+                    "title": "دعم قارئ الشاشة",
+                    "description": "محسن للتوافق مع قارئ الشاشة"
+                }
+            },
+            "security": {
+                "title": "الأمان",
+                "sessionTimeout": {
+                    "title": "انتهاء مهلة الجلسة (دقائق)",
+                    "description": "المدة قبل تسجيل الخروج التلقائي"
+                },
+                "twoFactorEnabled": {
+                    "title": "المصادقة الثنائية",
+                    "description": "طبقة أمان إضافية لحسابك"
+                },
+                "auditLogging": {
+                    "title": "تسجيل المراجعة",
+                    "description": "تتبع أنشطة المستخدم"
+                }
+            },
+            "messages": {
+                "settingsSaved": "تم حفظ الإعدادات بنجاح",
+                "settingsExported": "تم تصدير الإعدادات بنجاح",
+                "settingsImported": "تم استيراد الإعدادات بنجاح",
+                "settingsReset": "تم إعادة تعيين الإعدادات إلى الافتراضية",
+                "invalidFile": "ملف إعدادات غير صالح",
+                "confirmReset": "هل أنت متأكد من إعادة تعيين جميع الإعدادات إلى الافتراضية؟ لا يمكن التراجع عن هذا الإجراء."
             }
         },
         "apiSettings": {

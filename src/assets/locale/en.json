@@ -46,48 +46,132 @@
         "syncToCloud": "Sync to Cloud",
         "preferences": {
             "title": "User Preferences",
-            "language": {
-                "title": "Interface Language",
-                "description": "Choose your preferred language for the dashboard",
-                "availableLanguages": {
-                    "en": "English (United States)",
-                    "fr": "French (France)",
-                    "ar": "Arabic (Middle East)"
-                },
-                "systemDefault": "System Default",
-                "currentLanguage": "Current Language",
-                "changeLanguage": "Change Language",
-                "languageChanged": "Language changed successfully",
-                "languageChangeError": "Failed to change language"
-            },
-            "theme": {
+            "description": "Customize your experience and manage application settings",
+            "unsavedChanges": "Unsaved Changes",
+            "export": "Export",
+            "import": "Import",
+            "reset": "Reset",
+            "save": "Save",
+            "appearance": {
                 "title": "Appearance",
-                "description": "Customize your dashboard look and feel",
-                "lightMode": "Light Mode",
-                "darkMode": "Dark Mode",
-                "systemDefault": "System Default"
-            },
-            "accessibility": {
-                "title": "Accessibility",
+                "language": {
+                    "title": "Language",
+                    "description": "Choose your preferred interface language",
+                    "availableLanguages": {
+                        "en": "English (United States)",
+                        "fr": "French (France)",
+                        "ar": "Arabic (Middle East)"
+                    }
+                },
+                "theme": {
+                    "title": "Theme",
+                    "description": "Choose the application appearance",
+                    "light": "Light",
+                    "dark": "Dark",
+                    "system": "System"
+                },
                 "fontSize": {
                     "title": "Font Size",
+                    "description": "Adjust text size",
                     "small": "Small",
-                    "medium": "Medium", 
-                    "large": "Large",
-                    "description": "Adjust text size for better readability"
+                    "medium": "Medium",
+                    "large": "Large"
                 },
-                "highContrast": {
-                    "title": "High Contrast Mode",
-                    "description": "Improve visibility for users with visual impairments"
+                "density": {
+                    "title": "Interface Density",
+                    "description": "Adjust element spacing",
+                    "compact": "Compact",
+                    "standard": "Standard",
+                    "comfortable": "Comfortable"
+                },
+                "animations": {
+                    "title": "Enable animations and transitions",
+                    "description": "Show animated transitions in the interface"
+                }
+            },
+            "performance": {
+                "title": "Performance",
+                "defaultPageSize": {
+                    "title": "Default Page Size",
+                    "description": "Number of items displayed per page"
+                },
+                "refreshInterval": {
+                    "title": "Auto Refresh Interval (seconds)",
+                    "description": "Rate of automatic data refresh"
+                },
+                "enableVirtualization": {
+                    "title": "Enable grid virtualization for better performance",
+                    "description": "Improves performance with large datasets"
+                },
+                "cacheEnabled": {
+                    "title": "Enable data caching",
+                    "description": "Store data locally for faster loading"
+                },
+                "autoRefresh": {
+                    "title": "Auto refresh data",
+                    "description": "Refresh data periodically"
+                },
+                "lazyLoading": {
+                    "title": "Enable lazy loading",
+                    "description": "Load data only when needed"
                 }
             },
             "notifications": {
-                "title": "Notification Preferences",
-                "description": "Control how and when you receive notifications",
-                "email": "Email Notifications",
-                "sms": "SMS Notifications",
-                "push": "Push Notifications",
-                "marketing": "Marketing Communications"
+                "title": "Notifications",
+                "emailNotifications": {
+                    "title": "Email notifications",
+                    "description": "Receive notifications via email"
+                },
+                "pushNotifications": {
+                    "title": "Push notifications",
+                    "description": "Browser push notifications"
+                },
+                "soundEnabled": {
+                    "title": "Sound notifications",
+                    "description": "Play sounds with notifications"
+                }
+            },
+            "accessibility": {
+                "title": "Accessibility",
+                "highContrast": {
+                    "title": "High contrast mode",
+                    "description": "Increase contrast for better visibility"
+                },
+                "largeText": {
+                    "title": "Large text",
+                    "description": "Increase text size throughout the application"
+                },
+                "keyboardNavigation": {
+                    "title": "Keyboard navigation",
+                    "description": "Enhanced keyboard navigation support"
+                },
+                "screenReader": {
+                    "title": "Screen reader support",
+                    "description": "Optimized for screen reader compatibility"
+                }
+            },
+            "security": {
+                "title": "Security",
+                "sessionTimeout": {
+                    "title": "Session Timeout (minutes)",
+                    "description": "Time before automatic logout"
+                },
+                "twoFactorEnabled": {
+                    "title": "Two-factor authentication",
+                    "description": "Additional security layer for your account"
+                },
+                "auditLogging": {
+                    "title": "Audit logging",
+                    "description": "Track user activities"
+                }
+            },
+            "messages": {
+                "settingsSaved": "Settings saved successfully",
+                "settingsExported": "Settings exported successfully",
+                "settingsImported": "Settings imported successfully",
+                "settingsReset": "Settings reset to defaults",
+                "invalidFile": "Invalid settings file",
+                "confirmReset": "Are you sure you want to reset all settings to defaults? This action cannot be undone."
             }
         },
         "apiSettings": {

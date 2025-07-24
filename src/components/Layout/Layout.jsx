@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
-import { 
-    Box, 
-    useTheme, 
-    useMediaQuery 
+import {
+    Box,
+    useTheme,
+    useMediaQuery
 } from '@mui/material';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import TabPanel from './TabPanel';
 import Footer from './Footer';
 import { TabProvider } from '../../contexts/TabContext';
-import { LanguageProvider } from '../../contexts/LanguageContext';
+import { LanguageProvider, useLanguage } from '../../contexts/LanguageContext';
 import { DRAWER_WIDTH, COLLAPSED_WIDTH, FOOTER_HEIGHT } from './Constants';
 
-const Layout = () => {
+const LayoutContent = () => {
     const theme = useTheme();
+    const { currentLanguage, languages } = useLanguage();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const isTablet = useMediaQuery(theme.breakpoints.down('md'));
     const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
+
+    // Check if current language is RTL
+    const isRTL = languages[currentLanguage]?.dir === 'rtl';
 
     // Auto-collapse sidebar on mobile/tablet
     React.useEffect(() => {
@@ -26,8 +30,7 @@ const Layout = () => {
     }, [isMobile]);
 
     return (
-        <LanguageProvider>
-            <TabProvider sidebarOpen={sidebarOpen}>
+        <TabProvider sidebarOpen={sidebarOpen}>
                 <Box sx={{ 
                     display: 'flex', 
                     flexDirection: 'column', 
@@ -59,10 +62,17 @@ const Layout = () => {
                                     easing: theme.transitions.easing.sharp,
                                     duration: theme.transitions.duration.leavingScreen,
                                 }),
-                                marginLeft: {
-                                    xs: 0, // No margin on mobile
-                                    sm: sidebarOpen ? 0 : `-${COLLAPSED_WIDTH}px`
-                                },
+                                ...(isRTL ? {
+                                    marginRight: {
+                                        xs: 0, // No margin on mobile
+                                        sm: sidebarOpen ? 0 : `-${COLLAPSED_WIDTH}px`
+                                    }
+                                } : {
+                                    marginLeft: {
+                                        xs: 0, // No margin on mobile
+                                        sm: sidebarOpen ? 0 : `-${COLLAPSED_WIDTH}px`
+                                    }
+                                }),
                                 padding: {
                                     xs: theme.spacing(0.5), // Reduced padding on mobile
                                     sm: theme.spacing(1),
@@ -98,7 +108,15 @@ const Layout = () => {
                     <Footer sidebarOpen={sidebarOpen} />
                 </Box>
             </TabProvider>
+    );
+};
+
+const Layout = () => {
+    return (
+        <LanguageProvider>
+            <LayoutContent />
         </LanguageProvider>
     );
 };
+
 export default Layout;

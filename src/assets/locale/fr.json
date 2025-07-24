@@ -42,48 +42,132 @@
         },
         "preferences": {
             "title": "Préférences Utilisateur",
-            "language": {
-                "title": "Langue de l'Interface",
-                "description": "Choisissez la langue préférée pour le tableau de bord",
-                "availableLanguages": {
-                    "en": "Anglais (États-Unis)",
-                    "fr": "Français (France)",
-                    "ar": "Arabe (Moyen-Orient)"
-                },
-                "systemDefault": "Défaut du Système",
-                "currentLanguage": "Langue Actuelle",
-                "changeLanguage": "Changer de Langue",
-                "languageChanged": "Langue changée avec succès",
-                "languageChangeError": "Échec du changement de langue"
-            },
-            "theme": {
+            "description": "Personnalisez votre expérience et gérez les paramètres de l'application",
+            "unsavedChanges": "Modifications Non Sauvegardées",
+            "export": "Exporter",
+            "import": "Importer",
+            "reset": "Réinitialiser",
+            "save": "Sauvegarder",
+            "appearance": {
                 "title": "Apparence",
-                "description": "Personnalisez l'apparence de votre tableau de bord",
-                "lightMode": "Mode Clair",
-                "darkMode": "Mode Sombre",
-                "systemDefault": "Défaut du Système"
-            },
-            "accessibility": {
-                "title": "Accessibilité",
+                "language": {
+                    "title": "Langue",
+                    "description": "Choisissez votre langue d'interface préférée",
+                    "availableLanguages": {
+                        "en": "Anglais (États-Unis)",
+                        "fr": "Français (France)",
+                        "ar": "Arabe (Moyen-Orient)"
+                    }
+                },
+                "theme": {
+                    "title": "Thème",
+                    "description": "Choisissez l'apparence de l'application",
+                    "light": "Clair",
+                    "dark": "Sombre",
+                    "system": "Système"
+                },
                 "fontSize": {
                     "title": "Taille de Police",
+                    "description": "Ajuster la taille du texte",
                     "small": "Petit",
-                    "medium": "Moyen", 
-                    "large": "Grand",
-                    "description": "Ajustez la taille du texte pour une meilleure lisibilité"
+                    "medium": "Moyen",
+                    "large": "Grand"
                 },
-                "highContrast": {
-                    "title": "Mode Contraste Élevé",
-                    "description": "Améliorez la visibilité pour les utilisateurs malvoyants"
+                "density": {
+                    "title": "Densité de l'Interface",
+                    "description": "Ajuster l'espacement des éléments",
+                    "compact": "Compact",
+                    "standard": "Standard",
+                    "comfortable": "Confortable"
+                },
+                "animations": {
+                    "title": "Activer les animations et transitions",
+                    "description": "Afficher les transitions animées dans l'interface"
+                }
+            },
+            "performance": {
+                "title": "Performance",
+                "defaultPageSize": {
+                    "title": "Taille de Page par Défaut",
+                    "description": "Nombre d'éléments affichés par page"
+                },
+                "refreshInterval": {
+                    "title": "Intervalle de Rafraîchissement Auto (secondes)",
+                    "description": "Taux de rafraîchissement automatique des données"
+                },
+                "enableVirtualization": {
+                    "title": "Activer la virtualisation de grille pour de meilleures performances",
+                    "description": "Améliore les performances avec de gros jeux de données"
+                },
+                "cacheEnabled": {
+                    "title": "Activer la mise en cache des données",
+                    "description": "Stocker les données localement pour un chargement plus rapide"
+                },
+                "autoRefresh": {
+                    "title": "Rafraîchissement automatique des données",
+                    "description": "Rafraîchir les données périodiquement"
+                },
+                "lazyLoading": {
+                    "title": "Activer le chargement paresseux",
+                    "description": "Charger les données seulement quand nécessaire"
                 }
             },
             "notifications": {
-                "title": "Préférences de Notification",
-                "description": "Contrôlez comment et quand vous recevez des notifications",
-                "email": "Notifications par E-mail",
-                "sms": "Notifications SMS",
-                "push": "Notifications Push",
-                "marketing": "Communications Marketing"
+                "title": "Notifications",
+                "emailNotifications": {
+                    "title": "Notifications par e-mail",
+                    "description": "Recevoir des notifications par e-mail"
+                },
+                "pushNotifications": {
+                    "title": "Notifications push",
+                    "description": "Notifications push du navigateur"
+                },
+                "soundEnabled": {
+                    "title": "Notifications sonores",
+                    "description": "Jouer des sons avec les notifications"
+                }
+            },
+            "accessibility": {
+                "title": "Accessibilité",
+                "highContrast": {
+                    "title": "Mode contraste élevé",
+                    "description": "Augmenter le contraste pour une meilleure visibilité"
+                },
+                "largeText": {
+                    "title": "Texte large",
+                    "description": "Augmenter la taille du texte dans toute l'application"
+                },
+                "keyboardNavigation": {
+                    "title": "Navigation au clavier",
+                    "description": "Support amélioré de la navigation au clavier"
+                },
+                "screenReader": {
+                    "title": "Support de lecteur d'écran",
+                    "description": "Optimisé pour la compatibilité avec les lecteurs d'écran"
+                }
+            },
+            "security": {
+                "title": "Sécurité",
+                "sessionTimeout": {
+                    "title": "Délai d'Expiration de Session (minutes)",
+                    "description": "Temps avant la déconnexion automatique"
+                },
+                "twoFactorEnabled": {
+                    "title": "Authentification à deux facteurs",
+                    "description": "Couche de sécurité supplémentaire pour votre compte"
+                },
+                "auditLogging": {
+                    "title": "Journalisation d'audit",
+                    "description": "Suivre les activités des utilisateurs"
+                }
+            },
+            "messages": {
+                "settingsSaved": "Paramètres sauvegardés avec succès",
+                "settingsExported": "Paramètres exportés avec succès",
+                "settingsImported": "Paramètres importés avec succès",
+                "settingsReset": "Paramètres réinitialisés aux valeurs par défaut",
+                "invalidFile": "Fichier de paramètres invalide",
+                "confirmReset": "Êtes-vous sûr de vouloir réinitialiser tous les paramètres aux valeurs par défaut ? Cette action ne peut pas être annulée."
             }
         },
         "apiSettings": {
