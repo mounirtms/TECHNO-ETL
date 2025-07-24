@@ -1,7 +1,7 @@
 import { ref, set, get, update, onValue } from 'firebase/database';
 import { database } from '../config/firebase';
 import { languages } from '../contexts/LanguageContext';
-// Default user settings
+// Enhanced default user settings with comprehensive preferences
 const defaultUserSettings = {
     personalInfo: {
         firstName: '',
@@ -30,8 +30,48 @@ const defaultUserSettings = {
         }
     },
     preferences: {
+        // Appearance
         language: 'en',
-        theme: 'light'
+        theme: 'system', // 'light', 'dark', 'system'
+        fontSize: 'medium', // 'small', 'medium', 'large'
+        density: 'standard', // 'compact', 'standard', 'comfortable'
+        animations: true,
+
+        // Grid preferences
+        defaultPageSize: 25,
+        enableVirtualization: true,
+        showStatsCards: true,
+        autoRefresh: false,
+        refreshInterval: 30,
+
+        // Performance
+        cacheEnabled: true,
+        lazyLoading: true,
+        compressionEnabled: true,
+
+        // Notifications
+        emailNotifications: true,
+        pushNotifications: false,
+        soundEnabled: true,
+
+        // Security
+        sessionTimeout: 30,
+        twoFactorEnabled: false,
+        auditLogging: true,
+
+        // Accessibility
+        highContrast: false,
+        largeText: false,
+        keyboardNavigation: true,
+        screenReader: false,
+
+        // Dashboard
+        dashboardLayout: 'default',
+        widgetPreferences: {},
+
+        // Advanced
+        developerMode: false,
+        debugMode: false
     }
 };
 
@@ -65,21 +105,68 @@ export const saveUserSettings = async (userId, settings) => {
     }
 };
 
-// Reintroducing the applyUserPreferences function
-export const applyUserPreferences = (data, { setLanguage, toggleTheme, setFontSize }) => {
-    if (data?.preferences) {
-      if (data.preferences.language) {
-        setLanguage(data.preferences.language);
-        document.documentElement.setAttribute('lang', languages[data.preferences.language].code);
-      }
-      if (data.preferences.fontSize) {
-        setFontSize(data.preferences.fontSize);
-      }
-      if (data.preferences.theme) {
-        toggleTheme(data.preferences.theme);
-      }
+// Enhanced applyUserPreferences function
+export const applyUserPreferences = (data, contexts = {}) => {
+    if (!data?.preferences) return;
+
+    const { setLanguage, setTheme, setFontSize } = contexts;
+    const prefs = data.preferences;
+
+    try {
+        // Apply language settings
+        if (prefs.language && setLanguage) {
+            setLanguage(prefs.language);
+            const langConfig = languages[prefs.language];
+            if (langConfig) {
+                document.documentElement.setAttribute('lang', langConfig.code);
+                document.documentElement.setAttribute('dir', langConfig.dir);
+            }
+        }
+
+        // Apply theme settings
+        if (prefs.theme && setTheme) {
+            let themeToApply = prefs.theme;
+
+            // Handle system theme preference
+            if (prefs.theme === 'system') {
+                themeToApply = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+
+            setTheme(themeToApply);
+            localStorage.setItem('themeMode', themeToApply);
+        }
+
+        // Apply font size settings
+        if (prefs.fontSize && setFontSize) {
+            setFontSize(prefs.fontSize);
+            localStorage.setItem('fontSize', prefs.fontSize);
+        }
+
+        // Apply accessibility settings
+        if (prefs.highContrast) {
+            document.documentElement.classList.add('high-contrast');
+        } else {
+            document.documentElement.classList.remove('high-contrast');
+        }
+
+        if (prefs.largeText) {
+            document.documentElement.classList.add('large-text');
+        } else {
+            document.documentElement.classList.remove('large-text');
+        }
+
+        // Apply animation preferences
+        if (!prefs.animations) {
+            document.documentElement.classList.add('no-animations');
+        } else {
+            document.documentElement.classList.remove('no-animations');
+        }
+
+        console.log('User preferences applied successfully:', prefs);
+    } catch (error) {
+        console.error('Error applying user preferences:', error);
     }
-  };
+};
 
 // Function to get user profile data from Firebase
 export const getUserProfileData = (userId, callback) => {
@@ -95,6 +182,58 @@ export const getUserProfileData = (userId, callback) => {
     console.log('Unsubscribe Function:', unsubscribe); // Log the unsubscribe function
 
     return unsubscribe; // Return the unsubscribe function
+};
+
+// Get user settings with fallback to defaults
+export const getUserSettings = () => {
+    try {
+        const stored = localStorage.getItem('userSettings');
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            // Merge with defaults to ensure all properties exist
+            return {
+                personalInfo: { ...defaultUserSettings.personalInfo, ...parsed.personalInfo },
+                apiSettings: { ...defaultUserSettings.apiSettings, ...parsed.apiSettings },
+                preferences: { ...defaultUserSettings.preferences, ...parsed.preferences }
+            };
+        }
+    } catch (error) {
+        console.error('Error parsing stored user settings:', error);
+    }
+    return defaultUserSettings;
+};
+
+// Save settings to local storage
+export const saveSettingsLocally = (settings) => {
+    try {
+        localStorage.setItem('userSettings', JSON.stringify(settings));
+        localStorage.setItem('settingsLastModified', Date.now().toString());
+        return true;
+    } catch (error) {
+        console.error('Error saving settings locally:', error);
+        return false;
+    }
+};
+
+// Get default settings
+export const getDefaultSettings = () => {
+    return JSON.parse(JSON.stringify(defaultUserSettings)); // Deep clone
+};
+
+// Reset settings to defaults
+export const resetSettingsToDefaults = () => {
+    const defaults = getDefaultSettings();
+    saveSettingsLocally(defaults);
+    return defaults;
+};
+
+// Merge settings with defaults
+export const mergeWithDefaults = (userSettings) => {
+    return {
+        personalInfo: { ...defaultUserSettings.personalInfo, ...userSettings?.personalInfo },
+        apiSettings: { ...defaultUserSettings.apiSettings, ...userSettings?.apiSettings },
+        preferences: { ...defaultUserSettings.preferences, ...userSettings?.preferences }
+    };
 };
 
 // Helper function to encrypt sensitive data

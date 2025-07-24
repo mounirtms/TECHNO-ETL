@@ -20,6 +20,7 @@ import { I18nextProvider } from 'react-i18next';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { SettingsProvider } from './contexts/SettingsContext';
 import i18n from './config/i18n';
 import './index.css';
 
@@ -157,8 +158,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 <AuthProvider>
                     <LanguageProvider>
                         <ThemeProvider>
-                            <CssBaseline />
-                            <ToastContainer position="bottom-left" autoClose={3000} limit={3} />
+                            <SettingsProvider>
+                                <CssBaseline />
+                                <ToastContainer position="bottom-left" autoClose={3000} limit={3} />
 
                         <RouteErrorBoundary>
                             <Suspense fallback={<LoadingFallback />}>
@@ -201,6 +203,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                                 </Routes>
                             </Suspense>
                         </RouteErrorBoundary>
+                            </SettingsProvider>
                         </ThemeProvider>
                     </LanguageProvider>
                 </AuthProvider>

@@ -1,167 +1,438 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Grid, Typography, FormControl, Select, MenuItem, Switch, TextField, FormControlLabel } from '@mui/material';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Box,
+  Grid,
+  Typography,
+  FormControl,
+  Select,
+  MenuItem,
+  Switch,
+  TextField,
+  FormControlLabel,
+  Card,
+  CardContent,
+  Button,
+  Divider,
+  Alert,
+  Chip,
+  Stack,
+  Slider,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  CircularProgress,
+  Tooltip,
+  IconButton,
+  InputLabel
+} from '@mui/material';
+import {
+  Save,
+  Refresh,
+  Download,
+  Upload,
+  ExpandMore,
+  RestoreFromTrash,
+  Palette,
+  Language,
+  Accessibility,
+  Security,
+  Dashboard,
+  Speed,
+  Notifications,
+  CheckCircle,
+  Warning
+} from '@mui/icons-material';
 import { useTheme } from '../../../contexts/ThemeContext';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { useAuth } from '../../../contexts/AuthContext';
-import { useProfileController } from '../ProfileController';
+import { useSettings } from '../../../contexts/SettingsContext';
 import { styled } from '@mui/material/styles';
+import { toast } from 'react-toastify';
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+  '& .MuiCardContent-root': {
+    padding: theme.spacing(3),
+  },
+}));
 
 const PreferencesTab = () => {
     const { mode, toggleTheme, fontSize, setFontSize } = useTheme();
     const { currentLanguage, setLanguage, translate, languages } = useLanguage();
     const { currentUser } = useAuth();
-    const { updateUserData } = useProfileController();
-    const [formData, setFormData] = useState({
-        language: currentLanguage,
-        theme: mode,
-        fontSize: fontSize || 'medium'
+    const { settings, updateSettings, saveSettings, resetSettings, exportSettings, importSettings, loading, isDirty } = useSettings();
+    const fileInputRef = useRef(null);
+
+    const [expanded, setExpanded] = useState({
+        appearance: true,
+        performance: false,
+        notifications: false,
+        security: false,
+        accessibility: false,
+        advanced: false
     });
 
-    // Load data only once on mount
-    useEffect(() => {
-        const remoteSettings = currentUser?.preferences;
-        if (remoteSettings) {
-            setFormData({
-                ...remoteSettings,
-                fontSize: remoteSettings.fontSize || 'medium'
-            });
-            
-            // Apply settings
-            if (remoteSettings.language !== currentLanguage) {
-                setLanguage(remoteSettings.language);
-            }
-            if (remoteSettings.theme !== mode) {
-                toggleTheme();
-            }
-            if (remoteSettings.fontSize && remoteSettings.fontSize !== fontSize) {
-                setFontSize(remoteSettings.fontSize);
-            }
+    const handleAccordionChange = (panel) => (event, isExpanded) => {
+        setExpanded(prev => ({
+            ...prev,
+            [panel]: isExpanded
+        }));
+    };
+
+    const handlePreferenceChange = (section, key, value) => {
+        updateSettings({ [key]: value }, 'preferences');
+    };
+
+    const handleSave = async () => {
+        const result = await saveSettings(true);
+        if (result.success) {
+            toast.success('Settings saved successfully!');
         }
-    }, [currentUser]);
-
-    const handleLanguageChange = (event) => {
-        const newLanguage = event.target.value;
-        setLanguage(newLanguage);
-        
-        const updatedPreferences = {
-            ...formData,
-            language: newLanguage
-        };
-        setFormData(updatedPreferences);
-        
-        // Only update local storage
-        localStorage.setItem('userPreferences', JSON.stringify(updatedPreferences));
     };
 
-    const handleFontSizeChange = (event) => {
-        const newSize = event.target.value;
-        setFontSize(newSize);
-        
-        const updatedPreferences = {
-            ...formData,
-            fontSize: newSize
-        };
-        setFormData(updatedPreferences);
-        
-        // Only update local storage
-        localStorage.setItem('userPreferences', JSON.stringify(updatedPreferences));
+    const handleReset = () => {
+        if (window.confirm('Are you sure you want to reset all settings to defaults? This action cannot be undone.')) {
+            resetSettings();
+        }
     };
 
-    const handleThemeChange = () => {
-        const newTheme = mode === 'light' ? 'dark' : 'light';
-        toggleTheme();
-        
-        const updatedPreferences = {
-            ...formData,
-            theme: newTheme
-        };
-        setFormData(updatedPreferences);
-        
-        // Only update local storage
-        localStorage.setItem('userPreferences', JSON.stringify(updatedPreferences));
+    const handleExport = () => {
+        exportSettings();
     };
+
+    const handleImport = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileImport = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            importSettings(file);
+        }
+        event.target.value = ''; // Reset file input
+    };
+
+    const prefs = settings?.preferences || {};
 
     return (
         <Box sx={{ p: 3 }}>
-            <Grid container spacing={3}>
-                {/* Language Settings */}
-                <Grid item xs={12} md={6}>
-                    <Typography variant="h6" gutterBottom>
-                        {translate('profile.preferences.language.title')}
+            {/* Header with Actions */}
+            <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
+                <Box>
+                    <Typography variant="h5" gutterBottom>
+                        User Preferences
                     </Typography>
-                    <Typography variant="body2" color="textSecondary" paragraph>
-                        {translate('profile.preferences.language.description')}
+                    <Typography variant="body2" color="text.secondary">
+                        Customize your experience and manage application settings
                     </Typography>
-                    <FormControl fullWidth>
-                        <Select
-                            value={formData.language}
-                            onChange={handleLanguageChange}
+                </Box>
+
+                <Stack direction="row" spacing={1} flexWrap="wrap">
+                    {isDirty && (
+                        <Chip
+                            icon={<Warning />}
+                            label="Unsaved Changes"
+                            color="warning"
                             size="small"
-                        >
-                            {Object.entries(languages).map(([code, lang]) => (
-                                <MenuItem key={code} value={code}>
-                                    {translate(`profile.preferences.language.availableLanguages.${code}`)}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Grid>
+                        />
+                    )}
+                    <Button
+                        variant="outlined"
+                        size="small"
+                        startIcon={<Download />}
+                        onClick={handleExport}
+                    >
+                        Export
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        size="small"
+                        startIcon={<Upload />}
+                        onClick={handleImport}
+                    >
+                        Import
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        size="small"
+                        startIcon={<RestoreFromTrash />}
+                        onClick={handleReset}
+                        color="error"
+                    >
+                        Reset
+                    </Button>
+                    <Button
+                        variant="contained"
+                        size="small"
+                        startIcon={loading ? <CircularProgress size={16} /> : <Save />}
+                        onClick={handleSave}
+                        disabled={loading || !isDirty}
+                    >
+                        Save
+                    </Button>
+                </Stack>
+            </Box>
 
-                {/* Theme Settings */}
-                <Grid item xs={12} md={6}>
-                    <Typography variant="h6" gutterBottom>
-                        {translate('profile.preferences.theme.title')}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" paragraph>
-                        {translate('profile.preferences.theme.description')}
-                    </Typography>
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                checked={formData.theme === 'dark'}
-                                onChange={handleThemeChange}
-                                name="themeMode"
-                            />
-                        }
-                        label={translate(`profile.preferences.theme.${formData.theme}Mode`)}
-                    />
-                </Grid>
+            {/* Hidden file input for import */}
+            <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileImport}
+                accept=".json"
+                style={{ display: 'none' }}
+            />
 
-                {/* Notification Settings */}
-                <Grid item xs={12}>
-                    <Typography variant="h6" gutterBottom>
-                        {translate('profile.preferences.notifications.title')}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" paragraph>
-                        {translate('profile.preferences.notifications.description')}
-                    </Typography>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
-                            <FormControlLabel
-                                control={<Switch defaultChecked />}
-                                label={translate('profile.preferences.notifications.email')}
-                            />
+            {/* Appearance Settings */}
+            <Accordion
+                expanded={expanded.appearance}
+                onChange={handleAccordionChange('appearance')}
+            >
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Palette color="primary" />
+                        <Typography variant="h6">Appearance</Typography>
+                    </Box>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Grid container spacing={3}>
+                        {/* Language */}
+                        <Grid item xs={12} md={6}>
+                            <FormControl fullWidth>
+                                <InputLabel>Language</InputLabel>
+                                <Select
+                                    value={prefs.language || 'en'}
+                                    onChange={(e) => {
+                                        handlePreferenceChange('preferences', 'language', e.target.value);
+                                        setLanguage(e.target.value);
+                                    }}
+                                    label="Language"
+                                >
+                                    {Object.entries(languages).map(([key, lang]) => (
+                                        <MenuItem key={key} value={key}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                <span>{lang.flag}</span>
+                                                <span>{lang.name}</span>
+                                            </Box>
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <FormControlLabel
-                                control={<Switch defaultChecked />}
-                                label={translate('profile.preferences.notifications.push')}
-                            />
+
+                        {/* Theme */}
+                        <Grid item xs={12} md={6}>
+                            <FormControl fullWidth>
+                                <InputLabel>Theme</InputLabel>
+                                <Select
+                                    value={prefs.theme || 'system'}
+                                    onChange={(e) => handlePreferenceChange('preferences', 'theme', e.target.value)}
+                                    label="Theme"
+                                >
+                                    <MenuItem value="light">Light</MenuItem>
+                                    <MenuItem value="dark">Dark</MenuItem>
+                                    <MenuItem value="system">System</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <FormControlLabel
-                                control={<Switch />}
-                                label={translate('profile.preferences.notifications.sms')}
-                            />
+
+                        {/* Font Size */}
+                        <Grid item xs={12} md={6}>
+                            <FormControl fullWidth>
+                                <InputLabel>Font Size</InputLabel>
+                                <Select
+                                    value={prefs.fontSize || 'medium'}
+                                    onChange={(e) => {
+                                        handlePreferenceChange('preferences', 'fontSize', e.target.value);
+                                        setFontSize(e.target.value);
+                                    }}
+                                    label="Font Size"
+                                >
+                                    <MenuItem value="small">Small</MenuItem>
+                                    <MenuItem value="medium">Medium</MenuItem>
+                                    <MenuItem value="large">Large</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+
+                        {/* Density */}
+                        <Grid item xs={12} md={6}>
+                            <FormControl fullWidth>
+                                <InputLabel>Interface Density</InputLabel>
+                                <Select
+                                    value={prefs.density || 'standard'}
+                                    onChange={(e) => handlePreferenceChange('preferences', 'density', e.target.value)}
+                                    label="Interface Density"
+                                >
+                                    <MenuItem value="compact">Compact</MenuItem>
+                                    <MenuItem value="standard">Standard</MenuItem>
+                                    <MenuItem value="comfortable">Comfortable</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+
+                        {/* Animations */}
+                        <Grid item xs={12}>
                             <FormControlLabel
-                                control={<Switch defaultChecked />}
-                                label={translate('profile.preferences.notifications.marketing')}
+                                control={
+                                    <Switch
+                                        checked={prefs.animations !== false}
+                                        onChange={(e) => handlePreferenceChange('preferences', 'animations', e.target.checked)}
+                                    />
+                                }
+                                label="Enable animations and transitions"
                             />
                         </Grid>
                     </Grid>
-                </Grid>
+                </AccordionDetails>
+            </Accordion>
+
+            {/* Performance Settings */}
+            <Accordion
+                expanded={expanded.performance}
+                onChange={handleAccordionChange('performance')}
+            >
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Speed color="primary" />
+                        <Typography variant="h6">Performance</Typography>
+                    </Box>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} md={6}>
+                            <Typography variant="subtitle1" gutterBottom>
+                                Default Page Size
+                            </Typography>
+                            <Slider
+                                value={prefs.defaultPageSize || 25}
+                                onChange={(e, value) => handlePreferenceChange('preferences', 'defaultPageSize', value)}
+                                min={10}
+                                max={100}
+                                step={5}
+                                marks={[
+                                    { value: 10, label: '10' },
+                                    { value: 25, label: '25' },
+                                    { value: 50, label: '50' },
+                                    { value: 100, label: '100' }
+                                ]}
+                                valueLabelDisplay="auto"
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} md={6}>
+                            <Typography variant="subtitle1" gutterBottom>
+                                Auto Refresh Interval (seconds)
+                            </Typography>
+                            <Slider
+                                value={prefs.refreshInterval || 30}
+                                onChange={(e, value) => handlePreferenceChange('preferences', 'refreshInterval', value)}
+                                min={10}
+                                max={300}
+                                step={10}
+                                marks={[
+                                    { value: 10, label: '10s' },
+                                    { value: 30, label: '30s' },
+                                    { value: 60, label: '1m' },
+                                    { value: 300, label: '5m' }
+                                ]}
+                                valueLabelDisplay="auto"
+                                disabled={!prefs.autoRefresh}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Stack spacing={2}>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={prefs.enableVirtualization !== false}
+                                            onChange={(e) => handlePreferenceChange('preferences', 'enableVirtualization', e.target.checked)}
+                                        />
+                                    }
+                                    label="Enable grid virtualization for better performance"
+                                />
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={prefs.cacheEnabled !== false}
+                                            onChange={(e) => handlePreferenceChange('preferences', 'cacheEnabled', e.target.checked)}
+                                        />
+                                    }
+                                    label="Enable data caching"
+                                />
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={prefs.autoRefresh === true}
+                                            onChange={(e) => handlePreferenceChange('preferences', 'autoRefresh', e.target.checked)}
+                                        />
+                                    }
+                                    label="Auto refresh data"
+                                />
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={prefs.lazyLoading !== false}
+                                            onChange={(e) => handlePreferenceChange('preferences', 'lazyLoading', e.target.checked)}
+                                        />
+                                    }
+                                    label="Enable lazy loading"
+                                />
+                            </Stack>
+                        </Grid>
+                    </Grid>
+                </AccordionDetails>
+            </Accordion>
+
+            {/* Notifications Settings */}
+            <Accordion
+                expanded={expanded.notifications}
+                onChange={handleAccordionChange('notifications')}
+            >
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Notifications color="primary" />
+                        <Typography variant="h6">Notifications</Typography>
+                    </Box>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={6}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={prefs.emailNotifications !== false}
+                                        onChange={(e) => handlePreferenceChange('preferences', 'emailNotifications', e.target.checked)}
+                                    />
+                                }
+                                label="Email notifications"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={prefs.pushNotifications === true}
+                                        onChange={(e) => handlePreferenceChange('preferences', 'pushNotifications', e.target.checked)}
+                                    />
+                                }
+                                label="Push notifications"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={prefs.soundEnabled !== false}
+                                        onChange={(e) => handlePreferenceChange('preferences', 'soundEnabled', e.target.checked)}
+                                    />
+                                }
+                                label="Sound notifications"
+                            />
+                        </Grid>
+                    </Grid>
+                </AccordionDetails>
+            </Accordion>
 
                 {/* Accessibility Settings */}
                 <Grid item xs={12}>
@@ -199,6 +470,126 @@ const PreferencesTab = () => {
                         </Grid>
                     </Grid>
                 </Grid>
+
+            {/* Accessibility Settings */}
+            <Accordion
+                expanded={expanded.accessibility}
+                onChange={handleAccordionChange('accessibility')}
+            >
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Accessibility color="primary" />
+                        <Typography variant="h6">Accessibility</Typography>
+                    </Box>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={6}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={prefs.highContrast === true}
+                                        onChange={(e) => handlePreferenceChange('preferences', 'highContrast', e.target.checked)}
+                                    />
+                                }
+                                label="High contrast mode"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={prefs.largeText === true}
+                                        onChange={(e) => handlePreferenceChange('preferences', 'largeText', e.target.checked)}
+                                    />
+                                }
+                                label="Large text"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={prefs.keyboardNavigation !== false}
+                                        onChange={(e) => handlePreferenceChange('preferences', 'keyboardNavigation', e.target.checked)}
+                                    />
+                                }
+                                label="Keyboard navigation"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={prefs.screenReader === true}
+                                        onChange={(e) => handlePreferenceChange('preferences', 'screenReader', e.target.checked)}
+                                    />
+                                }
+                                label="Screen reader support"
+                            />
+                        </Grid>
+                    </Grid>
+                </AccordionDetails>
+            </Accordion>
+
+            {/* Security Settings */}
+            <Accordion
+                expanded={expanded.security}
+                onChange={handleAccordionChange('security')}
+            >
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Security color="primary" />
+                        <Typography variant="h6">Security</Typography>
+                    </Box>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} md={6}>
+                            <Typography variant="subtitle1" gutterBottom>
+                                Session Timeout (minutes)
+                            </Typography>
+                            <Slider
+                                value={prefs.sessionTimeout || 30}
+                                onChange={(e, value) => handlePreferenceChange('preferences', 'sessionTimeout', value)}
+                                min={5}
+                                max={120}
+                                step={5}
+                                marks={[
+                                    { value: 5, label: '5m' },
+                                    { value: 30, label: '30m' },
+                                    { value: 60, label: '1h' },
+                                    { value: 120, label: '2h' }
+                                ]}
+                                valueLabelDisplay="auto"
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Stack spacing={2}>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={prefs.twoFactorEnabled === true}
+                                            onChange={(e) => handlePreferenceChange('preferences', 'twoFactorEnabled', e.target.checked)}
+                                        />
+                                    }
+                                    label="Two-factor authentication"
+                                />
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={prefs.auditLogging !== false}
+                                            onChange={(e) => handlePreferenceChange('preferences', 'auditLogging', e.target.checked)}
+                                        />
+                                    }
+                                    label="Audit logging"
+                                />
+                            </Stack>
+                        </Grid>
+                    </Grid>
+                </AccordionDetails>
+            </Accordion>
             </Grid>
         </Box>
     );

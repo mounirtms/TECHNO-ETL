@@ -29,3 +29,74 @@ body {
 .row-changed:hover {
   background-color: #ffeeba !important;
 }
+
+/* Accessibility Styles */
+.high-contrast {
+  filter: contrast(150%) brightness(1.2);
+}
+
+.high-contrast * {
+  border-color: #000 !important;
+}
+
+.large-text {
+  font-size: 1.2em !important;
+}
+
+.large-text * {
+  font-size: inherit !important;
+}
+
+/* Animation Control */
+.no-animations,
+.no-animations * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Focus Styles for Keyboard Navigation */
+*:focus-visible {
+  outline: 2px solid #1976d2 !important;
+  outline-offset: 2px !important;
+}
+
+/* Screen Reader Only Content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Font Size Classes */
+.font-small {
+  font-size: 0.875rem;
+}
+
+.font-medium {
+  font-size: 1rem;
+}
+
+.font-large {
+  font-size: 1.125rem;
+}
+
+/* Density Classes */
+.density-compact {
+  --spacing-unit: 4px;
+}
+
+.density-standard {
+  --spacing-unit: 8px;
+}
+
+.density-comfortable {
+  --spacing-unit: 12px;
+}
