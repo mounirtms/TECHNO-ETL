@@ -38,8 +38,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useTheme } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useTab } from '../contexts/TabContext';
 import { StatsCards } from '../components/common/StatsCards';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
@@ -79,7 +79,7 @@ import dashboardDataService from '../services/dashboardDataService';
  */
 const Dashboard = () => {
   const theme = useTheme();
-  const navigate = useNavigate();
+  const { openTab } = useTab();
   
   // Date range state
   const [startDate, setStartDate] = useState(() => {
@@ -292,99 +292,34 @@ const Dashboard = () => {
     setSettingsAnchorEl(null);
   };
 
-  // Handle navigation with hash-based routing and parameters
+  // Handle navigation using tab system (like sidebar)
   const handleNavigate = (section, params = {}) => {
-    const generateHash = (data) => {
-      if (Object.keys(data).length === 0) return '';
-      try {
-        const encoded = btoa(JSON.stringify(data));
-        console.log('Dashboard: Generating hash for', section, data, 'encoded:', encoded);
-        return '#' + encoded;
-      } catch (error) {
-        console.error('Error encoding hash:', error);
-        return '';
-      }
-    };
+    console.log('Dashboard: Navigating to section:', section, 'with params:', params);
 
     switch (section) {
       case 'revenue':
-        navigate('/charts' + generateHash({
-          view: 'revenue',
-          period: 'monthly',
-          filter: 'all',
-          ...params
-        }));
+      case 'analytics':
+        openTab('Charts');
         break;
       case 'orders':
-        const ordersParams = {
-          status: 'all',
-          view: 'grid',
-          sortBy: 'date',
-          ...params
-        };
-        const ordersUrl = '/orders' + generateHash(ordersParams);
-        console.log('Dashboard: Navigating to orders with URL:', ordersUrl);
-        navigate(ordersUrl);
-        break;
       case 'pendingOrders':
-        navigate('/orders' + generateHash({
-          status: 'pending',
-          view: 'grid',
-          sortBy: 'date',
-          priority: 'high',
-          ...params
-        }));
+        openTab('OrdersGrid');
         break;
       case 'products':
-        navigate('/products' + generateHash({
-          view: 'catalog',
-          category: 'all',
-          status: 'active',
-          ...params
-        }));
+      case 'categories':
+      case 'brands':
+        openTab('ProductsGrid');
         break;
       case 'customers':
-        navigate('/customers' + generateHash({
-          view: 'grid',
-          status: 'active',
-          sortBy: 'name',
-          ...params
-        }));
-        break;
-      case 'categories':
-        navigate('/products' + generateHash({
-          view: 'categories',
-          filter: 'all',
-          sortBy: 'name',
-          ...params
-        }));
-        break;
-      case 'brands':
-        navigate('/products' + generateHash({
-          view: 'brands',
-          filter: 'active',
-          sortBy: 'name',
-          ...params
-        }));
+        openTab('CustomersGrid');
         break;
       case 'lowStock':
-        navigate('/inventory' + generateHash({
-          filter: 'low-stock',
-          view: 'grid',
-          sortBy: 'stock-level',
-          alert: 'true',
-          ...params
-        }));
-        break;
-      case 'analytics':
-        navigate('/charts' + generateHash({
-          view: 'overview',
-          period: 'monthly',
-          ...params
-        }));
+        openTab('StocksGrid'); // This is the inventory/stocks tab
         break;
       default:
-        console.log('Navigate to:', section, 'with params:', params);
+        console.log('Unknown section:', section);
+        // Try to open the section directly as a tab ID
+        openTab(section);
     }
   };
 
@@ -392,16 +327,12 @@ const Dashboard = () => {
   const handleAction = (action) => {
     switch (action) {
       case 'add-product':
-        navigate('/products');
-        break;
       case 'import-data':
-        navigate('/products');
+      case 'bulk-media-upload':
+        openTab('ProductsGrid');
         break;
       case 'sync-products':
         console.log('Sync products');
-        break;
-      case 'bulk-media-upload':
-        navigate('/products');
         break;
       case 'export-report':
         console.log('Export report');
@@ -493,7 +424,7 @@ const Dashboard = () => {
                 <Fab
                   size="medium"
                   color="secondary"
-                  onClick={() => navigate('/charts')}
+                  onClick={() => openTab('Charts')}
                   sx={{ boxShadow: 3 }}
                 >
                   <AnalyticsIcon />
@@ -552,7 +483,7 @@ const Dashboard = () => {
             <ListItemIcon><SettingsIcon /></ListItemIcon>
             <ListItemText>Dashboard Settings</ListItemText>
           </MenuItem>
-          <MenuItem onClick={() => navigate('/charts')}>
+          <MenuItem onClick={() => openTab('Charts')}>
             <ListItemIcon><AnalyticsIcon /></ListItemIcon>
             <ListItemText>Analytics Dashboard</ListItemText>
           </MenuItem>
