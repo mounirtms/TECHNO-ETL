@@ -13,7 +13,7 @@ import { StyledAppBar } from './styles';
 import { DRAWER_WIDTH, COLLAPSED_WIDTH } from './Constants';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { LanguageProvider,useLanguage } from '../../contexts/LanguageContext';
+import { LanguageProvider, useLanguage } from '../../contexts/LanguageContext';
 
 import { useAuth } from '../../contexts/AuthContext';
 import { useTab } from '../../contexts/TabContext';
@@ -29,7 +29,7 @@ export const Header = ({
 }) => {
     const { currentUser } = useAuth();
     const { openTab } = useTab();
-    const { currentLanguage } = useLanguage();
+    const { currentLanguage, translate } = useLanguage();
     const isRTL = currentLanguage === 'ar';
  
     const handleLogout = async () => {
@@ -66,7 +66,7 @@ export const Header = ({
                     size="large"
                     edge="start"
                     color="inherit"
-                    aria-label={isDrawerCollapsed ? "expand menu" : "collapse menu"}
+                    aria-label={isDrawerCollapsed ? translate('common.expandMenu') : translate('common.collapseMenu')}
                     onClick={handleDrawerToggle}
                     sx={{ 
                         mr: 2,
@@ -78,7 +78,7 @@ export const Header = ({
                 </IconButton>
 
                 <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-                    Techno Stationery
+                    {translate('common.appTitle')}
                 </Typography>
 
       

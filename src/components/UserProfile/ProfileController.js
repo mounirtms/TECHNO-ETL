@@ -40,10 +40,11 @@ export const useProfileController = () => {
                     const serverTimestamp = data.lastModified || Date.now();
                     if (!lastSyncTime || serverTimestamp > parseInt(lastSyncTime)) {
                         setUserDataState(mergedData);
+                        // Update settings context which will handle preference application
+                        updateSettings(mergedData);
                         localStorage.setItem('userSettings', JSON.stringify(mergedData));
                         localStorage.setItem('lastSyncTime', serverTimestamp.toString());
                         setLastSyncTime(serverTimestamp.toString());
-                        applyUserPreferences(mergedData, { setLanguage, toggleTheme });
                     }
                 }
                 setLoading(false);

@@ -4,7 +4,29 @@
         "logout": "Déconnexion",
         "settings": "Paramètres",
         "refresh": "Actualiser",
-        "changeLanguage": "Changer de langue"
+        "changeLanguage": "Changer de langue",
+        "user": "Utilisateur",
+        "expandMenu": "Développer le menu",
+        "collapseMenu": "Réduire le menu",
+        "appTitle": "Techno Papeterie"
+    },
+    "navigation": {
+        "dashboard": "Tableau de Bord",
+        "analytics": "Analyses et Graphiques",
+        "voting": "Vote des Fonctionnalités",
+        "products": "Produits",
+        "productCatalog": "Catalogue de Produits",
+        "mdmProducts": "Produits MDM",
+        "cegidProducts": "Produits Cegid",
+        "customers": "Clients",
+        "orders": "Commandes",
+        "invoices": "Factures",
+        "categories": "Catégories",
+        "stocks": "Stocks",
+        "sources": "Sources",
+        "userProfile": "Profil Utilisateur",
+        "cmsPages": "Pages CMS",
+        "gridTest": "Test de Grille"
     },
     "dashboard": {
         "title": "Tableau de bord",

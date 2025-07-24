@@ -4,7 +4,29 @@
         "logout": "تسجيل الخروج",
         "settings": "الإعدادات",
         "refresh": "تحديث",
-        "changeLanguage": "تغيير اللغة"
+        "changeLanguage": "تغيير اللغة",
+        "user": "المستخدم",
+        "expandMenu": "توسيع القائمة",
+        "collapseMenu": "طي القائمة",
+        "appTitle": "تكنو للقرطاسية"
+    },
+    "navigation": {
+        "dashboard": "لوحة التحكم",
+        "analytics": "التحليلات والرسوم البيانية",
+        "voting": "التصويت على الميزات",
+        "products": "المنتجات",
+        "productCatalog": "كتالوج المنتجات",
+        "mdmProducts": "منتجات MDM",
+        "cegidProducts": "منتجات Cegid",
+        "customers": "العملاء",
+        "orders": "الطلبات",
+        "invoices": "الفواتير",
+        "categories": "الفئات",
+        "stocks": "المخزون",
+        "sources": "المصادر",
+        "userProfile": "الملف الشخصي",
+        "cmsPages": "صفحات CMS",
+        "gridTest": "اختبار الشبكة"
     },
     "login": {
         "signInWithGoogle": "تسجيل الدخول باستخدام Google",

@@ -4,7 +4,29 @@
         "logout": "Logout",
         "settings": "Settings",
         "refresh": "Refresh",
-        "changeLanguage": "Change Language"
+        "changeLanguage": "Change Language",
+        "user": "User",
+        "expandMenu": "Expand menu",
+        "collapseMenu": "Collapse menu",
+        "appTitle": "Techno Stationery"
+    },
+    "navigation": {
+        "dashboard": "Dashboard",
+        "analytics": "Analytics & Charts",
+        "voting": "Feature Voting",
+        "products": "Products",
+        "productCatalog": "Products Catalog",
+        "mdmProducts": "MDM Products",
+        "cegidProducts": "Cegid Products",
+        "customers": "Customers",
+        "orders": "Orders",
+        "invoices": "Invoices",
+        "categories": "Categories",
+        "stocks": "Stocks",
+        "sources": "Sources",
+        "userProfile": "User Profile",
+        "cmsPages": "CMS Pages",
+        "gridTest": "Grid Test"
     },
     "dashboard": {
         "title": "Dashboard",

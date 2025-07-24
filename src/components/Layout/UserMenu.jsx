@@ -74,7 +74,7 @@ const UserMenu = () => {
         <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Typography variant="subtitle1" sx={{ display: { xs: 'none', sm: 'block' } }}>
-                    {currentUser?.displayName || currentUser?.email || 'User'}
+                    {currentUser?.displayName || currentUser?.email || translate('common.user')}
                 </Typography>
                 <IconButton
                     onClick={handleMenu}
@@ -84,7 +84,7 @@ const UserMenu = () => {
                     aria-expanded={open ? 'true' : undefined}
                 >
                     <Avatar
-                        alt={currentUser?.displayName || 'User'}
+                        alt={currentUser?.displayName || translate('common.user')}
                         src={currentUser?.photoURL}
                         sx={{ 
                             width: 32, 

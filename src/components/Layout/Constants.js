@@ -47,7 +47,8 @@ export const staticPrimaryKeys = {
 export const MENU_ITEMS = [
     {
         id: 'Dashboard',
-        label: 'Dashboard',
+        label: 'Dashboard', // Keep for backward compatibility
+        labelKey: 'navigation.dashboard',
         icon: DashboardIcon,
         path: '/dashboard',
         hidden: false,
@@ -56,6 +57,7 @@ export const MENU_ITEMS = [
     {
         id: 'Charts',
         label: 'Analytics & Charts',
+        labelKey: 'navigation.analytics',
         icon: AnalyticsIcon,
         path: '/charts',
         hidden: false,
@@ -64,6 +66,7 @@ export const MENU_ITEMS = [
     {
         id: 'Voting',
         label: 'Feature Voting',
+        labelKey: 'navigation.voting',
         icon: HowToVoteIcon,
         path: '/voting',
         hidden: false,
@@ -72,6 +75,7 @@ export const MENU_ITEMS = [
      {
         id: 'ProductsGrid',
         label: 'Products',
+        labelKey: 'navigation.products',
         icon: InventoryIcon,
         path: '/products',
         hidden: false,
@@ -80,6 +84,7 @@ export const MENU_ITEMS = [
     {
         id: 'ProductCatalog',
         label: 'Products Catalog',
+        labelKey: 'navigation.productCatalog',
         icon: SettingsIcon,
         path: '/productsManagement',
         hidden: false,
@@ -88,6 +93,7 @@ export const MENU_ITEMS = [
     {
         id: 'MDMProductsGrid',
         label: 'MDM Products',
+        labelKey: 'navigation.mdmProducts',
         icon: InventoryIcon,
         path: '/mdmproducts',
         hidden: false,
@@ -96,6 +102,7 @@ export const MENU_ITEMS = [
     {
         id: 'CegidProductsGrid',
         label: 'Cegid Products',
+        labelKey: 'navigation.cegidProducts',
         icon: StorefrontIcon,
         path: '/cegid-products',
         hidden: false,
@@ -104,6 +111,7 @@ export const MENU_ITEMS = [
     {
         id: 'CustomersGrid',
         label: 'Customers',
+        labelKey: 'navigation.customers',
         icon: PeopleIcon,
         path: '/customers',
         hidden: false,
@@ -112,6 +120,7 @@ export const MENU_ITEMS = [
     {
         id: 'OrdersGrid',
         label: 'Orders',
+        labelKey: 'navigation.orders',
         icon: ShoppingCartIcon,
         path: '/orders',
         hidden: false,
@@ -120,6 +129,7 @@ export const MENU_ITEMS = [
     {
         id: 'InvoicesGrid',
         label: 'Invoices',
+        labelKey: 'navigation.invoices',
         icon: ReceiptIcon,
         path: '/invoices',
         hidden: false,
@@ -128,6 +138,7 @@ export const MENU_ITEMS = [
     {
         id: 'CategoryTree',
         label: 'Categories',
+        labelKey: 'navigation.categories',
         icon: CategoryIcon,
         path: '/categories',
         hidden: false,
@@ -136,6 +147,7 @@ export const MENU_ITEMS = [
     {
         id: 'StocksGrid',
         label: 'Stocks',
+        labelKey: 'navigation.stocks',
         icon: Inventory2Icon,
         path: '/stocks',
         hidden: false,
@@ -144,6 +156,7 @@ export const MENU_ITEMS = [
     {
         id: 'SourcesGrid',
         label: 'Sources',
+        labelKey: 'navigation.sources',
         icon: WarehouseIcon,
         path: '/sources',
         hidden: false,
@@ -152,6 +165,7 @@ export const MENU_ITEMS = [
     {
         id: 'UserProfile',
         label: 'User Profile',
+        labelKey: 'navigation.userProfile',
         icon: AccountCircleIcon,
         path: '/profile',
         hidden: true,
@@ -160,6 +174,7 @@ export const MENU_ITEMS = [
     {
         id: 'CmsPageGrid',
         label: 'CMS Pages',
+        labelKey: 'navigation.cmsPages',
         icon: DescriptionIcon,
         path: '/cms-pages',
         hidden: false,
@@ -168,6 +183,7 @@ export const MENU_ITEMS = [
     {
         id: 'GridTestPage',
         label: 'Grid Test',
+        labelKey: 'navigation.gridTest',
         icon: BugReportIcon,
         path: '/grid-test',
         hidden: false,

@@ -13,6 +13,7 @@ import {
 
 import { MENU_ITEMS, DRAWER_WIDTH, COLLAPSED_WIDTH } from './Constants';
 import { useTab } from '../../contexts/TabContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import technoIcon from '../../assets/images/techno.png';
 import logoTechno from '../../assets/images/logo_techno.png';
 
@@ -103,6 +104,7 @@ const LogoContainer = styled(Box)(({ theme }) => ({
 const Sidebar = ({ open, toggleDrawer, isRTL = false }) => {
     const theme = useTheme();
     const { activeTab, openTab } = useTab();
+    const { translate } = useLanguage();
 
     const handleTabClick = (tabId) => {
         openTab(tabId);
@@ -131,7 +133,7 @@ const Sidebar = ({ open, toggleDrawer, isRTL = false }) => {
                     (!item.hidden && !!item.licensed) && (
                         <Tooltip
                             key={item.id}
-                            title={!open ? item.label : ''}
+                            title={!open ? translate(item.labelKey) : ''}
                             placement={isRTL ? "left" : "right"}
                         >
                             <StyledListItem
@@ -146,7 +148,7 @@ const Sidebar = ({ open, toggleDrawer, isRTL = false }) => {
                                     <item.icon />
                                 </ListItemIcon>
                                 <ListItemText
-                                    primary={item.label}
+                                    primary={translate(item.labelKey)}
                                     sx={{
                                         opacity: open ? 1 : 0,
                                         transition: theme.transitions.create('opacity'),
