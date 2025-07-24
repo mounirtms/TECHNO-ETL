@@ -17,7 +17,11 @@ export const ROUTES = {
   CUSTOMERS: '/customers',
   REPORTS: '/reports',
   SETTINGS: '/settings',
-  
+
+  // Enhanced Routes
+  DATA_GRIDS: '/data-grids',
+  GRID_TEST: '/grid-test',
+
   // Nested Routes
   PRODUCT_DETAIL: '/products/:id',
   PRODUCT_CATEGORY: '/products/category/:categoryId'
@@ -86,6 +90,20 @@ export const ROUTE_METADATA = {
     icon: 'Settings',
     requiresAuth: true,
     breadcrumb: 'Settings'
+  },
+  [ROUTES.DATA_GRIDS]: {
+    title: 'Data Management',
+    description: 'Comprehensive data grid interface with tabbed navigation',
+    icon: 'GridView',
+    requiresAuth: true,
+    breadcrumb: 'Data Grids'
+  },
+  [ROUTES.GRID_TEST]: {
+    title: 'Grid Testing',
+    description: 'Performance testing and validation for grid components',
+    icon: 'Speed',
+    requiresAuth: true,
+    breadcrumb: 'Grid Test'
   }
 };
 

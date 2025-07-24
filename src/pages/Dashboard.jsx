@@ -292,23 +292,99 @@ const Dashboard = () => {
     setSettingsAnchorEl(null);
   };
 
-  // Handle navigation
-  const handleNavigate = (section) => {
+  // Handle navigation with hash-based routing and parameters
+  const handleNavigate = (section, params = {}) => {
+    const generateHash = (data) => {
+      if (Object.keys(data).length === 0) return '';
+      try {
+        const encoded = btoa(JSON.stringify(data));
+        console.log('Dashboard: Generating hash for', section, data, 'encoded:', encoded);
+        return '#' + encoded;
+      } catch (error) {
+        console.error('Error encoding hash:', error);
+        return '';
+      }
+    };
+
     switch (section) {
-      case 'products':
-        navigate('/products');
+      case 'revenue':
+        navigate('/charts' + generateHash({
+          view: 'revenue',
+          period: 'monthly',
+          filter: 'all',
+          ...params
+        }));
         break;
       case 'orders':
-        navigate('/orders');
+        const ordersParams = {
+          status: 'all',
+          view: 'grid',
+          sortBy: 'date',
+          ...params
+        };
+        const ordersUrl = '/orders' + generateHash(ordersParams);
+        console.log('Dashboard: Navigating to orders with URL:', ordersUrl);
+        navigate(ordersUrl);
+        break;
+      case 'pendingOrders':
+        navigate('/orders' + generateHash({
+          status: 'pending',
+          view: 'grid',
+          sortBy: 'date',
+          priority: 'high',
+          ...params
+        }));
+        break;
+      case 'products':
+        navigate('/products' + generateHash({
+          view: 'catalog',
+          category: 'all',
+          status: 'active',
+          ...params
+        }));
         break;
       case 'customers':
-        navigate('/customers');
+        navigate('/customers' + generateHash({
+          view: 'grid',
+          status: 'active',
+          sortBy: 'name',
+          ...params
+        }));
+        break;
+      case 'categories':
+        navigate('/products' + generateHash({
+          view: 'categories',
+          filter: 'all',
+          sortBy: 'name',
+          ...params
+        }));
+        break;
+      case 'brands':
+        navigate('/products' + generateHash({
+          view: 'brands',
+          filter: 'active',
+          sortBy: 'name',
+          ...params
+        }));
+        break;
+      case 'lowStock':
+        navigate('/inventory' + generateHash({
+          filter: 'low-stock',
+          view: 'grid',
+          sortBy: 'stock-level',
+          alert: 'true',
+          ...params
+        }));
         break;
       case 'analytics':
-        navigate('/charts');
+        navigate('/charts' + generateHash({
+          view: 'overview',
+          period: 'monthly',
+          ...params
+        }));
         break;
       default:
-        console.log('Navigate to:', section);
+        console.log('Navigate to:', section, 'with params:', params);
     }
   };
 

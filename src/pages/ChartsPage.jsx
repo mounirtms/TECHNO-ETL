@@ -11,7 +11,8 @@ import {
   CircularProgress,
   Alert,
   Fab,
-  Tooltip
+  Tooltip,
+  Chip
 } from '@mui/material';
 import {
   Analytics as AnalyticsIcon,
@@ -35,6 +36,7 @@ import {
 
 // Import dashboard data service
 import dashboardDataService from '../services/dashboardDataService';
+import { useDashboardParams } from '../hooks/useHashParams';
 
 /**
  * Charts Page - Dedicated analytics and charts page
@@ -42,6 +44,13 @@ import dashboardDataService from '../services/dashboardDataService';
  */
 const ChartsPage = () => {
   const theme = useTheme();
+  const {
+    getView,
+    getPeriod,
+    isRevenueView,
+    params
+  } = useDashboardParams();
+
   const [activeTab, setActiveTab] = useState(0);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
@@ -225,12 +234,39 @@ const ChartsPage = () => {
 
   return (
     <Box sx={{ p: 3 }}>
+      {/* Dashboard Context Alert */}
+      {isRevenueView() && (
+        <Alert
+          severity="info"
+          icon={<TrendingUp />}
+          sx={{ mb: 3, borderRadius: 2 }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="body2">
+              Dashboard navigation: Viewing revenue analytics
+            </Typography>
+            <Chip
+              label={`Period: ${getPeriod()}`}
+              color="primary"
+              size="small"
+            />
+            {getView() !== 'overview' && (
+              <Chip
+                label={`View: ${getView()}`}
+                color="secondary"
+                size="small"
+              />
+            )}
+          </Box>
+        </Alert>
+      )}
+
       {/* Header */}
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        mb: 3 
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        mb: 3
       }}>
         <Box>
           <Typography variant="h4" fontWeight={600} gutterBottom>

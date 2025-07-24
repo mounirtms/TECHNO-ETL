@@ -1,9 +1,12 @@
+/**
+ * Products Page - Simple product catalog view
+ */
 import React from 'react';
 import { Container, Paper } from '@mui/material';
 import { motion } from 'framer-motion';
-import ReportsGrid from '../components/grids/ReportsGrid';
+import ProductsGrid from '../components/grids/ProductsGrid';
 
-const ReportsPage = () => {
+const ProductsPage = () => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -13,11 +16,11 @@ const ReportsPage = () => {
     >
       <Container maxWidth="xl" sx={{ py: 3 }}>
         <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
-          <ReportsGrid />
+          <ProductsGrid />
         </Paper>
       </Container>
     </motion.div>
   );
 };
 
-export default ReportsPage;
+export default ProductsPage;

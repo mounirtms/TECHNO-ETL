@@ -8,17 +8,14 @@ import {
   Tabs,
   Tab,
   Paper,
-  Typography,
-  Breadcrumbs,
-  Link
+  Typography
 } from '@mui/material';
 import {
   HowToVote,
-  Timeline,
-  Home
+  Timeline
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import VotingGrid from '../components/grids/VotingGrid';
 import EnhancedVotingGrid from '../components/grids/EnhancedVotingGrid';
 import RoadmapGrid from '../components/grids/RoadmapGrid';
@@ -58,21 +55,7 @@ const VotingPage = () => {
 
   return (
     <Container maxWidth="xl" sx={{ py: 3 }}>
-      {/* Breadcrumbs */}
-      <Breadcrumbs sx={{ mb: 3 }}>
-        <Link
-          component={RouterLink}
-          to="/"
-          color="inherit"
-          sx={{ display: 'flex', alignItems: 'center' }}
-        >
-          <Home sx={{ mr: 0.5 }} fontSize="inherit" />
-          Dashboard
-        </Link>
-        <Typography color="text.primary">
-          Feature Voting
-        </Typography>
-      </Breadcrumbs>
+
 
       {/* Page Header */}
       <Box sx={{ mb: 3 }}>

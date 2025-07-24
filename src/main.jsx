@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense ,lazy } from 'react';
 import ReactDOM from 'react-dom/client';
 import {
     BrowserRouter as Router,
@@ -35,6 +35,7 @@ const VotingPage = lazy(() => import('./pages/VotingPage'));
 const InventoryPage = lazy(() => import('./pages/InventoryPage'));
 const OrdersPage = lazy(() => import('./pages/OrdersPage'));
 const CustomersPage = lazy(() => import('./pages/CustomersPage'));
+const ProductsPage = lazy(() => import('./pages/ProductsPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const ReportsPage = lazy(() => import('./pages/ReportsPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
@@ -53,7 +54,7 @@ const LoadingFallback = () => (
     >
         <CircularProgress size={40} />
         <Box sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
-            Loading...
+            Loading TECHNO-ETL...
         </Box>
     </Box>
 );
@@ -176,11 +177,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                                             <Route path="products" element={<ProductManagementPage />} />
                                             <Route path="voting" element={<VotingPage />} />
 
-                                            {/* Additional Pages */}
+                                            {/* Grid View Pages */}
                                             <Route path="inventory" element={<InventoryPage />} />
                                             <Route path="orders" element={<OrdersPage />} />
                                             <Route path="customers" element={<CustomersPage />} />
+                                            <Route path="products-catalog" element={<ProductsPage />} />
                                             <Route path="reports" element={<ReportsPage />} />
+
+                                            {/* Additional Pages */}
                                             <Route path="settings" element={<SettingsPage />} />
 
                                             {/* Nested Routes for Products */}
@@ -197,10 +201,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                                 </Routes>
                             </Suspense>
                         </RouteErrorBoundary>
-                    </ThemeProvider>
-                </LanguageProvider>
-            </AuthProvider>
-        </Router>
-    </I18nextProvider>
+                        </ThemeProvider>
+                    </LanguageProvider>
+                </AuthProvider>
+            </Router>
+        </I18nextProvider>
     </React.StrictMode>
 );

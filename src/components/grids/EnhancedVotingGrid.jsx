@@ -47,8 +47,24 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FixedSizeList as List } from 'react-window';
-import { FixedSizeGrid as VirtualGrid } from 'react-window';
+// Virtual scrolling components - fallback implementation
+const VirtualGrid = ({ children, height, width, columnCount, rowCount, rowHeight, itemData }) => {
+  // Fallback implementation without react-window
+  const items = [];
+  for (let row = 0; row < Math.min(rowCount, 20); row++) {
+    for (let col = 0; col < columnCount; col++) {
+      const index = row * columnCount + col;
+      if (index < itemData.features.length) {
+        items.push(
+          <div key={`${row}-${col}`} style={{ height: rowHeight, width: width / columnCount }}>
+            {children({ columnIndex: col, rowIndex: row, style: {}, data: itemData })}
+          </div>
+        );
+      }
+    }
+  }
+  return <div style={{ height, width, display: 'flex', flexWrap: 'wrap' }}>{items}</div>;
+};
 
 // Hooks
 import { useGridPerformance, useDebounceFilter } from '../../hooks/useGridPerformance';
