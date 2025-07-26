@@ -11,14 +11,17 @@ import {
   Typography
 } from '@mui/material';
 import {
-  HowToVote,
-  Timeline
+  HowToVote
 } from '@mui/icons-material';
+import {
+  Timeline
+} from '@mui/lab';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import VotingGrid from '../components/grids/VotingGrid';
 import EnhancedVotingGrid from '../components/grids/EnhancedVotingGrid';
 import RoadmapGrid from '../components/grids/RoadmapGrid';
+import ComponentErrorBoundary from '../components/common/ComponentErrorBoundary';
 
 /**
  * Tab panel component
@@ -93,11 +96,15 @@ const VotingPage = () => {
 
       {/* Tab Panels */}
       <TabPanel value={activeTab} index={0}>
-        <EnhancedVotingGrid userId="current_user" />
+        <ComponentErrorBoundary componentName="Enhanced Voting Grid">
+          <EnhancedVotingGrid userId="current_user" />
+        </ComponentErrorBoundary>
       </TabPanel>
-      
+
       <TabPanel value={activeTab} index={1}>
-        <RoadmapGrid />
+        <ComponentErrorBoundary componentName="Roadmap Grid">
+          <RoadmapGrid />
+        </ComponentErrorBoundary>
       </TabPanel>
     </Container>
   );

@@ -37,6 +37,7 @@ import {
 // Import dashboard data service
 import dashboardDataService from '../services/dashboardDataService';
 import { useDashboardParams } from '../hooks/useHashParams';
+import ComponentErrorBoundary from '../components/common/ComponentErrorBoundary';
 
 /**
  * Charts Page - Dedicated analytics and charts page
@@ -335,7 +336,9 @@ const ChartsPage = () => {
           ) : (
             chartTabs.map((tab, index) => (
               <TabPanel key={index} value={activeTab} index={index}>
-                {tab.content}
+                <ComponentErrorBoundary componentName={`${tab.label} Charts`}>
+                  {tab.content}
+                </ComponentErrorBoundary>
               </TabPanel>
             ))
           )}

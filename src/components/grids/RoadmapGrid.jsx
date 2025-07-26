@@ -11,12 +11,6 @@ import {
   Grid,
   Paper,
   Stack,
-  Timeline,
-  TimelineItem,
-  TimelineSeparator,
-  TimelineConnector,
-  TimelineContent,
-  TimelineDot,
   LinearProgress,
   Alert,
   Accordion,
@@ -25,6 +19,14 @@ import {
   Badge,
   Tooltip
 } from '@mui/material';
+import {
+  Timeline,
+  TimelineItem,
+  TimelineSeparator,
+  TimelineConnector,
+  TimelineContent,
+  TimelineDot
+} from '@mui/lab';
 import {
   ExpandMore,
   Schedule,

@@ -47,7 +47,7 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
-// Virtual scrolling components - fallback implementation
+// Virtual scrolling components - custom fallback implementation (no external dependencies)
 const VirtualGrid = ({ children, height, width, columnCount, rowCount, rowHeight, itemData }) => {
   // Fallback implementation without react-window
   const items = [];
