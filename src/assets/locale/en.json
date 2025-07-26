@@ -247,7 +247,10 @@
         "or": "or",
         "noAccount": "Don't have an account?",
         "signUp": "Sign Up",
-        "createAccount": "Create Account"
+        "createAccount": "Create Account",
+        "signingIn": "Signing you in...",
+        "pleaseWait": "Please wait",
+        "authenticating": "Authenticating"
     },
     "errors": {
         "networkError": "Network Error",

@@ -527,7 +527,10 @@ const UnifiedGrid = forwardRef(({
               pageSizeOptions={[10, 25, 50, 100]}
               paginationMode={paginationMode || "client"}
               // rowCount is only set for server-side pagination to avoid MUI warning
-              {...(paginationMode === "server" ? { rowCount: totalCount || 0 } : {})}
+              // Ensure rowCount is always a valid number for server-side pagination
+              {...(paginationMode === "server" ? {
+                rowCount: typeof totalCount === 'number' && totalCount >= 0 ? totalCount : memoizedData.length
+              } : {})}
               // For client-side pagination, let MUI handle the row count automatically
 
               // Sorting with performance optimization

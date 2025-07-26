@@ -4,8 +4,7 @@ import {
     Container,
     Typography,
     Button,
-    CircularProgress,
-    Backdrop,
+
     Alert,
     TextField,
     useTheme,
@@ -21,6 +20,44 @@ import Footer from '../components/Layout/Footer';
 import { FOOTER_HEIGHT } from '../components/Layout/Constants';
 import { useNavigate } from 'react-router-dom';
 import magentoApi from '../services/magentoService';
+import logoTechno from '../assets/images/logo_techno.png';
+import technoIcon from '../assets/images/techno.png';
+
+// Logo rotation animation
+const logoRotation = keyframes`
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+    25% {
+        transform: rotate(90deg) scale(1.1);
+    }
+    50% {
+        transform: rotate(180deg) scale(1);
+    }
+    75% {
+        transform: rotate(270deg) scale(1.1);
+    }
+    100% {
+        transform: rotate(360deg) scale(1);
+    }
+`;
+
+// Logo pulse animation
+const logoPulse = keyframes`
+    0% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    100% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+`;
+
 // Animated background keyframes
 const backgroundAnimation = keyframes`
     0% {
@@ -118,6 +155,63 @@ const GoogleButton = styled(Button)(({ theme }) => ({
     },
 }));
 
+// Professional Loading Component with Rotating Logo
+const LoadingOverlay = styled(Box)(({ theme }) => ({
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    backdropFilter: 'blur(10px)',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: theme.zIndex.modal + 1,
+    gap: theme.spacing(3),
+}));
+
+const RotatingLogo = styled(Box)(({ theme }) => ({
+    width: 120,
+    height: 120,
+    borderRadius: '50%',
+    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    animation: `${logoRotation} 2s linear infinite`,
+    boxShadow: `0 8px 32px rgba(0, 0, 0, 0.1)`,
+    '& img': {
+        width: '70%',
+        height: '70%',
+        objectFit: 'contain',
+        filter: 'brightness(0) invert(1)', // Make logo white
+    },
+}));
+
+const LoadingText = styled(Typography)(({ theme }) => ({
+    color: theme.palette.text.primary,
+    fontWeight: 500,
+    animation: `${logoPulse} 1.5s ease-in-out infinite`,
+    textAlign: 'center',
+}));
+
+const LoadingDots = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    gap: theme.spacing(0.5),
+    '& .dot': {
+        width: 8,
+        height: 8,
+        borderRadius: '50%',
+        backgroundColor: theme.palette.primary.main,
+        animation: `${logoPulse} 1s ease-in-out infinite`,
+        '&:nth-of-type(1)': { animationDelay: '0s' },
+        '&:nth-of-type(2)': { animationDelay: '0.2s' },
+        '&:nth-of-type(3)': { animationDelay: '0.4s' },
+    },
+}));
+
 const LoginPage = () => {
     const theme = useTheme();
     const { signInWithGoogle, signInWithMagento } = useAuth();
@@ -159,7 +253,7 @@ const LoginPage = () => {
         try {
             setLoading(true);
             setError(null);
-           
+
             await signInWithMagento(email, password);
             // Navigation handled by AuthContext
         } catch (err) {
@@ -249,7 +343,7 @@ const LoginPage = () => {
                         </Alert>
                     )}
 
-                    {/* Email/Password Login Form */}
+                    {/* Email/Password Login Form 
                     <Box component="form" onSubmit={handleEmailPasswordSignIn} sx={{ mt: 2 }}>
                         <TextField
                             fullWidth
@@ -280,7 +374,7 @@ const LoginPage = () => {
                         </Button>
                     </Box>
 
-                    {/* Divider */}
+                    {/* Divider  
                     <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
                         <Box sx={{ flexGrow: 1, height: '1px', backgroundColor: theme.palette.divider }} />
                         <Typography variant="body2" sx={{ mx: 2, color: theme.palette.text.secondary }}>
@@ -288,7 +382,7 @@ const LoginPage = () => {
                         </Typography>
                         <Box sx={{ flexGrow: 1, height: '1px', backgroundColor: theme.palette.divider }} />
                     </Box>
-
+ */}
                     {/* Google Sign-In Button */}
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <GoogleButton
@@ -302,22 +396,26 @@ const LoginPage = () => {
                         </GoogleButton>
                     </Box>
 
-                    
+
                 </LoginCard>
             </LoginContainer>
 
-            {/* Full-screen loading spinner backdrop */}
-            <Backdrop
-                sx={{
-                    color: '#fff',
-                    zIndex: (theme) => theme.zIndex.drawer + 1,
-                    backdropFilter: 'blur(3px)',
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                }}
-                open={loading}
-            >
-                <CircularProgress color="inherit" />
-            </Backdrop>
+            {/* Professional Loading Overlay with Rotating Logo */}
+            {loading && (
+                <LoadingOverlay>
+                    <RotatingLogo>
+                        <img src={technoIcon} alt="Techno Logo" />
+                    </RotatingLogo>
+                    <LoadingText variant="h6">
+                        {translate('login.signingIn') || 'Signing you in...'}
+                    </LoadingText>
+                    <LoadingDots>
+                        <Box className="dot" />
+                        <Box className="dot" />
+                        <Box className="dot" />
+                    </LoadingDots>
+                </LoadingOverlay>
+            )}
 
             <Footer isLoginScreen={true} />
         </Box>

@@ -4,8 +4,8 @@ import { TablePagination } from '@mui/material';
 const CustomPagination = ({ rowCount, paginationModel, onPaginationModelChange }) => {
     if (!paginationModel) return null;
 
-    // Ensure count is always a valid number
-    const validCount = typeof rowCount === 'number' && rowCount >= 0 ? rowCount : 0;
+    // Ensure count is always a valid number - handle undefined, null, NaN, and negative values
+    const validCount = (typeof rowCount === 'number' && !isNaN(rowCount) && rowCount >= 0) ? rowCount : 0;
 
     return (
         <TablePagination
