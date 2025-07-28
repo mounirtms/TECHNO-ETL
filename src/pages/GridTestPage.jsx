@@ -14,7 +14,7 @@ import { useTheme } from '@mui/material/styles';
 import UnifiedGrid from '../components/common/UnifiedGrid';
 import { getStandardGridProps, getStandardToolbarConfig } from '../config/gridConfig';
 import { createProductionGridConfig } from '../config/productionGridConfig';
-import EnhancedVotingGrid from '../components/grids/EnhancedVotingGrid';
+import ProfessionalVotingGrid from '../components/grids/ProfessionalVotingGrid';
 import VotingGrid from '../components/grids/VotingGrid';
 
 const GridTestPage = () => {

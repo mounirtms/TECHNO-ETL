@@ -13,12 +13,15 @@ import { logger } from './src/utils/logger.js';
 // import { connectToDatabases } from './src/utils/database-setup.js';
 // import { quitRedisClient } from './src/utils/redisClient.js';
 import { productionConfig } from './production.config.js';
-// Import and use the main router (temporarily disabled for debugging)
-// import syncRoutes from './src/routes/syncRoutes.js';
+// Import and use the main router
+import apiRoutes from './src/routes/routes.js';
 // import mdmRoutes from './src/mdm/routes.js';
 import healthRoutes from './src/routes/healthRoutes.js';
 import metricsRoutes from './src/routes/metricsRoutes.js';
 import votingRoutes from './src/routes/votingRoutes.js';
+
+// Swagger imports (disabled for development)
+// import { specs, swaggerUi } from './swagger/swagger.config.js';
 // import dashboardRoutes from './src/routes/dashboardRoutes.js';
 // import monitoringRoutes from './src/routes/monitoringRoutes.js';
 
@@ -29,12 +32,13 @@ import votingRoutes from './src/routes/votingRoutes.js';
 // import { errorHandlingMiddleware, warningMiddleware, performanceMiddleware } from './src/middleware/errorCollector.js';
 // import usageAnalytics from './src/services/usageAnalytics.js';
 // import { proxyMagentoRequest } from './src/controllers/apiController.js';
-import {
-  requestTimingMiddleware,
-  memoryMonitoringMiddleware,
-  rateLimitMonitoringMiddleware,
-  errorTrackingMiddleware
-} from './src/middleware/performanceMiddleware.js';
+// Performance middleware (disabled for development)
+// import {
+//   requestTimingMiddleware,
+//   memoryMonitoringMiddleware,
+//   rateLimitMonitoringMiddleware,
+//   errorTrackingMiddleware
+// } from './src/middleware/performanceMiddleware.js';
 
 // Use production config for port and host (moved up before usage)
 const PORT = productionConfig.server.port;
@@ -63,10 +67,10 @@ app.use(cors(productionConfig.cors));
 // Add security headers
 app.use(helmet(productionConfig.security.helmet));
 
-// Add performance monitoring middleware
-app.use(requestTimingMiddleware);
-app.use(memoryMonitoringMiddleware);
-app.use(rateLimitMonitoringMiddleware);
+// Add performance monitoring middleware (disabled for development)
+// app.use(requestTimingMiddleware);
+// app.use(memoryMonitoringMiddleware);
+// app.use(rateLimitMonitoringMiddleware);
 
 // Apply production logging and monitoring middleware (temporarily disabled)
 // app.use(requestResponseMiddleware);
@@ -168,13 +172,44 @@ app.get('/api/health', (req, res) => {
 
 
 // app.use('/api/mdm', mdmRoutes);
-// app.use('/api/mdm', syncRoutes);
 // app.use('/api/dashboard', dashboardRoutes);
 // app.use('/api/monitoring', monitoringRoutes);
 // app.all('/api/magento/*', proxyMagentoRequest);
+// API Documentation with Swagger (disabled for development)
+// app.use('/api-docs', swaggerUi.serve);
+// app.get('/api-docs', swaggerUi.setup(specs, {
+//   explorer: true,
+//   customCss: '.swagger-ui .topbar { display: none }',
+//   customSiteTitle: 'TECHNO-ETL API Documentation',
+//   customfavIcon: '/favicon.ico',
+//   swaggerOptions: {
+//     persistAuthorization: true,
+//     displayRequestDuration: true,
+//     filter: true,
+//     showExtensions: true,
+//     showCommonExtensions: true
+//   }
+// }));
+
+// API Routes
+console.log('🔧 Mounting API routes...');
 app.use('/api', healthRoutes);
 app.use('/api/metrics', metricsRoutes);
 app.use('/api/voting', votingRoutes);
+
+// Test sync route mounting
+app.get('/api/sync/test', (req, res) => {
+    res.json({ message: 'Sync routes are working!', timestamp: new Date().toISOString() });
+});
+
+try {
+    app.use('/api', apiRoutes);
+    console.log('✅ Sync routes mounted successfully');
+} catch (error) {
+    console.error('❌ Error mounting sync routes:', error.message);
+}
+
+console.log('✅ API routes mounted successfully');
 
 // =========================
 // 4. Error Handling

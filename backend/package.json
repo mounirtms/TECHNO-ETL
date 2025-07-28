@@ -29,7 +29,9 @@
     "winston": "^3.11.0",
     "winston-daily-rotate-file": "^4.7.1",
     "geoip-lite": "^1.4.10",
-    "useragent": "^2.3.0"
+    "useragent": "^2.3.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.2",

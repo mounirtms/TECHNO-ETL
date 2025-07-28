@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Paper, Box, Chip, Typography, Alert } from '@mui/material';
 import { motion } from 'framer-motion';
-import { Priority, Warning } from '@mui/icons-material';
+import { PriorityHigh, Warning } from '@mui/icons-material';
 import OrdersGrid from '../components/grids/OrdersGrid';
 import { useDashboardParams } from '../hooks/useHashParams';
 
@@ -54,7 +54,7 @@ const OrdersPage = () => {
                   label="High Priority"
                   color="error"
                   size="small"
-                  icon={<Priority />}
+                  icon={<PriorityHigh />}
                 />
               )}
             </Box>

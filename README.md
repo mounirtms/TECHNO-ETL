@@ -183,7 +183,7 @@ const gridConfig = getStandardGridProps('voting', {
 - **Search Response**: < 100ms with debouncing
 
 #### **Backend Integration**
-- **API Endpoints**: `/api/voting/*` - Full CRUD operations
+- **API Endpoints**: `/api/task*` - Full CRUD operations
 - **Real-time Updates**: WebSocket support for live voting
 - **Caching Strategy**: Redis + in-memory fallback
 - **Response Times**: 2-15ms average API response
@@ -211,10 +211,10 @@ PM2 Status: ✅ ONLINE
 └── techno-etl-cron    - Scheduled tasks
 
 API Endpoints: ✅ ALL WORKING
-├── GET /api/voting/features      - Feature listing
-├── POST /api/voting/features     - Create features
-├── POST /api/voting/features/:id/vote - Vote management
-└── GET /api/voting/roadmap       - Roadmap data
+├── GET /api/taskfeatures      - Feature listing
+├── POST /api/taskfeatures     - Create features
+├── POST /api/taskfeatures/:id/vote - Vote management
+└── GET /api/taskroadmap       - Roadmap data
 ```
 
 #### **✅ Frontend - PRODUCTION READY**

@@ -23,6 +23,10 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import i18n from './config/i18n';
 import './index.css';
+import AppInitializer from './components/common/AppInitializer';
+
+// Import settings cleanup to run on startup
+import './utils/settingsCleanup';
 
 // Lazy Load Components for Performance with optimized chunking
 const Layout = lazy(() => import('./components/Layout/Layout'));
@@ -159,8 +163,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     <LanguageProvider>
                         <ThemeProvider>
                             <SettingsProvider>
-                                <CssBaseline />
-                                <ToastContainer position="bottom-left" autoClose={3000} limit={3} />
+                                <AppInitializer>
+                                    <CssBaseline />
+                                    <ToastContainer position="bottom-left" autoClose={3000} limit={3} />
 
                         <RouteErrorBoundary>
                             <Suspense fallback={<LoadingFallback />}>
@@ -203,6 +208,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                                 </Routes>
                             </Suspense>
                         </RouteErrorBoundary>
+                                </AppInitializer>
                             </SettingsProvider>
                         </ThemeProvider>
                     </LanguageProvider>

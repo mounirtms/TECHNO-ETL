@@ -1,0 +1,311 @@
+# Voting System API Endpoints
+
+/taskfeatures:
+  get:
+    tags:
+      - Voting
+    summary: Get all voting features
+    description: Retrieve a paginated list of voting features with optional filtering
+    parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+          default: 1
+        description: Page number
+      - in: query
+        name: pageSize
+        schema:
+          type: integer
+          default: 25
+        description: Number of items per page
+      - in: query
+        name: category
+        schema:
+          type: integer
+        description: Filter by category ID
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum: [Proposed, In Review, Approved, In Development, Testing, Completed, Rejected]
+        description: Filter by status
+      - in: query
+        name: priority
+        schema:
+          type: string
+          enum: [Low, Medium, High, Critical]
+        description: Filter by priority
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Search term for title or description
+      - in: query
+        name: sortBy
+        schema:
+          type: string
+          default: vote_count
+        description: Sort field
+      - in: query
+        name: sortOrder
+        schema:
+          type: string
+          enum: [ASC, DESC]
+          default: DESC
+        description: Sort order
+    responses:
+      '200':
+        description: Successful response
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaginationResponse'
+            example:
+              success: true
+              data:
+                - id: 1
+                  title: "Dark Mode Support"
+                  description: "Add dark mode theme support"
+                  category_name: "Feature Request"
+                  priority: "High"
+                  status: "Proposed"
+                  vote_count: 25
+                  created_at: "2024-01-15T10:30:00Z"
+              pagination:
+                page: 1
+                pageSize: 25
+                total: 50
+                totalPages: 2
+      '400':
+        $ref: '#/components/responses/BadRequest'
+      '500':
+        $ref: '#/components/responses/InternalServerError'
+
+  post:
+    tags:
+      - Voting
+    summary: Create a new voting feature
+    description: Submit a new feature request for voting
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [title, description]
+            properties:
+              title:
+                type: string
+                example: "Dark Mode Support"
+              description:
+                type: string
+                example: "Add dark mode theme support to the application"
+              category_id:
+                type: integer
+                example: 1
+              priority:
+                type: string
+                enum: [Low, Medium, High, Critical]
+                default: Medium
+              created_by:
+                type: string
+                example: "user123"
+    responses:
+      '201':
+        description: Feature created successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+            example:
+              success: true
+              message: "Feature created successfully"
+              data:
+                id: 1
+                title: "Dark Mode Support"
+                status: "Proposed"
+                vote_count: 0
+      '400':
+        $ref: '#/components/responses/BadRequest'
+      '500':
+        $ref: '#/components/responses/InternalServerError'
+
+/taskfeatures/{id}:
+  get:
+    tags:
+      - Voting
+    summary: Get feature by ID
+    description: Retrieve a specific voting feature by its ID
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        description: Feature ID
+    responses:
+      '200':
+        description: Successful response
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+            example:
+              success: true
+              data:
+                id: 1
+                title: "Dark Mode Support"
+                description: "Add dark mode theme support"
+                vote_count: 25
+                status: "Proposed"
+      '404':
+        $ref: '#/components/responses/NotFound'
+      '500':
+        $ref: '#/components/responses/InternalServerError'
+
+/taskfeatures/{id}/vote:
+  post:
+    tags:
+      - Voting
+    summary: Vote for a feature
+    description: Cast a vote for a specific feature
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        description: Feature ID
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              vote_type:
+                type: string
+                enum: [upvote, downvote]
+                default: upvote
+              user_id:
+                type: string
+                example: "user123"
+              user_email:
+                type: string
+                example: "user@example.com"
+              user_name:
+                type: string
+                example: "John Doe"
+    responses:
+      '200':
+        description: Vote recorded successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+            example:
+              success: true
+              message: "Vote recorded successfully"
+              data:
+                vote_id: 1
+                vote_type: "upvote"
+                feature_id: 1
+      '400':
+        $ref: '#/components/responses/BadRequest'
+      '500':
+        $ref: '#/components/responses/InternalServerError'
+
+/taskcategories:
+  get:
+    tags:
+      - Voting
+    summary: Get voting categories
+    description: Retrieve all available voting categories
+    responses:
+      '200':
+        description: Successful response
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+            example:
+              success: true
+              data:
+                - id: 1
+                  name: "Feature Request"
+                  description: "New feature suggestions"
+                  color: "#2196F3"
+                - id: 2
+                  name: "Bug Report"
+                  description: "Bug fixes and improvements"
+                  color: "#f44336"
+      '500':
+        $ref: '#/components/responses/InternalServerError'
+
+/taskstats:
+  get:
+    tags:
+      - Voting
+    summary: Get voting statistics
+    description: Retrieve overall voting system statistics
+    responses:
+      '200':
+        description: Successful response
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+            example:
+              success: true
+              data:
+                total_features: 150
+                total_votes: 1250
+                active_features: 45
+                completed_features: 25
+                top_categories:
+                  - name: "Feature Request"
+                    count: 80
+                  - name: "Bug Report"
+                    count: 45
+      '500':
+        $ref: '#/components/responses/InternalServerError'
+
+/taskuser-votes:
+  get:
+    tags:
+      - Voting
+    summary: Get user votes
+    description: Retrieve votes cast by a specific user
+    parameters:
+      - in: query
+        name: user_id
+        required: true
+        schema:
+          type: string
+        description: User ID
+      - in: query
+        name: feature_ids
+        schema:
+          type: string
+        description: Comma-separated list of feature IDs to check
+    responses:
+      '200':
+        description: Successful response
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+            example:
+              success: true
+              data:
+                - feature_id: 1
+                  vote_type: "upvote"
+                  created_at: "2024-01-15T10:30:00Z"
+                - feature_id: 3
+                  vote_type: "downvote"
+                  created_at: "2024-01-14T15:20:00Z"
+      '400':
+        $ref: '#/components/responses/BadRequest'
+      '500':
+        $ref: '#/components/responses/InternalServerError'

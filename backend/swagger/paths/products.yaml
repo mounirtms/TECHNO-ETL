@@ -1,0 +1,323 @@
+# Product Management API Endpoints
+
+/products:
+  get:
+    tags:
+      - Products
+    summary: Get all products
+    description: Retrieve a paginated list of products with optional filtering
+    parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+          default: 1
+        description: Page number
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 25
+        description: Number of items per page
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Search term for product name or SKU
+      - in: query
+        name: category
+        schema:
+          type: string
+        description: Filter by category
+      - in: query
+        name: brand
+        schema:
+          type: string
+        description: Filter by brand
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum: [active, inactive, discontinued]
+        description: Filter by status
+    responses:
+      '200':
+        description: Successful response
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaginationResponse'
+            example:
+              success: true
+              data:
+                - id: 1
+                  sku: "PROD-001"
+                  name: "Sample Product"
+                  price: 29.99
+                  stock: 100
+                  category: "Electronics"
+                  brand: "TechBrand"
+                  status: "active"
+              pagination:
+                page: 1
+                pageSize: 25
+                total: 100
+                totalPages: 4
+      '400':
+        $ref: '#/components/responses/BadRequest'
+      '500':
+        $ref: '#/components/responses/InternalServerError'
+
+  post:
+    tags:
+      - Products
+    summary: Create a new product
+    description: Add a new product to the catalog
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Product'
+          example:
+            sku: "PROD-002"
+            name: "New Product"
+            description: "A brand new product"
+            price: 49.99
+            stock: 50
+            category: "Electronics"
+            brand: "TechBrand"
+            status: "active"
+    responses:
+      '201':
+        description: Product created successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+            example:
+              success: true
+              message: "Product created successfully"
+              data:
+                id: 2
+                sku: "PROD-002"
+                name: "New Product"
+                price: 49.99
+      '400':
+        $ref: '#/components/responses/BadRequest'
+      '401':
+        $ref: '#/components/responses/Unauthorized'
+      '500':
+        $ref: '#/components/responses/InternalServerError'
+
+/products/{id}:
+  get:
+    tags:
+      - Products
+    summary: Get product by ID
+    description: Retrieve a specific product by its ID
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        description: Product ID
+    responses:
+      '200':
+        description: Successful response
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+            example:
+              success: true
+              data:
+                id: 1
+                sku: "PROD-001"
+                name: "Sample Product"
+                price: 29.99
+                stock: 100
+      '404':
+        $ref: '#/components/responses/NotFound'
+      '500':
+        $ref: '#/components/responses/InternalServerError'
+
+  put:
+    tags:
+      - Products
+    summary: Update product
+    description: Update an existing product
+    security:
+      - bearerAuth: []
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        description: Product ID
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Product'
+    responses:
+      '200':
+        description: Product updated successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+      '400':
+        $ref: '#/components/responses/BadRequest'
+      '401':
+        $ref: '#/components/responses/Unauthorized'
+      '404':
+        $ref: '#/components/responses/NotFound'
+      '500':
+        $ref: '#/components/responses/InternalServerError'
+
+  delete:
+    tags:
+      - Products
+    summary: Delete product
+    description: Delete a product from the catalog
+    security:
+      - bearerAuth: []
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        description: Product ID
+    responses:
+      '200':
+        description: Product deleted successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiResponse'
+      '401':
+        $ref: '#/components/responses/Unauthorized'
+      '404':
+        $ref: '#/components/responses/NotFound'
+      '500':
+        $ref: '#/components/responses/InternalServerError'
+
+/products/sync/prices:
+  post:
+    tags:
+      - Products
+      - Sync
+    summary: Sync product prices
+    description: Synchronize product prices with external systems (Magento, MDM)
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: false
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              products:
+                type: array
+                items:
+                  type: integer
+                description: Optional array of product IDs to sync (if empty, syncs all)
+              source:
+                type: string
+                enum: [magento, mdm, all]
+                default: all
+                description: Source system to sync from
+    responses:
+      '200':
+        description: Price sync completed successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: "Price sync completed successfully"
+                data:
+                  type: object
+                  properties:
+                    synced:
+                      type: integer
+                      example: 150
+                    failed:
+                      type: integer
+                      example: 2
+                    total:
+                      type: integer
+                      example: 152
+      '401':
+        $ref: '#/components/responses/Unauthorized'
+      '500':
+        $ref: '#/components/responses/InternalServerError'
+
+/products/sync/stock:
+  post:
+    tags:
+      - Products
+      - Sync
+    summary: Sync product stock
+    description: Synchronize product stock levels with external systems
+    security:
+      - bearerAuth: []
+    requestBody:
+      required: false
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              products:
+                type: array
+                items:
+                  type: integer
+                description: Optional array of product IDs to sync
+              source:
+                type: string
+                enum: [magento, mdm, all]
+                default: all
+    responses:
+      '200':
+        description: Stock sync completed successfully
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                message:
+                  type: string
+                  example: "Stock sync completed successfully"
+                data:
+                  type: object
+                  properties:
+                    synced:
+                      type: integer
+                      example: 145
+                    failed:
+                      type: integer
+                      example: 1
+                    total:
+                      type: integer
+                      example: 146
+      '401':
+        $ref: '#/components/responses/Unauthorized'
+      '500':
+        $ref: '#/components/responses/InternalServerError'

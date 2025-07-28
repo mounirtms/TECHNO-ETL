@@ -3,16 +3,26 @@ import { ref, onValue } from 'firebase/database';
 import { database } from '../config/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useTheme } from '../contexts/ThemeContext';
+import { useCustomTheme } from '../contexts/ThemeContext';
 import { useTheme as useMuiTheme } from '@mui/material/styles';
 import magentoApi from './magentoApi';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
+// Configure axios base URL for backend API
+const API_BASE_URL = 'http://localhost:5000/api';
+const apiClient = axios.create({
+    baseURL: API_BASE_URL,
+    timeout: 10000,
+    headers: {
+        'Content-Type': 'application/json'
+    }
+});
+
 export const useDashboardController = (startDate, endDate, refreshKey) => {
     const { currentUser } = useAuth();
     const { setLanguage } = useLanguage();
-    const themeCtx = useTheme();
+    const themeCtx = useCustomTheme();
     const theme = useMuiTheme();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -261,7 +271,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
     // Sync Prices
     const syncPrices = async (prices) => {
         try {
-            const response = await axios.post('/api/techno/prices-sync', prices);
+            const response = await apiClient.post('/mdm/sync-prices', prices);
             const requestItems = response.data?.request_items || [];
             const acceptedCount = requestItems.filter(item => item.status === 'accepted').length;
             if (acceptedCount === prices.length) {
@@ -270,6 +280,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                 toast.warn(`Partial sync: ${acceptedCount} of ${prices.length} items accepted`);
             }
         } catch (error) {
+            console.error('❌ Price sync error:', error);
             toast.error('Failed to sync prices');
         }
     };
@@ -278,7 +289,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
     const syncAllStocks = async () => {
         try {
             console.log('🔄 Starting stock sync from MDM...');
-            const response = await axios.post('/api/mdm/inventory/sync-all-stocks-sources');
+            const response = await apiClient.post('/mdm/sync-stocks');
 
             console.log('✅ Stock sync response:', response.data);
             toast.success('✅ Stock sync operation completed successfully');
@@ -297,15 +308,15 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
         }
     };
 
-    // Sync Prices from MDM
+    // Get Prices from MDM
     const getPrices = async () => {
         try {
             console.log('🔄 Starting price sync from MDM...');
-            const response = await axios.get('/api/mdm/sync/prices');
+            const response = await apiClient.get('/mdm/sync-prices');
 
             console.log('✅ Price sync response:', response.data);
             toast.success('✅ Price sync operation completed successfully');
-debugger
+
             // Refresh dashboard data after sync
             setTimeout(() => {
                 fetchDashboardData();

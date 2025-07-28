@@ -11,11 +11,12 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   CHARTS: '/charts',
   PRODUCTS: '/products',
-  VOTING: '/voting',
+  TASKS: '/tasks',
   INVENTORY: '/inventory',
   ORDERS: '/orders',
   CUSTOMERS: '/customers',
   REPORTS: '/reports',
+  ANALYTICS: '/analytics',
   SETTINGS: '/settings',
 
   // Enhanced Routes
@@ -49,12 +50,12 @@ export const ROUTE_METADATA = {
     requiresAuth: true,
     breadcrumb: 'Products'
   },
-  [ROUTES.VOTING]: {
-    title: 'Voting System',
-    description: 'Voting and decision management system',
-    icon: 'HowToVote',
+  [ROUTES.TASKS]: {
+    title: 'Task Management',
+    description: 'Task management and project tracking system',
+    icon: 'Task',
     requiresAuth: true,
-    breadcrumb: 'Voting'
+    breadcrumb: 'Tasks'
   },
   [ROUTES.INVENTORY]: {
     title: 'Inventory Management',
@@ -83,6 +84,13 @@ export const ROUTE_METADATA = {
     icon: 'Assessment',
     requiresAuth: true,
     breadcrumb: 'Reports'
+  },
+  [ROUTES.ANALYTICS]: {
+    title: 'Looker Studio Analytics',
+    description: 'Interactive business intelligence dashboards',
+    icon: 'Analytics',
+    requiresAuth: true,
+    breadcrumb: 'Analytics'
   },
   [ROUTES.SETTINGS]: {
     title: 'System Settings',
@@ -263,10 +271,18 @@ export const NAVIGATION_ITEMS = [
     ]
   },
   {
-    path: ROUTES.VOTING,
-    label: 'Voting',
-    icon: 'HowToVote',
+    path: ROUTES.ANALYTICS,
+    label: 'Analytics',
+    icon: 'Analytics',
     order: 8,
+    badge: null,
+    submenu: []
+  },
+  {
+    path: ROUTES.TASKS,
+    label: 'Tasks',
+    icon: 'Task',
+    order: 9,
     badge: null,
     submenu: []
   },

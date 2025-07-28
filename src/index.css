@@ -13,6 +13,8 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  /* Smooth transitions for RTL/LTR changes */
+  transition: all 0.3s ease-in-out;
 }
 
 #root {
@@ -236,4 +238,32 @@ body {
 [dir="rtl"] .MuiFab-root {
   left: 16px;
   right: auto;
+}
+
+/* RTL/LTR Smooth Transitions - Prevent Flickering */
+html[dir="rtl"] {
+  transition: all 0.3s ease-in-out;
+}
+
+html[dir="ltr"] {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Prevent layout jumping during language transitions */
+.MuiAppBar-root,
+.MuiDrawer-root,
+.MuiMenu-root,
+.MuiPaper-root {
+  transition: all 0.3s ease-in-out !important;
+}
+
+/* Smooth menu transitions for RTL */
+[dir="rtl"] .MuiMenu-paper {
+  transform-origin: top right !important;
+  transition: transform 0.3s ease-in-out !important;
+}
+
+[dir="ltr"] .MuiMenu-paper {
+  transform-origin: top left !important;
+  transition: transform 0.3s ease-in-out !important;
 }

@@ -1,4 +1,0 @@
-<odoo>
-    <menuitem id="menu_magento_cegid_dashboard" name="Magento Cegid Dashboard" sequence="10" />
-    <menuitem id="menu_magento_cegid_dashboard_main" name="Dashboard" parent="menu_magento_cegid_dashboard" action="action_magento_cegid_dashboard" sequence="10" />
-</odoo>

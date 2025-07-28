@@ -198,10 +198,23 @@ const createCustomTheme = (mode) => {
 };
 
 export const ThemeProvider = ({ children }) => {
+  // Unified settings storage - single source of truth
+  const getUnifiedSettings = () => {
+    try {
+      const unifiedSettings = localStorage.getItem('techno-etl-settings');
+      if (unifiedSettings) {
+        return JSON.parse(unifiedSettings);
+      }
+    } catch (error) {
+      console.warn('Error parsing unified settings:', error);
+    }
+    return null;
+  };
+
   const [mode, setMode] = useState(() => {
-    const savedMode = localStorage.getItem('themeMode');
-    if (savedMode) {
-      return savedMode;
+    const settings = getUnifiedSettings();
+    if (settings?.theme && settings.theme !== 'system') {
+      return settings.theme;
     }
 
     // Use system preference as default
@@ -213,25 +226,82 @@ export const ThemeProvider = ({ children }) => {
   });
 
   const [fontSize, setFontSize] = useState(() => {
-    const savedFontSize = localStorage.getItem('fontSize');
-    return savedFontSize || 'medium';
+    const settings = getUnifiedSettings();
+    return settings?.fontSize || 'medium';
   });
 
+  // Unified settings save function
+  const saveUnifiedSettings = useCallback((newSettings) => {
+    try {
+      const currentSettings = getUnifiedSettings() || {};
+      const updatedSettings = { ...currentSettings, ...newSettings };
+      localStorage.setItem('techno-etl-settings', JSON.stringify(updatedSettings));
+    } catch (error) {
+      console.error('Error saving unified settings:', error);
+    }
+  }, []);
+
+  // System theme change listener
   useEffect(() => {
-    localStorage.setItem('themeMode', mode);
-  }, [mode]);
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const handleSystemThemeChange = (e) => {
+      const settings = getUnifiedSettings();
+      const shouldFollowSystem = !settings?.theme || settings.theme === 'system';
+
+      if (shouldFollowSystem) {
+        setMode(e.matches ? 'dark' : 'light');
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleSystemThemeChange);
+    return () => mediaQuery.removeEventListener('change', handleSystemThemeChange);
+  }, []);
+
+  // Save to unified settings when theme or fontSize changes
+  useEffect(() => {
+    saveUnifiedSettings({ theme: mode });
+  }, [mode, saveUnifiedSettings]);
 
   useEffect(() => {
-    localStorage.setItem('fontSize', fontSize);
-  }, [fontSize]);
+    saveUnifiedSettings({ fontSize });
+  }, [fontSize, saveUnifiedSettings]);
 
   // Memoized theme creation to prevent unnecessary re-renders
   const theme = useMemo(() => createCustomTheme(mode), [mode]);
 
-  // Memoized toggle function to prevent re-renders
+  // Enhanced toggle function that respects user preferences
   const toggleTheme = useCallback(() => {
     setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
   }, []);
+
+  // Set specific theme mode
+  const setThemeMode = useCallback((newMode) => {
+    if (['light', 'dark', 'system'].includes(newMode)) {
+      if (newMode === 'system') {
+        // Apply system preference
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setMode(systemPrefersDark ? 'dark' : 'light');
+      } else {
+        setMode(newMode);
+      }
+    }
+  }, []);
+
+  // Apply user settings from login
+  const applyUserThemeSettings = useCallback((userSettings) => {
+    if (userSettings?.preferences) {
+      const { theme, fontSize: userFontSize } = userSettings.preferences;
+
+      if (theme) {
+        setThemeMode(theme);
+      }
+
+      if (userFontSize) {
+        setFontSize(userFontSize);
+      }
+    }
+  }, [setThemeMode]);
 
   // Memoized setFontSize to prevent re-renders
   const memoizedSetFontSize = useCallback((newFontSize) => {
@@ -242,10 +312,12 @@ export const ThemeProvider = ({ children }) => {
   const value = useMemo(() => ({
     mode,
     toggleTheme,
+    setThemeMode,
+    applyUserThemeSettings,
     isDark: mode === 'dark',
     fontSize,
     setFontSize: memoizedSetFontSize
-  }), [mode, toggleTheme, fontSize, memoizedSetFontSize]);
+  }), [mode, toggleTheme, setThemeMode, applyUserThemeSettings, fontSize, memoizedSetFontSize]);
 
   return (
     <ThemeContext.Provider value={value}>
@@ -256,10 +328,10 @@ export const ThemeProvider = ({ children }) => {
   );
 };
 
-export const useTheme = () => {
+export const useCustomTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error('useCustomTheme must be used within a ThemeProvider');
   }
   return context;
 };

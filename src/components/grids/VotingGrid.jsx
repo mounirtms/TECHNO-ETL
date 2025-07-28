@@ -268,14 +268,7 @@ const VotingGrid = ({ userId = 'current_user' }) => {
       {/* Header */}
       <Paper sx={{ p: 3, mb: 3 }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-          <Box>
-            <Typography variant="h4" gutterBottom>
-              Feature Voting & Roadmap
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              Vote for features you'd like to see implemented and track our development roadmap
-            </Typography>
-          </Box>
+        
           <Stack direction="row" spacing={1}>
             <Button
               variant="outlined"

@@ -35,29 +35,86 @@ export const useLanguage = () => {
 };
 
 export const LanguageProvider = ({ children }) => {
+  // Unified settings storage
+  const getUnifiedSettings = () => {
+    try {
+      const unifiedSettings = localStorage.getItem('techno-etl-settings');
+      if (unifiedSettings) {
+        return JSON.parse(unifiedSettings);
+      }
+    } catch (error) {
+      console.warn('Error parsing unified settings:', error);
+    }
+    return null;
+  };
+
   const [currentLanguage, setCurrentLanguage] = useState(() => {
-    const savedLang = localStorage.getItem('language');
-    return savedLang || 'en';
+    const settings = getUnifiedSettings();
+    if (settings?.language && languages[settings.language]) {
+      return settings.language;
+    }
+
+    // Try to detect browser language
+    const browserLang = navigator.language.split('-')[0];
+    if (languages[browserLang]) {
+      return browserLang;
+    }
+
+    // Default to English
+    return 'en';
   });
+
+  // Unified settings save function
+  const saveUnifiedSettings = useCallback((newSettings) => {
+    try {
+      const currentSettings = getUnifiedSettings() || {};
+      const updatedSettings = { ...currentSettings, ...newSettings };
+      localStorage.setItem('techno-etl-settings', JSON.stringify(updatedSettings));
+    } catch (error) {
+      console.error('Error saving unified settings:', error);
+    }
+  }, []);
 
   // Memoized language configuration to prevent unnecessary re-renders
   const currentLangConfig = useMemo(() => languages[currentLanguage], [currentLanguage]);
 
+  // Smooth RTL transition - prevent flickering
   useEffect(() => {
-    localStorage.setItem('language', currentLanguage);
-    document.documentElement.setAttribute('dir', currentLangConfig.dir);
-    document.documentElement.setAttribute('lang', currentLangConfig.code);
-  }, [currentLanguage, currentLangConfig]);
+    // Use requestAnimationFrame to ensure smooth transition
+    requestAnimationFrame(() => {
+      document.documentElement.setAttribute('dir', currentLangConfig.dir);
+      document.documentElement.setAttribute('lang', currentLangConfig.code);
 
-  // Memoized setLanguage function to prevent re-renders
+      // Add transition class for smooth layout changes
+      document.body.style.transition = 'all 0.3s ease-in-out';
+
+      // Save to unified settings
+      saveUnifiedSettings({ language: currentLanguage });
+
+      // Remove transition after animation completes
+      setTimeout(() => {
+        document.body.style.transition = '';
+      }, 300);
+    });
+  }, [currentLanguage, currentLangConfig, saveUnifiedSettings]);
+
+  // Enhanced setLanguage function with smooth transitions
   const setLanguage = useCallback((lang) => {
     if (languages[lang]) {
       setCurrentLanguage(lang);
-      localStorage.setItem('language', lang);
-      document.documentElement.setAttribute('dir', languages[lang].dir);
-      document.documentElement.setAttribute('lang', languages[lang].code);
+      // The useEffect above will handle the DOM updates and storage
     }
   }, []);
+
+  // Apply user language settings from login
+  const applyUserLanguageSettings = useCallback((userSettings) => {
+    if (userSettings?.preferences?.language) {
+      const userLanguage = userSettings.preferences.language;
+      if (languages[userLanguage]) {
+        setLanguage(userLanguage);
+      }
+    }
+  }, [setLanguage]);
 
   // Memoized translate function with caching to prevent excessive logging
   const translate = useCallback((key) => {
@@ -86,9 +143,10 @@ export const LanguageProvider = ({ children }) => {
   const contextValue = useMemo(() => ({
     currentLanguage,
     setLanguage,
+    applyUserLanguageSettings,
     translate,
     languages
-  }), [currentLanguage, setLanguage, translate]);
+  }), [currentLanguage, setLanguage, applyUserLanguageSettings, translate]);
 
   return (
     <LanguageContext.Provider value={contextValue}>

@@ -42,7 +42,7 @@ import {
   CheckCircle,
   Warning
 } from '@mui/icons-material';
-import { useTheme } from '../../../contexts/ThemeContext';
+import { useCustomTheme } from '../../../contexts/ThemeContext';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useSettings } from '../../../contexts/SettingsContext';

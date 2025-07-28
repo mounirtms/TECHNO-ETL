@@ -17,7 +17,6 @@ backend/.env
 backend/src/config/*
 backend/queries
 # Editor directories and files
-
 .idea
 .DS_Store
 *.suo
@@ -25,7 +24,5 @@ backend/queries
 *.njsproj
 *.sln
 *.sw?
-.env
 odoo_module
-
 package-lock.json

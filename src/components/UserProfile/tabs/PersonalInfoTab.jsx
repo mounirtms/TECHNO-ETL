@@ -17,7 +17,7 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import SaveIcon from '@mui/icons-material/Save';
 import SyncIcon from '@mui/icons-material/Sync';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import { useTheme } from '../../../contexts/ThemeContext';
+import { useCustomTheme } from '../../../contexts/ThemeContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useProfileController } from '../ProfileController';
 

@@ -24,12 +24,13 @@ const Login = lazy(() => import('../pages/Login'));
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const ChartsPage = lazy(() => import('../pages/ChartsPage'));
 const ProductManagementPage = lazy(() => import('../pages/ProductManagementPage'));
-const VotingPage = lazy(() => import('../pages/VotingPage'));
+const TaskPage = lazy(() => import('../pages/VotingPage'));
 const InventoryPage = lazy(() => import('../pages/InventoryPage'));
 const OrdersPage = lazy(() => import('../pages/OrdersPage'));
 const CustomersPage = lazy(() => import('../pages/CustomersPage'));
 const SettingsPage = lazy(() => import('../pages/SettingsPage'));
 const ReportsPage = lazy(() => import('../pages/ReportsPage'));
+const AnalyticsPage = lazy(() => import('../pages/AnalyticsPage'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 
 // Grid Test Page for development
@@ -264,10 +265,19 @@ const EnhancedRouter = () => {
                 />
                 
                 <Route
-                  path="voting"
+                  path="tasks"
                   element={
-                    <Suspense fallback={<EnhancedLoadingFallback routeName="Voting System" />}>
-                      <VotingPage />
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Task Management" />}>
+                      <TaskPage />
+                    </Suspense>
+                  }
+                />
+
+                <Route
+                  path="analytics"
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Looker Studio Analytics" />}>
+                      <AnalyticsPage />
                     </Suspense>
                   }
                 />

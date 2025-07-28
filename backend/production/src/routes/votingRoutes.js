@@ -9,21 +9,21 @@ const router = express.Router();
 // ===== FEATURE ROUTES =====
 
 /**
- * GET /api/voting/features
+ * GET /api/taskfeatures
  * Get all features with vote counts
  * Query params: status, category, priority, limit
  */
 router.get('/features', votingController.getFeatures);
 
 /**
- * POST /api/voting/features
+ * POST /api/taskfeatures
  * Create a new feature request
  * Body: { title, description, category, priority, created_by }
  */
 router.post('/features', votingController.createFeature);
 
 /**
- * PUT /api/voting/features/:featureId/status
+ * PUT /api/taskfeatures/:featureId/status
  * Update feature status (admin only)
  * Body: { status, target_release?, estimated_effort? }
  */
@@ -32,21 +32,21 @@ router.put('/features/:featureId/status', votingController.updateFeatureStatus);
 // ===== VOTING ROUTES =====
 
 /**
- * POST /api/voting/features/:featureId/vote
+ * POST /api/taskfeatures/:featureId/vote
  * Vote for a feature
  * Body: { userId }
  */
 router.post('/features/:featureId/vote', votingController.voteForFeature);
 
 /**
- * DELETE /api/voting/features/:featureId/vote
+ * DELETE /api/taskfeatures/:featureId/vote
  * Remove vote from a feature
  * Body: { userId }
  */
 router.delete('/features/:featureId/vote', votingController.removeVote);
 
 /**
- * GET /api/voting/votes/user
+ * GET /api/taskvotes/user
  * Get user's votes
  * Query params: userId
  */
@@ -55,13 +55,13 @@ router.get('/votes/user', votingController.getUserVotes);
 // ===== ROADMAP ROUTES =====
 
 /**
- * GET /api/voting/roadmap
+ * GET /api/taskroadmap
  * Get roadmap data with features grouped by status
  */
 router.get('/roadmap', votingController.getRoadmap);
 
 /**
- * GET /api/voting/release-notes
+ * GET /api/taskrelease-notes
  * Get release notes
  * Query params: published, version, limit
  */
@@ -70,7 +70,7 @@ router.get('/release-notes', votingController.getReleaseNotes);
 // ===== DEMO DATA ROUTES (for testing) =====
 
 /**
- * POST /api/voting/demo/seed
+ * POST /api/taskdemo/seed
  * Seed demo data for testing (development only)
  */
 router.post('/demo/seed', async (req, res) => {
@@ -151,7 +151,7 @@ router.post('/demo/seed', async (req, res) => {
 });
 
 /**
- * GET /api/voting/demo/status
+ * GET /api/taskdemo/status
  * Get demo data status
  */
 router.get('/demo/status', async (req, res) => {
@@ -165,10 +165,10 @@ router.get('/demo/status', async (req, res) => {
       demo_mode: process.env.NODE_ENV !== 'production',
       features_count: features?.length || 0,
       endpoints: {
-        features: '/api/voting/features',
-        roadmap: '/api/voting/roadmap',
-        vote: '/api/voting/features/:id/vote',
-        user_votes: '/api/voting/votes/user'
+        features: '/api/taskfeatures',
+        roadmap: '/api/taskroadmap',
+        vote: '/api/taskfeatures/:id/vote',
+        user_votes: '/api/taskvotes/user'
       }
     });
   } catch (error) {

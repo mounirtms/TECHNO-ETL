@@ -16,8 +16,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { styled } from '@mui/material/styles';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { useTab } from '../../contexts/TabContext'; // Add this import
-import { toast } from 'react-toastify'; // Add this import
+import { useTab } from '../../contexts/TabContext';
+import { toast } from 'react-toastify';
 
 const StyledMenu = styled(Menu)(({ theme }) => ({
     '& .MuiPaper-root': {
@@ -45,7 +45,7 @@ const UserMenu = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const { currentUser, logout } = useAuth();
     const { translate } = useLanguage();
-    const { openTab } = useTab(); // Add this line
+    const { openTab } = useTab();
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -57,6 +57,11 @@ const UserMenu = () => {
 
     const handleOpenProfile = () => {
         openTab('UserProfile');
+        handleClose();
+    };
+
+    const handleOpenSettings = () => {
+        openTab('Settings');
         handleClose();
     };
 
@@ -106,10 +111,18 @@ const UserMenu = () => {
                
                 <MenuItem onClick={handleOpenProfile}>
                     <ListItemIcon>
+                        <AccountCircleIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText primary={translate('common.profile')} />
+                </MenuItem>
+
+                <MenuItem onClick={handleOpenSettings}>
+                    <ListItemIcon>
                         <SettingsIcon fontSize="small" />
                     </ListItemIcon>
                     <ListItemText primary={translate('common.settings')} />
                 </MenuItem>
+
                 <Divider />
                 <MenuItem onClick={handleLogout}>
                     <ListItemIcon>
