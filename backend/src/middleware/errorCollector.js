@@ -3,7 +3,13 @@
  * Comprehensive error tracking with categorization and context collection
  */
 
-import productionLogger from '../services/productionLogger.js';
+// Simple console logger for clean development
+const logger = {
+    info: (message, meta = {}) => console.log(`[INFO] ${message}`, meta),
+    warn: (message, meta = {}) => console.warn(`[WARN] ${message}`, meta),
+    error: (message, meta = {}) => console.error(`[ERROR] ${message}`, meta),
+    debug: (message, meta = {}) => console.log(`[DEBUG] ${message}`, meta)
+};
 
 // Error categories
 export const ERROR_CATEGORIES = {
@@ -152,7 +158,7 @@ class ErrorCollector {
     this.updateErrorStats(errorData);
 
     // Log the error
-    productionLogger.logCategorizedError(error, category, errorData);
+    logger.error('Categorized error collected', { category, ...errorData });
 
     return errorData;
   }
@@ -172,7 +178,7 @@ class ErrorCollector {
     this.updateWarningStats(warningData);
 
     // Log the warning
-    productionLogger.warn('System warning collected', {
+    logger.warn('System warning collected', {
       category: 'system_warning',
       warningType: type,
       ...warningData

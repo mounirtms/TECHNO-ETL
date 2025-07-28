@@ -3,7 +3,13 @@
  * Tracks API usage, resource utilization, and generates analytics reports
  */
 
-import productionLogger from './productionLogger.js';
+// Simple console logger for clean development
+const logger = {
+    info: (message, meta = {}) => console.log(`[INFO] ${message}`, meta),
+    warn: (message, meta = {}) => console.warn(`[WARN] ${message}`, meta),
+    error: (message, meta = {}) => console.error(`[ERROR] ${message}`, meta),
+    debug: (message, meta = {}) => console.log(`[DEBUG] ${message}`, meta)
+};
 import os from 'os';
 import fs from 'fs';
 
@@ -114,7 +120,7 @@ class UsageAnalytics {
     this.apiMetrics.dailyStats.set(day, this.apiMetrics.dailyStats.get(day) + 1);
 
     // Log usage analytics
-    productionLogger.logPerformance('api_usage', {
+    logger.info('API usage tracked', {
       endpoint,
       responseTime,
       statusCode,
@@ -153,7 +159,7 @@ class UsageAnalytics {
       featureMetrics.metadata.shift();
     }
 
-    productionLogger.info('Feature usage tracked', {
+    logger.info('Feature usage tracked', {
       category: 'feature_usage',
       feature,
       userId,
@@ -195,7 +201,8 @@ class UsageAnalytics {
       userMetrics.actions.shift();
     }
 
-    productionLogger.logUserActivity('behavior_tracking', userId, context.sessionId, {
+    logger.info('User behavior tracked', {
+      userId,
       action,
       context,
       timestamp: timestamp.toISOString()
@@ -255,7 +262,7 @@ class UsageAnalytics {
     });
 
     // Log resource metrics
-    productionLogger.logPerformance('resource_utilization', {
+    logger.info('Resource utilization tracked', {
       cpu: cpuMetrics,
       memory: memMetrics,
       network: networkMetrics
@@ -278,7 +285,7 @@ class UsageAnalytics {
       recommendations: this.generateRecommendations()
     };
 
-    productionLogger.info('Usage report generated', {
+    logger.info('Usage report generated', {
       category: 'usage_report',
       report
     });

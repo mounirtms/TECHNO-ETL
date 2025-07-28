@@ -281,7 +281,7 @@ const Dashboard = () => {
       if (data && data.length > 0) {
         setPriceData(data);
         setPriceSyncDialogOpen(true);
-      } else {p
+      } else {
         alert('No price data available for sync');
       }
     } catch (error) {

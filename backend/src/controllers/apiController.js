@@ -1,9 +1,17 @@
 // src/controllers/apiController.js
 import { cloudConfig, betaConfig } from '../config/magento.js';
 import MagentoService from '../services/magentoService.js';
-import productionLogger from '../services/productionLogger.js';
 import usageAnalytics from '../services/usageAnalytics.js';
 import errorCollector, { ERROR_CATEGORIES } from '../middleware/errorCollector.js';
+import crypto from 'crypto';
+
+// Simple console logger for clean development
+const logger = {
+    info: (message, meta = {}) => console.log(`[INFO] ${message}`, meta),
+    warn: (message, meta = {}) => console.warn(`[WARN] ${message}`, meta),
+    error: (message, meta = {}) => console.error(`[ERROR] ${message}`, meta),
+    debug: (message, meta = {}) => console.log(`[DEBUG] ${message}`, meta)
+};
 
 // Helper: Recursively flatten params for Magento (searchCriteria, arrays, objects)
 function flattenMagentoParams(obj, urlParams, prefix = '') {
@@ -52,7 +60,7 @@ export async function getMdmData(req, res) {
             });
         }
 
-        productionLogger.info('MDM data request initiated', {
+        logger.info('MDM data request initiated', {
             category: 'api_request',
             endpoint: 'getMdmData',
             userId: req.user?.id,
@@ -70,7 +78,7 @@ export async function getMdmData(req, res) {
         };
 
         // Log successful response
-        productionLogger.info('MDM data request completed', {
+        logger.info('MDM data request completed', {
             category: 'api_response',
             endpoint: 'getMdmData',
             responseTime,
@@ -92,7 +100,7 @@ export async function getMdmData(req, res) {
             responseTime
         });
 
-        productionLogger.error('MDM data request failed', {
+        logger.error('MDM data request failed', {
             category: 'api_error',
             endpoint: 'getMdmData',
             error: error.message,
@@ -121,7 +129,7 @@ export async function getCegiData(req, res) {
             });
         }
 
-        productionLogger.info('CEGI data request initiated', {
+        logger.info('CEGI data request initiated', {
             category: 'api_request',
             endpoint: 'getCegiData',
             userId: req.user?.id,
@@ -139,7 +147,7 @@ export async function getCegiData(req, res) {
         };
 
         // Log successful response
-        productionLogger.info('CEGI data request completed', {
+        logger.info('CEGI data request completed', {
             category: 'api_response',
             endpoint: 'getCegiData',
             responseTime,
@@ -161,7 +169,7 @@ export async function getCegiData(req, res) {
             responseTime
         });
 
-        productionLogger.error('CEGI data request failed', {
+        logger.error('CEGI data request failed', {
             category: 'api_error',
             endpoint: 'getCegiData',
             error: error.message,
@@ -188,7 +196,7 @@ export async function proxyMagentoRequest(req, res) {
         let endpoint = req.originalUrl.replace("/api/magento", "").replace(/\/+/g, "/");
 
         // Log request initiation
-        productionLogger.info('Magento proxy request initiated', {
+        logger.info('Magento proxy request initiated', {
             category: 'magento_proxy',
             action: 'request_start',
             method,
@@ -218,7 +226,7 @@ export async function proxyMagentoRequest(req, res) {
 
         // Handle preflight requests
         if (method.toLowerCase() === 'options') {
-            productionLogger.debug('Magento proxy CORS preflight', {
+            logger.debug('Magento proxy CORS preflight', {
                 category: 'magento_proxy',
                 action: 'cors_preflight',
                 correlationId: requestId
@@ -228,7 +236,7 @@ export async function proxyMagentoRequest(req, res) {
 
         if (!magentoService) {
             magentoService = new MagentoService(cloudConfig);
-            productionLogger.info('Magento service initialized', {
+            logger.info('Magento service initialized', {
                 category: 'magento_proxy',
                 action: 'service_init',
                 correlationId: requestId
@@ -242,7 +250,7 @@ export async function proxyMagentoRequest(req, res) {
             const queryString = buildMagentoQueryString(query);
             endpointWithQuery = endpoint + (queryString ? '?' + queryString : '');
 
-            productionLogger.debug('Query string built for Magento request', {
+            logger.debug('Query string built for Magento request', {
                 category: 'magento_proxy',
                 action: 'query_build',
                 originalEndpoint: endpoint,
@@ -253,7 +261,7 @@ export async function proxyMagentoRequest(req, res) {
 
         // Special case for admin token
         if (endpoint.includes('admin/token')) {
-            productionLogger.info('Magento admin token request', {
+            logger.info('Magento admin token request', {
                 category: 'magento_proxy',
                 action: 'token_request',
                 correlationId: requestId
@@ -262,7 +270,7 @@ export async function proxyMagentoRequest(req, res) {
             response = await magentoService.getToken(true);
             const responseTime = Date.now() - startTime;
 
-            productionLogger.info('Magento admin token response', {
+            logger.info('Magento admin token response', {
                 category: 'magento_proxy',
                 action: 'token_response',
                 responseTime,
@@ -273,7 +281,7 @@ export async function proxyMagentoRequest(req, res) {
             return res.json(response);
         }
 
-        productionLogger.info('Magento API request executing', {
+        logger.info('Magento API request executing', {
             category: 'magento_proxy',
             action: 'api_call',
             method: method.toUpperCase(),
@@ -298,7 +306,7 @@ export async function proxyMagentoRequest(req, res) {
                 const methodError = new Error(`Method not allowed: ${method}`);
                 methodError.status = 405;
 
-                productionLogger.warn('Magento proxy method not allowed', {
+                logger.warn('Magento proxy method not allowed', {
                     category: 'magento_proxy',
                     action: 'method_not_allowed',
                     method,
@@ -322,7 +330,7 @@ export async function proxyMagentoRequest(req, res) {
         const responseTime = Date.now() - startTime;
 
         // Log successful response
-        productionLogger.info('Magento proxy response ready', {
+        logger.info('Magento proxy response ready', {
             category: 'magento_proxy',
             action: 'response_ready',
             responseType: typeof response,
@@ -366,7 +374,7 @@ export async function proxyMagentoRequest(req, res) {
             method
         });
 
-        productionLogger.error('Magento proxy error', {
+        logger.error('Magento proxy error', {
             category: 'magento_proxy',
             action: 'request_failed',
             error: error.message,

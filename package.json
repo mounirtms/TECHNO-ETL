@@ -64,6 +64,8 @@
     "sass": "^1.81.0",
     "stylis": "^4.3.0",
     "stylis-plugin-rtl": "^2.1.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "xlsx": "^0.18.5",
     "xml2js": "^0.6.2"
   },

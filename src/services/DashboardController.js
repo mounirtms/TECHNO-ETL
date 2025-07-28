@@ -9,15 +9,7 @@ import magentoApi from './magentoApi';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
-// Configure axios base URL for backend API
-const API_BASE_URL = 'http://localhost:5000/api';
-const apiClient = axios.create({
-    baseURL: API_BASE_URL,
-    timeout: 10000,
-    headers: {
-        'Content-Type': 'application/json'
-    }
-});
+ 
 
 export const useDashboardController = (startDate, endDate, refreshKey) => {
     const { currentUser } = useAuth();
@@ -271,7 +263,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
     // Sync Prices
     const syncPrices = async (prices) => {
         try {
-            const response = await apiClient.post('/mdm/sync-prices', prices);
+            const response = await axios.post('/api/mdm/prices/sync-to-magento', { products: prices });
             const requestItems = response.data?.request_items || [];
             const acceptedCount = requestItems.filter(item => item.status === 'accepted').length;
             if (acceptedCount === prices.length) {
@@ -289,7 +281,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
     const syncAllStocks = async () => {
         try {
             console.log('🔄 Starting stock sync from MDM...');
-            const response = await apiClient.post('/mdm/sync-stocks');
+            const response = await axios.post('/api/mdm/inventory/sync-all-stocks');
 
             console.log('✅ Stock sync response:', response.data);
             toast.success('✅ Stock sync operation completed successfully');
@@ -312,7 +304,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
     const getPrices = async () => {
         try {
             console.log('🔄 Starting price sync from MDM...');
-            const response = await apiClient.get('/mdm/sync-prices');
+            const response = await axios.get('/api/mdm/prices');
 
             console.log('✅ Price sync response:', response.data);
             toast.success('✅ Price sync operation completed successfully');

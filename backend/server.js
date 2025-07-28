@@ -10,18 +10,19 @@ import timeout from 'connect-timeout';
 import rateLimit from 'express-rate-limit';
 import { logger } from './src/utils/logger.js';
 // import { SQL_QUERIES } from './src/constants/sqlQueries.js';
-// import { connectToDatabases } from './src/utils/database-setup.js';
+import { connectToDatabases } from './src/utils/database-setup.js';
 // import { quitRedisClient } from './src/utils/redisClient.js';
 import { productionConfig } from './production.config.js';
-// Import and use the main router
+// Import route modules
 import apiRoutes from './src/routes/routes.js';
-// import mdmRoutes from './src/mdm/routes.js';
+// import mdmRoutes from './src/routes/mdmRoutes.js';
+// import magentoRoutes from './src/routes/magentoRoutes.js';
 import healthRoutes from './src/routes/healthRoutes.js';
 import metricsRoutes from './src/routes/metricsRoutes.js';
 import votingRoutes from './src/routes/votingRoutes.js';
 
-// Swagger imports (disabled for development)
-// import { specs, swaggerUi } from './swagger/swagger.config.js';
+// Swagger imports
+import { specs, swaggerUi } from './swagger/simple-swagger.js';
 // import dashboardRoutes from './src/routes/dashboardRoutes.js';
 // import monitoringRoutes from './src/routes/monitoringRoutes.js';
 
@@ -31,7 +32,7 @@ import votingRoutes from './src/routes/votingRoutes.js';
 // import { userActivityMiddleware } from './src/middleware/userActivityLogger.js';
 // import { errorHandlingMiddleware, warningMiddleware, performanceMiddleware } from './src/middleware/errorCollector.js';
 // import usageAnalytics from './src/services/usageAnalytics.js';
-// import { proxyMagentoRequest } from './src/controllers/apiController.js';
+import { proxyMagentoRequest } from './src/controllers/apiController.js';
 // Performance middleware (disabled for development)
 // import {
 //   requestTimingMiddleware,
@@ -174,28 +175,30 @@ app.get('/api/health', (req, res) => {
 // app.use('/api/mdm', mdmRoutes);
 // app.use('/api/dashboard', dashboardRoutes);
 // app.use('/api/monitoring', monitoringRoutes);
-// app.all('/api/magento/*', proxyMagentoRequest);
-// API Documentation with Swagger (disabled for development)
-// app.use('/api-docs', swaggerUi.serve);
-// app.get('/api-docs', swaggerUi.setup(specs, {
-//   explorer: true,
-//   customCss: '.swagger-ui .topbar { display: none }',
-//   customSiteTitle: 'TECHNO-ETL API Documentation',
-//   customfavIcon: '/favicon.ico',
-//   swaggerOptions: {
-//     persistAuthorization: true,
-//     displayRequestDuration: true,
-//     filter: true,
-//     showExtensions: true,
-//     showCommonExtensions: true
-//   }
-// }));
+app.all('/api/magento/*', proxyMagentoRequest);
+// API Documentation with Swagger
+app.use('/api-docs', swaggerUi.serve);
+app.get('/api-docs', swaggerUi.setup(specs, {
+  explorer: true,
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'TECHNO-ETL API Documentation',
+  customfavIcon: '/favicon.ico',
+  swaggerOptions: {
+    persistAuthorization: true,
+    displayRequestDuration: true,
+    filter: true,
+    showExtensions: true,
+    showCommonExtensions: true
+  }
+}));
 
 // API Routes
 console.log('🔧 Mounting API routes...');
 app.use('/api', healthRoutes);
 app.use('/api/metrics', metricsRoutes);
 app.use('/api/voting', votingRoutes);
+// app.use('/api/mdm', mdmRoutes);
+// app.use('/api/magento', magentoRoutes);
 
 // Test sync route mounting
 app.get('/api/sync/test', (req, res) => {
@@ -247,9 +250,15 @@ app.use((err, req, res, next) => {
 // Main function to run the operations
 async function main() {
     try {
-        // Skip database connections for now - focus on API endpoints
-        console.log('⚠️ Skipping database connections - running in API-only mode');
-        logger.info('✅ Server initialized in API-only mode');
+        // Initialize database connections and tokens (temporarily disabled for debugging)
+        console.log('🔗 Initializing database connections...');
+        try {
+            await connectToDatabases();
+            logger.info('✅ Server initialized with database connections');
+        } catch (dbError) {
+            console.log('⚠️ Database connection failed, continuing in API-only mode:', dbError.message);
+            logger.warn('⚠️ Database connection failed, continuing in API-only mode');
+        }
 
         // Start the server
         startServer();
@@ -264,9 +273,11 @@ function startServer() {
     server = app.listen(PORT, HOST, () => {
         console.log(`🚀 TECHNO-ETL Backend Server running on ${HOST}:${PORT}`);
         console.log(`📊 Health check: http://${HOST}:${PORT}/api/health`);
-        console.log(`🔄 Price sync: POST http://${HOST}:${PORT}/api/mdm/sync/prices`);
-        console.log(`📦 Inventory sync: POST http://${HOST}:${PORT}/api/mdm/sync/inventory`);
-        console.log(`📈 Dashboard stats: http://${HOST}:${PORT}/api/dashboard/stats`);
+        console.log(`🔄 Price sync: POST http://${HOST}:${PORT}/api/mdm/sync-prices`);
+        console.log(`📦 Stock sync: POST http://${HOST}:${PORT}/api/mdm/sync-stocks`);
+        console.log(`🏭 Inventory sync: POST http://${HOST}:${PORT}/api/mdm/inventory/sync-all-stocks-sources`);
+        console.log(`🛒 Magento proxy: http://${HOST}:${PORT}/api/magento/*`);
+        console.log(`📚 API Documentation (Swagger): http://${HOST}:${PORT}/api-docs`);
         logger.info('✅ Server started successfully', { port: PORT, host: HOST });
     });
 }
