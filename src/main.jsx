@@ -43,6 +43,7 @@ const CustomersPage = lazy(() => import('./pages/CustomersPage'));
 const ProductsPage = lazy(() => import('./pages/ProductsPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const ReportsPage = lazy(() => import('./pages/ReportsPage'));
+const BugBountyPage = lazy(() => import('./pages/BugBountyPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 // Loading Fallback Component
@@ -193,6 +194,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
                                             {/* Additional Pages */}
                                             <Route path="settings" element={<SettingsPage />} />
+                                            <Route path="bug-bounty" element={<BugBountyPage />} />
 
                                             {/* Nested Routes for Products */}
                                             <Route path="products/:id" element={<ProductManagementPage />} />

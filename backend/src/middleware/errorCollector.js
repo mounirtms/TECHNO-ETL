@@ -214,10 +214,10 @@ class ErrorCollector {
       this.errorStats.byUser[errorData.request.userId]++;
     }
 
-    // Recent errors (keep last 100)
+    // Recent errors (keep last 20 - reduced from 100)
     this.errorStats.recent.push(errorData);
-    if (this.errorStats.recent.length > 100) {
-      this.errorStats.recent.shift();
+    if (this.errorStats.recent.length > 20) {
+      this.errorStats.recent = this.errorStats.recent.slice(-10); // Keep only last 10
     }
   }
 
@@ -231,10 +231,10 @@ class ErrorCollector {
     }
     this.warningStats.byType[warningData.type]++;
 
-    // Recent warnings (keep last 100)
+    // Recent warnings (keep last 20 - reduced from 100)
     this.warningStats.recent.push(warningData);
-    if (this.warningStats.recent.length > 100) {
-      this.warningStats.recent.shift();
+    if (this.warningStats.recent.length > 20) {
+      this.warningStats.recent = this.warningStats.recent.slice(-10); // Keep only last 10
     }
   }
 

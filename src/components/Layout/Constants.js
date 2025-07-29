@@ -45,14 +45,16 @@ export const staticPrimaryKeys = {
 };
 
 export const MENU_ITEMS = [
+    // === CORE DASHBOARD ===
     {
         id: 'Dashboard',
-        label: 'Dashboard', // Keep for backward compatibility
+        label: 'Dashboard',
         labelKey: 'navigation.dashboard',
         icon: DashboardIcon,
         path: '/dashboard',
         hidden: false,
-        licensed: true
+        licensed: true,
+        category: 'core'
     },
     {
         id: 'Charts',
@@ -61,79 +63,30 @@ export const MENU_ITEMS = [
         icon: AnalyticsIcon,
         path: '/charts',
         hidden: false,
-        licensed: true
+        licensed: true,
+        category: 'core'
     },
+
+    // === PRODUCT MANAGEMENT ===
     {
-        id: 'Voting',
-        label: 'Feature Voting',
-        labelKey: 'navigation.voting',
-        icon: HowToVoteIcon,
-        path: '/voting',
-        hidden: false,
-        licensed: true
-    },
-     {
         id: 'ProductsGrid',
         label: 'Products',
         labelKey: 'navigation.products',
         icon: InventoryIcon,
         path: '/products',
         hidden: false,
-        licensed: true
+        licensed: true,
+        category: 'products'
     },
     {
         id: 'ProductCatalog',
-        label: 'Products Catalog',
+        label: 'Product Catalog',
         labelKey: 'navigation.productCatalog',
         icon: SettingsIcon,
         path: '/productsManagement',
         hidden: false,
-        licensed: true
-    },
-    {
-        id: 'MDMProductsGrid',
-        label: 'MDM Products',
-        labelKey: 'navigation.mdmProducts',
-        icon: InventoryIcon,
-        path: '/mdmproducts',
-        hidden: false,
-        licensed: true
-    },
-    {
-        id: 'CegidProductsGrid',
-        label: 'Cegid Products',
-        labelKey: 'navigation.cegidProducts',
-        icon: StorefrontIcon,
-        path: '/cegid-products',
-        hidden: false,
-        licensed: true
-    },
-    {
-        id: 'CustomersGrid',
-        label: 'Customers',
-        labelKey: 'navigation.customers',
-        icon: PeopleIcon,
-        path: '/customers',
-        hidden: false,
-        licensed: true
-    },
-    {
-        id: 'OrdersGrid',
-        label: 'Orders',
-        labelKey: 'navigation.orders',
-        icon: ShoppingCartIcon,
-        path: '/orders',
-        hidden: false,
-        licensed: true
-    },
-    {
-        id: 'InvoicesGrid',
-        label: 'Invoices',
-        labelKey: 'navigation.invoices',
-        icon: ReceiptIcon,
-        path: '/invoices',
-        hidden: false,
-        licensed: true
+        licensed: true,
+        category: 'products'
     },
     {
         id: 'CategoryTree',
@@ -142,35 +95,87 @@ export const MENU_ITEMS = [
         icon: CategoryIcon,
         path: '/categories',
         hidden: false,
-        licensed: true
+        licensed: true,
+        category: 'products'
     },
+
+    // === INVENTORY & STOCK ===
     {
         id: 'StocksGrid',
-        label: 'Stocks',
+        label: 'Inventory & Stocks',
         labelKey: 'navigation.stocks',
         icon: Inventory2Icon,
         path: '/stocks',
         hidden: false,
-        licensed: true
+        licensed: true,
+        category: 'inventory'
     },
     {
         id: 'SourcesGrid',
-        label: 'Sources',
+        label: 'Sources & Warehouses',
         labelKey: 'navigation.sources',
         icon: WarehouseIcon,
         path: '/sources',
         hidden: false,
-        licensed: true
+        licensed: true,
+        category: 'inventory'
+    },
+
+    // === DATA INTEGRATION ===
+    {
+        id: 'MDMProductsGrid',
+        label: 'MDM Products',
+        labelKey: 'navigation.mdmProducts',
+        icon: InventoryIcon,
+        path: '/mdmproducts',
+        hidden: false,
+        licensed: true,
+        category: 'integration'
     },
     {
-        id: 'UserProfile',
-        label: 'User Profile',
-        labelKey: 'navigation.userProfile',
-        icon: AccountCircleIcon,
-        path: '/profile',
-        hidden: true,
-        licensed: true
+        id: 'CegidProductsGrid',
+        label: 'Cegid Products',
+        labelKey: 'navigation.cegidProducts',
+        icon: StorefrontIcon,
+        path: '/cegid-products',
+        hidden: false,
+        licensed: true,
+        category: 'integration'
     },
+
+    // === SALES & CUSTOMERS ===
+    {
+        id: 'OrdersGrid',
+        label: 'Orders',
+        labelKey: 'navigation.orders',
+        icon: ShoppingCartIcon,
+        path: '/orders',
+        hidden: false,
+        licensed: true,
+        category: 'sales'
+    },
+    {
+        id: 'InvoicesGrid',
+        label: 'Invoices',
+        labelKey: 'navigation.invoices',
+        icon: ReceiptIcon,
+        path: '/invoices',
+        hidden: false,
+        licensed: true,
+        category: 'sales'
+    },
+    {
+        id: 'CustomersGrid',
+        label: 'Customers',
+        labelKey: 'navigation.customers',
+        icon: PeopleIcon,
+        path: '/customers',
+        hidden: false,
+        licensed: true,
+        category: 'sales'
+    },
+
+    // === CONTENT MANAGEMENT ===
     {
         id: 'CmsPageGrid',
         label: 'CMS Pages',
@@ -178,15 +183,51 @@ export const MENU_ITEMS = [
         icon: DescriptionIcon,
         path: '/cms-pages',
         hidden: false,
-        licensed: true
+        licensed: true,
+        category: 'content'
+    },
+
+    // === QUALITY & DEVELOPMENT ===
+    {
+        id: 'BugBounty',
+        label: 'Bug Bounty',
+        labelKey: 'navigation.bugBounty',
+        icon: BugReportIcon,
+        path: '/bug-bounty',
+        hidden: false,
+        licensed: true,
+        category: 'quality'
+    },
+    {
+        id: 'Voting',
+        label: 'Feature Voting',
+        labelKey: 'navigation.voting',
+        icon: HowToVoteIcon,
+        path: '/voting',
+        hidden: false,
+        licensed: true,
+        category: 'quality'
     },
     {
         id: 'GridTestPage',
-        label: 'Grid Test',
+        label: 'Grid Testing',
         labelKey: 'navigation.gridTest',
         icon: BugReportIcon,
         path: '/grid-test',
         hidden: false,
-        licensed: true
+        licensed: true,
+        category: 'quality'
+    },
+
+    // === USER MANAGEMENT ===
+    {
+        id: 'UserProfile',
+        label: 'User Profile',
+        labelKey: 'navigation.userProfile',
+        icon: AccountCircleIcon,
+        path: '/profile',
+        hidden: true,
+        licensed: true,
+        category: 'user'
     }
 ];

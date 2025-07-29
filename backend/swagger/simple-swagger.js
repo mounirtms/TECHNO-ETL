@@ -10,7 +10,16 @@ const options = {
     info: {
       title: 'TECHNO-ETL API Documentation',
       version: '1.0.0',
-      description: 'API documentation for TECHNO-ETL system',
+      description: 'Comprehensive API for TECHNO-ETL system including MDM operations, Magento proxy, and task management. This backend serves as a proxy to Magento web services as documented in the official Magento REST API documentation.',
+      contact: {
+        name: 'Mounir Abderrahmani',
+        email: 'mounir.ab@techno-dz.com',
+        url: 'mailto:mounir.webdev.tms@gmail.com'
+      },
+      license: {
+        name: 'ISC',
+        url: 'https://opensource.org/licenses/ISC'
+      }
     },
     servers: [
       {
@@ -58,9 +67,9 @@ const options = {
       },
       '/api/mdm/prices': {
         get: {
-          summary: 'Get price data from MDM',
-          description: 'Retrieve price data from MDM for dashboard display',
-          tags: ['MDM - Price Management'],
+          summary: 'Get real price data from MDM database',
+          description: 'Retrieve real price data from MDM database using syncService for dashboard display',
+          tags: ['MDM - Price Management (Real Data)'],
           parameters: [
             {
               name: 'sku',
@@ -124,9 +133,9 @@ const options = {
       },
       '/api/mdm/prices/sync-to-magento': {
         post: {
-          summary: 'Sync prices to Magento',
-          description: 'Sync processed price data from dashboard to Magento',
-          tags: ['MDM - Price Management'],
+          summary: 'Sync prices to Magento via syncService',
+          description: 'Sync processed price data from dashboard to Magento using real syncService',
+          tags: ['MDM - Price Management (Real Data)'],
           requestBody: {
             required: true,
             content: {
@@ -179,9 +188,9 @@ const options = {
       },
       '/api/mdm/inventory/stocks': {
         get: {
-          summary: 'Get stock data from MDM',
-          description: 'Retrieve stock data from MDM for dashboard and grid display',
-          tags: ['MDM - Inventory Management'],
+          summary: 'Get real stock data from MDM database',
+          description: 'Retrieve real stock data from MDM database using syncService for dashboard and grid display',
+          tags: ['MDM - Inventory Management (Real Data)'],
           parameters: [
             {
               name: 'sourceCode',
@@ -570,6 +579,97 @@ const options = {
           responses: {
             200: {
               description: 'Orders retrieved successfully from Magento'
+            }
+          }
+        }
+      },
+      '/api/magento/admin/token': {
+        post: {
+          summary: 'Get Magento admin token',
+          description: 'Proxy request to Magento REST API /rest/V1/integration/admin/token. This endpoint mirrors the official Magento authentication API as documented in Magento\'s REST API documentation.',
+          tags: ['Magento Proxy - Authentication'],
+          responses: {
+            200: {
+              description: 'Admin token retrieved successfully from Magento',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'string',
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+                  }
+                }
+              }
+            },
+            401: {
+              description: 'Unauthorized - Invalid credentials'
+            }
+          }
+        }
+      },
+      '/api/magento/categories': {
+        get: {
+          summary: 'Get categories from Magento',
+          description: 'Proxy request to Magento REST API /rest/V1/categories. This endpoint mirrors the official Magento categories API as documented in Magento\'s REST API documentation.',
+          tags: ['Magento Proxy - Categories'],
+          responses: {
+            200: {
+              description: 'Categories retrieved successfully from Magento',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      id: { type: 'integer', example: 1 },
+                      parent_id: { type: 'integer', example: 0 },
+                      name: { type: 'string', example: 'Root Category' },
+                      is_active: { type: 'boolean', example: true },
+                      position: { type: 'integer', example: 1 },
+                      level: { type: 'integer', example: 0 },
+                      children_data: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            id: { type: 'integer', example: 2 },
+                            name: { type: 'string', example: 'Electronics' },
+                            is_active: { type: 'boolean', example: true }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      '/api/magento/inventory/sources': {
+        get: {
+          summary: 'Get inventory sources from Magento',
+          description: 'Proxy request to Magento REST API /rest/V1/inventory/sources. This endpoint mirrors the official Magento Multi-Source Inventory API as documented in Magento\'s REST API documentation.',
+          tags: ['Magento Proxy - Inventory'],
+          responses: {
+            200: {
+              description: 'Inventory sources retrieved successfully from Magento',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        source_code: { type: 'string', example: 'default' },
+                        name: { type: 'string', example: 'Default Source' },
+                        enabled: { type: 'boolean', example: true },
+                        description: { type: 'string', example: 'Default inventory source' },
+                        latitude: { type: 'number', example: 0.0 },
+                        longitude: { type: 'number', example: 0.0 }
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }

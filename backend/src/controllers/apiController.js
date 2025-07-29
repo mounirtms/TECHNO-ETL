@@ -43,7 +43,7 @@ function buildMagentoQueryString(query = {}) {
     return params.toString();
 }
 
-let magentoService = null;
+let magentoService = MagentoService;
 
 export async function getMdmData(req, res) {
     const startTime = Date.now();

@@ -26,7 +26,8 @@
         "sources": "Sources",
         "userProfile": "User Profile",
         "cmsPages": "CMS Pages",
-        "gridTest": "Grid Test"
+        "gridTest": "Grid Test",
+        "bugBounty": "Bug Bounty"
     },
     "dashboard": {
         "title": "Dashboard",

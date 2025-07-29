@@ -1,4 +1,5 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material'; // Add Box import for error rendering
 import { MENU_ITEMS } from '../components/Layout/Constants';
 
@@ -20,6 +21,33 @@ import GridTestPage from '../pages/GridTestPage';
 import ProductManagementPage from '../pages/ProductManagementPage';
 import VotingPage from '../pages/VotingPage';
 import ChartsPage from '../pages/ChartsPage';
+import BugBountyPage from '../pages/BugBountyPage';
+
+// URL to Tab ID mapping
+const URL_TO_TAB_MAP = {
+    '/dashboard': 'Dashboard',
+    '/charts': 'Charts',
+    '/voting': 'Voting',
+    '/products': 'ProductsGrid',
+    '/productsManagement': 'ProductCatalog',
+    '/mdmproducts': 'MDMProductsGrid',
+    '/cegid-products': 'CegidProductsGrid',
+    '/customers': 'CustomersGrid',
+    '/orders': 'OrdersGrid',
+    '/invoices': 'InvoicesGrid',
+    '/categories': 'CategoryTree',
+    '/stocks': 'StocksGrid',
+    '/sources': 'SourcesGrid',
+    '/profile': 'UserProfile',
+    '/cms-pages': 'CmsPageGrid',
+    '/grid-test': 'GridTestPage',
+    '/bug-bounty': 'BugBounty'
+};
+
+// Tab ID to URL mapping
+const TAB_TO_URL_MAP = Object.fromEntries(
+    Object.entries(URL_TO_TAB_MAP).map(([url, tabId]) => [tabId, url])
+);
 
 // Component mapping
 const COMPONENT_MAP = {
@@ -38,30 +66,63 @@ const COMPONENT_MAP = {
     SourcesGrid: SourcesGrid,
     CegidProductsGrid: CegidGrid,
     CmsPageGrid: CmsPageGrid,
-    GridTestPage: GridTestPage
+    GridTestPage: GridTestPage,
+    BugBounty: BugBountyPage
 };
 
 const TabContext = createContext();
 
 export const TabProvider = ({ children, sidebarOpen }) => {
-    // Ensure initial tab is always set
-    const initialTab = MENU_ITEMS.find(item => item.id === 'Dashboard') || MENU_ITEMS[0];
-    
-    console.log('Initial Tab:', initialTab); // Debugging log
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    // Get initial tab from current URL or default to Dashboard
+    const getInitialTabFromURL = () => {
+        const tabId = URL_TO_TAB_MAP[location.pathname];
+        if (tabId) {
+            const menuItem = MENU_ITEMS.find(item => item.id === tabId);
+            if (menuItem) return menuItem;
+        }
+        return MENU_ITEMS.find(item => item.id === 'Dashboard') || MENU_ITEMS[0];
+    };
+
+    const initialTab = getInitialTabFromURL();
 
     const [tabs, setTabs] = useState([
-        { 
-            id: initialTab.id, 
-            label: initialTab.label, 
-            component: initialTab.id, 
-            closeable: false 
+        {
+            id: initialTab.id,
+            label: initialTab.label,
+            component: initialTab.id,
+            closeable: false
         }
     ]);
     const [activeTab, setActiveTab] = useState(initialTab.id);
 
-    const openTab = (tabId) => {
+    // Sync tab changes with URL
+    useEffect(() => {
+        const currentTabId = URL_TO_TAB_MAP[location.pathname];
+        if (currentTabId && currentTabId !== activeTab) {
+            // Skip navigation to prevent infinite loop
+            const tabExists = tabs.some(tab => tab.id === currentTabId);
+            if (!tabExists) {
+                const newTab = MENU_ITEMS.find(item => item.id === currentTabId);
+                if (newTab && COMPONENT_MAP[newTab.id]) {
+                    setTabs(prevTabs => [
+                        ...prevTabs,
+                        {
+                            ...newTab,
+                            closeable: newTab.id !== 'Dashboard'
+                        }
+                    ]);
+                }
+            }
+            setActiveTab(currentTabId);
+        }
+    }, [location.pathname, activeTab, tabs]);
+
+    const openTab = (tabId, skipNavigation = false) => {
         const tabExists = tabs.some(tab => tab.id === tabId);
-        
+
         if (!tabExists) {
             const newTab = MENU_ITEMS.find(item => item.id === tabId);
             if (newTab) {
@@ -71,25 +132,34 @@ export const TabProvider = ({ children, sidebarOpen }) => {
                 }
 
                 setTabs(prevTabs => [
-                    ...prevTabs, 
-                    { 
-                        ...newTab, 
-                        closeable: true 
+                    ...prevTabs,
+                    {
+                        ...newTab,
+                        closeable: newTab.id !== 'Dashboard' // Dashboard is never closeable
                     }
                 ]);
             }
         }
-        
+
         setActiveTab(tabId);
+
+        // Navigate to corresponding URL if not skipping navigation
+        if (!skipNavigation) {
+            const url = TAB_TO_URL_MAP[tabId];
+            if (url && location.pathname !== url) {
+                navigate(url);
+            }
+        }
     };
 
     const closeTab = (tabId) => {
         if (tabId === 'Dashboard') return;
 
         setTabs(prevTabs => prevTabs.filter(tab => tab.id !== tabId));
-        
+
         if (activeTab === tabId) {
             setActiveTab('Dashboard');
+            navigate('/dashboard');
         }
     };
 

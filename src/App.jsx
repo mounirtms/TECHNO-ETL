@@ -1,6 +1,10 @@
 /**
  * TECHNO-ETL Application
  * Enhanced with comprehensive theme and language system
+ *
+ * @author Mounir Abderrahmani
+ * @email mounir.ab@techno-dz.com
+ * @contact mounir.webdev.tms@gmail.com
  */
 
 import React, { useEffect } from 'react';

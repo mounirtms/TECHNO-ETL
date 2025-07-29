@@ -15,8 +15,8 @@ import { connectToDatabases } from './src/utils/database-setup.js';
 import { productionConfig } from './production.config.js';
 // Import route modules
 import apiRoutes from './src/routes/routes.js';
-// import mdmRoutes from './src/routes/mdmRoutes.js';
-// import magentoRoutes from './src/routes/magentoRoutes.js';
+import mdmRoutes from './src/routes/mdmRoutes.js';
+import magentoRoutes from './src/routes/magentoRoutes.js';
 import healthRoutes from './src/routes/healthRoutes.js';
 import metricsRoutes from './src/routes/metricsRoutes.js';
 import votingRoutes from './src/routes/votingRoutes.js';
@@ -197,8 +197,8 @@ console.log('🔧 Mounting API routes...');
 app.use('/api', healthRoutes);
 app.use('/api/metrics', metricsRoutes);
 app.use('/api/voting', votingRoutes);
-// app.use('/api/mdm', mdmRoutes);
-// app.use('/api/magento', magentoRoutes);
+app.use('/api/mdm', mdmRoutes);
+app.use('/api/magento', magentoRoutes);
 
 // Test sync route mounting
 app.get('/api/sync/test', (req, res) => {
@@ -290,6 +290,25 @@ main().catch((err) => {
 });
 
 
+
+// Memory optimization and cleanup
+function performMemoryCleanup() {
+    if (global.gc) {
+        global.gc();
+        console.log('🧹 Manual garbage collection performed');
+    }
+}
+
+// Schedule memory cleanup every 5 minutes
+setInterval(() => {
+    const memUsage = process.memoryUsage();
+    const heapUsedMB = Math.round(memUsage.heapUsed / 1024 / 1024);
+
+    if (heapUsedMB > 50) { // If heap usage > 50MB
+        performMemoryCleanup();
+        console.log(`🧹 Memory cleanup triggered - Heap: ${heapUsedMB}MB`);
+    }
+}, 5 * 60 * 1000); // Every 5 minutes
 
 // Graceful shutdown and error handling
 process.on('unhandledRejection', (reason, p) => {

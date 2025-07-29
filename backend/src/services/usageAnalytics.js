@@ -254,10 +254,10 @@ class UsageAnalytics {
     };
     this.resourceMetrics.network.push(networkMetrics);
 
-    // Keep only last 1000 entries for each metric
+    // Keep only last 100 entries for each metric (reduced from 1000)
     ['cpu', 'memory', 'network'].forEach(metric => {
-      if (this.resourceMetrics[metric].length > 1000) {
-        this.resourceMetrics[metric].shift();
+      if (this.resourceMetrics[metric].length > 100) {
+        this.resourceMetrics[metric] = this.resourceMetrics[metric].slice(-50); // Keep only last 50
       }
     });
 

@@ -26,7 +26,7 @@ const getSQLQuery = (queryKey) => {
  */
 export async function syncStocks(sourceCode) {
     const logIdentifier = sourceCode ? `source: ${sourceCode}` : 'all sources';
-    try { syncStocksinstead of ge using mock data use the real data fetch from the pool mdm connection 
+    try { 
         const mergeQuery = getSQLQuery('SYNC_STOCK');
         const pool = getPool('mdm');
         await pool.request()

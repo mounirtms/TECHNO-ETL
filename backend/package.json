@@ -5,7 +5,11 @@
   "description": "Node.js project",
   "type": "module",
   "main": "server.js",
-  "author": "Mounir Abderrahmani",
+  "author": {
+    "name": "Mounir Abderrahmani",
+    "email": "mounir.ab@techno-dz.com",
+    "url": "mailto:mounir.webdev.tms@gmail.com"
+  },
   "license": "ISC",
   "dependencies": {
     "axios": "^1.9.0",
@@ -42,15 +46,13 @@
     "terser-webpack-plugin": "^5.3.9"
   },
   "scripts": {
-    "start": "node --no-warnings server.js",
+    "start": "node --no-warnings --expose-gc server.js",
     "start:simple": "node --no-warnings simple-server.js",
     "start:prod": "node --no-warnings dist/server.js",
-    "dev": "NODE_ENV=development PORT=5000 nodemon server.js",
+    "dev": "NODE_ENV=development PORT=5000 nodemon --expose-gc server.js",
     "dev:simple": "NODE_ENV=development PORT=5000 nodemon simple-server.js",
-    "build": "webpack --mode production",
-    "build:dev": "webpack --mode development",
-    "build:analyze": "webpack --mode production --env analyze",
-    "build:watch": "webpack --mode development --watch",
+    "build": "node build.js",
+    "build:prod": "cross-env NODE_ENV=production node build.js",
     "cron": "node --no-warnings cron-runner.js",
     "cron:prod": "node --no-warnings dist/cron-runner.js",
     "pm2:start": "pm2 start ecosystem.config.js",

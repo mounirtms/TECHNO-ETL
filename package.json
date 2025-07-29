@@ -2,7 +2,11 @@
   "name": "Techno-ETL",
   "private": true,
   "version": "1.0.0",
-  "author": "Mounir Abderrahmani",
+  "author": {
+    "name": "Mounir Abderrahmani",
+    "email": "mounir.ab@techno-dz.com",
+    "url": "mailto:mounir.webdev.tms@gmail.com"
+  },
   "scripts": {
     "dev": "vite",
     "server": "node backend/server.js",
@@ -50,6 +54,7 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.3.8",
+    "react-helmet-async": "^2.0.5",
     "react-hot-toast": "^2.4.1",
     "react-i18next": "^15.6.0",
     "react-image-magnify": "^2.7.4",
