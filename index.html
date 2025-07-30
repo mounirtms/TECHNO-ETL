@@ -2,16 +2,199 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/src/assets/images/techno.png" />
+    <link rel="icon" type="image/svg+xml" href="/src/assets/images/logo_techno.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Techno ETL Web App</title>
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-    />
+    <meta name="description" content="TECHNO-ETL - Comprehensive ETL solution with advanced analytics, bug bounty program, and real-time synchronization capabilities." />
+    <meta name="keywords" content="ETL, data synchronization, Magento, MDM, analytics, bug bounty, React, Node.js" />
+    <meta name="author" content="Mounir Abderrahmani" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://etl.techno-dz.com/" />
+    <meta property="og:title" content="TECHNO-ETL v2.1.0 - Advanced ETL Solution" />
+    <meta property="og:description" content="Comprehensive ETL solution with advanced analytics, bug bounty program, and real-time synchronization capabilities." />
+    <meta property="og:image" content="/src/assets/images/logo_techno.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://etl.techno-dz.com/" />
+    <meta property="twitter:title" content="TECHNO-ETL v2.1.0 - Advanced ETL Solution" />
+    <meta property="twitter:description" content="Comprehensive ETL solution with advanced analytics, bug bounty program, and real-time synchronization capabilities." />
+    <meta property="twitter:image" content="/src/assets/images/logo_techno.png" />
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#1976d2" />
+    <meta name="msapplication-TileColor" content="#1976d2" />
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    
+    <title>TECHNO-ETL v2.1.0 - Advanced ETL Solution</title>
+    
+    <style>
+      /* Loading screen styles */
+      #loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        font-family: 'Inter', 'Roboto', sans-serif;
+        color: white;
+      }
+      
+      .loading-logo {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 20px;
+        animation: pulse 2s infinite;
+      }
+      
+      .loading-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+      
+      .loading-subtitle {
+        font-size: 1rem;
+        font-weight: 300;
+        margin-bottom: 30px;
+        text-align: center;
+        opacity: 0.8;
+      }
+      
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-top: 3px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+      }
+      
+      /* Hide loading screen when app loads */
+      .app-loaded #loading-screen {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+      }
+      
+      /* Base styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #f5f5f5;
+        line-height: 1.6;
+      }
+      
+      #root {
+        min-height: 100vh;
+      }
+      
+      /* Accessibility improvements */
+      @media (prefers-reduced-motion: reduce) {
+        .loading-spinner,
+        .loading-logo {
+          animation: none;
+        }
+      }
+      
+      /* Dark mode support */
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: #121212;
+          color: #ffffff;
+        }
+      }
+    </style>
   </head>
   <body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div class="loading-logo">
+        <svg viewBox="0 0 100 100" fill="currentColor">
+          <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+          <path d="M50 10 L50 30 M50 70 L50 90 M10 50 L30 50 M70 50 L90 50" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="50" cy="50" r="8" fill="currentColor"/>
+        </svg>
+      </div>
+      <h1 class="loading-title">TECHNO-ETL</h1>
+      <p class="loading-subtitle">Advanced ETL Solution v2.1.0</p>
+      <div class="loading-spinner"></div>
+    </div>
+    
+    <!-- React App Root -->
     <div id="root"></div>
+    
+    <!-- Main Application Script -->
     <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- Remove loading screen when app loads -->
+    <script>
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          document.body.classList.add('app-loaded');
+        }, 1000);
+      });
+      
+      // Fallback: Remove loading screen after 5 seconds
+      setTimeout(function() {
+        document.body.classList.add('app-loaded');
+      }, 5000);
+    </script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+              console.log('SW registered: ', registration);
+            })
+            .catch(function(registrationError) {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
   </body>
 </html>

@@ -8,12 +8,15 @@
     "url": "mailto:mounir.webdev.tms@gmail.com"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0 --port 80",
+    "start": "vite --host 0.0.0.0 --port 80",
     "server": "node backend/server.js",
     "build": "vite build",
-    "preview": "vite preview",
+    "preview": "vite preview --port 3000",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "lint:fix": "eslint src --ext js,jsx --fix"
+    "lint:fix": "eslint src --ext js,jsx --fix",
+    "dev:full": "concurrently \"npm run server\" \"npm run dev\"",
+    "start:full": "concurrently \"npm run server\" \"npm run start\""
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -26,30 +29,16 @@
     "@mui/x-date-pickers": "^7.26.0",
     "@mui/x-tree-view": "^7.26.0",
     "axios": "^1.7.8",
-    "bootstrap": "^5.3.3",
-    "compression": "^1.8.0",
-    "connect-timeout": "^1.9.0",
-    "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "date-fns": "^2.30.0",
     "dotenv": "^16.5.0",
-    "easy-soap-request": "^5.6.1",
-    "express": "^4.21.2",
-    "express-rate-limit": "^7.3.1",
     "firebase": "^11.2.0",
     "framer-motion": "^11.18.2",
-    "helmet": "^8.1.0",
-    "http-proxy-middleware": "^2.0.6",
+
     "i18next": "^25.3.2",
     "i18next-browser-languagedetector": "^8.2.0",
     "i18next-http-backend": "^3.0.2",
-    "ioredis": "^5.4.1",
-    "msnodesqlv8": "^4.5.0",
-    "mssql": "^11.0.1",
-    "node-cron": "^3.0.3",
-    "nodemon": "^3.1.9",
-    "p-limit": "^5.0.0",
-    "pm2": "^5.4.2",
+
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
@@ -69,10 +58,7 @@
     "sass": "^1.81.0",
     "stylis": "^4.3.0",
     "stylis-plugin-rtl": "^2.1.1",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1",
-    "xlsx": "^0.18.5",
-    "xml2js": "^0.6.2"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

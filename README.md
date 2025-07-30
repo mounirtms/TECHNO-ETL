@@ -1,438 +1,315 @@
-# TECHNO-ETL
+# 🚀 TECHNO-ETL v2.1.0
 
-![TECHNO-ETL Logo](https://img.shields.io/badge/TECHNO--ETL-v1.0.0-blue.svg)
-![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)
-![React](https://img.shields.io/badge/React-18+-blue.svg)
-![License](https://img.shields.io/badge/License-ISC-yellow.svg)
+**A comprehensive ETL (Extract, Transform, Load) solution with advanced analytics, bug bounty program, and real-time synchronization capabilities.**
 
-A comprehensive ETL (Extract, Transform, Load) system for managing data synchronization between MDM (Master Data Management) and Magento e-commerce platform. Built by **Mounir Abderrahmani**.
+[![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)](https://github.com/techno-dz/techno-etl)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node.js-18+-brightgreen.svg)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/react-18.2.0-blue.svg)](https://reactjs.org/)
 
-## 🚀 Features
+## 🌟 Overview
+
+TECHNO-ETL is a modern, full-stack enterprise application designed to streamline data operations between multiple systems including Magento, MDM (Master Data Management), and various data sources. Built with React.js frontend and Node.js backend, it provides a robust platform for data synchronization, analytics, and management with an integrated bug bounty program for quality assurance.
+
+## ✨ Key Features
 
 ### 🔄 **Data Synchronization**
-- **MDM Integration**: Seamless connection to Master Data Management systems
-- **Real-time Sync**: Live data synchronization capabilities with configurable intervals
-- **Bulk Operations**: Efficient bulk data processing for large datasets
-- **Error Handling**: Comprehensive error tracking and recovery mechanisms
+- **Real-time sync** between Magento and MDM systems
+- **Bidirectional data flow** with intelligent conflict resolution
+- **Automated scheduling** with cron-based jobs and monitoring
+- **Advanced error handling** with retry mechanisms and fallbacks
 
-### 🛒 **Magento Integration**
-- **REST API Proxy**: Direct proxy to all Magento REST API endpoints
-- **Authentication**: Automatic token management and renewal
-- **Multi-Store Support**: Handle multiple Magento stores and websites
-- **Inventory Management**: Multi-Source Inventory (MSI) support
+### 📊 **Advanced Analytics & Dashboards**
+- **Interactive dashboards** with real-time metrics and KPIs
+- **Custom charts** and visualizations using Recharts
+- **Performance monitoring** with system resource tracking
+- **Export capabilities** (PDF, Excel, CSV) with custom formatting
 
-### 📊 **Dashboard & Monitoring**
-- **Real-time Dashboard**: Live monitoring of sync operations and system health
-- **Performance Metrics**: Resource utilization tracking and analytics
-- **Task Management**: Built-in task tracking and voting system
-- **Audit Logs**: Comprehensive logging and audit trails
+### 🐛 **Bug Bounty Program** *(NEW in v2.1.0)*
+- **Professional reward system** ($25 - $3,375 based on severity)
+- **Firebase integration** for real-time bug tracking
+- **Quality-based scoring** with multipliers
+- **Gamified leaderboard** with tester rankings
+- **Admin panel** for bug review and management
 
-### 🔧 **Developer Experience**
-- **Swagger Documentation**: Interactive API documentation
-- **TypeScript Support**: Full TypeScript support for better development experience
-- **Hot Reload**: Development servers with hot reload capabilities
-- **Testing Suite**: Comprehensive test coverage
+### 🎯 **Product Management**
+- **Unified product catalog** across multiple systems
+- **Bulk operations** for efficient data management
+- **Category management** with hierarchical structures
+- **Advanced inventory tracking** and stock management
+
+### 🔐 **Security & Performance**
+- **Role-based access control** (RBAC) with JWT
+- **API rate limiting** and comprehensive security headers
+- **Redis caching** with intelligent cache invalidation
+- **Optimized database queries** with connection pooling
+
+### 🎨 **Modern UI/UX**
+- **Professional responsive design** for all devices
+- **Dark/Light theme** support with system preference detection
+- **Multi-language** internationalization (EN, FR, AR, ES)
+- **Accessibility** compliant (WCAG 2.1 AA)
+- **Smooth animations** and micro-interactions
 
 ## 🏗️ Architecture
 
+### **Frontend (React.js + Vite)**
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │    Backend      │    │   External      │
-│   (React)       │◄──►│   (Node.js)     │◄──►│   Systems       │
-│                 │    │                 │    │                 │
-│ • Dashboard     │    │ • REST API      │    │ • MDM Database  │
-│ • Task Mgmt     │    │ • Sync Services │    │ • Magento API   │
-│ • Monitoring    │    │ • Proxy Layer   │    │ • Redis Cache   │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+src/
+├── components/          # Reusable UI components
+│   ├── bugBounty/      # Bug bounty system components
+│   ├── common/         # Shared components
+│   ├── grids/          # Data grid components
+│   └── Layout/         # Layout components
+├── pages/              # Application pages
+├── services/           # API service layer
+├── contexts/           # React contexts (Theme, Language, Tabs)
+├── hooks/              # Custom React hooks
+├── utils/              # Utility functions and error handling
+└── assets/             # Static assets and translations
 ```
 
-### Backend Components
-- **Express.js Server**: RESTful API with comprehensive endpoints
-- **Database Layer**: SQL Server connections with connection pooling
-- **Sync Services**: Automated data synchronization with error recovery
-- **Proxy Layer**: Magento REST API proxy with authentication
-- **Cron Jobs**: Scheduled tasks for automated operations
-
-### Frontend Components
-- **React Application**: Modern SPA with responsive design
-- **Dashboard**: Real-time data visualization and control panels
-- **Task Interface**: User-friendly task management system
-- **Notification System**: Real-time updates and alerts
+### **Backend (Node.js + Express)**
+```
+backend/
+├── src/
+│   ├── controllers/    # Request handlers
+│   ├── services/       # Business logic
+│   ├── middleware/     # Express middleware
+│   ├── routes/         # API routes
+│   └── utils/          # Utility functions
+├── swagger/            # API documentation
+├── production/         # Production configurations
+└── dist/              # Built production files
+```
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- **Node.js** 18+ ([Download](https://nodejs.org/))
-- **SQL Server** (for MDM database)
-- **Redis** (optional, for caching)
-- **Git** for version control
+### **Prerequisites**
+- **Node.js** 18+ and npm
+- **SQL Server** (for MDM data)
+- **Redis** (for caching) - Optional but recommended
+- **Magento 2.4+** instance
+- **Firebase** project (for bug bounty system)
 
-### Installation
+### **Installation**
 
-1. **Clone the repository:**
+1. **Clone the repository**
 ```bash
-git clone https://github.com/your-org/TECHNO-ETL.git
-cd TECHNO-ETL
+git clone https://github.com/techno-dz/techno-etl.git
+cd techno-etl
 ```
 
-2. **Install backend dependencies:**
+2. **Install dependencies**
 ```bash
+# Frontend dependencies
+npm install
+
+# Backend dependencies
 cd backend
 npm install
 ```
 
-3. **Install frontend dependencies:**
+3. **Environment Configuration**
 ```bash
-cd ../
-npm install
-```
-
-4. **Configure environment variables:**
-```bash
-# Backend configuration
-cp backend/.env.example backend/.env
-# Edit backend/.env with your database and API credentials
-
-# Frontend configuration  
+# Copy environment templates
 cp .env.example .env
-# Edit .env with your frontend configuration
+cp backend/.env.example backend/.env
+
+# Configure your environment variables (see below)
 ```
 
-5. **Start development servers:**
+4. **Start Development Servers**
 ```bash
-# Terminal 1: Backend server
-cd backend
-npm run dev
+# Start both frontend and backend
+npm run start:full
 
-# Terminal 2: Frontend server
-cd ../
-npm start
+# Or start separately
+npm run dev          # Frontend (http://localhost:3000)
+cd backend && npm run dev  # Backend (http://localhost:5000)
 ```
 
-6. **Access the application:**
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:5000
-- **API Documentation**: http://localhost:5000/api-docs
+## 📋 Environment Configuration
 
-## 📚 API Documentation
+### **Frontend (.env)**
+```env
+# API Configuration
+VITE_API_BASE_URL=http://localhost:5000/api
+VITE_MAGENTO_BASE_URL=https://your-magento-store.com
 
-### Interactive Documentation
-Access the comprehensive Swagger API documentation:
-- **Development**: http://localhost:5000/api-docs
-- **Production**: https://your-domain.com/api-docs
+# Firebase Configuration (for Bug Bounty)
+VITE_FIREBASE_API_KEY=your-firebase-api-key
+VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=123456789
+VITE_FIREBASE_APP_ID=1:123456789:web:abcdef123456
 
-### Key API Endpoints
-
-#### 🔄 **MDM Operations**
-```bash
-# Get price data from MDM database
-GET /api/mdm/prices?limit=100&sku=PROD-001
-
-# Sync processed prices to Magento
-POST /api/mdm/prices/sync-to-magento
-{
-  "products": [{"sku": "PROD-001", "currentPrice": 29.99, "newPrice": 32.99}]
-}
-
-# Get stock data with source filtering
-GET /api/mdm/inventory/stocks?sourceCode=MAIN&limit=50
-
-# Sync stocks for specific source (MDM Grid operation)
-POST /api/mdm/inventory/sync-stocks
-{
-  "sourceCode": "MAIN",
-  "products": [{"sku": "PROD-001", "quantity": 100}]
-}
-
-# Bulk stock sync (Dashboard operation)
-POST /api/mdm/inventory/sync-all-stocks
-
-# Get available data sources
-GET /api/mdm/sources
+# Development
+VITE_NODE_ENV=development
 ```
 
-#### 🛒 **Magento Proxy (Official API Mirror)**
-```bash
-# Get products (mirrors /rest/V1/products)
-GET /api/magento/products?searchCriteria[pageSize]=200&searchCriteria[currentPage]=1
-
-# Get categories (mirrors /rest/V1/categories)
-GET /api/magento/categories
-
-# Get orders (mirrors /rest/V1/orders)
-GET /api/magento/orders?searchCriteria[pageSize]=50
-
-# Get admin token (mirrors /rest/V1/integration/admin/token)
-POST /api/magento/admin/token
-
-# Get inventory sources (mirrors /rest/V1/inventory/sources)
-GET /api/magento/inventory/sources
-```
-
-#### 📊 **System & Monitoring**
-```bash
-# Health check
-GET /api/health
-
-# System metrics
-GET /api/metrics
-
-# Task management
-GET /api/task/features
-GET /api/task/categories
-GET /api/task/stats
-```
-
-## ⚙️ Configuration
-
-### Database Configuration
-Configure your MDM database in `backend/src/config/database.js`:
-
-```javascript
-export const dbConfig = {
-  server: 'your-sql-server.com',
-  database: 'MDM_REPORT',
-  user: 'your-username',
-  password: 'your-password',
-  options: {
-    encrypt: true,
-    trustServerCertificate: true,
-    connectionTimeout: 30000,
-    requestTimeout: 30000
-  },
-  pool: {
-    max: 10,
-    min: 2,
-    idleTimeoutMillis: 30000
-  }
-};
-```
-
-### Magento Configuration
-Set up Magento API credentials in `backend/src/config/magento.js`:
-
-```javascript
-export const cloudConfig = {
-  baseURL: 'https://your-magento-store.com',
-  username: 'your-api-username',
-  password: 'your-api-password',
-  timeout: 30000,
-  retries: 3
-};
-```
-
-### Environment Variables
-```bash
-# Backend (.env)
-NODE_ENV=development
+### **Backend (backend/.env)**
+```env
+# Server Configuration
 PORT=5000
-DB_SERVER=your-sql-server
+NODE_ENV=development
+
+# Database Configuration
+DB_SERVER=localhost
 DB_DATABASE=MDM_REPORT
-DB_USER=your-username
-DB_PASSWORD=your-password
+DB_USER=sa
+DB_PASSWORD=your-secure-password
+DB_ENCRYPT=true
+DB_TRUST_SERVER_CERTIFICATE=true
+
+# Magento Configuration
 MAGENTO_BASE_URL=https://your-magento-store.com
-MAGENTO_USERNAME=your-api-username
-MAGENTO_PASSWORD=your-api-password
-REDIS_URL=redis://localhost:6379
+MAGENTO_ADMIN_TOKEN=your-admin-token
+MAGENTO_CONSUMER_KEY=your-consumer-key
+MAGENTO_CONSUMER_SECRET=your-consumer-secret
 
-# Frontend (.env)
-REACT_APP_API_BASE_URL=http://localhost:5000
-REACT_APP_ENVIRONMENT=development
+# Redis Configuration (Optional)
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=your-redis-password
+REDIS_DB=0
+
+# Security
+JWT_SECRET=your-super-secure-jwt-secret
+API_RATE_LIMIT=100
+CORS_ORIGIN=http://localhost:3000
+
+# Logging
+LOG_LEVEL=info
+LOG_FILE=logs/app.log
 ```
 
-## 🛠️ Development
+## 🔧 Available Scripts
 
-### Backend Development
+### **Frontend Scripts**
 ```bash
-cd backend
-
-# Development with hot reload
-npm run dev
-
-# Production build
-npm run build
-
-# Start production server
-npm run start:prod
-
-# Run with PM2
-npm run pm2:start
+npm run dev          # Start development server (Vite)
+npm run start        # Start development server (alias)
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Run ESLint
+npm run lint:fix     # Fix ESLint issues
+npm run dev:full     # Start both frontend and backend
 ```
 
-### Frontend Development
+### **Backend Scripts**
 ```bash
-# Development server
-npm start
-
-# Production build
-npm run build
-
-# Test the build locally
-npm run serve
+npm run dev          # Start with nodemon (development)
+npm run start        # Start production server
+npm run build        # Build for production
+npm run build:prod   # Build with production optimizations
+npm run pm2:start    # Start with PM2
+npm run pm2:stop     # Stop PM2 processes
+npm run pm2:logs     # View PM2 logs
+npm run pm2:restart  # Restart PM2 processes
 ```
 
-### Code Quality
-```bash
-# Backend linting
-cd backend
-npm run lint
-npm run lint:fix
+## 📊 API Documentation
 
-# Frontend linting
-npm run lint
-npm run lint:fix
+### **Interactive Documentation**
+- **Swagger UI**: `http://localhost:5000/api-docs`
+- **Health Check**: `http://localhost:5000/api/health`
+- **API Status**: `http://localhost:5000/api/status`
 
-# Run tests
-npm test
+### **Core API Endpoints**
+
+#### **MDM Operations**
+```http
+GET    /api/mdm/prices              # Get price data with filtering
+POST   /api/mdm/prices/sync         # Sync prices to Magento
+GET    /api/mdm/inventory/stocks    # Get stock data
+POST   /api/mdm/inventory/sync      # Sync stocks to Magento
+GET    /api/mdm/sources             # Get available sources
 ```
 
-## 🚀 Deployment
-
-### Production Build
-```bash
-# Build backend
-cd backend
-npm run build:prod
-
-# Build frontend
-cd ../
-npm run build
+#### **Magento Proxy**
+```http
+GET    /api/magento/products        # Get products
+POST   /api/magento/products        # Create product
+PUT    /api/magento/products/:id    # Update product
+DELETE /api/magento/products/:id    # Delete product
+GET    /api/magento/categories      # Get categories
+GET    /api/magento/orders          # Get orders
 ```
 
-### PM2 Deployment (Recommended)
-```bash
-cd backend
-
-# Start with PM2
-npm run pm2:start
-
-# Monitor
-npm run pm2:status
-npm run pm2:logs
-npm run pm2:monit
-
-# Restart
-npm run pm2:restart
-
-# Stop
-npm run pm2:stop
+#### **Bug Bounty System** *(NEW)*
+```http
+GET    /api/bugs                    # Get bug reports
+POST   /api/bugs                    # Submit bug report
+PUT    /api/bugs/:id                # Update bug status
+GET    /api/bugs/leaderboard        # Get tester leaderboard
+GET    /api/bugs/stats              # Get bug statistics
 ```
 
-### Docker Deployment
-```bash
-# Build and run with Docker Compose
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Scale services
-docker-compose up -d --scale backend=3
+#### **Analytics & Reporting**
+```http
+GET    /api/analytics/dashboard     # Dashboard metrics
+GET    /api/analytics/reports       # Generate reports
+POST   /api/analytics/export        # Export data
+GET    /api/analytics/performance   # Performance metrics
 ```
 
-## 📊 Monitoring & Maintenance
+## 🐛 Bug Bounty Program
 
-### Health Monitoring
-- **Backend Health**: http://localhost:5000/api/health
-- **System Metrics**: http://localhost:5000/api/metrics
-- **PM2 Monitoring**: `npm run pm2:monit`
+### **Reward Structure**
+| Category | Base Reward | Multiplier | Max Reward |
+|----------|-------------|------------|------------|
+| **Critical** | $500 | 3.0x | $3,375 |
+| **High** | $200 | 2.0x | $600 |
+| **Medium** | $100 | 1.5x | $225 |
+| **Low** | $50 | 1.0x | $75 |
+| **Enhancement** | $25 | 0.8x | $30 |
 
-### Logging
-```bash
-# Application logs
-tail -f backend/logs/combined-$(date +%Y-%m-%d).log
+### **Quality Multipliers**
+- **⭐⭐⭐⭐⭐ Excellent**: 1.5x bonus
+- **⭐⭐⭐⭐ Good**: 1.2x bonus
+- **⭐⭐⭐ Average**: 1.0x standard
+- **⭐⭐ Poor**: 0.8x reduction
+- **⭐ Very Poor**: 0.5x reduction
 
-# PM2 logs
-npm run pm2:logs
+### **How to Participate**
+1. Navigate to `/bug-bounty` in the application
+2. Click the "+" button to report a bug
+3. Fill out the comprehensive bug report form
+4. Track your submissions and earnings
+5. Climb the leaderboard!
 
-# Error logs
-tail -f backend/logs/error-$(date +%Y-%m-%d).log
-```
+## 📞 Support & Contact
 
-### Performance Optimization
-- **Database**: Connection pooling and query optimization
-- **Caching**: Redis caching for frequently accessed data
-- **Compression**: Gzip compression for API responses
-- **Rate Limiting**: API rate limiting to prevent abuse
+### **Technical Support**
+- **Primary Contact**: mounir.ab@techno-dz.com
+- **Development Support**: mounir.webdev.tms@gmail.com
+- **Bug Reports**: Use the integrated bug bounty system
+- **Feature Requests**: Submit via GitHub Issues
 
-## 🔧 Troubleshooting
-
-### Common Issues
-
-#### Database Connection Issues
-```bash
-# Check database connectivity
-npm run test:db
-
-# Verify connection string
-node -e "console.log(process.env.DB_SERVER)"
-```
-
-#### Magento API Issues
-```bash
-# Test Magento connectivity
-curl -X POST "http://localhost:5000/api/magento/admin/token"
-
-# Check Magento credentials
-npm run test:magento
-```
-
-#### Performance Issues
-```bash
-# Check system resources
-npm run metrics
-
-# Monitor PM2 processes
-npm run pm2:monit
-
-# Analyze bundle size
-npm run build:analyze
-```
-
-## 🤝 Contributing
-
-We welcome contributions! Please follow these steps:
-
-1. **Fork the repository**
-2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
-3. **Commit changes**: `git commit -m 'Add amazing feature'`
-4. **Push to branch**: `git push origin feature/amazing-feature`
-5. **Open a Pull Request**
-
-### Development Guidelines
-- Follow ESLint configuration
-- Write comprehensive tests
-- Update documentation
-- Follow semantic versioning
+### **Documentation**
+- **API Documentation**: `http://localhost:5000/api-docs`
+- **Bug Bounty Guide**: [BUG_BOUNTY_README.md](BUG_BOUNTY_README.md)
+- **Deployment Guide**: [docs/deployment.md](docs/deployment.md)
+- **Contributing Guide**: [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## 📄 License
 
-This project is licensed under the **ISC License** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Author
+## 🙏 Acknowledgments
 
-**Mounir Abderrahmani**
-- Email: mounir.ab@techno-dz.com
-- Contact: mounir.webdev.tms@gmail.com
-- GitHub: [@mounir-abderrahmani](https://github.com/mounir-abderrahmani)
-
-## 🆘 Support
-
-### Documentation
-- **API Documentation**: [Swagger UI](http://localhost:5000/api-docs)
-- **User Guide**: [docs/user-guide.md](docs/user-guide.md)
-- **Developer Guide**: [docs/developer-guide.md](docs/developer-guide.md)
-
-### Getting Help
-- **Issues**: [GitHub Issues](https://github.com/your-org/TECHNO-ETL/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-org/TECHNO-ETL/discussions)
-- **Email**: mounir.webdev.tms@gmail.com
-
-### Magento API Reference
-This backend serves as a proxy to Magento web services. For detailed Magento API documentation, refer to:
-- [Magento REST API Documentation](https://devdocs.magento.com/guides/v2.4/rest/bk-rest.html)
-- [Magento Web API Authentication](https://devdocs.magento.com/guides/v2.4/get-started/authentication/gs-authentication.html)
+- **React.js** and **Material-UI** teams for excellent frameworks
+- **Node.js** and **Express.js** communities for robust backend tools
+- **Firebase** team for real-time database capabilities
+- **Vite** team for lightning-fast development experience
+- All **contributors** and **beta testers** for their valuable feedback
 
 ---
 
-**Built with ❤️ by Mounir Abderrahmani**
+**🚀 Built with ❤️ by Mounir Abderrahmani**
+- **Email**: mounir.ab@techno-dz.com
+- **Contact**: mounir.webdev.tms@gmail.com
+
+*Last updated: July 29, 2025 - Version 2.1.0*
