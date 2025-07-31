@@ -6,7 +6,9 @@
  */
 
 import express from 'express';
-import mdmDataService from '../services/mdmDataService.js';
+import { fetchMdmPrices, syncStocks,inventorySync } from '../services/syncService.js';
+import { syncPricesToMagento } from '../mdm/services.js';
+
 const router = express.Router();
 
 // ===== PRICE MANAGEMENT =====
@@ -19,15 +21,14 @@ router.get('/prices', async (req, res) => {
     try {
         const { sku, category, limit = 100, offset = 0 } = req.query;
         console.log('📊 Getting real price data from MDM database...', { sku, category, limit, offset });
-
+        debugger
         // Use real data service instead of mock data
-        const result = await mdmDataService.getMdmPrices({ sku, category, limit, offset });
+        const result = await fetchMdmPrices({ sku, category, limit, offset });
 
         res.json({
-            success: result.success,
+            success: true,
             message: 'Price data retrieved successfully from MDM database',
-            data: result.data,
-            pagination: result.pagination
+            data: result.recordset
         });
 
     } catch (error) {
@@ -44,13 +45,11 @@ router.get('/prices', async (req, res) => {
  * POST /api/mdm/prices/sync-to-magento - Sync prices to Magento
  * Used by: Dashboard after treating price data in table
  */
-router.post('/prices/sync-to-magento', async (req, res) => {
+router.post('/prices-sync', async (req, res) => {
     try {
-        const { products = [], force = false } = req.body;
-        console.log(`🔄 Syncing ${products.length} prices to Magento using real syncService...`, { force });
 
         // Use real syncService instead of mock data
-        const result = await mdmDataService.syncPricesToMagento(products);
+        const result = await syncPricesToMagento(req);
 
         console.log('✅ Price sync to Magento completed via syncService', result);
 
@@ -82,7 +81,7 @@ router.get('/inventory/stocks', async (req, res) => {
         console.log('📦 Getting real stock data from MDM database...', { sourceCode, sku, limit, offset });
 
         // Use real data service instead of mock data
-        const result = await mdmDataService.getMdmStocks({ sourceCode, sku, limit, offset });
+        //const result = await mdmDataService.getMdmStocks({ sourceCode, sku, limit, offset });
 
         res.json({
             success: result.success,
@@ -121,8 +120,8 @@ router.post('/inventory/sync-stocks', async (req, res) => {
             productCount: products.length
         });
 
-        // Use real syncService instead of mock data
-        const result = await mdmDataService.syncStocksForSource(sourceCode, products);
+
+        const result = await syncStocks(sourceCode);
 
         console.log(`✅ Stock sync completed for source: ${sourceCode} via syncService`, result);
 
@@ -149,15 +148,14 @@ router.post('/inventory/sync-stocks', async (req, res) => {
 router.post('/inventory/sync-all-stocks', async (req, res) => {
     try {
         console.log('🔄 Starting comprehensive stock sync using real syncService...');
-
-        // Use real syncService instead of mock data
-        const result = await mdmDataService.syncAllStocks();
+ 
+        const result = await inventorySync();
 
         console.log('✅ Comprehensive stock sync completed via syncService', result);
 
         res.json({
             success: true,
-            message: 'All stock sources synchronized successfully via syncService',
+            message: 'All stock sources synchronized successfully via MdM Magento ETL syncService',
             data: result
         });
 
@@ -178,37 +176,8 @@ router.post('/inventory/sync-all-stocks', async (req, res) => {
 router.post('/inventory/sync-sources', async (req, res) => {
     try {
         const { sourceCode, target = 'magento' } = req.body;
-
-        console.log(`🔄 Syncing inventory to ${target}`, {
-            sourceCode: sourceCode || 'all'
-        });
-
-        // Simulate Magento inventory sync
-        await new Promise(resolve => setTimeout(resolve, 1800));
-
-        const mockResults = {
-            synced: 234,
-            failed: 8,
-            total: 242,
-            target: target,
-            sourceCode: sourceCode || 'all',
-            operations: [
-                {
-                    operation: 'stock_update',
-                    processed: 180,
-                    successful: 175,
-                    failed: 5
-                },
-                {
-                    operation: 'source_assignment',
-                    processed: 62,
-                    successful: 59,
-                    failed: 3
-                }
-            ],
-            timestamp: new Date().toISOString()
-        };
-
+ 
+     
         console.log(`✅ Inventory sync to ${target} completed`, mockResults);
 
         res.json({

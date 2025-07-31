@@ -215,7 +215,7 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
       {/* Tab Panels */}
       <TabPanel value={activeTab} index={0}>
         {/* General Settings */}
-        <Box sx={{ mb: 3 }}>
+        
         {/* Appearance Settings */}
         <SettingsSection title="Appearance" icon={<Palette />}>
           <SettingItem 

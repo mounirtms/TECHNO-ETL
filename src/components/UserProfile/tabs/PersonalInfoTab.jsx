@@ -88,7 +88,7 @@ const SaveButton = styled(Button)(({ theme }) => ({
 const PersonalInfoTab = () => {
   const { userData, updateUserData, loading } = useProfileController();
   const { translate } = useLanguage();
-  const { mode } = useTheme();
+  const { mode } = useCustomTheme();
   const { currentUser } = useAuth();
   const [formData, setFormData] = useState({
     firstName: '',

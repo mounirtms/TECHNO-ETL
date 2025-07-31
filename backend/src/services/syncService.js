@@ -9,7 +9,7 @@ import pLimit from 'p-limit';
 import { getPool } from '../utils/database.js';
 import { logger } from '../utils/logger.js';
 import { SQL_QUERIES } from '../constants/sqlQueries.js';
-import * as sourcesModule from '../config/sources.js';
+import * as sourcesModule from '../config/sources.js'
 import { syncInventoryToMagento, syncPricesToMagento } from '../mdm/services.js';
 
 const getSQLQuery = (queryKey) => {
@@ -29,10 +29,11 @@ export async function syncStocks(sourceCode) {
     try {
         const mergeQuery = getSQLQuery('SYNC_STOCK');
         const pool = getPool('mdm');
-        await pool.request()
+        const stockSync = await pool.request()
             .input('sourceCode', sql.NVarChar, sourceCode || null)
             .query(mergeQuery);
         logger.sync('stock changes', logIdentifier, 'success');
+        return stockSync
     } catch (error) {
         logger.sync('stock changes', logIdentifier, 'error', { error: error.message });
         throw error;
@@ -61,7 +62,7 @@ export async function syncSuccess(sourceCode) {
 /**
  * Fetches MDM prices from the database.
  */
-async function fetchMdmPrices() {
+export async function fetchMdmPrices() {
     try {
         const sqlQuery = getSQLQuery('PRICES');
         const pool = getPool('mdm');

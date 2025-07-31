@@ -38,7 +38,8 @@ import {
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useTheme } from '@mui/material/styles';
+ import { useCustomTheme } from '../contexts/ThemeContext';
+ import { useTheme } from '@mui/material/styles';
 import { toast } from 'react-toastify';
 import { useTab } from '../contexts/TabContext';
 import { StatsCards } from '../components/common/StatsCards';
@@ -275,11 +276,11 @@ const Dashboard = () => {
   const handlePriceSync = async () => {
     try {
       // Use getPrices from the controller, which manages loading
-      const data = await getPrices();
-      console.log('📊 Price data received:', data);
+      const pricesData = await getPrices();
+      console.log('📊 Price data received:', pricesData.data);
 
-      if (data && data.length > 0) {
-        setPriceData(data);
+      if (pricesData.data) {
+        setPriceData(pricesData.data);
         setPriceSyncDialogOpen(true);
       } else {
         alert('No price data available for sync');

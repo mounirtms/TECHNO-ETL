@@ -57,7 +57,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 const PreferencesTab = () => {
-    const { mode, toggleTheme, fontSize, setFontSize } = useTheme();
+    const { mode, toggleTheme, fontSize, setFontSize } = useCustomTheme();
     const { currentLanguage, setLanguage, translate, languages } = useLanguage();
     const { currentUser } = useAuth();
     const { settings, updateSettings, saveSettings, resetSettings, exportSettings, importSettings, loading, isDirty } = useSettings();
@@ -433,43 +433,6 @@ const PreferencesTab = () => {
                     </Grid>
                 </AccordionDetails>
             </Accordion>
-
-                {/* Accessibility Settings */}
-                <Grid item xs={12}>
-                    <Typography variant="h6" gutterBottom>
-                        {translate('profile.preferences.accessibility.title')}
-                    </Typography>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
-                            <FormControlLabel
-                                control={<Switch />}
-                                label={translate('profile.preferences.accessibility.highContrast.title')}
-                            />
-                            <Typography variant="body2" color="textSecondary">
-                                {translate('profile.preferences.accessibility.highContrast.description')}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth>
-                                <Typography variant="subtitle2" gutterBottom>
-                                    {translate('profile.preferences.accessibility.fontSize.title')}
-                                </Typography>
-                                <Select
-                                    value={formData.fontSize}
-                                    onChange={handleFontSizeChange}
-                                    size="small"
-                                >
-                                    <MenuItem value="small">{translate('profile.preferences.accessibility.fontSize.small')}</MenuItem>
-                                    <MenuItem value="medium">{translate('profile.preferences.accessibility.fontSize.medium')}</MenuItem>
-                                    <MenuItem value="large">{translate('profile.preferences.accessibility.fontSize.large')}</MenuItem>
-                                </Select>
-                                <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                                    {translate('profile.preferences.accessibility.fontSize.description')}
-                                </Typography>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                </Grid>
 
             {/* Accessibility Settings */}
             <Accordion

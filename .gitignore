@@ -26,3 +26,5 @@ backend/queries
 *.sw?
 odoo_module
 package-lock.json
+
+backend/production

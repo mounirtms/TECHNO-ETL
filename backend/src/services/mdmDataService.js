@@ -6,6 +6,8 @@
  */
 
 import sql from 'mssql';
+ 
+import {fetchMdmPrices} from './syncService'
 
 // Simple console logger for clean development
 const logger = {
@@ -15,135 +17,14 @@ const logger = {
     debug: (message, meta = {}) => console.log(`[DEBUG] ${message}`, meta)
 };
 
-// Database configuration
-const dbConfig = {
-    server: process.env.DB_SERVER || 'localhost',
-    database: process.env.DB_DATABASE || 'MDM_REPORT',
-    user: process.env.DB_USER || 'sa',
-    password: process.env.DB_PASSWORD || 'password',
-    options: {
-        encrypt: true,
-        trustServerCertificate: true,
-        connectionTimeout: 30000,
-        requestTimeout: 30000
-    },
-    pool: {
-        max: 10,
-        min: 2,
-        idleTimeoutMillis: 30000
-    }
-};
 
-let pool = null;
-
-/**
- * Get database connection pool
- */
-async function getPool() {
-    if (pool && pool.connected) {
-        return pool;
-    }
-
-    try {
-        logger.info('Creating database connection pool...');
-        pool = await sql.connect(dbConfig);
-        logger.info('✅ Database connection pool created successfully');
-        return pool;
-    } catch (error) {
-        logger.warn('⚠️ Database connection failed, using fallback data');
-        return null;
-    }
-}
-
-/**
- * Get real price data from MDM database
- */
 export async function getMdmPrices(filters = {}) {
     try {
         const { sku, category, limit = 100, offset = 0 } = filters;
-        logger.info('📊 Fetching price data...', { sku, category, limit, offset });
-
-        // Try to get database connection
-        const dbPool = await getPool();
         
-        if (!dbPool) {
-            // Return fallback data if database is not available
-            const fallbackData = [
-                {
-                    id: 'PROD-001',
-                    sku: 'PROD-001',
-                    name: 'Sample Product 1',
-                    currentPrice: 29.99,
-                    newPrice: 29.99,
-                    currency: 'EUR',
-                    status: 'active',
-                    lastUpdated: new Date().toISOString(),
-                    source: 'MDM'
-                },
-                {
-                    id: 'PROD-002',
-                    sku: 'PROD-002',
-                    name: 'Sample Product 2',
-                    currentPrice: 45.50,
-                    newPrice: 45.50,
-                    currency: 'EUR',
-                    status: 'active',
-                    lastUpdated: new Date().toISOString(),
-                    source: 'MDM'
-                },
-                {
-                    id: 'PROD-003',
-                    sku: 'PROD-003',
-                    name: 'Sample Product 3',
-                    currentPrice: 15.75,
-                    newPrice: 15.75,
-                    currency: 'EUR',
-                    status: 'active',
-                    lastUpdated: new Date().toISOString(),
-                    source: 'MDM'
-                }
-            ];
-
-            return {
-                success: true,
-                data: fallbackData.slice(0, parseInt(limit)),
-                pagination: {
-                    total: fallbackData.length,
-                    limit: parseInt(limit),
-                    offset: parseInt(offset)
-                }
-            };
-        }
-
-        // Use real database query
-        const query = `
-            SELECT TOP (@limit)
-                'PROD-' + CAST(ROW_NUMBER() OVER (ORDER BY NEWID()) AS VARCHAR) as sku,
-                CAST((RAND() * 100 + 10) AS DECIMAL(10,2)) as price
-            FROM sys.objects
-            WHERE type = 'U'
-        `;
-
-        const request = dbPool.request()
-            .input('limit', sql.Int, parseInt(limit));
-
-        const result = await request.query(query);
-        
-        logger.info(`✅ Fetched ${result.recordset.length} price records`);
-        
-        // Transform data to match expected format
-        const priceData = result.recordset.map(row => ({
-            id: row.sku,
-            sku: row.sku,
-            name: `Product ${row.sku}`,
-            currentPrice: parseFloat(row.price) || 0,
-            newPrice: parseFloat(row.price) || 0,
-            currency: 'EUR',
-            status: 'active',
-            lastUpdated: new Date().toISOString(),
-            source: 'MDM'
-        }));
-
+        const result = fetchMdmPrices()
+        debugger
+       
         return {
             success: true,
             data: priceData,
@@ -332,7 +213,7 @@ export async function getMdmSources() {
 /**
  * Sync prices to Magento
  */
-export async function syncPricesToMagento(products = []) {
+ async function syncPricesToMagento(products = []) {
     try {
         logger.info(`🔄 Syncing ${products.length} prices to Magento...`);
 

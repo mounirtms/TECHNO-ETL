@@ -260,23 +260,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
         }
     }, [startDate, endDate, refreshKey]);
 
-    // Sync Prices
-    const syncPrices = async (prices) => {
-        try {
-            const response = await axios.post('/api/mdm/prices/sync-to-magento', { products: prices });
-            const requestItems = response.data?.request_items || [];
-            const acceptedCount = requestItems.filter(item => item.status === 'accepted').length;
-            if (acceptedCount === prices.length) {
-                toast.success(`Prices synced successfully (${acceptedCount} items accepted)`);
-            } else {
-                toast.warn(`Partial sync: ${acceptedCount} of ${prices.length} items accepted`);
-            }
-        } catch (error) {
-            console.error('❌ Price sync error:', error);
-            toast.error('Failed to sync prices');
-        }
-    };
-
+   
     // Sync Stocks from MDM
     const syncAllStocks = async () => {
         try {
@@ -308,11 +292,6 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
 
             console.log('✅ Price sync response:', response.data);
             toast.success('✅ Price sync operation completed successfully');
-
-            // Refresh dashboard data after sync
-            setTimeout(() => {
-                fetchDashboardData();
-            }, 2000);
 
             return response.data;
         } catch (error) {
