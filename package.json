@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "author": {
     "name": "Mounir Abderrahmani",
-    "email": "mounir.ab@techno-dz.com",
-    "url": "mailto:mounir.webdev.tms@gmail.com"
+    "email": "mounir.webdev.tms@gmail.com",
+    "url": "mounir1.github.io"
   },
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 80",
@@ -13,11 +13,21 @@
     "backend": "node --inspect backend/server.js",
     "server": "node backend/server.js",
     "build": "vite build",
+    "build:clean": "rimraf dist && npm run build",
+    "build:prod": "npm run clean && npm run lint:fix && npm run build:frontend && npm run build:backend && npm run build:docs && npm run dist:combine",
+    "build:frontend": "vite build",
+    "build:backend": "cd backend && npm run build:prod",
+    "build:docs": "cd docs && npm run build",
+    "dist:combine": "node scripts/combine-dist.js",
     "preview": "vite preview --port 3000",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint src --ext js,jsx --fix",
+    "clean": "rimraf dist coverage .nyc_output logs",
+    "clean:all": "npm run clean && cd backend && npm run clean && cd ../docs && rimraf dist",
     "dev:full": "concurrently \"npm run server\" \"npm run dev\"",
-    "start:full": "concurrently \"npm run server\" \"npm run start\""
+    "start:full": "concurrently \"npm run server\" \"npm run start\"",
+    "serve:prod": "cd dist/backend \u0026\u0026 npm install --production \u0026\u0026 npm start",
+    "postinstall": "cd backend \u0026\u0026 npm install \u0026\u0026 cd ../docs \u0026\u0026 npm install"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -35,11 +45,9 @@
     "dotenv": "^16.5.0",
     "firebase": "^11.2.0",
     "framer-motion": "^11.18.2",
-
     "i18next": "^25.3.2",
     "i18next-browser-languagedetector": "^8.2.0",
     "i18next-http-backend": "^3.0.2",
-
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
@@ -62,6 +70,9 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@babel/core": "^7.28.0",
+    "@babel/plugin-transform-react-jsx": "^7.27.1",
+    "@babel/preset-react": "^7.27.1",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
@@ -70,6 +81,7 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "fs-extra": "^11.2.0",
     "rimraf": "^5.0.5",
     "terser": "^5.43.1",
     "vite": "^4.4.5",
