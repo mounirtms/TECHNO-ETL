@@ -24,11 +24,17 @@ class MagentoService {
     }
 
     buildUrl(endpoint) {
-        let path = endpoint.replace(/^\/+/, '');
+        // Clean up the endpoint path
+        let path = endpoint.replace(/^\/+/, ''); // Remove leading slashes
+        
+        // If endpoint already has V1 prefix or is a full path, use as-is
         if (!/^V1\b|^rest\/V1\b|^async\//.test(path)) {
             path = `V1/${path}`;
         }
-        return `${this.url}/${path}`;
+        
+        // Ensure proper URL construction with forward slash
+        const finalUrl = `${this.url}/${path}`.replace(/([^:])\/{2,}/g, '$1/');
+        return finalUrl;
     }
 
     async request(method, endpoint, data = null, customHeaders = {}, options = {}) {

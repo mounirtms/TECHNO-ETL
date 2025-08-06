@@ -6,8 +6,9 @@
  */
 
 import express from 'express';
-import { fetchMdmPrices, syncStocks,inventorySync } from '../services/syncService.js';
-import { syncPricesToMagento } from '../mdm/services.js';
+import { fetchMdmPrices, syncStocks, inventorySync, syncSource, syncSuccess} from '../services/syncService.js';
+import { syncPricesToMagento, fetchInventoryData} from '../mdm/services.js';
+import { getAllSources } from '../config/sources.js';
 
 const router = express.Router();
 
@@ -42,10 +43,10 @@ router.get('/prices', async (req, res) => {
 });
 
 /**
- * POST /api/mdm/prices/sync-to-magento - Sync prices to Magento
+ * POST /api/mdm/sync/prices-to-magento - Sync prices to Magento
  * Used by: Dashboard after treating price data in table
  */
-router.post('/prices-sync', async (req, res) => {
+router.post('/sync/prices', async (req, res) => {
     try {
 
         // Use real syncService instead of mock data
@@ -71,56 +72,14 @@ router.post('/prices-sync', async (req, res) => {
 
 // ===== INVENTORY MANAGEMENT =====
 
-/**
- * GET /api/mdm/inventory/stocks - Get stock data from MDM
- * Used by: Dashboard and MDM Grid to display stock levels
- */
-router.get('/inventory/stocks', async (req, res) => {
-    try {
-        const { sourceCode, sku, limit = 100, offset = 0 } = req.query;
-        console.log('📦 Getting real stock data from MDM database...', { sourceCode, sku, limit, offset });
-
-        // Use real data service instead of mock data
-        //const result = await mdmDataService.getMdmStocks({ sourceCode, sku, limit, offset });
-
-        res.json({
-            success: result.success,
-            message: 'Stock data retrieved successfully from MDM database',
-            data: result.data,
-            pagination: result.pagination,
-            filters: result.filters
-        });
-
-    } catch (error) {
-        console.error('❌ Error getting stock data from MDM database:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Failed to retrieve stock data from MDM database',
-            error: error.message
-        });
-    }
-});
 
 /**
- * POST /api/mdm/inventory/sync-stocks - Sync stocks for specific source
+ * POST /api/mdm/inventory/sync/stocks - Sync stocks for specific source
  * Used by: MDM Grid for selective stock sync per source code
  */
-router.post('/inventory/sync-stocks', async (req, res) => {
+router.post('/sync/stocks', async (req, res) => {
     try {
-        const { sourceCode, products = [] } = req.body;
-
-        if (!sourceCode) {
-            return res.status(400).json({
-                success: false,
-                message: 'sourceCode is required for stock sync'
-            });
-        }
-
-        console.log(`🔄 Syncing stocks for source: ${sourceCode} using real syncService`, {
-            productCount: products.length
-        });
-
-
+        const { sourceCode } = req.body;
         const result = await syncStocks(sourceCode);
 
         console.log(`✅ Stock sync completed for source: ${sourceCode} via syncService`, result);
@@ -173,50 +132,55 @@ router.post('/inventory/sync-all-stocks', async (req, res) => {
  * POST /api/mdm/inventory/sync-sources - Sync inventory to Magento
  * Used by: Dashboard and MDM Grid to sync inventory data to Magento
  */
-router.post('/inventory/sync-sources', async (req, res) => {
+router.post('/sync/source', async (req, res) => {
     try {
-        const { sourceCode, target = 'magento' } = req.body;
- 
-     
-        console.log(`✅ Inventory sync to ${target} completed`, mockResults);
-
+        const source = req.body;
+        const startTime = Date.now();
+        
+        console.log(`🔄 Starting sync for source: ${source.code_source || source.magentoSource}`);
+        
+        let response = await syncSource(source.code_source);
+        const duration = Date.now() - startTime;
+        
+        console.log(`✅ Source ${source.code_source} synced in ${duration}ms`);
+        
         res.json({
             success: true,
-            message: `Inventory synced to ${target} successfully`,
-            data: mockResults
+            message: `Source ${source.code_source || source.magentoSource} synced successfully`,
+            data: response,
+            source: source,
+            syncTime: duration,
+            timestamp: new Date().toISOString()
         });
 
     } catch (error) {
-        console.error('❌ Error syncing inventory:', error);
+        console.error(`❌ Error syncing source ${req.body?.code_source || 'unknown'}:`, error);
         res.status(500).json({
             success: false,
-            message: 'Failed to sync inventory',
-            error: error.message
+            message: `Failed to sync source ${req.body?.code_source || 'unknown'}`,
+            error: error.message,
+            source: req.body
         });
     }
 });
 
-// ===== SOURCE MANAGEMENT =====
 
-/**
- * GET /api/mdm/sources - Get available data sources
- * Used by: Dashboard and MDM Grid to display available sources
- */
-router.get('/sources', async (req, res) => {
+router.get('/inventory', async (req, res) => {
     try {
-        console.log('📋 Getting real data sources from MDM database...');
-
+        console.log('�� Getting real inventory sources from MDM database...');
         // Use real data service instead of mock data
-        const result = await mdmDataService.getMdmSources();
 
+        const result = await fetchInventoryData(req);
+      
         res.json({
-            success: result.success,
+            success: true,
             message: 'Data sources retrieved successfully from MDM database',
             data: result.data
         });
+        console.log('Data sources retrieved successfully:', result.data);
+        } catch (error) {
+        console.error('Error getting sources from MDM database:', error);
 
-    } catch (error) {
-        console.error('❌ Error getting sources from MDM database:', error);
         res.status(500).json({
             success: false,
             message: 'Failed to retrieve data sources from MDM database',
@@ -225,62 +189,67 @@ router.get('/sources', async (req, res) => {
     }
 });
 
+
+// ===== SOURCE MANAGEMENT =====
+
 /**
- * POST /api/mdm/sources/sync - Sync specific source
- * Used by: MDM Grid for selective source sync
+ * GET /api/mdm/sources - Get all available sources
+ * Used by: Dashboard to fetch source configurations for sync progress
  */
-router.post('/sources/sync', async (req, res) => {
+router.get('/sources', async (req, res) => {
     try {
-        const { sourceCode, operation = 'full' } = req.body;
-
-        if (!sourceCode) {
-            return res.status(400).json({
-                success: false,
-                message: 'sourceCode is required for source sync'
-            });
-        }
-
-        console.log(`🔄 Syncing source: ${sourceCode} (${operation})...`);
-
-        // Simulate source sync operation
-        await new Promise(resolve => setTimeout(resolve, 1200));
-
-        const mockResults = {
-            sourceCode: sourceCode,
-            operation: operation,
-            synced: 156,
-            failed: 4,
-            total: 160,
-            duration: '1.2s',
-            timestamp: new Date().toISOString(),
-            details: {
-                products_updated: 120,
-                stocks_updated: 156,
-                prices_updated: 89,
-                errors: [
-                    'SKU PROD-045: Invalid price format',
-                    'SKU PROD-078: Stock quantity negative',
-                    'SKU PROD-123: Missing required attributes',
-                    'SKU PROD-189: Duplicate entry'
-                ]
-            }
-        };
-
-        console.log(`✅ Source sync completed for: ${sourceCode}`, mockResults);
-
+        console.log('📋 Getting all sources configuration...');
+        const sources = getAllSources();
+        
         res.json({
             success: true,
-            message: `Source ${sourceCode} synced successfully`,
-            data: mockResults
+            message: 'Sources retrieved successfully',
+            data: sources
         });
-
+        
     } catch (error) {
-        console.error('❌ Error syncing source:', error);
+        console.error('❌ Error getting sources:', error);
         res.status(500).json({
             success: false,
-            message: 'Failed to sync source',
+            message: 'Failed to retrieve sources',
             error: error.message
         });
+    }
+});
+
+/**
+ * POST /api/mdm/sync/success - Mark sync as successful
+ * Used by: Dashboard after completing sync operations
+ */
+router.post('/sync/success', async (req, res) => {
+    // Prevent multiple responses with a flag
+    if (res.headersSent) {
+        console.warn('Headers already sent for sync/success endpoint');
+        return;
+    }
+    
+    try {
+        const { sourceCode } = req.body;
+        await syncSuccess(sourceCode);
+        
+        console.log(`✅ Sync success marked for ${sourceCode ? `source: ${sourceCode}` : 'all sources'}`);
+        
+        if (!res.headersSent) {
+            res.json({
+                success: true,
+                message: `Sync success marked for ${sourceCode ? `source: ${sourceCode}` : 'all sources'}`
+            });
+        }
+        
+    } catch (error) {
+        console.error('❌ Error marking sync success:', error);
+        if (!res.headersSent) {
+            res.status(500).json({
+                success: false,
+                message: 'Failed to mark sync success',
+                error: error.message
+            });
+        }
     }
 });
 

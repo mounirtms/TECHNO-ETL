@@ -7,11 +7,7 @@ import { MDM } from '../queries/index.js';
 
 const magento = new MagentoService(cloudConfig);
 
-// Helper: Only add searchCriteria for endpoints that support it
-function shouldAddSearchCriteria(endpoint) {
-  // Add more endpoints as needed
-  return /V1\/(products|orders|customers|categories|cms|stockItems|inventory\/source-items)/.test(endpoint);
-}
+ 
 
 async function syncInventoryToMagento(req) {
   try {
@@ -177,7 +173,7 @@ async function syncPricesToMagento(req) {
 async function fetchInventoryData(req) {
     try {
         console.log('🚀 [MDM Service] Starting inventory data fetch');
-
+ 
         let params = { ...req.query };
         console.log('📋 [MDM Service] Original params:', params);
 

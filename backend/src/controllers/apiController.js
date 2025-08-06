@@ -43,7 +43,7 @@ function buildMagentoQueryString(query = {}) {
     return params.toString();
 }
 
-let magentoService = MagentoService;
+let magentoService = null;
 
 export async function getMdmData(req, res) {
     const startTime = Date.now();
@@ -347,8 +347,9 @@ export async function proxyMagentoRequest(req, res) {
 
         // Track user behavior
         if (req.user?.id) {
+            const behaviorEndpoint = req.originalUrl?.replace('/api/magento', '').replace(/\/+/g, '/') || 'unknown';
             usageAnalytics.trackUserBehavior(req.user.id, 'magento_api_call', {
-                endpoint,
+                endpoint: behaviorEndpoint,
                 method,
                 responseTime,
                 success: true,
@@ -366,14 +367,16 @@ export async function proxyMagentoRequest(req, res) {
             : ERROR_CATEGORIES.SYSTEM;
 
         // Collect error with full context
+        const errorEndpoint = req.originalUrl?.replace('/api/magento', '').replace(/\/+/g, '/') || 'unknown';
         errorCollector.collectError(error, req, {
             endpoint: 'proxyMagentoRequest',
             isExternalService: true,
             responseTime,
-            magentoEndpoint: endpoint,
-            method
+            magentoEndpoint: errorEndpoint,
+            method: method || 'unknown'
         });
 
+        const logEndpoint = req.originalUrl?.replace('/api/magento', '').replace(/\/+/g, '/') || 'unknown';
         logger.error('Magento proxy error', {
             category: 'magento_proxy',
             action: 'request_failed',
@@ -381,15 +384,16 @@ export async function proxyMagentoRequest(req, res) {
             stack: error.stack,
             code: error.code,
             responseTime,
-            endpoint,
+            endpoint: logEndpoint,
             method,
             correlationId: requestId
         });
 
         // Track failed user behavior
         if (req.user?.id) {
+            const behaviorEndpoint = req.originalUrl?.replace('/api/magento', '').replace(/\/+/g, '/') || 'unknown';
             usageAnalytics.trackUserBehavior(req.user.id, 'magento_api_error', {
-                endpoint,
+                endpoint: behaviorEndpoint,
                 method,
                 error: error.message,
                 responseTime,

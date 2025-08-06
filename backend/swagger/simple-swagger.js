@@ -131,7 +131,7 @@ const options = {
           }
         }
       },
-      '/api/mdm/prices/sync-to-magento': {
+      '/api/mdm/sync/prices-to-magento': {
         post: {
           summary: 'Sync prices to Magento via syncService',
           description: 'Sync processed price data from dashboard to Magento using real syncService',
@@ -236,7 +236,7 @@ const options = {
           }
         }
       },
-      '/api/mdm/inventory/sync-stocks': {
+      '/api/mdm/inventory/sync/stocks': {
         post: {
           summary: 'Sync stocks for specific source',
           description: 'Sync stocks for a specific source code (MDM Grid operation)',

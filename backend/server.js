@@ -52,8 +52,8 @@ const app = express();
 // Global server variable for shutdown handlers
 let server;
 
-// Set a global request timeout to prevent requests from hanging
-app.use(timeout('30s'));
+// Set a global request timeout to prevent requests from hanging  
+app.use(timeout('120s')); // Increased to 2 minutes for heavy operations
 
 // Rate limiting to protect against brute-force attacks and API abuse
 const apiLimiter = rateLimit({
@@ -273,8 +273,8 @@ function startServer() {
     server = app.listen(PORT, HOST, () => {
         console.log(`🚀 TECHNO-ETL Backend Server running on ${HOST}:${PORT}`);
         console.log(`📊 Health check: http://${HOST}:${PORT}/api/health`);
-        console.log(`🔄 Price sync: POST http://${HOST}:${PORT}/api/mdm/sync-prices`);
-        console.log(`📦 Stock sync: POST http://${HOST}:${PORT}/api/mdm/sync-stocks`);
+        console.log(`🔄 Price sync: POST http://${HOST}:${PORT}/api/mdm/sync/prices`);
+        console.log(`📦 Stock sync: POST http://${HOST}:${PORT}/api/mdm/sync/stocks`);
         console.log(`🏭 Inventory sync: POST http://${HOST}:${PORT}/api/mdm/inventory/sync-all-stocks-sources`);
         console.log(`🛒 Magento proxy: http://${HOST}:${PORT}/api/magento/*`);
         console.log(`📚 API Documentation (Swagger): http://${HOST}:${PORT}/api-docs`);

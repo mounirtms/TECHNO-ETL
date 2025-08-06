@@ -75,33 +75,78 @@ export async function fetchMdmPrices() {
     }
 }
 
+export async function syncSource(code) {
+    try {
+        logger.info(`🔄 Starting sync for source: ${code}`);
+        const startTime = Date.now();
+        
+        const result = await syncInventoryToMagento({
+            query: {
+                changed: 1,
+                page: 0,
+                pageSize: 150, // Reduced for better performance
+                sortField: 'QteStock',
+                sortOrder: 'desc',
+                sourceCode: code
+            }
+        });
+        
+        const duration = Date.now() - startTime;
+        logger.info(`✅ Source ${code} synced successfully in ${duration}ms`);
+        
+        return {
+            ...result,
+            sourceCode: code,
+            syncTime: duration,
+            timestamp: new Date().toISOString()
+        };
+        
+    } catch (error) {
+        logger.error(`❌ Error syncing source ${code}:`, { error: error.message });
+        throw error;
+    }
+}
+
 /**
  * Syncs all sources concurrently to Magento.
  */
-async function syncSources() {
-    const limit = pLimit(3); // Limit to 3 concurrent syncs
+export async function syncSources() {
+const limit = pLimit(5); // Increase limit for better concurrency
     try {
         const allSources = typeof sourcesModule.getAllSources === 'function' ? sourcesModule.getAllSources() : [];
+        logger.info(`🔄 Starting concurrent sync for ${allSources.length} sources...`);
+        
         const syncPromises = allSources.map(source => {
             return limit(async () => {
-                logger.info(`🔄 [Concurrent] Syncing inventory for source: ${source.magentoSource}`);
-                await syncInventoryToMagento({
-                    query: {
-                        changed: 1,
-                        page: 0,
-                        pageSize: 300,
-                        sortField: 'QteStock',
-                        sortOrder: 'desc',
-                        sourceCode: source.code_source
-                    }
-                });
-                logger.info(`✅ [Concurrent] Finished syncing for ${source.magentoSource}`);
+                try {
+                    await syncSource(source.code_source);
+                    logger.info(`✅ Successfully synced source: ${source.magentoSource}`);
+                    return { source: source.magentoSource, status: 'success' };
+                } catch (error) {
+                    logger.error(`❌ Failed to sync source: ${source.magentoSource}`, { error: error.message });
+                    return { source: source.magentoSource, status: 'error', error: error.message };
+                }
             });
         });
-        await Promise.all(syncPromises);
-        logger.info('✅ All sources have been synced concurrently.');
+        
+        const syncResults = await Promise.all(syncPromises);
+        const successCount = syncResults.filter(result => result.status === 'success').length;
+        const errorCount = syncResults.filter(result => result.status === 'error').length;
+        
+        logger.info(`✅ Concurrent sync completed: ${successCount} successful, ${errorCount} failed`);
+        
+        return {
+            success: true,
+            totalSources: allSources.length,
+            successfulSources: successCount,
+            failedSources: errorCount,
+            results: syncResults,
+            message: `Successfully synced ${successCount}/${allSources.length} sources`
+        };
+        
     } catch (error) {
-        logger.error('❌ Error syncing all sources:', { error: error.message });
+        logger.error('❌ Error in concurrent source sync:', { error: error.message });
+        throw error;
     }
 }
 
