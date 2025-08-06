@@ -1,0 +1,667 @@
+{
+  "constants": [
+    {
+      "id": "Dashboard",
+      "label": "Dashboard",
+      "path": "/dashboard"
+    },
+    {
+      "id": "ProductsGrid",
+      "label": "Products",
+      "path": "/products"
+    },
+    {
+      "id": "CegidProductsGrid",
+      "label": "Cegid Products",
+      "path": "/cegid-products"
+    },
+    {
+      "id": "CustomersGrid",
+      "label": "Customers",
+      "path": "/customers"
+    },
+    {
+      "id": "OrdersGrid",
+      "label": "Orders",
+      "path": "/orders"
+    },
+    {
+      "id": "InvoicesGrid",
+      "label": "Invoices",
+      "path": "/invoices"
+    },
+    {
+      "id": "CategoryTree",
+      "label": "Categories",
+      "path": "/categories"
+    },
+    {
+      "id": "StocksGrid",
+      "label": "Stocks",
+      "path": "/stocks"
+    },
+    {
+      "id": "SourcesGrid",
+      "label": "Sources",
+      "path": "/sources"
+    },
+    {
+      "id": "UserProfile",
+      "label": "Profile",
+      "path": "/profile"
+    }
+  ],
+  "gridSettings": {
+    "MDMProductsGrid": {
+      "Catalogue": {
+        "index": 19,
+        "sorting": "asc",
+        "visible": true,
+        "width": 100
+      },
+      "Code_Fil_JDE": {
+        "index": 3,
+        "sorting": "asc",
+        "visible": true,
+        "width": 120
+      },
+      "Code_JDE": {
+        "index": 2,
+        "sorting": "asc",
+        "visible": true,
+        "width": 120
+      },
+      "Code_MDM": {
+        "index": 1,
+        "sorting": "asc",
+        "visible": true,
+        "width": 150
+      },
+      "DateDernierMaJ": {
+        "index": 17,
+        "sorting": "asc",
+        "visible": true,
+        "width": 160
+      },
+      "DatePremierEntrer": {
+        "index": 16,
+        "sorting": "asc",
+        "visible": true,
+        "width": 160
+      },
+      "ForAppro": {
+        "index": 18,
+        "sorting": "asc",
+        "visible": true,
+        "width": 100
+      },
+      "QteReceptionner": {
+        "index": 9,
+        "sorting": "asc",
+        "visible": true,
+        "width": 100
+      },
+      "QteStock": {
+        "index": 8,
+        "sorting": "asc",
+        "visible": true,
+        "width": 100
+      },
+      "QteV": {
+        "index": 11,
+        "sorting": "asc",
+        "visible": true,
+        "width": 110
+      },
+      "QteVM_1": {
+        "index": 12,
+        "sorting": "asc",
+        "visible": true,
+        "width": 110
+      },
+      "QteVM_2": {
+        "index": 13,
+        "sorting": "asc",
+        "visible": true,
+        "width": 110
+      },
+      "QteVM_3": {
+        "index": 14,
+        "sorting": "asc",
+        "visible": true,
+        "width": 110
+      },
+      "Source": {
+        "index": 5,
+        "sorting": "asc",
+        "visible": true,
+        "width": 150
+      },
+      "Succursale": {
+        "index": 7,
+        "sorting": "asc",
+        "visible": true,
+        "width": 100
+      },
+      "Tarif": {
+        "index": 15,
+        "sorting": "asc",
+        "visible": true,
+        "width": 100
+      },
+      "TypeProd": {
+        "index": 4,
+        "sorting": "asc",
+        "visible": true,
+        "width": 80
+      },
+      "VenteMoyen": {
+        "index": 10,
+        "sorting": "asc",
+        "visible": true,
+        "width": 110
+      },
+      "rowNumber": {
+        "index": 0,
+        "sorting": "asc",
+        "visible": true,
+        "width": 30
+      },
+      "syncedDate": {
+        "index": 6,
+        "sorting": "asc",
+        "visible": true,
+        "width": 170
+      }
+    },
+    "OrdersGrid": {
+      "applied_rule_ids": {
+        "index": 0,
+        "visible": true
+      },
+      "base_currency_code": {
+        "index": 0,
+        "visible": true
+      },
+      "base_discount_amount": {
+        "index": 0,
+        "visible": true
+      },
+      "base_discount_tax_compensation_amount": {
+        "index": 0,
+        "visible": true
+      },
+      "base_grand_total": {
+        "index": 0,
+        "visible": true
+      },
+      "base_shipping_amount": {
+        "index": 0,
+        "visible": true
+      },
+      "base_shipping_discount_amount": {
+        "index": 0,
+        "visible": true
+      },
+      "base_shipping_discount_tax_compensation_amnt": {
+        "index": 0,
+        "visible": true
+      },
+      "base_shipping_incl_tax": {
+        "index": 0,
+        "visible": true
+      },
+      "base_shipping_tax_amount": {
+        "index": 0,
+        "visible": true
+      },
+      "base_subtotal": {
+        "index": 0,
+        "visible": true
+      },
+      "base_subtotal_incl_tax": {
+        "index": 0,
+        "visible": true
+      },
+      "base_tax_amount": {
+        "index": 0,
+        "visible": false
+      },
+      "base_to_global_rate": {
+        "index": 0,
+        "visible": false
+      },
+      "base_to_order_rate": {
+        "index": 0,
+        "visible": false
+      },
+      "base_total_due": {
+        "index": 0,
+        "visible": false
+      },
+      "billing_address_id": {
+        "index": 0,
+        "visible": false
+      },
+      "created_at": {
+        "index": 0,
+        "visible": true
+      },
+      "customer_email": {
+        "index": 0,
+        "visible": false
+      },
+      "customer_firstname": {
+        "index": 0,
+        "visible": true
+      },
+      "customer_group_id": {
+        "index": 0,
+        "visible": false
+      },
+      "customer_id": {
+        "index": 0,
+        "visible": false
+      },
+      "customer_is_guest": {
+        "index": 0,
+        "visible": false
+      },
+      "customer_lastname": {
+        "index": 0,
+        "visible": false
+      },
+      "customer_note_notify": {
+        "index": 0,
+        "visible": false
+      },
+      "discount_amount": {
+        "index": 0,
+        "visible": false
+      },
+      "discount_description": {
+        "index": 0,
+        "visible": false
+      },
+      "discount_tax_compensation_amount": {
+        "index": 0,
+        "visible": false
+      },
+      "email_sent": {
+        "index": 0,
+        "visible": false
+      },
+      "entity_id": {
+        "index": 0,
+        "visible": false
+      },
+      "global_currency_code": {
+        "index": 0,
+        "visible": false
+      },
+      "grand_total": {
+        "index": 0,
+        "visible": true
+      },
+      "increment_id": {
+        "index": 0,
+        "visible": true
+      },
+      "is_virtual": {
+        "index": 0,
+        "visible": false
+      },
+      "order_currency_code": {
+        "index": 0,
+        "visible": false
+      },
+      "protect_code": {
+        "index": 0,
+        "visible": false
+      },
+      "quote_id": {
+        "index": 0,
+        "visible": false
+      },
+      "remote_ip": {
+        "index": 0,
+        "visible": false
+      },
+      "shipping_amount": {
+        "index": 0,
+        "visible": false
+      },
+      "shipping_description": {
+        "index": 0,
+        "visible": false
+      },
+      "shipping_discount_amount": {
+        "index": 0,
+        "visible": false
+      },
+      "shipping_discount_tax_compensation_amount": {
+        "index": 0,
+        "visible": true
+      },
+      "shipping_incl_tax": {
+        "index": 0,
+        "visible": true
+      },
+      "shipping_tax_amount": {
+        "index": 0,
+        "visible": true
+      },
+      "state": {
+        "index": 0,
+        "visible": true
+      },
+      "status": {
+        "index": 0,
+        "visible": true
+      },
+      "store_currency_code": {
+        "index": 0,
+        "visible": true
+      },
+      "store_id": {
+        "index": 0,
+        "visible": true
+      },
+      "store_name": {
+        "index": 0,
+        "visible": true
+      },
+      "store_to_base_rate": {
+        "index": 0,
+        "visible": true
+      },
+      "store_to_order_rate": {
+        "index": 0,
+        "visible": true
+      },
+      "subtotal": {
+        "index": 0,
+        "visible": true
+      },
+      "subtotal_incl_tax": {
+        "index": 0,
+        "visible": true
+      },
+      "tax_amount": {
+        "index": 0,
+        "visible": true
+      },
+      "total_due": {
+        "index": 0,
+        "visible": true
+      },
+      "total_item_count": {
+        "index": 0,
+        "visible": true
+      },
+      "total_qty_ordered": {
+        "index": 0,
+        "visible": true
+      },
+      "updated_at": {
+        "index": 0,
+        "visible": true
+      },
+      "weight": {
+        "index": 0,
+        "visible": true
+      }
+    },
+    "ProductsGrid": {
+      "created_at": {
+        "index": 9,
+        "sorting": "asc",
+        "visible": true,
+        "width": 180
+      },
+      "name": {
+        "index": 1,
+        "sorting": "asc",
+        "visible": true,
+        "width": 150
+      },
+      "price": {
+        "index": 2,
+        "sorting": "asc",
+        "visible": true,
+        "width": 120
+      },
+      "qty": {
+        "index": 3,
+        "sorting": "asc",
+        "visible": true,
+        "width": 100
+      },
+      "sku": {
+        "index": 0,
+        "sorting": "asc",
+        "visible": true,
+        "width": 150
+      },
+      "special_price": {
+        "index": 5,
+        "sorting": "asc",
+        "visible": true,
+        "width": 120
+      },
+      "status": {
+        "index": 7,
+        "sorting": "asc",
+        "visible": true,
+        "width": 150
+      },
+      "type_id": {
+        "index": 8,
+        "sorting": "asc",
+        "visible": true,
+        "width": 130
+      },
+      "updated_at": {
+        "index": 10,
+        "sorting": "asc",
+        "visible": true,
+        "width": 180
+      },
+      "visibility": {
+        "index": 4,
+        "sorting": "asc",
+        "visible": true,
+        "width": 120
+      },
+      "weight": {
+        "index": 6,
+        "sorting": "asc",
+        "visible": true,
+        "width": 100
+      }
+    }
+  },
+  "licenses": {
+    "DfVNoa9rcTXbdY0fTSK64owIRtF2": {
+      "canDelete": true,
+      "canEdit": true,
+      "canRead": true,
+      "createdAt": "2025-08-04T10:31:37.400Z",
+      "expiryDate": "2025-09-03T10:31:37.400Z",
+      "features": [
+        "dashboard",
+        "products",
+        "orders",
+        "customers",
+        "analytics",
+        "charts"
+      ],
+      "isValid": true,
+      "licenseType": "premium",
+      "updatedAt": "2025-08-04T10:31:37.400Z"
+    },
+    "magento-user": {
+      "createdAt": "2025-08-04T15:04:30.392Z",
+      "expiryDate": "2026-08-04T15:04:30.392Z",
+      "features": [
+        "dashboard",
+        "products",
+        "orders",
+        "customers",
+        "analytics"
+      ],
+      "isValid": true,
+      "licenseType": "premium",
+      "updatedAt": "2025-08-04T15:04:30.392Z"
+    },
+    "r0qAqox1GFMZV6JdbHwUnGUXCyr2": {
+      "createdAt": "2025-08-04T13:49:23.866Z",
+      "isValid": false,
+      "licenseType": "standard",
+      "updatedAt": "2025-08-04T13:49:23.866Z"
+    },
+    "test@techno-dz_com": {
+      "createdAt": "2025-08-04T15:04:30.448Z",
+      "expiryDate": "2025-09-03T15:04:30.392Z",
+      "features": [
+        "dashboard",
+        "products"
+      ],
+      "isValid": true,
+      "licenseType": "trial",
+      "updatedAt": "2025-08-04T15:04:30.448Z"
+    },
+    "turzM3Dy1yZFd2VmudUss3u4OHK2": {
+      "canDelete": true,
+      "canEdit": true,
+      "canRead": true,
+      "createdAt": "2025-08-04T10:31:10.189Z",
+      "isValid": false,
+      "licenseType": "standard",
+      "updatedAt": "2025-08-04T10:31:10.189Z"
+    },
+    "wXhdvkZ90vdTWVB5YNFhRNx9tiy2": {
+      "canDelete": true,
+      "canEdit": true,
+      "canRead": true,
+      "createdAt": "2025-08-04T10:33:51.560Z",
+      "isValid": false,
+      "licenseType": "standard",
+      "updatedAt": "2025-08-04T10:33:51.560Z"
+    }
+  },
+  "users": {
+    "DfVNoa9rcTXbdY0fTSK64owIRtF2": {
+      "apiSettings": {
+        "cegid": {
+          "database": "",
+          "password": "",
+          "url": "",
+          "username": ""
+        },
+        "magento": {
+          "authMode": "basic",
+          "password": "",
+          "url": "",
+          "username": ""
+        }
+      },
+      "lastLogin": "2025-08-04T15:04:30.137Z",
+      "personalInfo": {
+        "address": "",
+        "birthDate": "",
+        "city": "",
+        "country": "",
+        "email": "",
+        "firstName": "",
+        "gender": "",
+        "lastName": "",
+        "phone": "",
+        "postalCode": ""
+      },
+      "preferences": {
+        "animations": true,
+        "auditLogging": true,
+        "autoRefresh": false,
+        "cacheEnabled": true,
+        "compressionEnabled": true,
+        "dashboardLayout": "default",
+        "debugMode": false,
+        "defaultPageSize": 25,
+        "density": "standard",
+        "developerMode": false,
+        "emailNotifications": true,
+        "enableVirtualization": true,
+        "fontSize": "medium",
+        "highContrast": false,
+        "keyboardNavigation": true,
+        "language": "en",
+        "largeText": false,
+        "lazyLoading": true,
+        "preferences": {
+          "fontSize": "medium",
+          "language": "en",
+          "theme": "light"
+        },
+        "pushNotifications": false,
+        "refreshInterval": 30,
+        "screenReader": false,
+        "sessionTimeout": 30,
+        "showStatsCards": true,
+        "soundEnabled": true,
+        "theme": "light",
+        "twoFactorEnabled": false
+      },
+      "updatedAt": "2025-07-26T16:33:22.760Z"
+    },
+    "r0qAqox1GFMZV6JdbHwUnGUXCyr2": {
+      "createdAt": "2025-08-04T10:46:26.968Z",
+      "displayName": "Mounir ABDERRAHMANI",
+      "email": "mabderrahmani@hotech.systems",
+      "isMagentoUser": false,
+      "lastLogin": "2025-08-04T13:58:09.788Z",
+      "role": "user"
+    },
+    "turzM3Dy1yZFd2VmudUss3u4OHK2": {
+      "apiSettings": {
+        "cegid": {
+          "database": "",
+          "password": "",
+          "url": "",
+          "username": ""
+        },
+        "magento": {
+          "authMode": "basic",
+          "password": "",
+          "url": "",
+          "username": ""
+        }
+      },
+      "personalInfo": {
+        "address": "",
+        "birthDate": "",
+        "city": "",
+        "country": "Alger",
+        "email": "",
+        "firstName": "",
+        "gender": "",
+        "lastName": "",
+        "phone": "",
+        "postalCode": ""
+      },
+      "preferences": {
+        "language": "en",
+        "theme": "light"
+      },
+      "updatedAt": "2024-12-19T10:54:47.043Z"
+    },
+    "wXhdvkZ90vdTWVB5YNFhRNx9tiy2": {
+      "createdAt": "2025-08-04T10:32:37.702Z",
+      "displayName": "WebMaster Techno",
+      "email": "technostationery.tms@gmail.com",
+      "isMagentoUser": false,
+      "lastLogin": "2025-08-04T14:12:43.891Z",
+      "role": "admin"
+    }
+  }
+}

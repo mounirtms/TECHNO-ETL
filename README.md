@@ -222,7 +222,7 @@ npm run pm2:restart  # Restart PM2 processes
 #### **MDM Operations**
 ```http
 GET    /api/mdm/prices              # Get price data with filtering
-POST   /api/mdm/prices/sync         # Sync prices to Magento
+POST   /api/mdm/sync/prices         # Sync prices to Magento
 GET    /api/mdm/inventory/stocks    # Get stock data
 POST   /api/mdm/inventory/sync      # Sync stocks to Magento
 GET    /api/mdm/sources             # Get available sources
@@ -254,6 +254,20 @@ GET    /api/analytics/reports       # Generate reports
 POST   /api/analytics/export        # Export data
 GET    /api/analytics/performance   # Performance metrics
 ```
+
+## 🗃️ Combining Frontend, Backend, and Docs
+
+We've set up a build process that combines frontend, backend, and documentation into a single production-ready distribution:
+
+```bash
+npm run build:prod
+```
+
+This command will:
+1. Clean any existing builds.
+2. Lint and fix the code.
+3. Build the frontend, backend, and documentation.
+4. Combine all three into the `dist_prod` directory.
 
 ## 🐛 Bug Bounty Program
 
@@ -312,4 +326,4 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 - **Email**: mounir.ab@techno-dz.com
 - **Contact**: mounir.webdev.tms@gmail.com
 
-*Last updated: July 29, 2025 - Version 2.1.0*
+*Last updated: August 5, 2025 - Version 2.1.0*

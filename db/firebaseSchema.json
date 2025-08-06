@@ -1,0 +1,53 @@
+{
+  "system": {
+    "menuCategories": {
+      "core": {
+        "id": "core",
+        "name": "Dashboard",
+        "defaultExpanded": true
+      },
+      "development_testing": {
+        "id": "development_testing",
+        "name": "Development & Testing",
+        "defaultExpanded": true
+      }
+    },
+    "licensedPrograms": {
+      "dashboard": {
+        "id": "dashboard",
+        "name": "Dashboard"
+      },
+      "products": {
+        "id": "products",
+        "name": "Products"
+      }
+    }
+  },
+  "users": {
+    "{userId}": {
+      "email": "user@example.com",
+      "displayName": "User Name",
+      "role": "user",
+      "isMagentoUser": false
+    }
+  },
+  "bugBounty": {
+    "bugs": {
+      "{bugId}": {
+        "title": "Bug Title",
+        "description": "Bug Description",
+        "category": "CRITICAL",
+        "status": "submitted",
+        "submittedAt": "2025-08-04T15:30:00Z",
+        "tester": {
+          "id": "{testerId}",
+          "name": "Tester Name"
+        },
+        "reward": {
+          "calculated": 1500,
+          "final": null
+        }
+      }
+    }
+  }
+}

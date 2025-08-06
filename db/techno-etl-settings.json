@@ -1,0 +1,58 @@
+{
+  "personalInfo": {
+    "firstName": "",
+    "lastName": "",
+    "email": "",
+    "phone": "",
+    "address": "",
+    "city": "",
+    "country": "",
+    "postalCode": "",
+    "birthDate": "",
+    "gender": ""
+  },
+  "apiSettings": {
+    "magento": {
+      "url": "",
+      "username": "",
+      "password": "",
+      "authMode": "basic"
+    },
+    "cegid": {
+      "url": "",
+      "username": "",
+      "password": "",
+      "database": ""
+    }
+  },
+  "preferences": {
+    "language": "ar",
+    "theme": "system",
+    "fontSize": "large",
+    "density": "standard",
+    "animations": true,
+    "defaultPageSize": 25,
+    "enableVirtualization": true,
+    "showStatsCards": true,
+    "autoRefresh": false,
+    "refreshInterval": 30,
+    "cacheEnabled": true,
+    "lazyLoading": true,
+    "compressionEnabled": true,
+    "emailNotifications": true,
+    "pushNotifications": false,
+    "soundEnabled": true,
+    "sessionTimeout": 30,
+    "twoFactorEnabled": false,
+    "auditLogging": true,
+    "highContrast": false,
+    "largeText": false,
+    "keyboardNavigation": true,
+    "screenReader": false,
+    "dashboardLayout": "default",
+    "widgetPreferences": {},
+    "developerMode": false,
+    "debugMode": false,
+    "colorPreset": "purple"
+  }
+}

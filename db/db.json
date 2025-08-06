@@ -1,0 +1,1052 @@
+{
+  "system": {
+    "settings": {
+      "appVersion": "2.1.0",
+      "lastUpdated": "2025-08-04T16:13:00.000Z",
+      "maintenanceMode": false,
+      "registrationEnabled": true,
+      "defaultUserRole": "user",
+      "maxUsersPerLicense": {
+        "free": 3,
+        "basic": 10,
+        "professional": 50,
+        "enterprise": -1
+      },
+      "defaultLicensedPages": ["Dashboard", "BugBounty", "Voting"]
+    },
+    "menuCategories": {
+      "core": {
+        "id": "core",
+        "name": "Dashboard",
+        "description": "Essential dashboard features",
+        "order": 1,
+        "defaultExpanded": true,
+        "licensingRequired": false
+      },
+      "mdm": {
+        "id": "mdm",
+        "name": "MDM",
+        "description": "Master Data Management system",
+        "order": 2,
+        "defaultExpanded": false,
+        "licensingRequired": true
+      },
+      "magento": {
+        "id": "magento",
+        "name": "Magento",
+        "description": "E-commerce platform integration",
+        "order": 3,
+        "defaultExpanded": false,
+        "licensingRequired": true
+      },
+      "cegid": {
+        "id": "cegid",
+        "name": "Cegid",
+        "description": "ERP system integration",
+        "order": 4,
+        "defaultExpanded": false,
+        "licensingRequired": true
+      },
+      "analytics": {
+        "id": "analytics",
+        "name": "Analytics & Reports",
+        "description": "Business intelligence and reporting",
+        "order": 5,
+        "defaultExpanded": false,
+        "licensingRequired": true
+      },
+      "security": {
+        "id": "security",
+        "name": "Security",
+        "description": "Security management and access control",
+        "order": 6,
+        "defaultExpanded": false,
+        "licensingRequired": true
+      },
+      "development_testing": {
+        "id": "development_testing",
+        "name": "Development & Testing",
+        "description": "Development tools and testing features",
+        "order": 7,
+        "defaultExpanded": true,
+        "licensingRequired": false
+      },
+      "management": {
+        "id": "management",
+        "name": "Management",
+        "description": "System configuration and administration",
+        "order": 8,
+        "defaultExpanded": false,
+        "licensingRequired": false,
+        "roleRequired": "super_admin"
+      }
+    },
+    "licensedPrograms": {
+      "bug_bounty": {
+        "id": "bug_bounty",
+        "name": "Bug Bounty Program",
+        "description": "Quality assurance and bug reporting system",
+        "category": "development_testing",
+        "icon": "BugReportIcon",
+        "path": "/bug-bounty",
+        "defaultEnabled": true,
+        "permissions": {
+          "canRead": true,
+          "canReport": true,
+          "canAssign": false,
+          "canReview": false,
+          "canDelete": false
+        }
+      },
+      "task_voting": {
+        "id": "task_voting",
+        "name": "Task Voting Program",
+        "description": "Feature request and task prioritization system",
+        "category": "development_testing",
+        "icon": "HowToVoteIcon",
+        "path": "/voting",
+        "defaultEnabled": true,
+        "permissions": {
+          "canRead": true,
+          "canVote": true,
+          "canCreate": false,
+          "canModerate": false,
+          "canDelete": false
+        }
+      },
+      "core_dashboard": {
+        "id": "core_dashboard",
+        "name": "Core Dashboard",
+        "description": "Essential dashboard and analytics features",
+        "category": "core",
+        "icon": "DashboardIcon",
+        "path": "/dashboard",
+        "defaultEnabled": true,
+        "permissions": {
+          "canRead": true,
+          "canEdit": false,
+          "canDelete": false,
+          "canManage": false
+        }
+      },
+      "analytics_premium": {
+        "id": "analytics_premium",
+        "name": "Premium Analytics",
+        "description": "Advanced analytics and reporting features",
+        "category": "analytics",
+        "icon": "AnalyticsIcon",
+        "path": "/analytics/premium",
+        "defaultEnabled": false,
+        "permissions": {
+          "canRead": false,
+          "canExport": false,
+          "canShare": false,
+          "canManage": false
+        }
+      }
+    },
+    "pageModules": [
+      {
+        "id": "Dashboard",
+        "label": "Dashboard",
+        "path": "/dashboard",
+        "category": "core",
+        "icon": "DashboardIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["free", "basic", "professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "Charts",
+        "label": "Analytics & Charts", 
+        "path": "/charts",
+        "category": "core",
+        "icon": "AnalyticsIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["basic", "professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "MDMProductsGrid",
+        "label": "MDM Products",
+        "path": "/mdmproducts",
+        "category": "mdm",
+        "icon": "InventoryIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "MDMStock",
+        "label": "MDM Stock",
+        "path": "/mdm-stock",
+        "category": "mdm",
+        "icon": "Inventory2Icon",
+        "licensed": true,
+        "defaultLicenseTypes": ["professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "MDMSources",
+        "label": "MDM Sources",
+        "path": "/mdm-sources",
+        "category": "mdm",
+        "icon": "WarehouseIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "ProductsGrid",
+        "label": "Products",
+        "path": "/products",
+        "category": "magento",
+        "icon": "InventoryIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["basic", "professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "ProductCatalog",
+        "label": "Product Catalog",
+        "path": "/productsManagement",
+        "category": "magento",
+        "icon": "SettingsIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "CategoryTree",
+        "label": "Categories",
+        "path": "/categories",
+        "category": "magento",
+        "icon": "CategoryIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["basic", "professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "StocksGrid",
+        "label": "Inventory & Stocks",
+        "path": "/stocks",
+        "category": "magento",
+        "icon": "Inventory2Icon",
+        "licensed": true,
+        "defaultLicenseTypes": ["basic", "professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "SourcesGrid", 
+        "label": "Sources & Warehouses",
+        "path": "/sources",
+        "category": "magento",
+        "icon": "WarehouseIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["basic", "professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "OrdersGrid",
+        "label": "Orders",
+        "path": "/orders",
+        "category": "magento",
+        "icon": "ShoppingCartIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["basic", "professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "InvoicesGrid",
+        "label": "Invoices",
+        "path": "/invoices",
+        "category": "magento",
+        "icon": "ReceiptIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["basic", "professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "CustomersGrid",
+        "label": "Customers",
+        "path": "/customers",
+        "category": "magento",
+        "icon": "PeopleIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["basic", "professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "CmsPageGrid",
+        "label": "CMS Pages",
+        "path": "/cms-pages",
+        "category": "magento",
+        "icon": "DescriptionIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "CegidProductsGrid",
+        "label": "Cegid Products",
+        "path": "/cegid-products",
+        "category": "cegid",
+        "icon": "StorefrontIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "SalesAnalytics",
+        "label": "Sales Analytics",
+        "path": "/analytics/sales",
+        "category": "analytics",
+        "icon": "AnalyticsIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "InventoryAnalytics",
+        "label": "Inventory Analytics",
+        "path": "/analytics/inventory",
+        "category": "analytics",
+        "icon": "Inventory2Icon",
+        "licensed": true,
+        "defaultLicenseTypes": ["professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "SecureVault",
+        "label": "Secure Vault",
+        "path": "/locker/vault",
+        "category": "security",
+        "icon": "SecurityIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "AccessControl",
+        "label": "Access Control",
+        "path": "/locker/access",
+        "category": "security",
+        "icon": "AdminPanelSettingsIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["enterprise"],
+        "roleRequired": "admin",
+        "permissions": {
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "BugBounty",
+        "label": "Bug Bounty",
+        "path": "/bug-bounty",
+        "category": "development_testing",
+        "icon": "BugReportIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["free", "basic", "professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": true, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": true },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "Voting",
+        "label": "Feature Voting",
+        "path": "/voting",
+        "category": "development_testing",
+        "icon": "HowToVoteIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["free", "basic", "professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": true, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": true },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "GridTestPage",
+        "label": "Grid Testing",
+        "path": "/grid-test",
+        "category": "development_testing",
+        "icon": "BugReportIcon",
+        "licensed": true,
+        "defaultLicenseTypes": ["professional", "enterprise"],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": true, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "LicenseManagement",
+        "label": "License Management",
+        "path": "/license-management",
+        "category": "management",
+        "icon": "LicenseIcon",
+        "licensed": false,
+        "defaultLicenseTypes": [],
+        "roleRequired": "super_admin",
+        "permissions": {
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": true }
+        }
+      },
+      {
+        "id": "LicenseStatus",
+        "label": "License Status",
+        "path": "/license",
+        "category": "management",
+        "icon": "LicenseIcon",
+        "licensed": false,
+        "defaultLicenseTypes": [],
+        "roleRequired": null,
+        "permissions": {
+          "user": { "canRead": true, "canEdit": false, "canDelete": false },
+          "admin": { "canRead": true, "canEdit": false, "canDelete": false },
+          "super_admin": { "canRead": true, "canEdit": true, "canDelete": false }
+        }
+      }
+    ]
+  },
+  "users": {
+    "DfVNoa9rcTXbdY0fTSK64owIRtF2": {
+      "email": "admin@techno-dz.com",
+      "displayName": "Admin User",
+      "role": "super_admin",
+      "createdAt": "2025-08-04T10:31:37.400Z",
+      "lastLogin": "2025-08-04T15:04:30.137Z",
+      "isMagentoUser": false,
+      "apiSettings": {
+        "cegid": {
+          "database": "",
+          "password": "",
+          "url": "",
+          "username": ""
+        },
+        "magento": {
+          "authMode": "basic",
+          "password": "",
+          "url": "",
+          "username": ""
+        }
+      },
+      "personalInfo": {
+        "address": "",
+        "birthDate": "",
+        "city": "",
+        "country": "",
+        "email": "",
+        "firstName": "",
+        "gender": "",
+        "lastName": "",
+        "phone": "",
+        "postalCode": ""
+      },
+      "preferences": {
+        "animations": true,
+        "auditLogging": true,
+        "autoRefresh": false,
+        "cacheEnabled": true,
+        "compressionEnabled": true,
+        "dashboardLayout": "default",
+        "debugMode": false,
+        "defaultPageSize": 25,
+        "density": "standard",
+        "developerMode": false,
+        "emailNotifications": true,
+        "enableVirtualization": true,
+        "fontSize": "medium",
+        "highContrast": false,
+        "keyboardNavigation": true,
+        "language": "en",
+        "largeText": false,
+        "lazyLoading": true,
+        "pushNotifications": false,
+        "refreshInterval": 30,
+        "screenReader": false,
+        "sessionTimeout": 30,
+        "showStatsCards": true,
+        "soundEnabled": true,
+        "theme": "light",
+        "twoFactorEnabled": false
+      },
+      "licenses": {
+        "isValid": true,
+        "licenseType": "enterprise",
+        "licensedPages": [
+          "Dashboard",
+          "Charts", 
+          "MDMProductsGrid",
+          "MDMStock",
+          "MDMSources",
+          "ProductsGrid",
+          "ProductCatalog",
+          "CategoryTree",
+          "StocksGrid",
+          "SourcesGrid",
+          "OrdersGrid",
+          "InvoicesGrid",
+          "CustomersGrid",
+          "CmsPageGrid",
+          "CegidProductsGrid",
+          "SalesAnalytics",
+          "InventoryAnalytics",
+          "SecureVault",
+          "AccessControl",
+          "BugBounty",
+          "Voting",
+          "GridTestPage",
+          "LicenseManagement",
+          "LicenseStatus"
+        ],
+        "canDelete": true,
+        "canEdit": true,
+        "canRead": true,
+        "createdAt": "2025-08-04T10:31:37.400Z",
+        "expiryDate": "2025-09-03T10:31:37.400Z",
+        "updatedAt": "2025-08-04T16:13:00.000Z"
+      },
+      "updatedAt": "2025-08-04T15:47:00.000Z"
+    },
+    "r0qAqox1GFMZV6JdbHwUnGUXCyr2": {
+      "email": "mabderrahmani@hotech.systems",
+      "displayName": "Mounir ABDERRAHMANI",
+      "role": "user",
+      "createdAt": "2025-08-04T10:46:26.968Z",
+      "lastLogin": "2025-08-04T13:58:09.788Z",
+      "isMagentoUser": false,
+      "licenses": {
+        "isValid": false,
+        "licenseType": "free",
+        "licensedPages": ["Dashboard", "BugBounty", "Voting"],
+        "createdAt": "2025-08-04T13:49:23.866Z",
+        "expiryDate": null,
+        "updatedAt": "2025-08-04T16:13:00.000Z"
+      }
+    },
+    "wXhdvkZ90vdTWVB5YNFhRNx9tiy2": {
+      "email": "technostationery.tms@gmail.com",
+      "displayName": "WebMaster Techno",
+      "role": "admin",
+      "createdAt": "2025-08-04T10:32:37.702Z",
+      "lastLogin": "2025-08-04T14:12:43.891Z",
+      "isMagentoUser": false,
+      "licenses": {
+        "isValid": false,
+        "licenseType": "basic",
+        "licensedPages": ["Dashboard", "Charts", "ProductsGrid", "CategoryTree", "StocksGrid", "SourcesGrid", "OrdersGrid", "InvoicesGrid", "CustomersGrid", "BugBounty", "Voting"],
+        "canDelete": true,
+        "canEdit": true,
+        "canRead": true,
+        "createdAt": "2025-08-04T10:33:51.560Z",
+        "expiryDate": null,
+        "updatedAt": "2025-08-04T16:13:00.000Z"
+      }
+    },
+    "magento-user": {
+      "email": "magento@example.com",
+      "displayName": "Magento User",
+      "role": "user",
+      "createdAt": "2025-08-04T15:04:30.392Z",
+      "lastLogin": "2025-08-04T15:04:30.392Z",
+      "isMagentoUser": true,
+      "licenses": {
+        "isValid": true,
+        "licenseType": "professional",
+        "licensedPages": [
+          "Dashboard",
+          "Charts",
+          "ProductsGrid",
+          "ProductCatalog",
+          "CategoryTree",
+          "StocksGrid",
+          "SourcesGrid",
+          "OrdersGrid",
+          "InvoicesGrid",
+          "CustomersGrid",
+          "CmsPageGrid",
+          "SalesAnalytics",
+          "InventoryAnalytics",
+          "BugBounty",
+          "Voting",
+          "GridTestPage"
+        ],
+        "createdAt": "2025-08-04T15:04:30.392Z",
+        "expiryDate": "2026-08-04T15:04:30.392Z",
+        "updatedAt": "2025-08-04T16:13:00.000Z"
+      }
+    },
+    "test@techno-dz_com": {
+      "email": "test@techno-dz.com",
+      "displayName": "Test User",
+      "role": "user",
+      "createdAt": "2025-08-04T15:04:30.448Z",
+      "lastLogin": "2025-08-04T15:04:30.448Z",
+      "isMagentoUser": false,
+      "licenses": {
+        "isValid": true,
+        "licenseType": "trial",
+        "licensedPages": ["Dashboard", "ProductsGrid"],
+        "createdAt": "2025-08-04T15:04:30.448Z",
+        "expiryDate": "2025-09-03T15:04:30.392Z",
+        "updatedAt": "2025-08-04T16:13:00.000Z"
+      }
+    }
+  },
+  "userSettings": {
+    "DfVNoa9rcTXbdY0fTSK64owIRtF2": {
+      "preferences": {
+        "theme": "light",
+        "language": "en",
+        "fontSize": "medium"
+      },
+      "lastSync": "2025-08-04T15:47:00.000Z",
+      "userId": "DfVNoa9rcTXbdY0fTSK64owIRtF2",
+      "email": "admin@techno-dz.com"
+    }
+  },
+  "gridSettings": {
+    "MDMProductsGrid": {
+      "Catalogue": {
+        "index": 19,
+        "sorting": "asc",
+        "visible": true,
+        "width": 100
+      },
+      "Code_Fil_JDE": {
+        "index": 3,
+        "sorting": "asc",
+        "visible": true,
+        "width": 120
+      },
+      "Code_JDE": {
+        "index": 2,
+        "sorting": "asc",
+        "visible": true,
+        "width": 120
+      },
+      "Code_MDM": {
+        "index": 1,
+        "sorting": "asc",
+        "visible": true,
+        "width": 150
+      },
+      "DateDernierMaJ": {
+        "index": 17,
+        "sorting": "asc",
+        "visible": true,
+        "width": 160
+      },
+      "DatePremierEntrer": {
+        "index": 16,
+        "sorting": "asc",
+        "visible": true,
+        "width": 160
+      },
+      "ForAppro": {
+        "index": 18,
+        "sorting": "asc",
+        "visible": true,
+        "width": 100
+      },
+      "QteReceptionner": {
+        "index": 9,
+        "sorting": "asc",
+        "visible": true,
+        "width": 100
+      },
+      "QteStock": {
+        "index": 8,
+        "sorting": "asc",
+        "visible": true,
+        "width": 100
+      },
+      "QteV": {
+        "index": 11,
+        "sorting": "asc",
+        "visible": true,
+        "width": 110
+      },
+      "QteVM_1": {
+        "index": 12,
+        "sorting": "asc",
+        "visible": true,
+        "width": 110
+      },
+      "QteVM_2": {
+        "index": 13,
+        "sorting": "asc",
+        "visible": true,
+        "width": 110
+      },
+      "QteVM_3": {
+        "index": 14,
+        "sorting": "asc",
+        "visible": true,
+        "width": 110
+      },
+      "Source": {
+        "index": 5,
+        "sorting": "asc",
+        "visible": true,
+        "width": 150
+      },
+      "Succursale": {
+        "index": 7,
+        "sorting": "asc",
+        "visible": true,
+        "width": 100
+      },
+      "Tarif": {
+        "index": 15,
+        "sorting": "asc",
+        "visible": true,
+        "width": 100
+      },
+      "TypeProd": {
+        "index": 4,
+        "sorting": "asc",
+        "visible": true,
+        "width": 80
+      },
+      "VenteMoyen": {
+        "index": 10,
+        "sorting": "asc",
+        "visible": true,
+        "width": 110
+      },
+      "rowNumber": {
+        "index": 0,
+        "sorting": "asc",
+        "visible": true,
+        "width": 30
+      },
+      "syncedDate": {
+        "index": 6,
+        "sorting": "asc",
+        "visible": true,
+        "width": 170
+      }
+    },
+    "ProductsGrid": {
+      "created_at": {
+        "index": 9,
+        "sorting": "asc",
+        "visible": true,
+        "width": 180
+      },
+      "name": {
+        "index": 1,
+        "sorting": "asc",
+        "visible": true,
+        "width": 150
+      },
+      "price": {
+        "index": 2,
+        "sorting": "asc",
+        "visible": true,
+        "width": 120
+      },
+      "qty": {
+        "index": 3,
+        "sorting": "asc",
+        "visible": true,
+        "width": 100
+      },
+      "sku": {
+        "index": 0,
+        "sorting": "asc",
+        "visible": true,
+        "width": 150
+      },
+      "special_price": {
+        "index": 5,
+        "sorting": "asc",
+        "visible": true,
+        "width": 120
+      },
+      "status": {
+        "index": 7,
+        "sorting": "asc",
+        "visible": true,
+        "width": 150
+      },
+      "type_id": {
+        "index": 8,
+        "sorting": "asc",
+        "visible": true,
+        "width": 130
+      },
+      "updated_at": {
+        "index": 10,
+        "sorting": "asc",
+        "visible": true,
+        "width": 180
+      },
+      "visibility": {
+        "index": 4,
+        "sorting": "asc",
+        "visible": true,
+        "width": 120
+      },
+      "weight": {
+        "index": 6,
+        "sorting": "asc",
+        "visible": true,
+        "width": 100
+      }
+    }
+  },
+  "bugBounty": {
+    "bugs": {
+      "bug_sample_001": {
+        "id": "bug_sample_001",
+        "title": "Sample Bug Report",
+        "description": "This is a sample bug report for testing purposes",
+        "category": "MEDIUM",
+        "severity": "medium",
+        "status": "submitted",
+        "submittedAt": "2025-08-04T15:47:00.000Z",
+        "updatedAt": "2025-08-04T15:47:00.000Z",
+        "stepsToReproduce": [
+          "Step 1: Navigate to dashboard",
+          "Step 2: Click on product grid",
+          "Step 3: Observe the issue"
+        ],
+        "expectedBehavior": "Product grid should load properly",
+        "actualBehavior": "Product grid shows loading spinner indefinitely",
+        "environment": {
+          "browser": "Chrome 119.0.0.0",
+          "url": "/products",
+          "timestamp": "2025-08-04T15:47:00.000Z",
+          "screenResolution": "1920x1080",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+        },
+        "tester": {
+          "id": "DfVNoa9rcTXbdY0fTSK64owIRtF2",
+          "name": "Admin User",
+          "email": "admin@techno-dz.com",
+          "experience": "advanced"
+        },
+        "reward": {
+          "calculated": 150,
+          "final": null,
+          "paid": false
+        },
+        "votes": {
+          "helpful": 0,
+          "notHelpful": 0
+        },
+        "comments": [],
+        "qualityScore": null
+      }
+    },
+    "testers": {
+      "DfVNoa9rcTXbdY0fTSK64owIRtF2": {
+        "name": "Admin User",
+        "email": "admin@techno-dz.com",
+        "totalReports": 1,
+        "totalRewards": 0,
+        "points": 150,
+        "rank": 1,
+        "joinedAt": "2025-08-04T15:47:00.000Z",
+        "lastActivity": "2025-08-04T15:47:00.000Z"
+      }
+    },
+    "stats": {
+      "totalBugs": 1,
+      "totalRewards": 0,
+      "totalTesters": 1,
+      "averageReward": 150,
+      "bugsByCategory": {
+        "CRITICAL": 0,
+        "HIGH": 0,
+        "MEDIUM": 1,
+        "LOW": 0,
+        "ENHANCEMENT": 0
+      },
+      "bugsByStatus": {
+        "submitted": 1,
+        "under_review": 0,
+        "confirmed": 0,
+        "duplicate": 0,
+        "invalid": 0,
+        "fixed": 0,
+        "rewarded": 0
+      },
+      "lastUpdated": "2025-08-04T15:47:00.000Z"
+    }
+  },
+  "voting": {
+    "tasks": {
+      "task_sample_001": {
+        "id": "task_sample_001",
+        "title": "Improve Dashboard Performance",
+        "description": "Optimize dashboard loading time and reduce memory usage",
+        "category": "performance",
+        "priority": "high",
+        "status": "open",
+        "createdAt": "2025-08-04T15:47:00.000Z",
+        "updatedAt": "2025-08-04T15:47:00.000Z",
+        "createdBy": {
+          "id": "DfVNoa9rcTXbdY0fTSK64owIRtF2",
+          "name": "Admin User"
+        },
+        "votes": {
+          "upvotes": 0,
+          "downvotes": 0,
+          "total": 0
+        },
+        "comments": [],
+        "estimatedEffort": "medium",
+        "tags": ["performance", "dashboard", "optimization"]
+      }
+    },
+    "categories": {
+      "performance": {
+        "name": "Performance",
+        "description": "Performance improvements and optimizations",
+        "color": "#ff9800"
+      },
+      "feature": {
+        "name": "New Feature",
+        "description": "New feature requests",
+        "color": "#4caf50"
+      },
+      "bugfix": {
+        "name": "Bug Fix",
+        "description": "Bug fixes and issue resolutions",
+        "color": "#f44336"
+      },
+      "ui_ux": {
+        "name": "UI/UX",
+        "description": "User interface and experience improvements",
+        "color": "#2196f3"
+      }
+    }
+  },
+  "analytics": {
+    "dashboardMetrics": {
+      "totalUsers": 5,
+      "activeUsers": 3,
+      "totalBugReports": 1,
+      "totalFeatureRequests": 1,
+      "systemHealth": "good",
+      "lastUpdated": "2025-08-04T15:47:00.000Z"
+    },
+    "performanceMetrics": {
+      "avgResponseTime": 245,
+      "errorRate": 0.02,
+      "uptime": 99.8,
+      "lastCheck": "2025-08-04T15:47:00.000Z"
+    }
+  },
+  "notifications": {
+    "system": {
+      "maintenance": {
+        "enabled": false,
+        "message": "",
+        "startTime": null,
+        "endTime": null
+      },
+      "announcements": []
+    }
+  }
+}
