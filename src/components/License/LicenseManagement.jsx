@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import {
     Box, Button, Card, CardContent,
     Typography, Table, TableBody, TableCell,
@@ -9,7 +9,10 @@ import {
     Tooltip, IconButton, Divider, Dialog, DialogTitle,
     DialogContent, DialogActions, TextField, Autocomplete,
     List, ListItem, ListItemText, ListItemSecondaryAction,
-    ListItemAvatar, CardActions, Fab, Snackbar
+    ListItemAvatar, CardActions, Fab, Snackbar,
+    Paper, Breadcrumbs, Link, useTheme, alpha,
+    LinearProgress, Skeleton, Drawer, AppBar, Toolbar,
+    Badge, Menu
 } from '@mui/material';
 import {
     ExpandMore as ExpandMoreIcon,
@@ -26,11 +29,25 @@ import {
     Assignment as AssignmentIcon,
     Security as SecurityIcon,
     Groups as GroupsIcon,
-    Save as SaveIcon
+    Save as SaveIcon,
+    Refresh as RefreshIcon,
+    Download as ExportIcon,
+    Upload as ImportIcon,
+    FilterList as FilterIcon,
+    Search as SearchIcon,
+    VerifiedUser as LicenseIcon,
+    Warning as WarningIcon,
+    Info as InfoIcon,
+    Settings as SettingsIcon,
+    Dashboard as DashboardIcon,
+    Lock as LockIcon,
+    LockOpen as UnlockIcon,
+    Business as BusinessIcon,
+    Home as HomeIcon
 } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
 import { database } from '../../config/firebase';
-import { ref, get, set, onValue, remove, update } from 'firebase/database';
+import { ref, get, set, onValue, remove, update, child, push } from 'firebase/database';
 import { MENU_TREE } from '../Layout/MenuTree';
 import { 
     USER_ROLES, 
@@ -45,12 +62,55 @@ import {
     set_license_status,
     get_license_details
 } from '../../utils/licenseUtils';
+import { toast } from 'react-toastify';
 
+/**
+ * Professional License Management System
+ * Features:
+ * - Real-time user license management
+ * - Grid-based permission system
+ * - Role-based access control
+ * - Audit logging
+ * - Export/Import capabilities
+ * - Advanced search and filtering
+ */
 const LicenseManagement = () => {
+    const theme = useTheme();
     const { currentUser } = useAuth();
+    
+    // Core state management
     const [users, setUsers] = useState([]);
+    const [licenses, setLicenses] = useState({});
     const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
+    const [selectedUser, setSelectedUser] = useState(null);
+    
+    // UI state management
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterRole, setFilterRole] = useState('all');
+    const [filterStatus, setFilterStatus] = useState('all');
+    const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'list'
+    const [expandedCategories, setExpandedCategories] = useState(new Set(['core', 'system']));
+    
+    // Dialog states
+    const [bulkEditDialog, setBulkEditDialog] = useState(false);
+    const [exportDialog, setExportDialog] = useState(false);
+    const [auditDialog, setAuditDialog] = useState(false);
+    
+    // Performance optimization
+    const isLocalhost = useMemo(() => window.location.hostname === 'localhost', []);
+    
+    // License validation cache
+    const [licenseCache, setLicenseCache] = useState(new Map());
+    
+    // System statistics
+    const [stats, setStats] = useState({
+        totalUsers: 0,
+        activeUsers: 0,
+        licensedUsers: 0,
+        pendingApprovals: 0
+    });
 
     useEffect(() => {
         const fetchUsers = async () => {

@@ -324,27 +324,8 @@ export const MENU_TREE = [
         ]
     },
 
-    // === USER PROFILE ===
-    {
-        id: 'profile',
-        label: 'User Profile',
-        labelKey: 'navigation.profile',
-        icon: AccountCircleIcon,
-        licensed: true,
-        expanded: false,
-        children: [
-            {
-                id: 'UserProfile',
-                label: 'User Profile',
-                labelKey: 'navigation.userProfile',
-                icon: AccountCircleIcon,
-                path: '/profile',
-                hidden: false,
-                licensed: true,
-                category: 'profile'
-            }
-        ]
-    },
+    // === USER PROFILE REMOVED FROM SIDEBAR ===
+    // Profile access moved to header user menu
 
     // === SYSTEM MANAGEMENT ===
     {

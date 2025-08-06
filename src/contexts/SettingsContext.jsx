@@ -3,6 +3,8 @@
  * Manages all user preferences, settings, and their persistence
  */
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import { ref, set, onValue } from 'firebase/database';
+import { database } from '../config/firebase';
 import { useAuth } from './AuthContext';
 import { useCustomTheme } from './ThemeContext';
 import { useLanguage } from './LanguageContext';
@@ -86,20 +88,112 @@ export const SettingsProvider = ({ children }) => {
         }
     }, [getUnifiedSettings]);
 
-    // Load settings when user logs in
+    // Enhanced settings persistence with session management
+    const persistSettings = useCallback(async (newSettings) => {
+        try {
+            // Always save locally first for immediate availability
+            saveSettingsLocally(newSettings);
+            
+            // Save to unified localStorage system
+            const unifiedSettings = {
+                preferences: {
+                    language: newSettings.preferences?.language || 'en',
+                    theme: newSettings.preferences?.theme || 'system',
+                    fontSize: newSettings.preferences?.fontSize || 'medium',
+                    density: newSettings.preferences?.density || 'standard',
+                    animations: newSettings.preferences?.animations !== false,
+                    highContrast: newSettings.preferences?.highContrast === true,
+                    colorPreset: newSettings.preferences?.colorPreset || 'techno'
+                },
+                performance: newSettings.performance || {},
+                accessibility: newSettings.accessibility || {},
+                lastModified: Date.now(),
+                userId: currentUser?.uid || 'anonymous'
+            };
+            
+            localStorage.setItem('techno-etl-unified-settings', JSON.stringify(unifiedSettings));
+            
+            // If user is authenticated, also save to Firebase for cross-device sync
+            if (currentUser) {
+                try {
+                    const userSettingsRef = ref(database, `users/${currentUser.uid}/settings`);
+                    await set(userSettingsRef, {
+                        ...unifiedSettings,
+                        syncedAt: Date.now(),
+                        deviceInfo: {
+                            userAgent: navigator.userAgent,
+                            platform: navigator.platform,
+                            timestamp: Date.now()
+                        }
+                    });
+                    console.log('✅ Settings synced to Firebase');
+                } catch (firebaseError) {
+                    console.warn('⚠️ Firebase sync failed, settings saved locally:', firebaseError);
+                }
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('❌ Failed to persist settings:', error);
+            return false;
+        }
+    }, [currentUser]);
+
+    // Load settings when user logs in with enhanced session management
     useEffect(() => {
         if (currentUser) {
             loadRemoteSettings();
+            
+            // Set up real-time settings sync listener
+            const userSettingsRef = ref(database, `users/${currentUser.uid}/settings`);
+            const unsubscribeSettings = onValue(userSettingsRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const remoteSettings = snapshot.val();
+                    const localLastModified = localStorage.getItem('settingsLastModified');
+                    
+                    // Only apply if remote is newer than local
+                    if (!localLastModified || remoteSettings.lastModified > parseInt(localLastModified)) {
+                        console.log('🔄 Applying newer remote settings');
+                        const mergedSettings = mergeWithDefaults(remoteSettings);
+                        setSettings(mergedSettings);
+                        localStorage.setItem('settingsLastModified', remoteSettings.lastModified.toString());
+                        
+                        // Apply settings immediately
+                        applyUserThemeSettings(mergedSettings);
+                        if (applyUserLanguageSettings) {
+                            applyUserLanguageSettings(mergedSettings);
+                        }
+                    }
+                }
+            }, (error) => {
+                console.warn('Settings sync listener error:', error);
+            });
+            
+            return () => {
+                if (unsubscribeSettings) {
+                    unsubscribeSettings();
+                }
+            };
         } else {
-            // Reset to system defaults when user logs out
-            const defaults = getDefaultSettings();
-            setSettings(defaults);
+            // Reset to system defaults when user logs out but preserve anonymous settings
+            const anonymousSettings = localStorage.getItem('techno-etl-unified-settings');
+            if (anonymousSettings) {
+                try {
+                    const parsed = JSON.parse(anonymousSettings);
+                    const defaults = mergeWithDefaults(parsed);
+                    setSettings(defaults);
+                } catch (error) {
+                    console.warn('Failed to parse anonymous settings, using defaults');
+                    const defaults = getDefaultSettings();
+                    setSettings(defaults);
+                }
+            } else {
+                const defaults = getDefaultSettings();
+                setSettings(defaults);
+            }
             setIsDirty(false);
-
-            // Clear unified settings for anonymous users
-            localStorage.removeItem('techno-etl-settings');
         }
-    }, [currentUser]);
+    }, [currentUser, loadRemoteSettings, applyUserThemeSettings, applyUserLanguageSettings]);
 
     // Auto-save to local storage when settings change
     useEffect(() => {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { ref, onValue } from 'firebase/database';
 import { database } from '../config/firebase';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,6 +8,68 @@ import { useTheme as useMuiTheme } from '@mui/material/styles';
 import magentoApi from './magentoApi';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+
+// Enhanced caching system for dashboard data
+class DashboardCache {
+    constructor() {
+        this.cache = new Map();
+        this.cacheExpiry = new Map();
+        this.maxCacheSize = 50;
+        this.defaultTTL = 5 * 60 * 1000; // 5 minutes
+    }
+
+    set(key, data, ttl = this.defaultTTL) {
+        // Cleanup if cache is too large
+        if (this.cache.size >= this.maxCacheSize) {
+            this.cleanup();
+        }
+
+        this.cache.set(key, data);
+        this.cacheExpiry.set(key, Date.now() + ttl);
+    }
+
+    get(key) {
+        const expiry = this.cacheExpiry.get(key);
+        if (!expiry || Date.now() > expiry) {
+            this.cache.delete(key);
+            this.cacheExpiry.delete(key);
+            return null;
+        }
+        return this.cache.get(key);
+    }
+
+    has(key) {
+        return this.get(key) !== null;
+    }
+
+    clear() {
+        this.cache.clear();
+        this.cacheExpiry.clear();
+    }
+
+    cleanup() {
+        const now = Date.now();
+        for (const [key, expiry] of this.cacheExpiry.entries()) {
+            if (now > expiry) {
+                this.cache.delete(key);
+                this.cacheExpiry.delete(key);
+            }
+        }
+    }
+
+    invalidatePattern(pattern) {
+        const regex = new RegExp(pattern);
+        for (const key of this.cache.keys()) {
+            if (regex.test(key)) {
+                this.cache.delete(key);
+                this.cacheExpiry.delete(key);
+            }
+        }
+    }
+}
+
+// Global cache instance
+const dashboardCache = new DashboardCache();
 
  
 
@@ -100,15 +162,35 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
         }
     }, [currentUser, setLanguage, themeCtx]);
     
-    // Fetch dashboard data
-    const fetchDashboardData = useCallback(async () => {
+    // Enhanced fetch dashboard data with caching and optimization
+    const fetchDashboardData = useCallback(async (forceRefresh = false) => {
+        const cacheKey = `dashboard_${startDate.getTime()}_${endDate.getTime()}_${refreshKey || 'default'}`;
+        
+        // Check cache first if not forcing refresh
+        if (!forceRefresh && dashboardCache.has(cacheKey)) {
+            console.log('📋 Loading dashboard data from cache');
+            const cachedData = dashboardCache.get(cacheKey);
+            setStats(cachedData.stats);
+            setChartData(cachedData.chartData);
+            setRecentOrders(cachedData.recentOrders);
+            setBestSellers(cachedData.bestSellers);
+            setCustomerData(cachedData.customerData);
+            setCountryData(cachedData.countryData);
+            setProductTypeData(cachedData.productTypeData);
+            setLoading(false);
+            return cachedData;
+        }
+
         setLoading(true);
         setError(null);
         const ordersByTime = {};
+        
         try {
+            console.log('🔄 Fetching fresh dashboard data...');
             const formattedStartDate = startDate.toISOString();
             const formattedEndDate = endDate.toISOString();
 
+            // Optimized API parameters
             const ordersParams = {
                 filterGroups: [{
                     filters: [{
@@ -121,7 +203,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                         conditionType: 'lteq'
                     }]
                 }],
-                pageSize: 100,
+                pageSize: 150, // Increased for better data coverage
                 currentPage: 1,
                 sortOrders: [{
                     field: 'created_at',
@@ -129,132 +211,198 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                 }]
             };
 
-            const [ordersResponse, customersResponse, productsResponse] = await Promise.all([
-                magentoApi.getOrders(ordersParams),
-                magentoApi.getCustomers({ pageSize: 100 }),
-                magentoApi.getProducts({ pageSize: 100 })
-            ]);
+            // Parallel API calls with error handling
+            const apiCalls = [
+                magentoApi.getOrders(ordersParams).catch(error => {
+                    console.warn('Orders API failed:', error);
+                    return { items: [], total_count: 0 };
+                }),
+                magentoApi.getCustomers({ pageSize: 150 }).catch(error => {
+                    console.warn('Customers API failed:', error);
+                    return { items: [], total_count: 0 };
+                }),
+                magentoApi.getProducts({ pageSize: 150 }).catch(error => {
+                    console.warn('Products API failed:', error);
+                    return { items: [], total_count: 0 };
+                })
+            ];
+
+            const [ordersResponse, customersResponse, productsResponse] = await Promise.all(apiCalls);
 
             const orders = ordersResponse?.items || [];
             const customers = customersResponse?.items || [];
             const products = productsResponse?.items || [];
             let totalRevenue = 0;
 
-            // Build chart data
-            const startTimestamp = startDate.setHours(0, 0, 0, 0);
-            const endTimestamp = endDate.setHours(0, 0, 0, 0);
-            ordersByTime[startTimestamp] = { count: 0, revenue: 0, key: `day-${startTimestamp}` };
-            ordersByTime[endTimestamp] = { count: 0, revenue: 0, key: `day-${endTimestamp}` };
-
-            let currentDate = new Date(startDate);
-            while (currentDate <= endDate) {
-                const timestamp = currentDate.setHours(0, 0, 0, 0);
-                if (!ordersByTime[timestamp]) {
+            // Optimized chart data processing
+            const processChartData = () => {
+                const startTimestamp = new Date(startDate).setHours(0, 0, 0, 0);
+                const endTimestamp = new Date(endDate).setHours(0, 0, 0, 0);
+                
+                // Initialize time buckets
+                let currentDate = new Date(startTimestamp);
+                while (currentDate.getTime() <= endTimestamp) {
+                    const timestamp = currentDate.getTime();
                     ordersByTime[timestamp] = {
                         count: 0,
                         revenue: 0,
                         key: `day-${timestamp}`
                     };
+                    currentDate.setDate(currentDate.getDate() + 1);
                 }
-                currentDate = new Date(currentDate.getTime() + 86400000);
-            }
 
-            orders.forEach(order => {
-                const orderDate = new Date(order.created_at);
-                if (orderDate >= startDate && orderDate <= endDate) {
-                    const timestamp = orderDate.setHours(0, 0, 0, 0);
-                    if (!ordersByTime[timestamp]) {
-                        ordersByTime[timestamp] = {
-                            count: 0,
-                            revenue: 0,
-                            key: `day-${timestamp}`
-                        };
+                // Process orders efficiently
+                orders.forEach(order => {
+                    const orderDate = new Date(order.created_at);
+                    if (orderDate >= startDate && orderDate <= endDate) {
+                        const timestamp = new Date(orderDate).setHours(0, 0, 0, 0);
+                        if (ordersByTime[timestamp]) {
+                            ordersByTime[timestamp].count++;
+                            const orderTotal = parseFloat(order.grand_total || 0);
+                            ordersByTime[timestamp].revenue += orderTotal;
+                            totalRevenue += orderTotal;
+                        }
                     }
-                    ordersByTime[timestamp].count++;
-                    const orderTotal = parseFloat(order.grand_total || 0);
-                    ordersByTime[timestamp].revenue += orderTotal;
-                    totalRevenue += orderTotal;
-                }
-            });
-
-            const chartDataArr = Object.entries(ordersByTime)
-                .map(([timestamp, data]) => ({
-                    date: parseInt(timestamp),
-                    orders: data.count || 0,
-                    revenue: data.revenue || 0,
-                    key: data.key
-                }))
-                .sort((a, b) => a.date - b.date);
-
-            setChartData(chartDataArr);
-
-            // Stats
-            const newCustomers = customers.filter(c =>
-                new Date(c.created_at) >= startDate && new Date(c.created_at) <= endDate
-            ).length;
-
-            setStats({
-                totalOrders: orders.length,
-                totalCustomers: customersResponse?.total_count || 0,
-                totalProducts: productsResponse?.total_count || 0,
-                totalRevenue: totalRevenue,
-                averageOrderValue: orders.length > 0 ? totalRevenue / orders.length : 0,
-                totalValue: products.reduce((acc, p) => acc + (parseFloat(p.price) * (p.qty || 0)), 0),
-                newCustomers
-            });
-
-            // Recent Orders
-            setRecentOrders([...orders].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 10));
-
-            // Best Sellers
-            const productMap = {};
-            orders.forEach(order => {
-                (order.items || []).forEach(item => {
-                    if (!productMap[item.sku]) {
-                        productMap[item.sku] = { sku: item.sku, name: item.name, qty: 0 };
-                    }
-                    productMap[item.sku].qty += item.qty_ordered || 0;
                 });
-            });
-            setBestSellers(Object.values(productMap).sort((a, b) => b.qty - a.qty).slice(0, 10));
 
+                return Object.entries(ordersByTime)
+                    .map(([timestamp, data]) => ({
+                        date: parseInt(timestamp),
+                        orders: data.count || 0,
+                        revenue: data.revenue || 0,
+                        key: data.key
+                    }))
+                    .sort((a, b) => a.date - b.date);
+            };
+
+            const chartDataArr = processChartData();
+
+            // Optimized stats calculation
+            const calculateStats = () => {
+                const newCustomers = customers.filter(c => {
+                    const createdAt = new Date(c.created_at);
+                    return createdAt >= startDate && createdAt <= endDate;
+                }).length;
+
+                const totalValue = products.reduce((acc, p) => {
+                    const price = parseFloat(p.price || 0);
+                    const qty = parseFloat(p.qty || 0);
+                    return acc + (price * qty);
+                }, 0);
+
+                return {
+                    totalOrders: orders.length,
+                    totalCustomers: customersResponse?.total_count || 0,
+                    totalProducts: productsResponse?.total_count || 0,
+                    totalRevenue: totalRevenue,
+                    averageOrderValue: orders.length > 0 ? totalRevenue / orders.length : 0,
+                    totalValue: totalValue,
+                    newCustomers: newCustomers,
+                    growthRate: 0, // TODO: Calculate compared to previous period
+                    conversionRate: orders.length > 0 ? (orders.length / customers.length) * 100 : 0
+                };
+            };
+
+            // Optimized best sellers calculation
+            const calculateBestSellers = () => {
+                const productMap = new Map();
+                orders.forEach(order => {
+                    (order.items || []).forEach(item => {
+                        const sku = item.sku;
+                        if (!productMap.has(sku)) {
+                            productMap.set(sku, { 
+                                sku: sku, 
+                                name: item.name, 
+                                qty: 0,
+                                revenue: 0
+                            });
+                        }
+                        const existing = productMap.get(sku);
+                        existing.qty += parseFloat(item.qty_ordered || 0);
+                        existing.revenue += parseFloat(item.price || 0) * parseFloat(item.qty_ordered || 0);
+                    });
+                });
+                return Array.from(productMap.values())
+                    .sort((a, b) => b.qty - a.qty)
+                    .slice(0, 10);
+            };
+
+            // Optimized country data processing
+            const calculateCountryData = () => {
+                const countryCount = new Map();
+                products.forEach(product => {
+                    if (product?.custom_attributes?.length) {
+                        const countryAttr = product.custom_attributes.find(
+                            attr => attr?.attribute_code === 'country_of_manufacture'
+                        );
+                        const country = countryAttr?.value || 'Unknown';
+                        countryCount.set(country, (countryCount.get(country) || 0) + 1);
+                    }
+                });
+                return Array.from(countryCount.entries())
+                    .map(([country, count]) => ({ country_of_manufacture: country, count }))
+                    .sort((a, b) => b.count - a.count)
+                    .slice(0, 8); // Increased for better insights
+            };
+
+            // Optimized product type data processing
+            const calculateProductTypeData = () => {
+                const typeCount = new Map();
+                products.forEach(product => {
+                    const type = product?.type_id || 'unknown';
+                    typeCount.set(type, (typeCount.get(type) || 0) + 1);
+                });
+                return Array.from(typeCount.entries())
+                    .map(([type, count]) => ({
+                        name: type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' '),
+                        value: count,
+                        percentage: products.length > 0 ? (count / products.length) * 100 : 0
+                    }))
+                    .sort((a, b) => b.value - a.value);
+            };
+
+            // Calculate all metrics
+            const stats = calculateStats();
+            const bestSellers = calculateBestSellers();
+            const recentOrders = [...orders]
+                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                .slice(0, 15); // Increased for better overview
+            const countryData = calculateCountryData();
+            const productTypeData = calculateProductTypeData();
+
+            // Update state
+            setStats(stats);
+            setChartData(chartDataArr);
+            setRecentOrders(recentOrders);
+            setBestSellers(bestSellers);
             setCustomerData(customers);
+            setCountryData(countryData);
+            setProductTypeData(productTypeData);
 
-            // Country Data
-            const countryCount = {};
-            products.forEach(product => {
-                if (product && Array.isArray(product.custom_attributes)) {
-                    const countryAttr = product.custom_attributes.find(
-                        attr => attr && attr.attribute_code === 'country_of_manufacture'
-                    );
-                    const country = countryAttr?.value || 'Unknown';
-                    countryCount[country] = (countryCount[country] || 0) + 1;
-                }
-            });
-            setCountryData(Object.entries(countryCount)
-                .map(([country, count]) => ({
-                    country_of_manufacture: country,
-                    count: count
-                }))
-                .sort((a, b) => b.count - a.count)
-                .slice(0, 5));
-
-            // Product Type Data
-            const typeCount = {};
-            products.forEach(product => {
-                const type = product?.type_id || 'unknown';
-                typeCount[type] = (typeCount[type] || 0) + 1;
-            });
-            setProductTypeData(Object.entries(typeCount)
-                .map(([type, count]) => ({
-                    name: type.charAt(0).toUpperCase() + type.slice(1),
-                    value: count
-                }))
-                .sort((a, b) => b.value - a.value));
+            // Cache the results with shorter TTL for dynamic data
+            const cacheData = {
+                stats,
+                chartData: chartDataArr,
+                recentOrders,
+                bestSellers,
+                customerData: customers,
+                countryData,
+                productTypeData,
+                timestamp: Date.now()
+            };
+            
+            // Cache for 3 minutes for dashboard data (more dynamic)
+            dashboardCache.set(cacheKey, cacheData, 3 * 60 * 1000);
+            
+            console.log('✅ Dashboard data fetched and cached successfully');
+            return cacheData;
 
         } catch (error) {
-            setError('Failed to fetch dashboard data');
-            toast.error('Failed to fetch dashboard data');
+            console.error('❌ Dashboard data fetch error:', error);
+            const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch dashboard data';
+            setError(errorMessage);
+            toast.error(`Dashboard Error: ${errorMessage}`);
+            throw error;
         } finally {
             setLoading(false);
         }
