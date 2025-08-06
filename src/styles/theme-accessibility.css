@@ -1,0 +1,195 @@
+/* Theme Accessibility Styles */
+
+/* High Contrast Mode */
+.high-contrast {
+  --primary-color: #0066cc;
+  --secondary-color: #ff6600;
+  --background-color: #ffffff;
+  --text-color: #000000;
+  --border-color: #000000;
+}
+
+.high-contrast [data-theme="dark"] {
+  --primary-color: #66ccff;
+  --secondary-color: #ffaa66;
+  --background-color: #000000;
+  --text-color: #ffffff;
+  --border-color: #ffffff;
+}
+
+.high-contrast * {
+  border-color: var(--border-color) !important;
+  color: var(--text-color) !important;
+  background-color: var(--background-color) !important;
+}
+
+.high-contrast .MuiButton-root {
+  border: 2px solid var(--border-color) !important;
+  font-weight: bold !important;
+}
+
+.high-contrast .MuiCard-root {
+  border: 2px solid var(--border-color) !important;
+}
+
+.high-contrast .MuiListItemButton-root:hover {
+  background-color: var(--primary-color) !important;
+  color: var(--background-color) !important;
+}
+
+/* No Animations Mode */
+.no-animations * {
+  animation-duration: 0.01ms !important;
+  animation-delay: 0.01ms !important;
+  transition-duration: 0.01ms !important;
+  transition-delay: 0.01ms !important;
+}
+
+.no-animations *::before,
+.no-animations *::after {
+  animation-duration: 0.01ms !important;
+  animation-delay: 0.01ms !important;
+  transition-duration: 0.01ms !important;
+  transition-delay: 0.01ms !important;
+}
+
+/* Large Text Mode */
+.large-text {
+  font-size: 1.125rem !important;
+}
+
+.large-text .MuiTypography-body1 {
+  font-size: 1.25rem !important;
+}
+
+.large-text .MuiTypography-body2 {
+  font-size: 1.125rem !important;
+}
+
+.large-text .MuiButton-root {
+  font-size: 1.125rem !important;
+  padding: 12px 24px !important;
+}
+
+.large-text .MuiListItemText-primary {
+  font-size: 1.25rem !important;
+}
+
+.large-text .MuiListItemText-secondary {
+  font-size: 1.125rem !important;
+}
+
+/* Keyboard Navigation Enhancement */
+body:not(.using-mouse) *:focus,
+body:not(.using-mouse) *:focus-visible {
+  outline: 3px solid var(--primary-color, #ff5501) !important;
+  outline-offset: 2px !important;
+}
+
+/* Enhanced focus indicators for high contrast mode */
+.high-contrast body:not(.using-mouse) *:focus,
+.high-contrast body:not(.using-mouse) *:focus-visible {
+  outline: 4px solid var(--primary-color) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 2px var(--background-color) !important;
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip link for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--primary-color, #ff5501);
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 9999;
+  font-weight: bold;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0.01ms !important;
+  }
+  
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0.01ms !important;
+  }
+}
+
+/* Color preference adjustments */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --default-bg: #121212;
+    --default-text: #ffffff;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --default-bg: #ffffff;
+    --default-text: #000000;
+  }
+}
+
+/* Focus management for complex UI components */
+.focus-trap-active {
+  position: relative;
+}
+
+/* Enhanced button states for accessibility */
+.MuiButton-root:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+/* Improved contrast for form elements */
+.high-contrast .MuiOutlinedInput-root {
+  border: 2px solid var(--border-color) !important;
+}
+
+.high-contrast .MuiOutlinedInput-root:focus-within {
+  border: 3px solid var(--primary-color) !important;
+}
+
+/* Enhanced error states */
+.high-contrast .Mui-error {
+  color: #cc0000 !important;
+  border-color: #cc0000 !important;
+}
+
+/* Progress indicators with better visibility */
+.high-contrast .MuiCircularProgress-root {
+  color: var(--primary-color) !important;
+}
+
+.high-contrast .MuiLinearProgress-root {
+  background-color: var(--background-color) !important;
+  border: 1px solid var(--border-color) !important;
+}

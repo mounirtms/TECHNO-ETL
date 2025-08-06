@@ -26,7 +26,24 @@
         "sources": "المصادر",
         "userProfile": "الملف الشخصي",
         "cmsPages": "صفحات CMS",
-        "gridTest": "اختبار الشبكة"
+        "gridTest": "اختبار الشبكة",
+        "bugBounty": "مكافآت الأخطاء",
+        "licenseManagement": "إدارة التراخيص",
+        "licenseStatus": "حالة الترخيص",
+        "core": "لوحة التحكم الأساسية",
+        "mdm": "نظام إدارة البيانات الرئيسية",
+        "magento": "نظام ماجنتو",
+        "cegid": "نظام سيجيد",
+        "analyticsReports": "التحليلات والتقارير",
+        "lockerStudio": "استوديو الخزنة",
+        "development": "التطوير والاختبار",
+        "system": "إدارة النظام",
+        "mdmStock": "مخزون MDM",
+        "mdmSources": "مصادر MDM",
+        "salesAnalytics": "تحليلات المبيعات",
+        "inventoryAnalytics": "تحليلات المخزون",
+        "secureVault": "الخزنة الآمنة",
+        "accessControl": "التحكم في الوصول"
     },
     "login": {
         "signInWithGoogle": "تسجيل الدخول باستخدام Google",
@@ -52,8 +69,13 @@
         "noRecentOrders": "لا توجد طلبات حديثة",
         "lastWeek": "الأسبوع الماضي",
         "lastMonth": "الشهر الماضي",
-        "lastYear": "العام الماضي"
-
+        "lastYear": "العام الماضي",
+        "startDate": "تاريخ البداية",
+        "endDate": "تاريخ النهاية",
+        "syncPrices": "مزامنة الأسعار",
+        "syncStocks": "مزامنة المخزون",
+        "viewAnalytics": "عرض التحليلات",
+        "refreshing": "جاري التحديث..."
     },
     "products": "المنتجات",
     "orders": "الطلبات",

@@ -4,7 +4,7 @@ const csv = require('csv-parser');
 
 // Configuration
 const csvFile = '../csvFiles/calligraph_updated.csv';
-const sourceImagesFolder = '../images';
+const sourceImagesFolder = '../newimages';
 const destinationFolder = '../../renamed_images';
 
 /**
@@ -75,42 +75,40 @@ async function renameImagesImproved(forceUpdate = false) {
         // Process each CSV entry
         for (const csvEntry of csvData) {
           const { ref, imageName, productName } = csvEntry;
-          
-          // Check if destination file already exists (unless force update)
-          const destPath = path.join(destinationFolder, `${imageName}.jpg`);
-          if (!forceUpdate && fs.existsSync(destPath)) {
-            console.log(`⏭️  Skipped (already exists): ${imageName}.jpg`);
-            skippedCount++;
-            continue;
-          }
 
-          // Find matching source files using improved pattern matching
-          const matchingFiles = findMatchingFiles(imageFiles, ref, imageName);
+          // Find matching source files and sort them for deterministic order
+          const matchingFiles = findMatchingFiles(imageFiles, ref, imageName).sort();
           
           if (matchingFiles.length === 0) {
-            console.log(`❌ No match found for ref: ${ref} (${imageName})`);
+            console.log(`❌ No match found for ref: ${ref} (${productName})`);
             notFoundCount++;
             continue;
           }
 
-          // Use the first matching file (or implement priority logic)
-          const sourceFile = matchingFiles[0];
-          const sourcePath = path.join(sourceImagesFolder, sourceFile);
-          
-          try {
-            // Copy file with new name
-            fs.copyFileSync(sourcePath, destPath);
-            console.log(`✅ Renamed: ${sourceFile} → ${imageName}.jpg`);
-            renamedCount++;
-            
-            // If multiple matches, show them
-            if (matchingFiles.length > 1) {
-              console.log(`   ℹ️  Other matches: ${matchingFiles.slice(1).join(', ')}`);
+          // Process each matching file, potentially creating multiple renamed images for one product ref
+          for (const [index, sourceFile] of matchingFiles.entries()) {
+            const sourcePath = path.join(sourceImagesFolder, sourceFile);
+
+            // First image gets the base name, subsequent images get a suffix like _1, _2, etc.
+            const newBaseName = index === 0 ? imageName : `${imageName}_${index}`;
+            const destFileName = `${newBaseName}.jpg`;
+            const destPath = path.join(destinationFolder, destFileName);
+
+            if (!forceUpdate && fs.existsSync(destPath)) {
+              console.log(`⏭️  Skipped (already exists): ${destFileName}`);
+              skippedCount++;
+              continue;
             }
-            
-          } catch (error) {
-            console.error(`❌ Error copying ${sourceFile}:`, error.message);
-            errorCount++;
+
+            try {
+              // Copy file with new name
+              fs.copyFileSync(sourcePath, destPath);
+              console.log(`✅ Renamed: ${sourceFile} → ${destFileName}`);
+              renamedCount++;
+            } catch (error) {
+              console.error(`❌ Error copying ${sourceFile}:`, error.message);
+              errorCount++;
+            }
           }
         }
 
@@ -154,32 +152,28 @@ async function renameImagesImproved(forceUpdate = false) {
  * @returns {string[]} - Array of matching filenames
  */
 function findMatchingFiles(imageFiles, ref, imageName) {
-  const matches = [];
+  const matches = new Set();
   
   // Strategy 1: Exact match with imageName
   const exactMatch = imageFiles.find(file => {
     const nameWithoutExt = path.parse(file).name.toLowerCase();
     return nameWithoutExt === imageName.toLowerCase();
   });
-  if (exactMatch) matches.push(exactMatch);
+  if (exactMatch) matches.add(exactMatch);
 
   // Strategy 2: Files that start with the ref code
   const refMatches = imageFiles.filter(file => {
     const nameWithoutExt = path.parse(file).name;
     return nameWithoutExt.toLowerCase().startsWith(ref.toLowerCase());
   });
-  refMatches.forEach(match => {
-    if (!matches.includes(match)) matches.push(match);
-  });
+  refMatches.forEach(match => matches.add(match));
 
   // Strategy 3: Files that contain the ref code
   const containsRefMatches = imageFiles.filter(file => {
     const nameWithoutExt = path.parse(file).name.toLowerCase();
     return nameWithoutExt.includes(ref.toLowerCase());
   });
-  containsRefMatches.forEach(match => {
-    if (!matches.includes(match)) matches.push(match);
-  });
+  containsRefMatches.forEach(match => matches.add(match));
 
   // Strategy 4: Fuzzy matching - files that contain parts of the imageName
   const imageNameParts = imageName.toLowerCase().split('-').filter(part => part.length > 2);
@@ -188,12 +182,10 @@ function findMatchingFiles(imageFiles, ref, imageName) {
       const nameWithoutExt = path.parse(file).name.toLowerCase();
       return imageNameParts.some(part => nameWithoutExt.includes(part));
     });
-    fuzzyMatches.forEach(match => {
-      if (!matches.includes(match)) matches.push(match);
-    });
+    fuzzyMatches.forEach(match => matches.add(match));
   }
 
-  return matches;
+  return Array.from(matches);
 }
 
 // Export the function for use as a module
