@@ -8,6 +8,7 @@ import { Box, CircularProgress, Typography } from '@mui/material';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCustomTheme } from '../../contexts/ThemeContext';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { getUnifiedSettings, saveUnifiedSettings } from '../../utils/settingsCleanup';
 
 const AppInitializer = ({ children }) => {
   const { currentUser } = useAuth();
@@ -23,55 +24,60 @@ const AppInitializer = ({ children }) => {
       try {
         setInitializationStep('Detecting system preferences...');
         
-        // Step 1: Apply system defaults first
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const browserLang = navigator.language.split('-')[0];
-        const supportedLanguages = ['en', 'fr', 'ar'];
-        const detectedLanguage = supportedLanguages.includes(browserLang) ? browserLang : 'en';
+        // Step 1: Check unified settings first
+        const unifiedSettings = localStorage.getItem('techno-etl-settings');
+        let hasUnifiedSettings = false;
         
-        // Apply system defaults if no user is logged in
-        if (!currentUser) {
-          setInitializationStep('Applying system defaults...');
-          setThemeMode(systemPrefersDark ? 'dark' : 'light');
-          setLanguage(detectedLanguage);
-        }
-        
-        // Step 2: Load and apply user settings if available
-        if (currentUser) {
-          setInitializationStep('Loading user preferences...');
-
+        if (unifiedSettings) {
           try {
-            // Try to load user settings from localStorage
-            const userSettingsKey = `userSettings_${currentUser.uid}`;
-            const savedSettings = localStorage.getItem(userSettingsKey);
-
-            if (savedSettings) {
-              const parsedSettings = JSON.parse(savedSettings);
-              setUserSettings(parsedSettings);
-
-              // Apply theme
-              if (parsedSettings.preferences?.theme) {
-                if (parsedSettings.preferences.theme === 'system') {
-                  setThemeMode(systemPrefersDark ? 'dark' : 'light');
-                } else {
-                  setThemeMode(parsedSettings.preferences.theme);
-                }
-              }
-
-              // Apply language
-              if (parsedSettings.preferences?.language) {
-                setLanguage(parsedSettings.preferences.language);
+            const settings = JSON.parse(unifiedSettings);
+            hasUnifiedSettings = true;
+            setInitializationStep('Applying saved preferences...');
+            
+            // Apply theme from unified settings
+            if (settings.theme) {
+              if (settings.theme === 'system') {
+                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                setThemeMode(systemPrefersDark ? 'dark' : 'light');
+              } else {
+                setThemeMode(settings.theme);
               }
             }
+            
+            // Apply language from unified settings
+            if (settings.language) {
+              setLanguage(settings.language);
+            }
+            
+            console.log('Applied unified settings:', settings);
           } catch (error) {
-            console.warn('Error loading user settings:', error);
+            console.warn('Error parsing unified settings:', error);
+            hasUnifiedSettings = false;
           }
+        }
+        
+        // Step 2: Apply system defaults if no unified settings
+        if (!hasUnifiedSettings) {
+          setInitializationStep('Applying system defaults...');
+          const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const browserLang = navigator.language.split('-')[0];
+          const supportedLanguages = ['en', 'fr', 'ar'];
+          const detectedLanguage = supportedLanguages.includes(browserLang) ? browserLang : 'en';
+          
+          setThemeMode(systemPrefersDark ? 'dark' : 'light');
+          setLanguage(detectedLanguage);
+          
+          // Save detected settings as defaults for future use
+          saveUnifiedSettings({
+            language: detectedLanguage,
+            theme: systemPrefersDark ? 'dark' : 'light'
+          });
         }
         
         setInitializationStep('Finalizing...');
         
         // Small delay to ensure all contexts are updated
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 300));
         
         setIsInitialized(true);
         

@@ -8,9 +8,190 @@ import ordersData from '../assets/data/orders.json';
 import invoicesData from '../assets/data/invoices.json';
 import categoryData from '../assets/data/category.json';
 
+import directMagentoClient from './directMagentoClient';
+
+/**
+ * Settings Persistence Manager
+ * Handles persistent storage and retrieval of Magento settings
+ */
+class SettingsPersistenceManager {
+    constructor() {
+        this.STORAGE_KEY = 'magento_persistent_settings';
+        this.BACKUP_KEY = 'magento_settings_backup';
+    }
+
+    // Save settings with timestamp and validation
+    saveSettings(settings) {
+        try {
+            const persistentData = {
+                settings,
+                timestamp: Date.now(),
+                version: '1.0'
+            };
+            
+            // Primary storage
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(persistentData));
+            
+            // Backup storage
+            localStorage.setItem(this.BACKUP_KEY, JSON.stringify(persistentData));
+            
+            console.log('💾 Magento settings persisted successfully');
+            return true;
+        } catch (error) {
+            console.error('❌ Failed to persist settings:', error);
+            return false;
+        }
+    }
+
+    // Load settings with fallback mechanism
+    loadSettings() {
+        try {
+            // Try primary storage first
+            let data = localStorage.getItem(this.STORAGE_KEY);
+            
+            // Fallback to backup if primary fails
+            if (!data) {
+                data = localStorage.getItem(this.BACKUP_KEY);
+                console.log('🔄 Using backup settings');
+            }
+            
+            if (data) {
+                const parsed = JSON.parse(data);
+                console.log('📥 Loaded persistent settings:', parsed.timestamp);
+                return parsed.settings;
+            }
+            
+            return null;
+        } catch (error) {
+            console.error('❌ Failed to load persistent settings:', error);
+            return null;
+        }
+    }
+
+    // Clear all persistent data
+    clearSettings() {
+        try {
+            localStorage.removeItem(this.STORAGE_KEY);
+            localStorage.removeItem(this.BACKUP_KEY);
+            console.log('🗑️ Cleared persistent settings');
+        } catch (error) {
+            console.error('❌ Failed to clear settings:', error);
+        }
+    }
+
+    // Get settings info
+    getSettingsInfo() {
+        try {
+            const data = localStorage.getItem(this.STORAGE_KEY);
+            if (data) {
+                const parsed = JSON.parse(data);
+                return {
+                    exists: true,
+                    timestamp: parsed.timestamp,
+                    age: Date.now() - parsed.timestamp,
+                    version: parsed.version
+                };
+            }
+            return { exists: false };
+        } catch (error) {
+            return { exists: false, error: error.message };
+        }
+    }
+}
+
+/**
+ * Request Cancellation Manager
+ * Handles cancellation of ongoing requests when switching modes
+ */
+class RequestCancellationManager {
+    constructor() {
+        this.activeRequests = new Map();
+        this.abortControllers = new Map();
+    }
+
+    // Create a new request with cancellation support
+    createCancellableRequest(requestId, requestPromise) {
+        const abortController = new AbortController();
+        this.abortControllers.set(requestId, abortController);
+        
+        // Wrap the promise to handle cancellation
+        const cancellablePromise = new Promise((resolve, reject) => {
+            // Handle abort signal
+            abortController.signal.addEventListener('abort', () => {
+                reject(new Error(`Request ${requestId} was cancelled`));
+            });
+            
+            // Execute the original promise
+            requestPromise
+                .then(resolve)
+                .catch(reject)
+                .finally(() => {
+                    this.cleanup(requestId);
+                });
+        });
+        
+        this.activeRequests.set(requestId, cancellablePromise);
+        return cancellablePromise;
+    }
+
+    // Cancel all active requests
+    cancelAllRequests(reason = 'Service mode changed') {
+        console.log(`🚫 Cancelling ${this.activeRequests.size} active requests: ${reason}`);
+        
+        for (const [requestId, controller] of this.abortControllers.entries()) {
+            try {
+                controller.abort(reason);
+            } catch (error) {
+                console.warn(`Failed to cancel request ${requestId}:`, error);
+            }
+        }
+        
+        this.cleanup();
+    }
+
+    // Cancel specific request
+    cancelRequest(requestId, reason = 'Cancelled') {
+        const controller = this.abortControllers.get(requestId);
+        if (controller) {
+            controller.abort(reason);
+            this.cleanup(requestId);
+        }
+    }
+
+    // Cleanup finished/cancelled requests
+    cleanup(requestId = null) {
+        if (requestId) {
+            this.activeRequests.delete(requestId);
+            this.abortControllers.delete(requestId);
+        } else {
+            this.activeRequests.clear();
+            this.abortControllers.clear();
+        }
+    }
+
+    // Get active requests count
+    getActiveRequestsCount() {
+        return this.activeRequests.size;
+    }
+}
+
 class MagentoService {
-     constructor() {
-        this.baseURL = '/api/magento';	 // Your backend API URL
+    constructor(directConnectionEnabled = false, magentoSettings = null) {
+        this.baseURL = '/api/magento';
+        this.directConnectionEnabled = directConnectionEnabled;
+        this.magentoSettings = magentoSettings;
+        
+        if (directConnectionEnabled && magentoSettings) {
+            // Initialize direct client
+            try {
+                directMagentoClient.initialize(magentoSettings);
+                console.log('✅ Direct Magento client initialized');
+            } catch (error) {
+                console.error('❌ Failed to initialize direct client:', error);
+                this.directConnectionEnabled = false;
+            }
+        }
+        
         this.instance = axios.create({
             baseURL: this.baseURL,
             headers: {
@@ -19,163 +200,67 @@ class MagentoService {
         });
     }
 
-    async get(endpoint, params = {}) { 
-        return this.instance.get(endpoint, params );
+    async get(endpoint, params = {}) {
+        // Check if direct connection is enabled and settings are available
+        if (this.directConnectionEnabled && directMagentoClient.initialized) {
+            try {
+                console.log('🔄 Using direct Magento connection for GET:', endpoint);
+                return { data: await directMagentoClient.get(endpoint, params.params || params) };
+            } catch (error) {
+                console.warn('⚠️ Direct connection failed, falling back to proxy:', error.message);
+                // Fall back to proxy
+            }
+        }
+        
+        return this.instance.get(endpoint, params);
     }
 
 
     async post(endpoint, data = {}, config = {}) {
+        // Check if direct connection is enabled and settings are available
+        if (this.directConnectionEnabled && directMagentoClient.initialized) {
+            try {
+                console.log('🔄 Using direct Magento connection for POST:', endpoint);
+                return { data: await directMagentoClient.post(endpoint, data) };
+            } catch (error) {
+                console.warn('⚠️ Direct connection failed, falling back to proxy:', error.message);
+                // Fall back to proxy
+            }
+        }
+        
         return this.instance.post(endpoint, data, config);
     }
 
     async put(endpoint, data = {}, config = {}) {
+        // Check if direct connection is enabled and settings are available
+        if (this.directConnectionEnabled && directMagentoClient.initialized) {
+            try {
+                console.log('🔄 Using direct Magento connection for PUT:', endpoint);
+                return { data: await directMagentoClient.put(endpoint, data) };
+            } catch (error) {
+                console.warn('⚠️ Direct connection failed, falling back to proxy:', error.message);
+                // Fall back to proxy
+            }
+        }
+        
         return this.instance.put(endpoint, data, config);
     }
 
     async delete(endpoint, config = {}) {
+        // Check if direct connection is enabled and settings are available
+        if (this.directConnectionEnabled && directMagentoClient.initialized) {
+            try {
+                console.log('🔄 Using direct Magento connection for DELETE:', endpoint);
+                return { data: await directMagentoClient.delete(endpoint) };
+            } catch (error) {
+                console.warn('⚠️ Direct connection failed, falling back to proxy:', error.message);
+                // Fall back to proxy
+            }
+        }
+        
         return this.instance.delete(endpoint, config);
     }
 
-  /*  constructor() {
-        this.baseURL = import.meta.env.VITE_MAGENTO_API_URL;
-        this.instance = axios.create({
-            baseURL: this.baseURL,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        // Request interceptor
-        this.instance.interceptors.request.use(
-            (config) => {
-                const token = localStorage.getItem('adminToken');
-                if (token) {
-                    config.headers.Authorization = `Bearer ${token}`;
-                }
-                return config;
-            },
-            (error) => {
-                return Promise.reject(error);
-            }
-        );
-
-        // Response interceptor
-        this.instance.interceptors.response.use(
-            (response) => {
-                return response;
-            },
-            (error) => {
-                return this.handleApiError(error);
-            }
-        );
-    }
- 
-    // HTTP Methods
-    async get(endpoint, params = {}) {
-        try {
-            console.log('Making GET request to:', endpoint, 'with params:', params);
-            
-            let url = endpoint;
-            if (params.params) {
-                const queryParams = new URLSearchParams();
-                Object.entries(params.params).forEach(([key, value]) => {
-                    queryParams.append(key, value);
-                });
-                url += `?${queryParams.toString()}`;
-            }
-
-            console.log('Final URL:', url);
-
-            // Try to get from cache first
-            const cachedData = await this.getCachedResponse(url);
-            if (cachedData) {
-                console.log('Retrieved from cache:', url);
-                return cachedData;
-            }
-
-            const config = {
-                headers: {
-                    'Authorization': `Bearer ${this.getToken()}`,
-                    'Content-Type': 'application/json'
-                }
-            };
-
-            const response = await this.instance.get(url, config);
-            console.log('GET response:', response);
-            
-            if (response?.status === 200) {
-                // Cache the successful response
-                await this.setCachedResponse(url, response.data);
-                return {
-                    data: response.data,
-                    status: response.status
-                };
-            }
-
-            // If response is not 200, try to get local data
-            const localData = this.getLocalData(endpoint);
-            if (localData) {
-                console.log('Using local data for:', endpoint);
-                return {
-                    data: localData,
-                    status: 200,
-                    fromLocal: true
-                };
-            }
-
-            return this.handleApiError(response);
-        } catch (error) {
-            console.error('GET request error:', error);
-            if (error.response?.status === 401) {
-                toast.error('Authentication failed. Please log in again.');
-                this.handleAuthError();
-                return null;
-            }
-            // On error, try to get local data
-            const localData = this.getLocalData(endpoint);
-            if (localData) {
-                console.log('Using local data after error for:', endpoint);
-                return {
-                    data: localData,
-                    status: 200,
-                    fromLocal: true
-                };
-            }
-            throw {
-                message: 'Invalid request. Please check your input.',
-                code: 'INVALID_REQUEST',
-                originalError: error
-            };
-        }
-    }
-
-    async post(endpoint, data = {}) {
-        try {
-            const response = await this.instance.post(endpoint, data);
-            return response;
-        } catch (error) {
-            throw this.handleApiError(error);
-        }
-    }
-
-    async put(endpoint, data = {}) {
-        try {
-            const response = await this.instance.put(endpoint, data);
-            return response;
-        } catch (error) {
-            throw this.handleApiError(error);
-        }
-    }
-
-    async delete(endpoint) {
-        try {
-            const response = await this.instance.delete(endpoint);
-            return response;
-        } catch (error) {
-            throw this.handleApiError(error);
-        }
-    }
-*/
     // Utility to flatten nested object into URL parameters
     flattenObject(obj, urlParams, prefix = '') {
         for (const key in obj) {
@@ -269,9 +354,69 @@ class MagentoService {
                     localStorage.removeItem(key);
                 }
             });
+            console.log('🧹 All Magento cache cleared');
         } catch (error) {
             console.error('Error clearing cache:', error);
         }
+    }
+    
+    // Clear direct connection specific cache
+    clearDirectCache() {
+        try {
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('magento_direct_cache_')) {
+                    localStorage.removeItem(key);
+                }
+            });
+            
+            // Clear direct client cache if available
+            if (directMagentoClient.clearCache) {
+                directMagentoClient.clearCache();
+            }
+            
+            console.log('🧹 Direct connection cache cleared');
+        } catch (error) {
+            console.error('Error clearing direct cache:', error);
+        }
+    }
+    
+    // Clear proxy connection specific cache
+    clearProxyCache() {
+        try {
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('magento_proxy_cache_') || key.startsWith('magento_cache_')) {
+                    localStorage.removeItem(key);
+                }
+            });
+            console.log('🧹 Proxy connection cache cleared');
+        } catch (error) {
+            console.error('Error clearing proxy cache:', error);
+        }
+    }
+    
+    // Save current configuration to localStorage
+    saveCurrentConfiguration() {
+        try {
+            const config = {
+                directConnectionEnabled: this.directConnectionEnabled,
+                baseURL: this.baseURL,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('magento_service_config', JSON.stringify(config));
+        } catch (error) {
+            console.error('Error saving configuration:', error);
+        }
+    }
+    
+    // Get service status and metrics
+    getServiceStatus() {
+        return {
+            mode: this.directConnectionEnabled ? 'Direct' : 'Proxy',
+            baseURL: this.baseURL,
+            directClientInitialized: directMagentoClient.initialized,
+            hasAccessToken: !!this.magentoSettings?.accessToken,
+            timestamp: new Date().toISOString()
+        };
     }
 
     // Authentication
@@ -319,6 +464,69 @@ class MagentoService {
 
     getBaseURL() {
         return this.baseURL;
+    }
+
+    // Enhanced service configuration with intelligent switching and cache management
+    updateConfiguration(magentoSettings) {
+        const wasDirectEnabled = this.directConnectionEnabled;
+        this.directConnectionEnabled = magentoSettings.enableDirectConnection;
+        this.magentoSettings = magentoSettings;
+        
+        // If switching from direct to proxy, clear direct connection cache
+        if (wasDirectEnabled && !this.directConnectionEnabled) {
+            this.clearDirectCache();
+            console.log('🧹 Cleared direct connection cache, switching to proxy');
+            toast.info('Switched to backend proxy - cache cleared');
+        }
+        
+        // If enabling direct connection
+        if (this.directConnectionEnabled && magentoSettings) {
+            try {
+                directMagentoClient.initialize(magentoSettings);
+                
+                // Clear proxy cache when switching to direct
+                if (!wasDirectEnabled) {
+                    this.clearProxyCache();
+                    console.log('🧹 Cleared proxy cache, switching to direct connection');
+                }
+                
+                console.log('✅ Direct Magento client reconfigured');
+                toast.success('🚀 Direct connection to Magento enabled!');
+            } catch (error) {
+                console.error('❌ Failed to reconfigure direct client:', error);
+                this.directConnectionEnabled = false;
+                toast.error('Failed to enable direct connection: ' + error.message);
+            }
+        } else if (!this.directConnectionEnabled) {
+            console.log('📡 Using backend proxy for Magento API');
+            if (wasDirectEnabled) {
+                toast.success('🔄 Switched to backend proxy');
+            } else {
+                toast.info('📡 Using backend proxy for Magento API');
+            }
+        }
+        
+        // Update localStorage with current configuration
+        this.saveCurrentConfiguration();
+    }
+
+    // Test connection based on current configuration
+    async testConnection() {
+        if (this.directConnectionEnabled && directMagentoClient.initialized) {
+            return await directMagentoClient.testConnection();
+        } else {
+            // Test proxy connection
+            try {
+                const response = await this.get('/store/storeConfigs');
+                return {
+                    success: true,
+                    data: response.data,
+                    message: 'Backend proxy connection successful'
+                };
+            } catch (error) {
+                throw new Error(`Proxy connection test failed: ${error.message}`);
+            }
+        }
     }
 
     // Error Handler

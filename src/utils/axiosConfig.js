@@ -1,4 +1,5 @@
 import axios from 'axios';
+import directMagentoClient from '../services/directMagentoClient';
 
 // Create axios instance factory with default config
 const createAxiosInstance = (baseURL) => {
@@ -79,17 +80,23 @@ const createAxiosInstance = (baseURL) => {
 let magentoInstance = null;
 let cegidInstance = null;
 
-export const initializeServices = (settings) => {
-    if (settings.magentoUrl) {
-        // Ensure the Magento URL is properly formatted
-        const magentoBaseUrl = settings.magentoUrl.endsWith('/') 
-            ? settings.magentoUrl.slice(0, -1) 
-            : settings.magentoUrl;
-        magentoInstance = createAxiosInstance(magentoBaseUrl);
-    }
-    if (settings.cegidUrl) {
-        cegidInstance = createAxiosInstance(settings.cegidUrl);
-    }
+export const initializeServices = (settings) = > {
+    if (settings.directMagento && settings.directMagento.enableDirectConnection) {
+        console.log('🔄 Direct Magento connection enabled, initializing direct client...');
+        directMagentoClient.initialize(settings.directMagento);
+    } else {
+        console.log('Using Proxy Magento Connection');
+        if (settings.magentoUrl) {
+            // Ensure the Magento URL is properly formatted
+            const magentoBaseUrl = settings.magentoUrl.endsWith('/') 
+                ? settings.magentoUrl.slice(0, -1) 
+                : settings.magentoUrl;
+            magentoInstance = createAxiosInstance(magentoBaseUrl);
+        }
+        if (settings.cegidUrl) {
+            cegidInstance = createAxiosInstance(settings.cegidUrl);
+        }
+    }
 };
 
 // Utility functions for Magento service

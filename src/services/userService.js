@@ -105,67 +105,91 @@ export const saveUserSettings = async (userId, settings) => {
     }
 };
 
-// Enhanced applyUserPreferences function
+// Enhanced applyUserPreferences function with API service integration
 export const applyUserPreferences = (data, contexts = {}) => {
-    if (!data?.preferences) return;
+  if (!data?.preferences) return;
 
-    const { setLanguage, setTheme, setFontSize } = contexts;
-    const prefs = data.preferences;
+  const { setLanguage, setTheme, setFontSize } = contexts;
+  const prefs = data.preferences;
 
-    try {
-        // Apply language settings
-        if (prefs.language && setLanguage) {
-            setLanguage(prefs.language);
-            const langConfig = languages[prefs.language];
-            if (langConfig) {
-                document.documentElement.setAttribute('lang', langConfig.code);
-                document.documentElement.setAttribute('dir', langConfig.dir);
-            }
-        }
-
-        // Apply theme settings
-        if (prefs.theme && setTheme) {
-            let themeToApply = prefs.theme;
-
-            // Handle system theme preference
-            if (prefs.theme === 'system') {
-                themeToApply = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            }
-
-            setTheme(themeToApply);
-            localStorage.setItem('themeMode', themeToApply);
-        }
-
-        // Apply font size settings
-        if (prefs.fontSize && setFontSize) {
-            setFontSize(prefs.fontSize);
-            localStorage.setItem('fontSize', prefs.fontSize);
-        }
-
-        // Apply accessibility settings
-        if (prefs.highContrast) {
-            document.documentElement.classList.add('high-contrast');
-        } else {
-            document.documentElement.classList.remove('high-contrast');
-        }
-
-        if (prefs.largeText) {
-            document.documentElement.classList.add('large-text');
-        } else {
-            document.documentElement.classList.remove('large-text');
-        }
-
-        // Apply animation preferences
-        if (!prefs.animations) {
-            document.documentElement.classList.add('no-animations');
-        } else {
-            document.documentElement.classList.remove('no-animations');
-        }
-
-        console.log('User preferences applied successfully:', prefs);
-    } catch (error) {
-        console.error('Error applying user preferences:', error);
+  try {
+    // Apply language settings
+    if (prefs.language && setLanguage) {
+      setLanguage(prefs.language);
+      const langConfig = languages[prefs.language];
+      if (langConfig) {
+        document.documentElement.setAttribute('lang', langConfig.code);
+        document.documentElement.setAttribute('dir', langConfig.dir);
+      }
     }
+
+    // Apply theme settings
+    if (prefs.theme && setTheme) {
+      let themeToApply = prefs.theme;
+
+      // Handle system theme preference
+      if (prefs.theme === 'system') {
+        themeToApply = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+
+      setTheme(themeToApply);
+      localStorage.setItem('themeMode', themeToApply);
+    }
+
+    // Apply font size settings
+    if (prefs.fontSize && setFontSize) {
+      setFontSize(prefs.fontSize);
+      localStorage.setItem('fontSize', prefs.fontSize);
+    }
+
+    // Apply accessibility settings
+    if (prefs.highContrast) {
+      document.documentElement.classList.add('high-contrast');
+    } else {
+      document.documentElement.classList.remove('high-contrast');
+    }
+
+    if (prefs.largeText) {
+      document.documentElement.classList.add('large-text');
+    } else {
+      document.documentElement.classList.remove('large-text');
+    }
+
+    // Apply animation preferences
+    if (!prefs.animations) {
+      document.documentElement.classList.add('no-animations');
+    } else {
+      document.documentElement.classList.remove('no-animations');
+    }
+
+    // Update API services with new settings
+    updateApiServicesSettings(data.apiSettings);
+
+    console.log('User preferences applied successfully:', prefs);
+  } catch (error) {
+    console.error('Error applying user preferences:', error);
+  }
+};
+
+// Helper function to update API services with new settings
+const updateApiServicesSettings = (apiSettings) => {
+  if (!apiSettings) return;
+  
+  try {
+    // Dynamically import and update services
+    import('../services/unifiedMagentoService').then(({ default: unifiedMagentoService }) => {
+      if (apiSettings.magento) {
+        unifiedMagentoService.initializeMagento(apiSettings.magento);
+      }
+    }).catch(error => {
+      console.warn('Failed to update Magento service settings:', error);
+    });
+    
+    // Update other services as needed
+    console.log('API services updated with new settings');
+  } catch (error) {
+    console.error('Error updating API services:', error);
+  }
 };
 
 // Function to get user profile data from Firebase

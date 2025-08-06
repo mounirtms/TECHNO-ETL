@@ -1,6 +1,6 @@
  
-import axios from 'axios';
-import magentoService from './magentoService';
+import BaseApiService from './BaseApiService';
+import unifiedMagentoService from './unifiedMagentoService';
 import { toast } from 'react-toastify';
 
 // Import local data
@@ -9,7 +9,7 @@ import productsData from '../assets/data/products.json';
 import ordersData from '../assets/data/orders.json';
 import invoicesData from '../assets/data/invoices.json';
 import categoryData from '../assets/data/category.json';
-import cmsPagesData from '../assets/data/cmsPages.json'; // Import local CMS pages data
+import cmsPagesData from '../assets/data/cmsPages.json';
 
 const API_URL = import.meta.env.VITE_MAGENTO_API_URL;
 
@@ -105,20 +105,26 @@ const formatResponse = (response, mockDataKey) => {
   return response;
 };
 
-class MagentoApi {
+class MagentoApi extends BaseApiService {
   constructor() {
+    super({
+      cacheEnabled: true,
+      cacheDuration: 5 * 60 * 1000,
+      maxCacheSize: 150,
+      retryAttempts: 2,
+      retryDelay: 1000
+    });
+    
     this.baseURL = API_URL;
-    // Initialize cache
-    this.cache = new Map();
-    this.CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+    this.unifiedService = unifiedMagentoService;
   }
 
   // Get product media gallery by SKU (uses backend proxy)
   async getProductMedia(sku) {
     try {
-      // Use magentoService to ensure proxy and token usage
-      const response = await magentoService.get(`/products/${sku}/media`);
-      // magentoService returns { data: ... }
+      // Use unifiedMagentoService to ensure proxy and token usage
+      const response = await unifiedMagentoService.get(`/products/${sku}/media`);
+      // unifiedMagentoService returns { data: ... }
       return response?.data || [];
     } catch (error) {
       console.error('Failed to fetch product media:', error);
@@ -130,7 +136,7 @@ class MagentoApi {
   async createProduct(productData) {
     try {
       const payload = { product: productData };
-      const response = await magentoService.post('/products', payload);
+      const response = await unifiedMagentoService.post('/products', payload);
       // Clear cache after creating a product to ensure lists are updated
       this.clearCache();
       return response.data;
@@ -155,7 +161,7 @@ class MagentoApi {
       try {
         // We don't use this.createProduct here to avoid the double toast on error
         const payload = { product: productData };
-        const createdProduct = await magentoService.post('/products', payload);
+        const createdProduct = await unifiedMagentoService.post('/products', payload);
         results.success.push(createdProduct.data);
         toast.update(toastId, { render: `Successfully created ${productData.sku}`, type: 'success', isLoading: false, autoClose: 5000 });
       } catch (error) {
@@ -176,72 +182,43 @@ class MagentoApi {
       throw new Error('Base URL cannot be empty');
     }
     this.baseURL = newBaseURL;
-    magentoService.setBaseURL(newBaseURL);
+    // Note: unifiedMagentoService doesn't expose setBaseURL method
   }
 
   getBaseURL() {
     return this.baseURL;
   }
 
+  // Override buildSearchCriteria to use BaseApiService parameter validation
   buildSearchCriteria(params = {}) {
-    const {
-      pageSize = DEFAULT_PARAMS.pageSize,
-      currentPage = DEFAULT_PARAMS.currentPage,
-      sortOrders = DEFAULT_PARAMS.sortOrders,
-      filterGroups = []
-    } = params;
-
     const searchCriteria = {
-      'searchCriteria[pageSize]': pageSize,
-      'searchCriteria[currentPage]': currentPage
+      pageSize: params.pageSize || DEFAULT_PARAMS.pageSize,
+      currentPage: params.currentPage || DEFAULT_PARAMS.currentPage,
+      sortOrders: params.sortOrders || DEFAULT_PARAMS.sortOrders,
+      filterGroups: params.filterGroups || []
     };
-
-    // Add sort orders
-    sortOrders.forEach((sort, index) => {
-      searchCriteria[`searchCriteria[sortOrders][${index}][field]`] = sort.field;
-      searchCriteria[`searchCriteria[sortOrders][${index}][direction]`] = sort.direction;
-    });
-
-    // Add filter groups
-    filterGroups.forEach((group, groupIndex) => {
-      group.filters.forEach((filter, filterIndex) => {
-        searchCriteria[`searchCriteria[filterGroups][${groupIndex}][filters][${filterIndex}][field]`] = filter.field;
-        searchCriteria[`searchCriteria[filterGroups][${groupIndex}][filters][${filterIndex}][value]`] = filter.value;
-        searchCriteria[`searchCriteria[filterGroups][${groupIndex}][filters][${filterIndex}][condition_type]`] = filter.conditionType || 'eq';
-      });
-    });
-
-    return searchCriteria;
+    
+    // Use parent's parameter validation and flattening
+    return this.validateAndFlattenParams({ searchCriteria, fieldName: params.fieldName });
   }
 
-  // Cache management
+  // Use parent's cache methods with legacy compatibility
   getCacheKey(endpoint, params) {
-    return `${endpoint}:${JSON.stringify(params)}`;
+    return super._getCacheKey('get', endpoint, params);
   }
 
   getCachedData(key) {
-    const cached = this.cache.get(key);
-    if (cached && (Date.now() - cached.timestamp) < this.CACHE_DURATION) {
-      return cached.data;
-    }
-    return null;
+    return super._getCachedResponse(key);
   }
 
   setCachedData(key, data) {
-    this.cache.set(key, {
-      data,
-      timestamp: Date.now()
-    });
+    return super._setCachedResponse(key, data);
   }
 
-  clearCache() {
-    this.cache.clear();
-  }
-
-  // API Methods with error handling and caching
+  // API Methods with error handling and caching - using unified service
   async get(endpoint, config = {}) {
     try { 
-      const response = await magentoService.get(endpoint, config);
+      const response = await unifiedMagentoService.get(endpoint, config);
       return response;
     } catch (error) {
       // If there's an error and we have local data available, use it
@@ -255,7 +232,7 @@ class MagentoApi {
 
   async post(endpoint, data = {}, config = {}) {
     try {
-      const response = await magentoService.post(endpoint, data, config);
+      const response = await unifiedMagentoService.post(endpoint, data, config);
       return response;
     } catch (error) {
       throw error;
@@ -264,7 +241,7 @@ class MagentoApi {
 
   async put(endpoint, data = {}, config = {}) {
     try {
-      const response = await magentoService.put(endpoint, data, config);
+      const response = await unifiedMagentoService.put(endpoint, data, config);
       return response;
     } catch (error) {
       throw error;
@@ -273,7 +250,7 @@ class MagentoApi {
 
   async delete(endpoint, config = {}) {
     try {
-      const response = await magentoService.delete(endpoint, config);
+      const response = await unifiedMagentoService.delete(endpoint, config);
       return response;
     } catch (error) {
       throw error;

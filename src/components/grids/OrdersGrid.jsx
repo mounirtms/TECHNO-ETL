@@ -37,61 +37,7 @@ import { useTranslation } from 'react-i18next';
 
 // Mock order data
 const mockOrders = [
-  {
-    id: 'ORD-001',
-    customerName: 'John Smith',
-    customerEmail: 'john.smith@example.com',
-    status: 'pending',
-    total: '$245.99',
-    items: 3,
-    date: '2024-01-15',
-    shippingAddress: '123 Main St, New York, NY',
-    paymentMethod: 'Credit Card'
-  },
-  {
-    id: 'ORD-002',
-    customerName: 'Sarah Johnson',
-    customerEmail: 'sarah.j@example.com',
-    status: 'shipped',
-    total: '$189.50',
-    items: 2,
-    date: '2024-01-14',
-    shippingAddress: '456 Oak Ave, Los Angeles, CA',
-    paymentMethod: 'PayPal'
-  },
-  {
-    id: 'ORD-003',
-    customerName: 'Michael Brown',
-    customerEmail: 'mike.brown@example.com',
-    status: 'delivered',
-    total: '$567.25',
-    items: 5,
-    date: '2024-01-13',
-    shippingAddress: '789 Pine St, Chicago, IL',
-    paymentMethod: 'Credit Card'
-  },
-  {
-    id: 'ORD-004',
-    customerName: 'Emily Davis',
-    customerEmail: 'emily.d@example.com',
-    status: 'pending',
-    total: '$123.75',
-    items: 1,
-    date: '2024-01-16',
-    shippingAddress: '321 Elm St, Houston, TX',
-    paymentMethod: 'Bank Transfer'
-  },
-  {
-    id: 'ORD-005',
-    customerName: 'David Wilson',
-    customerEmail: 'david.w@example.com',
-    status: 'processing',
-    total: '$89.99',
-    items: 2,
-    date: '2024-01-15',
-    shippingAddress: '654 Maple Dr, Phoenix, AZ',
-    paymentMethod: 'Credit Card'
-  }
+
 ];
 
 const getStatusColor = (status) => {

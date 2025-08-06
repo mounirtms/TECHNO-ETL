@@ -4,6 +4,40 @@ import { alpha } from '@mui/material/styles';
 
 const ThemeContext = createContext();
 
+// Advanced theme customization options
+const themePresets = {
+  techno: {
+    primary: { main: '#ff5501', light: '#ff7733', dark: '#cc4400' },
+    secondary: { main: '#26A69A', light: '#51b7ae', dark: '#1a746b' }
+  },
+  blue: {
+    primary: { main: '#1976d2', light: '#42a5f5', dark: '#1565c0' },
+    secondary: { main: '#dc004e', light: '#ff5983', dark: '#9a0036' }
+  },
+  green: {
+    primary: { main: '#388e3c', light: '#66bb6a', dark: '#2e7d32' },
+    secondary: { main: '#f57c00', light: '#ffb74d', dark: '#ef6c00' }
+  },
+  purple: {
+    primary: { main: '#7b1fa2', light: '#ba68c8', dark: '#6a1b9a' },
+    secondary: { main: '#00acc1', light: '#4dd0e1', dark: '#00838f' }
+  }
+};
+
+// Density configurations
+const densityConfigs = {
+  compact: { spacing: 6, borderRadius: 6, typography: { body1: { fontSize: '0.8rem' } } },
+  standard: { spacing: 8, borderRadius: 8, typography: { body1: { fontSize: '0.875rem' } } },
+  comfortable: { spacing: 12, borderRadius: 12, typography: { body1: { fontSize: '1rem' } } }
+};
+
+// Font size configurations
+const fontSizeConfigs = {
+  small: { fontSize: 12, htmlFontSize: 14 },
+  medium: { fontSize: 14, htmlFontSize: 16 },
+  large: { fontSize: 16, htmlFontSize: 18 }
+};
+
 const lightPalette = {
   primary: {
     main: '#ff5501',
@@ -72,22 +106,47 @@ const darkPalette = {
   }
 };
 
-const createCustomTheme = (mode) => {
-  const palette = mode === 'dark' ? darkPalette : lightPalette;
+const createCustomTheme = (mode, colorPreset = 'techno', density = 'standard', fontSize = 'medium', customizations = {}) => {
+  let palette = mode === 'dark' ? darkPalette : lightPalette;
+  
+  // Apply color preset if different from default
+  if (colorPreset !== 'techno' && themePresets[colorPreset]) {
+    palette = {
+      ...palette,
+      primary: themePresets[colorPreset].primary,
+      secondary: themePresets[colorPreset].secondary,
+    };
+  }
+  
+  // Apply custom color overrides
+  if (customizations.colors) {
+    palette = {
+      ...palette,
+      ...customizations.colors,
+    };
+  }
+  
+  const densityConfig = densityConfigs[density];
+  const fontConfig = fontSizeConfigs[fontSize];
   
   return createTheme({
     palette: {
       mode,
       ...palette,
     },
+    spacing: densityConfig.spacing,
     typography: {
       fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+      fontSize: fontConfig.fontSize,
+      htmlFontSize: fontConfig.htmlFontSize,
       h1: { fontWeight: 600 },
       h2: { fontWeight: 600 },
       h3: { fontWeight: 600 },
       h4: { fontWeight: 600 },
       h5: { fontWeight: 600 },
       h6: { fontWeight: 600 },
+      ...densityConfig.typography,
+      ...customizations.typography,
     },
     components: {
       MuiDrawer: {
@@ -214,20 +273,49 @@ export const ThemeProvider = ({ children }) => {
   const [mode, setMode] = useState(() => {
     const settings = getUnifiedSettings();
     if (settings?.theme && settings.theme !== 'system') {
+      console.log('🎨 ThemeContext: Loading theme from unified settings:', settings.theme);
       return settings.theme;
     }
 
     // Use system preference as default
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      console.log('🎨 ThemeContext: Using system dark theme');
       return 'dark';
     }
 
+    console.log('🎨 ThemeContext: Using default light theme');
     return 'light';
   });
 
   const [fontSize, setFontSize] = useState(() => {
     const settings = getUnifiedSettings();
     return settings?.fontSize || 'medium';
+  });
+
+  // Advanced theme customization states
+  const [colorPreset, setColorPreset] = useState(() => {
+    const settings = getUnifiedSettings();
+    return settings?.colorPreset || 'techno';
+  });
+
+  const [density, setDensity] = useState(() => {
+    const settings = getUnifiedSettings();
+    return settings?.density || 'standard';
+  });
+
+  const [customizations, setCustomizations] = useState(() => {
+    const settings = getUnifiedSettings();
+    return settings?.customizations || {};
+  });
+
+  const [animations, setAnimations] = useState(() => {
+    const settings = getUnifiedSettings();
+    return settings?.animations !== false;
+  });
+
+  const [highContrast, setHighContrast] = useState(() => {
+    const settings = getUnifiedSettings();
+    return settings?.highContrast === true;
   });
 
   // Unified settings save function
@@ -250,6 +338,7 @@ export const ThemeProvider = ({ children }) => {
       const shouldFollowSystem = !settings?.theme || settings.theme === 'system';
 
       if (shouldFollowSystem) {
+        console.log('🎨 ThemeContext: System theme changed to:', e.matches ? 'dark' : 'light');
         setMode(e.matches ? 'dark' : 'light');
       }
     };
@@ -258,17 +347,41 @@ export const ThemeProvider = ({ children }) => {
     return () => mediaQuery.removeEventListener('change', handleSystemThemeChange);
   }, []);
 
-  // Save to unified settings when theme or fontSize changes
+  // Save to unified settings when any theme property changes
   useEffect(() => {
-    saveUnifiedSettings({ theme: mode });
-  }, [mode, saveUnifiedSettings]);
+    const currentSettings = {
+      theme: mode, 
+      fontSize, 
+      colorPreset, 
+      density, 
+      animations, 
+      highContrast,
+      customizations 
+    };
+    
+    console.log('🎨 ThemeContext: Saving unified settings:', currentSettings);
+    saveUnifiedSettings(currentSettings);
+  }, [mode, fontSize, colorPreset, density, animations, highContrast, customizations, saveUnifiedSettings]);
 
+  // Apply accessibility settings to document
   useEffect(() => {
-    saveUnifiedSettings({ fontSize });
-  }, [fontSize, saveUnifiedSettings]);
+    const root = document.documentElement;
+    
+    if (highContrast) {
+      root.classList.add('high-contrast');
+    } else {
+      root.classList.remove('high-contrast');
+    }
+    
+    if (!animations) {
+      root.classList.add('no-animations');
+    } else {
+      root.classList.remove('no-animations');
+    }
+  }, [highContrast, animations]);
 
   // Memoized theme creation to prevent unnecessary re-renders
-  const theme = useMemo(() => createCustomTheme(mode), [mode]);
+  const theme = useMemo(() => createCustomTheme(mode, colorPreset, density, fontSize, customizations), [mode, colorPreset, density, fontSize, customizations]);
 
   // Enhanced toggle function that respects user preferences
   const toggleTheme = useCallback(() => {
@@ -288,10 +401,48 @@ export const ThemeProvider = ({ children }) => {
     }
   }, []);
 
+  // Initialize theme from unified settings on app start
+  const initializeTheme = useCallback(() => {
+    const settings = getUnifiedSettings();
+    if (settings) {
+      console.log('Initializing theme from unified settings:', settings);
+      
+      // Apply all theme settings from unified storage
+      if (settings.theme && settings.theme !== mode) {
+        if (settings.theme === 'system') {
+          const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          setMode(systemPrefersDark ? 'dark' : 'light');
+        } else {
+          setMode(settings.theme);
+        }
+      }
+      
+      if (settings.fontSize && settings.fontSize !== fontSize) {
+        setFontSize(settings.fontSize);
+      }
+      
+      if (settings.colorPreset && settings.colorPreset !== colorPreset) {
+        setColorPreset(settings.colorPreset);
+      }
+      
+      if (settings.density && settings.density !== density) {
+        setDensity(settings.density);
+      }
+      
+      if (settings.animations !== undefined && settings.animations !== animations) {
+        setAnimations(settings.animations);
+      }
+      
+      if (settings.highContrast !== undefined && settings.highContrast !== highContrast) {
+        setHighContrast(settings.highContrast);
+      }
+    }
+  }, [mode, fontSize, colorPreset, density, animations, highContrast]);
+
   // Apply user settings from login
   const applyUserThemeSettings = useCallback((userSettings) => {
     if (userSettings?.preferences) {
-      const { theme, fontSize: userFontSize } = userSettings.preferences;
+      const { theme, fontSize: userFontSize, colorPreset: userColorPreset, density: userDensity, animations: userAnimations, highContrast: userHighContrast } = userSettings.preferences;
 
       if (theme) {
         setThemeMode(theme);
@@ -299,6 +450,22 @@ export const ThemeProvider = ({ children }) => {
 
       if (userFontSize) {
         setFontSize(userFontSize);
+      }
+      
+      if (userColorPreset) {
+        setColorPreset(userColorPreset);
+      }
+      
+      if (userDensity) {
+        setDensity(userDensity);
+      }
+      
+      if (userAnimations !== undefined) {
+        setAnimations(userAnimations);
+      }
+      
+      if (userHighContrast !== undefined) {
+        setHighContrast(userHighContrast);
       }
     }
   }, [setThemeMode]);
@@ -308,16 +475,73 @@ export const ThemeProvider = ({ children }) => {
     setFontSize(newFontSize);
   }, []);
 
+  // Memoized setter functions
+  const memoizedSetColorPreset = useCallback((newPreset) => {
+    if (themePresets[newPreset]) {
+      setColorPreset(newPreset);
+    }
+  }, []);
+
+  const memoizedSetDensity = useCallback((newDensity) => {
+    if (['compact', 'standard', 'comfortable'].includes(newDensity)) {
+      setDensity(newDensity);
+    }
+  }, []);
+
+  const memoizedSetAnimations = useCallback((enabled) => {
+    setAnimations(enabled);
+  }, []);
+
+  const memoizedSetHighContrast = useCallback((enabled) => {
+    setHighContrast(enabled);
+  }, []);
+
+  const memoizedSetCustomizations = useCallback((newCustomizations) => {
+    setCustomizations(prev => ({ ...prev, ...newCustomizations }));
+  }, []);
+
   // Memoized context value to prevent unnecessary re-renders
   const value = useMemo(() => ({
+    // Theme mode
     mode,
     toggleTheme,
     setThemeMode,
     applyUserThemeSettings,
     isDark: mode === 'dark',
+    
+    // Font size
     fontSize,
-    setFontSize: memoizedSetFontSize
-  }), [mode, toggleTheme, setThemeMode, applyUserThemeSettings, fontSize, memoizedSetFontSize]);
+    setFontSize: memoizedSetFontSize,
+    
+    // Color presets
+    colorPreset,
+    setColorPreset: memoizedSetColorPreset,
+    themePresets,
+    
+    // Density
+    density,
+    setDensity: memoizedSetDensity,
+    
+    // Animations
+    animations,
+    setAnimations: memoizedSetAnimations,
+    
+    // High contrast
+    highContrast,
+    setHighContrast: memoizedSetHighContrast,
+    
+    // Customizations
+    customizations,
+    setCustomizations: memoizedSetCustomizations
+  }), [
+    mode, toggleTheme, setThemeMode, applyUserThemeSettings,
+    fontSize, memoizedSetFontSize,
+    colorPreset, memoizedSetColorPreset,
+    density, memoizedSetDensity,
+    animations, memoizedSetAnimations,
+    highContrast, memoizedSetHighContrast,
+    customizations, memoizedSetCustomizations
+  ]);
 
   return (
     <ThemeContext.Provider value={value}>

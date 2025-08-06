@@ -11,7 +11,6 @@ import {
     Typography,
 } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { styled } from '@mui/material/styles';
 import { useAuth } from '../../contexts/AuthContext';
@@ -60,10 +59,6 @@ const UserMenu = () => {
         handleClose();
     };
 
-    const handleOpenSettings = () => {
-        openTab('Settings');
-        handleClose();
-    };
 
     const handleLogout = async () => {
         try {
@@ -114,13 +109,6 @@ const UserMenu = () => {
                         <AccountCircleIcon fontSize="small" />
                     </ListItemIcon>
                     <ListItemText primary={translate('common.profile')} />
-                </MenuItem>
-
-                <MenuItem onClick={handleOpenSettings}>
-                    <ListItemIcon>
-                        <SettingsIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText primary={translate('common.settings')} />
                 </MenuItem>
 
                 <Divider />

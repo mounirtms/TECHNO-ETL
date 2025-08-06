@@ -7,7 +7,7 @@
  * @contact mounir.webdev.tms@gmail.com
  */
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useDataFetching } from '../../hooks/useStandardErrorHandling.js';
 import {
   Container,
@@ -63,15 +63,19 @@ import {
   LocalFireDepartment as FireIcon
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
+import { useCustomTheme } from '../../contexts/ThemeContext';
+import { useSettings } from '../../contexts/SettingsContext';
 import BugReportForm from './BugReportForm.jsx';
 import BugBountyAdmin from './BugBountyAdmin.jsx';
 import bugBountyService, { BUG_CATEGORIES, BUG_STATUS } from '../../services/bugBountyService.js';
-
 const BugBountyDashboard = () => {
   const theme = useTheme();
+  const { mode, isDark, colorPreset, density, animations } = useCustomTheme();
+  const { settings } = useSettings();
   const [reportFormOpen, setReportFormOpen] = useState(false);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [adminPanelOpen, setAdminPanelOpen] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   // Use standardized error handling for data fetching
   const {
@@ -141,8 +145,13 @@ const BugBountyDashboard = () => {
     }
   }, [refresh]);
 
-  const handleRefresh = useCallback(() => {
-    refresh();
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await refresh();
+    } finally {
+      setTimeout(() => setRefreshing(false), 1000); // Keep spinner for UX
+    }
   }, [refresh]);
 
   // Memoized utility functions for performance

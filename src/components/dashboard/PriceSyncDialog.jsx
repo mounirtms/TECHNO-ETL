@@ -71,7 +71,7 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
       const progressInterval = setInterval(() => {
         setProgress(prev => Math.min(prev + 10, 90));
       }, 500);
-      const response = await axios.post('/api/mdm/prices-sync', priceData);
+      const response = await axios.post('/api/mdm/sync/prices', priceData);
       clearInterval(progressInterval);
       setProgress(100);
       setSyncResults({

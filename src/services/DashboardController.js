@@ -259,27 +259,197 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             setLoading(false);
         }
     }, [startDate, endDate, refreshKey]);
+    
+    // Enhanced progress tracking for stock sync
+    const [syncProgress, setSyncProgress] = useState({ 
+        current: 0, 
+        total: 0, 
+        isActive: false, 
+        completed: false,
+        currentStep: '',
+        sources: [],
+        completedSources: [],
+        errorSources: [],
+        message: ''
+    });
+    
+    const reportsProgress = (completed, total) => parseInt((completed / total) * 100, 10);
 
-   
-    // Sync Stocks from MDM
+    // Enhanced Sync Stocks from MDM with detailed progress tracking
     const syncAllStocks = async () => {
         try {
-            console.log('🔄 Starting stock sync from MDM...');
-            const response = await axios.post('/api/mdm/inventory/sync-all-stocks');
-
-            console.log('✅ Stock sync response:', response.data);
-            toast.success('✅ Stock sync operation completed successfully');
-
+            console.log('🔄 Starting comprehensive stock sync from MDM...');
+            
+            // Initialize progress tracking
+            setSyncProgress({ 
+                current: 0, 
+                total: 4, 
+                isActive: true, 
+                completed: false,
+                currentStep: 'Initializing sync process...',
+                sources: [],
+                completedSources: [],
+                errorSources: [],
+                message: 'Starting comprehensive stock synchronization'
+            });
+            
+            // Step 1: Mark stocks for sync (Local MDM level)
+            setSyncProgress(prev => ({ 
+                ...prev, 
+                current: 0,
+                currentStep: 'Marking stocks for sync',
+                message: 'Preparing stock data for synchronization...'
+            }));
+            
+            await axios.post('/api/mdm/sync/stocks');
+            setSyncProgress(prev => ({ ...prev, current: 1 }));
+            
+            // Step 2: Get all sources
+            setSyncProgress(prev => ({ 
+                ...prev, 
+                current: 1,
+                currentStep: 'Fetching source configurations',
+                message: 'Loading source configurations from MDM...'
+            }));
+            
+            const sourcesResponse = await axios.get('/api/mdm/sources');
+            const sources = sourcesResponse.data?.data || [];
+            
+            setSyncProgress(prev => ({ 
+                ...prev, 
+                current: 2, 
+                sources: sources,
+                message: `Found ${sources.length} sources to synchronize`
+            }));
+            
+            // Step 3: Sync sources using the consolidated endpoint
+            setSyncProgress(prev => ({ 
+                ...prev, 
+                current: 2,
+                currentStep: 'Syncing sources to Magento',
+                message: `Syncing ${sources.length} sources to Magento...`
+            }));
+            
+            // Sync sources sequentially for better progress tracking
+            const completedSources = [];
+            const errorSources = [];
+            
+            for (let i = 0; i < sources.length; i++) {
+                const source = sources[i];
+                try {
+                    setSyncProgress(prev => ({ 
+                        ...prev,
+                        message: `Syncing source ${i + 1}/${sources.length}: ${source.magentoSource || source.code_source}`
+                    }));
+                    
+                    await axios.post('/api/mdm/sync/source', source);
+                    completedSources.push(source.code_source);
+                    
+                    setSyncProgress(prev => ({ 
+                        ...prev,
+                        completedSources: [...completedSources],
+                        message: `Synced ${completedSources.length}/${sources.length} sources`
+                    }));
+                    
+                } catch (error) {
+                    console.error(`Error syncing source ${source.code_source}:`, error);
+                    errorSources.push(source.code_source);
+                    setSyncProgress(prev => ({ 
+                        ...prev,
+                        errorSources: [...errorSources]
+                    }));
+                }
+            }
+            
+            setSyncProgress(prev => ({ 
+                ...prev, 
+                current: 3,
+                completedSources: completedSources,
+                errorSources: errorSources,
+                message: `Sync completed: ${completedSources.length} successful, ${errorSources.length} failed`
+            }));
+            
+            // Step 4: Mark sync as successful
+            setSyncProgress(prev => ({ 
+                ...prev, 
+                current: 3,
+                currentStep: 'Finalizing sync process',
+                message: 'Marking sync as successful...'
+            }));
+            
+            await axios.post('/api/mdm/sync/success');
+            
+            // Complete the sync
+            setSyncProgress(prev => ({ 
+                ...prev, 
+                current: 4,
+                completed: true,
+                isActive: false,
+                currentStep: 'Sync completed successfully',
+                message: `Successfully synchronized ${sources.length} sources to Magento`
+            }));
+            
+            toast.success('🎉 Stock synchronization completed successfully!', {
+                position: 'top-center',
+                autoClose: 3000,
+                hideProgressBar: false
+            });
             // Refresh dashboard data after sync
             setTimeout(() => {
                 fetchDashboardData();
-            }, 2000);
-
-            return response.data;
+                setSyncProgress({ 
+                    current: 0, 
+                    total: 0, 
+                    isActive: false, 
+                    completed: false,
+                    currentStep: '',
+                    sources: [],
+                    completedSources: [],
+                    errorSources: [],
+                    message: ''
+                });
+            }, 3000);
+            
+            return { 
+                success: true, 
+                sourcesSynced: completedSources.length,
+                totalSources: sources.length,
+                failedSources: errorSources.length,
+                completedSources,
+                errorSources
+            };
+            
         } catch (error) {
             console.error('❌ Stock sync error:', error);
             const errorMessage = error.response?.data?.message || error.message || 'Unknown error';
+            
+            // Update progress to show error state
+            setSyncProgress(prev => ({ 
+                ...prev, 
+                isActive: false,
+                completed: false,
+                currentStep: 'Sync failed',
+                message: `Sync failed: ${errorMessage}`,
+                errorSources: prev.sources.map(s => s.code_source)
+            }));
+            
             toast.error(`❌ Failed to sync stocks: ${errorMessage}`);
+            
+            // Reset progress after showing error
+            setTimeout(() => {
+                setSyncProgress({ 
+                    current: 0, 
+                    total: 0, 
+                    isActive: false, 
+                    completed: false,
+                    currentStep: '',
+                    sources: [],
+                    completedSources: [],
+                    errorSources: [],
+                    message: ''
+                });
+            }, 5000);
+            
             throw error;
         }
     };
@@ -318,6 +488,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
         error,
         getPrices,
         syncAllStocks,
-        fetchDashboardData
+        fetchDashboardData,
+        syncProgress
     };
 };

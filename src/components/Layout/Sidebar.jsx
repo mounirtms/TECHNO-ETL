@@ -1,21 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Drawer,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    Tooltip,
     Box,
     useTheme,
     styled
 } from '@mui/material';
 
-import { MENU_ITEMS, DRAWER_WIDTH, COLLAPSED_WIDTH } from './Constants';
+import { DRAWER_WIDTH, COLLAPSED_WIDTH } from './Constants';
 import { useTab } from '../../contexts/TabContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import technoIcon from '../../assets/images/techno.png';
 import logoTechno from '../../assets/images/logo_techno.png';
+import { useAuth } from '../../contexts/AuthContext';
+import TreeMenuNavigation from './TreeMenuNavigation';
+
 
 const StyledDrawer = styled(Drawer, {
     shouldForwardProp: (prop) => !['isRTL'].includes(prop),
@@ -60,37 +58,6 @@ const StyledDrawer = styled(Drawer, {
     },
 }));
 
-const StyledListItem = styled(ListItem, {
-    shouldForwardProp: (prop) => !['isRTL', 'open'].includes(prop),
-})(({ theme, isRTL, open }) => ({
-    minHeight: 40,
-    padding: theme.spacing(1),
-    marginBottom: theme.spacing(0.25),
-    marginTop: theme.spacing(0.25),
-    marginRight: isRTL ? theme.spacing(0.5) : theme.spacing(1),
-    marginLeft: isRTL ? theme.spacing(1) : theme.spacing(0.5),
-    borderRadius: isRTL ? '16px 0 0 16px' : '0 16px 16px 0',
-    transition: theme.transitions.create(['background-color', 'color'], {
-        duration: theme.transitions.duration.shorter,
-    }),
-    '&:hover': {
-        backgroundColor: theme.palette.action.hover,
-        color: theme.palette.primary.main,
-        '& .MuiListItemIcon-root': {
-            color: theme.palette.primary.main,
-        },
-    },
-    '&.Mui-selected': {
-        backgroundColor: `${theme.palette.primary.main}12`,
-        color: theme.palette.primary.main,
-        '&:hover': {
-            backgroundColor: `${theme.palette.primary.main}20`,
-        },
-        '& .MuiListItemIcon-root': {
-            color: theme.palette.primary.main,
-        },
-    },
-}));
 
 const LogoContainer = styled(Box)(({ theme }) => ({
     height: 64,
@@ -105,6 +72,7 @@ const Sidebar = ({ open, toggleDrawer, isRTL = false }) => {
     const theme = useTheme();
     const { activeTab, openTab } = useTab();
     const { translate } = useLanguage();
+    const { currentUser } = useAuth();
 
     const handleTabClick = (tabId) => {
         openTab(tabId);
@@ -128,39 +96,15 @@ const Sidebar = ({ open, toggleDrawer, isRTL = false }) => {
                     }}
                 />
             </LogoContainer>
-            <List sx={{ mt: 1 }}>
-                {MENU_ITEMS.map((item) => (
-                    (!item.hidden && !!item.licensed) && (
-                        <Tooltip
-                            key={item.id}
-                            title={!open ? translate(item.labelKey) : ''}
-                            placement={isRTL ? "left" : "right"}
-                        >
-                            <StyledListItem
-                                component="div"
-                                selected={activeTab === item.id}
-                                onClick={() => handleTabClick(item.id)}
-                                isRTL={isRTL}
-                                open={open}
-                                sx={{ cursor: 'pointer' }}
-                            >
-                                <ListItemIcon>
-                                    <item.icon />
-                                </ListItemIcon>
-                                <ListItemText
-                                    primary={translate(item.labelKey)}
-                                    sx={{
-                                        opacity: open ? 1 : 0,
-                                        transition: theme.transitions.create('opacity'),
-                                        marginLeft: isRTL ? 0 : 'inherit',
-                                        marginRight: isRTL ? 'inherit' : 0,
-                                    }}
-                                />
-                            </StyledListItem>
-                        </Tooltip>
-                    )
-                ))}
-            </List>
+            {/* Tree Menu Navigation */}
+            <TreeMenuNavigation
+                open={open}
+                isRTL={isRTL}
+                activeTab={activeTab}
+                onTabClick={handleTabClick}
+                currentUser={currentUser}
+                translate={translate}
+            />
         </StyledDrawer>
     );
 };

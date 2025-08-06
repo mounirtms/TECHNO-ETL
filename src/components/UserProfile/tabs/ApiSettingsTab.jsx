@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
     Box,
     TextField,
@@ -12,25 +12,66 @@ import {
     Typography,
     Divider,
     Alert,
-    CircularProgress
+    CircularProgress,
+    FormControlLabel,
+    Switch,
+    Card,
+    CardContent,
+    Paper,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    Chip,
+    Stack,
+    Tooltip,
+    IconButton
 } from '@mui/material';
+import {
+    ExpandMore,
+    Settings,
+    Api,
+    Storage as Database,
+    Sync,
+    CheckCircle,
+    Error,
+    Info,
+    Warning,
+    Refresh,
+    Security,
+    CloudSync
+} from '@mui/icons-material';
 import axios from 'axios';
 import { useProfileController } from '../ProfileController';
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { toast } from 'react-toastify';
 import cegidApi from '../../../services/cegidService';
-import magentoApi from '../../../services/magentoService';
+import magentoService from '../../../services/magentoService';
+import directMagentoClient from '../../../services/directMagentoClient';
 
+/**
+ * Professional API Settings Management Component
+ * Provides unified configuration for all API endpoints and database connections
+ */
 const ApiSettingsTab = () => {
     const { userData, updateUserData, loading } = useProfileController();
-    const [testingMagentoConnection, setTestingMagentoConnection] = useState(false);
-    const [testingCegidConnection, setTestingCegidConnection] = useState(false);
-    const [testingCegidDbConnection, setTestingCegidDbConnection] = useState(false);
-    const [testingMdmDbConnection, setTestingMdmDbConnection] = useState(false);
-
     const { translate } = useLanguage();
+    
+    // Connection test states
+    const [connectionTests, setConnectionTests] = useState({
+        magento: { testing: false, status: null, lastTest: null },
+        cegid: { testing: false, status: null, lastTest: null },
+        cegidDb: { testing: false, status: null, lastTest: null },
+        mdmDb: { testing: false, status: null, lastTest: null }
+    });
+    
+    const [expandedSection, setExpandedSection] = useState('magento');
+    const [isDirty, setIsDirty] = useState(false);
+    // Professional API settings structure with validation and metadata
     const [formData, setFormData] = useState({
         magento: {
+            enabled: true,
+            name: 'Magento API',
+            description: 'E-commerce platform integration',
             url: '',
             username: '',
             password: '',
@@ -39,92 +80,141 @@ const ApiSettingsTab = () => {
             consumerSecret: '',
             accessToken: '',
             accessTokenSecret: '',
+            enableDirectConnection: false,
+            timeout: 30000,
+            retryAttempts: 3,
+            version: '2.4'
         },
         cegid: {
+            enabled: false,
+            name: 'CEGID API',
+            description: 'ERP system integration',
             url: '',
             username: '',
             password: '',
-            database: ''
+            database: '',
+            timeout: 30000,
+            retryAttempts: 3,
+            version: '1.0'
         },
-        DB: {
-            CEGID: {
+        databases: {
+            cegid: {
+                enabled: false,
+                name: 'CEGID Database',
+                description: 'Direct database connection for CEGID',
+                type: 'mssql',
                 server: '',
                 username: '',
                 password: '',
                 database: '',
+                port: 1433,
+                connectionTimeout: 15000,
+                requestTimeout: 30000,
                 options: {
+                    encrypt: true,
                     trustServerCertificate: true,
-                    trustedConnection: true,
                     enableArithAbort: true,
-                    instancename: ''
+                    instanceName: ''
                 }
             },
-            MDM: {
+            mdm: {
+                enabled: false,
+                name: 'MDM Database',
+                description: 'Master Data Management database',
+                type: 'mssql',
                 server: '',
                 username: '',
                 password: '',
                 database: '',
+                port: 1433,
+                connectionTimeout: 15000,
+                requestTimeout: 30000,
                 options: {
+                    encrypt: true,
                     trustServerCertificate: true,
-                    trustedConnection: true,
                     enableArithAbort: true,
-                    instancename: ''
+                    instanceName: ''
                 }
             }
+        },
+        general: {
+            backendServer: '',
+            globalTimeout: 30000,
+            enableLogging: true,
+            enableRetry: true,
+            maxConcurrentRequests: 10
         }
     });
 
-    // Load data only once on mount
-    useEffect(() => {
+    // Professional settings initialization with environment variable support
+    const initializeSettings = useCallback(() => {
         const remoteSettings = userData?.apiSettings;
-        if (remoteSettings) {
-            setFormData({
+        const localApiSettings = JSON.parse(localStorage.getItem('userApiSettings') || '{}');
+        const unifiedSettings = JSON.parse(localStorage.getItem('techno-etl-settings') || '{}');
+        
+        console.log('🔄 Initializing API settings from sources:', { remoteSettings, localApiSettings, unifiedSettings });
+        
+        if (remoteSettings || localApiSettings.magento || unifiedSettings.apiSettings) {
+            setFormData(prevData => ({
+                ...prevData,
                 magento: {
-                    url: remoteSettings?.magento?.url || import.meta.env.VITE_MAGENTO_API_URL || '',
-                    username: remoteSettings?.magento?.username || import.meta.env.VITE_MAGENTO_ADMIN_USERNAME || '',
-                    password: remoteSettings?.magento?.password || import.meta.env.VITE_MAGENTO_ADMIN_PASSWORD || '',
-                    authMode: remoteSettings?.magento?.authMode || 'basic',
-                    consumerKey: remoteSettings?.magento?.consumerKey || import.meta.env.VITE_MAGENTO_CONSUMER_KEY || '',
-                    consumerSecret: remoteSettings?.magento?.consumerSecret || import.meta.env.VITE_MAGENTO_CONSUMER_SECRET || '',
-                    accessToken: remoteSettings?.magento?.accessToken || import.meta.env.VITE_MAGENTO_ACCESS_TOKEN || '',
-                    accessTokenSecret: remoteSettings?.magento?.accessTokenSecret || import.meta.env.VITE_MAGENTO_ACCESS_TOKEN_SECRET || ''
+                    ...prevData.magento,
+                    url: remoteSettings?.magento?.url || localApiSettings?.magento?.url || import.meta.env.VITE_MAGENTO_API_URL || '',
+                    username: remoteSettings?.magento?.username || localApiSettings?.magento?.username || import.meta.env.VITE_MAGENTO_ADMIN_USERNAME || '',
+                    password: remoteSettings?.magento?.password || localApiSettings?.magento?.password || import.meta.env.VITE_MAGENTO_ADMIN_PASSWORD || '',
+                    authMode: remoteSettings?.magento?.authMode || localApiSettings?.magento?.authMode || 'basic',
+                    consumerKey: remoteSettings?.magento?.consumerKey || localApiSettings?.magento?.consumerKey || import.meta.env.VITE_MAGENTO_CONSUMER_KEY || '',
+                    consumerSecret: remoteSettings?.magento?.consumerSecret || localApiSettings?.magento?.consumerSecret || import.meta.env.VITE_MAGENTO_CONSUMER_SECRET || '',
+                    accessToken: remoteSettings?.magento?.accessToken || localApiSettings?.magento?.accessToken || import.meta.env.VITE_MAGENTO_ACCESS_TOKEN || '',
+                    accessTokenSecret: remoteSettings?.magento?.accessTokenSecret || localApiSettings?.magento?.accessTokenSecret || import.meta.env.VITE_MAGENTO_ACCESS_TOKEN_SECRET || '',
+                    enableDirectConnection: remoteSettings?.magento?.enableDirectConnection || localApiSettings?.magento?.enableDirectConnection || unifiedSettings?.enableDirectConnection || false
                 },
                 cegid: {
+                    ...prevData.cegid,
+                    enabled: remoteSettings?.cegid?.enabled || false,
                     url: remoteSettings?.cegid?.url || import.meta.env.VITE_Cegid_API_URL || '',
                     username: remoteSettings?.cegid?.username || import.meta.env.VITE_Cegid_ADMIN_USERNAME || '',
                     password: remoteSettings?.cegid?.password || import.meta.env.VITE_Cegid_ADMIN_PASSWORD || '',
                     database: remoteSettings?.cegid?.database || import.meta.env.VITE_Cegid_ADMIN_DATABASE || ''
                 },
-                DB: {
-                    Backend_Server:remoteSettings?.server ||import.meta.VITE_BACKEND_SERVER,
-                    CEGID: {
-                        server: remoteSettings?.DB?.server || import.meta.env.VITE_SQL_CEGID_SERVER || '',
-                        username: remoteSettings?.DB?.username || import.meta.env.VITE_SQL_CEGID_SERVER_USER || '',
-                        password: remoteSettings?.DB?.password || import.meta.env.VITE_SQL_CEGID_SERVER_PASSWORD || '',
-                        database: remoteSettings?.DB?.database || import.meta.env.VITE_SQL_CEGID_SERVER_DATABASE || '',
+                databases: {
+                    ...prevData.databases,
+                    cegid: {
+                        ...prevData.databases.cegid,
+                        enabled: remoteSettings?.databases?.cegid?.enabled || false,
+                        server: remoteSettings?.databases?.cegid?.server || import.meta.env.VITE_SQL_CEGID_SERVER || '',
+                        username: remoteSettings?.databases?.cegid?.username || import.meta.env.VITE_SQL_CEGID_SERVER_USER || '',
+                        password: remoteSettings?.databases?.cegid?.password || import.meta.env.VITE_SQL_CEGID_SERVER_PASSWORD || '',
+                        database: remoteSettings?.databases?.cegid?.database || import.meta.env.VITE_SQL_CEGID_SERVER_DATABASE || '',
                         options: {
-                            trustServerCertificate: true,
-                            trustedConnection: true,
-                            enableArithAbort: true,
-                            instancename: remoteSettings?.DB?.options?.instancename || import.meta.env.VITE_SQL_CEGID_SERVER_INSTANCE || ''
+                            ...prevData.databases.cegid.options,
+                            instanceName: remoteSettings?.databases?.cegid?.options?.instanceName || import.meta.env.VITE_SQL_CEGID_SERVER_INSTANCE || ''
                         }
                     },
-                    MDM: {
-                        server: remoteSettings?.DB?.server || import.meta.env.VITE_SQL_MDM_SERVER || '',
-                        username: remoteSettings?.DB?.username || import.meta.env.VITE_SQL_MDM_SERVER_USER || '',
-                        password: remoteSettings?.DB?.password || import.meta.env.VITE_SQL_MDM_SERVER_PASSWORD || '',
-                        database: remoteSettings?.DB?.database || import.meta.env.VITE_SQL_MDM_SERVER_DATABASE || '',
+                    mdm: {
+                        ...prevData.databases.mdm,
+                        enabled: remoteSettings?.databases?.mdm?.enabled || false,
+                        server: remoteSettings?.databases?.mdm?.server || import.meta.env.VITE_SQL_MDM_SERVER || '',
+                        username: remoteSettings?.databases?.mdm?.username || import.meta.env.VITE_SQL_MDM_SERVER_USER || '',
+                        password: remoteSettings?.databases?.mdm?.password || import.meta.env.VITE_SQL_MDM_SERVER_PASSWORD || '',
+                        database: remoteSettings?.databases?.mdm?.database || import.meta.env.VITE_SQL_MDM_SERVER_DATABASE || '',
                         options: {
-                            trustServerCertificate: true,
-                            trustedConnection: true,
-                            enableArithAbort: true,
-                            instancename: remoteSettings?.DB?.options?.instancename || import.meta.env.VITE_SQL_MDM_SERVER_INSTANCE || ''
+                            ...prevData.databases.mdm.options,
+                            instanceName: remoteSettings?.databases?.mdm?.options?.instanceName || import.meta.env.VITE_SQL_MDM_SERVER_INSTANCE || ''
                         }
                     }
+                },
+                general: {
+                    ...prevData.general,
+                    backendServer: remoteSettings?.general?.backendServer || import.meta.env.VITE_BACKEND_SERVER || ''
                 }
-            });
+            }));
         }
-    }, []);
+    }, [userData?.apiSettings]);
+    
+    useEffect(() => {
+        initializeSettings();
+    }, [initializeSettings]);
 
     const handleInputChange = (service, field, value) => {
         const updatedFormData = {
@@ -134,34 +224,138 @@ const ApiSettingsTab = () => {
                 [field]: value
             }
         };
+            setFormData(updatedFormData);
+
+            // Toggle fields visibility based on enableDirectConnection
+            if (service === 'magento' && field === 'enableDirectConnection') {
+                if (!value) {
+                    updatedFormData.magento.consumerKey = '';
+                    updatedFormData.magento.consumerSecret = '';
+                    updatedFormData.magento.accessToken = '';
+                    updatedFormData.magento.accessTokenSecret = '';
+                }
+            }
+
+        console.log('🔄 API Setting changed:', { service, field, value });
+
+        // Save to multiple storage locations for persistence
+        try {
+            // 1. Save to userApiSettings (legacy)
+            localStorage.setItem('userApiSettings', JSON.stringify(updatedFormData));
+            
+            // 2. Save to unified settings
+            const unifiedSettings = JSON.parse(localStorage.getItem('techno-etl-settings') || '{}');
+            unifiedSettings.apiSettings = updatedFormData;
+            if (service === 'magento' && field === 'enableDirectConnection') {
+                unifiedSettings.enableDirectConnection = value;
+            }
+            localStorage.setItem('techno-etl-settings', JSON.stringify(unifiedSettings));
+            
+            // 3. Update context
+            updateUserData(updatedFormData, 'apiSettings');
+            
+            // 4. If this is a Magento setting change, update the service configurations
+            if (service === 'magento') {
+                try {
+                    // Update unifiedMagentoService
+                    import('../../../services/unifiedMagentoService').then(({ default: unifiedMagentoService }) => {
+                        unifiedMagentoService.initialize(updatedFormData.magento);
+                        console.log('✅ UnifiedMagentoService updated with new settings');
+                    });
+                    
+                    // Update legacy magentoService
+                    magentoService.updateConfiguration(updatedFormData.magento);
+                } catch (error) {
+                    console.error('Failed to update Magento service configuration:', error);
+                }
+            }
+            
+            console.log('✅ Settings saved to all locations');
+        } catch (error) {
+            console.error('❌ Failed to save settings:', error);
+        }
+    };
+
+    const handleDbInputChange = (dbType, field, value) => {
+        const updatedFormData = {
+            ...formData,
+            DB: {
+                ...formData.DB,
+                [dbType]: {
+                    ...formData.DB[dbType],
+                    [field]: value
+                }
+            }
+        };
         setFormData(updatedFormData);
 
         // Only update local storage
         localStorage.setItem('userApiSettings', JSON.stringify(updatedFormData));
     };
 
+    // Helper function to update connection test state
+    const updateConnectionTest = useCallback((service, updates) => {
+        setConnectionTests(prev => ({
+            ...prev,
+            [service]: {
+                ...prev[service],
+                ...updates
+            }
+        }));
+    }, []);
+
     const handleMagentoBasicAuth = async () => {
         try {
-            setTestingMagentoConnection(true);
-            const token = await magentoApi.login(
-                formData.magento.username,
-                formData.magento.password,
-                formData.magento.url
-            );
-            // Update form data with the received token
+            updateConnectionTest('magento', { testing: true, status: 'testing' });
+            
+            // Validate required fields
+            if (!formData.magento.url || !formData.magento.username || !formData.magento.password) {
+                toast.error('Please fill in all required fields (URL, Username, Password)');
+                return;
+            }
+            
+            let token;
+            
+            // If direct connection is enabled, use direct client
+            if (formData.magento.enableDirectConnection) {
+                console.log('🔄 Using direct connection for login');
+                // Initialize direct client with current settings
+                directMagentoClient.initialize(formData.magento);
+                token = await directMagentoClient.login(
+                    formData.magento.username,
+                    formData.magento.password
+                );
+            } else {
+                console.log('🔄 Using backend proxy for login');
+                // Use backend proxy (original magentoService login)
+                token = await magentoService.login(
+                    formData.magento.username,
+                    formData.magento.password,
+                    formData.magento.url
+                );
+            }
+            
+            // Update form data and context with the received token
             handleInputChange('magento', 'accessToken', token);
-            toast.success(translate('profile.apiSettings.magento.tokenSuccess'));
+            updateUserData({ magento: { ...formData.magento, accessToken: token } }, 'apiSettings');
+            
+            const successMessage = formData.magento.enableDirectConnection 
+                ? 'Successfully obtained access token via direct connection!' 
+                : 'Successfully obtained access token via backend proxy!';
+            toast.success(successMessage);
+            
         } catch (error) {
-            console.error('Magento token error:', error);
-            toast.error(error.message || translate('profile.apiSettings.magento.tokenError'));
+            console.error('Magento authentication error:', error);
+            const errorMessage = error.message || 'Failed to authenticate with Magento';
+            toast.error(errorMessage);
         } finally {
-            setTestingMagentoConnection(false);
+            updateConnectionTest('magento', { testing: false, lastTest: new Date().toISOString() });
         }
     };
 
     const handleMagentoOAuthConnect = async () => {
         try {
-            setTestingMagentoConnection(true);
+            updateConnectionTest('magento', { testing: true, status: 'testing' });
             const success = await magentoApi.connectOAuth(
                 formData.magento.url,
                 formData.magento.consumerKey,
@@ -176,13 +370,13 @@ const ApiSettingsTab = () => {
             console.error('Magento OAuth error:', error);
             toast.error(error.message || translate('profile.apiSettings.magento.oauthError'));
         } finally {
-            setTestingMagentoConnection(false);
+            updateConnectionTest('magento', { testing: false, lastTest: new Date().toISOString() });
         }
     };
 
     const handleTestCegidConnection = async () => {
         try {
-            setTestingCegidConnection(true);
+            updateConnectionTest('cegid', { testing: true, status: 'testing' });
             await cegidApi.handleCegidConnect(
                 formData.cegid.url,
                 formData.cegid.username,
@@ -194,13 +388,13 @@ const ApiSettingsTab = () => {
             console.error('Cegid connection error:', error);
             toast.error(error.message || translate('profile.apiSettings.cegid.testError'));
         } finally {
-            setTestingCegidConnection(false);
+            updateConnectionTest('cegid', { testing: false, lastTest: new Date().toISOString() });
         }
     };
 
     const handleCegidDbConnection = async () => {
         try {
-            setTestingCegidDbConnection(true);
+            updateConnectionTest('cegidDb', { testing: true, status: 'testing' });
             // Here you would implement your SQL Server connection test logic for CEGID
             // This might involve using a library like 'mssql' or a custom API call.
 
@@ -225,7 +419,7 @@ const ApiSettingsTab = () => {
             } catch (error) {
                 console.error('CEGID DB Test Failed:', error);
             } finally {
-                setTestingCegidDbConnection(false);
+                updateConnectionTest('cegidDb', { testing: false, lastTest: new Date().toISOString() });
             }
 
 
@@ -233,14 +427,13 @@ const ApiSettingsTab = () => {
             console.error('CEGID DB connection error:', error);
             toast.error(error.message || translate('profile.apiSettings.cegidDb.testError'));
         } finally {
-            setTestingCegidDbConnection(false);
+            updateConnectionTest('cegidDb', { testing: false, lastTest: new Date().toISOString() });
         }
     };
 
     const handleMdmDbConnection = async () => {
         try {
-            debugger
-            setTestingMdmDbConnection(true);
+            updateConnectionTest('mdmDb', { testing: true, status: 'testing' });
             try {
                 // Send DB config from frontend to backend
                 const dbConfig = {
@@ -261,286 +454,320 @@ const ApiSettingsTab = () => {
             } catch (error) {
                 console.error('MDM DB Test Failed:', error);
             } finally {
-                setTestingMdmDbConnection(false);
+                updateConnectionTest('mdmDb', { testing: false, lastTest: new Date().toISOString() });
             }
         } catch (error) {
             console.error('MDM DB connection error:', error);
             toast.error(error.message || translate('profile.apiSettings.mdmDb.testError'));
         } finally {
-            setTestingMdmDbConnection(false);
+            updateConnectionTest('mdmDb', { testing: false, lastTest: new Date().toISOString() });
         }
     };
 
+    // Connection status indicator component
+    const ConnectionStatus = ({ service, status }) => {
+        const getStatusColor = () => {
+            switch (status?.status) {
+                case 'success': return 'success';
+                case 'error': return 'error';
+                case 'testing': return 'warning';
+                default: return 'default';
+            }
+        };
+        
+        const getStatusIcon = () => {
+            switch (status?.status) {
+                case 'success': return <CheckCircle fontSize="small" />;
+                case 'error': return <Error fontSize="small" />;
+                case 'testing': return <CircularProgress size={16} />;
+                default: return <Database fontSize="small" />;
+            }
+        };
+        
+        return (
+            <Chip
+                icon={getStatusIcon()}
+                label={status?.testing ? 'Testing...' : (status?.status || 'Not tested')}
+                color={getStatusColor()}
+                size="small"
+                variant="outlined"
+            />
+        );
+    };
+
     return (
-        <Box sx={{ p: 2 }}>
+        <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 }}>
+            {/* Header */}
+            <Box sx={{ mb: 4 }}>
+                <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
+                    <Api color="primary" sx={{ fontSize: 32 }} />
+                    <Box>
+                        <Typography variant="h4" sx={{ fontWeight: 600, color: 'primary.main' }}>
+                            API Configuration
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Configure connections to external services and databases
+                        </Typography>
+                    </Box>
+                </Stack>
+            </Box>
+
             {/* Magento API Settings */}
-            <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'medium' }}>
-                {translate('profile.apiSettings.magento.title')}
-            </Typography>
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={8}>
-                    <TextField
-                        size="small"
-                        fullWidth
-                        label={translate('profile.apiSettings.magento.url')}
-                        value={formData.magento.url}
-                        onChange={(e) => handleInputChange('magento', 'url', e.target.value)} />
-                </Grid>
-                <Grid item xs={12} md={4}>
-                    <FormControl fullWidth size="small" sx={{ mb: 2 }}>
-                        <InputLabel>{translate('profile.apiSettings.magento.authMode')}</InputLabel>
-                        <Select
-                            value={formData.magento.authMode}
-                            onChange={(e) => handleInputChange('magento', 'authMode', e.target.value)}
-                            label={translate('profile.apiSettings.magento.authMode')}
+            <Accordion 
+                expanded={expandedSection === 'magento'} 
+                onChange={() => setExpandedSection(expandedSection === 'magento' ? null : 'magento')}
+                sx={{ 
+                    mb: 2, 
+                    boxShadow: 2,
+                    '&:before': { display: 'none' },
+                    borderRadius: 2,
+                    overflow: 'hidden'
+                }}
+            >
+                <AccordionSummary 
+                    expandIcon={<ExpandMore />}
+                    sx={{ 
+                        bgcolor: 'primary.main', 
+                        color: 'white',
+                        minHeight: 64,
+                        '&:hover': { bgcolor: 'primary.dark' },
+                        '& .MuiAccordionSummary-content': { alignItems: 'center' }
+                    }}
+                >
+                    <Stack direction="row" alignItems="center" spacing={2} sx={{ flex: 1 }}>
+                        <Api sx={{ fontSize: 28 }} />
+                        <Box sx={{ flex: 1 }}>
+                            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                                Magento E-commerce API
+                            </Typography>
+                            <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                                {formData.magento.enableDirectConnection ? '🚀 Direct Connection' : '📡 Proxy Connection'}
+                            </Typography>
+                        </Box>
+                        <ConnectionStatus service="magento" status={connectionTests.magento} />
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={formData.magento.enableDirectConnection}
+                                    onChange={(e) => {
+                                        e.stopPropagation();
+                                        handleInputChange('magento', 'enableDirectConnection', e.target.checked);
+                                    }}
+                                    sx={{
+                                        '& .MuiSwitch-switchBase.Mui-checked': {
+                                            color: 'white',
+                                        },
+                                        '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                                            backgroundColor: 'rgba(255,255,255,0.3)',
+                                        }
+                                    }}
+                                />
+                            }
+                            label="Direct"
+                            sx={{ color: 'white', mr: 0 }}
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                    </Stack>
+                </AccordionSummary>
+                <AccordionDetails sx={{ p: 3 }}>
+                    <Stack spacing={3}>
+                        {/* Connection Mode Info */}
+                        <Alert 
+                            severity={formData.magento.enableDirectConnection ? "success" : "info"}
+                            icon={formData.magento.enableDirectConnection ? <CloudSync /> : <Database />}
                         >
-                            <MenuItem value="basic">Basic Auth</MenuItem>
-                            <MenuItem value="oauth">OAuth</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
+                            <Typography variant="body2">
+                                <strong>{formData.magento.enableDirectConnection ? 'Direct Mode:' : 'Proxy Mode:'}</strong>
+                                {' '}
+                                {formData.magento.enableDirectConnection 
+                                    ? 'Frontend connects directly to Magento API (requires CORS setup)'
+                                    : 'Requests are proxied through the backend server'
+                                }
+                            </Typography>
+                        </Alert>
 
-                {/* Basic Auth Fields */}
-                <Collapse in={formData.magento.authMode === 'basic'} sx={{ width: '100%' }}>
-                    <Grid container spacing={2} sx={{ mt: 0, ml: 0 }}>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                size="small"
-                                fullWidth
-                                label={translate('profile.apiSettings.magento.username')}
-                                value={formData.magento.username}
-                                onChange={(e) => handleInputChange('magento', 'username', e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                size="small"
-                                fullWidth
-                                type="password"
-                                label={translate('profile.apiSettings.magento.password')}
-                                value={formData.magento.password}
-                                onChange={(e) => handleInputChange('magento', 'password', e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
+                        {/* Direct Connection Settings */}
+                        <Collapse in={formData.magento.enableDirectConnection}>
+                            <Paper sx={{ p: 3, bgcolor: 'grey.50', borderRadius: 2 }}>
+                                <Stack spacing={3}>
+                                    {/* URL and Auth Mode */}
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={8}>
+                                            <TextField
+                                                size="small"
+                                                fullWidth
+                                                label="Magento API URL"
+                                                value={formData.magento.url}
+                                                onChange={(e) => handleInputChange('magento', 'url', e.target.value)}
+                                                placeholder="https://your-store.com/rest/V1"
+                                                InputProps={{
+                                                    startAdornment: <Api sx={{ color: 'text.secondary', mr: 1 }} />
+                                                }}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <FormControl fullWidth size="small">
+                                                <InputLabel>Authentication Mode</InputLabel>
+                                                <Select
+                                                    value={formData.magento.authMode}
+                                                    onChange={(e) => handleInputChange('magento', 'authMode', e.target.value)}
+                                                    label="Authentication Mode"
+                                                >
+                                                    <MenuItem value="basic">
+                                                        <Stack direction="row" alignItems="center" spacing={1}>
+                                                            <Security fontSize="small" />
+                                                            <span>Basic Auth</span>
+                                                        </Stack>
+                                                    </MenuItem>
+                                                    <MenuItem value="oauth">
+                                                        <Stack direction="row" alignItems="center" spacing={1}>
+                                                            <Security fontSize="small" />
+                                                            <span>OAuth 1.0</span>
+                                                        </Stack>
+                                                    </MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                    </Grid>
+
+                                    {/* Basic Auth Fields */}
+                                    <Collapse in={formData.magento.authMode === 'basic'}>
+                                        <Card sx={{ p: 2, bgcolor: 'background.paper' }}>
+                                            <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                                                <Typography variant="subtitle2" sx={{ mb: 2, color: 'primary.main', fontWeight: 600 }}>
+                                                    Basic Authentication
+                                                </Typography>
+                                                <Grid container spacing={2}>
+                                                    <Grid item xs={12} sm={6}>
+                                                        <TextField
+                                                            size="small"
+                                                            fullWidth
+                                                            label="Admin Username"
+                                                            value={formData.magento.username}
+                                                            onChange={(e) => handleInputChange('magento', 'username', e.target.value)}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={12} sm={6}>
+                                                        <TextField
+                                                            size="small"
+                                                            fullWidth
+                                                            type="password"
+                                                            label="Admin Password"
+                                                            value={formData.magento.password}
+                                                            onChange={(e) => handleInputChange('magento', 'password', e.target.value)}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={12}>
+                                                        <Button
+                                                            variant="contained"
+                                                            onClick={handleMagentoBasicAuth}
+                                                            disabled={connectionTests.magento.testing}
+                                                            startIcon={connectionTests.magento.testing ? <CircularProgress size={20} /> : <Security />}
+                                                            sx={{ borderRadius: 2 }}
+                                                        >
+                                                            {connectionTests.magento.testing ? 'Authenticating...' : 'Get Access Token'}
+                                                        </Button>
+                                                    </Grid>
+                                                </Grid>
+                                            </CardContent>
+                                        </Card>
+                                    </Collapse>
+
+                                    {/* OAuth Fields */}
+                                    <Collapse in={formData.magento.authMode === 'oauth'}>
+                                        <Card sx={{ p: 2, bgcolor: 'background.paper' }}>
+                                            <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                                                <Typography variant="subtitle2" sx={{ mb: 2, color: 'primary.main', fontWeight: 600 }}>
+                                                    OAuth 1.0 Configuration
+                                                </Typography>
+                                                <Grid container spacing={2}>
+                                                    {[
+                                                        ['consumerKey', 'Consumer Key'],
+                                                        ['consumerSecret', 'Consumer Secret'],
+                                                        ['accessToken', 'Access Token'],
+                                                        ['accessTokenSecret', 'Access Token Secret'],
+                                                    ].map(([key, label]) => (
+                                                        <Grid item xs={12} sm={6} key={key}>
+                                                            <TextField
+                                                                size="small"
+                                                                fullWidth
+                                                                label={label}
+                                                                value={formData.magento[key] || ''}
+                                                                onChange={(e) => handleInputChange('magento', key, e.target.value)}
+                                                                type={key.includes('Secret') ? 'password' : 'text'}
+                                                            />
+                                                        </Grid>
+                                                    ))}
+                                                    <Grid item xs={12}>
+                                                        <Button
+                                                            variant="contained"
+                                                            onClick={handleMagentoOAuthConnect}
+                                                            disabled={connectionTests.magento.testing}
+                                                            startIcon={connectionTests.magento.testing ? <CircularProgress size={20} /> : <Security />}
+                                                            sx={{ borderRadius: 2 }}
+                                                        >
+                                                            {connectionTests.magento.testing ? 'Connecting...' : 'Connect OAuth'}
+                                                        </Button>
+                                                    </Grid>
+                                                </Grid>
+                                            </CardContent>
+                                        </Card>
+                                    </Collapse>
+
+                                    {/* CORS Setup Guide */}
+                                    <Alert severity="warning" icon={<Warning />} sx={{ borderRadius: 2 }}>
+                                        <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                                            CORS Configuration Required
+                                        </Typography>
+                                        <Typography variant="body2" sx={{ mb: 1 }}>
+                                            Add these headers to your Magento server for direct connection:
+                                        </Typography>
+                                        <Paper sx={{ p: 2, bgcolor: 'grey.900', color: 'white', fontFamily: 'monospace', fontSize: '0.75rem' }}>
+                                            Access-Control-Allow-Origin: {window.location.origin}<br />
+                                            Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS<br />
+                                            Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With
+                                        </Paper>
+                                    </Alert>
+                                </Stack>
+                            </Paper>
+                        </Collapse>
+
+                        {/* Action Buttons */}
+                        <Stack direction="row" spacing={2} justifyContent="flex-end">
                             <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={handleMagentoBasicAuth}
-                                disabled={testingMagentoConnection}
-                                sx={{ mt: 1 }}
+                                variant="outlined"
+                                startIcon={<Refresh />}
+                                onClick={async () => {
+                                    try {
+                                        updateConnectionTest('magento', { testing: true, status: 'testing' });
+                                        const result = await magentoService.testConnection();
+                                        if (result.success) {
+                                            toast.success(result.message);
+                                            updateConnectionTest('magento', { status: 'success' });
+                                        }
+                                    } catch (error) {
+                                        toast.error('Connection test failed: ' + error.message);
+                                        updateConnectionTest('magento', { status: 'error' });
+                                    } finally {
+                                        updateConnectionTest('magento', { testing: false, lastTest: new Date().toISOString() });
+                                    }
+                                }}
+                                disabled={
+                                    connectionTests.magento.testing ||
+                                    !formData.magento.url ||
+                                    (!formData.magento.accessToken && formData.magento.authMode === 'basic')
+                                }
+                                sx={{ borderRadius: 2 }}
                             >
-                                {testingMagentoConnection ? (
-                                    <CircularProgress size={24} />
-                                ) : (
-                                    translate('profile.apiSettings.magento.getToken')
-                                )}
+                                {connectionTests.magento.testing ? 'Testing...' : 'Test Connection'}
                             </Button>
-                        </Grid>
-                    </Grid>
-                </Collapse>
+                        </Stack>
+                    </Stack>
+                </AccordionDetails>
+            </Accordion>
 
-                {/* OAuth Fields */}
-                <Collapse in={formData.magento.authMode === 'oauth'} sx={{ width: '100%' }}>
-                    <Grid container spacing={2} sx={{ mt: 0, ml: 0 }}>
-                        <Grid item xs={12} sm={6} md={3}>
-                            <TextField
-                                size="small"
-                                fullWidth
-                                label={translate('profile.apiSettings.magento.consumerKey')}
-                                value={formData.magento.consumerKey || ''}
-                                onChange={(e) => handleInputChange('magento', 'consumerKey', e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={3}>
-                            <TextField
-                                size="small"
-                                fullWidth
-                                label={translate('profile.apiSettings.magento.consumerSecret')}
-                                value={formData.magento.consumerSecret || ''}
-                                onChange={(e) => handleInputChange('magento', 'consumerSecret', e.target.value)} />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={3}>
-                            <TextField
-                                size="small"
-                                fullWidth
-                                label={translate('profile.apiSettings.magento.accessToken')}
-                                value={formData.magento.accessToken || ''}
-                                onChange={(e) => handleInputChange('magento', 'accessToken', e.target.value)} />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={3}>
-                            <TextField
-                                size="small"
-                                fullWidth
-                                label={translate('profile.apiSettings.magento.accessTokenSecret')}
-                                value={formData.magento.accessTokenSecret || ''}
-                                onChange={(e) => handleInputChange('magento', 'accessTokenSecret', e.target.value)}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={handleMagentoOAuthConnect}
-                                disabled={testingMagentoConnection}
-                                sx={{ mt: 1 }}
-                            >
-                                {testingMagentoConnection ? (
-                                    <CircularProgress size={24} />
-                                ) : (
-                                    translate('profile.apiSettings.magento.connect')
-                                )}
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </Collapse>
-            </Grid>
-
-            <Divider sx={{ my: 2 }} />
-
-            {/* Cegid API Settings */}
-            <Typography variant="subtitle1" sx={{ mb: 1, mt: 2, fontWeight: 'medium' }}>
-                Cegid API Settings
-            </Typography>
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                    <TextField
-                        size="small"
-                        fullWidth
-                        label={translate('profile.apiSettings.cegid.url')}
-                        value={formData.cegid.url}
-                        onChange={(e) => handleInputChange('cegid', 'url', e.target.value)}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <TextField
-                        size="small"
-                        fullWidth
-                        label={translate('profile.apiSettings.cegid.username')}
-                        value={formData.cegid.username}
-                        onChange={(e) => handleInputChange('cegid', 'username', e.target.value)}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <TextField
-                        size="small"
-                        fullWidth
-                        type="password"
-                        label={translate('profile.apiSettings.cegid.password')}
-                        value={formData.cegid.password}
-                        onChange={(e) => handleInputChange('cegid', 'password', e.target.value)}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        size="small"
-                        fullWidth
-                        label={translate('profile.apiSettings.cegid.database')}
-                        value={formData.cegid.database}
-                        onChange={(e) => handleInputChange('cegid', 'database', e.target.value)}
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleTestCegidConnection}
-                        disabled={testingCegidConnection || !formData.cegid.url || !formData.cegid.username || !formData.cegid.password || !formData.cegid.database}
-                        startIcon={testingCegidConnection ? <CircularProgress size={20} color="inherit" /> : null}
-                        sx={{ mt: 2 }}
-                    >
-                        {testingCegidConnection ? (
-                            <CircularProgress size={24} />
-                        ) : (
-                            translate('profile.apiSettings.cegid.testConnection')
-                        )}
-                    </Button>
-                </Grid>
-            </Grid>
-
-            {/* SQL Server Settings */}
-            <Typography variant="subtitle1" sx={{ mb: 1, mt: 2, fontWeight: 'medium' }}>
-                SQL Server Settings
-            </Typography>
-
-            {/* CEGID DB Settings */}
-            <Typography variant="subtitle2" sx={{ mb: 1, mt: 1, fontWeight: 'medium' }}>
-                CEGID Database
-            </Typography>
-            <Grid container spacing={2}>
-            <Grid item xs={12} sm={6} md={3}>
-                    <TextField size="small" fullWidth label="Server"
-                        value={formData.DB.CEGID.server}
-                        onChange={(e) => handleDbInputChange('CEGID', 'server', e.target.value)} />
-                </Grid>
-
-                <Grid item xs={12} sm={6} md={3}>
-                    <TextField size="small" fullWidth label="Username"
-                        value={formData.DB.CEGID.username}
-                        onChange={(e) => handleDbInputChange('CEGID', 'username', e.target.value)} />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <TextField size="small" fullWidth type="password" label="Password"
-                        value={formData.DB.CEGID.password}
-                        onChange={(e) => handleDbInputChange('CEGID', 'password', e.target.value)} />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <TextField size="small" fullWidth label="Database"
-                        value={formData.DB.CEGID.database}
-                        onChange={(e) => handleDbInputChange('CEGID', 'database', e.target.value)} />
-                </Grid>
-              
-                <Grid item xs={12}>
-                    <Button variant="contained" color="primary"
-                        onClick={handleCegidDbConnection}
-                        disabled={testingCegidDbConnection || !formData.DB.CEGID.username || !formData.DB.CEGID.password || !formData.DB.CEGID.database}
-                        startIcon={testingCegidDbConnection ? <CircularProgress size={20} color="inherit" /> : null}
-                        sx={{ mt: 2 }}>
-                        {testingCegidDbConnection ? "Testing..." : "Test CEGID DB Connection"}
-                    </Button>
-                </Grid>
-            </Grid>
-
-            {/* MDM DB Settings */}
-            <Typography variant="subtitle2" sx={{ mb: 1, mt: 2, fontWeight: 'medium' }}>
-                MDM Database
-            </Typography>
-            <Grid container spacing={2}>
-                {/* Similar structure as CEGID DB settings */}
-
-                <Grid item xs={12} sm={6} md={3}>
-                    <TextField size="small" fullWidth label="Server"
-                        value={formData.DB.MDM.server}
-                        onChange={(e) => handleDbInputChange('MDM', 'server', e.target.value)} />
-                </Grid>
-
-                <Grid item xs={12} sm={6} md={3}>
-                    <TextField size="small" fullWidth label="Username"
-                        value={formData.DB.MDM.username}
-                        onChange={(e) => handleDbInputChange('MDM', 'username', e.target.value)} />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <TextField size="small" fullWidth type="password" label="Password"
-                        value={formData.DB.MDM.password}
-                        onChange={(e) => handleDbInputChange('MDM', 'password', e.target.value)} />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <TextField size="small" fullWidth label="Database"
-                        value={formData.DB.MDM.database}
-                        onChange={(e) => handleDbInputChange('MDM', 'database', e.target.value)} />
-                </Grid>
-                
-                <Grid item xs={12}>
-                    <Button variant="contained" color="primary"
-                        onClick={handleMdmDbConnection}
-                        disabled={testingMdmDbConnection || !formData.DB.MDM.username || !formData.DB.MDM.password || !formData.DB.MDM.database}
-                        startIcon={testingMdmDbConnection ? <CircularProgress size={20} color="inherit" /> : null}
-                        sx={{ mt: 2 }}>
-                        {testingMdmDbConnection ? "Testing..." : "Test MDM DB Connection"}
-                    </Button>
-                </Grid>
-            </Grid>
-
+            {/* Additional API Sections can be added here */}
+            {/* For now, keeping the interface focused on Magento */}
         </Box>
     );
 };

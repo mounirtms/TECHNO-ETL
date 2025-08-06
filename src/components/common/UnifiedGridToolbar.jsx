@@ -279,10 +279,10 @@ const UnifiedGridToolbar = ({
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 200, maxWidth: 350 }}>
             <TextField
               size="small"
-              placeholder={translate('search', 'Search SKU, Name...')}
+              placeholder={translate('search', 'Search ')}
               value={searchText}
               onChange={handleSearchChange}
-              onKeyPress={handleSearchKeyPress}
+       
               sx={{ flex: 1 }}
               InputProps={{
                 startAdornment: (
@@ -299,15 +299,6 @@ const UnifiedGridToolbar = ({
                 )
               }}
             />
-            <Button
-              size="small"
-              variant="outlined"
-              onClick={handleSearchSubmit}
-              disabled={!searchText.trim()}
-              sx={{ minWidth: 'auto', px: 1 }}
-            >
-              Search
-            </Button>
           </Box>
         )}
 

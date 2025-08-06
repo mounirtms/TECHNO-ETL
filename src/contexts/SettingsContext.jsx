@@ -39,14 +39,16 @@ export const SettingsProvider = ({ children }) => {
         return localStorage.getItem('settingsLastModified') || null;
     });
 
-    // Apply settings when they change
+    // Apply settings when they change - integrate with unified theme system
     useEffect(() => {
         if (settings?.preferences) {
-            // Apply theme settings
+            // Apply theme settings through the unified theme context
             applyUserThemeSettings(settings);
 
             // Apply language settings
-            applyUserLanguageSettings(settings);
+            if (applyUserLanguageSettings) {
+                applyUserLanguageSettings(settings);
+            }
 
             // Apply other user preferences
             applyUserPreferences(settings, {
@@ -179,7 +181,28 @@ export const SettingsProvider = ({ children }) => {
                 });
             }
 
-            // Save to unified storage
+            // Save to unified storage - sync preferences to theme storage
+            if (section === 'preferences' || newSettings.preferences) {
+                const unifiedThemeSettings = {
+                    theme: newSettings.preferences?.theme || 'system',
+                    fontSize: newSettings.preferences?.fontSize || 'medium',
+                    colorPreset: newSettings.preferences?.colorPreset || 'techno',
+                    density: newSettings.preferences?.density || 'standard',
+                    animations: newSettings.preferences?.animations !== false,
+                    highContrast: newSettings.preferences?.highContrast === true,
+                    language: newSettings.preferences?.language || 'en'
+                };
+                
+                // Save to unified theme storage
+                try {
+                    localStorage.setItem('techno-etl-settings', JSON.stringify(unifiedThemeSettings));
+                    console.log('Settings synced to unified theme storage:', unifiedThemeSettings);
+                } catch (error) {
+                    console.error('Error syncing to unified theme storage:', error);
+                }
+            }
+
+            // Also save to legacy settings storage
             saveUnifiedSettings(newSettings);
 
             return newSettings;

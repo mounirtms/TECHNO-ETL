@@ -9,7 +9,7 @@ import Sidebar from './Sidebar';
 import TabPanel from './TabPanel';
 import Footer from './Footer';
 import { TabProvider } from '../../contexts/TabContext';
-import { LanguageProvider, useLanguage } from '../../contexts/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { DRAWER_WIDTH, COLLAPSED_WIDTH, FOOTER_HEIGHT } from './Constants';
 
 const LayoutContent = () => {
@@ -112,11 +112,7 @@ const LayoutContent = () => {
 };
 
 const Layout = () => {
-    return (
-        <LanguageProvider>
-            <LayoutContent />
-        </LanguageProvider>
-    );
+    return <LayoutContent />;
 };
 
 export default Layout;

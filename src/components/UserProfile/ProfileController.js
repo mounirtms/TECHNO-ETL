@@ -10,7 +10,7 @@ export const useProfileController = () => {
 
     // Use settings from SettingsContext instead of local state
     const [userData, setUserDataState] = useState(settings);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isDirty, setIsDirty] = useState(false);
     const [lastSyncTime, setLastSyncTime] = useState(() => {

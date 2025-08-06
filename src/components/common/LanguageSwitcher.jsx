@@ -5,8 +5,9 @@ import {
     IconButton, 
     Tooltip 
 } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../../contexts/LanguageContext';
 import LanguageIcon from '@mui/icons-material/Language';
+import { saveUnifiedSettings } from '../../utils/unifiedSettingsManager';
 
 const languages = [
     { code: 'en', name: 'English' },
@@ -16,17 +17,17 @@ const languages = [
 
 const LanguageSwitcher = () => {
     const [anchorEl, setAnchorEl] = useState(null);
-    const { i18n } = useTranslation();
+    const { currentLanguage, setLanguage, translate } = useLanguage();
 
     const handleLanguageChange = (languageCode) => {
-        i18n.changeLanguage(languageCode);
-        localStorage.setItem('language', languageCode);
+        setLanguage(languageCode);
+        saveUnifiedSettings({ language: languageCode });
         setAnchorEl(null);
     };
 
     return (
         <>
-            <Tooltip title="Change Language">
+            <Tooltip title={translate('common.changeLanguage') || 'Change Language'}>
                 <IconButton 
                     onClick={(e) => setAnchorEl(e.currentTarget)}
                     size="small"
@@ -43,7 +44,7 @@ const LanguageSwitcher = () => {
                     <MenuItem 
                         key={lang.code}
                         onClick={() => handleLanguageChange(lang.code)}
-                        selected={i18n.language === lang.code}
+                        selected={currentLanguage === lang.code}
                     >
                         {lang.name}
                     </MenuItem>

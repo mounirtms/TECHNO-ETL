@@ -2,6 +2,14 @@ import React, { createContext, useContext, useState, useEffect, useMemo, useCall
 import enLocale from '../assets/locale/en.json';
 import frLocale from '../assets/locale/fr.json';
 import arLocale from '../assets/locale/ar.json';
+import { 
+  getUnifiedSettings, 
+  saveUnifiedSettings, 
+  getUserSettings, 
+  saveUserSettings,
+  applyLanguageSettings,
+  getSystemPreferences 
+} from '../utils/unifiedSettingsManager';
 
 const LanguageContext = createContext();
 
@@ -35,66 +43,69 @@ export const useLanguage = () => {
 };
 
 export const LanguageProvider = ({ children }) => {
-  // Unified settings storage
-  const getUnifiedSettings = () => {
-    try {
-      const unifiedSettings = localStorage.getItem('techno-etl-settings');
-      if (unifiedSettings) {
-        return JSON.parse(unifiedSettings);
-      }
-    } catch (error) {
-      console.warn('Error parsing unified settings:', error);
-    }
-    return null;
-  };
-
   const [currentLanguage, setCurrentLanguage] = useState(() => {
     const settings = getUnifiedSettings();
     if (settings?.language && languages[settings.language]) {
       return settings.language;
     }
 
-    // Try to detect browser language
-    const browserLang = navigator.language.split('-')[0];
-    if (languages[browserLang]) {
-      return browserLang;
-    }
-
-    // Default to English
-    return 'en';
+    // Fallback to system preferences
+    const systemPrefs = getSystemPreferences();
+    return systemPrefs.language;
   });
-
-  // Unified settings save function
-  const saveUnifiedSettings = useCallback((newSettings) => {
-    try {
-      const currentSettings = getUnifiedSettings() || {};
-      const updatedSettings = { ...currentSettings, ...newSettings };
-      localStorage.setItem('techno-etl-settings', JSON.stringify(updatedSettings));
-    } catch (error) {
-      console.error('Error saving unified settings:', error);
-    }
-  }, []);
 
   // Memoized language configuration to prevent unnecessary re-renders
   const currentLangConfig = useMemo(() => languages[currentLanguage], [currentLanguage]);
 
-  // Smooth RTL transition - prevent flickering
+  // Persistent RTL support - ensure it works across all tabs and components
   useEffect(() => {
     // Use requestAnimationFrame to ensure smooth transition
     requestAnimationFrame(() => {
+      const isRTL = currentLangConfig.dir === 'rtl';
+      
+      // Set document attributes
       document.documentElement.setAttribute('dir', currentLangConfig.dir);
       document.documentElement.setAttribute('lang', currentLangConfig.code);
+      
+      // Add RTL class to body for additional styling
+      if (isRTL) {
+        document.body.classList.add('rtl');
+        document.body.classList.remove('ltr');
+      } else {
+        document.body.classList.add('ltr');
+        document.body.classList.remove('rtl');
+      }
+      
+      // Add/remove RTL class to root element
+      const root = document.getElementById('root');
+      if (root) {
+        if (isRTL) {
+          root.classList.add('rtl-layout');
+          root.classList.remove('ltr-layout');
+        } else {
+          root.classList.add('ltr-layout');
+          root.classList.remove('rtl-layout');
+        }
+      }
 
-      // Add transition class for smooth layout changes
+      // Add smooth transition class
       document.body.style.transition = 'all 0.3s ease-in-out';
+      if (root) {
+        root.style.transition = 'all 0.3s ease-in-out';
+      }
 
       // Save to unified settings
-      saveUnifiedSettings({ language: currentLanguage });
+      saveUnifiedSettings({ language: currentLanguage, dir: currentLangConfig.dir });
 
       // Remove transition after animation completes
       setTimeout(() => {
         document.body.style.transition = '';
+        if (root) {
+          root.style.transition = '';
+        }
       }, 300);
+      
+      console.log(`Language changed to ${currentLanguage} (${currentLangConfig.dir})`);
     });
   }, [currentLanguage, currentLangConfig, saveUnifiedSettings]);
 

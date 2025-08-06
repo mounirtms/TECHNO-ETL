@@ -34,8 +34,8 @@ import {
   InventoryStatusChart
 } from '../components/charts';
 
-// Import dashboard data service
-import dashboardDataService from '../services/dashboardDataService';
+// Import unified service
+import unifiedMagentoService from '../services/unifiedMagentoService';
 import { useDashboardParams } from '../hooks/useHashParams';
 import ComponentErrorBoundary from '../components/common/ComponentErrorBoundary';
 
@@ -67,8 +67,33 @@ const ChartsPage = () => {
   const loadData = async () => {
     try {
       setLoading(true);
-      const chartData = await dashboardDataService.getAllDashboardData();
-      setData(chartData);
+      const cacheKey = 'chartsPageData';
+      const cachedData = unifiedMagentoService._getCachedResponse(cacheKey);
+
+      if (cachedData) {
+        console.log('Loaded charts data from cache');
+        setData(cachedData);
+      } else {
+        const responses = await Promise.all([
+          unifiedMagentoService.get('/products/stats'),
+          unifiedMagentoService.get('/brands/distribution'),
+          unifiedMagentoService.get('/categories/distribution'),
+          unifiedMagentoService.get('/products/attributes'),
+          unifiedMagentoService.get('/sales/performance'),
+          unifiedMagentoService.get('/inventory/status')
+        ]);
+        const chartData = {
+          productStats: responses[0].data,
+          brandDistribution: responses[1].data,
+          categoryDistribution: responses[2].data,
+          productAttributes: responses[3].data,
+          salesPerformance: responses[4].data,
+          inventoryStatus: responses[5].data
+        };
+        setData(chartData);
+        unifiedMagentoService._setCachedResponse(cacheKey, chartData);
+        console.log('Stored charts data to cache');
+      }
     } catch (error) {
       console.error('Error loading chart data:', error);
     } finally {

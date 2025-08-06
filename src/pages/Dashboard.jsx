@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Box,
   Grid,
@@ -38,8 +38,9 @@ import {
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
- import { useCustomTheme } from '../contexts/ThemeContext';
- import { useTheme } from '@mui/material/styles';
+import { useCustomTheme } from '../contexts/ThemeContext';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useTheme } from '@mui/material/styles';
 import { toast } from 'react-toastify';
 import { useTab } from '../contexts/TabContext';
 import { StatsCards } from '../components/common/StatsCards';
@@ -79,15 +80,37 @@ import {
 } from '../components/charts';
 
 // Import dashboard data service
-import dashboardDataService from '../services/dashboardDataService';
+import unifiedMagentoService from '../services/unifiedMagentoService';
+import SyncProgressBar from '../components/SyncProgressBar';
 
 /**
  * Modern, Clean Dashboard Component
  * Simplified and professional dashboard with modular components
+ * Enhanced with proper theme and language persistence
  */
 const Dashboard = () => {
-  const theme = useTheme();
+  const muiTheme = useTheme(); // MUI theme for shadows and other MUI-specific properties
+  const { mode, isDark, colorPreset, density, animations } = useCustomTheme();
+  const { currentLanguage, translate, languages } = useLanguage();
   const { openTab } = useTab();
+  
+  // Check if current language is RTL
+  const isRTL = useMemo(() => languages[currentLanguage]?.dir === 'rtl', [languages, currentLanguage]);
+  
+  // Use custom theme colors based on current color preset and mode
+  const customColors = muiTheme.palette; // This will reflect the current theme
+  
+  // Debug logging for theme persistence issues
+  useEffect(() => {
+    console.log('🎨 Dashboard theme state:', {
+      mode,
+      isDark,
+      colorPreset,
+      currentLanguage,
+      isRTL,
+      paletteMode: muiTheme.palette.mode
+    });
+  }, [mode, isDark, colorPreset, currentLanguage, isRTL, muiTheme.palette.mode]);
   
   // Date range state
   const [startDate, setStartDate] = useState(() => {
@@ -169,17 +192,46 @@ const Dashboard = () => {
     error,
     getPrices,
     syncAllStocks,
-    fetchDashboardData
+    fetchDashboardData,
+    syncProgress
   } = useDashboardController(startDate, endDate, refreshKey);
 
   // Load enhanced dashboard data
   const loadEnhancedData = async () => {
     try {
       setEnhancedLoading(true);
-      const data = await dashboardDataService.getAllDashboardData();
-      setEnhancedData(data);
+      const cacheKey = 'enhancedDashboardData';
+      const cachedData = unifiedMagentoService._getCachedResponse(cacheKey);
+
+      if (cachedData) {
+        console.log('Loaded enhanced data from cache');
+        setEnhancedData(cachedData);
+      } else {
+        const responses = await Promise.all([
+          unifiedMagentoService.get('/products/stats'),
+          unifiedMagentoService.get('/products/types'),
+          unifiedMagentoService.get('/brands/distribution'),
+          unifiedMagentoService.get('/categories/distribution'),
+          unifiedMagentoService.get('/products/attributes'),
+          unifiedMagentoService.get('/sales/performance'),
+          unifiedMagentoService.get('/inventory/status')
+        ]);
+        const data = {
+          productStats: responses[0].data,
+          productTypes: responses[1].data,
+          brandDistribution: responses[2].data,
+          categoryDistribution: responses[3].data,
+          productAttributes: responses[4].data,
+          salesPerformance: responses[5].data,
+          inventoryStatus: responses[6].data
+        };
+        setEnhancedData(data);
+        unifiedMagentoService._setCachedResponse(cacheKey, data); // Cache the result
+        console.log('Stored enhanced data to cache');
+      }
     } catch (error) {
       console.error('Error loading enhanced dashboard data:', error);
+      toast.error('Failed to load dashboard data');
     } finally {
       setEnhancedLoading(false);
     }
@@ -200,18 +252,27 @@ const Dashboard = () => {
   const handleSyncPrices = async () => {
     try {
       await getPrices();
-      toast.success('Prices synced successfully');
+      toast.success('Prices synced successfully', {
+        position: 'top-center',
+        autoClose: 2000
+      });
     } catch (error) {
-      toast.error('Failed to sync prices');
+      toast.error('Failed to sync prices', {
+        position: 'top-center',
+        autoClose: 3000
+      });
     }
   };
 
   const handleSyncStocks = async () => {
     try {
       await syncAllStocks();
-      toast.success('Stocks synced successfully');
+      // Success notification is handled in the controller
     } catch (error) {
-      toast.error('Failed to sync stocks');
+      toast.error('Failed to sync stocks', {
+        position: 'top-center',
+        autoClose: 3000
+      });
     }
   };
 
@@ -355,7 +416,16 @@ const Dashboard = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Box sx={{ p: 3, minHeight: '100vh', bgcolor: 'background.default' }}>
+      <Box 
+        sx={{ 
+          p: 3, 
+          minHeight: '100vh', 
+          bgcolor: 'background.default',
+          direction: isRTL ? 'rtl' : 'ltr',
+          // Ensure the dashboard respects theme changes
+          transition: 'background-color 0.3s ease, color 0.3s ease'
+        }}
+      >
         {/* Header */}
         <Paper 
           elevation={0}
@@ -363,8 +433,11 @@ const Dashboard = () => {
             p: 3, 
             mb: 3, 
             borderRadius: 3,
-            background: `linear-gradient(135deg, ${theme.palette.primary.main}15, ${theme.palette.secondary.main}08)`,
-            border: `1px solid ${theme.palette.primary.light}20`
+            background: `linear-gradient(135deg, ${muiTheme.palette.primary.main}15, ${muiTheme.palette.secondary.main}08)`,
+            border: `1px solid ${muiTheme.palette.primary.light}20`,
+            // Ensure RTL support for the header
+            direction: isRTL ? 'rtl' : 'ltr',
+            transition: 'all 0.3s ease'
           }}
         >
           <Box sx={{ 
@@ -374,20 +447,28 @@ const Dashboard = () => {
           }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <DashboardIcon sx={{ fontSize: 32, color: 'primary.main' }} />
-               
+              <Typography variant="h4" sx={{ fontWeight: 700, color: 'primary.main' }}>
+                {translate('navigation.dashboard') || 'Dashboard'}
+              </Typography>
             </Box>
             
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
               {/* Date Range Pickers */}
-              <Box sx={{ display: 'flex', gap: 1, mr: 2 }}>
+              <Box sx={{ 
+                display: 'flex', 
+                gap: 1, 
+                mr: isRTL ? 0 : 2,
+                ml: isRTL ? 2 : 0,
+                direction: isRTL ? 'rtl' : 'ltr'
+              }}>
                 <DatePicker
-                  label="Start Date"
+                  label={translate('dashboard.startDate') || 'Start Date'}
                   value={startDate}
                   onChange={setStartDate}
                   slotProps={{ textField: { size: 'small', sx: { width: 140 } } }}
                 />
                 <DatePicker
-                  label="End Date"
+                  label={translate('dashboard.endDate') || 'End Date'}
                   value={endDate}
                   onChange={setEndDate}
                   slotProps={{ textField: { size: 'small', sx: { width: 140 } } }}
@@ -395,64 +476,77 @@ const Dashboard = () => {
               </Box>
 
               {/* Sync Buttons */}
-              <Tooltip title="Sync Prices to Magento">
+              <Tooltip title={translate('dashboard.syncPrices') || 'Sync Prices to Magento'}>
                 <Button
                   variant="outlined"
                   size="small"
                   onClick={handlePriceSync}
                   startIcon={<PriceIcon />}
-                  sx={{ mr: 1 }}
+                  sx={{ 
+                    mr: isRTL ? 0 : 1,
+                    ml: isRTL ? 1 : 0
+                  }}
                   disabled={loading}
                 >
-                  Sync Prices
+                  {translate('dashboard.syncPrices') || 'Sync Prices'}
                 </Button>
               </Tooltip>
 
-              <Tooltip title="Sync Stocks">
+              <Tooltip title={translate('dashboard.syncStocks') || 'Sync Stocks'}>
                 <Button
                   variant="outlined"
                   size="small"
                   onClick={handleSyncStocks}
                   startIcon={<StockIcon />}
-                  sx={{ mr: 1 }}
+                  sx={{ 
+                    mr: isRTL ? 0 : 1,
+                    ml: isRTL ? 1 : 0
+                  }}
                 >
-                  Stocks
+                  {translate('dashboard.syncStocks') || 'Stocks'}
                 </Button>
               </Tooltip>
 
               {/* Action Buttons */}
-              <Tooltip title="View Analytics">
+              <Tooltip title={translate('dashboard.viewAnalytics') || 'View Analytics'}>
                 <Fab
                   size="medium"
                   color="secondary"
                   onClick={() => openTab('Charts')}
-                  sx={{ boxShadow: 3 }}
+                  sx={{ 
+                    boxShadow: 3,
+                    margin: isRTL ? '0 4px 0 0' : '0 0 0 4px'
+                  }}
                 >
                   <AnalyticsIcon />
                 </Fab>
               </Tooltip>
 
-              <Tooltip title={loading ? "Refreshing..." : "Refresh Data"}>
+              <Tooltip title={loading ? (translate('common.refreshing') || 'Refreshing...') : (translate('common.refresh') || 'Refresh Data')}>
                 <span>
                   <Fab
                     size="medium"
                     color="primary"
                     onClick={handleRefresh}
                     disabled={loading}
-                    sx={{ boxShadow: 3 }}
+                    sx={{ 
+                      boxShadow: 3,
+                      margin: isRTL ? '0 4px 0 0' : '0 0 0 4px'
+                    }}
                   >
                     {loading ? <CircularProgress size={24} color="inherit" /> : <RefreshIcon />}
                   </Fab>
                 </span>
               </Tooltip>
 
-              <Tooltip title="Settings">
+              <Tooltip title={translate('common.settings') || 'Settings'}>
                 <IconButton
                   onClick={handleSettingsOpen}
                   sx={{
                     bgcolor: 'background.paper',
                     boxShadow: 2,
-                    '&:hover': { boxShadow: 4 }
+                    '&:hover': { boxShadow: 4 },
+                    margin: isRTL ? '0 4px 0 0' : '0 0 0 4px'
                   }}
                 >
                   <SettingsIcon />
@@ -472,7 +566,7 @@ const Dashboard = () => {
               sx: {
                 minWidth: 240,
                 borderRadius: 2,
-                boxShadow: theme.shadows[8]
+                boxShadow: muiTheme.shadows[8]
               }
             }
           }}
@@ -494,6 +588,9 @@ const Dashboard = () => {
             <ListItemText>Refresh Data</ListItemText>
           </MenuItem>
         </Menu>
+
+        {/* Sync Progress Bar */}
+        <SyncProgressBar progressData={syncProgress} />
 
         {/* Main Content */}
         {loading && (

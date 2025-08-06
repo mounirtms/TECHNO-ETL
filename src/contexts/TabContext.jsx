@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material'; // Add Box import for error rendering
-import { MENU_ITEMS } from '../components/Layout/Constants';
+import { MENU_TREE, MENU_ITEMS } from '../components/Layout/MenuTree';
 
 // Import all components dynamically
 import Dashboard from '../pages/Dashboard'; 
@@ -22,6 +22,16 @@ import ProductManagementPage from '../pages/ProductManagementPage';
 import VotingPage from '../pages/VotingPage';
 import ChartsPage from '../pages/ChartsPage';
 import BugBountyPage from '../pages/BugBountyPage';
+import LicenseManagement from '../components/License/LicenseManagement';
+import LicenseStatus from '../components/License/LicenseStatus';
+import {
+    SalesAnalytics,
+    InventoryAnalytics,
+    SecureVault,
+    AccessControl,
+    MDMStock,
+    MDMSources
+} from '../components/placeholders/PlaceholderComponents';
 
 // URL to Tab ID mapping
 const URL_TO_TAB_MAP = {
@@ -41,7 +51,15 @@ const URL_TO_TAB_MAP = {
     '/profile': 'UserProfile',
     '/cms-pages': 'CmsPageGrid',
     '/grid-test': 'GridTestPage',
-    '/bug-bounty': 'BugBounty'
+    '/bug-bounty': 'BugBounty',
+    '/license-management': 'LicenseManagement',
+    '/license': 'LicenseStatus',
+    '/analytics/sales': 'SalesAnalytics',
+    '/analytics/inventory': 'InventoryAnalytics',
+    '/locker/vault': 'SecureVault',
+    '/locker/access': 'AccessControl',
+    '/mdm-stock': 'MDMStock',
+    '/mdm-sources': 'MDMSources'
 };
 
 // Tab ID to URL mapping
@@ -67,7 +85,15 @@ const COMPONENT_MAP = {
     CegidProductsGrid: CegidGrid,
     CmsPageGrid: CmsPageGrid,
     GridTestPage: GridTestPage,
-    BugBounty: BugBountyPage
+    BugBounty: BugBountyPage,
+    LicenseManagement: LicenseManagement,
+    LicenseStatus: LicenseStatus,
+    SalesAnalytics: SalesAnalytics,
+    InventoryAnalytics: InventoryAnalytics,
+    SecureVault: SecureVault,
+    AccessControl: AccessControl,
+    MDMStock: MDMStock,
+    MDMSources: MDMSources
 };
 
 const TabContext = createContext();

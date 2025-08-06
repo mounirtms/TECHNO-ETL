@@ -3,6 +3,7 @@
  * Dynamic and responsive Looker Studio embed with professional UI
  */
 import React, { useState, useEffect } from 'react';
+import unifiedMagentoService from '../services/unifiedMagentoService';
 import {
   Box,
   Container,

@@ -166,7 +166,20 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                             <SettingsProvider>
                                 <AppInitializer>
                                     <CssBaseline />
-                                    <ToastContainer position="bottom-left" autoClose={3000} limit={3} />
+                                    <ToastContainer 
+                                        position="top-center" 
+                                        autoClose={2500} 
+                                        limit={2}
+                                        hideProgressBar={false}
+                                        newestOnTop={true}
+                                        closeOnClick={true}
+                                        rtl={false}
+                                        pauseOnFocusLoss={false}
+                                        draggable={true}
+                                        pauseOnHover={true}
+                                        theme="colored"
+                                        style={{ zIndex: 9999 }}
+                                    />
 
                         <RouteErrorBoundary>
                             <Suspense fallback={<LoadingFallback />}>

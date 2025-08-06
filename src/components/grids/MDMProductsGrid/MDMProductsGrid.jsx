@@ -1,5 +1,7 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Box, LinearProgress, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { useCustomTheme } from '../../../contexts/ThemeContext';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
@@ -10,6 +12,7 @@ import { useMDMCustomActions, useMDMContextMenuActions } from './MDMToolbar';
 
 // Unified Grid System
 import UnifiedGrid from '../../common/UnifiedGrid';
+import GridErrorBoundary from '../../common/GridErrorBoundary';
 import { getStandardGridProps, getStandardToolbarConfig } from '../../../config/gridConfig';
 
 // Services and Utils
@@ -25,6 +28,10 @@ import sourceMapping from '../../../utils/sources';
  * - Optimized data fetching
  */
 const MDMProductsGrid = () => {
+  // ===== THEME AND UI =====
+  const theme = useTheme();
+  const { mode, isDark, colorPreset, density, animations } = useCustomTheme();
+  
   // ===== STATE MANAGEMENT =====
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -493,7 +500,7 @@ const MDMProductsGrid = () => {
     try {
       setLoading(true);
       toast.info(`Marking changed stocks for source: ${sourceFilter}...`);
-      await axios.get('/api/mdm/inventory/sync-stocks', {
+      await axios.get('/api/mdm/inventory/sync/stocks', {
         params: { sourceCode: sourceFilter }
       });
       toast.success(`Changed stocks for source ${sourceFilter} marked for sync.`);

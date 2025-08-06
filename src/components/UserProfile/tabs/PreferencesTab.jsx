@@ -57,7 +57,22 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 const PreferencesTab = () => {
-    const { mode, toggleTheme, fontSize, setFontSize } = useCustomTheme();
+    const { 
+        mode, 
+        toggleTheme, 
+        setThemeMode, 
+        fontSize, 
+        setFontSize,
+        colorPreset,
+        setColorPreset,
+        density,
+        setDensity,
+        animations,
+        setAnimations,
+        highContrast,
+        setHighContrast,
+        themePresets
+    } = useCustomTheme();
     const { currentLanguage, setLanguage, translate, languages } = useLanguage();
     const { currentUser } = useAuth();
     const { settings, updateSettings, saveSettings, resetSettings, exportSettings, importSettings, loading, isDirty } = useSettings();
@@ -80,7 +95,27 @@ const PreferencesTab = () => {
     };
 
     const handlePreferenceChange = (section, key, value) => {
+        // Update settings in the context
         updateSettings({ [key]: value }, 'preferences');
+        
+        // Apply theme changes immediately for better UX
+        if (key === 'theme') {
+            setThemeMode(value);
+        } else if (key === 'fontSize') {
+            setFontSize(value);
+        } else if (key === 'colorPreset') {
+            setColorPreset(value);
+        } else if (key === 'density') {
+            setDensity(value);
+        } else if (key === 'animations') {
+            setAnimations(value);
+        } else if (key === 'highContrast') {
+            setHighContrast(value);
+        } else if (key === 'language') {
+            setLanguage(value);
+        }
+        
+        console.log(`Preference ${key} changed to:`, value);
     };
 
     const handleSave = async () => {
@@ -224,8 +259,11 @@ const PreferencesTab = () => {
                             <FormControl fullWidth>
                                 <InputLabel>{translate('profile.preferences.appearance.theme.title')}</InputLabel>
                                 <Select
-                                    value={prefs.theme || 'system'}
-                                    onChange={(e) => handlePreferenceChange('preferences', 'theme', e.target.value)}
+                                    value={prefs.theme || mode || 'system'}
+                                    onChange={(e) => {
+                                        handlePreferenceChange('preferences', 'theme', e.target.value);
+                                        setThemeMode(e.target.value);
+                                    }}
                                     label={translate('profile.preferences.appearance.theme.title')}
                                 >
                                     <MenuItem value="light">{translate('profile.preferences.appearance.theme.light')}</MenuItem>
@@ -259,13 +297,36 @@ const PreferencesTab = () => {
                             <FormControl fullWidth>
                                 <InputLabel>{translate('profile.preferences.appearance.density.title')}</InputLabel>
                                 <Select
-                                    value={prefs.density || 'standard'}
-                                    onChange={(e) => handlePreferenceChange('preferences', 'density', e.target.value)}
+                                    value={density || 'standard'}
+                                    onChange={(e) => {
+                                        handlePreferenceChange('preferences', 'density', e.target.value);
+                                        setDensity(e.target.value);
+                                    }}
                                     label={translate('profile.preferences.appearance.density.title')}
                                 >
                                     <MenuItem value="compact">{translate('profile.preferences.appearance.density.compact')}</MenuItem>
                                     <MenuItem value="standard">{translate('profile.preferences.appearance.density.standard')}</MenuItem>
                                     <MenuItem value="comfortable">{translate('profile.preferences.appearance.density.comfortable')}</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+
+                        {/* Color Preset */}
+                        <Grid item xs={12} md={6}>
+                            <FormControl fullWidth>
+                                <InputLabel>Color Theme</InputLabel>
+                                <Select
+                                    value={colorPreset || 'techno'}
+                                    onChange={(e) => {
+                                        handlePreferenceChange('preferences', 'colorPreset', e.target.value);
+                                        setColorPreset(e.target.value);
+                                    }}
+                                    label="Color Theme"
+                                >
+                                    <MenuItem value="techno">Techno Orange</MenuItem>
+                                    <MenuItem value="blue">Professional Blue</MenuItem>
+                                    <MenuItem value="green">Nature Green</MenuItem>
+                                    <MenuItem value="purple">Creative Purple</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>
