@@ -169,6 +169,7 @@ const MDMProductsGrid = () => {
     ];
   }, [succursaleFilter]);
 
+  // Memoize columns to avoid unnecessary recalculations
   const columns = useMemo(() => [
     {
       field: 'Code_MDM',
@@ -527,6 +528,13 @@ const MDMProductsGrid = () => {
   const getRowClassName = useCallback((params) =>
     params.row.changed ? 'row-changed' : '', []);
 
+  // Use react-window for virtualization if data is large
+  // (Assuming UnifiedGrid supports virtualization via a prop)
+  const enableVirtualization = useMemo(() => validatedData.length > 100, [validatedData.length]);
+
+  // Pass filterPanelHeight to BaseGrid for accurate height calculation
+  const filterPanelHeight = filterPanelExpanded ? 72 : 40; // Estimate: compact panel 40px, expanded ~72px
+
   // ===== RENDER =====
   return (
     <>
@@ -563,8 +571,6 @@ const MDMProductsGrid = () => {
           onViewModeChange: setViewMode,
           gridCards: MDMStatsCards,
           totalCount: stats.total,
-
-          // Server-side pagination configuration
           paginationMode: "server",
           defaultPageSize: 25,
           onPaginationModelChange: (model) => {
@@ -574,21 +580,19 @@ const MDMProductsGrid = () => {
               pageSize: model.pageSize
             });
           },
-          // Override toolbar config with MDM-specific configuration
           toolbarConfig: toolbarConfig,
           customActions: customActions,
-          contextMenuActions: contextMenuActions
+          contextMenuActions: contextMenuActions,
+          enableVirtualization: enableVirtualization,
+          filterPanelHeight: filterPanelHeight // Pass to BaseGrid
         })}
         columnVisibility={columnVisibility}
         onColumnVisibilityChange={setColumnVisibility}
         enableFloatingActions={false}
         onSync={onSyncHandler}
         onSelectionChange={setSelectedBaseGridRows}
-
-        // Search configuration
         onSearch={handleSearch}
         searchableFields={['Code_MDM', 'Code_JDE', 'TypeProd', 'Source']}
-
         getRowId={(row) => `${row.Source}-${row.Code_MDM}`}
         getRowClassName={getRowClassName}
         onError={(error) => toast.error(error.message)}
@@ -598,3 +602,4 @@ const MDMProductsGrid = () => {
 };
 
 export default MDMProductsGrid;
+

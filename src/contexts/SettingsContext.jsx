@@ -1,22 +1,24 @@
 /**
  * Enhanced Settings Context for TECHNO-ETL
  * Manages all user preferences, settings, and their persistence
+ * Professional unified settings management system
  */
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { ref, set, onValue } from 'firebase/database';
 import { database } from '../config/firebase';
 import { useAuth } from './AuthContext';
-import { useCustomTheme } from './ThemeContext';
-import { useLanguage } from './LanguageContext';
-import { 
-    getUserSettings, 
-    saveSettingsLocally, 
-    getDefaultSettings, 
-    resetSettingsToDefaults,
-    mergeWithDefaults,
-    applyUserPreferences,
+import {
     saveUserSettings
 } from '../services/userService';
+import {
+    getUnifiedSettings,
+    saveUnifiedSettings,
+    getUserSettings,
+    getDefaultSettings,
+    resetToSystemDefaults,
+    applyLanguageSettings,
+    getSystemPreferences
+} from '../utils/unifiedSettingsManager';
 import { toast } from 'react-toastify';
 
 const SettingsContext = createContext();
@@ -31,68 +33,109 @@ export const useSettings = () => {
 
 export const SettingsProvider = ({ children }) => {
     const { currentUser } = useAuth();
-    const { mode, toggleTheme, fontSize, setFontSize, applyUserThemeSettings } = useCustomTheme();
-    const { currentLanguage, setLanguage, applyUserLanguageSettings } = useLanguage();
-    
-    const [settings, setSettings] = useState(() => getUserSettings());
+
+    // Initialize settings with defaults first
+    const [settings, setSettings] = useState(null);
+
     const [loading, setLoading] = useState(false);
     const [isDirty, setIsDirty] = useState(false);
     const [lastSyncTime, setLastSyncTime] = useState(() => {
         return localStorage.getItem('settingsLastModified') || null;
     });
 
-    // Apply settings when they change - integrate with unified theme system
+    // Simple merge function for settings
+    const mergeWithDefaults = (userSettings) => {
+        const defaults = getDefaultSettings();
+        return { ...defaults, ...userSettings };
+    };
+
+    // Initialize settings on mount with comprehensive error handling
     useEffect(() => {
-        if (settings?.preferences) {
-            // Apply theme settings through the unified theme context
-            applyUserThemeSettings(settings);
+        const initializeSettings = async () => {
+            setLoading(true);
+            try {
+                let initialSettings;
 
-            // Apply language settings
-            if (applyUserLanguageSettings) {
-                applyUserLanguageSettings(settings);
-            }
-
-            // Apply other user preferences
-            applyUserPreferences(settings, {
-                setLanguage,
-                setTheme: (theme) => {
-                    if (theme !== mode) {
-                        toggleTheme();
+                if (currentUser) {
+                    // Try to get user settings with fallback
+                    try {
+                        initialSettings = getUserSettings(currentUser.uid);
+                        if (!initialSettings || Object.keys(initialSettings).length === 0) {
+                            console.warn('Empty user settings, using defaults');
+                            initialSettings = getDefaultSettings();
+                        }
+                    } catch (userError) {
+                        console.warn('Failed to load user settings, using defaults:', userError);
+                        initialSettings = getDefaultSettings();
                     }
-                },
-                setFontSize
-            });
-        }
-    }, [settings?.preferences, applyUserThemeSettings, applyUserLanguageSettings, setLanguage, toggleTheme, setFontSize, mode]);
+                } else {
+                    // Try to get unified settings with fallback
+                    try {
+                        initialSettings = getUnifiedSettings();
+                        if (!initialSettings || Object.keys(initialSettings).length === 0) {
+                            console.warn('Empty unified settings, using defaults');
+                            initialSettings = getDefaultSettings();
+                        }
+                    } catch (unifiedError) {
+                        console.warn('Failed to load unified settings, using defaults:', unifiedError);
+                        initialSettings = getDefaultSettings();
+                    }
+                }
 
-    // Unified settings management
-    const getUnifiedSettings = useCallback(() => {
-        try {
-            const unifiedSettings = localStorage.getItem('techno-etl-settings');
-            if (unifiedSettings) {
-                return JSON.parse(unifiedSettings);
+                // Validate settings structure
+                const validatedSettings = mergeWithDefaults(initialSettings);
+                setSettings(validatedSettings);
+
+                // Apply language settings with error handling
+                if (validatedSettings.language) {
+                    try {
+                        applyLanguageSettings(validatedSettings.language);
+                    } catch (langError) {
+                        console.warn('Failed to apply language settings:', langError);
+                    }
+                }
+
+                console.log('✅ Settings initialized successfully');
+            } catch (error) {
+                console.error('❌ Critical error initializing settings:', error);
+                // Last resort fallback
+                const fallbackSettings = getDefaultSettings();
+                setSettings(fallbackSettings);
+                toast.error('Failed to load user preferences. Using defaults.');
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            console.warn('Error parsing unified settings:', error);
-        }
-        return null;
-    }, []);
+        };
 
-    const saveUnifiedSettings = useCallback((newSettings) => {
-        try {
-            const currentSettings = getUnifiedSettings() || {};
-            const updatedSettings = { ...currentSettings, ...newSettings };
-            localStorage.setItem('techno-etl-settings', JSON.stringify(updatedSettings));
-        } catch (error) {
-            console.error('Error saving unified settings:', error);
+        initializeSettings();
+    }, [currentUser]);
+
+    // Apply settings when they change
+    useEffect(() => {
+        if (settings) {
+            // Apply language settings immediately
+            if (settings.language) {
+                applyLanguageSettings(settings.language);
+            }
+
+            // Notify other contexts about settings changes
+            window.dispatchEvent(new CustomEvent('settingsChanged', {
+                detail: settings
+            }));
         }
-    }, [getUnifiedSettings]);
+    }, [settings]);
+
+
 
     // Enhanced settings persistence with session management
     const persistSettings = useCallback(async (newSettings) => {
         try {
             // Always save locally first for immediate availability
-            saveSettingsLocally(newSettings);
+            if (currentUser) {
+                saveUserSettings(currentUser.uid, newSettings);
+            } else {
+                saveUnifiedSettings(newSettings);
+            }
             
             // Save to unified localStorage system
             const unifiedSettings = {
@@ -139,6 +182,60 @@ export const SettingsProvider = ({ children }) => {
         }
     }, [currentUser]);
 
+    // Define loadRemoteSettings first
+    const loadRemoteSettings = useCallback(async () => {
+        if (!currentUser) return;
+
+        setLoading(true);
+        try {
+            // Try to load from Firebase/remote first
+            let userSettings = null;
+
+            try {
+                // In a real app, you would fetch from your backend/Firebase
+                // For now, we'll simulate remote loading with local storage
+                const remoteSettings = localStorage.getItem(`userSettings_${currentUser.uid}`);
+                if (remoteSettings) {
+                    userSettings = JSON.parse(remoteSettings);
+                }
+            } catch (remoteError) {
+                console.warn('Failed to load remote settings, using local:', remoteError);
+            }
+
+            // Fallback to local settings
+            if (!userSettings) {
+                userSettings = getUserSettings();
+            }
+
+            // Merge with defaults to ensure all properties exist
+            const mergedSettings = mergeWithDefaults(userSettings);
+            setSettings(mergedSettings);
+
+            // Apply settings through unified system
+            if (mergedSettings.language) {
+                applyLanguageSettings(mergedSettings.language);
+            }
+
+            // Notify other contexts about user settings
+            window.dispatchEvent(new CustomEvent('userSettingsLoaded', {
+                detail: mergedSettings
+            }));
+
+            console.log('User settings loaded and applied successfully');
+            toast.success('Welcome back! Your preferences have been restored.');
+
+        } catch (error) {
+            console.error('Error loading user settings:', error);
+            toast.error('Failed to load your settings. Using defaults.');
+
+            // Load defaults on error
+            const defaults = getDefaultSettings();
+            setSettings(defaults);
+        } finally {
+            setLoading(false);
+        }
+    }, [currentUser]);
+
     // Load settings when user logs in with enhanced session management
     useEffect(() => {
         if (currentUser) {
@@ -159,9 +256,8 @@ export const SettingsProvider = ({ children }) => {
                         localStorage.setItem('settingsLastModified', remoteSettings.lastModified.toString());
                         
                         // Apply settings immediately
-                        applyUserThemeSettings(mergedSettings);
-                        if (applyUserLanguageSettings) {
-                            applyUserLanguageSettings(mergedSettings);
+                        if (mergedSettings.language) {
+                            applyLanguageSettings(mergedSettings.language);
                         }
                     }
                 }
@@ -193,66 +289,23 @@ export const SettingsProvider = ({ children }) => {
             }
             setIsDirty(false);
         }
-    }, [currentUser, loadRemoteSettings, applyUserThemeSettings, applyUserLanguageSettings]);
+    }, [currentUser, loadRemoteSettings]);
 
     // Auto-save to local storage when settings change
     useEffect(() => {
         if (isDirty) {
             const timeoutId = setTimeout(() => {
-                saveSettingsLocally(settings);
+                if (currentUser) {
+                    saveUserSettings(currentUser.uid, settings);
+                } else {
+                    saveUnifiedSettings(settings);
+                }
                 setIsDirty(false);
             }, 1000); // 1 second debounce
 
             return () => clearTimeout(timeoutId);
         }
     }, [settings, isDirty]);
-
-    const loadRemoteSettings = useCallback(async () => {
-        if (!currentUser) return;
-
-        setLoading(true);
-        try {
-            // Try to load from Firebase/remote first
-            let userSettings = null;
-
-            try {
-                // In a real app, you would fetch from your backend/Firebase
-                // For now, we'll simulate remote loading with local storage
-                const remoteSettings = localStorage.getItem(`userSettings_${currentUser.uid}`);
-                if (remoteSettings) {
-                    userSettings = JSON.parse(remoteSettings);
-                }
-            } catch (remoteError) {
-                console.warn('Failed to load remote settings, using local:', remoteError);
-            }
-
-            // Fallback to local settings
-            if (!userSettings) {
-                userSettings = getUserSettings();
-            }
-
-            // Merge with defaults to ensure all properties exist
-            const mergedSettings = mergeWithDefaults(userSettings);
-            setSettings(mergedSettings);
-
-            // Apply theme and language settings immediately
-            applyUserThemeSettings(mergedSettings);
-            applyUserLanguageSettings(mergedSettings);
-
-            console.log('User settings loaded and applied successfully');
-            toast.success('Welcome back! Your preferences have been restored.');
-
-        } catch (error) {
-            console.error('Error loading user settings:', error);
-            toast.error('Failed to load your settings. Using defaults.');
-
-            // Load defaults on error
-            const defaults = getDefaultSettings();
-            setSettings(defaults);
-        } finally {
-            setLoading(false);
-        }
-    }, [currentUser, applyUserThemeSettings, applyUserLanguageSettings]);
 
     const updateSettings = useCallback((updates, section = null) => {
         setSettings(prevSettings => {
@@ -313,8 +366,13 @@ export const SettingsProvider = ({ children }) => {
         setLoading(true);
         try {
             // Save locally first
-            const localSaved = saveSettingsLocally(settings);
-            
+            let localSaved;
+            if (currentUser) {
+                localSaved = saveUserSettings(currentUser.uid, settings);
+            } else {
+                localSaved = saveUnifiedSettings(settings);
+            }
+
             if (!localSaved) {
                 throw new Error('Failed to save settings locally');
             }

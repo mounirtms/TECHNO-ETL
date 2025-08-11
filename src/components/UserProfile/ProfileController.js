@@ -6,78 +6,23 @@ import { useState, useEffect } from 'react';
 
 export const useProfileController = () => {
     const { currentUser } = useAuth();
-    const { settings, updateSettings, saveSettings } = useSettings();
+    const { settings, updateSettings, saveSettings, loading: settingsLoading, isDirty: settingsIsDirty } = useSettings();
 
-    // Use settings from SettingsContext instead of local state
-    const [userData, setUserDataState] = useState(settings);
-    const [loading, setLoading] = useState(false);
+    // Remove duplicate state - use SettingsContext state directly
     const [error, setError] = useState(null);
-    const [isDirty, setIsDirty] = useState(false);
-    const [lastSyncTime, setLastSyncTime] = useState(() => {
-        return localStorage.getItem('lastSyncTime') || null;
-    });
 
-    // Sync with Firebase when component mounts
+    // Simplified initialization - let SettingsContext handle the heavy lifting
     useEffect(() => {
         if (!currentUser) {
-            setUserDataState(getDefaultSettings());
-            setLoading(false);
+            setError(null);
             return;
         }
 
-        const unsubscribe = getUserProfileData(currentUser.uid, (data) => {
-            try {
-                if (data) {
-                    // Merge with defaults to ensure all fields exist
-                    const defaults = getDefaultSettings();
-                    const mergedData = {
-                        personalInfo: { ...defaults.personalInfo, ...data.personalInfo },
-                        apiSettings: { ...defaults.apiSettings, ...data.apiSettings },
-                        preferences: { ...defaults.preferences, ...data.preferences }
-                    };
-
-                    // Only update if data is newer than local storage
-                    const serverTimestamp = data.lastModified || Date.now();
-                    if (!lastSyncTime || serverTimestamp > parseInt(lastSyncTime)) {
-                        setUserDataState(mergedData);
-                        // Update settings context which will handle preference application
-                        updateSettings(mergedData);
-                        localStorage.setItem('userSettings', JSON.stringify(mergedData));
-                        localStorage.setItem('lastSyncTime', serverTimestamp.toString());
-                        setLastSyncTime(serverTimestamp.toString());
-                    }
-                }
-                setLoading(false);
-            } catch (err) {
-                console.error('Error loading user data:', err);
-                setError(err);
-                setLoading(false);
-            }
-        });
-
-        return () => {
-            if (typeof unsubscribe === 'function') {
-                unsubscribe();
-            }
-        };
+        // SettingsContext already handles Firebase sync, just clear any errors
+        setError(null);
     }, [currentUser]);
 
-    // Sync userData with settings when settings change
-    useEffect(() => {
-        setUserDataState(settings);
-    }, [settings]);
-
-    // Debounced auto-save to local storage
-    useEffect(() => {
-        if (userData) {
-            const timeoutId = setTimeout(() => {
-                localStorage.setItem('userSettings', JSON.stringify(userData));
-                setIsDirty(true);
-            }, 500); // 500ms debounce
-
-            return () => clearTimeout(timeoutId);
-        }
-    }, [userData]);
+    // Remove duplicate effects - SettingsContext handles this
 
     const updateUserData = (updates, section) => {
         if (!currentUser) {
@@ -85,31 +30,8 @@ export const useProfileController = () => {
             return;
         }
 
-        // Use SettingsContext for updates
+        // Use SettingsContext for updates - it handles everything
         updateSettings(updates, section);
-
-        // Also update local state for immediate UI feedback
-        setUserDataState(prevData => {
-            const newData = { ...prevData };
-
-            if (section) {
-                newData[section] = {
-                    ...prevData[section],
-                    ...updates
-                };
-            } else {
-                Object.keys(updates).forEach(key => {
-                    if (newData[key]) {
-                        newData[key] = {
-                            ...newData[key],
-                            ...updates[key]
-                        };
-                    }
-                });
-            }
-
-            return newData;
-        });
     };
 
     const saveUserData = async (forceSave = false) => {
@@ -123,8 +45,8 @@ export const useProfileController = () => {
     };
 
     return {
-        userData,
-        loading,
+        userData: settings, // Use settings directly from SettingsContext
+        loading: settingsLoading, // Use loading from SettingsContext
         error,
         updateUserData,
         saveUserData

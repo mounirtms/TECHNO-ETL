@@ -5,7 +5,7 @@
  * and a fork mode for the scheduled cron worker.
  *
  * To use:
- *   - Start all: pm2 start backend/ecosystem.config.js
+ *   - Start all: pm2 start ecosystem.config.js
  *   - Stop all:  pm2 stop all
  *   - Reload API: pm2 reload techno-etl-api
  *   - Logs:      pm2 logs <name>
@@ -14,7 +14,7 @@ module.exports = {
   apps: [
     {
       name: 'techno-etl-api',
-      script: './server.js', // Fixed: Use actual server file
+      script: process.env.NODE_ENV === 'production' ? './dist/server.js' : './server.js',
       instances: 'max', // Use all available CPU cores
       exec_mode: 'cluster', // Enable cluster mode for the API
       autorestart: true,
@@ -44,7 +44,7 @@ module.exports = {
     },
     {
       name: 'techno-etl-cron',
-      script: './cron-runner.js', // Fixed: Use actual cron file
+      script: process.env.NODE_ENV === 'production' ? './dist/cron-runner.js' : './cron-runner.js',
       instances: 1,
       exec_mode: 'fork', // Cron jobs should run in a single instance
       cron_restart: '0 2 * * *', // Run every day at 2:00 AM

@@ -12,8 +12,7 @@ import {
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import UnifiedGrid from '../components/common/UnifiedGrid';
-import { getStandardGridProps, getStandardToolbarConfig } from '../config/gridConfig';
-import { createProductionGridConfig } from '../config/productionGridConfig';
+import { getStandardGridProps, getStandardToolbarConfig, getGridConfig } from '../config/gridConfig';
 import ProfessionalVotingGrid from '../components/grids/ProfessionalVotingGrid';
 import VotingGrid from '../components/grids/VotingGrid';
 
@@ -228,10 +227,10 @@ const GridTestPage = () => {
 
   // Get current grid data and columns
   const currentGridData = gridTypes[selectedGridType];
-  const productionConfig = createProductionGridConfig(selectedGridType, {
+  const standardConfig = getGridConfig(selectedGridType, {
     features: gridConfig,
-    performance: {
-      DEFAULT_PAGE_SIZE: gridConfig.pageSize
+    pagination: {
+      defaultPageSize: gridConfig.pageSize
     }
   });
 

@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCustomTheme } from '../contexts/ThemeContext';
 import { useTheme as useMuiTheme } from '@mui/material/styles';
+import { useSettings } from '../contexts/SettingsContext';
 import magentoApi from './magentoApi';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -78,6 +79,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
     const { setLanguage } = useLanguage();
     const themeCtx = useCustomTheme();
     const theme = useMuiTheme();
+    const { settings: globalSettings, updateSettings } = useSettings();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [stats, setStats] = useState({});

@@ -4,6 +4,7 @@
         "logout": "Déconnexion",
         "settings": "Paramètres",
         "refresh": "Actualiser",
+        "refreshing": "Actualisation...",
         "changeLanguage": "Changer de langue",
         "user": "Utilisateur",
         "expandMenu": "Développer le menu",

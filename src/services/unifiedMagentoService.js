@@ -76,32 +76,76 @@ class UnifiedMagentoService extends BaseApiService {
   }
 
   // Override main request method with intelligent routing
-  async request(method, endpoint, data = {}, config = {}) {
-    const context = { method, endpoint, showToast: config.showToast };
+  async request(method, endpoint, data, config = {}) {
+    const startTime = Date.now();
     
-    return this._retryRequest(async () => {
-      let response;
-      
-      if (this.magentoState.directEnabled && directMagentoClient.initialized) {
-        try {
-          console.log('🔄 Direct:', method.toUpperCase(), endpoint);
-          response = await directMagentoClient[method.toLowerCase()](endpoint, data, config);
-          this.magentoState.directMetrics.success++;
-        } catch (error) {
-          console.warn('⚠️ Direct failed, using proxy:', error.message);
-          this.magentoState.directMetrics.errors++;
-          response = await this.proxyClient.request({ ...config, method, url: endpoint, data });
-          this.magentoState.proxyMetrics.success++;
+    try {
+        let response;
+        
+        // Try direct connection first if enabled
+        if (this.magentoState.directEnabled && directMagentoClient.initialized) {
+            try {
+                console.log(`🔗 Direct API call: ${method.toUpperCase()} ${endpoint}`);
+                response = await directMagentoClient[method.toLowerCase()](endpoint, data, config);
+                this.magentoState.directMetrics.success++;
+                this.state.metrics.success++;
+                return { data: response };
+            } catch (directError) {
+                console.warn(`❌ Direct connection failed for ${endpoint}:`, directError.message);
+                this.magentoState.directMetrics.errors++;
+                
+                // Don't fallback to proxy for 404 errors (endpoint doesn't exist)
+                if (directError.response?.status === 404) {
+                    throw directError;
+                }
+            }
         }
-      } else {
-        console.log('🔄 Proxy:', method.toUpperCase(), endpoint);
-        response = await this.proxyClient.request({ ...config, method, url: endpoint, data });
+        
+        // Fallback to proxy connection
+        console.log(`🔄 Proxy API call: ${method.toUpperCase()} ${endpoint}`);
+        response = await this.proxyClient.request({
+            method,
+            url: endpoint,
+            data,
+            ...config
+        });
+        
         this.magentoState.proxyMetrics.success++;
-      }
-      
-      return response;
-    }, 0, context);
-  }
+        this.state.metrics.success++;
+        
+        return response;
+        
+    } catch (error) {
+        const duration = Date.now() - startTime;
+        this.state.metrics.errors++;
+        this.state.metrics.lastError = {
+            endpoint,
+            method,
+            message: error.message,
+            timestamp: new Date().toISOString()
+        };
+        
+        // Enhanced error logging
+        console.error(`🚨 API Error [${method} ${endpoint}]:`, {
+            message: error.message,
+            status: error.response?.status,
+            duration: `${duration}ms`,
+            directEnabled: this.magentoState.directEnabled,
+            proxyEnabled: true
+        });
+        
+        // Don't show toast for 404 errors (expected for non-existent endpoints)
+        if (error.response?.status !== 404) {
+            this._handleError(error, method, endpoint);
+        }
+        
+        throw error;
+    } finally {
+        const duration = Date.now() - startTime;
+        this.state.metrics.avgResponseTime = 
+            (this.state.metrics.avgResponseTime + duration) / 2;
+    }
+}
 
   // Override HTTP methods to use parent's parameter validation
   async get(endpoint, params = {}) {

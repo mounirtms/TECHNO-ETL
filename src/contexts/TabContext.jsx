@@ -3,35 +3,36 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material'; // Add Box import for error rendering
 import { MENU_TREE, MENU_ITEMS } from '../components/Layout/MenuTree';
 
-// Import all components dynamically
-import Dashboard from '../pages/Dashboard'; 
+// Import components lazily to avoid circular dependencies
+import { lazy } from 'react';
 
-import CmsPageGrid from '../components/grids/magento/CmsPagesGrid'; 
-import ProductsGrid from '../components/grids/magento/ProductsGrid';
-import MDMProductsGrid from '../components/grids/MDMProductsGrid/MDMProductsGrid';
-import CustomersGrid from '../components/grids/magento/CustomersGrid';
-import OrdersGrid from '../components/grids/magento/OrdersGrid';
-import InvoicesGrid from '../components/grids/magento/InvoicesGrid';
-import UserProfile from '../components/UserProfile';
-import CategoryTree from '../components/grids/magento/CategoryGrid';
-import StocksGrid from '../components/grids/magento/StocksGrid';
-import SourcesGrid from '../components/grids/magento/SourcesGrid';
-import CegidGrid from '../components/grids/CegidGrid';
-import GridTestPage from '../pages/GridTestPage';
-import ProductManagementPage from '../pages/ProductManagementPage';
-import VotingPage from '../pages/VotingPage';
-import ChartsPage from '../pages/ChartsPage';
-import BugBountyPage from '../pages/BugBountyPage';
-import LicenseManagement from '../components/License/LicenseManagement';
-import LicenseStatus from '../components/License/LicenseStatus';
-import {
-    SalesAnalytics,
-    InventoryAnalytics,
-    SecureVault,
-    AccessControl,
-    MDMStock,
-    MDMSources
-} from '../components/placeholders/PlaceholderComponents';
+const Dashboard = lazy(() => import('../pages/Dashboard'));
+const CmsPageGrid = lazy(() => import('../components/grids/magento/CmsPagesGrid'));
+const ProductsGrid = lazy(() => import('../components/grids/magento/ProductsGrid'));
+const MDMProductsGrid = lazy(() => import('../components/grids/MDMProductsGrid/MDMProductsGrid'));
+const CustomersGrid = lazy(() => import('../components/grids/magento/CustomersGrid'));
+const OrdersGrid = lazy(() => import('../components/grids/magento/OrdersGrid'));
+const InvoicesGrid = lazy(() => import('../components/grids/magento/InvoicesGrid'));
+const UserProfile = lazy(() => import('../components/UserProfile'));
+const CategoryTree = lazy(() => import('../components/grids/magento/CategoryGrid'));
+const StocksGrid = lazy(() => import('../components/grids/magento/StocksGrid'));
+const SourcesGrid = lazy(() => import('../components/grids/magento/SourcesGrid'));
+const CegidGrid = lazy(() => import('../components/grids/CegidGrid'));
+const GridTestPage = lazy(() => import('../pages/GridTestPage'));
+const ProductManagementPage = lazy(() => import('../pages/ProductManagementPage'));
+const VotingPage = lazy(() => import('../pages/VotingPage'));
+const ChartsPage = lazy(() => import('../pages/ChartsPage'));
+const BugBountyPage = lazy(() => import('../pages/BugBountyPage'));
+const LicenseManagement = lazy(() => import('../components/License/LicenseManagement'));
+const LicenseStatus = lazy(() => import('../components/License/LicenseStatus'));
+
+// Lazy load placeholder components
+const SalesAnalytics = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.SalesAnalytics })));
+const InventoryAnalytics = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.InventoryAnalytics })));
+const SecureVault = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.SecureVault })));
+const AccessControl = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.AccessControl })));
+const MDMStock = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.MDMStock })));
+const MDMSources = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.MDMSources })));
 
 // URL to Tab ID mapping
 const URL_TO_TAB_MAP = {
@@ -48,7 +49,6 @@ const URL_TO_TAB_MAP = {
     '/categories': 'CategoryTree',
     '/stocks': 'StocksGrid',
     '/sources': 'SourcesGrid',
-    '/profile': 'UserProfile',
     '/cms-pages': 'CmsPageGrid',
     '/grid-test': 'GridTestPage',
     '/bug-bounty': 'BugBounty',
@@ -59,7 +59,8 @@ const URL_TO_TAB_MAP = {
     '/locker/vault': 'SecureVault',
     '/locker/access': 'AccessControl',
     '/mdm-stock': 'MDMStock',
-    '/mdm-sources': 'MDMSources'
+    '/mdm-sources': 'MDMSources',
+    '/profile': 'UserProfile'
 };
 
 // Tab ID to URL mapping
@@ -78,7 +79,6 @@ const COMPONENT_MAP = {
     CustomersGrid: CustomersGrid,
     OrdersGrid: OrdersGrid,
     InvoicesGrid: InvoicesGrid,
-    UserProfile: UserProfile,
     CategoryTree: CategoryTree,
     StocksGrid: StocksGrid,
     SourcesGrid: SourcesGrid,
@@ -93,7 +93,8 @@ const COMPONENT_MAP = {
     SecureVault: SecureVault,
     AccessControl: AccessControl,
     MDMStock: MDMStock,
-    MDMSources: MDMSources
+    MDMSources: MDMSources,
+    UserProfile: UserProfile
 };
 
 const TabContext = createContext();
@@ -133,6 +134,14 @@ export const TabProvider = ({ children, sidebarOpen }) => {
             if (!tabExists) {
                 const newTab = MENU_ITEMS.find(item => item.id === currentTabId);
                 if (newTab && COMPONENT_MAP[newTab.id]) {
+    // Ensure activeTab is always valid
+    useEffect(() => {
+        const validTabIds = tabs.map(tab => tab.id);
+        if (!validTabIds.includes(activeTab)) {
+            setActiveTab(validTabIds.includes('Dashboard') ? 'Dashboard' : validTabIds[0]);
+        }
+    }, [activeTab, tabs]);
+
                     setTabs(prevTabs => [
                         ...prevTabs,
                         {

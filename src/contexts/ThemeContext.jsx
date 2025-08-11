@@ -1,6 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { createTheme, ThemeProvider as MuiThemeProvider } from '@mui/material';
 import { alpha } from '@mui/material/styles';
+import {
+  getUnifiedSettings,
+  saveUnifiedSettings,
+  getSystemPreferences
+} from '../utils/unifiedSettingsManager';
 
 const ThemeContext = createContext();
 
@@ -257,77 +262,32 @@ const createCustomTheme = (mode, colorPreset = 'techno', density = 'standard', f
 };
 
 export const ThemeProvider = ({ children }) => {
-  // Unified settings storage - single source of truth
-  const getUnifiedSettings = () => {
-    try {
-      const unifiedSettings = localStorage.getItem('techno-etl-settings');
-      if (unifiedSettings) {
-        return JSON.parse(unifiedSettings);
-      }
-    } catch (error) {
-      console.warn('Error parsing unified settings:', error);
-    }
-    return null;
+  // Initialize theme states from unified settings
+  const initializeFromSettings = () => {
+    const settings = getUnifiedSettings();
+    return {
+      mode: settings.theme === 'system' ?
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') :
+        (settings.theme || 'light'),
+      fontSize: settings.fontSize || 'medium',
+      colorPreset: settings.colorPreset || 'techno',
+      density: settings.density || 'standard',
+      animations: settings.animations !== false,
+      highContrast: settings.highContrast === true,
+      customizations: settings.customizations || {}
+    };
   };
 
-  const [mode, setMode] = useState(() => {
-    const settings = getUnifiedSettings();
-    if (settings?.theme && settings.theme !== 'system') {
-      console.log('🎨 ThemeContext: Loading theme from unified settings:', settings.theme);
-      return settings.theme;
-    }
+  // Initialize all theme states from unified settings
+  const initialSettings = initializeFromSettings();
 
-    // Use system preference as default
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      console.log('🎨 ThemeContext: Using system dark theme');
-      return 'dark';
-    }
-
-    console.log('🎨 ThemeContext: Using default light theme');
-    return 'light';
-  });
-
-  const [fontSize, setFontSize] = useState(() => {
-    const settings = getUnifiedSettings();
-    return settings?.fontSize || 'medium';
-  });
-
-  // Advanced theme customization states
-  const [colorPreset, setColorPreset] = useState(() => {
-    const settings = getUnifiedSettings();
-    return settings?.colorPreset || 'techno';
-  });
-
-  const [density, setDensity] = useState(() => {
-    const settings = getUnifiedSettings();
-    return settings?.density || 'standard';
-  });
-
-  const [customizations, setCustomizations] = useState(() => {
-    const settings = getUnifiedSettings();
-    return settings?.customizations || {};
-  });
-
-  const [animations, setAnimations] = useState(() => {
-    const settings = getUnifiedSettings();
-    return settings?.animations !== false;
-  });
-
-  const [highContrast, setHighContrast] = useState(() => {
-    const settings = getUnifiedSettings();
-    return settings?.highContrast === true;
-  });
-
-  // Unified settings save function
-  const saveUnifiedSettings = useCallback((newSettings) => {
-    try {
-      const currentSettings = getUnifiedSettings() || {};
-      const updatedSettings = { ...currentSettings, ...newSettings };
-      localStorage.setItem('techno-etl-settings', JSON.stringify(updatedSettings));
-    } catch (error) {
-      console.error('Error saving unified settings:', error);
-    }
-  }, []);
+  const [mode, setMode] = useState(initialSettings.mode);
+  const [fontSize, setFontSize] = useState(initialSettings.fontSize);
+  const [colorPreset, setColorPreset] = useState(initialSettings.colorPreset);
+  const [density, setDensity] = useState(initialSettings.density);
+  const [customizations, setCustomizations] = useState(initialSettings.customizations);
+  const [animations, setAnimations] = useState(initialSettings.animations);
+  const [highContrast, setHighContrast] = useState(initialSettings.highContrast);
 
   // System theme change listener
   useEffect(() => {
@@ -350,18 +310,18 @@ export const ThemeProvider = ({ children }) => {
   // Save to unified settings when any theme property changes
   useEffect(() => {
     const currentSettings = {
-      theme: mode, 
-      fontSize, 
-      colorPreset, 
-      density, 
-      animations, 
+      theme: mode,
+      fontSize,
+      colorPreset,
+      density,
+      animations,
       highContrast,
-      customizations 
+      customizations
     };
-    
+
     console.log('🎨 ThemeContext: Saving unified settings:', currentSettings);
     saveUnifiedSettings(currentSettings);
-  }, [mode, fontSize, colorPreset, density, animations, highContrast, customizations, saveUnifiedSettings]);
+  }, [mode, fontSize, colorPreset, density, animations, highContrast, customizations]);
 
   // Apply accessibility settings to document
   useEffect(() => {
@@ -401,12 +361,12 @@ export const ThemeProvider = ({ children }) => {
     }
   }, []);
 
-  // Initialize theme from unified settings on app start
+  // Initialize theme from unified settings
   const initializeTheme = useCallback(() => {
     const settings = getUnifiedSettings();
     if (settings) {
       console.log('Initializing theme from unified settings:', settings);
-      
+
       // Apply all theme settings from unified storage
       if (settings.theme && settings.theme !== mode) {
         if (settings.theme === 'system') {
@@ -416,23 +376,23 @@ export const ThemeProvider = ({ children }) => {
           setMode(settings.theme);
         }
       }
-      
+
       if (settings.fontSize && settings.fontSize !== fontSize) {
         setFontSize(settings.fontSize);
       }
-      
+
       if (settings.colorPreset && settings.colorPreset !== colorPreset) {
         setColorPreset(settings.colorPreset);
       }
-      
+
       if (settings.density && settings.density !== density) {
         setDensity(settings.density);
       }
-      
+
       if (settings.animations !== undefined && settings.animations !== animations) {
         setAnimations(settings.animations);
       }
-      
+
       if (settings.highContrast !== undefined && settings.highContrast !== highContrast) {
         setHighContrast(settings.highContrast);
       }

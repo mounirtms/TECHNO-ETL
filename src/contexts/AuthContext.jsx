@@ -9,7 +9,7 @@ import {
 } from 'firebase/auth';
 import { auth, database } from '../config/firebase';
 import { ref, set, get } from 'firebase/database';
-import { useNavigate } from 'react-router-dom';
+// Removed useNavigate to avoid circular dependency with Router
 import magentoApi from '../services/magentoService';
 import { USER_ROLES, createDefaultUserLicense, initializeFirebaseDefaults } from '../config/firebaseDefaults';
 import firebaseSyncService from '../services/firebaseSyncService';
@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
         }
         return null;
     });
-    const navigate = useNavigate(); // Add this line
+    // Removed navigate to avoid circular dependency
     const [loading, setLoading] = useState(true);     
     const [adminToken, setMagentoToken] = useState(() => localStorage.getItem('adminToken'));
     const [isUsingLocalData, setIsUsingLocalData] = useState(false);
@@ -279,7 +279,7 @@ export const AuthProvider = ({ children }) => {
 
             // User data will be set by the auth state observer
             toast.success('Successfully logged in with Google!');
-            navigate('/'); // Redirect to home after login
+            // Navigation will be handled by the component using this context
             return result;
         } catch (error) {
             console.error('Google sign-in error:', error);

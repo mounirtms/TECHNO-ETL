@@ -22,6 +22,7 @@ import {
   Launch as LaunchIcon
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
+import { useCustomTheme } from '../../contexts/ThemeContext';
 
 /**
  * Dashboard Overview Component
@@ -29,6 +30,7 @@ import { useTheme } from '@mui/material/styles';
  */
 const DashboardOverview = ({ stats, onNavigate }) => {
   const theme = useTheme();
+  const { animations, density } = useCustomTheme();
 
   const metricCards = [
     {
@@ -91,17 +93,17 @@ const DashboardOverview = ({ stats, onNavigate }) => {
                 height: '100%',
                 background: `linear-gradient(135deg, ${theme.palette[metric.color].light}15, ${theme.palette[metric.color].main}08)`,
                 border: `1px solid ${theme.palette[metric.color].light}30`,
-                borderRadius: 3,
-                transition: 'all 0.3s ease',
-                '&:hover': {
+                borderRadius: density === 'compact' ? 2 : 3,
+                transition: animations ? 'all 0.3s ease' : 'none',
+                '&:hover': animations ? {
                   transform: 'translateY(-4px)',
                   boxShadow: theme.shadows[8],
                   border: `1px solid ${theme.palette[metric.color].main}50`
-                }
+                } : {}
               }}
             >
-              <CardContent sx={{ p: 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: 2 }}>
+              <CardContent sx={{ p: density === 'compact' ? 2 : 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: density === 'compact' ? 1 : 2 }}>
                   <Avatar
                     sx={{
                       bgcolor: `${metric.color}.main`,

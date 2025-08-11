@@ -73,12 +73,16 @@ const MDMFilterPanel = ({
 
   return (
     <Paper 
-      elevation={1} 
-      sx={{ 
-        mb: 2, 
+      elevation={0}
+      sx={{
+        mb: 1, // Less margin for compactness
         border: `1px solid ${theme.palette.divider}`,
         borderRadius: 2,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        background: theme.palette.background.paper,
+        boxShadow: 'none',
+        minHeight: 40,
+        p: 0.5,
       }}
     >
       {/* Filter Header */}
@@ -87,13 +91,13 @@ const MDMFilterPanel = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          px: 2,
-          py: 1.5, // Reduced padding for compact header
-          backgroundColor: theme.palette.grey[50],
+          px: 1.5,
+          py: 0.5, // More compact
+          backgroundColor: theme.palette.background.default,
           cursor: 'pointer',
-          minHeight: 48, // Compact height
+          minHeight: 36, // More compact
           '&:hover': {
-            backgroundColor: theme.palette.grey[100]
+            backgroundColor: theme.palette.action.hover
           },
           transition: 'background-color 0.2s ease'
         }}

@@ -22,7 +22,7 @@ import {
     get_license_details, 
     set_license_status 
 } from '../../utils/licenseUtils';
-import { setupTestLicenses } from '../../utils/setupLicenseTest';
+// setupTestLicenses removed - not needed in production
 
 const LicenseStatus = () => {
     const { currentUser } = useAuth();
@@ -91,7 +91,8 @@ const LicenseStatus = () => {
     const setupAllTestLicenses = async () => {
         try {
             setLoading(true);
-            await setupTestLicenses();
+            // Test license setup removed for production
+            console.log('Test license setup disabled in production');
             await checkCurrentLicense();
         } catch (err) {
             setError(err.message);

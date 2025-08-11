@@ -1,11 +1,12 @@
 {
   "env": {
     "browser": true,
-    "es2021": true
+    "es2021": true,
+    "node": true,
+    "jest": true
   },
   "extends": [
     "eslint:recommended",
-    "@vitejs/plugin-react",
     "plugin:react/recommended",
     "plugin:react-hooks/recommended"
   ],
@@ -24,8 +25,17 @@
   "rules": {
     "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
+    "react/display-name": "off",
+    "react/no-unescaped-entities": "warn",
+    "react/jsx-key": "warn",
+    "react/jsx-no-undef": "warn",
+    "react-hooks/rules-of-hooks": "warn",
     "no-unused-vars": "warn",
-    "no-console": "warn",
+    "no-undef": "warn",
+    "no-console": "off",
+    "no-debugger": "warn",
+    "no-useless-escape": "off",
+    "no-prototype-builtins": "warn",
     "react-refresh/only-export-components": "warn"
   },
   "settings": {

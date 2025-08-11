@@ -20,7 +20,7 @@ import PreferencesTab from './tabs/PreferencesTab';
 import { useProfileController } from './ProfileController';
 
 const UserProfile = () => {
-    const [activeTab, setActiveTab] = useState(0);
+    const [activeTab, setActiveTab] = useState(0); // Change from 'UserProfile' to 0
     const [mounted, setMounted] = useState(false);
     const contentRef = useRef(null);
     const {
@@ -51,10 +51,14 @@ const UserProfile = () => {
         }
     }, [isDirty]);
 
-    const handleTabChange = (event, newValue) => {
-        // Auto-save when switching tabs if there are unsaved changes
-        if (isDirty) {
-            saveUserData();
+    const handleTabChange = async (event, newValue) => {
+        // Auto-save before switching tabs if there are unsaved changes
+        if (isDirty && activeTab !== newValue) {
+            try {
+                await onSave();
+            } catch (error) {
+                console.error('Failed to save before tab switch:', error);
+            }
         }
         setActiveTab(newValue);
     };
@@ -115,58 +119,30 @@ const UserProfile = () => {
     };
 
     return (
-        <Paper sx={{ 
-            height: '100%', 
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden', 
-            position: 'relative' 
-        }}>
-            <Tabs 
-                value={activeTab} 
+        <Paper elevation={3} sx={{ maxWidth: 1200, margin: 'auto', mt: 2 }}>
+            <Tabs
+                value={activeTab}
                 onChange={handleTabChange}
                 variant="fullWidth"
-                indicatorColor="primary"
-                textColor="primary"
+                sx={{ borderBottom: 1, borderColor: 'divider' }}
             >
-                <Tab 
-                    icon={<ApiIcon />} 
-                    label="API Settings" 
-                    sx={{ minHeight: 72 }}
-                />
-                <Tab 
-                    icon={<LanguageIcon />} 
-                    label="Preferences" 
-                    sx={{ minHeight: 72 }}
-                />
-                <Tab 
-                    icon={<PersonIcon />} 
-                    label="Personal Info" 
-                    sx={{ minHeight: 72 }}
-                />
+                <Tab icon={<ApiIcon />} label="API Settings" value={0} />
+                <Tab icon={<LanguageIcon />} label="Preferences" value={1} />
+                <Tab icon={<PersonIcon />} label="Personal Info" value={2} />
             </Tabs>
-
-            <Box 
+            <Box
                 ref={contentRef}
-                sx={{ 
-                    p: 3, 
+                sx={{
+                    p: 3,
                     flexGrow: 1,
-                    height: 'calc(100% - 72px)', 
-                    overflowY: 'auto',
-                    position: 'relative'
+                    minHeight: 'calc(100vh - 200px)',
+                    overflowY: 'auto'
                 }}
             >
                 {mounted && (
-                    <Fade 
-                        in={!loading && mounted} 
+                    <Fade
+                        in={!loading && mounted}
                         timeout={300}
-                        style={{
-                            position: 'absolute',
-                            width: '100%',
-                            height: '100%',
-                            top: 0,
-                            left: 0
-                        }}
                     >
                         <Box>
                             {renderActiveTab()}

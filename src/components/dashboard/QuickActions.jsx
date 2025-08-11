@@ -26,6 +26,7 @@ import {
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import { useCustomTheme } from '../../contexts/ThemeContext';
 
 /**
  * Quick Actions Component
@@ -34,6 +35,7 @@ import { useNavigate } from 'react-router-dom';
 const QuickActions = ({ onAction }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { animations, density } = useCustomTheme();
 
   const primaryActions = [
     {
@@ -127,8 +129,8 @@ const QuickActions = ({ onAction }) => {
   return (
     <Box>
       {/* Primary Actions */}
-      <Card sx={{ borderRadius: 3, mb: 3 }}>
-        <CardContent sx={{ p: 3 }}>
+      <Card sx={{ borderRadius: density === 'compact' ? 2 : 3, mb: density === 'compact' ? 2 : 3 }}>
+        <CardContent sx={{ p: density === 'compact' ? 2 : 3 }}>
           <Typography variant="h6" fontWeight={600} gutterBottom>
             Quick Actions
           </Typography>
@@ -142,19 +144,22 @@ const QuickActions = ({ onAction }) => {
                   size="large"
                   onClick={action.action}
                   sx={{
-                    height: 80,
-                    borderRadius: 2,
+                    height: density === 'compact' ? 60 : 80,
+                    borderRadius: density === 'compact' ? 1 : 2,
                     flexDirection: 'column',
                     gap: 1,
                     borderColor: `${action.color}.light`,
                     color: `${action.color}.main`,
-                    '&:hover': {
+                    '&:hover': animations ? {
                       borderColor: `${action.color}.main`,
                       bgcolor: `${action.color}.light`,
                       transform: 'translateY(-2px)',
                       boxShadow: theme.shadows[4]
+                    } : {
+                      borderColor: `${action.color}.main`,
+                      bgcolor: `${action.color}.light`
                     },
-                    transition: 'all 0.3s ease'
+                    transition: animations ? 'all 0.3s ease' : 'none'
                   }}
                 >
                   <Avatar

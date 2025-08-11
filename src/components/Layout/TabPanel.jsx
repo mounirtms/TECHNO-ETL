@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import {
     Box,
     Tabs,
     Tab,
     Typography,
-    useTheme
+    useTheme,
+    CircularProgress
 } from '@mui/material';
 import { useTab } from '../../contexts/TabContext';
 import { HEADER_HEIGHT, FOOTER_HEIGHT } from './Constants';
@@ -98,7 +99,20 @@ const TabPanel = ({ sidebarOpen, isMobile = false, isTablet = false }) => {
                     }
                 }
             }}>
-                {ActiveComponent ? <ActiveComponent /> : (
+                {ActiveComponent ? (
+                    <Suspense fallback={
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: '200px'
+                        }}>
+                            <CircularProgress />
+                        </Box>
+                    }>
+                        <ActiveComponent />
+                    </Suspense>
+                ) : (
                     <Typography variant="body1" color="error">
                         No active component found
                     </Typography>

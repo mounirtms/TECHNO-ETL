@@ -173,7 +173,6 @@ const LicenseManagement = () => {
         
         fetchUsers();
     }, [currentUser]);
-    const [selectedUser, setSelectedUser] = useState(null);
 
     const handleLicenseChange = async (userId, permissions) => {
         try {

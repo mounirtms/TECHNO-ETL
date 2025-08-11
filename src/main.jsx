@@ -23,28 +23,64 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import i18n from './config/i18n';
 import './index.css';
-import AppInitializer from './components/common/AppInitializer';
 
-// Import settings cleanup to run on startup
-import './utils/settingsCleanup';
+// Import and initialize unified settings system
+import { initializeSettingsSystem } from './utils/unifiedSettingsManager';
 
-// Lazy Load Components for Performance with optimized chunking
-const Layout = lazy(() => import('./components/Layout/Layout'));
-const Login = lazy(() => import('./pages/Login'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const ChartsPage = lazy(() => import('./pages/ChartsPage'));
-const ProductManagementPage = lazy(() => import('./pages/ProductManagementPage'));
-const VotingPage = lazy(() => import('./pages/VotingPage'));
+// Initialize settings system on startup
+initializeSettingsSystem();
 
-// Additional lazy-loaded pages for enhanced routing
-const InventoryPage = lazy(() => import('./pages/InventoryPage'));
-const OrdersPage = lazy(() => import('./pages/OrdersPage'));
-const CustomersPage = lazy(() => import('./pages/CustomersPage'));
-const ProductsPage = lazy(() => import('./pages/ProductsPage'));
-const SettingsPage = lazy(() => import('./pages/SettingsPage'));
-const ReportsPage = lazy(() => import('./pages/ReportsPage'));
-const BugBountyPage = lazy(() => import('./pages/BugBountyPage'));
-const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+// Import critical components statically to avoid dynamic import errors
+import Layout from './components/Layout/Layout';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import UserProfile from './components/UserProfile';
+
+// Lazy Load non-critical components with error handling
+const ChartsPage = lazy(() =>
+  import('./pages/ChartsPage').catch(() => ({ default: () => <div>Error loading Charts</div> }))
+);
+
+const ProductManagementPage = lazy(() =>
+  import('./pages/ProductManagementPage').catch(() => ({ default: () => <div>Error loading Product Management</div> }))
+);
+
+const VotingPage = lazy(() =>
+  import('./pages/VotingPage').catch(() => ({ default: () => <div>Error loading Voting</div> }))
+);
+
+// Additional lazy-loaded pages with error handling
+const InventoryPage = lazy(() =>
+  import('./pages/InventoryPage').catch(() => ({ default: () => <div>Error loading Inventory</div> }))
+);
+
+const OrdersPage = lazy(() =>
+  import('./pages/OrdersPage').catch(() => ({ default: () => <div>Error loading Orders</div> }))
+);
+
+const CustomersPage = lazy(() =>
+  import('./pages/CustomersPage').catch(() => ({ default: () => <div>Error loading Customers</div> }))
+);
+
+const ProductsPage = lazy(() =>
+  import('./pages/ProductsPage').catch(() => ({ default: () => <div>Error loading Products</div> }))
+);
+
+const SettingsPage = lazy(() =>
+  import('./pages/SettingsPage').catch(() => ({ default: () => <div>Error loading Settings</div> }))
+);
+
+const ReportsPage = lazy(() =>
+  import('./pages/ReportsPage').catch(() => ({ default: () => <div>Error loading Reports</div> }))
+);
+
+const BugBountyPage = lazy(() =>
+  import('./pages/BugBountyPage').catch(() => ({ default: () => <div>Error loading Bug Bounty</div> }))
+);
+
+const NotFoundPage = lazy(() =>
+  import('./pages/NotFoundPage').catch(() => ({ default: () => <div>Page Not Found</div> }))
+);
 
 // Loading Fallback Component
 const LoadingFallback = () => (
@@ -150,21 +186,19 @@ const LoginRoute = () => {
     return loading ? <LoadingFallback /> : <Login />;
 };
 
-// Render Application
+// Render Application - StrictMode disabled to fix initialization issues
 ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
-        <I18nextProvider i18n={i18n}>
-            <Router
-                future={{
-                    v7_startTransition: true,
-                    v7_relativeSplatPath: true
-                }}
-            >
-                <AuthProvider>
-                    <LanguageProvider>
-                        <ThemeProvider>
-                            <SettingsProvider>
-                                <AppInitializer>
+    <I18nextProvider i18n={i18n}>
+                <Router
+                    future={{
+                        v7_startTransition: true,
+                        v7_relativeSplatPath: true
+                    }}
+                >
+                    <AuthProvider>
+                        <LanguageProvider>
+                            <ThemeProvider>
+                                <SettingsProvider>
                                     <CssBaseline />
                                     <ToastContainer 
                                         position="top-center" 
@@ -208,6 +242,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                                             {/* Additional Pages */}
                                             <Route path="settings" element={<SettingsPage />} />
                                             <Route path="bug-bounty" element={<BugBountyPage />} />
+                                            <Route path="profile" element={<UserProfile />} />
 
                                             {/* Nested Routes for Products */}
                                             <Route path="products/:id" element={<ProductManagementPage />} />
@@ -223,12 +258,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                                 </Routes>
                             </Suspense>
                         </RouteErrorBoundary>
-                                </AppInitializer>
-                            </SettingsProvider>
-                        </ThemeProvider>
-                    </LanguageProvider>
-                </AuthProvider>
-            </Router>
-        </I18nextProvider>
-    </React.StrictMode>
+                                </SettingsProvider>
+                            </ThemeProvider>
+                        </LanguageProvider>
+                    </AuthProvider>
+                </Router>
+            </I18nextProvider>
 );

@@ -2,13 +2,10 @@ import React, { createContext, useContext, useState, useEffect, useMemo, useCall
 import enLocale from '../assets/locale/en.json';
 import frLocale from '../assets/locale/fr.json';
 import arLocale from '../assets/locale/ar.json';
-import { 
-  getUnifiedSettings, 
-  saveUnifiedSettings, 
-  getUserSettings, 
-  saveUserSettings,
-  applyLanguageSettings,
-  getSystemPreferences 
+import {
+  getUnifiedSettings,
+  saveUnifiedSettings,
+  getSystemPreferences
 } from '../utils/unifiedSettingsManager';
 
 const LanguageContext = createContext();
@@ -107,7 +104,7 @@ export const LanguageProvider = ({ children }) => {
       
       console.log(`Language changed to ${currentLanguage} (${currentLangConfig.dir})`);
     });
-  }, [currentLanguage, currentLangConfig, saveUnifiedSettings]);
+  }, [currentLanguage, currentLangConfig]);
 
   // Enhanced setLanguage function with smooth transitions
   const setLanguage = useCallback((lang) => {

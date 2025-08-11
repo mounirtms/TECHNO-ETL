@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -27,38 +27,97 @@ import {
   Assessment as StatsIcon,
   Refresh as RefreshIcon
 } from '@mui/icons-material';
+import { useCustomTheme } from '../../contexts/ThemeContext';
+import { useSettings } from '../../contexts/SettingsContext';
+import { toast } from 'react-toastify';
 
 /**
  * Dashboard Settings Component
  * Advanced settings for customizing dashboard visibility and behavior
  */
-const DashboardSettings = ({ 
-  open, 
-  onClose, 
-  settings, 
+const DashboardSettings = ({
+  open,
+  onClose,
+  settings,
   onSettingsChange,
-  onResetSettings 
+  onResetSettings
 }) => {
+  const { animations, density } = useCustomTheme();
+  const { settings: globalSettings, updateSettings } = useSettings();
   const [localSettings, setLocalSettings] = useState(settings);
 
-  const handleSettingChange = (category, key, value) => {
-    setLocalSettings(prev => ({
-      ...prev,
-      [category]: {
-        ...prev[category],
-        [key]: value
+  // Sync with global settings when dialog opens or settings change
+  useEffect(() => {
+    if (open) {
+      // Initialize with current settings
+      setLocalSettings(settings);
+
+      // Merge with global settings if available
+      if (globalSettings?.dashboard) {
+        setLocalSettings(prev => ({
+          ...prev,
+          ...globalSettings.dashboard
+        }));
       }
-    }));
+    }
+  }, [open, settings, globalSettings?.dashboard]);
+
+  const handleSettingChange = (category, key, value) => {
+    try {
+      setLocalSettings(prev => {
+        // Ensure the category exists
+        const currentCategory = prev[category] || {};
+
+        return {
+          ...prev,
+          [category]: {
+            ...currentCategory,
+            [key]: value
+          }
+        };
+      });
+    } catch (error) {
+      console.error('Error updating dashboard setting:', error);
+    }
   };
 
-  const handleSave = () => {
-    onSettingsChange(localSettings);
-    onClose();
+  const handleSave = async () => {
+    try {
+      // Validate settings before saving
+      if (!localSettings || typeof localSettings !== 'object') {
+        throw new Error('Invalid settings data');
+      }
+
+      // Save to local dashboard settings
+      onSettingsChange(localSettings);
+
+      // Save to global unified settings
+      if (updateSettings) {
+        await updateSettings({ dashboard: localSettings }, 'dashboard');
+        console.log('Dashboard settings saved to unified settings');
+      }
+
+      // Show success feedback
+      toast.success('Dashboard settings saved successfully!');
+
+      onClose();
+    } catch (error) {
+      console.error('Failed to save dashboard settings:', error);
+
+      // Show error feedback
+      toast.error('Failed to save dashboard settings. Please try again.');
+    }
   };
 
   const handleReset = () => {
-    onResetSettings();
-    setLocalSettings(settings);
+    try {
+      onResetSettings();
+      setLocalSettings(settings);
+      toast.success('Dashboard settings reset to defaults!');
+    } catch (error) {
+      console.error('Error resetting dashboard settings:', error);
+      toast.error('Failed to reset dashboard settings. Please try again.');
+    }
   };
 
   const statCardSettings = [
@@ -83,6 +142,14 @@ const DashboardSettings = ({
     { key: 'productAttributes', label: 'Product Attributes', icon: '🔧' }
   ];
 
+  const widgetSettings = [
+    { key: 'quickActions', label: 'Quick Actions', icon: '⚡' },
+    { key: 'taskManagement', label: 'Task Management', icon: '✅' },
+    { key: 'recentActivity', label: 'Recent Activity Feed', icon: '📋' },
+    { key: 'performanceMetrics', label: 'Performance Metrics', icon: '📊' },
+    { key: 'dashboardOverview', label: 'Dashboard Overview', icon: '🏠' }
+  ];
+
   return (
     <Dialog 
       open={open} 
@@ -90,7 +157,10 @@ const DashboardSettings = ({
       maxWidth="md" 
       fullWidth
       PaperProps={{
-        sx: { borderRadius: 3, minHeight: '70vh' }
+        sx: {
+          borderRadius: density === 'compact' ? 2 : 3,
+          minHeight: density === 'compact' ? '60vh' : '70vh'
+        }
       }}
     >
       <DialogTitle sx={{ 
@@ -194,6 +264,52 @@ const DashboardSettings = ({
                     <Switch
                       checked={localSettings.charts?.[chart.key] || false}
                       onChange={(e) => handleSettingChange('charts', chart.key, e.target.checked)}
+                      size="small"
+                    />
+                  </Box>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+
+        <Divider sx={{ my: 3 }} />
+
+        {/* Widgets Settings */}
+        <Box sx={{ mb: 4 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+            <DashboardIcon color="info" />
+            <Typography variant="h6" fontWeight={600}>
+              Dashboard Widgets
+            </Typography>
+            <Chip
+              label={`${Object.values(localSettings.widgets || {}).filter(Boolean).length}/5 visible`}
+              color="info"
+              size="small"
+            />
+          </Box>
+
+          <Grid container spacing={2}>
+            {widgetSettings.map((widget) => (
+              <Grid item xs={12} sm={6} md={4} key={widget.key}>
+                <Card
+                  variant="outlined"
+                  sx={{
+                    p: 2,
+                    opacity: localSettings.widgets?.[widget.key] ? 1 : 0.5,
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Typography variant="h6">{widget.icon}</Typography>
+                    <Box sx={{ flexGrow: 1 }}>
+                      <Typography variant="body2" fontWeight={500}>
+                        {widget.label}
+                      </Typography>
+                    </Box>
+                    <Switch
+                      checked={localSettings.widgets?.[widget.key] || false}
+                      onChange={(e) => handleSettingChange('widgets', widget.key, e.target.checked)}
                       size="small"
                     />
                   </Box>

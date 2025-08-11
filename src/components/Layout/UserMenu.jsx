@@ -17,6 +17,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTab } from '../../contexts/TabContext';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const StyledMenu = styled(Menu)(({ theme }) => ({
     '& .MuiPaper-root': {
@@ -45,6 +46,7 @@ const UserMenu = () => {
     const { currentUser, logout } = useAuth();
     const { translate } = useLanguage();
     const { openTab } = useTab();
+    const navigate = useNavigate();
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -55,7 +57,7 @@ const UserMenu = () => {
     };
 
     const handleOpenProfile = () => {
-        openTab('UserProfile');
+        navigate('/profile'); // Navigate directly to the profile route
         handleClose();
     };
 

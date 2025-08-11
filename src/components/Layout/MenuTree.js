@@ -6,6 +6,7 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import CategoryIcon from '@mui/icons-material/Category';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import PersonIcon from '@mui/icons-material/Person';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import StorefrontIcon from '@mui/icons-material/Storefront';
@@ -323,9 +324,6 @@ export const MENU_TREE = [
             }
         ]
     },
-
-    // === USER PROFILE REMOVED FROM SIDEBAR ===
-    // Profile access moved to header user menu
 
     // === SYSTEM MANAGEMENT ===
     {

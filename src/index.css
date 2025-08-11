@@ -1,4 +1,4 @@
-@import './styles/theme-accessibility.css';
+/* Accessibility styles are now included in global.css */
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;

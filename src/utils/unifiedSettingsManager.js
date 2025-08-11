@@ -72,16 +72,49 @@ export const getUnifiedSettings = () => {
 };
 
 /**
- * Save unified settings for anonymous users
+ * Save unified settings for anonymous users with optimization
  */
 export const saveUnifiedSettings = (settings) => {
   try {
+    // Validate settings structure
+    if (!settings || typeof settings !== 'object') {
+      console.warn('Invalid settings provided to saveUnifiedSettings');
+      return false;
+    }
+
     const currentSettings = getUnifiedSettings();
-    const updatedSettings = { ...currentSettings, ...settings };
-    localStorage.setItem(UNIFIED_SETTINGS_KEY, JSON.stringify(updatedSettings));
+    const updatedSettings = {
+      ...currentSettings,
+      ...settings,
+      lastModified: Date.now(),
+      version: '2.1.0'
+    };
+
+    // Debounce localStorage writes to prevent excessive I/O
+    if (saveUnifiedSettings._timeout) {
+      clearTimeout(saveUnifiedSettings._timeout);
+    }
+
+    saveUnifiedSettings._timeout = setTimeout(() => {
+      try {
+        localStorage.setItem(UNIFIED_SETTINGS_KEY, JSON.stringify(updatedSettings));
+        console.log('✅ Unified settings saved successfully');
+      } catch (storageError) {
+        console.error('❌ Failed to save to localStorage:', storageError);
+        // Try to clear some space and retry
+        try {
+          localStorage.removeItem('temp_data');
+          localStorage.setItem(UNIFIED_SETTINGS_KEY, JSON.stringify(updatedSettings));
+          console.log('✅ Settings saved after cleanup');
+        } catch (retryError) {
+          console.error('❌ Failed to save even after cleanup:', retryError);
+        }
+      }
+    }, 100); // 100ms debounce
+
     return updatedSettings;
   } catch (error) {
-    console.error('Error saving unified settings:', error);
+    console.error('❌ Error saving unified settings:', error);
     return null;
   }
 };
@@ -266,6 +299,13 @@ const migrateLegacySettings = (userId = null) => {
 };
 
 /**
+ * Get default settings
+ */
+export const getDefaultSettings = () => {
+  return { ...DEFAULT_SETTINGS };
+};
+
+/**
  * Reset settings to system defaults
  */
 export const resetToSystemDefaults = (userId = null) => {
@@ -275,7 +315,7 @@ export const resetToSystemDefaults = (userId = null) => {
     theme: 'system',
     language: systemPrefs.language
   };
-  
+
   if (userId) {
     return saveUserSettings(userId, defaultSettings);
   } else {
@@ -371,6 +411,7 @@ export default {
   saveUnifiedSettings,
   getUserSettings,
   saveUserSettings,
+  getDefaultSettings,
   applyLanguageSettings,
   getSystemPreferences,
   initializeSettingsSystem,

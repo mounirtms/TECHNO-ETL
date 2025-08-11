@@ -185,7 +185,29 @@ export const getTreeColumn = (field, options = {}) => ({
 // Cache management for grid data
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
-export const getLocalData = (gridName) => {
+// Import all data files statically to avoid dynamic import warnings
+import customersData from '../assets/data/customers.json';
+import productsData from '../assets/data/products.json';
+import ordersData from '../assets/data/orders.json';
+import invoicesData from '../assets/data/invoices.json';
+import categoryData from '../assets/data/category.json';
+import cmsPagesData from '../assets/data/cmsPages.json';
+import cmsBlocksData from '../assets/data/cmsBlocks.json';
+
+// Data mapping for static imports
+const DATA_MAP = {
+    'customers': customersData,
+    'products': productsData,
+    'orders': ordersData,
+    'invoices': invoicesData,
+    'category': categoryData,
+    'categories': categoryData,
+    'cmspages': cmsPagesData,
+    'cmsblocks': cmsBlocksData,
+    'cms': cmsPagesData
+};
+
+export const getLocalData = async (gridName) => {
     try {
         const cachedData = localStorage.getItem(`grid_${gridName}_data`);
         if (cachedData) {
@@ -194,8 +216,10 @@ export const getLocalData = (gridName) => {
                 return data;
             }
         }
-        // If cache is expired or not found, return default data from assets
-        return require(`../assets/data/${gridName.toLowerCase()}.json`);
+        // Use static imports instead of dynamic imports
+        const dataKey = gridName.toLowerCase();
+        const data = DATA_MAP[dataKey];
+        return data || [];
     } catch (error) {
         console.error(`Error getting local data for ${gridName}:`, error);
         return [];

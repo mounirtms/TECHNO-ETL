@@ -103,13 +103,13 @@ const PersonalInfoTab = () => {
     gender: ''
   });
 
-  // Load data only once on mount
+  // Load data when userData changes
   useEffect(() => {
     const remoteSettings = userData?.personalInfo;
     if (remoteSettings) {
       setFormData(remoteSettings);
     }
-  }, []);
+  }, [userData?.personalInfo]);
 
   const handleInputChange = (field, value) => {
     const updatedFormData = {

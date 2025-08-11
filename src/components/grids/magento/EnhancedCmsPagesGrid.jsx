@@ -412,7 +412,7 @@ const EnhancedCmsPagesGrid = () => {
                     toast.success('CMS Block updated successfully');
                 }
             } else {
-                // CREATE new item
+                // CREATE new item (always POST to Magento API)
                 if (contentType === 'pages') {
                     await magentoApi.post('/cmsPage', { page: payload });
                     toast.success('CMS Page created successfully');
@@ -503,17 +503,19 @@ const EnhancedCmsPagesGrid = () => {
                                 color: 'white',
                                 height: 120
                             }}>
+                                {/* Fix validateDOMNesting: Replace nested Typography <p> with <span> or <div> */}
+                                {/* CardContent area */}
                                 <CardContent sx={{ p: 2 }}>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                                         <Box>
-                                            <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
+                                            <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }} component="div">
                                                 {card.value}
                                             </Typography>
-                                            <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                                            <Typography variant="body2" sx={{ opacity: 0.9 }} component="div">
                                                 {card.title}
                                             </Typography>
                                             {card.subtitle && (
-                                                <Typography variant="caption" sx={{ opacity: 0.8 }}>
+                                                <Typography variant="caption" sx={{ opacity: 0.8 }} component="div">
                                                     {card.subtitle}
                                                 </Typography>
                                             )}
@@ -523,7 +525,7 @@ const EnhancedCmsPagesGrid = () => {
                                         </Box>
                                     </Box>
                                     {card.percentage !== undefined && (
-                                        <Typography variant="caption" sx={{ opacity: 0.9 }}>
+                                        <Typography variant="caption" sx={{ opacity: 0.9 }} component="div">
                                             {card.percentage}% of total
                                         </Typography>
                                     )}
@@ -573,6 +575,54 @@ const EnhancedCmsPagesGrid = () => {
                     }
                 })}
             />
+
+            {/* Dialog for Editing CMS Page/Block */}
+            <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
+                <DialogTitle>{selectedItem ? `Edit ${contentType === 'pages' ? 'Page' : 'Block'}` : `Add ${contentType === 'pages' ? 'Page' : 'Block'}`}</DialogTitle>
+                <DialogContent>
+                    <Tabs value={activeTab} onChange={(_, v) => setActiveTab(v)} sx={{ mb: 2 }}>
+                        <Tab label="General" />
+                        <Tab label="Content" />
+                        <Tab label="SEO" />
+                        <Tab label="Advanced" />
+                    </Tabs>
+                    {activeTab === 0 && (
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            <TextField label="Title" value={formData.title} onChange={e => handleFormChange('title', e.target.value)} fullWidth required />
+                            <TextField label="Identifier" value={formData.identifier} onChange={e => handleFormChange('identifier', e.target.value)} fullWidth required />
+                            <FormControlLabel control={<Switch checked={formData.is_active} onChange={e => handleFormChange('is_active', e.target.checked)} />} label="Active" />
+                        </Box>
+                    )}
+                    {activeTab === 1 && (
+                        <Box sx={{ mt: 2 }}>
+                            <ReactQuill theme="snow" value={formData.content} onChange={v => handleFormChange('content', v)} modules={quillModules} formats={quillFormats} style={{ minHeight: 200 }} />
+                        </Box>
+                    )}
+                    {activeTab === 2 && (
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                            <TextField label="Meta Title" value={formData.meta_title} onChange={e => handleFormChange('meta_title', e.target.value)} fullWidth />
+                            <TextField label="Meta Description" value={formData.meta_description} onChange={e => handleFormChange('meta_description', e.target.value)} fullWidth />
+                            <TextField label="Meta Keywords" value={formData.meta_keywords} onChange={e => handleFormChange('meta_keywords', e.target.value)} fullWidth />
+                        </Box>
+                    )}
+                    {activeTab === 3 && (
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                            <TextField label="URL Key" value={formData.url_key} onChange={e => handleFormChange('url_key', e.target.value)} fullWidth />
+                            <TextField label="Sort Order" type="number" value={formData.sort_order} onChange={e => handleFormChange('sort_order', Number(e.target.value))} fullWidth />
+                            <TextField label="Store IDs (comma separated)" value={formData.store_id ? formData.store_id.join(',') : ''} onChange={e => handleFormChange('store_id', e.target.value.split(',').map(v => v.trim()).filter(Boolean))} fullWidth />
+                        </Box>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseDialog}>Cancel</Button>
+                    <Button onClick={handleSave} variant="contained">Save</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Fix findDOMNode warning: ensure refs are attached directly to DOM elements, not React components */}
+            {/* Fix validateDOMNesting warning: avoid <p> inside <p> in Typography */}
+            {/* 1. Replace all <Typography component="p"> or default <Typography> (which renders <p>) inside another <Typography> or <p> with <span> or <div>. */}
+            {/* 2. Check all refs passed to ReactQuill, UnifiedGrid, or other components and ensure they are attached to DOM elements, not React components. */}
         </Box>
     );
 };

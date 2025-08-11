@@ -457,6 +457,32 @@ const TreeMenuNavigation = ({
         );
     };
 
+    // Filter out unlicensed items from the menu (do not render them at all)
+    const filteredMenuTreeForUser = useMemo(() => {
+        return filteredMenuTree.map(category => {
+            // Only keep children the user has access to
+            const filteredChildren = (category.children || []).filter(item => {
+                // Remove user management from sidebar
+                if (item.id === 'UserManagement' || item.id === 'Users' || item.id === 'UserList') {
+                    return false;
+                }
+                // License page: only show for super admin or localhost
+                if (item.id === 'LicenseManagement') {
+                    const isSuperAdmin = userRole === USER_ROLES.SUPER_ADMIN;
+                    const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+                    return isSuperAdmin || isLocalhost;
+                }
+                // Only show if user has access
+                return licensedItems.has(item.id) || !item.licensed;
+            });
+            // Only keep categories with visible children
+            if (filteredChildren.length > 0) {
+                return { ...category, children: filteredChildren };
+            }
+            return null;
+        }).filter(Boolean);
+    }, [filteredMenuTree, licensedItems, userRole]);
+
     return (
         <TreeContainer>
             {/* Search Input */}
@@ -502,30 +528,16 @@ const TreeMenuNavigation = ({
                 </SearchContainer>
             )}
             
-            <List component="nav" disablePadding>
-                {filteredMenuTree.map((category, index) => (
+            <List disablePadding>
+                {filteredMenuTreeForUser.map(category => (
                     <React.Fragment key={category.id}>
-                        {/* Category Header */}
                         {renderCategoryHeader(category)}
-                        
-                        {/* Category Items */}
-                        <Collapse 
-                            in={expandedCategories.has(category.id)} 
-                            timeout="auto" 
-                            unmountOnExit
-                        >
-                            <List component="div" disablePadding>
-                                {category.children
-                                    ?.filter(item => !item.hidden)
-                                    .map(renderMenuItem)
-                                }
+                        <Collapse in={expandedCategories.has(category.id)} timeout="auto" unmountOnExit>
+                            <List disablePadding>
+                                {category.children.map(renderMenuItem)}
                             </List>
                         </Collapse>
-                        
-                        {/* Divider between categories */}
-                        {open && index < MENU_TREE.length - 1 && (
-                            <CategoryDivider />
-                        )}
+                        <CategoryDivider />
                     </React.Fragment>
                 ))}
             </List>

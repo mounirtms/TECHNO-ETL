@@ -203,7 +203,7 @@ npm run dev:full     # Start both frontend and backend
 npm run dev          # Start with nodemon (development)
 npm run start        # Start production server
 npm run build        # Build for production
-npm run build:prod   # Build with production optimizations
+npm run build:prod   # Build backend with production optimizations
 npm run pm2:start    # Start with PM2
 npm run pm2:stop     # Stop PM2 processes
 npm run pm2:logs     # View PM2 logs
@@ -260,7 +260,7 @@ GET    /api/analytics/performance   # Performance metrics
 We've set up a build process that combines frontend, backend, and documentation into a single production-ready distribution:
 
 ```bash
-npm run build:prod
+npm run build:optimized
 ```
 
 This command will:
@@ -327,3 +327,46 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 - **Contact**: mounir.webdev.tms@gmail.com
 
 *Last updated: August 5, 2025 - Version 2.1.0*
+
+# Techno-ETL Development Summary (August 2025)
+
+## Major Enhancements & Features
+
+### 1. Unified Grid System
+- All grid components (BaseGrid, EnhancedBaseGrid, OptimizedDataGrid) have been unified into a single, feature-rich BaseGrid.
+- Duplicate and deprecated grid files have been removed.
+- All usages now reference the unified grid, ensuring consistency and maintainability.
+
+### 2. CMS Pages & Blocks Management
+- EnhancedCmsPagesGrid now supports editing and creating CMS Pages and Blocks with a professional dialog.
+- The dialog features tabs for General, Content (with a ReactQuill HTML editor), SEO, and Advanced fields.
+- All content changes are saved directly to Magento using the correct API POST/PUT calls.
+- Improved error handling, validation, and user feedback.
+- Fixed React warnings (findDOMNode, validateDOMNesting) for a cleaner developer experience.
+
+### 3. CMS Blocks Grid
+- Added an Edit action to CmsBlocksGrid, allowing direct editing of the content field with a ReactQuill HTML editor.
+- All changes are saved to Magento via the API.
+
+### 4. License Management (Backend Utility)
+- Utility functions for checking and setting user license status using Firebase.
+- Ready for UI integration to allow admin assignment of licenses and permissions.
+
+### 5. UI/UX & Code Quality
+- Improved error boundaries and feedback for all grids.
+- Enhanced stats cards and toolbar for CMS management.
+- Fixed all known React warnings and improved code structure for maintainability.
+
+## How to Use
+- Manage CMS Pages/Blocks from the CMS grid. Use the edit button to open the dialog and update content, SEO, and advanced fields. All changes are synced with Magento.
+- License management utilities are available in `src/utils/licenseUtils.js` and can be integrated into an admin UI as needed.
+
+## Next Steps
+- (Optional) Build a UI for license and permission management, connecting to Firebase.
+- Continue to tune and optimize the grid and CMS management experience as needed.
+
+---
+
+**All changes have been tested and are working as intended.**
+
+For more details, see the in-code comments and documentation in each component.

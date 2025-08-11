@@ -121,20 +121,14 @@
     "cron": "node --no-warnings cron-runner.js",
 
     "cron:prod": "node --no-warnings dist/cron-runner.js",
-
-    "pm2:start": "pm2 start ecosystem.config.js",
-
-    "pm2:stop": "pm2 stop all",
-
-    "pm2:restart": "pm2 restart all",
-
-    "pm2:reload": "pm2 reload techno-etl-api",
-
-    "pm2:logs": "pm2 logs",
-
-    "pm2:monit": "pm2 monit",
-
-    "pm2:status": "pm2 status",
+ 
+"pm2:start": "pm2 start ecosystem.config.js",
+"pm2:stop": "pm2 stop all",
+"pm2:restart": "pm2 restart all",
+"pm2:reload": "pm2 reload techno-etl-api",
+"pm2:logs": "pm2 logs",
+"pm2:monit": "pm2 monit",
+"pm2:status": "pm2 status",
 
     "flush": "redis-cli --scan --pattern 'cache:*' | xargs -r redis-cli del",
 

@@ -43,6 +43,9 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '@mui/material/styles';
 import { toast } from 'react-toastify';
 import { useTab } from '../contexts/TabContext';
+import { getUnifiedSettings, saveUnifiedSettings } from '../utils/unifiedSettingsManager';
+import { useStandardErrorHandling } from '../hooks/useStandardErrorHandling';
+import ComponentErrorBoundary from '../components/common/ComponentErrorBoundary';
 import { StatsCards } from '../components/common/StatsCards';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
@@ -61,6 +64,10 @@ import DashboardOverview from '../components/dashboard/DashboardOverview';
 import QuickActions from '../components/dashboard/QuickActions';
 import EnhancedStatsCards from '../components/dashboard/EnhancedStatsCards';
 import DashboardSettings from '../components/dashboard/DashboardSettings';
+import TaskManagementWidget from '../components/dashboard/TaskManagementWidget';
+import RecentActivityFeed from '../components/dashboard/RecentActivityFeed';
+import PerformanceMetricsWidget from '../components/dashboard/PerformanceMetricsWidget';
+import DashboardTestSummary from '../components/dashboard/DashboardTestSummary';
 import {
   ProfessionalMetricCard,
   ProfessionalChartWidget,
@@ -93,6 +100,17 @@ const Dashboard = () => {
   const { mode, isDark, colorPreset, density, animations } = useCustomTheme();
   const { currentLanguage, translate, languages } = useLanguage();
   const { openTab } = useTab();
+
+  // Add error handling
+  const {
+    error: settingsError,
+    loading: errorLoading,
+    executeWithErrorHandling,
+    clearError
+  } = useStandardErrorHandling('Dashboard', {
+    fallbackDataType: 'object',
+    showToast: true
+  });
   
   // Check if current language is RTL
   const isRTL = useMemo(() => languages[currentLanguage]?.dir === 'rtl', [languages, currentLanguage]);
@@ -144,34 +162,49 @@ const Dashboard = () => {
   });
   const [enhancedLoading, setEnhancedLoading] = useState(false);
 
-  // Dashboard settings
-  const [dashboardSettings, setDashboardSettings] = useState({
-    statCards: {
-      revenue: true,
-      orders: true,
-      products: true,
-      customers: true,
-      categories: true,
-      brands: true,
-      lowStock: true,
-      pendingOrders: true
-    },
-    charts: {
-      orders: true,
-      customers: true,
-      productStats: true,
-      brandDistribution: true,
-      categoryTree: true,
-      salesPerformance: true,
-      inventoryStatus: true,
-      productAttributes: true
-    },
-    general: {
-      autoRefresh: false,
-      animations: true,
-      compactMode: false,
-      showTooltips: true
-    }
+  // Dashboard settings with unified settings integration
+  const [dashboardSettings, setDashboardSettings] = useState(() => {
+    // Try to load from unified settings first
+    const unifiedSettings = getUnifiedSettings();
+    const savedDashboardSettings = unifiedSettings.dashboard;
+
+    const defaultSettings = {
+      statCards: {
+        revenue: true,
+        orders: true,
+        products: true,
+        customers: true,
+        categories: true,
+        brands: true,
+        lowStock: true,
+        pendingOrders: true
+      },
+      charts: {
+        orders: true,
+        customers: true,
+        productStats: true,
+        brandDistribution: true,
+        categoryTree: true,
+        salesPerformance: true,
+        inventoryStatus: true,
+        productAttributes: true
+      },
+      widgets: {
+        taskManagement: true,
+        recentActivity: true,
+        performanceMetrics: true,
+        quickActions: true,
+        dashboardOverview: true
+      },
+      general: {
+        autoRefresh: false,
+        animations: true,
+        compactMode: false,
+        showTooltips: true
+      }
+    };
+
+    return savedDashboardSettings ? { ...defaultSettings, ...savedDashboardSettings } : defaultSettings;
   });
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
 
@@ -199,43 +232,58 @@ const Dashboard = () => {
   // Load enhanced dashboard data
   const loadEnhancedData = async () => {
     try {
-      setEnhancedLoading(true);
-      const cacheKey = 'enhancedDashboardData';
-      const cachedData = unifiedMagentoService._getCachedResponse(cacheKey);
+        setEnhancedLoading(true);
+        const cacheKey = 'enhancedDashboardData';
+        const cachedData = unifiedMagentoService._getCachedResponse(cacheKey);
 
-      if (cachedData) {
-        console.log('Loaded enhanced data from cache');
-        setEnhancedData(cachedData);
-      } else {
-        const responses = await Promise.all([
-          unifiedMagentoService.get('/products/stats'),
-          unifiedMagentoService.get('/products/types'),
-          unifiedMagentoService.get('/brands/distribution'),
-          unifiedMagentoService.get('/categories/distribution'),
-          unifiedMagentoService.get('/products/attributes'),
-          unifiedMagentoService.get('/sales/performance'),
-          unifiedMagentoService.get('/inventory/status')
-        ]);
-        const data = {
-          productStats: responses[0].data,
-          productTypes: responses[1].data,
-          brandDistribution: responses[2].data,
-          categoryDistribution: responses[3].data,
-          productAttributes: responses[4].data,
-          salesPerformance: responses[5].data,
-          inventoryStatus: responses[6].data
-        };
-        setEnhancedData(data);
-        unifiedMagentoService._setCachedResponse(cacheKey, data); // Cache the result
-        console.log('Stored enhanced data to cache');
-      }
+        if (cachedData) {
+            console.log('Loaded enhanced data from cache');
+            setEnhancedData(cachedData);
+        } else {
+            // Use Promise.allSettled to handle failed endpoints gracefully
+            const endpoints = [
+                '/products/stats',
+                '/products/types', 
+                '/brands/distribution',
+                '/categories/distribution',
+                '/products/attributes',
+                '/sales/performance',
+                '/inventory/status'
+            ];
+            
+            const responses = await Promise.allSettled(
+                endpoints.map(endpoint => 
+                    unifiedMagentoService.get(endpoint).catch(error => {
+                        console.warn(`Endpoint ${endpoint} failed:`, error.message);
+                        return { data: null };
+                    })
+                )
+            );
+            
+            const data = {
+                productStats: responses[0].status === 'fulfilled' ? responses[0].value?.data : null,
+                productTypes: responses[1].status === 'fulfilled' ? responses[1].value?.data : [],
+                brandDistribution: responses[2].status === 'fulfilled' ? responses[2].value?.data : [],
+                categoryDistribution: responses[3].status === 'fulfilled' ? responses[3].value?.data : [],
+                productAttributes: responses[4].status === 'fulfilled' ? responses[4].value?.data : [],
+                salesPerformance: responses[5].status === 'fulfilled' ? responses[5].value?.data : null,
+                inventoryStatus: responses[6].status === 'fulfilled' ? responses[6].value?.data : null
+            };
+            
+            setEnhancedData(data);
+            unifiedMagentoService._setCachedResponse(cacheKey, data);
+            console.log('Stored enhanced data to cache');
+        }
     } catch (error) {
-      console.error('Error loading enhanced dashboard data:', error);
-      toast.error('Failed to load dashboard data');
+        console.error('Error loading enhanced dashboard data:', error);
+        // Don't show error toast for expected failures
+        if (error.response?.status !== 404) {
+            toast.error('Failed to load some dashboard data');
+        }
     } finally {
-      setEnhancedLoading(false);
+        setEnhancedLoading(false);
     }
-  };
+};
 
   // Load enhanced data on mount and refresh
   useEffect(() => {
@@ -281,11 +329,44 @@ const Dashboard = () => {
     setVisibleCharts(prev => ({ ...prev, [chartKey]: !prev[chartKey] }));
   };
 
-  // Handle dashboard settings
-  const handleSettingsChange = (newSettings) => {
-    setDashboardSettings(newSettings);
-    // Save to localStorage
-    localStorage.setItem('dashboardSettings', JSON.stringify(newSettings));
+  // Handle dashboard settings with unified settings integration and error handling
+  const handleSettingsChange = async (newSettings) => {
+    try {
+      await executeWithErrorHandling(async () => {
+        setDashboardSettings(newSettings);
+
+        // Save to unified settings
+        const currentUnifiedSettings = getUnifiedSettings();
+        const updatedUnifiedSettings = {
+          ...currentUnifiedSettings,
+          dashboard: newSettings
+        };
+        const result = saveUnifiedSettings(updatedUnifiedSettings);
+
+        if (!result) {
+          throw new Error('Failed to save dashboard settings');
+        }
+
+        console.log('✅ Dashboard settings saved successfully');
+        toast.success('Dashboard settings saved successfully');
+
+        return result;
+      }, {
+        operation: 'save_dashboard_settings',
+        settings: newSettings
+      });
+    } catch (error) {
+      console.error('❌ Failed to save dashboard settings:', error);
+      toast.error('Failed to save dashboard settings. Please try again.');
+
+      // Fallback to local storage
+      try {
+        localStorage.setItem('dashboardSettings', JSON.stringify(newSettings));
+        console.log('⚠️ Settings saved to local storage as fallback');
+      } catch (fallbackError) {
+        console.error('❌ Even fallback save failed:', fallbackError);
+      }
+    }
   };
 
   const handleResetSettings = () => {
@@ -310,6 +391,13 @@ const Dashboard = () => {
         inventoryStatus: true,
         productAttributes: true
       },
+      widgets: {
+        taskManagement: true,
+        recentActivity: true,
+        performanceMetrics: true,
+        quickActions: true,
+        dashboardOverview: true
+      },
       general: {
         autoRefresh: false,
         animations: true,
@@ -318,17 +406,40 @@ const Dashboard = () => {
       }
     };
     setDashboardSettings(defaultSettings);
+
+    // Remove from unified settings
+    try {
+      const currentUnifiedSettings = JSON.parse(localStorage.getItem('techno-etl-settings') || '{}');
+      delete currentUnifiedSettings.dashboard;
+      localStorage.setItem('techno-etl-settings', JSON.stringify(currentUnifiedSettings));
+    } catch (error) {
+      console.error('Failed to reset dashboard settings in unified settings:', error);
+    }
+
+    // Also remove old localStorage key for backward compatibility
     localStorage.removeItem('dashboardSettings');
   };
 
-  // Load settings from localStorage on mount
+  // Settings are now loaded in the initial state from unified settings
+  // This effect is kept for backward compatibility and migration
   useEffect(() => {
-    const savedSettings = localStorage.getItem('dashboardSettings');
-    if (savedSettings) {
+    const oldSettings = localStorage.getItem('dashboardSettings');
+    if (oldSettings) {
       try {
-        setDashboardSettings(JSON.parse(savedSettings));
+        const parsedOldSettings = JSON.parse(oldSettings);
+        // Migrate old settings to unified settings
+        const currentUnifiedSettings = JSON.parse(localStorage.getItem('techno-etl-settings') || '{}');
+        if (!currentUnifiedSettings.dashboard) {
+          const updatedUnifiedSettings = {
+            ...currentUnifiedSettings,
+            dashboard: parsedOldSettings
+          };
+          localStorage.setItem('techno-etl-settings', JSON.stringify(updatedUnifiedSettings));
+          localStorage.removeItem('dashboardSettings'); // Clean up old storage
+          console.log('Migrated dashboard settings to unified settings');
+        }
       } catch (error) {
-        console.error('Error loading dashboard settings:', error);
+        console.error('Error migrating dashboard settings:', error);
       }
     }
   }, []);
@@ -415,7 +526,11 @@ const Dashboard = () => {
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <ComponentErrorBoundary
+      componentName="Dashboard"
+      fallbackMessage="There was an error loading the dashboard. Please refresh the page."
+    >
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box 
         sx={{ 
           p: 3, 
@@ -683,6 +798,9 @@ const Dashboard = () => {
               </Grid>
             </Grid>
 
+            {/* Dashboard Test Summary (temporary for testing) */}
+            <DashboardTestSummary />
+
             <Grid container spacing={3}>
               {/* Main Dashboard Overview */}
               <Grid item xs={12} lg={8}>
@@ -743,11 +861,24 @@ const Dashboard = () => {
                 )}
               </Grid>
 
-              {/* Quick Actions Sidebar */}
+              {/* Dashboard Widgets Sidebar */}
               <Grid item xs={12} lg={4}>
-                <QuickActions
-                  onAction={handleAction}
-                />
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                  {/* Quick Actions */}
+                  {dashboardSettings.widgets?.quickActions && (
+                    <QuickActions onAction={handleAction} />
+                  )}
+
+                  {/* Task Management Widget */}
+                  {dashboardSettings.widgets?.taskManagement && (
+                    <TaskManagementWidget />
+                  )}
+
+                  {/* Recent Activity Feed */}
+                  {dashboardSettings.widgets?.recentActivity && (
+                    <RecentActivityFeed />
+                  )}
+                </Box>
               </Grid>
             </Grid>
 
@@ -792,18 +923,25 @@ const Dashboard = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
-                  <ProfessionalProgressWidget
-                    title="🎯 Performance Metrics"
-                    loading={enhancedLoading}
-                    items={[
-                      { label: 'Order Fulfillment', value: 85, color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
-                      { label: 'Customer Satisfaction', value: 92, color: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' },
-                      { label: 'Inventory Accuracy', value: 78, color: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' },
-                      { label: 'System Uptime', value: 99, color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }
-                    ]}
-                  />
-                </Grid>
+                {/* Performance Metrics Widget */}
+                {dashboardSettings.widgets?.performanceMetrics ? (
+                  <Grid item xs={12} md={6} lg={4}>
+                    <PerformanceMetricsWidget />
+                  </Grid>
+                ) : (
+                  <Grid item xs={12} md={6} lg={4}>
+                    <ProfessionalProgressWidget
+                      title="🎯 Performance Metrics"
+                      loading={enhancedLoading}
+                      items={[
+                        { label: 'Order Fulfillment', value: 85, color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
+                        { label: 'Customer Satisfaction', value: 92, color: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' },
+                        { label: 'Inventory Accuracy', value: 78, color: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' },
+                        { label: 'System Uptime', value: 99, color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }
+                      ]}
+                    />
+                  </Grid>
+                )}
 
                 {/* Product Statistics */}
                 {dashboardSettings.charts.productStats && (
@@ -929,6 +1067,7 @@ const Dashboard = () => {
         />
       </Box>
     </LocalizationProvider>
+    </ComponentErrorBoundary>
   );
 };
 

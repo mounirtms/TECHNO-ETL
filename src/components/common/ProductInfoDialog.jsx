@@ -37,8 +37,8 @@ import {
     Edit as EditIcon,
     ContentCopy as CopyIcon
 } from '@mui/icons-material';
-import Carousel from 'react-material-ui-carousel';
-import ReactImageMagnify from 'react-image-magnify';
+ 
+// Removed react-image-magnify due to React 18 compatibility issues
 import { toast } from 'react-toastify';
 
 const MEDIA_PREFIX = 'https://technostationery.com/pub/media/catalog/product';
@@ -71,24 +71,18 @@ const ProductInfoDialog = ({ open, onClose, product }) => {
                 <Grid container spacing={3} alignItems="flex-start">
                     <Grid item xs={12} sm={5} md={4}>
                         <Box sx={{ width: '100%' }}>
-                            <ReactImageMagnify
-                                {...{
-                                    smallImage: {
-                                        alt: product?.name || 'Product Image',
-                                        isFluidWidth: true,
-                                        src: mainImage
-                                    },
-                                    largeImage: {
-                                        src: mainImage,
-                                        width: 1000,
-                                        height: 1000
-                                    },
-                                    enlargedImageContainerDimensions: {
-                                        width: '180%',
-                                        height: '180%'
-                                    },
-                                    lensStyle: { backgroundColor: 'rgba(0,0,0,.2)' }
+                            <img
+                                src={mainImage}
+                                alt={product?.name || 'Product Image'}
+                                style={{
+                                    width: '100%',
+                                    height: 'auto',
+                                    borderRadius: '8px',
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                                    cursor: 'pointer'
                                 }}
+                                onClick={() => window.open(mainImage, '_blank')}
+                                title="Click to view full size"
                             />
                         </Box>
                     </Grid>
@@ -132,44 +126,7 @@ const ProductInfoDialog = ({ open, onClose, product }) => {
                         <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
                             📷 Additional Images
                         </Typography>
-                        <Carousel
-                            autoPlay={false}
-                            navButtonsAlwaysVisible
-                            animation="slide"
-                            swipe
-                            indicators
-                            navButtonsProps={{
-                                style: {
-                                    backgroundColor: '#fff',
-                                    color: '#333',
-                                    borderRadius: 4
-                                }
-                            }}
-                        >
-                            {media.map((item, idx) => (
-                                <Box
-                                    key={idx}
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        p: 2,
-                                        border: '1px solid #eee',
-                                        borderRadius: 2,
-                                        background: '#fafafa'
-                                    }}
-                                >
-                                    <img
-                                        src={item.url}
-                                        alt={item.label || ''}
-                                        style={{ width: '100%', maxHeight: 250, objectFit: 'contain', borderRadius: 8 }}
-                                    />
-                                    <Typography variant="caption" sx={{ mt: 1 }} color="text.secondary">
-                                        {item.label || item.file}
-                                    </Typography>
-                                </Box>
-                            ))}
-                        </Carousel>
+                        
                     </>
                 )}
             </DialogContent>

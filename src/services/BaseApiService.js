@@ -255,50 +255,41 @@ export class BaseApiService {
 
   // ===== ERROR HANDLING =====
   
-  _handleError(error, context = {}) {
-    this.state.metrics.errors++;
-    this.state.metrics.lastError = {
-      message: error.message,
-      timestamp: Date.now(),
-      context
-    };
-
+  _handleError(error, method, endpoint) {
     const errorMessage = this._getErrorMessage(error);
     
-    // Only show toast for user-facing errors
-    if (context.showToast !== false) {
-      toast.error(errorMessage);
+    // Only show user-facing errors for non-404 status codes
+    if (error.response?.status !== 404) {
+        if (error.response?.status >= 500) {
+            toast.error(`Server Error: ${errorMessage}`);
+        } else if (error.response?.status === 401) {
+            toast.error('Authentication failed. Please check your credentials.');
+        } else if (error.response?.status === 403) {
+            toast.error('Access denied. Please check your permissions.');
+        } else {
+            toast.error(`API Error: ${errorMessage}`);
+        }
     }
-
-    console.error(`❌ API Error [${context.method} ${context.endpoint}]:`, error);
-    return errorMessage;
+    
+    // Always log for debugging
+    console.error(`API Error [${method} ${endpoint}]:`, {
+        status: error.response?.status,
+        message: errorMessage,
+        url: error.config?.url
+    });
   }
-
+  
   _getErrorMessage(error) {
     if (error.response?.data?.message) {
       return error.response.data.message;
     }
-    
-    if (error.response?.status) {
-      const statusMessages = {
-        400: 'Invalid request parameters',
-        401: 'Authentication required',
-        403: 'Access forbidden',
-        404: 'Resource not found',
-        422: 'Validation failed',
-        429: 'Too many requests',
-        500: 'Server error',
-        502: 'Service unavailable',
-        503: 'Service temporarily unavailable'
-      };
-      return statusMessages[error.response.status] || `HTTP ${error.response.status} error`;
+    if (error.response?.data?.error) {
+      return error.response.data.error;
     }
-    
-    if (error.code === 'NETWORK_ERROR' || error.message?.includes('Network Error')) {
-      return 'Network connection error';
+    if (error.message) {
+      return error.message;
     }
-    
-    return error.message || 'Unexpected error occurred';
+    return 'Unknown error occurred';
   }
 
   _isRetryableError(error) {
