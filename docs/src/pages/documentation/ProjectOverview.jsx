@@ -24,7 +24,7 @@ import {
   Security as SecurityIcon,
   CloudUpload as CloudIcon,
   Analytics as AnalyticsIcon,
-  Integration as IntegrationIcon,
+  IntegrationInstructions as IntegrationIcon,
   Storage as StorageIcon
 } from '@mui/icons-material';
 

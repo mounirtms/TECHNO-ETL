@@ -15,6 +15,7 @@
     "@mui/icons-material": "^5.15.6",
     "@mui/material": "^5.15.6",
     "framer-motion": "^11.0.3",
+    "fuse.js": "^7.0.0",
     "prism-react-renderer": "^2.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -43,9 +43,6 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '@mui/material/styles';
 import { toast } from 'react-toastify';
 import { useTab } from '../contexts/TabContext';
-import { getUnifiedSettings, saveUnifiedSettings } from '../utils/unifiedSettingsManager';
-import { useStandardErrorHandling } from '../hooks/useStandardErrorHandling';
-import ComponentErrorBoundary from '../components/common/ComponentErrorBoundary';
 import { StatsCards } from '../components/common/StatsCards';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
@@ -100,17 +97,6 @@ const Dashboard = () => {
   const { mode, isDark, colorPreset, density, animations } = useCustomTheme();
   const { currentLanguage, translate, languages } = useLanguage();
   const { openTab } = useTab();
-
-  // Add error handling
-  const {
-    error: settingsError,
-    loading: errorLoading,
-    executeWithErrorHandling,
-    clearError
-  } = useStandardErrorHandling('Dashboard', {
-    fallbackDataType: 'object',
-    showToast: true
-  });
   
   // Check if current language is RTL
   const isRTL = useMemo(() => languages[currentLanguage]?.dir === 'rtl', [languages, currentLanguage]);
@@ -165,7 +151,7 @@ const Dashboard = () => {
   // Dashboard settings with unified settings integration
   const [dashboardSettings, setDashboardSettings] = useState(() => {
     // Try to load from unified settings first
-    const unifiedSettings = getUnifiedSettings();
+    const unifiedSettings = JSON.parse(localStorage.getItem('techno-etl-settings') || '{}');
     const savedDashboardSettings = unifiedSettings.dashboard;
 
     const defaultSettings = {
@@ -329,43 +315,23 @@ const Dashboard = () => {
     setVisibleCharts(prev => ({ ...prev, [chartKey]: !prev[chartKey] }));
   };
 
-  // Handle dashboard settings with unified settings integration and error handling
-  const handleSettingsChange = async (newSettings) => {
+  // Handle dashboard settings with unified settings integration
+  const handleSettingsChange = (newSettings) => {
+    setDashboardSettings(newSettings);
+
+    // Save to unified settings
     try {
-      await executeWithErrorHandling(async () => {
-        setDashboardSettings(newSettings);
-
-        // Save to unified settings
-        const currentUnifiedSettings = getUnifiedSettings();
-        const updatedUnifiedSettings = {
-          ...currentUnifiedSettings,
-          dashboard: newSettings
-        };
-        const result = saveUnifiedSettings(updatedUnifiedSettings);
-
-        if (!result) {
-          throw new Error('Failed to save dashboard settings');
-        }
-
-        console.log('✅ Dashboard settings saved successfully');
-        toast.success('Dashboard settings saved successfully');
-
-        return result;
-      }, {
-        operation: 'save_dashboard_settings',
-        settings: newSettings
-      });
+      const currentUnifiedSettings = JSON.parse(localStorage.getItem('techno-etl-settings') || '{}');
+      const updatedUnifiedSettings = {
+        ...currentUnifiedSettings,
+        dashboard: newSettings
+      };
+      localStorage.setItem('techno-etl-settings', JSON.stringify(updatedUnifiedSettings));
+      console.log('Dashboard settings saved to unified settings');
     } catch (error) {
-      console.error('❌ Failed to save dashboard settings:', error);
-      toast.error('Failed to save dashboard settings. Please try again.');
-
+      console.error('Failed to save dashboard settings to unified settings:', error);
       // Fallback to local storage
-      try {
-        localStorage.setItem('dashboardSettings', JSON.stringify(newSettings));
-        console.log('⚠️ Settings saved to local storage as fallback');
-      } catch (fallbackError) {
-        console.error('❌ Even fallback save failed:', fallbackError);
-      }
+      localStorage.setItem('dashboardSettings', JSON.stringify(newSettings));
     }
   };
 
@@ -526,11 +492,7 @@ const Dashboard = () => {
   };
 
   return (
-    <ComponentErrorBoundary
-      componentName="Dashboard"
-      fallbackMessage="There was an error loading the dashboard. Please refresh the page."
-    >
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box 
         sx={{ 
           p: 3, 
@@ -1067,7 +1029,6 @@ const Dashboard = () => {
         />
       </Box>
     </LocalizationProvider>
-    </ComponentErrorBoundary>
   );
 };
 
