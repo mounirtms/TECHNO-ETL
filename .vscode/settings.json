@@ -3,5 +3,7 @@
     "Codegeex.Comment.LanguagePreference": "English",
     "Codegeex.Chat.LanguagePreference": "English",
     "Codegeex.CommitMessageStyle": "Default",
-    "Codegeex.GenerationPreference": "automatic"
+    "Codegeex.GenerationPreference": "automatic",
+    "codium.codeCompletion.enable": false,
+    "kiroAgent.configureMCP": "Disabled"
 }

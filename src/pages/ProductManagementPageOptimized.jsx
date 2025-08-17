@@ -16,7 +16,8 @@ import {
   Grid,
   Divider,
   LinearProgress,
-  CircularProgress
+  CircularProgress,
+  Badge
 } from '@mui/material';
 import {
   Inventory as ProductIcon,
@@ -30,26 +31,28 @@ import {
   LocalOffer as BrandIcon,
   Settings as SettingsIcon,
   CloudUpload as UploadIcon,
-  Transform as TransformIcon
+  Transform as TransformIcon,
+  AutoFixHigh as OptimizedIcon,
+  Speed as BasicIcon,
+  Psychology as ProfessionalIcon
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
 // Components
 import ProductManagementGrid from '../components/grids/magento/ProductManagementGrid';
-import BulkMediaUploadDialog from '../components/dialogs/BulkMediaUploadDialog';
-import EnhancedBulkMediaUploadDialog from '../components/dialogs/EnhancedBulkMediaUploadDialog';
+import OptimizedBulkUploadDialog from '../components/dialogs/OptimizedBulkUploadDialog';
 
 /**
- * ProductManagementPage - Main page for comprehensive product management
- * Allows users to specify product IDs or work with all products
+ * Optimized ProductManagementPage - Enhanced with unified upload dialog
+ * Features both Basic and Professional upload modes with advanced matching
  */
-const ProductManagementPage = () => {
+const ProductManagementPageOptimized = () => {
   // ===== STATE MANAGEMENT =====
-  const [productIds, setProductIds] = useState([  ]); // Pre-populated with your provided IDs
+  const [productIds, setProductIds] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [showAllProducts, setShowAllProducts] = useState(false);
-  const [bulkMediaDialogOpen, setBulkMediaDialogOpen] = useState(false);
-  const [enhancedBulkMediaDialogOpen, setEnhancedBulkMediaDialogOpen] = useState(false);
+  const [optimizedUploadDialogOpen, setOptimizedUploadDialogOpen] = useState(false);
+  const [uploadMode, setUploadMode] = useState('basic'); // 'basic' or 'professional'
 
   // Tab management
   const [activeTab, setActiveTab] = useState(0);
@@ -115,6 +118,13 @@ const ProductManagementPage = () => {
     }
   };
 
+  // Open upload dialog with specific mode
+  const handleOpenUpload = (mode) => {
+    setUploadMode(mode);
+    setOptimizedUploadDialogOpen(true);
+    toast.info(`Opening ${mode} upload mode`);
+  };
+
   // ===== CACHING FUNCTIONS =====
   const loadCachedData = async () => {
     try {
@@ -150,8 +160,6 @@ const ProductManagementPage = () => {
     try {
       setImageProcessing(prev => ({ ...prev, renaming: true }));
 
-      // This would call the renameImages.js script functionality
-      // For now, simulate the process
       toast.info('Starting image renaming process...');
 
       // Simulate processing time
@@ -208,7 +216,29 @@ const ProductManagementPage = () => {
   return (
     <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', p: 2 }}>
       {/* Enhanced Header */}
-      
+      <Paper sx={{ p: 3, mb: 3, borderRadius: 3, bgcolor: 'primary.main', color: 'primary.contrastText' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <OptimizedIcon sx={{ fontSize: 40 }} />
+          <Box sx={{ flexGrow: 1 }}>
+            <Typography variant="h4" component="h1" gutterBottom>
+              Optimized Product Management
+            </Typography>
+            <Typography variant="body1" sx={{ opacity: 0.9 }}>
+              Advanced product management with unified upload system and intelligent matching
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Chip 
+              label="Optimized" 
+              sx={{ bgcolor: 'success.main', color: 'white' }} 
+            />
+            <Chip 
+              label="AI Matching" 
+              sx={{ bgcolor: 'secondary.main', color: 'white' }} 
+            />
+          </Box>
+        </Box>
+      </Paper>
 
       {/* Enhanced Tabs */}
       <Paper sx={{ borderRadius: 3, overflow: 'hidden', mb: 3 }}>
@@ -259,111 +289,155 @@ const ProductManagementPage = () => {
         {activeTab === 0 && (
           <Paper sx={{ p: 3, borderRadius: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
-              Product Selection & Management
+              Product Selection & Optimized Upload
             </Typography>
           
-          {/* Mode Toggle */}
-          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-            <Button
-              variant={!showAllProducts ? 'contained' : 'outlined'}
-              onClick={handleShowSpecificProducts}
-              startIcon={<SearchIcon />}
-            >
-              Specific Products
-            </Button>
-            <Button
-              variant={showAllProducts ? 'contained' : 'outlined'}
-              onClick={handleShowAllProducts}
-              startIcon={<ProductIcon />}
-            >
-              All Products
-            </Button>
-          </Box>
+            {/* Mode Toggle */}
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <Button
+                variant={!showAllProducts ? 'contained' : 'outlined'}
+                onClick={handleShowSpecificProducts}
+                startIcon={<SearchIcon />}
+              >
+                Specific Products
+              </Button>
+              <Button
+                variant={showAllProducts ? 'contained' : 'outlined'}
+                onClick={handleShowAllProducts}
+                startIcon={<ProductIcon />}
+              >
+                All Products
+              </Button>
+            </Box>
 
-          {/* Specific Products Mode */}
-          {!showAllProducts && (
-            <>
-              {/* Add Product ID Input */}
-              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                <TextField
-                  label="Product ID"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Enter product ID (e.g., 1140659762)"
-                  size="small"
-                  sx={{ minWidth: 200 }}
-                />
-                <Button
-                  variant="contained"
-                  onClick={handleAddProductId}
-                  startIcon={<AddIcon />}
-                  disabled={!inputValue.trim()}
-                >
-                  Add
-                </Button>
-                <Button
-                  variant="outlined"
-                  onClick={handleClearAll}
-                  startIcon={<ClearIcon />}
-                  disabled={productIds.length === 0}
-                  color="warning"
-                >
-                  Clear All
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => setEnhancedBulkMediaDialogOpen(true)}
-                  startIcon={<TransformIcon />}
-                  color="success"
-                >
-                  Professional Upload
-                </Button>
-                <Button
-                  variant="outlined"
-                  onClick={() => setBulkMediaDialogOpen(true)}
-                  startIcon={<ImageIcon />}
-                  color="info"
-                >
-                  Basic Upload
-                </Button>
-              </Box>
-
-              {/* Current Product IDs */}
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Selected Product IDs ({productIds.length}):
-                </Typography>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {productIds.length > 0 ? (
-                    productIds.map((id) => (
-                      <Chip
-                        key={id}
-                        label={id}
-                        onDelete={() => handleRemoveProductId(id)}
-                        color="primary"
-                        variant="outlined"
-                        size="small"
-                      />
-                    ))
-                  ) : (
-                    <Typography variant="body2" color="text.secondary" fontStyle="italic">
-                      No product IDs selected. Add some above or switch to "All Products" mode.
-                    </Typography>
-                  )}
+            {/* Specific Products Mode */}
+            {!showAllProducts && (
+              <>
+                {/* Add Product ID Input */}
+                <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
+                  <TextField
+                    label="Product ID"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Enter product ID (e.g., 1140659762)"
+                    size="small"
+                    sx={{ minWidth: 200 }}
+                  />
+                  <Button
+                    variant="contained"
+                    onClick={handleAddProductId}
+                    startIcon={<AddIcon />}
+                    disabled={!inputValue.trim()}
+                  >
+                    Add
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={handleClearAll}
+                    startIcon={<ClearIcon />}
+                    disabled={productIds.length === 0}
+                    color="warning"
+                  >
+                    Clear All
+                  </Button>
+                  
+                  <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+                  
+                  {/* Optimized Upload Buttons */}
+                  <Tooltip title="Basic mode: Simple SKU to image name matching with fuzzy algorithms">
+                    <Button
+                      variant="contained"
+                      onClick={() => handleOpenUpload('basic')}
+                      startIcon={<BasicIcon />}
+                      color="info"
+                      sx={{ minWidth: 140 }}
+                    >
+                      Basic Upload
+                    </Button>
+                  </Tooltip>
+                  
+                  <Tooltip title="Professional mode: Advanced REF column matching with multiple strategies">
+                    <Button
+                      variant="contained"
+                      onClick={() => handleOpenUpload('professional')}
+                      startIcon={<ProfessionalIcon />}
+                      color="success"
+                      sx={{ minWidth: 160 }}
+                    >
+                      Professional Upload
+                    </Button>
+                  </Tooltip>
                 </Box>
-              </Box>
-            </>
-          )}
 
-          {/* All Products Mode */}
-          {showAllProducts && (
-            <Alert severity="info">
-              <Typography variant="body2">
-                Working with all products in the system. This may take longer to load.
-              </Typography>
-            </Alert>
-          )}
+                {/* Upload Mode Comparison */}
+                <Alert severity="info" sx={{ mb: 2 }}>
+                  <Typography variant="body2" gutterBottom>
+                    <strong>Upload Mode Comparison:</strong>
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                        <BasicIcon color="info" fontSize="small" />
+                        <Typography variant="body2"><strong>Basic Mode:</strong></Typography>
+                      </Box>
+                      <Typography variant="caption" display="block">
+                        • SKU + Image Name matching<br/>
+                        • Multiple images per SKU (_1, _2, _3)<br/>
+                        • Fuzzy matching for variations<br/>
+                        • Fast processing
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                        <ProfessionalIcon color="success" fontSize="small" />
+                        <Typography variant="body2"><strong>Professional Mode:</strong></Typography>
+                      </Box>
+                      <Typography variant="caption" display="block">
+                        • REF column matching (primary)<br/>
+                        • Product name fallback matching<br/>
+                        • Advanced AI similarity algorithms<br/>
+                        • Multiple matching strategies
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Alert>
+
+                {/* Current Product IDs */}
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                    Selected Product IDs ({productIds.length}):
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    {productIds.length > 0 ? (
+                      productIds.map((id) => (
+                        <Chip
+                          key={id}
+                          label={id}
+                          onDelete={() => handleRemoveProductId(id)}
+                          color="primary"
+                          variant="outlined"
+                          size="small"
+                        />
+                      ))
+                    ) : (
+                      <Typography variant="body2" color="text.secondary" fontStyle="italic">
+                        No product IDs selected. Add some above or switch to "All Products" mode.
+                      </Typography>
+                    )}
+                  </Box>
+                </Box>
+              </>
+            )}
+
+            {/* All Products Mode */}
+            {showAllProducts && (
+              <Alert severity="info">
+                <Typography variant="body2">
+                  Working with all products in the system. This may take longer to load.
+                </Typography>
+              </Alert>
+            )}
 
             {/* Main Content */}
             <Box sx={{ flexGrow: 1, overflow: 'hidden', mt: 2 }}>
@@ -374,10 +448,10 @@ const ProductManagementPage = () => {
             </Box>
 
             {/* Footer Info */}
-            <Alert severity="info" sx={{ mt: 2 }}>
+            <Alert severity="success" sx={{ mt: 2 }}>
               <Typography variant="body2">
-                💡 <strong>Tip:</strong> Use the tabs above to switch between Products Overview, Attributes Management, and Category Assignment.
-                Double-click any product to view details, or use the action buttons for specific operations.
+                🚀 <strong>Optimized Features:</strong> Advanced matching algorithms, configurable settings, 
+                real-time statistics, and unified upload experience for both basic and professional workflows.
               </Typography>
             </Alert>
           </Paper>
@@ -584,31 +658,38 @@ const ProductManagementPage = () => {
         )}
       </Box>
 
-      {/* Enhanced Professional Bulk Media Upload Dialog */}
-      <EnhancedBulkMediaUploadDialog
-        open={enhancedBulkMediaDialogOpen}
-        onClose={() => setEnhancedBulkMediaDialogOpen(false)}
+      {/* Optimized Bulk Upload Dialog */}
+      <OptimizedBulkUploadDialog
+        open={optimizedUploadDialogOpen}
+        onClose={() => setOptimizedUploadDialogOpen(false)}
+        initialMode={uploadMode}
         onComplete={(results) => {
-          console.log('Enhanced bulk media upload completed:', results);
+          console.log('Optimized bulk upload completed:', results);
           const successful = results.filter(r => r.status === 'success').length;
           const failed = results.filter(r => r.status === 'error').length;
-          toast.success(`Professional upload completed: ${successful} successful, ${failed} failed`);
-          setEnhancedBulkMediaDialogOpen(false);
-        }}
-      />
-
-      {/* Basic Bulk Media Upload Dialog */}
-      <BulkMediaUploadDialog
-        open={bulkMediaDialogOpen}
-        onClose={() => setBulkMediaDialogOpen(false)}
-        onComplete={(results) => {
-          console.log('Basic bulk media upload completed:', results);
-          toast.success(`Media upload completed: ${results.filter(r => r.status === 'success').length} successful`);
-          setBulkMediaDialogOpen(false);
+          const stats = results.length > 0 ? results[0].stats || {} : {};
+          
+          toast.success(
+            `${uploadMode.charAt(0).toUpperCase() + uploadMode.slice(1)} upload completed: ${successful} successful, ${failed} failed`
+          );
+          
+          // Show additional stats if available
+          if (stats.matchStrategies) {
+            const strategies = Object.entries(stats.matchStrategies)
+              .filter(([_, count]) => count > 0)
+              .map(([strategy, count]) => `${strategy}: ${count}`)
+              .join(', ');
+            
+            if (strategies) {
+              toast.info(`Match strategies used: ${strategies}`);
+            }
+          }
+          
+          setOptimizedUploadDialogOpen(false);
         }}
       />
     </Box>
   );
 };
 
-export default ProductManagementPage;
+export default ProductManagementPageOptimized;

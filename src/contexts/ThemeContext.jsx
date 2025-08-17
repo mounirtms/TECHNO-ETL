@@ -6,6 +6,10 @@ import {
   saveUnifiedSettings,
   getSystemPreferences
 } from '../utils/unifiedSettingsManager';
+import { CacheProvider } from '@emotion/react';
+import createCache from '@emotion/cache';
+import rtlPlugin from 'stylis-plugin-rtl';
+import { useLanguage } from './LanguageContext';
 
 const ThemeContext = createContext();
 
@@ -111,7 +115,7 @@ const darkPalette = {
   }
 };
 
-const createCustomTheme = (mode, colorPreset = 'techno', density = 'standard', fontSize = 'medium', customizations = {}) => {
+const createCustomTheme = (mode, colorPreset = 'techno', density = 'standard', fontSize = 'medium', customizations = {}, direction = 'ltr') => {
   let palette = mode === 'dark' ? darkPalette : lightPalette;
   
   // Apply color preset if different from default
@@ -135,6 +139,7 @@ const createCustomTheme = (mode, colorPreset = 'techno', density = 'standard', f
   const fontConfig = fontSizeConfigs[fontSize];
   
   return createTheme({
+    direction,
     palette: {
       mode,
       ...palette,
@@ -262,6 +267,11 @@ const createCustomTheme = (mode, colorPreset = 'techno', density = 'standard', f
 };
 
 export const ThemeProvider = ({ children }) => {
+  // Detect language direction for RTL/LTR theme and Emotion cache
+  const { currentLanguage, languages } = useLanguage();
+  const isRTL = languages[currentLanguage]?.dir === 'rtl';
+  const direction = isRTL ? 'rtl' : 'ltr';
+
   // Initialize theme states from unified settings
   const initializeFromSettings = () => {
     const settings = getUnifiedSettings();
@@ -341,7 +351,7 @@ export const ThemeProvider = ({ children }) => {
   }, [highContrast, animations]);
 
   // Memoized theme creation to prevent unnecessary re-renders
-  const theme = useMemo(() => createCustomTheme(mode, colorPreset, density, fontSize, customizations), [mode, colorPreset, density, fontSize, customizations]);
+  const theme = useMemo(() => createCustomTheme(mode, colorPreset, density, fontSize, customizations, direction), [mode, colorPreset, density, fontSize, customizations, direction]);
 
   // Enhanced toggle function that respects user preferences
   const toggleTheme = useCallback(() => {
@@ -460,6 +470,13 @@ export const ThemeProvider = ({ children }) => {
     setCustomizations(prev => ({ ...prev, ...newCustomizations }));
   }, []);
 
+  // Emotion Cache for RTL/LTR
+  const cache = useMemo(() => {
+    const options = { key: isRTL ? 'mui-rtl' : 'mui' };
+    if (isRTL) options.stylisPlugins = [rtlPlugin];
+    return createCache(options);
+  }, [isRTL]);
+
   // Memoized context value to prevent unnecessary re-renders
   const value = useMemo(() => ({
     // Theme mode
@@ -505,9 +522,11 @@ export const ThemeProvider = ({ children }) => {
 
   return (
     <ThemeContext.Provider value={value}>
-      <MuiThemeProvider theme={theme}>
-        {children}
-      </MuiThemeProvider>
+      <CacheProvider value={cache}>
+        <MuiThemeProvider theme={theme}>
+          {children}
+        </MuiThemeProvider>
+      </CacheProvider>
     </ThemeContext.Provider>
   );
 };

@@ -17,6 +17,9 @@ backend/.env
 backend/src/config/*
 backend/queries
 # Editor directories and files
+
+dist_prod
+dist_complete
 .idea
 .DS_Store
 *.suo

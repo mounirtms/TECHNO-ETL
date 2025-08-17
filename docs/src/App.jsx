@@ -21,6 +21,8 @@ import APIDocumentation from './pages/documentation/APIDocumentation';
 import DashboardSystem from './pages/documentation/DashboardSystem';
 import ProductManagement from './pages/documentation/ProductManagement';
 import DeploymentGuide from './pages/documentation/DeploymentGuide';
+import OptimizedDeploymentGuide from './pages/documentation/OptimizedDeploymentGuide';
+import BackendProductionGuide from './pages/documentation/BackendProductionGuide';
 import Troubleshooting from './pages/documentation/Troubleshooting';
 import ConfigurationSetup from './pages/documentation/ConfigurationSetup';
 import SystemOverview from './pages/documentation/SystemOverview';
@@ -56,7 +58,12 @@ const App = () => {
               <Route path="/docs/getting-started" element={<GettingStarted />} />
               <Route path="/docs/features-showcase" element={<FeaturesShowcase />} />
               <Route path="/docs/product-management" element={<ProductManagement />} />
+              
+              {/* Deployment Documentation */}
               <Route path="/docs/deployment-guide" element={<DeploymentGuide />} />
+              <Route path="/docs/optimized-deployment" element={<OptimizedDeploymentGuide />} />
+              <Route path="/docs/backend-production" element={<BackendProductionGuide />} />
+              
               <Route path="/docs/troubleshooting" element={<Troubleshooting />} />
               <Route path="/docs/configuration-setup" element={<ConfigurationSetup />} />
               <Route path="/docs/search-help" element={<SearchHelp />} />

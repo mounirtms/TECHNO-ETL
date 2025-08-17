@@ -66,13 +66,13 @@ import { toast } from 'react-toastify';
 import mediaUploadService, { DEFAULT_MATCHING_SETTINGS } from '../../services/mediaUploadServiceOptimized';
 
 /**
- * OPTIMIZED Bulk Media Upload Dialog
- * Enhanced with advanced matching, configurable settings, and professional features
- * Automatically detects and handles both Basic and Professional modes
+ * Optimized Bulk Upload Dialog
+ * Unified dialog for both Basic and Professional modes
+ * Advanced matching settings and real-time configuration
  */
-const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
+const OptimizedBulkUploadDialog = ({ open, onClose, onComplete, initialMode = 'basic' }) => {
   const [activeStep, setActiveStep] = useState(0);
-  const [mode, setMode] = useState('basic'); // Auto-detected based on CSV
+  const [mode, setMode] = useState(initialMode);
   const [csvFile, setCsvFile] = useState(null);
   const [csvData, setCsvData] = useState(null);
   const [imageFiles, setImageFiles] = useState([]);
@@ -85,48 +85,38 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
 
   const steps = [
     'Upload CSV File',
-    'Upload Images', 
+    'Upload Images',
+    'Configure Matching',
     'Review Matches',
     'Upload Process'
   ];
 
-  // Auto-detect mode based on CSV columns
-  const detectMode = (csvData) => {
-    if (csvData.headers && csvData.headers.includes('ref')) {
-      return 'professional';
+  // Mode descriptions for tooltips
+  const modeDescriptions = {
+    basic: {
+      title: 'Basic Upload Mode',
+      description: 'Simple SKU to image name matching. Perfect for straightforward CSV files with direct image name references.',
+      features: ['SKU + Image Name matching', 'Multiple images per SKU (_1, _2, _3)', 'Fuzzy matching for variations', 'Fast processing']
+    },
+    professional: {
+      title: 'Professional Upload Mode',
+      description: 'Advanced matching with REF column support. Ideal for complex product catalogs with reference codes.',
+      features: ['REF column matching (primary)', 'SKU + Image Name matching', 'Product name fallback', 'Advanced fuzzy algorithms', 'Multiple matching strategies']
     }
-    return 'basic';
   };
 
-  // CSV Upload with auto-mode detection
+  // CSV Upload
   const onCSVDrop = useCallback(async (acceptedFiles) => {
     const file = acceptedFiles[0];
     if (!file) return;
 
     setLoading(true);
     try {
-      console.log('🧪 OPTIMIZED: Parsing CSV with auto-detection...');
-      
-      // Try professional mode first
-      let data;
-      let detectedMode = 'basic';
-      
-      try {
-        data = await mediaUploadService.parseCSVFile(file, 'professional');
-        detectedMode = 'professional';
-        console.log('✅ Professional mode detected (REF column found)');
-      } catch (error) {
-        console.log('⚠️ Professional mode failed, trying basic mode...');
-        data = await mediaUploadService.parseCSVFile(file, 'basic');
-        detectedMode = 'basic';
-        console.log('✅ Basic mode detected');
-      }
-      
-      setMode(detectedMode);
+      console.log(`🧪 OPTIMIZED: Parsing CSV in ${mode} mode...`);
+      const data = await mediaUploadService.parseCSVFile(file, mode);
       setCsvFile(file);
       setCsvData(data);
-      
-      toast.success(`CSV parsed successfully: ${data.data.length} products found (${detectedMode} mode auto-detected)`);
+      toast.success(`CSV parsed successfully: ${data.data.length} products found (${mode} mode)`);
       setActiveStep(1);
     } catch (error) {
       console.error('❌ OPTIMIZED: CSV parsing failed:', error);
@@ -134,7 +124,7 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [mode]);
 
   // Image Upload
   const onImageDrop = useCallback(async (acceptedFiles) => {
@@ -161,7 +151,7 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
     }
   }, []);
 
-  // Process matching with optimized settings
+  // Process matching with current settings
   const handleMatching = () => {
     if (!csvData || imageFiles.length === 0) {
       toast.error('Please upload both CSV and images');
@@ -173,18 +163,9 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
       console.log('🔍 OPTIMIZED: Starting advanced matching with settings:', settings);
       const results = mediaUploadService.matchImagesWithCSV(csvData, imageFiles, settings);
       setMatchingResults(results);
-      setActiveStep(2);
-      
-      const strategyInfo = Object.entries(results.stats.matchStrategies)
-        .filter(([_, count]) => count > 0)
-        .map(([strategy, count]) => `${strategy}: ${count}`)
-        .join(', ');
+      setActiveStep(3);
       
       toast.success(`Advanced matching complete: ${results.stats.matched} matches found for ${results.stats.uniqueProducts} products`);
-      
-      if (strategyInfo) {
-        toast.info(`Strategies used: ${strategyInfo}`);
-      }
     } catch (error) {
       console.error('❌ OPTIMIZED: Matching failed:', error);
       toast.error(`Matching failed: ${error.message}`);
@@ -200,7 +181,7 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
       return;
     }
 
-    setActiveStep(3);
+    setActiveStep(4);
     setUploadProgress({ current: 0, total: matchingResults.matches.length });
 
     try {
@@ -239,7 +220,6 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
     setUploadProgress(null);
     setUploadResults(null);
     setSettings(DEFAULT_MATCHING_SETTINGS);
-    setMode('basic');
   };
 
   // Update settings
@@ -288,7 +268,7 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
       maxWidth="xl" 
       fullWidth
       PaperProps={{
-        sx: { minHeight: '85vh', maxHeight: '95vh' }
+        sx: { minHeight: '90vh', maxHeight: '95vh' }
       }}
     >
       <DialogTitle sx={{ 
@@ -343,16 +323,40 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
       <DialogContent dividers sx={{ p: 0, display: 'flex', height: '70vh' }}>
         {/* Settings Panel */}
         {showSettings && (
-          <Paper sx={{ width: 320, p: 2, borderRight: 1, borderColor: 'divider', overflow: 'auto' }}>
+          <Paper sx={{ width: 350, p: 2, borderRight: 1, borderColor: 'divider', overflow: 'auto' }}>
             <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <TuneIcon color="primary" />
-              Advanced Settings
+              Matching Settings
             </Typography>
             
-            <Alert severity="info" sx={{ mb: 2, fontSize: '0.75rem' }}>
-              Mode auto-detected: <strong>{mode}</strong>
-              {mode === 'professional' && ' (REF column found)'}
-            </Alert>
+            {/* Mode Selection */}
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="subtitle2" gutterBottom>Upload Mode</Typography>
+              <ToggleButtonGroup
+                value={mode}
+                exclusive
+                onChange={(e, newMode) => newMode && setMode(newMode)}
+                size="small"
+                fullWidth
+              >
+                <ToggleButton value="basic">
+                  <Tooltip title={modeDescriptions.basic.description}>
+                    <Box sx={{ textAlign: 'center' }}>
+                      <SpeedIcon fontSize="small" />
+                      <Typography variant="caption" display="block">Basic</Typography>
+                    </Box>
+                  </Tooltip>
+                </ToggleButton>
+                <ToggleButton value="professional">
+                  <Tooltip title={modeDescriptions.professional.description}>
+                    <Box sx={{ textAlign: 'center' }}>
+                      <AIIcon fontSize="small" />
+                      <Typography variant="caption" display="block">Professional</Typography>
+                    </Box>
+                  </Tooltip>
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Box>
 
             {/* Matching Strategies */}
             <Accordion defaultExpanded>
@@ -365,7 +369,6 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                     <Switch
                       checked={settings.strategies.exact}
                       onChange={(e) => updateSettings('strategies.exact', e.target.checked)}
-                      size="small"
                     />
                   }
                   label={
@@ -381,9 +384,25 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                 <FormControlLabel
                   control={
                     <Switch
+                      checked={settings.strategies.normalized}
+                      onChange={(e) => updateSettings('strategies.normalized', e.target.checked)}
+                    />
+                  }
+                  label={
+                    <Tooltip title="Remove dashes, spaces, special characters for matching">
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                        <AutoIcon fontSize="small" />
+                        <Typography variant="body2">Normalized</Typography>
+                      </Box>
+                    </Tooltip>
+                  }
+                />
+                
+                <FormControlLabel
+                  control={
+                    <Switch
                       checked={settings.strategies.fuzzy}
                       onChange={(e) => updateSettings('strategies.fuzzy', e.target.checked)}
-                      size="small"
                     />
                   }
                   label={
@@ -402,7 +421,6 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                       <Switch
                         checked={settings.strategies.ref}
                         onChange={(e) => updateSettings('strategies.ref', e.target.checked)}
-                        size="small"
                       />
                     }
                     label={
@@ -421,7 +439,7 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
             {/* Matching Thresholds */}
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle2">Thresholds</Typography>
+                <Typography variant="subtitle2">Matching Thresholds</Typography>
               </AccordionSummary>
               <AccordionDetails sx={{ pt: 0 }}>
                 <Box sx={{ mb: 2 }}>
@@ -442,13 +460,24 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                     size="small"
                   />
                 </Box>
+                
+                <TextField
+                  label="Partial Match Length"
+                  type="number"
+                  value={settings.thresholds.partialLength}
+                  onChange={(e) => updateSettings('thresholds.partialLength', parseInt(e.target.value))}
+                  size="small"
+                  fullWidth
+                  inputProps={{ min: 10, max: 50 }}
+                  sx={{ mb: 2 }}
+                />
               </AccordionDetails>
             </Accordion>
 
             {/* File Handling */}
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle2">File Options</Typography>
+                <Typography variant="subtitle2">File Handling</Typography>
               </AccordionSummary>
               <AccordionDetails sx={{ pt: 0 }}>
                 <FormControlLabel
@@ -456,7 +485,6 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                     <Switch
                       checked={settings.fileHandling.multipleImages}
                       onChange={(e) => updateSettings('fileHandling.multipleImages', e.target.checked)}
-                      size="small"
                     />
                   }
                   label={
@@ -469,9 +497,30 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                 <FormControlLabel
                   control={
                     <Switch
+                      checked={!settings.fileHandling.caseSensitive}
+                      onChange={(e) => updateSettings('fileHandling.caseSensitive', !e.target.checked)}
+                    />
+                  }
+                  label={
+                    <Tooltip title="Ignore case differences in filenames">
+                      <Typography variant="body2">Case Insensitive</Typography>
+                    </Tooltip>
+                  }
+                />
+              </AccordionDetails>
+            </Accordion>
+
+            {/* Upload Settings */}
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="subtitle2">Upload Settings</Typography>
+              </AccordionSummary>
+              <AccordionDetails sx={{ pt: 0 }}>
+                <FormControlLabel
+                  control={
+                    <Switch
                       checked={settings.upload.processImages}
                       onChange={(e) => updateSettings('upload.processImages', e.target.checked)}
-                      size="small"
                     />
                   }
                   label={
@@ -479,6 +528,44 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                       <Typography variant="body2">Process Images</Typography>
                     </Tooltip>
                   }
+                />
+                
+                {settings.upload.processImages && (
+                  <>
+                    <TextField
+                      label="Target Size (px)"
+                      type="number"
+                      value={settings.upload.targetSize}
+                      onChange={(e) => updateSettings('upload.targetSize', parseInt(e.target.value))}
+                      size="small"
+                      fullWidth
+                      sx={{ mb: 1 }}
+                    />
+                    
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="body2" gutterBottom>
+                        Quality: {Math.round(settings.upload.imageQuality * 100)}%
+                      </Typography>
+                      <Slider
+                        value={settings.upload.imageQuality}
+                        onChange={(e, value) => updateSettings('upload.imageQuality', value)}
+                        min={0.5}
+                        max={1.0}
+                        step={0.05}
+                        size="small"
+                      />
+                    </Box>
+                  </>
+                )}
+                
+                <TextField
+                  label="Batch Size"
+                  type="number"
+                  value={settings.upload.batchSize}
+                  onChange={(e) => updateSettings('upload.batchSize', parseInt(e.target.value))}
+                  size="small"
+                  fullWidth
+                  inputProps={{ min: 1, max: 10 }}
                 />
               </AccordionDetails>
             </Accordion>
@@ -496,9 +583,13 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
               <StepContent>
                 <Alert severity="info" sx={{ mb: 2 }}>
                   <Typography variant="body2">
-                    <strong>Auto-Detection:</strong> Upload your CSV and the system will automatically detect 
-                    whether to use Basic mode (SKU + Image Name) or Professional mode (REF column matching).
+                    <strong>{modeDescriptions[mode].title}:</strong> {modeDescriptions[mode].description}
                   </Typography>
+                  <Box sx={{ mt: 1 }}>
+                    {modeDescriptions[mode].features.map((feature, index) => (
+                      <Chip key={index} label={feature} size="small" sx={{ mr: 0.5, mb: 0.5 }} />
+                    ))}
+                  </Box>
                 </Alert>
                 
                 <Paper
@@ -522,19 +613,22 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                     }
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Auto-detects Basic or Professional mode based on CSV structure
+                    {mode === 'professional' 
+                      ? 'Requires: SKU, REF, Image Name columns'
+                      : 'Requires: SKU, Image Name columns'
+                    }
                   </Typography>
                 </Paper>
 
                 {csvFile && csvData && (
                   <Alert severity="success" sx={{ mt: 2 }}>
                     <Typography variant="body2">
-                      <strong>{csvFile.name}</strong> - {csvData.data.length} products loaded
+                      <strong>{csvFile.name}</strong> - {csvData.data.length} products loaded ({mode} mode)
                     </Typography>
                     <Typography variant="caption" display="block">
-                      Mode: <strong>{mode}</strong> | 
                       Columns: {csvData.skuColumn}, {csvData.imageColumn}
                       {csvData.refColumn && `, ${csvData.refColumn}`}
+                      {csvData.processedRows && ` | Processed: ${csvData.processedRows}, Skipped: ${csvData.skippedRows}`}
                     </Typography>
                   </Alert>
                 )}
@@ -602,12 +696,12 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                     <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
                       <Button
                         variant="contained"
-                        onClick={handleMatching}
-                        disabled={!csvData || imageFiles.length === 0 || loading}
-                        startIcon={loading ? <SuccessIcon className="spin" /> : <SearchIcon />}
-                        color="success"
+                        onClick={() => setActiveStep(2)}
+                        disabled={!csvData || imageFiles.length === 0}
+                        startIcon={<TuneIcon />}
+                        color="primary"
                       >
-                        {loading ? 'Processing...' : 'Start Advanced Matching'}
+                        Configure Matching
                       </Button>
                       <Button
                         variant="outlined"
@@ -622,15 +716,72 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
               </StepContent>
             </Step>
 
-            {/* Step 3: Review Matches */}
+            {/* Step 3: Configure Matching */}
             <Step>
               <StepLabel>
-                <Typography variant="h6">Review Advanced Matches</Typography>
+                <Typography variant="h6">Configure Matching</Typography>
+              </StepLabel>
+              <StepContent>
+                <Alert severity="info" sx={{ mb: 2 }}>
+                  <Typography variant="body2">
+                    Configure matching strategies and thresholds. Use the settings panel on the left for detailed configuration.
+                  </Typography>
+                </Alert>
+
+                <Grid container spacing={2} sx={{ mb: 3 }}>
+                  <Grid item xs={12} sm={6}>
+                    <Card>
+                      <CardContent>
+                        <Typography variant="h6" gutterBottom>
+                          Active Strategies
+                        </Typography>
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                          {settings.strategies.exact && <Chip label="Exact" color="primary" size="small" />}
+                          {settings.strategies.normalized && <Chip label="Normalized" color="secondary" size="small" />}
+                          {settings.strategies.fuzzy && <Chip label="Fuzzy" color="success" size="small" />}
+                          {settings.strategies.ref && mode === 'professional' && <Chip label="REF" color="warning" size="small" />}
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Card>
+                      <CardContent>
+                        <Typography variant="h6" gutterBottom>
+                          Settings Summary
+                        </Typography>
+                        <Typography variant="body2">
+                          Fuzzy Threshold: {settings.thresholds.fuzzyThreshold}<br/>
+                          Multiple Images: {settings.fileHandling.multipleImages ? 'Yes' : 'No'}<br/>
+                          Process Images: {settings.upload.processImages ? 'Yes' : 'No'}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </Grid>
+
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={handleMatching}
+                  disabled={!csvData || imageFiles.length === 0 || loading}
+                  startIcon={loading ? <SuccessIcon className="spin" /> : <SearchIcon />}
+                  color="success"
+                >
+                  {loading ? 'Processing...' : 'Start Advanced Matching'}
+                </Button>
+              </StepContent>
+            </Step>
+
+            {/* Step 4: Review Matches */}
+            <Step>
+              <StepLabel>
+                <Typography variant="h6">Review Matches</Typography>
               </StepLabel>
               <StepContent>
                 {matchingResults && (
                   <Box>
-                    {/* Enhanced Statistics Cards */}
+                    {/* Statistics Cards */}
                     <Grid container spacing={2} sx={{ mb: 3 }}>
                       <Grid item xs={6} sm={3}>
                         <Card sx={{ textAlign: 'center', bgcolor: 'success.light' }}>
@@ -715,10 +866,11 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                                 <TableCell>Strategy</TableCell>
                                 <TableCell>Position</TableCell>
                                 <TableCell>Similarity</TableCell>
+                                <TableCell>Size</TableCell>
                               </TableRow>
                             </TableHead>
                             <TableBody>
-                              {matchingResults.matches.slice(0, 15).map((match, index) => (
+                              {matchingResults.matches.slice(0, 20).map((match, index) => (
                                 <TableRow key={index}>
                                   <TableCell>{match.sku}</TableCell>
                                   <TableCell>{match.file.name}</TableCell>
@@ -740,14 +892,15 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                                     )}
                                   </TableCell>
                                   <TableCell>{(match.similarity * 100).toFixed(0)}%</TableCell>
+                                  <TableCell>{(match.file.size / 1024 / 1024).toFixed(2)}MB</TableCell>
                                 </TableRow>
                               ))}
                             </TableBody>
                           </Table>
                         </TableContainer>
-                        {matchingResults.matches.length > 15 && (
+                        {matchingResults.matches.length > 20 && (
                           <Typography variant="caption" sx={{ p: 2, display: 'block', textAlign: 'center' }}>
-                            ... and {matchingResults.matches.length - 15} more matches
+                            ... and {matchingResults.matches.length - 20} more matches
                           </Typography>
                         )}
                       </Box>
@@ -768,10 +921,10 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
               </StepContent>
             </Step>
 
-            {/* Step 4: Upload Process */}
+            {/* Step 5: Upload Process */}
             <Step>
               <StepLabel>
-                <Typography variant="h6">Optimized Upload Process</Typography>
+                <Typography variant="h6">Upload Process</Typography>
               </StepLabel>
               <StepContent>
                 {uploadProgress && (
@@ -822,6 +975,7 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                               <TableCell>SKU</TableCell>
                               <TableCell>File</TableCell>
                               <TableCell>Strategy</TableCell>
+                              <TableCell>Position</TableCell>
                               <TableCell>Message</TableCell>
                             </TableRow>
                           </TableHead>
@@ -847,6 +1001,12 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                                       result.matchStrategy === 'fuzzy' ? 'success' : 'info'
                                     }
                                   />
+                                </TableCell>
+                                <TableCell>
+                                  {result.imageIndex + 1}/{result.totalImagesForSku}
+                                  {result.isMainImage && (
+                                    <Chip label="Main" size="small" color="primary" sx={{ ml: 1 }} />
+                                  )}
                                 </TableCell>
                                 <TableCell>
                                   <Typography variant="caption">
@@ -876,9 +1036,17 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
             Reset
           </Button>
         )}
+        {activeStep > 0 && activeStep < 2 && (
+          <Button 
+            onClick={() => setActiveStep(prev => prev - 1)} 
+            disabled={loading}
+          >
+            Back
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );
 };
 
-export default BulkMediaUploadDialog;
+export default OptimizedBulkUploadDialog;

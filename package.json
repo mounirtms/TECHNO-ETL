@@ -1,11 +1,11 @@
 {
   "name": "Techno-ETL",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": {
     "name": "Mounir Abderrahmani",
-    "email": "mounir.webdev.tms@gmail.com",
-    "url": "mounir1.github.io"
+    "email": "mounir.ab@techno-dz.com",
+    "url": "mounir.webdev.tms@gmail.com"
   },
   "scripts": {
     "start": "npm run dev",
@@ -13,14 +13,16 @@
     "backend": "cd backend && npm run dev",
     "server": "cd backend && npm run start",
     "build": "npm run build:clean && vite build --mode production",
+    "build:complete": "node build-all.js",
+    "build:optimized": "node build-complete-optimized.js",
     "build:analyze": "npm run build && open dist/bundle-analysis.html",
-    "build:clean": "rimraf dist && rimraf dist_prod",
+    "build:clean": "rimraf dist && rimraf dist_prod && rimraf dist_complete",
     "build:dev": "vite build --mode development",
     "build:staging": "vite build --mode staging",
-    "build:optimized": "npm run clean:all && npm run security:audit && npm run lint:fix && npm run test:quick && npm run build:all",
+    "build:production": "npm run clean:all && npm run security:audit && npm run lint:fix && npm run test:quick && npm run build:all",
     "build:all": "npm run build:frontend:optimized && npm run build:backend:optimized && npm run build:docs:optimized && npm run dist:combine:optimized",
     "build:frontend:optimized": "cross-env NODE_ENV=production vite build --mode production",
-    "build:backend:optimized": "cd backend && npm run build:prod",
+    "build:backend:optimized": "cd backend && npm run build:production",
     "build:docs:optimized": "cd docs && npm run build || echo 'Docs build skipped'",
     "build:shoppingbot": "cd shoppingbot-firebase-ai && npm run build || echo 'Shopping bot build skipped'",
     "dist:combine": "node scripts/combine-dist.js",
@@ -49,7 +51,7 @@
     "docker:run": "docker run -p 3000:3000 -p 5000:5000 techno-etl:latest",
     "postinstall-disabled": "npm run deps:install:all",
     "prepare": "npm run security:audit",
-    "info": "echo '🚀 TECHNO-ETL v2.1.0 - Professional Build System' && echo '👨‍💻 Author: Mounir Abderrahmani' && echo 'Commands: dev, build:optimized, start:full, preview'"
+    "info": "echo '🚀 TECHNO-ETL v2.0.0 - Complete Build System' && echo '👨‍💻 Author: Mounir Abderrahmani' && echo 'Commands: build:complete, dev:full, start:all'"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",

@@ -35,6 +35,8 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import BuildIcon from '@mui/icons-material/Build';
 import SearchComponent from './SearchComponent';
 import GlobalSearchModal from './GlobalSearchModal';
 
@@ -42,7 +44,7 @@ const drawerWidth = 280;
 
 const menuItems = [
   { text: 'Home', path: '/', icon: <HomeIcon /> },
-    { text: 'Search', path: '/search', icon: <SearchIcon /> },
+  { text: 'Search', path: '/search', icon: <SearchIcon /> },
   {
     text: 'Integrations',
     icon: <IntegrationInstructionsIcon />,
@@ -68,9 +70,17 @@ const menuItems = [
       { text: 'Dashboard System', path: '/docs/dashboard-system', icon: <DashboardIcon /> },
       { text: 'Product Management', path: '/docs/product-management', icon: <ShoppingCartIcon /> },
       { text: 'Configuration & Setup', path: '/docs/configuration-setup', icon: <SettingsIcon /> },
-      { text: 'Deployment Guide', path: '/docs/deployment-guide', icon: <CloudUploadIcon /> },
-      { text: 'Troubleshooting', path: '/docs/troubleshooting', icon: <BugReportIcon /> },
       { text: 'Search Help', path: '/docs/search-help', icon: <SearchIcon /> },
+    ]
+  },
+  {
+    text: 'Deployment',
+    icon: <CloudUploadIcon />,
+    children: [
+      { text: 'Standard Deployment', path: '/docs/deployment-guide', icon: <CloudUploadIcon /> },
+      { text: 'Optimized Deployment', path: '/docs/optimized-deployment', icon: <RocketLaunchIcon /> },
+      { text: 'Backend Production', path: '/docs/backend-production', icon: <BuildIcon /> },
+      { text: 'Troubleshooting', path: '/docs/troubleshooting', icon: <BugReportIcon /> },
     ]
   }
 ];

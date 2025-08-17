@@ -30,7 +30,8 @@ import {
   LocalOffer as BrandIcon,
   Settings as SettingsIcon,
   CloudUpload as UploadIcon,
-  Transform as TransformIcon
+  Transform as TransformIcon,
+  Assignment as RefIcon
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
@@ -38,18 +39,21 @@ import { toast } from 'react-toastify';
 import ProductManagementGrid from '../components/grids/magento/ProductManagementGrid';
 import BulkMediaUploadDialog from '../components/dialogs/BulkMediaUploadDialog';
 import EnhancedBulkMediaUploadDialog from '../components/dialogs/EnhancedBulkMediaUploadDialog';
+import CalligraphBulkUploadDialog from '../components/dialogs/CalligraphBulkUploadDialog';
 
 /**
  * ProductManagementPage - Main page for comprehensive product management
  * Allows users to specify product IDs or work with all products
+ * Enhanced with Calligraph-specific bulk upload functionality
  */
 const ProductManagementPage = () => {
   // ===== STATE MANAGEMENT =====
-  const [productIds, setProductIds] = useState([  ]); // Pre-populated with your provided IDs
+  const [productIds, setProductIds] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [showAllProducts, setShowAllProducts] = useState(false);
   const [bulkMediaDialogOpen, setBulkMediaDialogOpen] = useState(false);
   const [enhancedBulkMediaDialogOpen, setEnhancedBulkMediaDialogOpen] = useState(false);
+  const [calligraphBulkDialogOpen, setCalligraphBulkDialogOpen] = useState(false);
 
   // Tab management
   const [activeTab, setActiveTab] = useState(0);
@@ -150,9 +154,7 @@ const ProductManagementPage = () => {
     try {
       setImageProcessing(prev => ({ ...prev, renaming: true }));
 
-      // This would call the renameImages.js script functionality
-      // For now, simulate the process
-      toast.info('Starting image renaming process...');
+      toast.info('Starting Calligraph image processing...');
 
       // Simulate processing time
       await new Promise(resolve => setTimeout(resolve, 3000));
@@ -164,11 +166,11 @@ const ProductManagementPage = () => {
       };
 
       setProcessingResults(prev => ({ ...prev, renamed: results.renamed }));
-      toast.success(`Image renaming completed: ${results.renamed} renamed, ${results.skipped} skipped`);
+      toast.success(`Calligraph processing completed: ${results.renamed} processed, ${results.skipped} skipped`);
 
     } catch (error) {
-      console.error('Error renaming images:', error);
-      toast.error('Failed to rename images');
+      console.error('Error processing images:', error);
+      toast.error('Failed to process images');
     } finally {
       setImageProcessing(prev => ({ ...prev, renaming: false }));
     }
@@ -208,7 +210,14 @@ const ProductManagementPage = () => {
   return (
     <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', p: 2 }}>
       {/* Enhanced Header */}
-      
+      <Paper sx={{ p: 2, mb: 3, borderRadius: 3, bgcolor: 'primary.main', color: 'primary.contrastText' }}>
+        <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold' }}>
+          🎯 Techno-ETL Product Catalog Management
+        </Typography>
+        <Typography variant="body1">
+          Professional bulk media upload with Calligraph CSV support, REF-based matching, and advanced image processing
+        </Typography>
+      </Paper>
 
       {/* Enhanced Tabs */}
       <Paper sx={{ borderRadius: 3, overflow: 'hidden', mb: 3 }}>
@@ -233,14 +242,14 @@ const ProductManagementPage = () => {
             sx={{ gap: 1 }}
           />
           <Tab
-            icon={<RenameIcon />}
-            label="Image Renaming"
+            icon={<RefIcon />}
+            label="Calligraph Processing"
             iconPosition="start"
             sx={{ gap: 1 }}
           />
           <Tab
             icon={<ResizeIcon />}
-            label="Image Resizing"
+            label="Image Processing"
             iconPosition="start"
             sx={{ gap: 1 }}
           />
@@ -284,7 +293,7 @@ const ProductManagementPage = () => {
           {!showAllProducts && (
             <>
               {/* Add Product ID Input */}
-              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
                 <TextField
                   label="Product ID"
                   value={inputValue}
@@ -311,11 +320,22 @@ const ProductManagementPage = () => {
                 >
                   Clear All
                 </Button>
+                
+                {/* Enhanced Upload Options */}
+                <Button
+                  variant="contained"
+                  onClick={() => setCalligraphBulkDialogOpen(true)}
+                  startIcon={<RefIcon />}
+                  color="success"
+                  sx={{ fontWeight: 'bold' }}
+                >
+                  Calligraph Upload
+                </Button>
                 <Button
                   variant="contained"
                   onClick={() => setEnhancedBulkMediaDialogOpen(true)}
                   startIcon={<TransformIcon />}
-                  color="success"
+                  color="primary"
                 >
                   Professional Upload
                 </Button>
@@ -376,32 +396,55 @@ const ProductManagementPage = () => {
             {/* Footer Info */}
             <Alert severity="info" sx={{ mt: 2 }}>
               <Typography variant="body2">
-                💡 <strong>Tip:</strong> Use the tabs above to switch between Products Overview, Attributes Management, and Category Assignment.
-                Double-click any product to view details, or use the action buttons for specific operations.
+                💡 <strong>Tip:</strong> Use the Calligraph Upload for REF-based image matching with the Calligraph CSV structure.
+                Professional Upload for advanced features, and Basic Upload for simple operations.
               </Typography>
             </Alert>
           </Paper>
         )}
 
-        {/* Image Renaming Tab */}
+        {/* Calligraph Processing Tab */}
         {activeTab === 1 && (
           <Paper sx={{ p: 3, borderRadius: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
-              Image Renaming Tool
+              Calligraph Professional Processing
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              Rename camera images with ref attributes to longer descriptive names using CSV mapping
+              Specialized processing for Calligraph CSV with REF column matching, image renaming, and bulk upload
             </Typography>
 
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <Card sx={{ p: 3, textAlign: 'center' }}>
-                  <RenameIcon sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
+              <Grid item xs={12} md={4}>
+                <Card sx={{ p: 3, textAlign: 'center', height: '100%', bgcolor: 'success.light' }}>
+                  <RefIcon sx={{ fontSize: 48, color: 'success.main', mb: 2 }} />
                   <Typography variant="h6" gutterBottom>
-                    Rename Images
+                    Calligraph Upload
                   </Typography>
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                    Process camera images and rename them using CSV reference mapping
+                    REF-based matching with Calligraph CSV structure. Handles 7203C_1.jpg, 7203C_2.jpg patterns.
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    size="large"
+                    onClick={() => setCalligraphBulkDialogOpen(true)}
+                    startIcon={<RefIcon />}
+                    fullWidth
+                    sx={{ fontWeight: 'bold' }}
+                  >
+                    Open Calligraph Uploader
+                  </Button>
+                </Card>
+              </Grid>
+
+              <Grid item xs={12} md={4}>
+                <Card sx={{ p: 3, textAlign: 'center', height: '100%' }}>
+                  <RenameIcon sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
+                  <Typography variant="h6" gutterBottom>
+                    Process & Rename
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                    Process raw images and rename using CSV reference mapping with proper numbering
                   </Typography>
                   <Button
                     variant="contained"
@@ -411,45 +454,56 @@ const ProductManagementPage = () => {
                     startIcon={imageProcessing.renaming ? <CircularProgress size={20} /> : <RenameIcon />}
                     fullWidth
                   >
-                    {imageProcessing.renaming ? 'Renaming Images...' : 'Start Renaming'}
+                    {imageProcessing.renaming ? 'Processing...' : 'Start Processing'}
                   </Button>
                 </Card>
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={4}>
                 <Card sx={{ p: 3 }}>
                   <Typography variant="h6" gutterBottom>
-                    Processing Results
+                    Processing Statistics
                   </Typography>
                   <Box sx={{ mb: 2 }}>
                     <Typography variant="body2" color="text.secondary">
-                      Renamed Images: {processingResults.renamed}
+                      Images Processed: {processingResults.renamed}
                     </Typography>
                     <LinearProgress
                       variant="determinate"
-                      value={processingResults.renamed > 0 ? (processingResults.renamed / 100) * 100 : 0}
+                      value={processingResults.renamed > 0 ? Math.min((processingResults.renamed / 50) * 100, 100) : 0}
                       sx={{ mt: 1 }}
                     />
                   </Box>
                   <Typography variant="body2" color="text.secondary">
-                    📁 Source: /images folder<br/>
-                    📁 Output: /renamed_images folder<br/>
-                    📄 CSV: calligraph.csv mapping file
+                    📁 Raw Images: /raw_images<br/>
+                    📁 Processed: /processed_images<br/>
+                    📄 CSV: calligraph_updated.csv<br/>
+                    🎯 Target: 1200x1200px<br/>
+                    📊 REF-based matching<br/>
+                    🔢 Multiple images per SKU
                   </Typography>
                 </Card>
               </Grid>
             </Grid>
+
+            <Alert severity="success" sx={{ mt: 3 }}>
+              <Typography variant="body2">
+                <strong>Calligraph Features:</strong> REF column matching (7203C → 7203C_1.jpg, 7203C_2.jpg), 
+                automatic image renaming using "image name" column, professional resizing to 1200x1200px, 
+                and intelligent SKU-to-multiple-images mapping for bulk upload to Magento.
+              </Typography>
+            </Alert>
           </Paper>
         )}
 
-        {/* Image Resizing Tab */}
+        {/* Image Processing Tab */}
         {activeTab === 2 && (
           <Paper sx={{ p: 3, borderRadius: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
-              Image Resizing Tool
+              Advanced Image Processing
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              Resize images to 1200x1200 pixels with white background padding (preserves all content)
+              Professional image processing with resizing, optimization, and quality enhancement
             </Typography>
 
             <Grid container spacing={3}>
@@ -457,10 +511,10 @@ const ProductManagementPage = () => {
                 <Card sx={{ p: 3, textAlign: 'center' }}>
                   <ResizeIcon sx={{ fontSize: 48, color: 'info.main', mb: 2 }} />
                   <Typography variant="h6" gutterBottom>
-                    Resize Images
+                    Resize & Optimize
                   </Typography>
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                    Convert images to 1200x1200 format with aspect ratio preservation
+                    Convert images to 1200x1200 format with aspect ratio preservation and white background
                   </Typography>
                   <Button
                     variant="contained"
@@ -471,7 +525,7 @@ const ProductManagementPage = () => {
                     startIcon={imageProcessing.resizing ? <CircularProgress size={20} /> : <ResizeIcon />}
                     fullWidth
                   >
-                    {imageProcessing.resizing ? 'Resizing Images...' : 'Start Resizing'}
+                    {imageProcessing.resizing ? 'Processing...' : 'Start Processing'}
                   </Button>
                 </Card>
               </Grid>
@@ -479,23 +533,23 @@ const ProductManagementPage = () => {
               <Grid item xs={12} md={6}>
                 <Card sx={{ p: 3 }}>
                   <Typography variant="h6" gutterBottom>
-                    Resize Settings
+                    Processing Settings
                   </Typography>
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                     🎯 Target Size: 1200x1200 pixels<br/>
                     🖼️ Method: Aspect ratio preservation<br/>
                     🎨 Background: White padding<br/>
                     📸 Quality: 90% JPEG compression<br/>
-                    📁 Source: /renamed_images<br/>
-                    📁 Output: /resized_images
+                    🔄 Batch Processing: Enabled<br/>
+                    ⚡ Performance: Optimized
                   </Typography>
                   <Box sx={{ mt: 2 }}>
                     <Typography variant="body2" color="text.secondary">
-                      Resized Images: {processingResults.resized}
+                      Processed Images: {processingResults.resized}
                     </Typography>
                     <LinearProgress
                       variant="determinate"
-                      value={processingResults.resized > 0 ? (processingResults.resized / 100) * 100 : 0}
+                      value={processingResults.resized > 0 ? Math.min((processingResults.resized / 50) * 100, 100) : 0}
                       color="info"
                       sx={{ mt: 1 }}
                     />
@@ -583,6 +637,19 @@ const ProductManagementPage = () => {
           </Paper>
         )}
       </Box>
+
+      {/* Calligraph Bulk Upload Dialog */}
+      <CalligraphBulkUploadDialog
+        open={calligraphBulkDialogOpen}
+        onClose={() => setCalligraphBulkDialogOpen(false)}
+        onComplete={(results) => {
+          console.log('Calligraph bulk upload completed:', results);
+          const successful = results.filter(r => r.status === 'success').length;
+          const failed = results.filter(r => r.status === 'error').length;
+          toast.success(`Calligraph upload completed: ${successful} successful, ${failed} failed`);
+          setCalligraphBulkDialogOpen(false);
+        }}
+      />
 
       {/* Enhanced Professional Bulk Media Upload Dialog */}
       <EnhancedBulkMediaUploadDialog

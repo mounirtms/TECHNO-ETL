@@ -116,7 +116,7 @@ const Layout = () => {
 
 // Dynamically render TabPanel or Outlet based on route
 const tabRoutes = [
-    '/dashboard', '/charts', '/products', '/voting', '/inventory', '/orders', '/customers', '/products-catalog', '/reports', '/settings', '/bug-bounty', '/products/:id', '/products/category/:categoryId'
+    '/dashboard', '/charts', '/products', '/voting', '/inventory', '/orders', '/customers', '/products-catalog', '/reports', '/settings', '/bug-bounty', '/profile', '/products/:id', '/products/category/:categoryId'
 ];
 function DynamicMainContent() {
     const location = useLocation();
