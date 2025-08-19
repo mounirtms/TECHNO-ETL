@@ -50,7 +50,12 @@ export default defineConfig(({ command, mode }) => {
         '@hooks': resolve(__dirname, 'src/hooks'),
         // Force React to be a singleton to prevent scheduler issues
         'react': resolve(__dirname, 'node_modules/react'),
-        'react-dom': resolve(__dirname, 'node_modules/react-dom')
+        'react-dom': resolve(__dirname, 'node_modules/react-dom'),
+        'react/jsx-runtime': resolve(__dirname, 'node_modules/react/jsx-runtime'),
+        'react-dom/client': resolve(__dirname, 'node_modules/react-dom/client'),
+        'react-is': resolve(__dirname, 'node_modules/react-is'),
+        'prop-types': resolve(__dirname, 'node_modules/prop-types'),
+        'scheduler': resolve(__dirname, 'node_modules/scheduler')
       },
       // Handle Firebase v9 modular imports
       conditions: ['import', 'module', 'browser', 'default'],
@@ -58,27 +63,32 @@ export default defineConfig(({ command, mode }) => {
       mainFields: ['browser', 'module', 'main']
     },
 
-    // Development server configuration
+    // Development server configuration - Optimized for port 80
     server: {
       host: '0.0.0.0',
-      port: parseInt(env.VITE_PORT) || 3000,
+      port: 80, // Standardized to port 80
       strictPort: false,
       cors: true,
+      hmr: {
+        overlay: true,
+        port: 24678 // Separate HMR port to avoid conflicts
+      },
       proxy: {
-        // Proxy API calls to backend during development
+        // Optimized proxy configuration for all API calls
         '/api': {
-          target: env.VITE_API_BASE_URL || 'http://localhost:5000',
+          target: 'http://localhost:5000',
           changeOrigin: true,
           secure: false,
+          timeout: 30000, // Increased timeout for better reliability
           configure: (proxy, _options) => {
             proxy.on('error', (err, _req, _res) => {
-              console.log('proxy error', err);
+              console.log('🔴 Proxy Error:', err.message);
             });
             proxy.on('proxyReq', (proxyReq, req, _res) => {
-              console.log('Sending Request to the Target:', req.method, req.url);
+              console.log('🚀 Proxying:', req.method, req.url, '→ Backend:5000');
             });
             proxy.on('proxyRes', (proxyRes, req, _res) => {
-              console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
+              console.log('✅ Response:', proxyRes.statusCode, req.url, `(${Date.now()}ms)`);
             });
           }
         }
@@ -137,45 +147,38 @@ export default defineConfig(({ command, mode }) => {
         input: resolve(__dirname, 'index.html'),
         
         output: {
-          // Simplified chunk splitting - keep React ecosystem together
+          // FIXED: Simplified chunk strategy to prevent React splitting
           manualChunks: (id) => {
             if (id.includes('node_modules')) {
-              // Keep React, MUI, and Emotion together to prevent initialization issues
-              if (id.includes('react') || id.includes('@mui') || id.includes('@emotion')) {
-                return 'vendor-react-ui';
+              // CRITICAL: Keep ALL React ecosystem in ONE chunk
+              if (id.includes('react') || 
+                  id.includes('scheduler') || 
+                  id.includes('react-is') ||
+                  id.includes('prop-types') ||
+                  id.includes('@emotion') ||
+                  id.includes('stylis') ||
+                  id.includes('@mui')) {
+                return 'vendor-react'; // Single React chunk
               }
-
-              // Firebase
+  
+              // Firebase separate
               if (id.includes('firebase')) {
                 return 'vendor-firebase';
               }
-
-              // Charts and utilities
-              if (id.includes('recharts') || id.includes('date-fns') || id.includes('axios')) {
-                return 'vendor-utils';
-              }
-
+  
               // Everything else
-              return 'vendor-misc';
+              return 'vendor-libs';
             }
-
-            // Data chunks - group JSON data files together
-            if (id.includes('/assets/data/') && id.endsWith('.json')) {
-              return 'data-assets';
+  
+            // App code chunks
+            if (id.includes('/contexts/')) {
+              return 'app-contexts'; // Keep contexts together
             }
-
-            // Feature-based chunks
-            if (id.includes('/components/grids/')) {
-              return 'components-grids';
-            }
-            if (id.includes('/components/dashboard/')) {
-              return 'components-dashboard';
-            }
-            if (id.includes('/components/bugBounty/')) {
-              return 'components-bugbounty';
+            if (id.includes('/components/')) {
+              return 'app-components';
             }
             if (id.includes('/services/')) {
-              return 'services';
+              return 'app-services';
             }
           },
           
@@ -201,10 +204,10 @@ export default defineConfig(({ command, mode }) => {
         },
         
         // External dependencies - prevent React bundling conflicts
-        external: (id) => {
-          // Don't externalize anything for now
-          return false;
-        },
+        // CRITICAL: Ensure React is never externalized
+        external: () => false,
+        
+
 
         // Preserve module structure for tree shaking
         preserveEntrySignatures: 'allow-extension'
@@ -217,13 +220,22 @@ export default defineConfig(({ command, mode }) => {
       write: true
     },
 
-    // Simplified dependency optimization
+    // Aggressive dependency optimization
     optimizeDeps: {
-      // Include common dependencies
+      // Include ALL React-related dependencies to ensure proper bundling
       include: [
         'react',
         'react-dom',
-        'react-router-dom'
+        'react-dom/client',
+        'react/jsx-runtime',
+        'react-router-dom',
+        'react-is',
+        'prop-types',
+        'scheduler',
+        '@mui/material',
+        '@mui/icons-material',
+        '@emotion/react',
+        '@emotion/styled'
       ],
 
       // Exclude problematic dependencies
@@ -231,12 +243,15 @@ export default defineConfig(({ command, mode }) => {
         'firebase'
       ],
 
-      // Force optimization only in development
-      force: isDev,
+      // Force optimization
+      force: true,
 
-      // Basic ESBuild options
+      // Enhanced ESBuild options
       esbuildOptions: {
-        target: 'es2020'
+        target: 'es2020',
+        define: {
+          global: 'globalThis'
+        }
       }
     },
 

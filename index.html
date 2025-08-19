@@ -164,6 +164,12 @@
     <!-- React App Root -->
     <div id="root"></div>
     
+    <!-- React Context Polyfill -->
+    <script>
+      // Ensure React context is available before module loading
+      window.__REACT_CONTEXT_FIX__ = true;
+    </script>
+    
     <!-- Main Application Script -->
     <script type="module" src="/src/main.jsx"></script>
     

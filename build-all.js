@@ -53,7 +53,7 @@ try {
   process.chdir(path.join(__dirname, 'backend'));
   
   try {
-    execSync('npm run build:production', { stdio: 'inherit' });
+    execSync('npm run build', { stdio: 'inherit' });
     console.log('   ✅ Backend build completed');
   } catch (error) {
     throw new Error(`Backend build failed: ${error.message}`);

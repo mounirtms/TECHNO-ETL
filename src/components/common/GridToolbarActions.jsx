@@ -2,9 +2,9 @@
 import React from 'react';
 import {
   Box,
-  Button,
-  Tooltip
+  Button
 } from '@mui/material';
+import TooltipWrapper from './TooltipWrapper';
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -47,7 +47,7 @@ const GridToolbarActions = ({
     <Box sx={{ display: 'flex', alignItems: 'center', gap: spacing }}>
       {/* Add Button */}
       {config.showAdd && (
-        <Tooltip title={translate('add', 'Add New')}>
+        <TooltipWrapper title={translate('add', 'Add New')} disabled={loading}>
           <Button
             startIcon={<AddIcon />}
             onClick={onAdd}
@@ -57,29 +57,27 @@ const GridToolbarActions = ({
           >
             {config.compact ? '' : translate('add', 'Add')}
           </Button>
-        </Tooltip>
+        </TooltipWrapper>
       )}
 
       {/* Edit Button */}
       {config.showEdit && (
-        <Tooltip title={translate('edit', 'Edit Selected')}>
-          <span>
-            <Button
-              startIcon={<EditIcon />}
-              onClick={onEdit}
-              variant="outlined"
-              size={buttonSize}
-              disabled={!hasSelection || loading}
-            >
-              {config.compact ? '' : translate('edit', 'Edit')}
-            </Button>
-          </span>
-        </Tooltip>
+        <TooltipWrapper title={translate('edit', 'Edit Selected')} disabled={!hasSelection || loading}>
+          <Button
+            startIcon={<EditIcon />}
+            onClick={onEdit}
+            variant="outlined"
+            size={buttonSize}
+            disabled={!hasSelection || loading}
+          >
+            {config.compact ? '' : translate('edit', 'Edit')}
+          </Button>
+        </TooltipWrapper>
       )}
 
       {/* Delete Button */}
       {config.showDelete && (
-        <Tooltip title={translate('delete', 'Delete Selected')}>
+        <TooltipWrapper title={translate('delete', 'Delete Selected')} disabled={!hasSelection || loading}>
           <Button
             startIcon={<DeleteIcon />}
             onClick={onDelete}
@@ -90,12 +88,12 @@ const GridToolbarActions = ({
           >
             {config.compact ? '' : translate('delete', 'Delete')}
           </Button>
-        </Tooltip>
+        </TooltipWrapper>
       )}
 
       {/* Sync Button */}
       {config.showSync && (
-        <Tooltip title={translate('sync', 'Sync Data')}>
+        <TooltipWrapper title={translate('sync', 'Sync Data')} disabled={loading}>
           <Button
             startIcon={<SyncIcon />}
             onClick={onSync}
@@ -106,14 +104,14 @@ const GridToolbarActions = ({
           >
             {config.compact ? '' : translate('sync', 'Sync')}
           </Button>
-        </Tooltip>
+        </TooltipWrapper>
       )}
 
        
 
       {/* Import Button */}
       {config.showImport && (
-        <Tooltip title={translate('import', 'Import Data')}>
+        <TooltipWrapper title={translate('import', 'Import Data')} disabled={loading}>
           <Button
             startIcon={<ImportIcon />}
             onClick={onImport}
@@ -123,12 +121,12 @@ const GridToolbarActions = ({
           >
             {config.compact ? '' : translate('import', 'Import')}
           </Button>
-        </Tooltip>
+        </TooltipWrapper>
       )}
 
       {/* Info Button */}
       {canInfo && (
-        <Tooltip title={translate('info', 'Information')}>
+        <TooltipWrapper title={translate('info', 'Information')} disabled={loading}>
           <Button
             startIcon={<InfoIcon />}
             onClick={onInfo}
@@ -138,12 +136,12 @@ const GridToolbarActions = ({
           >
             {config.compact ? '' : translate('info', 'Info')}
           </Button>
-        </Tooltip>
+        </TooltipWrapper>
       )}
 
       {/* Export Button */}
       {config.showExport && (
-        <Tooltip title={translate('export', 'Export Data')}>
+        <TooltipWrapper title={translate('export', 'Export Data')} disabled={loading}>
           <Button
             startIcon={<ExportIcon />}
             onClick={onExport}
@@ -153,12 +151,12 @@ const GridToolbarActions = ({
           >
             {config.compact ? '' : translate('export', 'Export')}
           </Button>
-        </Tooltip>
+        </TooltipWrapper>
       )}
 
       {/* Sync Stocks Button - Only for MDM grids */}
       {mdmStocks && typeof onSyncStocksHandler === 'function' && (
-        <Tooltip title={translate('syncStocks', 'Mark changed stocks for sync')}>
+        <TooltipWrapper title={translate('syncStocks', 'Mark changed stocks for sync')} disabled={loading}>
           <Button
             variant="outlined"
             color="warning"
@@ -169,12 +167,12 @@ const GridToolbarActions = ({
           >
             {config.compact ? '' : translate('syncStocks', 'Mark Changed Stocks')}
           </Button>
-        </Tooltip>
+        </TooltipWrapper>
       )}
 
       {/* Sync All Handler - Only for MDM grids */}
       {mdmStocks && typeof onSyncAllHandler === 'function' && (
-        <Tooltip title={translate('syncAll', 'Sync all data')}>
+        <TooltipWrapper title={translate('syncAll', 'Sync all data')} disabled={loading}>
           <Button
             variant="outlined"
             color="secondary"
@@ -185,7 +183,7 @@ const GridToolbarActions = ({
           >
             {config.compact ? '' : translate('syncAll', 'Sync All')}
           </Button>
-        </Tooltip>
+        </TooltipWrapper>
       )}
 
       {/* Custom Actions */}
@@ -210,20 +208,22 @@ const GridToolbarActions = ({
         };
 
         return (
-          <Tooltip key={index} title={action.tooltip || action.label}>
-            <span>
-              <Button
-                startIcon={renderIcon()}
-                onClick={action.onClick}
-                variant={action.variant || 'outlined'}
-                color={action.color || 'primary'}
-                size={buttonSize}
-                disabled={action.disabled || loading}
-              >
-                {config.compact ? '' : action.label}
-              </Button>
-            </span>
-          </Tooltip>
+          <TooltipWrapper 
+            key={index} 
+            title={action.tooltip || action.label}
+            disabled={action.disabled || loading}
+          >
+            <Button
+              startIcon={renderIcon()}
+              onClick={action.onClick}
+              variant={action.variant || 'outlined'}
+              color={action.color || 'primary'}
+              size={buttonSize}
+              disabled={action.disabled || loading}
+            >
+              {config.compact ? '' : action.label}
+            </Button>
+          </TooltipWrapper>
         );
       })}
     </Box>

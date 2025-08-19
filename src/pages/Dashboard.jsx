@@ -554,19 +554,21 @@ const Dashboard = () => {
 
               {/* Sync Buttons */}
               <Tooltip title={translate('dashboard.syncPrices') || 'Sync Prices to Magento'}>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  onClick={handlePriceSync}
-                  startIcon={<PriceIcon />}
-                  sx={{ 
-                    mr: isRTL ? 0 : 1,
-                    ml: isRTL ? 1 : 0
-                  }}
-                  disabled={loading}
-                >
-                  {translate('dashboard.syncPrices') || 'Sync Prices'}
-                </Button>
+                <span>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={handlePriceSync}
+                    startIcon={<PriceIcon />}
+                    sx={{ 
+                      mr: isRTL ? 0 : 1,
+                      ml: isRTL ? 1 : 0
+                    }}
+                    disabled={loading}
+                  >
+                    {translate('dashboard.syncPrices') || 'Sync Prices'}
+                  </Button>
+                </span>
               </Tooltip>
 
               <Tooltip title={translate('dashboard.syncStocks') || 'Sync Stocks'}>

@@ -171,7 +171,7 @@ EOF
 npm install -g pm2
 
 # Start application with PM2
-pm2 start ecosystem.config.js --env production
+pm2 start ecosystem.config.cjs --env production
 pm2 save
 pm2 startup`
       }

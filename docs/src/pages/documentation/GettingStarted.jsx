@@ -285,7 +285,7 @@ cd backend
 npm run dev
 
 # Or start with PM2 for production-like environment
-pm2 start ecosystem.config.js --env development
+pm2 start ecosystem.config.cjs --env development
 
 # Verify server is running
 curl http://localhost:3001/api/v1/health`,

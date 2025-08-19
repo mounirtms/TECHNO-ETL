@@ -451,7 +451,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                 message: 'Preparing stock data for synchronization...'
             }));
             
-            await axios.post('/api/mdm/sync/stocks');
+            await axios.post('/api/mdm/sync-stocks');
             setSyncProgress(prev => ({ ...prev, current: 1 }));
             
             // Step 2: Get all sources

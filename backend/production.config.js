@@ -4,11 +4,11 @@
  */
 
 export const productionConfig = {
-    // Server Configuration
+    // Server Configuration - Optimized for port 5000
     server: {
-        port: process.env.PORT || 5000,
+        port: process.env.PORT || 5000, // Standardized backend port
         host: process.env.HOST || 'localhost',
-        environment: 'production'
+        environment: process.env.NODE_ENV || 'development'
     },
 
     // CORS Configuration for Production
@@ -17,9 +17,15 @@ export const productionConfig = {
             'http://etl.techno-dz.com',
             'http://techno-webapp.web.app',
             'http://dashboard.technostationery.com',
-            // Add development origins for testing
+            // Optimized development origins for port 80 frontend
             'http://localhost:80',
-            'http://localhost:4173'
+            'http://localhost', // Port 80 without explicit port
+            'http://localhost:3000', // Fallback port
+            'http://localhost:4173', // Preview port
+            'http://127.0.0.1:80',
+            'http://127.0.0.1',
+            'http://0.0.0.0:80',
+            'http://0.0.0.0'
         ],
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
         allowedHeaders: [

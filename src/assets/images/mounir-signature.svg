@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 150">
+  <!-- Mounir Abderrahmani Professional Signature -->
+  <defs>
+    <!-- Signature gradient -->
+    <linearGradient id="signatureGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4361ee" />
+      <stop offset="50%" stop-color="#3a0ca3" />
+      <stop offset="100%" stop-color="#7209b7" />
+    </linearGradient>
+    
+    <!-- Glow effect -->
+    <filter id="signatureGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+      <feFlood flood-color="#4361ee" flood-opacity="0.5" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feComposite in="SourceGraphic" in2="glow" operator="over"/>
+    </filter>
+    
+    <!-- Brace symbol gradient -->
+    <linearGradient id="braceGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f72585" />
+      <stop offset="100%" stop-color="#4361ee" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Left curly brace -->
+  <path d="M60,30 
+           C50,30 50,50 60,50 
+           C50,50 50,70 60,70 
+           C50,70 50,90 60,90 
+           C50,90 50,110 60,110" 
+        fill="none" 
+        stroke="url(#braceGradient)" 
+        stroke-width="3" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+  
+  <!-- Name text -->
+  <text x="250" y="80" 
+        font-family="'Dancing Script', 'Segoe Script', 'Brush Script MT', cursive" 
+        font-size="48" 
+        font-weight="700" 
+        fill="url(#signatureGradient)" 
+        text-anchor="middle" 
+        dominant-baseline="middle"
+        filter="url(#signatureGlow)"
+        letter-spacing="1">
+MAB
+  </text>
+  
+  <!-- Right curly brace -->
+  <path d="M440,30 
+           C450,30 450,50 440,50 
+           C450,50 450,70 440,70 
+           C450,70 450,90 440,90 
+           C450,90 450,110 440,110" 
+        fill="none" 
+        stroke="url(#braceGradient)" 
+        stroke-width="3" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+  
+  <!-- Professional tag -->
+  <text x="250" y="120" 
+        font-family="'Inter', 'Segoe UI', 'Roboto', sans-serif" 
+        font-size="12" 
+        font-weight="600" 
+        fill="#4cc9f0" 
+        text-anchor="middle" 
+        letter-spacing="2"
+        opacity="0.9">
+    SENIOR SOFTWARE ENGINEER ARCHITECT
+  </text>
+  
+  <!-- Decorative line -->
+  <line x1="100" y1="95" x2="400" y2="95" 
+        stroke="url(#signatureGradient)" 
+        stroke-width="1" 
+        stroke-linecap="round"
+        opacity="0.5">
+    <animate attributeName="x1" from="250" to="100" dur="1s" fill="freeze" />
+    <animate attributeName="x2" from="250" to="400" dur="1s" fill="freeze" />
+  </line>
+</svg>

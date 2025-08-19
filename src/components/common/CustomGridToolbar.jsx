@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Button, Tooltip, IconButton, Menu, MenuItem, Select, FormControl, InputLabel, Checkbox, Typography } from '@mui/material';
+import { Box, Button, IconButton, Menu, MenuItem, Select, FormControl, InputLabel, Checkbox, Typography } from '@mui/material';
+import TooltipWrapper from './TooltipWrapper';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import SyncIcon from '@mui/icons-material/Sync';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -102,11 +103,11 @@ const CustomGridToolbar = ({
     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', p: 1 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         {/* Refresh Button */}
-        <Tooltip title="Refresh Data">
+        <TooltipWrapper title="Refresh Data">
           <Button variant="outlined" size="small" onClick={handleRefresh} sx={toolbarButtonStyle} startIcon={<RefreshIcon />}>
             Refresh
           </Button>
-        </Tooltip>
+        </TooltipWrapper>
 
       
 
@@ -140,7 +141,7 @@ const CustomGridToolbar = ({
 
         {/* Inventory Changes Only Checkbox - right after Source filter */}
         {typeof showChangedOnly !== 'undefined' && typeof setShowChangedOnly === 'function' && canSyncAll && (
-          <Tooltip title="Show only products with inventory changes">
+          <TooltipWrapper title="Show only products with inventory changes">
             <Box sx={{ display: 'flex', alignItems: 'center', pl: 1 }}>
               <Checkbox
                 checked={showChangedOnly}
@@ -153,7 +154,7 @@ const CustomGridToolbar = ({
                 Inventory Changes Only
               </Typography>
             </Box>
-          </Tooltip>
+          </TooltipWrapper>
         )}
         {/* Custom Filter Dropdown */}
         {customFilters?.length > 0 && (
@@ -174,31 +175,31 @@ const CustomGridToolbar = ({
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         {/* Add Row Button */}
         {canAdd && (
-          <Tooltip title="Add Row">
+          <TooltipWrapper title="Add Row">
             <Button variant="outlined" size="small" onClick={onAdd} sx={toolbarButtonStyle}>
               Add
             </Button>
-          </Tooltip>
+          </TooltipWrapper>
         )}
         {/* Edit Row Button */}
         {canEdit && (
-          <Tooltip title="Edit Row">
+          <TooltipWrapper title="Edit Row" disabled={selectedCount === 0}>
             <Button variant="outlined" size="small" onClick={onEdit} sx={toolbarButtonStyle} disabled={selectedCount === 0}>
               Edit
             </Button>
-          </Tooltip>
+          </TooltipWrapper>
         )}
         {/* Delete Row Button */}
         {canDelete && (
-          <Tooltip title="Delete Row">
+          <TooltipWrapper title="Delete Row" disabled={selectedCount === 0}>
             <Button variant="outlined" size="small" onClick={onDelete} sx={toolbarButtonStyle} disabled={selectedCount === 0}>
               Delete
             </Button>
-          </Tooltip>
+          </TooltipWrapper>
         )}
         {/* Sync Stocks Button (mark changed) */}
         {typeof onSyncStocksHandler === 'function' && canSyncAll && (
-          <Tooltip title="Mark changed stocks for sync (selected source)">
+          <TooltipWrapper title="Mark changed stocks for sync (selected source)">
             <Button
               variant="outlined"
               size="small"
@@ -208,12 +209,12 @@ const CustomGridToolbar = ({
             >
               Mark Changed Stocks
             </Button>
-          </Tooltip>
+          </TooltipWrapper>
         )}
 
         {/* Sync All Stock Button (no source) */}
         {typeof onSyncAllStockHandler === 'function' && (
-          <Tooltip title="Sync all stock (all sources)">
+          <TooltipWrapper title="Sync all stock (all sources)">
             <Button
               variant="contained"
               color="secondary"
@@ -224,11 +225,11 @@ const CustomGridToolbar = ({
             >
               Sync All Stock
             </Button>
-          </Tooltip>
+          </TooltipWrapper>
         )}
         {/* Sync Selected Button */}
         {canSync && (
-          <Tooltip title="Sync Selected Rows">
+          <TooltipWrapper title="Sync Selected Rows" disabled={selectedCount === 0}>
             <Button
               variant="outlined"
               size="small"
@@ -239,11 +240,11 @@ const CustomGridToolbar = ({
             >
               Sync
             </Button>
-          </Tooltip>
+          </TooltipWrapper>
         )}
         {/* Sync All Button */}
         {canSyncAll && (
-          <Tooltip title="Sync All Items for Source">
+          <TooltipWrapper title="Sync All Items for Source">
             <Button
               variant="contained"
               color="primary"
@@ -254,21 +255,21 @@ const CustomGridToolbar = ({
             >
               Sync All
             </Button>
-          </Tooltip>
+          </TooltipWrapper>
         )}
         {/* Grid Settings Icon */}
-        <Tooltip title="Grid Settings">
+        <TooltipWrapper title="Grid Settings">
           <IconButton size="small" onClick={handleSettingsClick} sx={{ color: theme.palette.text.secondary, '&:hover': { backgroundColor: theme.palette.action.hover } }}>
             <SettingsIcon />
           </IconButton>
-        </Tooltip>
+        </TooltipWrapper>
         {/* Info Button - rightmost */}
         {canInfo && (
-          <Tooltip title="Product Info">
+          <TooltipWrapper title="Product Info">
             <Button variant="outlined" size="small" onClick={onInfo} sx={{ ...toolbarButtonStyle, minWidth: 40, px: 1.5, ml: 1 }}>
               Info
             </Button>
-          </Tooltip>
+          </TooltipWrapper>
         )}
       </Box>
 

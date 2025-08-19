@@ -8,7 +8,6 @@ import {
   IconButton,
   TextField,
   InputAdornment,
-  Tooltip,
   Divider,
   Menu,
   MenuItem,
@@ -41,7 +40,9 @@ import {
   Clear as ClearIcon,
   Info as InfoIcon
 } from '@mui/icons-material';
-// Removed useSafeTranslate import - using stable local translation function
+
+// Import TooltipWrapper for proper disabled button handling
+import TooltipWrapper from './TooltipWrapper';
 
 // Toolbar sub-components
 import GridToolbarActions from './GridToolbarActions';
@@ -219,7 +220,7 @@ const UnifiedGridToolbar = ({
         {/* Section 1: Refresh */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {toolbarConfig.showRefresh && (
-            <Tooltip title={translate('refresh', 'Refresh Data')}>
+            <TooltipWrapper title={translate('refresh', 'Refresh Data')} disabled={loading}>
               <IconButton
                 onClick={onRefresh}
                 disabled={loading}
@@ -228,7 +229,7 @@ const UnifiedGridToolbar = ({
               >
                 <RefreshIcon />
               </IconButton>
-            </Tooltip>
+            </TooltipWrapper>
           )}
         </Box>
 
@@ -331,16 +332,16 @@ const UnifiedGridToolbar = ({
             onChange={onViewModeChange}
             size="small"
           >
-            <ToggleButton value="grid">
-              <Tooltip title={translate('gridView', 'Grid View')}>
+            <TooltipWrapper title={translate('gridView', 'Grid View')} disabled={loading}>
+              <ToggleButton value="grid" disabled={loading}>
                 <GridViewIcon />
-              </Tooltip>
-            </ToggleButton>
-            <ToggleButton value="card">
-              <Tooltip title={translate('cardView', 'Card View')}>
+              </ToggleButton>
+            </TooltipWrapper>
+            <TooltipWrapper title={translate('cardView', 'Card View')} disabled={loading}>
+              <ToggleButton value="card" disabled={loading}>
                 <ViewListIcon />
-              </Tooltip>
-            </ToggleButton>
+              </ToggleButton>
+            </TooltipWrapper>
           </ToggleButtonGroup>
         )}
 
@@ -356,27 +357,29 @@ const UnifiedGridToolbar = ({
 
         {/* Section 7: Filter Toggle */}
         {toolbarConfig.showFilters && (
-          <Tooltip title={translate('toggleFilters', 'Toggle Filters')}>
+          <TooltipWrapper title={translate('toggleFilters', 'Toggle Filters')} disabled={loading}>
             <IconButton
               onClick={onFiltersToggle}
               color={filtersVisible ? 'primary' : 'default'}
               size="small"
+              disabled={loading}
             >
               <FilterIcon />
             </IconButton>
-          </Tooltip>
+          </TooltipWrapper>
         )}
 
         {/* Section 8: Settings */}
         {toolbarConfig.showSettings && (
-          <Tooltip title={translate('settings', 'Settings')}>
+          <TooltipWrapper title={translate('settings', 'Settings')} disabled={loading}>
             <IconButton
               onClick={handleSettingsMenuOpen}
               size="small"
+              disabled={loading}
             >
               <SettingsIcon />
             </IconButton>
-          </Tooltip>
+          </TooltipWrapper>
         )}
 
         {/* Section 9: More Menu  

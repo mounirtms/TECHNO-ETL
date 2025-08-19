@@ -80,7 +80,7 @@ RUN npm ci --production --silent --no-audit
 
 # Copy additional configuration files
 WORKDIR /app
-COPY --from=backend-builder /app/backend/ecosystem.config.js ./
+COPY --from=backend-builder /app/backend/ecosystem.config.cjs ./
 COPY --from=backend-builder /app/backend/production.config.js ./
 
 # Create necessary directories

@@ -117,7 +117,7 @@ npm run status   # Process status
 
 ### **Memory Issues:**
 1. Monitor with: `npm run monit`
-2. Check memory limits in ecosystem.config.js
+2. Check memory limits in ecosystem.config.cjs
 3. Restart if memory usage high: `npm run reload`
 
 ## 📁 **Production Structure**
@@ -126,7 +126,7 @@ npm run status   # Process status
 dist_prod/backend/
 ├── server.js              # Main server (ES modules)
 ├── package.json           # Production dependencies only
-├── ecosystem.config.js    # PM2 configuration (CommonJS)
+├── ecosystem.config.cjs    # PM2 configuration (CommonJS)
 ├── .env                   # Environment variables
 ├── start-windows.bat      # Windows startup script
 ├── start-linux.sh         # Linux startup script
@@ -238,7 +238,7 @@ npm run health
 
 ### **Common Solutions:**
 1. **Port in use:** Kill Node processes: `taskkill /F /IM node.exe`
-2. **PM2 issues:** Reset PM2: `pm2 kill && pm2 start ecosystem.config.js`
+2. **PM2 issues:** Reset PM2: `pm2 kill && pm2 start ecosystem.config.cjs`
 3. **Memory issues:** Restart cluster: `npm run reload`
 4. **Database issues:** Check .env configuration
 

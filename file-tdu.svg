@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- MAB Developer Logo - Icon Version -->
+  <defs>
+    <linearGradient id="icon-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="50%" stop-color="#1e40af" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+    
+    <linearGradient id="icon-accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+    
+    <filter id="icon-glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background for icon -->
+  <rect width="200" height="200" rx="25" fill="#f8fafc" stroke="#e5e7eb" stroke-width="2"/>
+  
+  <!-- Simplified brackets -->
+  <path d="M45 70 Q30 100 45 130" stroke="url(#icon-accent)" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M155 70 Q170 100 155 130" stroke="url(#icon-accent)" stroke-width="4" fill="none" stroke-linecap="round"/>
+  
+  <!-- MAB Text - Icon optimized -->
+  <text x="100" y="108" 
+        font-family="'JetBrains Mono', 'SF Mono', monospace" 
+        font-size="42" 
+        font-weight="800" 
+        fill="url(#icon-gradient)" 
+        text-anchor="middle" 
+        dominant-baseline="middle"
+        filter="url(#icon-glow)">MAB</text>
+  
+  <!-- Simplified circuit -->
+  <g stroke="url(#icon-accent)" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.7">
+    <path d="M65 145 L85 145 L95 130 L105 130 L115 145 L135 145"/>
+    <circle cx="95" cy="130" r="1.5" fill="#3b82f6"/>
+    <circle cx="115" cy="145" r="1.5" fill="#3b82f6"/>
+  </g>
+  
+  <!-- Corner accent -->
+  <circle cx="165" cy="35" r="3" fill="#3b82f6" opacity="0.6"/>
+  <circle cx="35" cy="165" r="3" fill="#06b6d4" opacity="0.6"/>
+</svg>

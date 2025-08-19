@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 150">
+  <!-- Mounir Professional Banner with Code Elements -->
+  <defs>
+    <!-- Banner gradient -->
+    <linearGradient id="bannerGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f8f9fa" />
+      <stop offset="100%" stop-color="#e9ecef" />
+    </linearGradient>
+    
+    <!-- Text gradient -->
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4361ee" />
+      <stop offset="50%" stop-color="#3a0ca3" />
+      <stop offset="100%" stop-color="#7209b7" />
+    </linearGradient>
+    
+    <!-- Accent gradient -->
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4361ee" />
+      <stop offset="100%" stop-color="#4cc9f0" />
+    </linearGradient>
+    
+    <!-- Code symbol gradient -->
+    <linearGradient id="codeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f72585" />
+      <stop offset="100%" stop-color="#4361ee" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="600" height="150" fill="url(#bannerGradient)" rx="10"/>
+  
+  <!-- Decorative code symbols -->
+  <text x="500" y="50" 
+        font-family="'Courier New', monospace" 
+        font-size="30" 
+        fill="url(#codeGradient)"
+        opacity="0.1">{ }</text>
+
+  <text x="550" y="100"
+        font-family="'Courier New', monospace"
+        font-size="20"
+        fill="url(#codeGradient)"
+        opacity="0.1">&lt;/&gt;</text>
+
+  <!-- Name -->
+  <text x="50" y="80"
+        font-family="'Inter', 'Segoe UI', 'Roboto', sans-serif"
+        font-size="30"
+        font-weight="800"
+        fill="url(#textGradient)"
+        text-anchor="start"
+        letter-spacing="-0.5">
+MAB
+  </text>
+
+  <!-- Title -->
+  <text x="50" y="115"
+        font-family="'Inter', 'Segoe UI', 'Roboto', sans-serif"
+        font-size="16"
+        font-weight="600"
+        fill="#6c757d"
+        text-anchor="start"
+        letter-spacing="0.5">
+
+  </text>
+
+  <!-- Separator line with code symbols -->
+  <text x="45" y="92"
+        font-family="'Courier New', monospace"
+        font-size="30"
+        fill="url(#codeGradient)"
+        opacity="0.7">{ </text>
+
+  <line x1="70" y1="95" x2="350" y2="95"
+        stroke="url(#accentGradient)"
+        stroke-width="2"
+        stroke-linecap="round"/>
+
+  <text x="355" y="92"
+        font-family="'Courier New', monospace"
+        font-size="30"
+        fill="url(#codeGradient)"
+        opacity="0.7"> }</text>
+</svg>

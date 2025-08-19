@@ -16,8 +16,8 @@ import {
 import {
   Timeline
 } from '@mui/lab';
-import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 import VotingGrid from '../components/grids/VotingGrid';
 import ProfessionalVotingGrid from '../components/grids/ProfessionalVotingGrid';
 import RoadmapGrid from '../components/grids/RoadmapGrid';
@@ -48,7 +48,7 @@ function TabPanel({ children, value, index, ...other }) {
  * TaskPage Component
  */
 const TaskPage = () => {
-  const { t } = useTranslation();
+  const { translate } = useLanguage();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(0);
 

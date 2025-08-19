@@ -5,5 +5,7 @@
     "Codegeex.CommitMessageStyle": "Default",
     "Codegeex.GenerationPreference": "automatic",
     "codium.codeCompletion.enable": false,
-    "kiroAgent.configureMCP": "Disabled"
+    "kiroAgent.configureMCP": "Disabled",
+    "CodeGPT.apiKey": "Anthropic",
+    "javascript.autoClosingTags": false
 }

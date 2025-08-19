@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <!-- Gradient for the main MAB text (scaled) -->
+    <linearGradient id="icon-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" /> <!-- Blue -->
+      <stop offset="100%" stop-color="#1d4ed8" /> <!-- Dark Blue -->
+    </linearGradient>
+    <!-- Gradient for supporting elements (scaled) -->
+    <linearGradient id="icon-line-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1d4ed8" /> <!-- Dark Blue -->
+      <stop offset="100%" stop-color="#0f2a6c" /> <!-- Even Darker Blue -->
+    </linearGradient>
+  </defs>
+
+  <!-- Simplified Stylized Brackets for Icon -->
+  <!-- Left Bracket -->
+  <path d="M20 30 Q15 50 20 70" stroke="url(#icon-line-gradient)" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <!-- Right Bracket -->
+  <path d="M80 30 Q85 50 80 70" stroke="url(#icon-line-gradient)" stroke-width="4" fill="none" stroke-linecap="round"/>
+
+  <!-- MAB Text for Icon -->
+  <!-- Using suggested modern monospace font -->
+  <text x="50" y="55" font-family="'Fira Code', 'Courier New', monospace" font-size="35" font-weight="700" fill="url(#icon-gradient)" text-anchor="middle" dominant-baseline="middle">MAB</text>
+</svg>

@@ -193,8 +193,8 @@ RATE_LIMIT_MAX=100
     },
     scripts: {
       "start": "node --no-warnings --expose-gc server.js",
-      "start:cluster": "pm2 start ecosystem.config.js",
-      "start:cron": "pm2 start ecosystem.config.js --only techno-etl-cron",
+      "start:cluster": "pm2 start ecosystem.config.cjs",
+      "start:cron": "pm2 start ecosystem.config.cjs --only techno-etl-cron",
       "stop": "pm2 stop all",
       "restart": "pm2 restart all",
       "reload": "pm2 reload all",
@@ -269,7 +269,7 @@ module.exports = {
   ]
 };`;
 
-  fs.writeFileSync(path.join(prodDir, 'ecosystem.config.js'), ecosystemConfig);
+  fs.writeFileSync(path.join(prodDir, 'ecosystem.config.cjs'), ecosystemConfig);
   console.log('   ✅ Created unified PM2 configuration');
 
   // Create cron runner if it doesn't exist

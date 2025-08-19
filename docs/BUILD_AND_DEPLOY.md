@@ -262,7 +262,7 @@ cd backend && npm run build:prod
 npm ci --production
 
 # Start with PM2 (recommended)
-pm2 start ecosystem.config.js --env production
+pm2 start ecosystem.config.cjs --env production
 
 # Or start directly
 NODE_ENV=production npm start

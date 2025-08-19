@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- MAB Developer Logo - Enhanced Professional Version with Angle Brackets -->
+  <defs>
+    <!-- Main gradient for text -->
+    <linearGradient id="main-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" /> <!-- Blue -->
+      <stop offset="50%" stop-color="#1e40af" /> <!-- Deeper Blue -->
+      <stop offset="100%" stop-color="#1d4ed8" /> <!-- Dark Blue -->
+    </linearGradient>
+    
+    <!-- Accent gradient for brackets and circuit -->
+    <linearGradient id="accent-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4" /> <!-- Cyan -->
+      <stop offset="100%" stop-color="#3b82f6" /> <!-- Blue -->
+    </linearGradient>
+    
+    <!-- Subtle glow effect for emphasis -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Left Angle Bracket (<) -->
+  <g filter="url(#glow)">
+    <path d="M20 70 L40 90" stroke="url(#accent-gradient)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M20 110 L40 90" stroke="url(#accent-gradient)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+  
+  <!-- MAB Text with Modern Developer Font -->
+  <text x="100" y="105" 
+        font-family="'JetBrains Mono', 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', 'Droid Sans Mono', 'Source Code Pro', monospace" 
+        font-size="48" 
+        font-weight="700" 
+        fill="url(#main-gradient)" 
+        text-anchor="middle" 
+        dominant-baseline="middle"
+        filter="url(#glow)">MAB</text>
+  
+  <!-- Developer Subtitle -->
+  <text x="100" y="130" 
+        font-family="'Inter', 'Segoe UI', 'Roboto', sans-serif" 
+        font-size="12" 
+        font-weight="500" 
+        fill="#6b7280" 
+        text-anchor="middle" 
+        letter-spacing="2px">DEVELOPER</text>
+  
+  <!-- Stylized Circuit/Coding Line -->
+  <g stroke="url(#accent-gradient)" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.8">
+    <path d="M50 150 L70 150 L80 135 L100 135 L110 150 L130 150 L140 135 L160 135"/>
+    <!-- Circuit nodes -->
+    <circle cx="80" cy="135" r="2" fill="#3b82f6"/>
+    <circle cx="110" cy="150" r="2" fill="#3b82f6"/>
+    <circle cx="140" cy="135" r="2" fill="#3b82f6"/>
+  </g>
+
+  <!-- Right Angle Bracket (>) -->
+  <g filter="url(#glow)">
+    <path d="M160 90 L170 70" stroke="url(#accent-gradient)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M160 90 L170 110" stroke="url(#accent-gradient)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>

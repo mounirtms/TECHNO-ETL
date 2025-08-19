@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- MAB Developer Logo - Icon Version with Angle Brackets -->
+  <defs>
+    <!-- Gradient for MAB text -->
+    <linearGradient id="icon-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" /> <!-- Blue -->
+      <stop offset="50%" stop-color="#1e40af" /> <!-- Deeper Blue -->
+      <stop offset="100%" stop-color="#1d4ed8" /> <!-- Dark Blue -->
+    </linearGradient>
+    
+    <!-- Accent gradient for brackets and circuit -->
+    <linearGradient id="icon-accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4" /> <!-- Cyan -->
+      <stop offset="100%" stop-color="#3b82f6" /> <!-- Blue -->
+    </linearGradient>
+    
+    <!-- Subtle glow effect for emphasis -->
+    <filter id="icon-glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background container for the icon -->
+  <rect width="200" height="200" rx="25" fill="#f8fafc" stroke="#e5e7eb" stroke-width="2"/>
+  
+  <!-- Left Angle Bracket (<) -->
+  <g filter="url(#icon-glow)">
+    <path d="M25 75 L40 90" stroke="url(#icon-accent)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M25 105 L40 90" stroke="url(#icon-accent)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+  
+  <!-- MAB Text - Icon optimized -->
+  <text x="100" y="108" 
+        font-family="'JetBrains Mono', 'SF Mono', monospace" 
+        font-size="42" 
+        font-weight="800" 
+        fill="url(#icon-gradient)" 
+        text-anchor="middle" 
+        dominant-baseline="middle"
+        filter="url(#icon-glow)">MAB</text>
+  
+  <!-- Right Angle Bracket (>) -->
+  <g filter="url(#icon-glow)">
+    <path d="M160 90 L175 75" stroke="url(#icon-accent)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M160 90 L175 105" stroke="url(#icon-accent)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Simplified Circuit/Coding Line -->
+  <g stroke="url(#icon-accent)" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.7">
+    <path d="M50 145 L70 145 L80 130 L100 130 L110 145 L130 145 L140 130 L160 130"/>
+    <!-- Circuit nodes -->
+    <circle cx="80" cy="130" r="1.5" fill="#3b82f6"/>
+    <circle cx="110" cy="145" r="1.5" fill="#3b82f6"/>
+    <circle cx="140" cy="130" r="1.5" fill="#3b82f6"/>
+  </g>
+  
+  <!-- Subtle Corner Accents -->
+  <circle cx="165" cy="35" r="3" fill="#3b82f6" opacity="0.6"/>
+  <circle cx="35" cy="165" r="3" fill="#06b6d4" opacity="0.6"/>
+</svg>

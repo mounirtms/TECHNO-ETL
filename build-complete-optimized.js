@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
 /**
- * TECHNO-ETL COMPLETE OPTIMIZED BUILD SYSTEM
+ * TECHNO-ETL ULTRA-OPTIMIZED BUILD SYSTEM v2.0
  * Author: Mounir Abderrahmani
  * Email: mounir.ab@techno-dz.com
  * 
- * Creates fully optimized, minified, and obfuscated production build
- * Includes: Backend + Frontend + Documentation
- * Features: Code minification, obfuscation, compression
+ * Creates ultra-optimized production build with port standardization
+ * Features: Port 80 frontend, Port 5000 backend, Advanced optimization
+ * Includes: Backend + Frontend + Documentation + Service routing
  */
 
 import fs from 'fs';
@@ -19,11 +19,12 @@ import { createHash } from 'crypto';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-console.log('🚀 TECHNO-ETL COMPLETE OPTIMIZED BUILD SYSTEM');
+console.log('🚀 TECHNO-ETL ULTRA-OPTIMIZED BUILD SYSTEM v2.0');
 console.log('👨‍💻 Author: Mounir Abderrahmani');
 console.log('📧 Email: mounir.ab@techno-dz.com');
-console.log('🎯 Optimized + Minified + Obfuscated Build');
-console.log('🔒 Hard to read/decrypt final build');
+console.log('🎯 Port Standardized + Ultra-Optimized Build');
+console.log('🔧 Frontend: Port 80 | Backend: Port 5000');
+console.log('🔒 Advanced Service Routing + Performance');
 console.log('=====================================\n');
 
 const startTime = Date.now();
@@ -96,7 +97,7 @@ try {
 
   // Step 3: Fix PM2 Configuration
   console.log('\n⚙️ Fixing PM2 Configuration...');
-  const ecosystemPath = path.join(optimizedDir, 'backend', 'ecosystem.config.js');
+  const ecosystemPath = path.join(optimizedDir, 'backend', 'ecosystem.config.cjs');
   const ecosystemCjsPath = path.join(optimizedDir, 'backend', 'ecosystem.config.cjs');
   
   if (fs.existsSync(ecosystemPath)) {

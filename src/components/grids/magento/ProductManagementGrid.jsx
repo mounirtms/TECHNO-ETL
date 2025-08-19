@@ -8,7 +8,6 @@ import {
   Alert,
   Chip,
   IconButton,
-  Tooltip,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -63,6 +62,7 @@ import ProductAttributesGrid from './ProductAttributesGrid';
 import ProductCategoriesGrid from './ProductCategoriesGrid';
 import BrandManagementDialog from '../../dialogs/BrandManagementDialog';
 import UnifiedGrid from '../../common/UnifiedGrid';
+import TooltipWrapper from '../../common/TooltipWrapper';
 import { getStandardGridProps, getStandardToolbarConfig } from '../../../config/gridConfig';
 import { ColumnFactory } from '../../../utils/ColumnFactory.jsx';
 
@@ -261,30 +261,30 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
       filterable: false,
       renderCell: (params) => (
         <Box sx={{ display: 'flex', gap: 0.5 }}>
-          <Tooltip title="View Details">
+          <TooltipWrapper title="View Details">
             <IconButton
               size="small"
               onClick={() => handleViewProduct(params.row)}
             >
               <ViewIcon fontSize="small" />
             </IconButton>
-          </Tooltip>
-          <Tooltip title="Edit Product">
+          </TooltipWrapper>
+          <TooltipWrapper title="Edit Product">
             <IconButton
               size="small"
               onClick={() => handleEditProduct(params.row)}
             >
               <EditIcon fontSize="small" />
             </IconButton>
-          </Tooltip>
-          <Tooltip title="Manage Categories">
+          </TooltipWrapper>
+          <TooltipWrapper title="Manage Categories">
             <IconButton
               size="small"
               onClick={() => handleManageCategories(params.row)}
             >
               <AssignmentIcon fontSize="small" />
             </IconButton>
-          </Tooltip>
+          </TooltipWrapper>
         </Box>
       )
     }
@@ -817,7 +817,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
       <Box sx={{ position: 'fixed', bottom: 24, right: 24, zIndex: 1000 }}>
         <Stack spacing={2}>
           {/* Quick Actions FAB */}
-          <Tooltip title="Quick Actions" placement="left">
+          <TooltipWrapper title="Quick Actions" placement="left">
             <Fab
               color="primary"
               size="medium"
@@ -825,10 +825,14 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
             >
               <AddIcon />
             </Fab>
-          </Tooltip>
+          </TooltipWrapper>
 
           {/* Bulk Operations FAB */}
-          <Tooltip title="Bulk Operations" placement="left">
+          <TooltipWrapper 
+            title="Bulk Operations" 
+            placement="left"
+            disabled={selectedProducts.length === 0}
+          >
             <Fab
               color="secondary"
               size="medium"
@@ -837,10 +841,10 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
             >
               <SettingsIcon />
             </Fab>
-          </Tooltip>
+          </TooltipWrapper>
 
           {/* Data Management FAB */}
-          <Tooltip title="Data Management" placement="left">
+          <TooltipWrapper title="Data Management" placement="left">
             <Fab
               color="info"
               size="medium"
@@ -848,7 +852,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
             >
               <RefreshIcon />
             </Fab>
-          </Tooltip>
+          </TooltipWrapper>
         </Stack>
       </Box>
 

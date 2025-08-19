@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- MAB Developer Logo - Premium Icon Version -->
+  <defs>
+    <linearGradient id="icon-premium" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="50%" stop-color="#1d4ed8" />
+      <stop offset="100%" stop-color="#1e3a8a" />
+    </linearGradient>
+    
+    <linearGradient id="icon-symbols" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+    
+    <filter id="icon-premium-glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Modern gradient background -->
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#f1f5f9" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Premium background -->
+  <rect width="200" height="200" rx="35" fill="url(#bg-gradient)" stroke="#e2e8f0" stroke-width="2"/>
+  
+  <!-- Subtle background pattern -->
+  <g opacity="0.05">
+    <circle cx="50" cy="50" r="20" fill="none" stroke="#3b82f6" stroke-width="1"/>
+    <circle cx="150" cy="150" r="15" fill="none" stroke="#06b6d4" stroke-width="1"/>
+  </g>
+  
+  <!-- Left < symbol -->
+  <g transform="translate(50, 100)">
+    <path d="M15 -20 L-8 0 L15 20" 
+          stroke="url(#icon-symbols)" 
+          stroke-width="5" 
+          fill="none" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"
+          filter="url(#icon-premium-glow)"/>
+  </g>
+  
+  <!-- MAB Text - Icon optimized -->
+  <text x="100" y="108" 
+        font-family="'SF Pro Display', 'Inter', 'Segoe UI', sans-serif" 
+        font-size="38" 
+        font-weight="700" 
+        fill="url(#icon-premium)" 
+        text-anchor="middle" 
+        dominant-baseline="middle"
+        filter="url(#icon-premium-glow)"
+        letter-spacing="-1px">MAB</text>
+  
+  <!-- Right > symbol -->
+  <g transform="translate(150, 100)">
+    <path d="M-15 -20 L8 0 L-15 20" 
+          stroke="url(#icon-symbols)" 
+          stroke-width="5" 
+          fill="none" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"
+          filter="url(#icon-premium-glow)"/>
+  </g>
+  
+  <!-- Subtle subtitle -->
+  <text x="100" y="130" 
+        font-family="'SF Pro Text', 'Inter', sans-serif" 
+        font-size="10" 
+        font-weight="500" 
+        fill="#64748b" 
+        text-anchor="middle" 
+        letter-spacing="1px"
+        opacity="0.8">DEV</text>
+  
+  <!-- Minimalist circuit -->
+  <g stroke="url(#icon-symbols)" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.5">
+    <path d="M70 145 L85 145 L95 155 L105 155 L115 145 L130 145"/>
+    <circle cx="95" cy="155" r="1" fill="#3b82f6"/>
+    <circle cx="115" cy="145" r="1" fill="#06b6d4"/>
+  </g>
+  
+  <!-- Corner accents -->
+  <circle cx="170" cy="30" r="2" fill="#3b82f6" opacity="0.4"/>
+  <circle cx="30" cy="170" r="2" fill="#06b6d4" opacity="0.4"/>
+</svg>
