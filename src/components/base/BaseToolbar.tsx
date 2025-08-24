@@ -93,6 +93,7 @@ const BaseToolbar = ({
   // Real-time features
   realTimeEnabled = false,
   onRealTimeToggle,
+  onSelectionModelChange,
 
   // Styling
   compact = false,

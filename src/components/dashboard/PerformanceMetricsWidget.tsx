@@ -220,7 +220,7 @@ const PerformanceMetricsWidget = () => {
           System Health
         </Typography>
         <Grid container spacing={1} sx={{ mb: 3 }}>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <MetricCard
               title="CPU Usage"
               value={metrics.systemHealth.cpu.value}
@@ -231,7 +231,7 @@ const PerformanceMetricsWidget = () => {
               isPercentage
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <MetricCard
               title="Memory"
               value={metrics.systemHealth.memory.value}
@@ -285,7 +285,7 @@ const PerformanceMetricsWidget = () => {
             Quick Stats
           </Typography>
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <Typography variant="body2" fontWeight={500}>
                 {metrics.performance.throughput.value} req/min
               </Typography>
@@ -293,7 +293,7 @@ const PerformanceMetricsWidget = () => {
                 Throughput
               </Typography>
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <Typography variant="body2" fontWeight={500}>
                 {metrics.performance.errorRate.value}%
               </Typography>

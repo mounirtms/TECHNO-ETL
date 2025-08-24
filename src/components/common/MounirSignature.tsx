@@ -64,7 +64,7 @@ const MounirSignature = ({ type = 'signature', showText = true, showRole = true 
       name: 'Mounir Abderrahmani',
     },
     icon: {
-      src: '/src/assets/images/mounir-icon.svg',
+      src: '/src/assets/images/mab-icon.svg',
       alt: 'Mounir Icon with Code Brackets',
       name: 'Mounir A.',
     },

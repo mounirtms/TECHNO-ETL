@@ -17,8 +17,8 @@ import {
   Box,
   CircularProgress
 } from '@mui/material';
-import { TestTube as TestIcon } from '@mui/icons-material';
-import bugBountyService from '../../services/bugBountyService.ts';
+import { Science as TestIcon } from '@mui/icons-material';
+import bugBountyService from '../../services/bugBountyService';
 
 const BugBountyTest = () => {
   const [testing, setTesting] = useState(false);

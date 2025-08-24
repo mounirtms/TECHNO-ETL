@@ -46,7 +46,7 @@ import {
   Cancel as RejectIcon,
   AttachMoney as PayIcon
 } from '@mui/icons-material';
-import bugBountyService, { BUG_CATEGORIES, BUG_STATUS, QUALITY_SCORES } from '../../services/bugBountyService.ts';
+import bugBountyService, { BUG_CATEGORIES, BUG_STATUS, QUALITY_SCORES } from '../../services/bugBountyService';
 
 const BugBountyAdmin = ({ open, onClose }) => {
   const [bugs, setBugs] = useState([]);

@@ -4,7 +4,7 @@
  * Features: Animated metrics, real-time updates, responsive design, accessibility
  */
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Card,
   CardContent,
@@ -31,6 +31,58 @@ import PropTypes from 'prop-types';
 // Components
 import TooltipWrapper from '../common/TooltipWrapper';
 
+// TypeScript interfaces
+interface BaseCardProps {
+  // Content props
+  title?: string;
+  value?: number | string;
+  subtitle?: string;
+  description?: string;
+  
+  // Visual props
+  icon?: React.ComponentType<any>;
+  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
+  variant?: 'elevation' | 'outlined';
+  elevation?: number;
+  
+  // State props
+  loading?: boolean;
+  error?: Error | null;
+  
+  // Trend and analytics
+  previousValue?: number;
+  showTrend?: boolean;
+  trendPeriod?: string;
+  
+  // Progress and goals
+  showProgress?: boolean;
+  progressValue?: number;
+  progressMax?: number;
+  goalValue?: number;
+  
+  // Interactive features
+  clickable?: boolean;
+  onClick?: () => void;
+  onRefresh?: () => void;
+  
+  // Styling
+  sx?: any;
+  minHeight?: number;
+  
+  // Animation
+  animateValue?: boolean;
+  animationDuration?: number;
+  
+  // Advanced features
+  realTimeUpdate?: boolean;
+  updateInterval?: number;
+  
+  // Accessibility
+  ariaLabel?: string;
+  
+  [key: string]: any;
+}
+
 /**
  * Advanced BaseCard Component
  * 
@@ -42,7 +94,7 @@ import TooltipWrapper from '../common/TooltipWrapper';
  * - Accessibility compliance
  * - Performance optimization
  */
-const BaseCard = ({
+const BaseCard: React.FC<BaseCardProps> = ({
   // Content props
   title = '',
   value = 0,
@@ -52,7 +104,7 @@ const BaseCard = ({
   // Visual props
   icon: IconComponent,
   color = 'primary',
-  variant = 'elevation',
+  variant = 'outlined',
   elevation = 1,
   
   // State props
@@ -96,7 +148,7 @@ const BaseCard = ({
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   
   // Local state
-  const [displayValue, setDisplayValue] = useState(0);
+  const [displayValue, setDisplayValue] = useState<number | string>(value);
   const [isAnimating, setIsAnimating] = useState(false);
   
   // Color configuration
@@ -139,13 +191,13 @@ const BaseCard = ({
 
   // Animate value changes
   useEffect(() => {
-    if (!animateValue || loading) {
+    if (!animateValue || loading || typeof value !== 'number') {
       setDisplayValue(value);
       return;
     }
 
     setIsAnimating(true);
-    const startValue = displayValue;
+    const startValue = typeof displayValue === 'number' ? displayValue : 0;
     const endValue = value;
     const startTime = Date.now();
 
@@ -182,7 +234,7 @@ const BaseCard = ({
 
   // Calculate trend
   const trendData = useMemo(() => {
-    if (!showTrend || previousValue === undefined) return null;
+    if (!showTrend || previousValue === undefined || typeof value !== 'number') return null;
 
     const change = value - previousValue;
     const changePercent = previousValue !== 0 ? (change / previousValue) * 100 : 0;
@@ -336,8 +388,8 @@ const BaseCard = ({
   if (loading) {
     return (
       <Card
-        variant={variant}
-        elevation={elevation}
+        variant={variant === 'elevation' ? undefined : variant}
+        elevation={variant === 'elevation' ? elevation : 0}
         sx={{
           minHeight,
           position: 'relative',
@@ -362,8 +414,8 @@ const BaseCard = ({
   if (error) {
     return (
       <Card
-        variant={variant}
-        elevation={elevation}
+        variant={variant === 'elevation' ? undefined : variant}
+        elevation={variant === 'elevation' ? elevation : 0}
         sx={{
           minHeight,
           position: 'relative',
@@ -386,8 +438,8 @@ const BaseCard = ({
   return (
     <Grow in timeout={300}>
       <Card
-        variant={variant}
-        elevation={elevation}
+        variant={variant === 'elevation' ? undefined : variant}
+        elevation={variant === 'elevation' ? elevation : 0}
         sx={{
           minHeight,
           position: 'relative',

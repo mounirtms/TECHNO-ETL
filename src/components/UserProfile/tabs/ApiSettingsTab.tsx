@@ -592,7 +592,7 @@ const ApiSettingsTab = () => {
                                 <Stack spacing={3}>
                                     {/* URL and Auth Mode */}
                                     <Grid container spacing={2}>
-                                        <Grid item xs={12} md={8}>
+                                        <Grid size={{ xs: 12, md: 8 }}>
                                             <TextField
                                                 size="small"
                                                 fullWidth
@@ -605,7 +605,7 @@ const ApiSettingsTab = () => {
                                                 }}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} md={4}>
+                                        <Grid size={{ xs: 12, md: 4 }}>
                                             <FormControl fullWidth size="small">
                                                 <InputLabel>Authentication Mode</InputLabel>
                                                 <Select
@@ -638,7 +638,7 @@ const ApiSettingsTab = () => {
                                                     Basic Authentication
                                                 </Typography>
                                                 <Grid container spacing={2}>
-                                                    <Grid item xs={12} sm={6}>
+                                                    <Grid size={{ xs: 12, sm: 6 }}>
                                                         <TextField
                                                             size="small"
                                                             fullWidth
@@ -647,7 +647,7 @@ const ApiSettingsTab = () => {
                                                             onChange={(e) => handleInputChange('magento', 'username', e.target.value)}
                                                         />
                                                     </Grid>
-                                                    <Grid item xs={12} sm={6}>
+                                                    <Grid size={{ xs: 12, sm: 6 }}>
                                                         <TextField
                                                             size="small"
                                                             fullWidth
@@ -657,7 +657,7 @@ const ApiSettingsTab = () => {
                                                             onChange={(e) => handleInputChange('magento', 'password', e.target.value)}
                                                         />
                                                     </Grid>
-                                                    <Grid item xs={12}>
+                                                    <Grid size={12}>
                                                         <Button
                                                             variant="contained"
                                                             onClick={handleMagentoBasicAuth}
@@ -687,7 +687,7 @@ const ApiSettingsTab = () => {
                                                         ['accessToken', 'Access Token'],
                                                         ['accessTokenSecret', 'Access Token Secret'],
                                                     ].map(([key, label]) => (
-                                                        <Grid item xs={12} sm={6} key={key}>
+                                                        <Grid size={{ xs: 12, sm: 6 }} key={key}>
                                                             <TextField
                                                                 size="small"
                                                                 fullWidth
@@ -698,7 +698,7 @@ const ApiSettingsTab = () => {
                                                             />
                                                         </Grid>
                                                     ))}
-                                                    <Grid item xs={12}>
+                                                    <Grid size={12}>
                                                         <Button
                                                             variant="contained"
                                                             onClick={handleMagentoOAuthConnect}

@@ -11,11 +11,11 @@ export class BaseApiService {
   constructor(config = {}) {
     this.config = {
       cacheEnabled: true,
-      cacheDuration: 5 * 60 * 1000, // 5 minutes
-      maxCacheSize: 100,
-      retryAttempts: 3,
-      retryDelay: 1000,
-      timeout: 30000,
+      cacheDuration: 10 * 60 * 1000, // 10 minutes for better caching
+      maxCacheSize: 150,
+      retryAttempts: 2, // Reduced retry attempts for faster failure
+      retryDelay: 500, // Faster retry delay
+      timeout: 15000, // Reduced from 30 seconds to 15 seconds
       ...config
     };
 

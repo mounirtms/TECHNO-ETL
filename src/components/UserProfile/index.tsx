@@ -55,7 +55,7 @@ const UserProfile = () => {
         // Auto-save before switching tabs if there are unsaved changes
         if (isDirty && activeTab !== newValue) {
             try {
-                await onSave();
+                await saveUserData();
             } catch (error) {
                 console.error('Failed to save before tab switch:', error);
             }
@@ -135,8 +135,8 @@ const UserProfile = () => {
                 sx={{
                     p: 3,
                     flexGrow: 1,
-                    minHeight: 'calc(100vh - 200px)',
-                    overflowY: 'auto'
+                    height: 'calc(100vh - 200px)', // 固定高度而非最小高度
+                    overflowY: 'hidden' // 隐藏垂直滚动条
                 }}
             >
                 {mounted && (
@@ -144,7 +144,7 @@ const UserProfile = () => {
                         in={!loading && mounted}
                         timeout={300}
                     >
-                        <Box>
+                        <Box sx={{ height: '100%' }}>
                             {renderActiveTab()}
                         </Box>
                     </Fade>

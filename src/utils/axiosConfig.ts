@@ -80,7 +80,7 @@ const createAxiosInstance = (baseURL) => {
 let magentoInstance = null;
 let cegidInstance = null;
 
-export const initializeServices = (settings) = > {
+export const initializeServices = (settings) => {
     if (settings.directMagento && settings.directMagento.enableDirectConnection) {
         console.log('🔄 Direct Magento connection enabled, initializing direct client...');
         directMagentoClient.initialize(settings.directMagento);

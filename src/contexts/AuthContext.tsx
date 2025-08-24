@@ -1,26 +1,80 @@
-
-import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
-import { toast } from 'react-toastify';
+import React, { 
+  createContext, 
+  useState, 
+  useContext, 
+  useEffect, 
+  useCallback, 
+  useMemo,
+  type ReactNode 
+} from 'react';
+import { toast } from 'react-hot-toast';
 import {
-    GoogleAuthProvider,
-    signInWithPopup,
-    signOut,
-    onAuthStateChanged
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+  type User as FirebaseUser
 } from 'firebase/auth';
 import { auth, database } from '../config/firebase';
 import { ref, set, get } from 'firebase/database';
-// Removed useNavigate to avoid circular dependency with Router
 import magentoApi from '../services/magentoService';
 import { USER_ROLES, createDefaultUserLicense, initializeFirebaseDefaults } from '../config/firebaseDefaults';
 import firebaseSyncService from '../services/firebaseSyncService';
-const AuthContext = createContext();
-const MAGENTO_API_URL = import.meta.env.VITE_MAGENTO_API_URL;
 
-export const useAuth = () => {
-    return useContext(AuthContext);
+// Types
+interface User {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  isMagentoUser?: boolean;
+  token?: string;
+  role?: string;
+  createdAt?: string;
+  lastLogin?: string;
+}
+
+interface UserSettings {
+  preferences: {
+    language?: string;
+    theme?: string;
+    fontSize?: string;
+    density?: string;
+    animations?: boolean;
+    highContrast?: boolean;
+    colorPreset?: string;
+  };
+  lastSync?: string;
+  userId: string;
+  email?: string | null;
+}
+
+interface AuthContextType {
+  currentUser: User | null;
+  loading: boolean;
+  signInWithGoogle: () => Promise<any>;
+  signInWithMagento: (username: string, password: string) => Promise<User>;
+  logout: () => Promise<void>;
+  adminToken: string | null;
+  isUsingLocalData: boolean;
+  validateMagentoToken: (token: string) => Promise<boolean>;
+  saveUserSettings: (settings: any) => void;
+}
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
+
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(() => {
         const token = localStorage.getItem('adminToken');
         if (token) {
@@ -210,10 +264,17 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user && !currentUser?.isMagentoUser) {
-                setCurrentUser({
+                const userObj = {
                     ...user,
                     isMagentoUser: false
-                });
+                };
+                setCurrentUser(userObj);
+                
+                // Dispatch auth state change event for SettingsContext
+                window.dispatchEvent(new CustomEvent('authStateChanged', {
+                    detail: { currentUser: userObj }
+                }));
+                
                 toast.success('Welcome back, ' + user.displayName);
                 
                 // Register user in database and initialize settings
@@ -224,6 +285,12 @@ export const AuthProvider = ({ children }) => {
                 firebaseSyncService.syncUserOnLogin(user);
             } else if (!user && !currentUser?.isMagentoUser) {
                 setCurrentUser(null);
+                
+                // Dispatch auth state change event for SettingsContext
+                window.dispatchEvent(new CustomEvent('authStateChanged', {
+                    detail: { currentUser: null }
+                }));
+                
                 // Clear settings on logout
                 clearUserSettings();
             }
@@ -304,6 +371,11 @@ export const AuthProvider = ({ children }) => {
 
             setCurrentUser(magentoUser);
             
+            // Dispatch auth state change event for SettingsContext
+            window.dispatchEvent(new CustomEvent('authStateChanged', {
+                detail: { currentUser: magentoUser }
+            }));
+            
             // Register Magento user and initialize settings
             registerUserInDatabase(magentoUser);
             initializeUserSettings(magentoUser);
@@ -332,6 +404,12 @@ export const AuthProvider = ({ children }) => {
                 await signOut(auth);
             }
             setCurrentUser(null);
+            
+            // Dispatch auth state change event for SettingsContext
+            window.dispatchEvent(new CustomEvent('authStateChanged', {
+                detail: { currentUser: null }
+            }));
+            
             toast.success('Successfully logged out');
             window.location.href = '/login';  // Force a full page reload to clear all states
         } catch (error) {

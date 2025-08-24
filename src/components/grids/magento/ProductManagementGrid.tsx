@@ -653,7 +653,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
 
             <Grid container spacing={2}>
               {/* Brand Filter */}
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <FormControl fullWidth size="small">
                   <InputLabel>Brand</InputLabel>
                   <Select
@@ -676,7 +676,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
               </Grid>
 
               {/* Status Filter */}
-              <Grid item xs={12} sm={6} md={2}>
+              <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                 <FormControl fullWidth size="small">
                   <InputLabel>Status</InputLabel>
                   <Select
@@ -692,7 +692,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
               </Grid>
 
               {/* Type Filter */}
-              <Grid item xs={12} sm={6} md={2}>
+              <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                 <FormControl fullWidth size="small">
                   <InputLabel>Type</InputLabel>
                   <Select
@@ -711,7 +711,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
               </Grid>
 
               {/* Price Range */}
-              <Grid item xs={12} sm={6} md={2}>
+              <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                 <TextField
                   label="Min Price"
                   type="number"
@@ -721,7 +721,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
                   onChange={(e) => handlePriceRangeChange('min', e.target.value)}
                 />
               </Grid>
-              <Grid item xs={12} sm={6} md={2}>
+              <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                 <TextField
                   label="Max Price"
                   type="number"
@@ -733,7 +733,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
               </Grid>
 
               {/* Active Filters Display */}
-              <Grid item xs={12}>
+              <Grid size={12}>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
                   {filters.brand && (
                     <Chip
@@ -998,7 +998,7 @@ const ProductDetailDialog = ({ open, onClose, product }) => {
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2} sx={{ mt: 1 }}>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <TextField
               label="Product ID"
               value={product.id}
@@ -1006,7 +1006,7 @@ const ProductDetailDialog = ({ open, onClose, product }) => {
               disabled
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <TextField
               label="SKU"
               value={product.sku}
@@ -1014,7 +1014,7 @@ const ProductDetailDialog = ({ open, onClose, product }) => {
               disabled
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <TextField
               label="Product Name"
               value={product.name}
@@ -1022,7 +1022,7 @@ const ProductDetailDialog = ({ open, onClose, product }) => {
               disabled
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <TextField
               label="Price"
               value={product.price || 0}
@@ -1030,7 +1030,7 @@ const ProductDetailDialog = ({ open, onClose, product }) => {
               disabled
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <TextField
               label="Status"
               value={product.status === 1 ? 'Active' : 'Inactive'}
@@ -1038,7 +1038,7 @@ const ProductDetailDialog = ({ open, onClose, product }) => {
               disabled
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <TextField
               label="Type"
               value={product.type_id || 'simple'}

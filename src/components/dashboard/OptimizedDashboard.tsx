@@ -253,7 +253,7 @@ const OptimizedDashboard = () => {
         {/* Charts Section */}
         <Grid container spacing={3}>
           {/* Sales Chart */}
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Paper sx={{ p: 2 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h6">
@@ -296,7 +296,7 @@ const OptimizedDashboard = () => {
           </Grid>
 
           {/* Inventory and Customers */}
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Paper sx={{ p: 2, height: '100%' }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h6">
@@ -335,7 +335,7 @@ const OptimizedDashboard = () => {
             </Paper>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <Paper sx={{ p: 2, height: '100%' }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h6">
@@ -360,13 +360,13 @@ const OptimizedDashboard = () => {
                           fill="#8884d8"
                           dataKey="value"
                           nameKey="name"
-                          label={({ name, percent }) => \`\${name}: \${(percent * 100).toFixed(0)}%\`}
+                          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                         >
                           {processedData.customerData.map((entry, index) => (
-                            <Cell key={`cell-\${index}`} fill={chartColors[index % chartColors.length]} />
+                            <Cell key={`cell-${index}`} fill={chartColors[index % chartColors.length]} />
                           ))}
                         </Pie>
-                        <RechartsTooltip formatter={(value) => [\`$\${value.toFixed(2)}\`, t('dashboard.value')]} />
+                        <RechartsTooltip formatter={(value) => [`$${value.toFixed(2)}`, t('dashboard.value')]} />
                         <Legend />
                       </PieChart>
                     </ResponsiveContainer>

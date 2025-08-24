@@ -18,25 +18,60 @@ const sanitizeKey = (userId) => {
  */
 export const check_license_status = async (userId) => {
     try {
+        // Validate input
+        if (!userId || typeof userId !== 'string') {
+            console.warn('Invalid userId provided to check_license_status:', userId);
+            return false;
+        }
+
+        // For localhost development, always return true
+        if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+            console.log('🔓 Development mode: License check bypassed for localhost');
+            return true;
+        }
+
         const sanitizedUserId = sanitizeKey(userId);
         const licenseRef = ref(database, `licenses/${sanitizedUserId}`);
         const snapshot = await get(licenseRef);
 
         if (snapshot.exists()) {
             const licenseData = snapshot.val();
-            // Check if license is valid and not expired
-            const isValid = licenseData.isValid;
+            
+            // Enhanced validation with better error handling
+            const isValid = Boolean(licenseData.isValid);
             const expiryDate = licenseData.expiryDate ? new Date(licenseData.expiryDate) : null;
             const now = new Date();
 
-            if (isValid && (!expiryDate || expiryDate > now)) {
+            // Check expiry date validity
+            const isNotExpired = !expiryDate || (expiryDate instanceof Date && !isNaN(expiryDate.getTime()) && expiryDate > now);
+            
+            // Additional license data validation
+            const hasRequiredFields = licenseData.createdAt && licenseData.licenseType;
+            
+            if (isValid && isNotExpired && hasRequiredFields) {
+                console.log('✅ Valid license found for user:', userId);
                 return true;
+            } else {
+                console.log('❌ License validation failed:', {
+                    isValid,
+                    isNotExpired,
+                    hasRequiredFields,
+                    expiryDate: expiryDate?.toISOString()
+                });
             }
+        } else {
+            console.log('📄 No license found for user:', userId);
         }
+        
         return false;
 
     } catch (error) {
-        console.error('Error checking license status:', error);
+        console.error('❌ Error checking license status:', error);
+        // For development, be more lenient with errors
+        if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+            console.warn('🔧 Development mode: Allowing access despite license check error');
+            return true;
+        }
         return false;
     }
 };

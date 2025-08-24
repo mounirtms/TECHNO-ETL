@@ -215,56 +215,97 @@ const Dashboard = () => {
     syncProgress
   } = useDashboardController(startDate, endDate, refreshKey);
 
-  // Load enhanced dashboard data
+  // Load enhanced dashboard data with optimized performance
   const loadEnhancedData = async () => {
     try {
         setEnhancedLoading(true);
         const cacheKey = 'enhancedDashboardData';
-        const cachedData = unifiedMagentoService._getCachedResponse(cacheKey);
+        const cachedData = unifiedMagentoService._getCachedResponse && unifiedMagentoService._getCachedResponse(cacheKey);
 
         if (cachedData) {
-            console.log('Loaded enhanced data from cache');
+            console.log('✅ Loaded enhanced data from cache');
             setEnhancedData(cachedData);
-        } else {
-            // Use Promise.allSettled to handle failed endpoints gracefully
-            const endpoints = [
-                '/products/stats',
-                '/products/types', 
-                '/brands/distribution',
-                '/categories/distribution',
-                '/products/attributes',
-                '/sales/performance',
-                '/inventory/status'
-            ];
-            
-            const responses = await Promise.allSettled(
-                endpoints.map(endpoint => 
-                    unifiedMagentoService.get(endpoint).catch(error => {
-                        console.warn(`Endpoint ${endpoint} failed:`, error.message);
-                        return { data: null };
-                    })
-                )
-            );
-            
-            const data = {
-                productStats: responses[0].status === 'fulfilled' ? responses[0].value?.data : null,
-                productTypes: responses[1].status === 'fulfilled' ? responses[1].value?.data : [],
-                brandDistribution: responses[2].status === 'fulfilled' ? responses[2].value?.data : [],
-                categoryDistribution: responses[3].status === 'fulfilled' ? responses[3].value?.data : [],
-                productAttributes: responses[4].status === 'fulfilled' ? responses[4].value?.data : [],
-                salesPerformance: responses[5].status === 'fulfilled' ? responses[5].value?.data : null,
-                inventoryStatus: responses[6].status === 'fulfilled' ? responses[6].value?.data : null
-            };
-            
-            setEnhancedData(data);
-            unifiedMagentoService._setCachedResponse(cacheKey, data);
-            console.log('Stored enhanced data to cache');
+            setEnhancedLoading(false);
+            return;
         }
+
+        // Optimized endpoints with shorter timeout
+        const endpoints = [
+            { path: '/products/stats', key: 'productStats', timeout: 10000 },
+            { path: '/products/types', key: 'productTypes', timeout: 8000 }, 
+            { path: '/brands/distribution', key: 'brandDistribution', timeout: 8000 },
+            { path: '/categories/distribution', key: 'categoryDistribution', timeout: 8000 },
+            { path: '/products/attributes', key: 'productAttributes', timeout: 8000 },
+            { path: '/sales/performance', key: 'salesPerformance', timeout: 12000 },
+            { path: '/inventory/status', key: 'inventoryStatus', timeout: 10000 }
+        ];
+        
+        console.log('🔄 Loading dashboard data from API...');
+        
+        // Create timeout promise for each endpoint
+        const createTimeoutPromise = (endpoint) => {
+            return Promise.race([
+                unifiedMagentoService.get(endpoint.path),
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error(`Timeout: ${endpoint.path} exceeded ${endpoint.timeout}ms`)), endpoint.timeout)
+                )
+            ]);
+        };
+        
+        // Execute all requests with individual timeouts
+        const responses = await Promise.allSettled(
+            endpoints.map(endpoint => 
+                createTimeoutPromise(endpoint).catch(error => {
+                    console.warn(`⚠️ Endpoint ${endpoint.path} failed:`, error.message);
+                    return { data: null, error: error.message };
+                })
+            )
+        );
+        
+        // Build data object with proper error handling
+        const data = {};
+        endpoints.forEach((endpoint, index) => {
+            const response = responses[index];
+            if (response.status === 'fulfilled' && response.value?.data) {
+                data[endpoint.key] = response.value.data;
+            } else {
+                data[endpoint.key] = endpoint.key.includes('Distribution') || endpoint.key === 'productTypes' ? [] : null;
+                console.warn(`📊 Using fallback data for ${endpoint.key}`);
+            }
+        });
+        
+        setEnhancedData(data);
+        
+        // Cache successful data
+        if (unifiedMagentoService._setCachedResponse) {
+            unifiedMagentoService._setCachedResponse(cacheKey, data);
+            console.log('💾 Cached enhanced data for faster subsequent loads');
+        }
+        
+        // Log successful loads
+        const successfulLoads = responses.filter(r => r.status === 'fulfilled' && r.value?.data).length;
+        console.log(`✅ Dashboard data loaded: ${successfulLoads}/${endpoints.length} endpoints successful`);
+        
     } catch (error) {
-        console.error('Error loading enhanced dashboard data:', error);
-        // Don't show error toast for expected failures
-        if (error.response?.status !== 404) {
-            toast.error('Failed to load some dashboard data');
+        console.error('❌ Error loading enhanced dashboard data:', error);
+        
+        // Set empty fallback data to prevent UI breaking
+        setEnhancedData({
+            productStats: null,
+            productTypes: [],
+            brandDistribution: [],
+            categoryDistribution: [],
+            productAttributes: [],
+            salesPerformance: null,
+            inventoryStatus: null
+        });
+        
+        // Only show error for unexpected failures
+        if (!error.message?.includes('Timeout') && error.response?.status !== 404) {
+            toast.error('Some dashboard data could not be loaded. Using cached or default values.', {
+                position: 'top-center',
+                autoClose: 4000
+            });
         }
     } finally {
         setEnhancedLoading(false);
@@ -708,7 +749,7 @@ const Dashboard = () => {
 
             {/* Professional Metric Cards */}
             <Grid container spacing={3} sx={{ mb: 4 }}>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                 <ProfessionalMetricCard
                   title="Total Revenue"
                   value={stats?.totalRevenue || 0}
@@ -721,7 +762,7 @@ const Dashboard = () => {
                   onClick={() => openTab('Orders')}
                 />
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                 <ProfessionalMetricCard
                   title="Active Orders"
                   value={stats?.totalOrders || 0}
@@ -734,7 +775,7 @@ const Dashboard = () => {
                   onClick={() => openTab('Orders')}
                 />
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                 <ProfessionalMetricCard
                   title="Total Customers"
                   value={stats?.totalCustomers || 0}
@@ -747,7 +788,7 @@ const Dashboard = () => {
                   onClick={() => openTab('Customers')}
                 />
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
+              <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                 <ProfessionalMetricCard
                   title="Products"
                   value={stats?.totalProducts || 0}
@@ -767,7 +808,7 @@ const Dashboard = () => {
 
             <Grid container spacing={3}>
               {/* Main Dashboard Overview */}
-              <Grid item xs={12} lg={8}>
+              <Grid size={{ xs: 12, lg: 8 }}>
                 <DashboardOverview
                   stats={stats}
                   onNavigate={handleNavigate}
@@ -826,7 +867,7 @@ const Dashboard = () => {
               </Grid>
 
               {/* Dashboard Widgets Sidebar */}
-              <Grid item xs={12} lg={4}>
+              <Grid size={{ xs: 12, lg: 4 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                   {/* Quick Actions */}
                   {dashboardSettings.widgets?.quickActions && (
@@ -863,7 +904,7 @@ const Dashboard = () => {
 
               <Grid container spacing={3}>
                 {/* Professional Chart Widgets */}
-                <Grid item xs={12} md={6} lg={4}>
+                <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                   <ProfessionalChartWidget
                     title="📈 Revenue Trend"
                     data={chartData}
@@ -875,7 +916,7 @@ const Dashboard = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12} md={6} lg={4}>
+                <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                   <ProfessionalChartWidget
                     title="📊 Order Volume"
                     data={customerData}
@@ -889,11 +930,11 @@ const Dashboard = () => {
 
                 {/* Performance Metrics Widget */}
                 {dashboardSettings.widgets?.performanceMetrics ? (
-                  <Grid item xs={12} md={6} lg={4}>
+                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                     <PerformanceMetricsWidget />
                   </Grid>
                 ) : (
-                  <Grid item xs={12} md={6} lg={4}>
+                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                     <ProfessionalProgressWidget
                       title="🎯 Performance Metrics"
                       loading={enhancedLoading}
@@ -909,7 +950,7 @@ const Dashboard = () => {
 
                 {/* Product Statistics */}
                 {dashboardSettings.charts.productStats && (
-                  <Grid item xs={12} md={6} lg={4}>
+                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                     <ProductStatsChart
                       data={enhancedData.productStats}
                       title="📊 Product Status Distribution"
@@ -921,7 +962,7 @@ const Dashboard = () => {
 
                 {/* Brand Distribution */}
                 {dashboardSettings.charts.brandDistribution && (
-                  <Grid item xs={12} md={6} lg={4}>
+                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                     <BrandDistributionChart
                       data={enhancedData.brandDistribution}
                       title="🏷️ Top Brands"
@@ -932,7 +973,7 @@ const Dashboard = () => {
                 )}
 
                 {/* System Status Widget */}
-                <Grid item xs={12} md={6} lg={4}>
+                <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                   <ProfessionalStatusWidget
                     title="🔧 System Status"
                     loading={enhancedLoading}
@@ -947,7 +988,7 @@ const Dashboard = () => {
 
                 {/* Product Attributes */}
                 {dashboardSettings.charts.productAttributes && (
-                  <Grid item xs={12} md={6} lg={4}>
+                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                     <ProductAttributesChart
                       data={enhancedData.productAttributes}
                       title="🔧 Product Features"
@@ -959,7 +1000,7 @@ const Dashboard = () => {
 
                 {/* Category Tree */}
                 {dashboardSettings.charts.categoryTree && (
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <CategoryTreeChart
                       data={enhancedData.categoryDistribution}
                       title="🌳 Category Distribution"
@@ -971,7 +1012,7 @@ const Dashboard = () => {
 
                 {/* Sales Performance */}
                 {dashboardSettings.charts.salesPerformance && (
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <SalesPerformanceChart
                       data={enhancedData.salesPerformance}
                       title="💹 Sales Trends"
@@ -984,7 +1025,7 @@ const Dashboard = () => {
 
                 {/* Inventory Status */}
                 {dashboardSettings.charts.inventoryStatus && (
-                  <Grid item xs={12}>
+                  <Grid size={{ xs: 12 }}>
                     <InventoryStatusChart
                       data={enhancedData.inventoryStatus}
                       title="📦 Inventory Overview"

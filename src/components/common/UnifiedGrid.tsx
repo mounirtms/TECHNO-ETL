@@ -148,7 +148,7 @@ const UnifiedGrid = forwardRef(({
     }
   }, [enableI18n]);
 
-  // Grid state management
+  // Grid state management with safety checks
   const {
     paginationModel,
     setPaginationModel,
@@ -178,6 +178,19 @@ const UnifiedGrid = forwardRef(({
       density: 'standard'
     }
   });
+
+  // Safety checks for state variables
+  const safePaginationModel = useMemo(() => {
+    return paginationModel || { page: 0, pageSize: defaultPageSize };
+  }, [paginationModel, defaultPageSize]);
+
+  const safeSelectedRows = useMemo(() => {
+    return Array.isArray(selectedRows) ? selectedRows : [];
+  }, [selectedRows]);
+
+  const safeColumnVisibility = useMemo(() => {
+    return columnVisibility || {};
+  }, [columnVisibility]);
 
   // Cache management
   const {
@@ -350,6 +363,17 @@ const UnifiedGrid = forwardRef(({
     return baseHeight - statsHeight - toolbarHeight; // 32px for padding
   }, [showStatsCards]);
 
+  // Calculate responsive grid height with better handling
+  const responsiveGridHeight = useMemo(() => {
+    // Calculate available height minus known fixed elements
+    const viewportHeight = window.innerHeight;
+    const reservedHeight = HEADER_HEIGHT + FOOTER_HEIGHT + (showStatsCards ? STATS_CARD_HEIGHT : 0) + 155; // 155 for toolbar
+    const calculatedHeight = viewportHeight - reservedHeight;
+    
+    // Ensure minimum height of 400px
+    return Math.max(calculatedHeight, 400);
+  }, [showStatsCards]);
+
   // Cache management effect
   useEffect(() => {
     if (enableCache && memoizedData.length > 0) {
@@ -479,7 +503,8 @@ const UnifiedGrid = forwardRef(({
           sx={{
             flex: 1,
             minHeight: 0,
-            maxHeight: gridHeight,
+            maxHeight: responsiveGridHeight,
+            height: responsiveGridHeight, // 固定高度以避免滚动条问题
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
@@ -516,46 +541,53 @@ const UnifiedGrid = forwardRef(({
               } : {})}
 
               // Pagination - supports both client and server-side pagination
-              paginationModel={paginationModel || { page: 0, pageSize: defaultPageSize }}
+              // Ensure pagination model is always valid to prevent MUI errors
+              paginationModel={{
+                page: Math.max(0, safePaginationModel.page || 0),
+                pageSize: Math.max(1, safePaginationModel.pageSize || defaultPageSize)
+              }}
               onPaginationModelChange={useCallback((model) => {
-                setPaginationModel(model);
+                // Validate pagination model before setting
+                const validModel = {
+                  page: Math.max(0, model?.page || 0),
+                  pageSize: Math.max(1, model?.pageSize || defaultPageSize)
+                };
+                setPaginationModel(validModel);
                 // Call parent pagination handler if provided (for server-side pagination)
                 if (onPaginationModelChange) {
-                  onPaginationModelChange(model);
+                  onPaginationModelChange(validModel);
                 }
-              }, [onPaginationModelChange])}
+              }, [onPaginationModelChange, defaultPageSize, setPaginationModel])}
               pageSizeOptions={[10, 25, 50, 100]}
               paginationMode={paginationMode || "client"}
-              // rowCount is only set for server-side pagination to avoid MUI warning
-              // Ensure rowCount is always a valid number for server-side pagination
+              // Only provide rowCount for server-side pagination to prevent warnings
               {...(paginationMode === "server" ? {
-                rowCount: typeof totalCount === 'number' && totalCount >= 0 ? totalCount : memoizedData.length
+                rowCount: Math.max(0, typeof totalCount === 'number' ? totalCount : 0)
               } : {})}
-              // For client-side pagination, let MUI handle the row count automatically
 
               // Sorting with performance optimization
               sortModel={sortModel}
               onSortModelChange={useCallback((model) => {
-                setSortModel(model);
+                setSortModel?.(model);
                 onSortChange?.(model);
-              }, [onSortChange])}
+              }, [setSortModel, onSortChange])}
               sortingOrder={['asc', 'desc']}
 
               // Filtering with performance optimization
               filterModel={filterModel}
               onFilterModelChange={useCallback((model) => {
-                setFilterModel(model);
+                setFilterModel?.(model);
                 onFilterChange?.(model);
                 onFilterModelChange?.(model);
-              }, [onFilterChange, onFilterModelChange])}
+              }, [setFilterModel, onFilterChange, onFilterModelChange])}
 
               // Selection
               checkboxSelection={enableSelection}
-              rowSelectionModel={selectedRows}
+              rowSelectionModel={safeSelectedRows}
               onRowSelectionModelChange={handleSelectionChange}
 
               // Column management
-              columnVisibilityModel={columnVisibility}
+              columnVisibilityModel={safeColumnVisibility}
               onColumnVisibilityModelChange={setColumnVisibility}
               columnOrderModel={columnOrder}
               onColumnOrderModelChange={setColumnOrder}

@@ -137,7 +137,7 @@ const QuickActions = ({ onAction }) => {
           
           <Grid container spacing={2}>
             {primaryActions.map((action, index) => (
-              <Grid item xs={12} sm={6} md={3} key={index}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
                 <Button
                   fullWidth
                   variant="outlined"
@@ -195,7 +195,7 @@ const QuickActions = ({ onAction }) => {
           
           <Grid container spacing={2}>
             {quickLinks.map((link, index) => (
-              <Grid item xs={6} sm={3} key={index}>
+              <Grid size={{ xs: 6, sm: 3 }} key={index}>
                 <Card
                   sx={{
                     cursor: 'pointer',

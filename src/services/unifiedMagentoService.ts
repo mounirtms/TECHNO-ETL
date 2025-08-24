@@ -10,11 +10,11 @@ class UnifiedMagentoService extends BaseApiService {
   constructor() {
     super({
       cacheEnabled: true,
-      cacheDuration: 5 * 60 * 1000,
-      maxCacheSize: 100,
-      retryAttempts: 3,
-      retryDelay: 1000,
-      timeout: 30000
+      cacheDuration: 10 * 60 * 1000, // Increased cache duration
+      maxCacheSize: 150,
+      retryAttempts: 2, // Reduced retry attempts
+      retryDelay: 500, // Faster retry
+      timeout: 12000 // Reduced from 30 seconds to 12 seconds
     });
 
     this.proxyClient = axios.create({

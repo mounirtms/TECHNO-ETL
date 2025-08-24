@@ -45,7 +45,8 @@
         "salesAnalytics": "Sales Analytics",
         "inventoryAnalytics": "Inventory Analytics",
         "secureVault": "Secure Vault",
-        "accessControl": "Access Control"
+        "accessControl": "Access Control",
+        "profile": "Profile"
     },
     "dashboard": {
         "title": "Dashboard",

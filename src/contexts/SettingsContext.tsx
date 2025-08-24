@@ -1,38 +1,108 @@
 /**
  * Enhanced Settings Context for TECHNO-ETL
  * Manages all user preferences, settings, and their persistence
- * Professional unified settings management system
+ * Modern TypeScript implementation with optimized performance
  */
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { 
+  createContext, 
+  useContext, 
+  useState, 
+  useEffect, 
+  useCallback, 
+  useMemo,
+  type ReactNode 
+} from 'react';
+import { toast } from 'react-hot-toast';
 import { ref, set, onValue } from 'firebase/database';
 import { database } from '../config/firebase';
-import { useAuth } from './AuthContext';
 import {
-    saveUserSettings
-} from '../services/userService';
-import {
-    getUnifiedSettings,
-    saveUnifiedSettings,
-    getUserSettings,
-    getDefaultSettings,
-    resetToSystemDefaults,
-    applyLanguageSettings,
-    getSystemPreferences
-} from '../utils/unifiedSettingsManager';
-import { toast } from 'react-toastify';
+  getUnifiedSettings,
+  saveUnifiedSettings,
+  getUserSettings,
+  saveUserSettings,
+  getDefaultSettings,
+  resetToSystemDefaults,
+  applyLanguageSettings,
+  getSystemPreferences
+} from '../utils/settingsUtils';
 
-const SettingsContext = createContext();
+// Types
+interface UserPreferences {
+  language?: string;
+  theme?: string;
+  fontSize?: string;
+  density?: string;
+  animations?: boolean;
+  highContrast?: boolean;
+  colorPreset?: string;
+}
 
-export const useSettings = () => {
-    const context = useContext(SettingsContext);
-    if (!context) {
-        throw new Error('useSettings must be used within a SettingsProvider');
-    }
-    return context;
+interface PerformanceSettings {
+  enableVirtualization?: boolean;
+  chunkSize?: number;
+  cacheSize?: number;
+}
+
+interface AccessibilitySettings {
+  screenReader?: boolean;
+  keyboardNavigation?: boolean;
+  reducedMotion?: boolean;
+}
+
+interface Settings {
+  preferences?: UserPreferences;
+  performance?: PerformanceSettings;
+  accessibility?: AccessibilitySettings;
+  lastModified?: number;
+  userId?: string;
+}
+
+interface SaveResult {
+  success: boolean;
+  message: string;
+}
+
+interface SettingsContextType {
+  settings: Settings | null;
+  loading: boolean;
+  isDirty: boolean;
+  lastSyncTime: string | null;
+  updateSettings: (updates: Partial<Settings>, section?: string) => void;
+  saveSettings: (forceSave?: boolean) => Promise<SaveResult>;
+  resetSettings: () => void;
+  exportSettings: () => void;
+  importSettings: (file: File) => Promise<Settings>;
+  loadRemoteSettings: () => Promise<void>;
+}
+
+interface SettingsProviderProps {
+  children: ReactNode;
+}
+
+const SettingsContext = createContext<SettingsContextType | null>(null);
+
+export const useSettings = (): SettingsContextType => {
+  const context = useContext(SettingsContext);
+  if (!context) {
+    throw new Error('useSettings must be used within a SettingsProvider');
+  }
+  return context;
 };
 
-export const SettingsProvider = ({ children }) => {
-    const { currentUser } = useAuth();
+export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) => {
+    // For now, we'll avoid the auth dependency and work with anonymous users
+    // The auth state can be passed through event listeners or props if needed
+    const [currentUser, setCurrentUser] = useState(null);
+    
+    // Listen for auth changes through custom events to avoid circular dependency
+    useEffect(() => {
+        const handleAuthChange = (event: CustomEvent) => {
+            setCurrentUser(event.detail?.currentUser || null);
+        };
+        
+        window.addEventListener('authStateChanged' as any, handleAuthChange);
+        return () => window.removeEventListener('authStateChanged' as any, handleAuthChange);
+    }, []);
 
     // Initialize settings with defaults first
     const [settings, setSettings] = useState(null);
@@ -293,19 +363,23 @@ export const SettingsProvider = ({ children }) => {
 
     // Auto-save to local storage when settings change
     useEffect(() => {
-        if (isDirty) {
-            const timeoutId = setTimeout(() => {
-                if (currentUser) {
-                    saveUserSettings(currentUser.uid, settings);
-                } else {
-                    saveUnifiedSettings(settings);
+        if (isDirty && settings) {
+            const timeoutId = setTimeout(async () => {
+                try {
+                    if (currentUser) {
+                        saveUserSettings(currentUser.uid, settings);
+                    } else {
+                        saveUnifiedSettings(settings);
+                    }
+                    setIsDirty(false);
+                } catch (error) {
+                    console.error('Auto-save failed:', error);
                 }
-                setIsDirty(false);
             }, 1000); // 1 second debounce
 
             return () => clearTimeout(timeoutId);
         }
-    }, [settings, isDirty]);
+    }, [settings, isDirty, currentUser]);
 
     const updateSettings = useCallback((updates, section = null) => {
         setSettings(prevSettings => {
@@ -402,11 +476,25 @@ export const SettingsProvider = ({ children }) => {
     }, [settings, isDirty, currentUser]);
 
     const resetSettings = useCallback(() => {
-        const defaults = resetSettingsToDefaults();
-        setSettings(defaults);
-        setIsDirty(true);
-        toast.info('Settings reset to defaults');
-    }, []);
+        try {
+            const defaults = getDefaultSettings();
+            setSettings(defaults);
+            setIsDirty(true);
+            
+            // Clear all storage
+            if (currentUser) {
+                localStorage.removeItem(`userSettings_${currentUser.uid}`);
+            }
+            localStorage.removeItem('techno-etl-unified-settings');
+            localStorage.removeItem('techno-etl-settings');
+            localStorage.removeItem('settingsLastModified');
+            
+            toast.success('Settings reset to defaults');
+        } catch (error) {
+            console.error('Error resetting settings:', error);
+            toast.error('Failed to reset settings');
+        }
+    }, [currentUser]);
 
     const exportSettings = useCallback(() => {
         try {

@@ -4,12 +4,7 @@
  */
 
 import React from 'react';
-
 import { createRoot } from 'react-dom/client';
-import { AuthProvider } from './contexts/AuthContext.tsx';
-import { LanguageProvider } from './contexts/LanguageContext.tsx';
-import { ThemeProvider } from './contexts/ThemeContext.tsx';
-import { SettingsProvider } from './contexts/SettingsContext.tsx';
 import App from './App.tsx';
 import './styles/globals.css';
 
@@ -85,19 +80,11 @@ function initApp() {
   try {
     const root = createRoot(container);
     
-    // Proper provider nesting without TabProvider in main (it's in Layout)
+    // Simple initialization - all providers are handled in UnifiedProvider within App
     root.render(
       React.createElement(React.StrictMode, null,
         React.createElement(ErrorBoundary, null,
-          React.createElement(AuthProvider, null,
-            React.createElement(LanguageProvider, null,
-              React.createElement(ThemeProvider, null,
-                React.createElement(SettingsProvider, null,
-                  React.createElement(App)
-                )
-              )
-            )
-          )
+          React.createElement(App)
         )
       )
     );

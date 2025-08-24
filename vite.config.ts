@@ -2,6 +2,7 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { visualizer } from 'rollup-plugin-visualizer';
+import { compression } from 'vite-plugin-compression';
 
 export default defineConfig(({ command, mode }) => {
   // Load environment variables based on mode
@@ -14,22 +15,29 @@ export default defineConfig(({ command, mode }) => {
   return {
     plugins: [
       react({
-        // Fast Refresh for development
-        fastRefresh: isDev,
         // React automatic JSX runtime
-        jsxRuntime: 'automatic',
-        // Babel options
-        babel: {
-          presets: [
-            ['@babel/preset-react', { runtime: 'automatic' }]
-          ]
-          // Note: Console removal handled by terser in build.terserOptions
-        }
+        jsxRuntime: 'automatic'
+        // Let Vite handle React refresh automatically
+      }),
+
+      // Note: Manual chunk splitting is handled in rollupOptions.output.manualChunks
+
+      // Compression for production
+      isProd && compression({
+        algorithm: 'gzip',
+        ext: '.gz',
+        deleteOriginFile: false
+      }),
+
+      isProd && compression({
+        algorithm: 'brotliCompress',
+        ext: '.br',
+        deleteOriginFile: false
       }),
 
       // Bundle analyzer for production builds
       isProd && visualizer({
-        filename: 'dist/bundle-analysis.html',
+        filename: 'dist/stats.html',
         open: false,
         gzipSize: true,
         brotliSize: true,
@@ -66,7 +74,7 @@ export default defineConfig(({ command, mode }) => {
     // Development server configuration - Optimized for port 80
     server: {
       host: '0.0.0.0',
-      port: 80, // Standardized to port 80
+      port: 3000, // Changed to port 3000 for better compatibility
       strictPort: false,
       cors: true,
       hmr: {
@@ -107,7 +115,7 @@ export default defineConfig(({ command, mode }) => {
       minify: isProd ? 'terser' : false,
       
       // Target modern browsers
-      target: ['es2020', 'chrome80', 'firefox78', 'safari14', 'edge88'],
+      target: ['es2022', 'chrome100', 'firefox100', 'safari15', 'edge100'],
       
       // CSS code splitting
       cssCodeSplit: true,
@@ -232,10 +240,24 @@ export default defineConfig(({ command, mode }) => {
         'react-is',
         'prop-types',
         'scheduler',
+        // Modern UI dependencies
+        'lucide-react',
+        '@heroicons/react',
+        'react-hot-toast',
+        'framer-motion',
+        'clsx',
+        'tailwind-merge',
+        // Material-UI (temporarily for compatibility)
         '@mui/material',
         '@mui/icons-material',
         '@emotion/react',
-        '@emotion/styled'
+        '@emotion/styled',
+        // Date pickers and date-fns
+        'date-fns',
+        '@mui/x-date-pickers',
+        '@mui/x-date-pickers/LocalizationProvider',
+        '@mui/x-date-pickers/AdapterDateFns',
+        '@mui/x-date-pickers/DatePicker'
       ],
 
       // Exclude problematic dependencies
@@ -248,9 +270,12 @@ export default defineConfig(({ command, mode }) => {
 
       // Enhanced ESBuild options
       esbuildOptions: {
-        target: 'es2020',
+        target: 'es2022',
         define: {
           global: 'globalThis'
+        },
+        supported: {
+          'top-level-await': true
         }
       }
     },
@@ -299,17 +324,23 @@ export default defineConfig(({ command, mode }) => {
       drop: isProd ? ['console', 'debugger'] : [],
       
       // Target
-      target: 'es2020',
+      target: 'es2022',
       
       // JSX configuration
       jsx: 'automatic',
-      jsxDev: isDev
+      jsxDev: isDev,
+      
+      // Modern features
+      supported: {
+        'top-level-await': true,
+        'import-meta': true
+      }
     },
 
     // Worker configuration
     worker: {
       format: 'es',
-      plugins: []
+      plugins: () => []
     },
 
     // JSON configuration

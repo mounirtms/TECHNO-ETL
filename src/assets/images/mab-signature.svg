@@ -1,0 +1,104 @@
+<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Unique Mobile-Optimized Signature for Mounir Abderrahmani -->
+  <defs>
+    <!-- Signature gradient -->
+    <linearGradient id="signatureGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4361ee" stop-opacity="0.9" />
+      <stop offset="25%" stop-color="#7209b7" stop-opacity="1" />
+      <stop offset="75%" stop-color="#f72585" stop-opacity="1" />
+      <stop offset="100%" stop-color="#4cc9f0" stop-opacity="0.8" />
+    </linearGradient>
+    
+    <!-- Glow effect -->
+    <filter id="signatureGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Code accent gradient -->
+    <linearGradient id="codeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00d4aa" />
+      <stop offset="100%" stop-color="#4361ee" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background subtle pattern -->
+  <rect width="200" height="60" fill="transparent"/>
+  
+  <!-- Code brackets as signature frame -->
+  <text x="8" y="35" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="24" font-weight="bold" fill="url(#codeGradient)" opacity="0.6">
+    &lt;
+  </text>
+  <text x="184" y="35" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="24" font-weight="bold" fill="url(#codeGradient)" opacity="0.6">
+    /&gt;
+  </text>
+  
+  <!-- Main signature path - stylized "Mounir Abderrahmani" -->
+  <g filter="url(#signatureGlow)">
+    <!-- M -->
+    <path d="M25 20 L25 40 M25 20 L35 35 L45 20 M45 20 L45 40" 
+          stroke="url(#signatureGradient)" 
+          stroke-width="2.5" 
+          fill="none" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+    
+    <!-- A -->
+    <path d="M55 40 L60 20 L65 40 M57 32 L63 32" 
+          stroke="url(#signatureGradient)" 
+          stroke-width="2.5" 
+          fill="none" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+    
+    <!-- B -->
+    <path d="M75 20 L75 40 M75 20 L82 20 Q87 20 87 25 Q87 30 82 30 L75 30 M75 30 L83 30 Q88 30 88 35 Q88 40 83 40 L75 40" 
+          stroke="url(#signatureGradient)" 
+          stroke-width="2.5" 
+          fill="none" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+    
+    <!-- Decorative dot -->
+    <circle cx="100" cy="30" r="2" fill="url(#signatureGradient)" opacity="0.8">
+      <animate attributeName="r" values="2;3;2" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- Stylized initials continuation -->
+    <path d="M110 25 Q120 15 130 25 Q140 35 150 25 Q160 15 170 25" 
+          stroke="url(#signatureGradient)" 
+          stroke-width="2" 
+          fill="none" 
+          stroke-linecap="round" 
+          opacity="0.8"/>
+  </g>
+  
+  <!-- Underline with tech elements -->
+  <path d="M25 45 Q100 42 175 45" 
+        stroke="url(#signatureGradient)" 
+        stroke-width="1.5" 
+        fill="none" 
+        stroke-linecap="round" 
+        opacity="0.6"/>
+  
+  <!-- Tech accent elements -->
+  <circle cx="30" cy="12" r="1" fill="#4361ee" opacity="0.7" class="animate-pulse"/>
+  <circle cx="100" cy="12" r="0.8" fill="#7209b7" opacity="0.6" class="animate-pulse" style="animation-delay: 1s"/>
+  <circle cx="170" cy="12" r="1" fill="#f72585" opacity="0.7" class="animate-pulse" style="animation-delay: 2s"/>
+  
+  <!-- Binary code pattern (subtle) -->
+  <text x="100" y="55" font-family="'JetBrains Mono', monospace" font-size="6" fill="url(#codeGradient)" text-anchor="middle" opacity="0.3">
+    01001101 01000001 01000010
+  </text>
+  
+  <!-- Professional badge -->
+  <g transform="translate(160, 8)">
+    <circle cx="8" cy="8" r="6" fill="url(#signatureGradient)" opacity="0.1"/>
+    <text x="8" y="11" font-family="'Inter', sans-serif" font-size="6" font-weight="bold" fill="url(#signatureGradient)" text-anchor="middle" opacity="0.8">
+      FS
+    </text>
+  </g>
+</svg>

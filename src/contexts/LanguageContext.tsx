@@ -6,7 +6,7 @@ import {
   getUnifiedSettings,
   saveUnifiedSettings,
   getSystemPreferences
-} from '../utils/unifiedSettingsManager';
+} from '../utils/settingsUtils';
 
 const LanguageContext = createContext();
 
@@ -41,21 +41,60 @@ export const useLanguage = () => {
 
 export const LanguageProvider = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState(() => {
-    const settings = getUnifiedSettings();
-    if (settings?.language && languages[settings.language]) {
-      return settings.language;
-    }
+    console.log('🌐 Initializing LanguageProvider...');
+    
+    try {
+      console.log('🌐 Getting unified settings...');
+      const settings = getUnifiedSettings();
+      console.log('🌐 Settings received:', settings);
+      
+      if (settings?.preferences?.language && languages[settings.preferences.language]) {
+        console.log('🌐 Using preferences language:', settings.preferences.language);
+        return settings.preferences.language;
+      }
 
-    // Fallback to system preferences
-    const systemPrefs = getSystemPreferences();
-    return systemPrefs.language;
+      // Also check top-level language for backward compatibility
+      if (settings?.language && languages[settings.language]) {
+        console.log('🌐 Using top-level language:', settings.language);
+        return settings.language;
+      }
+
+      // Fallback to system preferences
+      console.log('🌐 Getting system preferences...');
+      const systemPrefs = getSystemPreferences();
+      console.log('🌐 System preferences:', systemPrefs);
+      
+      if (systemPrefs?.language && languages[systemPrefs.language]) {
+        console.log('🌐 Using system language:', systemPrefs.language);
+        return systemPrefs.language;
+      }
+    } catch (error) {
+      console.error('Failed to get language settings:', error);
+    }
+    
+    // Final fallback to English
+    console.log('🌐 Using fallback language: en');
+    return 'en';
   });
 
   // Memoized language configuration to prevent unnecessary re-renders
-  const currentLangConfig = useMemo(() => languages[currentLanguage], [currentLanguage]);
+  const currentLangConfig = useMemo(() => {
+    const config = languages[currentLanguage];
+    if (!config) {
+      console.warn(`Invalid language: ${currentLanguage}, falling back to English`);
+      return languages.en;
+    }
+    return config;
+  }, [currentLanguage]);
 
   // Persistent RTL support - ensure it works across all tabs and components
   useEffect(() => {
+    // Safety check to ensure currentLangConfig is valid
+    if (!currentLangConfig || !currentLangConfig.dir || !currentLangConfig.code) {
+      console.warn('Invalid currentLangConfig:', currentLangConfig);
+      return;
+    }
+
     // Use requestAnimationFrame to ensure smooth transition
     requestAnimationFrame(() => {
       const isRTL = currentLangConfig.dir === 'rtl';
@@ -91,8 +130,18 @@ export const LanguageProvider = ({ children }) => {
         root.style.transition = 'all 0.3s ease-in-out';
       }
 
-      // Save to unified settings
-      saveUnifiedSettings({ language: currentLanguage, dir: currentLangConfig.dir });
+      // Save to unified settings with proper structure
+      saveUnifiedSettings({ 
+        preferences: {
+          language: currentLanguage, 
+          dir: currentLangConfig.dir 
+        }
+      });
+
+      // Dispatch RTL change event for ThemeContext to avoid circular imports
+      window.dispatchEvent(new CustomEvent('languageRTLChanged', {
+        detail: { isRTL, language: currentLanguage, dir: currentLangConfig.dir }
+      }));
 
       // Remove transition after animation completes
       setTimeout(() => {
@@ -102,7 +151,7 @@ export const LanguageProvider = ({ children }) => {
         }
       }, 300);
       
-      console.log(`Language changed to ${currentLanguage} (${currentLangConfig.dir})`);
+      console.log(`🌐 Language changed to ${currentLanguage} (${currentLangConfig.dir})`);
     });
   }, [currentLanguage, currentLangConfig]);
 
@@ -126,6 +175,17 @@ export const LanguageProvider = ({ children }) => {
 
   // Memoized translate function with caching to prevent excessive logging
   const translate = useCallback((key) => {
+    // Safety checks
+    if (!key || typeof key !== 'string') {
+      console.warn('Invalid translation key:', key);
+      return key || '';
+    }
+
+    if (!currentLangConfig || !currentLangConfig.locale) {
+      console.warn('Translation attempted before language config loaded');
+      return key;
+    }
+
     const keys = key.split('.');
     let value = currentLangConfig.locale;
 

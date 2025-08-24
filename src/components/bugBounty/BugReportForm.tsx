@@ -39,7 +39,7 @@ import {
   AttachFile as AttachIcon,
   Info as InfoIcon
 } from '@mui/icons-material';
-import bugBountyService, { BUG_CATEGORIES } from '../../services/bugBountyService.ts';
+import bugBountyService, { BUG_CATEGORIES } from '../../services/bugBountyService';
 
 const steps = ['Bug Details', 'Steps to Reproduce', 'Environment & Contact'];
 
@@ -189,7 +189,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
       case 0:
         return (
           <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
                 label="Bug Title"
@@ -199,7 +199,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
                 required
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
                 multiline
@@ -211,7 +211,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
                 required
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <FormControl fullWidth required>
                 <InputLabel>Category</InputLabel>
                 <Select
@@ -233,7 +233,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <FormControl fullWidth required>
                 <InputLabel>Severity</InputLabel>
                 <Select
@@ -248,7 +248,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
               </FormControl>
             </Grid>
             {formData.category && formData.severity && (
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Alert severity="info" icon={<InfoIcon />}>
                   <Typography variant="body2">
                     <strong>Estimated Reward: ${getRewardEstimate()}</strong>
@@ -264,7 +264,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
       case 1:
         return (
           <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Typography variant="h6" gutterBottom>
                 Steps to Reproduce
               </Typography>
@@ -295,7 +295,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
                 Add Step
               </Button>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
                 multiline
@@ -307,7 +307,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
                 required
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
                 multiline
@@ -325,7 +325,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
       case 2:
         return (
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
                 label="Your Name"
@@ -334,7 +334,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
                 required
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
                 type="email"
@@ -344,7 +344,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
                 required
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <FormControl fullWidth>
                 <InputLabel>Testing Experience</InputLabel>
                 <Select
@@ -358,7 +358,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Card variant="outlined">
                 <CardContent>
                   <Typography variant="h6" gutterBottom>

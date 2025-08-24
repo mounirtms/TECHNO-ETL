@@ -1,19 +1,30 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "lib": ["DOM", "DOM.Iterable", "ES6"],
+    "target": "ES2023",
+    "lib": ["DOM", "DOM.Iterable", "DOM.AsyncIterable", "ES2023"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
+    "moduleDetection": "force",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": false,
+    "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo",
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
@@ -24,14 +35,31 @@
       "@/types/*": ["src/types/*"],
       "@/contexts/*": ["src/contexts/*"],
       "@/hooks/*": ["src/hooks/*"],
-      "@/assets/*": ["src/assets/*"]
-    }
+      "@/assets/*": ["src/assets/*"],
+      "@/config/*": ["src/config/*"]
+    },
+    "types": ["vite/client", "node"],
+    "useDefineForClassFields": true,
+    "declaration": false,
+    "sourceMap": true
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/**/*.js",
-    "src/**/*.jsx"
+    "src/**/*.jsx",
+    "vite.config.ts",
+    "tailwind.config.js",
+    "postcss.config.js"
   ],
-  "exclude": ["node_modules", "dist", "build"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "archive",
+    "backend/node_modules",
+    "**/*.test.*",
+    "**/*.spec.*"
+  ]
 }

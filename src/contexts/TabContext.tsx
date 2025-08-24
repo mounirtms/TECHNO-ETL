@@ -26,16 +26,21 @@ const BugBountyPage = lazy(() => import('../pages/BugBountyPage'));
 const LicenseManagement = lazy(() => import('../components/License/LicenseManagement'));
 const LicenseStatus = lazy(() => import('../components/License/LicenseStatus'));
 
+// Create a reusable function for importing placeholder components
+const importPlaceholder = (componentName: string) => 
+  import('../components/placeholders/PlaceholderComponents')
+    .then(module => ({ default: (module as any)[componentName] }));
+
 // Lazy load placeholder components
-const SalesAnalytics = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.SalesAnalytics })));
-const InventoryAnalytics = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.InventoryAnalytics })));
-const SecureVault = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.SecureVault })));
-const AccessControl = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.AccessControl })));
-const MDMStock = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.MDMStock })));
-const MDMSources = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.MDMSources })));
+const SalesAnalytics = lazy(() => importPlaceholder('SalesAnalytics'));
+const InventoryAnalytics = lazy(() => importPlaceholder('InventoryAnalytics'));
+const SecureVault = lazy(() => importPlaceholder('SecureVault'));
+const AccessControl = lazy(() => importPlaceholder('AccessControl'));
+const MDMStock = lazy(() => importPlaceholder('MDMStock'));
+const MDMSources = lazy(() => importPlaceholder('MDMSources'));
 
 // URL to Tab ID mapping
-const URL_TO_TAB_MAP = {
+const URL_TO_TAB_MAP: { [key: string]: string } = {
     '/dashboard': 'Dashboard',
     '/charts': 'Charts',
     '/voting': 'Voting',
@@ -99,7 +104,7 @@ const COMPONENT_MAP = {
 
 const TabContext = createContext();
 
-export const TabProvider = ({ children, sidebarOpen }) => {
+export const TabProvider = ({ children, sidebarOpen }: { children: React.ReactNode; sidebarOpen: boolean }) => {
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -134,14 +139,6 @@ export const TabProvider = ({ children, sidebarOpen }) => {
             if (!tabExists) {
                 const newTab = MENU_ITEMS.find(item => item.id === currentTabId);
                 if (newTab && COMPONENT_MAP[newTab.id]) {
-    // Ensure activeTab is always valid
-    useEffect(() => {
-        const validTabIds = tabs.map(tab => tab.id);
-        if (!validTabIds.includes(activeTab)) {
-            setActiveTab(validTabIds.includes('Dashboard') ? 'Dashboard' : validTabIds[0]);
-        }
-    }, [activeTab, tabs]);
-
                     setTabs(prevTabs => [
                         ...prevTabs,
                         {
@@ -201,8 +198,6 @@ export const TabProvider = ({ children, sidebarOpen }) => {
     const getActiveComponent = () => {
         const activeTabItem = tabs.find(tab => tab.id === activeTab);
         
-        console.log('Active Tab Item:', activeTabItem); // Debugging log
-
         if (!activeTabItem) {
             console.warn(`No tab found for activeTab: ${activeTab}`);
             return () => (
@@ -214,8 +209,6 @@ export const TabProvider = ({ children, sidebarOpen }) => {
 
         const Component = COMPONENT_MAP[activeTabItem.id];
         
-        console.log('Component:', Component); // Debugging log
-
         if (!Component) {
             console.warn(`No component mapped for tab: ${activeTabItem.id}`);
             return () => (

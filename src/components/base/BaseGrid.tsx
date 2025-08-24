@@ -23,6 +23,87 @@ import BaseToolbar from './BaseToolbar';
 import BaseCard from './BaseCard';
 import TooltipWrapper from '../common/TooltipWrapper';
 
+// TypeScript interfaces
+interface BaseGridProps {
+  // Data props
+  data?: any[];
+  columns?: any[];
+  loading?: boolean;
+  error?: Error | null;
+  
+  // Grid configuration
+  gridName?: string;
+  gridType?: string;
+  height?: number;
+  autoHeight?: boolean;
+  
+  // Pagination
+  pagination?: boolean;
+  pageSize?: number;
+  pageSizeOptions?: number[];
+  
+  // Selection
+  checkboxSelection?: boolean;
+  disableSelectionOnClick?: boolean;
+  selectionModel?: any[];
+  onSelectionModelChange?: (selection: any[]) => void;
+  
+  // Sorting and filtering
+  sortModel?: any[];
+  onSortModelChange?: (model: any[]) => void;
+  filterModel?: any;
+  onFilterModelChange?: (model: any) => void;
+  
+  // Toolbar configuration
+  showToolbar?: boolean;
+  toolbarConfig?: any;
+  customActions?: any[];
+  customLeftActions?: any[];
+  
+  // Stats cards
+  showStatsCards?: boolean;
+  gridCards?: any[];
+  
+  // Event handlers
+  onRefresh?: () => void;
+  onAdd?: () => void;
+  onEdit?: (row: any) => void;
+  onDelete?: (rows: any[]) => void;
+  onExport?: () => void;
+  onImport?: () => void;
+  onRowClick?: (params: any) => void;
+  onRowDoubleClick?: (params: any) => void;
+  onCellClick?: (params: any) => void;
+  
+  // Advanced features
+  enableVirtualization?: boolean;
+  enableRealTimeUpdates?: boolean;
+  updateInterval?: number;
+  
+  // Styling
+  density?: string;
+  sx?: any;
+  
+  // Accessibility
+  ariaLabel?: string;
+  
+  // Error handling
+  onError?: (error: any, context?: string) => void;
+  
+  // Custom components
+  NoRowsOverlay?: React.ComponentType<any>;
+  LoadingOverlay?: React.ComponentType<any>;
+  ErrorOverlay?: React.ComponentType<any>;
+  
+  // Advanced props
+  getRowId?: (row: any) => any;
+  getRowClassName?: (params: any) => string;
+  getCellClassName?: (params: any) => string;
+  isRowSelectable?: (params: any) => boolean;
+  
+  [key: string]: any;
+}
+
 /**
  * Advanced BaseGrid Component
  * 
@@ -34,7 +115,7 @@ import TooltipWrapper from '../common/TooltipWrapper';
  * - Accessibility compliance
  * - Error boundary integration
  */
-const BaseGrid = ({
+const BaseGrid: React.FC<BaseGridProps> = ({
   // Data props
   data = [],
   columns = [],

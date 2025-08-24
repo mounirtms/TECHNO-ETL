@@ -12,7 +12,7 @@ TECHNO-ETL is a comprehensive data integration platform designed to streamline d
 - Portfolio: [mounir1.github.io](https://mounir1.github.io)
 - GitHub: [github.com/mounir](https://github.com/mounir)
 
-![Mounir Abderrahmani Signature](src/assets/images/mounir-icon.svg)
+![Mounir Abderrahmani Signature](src/assets/images/mab-icon.svg)
 
 ## 📦 Key Features
 

@@ -182,7 +182,7 @@ const EnhancedStatsCards = ({
     return (
       <Grid container spacing={3}>
         {Array.from({ length: 8 }).map((_, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+          <Grid size={{ xs: 12, md: 6, lg: 4, xl: 3 }} key={index}>
             <Card sx={{ height: 200, borderRadius: 3 }}>
               <CardContent sx={{ p: 3 }}>
                 <Skeleton variant="circular" width={48} height={48} />
@@ -201,11 +201,12 @@ const EnhancedStatsCards = ({
     <Grid container spacing={3}>
       {visibleCards.map((card, index) => (
         <Grid 
-          item 
-          xs={12} 
-          sm={6} 
-          md={4} 
-          lg={visibleCards.length <= 4 ? 3 : visibleCards.length <= 6 ? 4 : 3} 
+          size={{ 
+            xs: 12, 
+            md: 6, 
+            lg: 4, 
+            xl: visibleCards.length <= 4 ? 3 : visibleCards.length <= 6 ? 4 : 3 
+          }} 
           key={card.key}
         >
           <Card

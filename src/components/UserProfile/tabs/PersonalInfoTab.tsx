@@ -134,7 +134,7 @@ const PersonalInfoTab = () => {
     <Paper elevation={0} sx={{ p: 2 }}>
       <Grid container spacing={2}>
         {/* Header with Avatar and Save Button */}
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Stack
             direction="row"
             alignItems="center"
@@ -193,9 +193,9 @@ const PersonalInfoTab = () => {
         </Grid>
 
         {/* Form Fields */}
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledTextField
                 fullWidth
                 size="small"
@@ -206,7 +206,7 @@ const PersonalInfoTab = () => {
                 disabled={loading}
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledTextField
                 fullWidth
                 size="small"
@@ -217,7 +217,7 @@ const PersonalInfoTab = () => {
                 disabled={loading}
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledTextField
                 fullWidth
                 size="small"
@@ -228,7 +228,7 @@ const PersonalInfoTab = () => {
                 disabled={loading}
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledTextField
                 fullWidth
                 size="small"
@@ -241,7 +241,7 @@ const PersonalInfoTab = () => {
                 InputLabelProps={{ shrink: true }}
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledTextField
                 fullWidth
                 size="small"
@@ -257,7 +257,7 @@ const PersonalInfoTab = () => {
                 <option value="other">{translate('profile.personalInfo.other')}</option>
               </StyledTextField>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <StyledTextField
                 fullWidth
                 size="small"
@@ -268,7 +268,7 @@ const PersonalInfoTab = () => {
                 disabled={loading}
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledTextField
                 fullWidth
                 size="small"
@@ -279,7 +279,7 @@ const PersonalInfoTab = () => {
                 disabled={loading}
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledTextField
                 fullWidth
                 size="small"
@@ -290,7 +290,7 @@ const PersonalInfoTab = () => {
                 disabled={loading}
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledTextField
                 fullWidth
                 size="small"

@@ -87,7 +87,7 @@ const DashboardOverview = ({ stats, onNavigate }) => {
       {/* Main Metrics */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {metricCards.map((metric, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
             <Card
               sx={{
                 height: '100%',
@@ -181,7 +181,7 @@ const DashboardOverview = ({ stats, onNavigate }) => {
           
           <Grid container spacing={3}>
             {quickStats.map((stat, index) => (
-              <Grid item xs={6} sm={3} key={index}>
+              <Grid size={{ xs: 6, sm: 3 }} key={index}>
                 <Box sx={{ textAlign: 'center' }}>
                   <Typography
                     variant="h5"

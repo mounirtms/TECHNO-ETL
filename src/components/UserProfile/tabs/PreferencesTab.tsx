@@ -231,7 +231,7 @@ const PreferencesTab = () => {
                 <AccordionDetails>
                     <Grid container spacing={3}>
                         {/* Language */}
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <FormControl fullWidth>
                                 <InputLabel>{translate('profile.preferences.appearance.language.title')}</InputLabel>
                                 <Select
@@ -255,7 +255,7 @@ const PreferencesTab = () => {
                         </Grid>
 
                         {/* Theme */}
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <FormControl fullWidth>
                                 <InputLabel>{translate('profile.preferences.appearance.theme.title')}</InputLabel>
                                 <Select
@@ -274,7 +274,7 @@ const PreferencesTab = () => {
                         </Grid>
 
                         {/* Font Size */}
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <FormControl fullWidth>
                                 <InputLabel>{translate('profile.preferences.appearance.fontSize.title')}</InputLabel>
                                 <Select
@@ -293,7 +293,7 @@ const PreferencesTab = () => {
                         </Grid>
 
                         {/* Density */}
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <FormControl fullWidth>
                                 <InputLabel>{translate('profile.preferences.appearance.density.title')}</InputLabel>
                                 <Select
@@ -312,7 +312,7 @@ const PreferencesTab = () => {
                         </Grid>
 
                         {/* Color Preset */}
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <FormControl fullWidth>
                                 <InputLabel>Color Theme</InputLabel>
                                 <Select
@@ -332,7 +332,7 @@ const PreferencesTab = () => {
                         </Grid>
 
                         {/* Animations */}
-                        <Grid item xs={12}>
+                        <Grid size={{ xs: 12 }}>
                             <FormControlLabel
                                 control={
                                     <Switch
@@ -360,7 +360,7 @@ const PreferencesTab = () => {
                 </AccordionSummary>
                 <AccordionDetails>
                     <Grid container spacing={3}>
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <Typography variant="subtitle1" gutterBottom>
                                 {translate('profile.preferences.performance.defaultPageSize.title')}
                             </Typography>
@@ -380,7 +380,7 @@ const PreferencesTab = () => {
                             />
                         </Grid>
 
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <Typography variant="subtitle1" gutterBottom>
                                 {translate('profile.preferences.performance.refreshInterval.title')}
                             </Typography>
@@ -401,7 +401,7 @@ const PreferencesTab = () => {
                             />
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid size={{ xs: 12 }}>
                             <Stack spacing={2}>
                                 <FormControlLabel
                                     control={
@@ -458,7 +458,7 @@ const PreferencesTab = () => {
                 </AccordionSummary>
                 <AccordionDetails>
                     <Grid container spacing={3}>
-                        <Grid item xs={12} sm={6}>
+                        <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
                                 control={
                                     <Switch
@@ -469,7 +469,7 @@ const PreferencesTab = () => {
                                 label={translate('profile.preferences.notifications.emailNotifications.title')}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
                                 control={
                                     <Switch
@@ -480,7 +480,7 @@ const PreferencesTab = () => {
                                 label={translate('profile.preferences.notifications.pushNotifications.title')}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
                                 control={
                                     <Switch
@@ -508,7 +508,7 @@ const PreferencesTab = () => {
                 </AccordionSummary>
                 <AccordionDetails>
                     <Grid container spacing={3}>
-                        <Grid item xs={12} sm={6}>
+                        <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
                                 control={
                                     <Switch
@@ -519,7 +519,7 @@ const PreferencesTab = () => {
                                 label={translate('profile.preferences.accessibility.highContrast.title')}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
                                 control={
                                     <Switch
@@ -530,7 +530,7 @@ const PreferencesTab = () => {
                                 label={translate('profile.preferences.accessibility.largeText.title')}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
                                 control={
                                     <Switch
@@ -541,7 +541,7 @@ const PreferencesTab = () => {
                                 label={translate('profile.preferences.accessibility.keyboardNavigation.title')}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
                                 control={
                                     <Switch
@@ -569,7 +569,7 @@ const PreferencesTab = () => {
                 </AccordionSummary>
                 <AccordionDetails>
                     <Grid container spacing={3}>
-                        <Grid item xs={12} md={6}>
+                        <Grid size={{ xs: 12, md: 6 }}>
                             <Typography variant="subtitle1" gutterBottom>
                                 {translate('profile.preferences.security.sessionTimeout.title')}
                             </Typography>
@@ -589,7 +589,7 @@ const PreferencesTab = () => {
                             />
                         </Grid>
 
-                        <Grid item xs={12}>
+                        <Grid size={{ xs: 12 }}>
                             <Stack spacing={2}>
                                 <FormControlLabel
                                     control={

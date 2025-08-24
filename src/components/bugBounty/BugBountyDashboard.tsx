@@ -14,7 +14,7 @@ import React, {
   useCallback,
   useRef,
 } from "react";
-import { useDataFetching } from "../../hooks/useStandardErrorHandling.tsx";
+import { useDataFetching } from "../../hooks/useStandardErrorHandling";
 import {
   Container,
   Grid,
@@ -71,8 +71,8 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { useCustomTheme } from "../../contexts/ThemeContext";
 import { useSettings } from "../../contexts/SettingsContext";
-import BugReportForm from "./BugReportForm.tsx";
-import BugBountyAdmin from "./BugBountyAdmin.tsx";
+import BugReportForm from "./BugReportForm";
+import BugBountyAdmin from "./BugBountyAdmin";
 import bugBountyService, {
   BUG_CATEGORIES,
   BUG_STATUS,
@@ -227,7 +227,7 @@ const BugBountyDashboard = () => {
 
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {[1, 2, 3, 4].map((item) => (
-          <Grid item xs={12} sm={6} md={3} key={item}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={item}>
             <Card>
               <CardContent>
                 <Skeleton variant="circular" width={40} height={40} />
@@ -245,7 +245,7 @@ const BugBountyDashboard = () => {
       </Grid>
 
       <Grid container spacing={3}>
-        <Grid item xs={12} md={8}>
+        <Grid size={{ xs: 12, md: 8 }}>
           <Card>
             <CardContent>
               <Skeleton variant="text" width="30%" height={30} />
@@ -258,7 +258,7 @@ const BugBountyDashboard = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>
               <Skeleton variant="text" width="40%" height={30} />
@@ -350,14 +350,17 @@ const BugBountyDashboard = () => {
           }}
           icon={<FireIcon />}
         >
-          <Typography variant="body2">
-            <strong>How it works:</strong> Find bugs, report them with detailed
-            information, and earn rewards based on severity and quality. All
-            reports are reviewed by our team.
-            <br />
-            <strong>💰 Rewards range from $25 to $3,375</strong> based on
-            category, severity, and quality!
-          </Typography>
+          <Box>
+            <Typography variant="body2" component="div">
+              <strong>How it works:</strong> Find bugs, report them with detailed
+              information, and earn rewards based on severity and quality. All
+              reports are reviewed by our team.
+            </Typography>
+            <Typography variant="body2" component="div" sx={{ mt: 1 }}>
+              <strong>💰 Rewards range from $25 to $3,375</strong> based on
+              category, severity, and quality!
+            </Typography>
+          </Box>
         </Alert>
 
         {/* Error Display */}
@@ -374,7 +377,7 @@ const BugBountyDashboard = () => {
             }
             onClose={clearError}
           >
-            <Typography variant="body2">{error.message}</Typography>
+            <Typography variant="body2" component="div">{error.message}</Typography>
           </Alert>
         )}
       </Box>
@@ -411,7 +414,7 @@ const BugBountyDashboard = () => {
             gradient: `linear-gradient(135deg, ${theme.palette.info.main}, ${theme.palette.info.dark})`,
           },
         ].map((stat, index) => (
-          <Grid item xs={12} sm={6} md={3} key={stat.title}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={stat.title}>
             <Zoom in={!loading} style={{ transitionDelay: `${index * 100}ms` }}>
               <Card
                 sx={{
@@ -500,7 +503,7 @@ const BugBountyDashboard = () => {
 
           <Grid container spacing={3}>
             {Object.entries(BUG_CATEGORIES).map(([key, category], index) => (
-              <Grid item xs={12} sm={6} md={4} key={key}>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={key}>
                 <Slide
                   in={!loading}
                   direction="up"
@@ -582,7 +585,7 @@ const BugBountyDashboard = () => {
 
       {/* Recent Bugs */}
       <Grid container spacing={3}>
-        <Grid item xs={12} md={8}>
+        <Grid size={{ xs: 12, md: 8 }}>
           <Card>
             <CardContent>
               <Box
@@ -721,7 +724,7 @@ const BugBountyDashboard = () => {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card sx={{ height: "fit-content" }}>
             <CardContent>
               <Box

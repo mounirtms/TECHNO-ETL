@@ -5,9 +5,17 @@
  */
 
 // Environment variable defaults
-const getEnvDefault = (key, fallback = '') => {
-  if (typeof import !== 'undefined' && import.meta?.env) {
-    return import.meta.env[key] || fallback;
+const getEnvDefault = (key: string, fallback = '') => {
+  if (typeof window !== 'undefined' && (window as any).__VITE_ENV__) {
+    return (window as any).__VITE_ENV__[key] || fallback;
+  }
+  try {
+    // Use dynamic import.meta access for Vite environment variables
+    if (import.meta && (import.meta as any).env) {
+      return (import.meta as any).env[key] || fallback;
+    }
+  } catch {
+    // Fallback if import.meta is not available
   }
   return fallback;
 };

@@ -199,7 +199,7 @@ const DashboardSettings = ({
           
           <Grid container spacing={2}>
             {statCardSettings.map((card) => (
-              <Grid item xs={12} sm={6} md={4} key={card.key}>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={card.key}>
                 <Card 
                   variant="outlined" 
                   sx={{ 
@@ -245,7 +245,7 @@ const DashboardSettings = ({
           
           <Grid container spacing={2}>
             {chartSettings.map((chart) => (
-              <Grid item xs={12} sm={6} md={4} key={chart.key}>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={chart.key}>
                 <Card 
                   variant="outlined" 
                   sx={{ 
@@ -291,7 +291,7 @@ const DashboardSettings = ({
 
           <Grid container spacing={2}>
             {widgetSettings.map((widget) => (
-              <Grid item xs={12} sm={6} md={4} key={widget.key}>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={widget.key}>
                 <Card
                   variant="outlined"
                   sx={{
