@@ -1,18 +1,15 @@
-import React, { createContext, useState, useContext, useEffect, ReactNode, ComponentType } from 'react';
+import React, { createContext, useState, useContext, useEffect, ReactNode, ComponentType, lazy } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material'; // Add Box import for error rendering
 import { MENU_TREE, MENU_ITEMS as MenuItemsImport } from '../components/Layout/MenuTree';
 
-// Cast MENU_ITEMS to the correct type
-const MENU_ITEMS = MenuItemsImport as MenuItem[];
-
-// Import components lazily to avoid circular dependencies
-import { lazy } from 'react';
+// Cast MENU_ITEMS to the correct type with fallback
+const MENU_ITEMS: MenuItem[] = Array.isArray(MenuItemsImport) ? MenuItemsImport as MenuItem[] : [];
 
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const CmsPageGrid = lazy(() => import('../components/grids/magento/CmsPagesGrid'));
-const ProductsGrid = lazy(() => import('../components/grids/magento/ProductsGrid'));
-const MDMProductsGrid = lazy(() => import('../components/grids/MDMProductsGrid/MDMProductsGrid'));
+const ProductsGrid = lazy(() => import('../components/grids/magento/ProductsGrid').then(module => ({ default: module.default || module })));
+const MDMProductsGrid = lazy(() => import('../components/grids/MDMProductsGrid/MDMProductsGrid').then(module => ({ default: module.default || module })));
 const CustomersGrid = lazy(() => import('../components/grids/magento/CustomersGrid'));
 const OrdersGrid = lazy(() => import('../components/grids/magento/OrdersGrid'));
 const InvoicesGrid = lazy(() => import('../components/grids/magento/InvoicesGrid'));
@@ -21,10 +18,10 @@ const CategoryTree = lazy(() => import('../components/grids/magento/CategoryGrid
 const StocksGrid = lazy(() => import('../components/grids/magento/StocksGrid'));
 const SourcesGrid = lazy(() => import('../components/grids/magento/SourcesGrid'));
 const CegidGrid = lazy(() => import('../components/grids/CegidGrid'));
-const GridTestPage = lazy(() => import('../pages/GridTestPage'));
+const GridTestPage = lazy(() => import('../pages/GridTestPage').then(module => ({ default: module.default || module })));
 const ProductManagementPage = lazy(() => import('../pages/ProductManagementPage'));
 const VotingPage = lazy(() => import('../pages/VotingPage'));
-const ChartsPage = lazy(() => import('../pages/ChartsPage'));
+const ChartsPage = lazy(() => import('../pages/ChartsPage').then(module => ({ default: module.default || module })));
 const BugBountyPage = lazy(() => import('../pages/BugBountyPage'));
 const LicenseManagement = lazy(() => import('../components/License/LicenseManagement'));
 const LicenseStatus = lazy(() => import('../components/License/LicenseStatus'));
@@ -60,7 +57,7 @@ interface TabContextType {
 // Create a reusable function for importing placeholder components
 const importPlaceholder = (componentName: string) => 
   import('../components/placeholders/PlaceholderComponents')
-    .then(module => ({ default: (module)[componentName] }));
+    .then((module: any) => ({ default: module[componentName] }));
 
 // Lazy load placeholder components
 const SalesAnalytics = lazy(() => importPlaceholder('SalesAnalytics'));
@@ -101,7 +98,7 @@ const URL_TO_TAB_MAP: { [key: string]: string } = {
 
 // Tab ID to URL mapping
 const TAB_TO_URL_MAP = Object.fromEntries(
-    Object.entries(URL_TO_TAB_MAP).map(([url: any, tabId]: any) => [tabId, url])
+    Object.entries(URL_TO_TAB_MAP).map(([url, tabId]: any) => [tabId, url])
 );
 
 // Component mapping
@@ -142,25 +139,45 @@ export const TabProvider = ({ children, sidebarOpen }: { children: ReactNode; si
 
     // Get initial tab from current URL or default to Dashboard
     const getInitialTabFromURL = (): MenuItem => {
+        // Ensure MENU_ITEMS is available and not empty
+        if (!MENU_ITEMS || !Array.isArray(MENU_ITEMS) || MENU_ITEMS.length === 0) {
+            console.warn('MENU_ITEMS is empty or undefined, creating default dashboard item');
+            return {
+                id: 'Dashboard',
+                label: 'Dashboard',
+                path: '/dashboard'
+            };
+        }
+        
         const tabId = URL_TO_TAB_MAP[location.pathname];
-        if(tabId) {
-            const menuItem = MENU_ITEMS.find(item => item.id ===tabId);
+        if (tabId) {
+            const menuItem = MENU_ITEMS.find(item => item?.id === tabId);
             if (menuItem) return menuItem;
         }
-        return MENU_ITEMS.find(item => item.id === 'Dashboard') || MENU_ITEMS[0];
+        
+        // Fallback to Dashboard from MENU_ITEMS
+        const dashboardItem = MENU_ITEMS.find(item => item?.id === 'Dashboard');
+        if (dashboardItem) return dashboardItem;
+        
+        // Create a default dashboard item if none found
+        return {
+            id: 'Dashboard',
+            label: 'Dashboard',
+            path: '/dashboard'
+        };
     };
 
     const initialTab = getInitialTabFromURL();
 
     const [tabs, setTabs] = useState<Tab[]>([
         {
-            id: initialTab.id,
-            label: initialTab.label,
-            component: initialTab.id,
+            id: initialTab?.id || 'Dashboard',
+            label: initialTab?.label || 'Dashboard',
+            component: initialTab?.id || 'Dashboard',
             closeable: false
         }
     ]);
-    const [activeTab, setActiveTab] = useState<string>(initialTab.id);
+    const [activeTab, setActiveTab] = useState<string>(initialTab?.id || 'Dashboard');
 
     // Sync tab changes with URL
     useEffect(() => {
@@ -169,7 +186,7 @@ export const TabProvider = ({ children, sidebarOpen }: { children: ReactNode; si
             // Skip navigation to prevent infinite loop
             const tabExists = tabs.some(tab => tab.id ===currentTabId);
             if(!tabExists) {
-                const newTab = MENU_ITEMS.find(item => item.id ===currentTabId);
+                const newTab = MENU_ITEMS?.find(item => item?.id === currentTabId);
                 if(newTab && COMPONENT_MAP[newTab.id]) {
                     setTabs(prevTabs => [
                         ...prevTabs,
@@ -188,7 +205,7 @@ export const TabProvider = ({ children, sidebarOpen }: { children: ReactNode; si
         const tabExists = tabs.some(tab => tab.id ===tabId);
 
         if(!tabExists) {
-            const newTab = MENU_ITEMS.find(item => item.id ===tabId);
+            const newTab = MENU_ITEMS?.find(item => item?.id === tabId);
             if(newTab) {
                 if(!COMPONENT_MAP[newTab.id]) {
                     console.error(`No component found for tab: ${newTab.id}`);
@@ -219,7 +236,7 @@ export const TabProvider = ({ children, sidebarOpen }: { children: ReactNode; si
     const closeTab = (tabId: string) => {
         if (tabId === 'Dashboard') return;
 
-        setTabs(prevTabs => prevTabs.filter((tab: any: any) => tab.id !== tabId));
+        setTabs(prevTabs => prevTabs.filter((tab: any) => tab.id !== tabId));
 
         if(activeTab ===tabId) {
             setActiveTab('Dashboard');
