@@ -20,9 +20,15 @@ import {
 import { Science as TestIcon } from '@mui/icons-material';
 import bugBountyService from '../../services/bugBountyService';
 
+interface TestResult {
+  success: boolean;
+  message: string;
+  details: any;
+}
+
 const BugBountyTest = () => {
   const [testing, setTesting] = useState(false);
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState<TestResult | null>(null);
 
   const runTest = async () => {
     setTesting(true);
@@ -45,7 +51,7 @@ const BugBountyTest = () => {
 
       const submitResult = await bugBountyService.submitBug(testBug);
       
-      if (submitResult.success) {
+      if(submitResult.success) {
         // Test getting bugs
         const getBugsResult = await bugBountyService.getBugs();
         
@@ -69,7 +75,7 @@ const BugBountyTest = () => {
           details: submitResult
         });
       }
-    } catch (error) {
+    } catch(error: any) {
       setResult({
         success: false,
         message: 'Test error: ' + error.message,
@@ -80,7 +86,7 @@ const BugBountyTest = () => {
     }
   };
 
-  return (
+  return Boolean(Boolean((
     <Card sx={{ maxWidth: 600, mx: 'auto', mt: 4 }}>
       <CardContent>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
@@ -93,7 +99,7 @@ const BugBountyTest = () => {
         </Typography>
 
         <Button
-          variant="contained"
+          variant: any,
           onClick={runTest}
           disabled={testing}
           startIcon={testing ? <CircularProgress size={20} /> : <TestIcon />}
@@ -121,7 +127,7 @@ const BugBountyTest = () => {
         )}
       </CardContent>
     </Card>
-  );
+  )));
 };
 
 export default BugBountyTest;

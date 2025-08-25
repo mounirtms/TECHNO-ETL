@@ -73,7 +73,7 @@ import magentoApi from '../../../services/magentoApi';
  * ProductManagementGrid - Comprehensive Product Management
  * Combines Products, Attributes, and Categories like Magento Backend
  */
-const ProductManagementGrid = ({ initialProductIds = [] }) => {
+const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initialProductIds = []  }) => {
   // ===== STATE MANAGEMENT =====
   const [currentTab, setCurrentTab] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -114,15 +114,13 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
 
   // ===== FLOATING WINDOW HANDLERS =====
   const openFloatingWindow = useCallback((windowType, event) => {
-    setFloatingWindows(prev => ({
-      ...prev,
+    setFloatingWindows(prev => ({ ...prev,
       [windowType]: { open: true, anchorEl: event.currentTarget }
     }));
   }, []);
 
   const closeFloatingWindow = useCallback((windowType) => {
-    setFloatingWindows(prev => ({
-      ...prev,
+    setFloatingWindows(prev => ({ ...prev,
       [windowType]: { open: false, anchorEl: null }
     }));
   }, []);
@@ -141,7 +139,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
     setRefreshing(prev => ({ ...prev, [type]: true }));
 
     try {
-      switch (type) {
+      switch(type) {
         case 'attributes':
           await magentoApi.getProductAttributes();
           toast.success('Attributes refreshed successfully');
@@ -157,7 +155,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
         default:
           break;
       }
-    } catch (error) {
+    } catch(error: any) {
       console.error(`Error refreshing ${type}:`, error);
       toast.error(`Failed to refresh ${type}`);
     } finally {
@@ -222,8 +220,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
         <Chip
           label={params.value || 'Unknown'}
           color={params.value && params.value !== 'Unknown' ? 'primary' : 'default'}
-          size="small"
-          variant="outlined"
+          size: any,
           icon={<BrandIcon />}
         />
       )
@@ -234,11 +231,9 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
       width: 100,
       renderCell: (params) => (
         <Chip
-          label={params.value === 1 ? 'Active' : 'Inactive'}
-          color={params.value === 1 ? 'success' : 'default'}
-          size="small"
-        />
-      )
+          label={params.value ===1 ? 'Active' : 'Inactive'}
+          color={params.value ===1 ? 'success' : 'default'}
+          size: any,
     },
     {
       field: 'type_id',
@@ -247,11 +242,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
       renderCell: (params) => (
         <Chip
           label={params.value || 'Simple'}
-          color="info"
-          size="small"
-          variant="outlined"
-        />
-      )
+          color: any,
     },
     {
       field: 'actions',
@@ -263,7 +254,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
         <Box sx={{ display: 'flex', gap: 0.5 }}>
           <TooltipWrapper title="View Details">
             <IconButton
-              size="small"
+              size: any,
               onClick={() => handleViewProduct(params.row)}
             >
               <ViewIcon fontSize="small" />
@@ -271,7 +262,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
           </TooltipWrapper>
           <TooltipWrapper title="Edit Product">
             <IconButton
-              size="small"
+              size: any,
               onClick={() => handleEditProduct(params.row)}
             >
               <EditIcon fontSize="small" />
@@ -279,7 +270,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
           </TooltipWrapper>
           <TooltipWrapper title="Manage Categories">
             <IconButton
-              size="small"
+              size: any,
               onClick={() => handleManageCategories(params.row)}
             >
               <AssignmentIcon fontSize="small" />
@@ -304,7 +295,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
       setBrands(sortedBrands);
 
       console.log('✅ Brands loaded for filters:', sortedBrands.length);
-    } catch (error) {
+    } catch(error: any) {
       console.error('❌ Error fetching brands:', error);
       toast.error('Failed to load brands');
     } finally {
@@ -320,20 +311,12 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
 
       let productsData = [];
 
-      if (selectedProducts.length > 0) {
+      if(selectedProducts.length > 0) {
         // Fetch specific products
         console.log('📦 Fetching specific products:', selectedProducts);
-        productsData = await Promise.all(
-          selectedProducts.map(async (id) => {
-            try {
-              const product = await magentoApi.getProduct(id);
-              // Get additional attributes including brand
-              const additionalAttrs = await magentoApi.getAdditionalAttributes(id);
-
-              return {
-                ...product,
+        productsData: any,
                 additional_attributes: additionalAttrs?.additional_attributes || [],
-                brand: additionalAttrs?.additional_attributes?.find(attr => attr.attribute_code === 'mgs_brand')?.label || 'Unknown'
+                brand: additionalAttrs?.additional_attributes?.find(attr => attr.attribute_code === 'mgs_brand').label || 'Unknown'
               } || {
                 id,
                 sku: `PRODUCT-${id}`,
@@ -344,7 +327,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
                 brand: 'Unknown',
                 additional_attributes: []
               };
-            } catch (error) {
+            } catch(error: any) {
               console.warn(`Failed to fetch product ${id}:`, error);
               return {
                 id,
@@ -362,21 +345,12 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
       } else {
         // Fetch all products
         const response = await magentoApi.getProducts(params);
-        productsData = response?.items || [];
-
-        // Enhance with additional attributes
-        productsData = await Promise.all(
-          productsData.map(async (product) => {
-            try {
-              const additionalAttrs = await magentoApi.getAdditionalAttributes(product.id);
-              return {
-                ...product,
+        productsData: any,
                 additional_attributes: additionalAttrs?.additional_attributes || [],
-                brand: additionalAttrs?.additional_attributes?.find(attr => attr.attribute_code === 'mgs_brand')?.label || 'Unknown'
+                brand: additionalAttrs?.additional_attributes?.find(attr => attr.attribute_code === 'mgs_brand').label || 'Unknown'
               };
-            } catch (error) {
-              return {
-                ...product,
+            } catch(error: any) {
+              return { ...product,
                 brand: 'Unknown',
                 additional_attributes: []
               };
@@ -390,7 +364,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
       setProducts(filteredProducts);
       updateStats(filteredProducts);
 
-    } catch (error) {
+    } catch(error: any) {
       console.error('❌ Error fetching products:', error);
       toast.error('Failed to load products');
     } finally {
@@ -400,9 +374,9 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
 
   // ===== FILTERING LOGIC =====
   const applyFilters = useCallback((productsData) => {
-    return productsData.filter(product => {
+    return productsData.filter((product: any: any) => {
       // Brand filter
-      if (filters.brand && product.brand !== filters.brand) {
+      if(filters.brand && product.brand !== filters.brand) {
         return false;
       }
 
@@ -412,7 +386,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
       }
 
       // Type filter
-      if (filters.type && product.type_id !== filters.type) {
+      if(filters.type && product.type_id !== filters.type) {
         return false;
       }
 
@@ -430,9 +404,9 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
 
   // ===== STATISTICS UPDATE =====
   const updateStats = useCallback((productsData) => {
-    const newStats = productsData.reduce((acc, product) => ({
+    const newStats = productsData.reduce((acc: any: any, product: any: any) => ({
       total: acc.total + 1,
-      active: acc.active + (product.status === 1 ? 1 : 0),
+      active: acc.active + (product.status ===1 ? 1 : 0),
       inactive: acc.inactive + (product.status !== 1 ? 1 : 0),
       withCategories: acc.withCategories + (product.categories?.length > 0 ? 1 : 0)
     }), {
@@ -468,17 +442,14 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
 
   // ===== FILTER HANDLERS =====
   const handleFilterChange = useCallback((filterType, value) => {
-    setFilters(prev => ({
-      ...prev,
+    setFilters(prev => ({ ...prev,
       [filterType]: value
     }));
   }, []);
 
   const handlePriceRangeChange = useCallback((type, value) => {
-    setFilters(prev => ({
-      ...prev,
-      priceRange: {
-        ...prev.priceRange,
+    setFilters(prev => ({ ...prev,
+      priceRange: { ...prev.priceRange,
         [type]: value
       }
     }));
@@ -513,18 +484,18 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
 
   // Re-fetch products when filters change
   useEffect(() => {
-    if (brands.length > 0) { // Only fetch after brands are loaded
+    if(brands.length > 0) { // Only fetch after brands are loaded
       fetchProducts();
     }
   }, [filters, fetchProducts, brands.length]);
 
   // ===== RENDER TAB CONTENT =====
   const renderTabContent = () => {
-    switch (currentTab) {
+    switch(currentTab) {
       case 0: // Products Overview
         return (
           <UnifiedGrid
-            {...getStandardGridProps('products', {
+            { ...getStandardGridProps('products', {
               // Data
               data: products,
               columns: productColumns,
@@ -598,7 +569,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
     }
   };
 
-  return (
+  return Boolean(Boolean((
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
       <Paper sx={{ mb: 2, p: 2 }}>
@@ -620,7 +591,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
       </Paper>
 
       {/* Built-in Filters */}
-      {currentTab === 0 && (
+      {currentTab ===0 && (
         <Card sx={{ mb: 2 }}>
           <CardContent>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
@@ -632,16 +603,14 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
               </Box>
               <Box sx={{ display: 'flex', gap: 1 }}>
                 <Button
-                  variant="outlined"
-                  size="small"
+                  variant: any,
                   startIcon={<BrandIcon />}
                   onClick={handleOpenBrandManagement}
                 >
                   Manage Brands
                 </Button>
                 <Button
-                  variant="outlined"
-                  size="small"
+                  variant: any,
                   startIcon={<ClearIcon />}
                   onClick={handleClearFilters}
                   disabled={!Object.values(filters).some(v => v !== '' && !(typeof v === 'object' && !v.min && !v.max))}
@@ -651,7 +620,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
               </Box>
             </Box>
 
-            <Grid container spacing={2}>
+            <Grid { ...{container: true}} spacing={2}>
               {/* Brand Filter */}
               <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <FormControl fullWidth size="small">
@@ -659,11 +628,11 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
                   <Select
                     value={filters.brand}
                     onChange={(e) => handleFilterChange('brand', e.target.value)}
-                    label="Brand"
+                    label: any,
                     disabled={brandsLoading}
                   >
                     <MenuItem value="">All Brands</MenuItem>
-                    {brands.map((brand) => (
+                    {brands.map((brand: any: any) => (
                       <MenuItem key={brand.value} value={brand.label}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <BrandIcon fontSize="small" />
@@ -682,15 +651,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
                   <Select
                     value={filters.status}
                     onChange={(e) => handleFilterChange('status', e.target.value)}
-                    label="Status"
-                  >
-                    <MenuItem value="">All Status</MenuItem>
-                    <MenuItem value="1">Active</MenuItem>
-                    <MenuItem value="0">Inactive</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-
+                    label: any,
               {/* Type Filter */}
               <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                 <FormControl fullWidth size="small">
@@ -698,35 +659,18 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
                   <Select
                     value={filters.type}
                     onChange={(e) => handleFilterChange('type', e.target.value)}
-                    label="Type"
-                  >
-                    <MenuItem value="">All Types</MenuItem>
-                    <MenuItem value="simple">Simple</MenuItem>
-                    <MenuItem value="configurable">Configurable</MenuItem>
-                    <MenuItem value="grouped">Grouped</MenuItem>
-                    <MenuItem value="virtual">Virtual</MenuItem>
-                    <MenuItem value="bundle">Bundle</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-
+                    label: any,
               {/* Price Range */}
               <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                 <TextField
-                  label="Min Price"
-                  type="number"
-                  size="small"
-                  fullWidth
+                  label: any,
                   value={filters.priceRange.min}
                   onChange={(e) => handlePriceRangeChange('min', e.target.value)}
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                 <TextField
-                  label="Max Price"
-                  type="number"
-                  size="small"
-                  fullWidth
+                  label: any,
                   value={filters.priceRange.max}
                   onChange={(e) => handlePriceRangeChange('max', e.target.value)}
                 />
@@ -739,33 +683,25 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
                     <Chip
                       label={`Brand: ${filters.brand}`}
                       onDelete={() => handleFilterChange('brand', '')}
-                      color="primary"
-                      size="small"
-                    />
+                      color: any,
                   )}
                   {filters.status !== '' && (
                     <Chip
                       label={`Status: ${filters.status === '1' ? 'Active' : 'Inactive'}`}
                       onDelete={() => handleFilterChange('status', '')}
-                      color="primary"
-                      size="small"
-                    />
+                      color: any,
                   )}
                   {filters.type && (
                     <Chip
                       label={`Type: ${filters.type}`}
                       onDelete={() => handleFilterChange('type', '')}
-                      color="primary"
-                      size="small"
-                    />
+                      color: any,
                   )}
                   {(filters.priceRange.min || filters.priceRange.max) && (
                     <Chip
                       label={`Price: ${filters.priceRange.min || '0'} - ${filters.priceRange.max || '∞'}`}
                       onDelete={() => handlePriceRangeChange('min', '') || handlePriceRangeChange('max', '')}
-                      color="primary"
-                      size="small"
-                    />
+                      color: any,
                   )}
                 </Box>
               </Grid>
@@ -778,18 +714,14 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
       <Paper sx={{ mb: 2 }}>
         <Tabs
           value={currentTab}
-          onChange={handleTabChange}
-          variant="fullWidth"
-          indicatorColor="primary"
-          textColor="primary"
-        >
-          {tabs.map((tab, index) => (
+          onChange={(e) => handleTabChange}
+          variant: any,
+          {tabs.map((tab: any: any, index: any: any) => (
             <Tab
               key={index}
               label={tab.label}
               icon={tab.icon}
-              iconPosition="start"
-            />
+              iconPosition: any,
           ))}
         </Tabs>
       </Paper>
@@ -819,8 +751,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
           {/* Quick Actions FAB */}
           <TooltipWrapper title="Quick Actions" placement="left">
             <Fab
-              color="primary"
-              size="medium"
+              color: any,
               onClick={(e) => openFloatingWindow('quickActions', e)}
             >
               <AddIcon />
@@ -829,15 +760,13 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
 
           {/* Bulk Operations FAB */}
           <TooltipWrapper 
-            title="Bulk Operations" 
-            placement="left"
-            disabled={selectedProducts.length === 0}
+            title: any,
+            disabled={selectedProducts.length ===0}
           >
             <Fab
-              color="secondary"
-              size="medium"
+              color: any,
               onClick={(e) => openFloatingWindow('bulkOperations', e)}
-              disabled={selectedProducts.length === 0}
+              disabled={selectedProducts.length ===0}
             >
               <SettingsIcon />
             </Fab>
@@ -846,8 +775,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
           {/* Data Management FAB */}
           <TooltipWrapper title="Data Management" placement="left">
             <Fab
-              color="info"
-              size="medium"
+              color: any,
               onClick={(e) => openFloatingWindow('dataManagement', e)}
             >
               <RefreshIcon />
@@ -872,7 +800,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
             </IconButton>
           </Box>
           <List dense>
-            <ListItem button onClick={() => { /* Add Product */ closeFloatingWindow('quickActions'); }}>
+            <ListItem button onClick={() => { /* Add Product */ closeFloatingWindow('quickActions'))); }}>
               <ListItemIcon><AddIcon /></ListItemIcon>
               <ListItemText primary="Add Product" />
             </ListItem>
@@ -988,7 +916,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
 };
 
 // ===== PRODUCT DETAIL DIALOG =====
-const ProductDetailDialog = ({ open, onClose, product }) => {
+const ProductDetailDialog: React.FC<{open: any, onClose: any, product: any}> = ({ open, onClose, product  }) => {
   if (!product) return null;
 
   return (
@@ -997,10 +925,10 @@ const ProductDetailDialog = ({ open, onClose, product }) => {
         Product Details: {product.name}
       </DialogTitle>
       <DialogContent>
-        <Grid container spacing={2} sx={{ mt: 1 }}>
+        <Grid { ...{container: true}} spacing={2} sx={{ mt: 1 }}>
           <Grid size={6}>
             <TextField
-              label="Product ID"
+              label: any,
               value={product.id}
               fullWidth
               disabled
@@ -1008,7 +936,7 @@ const ProductDetailDialog = ({ open, onClose, product }) => {
           </Grid>
           <Grid size={6}>
             <TextField
-              label="SKU"
+              label: any,
               value={product.sku}
               fullWidth
               disabled
@@ -1016,7 +944,7 @@ const ProductDetailDialog = ({ open, onClose, product }) => {
           </Grid>
           <Grid size={12}>
             <TextField
-              label="Product Name"
+              label: any,
               value={product.name}
               fullWidth
               disabled
@@ -1024,7 +952,7 @@ const ProductDetailDialog = ({ open, onClose, product }) => {
           </Grid>
           <Grid size={6}>
             <TextField
-              label="Price"
+              label: any,
               value={product.price || 0}
               fullWidth
               disabled
@@ -1032,15 +960,15 @@ const ProductDetailDialog = ({ open, onClose, product }) => {
           </Grid>
           <Grid size={6}>
             <TextField
-              label="Status"
-              value={product.status === 1 ? 'Active' : 'Inactive'}
+              label: any,
+              value={product.status ===1 ? 'Active' : 'Inactive'}
               fullWidth
               disabled
             />
           </Grid>
           <Grid size={6}>
             <TextField
-              label="Type"
+              label: any,
               value={product.type_id || 'simple'}
               fullWidth
               disabled

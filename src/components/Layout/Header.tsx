@@ -20,13 +20,12 @@ import { useTab } from '../../contexts/TabContext';
 import UserMenu from './UserMenu'; 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'; // Import the AccountCircle icon
 
-export const Header = ({
-    isDrawerCollapsed,
+export const Header = ({ isDrawerCollapsed,
     handleDrawerToggle,
     handleProfileMenuOpen,
     handleProfileMenuClose,
     anchorEl
-}) => {
+ }: { isDrawerCollapsed: any, handleDrawerToggle: any, handleProfileMenuOpen: any, handleProfileMenuClose: any, anchorEl: any }) => {
     const { currentUser } = useAuth();
     const { openTab } = useTab();
     const { currentLanguage, translate } = useLanguage();
@@ -37,7 +36,7 @@ export const Header = ({
             await logout();
             handleProfileMenuClose();
             // Optionally redirect to login page
-        } catch (error) {
+        } catch(error: any) {
             console.error('Logout failed', error);
             // Optionally show an error notification
         }
@@ -45,11 +44,9 @@ export const Header = ({
 
     return (
         <StyledAppBar
-            position="fixed"
+            position: any,
             open={!isDrawerCollapsed}
-            sx={{
-                width: {
-                    xs: '100%',
+            sx: any,
                     sm: `calc(100% - ${isDrawerCollapsed ? COLLAPSED_WIDTH : DRAWER_WIDTH}px)`
                 },
                 marginLeft: {
@@ -63,14 +60,10 @@ export const Header = ({
         >
             <Toolbar>
                 <IconButton
-                    size="large"
-                    edge="start"
-                    color="inherit"
+                    size: any,
                     aria-label={isDrawerCollapsed ? translate('common.expandMenu') : translate('common.collapseMenu')}
                     onClick={handleDrawerToggle}
-                    sx={{ 
-                        mr: 2,
-                        
+                    sx: any,
                         display: 'flex' // Always show the toggle button
                     }}
                 >

@@ -106,14 +106,13 @@ const PersonalInfoTab = () => {
   // Load data when userData changes
   useEffect(() => {
     const remoteSettings = userData?.personalInfo;
-    if (remoteSettings) {
+    if(remoteSettings) {
       setFormData(remoteSettings);
     }
   }, [userData?.personalInfo]);
 
   const handleInputChange = (field, value) => {
-    const updatedFormData = {
-      ...formData,
+    const updatedFormData = { ...formData,
       [field]: value
     };
     setFormData(updatedFormData);
@@ -131,16 +130,14 @@ const PersonalInfoTab = () => {
   };
 
   return (
-    <Paper elevation={0} sx={{ p: 2 }}>
-      <Grid container spacing={2}>
+    <Paper elevation={0} sx={{ p: 2 } as any}>
+      <Grid { ...{container: true}} spacing={2}>
         {/* Header with Avatar and Save Button */}
         <Grid size={{ xs: 12 }}>
           <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
+            direction: any,
             spacing={2}
-            sx={{ mb: 2 }}
+            sx={{ mb: 2 } as any}
           >
             <Stack direction="row" spacing={2} alignItems="center">
               <Box position="relative">
@@ -153,25 +150,14 @@ const PersonalInfoTab = () => {
                   />
                 )}
                 <input
-                  accept="image/*"
+                  accept: any,
                   style={{ display: 'none' }}
-                  id="avatar-upload"
-                  type="file"
-                  onChange={(event) => console.log('Avatar file:', event.target.files[0])}
+                  id: any,
+                  onChange={(e) => (event) => console.log('Avatar file:', event.target.files[0])}
                 />
                 <label htmlFor="avatar-upload">
                   <UploadButton
-                    component="span"
-                    size="small"
-                    color="primary"
-                    aria-label="upload picture"
-                  >
-                    <PhotoCamera fontSize="small" />
-                  </UploadButton>
-                </label>
-              </Box>
-              <Stack>
-                <Typography variant="h6" gutterBottom>
+                    component: any,
                   {translate('profile.personalInfo.title')}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
@@ -180,8 +166,7 @@ const PersonalInfoTab = () => {
               </Stack>
             </Stack>
             <Button
-              variant="contained"
-              color="primary"
+              variant: any,
               onClick={handleSyncToFirebase}
               startIcon={<SyncIcon />}
               disabled={loading}
@@ -189,18 +174,18 @@ const PersonalInfoTab = () => {
               {translate('profile.syncToCloud')}
             </Button>
           </Stack>
-          <Divider sx={{ my: 2 }} />
+          <Divider sx={{ my: 2 } as any} />
         </Grid>
 
         {/* Form Fields */}
         <Grid size={{ xs: 12 }}>
-          <Grid container spacing={2}>
+          <Grid { ...{container: true}} spacing={2}>
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledTextField
                 fullWidth
-                size="small"
+                size: any,
                 label={translate('profile.personalInfo.firstName')}
-                name="firstName"
+                name: any,
                 value={formData.firstName}
                 onChange={(e) => handleInputChange('firstName', e.target.value)}
                 disabled={loading}
@@ -209,9 +194,9 @@ const PersonalInfoTab = () => {
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledTextField
                 fullWidth
-                size="small"
+                size: any,
                 label={translate('profile.personalInfo.lastName')}
-                name="lastName"
+                name: any,
                 value={formData.lastName}
                 onChange={(e) => handleInputChange('lastName', e.target.value)}
                 disabled={loading}
@@ -220,9 +205,9 @@ const PersonalInfoTab = () => {
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledTextField
                 fullWidth
-                size="small"
+                size: any,
                 label={translate('profile.personalInfo.phone')}
-                name="phone"
+                name: any,
                 value={formData.phone}
                 onChange={(e) => handleInputChange('phone', e.target.value)}
                 disabled={loading}
@@ -231,10 +216,9 @@ const PersonalInfoTab = () => {
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledTextField
                 fullWidth
-                size="small"
+                size: any,
                 label={translate('profile.personalInfo.birthDate')}
-                name="birthDate"
-                type="date"
+                name: any,
                 value={formData.birthDate}
                 onChange={(e) => handleInputChange('birthDate', e.target.value)}
                 disabled={loading}
@@ -244,10 +228,9 @@ const PersonalInfoTab = () => {
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledTextField
                 fullWidth
-                size="small"
-                select
+                size: any,
                 label={translate('profile.personalInfo.gender')}
-                name="gender"
+                name: any,
                 value={formData.gender}
                 onChange={(e) => handleInputChange('gender', e.target.value)}
                 disabled={loading}
@@ -260,9 +243,9 @@ const PersonalInfoTab = () => {
             <Grid size={{ xs: 12 }}>
               <StyledTextField
                 fullWidth
-                size="small"
+                size: any,
                 label={translate('profile.personalInfo.address')}
-                name="address"
+                name: any,
                 value={formData.address}
                 onChange={(e) => handleInputChange('address', e.target.value)}
                 disabled={loading}
@@ -271,9 +254,9 @@ const PersonalInfoTab = () => {
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledTextField
                 fullWidth
-                size="small"
+                size: any,
                 label={translate('profile.personalInfo.city')}
-                name="city"
+                name: any,
                 value={formData.city}
                 onChange={(e) => handleInputChange('city', e.target.value)}
                 disabled={loading}
@@ -282,9 +265,9 @@ const PersonalInfoTab = () => {
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledTextField
                 fullWidth
-                size="small"
+                size: any,
                 label={translate('profile.personalInfo.country')}
-                name="country"
+                name: any,
                 value={formData.country}
                 onChange={(e) => handleInputChange('country', e.target.value)}
                 disabled={loading}
@@ -293,9 +276,9 @@ const PersonalInfoTab = () => {
             <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <StyledTextField
                 fullWidth
-                size="small"
+                size: any,
                 label={translate('profile.personalInfo.postalCode')}
-                name="postalCode"
+                name: any,
                 value={formData.postalCode}
                 onChange={(e) => handleInputChange('postalCode', e.target.value)}
                 disabled={loading}

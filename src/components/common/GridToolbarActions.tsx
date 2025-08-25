@@ -20,8 +20,8 @@ import {
  * GridToolbarActions - Action buttons section of the toolbar
  * Handles all action buttons like Add, Edit, Delete, Sync, Export, etc.
  */
-const GridToolbarActions = ({
-  config,
+const GridToolbarActions: React.FC<{config: any, selectedCount: any, hasSelection: any, onAdd: any, onEdit: any, onDelete: any, onSync: any, onExport: any, onImport: any, customActions: any: any, loading: any: any, buttonSize: any: any, spacing: any: any, translate: any, mdmStocks: any, // Custom action handlers from CustomGridToolbar
+  onSyncStocksHandler: any, onSyncAllHandler: any, canInfo: any, onInfo: any}> = ({ config,
   selectedCount,
   hasSelection,
   onAdd,
@@ -30,10 +30,10 @@ const GridToolbarActions = ({
   onSync,
   onExport,
   onImport,
-  customActions = [],
-  loading = false,
-  buttonSize = 'medium',
-  spacing = 1,
+  customActions: any,
+  loading: any,
+  buttonSize: any,
+  spacing: any,
   translate,
   mdmStocks,
   
@@ -42,8 +42,8 @@ const GridToolbarActions = ({
   onSyncAllHandler,
   canInfo,
   onInfo
-}) => {
-  return (
+ }) => {
+  return Boolean(Boolean((
     <Box sx={{ display: 'flex', alignItems: 'center', gap: spacing }}>
       {/* Add Button */}
       {config.showAdd && (
@@ -51,7 +51,7 @@ const GridToolbarActions = ({
           <Button
             startIcon={<AddIcon />}
             onClick={onAdd}
-            variant="contained"
+            variant: any,
             size={buttonSize}
             disabled={loading}
           >
@@ -66,7 +66,7 @@ const GridToolbarActions = ({
           <Button
             startIcon={<EditIcon />}
             onClick={onEdit}
-            variant="outlined"
+            variant: any,
             size={buttonSize}
             disabled={!hasSelection || loading}
           >
@@ -81,8 +81,7 @@ const GridToolbarActions = ({
           <Button
             startIcon={<DeleteIcon />}
             onClick={onDelete}
-            variant="outlined"
-            color="error"
+            variant: any,
             size={buttonSize}
             disabled={!hasSelection || loading}
           >
@@ -97,8 +96,7 @@ const GridToolbarActions = ({
           <Button
             startIcon={<SyncIcon />}
             onClick={onSync}
-            variant="outlined"
-            color="secondary"
+            variant: any,
             size={buttonSize}
             disabled={loading}
           >
@@ -115,7 +113,7 @@ const GridToolbarActions = ({
           <Button
             startIcon={<ImportIcon />}
             onClick={onImport}
-            variant="outlined"
+            variant: any,
             size={buttonSize}
             disabled={loading}
           >
@@ -130,7 +128,7 @@ const GridToolbarActions = ({
           <Button
             startIcon={<InfoIcon />}
             onClick={onInfo}
-            variant="outlined"
+            variant: any,
             size={buttonSize}
             disabled={loading}
           >
@@ -145,7 +143,7 @@ const GridToolbarActions = ({
           <Button
             startIcon={<ExportIcon />}
             onClick={onExport}
-            variant="outlined"
+            variant: any,
             size={buttonSize}
             disabled={loading}
           >
@@ -158,8 +156,7 @@ const GridToolbarActions = ({
       {mdmStocks && typeof onSyncStocksHandler === 'function' && (
         <TooltipWrapper title={translate('syncStocks', 'Mark changed stocks for sync')} disabled={loading}>
           <Button
-            variant="outlined"
-            color="warning"
+            variant: any,
             size={buttonSize}
             onClick={onSyncStocksHandler}
             startIcon={<AutorenewIcon />}
@@ -174,8 +171,7 @@ const GridToolbarActions = ({
       {mdmStocks && typeof onSyncAllHandler === 'function' && (
         <TooltipWrapper title={translate('syncAll', 'Sync all data')} disabled={loading}>
           <Button
-            variant="outlined"
-            color="secondary"
+            variant: any,
             size={buttonSize}
             onClick={onSyncAllHandler}
             startIcon={<SyncIcon />}
@@ -187,20 +183,20 @@ const GridToolbarActions = ({
       )}
 
       {/* Custom Actions */}
-      {customActions.map((action, index) => {
+      {customActions.map((action: any: any, index: any: any) => {
         // Safely render icon - ensure it's a valid React element
         const renderIcon = () => {
-          if (!action.icon) return null;
+          if (!action?.icon) return null));
 
           // Handle Material-UI icon components (functions)
-          if (typeof action.icon === 'function') {
-            const IconComponent = action.icon;
+          if(typeof action?.icon === 'function') {
+            const IconComponent = action?.icon;
             return <IconComponent />;
           }
 
           // Handle React elements
-          if (React.isValidElement(action.icon)) {
-            return action.icon;
+          if (React.isValidElement(action?.icon)) {
+            return action?.icon;
           }
 
           // Invalid icon type - return null to avoid prop type warning
@@ -210,18 +206,18 @@ const GridToolbarActions = ({
         return (
           <TooltipWrapper 
             key={index} 
-            title={action.tooltip || action.label}
-            disabled={action.disabled || loading}
+            title={action?.tooltip || action?.label}
+            disabled={action?.disabled || loading}
           >
             <Button
               startIcon={renderIcon()}
-              onClick={action.onClick}
-              variant={action.variant || 'outlined'}
-              color={action.color || 'primary'}
+              onClick={action?.onClick}
+              variant={action?.variant || 'outlined'}
+              color={action?.color || 'primary'}
               size={buttonSize}
-              disabled={action.disabled || loading}
+              disabled={action?.disabled || loading}
             >
-              {config.compact ? '' : action.label}
+              {config.compact ? '' : action?.label}
             </Button>
           </TooltipWrapper>
         );

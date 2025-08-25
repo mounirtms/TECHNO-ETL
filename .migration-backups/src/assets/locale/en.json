@@ -1,0 +1,396 @@
+{
+    "common": {
+        "profile": "Profile",
+        "logout": "Logout",
+        "settings": "Settings",
+        "refresh": "Refresh",
+        "refreshing": "Refreshing...",
+        "changeLanguage": "Change Language",
+        "user": "User",
+        "expandMenu": "Expand menu",
+        "collapseMenu": "Collapse menu",
+        "appTitle": "Techno Stationery"
+    },
+    "navigation": {
+        "dashboard": "Dashboard",
+        "analytics": "Analytics & Charts",
+        "voting": "Feature Voting",
+        "products": "Products",
+        "productCatalog": "Products Catalog",
+        "mdmProducts": "MDM Products",
+        "cegidProducts": "Cegid Products",
+        "customers": "Customers",
+        "orders": "Orders",
+        "invoices": "Invoices",
+        "categories": "Categories",
+        "stocks": "Stocks",
+        "sources": "Sources",
+        "userProfile": "User Profile",
+        "cmsPages": "CMS Pages",
+        "gridTest": "Grid Test",
+        "bugBounty": "Bug Bounty",
+        "licenseManagement": "License Management",
+        "licenseStatus": "License Status",
+        "core": "Core Dashboard",
+        "mdm": "MDM System",
+        "magento": "Magento System",
+        "cegid": "Cegid System",
+        "analyticsReports": "Analytics & Reports",
+        "lockerStudio": "Locker Studio",
+        "development": "Development & Testing",
+        "user": "User Management",
+        "system": "System Management",
+        "mdmStock": "MDM Stock",
+        "mdmSources": "MDM Sources",
+        "salesAnalytics": "Sales Analytics",
+        "inventoryAnalytics": "Inventory Analytics",
+        "secureVault": "Secure Vault",
+        "accessControl": "Access Control",
+        "profile": "Profile"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "totalOrders": "Total Orders",
+        "totalCustomers": "Total Customers",
+        "totalProducts": "Total Products",
+        "totalSales": "Total Sales",
+        "salesOverTime": "Sales Over Time",
+        "chartComingSoon": "Chart Coming Soon",
+        "recentOrders": "Recent Orders",
+        "noRecentOrders": "No Recent Orders",
+        "lastWeek": "Last Week",
+        "lastMonth": "Last Month",
+        "lastYear": "Last Year",
+        "refresh": "Refresh",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "syncPrices": "Sync Prices",
+        "syncStocks": "Sync Stocks",
+        "viewAnalytics": "View Analytics",
+        "refreshing": "Refreshing..."
+    },
+    "products": "Products",
+    "orders": "Orders",
+    "customers": "Customers",
+    "settings": "Settings",
+    "logout": "Logout",
+    "profile": {
+        "personalInfo": {
+            "title": "Personal Information",
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "email": "Email Address",
+            "phone": "Phone Number",
+            "birthDate": "Date of Birth",
+            "gender": "Gender",
+            "male": "Male",
+            "female": "Female",
+            "other": "Other",
+            "address": "Address",
+            "city": "City",
+            "country": "Country",
+            "postalCode": "Postal Code"
+        },
+        "syncToCloud": "Sync to Cloud",
+        "preferences": {
+            "title": "User Preferences",
+            "description": "Customize your experience and manage application settings",
+            "unsavedChanges": "Unsaved Changes",
+            "export": "Export",
+            "import": "Import",
+            "reset": "Reset",
+            "save": "Save",
+            "appearance": {
+                "title": "Appearance",
+                "language": {
+                    "title": "Language",
+                    "description": "Choose your preferred interface language",
+                    "availableLanguages": {
+                        "en": "English (United States)",
+                        "fr": "French (France)",
+                        "ar": "Arabic (Middle East)"
+                    }
+                },
+                "theme": {
+                    "title": "Theme",
+                    "description": "Choose the application appearance",
+                    "light": "Light",
+                    "dark": "Dark",
+                    "system": "System"
+                },
+                "fontSize": {
+                    "title": "Font Size",
+                    "description": "Adjust text size",
+                    "small": "Small",
+                    "medium": "Medium",
+                    "large": "Large"
+                },
+                "density": {
+                    "title": "Interface Density",
+                    "description": "Adjust element spacing",
+                    "compact": "Compact",
+                    "standard": "Standard",
+                    "comfortable": "Comfortable"
+                },
+                "animations": {
+                    "title": "Enable animations and transitions",
+                    "description": "Show animated transitions in the interface"
+                }
+            },
+            "performance": {
+                "title": "Performance",
+                "defaultPageSize": {
+                    "title": "Default Page Size",
+                    "description": "Number of items displayed per page"
+                },
+                "refreshInterval": {
+                    "title": "Auto Refresh Interval (seconds)",
+                    "description": "Rate of automatic data refresh"
+                },
+                "enableVirtualization": {
+                    "title": "Enable grid virtualization for better performance",
+                    "description": "Improves performance with large datasets"
+                },
+                "cacheEnabled": {
+                    "title": "Enable data caching",
+                    "description": "Store data locally for faster loading"
+                },
+                "autoRefresh": {
+                    "title": "Auto refresh data",
+                    "description": "Refresh data periodically"
+                },
+                "lazyLoading": {
+                    "title": "Enable lazy loading",
+                    "description": "Load data only when needed"
+                }
+            },
+            "notifications": {
+                "title": "Notifications",
+                "emailNotifications": {
+                    "title": "Email notifications",
+                    "description": "Receive notifications via email"
+                },
+                "pushNotifications": {
+                    "title": "Push notifications",
+                    "description": "Browser push notifications"
+                },
+                "soundEnabled": {
+                    "title": "Sound notifications",
+                    "description": "Play sounds with notifications"
+                }
+            },
+            "accessibility": {
+                "title": "Accessibility",
+                "highContrast": {
+                    "title": "High contrast mode",
+                    "description": "Increase contrast for better visibility"
+                },
+                "largeText": {
+                    "title": "Large text",
+                    "description": "Increase text size throughout the application"
+                },
+                "keyboardNavigation": {
+                    "title": "Keyboard navigation",
+                    "description": "Enhanced keyboard navigation support"
+                },
+                "screenReader": {
+                    "title": "Screen reader support",
+                    "description": "Optimized for screen reader compatibility"
+                }
+            },
+            "security": {
+                "title": "Security",
+                "sessionTimeout": {
+                    "title": "Session Timeout (minutes)",
+                    "description": "Time before automatic logout"
+                },
+                "twoFactorEnabled": {
+                    "title": "Two-factor authentication",
+                    "description": "Additional security layer for your account"
+                },
+                "auditLogging": {
+                    "title": "Audit logging",
+                    "description": "Track user activities"
+                }
+            },
+            "messages": {
+                "settingsSaved": "Settings saved successfully",
+                "settingsExported": "Settings exported successfully",
+                "settingsImported": "Settings imported successfully",
+                "settingsReset": "Settings reset to defaults",
+                "invalidFile": "Invalid settings file",
+                "confirmReset": "Are you sure you want to reset all settings to defaults? This action cannot be undone."
+            }
+        },
+        "apiSettings": {
+            "title": "API Settings",
+            "save": "Save Changes",
+            "validation": {
+                "missingCredentials": "Please provide Magento URL, username, and password",
+                "missingCegidCredentials": "Please provide Cegid URL, username, password, and database"
+            },
+            "magento": {
+                "title": "Magento API",
+                "url": "API URL",
+                "username": "Username",
+                "password": "Password",
+                "authMode": "Authentication Mode",
+                "getToken": "Get Token",
+                "connect": "Connect",
+                "tokenSuccess": "Token obtained successfully",
+                "tokenError": "Failed to obtain token",
+                "oauthSuccess": "OAuth connection successful",
+                "oauthError": "OAuth connection failed",
+                "consumerKey": "Consumer Key",
+                "consumerSecret": "Consumer Secret",
+                "accessToken": "Access Token",
+                "accessTokenSecret": "Access Token Secret"
+            },
+            "cegid": {
+                "title": "Cegid API",
+                "url": "API URL",
+                "username": "Username",
+                "password": "Password",
+                "database": "Database",
+                "testConnection": "Test Connection",
+                "testSuccess": "Connection test successful",
+                "testError": "Connection test failed"
+            }
+        },
+        "actions": {
+            "save": "Save Changes",
+            "cancel": "Cancel",
+            "edit": "Edit Profile"
+        }
+    },
+    "login": {
+        "welcome": "Welcome",
+        "signIn": "Sign In",
+        "signInWithGoogle": "Sign in with Google",
+        "username": "Username",
+        "password": "Password",
+        "forgotPassword": "Forgot Password?",
+        "or": "or",
+        "noAccount": "Don't have an account?",
+        "signUp": "Sign Up",
+        "createAccount": "Create Account",
+        "signingIn": "Signing you in...",
+        "pleaseWait": "Please wait",
+        "authenticating": "Authenticating"
+    },
+    "errors": {
+        "networkError": "Network Error",
+        "serverError": "Server Error",
+        "notFound": "Page Not Found"
+    },
+    "grid": {
+        "common": {
+            "loading": "Loading...",
+            "noData": "No data available",
+            "error": "Error loading data",
+            "refresh": "Refresh",
+            "export": "Export",
+            "import": "Import",
+            "settings": "Settings",
+            "filters": "Filters",
+            "search": "Search",
+            "clear": "Clear",
+            "apply": "Apply",
+            "cancel": "Cancel",
+            "save": "Save",
+            "delete": "Delete",
+            "edit": "Edit",
+            "add": "Add",
+            "view": "View",
+            "actions": "Actions",
+            "selected": "Selected",
+            "total": "Total",
+            "page": "Page",
+            "of": "of",
+            "rows": "rows",
+            "rowsPerPage": "Rows per page",
+            "density": "Density",
+            "columns": "Columns",
+            "sort": "Sort",
+            "filter": "Filter",
+            "group": "Group",
+            "pin": "Pin",
+            "hide": "Hide",
+            "show": "Show",
+            "reset": "Reset",
+            "gridView": "Grid View",
+            "cardView": "Card View"
+        },
+        "toolbar": {
+            "refresh": "Refresh Data",
+            "add": "Add New",
+            "edit": "Edit Selected",
+            "delete": "Delete Selected",
+            "export": "Export Data",
+            "import": "Import Data",
+            "settings": "Grid Settings",
+            "filters": "Show Filters",
+            "search": "Search...",
+            "clearFilters": "Clear All Filters",
+            "selectAll": "Select All",
+            "deselectAll": "Deselect All",
+            "selectedCount": "{{count}} selected",
+            "sync": "Sync Data"
+        },
+        "contextMenu": {
+            "edit": "Edit Row",
+            "delete": "Delete Row",
+            "duplicate": "Duplicate Row",
+            "view": "View Details",
+            "export": "Export Row",
+            "copy": "Copy",
+            "paste": "Paste",
+            "cut": "Cut",
+            "rowActions": "Row Actions"
+        },
+        "settings": {
+            "title": "Grid Settings",
+            "columns": "Column Settings",
+            "visibility": "Column Visibility",
+            "order": "Column Order",
+            "pinning": "Column Pinning",
+            "density": "Row Density",
+            "compact": "Compact",
+            "standard": "Standard",
+            "comfortable": "Comfortable",
+            "autoSize": "Auto Size Columns",
+            "resetLayout": "Reset Layout",
+            "saveLayout": "Save Layout",
+            "loadLayout": "Load Layout",
+            "resetSuccess": "Grid layout reset successfully"
+        },
+        "filters": {
+            "title": "Filters",
+            "addFilter": "Add Filter",
+            "removeFilter": "Remove Filter",
+            "operator": "Operator",
+            "value": "Value",
+            "contains": "Contains",
+            "equals": "Equals",
+            "startsWith": "Starts with",
+            "endsWith": "Ends with",
+            "isEmpty": "Is empty",
+            "isNotEmpty": "Is not empty",
+            "isAnyOf": "Is any of",
+            "greaterThan": "Greater than",
+            "lessThan": "Less than",
+            "between": "Between",
+            "and": "And",
+            "or": "Or"
+        },
+        "floating": {
+            "add": "Add New Item",
+            "edit": "Edit Selected",
+            "delete": "Delete Selected",
+            "export": "Export Selection",
+            "sync": "Sync Data",
+            "refresh": "Refresh",
+            "settings": "Settings"
+        }
+    }
+}

@@ -41,7 +41,7 @@ import ProductMediaUpload from '../media/ProductMediaUpload';
  * Enhanced Product Edit Dialog
  * Handles product editing with additional attributes and categories
  */
-const ProductEditDialog = ({ open, onClose, product, onSave }) => {
+const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -81,7 +81,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
   
   // Initialize form data when product changes
   useEffect(() => {
-    if (product) {
+    if(product) {
       // Basic product data
       setFormData({
         sku: product.sku || '',
@@ -97,8 +97,8 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
       const customAttrs = product.custom_attributes || [];
       const attrs = {};
       
-      customAttrs.forEach(attr => {
-        switch (attr.attribute_code) {
+      customAttrs.forEach((attr) => {
+        switch(attr.attribute_code) {
           case 'description':
           case 'short_description':
           case 'techno_ref':
@@ -112,11 +112,11 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
           case 'trending':
           case 'best_seller':
           case 'a_la_une':
-            attrs[attr.attribute_code] = attr.value === '1' || attr.value === true;
+            attrs[attr.attribute_code] = attr.value === '1' || attr.value ===true;
             break;
           case 'category_ids':
             if (Array.isArray(attr.value)) {
-              setSelectedCategories(attr.value.map(id => id.toString()));
+              setSelectedCategories(attr.value.map((id: any: any) => id.toString()));
             }
             break;
         }
@@ -137,12 +137,12 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
         // Load brands
         const brandsResponse = await magentoApi.getBrands();
         setBrands(brandsResponse?.items || []);
-      } catch (error) {
+      } catch(error: any) {
         console.error('Error loading data:', error);
       }
     };
     
-    if (open) {
+    if(open) {
       loadData();
     }
   }, [open]);
@@ -154,8 +154,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
   
   const handleAttributeChange = (e) => {
     const { name, value, checked } = e.target;
-    setAdditionalAttributes(prev => ({
-      ...prev,
+    setAdditionalAttributes(prev => ({ ...prev,
       [name]: e.target.type === 'checkbox' ? checked : value
     }));
   };
@@ -174,7 +173,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
       const customAttributes = [];
       
       Object.entries(additionalAttributes).forEach(([key, value]) => {
-        if (value !== '' && value !== null && value !== undefined) {
+        if(value !== '' && value !== null && value !== undefined) {
           customAttributes.push({
             attribute_code: key,
             value: typeof value === 'boolean' ? (value ? '1' : '0') : value
@@ -183,7 +182,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
       });
       
       // Add category IDs
-      if (selectedCategories.length > 0) {
+      if(selectedCategories.length > 0) {
         customAttributes.push({
           attribute_code: 'category_ids',
           value: selectedCategories
@@ -191,15 +190,14 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
       }
       
       // Prepare final product data
-      const productData = {
-        ...formData,
+      const productData = { ...formData,
         custom_attributes: customAttributes
       };
       
       onSave(productData);
       toast.success(`Product "${formData.name}" saved successfully`);
       onClose();
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error saving product:', error);
       toast.error('Failed to save product');
     } finally {
@@ -207,9 +205,9 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
     }
   };
   
-  const TabPanel = ({ children, value, index }) => (
+  const TabPanel = ({ children, value, index  }: { children: any, value: any, index: any }) => (
     <div hidden={value !== index} style={{ paddingTop: 16 }}>
-      {value === index && children}
+      {value ===index && children}
     </div>
   );
   
@@ -217,11 +215,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
     <Dialog 
       open={open} 
       onClose={onClose} 
-      maxWidth="lg" 
-      fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: 2,
+      maxWidth: any,
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
           minHeight: '70vh'
         }
@@ -233,7 +227,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
         gap: 1,
         bgcolor: 'primary.main',
         color: 'primary.contrastText'
-      }}>
+      } as any}>
         <ProductIcon />
         {product?.sku ? `Edit Product: ${product.sku}` : 'Add New Product'}
       </DialogTitle>
@@ -242,7 +236,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
         <Tabs
           value={activeTab}
           onChange={(e, newValue) => setActiveTab(newValue)}
-          sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}
+          sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 } as any}
         >
           <Tab icon={<ProductIcon />} label="Basic Info" />
           <Tab icon={<CategoryIcon />} label="Categories" />
@@ -253,14 +247,13 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
         
         {/* Basic Information Tab */}
         <TabPanel value={activeTab} index={0}>
-          <Grid container spacing={2}>
+          <Grid { ...{container: true}} spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="SKU"
-                name="sku"
+                label: any,
                 value={formData.sku}
-                onChange={handleBasicChange}
+                onChange={(e) => handleBasicChange}
                 required
                 disabled={!!product?.sku} // Don't allow SKU changes for existing products
               />
@@ -269,20 +262,18 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Techno Reference"
-                name="techno_ref"
+                label: any,
                 value={additionalAttributes.techno_ref}
-                onChange={handleAttributeChange}
+                onChange={(e) => handleAttributeChange}
               />
             </Grid>
             
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Product Name"
-                name="name"
+                label: any,
                 value={formData.name}
-                onChange={handleBasicChange}
+                onChange={(e) => handleBasicChange}
                 required
                 multiline
                 rows={2}
@@ -292,11 +283,9 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
             <Grid item xs={12} sm={4}>
               <TextField
                 fullWidth
-                label="Price (DA)"
-                name="price"
-                type="number"
+                label: any,
                 value={formData.price}
-                onChange={handleBasicChange}
+                onChange={(e) => handleBasicChange}
                 InputProps={{ inputProps: { min: 0, step: 0.01 } }}
               />
             </Grid>
@@ -304,11 +293,9 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
             <Grid item xs={12} sm={4}>
               <TextField
                 fullWidth
-                label="Weight (g)"
-                name="weight"
-                type="number"
+                label: any,
                 value={formData.weight}
-                onChange={handleBasicChange}
+                onChange={(e) => handleBasicChange}
                 InputProps={{ inputProps: { min: 0 } }}
               />
             </Grid>
@@ -317,11 +304,10 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
               <FormControl fullWidth>
                 <InputLabel>Status</InputLabel>
                 <Select
-                  name="status"
+                  name: any,
                   value={formData.status}
-                  onChange={handleBasicChange}
-                  label="Status"
-                >
+                  onChange={(e) => handleBasicChange}
+                  label: any,
                   <MenuItem value={1}>Enabled</MenuItem>
                   <MenuItem value={2}>Disabled</MenuItem>
                 </Select>
@@ -331,10 +317,9 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Short Description"
-                name="short_description"
+                label: any,
                 value={additionalAttributes.short_description}
-                onChange={handleAttributeChange}
+                onChange={(e) => handleAttributeChange}
                 multiline
                 rows={2}
               />
@@ -343,10 +328,9 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Description"
-                name="description"
+                label: any,
                 value={additionalAttributes.description}
-                onChange={handleAttributeChange}
+                onChange={(e) => handleAttributeChange}
                 multiline
                 rows={4}
               />
@@ -356,7 +340,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
         
         {/* Categories Tab */}
         <TabPanel value={activeTab} index={1}>
-          <Alert severity="info" sx={{ mb: 2 }}>
+          <Alert severity="info" sx={{ mb: 2 } as any}>
             Select categories for this product. You can choose multiple categories.
           </Alert>
           
@@ -364,23 +348,20 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
             multiple
             options={categories}
             getOptionLabel={(option) => option.label}
-            value={categories.filter(cat => selectedCategories.includes(cat.id.toString()))}
-            onChange={(event, newValue) => {
-              setSelectedCategories(newValue.map(cat => cat.id.toString()));
+            value={categories.filter((cat: any: any) => selectedCategories.includes(cat.id.toString()))}
+            onChange={(e) => (event, newValue) => {
+              setSelectedCategories(newValue.map((cat: any: any) => cat.id.toString()));
             }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Product Categories"
-                placeholder="Select categories..."
-              />
+            renderInput: any,
+                { ...params}
+                label: any,
             )}
             renderTags={(value, getTagProps) =>
-              value.map((option, index) => (
+              value.map((option: any: any, index: any: any) => (
                 <Chip
-                  variant="outlined"
+                  variant: any,
                   label={option.name}
-                  {...getTagProps({ index })}
+                  { ...getTagProps({ index })}
                   key={option.id}
                 />
               ))
@@ -388,22 +369,18 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
           />
           
           {selectedCategories.length > 0 && (
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ mt: 2 } as any}>
               <Typography variant="subtitle2" gutterBottom>
                 Selected Categories ({selectedCategories.length}):
               </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                {selectedCategories.map(catId => {
-                  const category = categories.find(cat => cat.id.toString() === catId);
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 } as any}>
+                {selectedCategories.map((catId: any: any) => {
+                  const category = categories.find(cat => cat.id.toString() ===catId);
                   return category ? (
                     <Chip
                       key={catId}
                       label={category.name}
-                      size="small"
-                      color="primary"
-                      variant="outlined"
-                    />
-                  ) : null;
+                      size: any,
                 })}
               </Box>
             </Box>
@@ -412,20 +389,15 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
         
         {/* Attributes Tab */}
         <TabPanel value={activeTab} index={2}>
-          <Grid container spacing={2}>
+          <Grid { ...{container: true}} spacing={2}>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Brand</InputLabel>
                 <Select
-                  name="mgs_brand"
+                  name: any,
                   value={additionalAttributes.mgs_brand}
-                  onChange={handleAttributeChange}
-                  label="Brand"
-                >
-                  <MenuItem value="">
-                    <em>No Brand</em>
-                  </MenuItem>
-                  {brands.map(brand => (
+                  onChange={(e) => handleAttributeChange}
+                  label: any,
                     <MenuItem key={brand.value || brand.id} value={brand.value || brand.id}>
                       {brand.label || brand.name}
                     </MenuItem>
@@ -437,10 +409,9 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Country of Manufacture"
-                name="country_of_manufacture"
+                label: any,
                 value={additionalAttributes.country_of_manufacture}
-                onChange={handleAttributeChange}
+                onChange={(e) => handleAttributeChange}
                 placeholder="e.g., FR, CN, DE"
               />
             </Grid>
@@ -449,50 +420,27 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
               <Typography variant="subtitle1" gutterBottom>
                 Product Flags
               </Typography>
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' } as any}>
                 <FormControlLabel
-                  control={
-                    <Switch
+                  control: any,
                       checked={additionalAttributes.trending}
-                      onChange={handleAttributeChange}
-                      name="trending"
-                      color="success"
-                    />
+                      onChange={(e) => handleAttributeChange}
+                      name: any,
                   }
-                  label="Trending"
-                />
-                
-                <FormControlLabel
-                  control={
-                    <Switch
+                  label: any,
                       checked={additionalAttributes.best_seller}
-                      onChange={handleAttributeChange}
-                      name="best_seller"
-                      color="warning"
-                    />
+                      onChange={(e) => handleAttributeChange}
+                      name: any,
                   }
-                  label="Best Seller"
-                />
-                
-                <FormControlLabel
-                  control={
-                    <Switch
+                  label: any,
                       checked={additionalAttributes.a_la_une}
-                      onChange={handleAttributeChange}
-                      name="a_la_une"
-                      color="secondary"
-                    />
+                      onChange={(e) => handleAttributeChange}
+                      name: any,
                   }
-                  label="À la Une"
-                />
-              </Box>
-            </Grid>
-          </Grid>
-        </TabPanel>
-
+                  label: any,
         {/* Images Tab */}
         <TabPanel value={activeTab} index={3}>
-          <Alert severity="info" sx={{ mb: 2 }}>
+          <Alert severity="info" sx={{ mb: 2 } as any}>
             Upload and manage product images. The first image will be used as the main product image.
           </Alert>
 
@@ -505,24 +453,22 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
 
         {/* SEO & Meta Tab */}
         <TabPanel value={activeTab} index={4}>
-          <Grid container spacing={2}>
+          <Grid { ...{container: true}} spacing={2}>
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Meta Title"
-                name="meta_title"
+                label: any,
                 value={additionalAttributes.meta_title}
-                onChange={handleAttributeChange}
+                onChange={(e) => handleAttributeChange}
               />
             </Grid>
             
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Meta Keywords"
-                name="meta_keywords"
+                label: any,
                 value={additionalAttributes.meta_keywords}
-                onChange={handleAttributeChange}
+                onChange={(e) => handleAttributeChange}
                 multiline
                 rows={2}
                 placeholder="keyword1, keyword2, keyword3"
@@ -532,10 +478,9 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Meta Description"
-                name="meta_description"
+                label: any,
                 value={additionalAttributes.meta_description}
-                onChange={handleAttributeChange}
+                onChange={(e) => handleAttributeChange}
                 multiline
                 rows={3}
               />
@@ -548,19 +493,13 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
         justifyContent: 'space-between',
         bgcolor: 'background.default',
         p: 2
-      }}>
+      } as any}>
         <Button 
           onClick={onClose}
           startIcon={<CancelIcon />}
-          color="inherit"
-        >
-          Cancel
-        </Button>
-        
-        <Button 
+          color: any,
           onClick={handleSave}
-          variant="contained"
-          color="primary"
+          variant: any,
           startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
           disabled={loading || !formData.sku.trim() || !formData.name.trim()}
         >

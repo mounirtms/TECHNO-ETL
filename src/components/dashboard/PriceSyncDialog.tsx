@@ -40,7 +40,7 @@ import axios from 'axios';
  * Price Sync Dialog Component
  * Displays price sync operations with real-time progress and results
  */
-const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncStatus, syncResults: propSyncResults, progress: propProgress, setSyncStatus: propSetSyncStatus, setSyncResults: propSetSyncResults, setProgress: propSetProgress, onSync }) => {
+const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, syncStatus: propSyncStatus: any, syncResults: propSyncResults: any, progress: propProgress: any, setSyncStatus: propSetSyncStatus: any, setSyncResults: propSetSyncResults: any, setProgress: propSetProgress: any, onSync: any}> = ({ open, onClose, priceData = [], syncStatus: propSyncStatus, syncResults: propSyncResults, progress: propProgress, setSyncStatus: propSetSyncStatus, setSyncResults: propSetSyncResults, setProgress: propSetProgress, onSync  }) => {
   // Use props if provided, otherwise fallback to internal state
   const [internalSyncStatus, internalSetSyncStatus] = useState('idle');
   const [internalSyncResults, internalSetSyncResults] = useState(null);
@@ -57,7 +57,7 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
   // Only use internal handleSync if onSync is not provided
   const handleSync = async () => {
     if (onSync) return onSync();
-    if (!priceData || priceData.length === 0) {
+    if(!priceData || priceData.length ===0) {
       alert('No price data to sync');
       return;
     }
@@ -85,7 +85,7 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
         message: response.data.message || 'Sync completed successfully'
       });
       setSyncStatus('success');
-    } catch (error) {
+    } catch(error: any) {
       setSyncStatus('error');
       setSyncResults({
         success: false,
@@ -106,7 +106,7 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
   };
 
   const getStatusColor = (status) => {
-    switch (status) {
+    switch(status) {
       case 'success': return 'success';
       case 'error': return 'error';
       case 'loading': return 'info';
@@ -115,7 +115,7 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
   };
 
   const getStatusIcon = (status) => {
-    switch (status) {
+    switch(status) {
       case 'success': return <SuccessIcon />;
       case 'error': return <ErrorIcon />;
       case 'loading': return <SyncIcon />;
@@ -128,14 +128,14 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
     
     const csvContent = [
       ['SKU', 'Price', 'Status', 'Method', 'Error'],
-      ...syncResults.results.map(result => [
-        result.sku,
-        result.price,
+      ...syncResults.results.map((result: any: any) => [
+        result?.sku,
+        result?.price,
         result.status,
         result.method || 'bulk',
         result.error || ''
       ])
-    ].map(row => row.join(',')).join('\n');
+    ].map((row: any: any) => row.join(',')).join('\n');
     
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
@@ -146,13 +146,11 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
     window.URL.revokeObjectURL(url);
   };
 
-  return (
+  return Boolean(Boolean((
     <Dialog 
       open={open} 
       onClose={handleClose} 
-      maxWidth="md" 
-      fullWidth
-      PaperProps={{
+      maxWidth: any,
         sx: { borderRadius: 3, minHeight: '60vh' }
       }}
     >
@@ -177,7 +175,7 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
 
       <DialogContent sx={{ p: 3 }}>
         {/* Sync Overview */}
-        <Grid container spacing={3} sx={{ mb: 3 }}>
+        <Grid { ...{container: true}} spacing={3} sx={{ mb: 3 }}>
           <Grid item xs={12} md={4}>
             <Card variant="outlined">
               <CardContent sx={{ textAlign: 'center' }}>
@@ -229,7 +227,7 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
               Syncing prices... {progress}%
             </Typography>
             <LinearProgress 
-              variant="determinate" 
+              variant: any,
               value={progress} 
               sx={{ height: 8, borderRadius: 4 }}
             />
@@ -241,11 +239,7 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
           <Alert 
             severity={syncResults.success ? 'success' : 'error'} 
             sx={{ mb: 3 }}
-            action={
-              syncResults.results && (
-                <IconButton
-                  color="inherit"
-                  size="small"
+            action: any,
                   onClick={exportResults}
                 >
                   <DownloadIcon />
@@ -293,27 +287,22 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {syncResults.results.slice(0, 20).map((result, index) => (
+                    {syncResults.results.slice(0, 20).map((result: any: any, index: any: any) => (
                       <TableRow key={index}>
-                        <TableCell>{result.sku}</TableCell>
-                        <TableCell>{result.price}</TableCell>
+                        <TableCell>{result?.sku}</TableCell>
+                        <TableCell>{result?.price}</TableCell>
                         <TableCell>
                           <Chip
                             label={result.status}
                             color={result.status === 'success' ? 'success' : 'error'}
-                            size="small"
+                            size: any,
                             icon={result.status === 'success' ? <SuccessIcon /> : <ErrorIcon />}
                           />
                         </TableCell>
                         <TableCell>
                           <Chip
                             label={result.method || 'bulk'}
-                            variant="outlined"
-                            size="small"
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant="caption" color="text.secondary">
+                            variant: any,
                             {result.error || result.response || 'OK'}
                           </Typography>
                         </TableCell>
@@ -347,10 +336,10 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {priceData.slice(0, 5).map((item, index) => (
+                  {priceData.slice(0, 5).map((item: any: any, index: any: any) => (
                     <TableRow key={index}>
-                      <TableCell>{item.sku}</TableCell>
-                      <TableCell>{item.price}</TableCell>
+                      <TableCell>{item?.sku}</TableCell>
+                      <TableCell>{item?.price}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -371,15 +360,15 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
         </Button>
         <Button 
           onClick={handleSync} 
-          variant="contained"
-          disabled={syncStatus === 'loading' || priceData.length === 0}
+          variant: any,
+          disabled={syncStatus === 'loading' || priceData.length ===0}
           startIcon={syncStatus === 'loading' ? <SyncIcon /> : <RefreshIcon />}
         >
           {syncStatus === 'loading' ? 'Syncing...' : 'Start Sync'}
         </Button>
       </DialogActions>
     </Dialog>
-  );
+  )));
 };
 
 export default PriceSyncDialog;

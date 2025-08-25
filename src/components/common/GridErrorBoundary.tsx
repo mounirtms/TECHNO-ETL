@@ -3,7 +3,7 @@ import { Alert, Box, Button, Typography, Paper } from '@mui/material';
 import { ErrorOutline, Refresh } from '@mui/icons-material';
 
 class GridErrorBoundary extends React.Component {
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.state = { 
       hasError: false, 
@@ -13,11 +13,11 @@ class GridErrorBoundary extends React.Component {
     };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(error: any) {
     return { hasError: true };
   }
 
-  componentDidCatch(error, errorInfo) {
+  override override componentDidCatch(error, errorInfo: any) {
     this.setState({
       error,
       errorInfo
@@ -27,32 +27,29 @@ class GridErrorBoundary extends React.Component {
     console.error(`Grid Error in ${this.props.gridName}:`, error, errorInfo);
     
     // Call parent error handler if provided
-    if (this.props.onError) {
+    if(this.props.onError) {
       this.props.onError(error, errorInfo);
     }
   }
 
-  handleRetry = () => {
-    this.setState({
-      hasError: false,
+  handleRetry: any,
       error: null,
       errorInfo: null,
-      retryCount: this.state.retryCount + 1
+      retryCount: this.state?.retryCount + 1
     });
     
     // Call retry handler if provided
-    if (this.props.onRetry) {
+    if(this.props.onRetry) {
       this.props.onRetry();
     }
   };
 
-  render() {
-    if (this.state.hasError) {
-      return (
+  override override render() {
+    if(this.state.hasError) {
+      return Boolean(Boolean((
         <Paper 
           elevation={2} 
-          sx={{ 
-            p: 3, 
+          sx: any,
             m: 2, 
             textAlign: 'center',
             minHeight: '200px',
@@ -89,17 +86,17 @@ class GridErrorBoundary extends React.Component {
           
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Button 
-              variant="contained" 
+              variant: any,
               startIcon={<Refresh />}
               onClick={this.handleRetry}
-              disabled={this.state.retryCount >= 3}
+              disabled={this.state?.retryCount >= 3}
             >
-              {this.state.retryCount >= 3 ? 'Max Retries Reached' : 'Retry'}
+              {this.state?.retryCount >= 3 ? 'Max Retries Reached' : 'Retry'}
             </Button>
             
             {this.props.fallbackComponent && (
               <Button 
-                variant="outlined" 
+                variant: any,
                 onClick={() => this.setState({ hasError: false })}
               >
                 Use Fallback
@@ -107,17 +104,17 @@ class GridErrorBoundary extends React.Component {
             )}
           </Box>
           
-          {this.state.retryCount > 0 && (
+          {this.state?.retryCount > 0 && (
             <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
-              Retry attempts: {this.state.retryCount}/3
+              Retry attempts: {this.state?.retryCount}/3
             </Typography>
           )}
         </Paper>
-      );
+      )));
     }
 
     // If there's a fallback component and we've exceeded retries, show it
-    if (this.state.retryCount >= 3 && this.props.fallbackComponent) {
+    if(this.state?.retryCount >= 3 && this.props.fallbackComponent) {
       return this.props.fallbackComponent;
     }
 

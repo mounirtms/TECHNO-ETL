@@ -1,3 +1,4 @@
+import React from 'react';
 
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -24,7 +25,7 @@ class CegidApi {
 
     // Create SOAP envelope with proper XML structure
     createSoapEnvelope(body, database) {
-        return `<?xml version="1.0" encoding="utf-8"?>
+        return `<?xml version: any = "1.0" encoding="utf-8"?>
             <soap:Envelope 
                 xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" 
                 xmlns:ret="http://www.cegid.fr/Retail/1.0">
@@ -51,11 +52,11 @@ class CegidApi {
     }
 
     // Simple XML response parser
-    parseSoapResponse(xmlString) {
+    parseSoapResponse(xmlString: any) {
         try {
             // Extract content between HelloWorldResult tags
             const match = xmlString.match(/<HelloWorldResult>(.*?)<\/HelloWorldResult>/s);
-            if (match) {
+            if(match) {
                 const result = match[1].trim();
                 // Extract database and identity information
                 const dbMatch = result.match(/DataBaseId: \((.*?)\)/);
@@ -70,7 +71,7 @@ class CegidApi {
 
             // Check for fault
             const faultMatch = xmlString.match(/<faultstring>(.*?)<\/faultstring>/s);
-            if (faultMatch) {
+            if(faultMatch) {
                 throw new Error(faultMatch[1].trim());
             }
 
@@ -78,18 +79,18 @@ class CegidApi {
                 success: true,
                 raw: xmlString
             };
-        } catch (error) {
+        } catch(error: any) {
             console.error('XML Parsing Error:', error);
             throw error;
         }
     }
 
     // Create Basic Auth header using browser's btoa
-    createBasicAuth(username, password) {
+    createBasicAuth(username, password: any) {
         try {
             const auth = btoa(`${username}:${password}`);
             return `Basic ${auth}`;
-        } catch (error) {
+        } catch(error: any) {
             console.error('Error creating Basic Auth:', error);
             throw new Error('Failed to create authorization header');
         }
@@ -97,19 +98,17 @@ class CegidApi {
 
     // Cancel any ongoing requests
     cancelOngoingRequests() {
-        if (this.cancelTokenSource) {
+        if(this.cancelTokenSource) {
             this.cancelTokenSource.cancel('Operation cancelled due to new request');
             this.cancelTokenSource = null;
         }
     }
 
     // Cegid Connection Method with Basic Authentication
-    async handleCegidConnect(
-        url = this.credentials.url,
-        username = this.credentials.username,
-        password = this.credentials.password,
-        database = this.credentials.database
-    ) {
+    async handleCegidConnect(url = this.credentials.url,
+        username: any,
+        password = this.credentials.password, database: any = this.credentials.database
+     ) {
         try {
             // Cancel any ongoing requests
             this.cancelOngoingRequests();
@@ -118,7 +117,7 @@ class CegidApi {
             this.cancelTokenSource = axios.CancelToken.source();
 
             // Validate inputs
-            if (!url || !username || !password || !database) {
+            if(!url || !username || !password || !database) {
                 throw new Error('Missing required credentials');
             }
 
@@ -127,14 +126,12 @@ class CegidApi {
                 : `${url}/CustomerWcfService.svc`;
 
             // Create SOAP request with proper structure
-            const soapRequest = this.createSoapEnvelope(
-                this.createHelloWorldBody(database),
+            const soapRequest = this.createSoapEnvelope(this.createHelloWorldBody(database),
                 database
             );
 
             console.log('Making request to:', serviceUrl);
-            const headers = {
-                ...this.baseConfig.headers,
+            const headers = { ...this.baseConfig.headers,
                 'Authorization': this.createBasicAuth(username, password),
                 'SOAPAction': 'http://www.cegid.fr/Retail/1.0/ICbrBasicWebServiceInterface/HelloWorld'
             };
@@ -168,14 +165,14 @@ class CegidApi {
 
             return result;
 
-        } catch (error) {
+        } catch(error: any) {
             console.error('Cegid Connection Error:', error);
 
             // Don't show error toast if request was cancelled
             if (!axios.isCancel(error)) {
                 const errorMessage = error.response?.data
-                    ? this.parseSoapResponse(error.response.data).message || error.message
-                    : error.message;
+                    ? this.parseSoapResponse(error.response.data)?.message || error?.message
+                    : error?.message;
 
                 toast.error(`Connection failed: ${errorMessage}`, { autoClose: 5000 });
                 throw new Error(`Cegid Connection Error: ${errorMessage}`);
@@ -185,10 +182,10 @@ class CegidApi {
         }
     }
     // Generic method for making SOAP requests
-    async fetchData(action, body, options = {}) {
+    async fetchData(action, body, options: any = {}) {
         try {
             const credentials = JSON.parse(localStorage.getItem('cegidCredentials'));
-            if (!credentials) {
+            if(!credentials) {
                 throw new Error('No stored credentials found');
             }
 
@@ -198,22 +195,21 @@ class CegidApi {
                 method: 'post',
                 url: credentials.url,
                 data: soapRequest,
-                headers: {
-                    ...this.baseConfig.headers,
+                headers: { ...this.baseConfig.headers,
                     'Authorization': this.createBasicAuth(credentials.username, this.credentials.password),
                     'SOAPAction': action
                 }
             });
 
             return this.parseSoapResponse(response.data);
-        } catch (error) {
+        } catch(error: any) {
             console.error('Cegid API Fetch Error:', error);
             throw error;
         }
     }
 
     // Inventory endpoints
-    async getStock(itemId) {
+    async getStock(itemId: any) {
         const body = `
             <ret:GetStock>
                 <ret:request>
@@ -224,7 +220,7 @@ class CegidApi {
     }
 
 
-    createSearchProductSoapEnvelope(action, parameter, request) {
+    createSearchProductSoapEnvelope(action, parameter, request: any) {
         return `<?xml version="1.0" encoding="utf-8"?>
         <soapenv:Envelope 
             xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" 
@@ -253,17 +249,17 @@ class CegidApi {
         
         return `
             <Document>
-                <Data formatVersion="ForwardRead" serializeVersion="3.2">
+                <Data formatVersion: any = "ForwardRead" serializeVersion="3.2">
                     <Tob Name="">
                         <Fields>
                             <Field Name="PLUGINPGICONTEXTE" Value="GC;ctxMode;ctxFO" />
                             <Field Name="PLUGINLASERIE" Type="Integer" Value="3" />
                             <Field Name="PLUGINCBRCONTEXTE" Value="" />
-                            <Field Name="PLUGINDEFAULTSTORE" Value="${searchParams.store || '218'}" />
+                            <Field Name="PLUGINDEFAULTSTORE" Value="${searchParams?.store || '218'}" />
                             <Field Name="PLUGINVPGIDATEENTREE" Type="DateTime" Value="${currentDate}T00:00:00" />
                             <Field Name="P_NATUREPIECE" Value="FFO" />
-                            <Field Name="P_REFSAIS" Value="${searchParams.reference || ''}" />
-                            <Field Name="P_DEPOT" Value="${searchParams.store || '218'}" />
+                            <Field Name="P_REFSAIS" Value="${searchParams?.reference || ''}" />
+                            <Field Name="P_DEPOT" Value="${searchParams?.store || '218'}" />
                             <Field Name="P_P_DEVISE" Value="DZD" />
                             <Field Name="P_ADDPHOTO" Type="Integer" Value="1" />
                         </Fields>
@@ -275,7 +271,7 @@ class CegidApi {
     async searchProducts(searchParams = {}) {
         try {
             const action = 'Cegid.CBR.ItemSearchPlugin.SearchItem';
-            const parameter = searchParams.reference || '';
+            const parameter = searchParams?.reference || '';
             const request = this.createItemSearchRequest(searchParams);
             
             const soapEnvelope = this.createSearchProductSoapEnvelope(action, parameter, request);
@@ -296,14 +292,14 @@ class CegidApi {
     
             // Parse response
             return this.parseProductSearchResponse(response.data);
-        } catch (error) {
+        } catch(error: any) {
             console.error('Cegid Product Search Error:', error);
             throw error;
         }
     }
 
     // Add this helper method to parse product search response
-    parseProductSearchResponse(xmlResponse) {
+    parseProductSearchResponse(xmlResponse: any) {
         try {
             // Extract products from SOAP response
             const productsMatch = xmlResponse.raw.match(/<Items>(.*?)<\/Items>/s);
@@ -312,7 +308,7 @@ class CegidApi {
             // Parse individual product entries
             const productEntries = productsMatch[1].match(/<Item>(.*?)<\/Item>/g) || [];
 
-            return productEntries.map(entry => {
+            return productEntries.map((entry: any: any) => {
                 const reference = entry.match(/<Reference>(.*?)<\/Reference>/)?.[1] || '';
                 const description = entry.match(/<Description>(.*?)<\/Description>/)?.[1] || '';
                 const family = entry.match(/<Family>(.*?)<\/Family>/)?.[1] || '';
@@ -325,7 +321,7 @@ class CegidApi {
                     price: parseFloat(price)
                 };
             });
-        } catch (error) {
+        } catch(error: any) {
             console.error('Error parsing product search response:', error);
             return [];
         }

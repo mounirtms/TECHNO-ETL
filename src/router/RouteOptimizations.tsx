@@ -35,9 +35,9 @@ export const useRoutePreloader = () => {
     
     // Preload components for likely next routes
     const preloadTimeout = setTimeout(() => {
-      nextRoutes.forEach(route => {
+      nextRoutes.forEach((route) => {
         const componentPath = getComponentPath(route);
-        if (componentPath) {
+        if(componentPath) {
           import(componentPath).catch(err => 
             console.log('Route preload failed (non-critical):', route, err.message)
           );
@@ -77,9 +77,9 @@ export const OptimizedLoadingFallback: React.FC<{
   showProgress?: boolean;
   timeout?: number;
 }> = ({ 
-  routeName = 'page', 
-  showProgress = true,
-  timeout = 10000 
+  routeName: any,
+  showProgress: any,
+  timeout: any,
 }) => {
   usePerformanceMonitor(`Loading-${routeName}`);
   const [showTimeout, setShowTimeout] = useState(false);
@@ -92,17 +92,16 @@ export const OptimizedLoadingFallback: React.FC<{
     return () => clearTimeout(timer);
   }, [timeout]);
 
-  if (showTimeout) {
+  if(showTimeout) {
     return (
       <Box
-        sx={{
-          display: 'flex',
+        sx: any,
           justifyContent: 'center',
           alignItems: 'center',
           height: '100vh',
           flexDirection: 'column',
           gap: 2
-        }}
+        } as any}
       >
         <Alert severity="warning">
           Loading is taking longer than expected...
@@ -117,14 +116,13 @@ export const OptimizedLoadingFallback: React.FC<{
 
   return (
     <Box
-      sx={{
-        display: 'flex',
+      sx: any,
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh',
         flexDirection: 'column',
         gap: 2
-      }}
+      } as any}
     >
       {showProgress && <CircularProgress size={40} />}
       <Typography variant="body2" color="text.secondary">
@@ -147,14 +145,14 @@ export const CachedRoute: React.FC<{
   useEffect(() => {
     // Try to get cached content
     const cached = globalCache.get(`route-${routeKey}`);
-    if (cached) {
+    if(cached) {
       setCachedContent(cached);
     }
   }, [routeKey]);
 
   useEffect(() => {
     // Cache the content after it loads
-    if (children && !cachedContent) {
+    if(children && !cachedContent) {
       globalCache.set(`route-${routeKey}`, children, cacheTTL);
       setCachedContent(children);
     }
@@ -169,7 +167,7 @@ export const CachedRoute: React.FC<{
 export const usePrefetch = () => {
   const prefetchRoute = useCallback((routePath: string) => {
     const componentPath = getComponentPath(routePath);
-    if (componentPath) {
+    if(componentPath) {
       // Prefetch the component
       import(componentPath)
         .then(() => {
@@ -206,7 +204,7 @@ export const RouteTransition: React.FC<{
   const [currentKey, setCurrentKey] = useState(transitionKey);
 
   useEffect(() => {
-    if (transitionKey !== currentKey) {
+    if(transitionKey !== currentKey) {
       setIsTransitioning(true);
       
       const timer = setTimeout(() => {
@@ -220,8 +218,7 @@ export const RouteTransition: React.FC<{
 
   return (
     <Box
-      sx={{
-        opacity: isTransitioning ? 0.7 : 1,
+      sx: any,
         transition: `opacity ${duration}ms ease-in-out`,
         minHeight: '100vh'
       }}
@@ -250,8 +247,8 @@ export const useRouteAnalytics = () => {
       console.log(`📊 Route timing for ${location.pathname}: ${duration}ms`);
       
       // Send to analytics if available
-      if (window.gtag) {
-        window.gtag('event', 'page_view', {
+      if(window?.gtag) {
+        window?.gtag('event', 'page_view', {
           page_title: document.title,
           page_location: window.location.href,
           page_path: location.pathname,
@@ -280,7 +277,7 @@ export const createSplitComponent = (
   
   return React.forwardRef<any, any>((props, ref) => (
     <Suspense fallback={fallback || <OptimizedLoadingFallback />}>
-      <LazyComponent {...props} ref={ref} />
+      <LazyComponent { ...props} ref={ref} />
     </Suspense>
   ));
 };
@@ -304,13 +301,13 @@ export const RoutePerformanceMonitor: React.FC<{
 export const useMemoryAwareRouting = () => {
   const navigate = useNavigate();
 
-  const navigateWithCleanup = useCallback((to: string, options?: any) => {
+  const navigateWithCleanup = useCallback((to: string, options? ) => {
     // Clear cache if memory usage is high
     if (globalCache.size() > 50) {
       console.log('🧹 Clearing route cache due to memory pressure');
       // Clear only route-specific caches, keep others
       const allKeys = globalCache.getStats().keys;
-      allKeys.forEach(key => {
+      allKeys.forEach((key) => {
         if (typeof key === 'string' && key.startsWith('route-')) {
           globalCache.delete(key);
         }

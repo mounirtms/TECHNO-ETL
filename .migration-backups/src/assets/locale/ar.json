@@ -1,0 +1,376 @@
+{
+    "common": {
+        "profile": "الملف الشخصي",
+        "logout": "تسجيل الخروج",
+        "settings": "الإعدادات",
+        "refresh": "تحديث",
+        "refreshing": "جاري التحديث...",
+        "changeLanguage": "تغيير اللغة",
+        "user": "المستخدم",
+        "expandMenu": "توسيع القائمة",
+        "collapseMenu": "طي القائمة",
+        "appTitle": "تكنو للقرطاسية"
+    },
+    "navigation": {
+        "dashboard": "لوحة التحكم",
+        "analytics": "التحليلات والرسوم البيانية",
+        "voting": "التصويت على الميزات",
+        "products": "المنتجات",
+        "productCatalog": "كتالوج المنتجات",
+        "mdmProducts": "منتجات MDM",
+        "cegidProducts": "منتجات Cegid",
+        "customers": "العملاء",
+        "orders": "الطلبات",
+        "invoices": "الفواتير",
+        "categories": "الفئات",
+        "stocks": "المخزون",
+        "sources": "المصادر",
+        "profile": "الملف الشخصي",
+        "userProfile": "الملف الشخصي",
+        "cmsPages": "صفحات CMS",
+        "gridTest": "اختبار الشبكة",
+        "bugBounty": "مكافآت الأخطاء",
+        "licenseManagement": "إدارة التراخيص",
+        "licenseStatus": "حالة الترخيص",
+        "core": "لوحة التحكم الأساسية",
+        "mdm": "نظام إدارة البيانات الرئيسية",
+        "magento": "نظام ماجنتو",
+        "cegid": "نظام سيجيد",
+        "analyticsReports": "التحليلات والتقارير",
+        "lockerStudio": "استوديو الخزنة",
+        "development": "التطوير والاختبار",
+        "system": "إدارة النظام",
+        "mdmStock": "مخزون MDM",
+        "mdmSources": "مصادر MDM",
+        "salesAnalytics": "تحليلات المبيعات",
+        "inventoryAnalytics": "تحليلات المخزون",
+        "secureVault": "الخزنة الآمنة",
+        "accessControl": "التحكم في الوصول"
+    },
+    "login": {
+        "signInWithGoogle": "تسجيل الدخول باستخدام Google",
+        "username": "اسم المستخدم",
+        "password": "كلمة المرور",
+        "signIn": "تسجيل الدخول",
+        "forgotPassword": "هل نسيت كلمة المرور؟",
+        "or": "أو",
+        "noAccount": "ليس لديك حساب؟",
+        "signUp": "إنشاء حساب",
+        "welcome": "أهلا بك",
+        "createAccount": "إنشاء حساب"
+    },
+    "dashboard": {
+        "title": "لوحة التحكم",
+        "totalOrders": "إجمالي الطلبات",
+        "totalCustomers": "إجمالي العملاء",
+        "totalProducts": "إجمالي المنتجات",
+        "totalSales": "إجمالي المبيعات",
+        "salesOverTime": "المبيعات على مدار الوقت",
+        "chartComingSoon": "الرسم البياني قريبًا",
+        "recentOrders": "الطلبات الحديثة",
+        "noRecentOrders": "لا توجد طلبات حديثة",
+        "lastWeek": "الأسبوع الماضي",
+        "lastMonth": "الشهر الماضي",
+        "lastYear": "العام الماضي",
+        "startDate": "تاريخ البداية",
+        "endDate": "تاريخ النهاية",
+        "syncPrices": "مزامنة الأسعار",
+        "syncStocks": "مزامنة المخزون",
+        "viewAnalytics": "عرض التحليلات",
+        "refreshing": "جاري التحديث..."
+    },
+    "products": "المنتجات",
+    "orders": "الطلبات",
+    "customers": "العملاء",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج",
+    "profile": {
+        "personalInfo": {
+            "title": "المعلومات الشخصية",
+            "firstName": "الاسم الأول",
+            "lastName": "اسم العائلة",
+            "email": "البريد الإلكتروني",
+            "phone": "رقم الهاتف",
+            "birthDate": "تاريخ الميلاد",
+            "gender": "الجنس",
+            "address": "العنوان",
+            "city": "المدينة",
+            "country": "البلد",
+            "postalCode": "الرمز البريدي"
+        },
+        "preferences": {
+            "title": "تفضيلات المستخدم",
+            "description": "خصص تجربتك وإدارة إعدادات التطبيق",
+            "unsavedChanges": "تغييرات غير محفوظة",
+            "export": "تصدير",
+            "import": "استيراد",
+            "reset": "إعادة تعيين",
+            "save": "حفظ",
+            "appearance": {
+                "title": "المظهر",
+                "language": {
+                    "title": "اللغة",
+                    "description": "اختر اللغة المفضلة للواجهة",
+                    "availableLanguages": {
+                        "en": "الإنجليزية (الولايات المتحدة)",
+                        "fr": "الفرنسية (فرنسا)",
+                        "ar": "العربية (الشرق الأوسط)"
+                    }
+                },
+                "theme": {
+                    "title": "السمة",
+                    "description": "اختر مظهر التطبيق",
+                    "light": "فاتح",
+                    "dark": "داكن",
+                    "system": "النظام"
+                },
+                "fontSize": {
+                    "title": "حجم الخط",
+                    "description": "اضبط حجم النص",
+                    "small": "صغير",
+                    "medium": "متوسط",
+                    "large": "كبير"
+                },
+                "density": {
+                    "title": "كثافة الواجهة",
+                    "description": "اضبط تباعد العناصر",
+                    "compact": "مضغوط",
+                    "standard": "قياسي",
+                    "comfortable": "مريح"
+                },
+                "animations": {
+                    "title": "تفعيل الحركات والانتقالات",
+                    "description": "إظهار الحركات المتحركة في الواجهة"
+                }
+            },
+            "performance": {
+                "title": "الأداء",
+                "defaultPageSize": {
+                    "title": "حجم الصفحة الافتراضي",
+                    "description": "عدد العناصر المعروضة في كل صفحة"
+                },
+                "refreshInterval": {
+                    "title": "فترة التحديث التلقائي (ثواني)",
+                    "description": "معدل تحديث البيانات تلقائياً"
+                },
+                "enableVirtualization": {
+                    "title": "تفعيل المحاكاة الافتراضية للشبكة لأداء أفضل",
+                    "description": "يحسن الأداء مع البيانات الكبيرة"
+                },
+                "cacheEnabled": {
+                    "title": "تفعيل تخزين البيانات مؤقتاً",
+                    "description": "حفظ البيانات محلياً لتحميل أسرع"
+                },
+                "autoRefresh": {
+                    "title": "التحديث التلقائي للبيانات",
+                    "description": "تحديث البيانات بشكل دوري"
+                },
+                "lazyLoading": {
+                    "title": "تفعيل التحميل التدريجي",
+                    "description": "تحميل البيانات عند الحاجة فقط"
+                }
+            },
+            "notifications": {
+                "title": "الإشعارات",
+                "emailNotifications": {
+                    "title": "إشعارات البريد الإلكتروني",
+                    "description": "استقبال الإشعارات عبر البريد الإلكتروني"
+                },
+                "pushNotifications": {
+                    "title": "الإشعارات الفورية",
+                    "description": "إشعارات فورية في المتصفح"
+                },
+                "soundEnabled": {
+                    "title": "إشعارات صوتية",
+                    "description": "تشغيل أصوات مع الإشعارات"
+                }
+            },
+            "accessibility": {
+                "title": "إمكانية الوصول",
+                "highContrast": {
+                    "title": "وضع التباين العالي",
+                    "description": "زيادة التباين لرؤية أفضل"
+                },
+                "largeText": {
+                    "title": "نص كبير",
+                    "description": "زيادة حجم النص في جميع أنحاء التطبيق"
+                },
+                "keyboardNavigation": {
+                    "title": "التنقل بلوحة المفاتيح",
+                    "description": "دعم محسن للتنقل بلوحة المفاتيح"
+                },
+                "screenReader": {
+                    "title": "دعم قارئ الشاشة",
+                    "description": "محسن للتوافق مع قارئ الشاشة"
+                }
+            },
+            "security": {
+                "title": "الأمان",
+                "sessionTimeout": {
+                    "title": "انتهاء مهلة الجلسة (دقائق)",
+                    "description": "المدة قبل تسجيل الخروج التلقائي"
+                },
+                "twoFactorEnabled": {
+                    "title": "المصادقة الثنائية",
+                    "description": "طبقة أمان إضافية لحسابك"
+                },
+                "auditLogging": {
+                    "title": "تسجيل المراجعة",
+                    "description": "تتبع أنشطة المستخدم"
+                }
+            },
+            "messages": {
+                "settingsSaved": "تم حفظ الإعدادات بنجاح",
+                "settingsExported": "تم تصدير الإعدادات بنجاح",
+                "settingsImported": "تم استيراد الإعدادات بنجاح",
+                "settingsReset": "تم إعادة تعيين الإعدادات إلى الافتراضية",
+                "invalidFile": "ملف إعدادات غير صالح",
+                "confirmReset": "هل أنت متأكد من إعادة تعيين جميع الإعدادات إلى الافتراضية؟ لا يمكن التراجع عن هذا الإجراء."
+            }
+        },
+        "apiSettings": {
+            "title": "إعدادات واجهة برمجة التطبيقات",
+            "magento": {
+                "title": "واجهة برمجة التطبيقات ماجنتو",
+                "url": "رابط ماجنتو",
+                "username": "اسم مستخدم ماجنتو",
+                "password": "كلمة مرور ماجنتو",
+                "token": "رمز الوصول",
+                "generateToken": "إنشاء رمز"
+            },
+            "cegid": {
+                "title": "واجهة برمجة التطبيقات سيجيد",
+                "url": "رابط سيجيد",
+                "username": "اسم مستخدم سيجيد",
+                "password": "كلمة مرور سيجيد",
+                "database": "اسم قاعدة البيانات",
+                "connect": "اتصال"
+            },
+            "security": {
+                "title": "إعدادات الأمان",
+                "twoFactorAuth": "المصادقة الثنائية",
+                "ipRestriction": "قيود عنوان IP"
+            }
+        },
+        "actions": {
+            "save": "حفظ التغييرات",
+            "cancel": "إلغاء",
+            "edit": "تعديل الملف الشخصي"
+        }
+    },
+    "errors": {
+        "networkError": "خطأ في الشبكة",
+        "serverError": "خطأ في الخادم",
+        "notFound": "الصفحة غير موجودة"
+    },
+    "grid": {
+        "common": {
+            "loading": "جاري التحميل...",
+            "noData": "لا توجد بيانات متاحة",
+            "error": "خطأ في تحميل البيانات",
+            "refresh": "تحديث",
+            "export": "تصدير",
+            "import": "استيراد",
+            "settings": "الإعدادات",
+            "filters": "المرشحات",
+            "search": "بحث",
+            "clear": "مسح",
+            "apply": "تطبيق",
+            "cancel": "إلغاء",
+            "save": "حفظ",
+            "delete": "حذف",
+            "edit": "تعديل",
+            "add": "إضافة",
+            "view": "عرض",
+            "actions": "الإجراءات",
+            "selected": "محدد",
+            "total": "المجموع",
+            "page": "صفحة",
+            "of": "من",
+            "rows": "صفوف",
+            "rowsPerPage": "صفوف لكل صفحة",
+            "density": "الكثافة",
+            "columns": "الأعمدة",
+            "sort": "ترتيب",
+            "filter": "تصفية",
+            "group": "تجميع",
+            "pin": "تثبيت",
+            "hide": "إخفاء",
+            "show": "إظهار",
+            "reset": "إعادة تعيين",
+            "gridView": "عرض الشبكة",
+            "cardView": "عرض البطاقات"
+        },
+        "toolbar": {
+            "refresh": "تحديث البيانات",
+            "add": "إضافة جديد",
+            "edit": "تعديل المحدد",
+            "delete": "حذف المحدد",
+            "export": "تصدير البيانات",
+            "import": "استيراد البيانات",
+            "settings": "إعدادات الشبكة",
+            "filters": "إظهار المرشحات",
+            "search": "بحث...",
+            "clearFilters": "مسح جميع المرشحات",
+            "selectAll": "تحديد الكل",
+            "deselectAll": "إلغاء تحديد الكل",
+            "selectedCount": "{{count}} محدد",
+            "sync": "مزامنة البيانات"
+        },
+        "contextMenu": {
+            "edit": "تعديل الصف",
+            "delete": "حذف الصف",
+            "duplicate": "تكرار الصف",
+            "view": "عرض التفاصيل",
+            "export": "تصدير الصف",
+            "copy": "نسخ",
+            "paste": "لصق",
+            "cut": "قص",
+            "rowActions": "إجراءات الصف"
+        },
+        "settings": {
+            "title": "إعدادات الشبكة",
+            "columns": "إعدادات الأعمدة",
+            "visibility": "رؤية الأعمدة",
+            "order": "ترتيب الأعمدة",
+            "pinning": "تثبيت الأعمدة",
+            "density": "كثافة الصفوف",
+            "compact": "مضغوط",
+            "standard": "قياسي",
+            "comfortable": "مريح",
+            "autoSize": "حجم تلقائي للأعمدة",
+            "resetLayout": "إعادة تعيين التخطيط",
+            "saveLayout": "حفظ التخطيط",
+            "loadLayout": "تحميل التخطيط",
+            "resetSuccess": "تم إعادة تعيين تخطيط الشبكة بنجاح"
+        },
+        "filters": {
+            "title": "المرشحات",
+            "addFilter": "إضافة مرشح",
+            "removeFilter": "إزالة مرشح",
+            "operator": "المشغل",
+            "value": "القيمة",
+            "contains": "يحتوي على",
+            "equals": "يساوي",
+            "startsWith": "يبدأ بـ",
+            "endsWith": "ينتهي بـ",
+            "isEmpty": "فارغ",
+            "isNotEmpty": "غير فارغ",
+            "isAnyOf": "أي من",
+            "greaterThan": "أكبر من",
+            "lessThan": "أصغر من",
+            "between": "بين",
+            "and": "و",
+            "or": "أو"
+        },
+        "floating": {
+            "add": "إضافة عنصر جديد",
+            "edit": "تعديل المحدد",
+            "delete": "حذف المحدد",
+            "export": "تصدير المحدد",
+            "sync": "مزامنة البيانات",
+            "refresh": "تحديث",
+            "settings": "الإعدادات"
+        }
+    }
+}

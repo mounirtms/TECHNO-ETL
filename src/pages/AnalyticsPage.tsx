@@ -82,7 +82,7 @@ const LOOKER_DASHBOARDS = {
 /**
  * LookerStudioEmbed Component
  */
-const LookerStudioEmbed = ({ dashboard, isFullscreen, onLoad, onError }) => {
+const LookerStudioEmbed: React.FC<{dashboard: any, isFullscreen: any, onLoad: any, onError: any}> = ({ dashboard, isFullscreen, onLoad, onError  }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -98,10 +98,9 @@ const LookerStudioEmbed = ({ dashboard, isFullscreen, onLoad, onError }) => {
     onError?.();
   };
 
-  return (
+  return Boolean(Boolean((
     <Box
-      sx={{
-        position: 'relative',
+      sx: any,
         width: '100%',
         height: isFullscreen ? '100vh' : dashboard.defaultSize.height,
         border: '1px solid',
@@ -113,8 +112,7 @@ const LookerStudioEmbed = ({ dashboard, isFullscreen, onLoad, onError }) => {
     >
       {loading && (
         <Box
-          sx={{
-            position: 'absolute',
+          sx: any,
             top: 0,
             left: 0,
             right: 0,
@@ -137,8 +135,7 @@ const LookerStudioEmbed = ({ dashboard, isFullscreen, onLoad, onError }) => {
 
       {error && (
         <Box
-          sx={{
-            position: 'absolute',
+          sx: any,
             top: 0,
             left: 0,
             right: 0,
@@ -154,8 +151,7 @@ const LookerStudioEmbed = ({ dashboard, isFullscreen, onLoad, onError }) => {
             <Typography variant="h6">Dashboard Load Error</Typography>
             <Typography variant="body2">{error}</Typography>
             <Button
-              variant="outlined"
-              size="small"
+              variant: any,
               startIcon={<Refresh />}
               onClick={() => window.location.reload()}
               sx={{ mt: 1 }}
@@ -168,18 +164,16 @@ const LookerStudioEmbed = ({ dashboard, isFullscreen, onLoad, onError }) => {
 
       <iframe
         src={dashboard.url}
-        width="100%"
-        height="100%"
-        frameBorder="0"
+        width: any,
         style={{ border: 0 }}
         allowFullScreen
-        sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+        sandbox: any,
         onLoad={handleLoad}
         onError={handleError}
         title={dashboard.title}
       />
     </Box>
-  );
+  )));
 };
 
 /**
@@ -203,8 +197,8 @@ const AnalyticsPage = () => {
     const interval = setInterval(() => {
       // Refresh the iframe by updating its src
       const iframe = document.querySelector('iframe[title="' + currentDashboard.title + '"]');
-      if (iframe) {
-        const src = iframe.src;
+      if(iframe) {
+        const src = iframe?.src;
         iframe.src = '';
         setTimeout(() => {
           iframe.src = src;
@@ -221,8 +215,8 @@ const AnalyticsPage = () => {
 
   const handleRefresh = () => {
     const iframe = document.querySelector('iframe[title="' + currentDashboard.title + '"]');
-    if (iframe) {
-      const src = iframe.src;
+    if(iframe) {
+      const src = iframe?.src;
       iframe.src = '';
       setTimeout(() => {
         iframe.src = src;
@@ -234,11 +228,10 @@ const AnalyticsPage = () => {
     window.open(currentDashboard.url, '_blank', 'noopener,noreferrer');
   };
 
-  if (isFullscreen) {
+  if(isFullscreen) {
     return (
       <Box
-        sx={{
-          position: 'fixed',
+        sx: any,
           top: 0,
           left: 0,
           right: 0,
@@ -248,8 +241,7 @@ const AnalyticsPage = () => {
         }}
       >
         <Box
-          sx={{
-            position: 'absolute',
+          sx: any,
             top: 16,
             right: 16,
             zIndex: 10000,
@@ -260,8 +252,7 @@ const AnalyticsPage = () => {
           <Tooltip title="Exit Fullscreen">
             <IconButton
               onClick={handleFullscreenToggle}
-              sx={{
-                bgcolor: 'background.paper',
+              sx: any,
                 boxShadow: 2,
                 '&:hover': { bgcolor: 'background.paper' }
               }}
@@ -333,13 +324,13 @@ const AnalyticsPage = () => {
 
         {/* Dashboard Selection */}
         <Stack direction="row" spacing={2} flexWrap="wrap">
-          {Object.entries(LOOKER_DASHBOARDS).map(([key, dashboard]) => (
+          {Object.entries(LOOKER_DASHBOARDS).map(([key: any: any, dashboard]: any: any) => (
             <Chip
               key={key}
               icon={dashboard.icon}
               label={dashboard.title}
-              variant={selectedDashboard === key ? "filled" : "outlined"}
-              color={selectedDashboard === key ? "primary" : "default"}
+              variant={selectedDashboard ===key ? "filled" : "outlined"}
+              color={selectedDashboard ===key ? "primary" : "default"}
               onClick={() => setSelectedDashboard(key)}
               sx={{ mb: 1 }}
             />
@@ -379,21 +370,14 @@ const AnalyticsPage = () => {
         <DialogContent>
           <Stack spacing={3} sx={{ mt: 1 }}>
             <FormControlLabel
-              control={
-                <Switch
+              control: any,
                   checked={autoRefresh}
                   onChange={(e) => setAutoRefresh(e.target.checked)}
                 />
               }
-              label="Auto Refresh"
-            />
-
-            {autoRefresh && (
-              <FormControl fullWidth>
-                <InputLabel>Refresh Interval</InputLabel>
-                <Select
+              label: any,
                   value={refreshInterval}
-                  label="Refresh Interval"
+                  label: any,
                   onChange={(e) => setRefreshInterval(e.target.value)}
                 >
                   <MenuItem value={60}>1 minute</MenuItem>
@@ -408,10 +392,10 @@ const AnalyticsPage = () => {
               <InputLabel>Default Dashboard</InputLabel>
               <Select
                 value={selectedDashboard}
-                label="Default Dashboard"
+                label: any,
                 onChange={(e) => setSelectedDashboard(e.target.value)}
               >
-                {Object.entries(LOOKER_DASHBOARDS).map(([key, dashboard]) => (
+                {Object.entries(LOOKER_DASHBOARDS).map(([key: any: any, dashboard]: any: any) => (
                   <MenuItem key={key} value={key}>
                     {dashboard.title}
                   </MenuItem>

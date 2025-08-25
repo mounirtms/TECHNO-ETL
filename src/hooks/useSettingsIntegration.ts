@@ -31,27 +31,27 @@ export const useSettingsIntegration = () => {
       const { preferences } = settings;
 
       // Apply theme settings
-      if (preferences.theme) {
-        setThemeMode(preferences.theme as any);
+      if(preferences.theme) {
+        setThemeMode(preferences.theme);
       }
-      if (preferences.fontSize) {
+      if(preferences.fontSize) {
         setFontSize(preferences.fontSize);
       }
-      if (preferences.colorPreset) {
+      if(preferences.colorPreset) {
         setColorPreset(preferences.colorPreset);
       }
-      if (preferences.density) {
+      if(preferences.density) {
         setDensity(preferences.density);
       }
-      if (preferences.animations !== undefined) {
+      if(preferences.animations !== undefined) {
         setAnimations(preferences.animations);
       }
-      if (preferences.highContrast !== undefined) {
+      if(preferences.highContrast !== undefined) {
         setHighContrast(preferences.highContrast);
       }
 
       // Apply language settings
-      if (preferences.language) {
+      if(preferences.language) {
         setLanguage(preferences.language);
       }
 
@@ -59,14 +59,14 @@ export const useSettingsIntegration = () => {
       applyThemeSettings(preferences);
 
       console.log('✅ Settings applied to all contexts:', preferences);
-    } catch (error) {
+    } catch(error: any) {
       console.error('❌ Failed to apply settings to contexts:', error);
     }
   }, [setThemeMode, setFontSize, setColorPreset, setDensity, setAnimations, setHighContrast, setLanguage]);
 
   // Load and apply user settings on login
   useEffect(() => {
-    if (currentUser) {
+    if(currentUser) {
       try {
         const userSettings = optimizedSettingsManager.getSettings(currentUser.uid);
         applySettingsToContexts(userSettings);
@@ -75,7 +75,7 @@ export const useSettingsIntegration = () => {
         updateSettingsContext(userSettings);
         
         toast.success('Settings loaded successfully');
-      } catch (error) {
+      } catch(error: any) {
         console.error('Failed to load user settings:', error);
         toast.error('Failed to load user settings');
       }
@@ -87,7 +87,7 @@ export const useSettingsIntegration = () => {
     try {
       const success = optimizedSettingsManager.saveSettings(settings, currentUser?.uid, true);
       
-      if (success) {
+      if(success) {
         // Apply to contexts immediately
         const fullSettings = optimizedSettingsManager.getSettings(currentUser?.uid);
         applySettingsToContexts(fullSettings);
@@ -96,8 +96,8 @@ export const useSettingsIntegration = () => {
         updateSettingsContext(fullSettings);
         
         // Save to Firebase through auth context if available
-        if (currentUser && typeof (currentUser as any).saveUserSettings === 'function') {
-          (currentUser as any).saveUserSettings(settings);
+        if(currentUser && typeof currentUser?.saveUserSettings === 'function') {
+          currentUser?.saveUserSettings(settings);
         }
         
         toast.success('Settings saved successfully');
@@ -105,7 +105,7 @@ export const useSettingsIntegration = () => {
       }
       
       throw new Error('Failed to save settings');
-    } catch (error) {
+    } catch(error: any) {
       console.error('Save settings error:', error);
       toast.error('Failed to save settings');
       return false;
@@ -113,12 +113,10 @@ export const useSettingsIntegration = () => {
   }, [currentUser, applySettingsToContexts, updateSettingsContext]);
 
   // Update specific preference
-  const updatePreference = useCallback((key: keyof UserPreferences, value: any) => {
+  const updatePreference = useCallback((key: keyof UserPreferences, value) => {
     const currentSettings = optimizedSettingsManager.getSettings(currentUser?.uid);
-    const updatedSettings = {
-      ...currentSettings,
-      preferences: {
-        ...currentSettings.preferences,
+    const updatedSettings = { ...currentSettings,
+      preferences: { ...currentSettings.preferences,
         [key]: value
       }
     };
@@ -131,7 +129,7 @@ export const useSettingsIntegration = () => {
     try {
       const settings = optimizedSettingsManager.getSettings(currentUser?.uid);
       applySettingsToContexts(settings);
-    } catch (error) {
+    } catch(error: any) {
       console.error('Failed to initialize settings:', error);
     }
   }, [currentUser, applySettingsToContexts]);

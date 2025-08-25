@@ -1,0 +1,504 @@
+{
+  "success": false,
+  "timestamp": "2025-08-24T16:09:20.077Z",
+  "errors": [
+    {
+      "filePath": "src/components/bugBounty/BugBountyDashboard.tsx",
+      "line": 267,
+      "column": 12,
+      "severity": "error",
+      "code": "TS2769",
+      "message": "No overload matches this call.",
+      "details": [
+        "Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<...> & Omit<...>): Element | null', gave the following error.",
+        "Property 'component' is missing in type '{ children: Element; item: true; xs: number; sm: number; md: number; key: number; }' but required in type '{ component: ElementType<any, keyof IntrinsicElements>; }'.",
+        "Overload 2 of 2, '(props: DefaultComponentProps<GridTypeMap<{}, \"div\">>): Element | null', gave the following error.",
+        "Type '{ children: Element; item: true; xs: number; sm: number; md: number; key: number; }' is not assignable to type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'.",
+        "Property 'item' does not exist on type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'."
+      ]
+    },
+    {
+      "filePath": "src/components/bugBounty/BugBountyDashboard.tsx",
+      "line": 285,
+      "column": 10,
+      "severity": "error",
+      "code": "TS2769",
+      "message": "No overload matches this call.",
+      "details": [
+        "Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<...> & Omit<...>): Element | null', gave the following error.",
+        "Property 'component' is missing in type '{ children: Element; item: true; xs: number; md: number; }' but required in type '{ component: ElementType<any, keyof IntrinsicElements>; }'.",
+        "Overload 2 of 2, '(props: DefaultComponentProps<GridTypeMap<{}, \"div\">>): Element | null', gave the following error.",
+        "Type '{ children: Element; item: true; xs: number; md: number; }' is not assignable to type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'.",
+        "Property 'item' does not exist on type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'."
+      ]
+    },
+    {
+      "filePath": "src/components/bugBounty/BugBountyDashboard.tsx",
+      "line": 298,
+      "column": 10,
+      "severity": "error",
+      "code": "TS2769",
+      "message": "No overload matches this call.",
+      "details": [
+        "Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<...> & Omit<...>): Element | null', gave the following error.",
+        "Property 'component' is missing in type '{ children: Element; item: true; xs: number; md: number; }' but required in type '{ component: ElementType<any, keyof IntrinsicElements>; }'.",
+        "Overload 2 of 2, '(props: DefaultComponentProps<GridTypeMap<{}, \"div\">>): Element | null', gave the following error.",
+        "Type '{ children: Element; item: true; xs: number; md: number; }' is not assignable to type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'.",
+        "Property 'item' does not exist on type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'."
+      ]
+    },
+    {
+      "filePath": "src/components/bugBounty/BugBountyDashboard.tsx",
+      "line": 454,
+      "column": 12,
+      "severity": "error",
+      "code": "TS2769",
+      "message": "No overload matches this call.",
+      "details": [
+        "Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<...> & Omit<...>): Element | null', gave the following error.",
+        "Property 'component' is missing in type '{ children: Element; item: true; xs: number; sm: number; md: number; key: string; }' but required in type '{ component: ElementType<any, keyof IntrinsicElements>; }'.",
+        "Overload 2 of 2, '(props: DefaultComponentProps<GridTypeMap<{}, \"div\">>): Element | null', gave the following error.",
+        "Type '{ children: Element; item: true; xs: number; sm: number; md: number; key: string; }' is not assignable to type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'.",
+        "Property 'item' does not exist on type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'."
+      ]
+    },
+    {
+      "filePath": "src/components/bugBounty/BugBountyDashboard.tsx",
+      "line": 543,
+      "column": 16,
+      "severity": "error",
+      "code": "TS2769",
+      "message": "No overload matches this call.",
+      "details": [
+        "Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<...> & Omit<...>): Element | null', gave the following error.",
+        "Property 'component' is missing in type '{ children: Element; item: true; xs: number; sm: number; md: number; key: string; }' but required in type '{ component: ElementType<any, keyof IntrinsicElements>; }'.",
+        "Overload 2 of 2, '(props: DefaultComponentProps<GridTypeMap<{}, \"div\">>): Element | null', gave the following error.",
+        "Type '{ children: Element; item: true; xs: number; sm: number; md: number; key: string; }' is not assignable to type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'.",
+        "Property 'item' does not exist on type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'."
+      ]
+    },
+    {
+      "filePath": "src/components/bugBounty/BugBountyDashboard.tsx",
+      "line": 625,
+      "column": 10,
+      "severity": "error",
+      "code": "TS2769",
+      "message": "No overload matches this call.",
+      "details": [
+        "Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<...> & Omit<...>): Element | null', gave the following error.",
+        "Property 'component' is missing in type '{ children: Element; item: true; xs: number; md: number; }' but required in type '{ component: ElementType<any, keyof IntrinsicElements>; }'.",
+        "Overload 2 of 2, '(props: DefaultComponentProps<GridTypeMap<{}, \"div\">>): Element | null', gave the following error.",
+        "Type '{ children: Element; item: true; xs: number; md: number; }' is not assignable to type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'.",
+        "Property 'item' does not exist on type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'."
+      ]
+    },
+    {
+      "filePath": "src/components/bugBounty/BugBountyDashboard.tsx",
+      "line": 764,
+      "column": 10,
+      "severity": "error",
+      "code": "TS2769",
+      "message": "No overload matches this call.",
+      "details": [
+        "Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<...> & Omit<...>): Element | null', gave the following error.",
+        "Property 'component' is missing in type '{ children: Element; item: true; xs: number; md: number; }' but required in type '{ component: ElementType<any, keyof IntrinsicElements>; }'.",
+        "Overload 2 of 2, '(props: DefaultComponentProps<GridTypeMap<{}, \"div\">>): Element | null', gave the following error.",
+        "Type '{ children: Element; item: true; xs: number; md: number; }' is not assignable to type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'.",
+        "Property 'item' does not exist on type 'IntrinsicAttributes & GridBaseProps & { sx?: SxProps<Theme> | undefined; } & SystemProps<Theme> & Omit<...>'."
+      ]
+    },
+    {
+      "filePath": "src/components/bugBounty/BugReportForm.tsx",
+      "line": 72,
+      "column": 30,
+      "severity": "error",
+      "code": "TS7006",
+      "message": "Parameter 'field' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/bugBounty/BugReportForm.tsx",
+      "line": 72,
+      "column": 37,
+      "severity": "error",
+      "code": "TS7006",
+      "message": "Parameter 'value' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/bugBounty/BugReportForm.tsx",
+      "line": 79,
+      "column": 29,
+      "severity": "error",
+      "code": "TS7006",
+      "message": "Parameter 'field' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/bugBounty/BugReportForm.tsx",
+      "line": 79,
+      "column": 36,
+      "severity": "error",
+      "code": "TS7006",
+      "message": "Parameter 'index' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/bugBounty/BugReportForm.tsx",
+      "line": 79,
+      "column": 43,
+      "severity": "error",
+      "code": "TS7006",
+      "message": "Parameter 'value' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/bugBounty/BugReportForm.tsx",
+      "line": 95,
+      "column": 23,
+      "severity": "error",
+      "code": "TS7006",
+      "message": "Parameter 'index' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/bugBounty/BugReportForm.tsx",
+      "line": 172,
+      "column": 24,
+      "severity": "error",
+      "code": "TS7006",
+      "message": "Parameter 'step' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/bugBounty/BugReportForm.tsx",
+      "line": 193,
+      "column": 30,
+      "severity": "error",
+      "code": "TS7006",
+      "message": "Parameter 'step' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/BrandDistributionChart.tsx",
+      "line": 9,
+      "column": 35,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'data' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/BrandDistributionChart.tsx",
+      "line": 11,
+      "column": 28,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'active' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/BrandDistributionChart.tsx",
+      "line": 11,
+      "column": 36,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'payload' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/BrandDistributionChart.tsx",
+      "line": 11,
+      "column": 45,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'label' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/BrandDistributionChart.tsx",
+      "line": 65,
+      "column": 30,
+      "severity": "error",
+      "code": "TS7006",
+      "message": "Parameter 'sum' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/BrandDistributionChart.tsx",
+      "line": 65,
+      "column": 35,
+      "severity": "error",
+      "code": "TS7006",
+      "message": "Parameter 'item' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/BrandDistributionChart.tsx",
+      "line": 66,
+      "column": 39,
+      "severity": "error",
+      "code": "TS7006",
+      "message": "Parameter 'item' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/BrandDistributionChart.tsx",
+      "line": 73,
+      "column": 12,
+      "severity": "error",
+      "code": "TS7006",
+      "message": "Parameter 'a' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/BrandDistributionChart.tsx",
+      "line": 73,
+      "column": 15,
+      "severity": "error",
+      "code": "TS7006",
+      "message": "Parameter 'b' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/BrandDistributionChart.tsx",
+      "line": 102,
+      "column": 32,
+      "severity": "error",
+      "code": "TS2739",
+      "message": "Type '{}' is missing the following properties from type '{ active: any; payload: any; label: any; }': active, payload, label",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 9,
+      "column": 30,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'data' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 11,
+      "column": 28,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'active' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 11,
+      "column": 36,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'payload' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 45,
+      "column": 28,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'root' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 45,
+      "column": 34,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'depth' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 45,
+      "column": 41,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'x' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 45,
+      "column": 44,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'y' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 45,
+      "column": 47,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'width' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 45,
+      "column": 54,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'height' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 45,
+      "column": 62,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'index' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 45,
+      "column": 69,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'payload' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 45,
+      "column": 78,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'colors' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 45,
+      "column": 86,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'rank' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 45,
+      "column": 92,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'name' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 117,
+      "column": 13,
+      "severity": "error",
+      "code": "TS7006",
+      "message": "Parameter 'item' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 118,
+      "column": 12,
+      "severity": "error",
+      "code": "TS7006",
+      "message": "Parameter 'a' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 118,
+      "column": 15,
+      "severity": "error",
+      "code": "TS7006",
+      "message": "Parameter 'b' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 136,
+      "column": 23,
+      "severity": "error",
+      "code": "TS2740",
+      "message": "Type '{ colors: string[]; }' is missing the following properties from type '{ root: any; depth: any; x: any; y: any; width: any; height: any; index: any; payload: any; colors: any; rank: any; name: any; }': root, depth, x, y, and 6 more.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/CategoryTreeChart.tsx",
+      "line": 138,
+      "column": 32,
+      "severity": "error",
+      "code": "TS2739",
+      "message": "Type '{}' is missing the following properties from type '{ active: any; payload: any; }': active, payload",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/EnhancedCharts.tsx",
+      "line": 76,
+      "column": 3,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'title' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/EnhancedCharts.tsx",
+      "line": 81,
+      "column": 3,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'onRefresh' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/EnhancedCharts.tsx",
+      "line": 82,
+      "column": 3,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'onExport' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/EnhancedCharts.tsx",
+      "line": 83,
+      "column": 3,
+      "severity": "error",
+      "code": "TS7031",
+      "message": "Binding element 'subtitle' implicitly has an 'any' type.",
+      "details": []
+    },
+    {
+      "filePath": "src/components/charts/EnhancedCharts.tsx",
+      "line": 91,
+      "column": 18,
+      "severity": "error",
+      "code": "TS7053",
+      "message": "Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ primary: string[]; success: string[]; warning: string[]; error: string[]; info: string[]; gradient: { blue: string; green: string; orange: string; purple: string; }; }'.",
+      "details": [
+        "No index signature with a parameter of type 'string' was found on type '{ primary: string[]; success: string[]; warning: string[]; error: string[]; info: string[]; gradient: { blue: string; green: string; orange: string; purple: string; }; }'."
+      ]
+    },
+    {
+      "filePath": "src/components/charts/EnhancedCharts.tsx",
+      "line": 95,
+      "column": 44,
+      "severity": "error",
+      "code": "TS2339",
+      "message": "Property 'value' does not exist on type 'never'.",
+      "details": []
+    }
+  ],
+  "errorCount": 5299,
+  "warningCount": 0,
+  "totalIssues": 5299,
+  "truncated": true
+}

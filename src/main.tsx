@@ -5,60 +5,64 @@
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
+import App from './App';
 import './styles/globals.css';
 
 // Enhanced error boundary
-class ErrorBoundary extends React.Component {
-  constructor(props) {
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class ErrorBoundary extends React.Component<React.PropsWithChildren<{}>, ErrorBoundaryState> {
+  constructor(props: React.PropsWithChildren<{}>) {
     super(props);
     this.state = { hasError: false, error: null };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error, errorInfo) {
+  override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('React Error Boundary:', error, errorInfo);
   }
 
-  render() {
+  override render(): React.ReactNode {
     if (this.state.hasError) {
-      return React.createElement('div', {
-        style: {
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '100vh',
-          fontFamily: 'Arial, sans-serif',
-          textAlign: 'center',
-          padding: '20px'
-        }
-      }, [
-        React.createElement('h1', { 
-          key: 'title',
-          style: { color: '#d32f2f', marginBottom: '16px' } 
-        }, 'Application Error'),
-        React.createElement('p', { 
-          key: 'message',
-          style: { color: '#666', marginBottom: '24px' } 
-        }, `Error: ${this.state.error?.message || 'Unknown error'}`),
-        React.createElement('button', {
-          key: 'button',
-          onClick: () => window.location.reload(),
-          style: {
-            padding: '12px 24px',
-            backgroundColor: '#1976d2',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '16px'
-          }
-        }, 'Refresh Page')
-      ]);
+      return (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100vh',
+            fontFamily: 'Arial, sans-serif',
+            textAlign: 'center',
+            padding: '20px',
+          }}
+        >
+          <h1 style={{ color: '#d32f2f', marginBottom: '16px' }}>Application Error</h1>
+          <p style={{ color: '#666', marginBottom: '24px' }}>
+            Error: {this.state.error?.message || 'Unknown error'}
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            style={{
+              padding: '12px 24px',
+              backgroundColor: '#1976d2',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '16px',
+            }}
+          >
+            Refresh Page
+          </button>
+        </div>
+      );
     }
 
     return this.props.children;
@@ -68,29 +72,26 @@ class ErrorBoundary extends React.Component {
 // Initialize app with proper context nesting
 function initApp() {
   console.log('🚀 Initializing TECHNO-ETL with fixed contexts...');
-  
+
   const container = document.getElementById('root');
   if (!container) {
     console.error('Root container not found');
     return;
   }
 
-
-
   try {
     const root = createRoot(container);
-    
-    // Simple initialization - all providers are handled in UnifiedProvider within App
+
     root.render(
-      React.createElement(React.StrictMode, null,
-        React.createElement(ErrorBoundary, null,
-          React.createElement(App)
-        )
-      )
+      <React.StrictMode>
+        <ErrorBoundary>
+          <App />
+        </ErrorBoundary>
+      </React.StrictMode>
     );
-    
+
     console.log('✅ TECHNO-ETL initialized successfully');
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to initialize app:', error);
     container.innerHTML = `
       <div style="display: flex; align-items: center; justify-content: center; height: 100vh; font-family: Arial, sans-serif; text-align: center;">

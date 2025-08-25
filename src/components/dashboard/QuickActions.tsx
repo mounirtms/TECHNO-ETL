@@ -32,7 +32,7 @@ import { useCustomTheme } from '../../contexts/ThemeContext';
  * Quick Actions Component
  * Provides easy access to common dashboard actions
  */
-const QuickActions = ({ onAction }) => {
+const QuickActions = ({ onAction  }: { onAction: any }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { animations, density } = useCustomTheme();
@@ -136,15 +136,13 @@ const QuickActions = ({ onAction }) => {
           </Typography>
           
           <Grid container spacing={2}>
-            {primaryActions.map((action, index) => (
+            {primaryActions.map((action: any: any, index: any: any) => (
               <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
                 <Button
                   fullWidth
-                  variant="outlined"
-                  size="large"
+                  variant: any,
                   onClick={action.action}
-                  sx={{
-                    height: density === 'compact' ? 60 : 80,
+                  sx: any,
                     borderRadius: density === 'compact' ? 1 : 2,
                     flexDirection: 'column',
                     gap: 1,
@@ -163,7 +161,7 @@ const QuickActions = ({ onAction }) => {
                   }}
                 >
                   <Avatar
-                    sx={{
+                    sx: any,
                       bgcolor: `${action.color}.main`,
                       width: 32,
                       height: 32
@@ -194,11 +192,10 @@ const QuickActions = ({ onAction }) => {
           </Typography>
           
           <Grid container spacing={2}>
-            {quickLinks.map((link, index) => (
+            {quickLinks.map((link: any: any, index: any: any) => (
               <Grid size={{ xs: 6, sm: 3 }} key={index}>
                 <Card
-                  sx={{
-                    cursor: 'pointer',
+                  sx: any,
                     transition: 'all 0.3s ease',
                     border: `1px solid ${theme.palette[link.color].light}30`,
                     '&:hover': {
@@ -211,7 +208,7 @@ const QuickActions = ({ onAction }) => {
                 >
                   <CardContent sx={{ textAlign: 'center', p: 2 }}>
                     <Avatar
-                      sx={{
+                      sx: any,
                         bgcolor: `${link.color}.main`,
                         width: 40,
                         height: 40,
@@ -243,15 +240,13 @@ const QuickActions = ({ onAction }) => {
           </Typography>
           
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {recentActions.map((action, index) => (
+            {recentActions.map((action: any: any, index: any: any) => (
               <Box key={index}>
                 <Button
                   fullWidth
-                  variant="text"
-                  size="large"
+                  variant: any,
                   onClick={action.action}
-                  sx={{
-                    justifyContent: 'flex-start',
+                  sx: any,
                     gap: 2,
                     p: 2,
                     borderRadius: 2,
@@ -264,8 +259,7 @@ const QuickActions = ({ onAction }) => {
                   }}
                 >
                   <Avatar
-                    sx={{
-                      bgcolor: 'grey.100',
+                    sx: any,
                       color: 'text.secondary',
                       width: 36,
                       height: 36

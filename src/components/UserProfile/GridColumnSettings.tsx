@@ -16,7 +16,7 @@ import {
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useTheme } from '@mui/material/styles';
 
-const GridColumnSettings = ({ user, onSettingsChange }) => {
+const GridColumnSettings: React.FC<any> = ({ user, onSettingsChange }) => {
   const theme = useTheme();
   
   // Grid types and their default columns
@@ -104,12 +104,12 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
     const savedColumnSettings = localStorage.getItem(`columnSettings_${user?.id}`);
     const savedFilterPresets = localStorage.getItem(`filterPresets_${user?.id}`);
     
-    if (savedColumnSettings) {
+    if(savedColumnSettings) {
       setColumnSettings(JSON.parse(savedColumnSettings));
     } else {
       // Initialize with default settings
       const defaultSettings = {};
-      Object.keys(gridTypes).forEach(gridType => {
+      Object.keys(gridTypes).forEach((gridType) => {
         defaultSettings[gridType] = {
           columns: gridTypes[gridType].defaultColumns,
           density: 'standard',
@@ -120,42 +120,36 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
       setColumnSettings(defaultSettings);
     }
 
-    if (savedFilterPresets) {
+    if(savedFilterPresets) {
       setFilterPresets(JSON.parse(savedFilterPresets));
     }
   }, [user]);
 
   const handleColumnVisibilityChange = (gridType, columnField, visible) => {
-    setColumnSettings(prev => ({
-      ...prev,
-      [gridType]: {
-        ...prev[gridType],
-        columns: prev[gridType]?.columns?.map(col => 
-          col.field === columnField ? { ...col, visible } : col
+    setColumnSettings(prev => ({ ...prev,
+      [gridType]: { ...prev[gridType],
+        columns: prev[gridType]?.columns?.map((col: any: any) => 
+          col.field ===columnField ? { ...col, visible } : col
         ) || []
       }
     }));
   };
 
   const handleColumnWidthChange = (gridType, columnField, width) => {
-    setColumnSettings(prev => ({
-      ...prev,
-      [gridType]: {
-        ...prev[gridType],
-        columns: prev[gridType]?.columns?.map(col => 
-          col.field === columnField ? { ...col, width } : col
+    setColumnSettings(prev => ({ ...prev,
+      [gridType]: { ...prev[gridType],
+        columns: prev[gridType]?.columns?.map((col: any: any) => 
+          col.field ===columnField ? { ...col, width } : col
         ) || []
       }
     }));
   };
 
   const handleColumnPinChange = (gridType, columnField, pinned) => {
-    setColumnSettings(prev => ({
-      ...prev,
-      [gridType]: {
-        ...prev[gridType],
-        columns: prev[gridType]?.columns?.map(col => 
-          col.field === columnField ? { ...col, pinned } : col
+    setColumnSettings(prev => ({ ...prev,
+      [gridType]: { ...prev[gridType],
+        columns: prev[gridType]?.columns?.map((col: any: any) => 
+          col.field ===columnField ? { ...col, pinned } : col
         ) || []
       }
     }));
@@ -168,20 +162,16 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
     const [reorderedColumn] = columns.splice(result.source.index, 1);
     columns.splice(result.destination.index, 0, reorderedColumn);
 
-    setColumnSettings(prev => ({
-      ...prev,
-      [gridType]: {
-        ...prev[gridType],
+    setColumnSettings(prev => ({ ...prev,
+      [gridType]: { ...prev[gridType],
         columns
       }
     }));
   };
 
   const handleDensityChange = (gridType, density) => {
-    setColumnSettings(prev => ({
-      ...prev,
-      [gridType]: {
-        ...prev[gridType],
+    setColumnSettings(prev => ({ ...prev,
+      [gridType]: { ...prev[gridType],
         density
       }
     }));
@@ -192,20 +182,19 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
       localStorage.setItem(`columnSettings_${user?.id}`, JSON.stringify(columnSettings));
       localStorage.setItem(`filterPresets_${user?.id}`, JSON.stringify(filterPresets));
       
-      if (onSettingsChange) {
+      if(onSettingsChange) {
         onSettingsChange({ columnSettings, filterPresets });
       }
       
       setShowSuccess(true);
-    } catch (error) {
+    } catch(error: any) {
       console.error('Failed to save column settings:', error);
       setShowError(true);
     }
   };
 
   const handleResetToDefaults = (gridType) => {
-    setColumnSettings(prev => ({
-      ...prev,
+    setColumnSettings(prev => ({ ...prev,
       [gridType]: {
         columns: gridTypes[gridType].defaultColumns,
         density: 'standard',
@@ -218,11 +207,10 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
   const currentColumns = columnSettings[selectedGridType]?.columns || [];
   const currentDensity = columnSettings[selectedGridType]?.density || 'standard';
 
-  return (
-    <Box sx={{ p: 3 }}>
+  return(<Box sx={{ p: 3 } as any}>
       {/* Header */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h5" sx={{ mb: 1, fontWeight: 600 }}>
+      <Box sx={{ mb: 4 } as any}>
+        <Typography variant="h5" sx={{ mb: 1, fontWeight: 600 } as any}>
           Grid Columns & Display Settings
         </Typography>
         <Typography variant="body1" color="text.secondary">
@@ -231,18 +219,17 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
       </Box>
 
       {/* Grid Type Selector */}
-      <Card sx={{ mb: 3 }}>
+      <Card sx={{ mb: 3 } as any}>
         <CardContent>
-          <FormControl fullWidth sx={{ mb: 2 }}>
+          <FormControl fullWidth sx={{ mb: 2 } as any}>
             <InputLabel>Select Grid Type</InputLabel>
             <Select
               value={selectedGridType}
               onChange={(e) => setSelectedGridType(e.target.value)}
-              label="Select Grid Type"
-            >
-              {Object.entries(gridTypes).map(([key, config]) => (
+              label: any,
+              {Object.entries(gridTypes).map(([key: any: any, config]: any: any) => (
                 <MenuItem key={key} value={key}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
                     <GridView fontSize="small" />
                     {config.name}
                   </Box>
@@ -252,11 +239,11 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
           </FormControl>
 
           {/* Density Settings */}
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
+          <Box sx={{ mb: 3 } as any}>
+            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 } as any}>
               Grid Density
             </Typography>
-            <FormControl size="small" sx={{ minWidth: 150 }}>
+            <FormControl size="small" sx={{ minWidth: 150 } as any}>
               <Select
                 value={currentDensity}
                 onChange={(e) => handleDensityChange(selectedGridType, e.target.value)}
@@ -273,25 +260,25 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
       {/* Column Configuration */}
       <Card>
         <CardHeader
-          title={
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          title: any,
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
               <ViewColumn />
               <Typography variant="h6">
                 {gridTypes[selectedGridType]?.name} Columns
               </Typography>
             </Box>
           }
-          action={
-            <Box sx={{ display: 'flex', gap: 1 }}>
+          action: any,
+            <Box sx={{ display: 'flex', gap: 1 } as any}>
               <Button
-                size="small"
+                size: any,
                 startIcon={<RestoreFromTrash />}
                 onClick={() => handleResetToDefaults(selectedGridType)}
               >
                 Reset
               </Button>
               <Button
-                size="small"
+                size: any,
                 startIcon={<Reorder />}
                 onClick={() => setShowColumnDialog(true)}
               >
@@ -304,14 +291,13 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
           <DragDropContext onDragEnd={(result) => handleColumnReorder(selectedGridType, result)}>
             <Droppable droppableId="columns">
               {(provided) => (
-                <List {...provided.droppableProps} ref={provided.innerRef}>
-                  {currentColumns.map((column, index) => (
+                <List { ...provided.droppableProps} ref={provided.innerRef}>
+                  {currentColumns.map((column: any: any, index: any: any) => (
                     <Draggable key={column.field} draggableId={column.field} index={index}>
-                      {(provided, snapshot) => (
-                        <ListItem
+                      {(provided, snapshot) => (<ListItem
                           ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          sx={{
+                          { ...provided.draggableProps}
+                          sx: any,
                             border: `1px solid ${theme.palette.divider}`,
                             borderRadius: 1,
                             mb: 1,
@@ -320,7 +306,7 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
                               : 'transparent'
                           }}
                         >
-                          <Box {...provided.dragHandleProps} sx={{ mr: 1 }}>
+                          <Box { ...provided.dragHandleProps} sx={{ mr: 1 }}>
                             <DragIndicator color="action" />
                           </Box>
                           
@@ -329,27 +315,23 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
                             secondary={`Field: ${column.field}`}
                           />
                           
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 } as any}>
                             {/* Width Control */}
                             <TextField
-                              size="small"
-                              type="number"
-                              label="Width"
+                              size: any,
                               value={column.width}
-                              onChange={(e) => handleColumnWidthChange(
-                                selectedGridType, 
+                              onChange: any,
                                 column.field, 
                                 parseInt(e.target.value) || 100
                               )}
-                              sx={{ width: 80 }}
+                              sx={{ width: 80 } as any}
                             />
                             
                             {/* Pin Control */}
                             <Tooltip title="Pin Column">
                               <Checkbox
                                 checked={column.pinned}
-                                onChange={(e) => handleColumnPinChange(
-                                  selectedGridType, 
+                                onChange: any,
                                   column.field, 
                                   e.target.checked
                                 )}
@@ -361,8 +343,7 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
                             {/* Visibility Control */}
                             <Tooltip title="Show/Hide Column">
                               <IconButton
-                                onClick={() => handleColumnVisibilityChange(
-                                  selectedGridType, 
+                                onClick: any,
                                   column.field, 
                                   !column.visible
                                 )}
@@ -394,7 +375,7 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
         mt: 3
       }}>
         <Button
-          variant="contained"
+          variant: any,
           startIcon={<Save />}
           onClick={handleSaveSettings}
         >

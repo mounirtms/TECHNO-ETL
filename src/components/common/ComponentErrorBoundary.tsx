@@ -19,7 +19,7 @@ import {
 } from '@mui/icons-material';
 
 class ComponentErrorBoundary extends React.Component {
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.state = { 
       hasError: false, 
@@ -29,49 +29,45 @@ class ComponentErrorBoundary extends React.Component {
     };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(error: any) {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error, errorInfo) {
+  override override componentDidCatch(error: any, errorInfo: any) {
     console.error('Component Error:', error, errorInfo);
     this.setState({ errorInfo });
 
     // Log error to analytics if available
-    if (window.gtag) {
-      window.gtag('event', 'exception', {
+    if(window?.gtag) {
+      window?.gtag('event', 'exception', {
         description: `Component Error: ${error.toString()}`,
         fatal: false,
         custom_map: {
           component: this.props.componentName || 'Unknown',
-          retry_count: this.state.retryCount
+          retry_count: this.state?.retryCount
         }
       });
     }
   }
 
-  handleRetry = () => {
-    this.setState(prevState => ({
-      hasError: false,
+  handleRetry: any,
       error: null,
       errorInfo: null,
-      retryCount: prevState.retryCount + 1
+      retryCount: prevState?.retryCount + 1
     }));
   };
 
-  handleGoHome = () => {
-    window.location.href = '/dashboard';
+  handleGoHome: any,
   };
 
-  render() {
-    if (this.state.hasError) {
+  override override render() {
+    if(this.state.hasError) {
       const { componentName = 'Component', fallbackMessage, showRetry = true } = this.props;
       
-      return (
+      return Boolean(Boolean((
         <Paper 
           elevation={1} 
-          sx={{ 
-            p: 3, 
+          sx: any,
             m: 2, 
             textAlign: 'center',
             borderRadius: 2,
@@ -88,23 +84,23 @@ class ComponentErrorBoundary extends React.Component {
             </Alert>
 
             <Typography variant="body2" color="text.secondary">
-              {this.state.retryCount > 0 && `Retry attempt: ${this.state.retryCount}`}
+              {this.state?.retryCount > 0 && `Retry attempt: ${this.state?.retryCount}`}
             </Typography>
 
             <Stack direction="row" spacing={2}>
               {showRetry && (
                 <Button
-                  variant="contained"
+                  variant: any,
                   startIcon={<Refresh />}
                   onClick={this.handleRetry}
-                  disabled={this.state.retryCount >= 3}
+                  disabled={this.state?.retryCount >= 3}
                 >
-                  {this.state.retryCount >= 3 ? 'Max Retries' : 'Try Again'}
+                  {this.state?.retryCount >= 3 ? 'Max Retries' : 'Try Again'}
                 </Button>
               )}
               
               <Button
-                variant="outlined"
+                variant: any,
                 startIcon={<Home />}
                 onClick={this.handleGoHome}
               >
@@ -115,8 +111,7 @@ class ComponentErrorBoundary extends React.Component {
             {/* Development error details */}
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <Box 
-                sx={{ 
-                  mt: 2, 
+                sx: any,
                   p: 2, 
                   bgcolor: 'grey.100', 
                   borderRadius: 1, 
@@ -130,11 +125,11 @@ class ComponentErrorBoundary extends React.Component {
                   fontFamily: 'monospace'
                 }}>
                   <strong>Error:</strong> {this.state.error.toString()}
-                  {this.state.errorInfo && (
+                  {this.state?.errorInfo && (
                     <>
                       <br /><br />
                       <strong>Component Stack:</strong>
-                      {this.state.errorInfo.componentStack}
+                      {this.state?.errorInfo.componentStack}
                     </>
                   )}
                 </Typography>
@@ -142,7 +137,7 @@ class ComponentErrorBoundary extends React.Component {
             )}
           </Stack>
         </Paper>
-      );
+      )));
     }
 
     return this.props.children;
@@ -155,7 +150,7 @@ class ComponentErrorBoundary extends React.Component {
 export const withErrorBoundary = (WrappedComponent, componentName) => {
   const WithErrorBoundaryComponent = (props) => (
     <ComponentErrorBoundary componentName={componentName}>
-      <WrappedComponent {...props} />
+      <WrappedComponent { ...props} />
     </ComponentErrorBoundary>
   );
 
@@ -180,10 +175,10 @@ export const useErrorHandler = () => {
   }, []);
 
   React.useEffect(() => {
-    if (error) {
+    if(error) {
       // Log error to analytics
-      if (window.gtag) {
-        window.gtag('event', 'exception', {
+      if(window?.gtag) {
+        window?.gtag('event', 'exception', {
           description: error.toString(),
           fatal: false
         });

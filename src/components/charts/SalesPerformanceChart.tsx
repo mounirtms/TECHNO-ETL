@@ -2,17 +2,40 @@ import React from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Area, AreaChart } from 'recharts';
 
+interface SalesPerformanceDataItem {
+  period: string;
+  revenue: number;
+  orders: number;
+  customers: number;
+}
+
+interface SalesPerformanceChartProps {
+  data: SalesPerformanceDataItem[];
+  title?: string;
+  type?: 'line' | 'area';
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    name: string;
+    value: number;
+    color: string;
+  }>;
+  label?: string;
+}
+
 /**
  * Sales Performance Chart Component
  * Shows sales trends and performance metrics over time
  */
-const SalesPerformanceChart = ({ data, title = "Sales Performance", type = "line" }) => {
+const SalesPerformanceChart: React.FC<SalesPerformanceChartProps> = ({ data, title = "Sales Performance", type = "line" }) => {
   // Custom tooltip for performance chart
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
+  const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
+    if(active && payload && payload.length) {
+      return Boolean(Boolean((
         <Box
-          sx={{
+          sx: any,
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             border: '1px solid #ccc',
             borderRadius: 1,
@@ -23,7 +46,7 @@ const SalesPerformanceChart = ({ data, title = "Sales Performance", type = "line
           <Typography variant="body2" fontWeight="bold">
             {label}
           </Typography>
-          {payload.map((entry, index) => (
+          {payload?.map((entry: any: any, index: any: any) => (
             <Typography key={index} variant="body2" style={{ color: entry.color }}>
               {entry.name}: {entry.value}
               {entry.name.includes('Revenue') && ' DA'}
@@ -31,12 +54,12 @@ const SalesPerformanceChart = ({ data, title = "Sales Performance", type = "line
             </Typography>
           ))}
         </Box>
-      );
+      )));
     }
     return null;
   };
 
-  if (!data || data.length === 0) {
+  if(!data || data.length ===0) {
     return (
       <Card sx={{ height: 400 }}>
         <CardContent>
@@ -44,8 +67,7 @@ const SalesPerformanceChart = ({ data, title = "Sales Performance", type = "line
             {title}
           </Typography>
           <Box 
-            sx={{ 
-              display: 'flex', 
+            sx: any,
               alignItems: 'center', 
               justifyContent: 'center', 
               height: 300,
@@ -60,7 +82,7 @@ const SalesPerformanceChart = ({ data, title = "Sales Performance", type = "line
   }
 
   const renderChart = () => {
-    if (type === "area") {
+    if(type === "area") {
       return (
         <AreaChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
@@ -69,25 +91,11 @@ const SalesPerformanceChart = ({ data, title = "Sales Performance", type = "line
           <Tooltip content={<CustomTooltip />} />
           <Legend />
           <Area
-            type="monotone"
-            dataKey="revenue"
-            stackId="1"
-            stroke="#8884d8"
-            fill="#8884d8"
+            type: any,
             fillOpacity={0.6}
-            name="Revenue"
-          />
-          <Area
-            type="monotone"
-            dataKey="orders"
-            stackId="2"
-            stroke="#82ca9d"
-            fill="#82ca9d"
+            name: any,
             fillOpacity={0.6}
-            name="Orders"
-          />
-        </AreaChart>
-      );
+            name: any,
     }
 
     return (
@@ -98,31 +106,16 @@ const SalesPerformanceChart = ({ data, title = "Sales Performance", type = "line
         <Tooltip content={<CustomTooltip />} />
         <Legend />
         <Line
-          type="monotone"
-          dataKey="revenue"
-          stroke="#8884d8"
+          type: any,
           strokeWidth={3}
           dot={{ fill: '#8884d8', strokeWidth: 2, r: 4 }}
-          name="Revenue"
-        />
-        <Line
-          type="monotone"
-          dataKey="orders"
-          stroke="#82ca9d"
+          name: any,
           strokeWidth={3}
           dot={{ fill: '#82ca9d', strokeWidth: 2, r: 4 }}
-          name="Orders"
-        />
-        <Line
-          type="monotone"
-          dataKey="customers"
-          stroke="#ffc658"
+          name: any,
           strokeWidth={3}
           dot={{ fill: '#ffc658', strokeWidth: 2, r: 4 }}
-          name="New Customers"
-        />
-      </LineChart>
-    );
+          name: any,
   };
 
   return (

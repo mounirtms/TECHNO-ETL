@@ -35,7 +35,7 @@ import {
  * @param {number} props.stats.totalValue - Total inventory value
  * @returns {JSX.Element} MDM statistics cards
  */
-const MDMStatsCards = ({ stats }) => {
+const MDMStatsCards = ({ stats  }: { stats: any }) => {
   /**
    * Generate statistics cards configuration
    * Creates an array of card configurations with proper formatting

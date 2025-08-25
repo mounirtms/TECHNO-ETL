@@ -15,7 +15,7 @@ import TooltipWrapper from '../TooltipWrapper';
 const theme = createTheme();
 
 // Test wrapper component
-const TestWrapper = ({ children }) => (
+const TestWrapper = ({ children  }: { children: any }) => (
   <ThemeProvider theme={theme}>
     {children}
   </ThemeProvider>

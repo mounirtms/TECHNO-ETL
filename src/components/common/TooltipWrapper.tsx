@@ -4,9 +4,9 @@
  * Fixes the common issue where Tooltip doesn't work with disabled buttons
  */
 
-import React from 'react';
-import { Tooltip } from '@mui/material';
-import PropTypes from 'prop-types';
+import React, { ReactNode, ReactElement, cloneElement } from 'react';
+import { Tooltip, TooltipProps } from '@mui/material';
+import { TooltipWrapperProps } from '../../types/baseComponents';
 
 /**
  * TooltipWrapper Component
@@ -16,28 +16,31 @@ import PropTypes from 'prop-types';
  */
 const TooltipWrapper = ({ 
   children, 
-  disabled = false, 
+  disabled: any,
   title, 
-  placement = 'top',
-  arrow = true,
+  placement: any,
+  arrow: any,
   ...tooltipProps 
-}) => {
+}: TooltipWrapperProps) => {
+  // If the children is not a valid React element, wrap it in a span
+  const childElement = React.isValidElement(children) 
+    ? children 
+    : <span>{children}</span>;
   // If the element is disabled, wrap it in a span
-  if (disabled) {
+  if(disabled) {
     return (
       <Tooltip 
         title={title} 
         placement={placement}
         arrow={arrow}
-        {...tooltipProps}
+        { ...tooltipProps}
       >
         <span 
-          style={{ 
-            display: 'inline-block',
+          style: any,
             cursor: 'not-allowed'
           }}
         >
-          {children}
+          {childElement}
         </span>
       </Tooltip>
     );
@@ -49,32 +52,11 @@ const TooltipWrapper = ({
       title={title} 
       placement={placement}
       arrow={arrow}
-      {...tooltipProps}
+      { ...tooltipProps}
     >
-      {children}
+      {childElement}
     </Tooltip>
   );
-};
-
-TooltipWrapper.propTypes = {
-  children: PropTypes.node.isRequired,
-  disabled: PropTypes.bool,
-  title: PropTypes.string.isRequired,
-  placement: PropTypes.oneOf([
-    'bottom-end',
-    'bottom-start',
-    'bottom',
-    'left-end',
-    'left-start',
-    'left',
-    'right-end',
-    'right-start',
-    'right',
-    'top-end',
-    'top-start',
-    'top'
-  ]),
-  arrow: PropTypes.bool
 };
 
 export default TooltipWrapper;

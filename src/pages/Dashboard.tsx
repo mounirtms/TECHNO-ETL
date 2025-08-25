@@ -38,11 +38,11 @@ import {
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useCustomTheme } from '../contexts/ThemeContext';
-import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '@mui/material/styles';
 import { toast } from 'react-toastify';
 import { useTab } from '../contexts/TabContext';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useAppearanceSettings } from '../hooks/useUserSettings';
 import { StatsCards } from '../components/common/StatsCards';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
@@ -90,31 +90,25 @@ import SyncProgressBar from '../components/SyncProgressBar';
 /**
  * Modern, Clean Dashboard Component
  * Simplified and professional dashboard with modular components
- * Enhanced with proper theme and language persistence
+ * Enhanced with unified settings system
  */
 const Dashboard = () => {
   const muiTheme = useTheme(); // MUI theme for shadows and other MUI-specific properties
-  const { mode, isDark, colorPreset, density, animations } = useCustomTheme();
-  const { currentLanguage, translate, languages } = useLanguage();
+  const { isDark, theme, fontSize, language, isRTL } = useAppearanceSettings();
+  const { translate } = useLanguage();
   const { openTab } = useTab();
-  
-  // Check if current language is RTL
-  const isRTL = useMemo(() => languages[currentLanguage]?.dir === 'rtl', [languages, currentLanguage]);
-  
-  // Use custom theme colors based on current color preset and mode
-  const customColors = muiTheme.palette; // This will reflect the current theme
   
   // Debug logging for theme persistence issues
   useEffect(() => {
     console.log('🎨 Dashboard theme state:', {
-      mode,
+      theme,
       isDark,
-      colorPreset,
-      currentLanguage,
+      fontSize,
+      language,
       isRTL,
       paletteMode: muiTheme.palette.mode
     });
-  }, [mode, isDark, colorPreset, currentLanguage, isRTL, muiTheme.palette.mode]);
+  }, [theme, isDark, fontSize, language, isRTL, muiTheme.palette.mode]);
   
   // Date range state
   const [startDate, setStartDate] = useState(() => {
@@ -150,8 +144,8 @@ const Dashboard = () => {
 
   // Dashboard settings with unified settings integration
   const [dashboardSettings, setDashboardSettings] = useState(() => {
-    // Try to load from unified settings first
-    const unifiedSettings = JSON.parse(localStorage.getItem('techno-etl-settings') || '{}');
+    // Try to load from unified settings using the new system
+    const unifiedSettings = JSON.parse(localStorage.getItem('techno-etl-unified-settings') || '{}');
     const savedDashboardSettings = unifiedSettings.dashboard;
 
     const defaultSettings = {
@@ -222,7 +216,7 @@ const Dashboard = () => {
         const cacheKey = 'enhancedDashboardData';
         const cachedData = unifiedMagentoService._getCachedResponse && unifiedMagentoService._getCachedResponse(cacheKey);
 
-        if (cachedData) {
+        if(cachedData) {
             console.log('✅ Loaded enhanced data from cache');
             setEnhancedData(cachedData);
             setEnhancedLoading(false);
@@ -253,8 +247,7 @@ const Dashboard = () => {
         };
         
         // Execute all requests with individual timeouts
-        const responses = await Promise.allSettled(
-            endpoints.map(endpoint => 
+        const responses = await Promise.allSettled(endpoints.map((endpoint: any: any) => 
                 createTimeoutPromise(endpoint).catch(error => {
                     console.warn(`⚠️ Endpoint ${endpoint.path} failed:`, error.message);
                     return { data: null, error: error.message };
@@ -266,7 +259,7 @@ const Dashboard = () => {
         const data = {};
         endpoints.forEach((endpoint, index) => {
             const response = responses[index];
-            if (response.status === 'fulfilled' && response.value?.data) {
+            if(response.status === 'fulfilled' && response.value?.data) {
                 data[endpoint.key] = response.value.data;
             } else {
                 data[endpoint.key] = endpoint.key.includes('Distribution') || endpoint.key === 'productTypes' ? [] : null;
@@ -277,16 +270,16 @@ const Dashboard = () => {
         setEnhancedData(data);
         
         // Cache successful data
-        if (unifiedMagentoService._setCachedResponse) {
+        if(unifiedMagentoService._setCachedResponse) {
             unifiedMagentoService._setCachedResponse(cacheKey, data);
             console.log('💾 Cached enhanced data for faster subsequent loads');
         }
         
         // Log successful loads
-        const successfulLoads = responses.filter(r => r.status === 'fulfilled' && r.value?.data).length;
+        const successfulLoads = responses.filter((r: any: any) => r.status === 'fulfilled' && r.value?.data).length;
         console.log(`✅ Dashboard data loaded: ${successfulLoads}/${endpoints.length} endpoints successful`);
         
-    } catch (error) {
+    } catch(error: any) {
         console.error('❌ Error loading enhanced dashboard data:', error);
         
         // Set empty fallback data to prevent UI breaking
@@ -331,7 +324,7 @@ const Dashboard = () => {
         position: 'top-center',
         autoClose: 2000
       });
-    } catch (error) {
+    } catch(error: any) {
       toast.error('Failed to sync prices', {
         position: 'top-center',
         autoClose: 3000
@@ -343,7 +336,7 @@ const Dashboard = () => {
     try {
       await syncAllStocks();
       // Success notification is handled in the controller
-    } catch (error) {
+    } catch(error: any) {
       toast.error('Failed to sync stocks', {
         position: 'top-center',
         autoClose: 3000
@@ -360,16 +353,21 @@ const Dashboard = () => {
   const handleSettingsChange = (newSettings) => {
     setDashboardSettings(newSettings);
 
-    // Save to unified settings
+    // Save to unified settings system
     try {
-      const currentUnifiedSettings = JSON.parse(localStorage.getItem('techno-etl-settings') || '{}');
-      const updatedUnifiedSettings = {
-        ...currentUnifiedSettings,
+      const currentUnifiedSettings = JSON.parse(localStorage.getItem('techno-etl-unified-settings') || '{}');
+      const updatedUnifiedSettings = { ...currentUnifiedSettings,
         dashboard: newSettings
       };
-      localStorage.setItem('techno-etl-settings', JSON.stringify(updatedUnifiedSettings));
+      localStorage.setItem('techno-etl-unified-settings', JSON.stringify(updatedUnifiedSettings));
+      
+      // Emit settings change event
+      window.dispatchEvent(new CustomEvent('settingsSync', {
+        detail: { dashboardSettings: newSettings }
+      }));
+      
       console.log('Dashboard settings saved to unified settings');
-    } catch (error) {
+    } catch(error: any) {
       console.error('Failed to save dashboard settings to unified settings:', error);
       // Fallback to local storage
       localStorage.setItem('dashboardSettings', JSON.stringify(newSettings));
@@ -419,7 +417,7 @@ const Dashboard = () => {
       const currentUnifiedSettings = JSON.parse(localStorage.getItem('techno-etl-settings') || '{}');
       delete currentUnifiedSettings.dashboard;
       localStorage.setItem('techno-etl-settings', JSON.stringify(currentUnifiedSettings));
-    } catch (error) {
+    } catch(error: any) {
       console.error('Failed to reset dashboard settings in unified settings:', error);
     }
 
@@ -431,21 +429,20 @@ const Dashboard = () => {
   // This effect is kept for backward compatibility and migration
   useEffect(() => {
     const oldSettings = localStorage.getItem('dashboardSettings');
-    if (oldSettings) {
+    if(oldSettings) {
       try {
         const parsedOldSettings = JSON.parse(oldSettings);
         // Migrate old settings to unified settings
         const currentUnifiedSettings = JSON.parse(localStorage.getItem('techno-etl-settings') || '{}');
-        if (!currentUnifiedSettings.dashboard) {
-          const updatedUnifiedSettings = {
-            ...currentUnifiedSettings,
+        if(!currentUnifiedSettings.dashboard) {
+          const updatedUnifiedSettings = { ...currentUnifiedSettings,
             dashboard: parsedOldSettings
           };
           localStorage.setItem('techno-etl-settings', JSON.stringify(updatedUnifiedSettings));
           localStorage.removeItem('dashboardSettings'); // Clean up old storage
           console.log('Migrated dashboard settings to unified settings');
         }
-      } catch (error) {
+      } catch(error: any) {
         console.error('Error migrating dashboard settings:', error);
       }
     }
@@ -458,13 +455,13 @@ const Dashboard = () => {
       const pricesData = await getPrices();
       console.log('📊 Price data received:', pricesData.data);
 
-      if (pricesData.data) {
+      if(pricesData.data) {
         setPriceData(pricesData.data);
         setPriceSyncDialogOpen(true);
       } else {
         alert('No price data available for sync');
       }
-    } catch (error) {
+    } catch(error: any) {
       console.error('❌ Failed to fetch price data:', error);
       alert('Failed to fetch price data: ' + error.message);
     }
@@ -483,7 +480,7 @@ const Dashboard = () => {
   const handleNavigate = (section, params = {}) => {
     console.log('Dashboard: Navigating to section:', section, 'with params:', params);
 
-    switch (section) {
+    switch(section) {
       case 'revenue':
       case 'analytics':
         openTab('Charts');
@@ -512,7 +509,7 @@ const Dashboard = () => {
 
   // Handle actions
   const handleAction = (action) => {
-    switch (action) {
+    switch(action) {
       case 'add-product':
       case 'import-data':
       case 'bulk-media-upload':
@@ -535,8 +532,7 @@ const Dashboard = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box 
-        sx={{ 
-          p: 3, 
+        sx: any,
           minHeight: '100vh', 
           bgcolor: 'background.default',
           direction: isRTL ? 'rtl' : 'ltr',
@@ -547,8 +543,7 @@ const Dashboard = () => {
         {/* Header */}
         <Paper 
           elevation={0}
-          sx={{ 
-            p: 3, 
+          sx: any,
             mb: 3, 
             borderRadius: 3,
             background: `linear-gradient(135deg, ${muiTheme.palette.primary.main}15, ${muiTheme.palette.secondary.main}08)`,
@@ -582,13 +577,13 @@ const Dashboard = () => {
                 <DatePicker
                   label={translate('dashboard.startDate') || 'Start Date'}
                   value={startDate}
-                  onChange={setStartDate}
+                  onChange={(e) => setStartDate}
                   slotProps={{ textField: { size: 'small', sx: { width: 140 } } }}
                 />
                 <DatePicker
                   label={translate('dashboard.endDate') || 'End Date'}
                   value={endDate}
-                  onChange={setEndDate}
+                  onChange={(e) => setEndDate}
                   slotProps={{ textField: { size: 'small', sx: { width: 140 } } }}
                 />
               </Box>
@@ -597,12 +592,10 @@ const Dashboard = () => {
               <Tooltip title={translate('dashboard.syncPrices') || 'Sync Prices to Magento'}>
                 <span>
                   <Button
-                    variant="outlined"
-                    size="small"
+                    variant: any,
                     onClick={handlePriceSync}
                     startIcon={<PriceIcon />}
-                    sx={{ 
-                      mr: isRTL ? 0 : 1,
+                    sx: any,
                       ml: isRTL ? 1 : 0
                     }}
                     disabled={loading}
@@ -614,12 +607,10 @@ const Dashboard = () => {
 
               <Tooltip title={translate('dashboard.syncStocks') || 'Sync Stocks'}>
                 <Button
-                  variant="outlined"
-                  size="small"
+                  variant: any,
                   onClick={handleSyncStocks}
                   startIcon={<StockIcon />}
-                  sx={{ 
-                    mr: isRTL ? 0 : 1,
+                  sx: any,
                     ml: isRTL ? 1 : 0
                   }}
                 >
@@ -630,11 +621,9 @@ const Dashboard = () => {
               {/* Action Buttons */}
               <Tooltip title={translate('dashboard.viewAnalytics') || 'View Analytics'}>
                 <Fab
-                  size="medium"
-                  color="secondary"
+                  size: any,
                   onClick={() => openTab('Charts')}
-                  sx={{ 
-                    boxShadow: 3,
+                  sx: any,
                     margin: isRTL ? '0 4px 0 0' : '0 0 0 4px'
                   }}
                 >
@@ -645,12 +634,10 @@ const Dashboard = () => {
               <Tooltip title={loading ? (translate('common.refreshing') || 'Refreshing...') : (translate('common.refresh') || 'Refresh Data')}>
                 <span>
                   <Fab
-                    size="medium"
-                    color="primary"
+                    size: any,
                     onClick={handleRefresh}
                     disabled={loading}
-                    sx={{ 
-                      boxShadow: 3,
+                    sx: any,
                       margin: isRTL ? '0 4px 0 0' : '0 0 0 4px'
                     }}
                   >
@@ -662,8 +649,7 @@ const Dashboard = () => {
               <Tooltip title={translate('common.settings') || 'Settings'}>
                 <IconButton
                   onClick={handleSettingsOpen}
-                  sx={{
-                    bgcolor: 'background.paper',
+                  sx: any,
                     boxShadow: 2,
                     '&:hover': { boxShadow: 4 },
                     margin: isRTL ? '0 4px 0 0' : '0 0 0 4px'
@@ -681,10 +667,7 @@ const Dashboard = () => {
           anchorEl={settingsAnchorEl}
           open={Boolean(settingsAnchorEl)}
           onClose={handleSettingsClose}
-          slotProps={{
-            paper: {
-              sx: {
-                minWidth: 240,
+          slotProps: any,
                 borderRadius: 2,
                 boxShadow: muiTheme.shadows[8]
               }
@@ -748,56 +731,52 @@ const Dashboard = () => {
             </Box>
 
             {/* Professional Metric Cards */}
-            <Grid container spacing={3} sx={{ mb: 4 }}>
+            <Grid { ...{container: true}} spacing={3} sx={{ mb: 4 }}>
               <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                 <ProfessionalMetricCard
-                  title="Total Revenue"
+                  title: any,
                   value={stats?.totalRevenue || 0}
                   previousValue={stats?.previousRevenue || 0}
                   icon={AttachMoney}
-                  color="success"
+                  color: any,
                   loading={loading}
-                  subtitle="This month"
-                  trend="vs last month"
+                  subtitle: any,
                   onClick={() => openTab('Orders')}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                 <ProfessionalMetricCard
-                  title="Active Orders"
+                  title: any,
                   value={stats?.totalOrders || 0}
                   previousValue={stats?.previousOrders || 0}
                   icon={ShoppingCart}
-                  color="primary"
+                  color: any,
                   loading={loading}
-                  subtitle="Processing"
-                  trend="vs last month"
+                  subtitle: any,
                   onClick={() => openTab('Orders')}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                 <ProfessionalMetricCard
-                  title="Total Customers"
+                  title: any,
                   value={stats?.totalCustomers || 0}
                   previousValue={stats?.previousCustomers || 0}
                   icon={People}
-                  color="info"
+                  color: any,
                   loading={loading}
-                  subtitle="Registered"
-                  trend="vs last month"
+                  subtitle: any,
                   onClick={() => openTab('Customers')}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6, lg: 3 }}>
                 <ProfessionalMetricCard
-                  title="Products"
+                  title: any,
                   value={stats?.totalProducts || 0}
                   previousValue={stats?.previousProducts || 0}
                   icon={Category}
-                  color="warning"
+                  color: any,
                   loading={loading}
-                  subtitle="In catalog"
-                  trend="vs last month"
+                  subtitle: any,
                   onClick={() => openTab('ProductsGrid')}
                 />
               </Grid>
@@ -806,7 +785,7 @@ const Dashboard = () => {
             {/* Dashboard Test Summary (temporary for testing) */}
             <DashboardTestSummary />
 
-            <Grid container spacing={3}>
+            <Grid { ...{container: true}} spacing={3}>
               {/* Main Dashboard Overview */}
               <Grid size={{ xs: 12, lg: 8 }}>
                 <DashboardOverview
@@ -894,7 +873,7 @@ const Dashboard = () => {
                   🚀 Enhanced Analytics
                 </Typography>
                 <Button
-                  variant="outlined"
+                  variant: any,
                   onClick={() => setSettingsDialogOpen(true)}
                   startIcon={<SettingsIcon />}
                 >
@@ -902,15 +881,15 @@ const Dashboard = () => {
                 </Button>
               </Box>
 
-              <Grid container spacing={3}>
+              <Grid { ...{container: true}} spacing={3}>
                 {/* Professional Chart Widgets */}
                 <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                   <ProfessionalChartWidget
-                    title="📈 Revenue Trend"
+                    title: any,
                     data={chartData}
-                    chartType="area"
+                    chartType: any,
                     loading={enhancedLoading}
-                    color="success"
+                    color: any,
                     onRefresh={() => handleRefresh()}
                     onExpand={() => openTab('Charts')}
                   />
@@ -918,11 +897,11 @@ const Dashboard = () => {
 
                 <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                   <ProfessionalChartWidget
-                    title="📊 Order Volume"
+                    title: any,
                     data={customerData}
-                    chartType="bar"
+                    chartType: any,
                     loading={enhancedLoading}
-                    color="primary"
+                    color: any,
                     onRefresh={() => handleRefresh()}
                     onExpand={() => openTab('Charts')}
                   />
@@ -936,9 +915,9 @@ const Dashboard = () => {
                 ) : (
                   <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                     <ProfessionalProgressWidget
-                      title="🎯 Performance Metrics"
+                      title: any,
                       loading={enhancedLoading}
-                      items={[
+                      items: any,
                         { label: 'Order Fulfillment', value: 85, color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
                         { label: 'Customer Satisfaction', value: 92, color: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' },
                         { label: 'Inventory Accuracy', value: 78, color: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' },
@@ -953,7 +932,7 @@ const Dashboard = () => {
                   <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                     <ProductStatsChart
                       data={enhancedData.productStats}
-                      title="📊 Product Status Distribution"
+                      title: any,
                       loading={enhancedLoading}
                       compact={dashboardSettings.general.compactMode}
                     />
@@ -965,7 +944,7 @@ const Dashboard = () => {
                   <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                     <BrandDistributionChart
                       data={enhancedData.brandDistribution}
-                      title="🏷️ Top Brands"
+                      title: any,
                       loading={enhancedLoading}
                       compact={dashboardSettings.general.compactMode}
                     />
@@ -975,9 +954,9 @@ const Dashboard = () => {
                 {/* System Status Widget */}
                 <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                   <ProfessionalStatusWidget
-                    title="🔧 System Status"
+                    title: any,
                     loading={enhancedLoading}
-                    items={[
+                    items: any,
                       { label: 'Database Connection', status: 'success', description: 'All systems operational', badge: 'Online' },
                       { label: 'API Services', status: 'success', description: 'Response time: 120ms', badge: 'Healthy' },
                       { label: 'Cache System', status: 'warning', description: 'Memory usage: 78%', badge: 'Monitor' },
@@ -991,7 +970,7 @@ const Dashboard = () => {
                   <Grid size={{ xs: 12, md: 6, lg: 4 }}>
                     <ProductAttributesChart
                       data={enhancedData.productAttributes}
-                      title="🔧 Product Features"
+                      title: any,
                       loading={enhancedLoading}
                       compact={dashboardSettings.general.compactMode}
                     />
@@ -1003,7 +982,7 @@ const Dashboard = () => {
                   <Grid size={{ xs: 12, md: 6 }}>
                     <CategoryTreeChart
                       data={enhancedData.categoryDistribution}
-                      title="🌳 Category Distribution"
+                      title: any,
                       loading={enhancedLoading}
                       compact={dashboardSettings.general.compactMode}
                     />
@@ -1015,8 +994,7 @@ const Dashboard = () => {
                   <Grid size={{ xs: 12, md: 6 }}>
                     <SalesPerformanceChart
                       data={enhancedData.salesPerformance}
-                      title="💹 Sales Trends"
-                      type="area"
+                      title: any,
                       loading={enhancedLoading}
                       compact={dashboardSettings.general.compactMode}
                     />
@@ -1028,7 +1006,7 @@ const Dashboard = () => {
                   <Grid size={{ xs: 12 }}>
                     <InventoryStatusChart
                       data={enhancedData.inventoryStatus}
-                      title="📦 Inventory Overview"
+                      title: any,
                       loading={enhancedLoading}
                       compact={dashboardSettings.general.compactMode}
                     />

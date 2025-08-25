@@ -77,18 +77,17 @@ const COLORS = {
 /**
  * Enhanced Metric Card with animations and trends
  */
-export const ProfessionalMetricCard = ({
-  title,
+export const ProfessionalMetricCard: React.FC<{title: any, value: any, previousValue: any, icon: Icon: any, color: any: any, loading: any: any, subtitle: any, trend: any, onClick: any, actions: any}> = ({ title,
   value,
   previousValue,
   icon: Icon,
-  color = 'primary',
-  loading = false,
+  color: any,
+  loading: any,
   subtitle,
   trend,
   onClick,
   actions
-}) => {
+ }) => {
   const theme = useTheme();
   const [isHovered, setIsHovered] = useState(false);
 
@@ -99,7 +98,7 @@ export const ProfessionalMetricCard = ({
   
   const isPositiveTrend = trendPercentage >= 0;
 
-  return (
+  return Boolean(Boolean((
     <motion.div
       whileHover={{ y: -4, scale: 1.02 }}
       transition={{ duration: 0.2 }}
@@ -107,8 +106,7 @@ export const ProfessionalMetricCard = ({
       onHoverEnd={() => setIsHovered(false)}
     >
       <Card
-        sx={{
-          height: '100%',
+        sx: any,
           background: COLORS.gradient[color] || COLORS.gradient.primary,
           color: 'white',
           cursor: onClick ? 'pointer' : 'default',
@@ -132,7 +130,7 @@ export const ProfessionalMetricCard = ({
         <CardContent sx={{ position: 'relative', zIndex: 1 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
             <Avatar
-              sx={{
+              sx: any,
                 bgcolor: 'rgba(255, 255, 255, 0.2)',
                 color: 'white',
                 width: 48,
@@ -182,27 +180,26 @@ export const ProfessionalMetricCard = ({
         </CardContent>
       </Card>
     </motion.div>
-  );
+  )));
 };
 
 /**
  * Professional Chart Widget with enhanced styling
  */
-export const ProfessionalChartWidget = ({
-  title,
+export const ProfessionalChartWidget: React.FC<{title: any, data: any, chartType: any: any, loading: any: any, height: any: any, showLegend: any: any, color: any: any, onRefresh: any, onExpand: any}> = ({ title,
   data,
-  chartType = 'line',
-  loading = false,
-  height = 300,
-  showLegend = true,
-  color = 'primary',
+  chartType: any,
+  loading: any,
+  height: any,
+  showLegend: any,
+  color: any,
   onRefresh,
   onExpand
-}) => {
+ }) => {
   const theme = useTheme();
 
   const renderChart = () => {
-    if (loading) {
+    if(loading) {
       return (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height }}>
           <CircularProgress />
@@ -215,10 +212,10 @@ export const ProfessionalChartWidget = ({
       margin: { top: 20, right: 30, left: 20, bottom: 20 }
     };
 
-    switch (chartType) {
+    switch(chartType) {
       case 'area':
         return (
-          <AreaChart {...chartProps}>
+          <AreaChart { ...chartProps}>
             <defs>
               <linearGradient id={`gradient-${color}`} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor={COLORS[color]} stopOpacity={0.8}/>
@@ -229,16 +226,14 @@ export const ProfessionalChartWidget = ({
             <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
             <YAxis stroke={theme.palette.text.secondary} />
             <RechartsTooltip 
-              contentStyle={{
-                backgroundColor: theme.palette.background.paper,
+              contentStyle: any,
                 border: `1px solid ${theme.palette.divider}`,
                 borderRadius: theme.shape.borderRadius
               }}
             />
             {showLegend && <Legend />}
             <Area
-              type="monotone"
-              dataKey="value"
+              type: any,
               stroke={COLORS[color]}
               fill={`url(#gradient-${color})`}
               strokeWidth={3}
@@ -248,13 +243,12 @@ export const ProfessionalChartWidget = ({
 
       case 'bar':
         return (
-          <BarChart {...chartProps}>
+          <BarChart { ...chartProps}>
             <CartesianGrid strokeDasharray="3 3" stroke={alpha(theme.palette.divider, 0.3)} />
             <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
             <YAxis stroke={theme.palette.text.secondary} />
             <RechartsTooltip 
-              contentStyle={{
-                backgroundColor: theme.palette.background.paper,
+              contentStyle: any,
                 border: `1px solid ${theme.palette.divider}`,
                 borderRadius: theme.shape.borderRadius
               }}
@@ -266,17 +260,16 @@ export const ProfessionalChartWidget = ({
 
       case 'pie':
         return (
-          <PieChart {...chartProps}>
+          <PieChart { ...chartProps}>
             <Pie
               data={data}
-              cx="50%"
-              cy="50%"
+              cx: any,
               outerRadius={80}
               fill={COLORS[color]}
-              dataKey="value"
+              dataKey: any,
               label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
             >
-              {data.map((entry, index) => (
+              {data.map((entry: any: any, index: any: any) => (
                 <Cell key={`cell-${index}`} fill={Object.values(COLORS)[index % Object.values(COLORS).length]} />
               ))}
             </Pie>
@@ -286,21 +279,19 @@ export const ProfessionalChartWidget = ({
 
       default: // line
         return (
-          <LineChart {...chartProps}>
+          <LineChart { ...chartProps}>
             <CartesianGrid strokeDasharray="3 3" stroke={alpha(theme.palette.divider, 0.3)} />
             <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
             <YAxis stroke={theme.palette.text.secondary} />
             <RechartsTooltip 
-              contentStyle={{
-                backgroundColor: theme.palette.background.paper,
+              contentStyle: any,
                 border: `1px solid ${theme.palette.divider}`,
                 borderRadius: theme.shape.borderRadius
               }}
             />
             {showLegend && <Legend />}
             <Line
-              type="monotone"
-              dataKey="value"
+              type: any,
               stroke={COLORS[color]}
               strokeWidth={3}
               dot={{ fill: COLORS[color], strokeWidth: 2, r: 4 }}
@@ -311,7 +302,7 @@ export const ProfessionalChartWidget = ({
     }
   };
 
-  return (
+  return Boolean(Boolean((
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <CardContent sx={{ pb: 1 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -343,21 +334,19 @@ export const ProfessionalChartWidget = ({
         </ResponsiveContainer>
       </CardContent>
     </Card>
-  );
+  )));
 };
 
 /**
  * Professional Progress Widget
  */
-export const ProfessionalProgressWidget = ({
-  title,
+export const ProfessionalProgressWidget: React.FC<{title: any, items: any, loading: any: any, : any}> = ({ title,
   items,
-  loading = false
-}) => {
+  loading: any,
+ }) => {
   const theme = useTheme();
 
-  return (
-    <Card sx={{ height: '100%' }}>
+  return(<Card sx={{ height: '100%' }}>
       <CardContent>
         <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
           {title}
@@ -365,7 +354,7 @@ export const ProfessionalProgressWidget = ({
 
         {loading ? (
           <Stack spacing={2}>
-            {[1, 2, 3].map((i) => (
+            {[1, 2, 3].map((i: any: any) => (
               <Box key={i}>
                 <Skeleton variant="text" width="60%" />
                 <Skeleton variant="rectangular" height={8} sx={{ mt: 1 }} />
@@ -374,7 +363,7 @@ export const ProfessionalProgressWidget = ({
           </Stack>
         ) : (
           <Stack spacing={3}>
-            {items.map((item, index) => (
+            {items.map((item: any: any, index: any: any) => (
               <Box key={index}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                   <Typography variant="body2" sx={{ fontWeight: 500 }}>
@@ -385,10 +374,9 @@ export const ProfessionalProgressWidget = ({
                   </Typography>
                 </Box>
                 <LinearProgress
-                  variant="determinate"
+                  variant: any,
                   value={item.value}
-                  sx={{
-                    height: 8,
+                  sx: any,
                     borderRadius: 4,
                     backgroundColor: alpha(theme.palette.primary.main, 0.1),
                     '& .MuiLinearProgress-bar': {
@@ -409,13 +397,12 @@ export const ProfessionalProgressWidget = ({
 /**
  * Professional Status Widget
  */
-export const ProfessionalStatusWidget = ({
-  title,
+export const ProfessionalStatusWidget: React.FC<{title: any, items: any, loading: any: any, : any}> = ({ title,
   items,
-  loading = false
-}) => {
+  loading: any,
+ }) => {
   const getStatusIcon = (status) => {
-    switch (status) {
+    switch(status) {
       case 'success': return <CheckCircle sx={{ color: COLORS.success }} />;
       case 'warning': return <Warning sx={{ color: COLORS.warning }} />;
       case 'error': return <Error sx={{ color: COLORS.error }} />;
@@ -424,7 +411,7 @@ export const ProfessionalStatusWidget = ({
   };
 
   const getStatusColor = (status) => {
-    switch (status) {
+    switch(status) {
       case 'success': return COLORS.success;
       case 'warning': return COLORS.warning;
       case 'error': return COLORS.error;
@@ -432,8 +419,7 @@ export const ProfessionalStatusWidget = ({
     }
   };
 
-  return (
-    <Card sx={{ height: '100%' }}>
+  return(<Card sx={{ height: '100%' }}>
       <CardContent>
         <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
           {title}
@@ -441,7 +427,7 @@ export const ProfessionalStatusWidget = ({
 
         {loading ? (
           <Stack spacing={2}>
-            {[1, 2, 3, 4].map((i) => (
+            {[1, 2, 3, 4].map((i: any: any) => (
               <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Skeleton variant="circular" width={24} height={24} />
                 <Skeleton variant="text" width="70%" />
@@ -450,7 +436,7 @@ export const ProfessionalStatusWidget = ({
           </Stack>
         ) : (
           <Stack spacing={2}>
-            {items.map((item, index) => (
+            {items.map((item: any: any, index: any: any) => (
               <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 {getStatusIcon(item.status)}
                 <Box sx={{ flexGrow: 1 }}>
@@ -466,8 +452,7 @@ export const ProfessionalStatusWidget = ({
                 {item.badge && (
                   <Chip
                     label={item.badge}
-                    size="small"
-                    sx={{
+                    size: any,
                       backgroundColor: alpha(getStatusColor(item.status), 0.1),
                       color: getStatusColor(item.status),
                       fontWeight: 600

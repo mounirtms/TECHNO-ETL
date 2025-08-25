@@ -10,20 +10,20 @@
  * @param {Object} processors - Data processors
  * @returns {Array} - Processed rows
  */
-export const processGridRows = (rows, processors = {}) => {
+export const processGridRows = (rows: any[], processors: {[key: string]: any} = {}) => {
   // Use WeakMap for caching processed rows
   const processedCache = new WeakMap();
   
-  if (processedCache.has(rows)) {
+  if(processedCache.has(rows)) {
     return processedCache.get(rows);
   }
   
-  const processed = rows.map((row, index) => {
+  const processed = rows.map((row: any: any: any, index: number: any: any) => {
     // Apply processors if available
     let processedRow = { ...row, id: row.id || index };
     
-    Object.keys(processors).forEach(key => {
-      if (processors[key] && typeof processors[key] === 'function') {
+    Object.keys(processors).forEach((key: string) => {
+      if(processors[key] && typeof processors[key] ==='function') {
         processedRow[key] = processors[key](row[key], row);
       }
     });
@@ -41,19 +41,17 @@ export const processGridRows = (rows, processors = {}) => {
  * @param {Object} overrides - Column overrides
  * @returns {Array} - Optimized column definitions
  */
-export const generateOptimizedColumns = (baseColumns, overrides = {}) => {
-  return baseColumns.map(column => {
+export const generateOptimizedColumns = (baseColumns: any[], overrides: {[key: string]: any} = {}) => {
+  return baseColumns.map((column: any: any: any) => {
     // Apply overrides
-    const overriddenColumn = {
-      ...column,
-      ...overrides[column.field]
+    const overriddenColumn = { ...column, ...overrides[column.field]
     };
     
     // Optimize renderers
-    if (overriddenColumn.renderCell) {
+    if(overriddenColumn.renderCell) {
       // Memoize renderers to prevent unnecessary re-renders
       const originalRenderer = overriddenColumn.renderCell;
-      overriddenColumn.renderCell = (params) => {
+      overriddenColumn.renderCell = (params: any) => {
         // Add performance optimization hints
         return originalRenderer(params);
       };
@@ -70,7 +68,7 @@ export const generateOptimizedColumns = (baseColumns, overrides = {}) => {
  * @param {number} endIndex - End index
  * @returns {Array} - Sliced data for virtualization
  */
-export const getVirtualizedData = (data, startIndex, endIndex) => {
+export const getVirtualizedData = (data: any[], startIndex: number, endIndex: number) => {
   // Ensure we don't go out of bounds
   const start = Math.max(0, startIndex);
   const end = Math.min(data.length, endIndex);

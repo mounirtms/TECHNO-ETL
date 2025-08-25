@@ -56,7 +56,7 @@ const InfoRow = styled(Box)(({ theme }) => ({
     }
 }));
 
-const GridCardView = ({ data = [], type = 'product' }) => {
+const GridCardView: React.FC<{data = []: any, type = 'product': any}> = ({ data = [], type = 'product'  }) => {
     const getStatusColor = (status) => {
         switch (status?.toLowerCase()) {
             case 'enabled':
@@ -83,8 +83,7 @@ const GridCardView = ({ data = [], type = 'product' }) => {
                             key={item.id || item.sku}
                             label={item.status}
                             color={getStatusColor(item.status)}
-                            size="small"
-                        />
+                            size: any,
                     )}
                 </Box>
                 <CardContent>
@@ -188,9 +187,9 @@ const GridCardView = ({ data = [], type = 'product' }) => {
 
     return (
         <Box sx={{ p: 2 }}>
-                <Grid container spacing={3}>
-                {data.map((item, index) => {
-                    switch (type) {
+                <Grid { ...{container: true}} spacing={3}>
+                {data.map((item: any: any, index: any: any) => {
+                    switch(type) {
                         case 'ProductsGrid':
                             return renderProductCard(item);
                         case 'OrdersGrid':

@@ -101,12 +101,12 @@ export interface ChartProps extends BaseComponentProps {
   showLegend?: boolean;
   showTooltip?: boolean;
   showGrid?: boolean;
-  onDataPointClick?: (data: any) => void;
+  onDataPointClick?: (data) => void;
 }
 
 // Form component types
 export interface FormProps extends BaseComponentProps {
-  onSubmit: (data: any) => void;
+  onSubmit: (data) => void;
   initialValues?: Record<string, any>;
   validationSchema?: any;
   loading?: boolean;
@@ -124,7 +124,7 @@ export interface FormFieldProps extends BaseComponentProps {
   error?: string;
   helperText?: string;
   value?: any;
-  onChange?: (value: any) => void;
+  onChange?: (value) => void;
   onBlur?: () => void;
   onFocus?: () => void;
 }
@@ -183,7 +183,7 @@ export interface GridColumn<T = any> {
   pinned?: 'left' | 'right';
   align?: 'left' | 'center' | 'right';
   type?: 'text' | 'number' | 'date' | 'boolean' | 'actions' | 'custom';
-  format?: (value: any, row: T) => ReactNode;
+  format?: (value, row: T) => ReactNode;
   render?: (value: any, row: T, index: number) => ReactNode;
   cellProps?: (value: any, row: T) => Record<string, any>;
   headerProps?: Record<string, any>;
@@ -338,7 +338,7 @@ export interface SkeletonProps extends BaseComponentProps {
 // Error boundary types
 export interface ErrorBoundaryProps extends BaseComponentProps {
   fallback?: ComponentType<ErrorFallbackProps>;
-  onError?: (error: Error, errorInfo: any) => void;
+  onError?: (error: Error, errorInfo) => void;
   resetOnPropsChange?: boolean;
   resetKeys?: any[];
 }
@@ -372,7 +372,7 @@ export interface WithLoadingProps {
 }
 
 export interface WithAuthProps {
-  user?: any;
+  user?;
   authenticated: boolean;
   loading: boolean;
 }

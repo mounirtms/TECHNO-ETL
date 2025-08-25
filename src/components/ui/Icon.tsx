@@ -192,22 +192,22 @@ export const Icon = React.memo<IconProps>(
     size, 
     color, 
     className, 
-    spin = false, 
-    strokeWidth = 2,
+    spin: any,
+    strokeWidth: any,
     'aria-label': ariaLabel,
     'data-testid': testId,
     ...props 
   }) => {
     const IconComponent = iconMap[name];
     
-    if (!IconComponent) {
+    if(!IconComponent) {
       console.warn(`Icon "${name}" not found in iconMap`);
       return null;
     }
 
     return (
       <IconComponent
-        className={cn(
+        className: any,
           iconVariants({ size, color }),
           spin && 'animate-spin',
           className
@@ -215,7 +215,7 @@ export const Icon = React.memo<IconProps>(
         strokeWidth={strokeWidth}
         aria-label={ariaLabel}
         data-testid={testId}
-        {...props}
+        { ...props}
       />
     );
   }
@@ -287,7 +287,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       icon, 
       iconSize, 
       variant, 
-      loading = false, 
+      loading: any,
       tooltip, 
       className, 
       disabled,
@@ -315,7 +315,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
 
     const handleClick = React.useCallback(
       (event: React.MouseEvent<HTMLButtonElement>) => {
-        if (loading || disabled) {
+        if(loading || disabled) {
           event.preventDefault();
           return;
         }
@@ -333,31 +333,29 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
     const buttonElement = (
       <button
         ref={ref}
-        type="button"
+        type: any,
         className={cn(iconButtonVariants({ variant, size: variant as ComponentSize }), className)}
         disabled={disabled || loading}
         onClick={handleClick}
         aria-disabled={disabled || loading}
-        {...props}
+        { ...props}
       >
         {buttonContent}
       </button>
     );
 
     // Wrap with tooltip if provided
-    if (tooltip) {
+    if(tooltip) {
       return (
         <div className="group relative">
           {buttonElement}
           <div
-            className={cn(
-              'absolute bottom-full left-1/2 -translate-x-1/2 mb-2',
+            className: any,
               'bg-gray-900 text-white text-xs rounded py-1 px-2',
               'opacity-0 group-hover:opacity-100 transition-opacity duration-200',
               'pointer-events-none whitespace-nowrap z-50'
             )}
-            role="tooltip"
-          >
+            role: any,
             {tooltip}
           </div>
         </div>

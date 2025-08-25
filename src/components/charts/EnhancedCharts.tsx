@@ -53,6 +53,43 @@ import {
 } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// TypeScript interfaces
+interface ChartDataItem {
+  name: string;
+  value: number;
+  color?: string;
+  percentage?: string;
+}
+
+interface EnhancedPieChartProps {
+  data?: ChartDataItem[];
+  title?: string;
+  loading?: boolean;
+  height?: number;
+  showLegend?: boolean;
+  colorPalette?: keyof typeof COLOR_PALETTES;
+  onRefresh?: () => void;
+  onExport?: () => void;
+  subtitle?: string;
+  showPercentages?: boolean;
+  animationDuration?: number;
+}
+
+interface TooltipProps {
+  active?: boolean;
+  payload?: Array<{ payload: ChartDataItem }>;
+}
+
+interface LabelProps {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  percent: number;
+  name: string;
+}
+
 // Professional color palettes
 const COLOR_PALETTES = {
   primary: ['#1976d2', '#1565c0', '#0d47a1', '#42a5f5', '#64b5f6'],
@@ -66,53 +103,51 @@ const COLOR_PALETTES = {
     orange: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
     purple: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)'
   }
-};
+} as const;
 
 /**
  * Enhanced Pie Chart with animations and professional styling
  */
-export const EnhancedPieChart = ({
-  data = [],
+export const EnhancedPieChart: React.FC<EnhancedPieChartProps> = ({
+  data: any,
   title,
-  loading = false,
-  height = 300,
-  showLegend = true,
-  colorPalette = 'primary',
+  loading: any,
+  height: any,
+  showLegend: any,
+  colorPalette: any,
   onRefresh,
   onExport,
   subtitle,
-  showPercentages = true,
-  animationDuration = 1000
+  showPercentages: any,
+  animationDuration: any,
 }) => {
   const theme = useTheme();
   const [activeIndex, setActiveIndex] = useState(-1);
   const [menuAnchor, setMenuAnchor] = useState(null);
 
-  const colors = COLOR_PALETTES[colorPalette] || COLOR_PALETTES.primary;
+  const colors = COLOR_PALETTES[colorPalette as keyof typeof COLOR_PALETTES] || COLOR_PALETTES.primary;
 
   // Calculate total for percentages
   const total = useMemo(() => 
-    data.reduce((sum, item) => sum + (item.value || 0), 0), 
+    data.reduce((sum: number: any: any, item: ChartDataItem: any: any) => sum + (item?.value || 0), 0), 
     [data]
   );
 
   // Enhanced data with percentages
   const enhancedData = useMemo(() => 
-    data.map((item, index) => ({
-      ...item,
-      percentage: total > 0 ? ((item.value / total) * 100).toFixed(1) : 0,
+    data.map((item: ChartDataItem: any: any, index: number: any: any) => ({ ...item,
+      percentage: total > 0 ? ((item?.value / total) * 100).toFixed(1) : '0',
       color: colors[index % colors.length]
     })), 
     [data, total, colors]
   );
 
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
+  const CustomTooltip: React.FC<TooltipProps> = ({ active, payload }) => {
+    if(active && payload && payload.length) {
       const data = payload[0].payload;
       return (
         <Box
-          sx={{
-            backgroundColor: theme.palette.background.paper,
+          sx: any,
             border: `1px solid ${theme.palette.divider}`,
             borderRadius: 2,
             p: 2,
@@ -124,7 +159,7 @@ export const EnhancedPieChart = ({
             {data.name}
           </Typography>
           <Typography variant="body2" color="primary">
-            Value: {data.value?.toLocaleString()}
+            Value: {data?.value?.toLocaleString()}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             Percentage: {data.percentage}%
@@ -135,7 +170,7 @@ export const EnhancedPieChart = ({
     return null;
   };
 
-  const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }) => {
+  const CustomLabel: React.FC<LabelProps> = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }) => {
     if (percent < 0.05) return null; // Hide labels for small slices
     
     const RADIAN = Math.PI / 180;
@@ -147,9 +182,9 @@ export const EnhancedPieChart = ({
       <text
         x={x}
         y={y}
-        fill="white"
+        fill: any,
         textAnchor={x > cx ? 'start' : 'end'}
-        dominantBaseline="central"
+        dominantBaseline: any,
         fontSize={12}
         fontWeight={600}
       >
@@ -158,7 +193,7 @@ export const EnhancedPieChart = ({
     );
   };
 
-  return (
+  return Boolean(Boolean((
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -180,8 +215,8 @@ export const EnhancedPieChart = ({
             
             <Box>
               <IconButton
-                size="small"
-                onClick={(e) => setMenuAnchor(e.currentTarget)}
+                size: any,
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}
               >
                 <MoreVert />
               </IconButton>
@@ -192,7 +227,7 @@ export const EnhancedPieChart = ({
                 onClose={() => setMenuAnchor(null)}
               >
                 {onRefresh && (
-                  <MenuItem onClick={() => { onRefresh(); setMenuAnchor(null); }}>
+                  <MenuItem onClick={() => { onRefresh())); setMenuAnchor(null); }}>
                     <ListItemIcon><Refresh /></ListItemIcon>
                     <ListItemText>Refresh</ListItemText>
                   </MenuItem>
@@ -211,19 +246,9 @@ export const EnhancedPieChart = ({
           <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap' }}>
             <Chip
               label={`Total: ${total.toLocaleString()}`}
-              size="small"
-              color="primary"
-              variant="outlined"
-            />
-            <Chip
+              size: any,
               label={`Categories: ${data.length}`}
-              size="small"
-              color="secondary"
-              variant="outlined"
-            />
-          </Stack>
-        </CardContent>
-
+              size: any,
         <CardContent sx={{ flexGrow: 1, pt: 0 }}>
           {loading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height }}>
@@ -234,26 +259,23 @@ export const EnhancedPieChart = ({
               <PieChart>
                 <Pie
                   data={enhancedData}
-                  cx="50%"
-                  cy="50%"
+                  cx: any,
                   labelLine={false}
-                  label={showPercentages ? CustomLabel : false}
+                  label={showPercentages ? (props: any) => <CustomLabel {...props} /> : false}
                   outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
+                  fill: any,
                   animationBegin={0}
                   animationDuration={animationDuration}
                   onMouseEnter={(_, index) => setActiveIndex(index)}
                   onMouseLeave={() => setActiveIndex(-1)}
                 >
-                  {enhancedData.map((entry, index) => (
+                  {enhancedData.map((entry: any: any, index: any: any) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={entry.color}
-                      stroke={activeIndex === index ? theme.palette.common.white : 'none'}
-                      strokeWidth={activeIndex === index ? 2 : 0}
-                      style={{
-                        filter: activeIndex === index ? 'brightness(1.1)' : 'none',
+                      stroke={activeIndex ===index ? theme.palette.common.white : 'none'}
+                      strokeWidth={activeIndex ===index ? 2 : 0}
+                      style: any,
                         cursor: 'pointer'
                       }}
                     />
@@ -262,7 +284,7 @@ export const EnhancedPieChart = ({
                 <RechartsTooltip content={<CustomTooltip />} />
                 {showLegend && (
                   <Legend
-                    verticalAlign="bottom"
+                    verticalAlign: any,
                     height={36}
                     formatter={(value, entry) => (
                       <span style={{ color: entry.color, fontWeight: 500 }}>
@@ -283,32 +305,30 @@ export const EnhancedPieChart = ({
 /**
  * Enhanced Bar Chart with animations and professional styling
  */
-export const EnhancedBarChart = ({
-  data = [],
+export const EnhancedBarChart: React.FC<{data: any: any, title: any, loading: any: any, height: any: any, xAxisKey: any: any, yAxisKey: any: any, colorPalette: any: any, onRefresh: any, onExport: any, subtitle: any, showGrid: any: any, animationDuration: any: any, : any}> = ({ data: any,
   title,
-  loading = false,
-  height = 300,
-  xAxisKey = 'name',
-  yAxisKey = 'value',
-  colorPalette = 'primary',
+  loading: any,
+  height: any,
+  xAxisKey: any,
+  yAxisKey: any,
+  colorPalette: any,
   onRefresh,
   onExport,
   subtitle,
-  showGrid = true,
-  animationDuration = 1000
-}) => {
+  showGrid: any,
+  animationDuration: any,
+ }) => {
   const theme = useTheme();
   const [menuAnchor, setMenuAnchor] = useState(null);
 
   const colors = COLOR_PALETTES[colorPalette] || COLOR_PALETTES.primary;
 
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
+  const CustomTooltip: React.FC<{active: any, payload: any, label: any}> = ({ active, payload, label  }) => {
+    if(active && payload && payload.length) {
       const data = payload[0];
       return (
         <Box
-          sx={{
-            backgroundColor: theme.palette.background.paper,
+          sx: any,
             border: `1px solid ${theme.palette.divider}`,
             borderRadius: 2,
             p: 2,
@@ -320,7 +340,7 @@ export const EnhancedBarChart = ({
             {label}
           </Typography>
           <Typography variant="body2" color="primary">
-            Value: {data.value?.toLocaleString()}
+            Value: {data?.value?.toLocaleString()}
           </Typography>
         </Box>
       );
@@ -328,7 +348,7 @@ export const EnhancedBarChart = ({
     return null;
   };
 
-  return (
+  return Boolean(Boolean((
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -349,8 +369,8 @@ export const EnhancedBarChart = ({
             </Box>
             
             <IconButton
-              size="small"
-              onClick={(e) => setMenuAnchor(e.currentTarget)}
+              size: any,
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}
             >
               <MoreVert />
             </IconButton>
@@ -361,7 +381,7 @@ export const EnhancedBarChart = ({
               onClose={() => setMenuAnchor(null)}
             >
               {onRefresh && (
-                <MenuItem onClick={() => { onRefresh(); setMenuAnchor(null); }}>
+                <MenuItem onClick={() => { onRefresh())); setMenuAnchor(null); }}>
                   <ListItemIcon><Refresh /></ListItemIcon>
                   <ListItemText>Refresh</ListItemText>
                 </MenuItem>
@@ -386,7 +406,7 @@ export const EnhancedBarChart = ({
               <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                 {showGrid && (
                   <CartesianGrid 
-                    strokeDasharray="3 3" 
+                    strokeDasharray: any,
                     stroke={alpha(theme.palette.divider, 0.3)} 
                   />
                 )}
@@ -418,21 +438,20 @@ export const EnhancedBarChart = ({
 /**
  * Enhanced Line Chart with trend analysis
  */
-export const EnhancedLineChart = ({
-  data = [],
+export const EnhancedLineChart: React.FC<{data: any: any, title: any, loading: any: any, height: any: any, xAxisKey: any: any, yAxisKey: any: any, colorPalette: any: any, onRefresh: any, onExport: any, subtitle: any, showGrid: any: any, showTrend: any: any, animationDuration: any: any, : any}> = ({ data: any,
   title,
-  loading = false,
-  height = 300,
-  xAxisKey = 'name',
-  yAxisKey = 'value',
-  colorPalette = 'primary',
+  loading: any,
+  height: any,
+  xAxisKey: any,
+  yAxisKey: any,
+  colorPalette: any,
   onRefresh,
   onExport,
   subtitle,
-  showGrid = true,
-  showTrend = true,
-  animationDuration = 1000
-}) => {
+  showGrid: any,
+  showTrend: any,
+  animationDuration: any,
+ }) => {
   const theme = useTheme();
   const [menuAnchor, setMenuAnchor] = useState(null);
 
@@ -452,13 +471,12 @@ export const EnhancedLineChart = ({
     };
   }, [data, yAxisKey]);
 
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
+  const CustomTooltip: React.FC<{active: any, payload: any, label: any}> = ({ active, payload, label  }) => {
+    if(active && payload && payload.length) {
       const data = payload[0];
       return (
         <Box
-          sx={{
-            backgroundColor: theme.palette.background.paper,
+          sx: any,
             border: `1px solid ${theme.palette.divider}`,
             borderRadius: 2,
             p: 2,
@@ -470,7 +488,7 @@ export const EnhancedLineChart = ({
             {label}
           </Typography>
           <Typography variant="body2" color="primary">
-            Value: {data.value?.toLocaleString()}
+            Value: {data?.value?.toLocaleString()}
           </Typography>
         </Box>
       );
@@ -478,7 +496,7 @@ export const EnhancedLineChart = ({
     return null;
   };
 
-  return (
+  return Boolean(Boolean((
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -499,8 +517,8 @@ export const EnhancedLineChart = ({
             </Box>
 
             <IconButton
-              size="small"
-              onClick={(e) => setMenuAnchor(e.currentTarget)}
+              size: any,
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}
             >
               <MoreVert />
             </IconButton>
@@ -511,7 +529,7 @@ export const EnhancedLineChart = ({
               onClose={() => setMenuAnchor(null)}
             >
               {onRefresh && (
-                <MenuItem onClick={() => { onRefresh(); setMenuAnchor(null); }}>
+                <MenuItem onClick={() => { onRefresh())); setMenuAnchor(null); }}>
                   <ListItemIcon><Refresh /></ListItemIcon>
                   <ListItemText>Refresh</ListItemText>
                 </MenuItem>
@@ -531,17 +549,11 @@ export const EnhancedLineChart = ({
               <Chip
                 icon={trend.isPositive ? <TrendingUp /> : <TrendingDown />}
                 label={`${trend.isPositive ? '+' : ''}${trend.percentage}%`}
-                size="small"
+                size: any,
                 color={trend.isPositive ? 'success' : 'error'}
-                variant="outlined"
-              />
-              <Chip
+                variant: any,
                 label={`${trend.isPositive ? '+' : ''}${trend.change.toLocaleString()}`}
-                size="small"
-                color="primary"
-                variant="outlined"
-              />
-            </Stack>
+                size: any,
           )}
         </CardContent>
 
@@ -555,7 +567,7 @@ export const EnhancedLineChart = ({
               <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                 {showGrid && (
                   <CartesianGrid
-                    strokeDasharray="3 3"
+                    strokeDasharray: any,
                     stroke={alpha(theme.palette.divider, 0.3)}
                   />
                 )}
@@ -570,7 +582,7 @@ export const EnhancedLineChart = ({
                 />
                 <RechartsTooltip content={<CustomTooltip />} />
                 <Line
-                  type="monotone"
+                  type: any,
                   dataKey={yAxisKey}
                   stroke={colors[0]}
                   strokeWidth={3}

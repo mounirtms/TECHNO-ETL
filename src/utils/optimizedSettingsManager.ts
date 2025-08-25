@@ -109,24 +109,19 @@ class OptimizedSettingsManager {
   mergeWithDefaults(userSettings: Partial<AppSettings>): AppSettings {
     const systemPrefs = this.getSystemPreferences();
 
-    return {
-      ...DEFAULT_SETTINGS,
+    return { ...DEFAULT_SETTINGS,
       ...userSettings,
-      preferences: {
-        ...DEFAULT_SETTINGS.preferences,
+      preferences: { ...DEFAULT_SETTINGS.preferences,
         ...systemPrefs,
         ...userSettings.preferences,
       },
-      performance: {
-        ...DEFAULT_SETTINGS.performance,
+      performance: { ...DEFAULT_SETTINGS.performance,
         ...userSettings.performance,
       },
-      accessibility: {
-        ...DEFAULT_SETTINGS.accessibility,
+      accessibility: { ...DEFAULT_SETTINGS.accessibility,
         ...userSettings.accessibility,
       },
-      grid: {
-        ...DEFAULT_SETTINGS.grid,
+      grid: { ...DEFAULT_SETTINGS.grid,
         ...userSettings.grid,
       },
       lastModified: Date.now(),
@@ -148,9 +143,9 @@ class OptimizedSettingsManager {
       let settings: Partial<AppSettings> = {};
 
       // Try to load user-specific settings first
-      if (userId) {
+      if(userId) {
         const userSettings = localStorage.getItem(`${STORAGE_KEYS.USER_SETTINGS}-${userId}`);
-        if (userSettings) {
+        if(userSettings) {
           settings = JSON.parse(userSettings);
         }
       }
@@ -158,7 +153,7 @@ class OptimizedSettingsManager {
       // Fallback to unified settings
       if (!settings || Object.keys(settings).length === 0) {
         const unifiedSettings = localStorage.getItem(STORAGE_KEYS.UNIFIED_SETTINGS);
-        if (unifiedSettings) {
+        if(unifiedSettings) {
           settings = JSON.parse(unifiedSettings);
         }
       }
@@ -170,7 +165,7 @@ class OptimizedSettingsManager {
       this.cache.set(cacheKey, mergedSettings);
       
       return mergedSettings;
-    } catch (error) {
+    } catch(error: any) {
       console.error('Failed to load settings:', error);
       const defaultSettings = this.mergeWithDefaults({});
       this.cache.set(cacheKey, defaultSettings);
@@ -189,8 +184,7 @@ class OptimizedSettingsManager {
 
     // Update cache immediately
     const currentSettings = this.getSettings(userId);
-    const updatedSettings = {
-      ...currentSettings,
+    const updatedSettings = { ...currentSettings,
       ...settings,
       lastModified: Date.now(),
     };
@@ -208,20 +202,20 @@ class OptimizedSettingsManager {
 
         console.log('Settings saved successfully');
         return true;
-      } catch (error) {
+      } catch(error: any) {
         console.error('Failed to save settings:', error);
         toast.error('Failed to save settings');
         return false;
       }
     };
 
-    if (immediate) {
+    if(immediate) {
       return saveToStorage();
     }
 
     // Clear existing timer
     const existingTimer = this.debounceTimers.get(storageKey);
-    if (existingTimer) {
+    if(existingTimer) {
       clearTimeout(existingTimer);
     }
 
@@ -247,11 +241,11 @@ class OptimizedSettingsManager {
     const currentSettings = this.getSettings(userId);
     let updatedSettings: Partial<AppSettings>;
 
-    if (section && typeof updates === 'object') {
+    if(section) {
       updatedSettings = {
         ...currentSettings,
         [section]: {
-          ...currentSettings[section],
+          ...(currentSettings[section] as any),
           ...updates,
         },
       };
@@ -290,7 +284,7 @@ class OptimizedSettingsManager {
       
       toast.success('Settings reset to defaults');
       return true;
-    } catch (error) {
+    } catch(error: any) {
       console.error('Failed to reset settings:', error);
       toast.error('Failed to reset settings');
       return false;
@@ -316,7 +310,7 @@ class OptimizedSettingsManager {
       this.saveSettings(validatedSettings, userId, true);
       toast.success('Settings imported successfully');
       return true;
-    } catch (error) {
+    } catch(error: any) {
       console.error('Failed to import settings:', error);
       toast.error('Invalid settings file');
       return false;
@@ -340,7 +334,7 @@ class OptimizedSettingsManager {
     
     // Theme mode
     root.setAttribute('data-theme', preferences.theme);
-    if (preferences.theme === 'dark') {
+    if(preferences.theme === 'dark') {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
@@ -355,14 +349,14 @@ class OptimizedSettingsManager {
     root.style.setProperty('--base-spacing', spacings[preferences.density]);
 
     // High contrast
-    if (preferences.highContrast) {
+    if(preferences.highContrast) {
       root.classList.add('high-contrast');
     } else {
       root.classList.remove('high-contrast');
     }
 
     // Animations
-    if (!preferences.animations) {
+    if(!preferences.animations) {
       root.classList.add('no-animations');
     } else {
       root.classList.remove('no-animations');

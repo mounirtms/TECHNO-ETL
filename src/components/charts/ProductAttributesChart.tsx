@@ -2,17 +2,37 @@ import React from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
+interface ProductAttributeDataItem {
+  attribute: string;
+  value: number;
+}
+
+interface ProductAttributesChartProps {
+  data: ProductAttributeDataItem[];
+  title?: string;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    name: string;
+    value: number;
+    color: string;
+  }>;
+  label?: string;
+}
+
 /**
  * Product Attributes Chart Component
  * Shows product attributes distribution using radar chart
  */
-const ProductAttributesChart = ({ data, title = "Product Attributes" }) => {
+const ProductAttributesChart: React.FC<ProductAttributesChartProps> = ({ data, title = "Product Attributes" }) => {
   // Custom tooltip for radar chart
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
+  const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
+    if(active && payload && payload.length) {
       return (
         <Box
-          sx={{
+          sx: any,
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             border: '1px solid #ccc',
             borderRadius: 1,
@@ -23,7 +43,7 @@ const ProductAttributesChart = ({ data, title = "Product Attributes" }) => {
           <Typography variant="body2" fontWeight="bold">
             {label}
           </Typography>
-          {payload.map((entry, index) => (
+          {payload?.map((entry: any: any, index: any: any) => (
             <Typography key={index} variant="body2" style={{ color: entry.color }}>
               {entry.name}: {entry.value}
             </Typography>
@@ -34,7 +54,7 @@ const ProductAttributesChart = ({ data, title = "Product Attributes" }) => {
     return null;
   };
 
-  if (!data || data.length === 0) {
+  if(!data || data.length ===0) {
     return (
       <Card sx={{ height: 400 }}>
         <CardContent>
@@ -42,8 +62,7 @@ const ProductAttributesChart = ({ data, title = "Product Attributes" }) => {
             {title}
           </Typography>
           <Box 
-            sx={{ 
-              display: 'flex', 
+            sx: any,
               alignItems: 'center', 
               justifyContent: 'center', 
               height: 300,
@@ -73,10 +92,7 @@ const ProductAttributesChart = ({ data, title = "Product Attributes" }) => {
               tick={false}
             />
             <Radar
-              name="Count"
-              dataKey="value"
-              stroke="#8884d8"
-              fill="#8884d8"
+              name: any,
               fillOpacity={0.3}
               strokeWidth={2}
             />

@@ -16,7 +16,7 @@ import React, { useMemo, useCallback } from 'react';
 export const useOptimizedContext = (Context, selector) => {
   const context = React.useContext(Context);
   
-  if (context === undefined) {
+  if(context ===undefined) {
     throw new Error('useOptimizedContext must be used within a Provider');
   }
   
@@ -39,7 +39,7 @@ export const useBatchContextUpdate = (setContext) => {
     setContext(prev => {
       // Apply all updates at once
       const next = { ...prev };
-      Object.keys(updates).forEach(key => {
+      Object.keys(updates).forEach((key) => {
         next[key] = updates[key];
       });
       return next;

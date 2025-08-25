@@ -25,7 +25,7 @@ const LayoutContent = () => {
 
     // Auto-collapse sidebar on mobile/tablet
     React.useEffect(() => {
-        if (isMobile) {
+        if(isMobile) {
             setSidebarOpen(false);
         }
     }, [isMobile]);
@@ -51,9 +51,7 @@ const LayoutContent = () => {
                         toggleDrawer={() => setSidebarOpen(prev => !prev)}
                     />
                     <Box
-                        component="main"
-                        sx={{
-                            flexGrow: 1,
+                        component: any,
                             width: {
                                 xs: '100%',
                                 sm: `calc(100% - ${sidebarOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH}px)`
@@ -122,7 +120,7 @@ function DynamicMainContent() {
     const location = useLocation();
     // Only show TabPanel if the current path is a tab route
     const isTabRoute = tabRoutes.some(route => location.pathname.startsWith(route.replace(/:.*$/, '')));
-    if (isTabRoute) {
+    if(isTabRoute) {
         return <TabPanel sidebarOpen={false} isMobile={false} isTablet={false} />;
     }
     return <Outlet />;

@@ -9,15 +9,14 @@ import { loadGridSettings, saveGridSettings } from '../../../utils/gridSettings'
  * @param {Array} props.initialColumns - The initial column definitions.
  * @returns {object} - The state and handlers for the grid columns.
  */
-export const useGridColumns = ({ gridName, initialColumns }) => {
+export const useGridColumns: React.FC<any> = ({ gridName, initialColumns }) => {
     const [columns, setColumns] = useState(initialColumns);
     const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
 
     useEffect(() => {
         const savedSettings = loadGridSettings(gridName);
-        if (savedSettings) {
-            const updatedColumns = initialColumns.map(col => ({
-                ...col,
+        if(savedSettings) {
+            const updatedColumns = initialColumns.map((col: any: any) => ({ ...col,
                 hide: savedSettings[col.field]?.hide ?? col.hide,
                 width: savedSettings[col.field]?.width || col.width,
                 index: savedSettings[col.field]?.index
@@ -26,10 +25,9 @@ export const useGridColumns = ({ gridName, initialColumns }) => {
         }
     }, [gridName, initialColumns]);
 
-    const handleSettingsSave = async (newSettings) => {
+    const handleSettingsSave = async(newSettings) => {
         try {
-            const updatedColumns = columns.map(col => ({
-                ...col,
+            const updatedColumns = columns.map((col: any: any) => ({ ...col,
                 hide: !newSettings[col.field]?.visible,
                 width: newSettings[col.field]?.width || col.width,
                 index: newSettings[col.field]?.index
@@ -38,12 +36,12 @@ export const useGridColumns = ({ gridName, initialColumns }) => {
             setColumns(updatedColumns);
             saveGridSettings(gridName, newSettings);
             setSettingsDialogOpen(false);
-        } catch (error) {
+        } catch(error: any) {
             console.error('Error applying column settings:', error);
         }
     };
 
-    const finalColumns = useMemo(() => columns.filter(c => !c.hide), [columns]);
+    const finalColumns = useMemo(() => columns.filter((c: any: any) => !c.hide), [columns]);
 
     return {
         columns,

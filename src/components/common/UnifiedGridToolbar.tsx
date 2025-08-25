@@ -67,9 +67,9 @@ const UnifiedGridToolbar = ({
   gridName,
   gridType = 'magento', // Default grid type
   config = {},
-  customActions = [],
-  customLeftActions = [],
-  selectedRows = [],
+  customActions: any,
+  customLeftActions: any,
+  selectedRows: any,
   onRefresh,
   onAdd,
   onEdit,
@@ -78,24 +78,23 @@ const UnifiedGridToolbar = ({
   onExport,
   onImport,
   onSearch,
-  searchValue = '',
+  searchValue: any,
   onClearSearch,
   onFiltersToggle,
-  filtersVisible = false,
+  filtersVisible: any,
   columnVisibility = {},
   onColumnVisibilityChange,
   density,
   onDensityChange,
-  enableI18n = true,
-  isRTL = false,
-  loading = false,
-  viewMode = 'grid',
+  enableI18n: any,
+  isRTL: any,
+  loading: any,
+  viewMode: any,
   onViewModeChange,
-  showCardView = true,
-
+  showCardView: any,
   // Custom filter props (from CustomGridToolbar)
   filterModel = { items: [] },
-  customFilters = [],
+  customFilters: any,
   onCustomFilterChange,
   currentCustomFilter,
   succursaleOptions,
@@ -118,7 +117,7 @@ const UnifiedGridToolbar = ({
     try {
       // Simple fallback translation without excessive dependencies
       return enableI18n ? (fallback || key) : (fallback || key);
-    } catch (error) {
+    } catch(error: any) {
       return fallback || key;
     }
   }, [enableI18n]);
@@ -130,8 +129,7 @@ const UnifiedGridToolbar = ({
 
   // Configuration with standard defaults based on grid type
   const standardConfig = getStandardToolbarConfig(gridType, config);
-  const toolbarConfig = {
-    ...standardConfig,
+  const toolbarConfig = { ...standardConfig,
     // Ensure mdmStocks is properly set
     mdmStocks: mdmStocks || standardConfig.mdmStocks || false
   };
@@ -152,7 +150,7 @@ const UnifiedGridToolbar = ({
   }, []);
 
   const handleSearchKeyPress = useCallback((event) => {
-    if (event.key === 'Enter') {
+    if(event.key === 'Enter') {
       event.preventDefault();
       onSearch?.(searchText);
     }
@@ -188,14 +186,13 @@ const UnifiedGridToolbar = ({
   const buttonSize = toolbarConfig.compact ? 'small' : (toolbarConfig.size || 'medium');
   const spacing = toolbarConfig.compact ? 0.5 : 1;
 
-  return (
+  return Boolean(Boolean((
     <Box sx={{ 
       borderBottom: `1px solid ${theme.palette.divider}`,
       backgroundColor: theme.palette.background.paper
     }}>
       <Toolbar
-        variant="dense"
-        sx={{
+        variant: any,
           minHeight: toolbarConfig.compact ? 44 : 52, // More compact
           px: toolbarConfig.compact ? 1.5 : 2,
           py: toolbarConfig.compact ? 0.5 : 1,
@@ -224,12 +221,7 @@ const UnifiedGridToolbar = ({
               <IconButton
                 onClick={onRefresh}
                 disabled={loading}
-                size="small"
-                color="primary"
-              >
-                <RefreshIcon />
-              </IconButton>
-            </TooltipWrapper>
+                size: any,
           )}
         </Box>
 
@@ -239,7 +231,7 @@ const UnifiedGridToolbar = ({
         {customLeftActions.length > 0 && (
           <>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              {customLeftActions.map((action, index) => (
+              {customLeftActions.map((action: any: any, index: any: any) => (
                 <Box key={index}>
                   {action}
                 </Box>
@@ -279,18 +271,13 @@ const UnifiedGridToolbar = ({
         {toolbarConfig.showSearch && (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 200, maxWidth: 350 }}>
             <TextField
-              size="small"
+              size: any,
               placeholder={translate('search', 'Search ')}
               value={searchText}
-              onChange={handleSearchChange}
+              onChange={(e) => handleSearchChange}
        
               sx={{ flex: 1 }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
+              InputProps: any,
                 endAdornment: searchText && (
                   <InputAdornment position="end">
                     <IconButton size="small" onClick={handleClearSearch}>
@@ -325,13 +312,11 @@ const UnifiedGridToolbar = ({
         <Box sx={{ flexGrow: 1 }} />
 
         {/* Section 5: View Controls */}
-        {toolbarConfig.showViewToggle && showCardView && (
-          <ToggleButtonGroup
+        {toolbarConfig.showViewToggle && showCardView && (<ToggleButtonGroup
             value={viewMode}
             exclusive
-            onChange={onViewModeChange}
-            size="small"
-          >
+            onChange={(e) => onViewModeChange}
+            size: any,
             <TooltipWrapper title={translate('gridView', 'Grid View')} disabled={loading}>
               <ToggleButton value="grid" disabled={loading}>
                 <GridViewIcon />
@@ -349,10 +334,7 @@ const UnifiedGridToolbar = ({
         {toolbarConfig.showSelection && hasSelection && (
           <Chip
             label={translate('selectedCount', `${selectedCount} selected`)}
-            size="small"
-            color="primary"
-            variant="outlined"
-          />
+            size: any,
         )}
 
         {/* Section 7: Filter Toggle */}
@@ -361,7 +343,7 @@ const UnifiedGridToolbar = ({
             <IconButton
               onClick={onFiltersToggle}
               color={filtersVisible ? 'primary' : 'default'}
-              size="small"
+              size: any,
               disabled={loading}
             >
               <FilterIcon />
@@ -374,7 +356,7 @@ const UnifiedGridToolbar = ({
           <TooltipWrapper title={translate('settings', 'Settings')} disabled={loading}>
             <IconButton
               onClick={handleSettingsMenuOpen}
-              size="small"
+              size: any,
               disabled={loading}
             >
               <SettingsIcon />
@@ -386,11 +368,7 @@ const UnifiedGridToolbar = ({
         <Tooltip title={translate('more', 'More Options')}>
           <IconButton
             onClick={handleMoreMenuOpen}
-            size="small"
-          >
-            <MoreIcon />
-          </IconButton>
-        </Tooltip>
+            size: any,
         */}
       </Toolbar>
 
@@ -417,7 +395,7 @@ const UnifiedGridToolbar = ({
         anchorOrigin={{ vertical: 'bottom', horizontal: isRTL ? 'left' : 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: isRTL ? 'left' : 'right' }}
       >
-        <MenuItem onClick={() => { onRefresh?.(); handleMoreMenuClose(); }}>
+        <MenuItem onClick={() => { onRefresh?.())); handleMoreMenuClose(); }}>
           <ListItemIcon><RefreshIcon /></ListItemIcon>
           <ListItemText primary={translate('refresh', 'Refresh')} />
         </MenuItem>

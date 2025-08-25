@@ -89,7 +89,7 @@ const PRIORITY_COLORS = {
   'Critical': '#F44336'
 };
 
-const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
+const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId = 'anonymous'  }) => {
   const theme = useTheme();
 
   // Grid settings hook
@@ -148,14 +148,14 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
 
       const response = await votingApiService.getFeatures(options);
       
-      if (response.success) {
+      if(response.success) {
         setFeatures(response.data);
         setTotalCount(response.pagination.total);
       } else {
         throw new Error(response.message || 'Failed to load features');
       }
 
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error loading features:', error);
       setError(error.message);
       showSnackbar('Failed to load voting features', 'error');
@@ -170,10 +170,10 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
   const loadCategories = useCallback(async () => {
     try {
       const response = await votingApiService.getCategories();
-      if (response.success) {
+      if(response.success) {
         setCategories(response.data);
       }
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error loading categories:', error);
     }
   }, []);
@@ -183,18 +183,18 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
    */
   const loadUserVotes = useCallback(async () => {
     try {
-      const featureIds = features.map(f => f.id);
-      if (featureIds.length === 0) return;
+      const featureIds = features.map((f: any: any) => f?.id);
+      if (featureIds.length ===0) return;
 
       const response = await votingApiService.getUserVotes(userId, featureIds);
-      if (response.success) {
+      if(response.success) {
         const votesMap = {};
-        response.data.forEach(vote => {
+        response.data.forEach((vote) => {
           votesMap[vote.feature_id] = vote.vote_type;
         });
         setUserVotes(votesMap);
       }
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error loading user votes:', error);
     }
   }, [features, userId]);
@@ -207,7 +207,7 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
       const userInfo = votingApiService.getCurrentUserInfo();
       const currentVote = userVotes[featureId];
 
-      if (currentVote === voteType) {
+      if(currentVote ===voteType) {
         // Remove vote if clicking same vote type
         await votingApiService.removeVote(featureId, userInfo);
         setUserVotes(prev => {
@@ -226,7 +226,7 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
       // Refresh the features to get updated vote counts
       await loadFeatures();
 
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error voting:', error);
       showSnackbar('Failed to record vote', 'error');
     }
@@ -285,8 +285,7 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
           <Chip
             icon={<IconComponent />}
             label={params.value}
-            size="small"
-            sx={{
+            size: any,
               backgroundColor: alpha(params.row.category_color || '#2196F3', 0.1),
               color: params.row.category_color || '#2196F3',
               border: `1px solid ${alpha(params.row.category_color || '#2196F3', 0.3)}`
@@ -302,8 +301,7 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
       renderCell: (params) => (
         <Chip
           label={params.value}
-          size="small"
-          sx={{
+          size: any,
             backgroundColor: alpha(PRIORITY_COLORS[params.value] || '#2196F3', 0.1),
             color: PRIORITY_COLORS[params.value] || '#2196F3',
             fontWeight: 600
@@ -318,8 +316,7 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
       renderCell: (params) => (
         <Chip
           label={params.value}
-          size="small"
-          sx={{
+          size: any,
             backgroundColor: alpha(STATUS_COLORS[params.value] || '#2196F3', 0.1),
             color: STATUS_COLORS[params.value] || '#2196F3',
             fontWeight: 500
@@ -335,10 +332,7 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
       renderCell: (params) => (
         <Badge
           badgeContent={params.value}
-          color="primary"
-          sx={{
-            '& .MuiBadge-badge': {
-              fontSize: '0.75rem',
+          color: any,
               fontWeight: 600
             }
           }}
@@ -353,17 +347,16 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
       width: 120,
       sortable: false,
       renderCell: (params) => {
-        const featureId = params.row.id;
+        const featureId = params.row?.id;
         const userVote = userVotes[featureId];
         
         return (
           <Stack direction="row" spacing={0.5}>
             <Tooltip title="Upvote">
               <IconButton
-                size="small"
+                size: any,
                 onClick={() => handleVote(featureId, 'upvote')}
-                sx={{
-                  color: userVote === 'upvote' ? theme.palette.success.main : 'inherit',
+                sx: any,
                   backgroundColor: userVote === 'upvote' ? alpha(theme.palette.success.main, 0.1) : 'transparent'
                 }}
               >
@@ -372,10 +365,9 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
             </Tooltip>
             <Tooltip title="Downvote">
               <IconButton
-                size="small"
+                size: any,
                 onClick={() => handleVote(featureId, 'downvote')}
-                sx={{
-                  color: userVote === 'downvote' ? theme.palette.error.main : 'inherit',
+                sx: any,
                   backgroundColor: userVote === 'downvote' ? alpha(theme.palette.error.main, 0.1) : 'transparent'
                 }}
               >
@@ -384,7 +376,7 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
             </Tooltip>
             <Tooltip title="Comments">
               <IconButton
-                size="small"
+                size: any,
                 onClick={() => setSelectedFeature(params.row)}
               >
                 <Comment fontSize="small" />
@@ -406,29 +398,22 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
   }, [loadFeatures]);
 
   useEffect(() => {
-    if (features.length > 0) {
+    if(features.length > 0) {
       loadUserVotes();
     }
   }, [loadUserVotes]);
 
-  return (
-    <Box sx={{ height: '100%', width: '100%' }}>
+  return(<Box sx={{ height: '100%', width: '100%' }}>
       {/* Header with filters and actions */}
       <Paper sx={{ p: 2, mb: 2 }}>
-        <Grid container spacing={2} alignItems="center">
+        <Grid { ...{container: true}} spacing={2} alignItems="center">
           <Grid item xs={12} md={3}>
             <TextField
               fullWidth
-              size="small"
-              placeholder="Search features..."
+              size: any,
               value={filterModel.search}
               onChange={(e) => setFilterModel(prev => ({ ...prev, search: e.target.value }))}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search />
-                  </InputAdornment>
-                )
+              InputProps: any,
               }}
             />
           </Grid>
@@ -438,12 +423,12 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
               <InputLabel>Category</InputLabel>
               <Select
                 value={filterModel.category}
-                label="Category"
+                label: any,
                 onChange={(e) => setFilterModel(prev => ({ ...prev, category: e.target.value }))}
               >
                 <MenuItem value="">All Categories</MenuItem>
-                {categories.map(cat => (
-                  <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
+                {categories.map((cat: any: any) => (
+                  <MenuItem key={cat?.id} value={cat?.id}>{cat?.name}</MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -454,11 +439,11 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
               <InputLabel>Status</InputLabel>
               <Select
                 value={filterModel.status}
-                label="Status"
+                label: any,
                 onChange={(e) => setFilterModel(prev => ({ ...prev, status: e.target.value }))}
               >
                 <MenuItem value="">All Statuses</MenuItem>
-                {Object.keys(STATUS_COLORS).map(status => (
+                {Object.keys(STATUS_COLORS).map((status: any: any) => (
                   <MenuItem key={status} value={status}>{status}</MenuItem>
                 ))}
               </Select>
@@ -470,11 +455,11 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
               <InputLabel>Priority</InputLabel>
               <Select
                 value={filterModel.priority}
-                label="Priority"
+                label: any,
                 onChange={(e) => setFilterModel(prev => ({ ...prev, priority: e.target.value }))}
               >
                 <MenuItem value="">All Priorities</MenuItem>
-                {Object.keys(PRIORITY_COLORS).map(priority => (
+                {Object.keys(PRIORITY_COLORS).map((priority: any: any) => (
                   <MenuItem key={priority} value={priority}>{priority}</MenuItem>
                 ))}
               </Select>
@@ -484,35 +469,17 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
           <Grid item xs={12} md={3}>
             <Stack direction="row" spacing={1}>
               <Button
-                variant="outlined"
+                variant: any,
                 startIcon={<Refresh />}
                 onClick={handleRefresh}
                 disabled={refreshing}
-                size="small"
-              >
-                Refresh
-              </Button>
-              <Button
-                variant="contained"
+                size: any,
                 startIcon={<Add />}
                 onClick={() => setCreateDialogOpen(true)}
-                size="small"
-              >
-                New Feature
-              </Button>
-              <Button
-                variant="outlined"
+                size: any,
                 startIcon={<Settings />}
                 onClick={() => setSettingsDialogOpen(true)}
-                size="small"
-              >
-                Settings
-              </Button>
-            </Stack>
-          </Grid>
-        </Grid>
-      </Paper>
-
+                size: any,
       {/* Error Alert */}
       {error && (
         <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
@@ -534,13 +501,11 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
           onSortModelChange={setSortModel}
           rowCount={totalCount}
           loading={loading}
-          paginationMode="server"
-          sortingMode="server"
+          paginationMode: any,
           pageSizeOptions={[10, 25, 50, 100]}
           disableRowSelectionOnClick
           getRowHeight={() => 80}
-          sx={{
-            border: 'none',
+          sx: any,
             '& .MuiDataGrid-cell': {
               borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
             },
@@ -571,10 +536,10 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
         open={settingsDialogOpen}
         onClose={() => setSettingsDialogOpen(false)}
         onSave={saveSettings}
-        gridId="voting-grid"
+        gridId: any,
         columns={columns}
         currentSettings={gridSettings}
-        onReset={() => {
+        onReset: any,
           saveSettings({});
           showSnackbar('Settings reset to defaults', 'info');
         }}

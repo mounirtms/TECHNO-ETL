@@ -111,7 +111,7 @@ const LogoContainer = styled(Box)(({ theme, open }) => ({
   borderBottom: `1px solid rgba(255, 255, 255, 0.1)`,
 }));
 
-const EnhancedSidebar = ({ open, onToggle }) => {
+const EnhancedSidebar: React.FC<any> = ({ open, onToggle }) => {
   const theme = useTheme();
   const { getMenuItems, navigateTo, isRouteActive } = useNavigation();
   const { activeSubmenu, setActiveSubmenu } = useMenuState();
@@ -119,18 +119,18 @@ const EnhancedSidebar = ({ open, onToggle }) => {
   const menuItems = getMenuItems();
 
   const handleNavigation = (item) => {
-    if (item.path) {
+    if(item.path) {
       navigateTo(item.path);
     }
     
     // Close submenu if navigating to a different section
-    if (activeSubmenu && activeSubmenu !== item.path) {
+    if(activeSubmenu && activeSubmenu !== item.path) {
       setActiveSubmenu(null);
     }
   };
 
   const handleSubmenuToggle = (itemPath) => {
-    setActiveSubmenu(activeSubmenu === itemPath ? null : itemPath);
+    setActiveSubmenu(activeSubmenu ===itemPath ? null : itemPath);
   };
 
   const getIcon = (iconName) => {
@@ -141,32 +141,27 @@ const EnhancedSidebar = ({ open, onToggle }) => {
   const renderMenuItem = (item) => {
     const isActive = isRouteActive(item.path);
     const hasSubmenu = item.submenu && item.submenu.length > 0;
-    const isSubmenuOpen = activeSubmenu === item.path;
+    const isSubmenuOpen = activeSubmenu ===item.path;
 
-    return (
+    return Boolean(Boolean((
       <React.Fragment key={item.path}>
         <Tooltip
           title={!open ? item.label : ''}
-          placement="right"
-          arrow
-        >
-          <StyledListItemButton
+          placement: any,
             active={isActive}
             open={open}
             onClick={() => hasSubmenu ? handleSubmenuToggle(item.path) : handleNavigation(item)}
           >
             <ListItemIcon
-              sx={{
-                minWidth: 0,
+              sx: any,
                 mr: open ? 3 : 'auto',
                 justifyContent: 'center',
                 color: 'inherit',
-              }}
+              } as any}
             >
               <Badge
                 badgeContent={item.badge}
-                color="secondary"
-                variant="dot"
+                color: any,
                 invisible={!item.badge}
               >
                 {getIcon(item.icon)}
@@ -175,12 +170,10 @@ const EnhancedSidebar = ({ open, onToggle }) => {
             
             <ListItemText
               primary={item.label}
-              sx={{
-                opacity: open ? 1 : 0,
+              sx: any,
                 transition: theme.transitions.create('opacity'),
-              }}
-              primaryTypographyProps={{
-                fontSize: '0.875rem',
+              } as any}
+              primaryTypographyProps: any,
                 fontWeight: isActive ? 600 : 400,
               }}
             />
@@ -195,34 +188,29 @@ const EnhancedSidebar = ({ open, onToggle }) => {
         {hasSubmenu && (
           <Collapse in={isSubmenuOpen && open} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              {item.submenu.map((subItem) => (
+              {item.submenu.map((subItem: any: any) => (
                 <Tooltip
                   key={subItem.path}
                   title={!open ? subItem.label : ''}
-                  placement="right"
-                  arrow
-                >
-                  <StyledListItemButton
+                  placement: any,
                     active={isRouteActive(subItem.path)}
                     open={open}
                     onClick={() => handleNavigation(subItem)}
-                    sx={{ pl: 4 }}
+                    sx={{ pl: 4 } as any}
                   >
                     <ListItemIcon
-                      sx={{
-                        minWidth: 0,
+                      sx: any,
                         mr: open ? 3 : 'auto',
                         justifyContent: 'center',
                         color: 'inherit',
-                      }}
+                      } as any}
                     >
                       {getIcon(subItem.icon)}
                     </ListItemIcon>
                     <ListItemText
                       primary={subItem.label}
-                      sx={{ opacity: open ? 1 : 0 }}
-                      primaryTypographyProps={{
-                        fontSize: '0.8rem',
+                      sx={{ opacity: open ? 1 : 0 } as any}
+                      primaryTypographyProps: any,
                         fontWeight: isRouteActive(subItem.path) ? 600 : 400,
                       }}
                     />
@@ -233,31 +221,29 @@ const EnhancedSidebar = ({ open, onToggle }) => {
           </Collapse>
         )}
       </React.Fragment>
-    );
+    )));
   };
 
-  return (
+  return Boolean(Boolean((
     <StyledDrawer
-      variant="permanent"
+      variant: any,
       open={open}
     >
       {/* Logo Section */}
       <LogoContainer open={open}>
         <img
           src={technoIcon}
-          alt="Techno Logo"
-          style={{
-            width: open ? 40 : 32,
+          alt: any,
             height: open ? 40 : 32,
             transition: theme.transitions.create(['width', 'height']),
           }}
         />
         {open && (
-          <Box sx={{ ml: 2 }}>
-            <Typography variant="h6" noWrap sx={{ fontWeight: 600 }}>
+          <Box sx={{ ml: 2 } as any}>
+            <Typography variant="h6" noWrap sx={{ fontWeight: 600 } as any}>
               TECHNO
             </Typography>
-            <Typography variant="caption" noWrap sx={{ opacity: 0.8 }}>
+            <Typography variant="caption" noWrap sx={{ opacity: 0.8 } as any}>
               ETL System
             </Typography>
           </Box>
@@ -265,22 +251,22 @@ const EnhancedSidebar = ({ open, onToggle }) => {
       </LogoContainer>
 
       {/* Navigation Menu */}
-      <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
-        <List sx={{ pt: 1 }}>
-          {menuItems.map((item) => renderMenuItem(item))}
+      <Box sx={{ flexGrow: 1, overflow: 'auto' } as any}>
+        <List sx={{ pt: 1 } as any}>
+          {menuItems.map((item: any: any) => renderMenuItem(item))}
         </List>
       </Box>
 
       {/* Footer Section */}
       {open && (
-        <Box sx={{ p: 2, borderTop: `1px solid rgba(255, 255, 255, 0.1)` }}>
-          <Typography variant="caption" sx={{ opacity: 0.6 }}>
+        <Box sx={{ p: 2, borderTop: `1px solid rgba(255, 255, 255, 0.1)` } as any}>
+          <Typography variant="caption" sx={{ opacity: 0.6 } as any}>
             Version 2.0.0
           </Typography>
         </Box>
       )}
     </StyledDrawer>
-  );
+  )));
 };
 
 export default EnhancedSidebar;

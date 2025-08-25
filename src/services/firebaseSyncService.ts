@@ -33,7 +33,7 @@ class FirebaseSyncService {
             
             console.log('Firebase schema initialized successfully');
             return true;
-        } catch (error) {
+        } catch(error: any) {
             console.error('Error initializing Firebase schema:', error);
             return false;
         }
@@ -96,7 +96,7 @@ class FirebaseSyncService {
     /**
      * Sync user data with Firebase on login
      */
-    async syncUserOnLogin(user) {
+    async syncUserOnLogin(user: any) {
         try {
             const sanitizedUserId = user.uid.replace(/[.#$\[\]]/g, '_');
             const userRef = ref(this.database, `users/${sanitizedUserId}`);
@@ -108,7 +108,7 @@ class FirebaseSyncService {
                 // Check if this is the first user (super_admin)
                 const usersRef = ref(this.database, 'users');
                 const usersSnapshot = await get(usersRef);
-                const isFirstUser = !usersSnapshot.exists() || Object.keys(usersSnapshot.val() || {}).length === 0;
+                const isFirstUser = !usersSnapshot.exists() || Object.keys(usersSnapshot.val() || {}).length ===0;
                 
                 const userData = {
                     email: user.email,
@@ -130,7 +130,7 @@ class FirebaseSyncService {
                 console.log(`New user ${user.email} registered with role: ${userData.role}`);
                 
                 // Initialize Firebase schema if this is the first user
-                if (isFirstUser) {
+                if(isFirstUser) {
                     await this.initializeSchema();
                 }
             } else {
@@ -143,7 +143,7 @@ class FirebaseSyncService {
             }
             
             return true;
-        } catch (error) {
+        } catch(error: any) {
             console.error('Error syncing user on login:', error);
             return false;
         }
@@ -152,7 +152,7 @@ class FirebaseSyncService {
     /**
      * Get user role and permissions
      */
-    async getUserRole(userId) {
+    async getUserRole(userId: any) {
         try {
             const sanitizedUserId = userId.replace(/[.#$\[\]]/g, '_');
             const userRef = ref(this.database, `users/${sanitizedUserId}`);
@@ -164,7 +164,7 @@ class FirebaseSyncService {
             }
             
             return USER_ROLES.USER;
-        } catch (error) {
+        } catch(error: any) {
             console.error('Error getting user role:', error);
             return USER_ROLES.USER;
         }
@@ -173,7 +173,7 @@ class FirebaseSyncService {
     /**
      * Check if user has required role for menu access
      */
-    async hasRequiredRole(userId, requiredRole) {
+    async hasRequiredRole(userId, requiredRole: any) {
         try {
             const userRole = await this.getUserRole(userId);
             const roleHierarchy = {
@@ -188,7 +188,7 @@ class FirebaseSyncService {
             const requiredLevel = roleHierarchy[requiredRole] || 0;
             
             return userLevel >= requiredLevel;
-        } catch (error) {
+        } catch(error) {
             console.error('Error checking role permissions:', error);
             return false;
         }
@@ -211,7 +211,7 @@ class FirebaseSyncService {
             
             console.log('Schema pushed to Firebase successfully');
             return true;
-        } catch (error) {
+        } catch(error: any) {
             console.error('Error pushing schema to Firebase:', error);
             return false;
         }

@@ -68,7 +68,7 @@ const LogoContainer = styled(Box)(({ theme }) => ({
     borderBottom: `1px solid ${theme.palette.divider}`,
 }));
 
-const Sidebar = ({ open, toggleDrawer, isRTL = false }) => {
+const Sidebar: React.FC<any> = ({ open, toggleDrawer, isRTL = false }) => {
     const theme = useTheme();
     const { activeTab, openTab } = useTab();
     const { translate } = useLanguage();
@@ -80,20 +80,18 @@ const Sidebar = ({ open, toggleDrawer, isRTL = false }) => {
 
     return (
         <StyledDrawer
-            variant="permanent"
+            variant: any,
             open={open}
             isRTL={isRTL}
         >
             <LogoContainer>
                 <Box
-                    component="img"
+                    component: any,
                     src={open ? logoTechno : technoIcon}
-                    alt="Logo"
-                    sx={{
-                        height: 'auto',
+                    alt: any,
                         width: '100%',
                         transition: theme.transitions.create('all'),
-                    }}
+                    } as any}
                 />
             </LogoContainer>
             {/* Tree Menu Navigation */}

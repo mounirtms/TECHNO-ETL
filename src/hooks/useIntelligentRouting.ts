@@ -41,7 +41,7 @@ const ROUTE_PERMISSIONS = {
   [ROUTES.DASHBOARD]: ['user', 'supervisor', 'manager', 'admin', 'super_admin'],
   [ROUTES.CHARTS]: ['analyst', 'manager', 'admin', 'super_admin'],
   [ROUTES.PRODUCTS]: ['user', 'supervisor', 'manager', 'admin', 'super_admin'],
-  [ROUTES.VOTING]: ['user', 'supervisor', 'manager', 'admin', 'super_admin'],
+  [ROUTES?.VOTING]: ['user', 'supervisor', 'manager', 'admin', 'super_admin'],
   [ROUTES.INVENTORY]: ['inventory', 'supervisor', 'manager', 'admin', 'super_admin'],
   [ROUTES.ORDERS]: ['sales', 'supervisor', 'manager', 'admin', 'super_admin'],
   [ROUTES.CUSTOMERS]: ['sales', 'supervisor', 'manager', 'admin', 'super_admin'],
@@ -119,7 +119,7 @@ export const useIntelligentRouting = () => {
     const targetRoute = getPostLoginRoute();
     
     // Only navigate if we're currently on login page or root
-    if (location.pathname === ROUTES.LOGIN || location.pathname === '/') {
+    if(location.pathname ===ROUTES.LOGIN || location.pathname === '/') {
       navigate(targetRoute, { replace: true });
       
       // Clear the stored route after successful navigation
@@ -150,7 +150,7 @@ export const useIntelligentRouting = () => {
    * Store current route for session restoration
    */
   const storeCurrentRoute = useCallback(() => {
-    if (currentUser && location.pathname !== ROUTES.LOGIN) {
+    if(currentUser && location.pathname !== ROUTES.LOGIN) {
       localStorage.setItem('lastVisitedRoute', location.pathname + location.search);
     }
   }, [currentUser, location]);
@@ -163,7 +163,7 @@ export const useIntelligentRouting = () => {
     
     const userRole = getUserRole();
     
-    return Object.keys(ROUTE_PERMISSIONS).filter(route => 
+    return Object.keys(ROUTE_PERMISSIONS).filter((route: any: any) => 
       hasRouteAccess(route, userRole)
     );
   }, [currentUser, getUserRole, hasRouteAccess]);
@@ -178,11 +178,11 @@ export const useIntelligentRouting = () => {
     // Get recent routes from localStorage
     const routeVisits = JSON.parse(localStorage.getItem('routeVisits') || '[]');
     const recentRoutes = routeVisits
-      .filter(visit => visit.userId === currentUser?.uid)
+      .filter((visit: any: any) => visit.userId ===currentUser?.uid)
       .slice(-10)
-      .map(visit => visit.path)
-      .filter((path, index, arr) => arr.indexOf(path) === index) // Remove duplicates
-      .filter(path => path !== currentPath && hasRouteAccess(path, userRole));
+      .map((visit: any: any) => visit.path)
+      .filter((path, index, arr: any: any) => arr.indexOf(path ) ===index) // Remove duplicates
+      .filter((path: any: any) => path !== currentPath && hasRouteAccess(path, userRole));
     
     // Role-based suggestions
     const roleSuggestions = {
@@ -197,7 +197,7 @@ export const useIntelligentRouting = () => {
     
     return {
       recent: recentRoutes.slice(0, 3),
-      suggested: suggestions.filter(route => 
+      suggested: suggestions.filter((route: any: any) => 
         route !== currentPath && hasRouteAccess(route, userRole)
       ).slice(0, 3)
     };
@@ -207,7 +207,7 @@ export const useIntelligentRouting = () => {
    * Handle deep linking with authentication
    */
   const handleDeepLink = useCallback((targetPath) => {
-    if (!currentUser) {
+    if(!currentUser) {
       // Store intended destination and redirect to login
       navigate(ROUTES.LOGIN, { 
         state: { from: { pathname: targetPath } },
@@ -225,7 +225,7 @@ export const useIntelligentRouting = () => {
       return false;
     }
     
-    navigate(targetPath);
+    navigate(targetPath );
     return true;
   }, [currentUser, getUserRole, hasRouteAccess, navigate]);
 
@@ -309,12 +309,12 @@ export const useNavigationAnalytics = () => {
       analytics.push(pageData);
 
       // Keep only last 1000 entries
-      if (analytics.length > 1000) {
+      if(analytics.length > 1000) {
         analytics.splice(0, analytics.length - 1000);
       }
 
       localStorage.setItem('navigationAnalytics', JSON.stringify(analytics));
-    } catch (error) {
+    } catch(error: any) {
       console.warn('Analytics tracking error:', error);
     }
   }, [location, currentUser]);

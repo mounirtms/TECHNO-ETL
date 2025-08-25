@@ -100,7 +100,7 @@ const StatsCardContent = styled(Box)(({ theme }) => ({
     minWidth: 0 
 }));
 
-const StatCard = ({ title, value, icon: Icon, color = 'primary', active, onClick }) => {
+const StatCard: React.FC<{title: any, value: any, icon: Icon: any, color = 'primary': any, active: any, onClick: any}> = ({ title, value, icon: Icon, color = 'primary', active, onClick  }) => {
     const theme = useTheme();
 
     return (
@@ -119,7 +119,7 @@ const StatCard = ({ title, value, icon: Icon, color = 'primary', active, onClick
                 }}>
                     {Icon && (
                         <Icon
-                            sx={{
+                            sx: any,
                                 fontSize: 20, // Smaller, more professional
                                 color: theme.palette[color].main,
                                 mr: 1.5,
@@ -134,9 +134,7 @@ const StatCard = ({ title, value, icon: Icon, color = 'primary', active, onClick
                         width: 'calc(100% - 50px)'
                     }}>
                         <Typography
-                            variant="body2"
-                            sx={{
-                                fontWeight: 'bold',
+                            variant: any,
                                 whiteSpace: 'nowrap',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
@@ -146,9 +144,7 @@ const StatCard = ({ title, value, icon: Icon, color = 'primary', active, onClick
                             {title}
                         </Typography>
                         <Typography
-                            variant="h6"
-                            sx={{
-                                fontWeight: 'bold',
+                            variant: any,
                                 whiteSpace: 'nowrap',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
@@ -164,7 +160,7 @@ const StatCard = ({ title, value, icon: Icon, color = 'primary', active, onClick
     );
 };
 
-const StatsCards = ({ cards }) => {
+const StatsCards: React.FC<{cards: any}> = ({ cards  }) => {
     const theme = useTheme();
 
     // Ensure cards is an array
@@ -176,13 +172,13 @@ const StatsCards = ({ cards }) => {
     return (
         <StatsCardContainer>
             <StatsCardWrapper>
-                {cards.map((card, index) => {
+                {cards.map((card: any: any, index: any: any) => {
                     const Icon = card.icon;
 
                     // Professional and responsive icon rendering
                     const renderIcon = () => {
                         // Handle Material-UI icon components (functions)
-                        if (typeof Icon === 'function') {
+                        if(typeof Icon === 'function') {
                             return <Icon sx={{
                                 fontSize: { xs: 16, sm: 18, md: 20 }, // Professional sizing
                                 opacity: 0.9,
@@ -197,13 +193,13 @@ const StatsCards = ({ cards }) => {
                                     fontSize: { xs: 16, sm: 18, md: 20 },
                                     opacity: 0.9,
                                     color: 'inherit',
-                                    ...Icon.props?.sx
+                                    ...Icon.props.sx
                                 }
                             });
                         }
 
                         // Handle icon objects (like {type: 'TrendingUp'})
-                        if (Icon && typeof Icon === 'object' && Icon.type) {
+                        if(Icon && typeof Icon === 'object' && Icon.type) {
                             // Try to render the icon type as a string
                             return (
                                 <Box sx={{
@@ -220,7 +216,7 @@ const StatsCards = ({ cards }) => {
                         }
 
                         // Handle string icons (emoji or text)
-                        if (typeof Icon === 'string') {
+                        if(typeof Icon === 'string') {
                             return (
                                 <Box sx={{
                                     fontSize: { xs: 16, sm: 18, md: 20 },
@@ -267,9 +263,7 @@ const StatsCards = ({ cards }) => {
                             </Box>
                             <StatsCardContent>
                                 <Typography
-                                    variant="caption"
-                                    sx={{
-                                        fontWeight: 500,
+                                    variant: any,
                                         letterSpacing: 0.2,
                                         opacity: 0.8,
                                         textTransform: 'uppercase',
@@ -286,9 +280,7 @@ const StatsCards = ({ cards }) => {
                                     {card.title}
                                 </Typography>
                                 <Typography
-                                    variant="h6"
-                                    sx={{
-                                        fontWeight: 700,
+                                    variant: any,
                                         fontSize: 16, // Fixed 16px as requested
                                         letterSpacing: 0.2,
                                         lineHeight: 1.2,

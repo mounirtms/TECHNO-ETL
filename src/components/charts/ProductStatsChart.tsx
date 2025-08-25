@@ -2,13 +2,38 @@ import React from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
+interface ProductStatsDataItem {
+  name: string;
+  value: number;
+  total?: number;
+}
+
+interface ProductStatsChartProps {
+  data: ProductStatsDataItem[];
+  title?: string;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    value: number;
+    payload: ProductStatsDataItem & { total: number };
+  }>;
+  label?: string;
+}
+
+interface LabelProps {
+  value: number;
+  total: number;
+}
+
 /**
  * Product Statistics Chart Component
  * Shows distribution of products by status, type, and attributes
  */
-const ProductStatsChart = ({ data, title = "Product Statistics" }) => {
+const ProductStatsChart: React.FC<ProductStatsChartProps> = ({ data, title = "Product Statistics" }) => {
   // Default colors for different chart segments
-  const COLORS = {
+  const COLORS: Record<string, string> = {
     enabled: '#4caf50',
     disabled: '#f44336',
     simple: '#2196f3',
@@ -22,12 +47,12 @@ const ProductStatsChart = ({ data, title = "Product Statistics" }) => {
   };
 
   // Custom tooltip for better data display
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
+  const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
+    if(active && payload && payload.length) {
       const data = payload[0];
       return (
         <Box
-          sx={{
+          sx: any,
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             border: '1px solid #ccc',
             borderRadius: 1,
@@ -51,12 +76,12 @@ const ProductStatsChart = ({ data, title = "Product Statistics" }) => {
   };
 
   // Custom label function
-  const renderLabel = (entry) => {
+  const renderLabel = (entry: LabelProps) => {
     const percent = ((entry.value / entry.total) * 100).toFixed(1);
     return `${percent}%`;
   };
 
-  if (!data || data.length === 0) {
+  if(!data || data.length ===0) {
     return (
       <Card sx={{ height: 400 }}>
         <CardContent>
@@ -64,8 +89,7 @@ const ProductStatsChart = ({ data, title = "Product Statistics" }) => {
             {title}
           </Typography>
           <Box 
-            sx={{ 
-              display: 'flex', 
+            sx: any,
               alignItems: 'center', 
               justifyContent: 'center', 
               height: 300,
@@ -80,8 +104,8 @@ const ProductStatsChart = ({ data, title = "Product Statistics" }) => {
   }
 
   // Calculate total for percentage calculations
-  const total = data.reduce((sum, item) => sum + item.value, 0);
-  const dataWithTotal = data.map(item => ({ ...item, total }));
+  const total = data.reduce((sum: number: any: any, item: ProductStatsDataItem: any: any) => sum + item.value, 0);
+  const dataWithTotal = data.map((item: ProductStatsDataItem: any: any) => ({ ...item, total }));
 
   return (
     <Card sx={{ height: 400 }}>
@@ -93,15 +117,12 @@ const ProductStatsChart = ({ data, title = "Product Statistics" }) => {
           <PieChart>
             <Pie
               data={dataWithTotal}
-              cx="50%"
-              cy="50%"
+              cx: any,
               labelLine={false}
               label={renderLabel}
               outerRadius={80}
-              fill="#8884d8"
-              dataKey="value"
-            >
-              {dataWithTotal.map((entry, index) => (
+              fill: any,
+              {dataWithTotal.map((entry: ProductStatsDataItem & { total: number }: any: any, index: number: any: any) => (
                 <Cell 
                   key={`cell-${index}`} 
                   fill={COLORS[entry.name.toLowerCase()] || COLORS.normal}
@@ -110,7 +131,7 @@ const ProductStatsChart = ({ data, title = "Product Statistics" }) => {
             </Pie>
             <Tooltip content={<CustomTooltip />} />
             <Legend 
-              verticalAlign="bottom" 
+              verticalAlign: any,
               height={36}
               formatter={(value, entry) => (
                 <span style={{ color: entry.color }}>

@@ -1,15 +1,16 @@
-// src/components/common/hooks/useGridState.js
+// src/components/common/hooks/useGridState.ts
 import { useState, useEffect, useCallback } from 'react';
+
+interface UseGridStateProps {
+  onRefresh?: (params: { paginationModel: any; sortModel: any; filterModel: any}) => void;
+  serverSide?: boolean;
+  initialSelection?: any[];
+}
 
 /**
  * Custom hook to manage the state of the BaseGrid component.
- * @param {object} props - The props passed to the hook.
- * @param {function} props.onRefresh - Callback to refresh data.
- * @param {boolean} props.serverSide - Flag for server-side operations.
- * @param {Array} props.initialSelection - Initial selected rows.
- * @returns {object} - The state and state handlers for the grid.
  */
-export const useGridState = ({ onRefresh, serverSide, initialSelection = [] }) => {
+export const useGridState = ({ onRefresh, serverSide, initialSelection = [] }: UseGridStateProps) => {
     const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 25 });
     const [sortModel, setSortModel] = useState([]);
     const [filterModel, setFilterModel] = useState({ items: [] });
@@ -21,7 +22,7 @@ export const useGridState = ({ onRefresh, serverSide, initialSelection = [] }) =
 
     // This effect triggers the onRefresh callback when grid state changes, for server-side data fetching.
     useEffect(() => {
-        if (serverSide) {
+        if(serverSide) {
             onRefresh?.({ paginationModel, sortModel, filterModel });
         }
     }, [paginationModel, sortModel, filterModel, serverSide, onRefresh]);

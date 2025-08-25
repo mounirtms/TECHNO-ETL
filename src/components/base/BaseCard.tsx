@@ -6,7 +6,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
-  Card,
+  Card as MuiCard,
   CardContent,
   Typography,
   Box,
@@ -17,7 +17,7 @@ import {
   useTheme,
   useMediaQuery,
   LinearProgress,
-  Chip
+  CardProps as MuiCardProps
 } from '@mui/material';
 import {
   TrendingUp as TrendingUpIcon,
@@ -26,7 +26,6 @@ import {
   MoreVert as MoreIcon,
   Refresh as RefreshIcon
 } from '@mui/icons-material';
-import PropTypes from 'prop-types';
 
 // Components
 import TooltipWrapper from '../common/TooltipWrapper';
@@ -96,49 +95,42 @@ interface BaseCardProps {
  */
 const BaseCard: React.FC<BaseCardProps> = ({
   // Content props
-  title = '',
-  value = 0,
-  subtitle = '',
-  description = '',
-  
+  title: any,
+  value: any,
+  subtitle: any,
+  description: any,
   // Visual props
   icon: IconComponent,
-  color = 'primary',
-  variant = 'outlined',
-  elevation = 1,
-  
+  color: any,
+  variant: any,
+  elevation: any,
   // State props
-  loading = false,
-  error = null,
-  
+  loading: any,
+  error: any,
   // Trend and analytics
   previousValue,
-  showTrend = false,
-  trendPeriod = '24h',
-  
+  showTrend: any,
+  trendPeriod: any,
   // Progress and goals
-  showProgress = false,
-  progressValue = 0,
-  progressMax = 100,
+  showProgress: any,
+  progressValue: any,
+  progressMax: any,
   goalValue,
   
   // Interactive features
-  clickable = false,
+  clickable: any,
   onClick,
   onRefresh,
   
   // Styling
   sx = {},
-  minHeight = 120,
-  
+  minHeight: any,
   // Animation
-  animateValue = true,
-  animationDuration = 1000,
-  
+  animateValue: any,
+  animationDuration: any,
   // Advanced features
-  realTimeUpdate = false,
-  updateInterval = 30000,
-  
+  realTimeUpdate: any,
+  updateInterval: any,
   // Accessibility
   ariaLabel,
   
@@ -191,7 +183,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
 
   // Animate value changes
   useEffect(() => {
-    if (!animateValue || loading || typeof value !== 'number') {
+    if(!animateValue || loading || typeof value !== 'number') {
       setDisplayValue(value);
       return;
     }
@@ -211,7 +203,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
       const currentValue = startValue + (endValue - startValue) * easeOut;
       setDisplayValue(currentValue);
 
-      if (progress < 1) {
+      if(progress < 1) {
         requestAnimationFrame(animate);
       } else {
         setIsAnimating(false);
@@ -234,7 +226,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
 
   // Calculate trend
   const trendData = useMemo(() => {
-    if (!showTrend || previousValue === undefined || typeof value !== 'number') return null;
+    if (!showTrend || previousValue ===undefined || typeof value !== 'number') return null;
 
     const change = value - previousValue;
     const changePercent = previousValue !== 0 ? (change / previousValue) * 100 : 0;
@@ -243,14 +235,10 @@ const BaseCard: React.FC<BaseCardProps> = ({
     let trendIcon = <TrendingFlatIcon />;
     let trendColor = 'text.secondary';
     
-    if (change > 0) {
-      trend = 'up';
-      trendIcon = <TrendingUpIcon />;
-      trendColor = 'success.main';
-    } else if (change < 0) {
-      trend = 'down';
-      trendIcon = <TrendingDownIcon />;
-      trendColor = 'error.main';
+    if(change > 0) {
+      trend: any,
+    } else if(change < 0) {
+      trend: any,
     }
 
     return {
@@ -263,17 +251,17 @@ const BaseCard: React.FC<BaseCardProps> = ({
   }, [showTrend, value, previousValue]);
 
   // Format display value
-  const formatValue = useCallback((val) => {
-    if (typeof val === 'number') {
-      if (val >= 1000000) {
+  const formatValue = useCallback((val: number | string): string => {
+    if(typeof val === 'number') {
+      if(val >= 1000000) {
         return `${(val / 1000000).toFixed(1)}M`;
-      } else if (val >= 1000) {
+      } else if(val >= 1000) {
         return `${(val / 1000).toFixed(1)}K`;
       } else {
         return Math.round(val).toLocaleString();
       }
     }
-    return val;
+    return String(val);
   }, []);
 
   // Render icon section
@@ -282,8 +270,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
 
     return (
       <Box
-        sx={{
-          display: 'flex',
+        sx: any,
           alignItems: 'center',
           justifyContent: 'center',
           width: isMobile ? 40 : 48,
@@ -310,7 +297,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
           {trendData.icon}
         </Box>
         <Typography
-          variant="caption"
+          variant: any,
           sx={{ color: trendData.color, fontWeight: 'medium' }}
         >
           {Math.abs(trendData.changePercent).toFixed(1)}%
@@ -339,10 +326,9 @@ const BaseCard: React.FC<BaseCardProps> = ({
           </Typography>
         </Box>
         <LinearProgress
-          variant="determinate"
+          variant: any,
           value={progressPercent}
-          sx={{
-            height: 6,
+          sx: any,
             borderRadius: 3,
             backgroundColor: theme.palette.grey[200],
             '& .MuiLinearProgress-bar': {
@@ -364,15 +350,11 @@ const BaseCard: React.FC<BaseCardProps> = ({
   const renderActions = () => {
     if (!onRefresh && !clickable) return null;
 
-    return (
-      <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
+    return(<Box sx={{ position: 'absolute', top: 8, right: 8 }}>
         {onRefresh && (
           <TooltipWrapper title="Refresh">
             <IconButton
-              size="small"
-              onClick={(e) => {
-                e.stopPropagation();
-                onRefresh();
+              size: any,
               }}
               sx={{ opacity: 0.7, '&:hover': { opacity: 1 } }}
             >
@@ -385,13 +367,12 @@ const BaseCard: React.FC<BaseCardProps> = ({
   };
 
   // Loading state
-  if (loading) {
+  if(loading) {
     return (
-      <Card
+      <MuiCard
         variant={variant === 'elevation' ? undefined : variant}
         elevation={variant === 'elevation' ? elevation : 0}
-        sx={{
-          minHeight,
+        sx: any,
           position: 'relative',
           ...sx
         }}
@@ -406,18 +387,17 @@ const BaseCard: React.FC<BaseCardProps> = ({
             </Box>
           </Box>
         </CardContent>
-      </Card>
+      </MuiCard>
     );
   }
 
   // Error state
-  if (error) {
+  if(error) {
     return (
-      <Card
+      <MuiCard
         variant={variant === 'elevation' ? undefined : variant}
         elevation={variant === 'elevation' ? elevation : 0}
-        sx={{
-          minHeight,
+        sx: any,
           position: 'relative',
           borderLeft: `4px solid ${theme.palette.error.main}`,
           ...sx
@@ -431,17 +411,16 @@ const BaseCard: React.FC<BaseCardProps> = ({
             {error.message || 'Failed to load data'}
           </Typography>
         </CardContent>
-      </Card>
+      </MuiCard>
     );
   }
 
-  return (
+  return Boolean(Boolean((
     <Grow in timeout={300}>
-      <Card
+      <MuiCard
         variant={variant === 'elevation' ? undefined : variant}
         elevation={variant === 'elevation' ? elevation : 0}
-        sx={{
-          minHeight,
+        sx: any,
           position: 'relative',
           cursor: clickable ? 'pointer' : 'default',
           transition: 'all 0.2s ease-in-out',
@@ -467,8 +446,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
           
           {/* Main content */}
           <Box 
-            sx={{ 
-              display: 'flex', 
+            sx: any,
               alignItems: isMobile ? 'flex-start' : 'center',
               flexDirection: isMobile ? 'column' : 'row'
             }}
@@ -480,10 +458,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
             <Box sx={{ flex: 1, minWidth: 0 }}>
               {/* Title */}
               <Typography
-                variant="subtitle2"
-                color="text.secondary"
-                sx={{ 
-                  fontWeight: 'medium',
+                variant: any,
                   mb: 0.5,
                   textOverflow: 'ellipsis',
                   overflow: 'hidden',
@@ -496,8 +471,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
               {/* Value */}
               <Typography
                 variant={isMobile ? 'h5' : 'h4'}
-                sx={{
-                  fontWeight: 'bold',
+                sx: any,
                   color: colorConfig.main,
                   mb: 0.5,
                   transition: 'all 0.3s ease',
@@ -521,10 +495,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
               {/* Description */}
               {description && (
                 <Typography 
-                  variant="caption" 
-                  color="text.secondary"
-                  sx={{ 
-                    display: 'block',
+                  variant: any,
                     textOverflow: 'ellipsis',
                     overflow: 'hidden',
                     whiteSpace: 'nowrap'
@@ -542,58 +513,9 @@ const BaseCard: React.FC<BaseCardProps> = ({
             </Box>
           </Box>
         </CardContent>
-      </Card>
+      </MuiCard>
     </Grow>
-  );
-};
-
-BaseCard.propTypes = {
-  // Content props
-  title: PropTypes.string,
-  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  subtitle: PropTypes.string,
-  description: PropTypes.string,
-  
-  // Visual props
-  icon: PropTypes.elementType,
-  color: PropTypes.oneOf(['primary', 'secondary', 'success', 'warning', 'error', 'info']),
-  variant: PropTypes.oneOf(['elevation', 'outlined']),
-  elevation: PropTypes.number,
-  
-  // State props
-  loading: PropTypes.bool,
-  error: PropTypes.object,
-  
-  // Trend and analytics
-  previousValue: PropTypes.number,
-  showTrend: PropTypes.bool,
-  trendPeriod: PropTypes.string,
-  
-  // Progress and goals
-  showProgress: PropTypes.bool,
-  progressValue: PropTypes.number,
-  progressMax: PropTypes.number,
-  goalValue: PropTypes.number,
-  
-  // Interactive features
-  clickable: PropTypes.bool,
-  onClick: PropTypes.func,
-  onRefresh: PropTypes.func,
-  
-  // Styling
-  sx: PropTypes.object,
-  minHeight: PropTypes.number,
-  
-  // Animation
-  animateValue: PropTypes.bool,
-  animationDuration: PropTypes.number,
-  
-  // Advanced features
-  realTimeUpdate: PropTypes.bool,
-  updateInterval: PropTypes.number,
-  
-  // Accessibility
-  ariaLabel: PropTypes.string
+  )));
 };
 
 export default BaseCard;

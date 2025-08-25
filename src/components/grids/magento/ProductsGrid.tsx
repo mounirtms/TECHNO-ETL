@@ -1,3 +1,4 @@
+import React from 'react';
 /**
  * ProductsGrid - Professional Magento Products Management Grid
  *
@@ -86,7 +87,7 @@ const ProductsGrid = () => {
           lineHeight: '1.2',
           padding: '4px 0'
         }}>
-          {params.value}
+          {params?.value}
         </div>
       )
     }),
@@ -99,10 +100,8 @@ const ProductsGrid = () => {
         try {
           if (!params?.row?.custom_attributes) return '-';
           const technoRef = params.row.custom_attributes.find(
-            attr => attr.attribute_code === 'techno_ref'
-          );
-          return technoRef?.value || '-';
-        } catch (error) {
+            attr: any,
+        } catch(error: any) {
           console.warn('Error getting techno_ref:', error);
           return '-';
         }
@@ -113,7 +112,7 @@ const ProductsGrid = () => {
     ColumnFactory.status('status', {
       headerName: 'Status',
       width: 100,
-      valueGetter: (params) => params.row.status === 1 ? 'enabled' : 'disabled',
+      valueGetter: (params) => params.row.status ===1 ? 'enabled' : 'disabled',
       statusColors: {
         enabled: 'success',
         disabled: 'error'
@@ -149,10 +148,8 @@ const ProductsGrid = () => {
         try {
           if (!params?.row?.custom_attributes) return '-';
           const brand = params.row.custom_attributes.find(
-            attr => attr.attribute_code === 'mgs_brand'
-          );
-          return brand?.value || '-';
-        } catch (error) {
+            attr: any,
+        } catch(error: any) {
           console.warn('Error getting brand:', error);
           return '-';
         }
@@ -167,10 +164,8 @@ const ProductsGrid = () => {
         try {
           if (!params?.row?.custom_attributes) return '-';
           const country = params.row.custom_attributes.find(
-            attr => attr.attribute_code === 'country_of_manufacture'
-          );
-          return country?.value || '-';
-        } catch (error) {
+            attr: any,
+        } catch(error: any) {
           console.warn('Error getting country:', error);
           return '-';
         }
@@ -186,11 +181,8 @@ const ProductsGrid = () => {
           if (!params?.row?.custom_attributes) return [];
 
           const categoryIds = params.row.custom_attributes.find(
-            attr => attr.attribute_code === 'category_ids'
-          )?.value || [];
-
-          return Array.isArray(categoryIds) ? categoryIds : [];
-        } catch (error) {
+            attr: any,
+        } catch(error: any) {
           console.warn('Error getting category IDs:', error);
           return [];
         }
@@ -199,15 +191,15 @@ const ProductsGrid = () => {
         try {
           const categoryIds = params.value || [];
 
-          if (!Array.isArray(categoryIds) || categoryIds.length === 0) {
+          if (!Array.isArray(categoryIds) || categoryIds.length ===0) {
             return <span style={{ color: '#999', fontSize: '0.75rem' }}>No categories</span>;
           }
 
-          const categoryNames = categoryIds.slice(0, 2).map(id => {
+          const categoryNames = categoryIds.slice(0, 2).map((id: any: any) => {
             try {
-              const category = categories.find(cat => cat.id.toString() === id.toString());
+              const category = categories.find(cat => cat.id.toString() ===id.toString());
               return category ? category.name : `ID:${id}`;
-            } catch (error) {
+            } catch(error: any) {
               console.warn('Error finding category:', error);
               return `ID:${id}`;
             }
@@ -215,11 +207,10 @@ const ProductsGrid = () => {
 
           return (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2px' }}>
-              {categoryNames.map((name, index) => (
+              {categoryNames.map((name: any: any, index: any: any) => (
                 <span
                   key={index}
-                  style={{
-                    fontSize: '0.75rem',
+                  style: any,
                     backgroundColor: '#e3f2fd',
                     color: '#1976d2',
                     padding: '2px 6px',
@@ -237,7 +228,7 @@ const ProductsGrid = () => {
               )}
             </div>
           );
-        } catch (error) {
+        } catch(error: any) {
           console.warn('Error rendering categories:', error);
           return <span style={{ color: '#f44336', fontSize: '0.75rem' }}>Error</span>;
         }
@@ -252,10 +243,8 @@ const ProductsGrid = () => {
         try {
           if (!params?.row?.custom_attributes) return false;
           const trending = params.row.custom_attributes.find(
-            attr => attr.attribute_code === 'trending'
-          );
-          return trending?.value === '1' || trending?.value === true;
-        } catch (error) {
+            attr: any,
+        } catch(error) {
           console.warn('Error getting trending value:', error);
           return false;
         }
@@ -278,10 +267,8 @@ const ProductsGrid = () => {
         try {
           if (!params?.row?.custom_attributes) return false;
           const bestSeller = params.row.custom_attributes.find(
-            attr => attr.attribute_code === 'best_seller'
-          );
-          return bestSeller?.value === '1' || bestSeller?.value === true;
-        } catch (error) {
+            attr: any,
+        } catch(error) {
           console.warn('Error getting best_seller value:', error);
           return false;
         }
@@ -304,10 +291,8 @@ const ProductsGrid = () => {
         try {
           if (!params?.row?.custom_attributes) return false;
           const alaune = params.row.custom_attributes.find(
-            attr => attr.attribute_code === 'a_la_une'
-          );
-          return alaune?.value === '1' || alaune?.value === true;
-        } catch (error) {
+            attr: any,
+        } catch(error) {
           console.warn('Error getting a_la_une value:', error);
           return false;
         }
@@ -394,12 +379,12 @@ const ProductsGrid = () => {
       setData(products);
       setStats({
         total: totalCount,
-        active: products.filter(p => p.status === 1).length,
-        inactive: products.filter(p => p.status === 2).length,
+        active: products.filter((p: any: any) => p.status ===1).length,
+        inactive: products.filter((p: any: any) => p.status ===2).length,
         localProducts: localProducts.length,
-        syncedProducts: products.filter(p => !p.isLocal).length
+        syncedProducts: products.filter((p: any: any) => !p.isLocal).length
       });
-    } catch (error) {
+    } catch(error: any) {
       console.error('Failed to fetch products:', error);
       toast.error('Failed to fetch products');
       setData([]);
@@ -433,7 +418,7 @@ const ProductsGrid = () => {
           const brandsData = brandsResponse?.items || [];
           setBrands(brandsData);
           console.log('🏷️ Brands loaded for filtering:', brandsData.length);
-        } catch (brandError) {
+        } catch(brandError: any) {
           console.warn('⚠️ Could not load brands:', brandError.message);
           // Provide fallback brands if API fails
           setBrands([
@@ -442,7 +427,7 @@ const ProductsGrid = () => {
             { value: '1661', label: 'Bic' }
           ]);
         }
-      } catch (error) {
+      } catch(error: any) {
         console.error('❌ Error loading filter data:', error);
       }
     };
@@ -457,7 +442,7 @@ const ProductsGrid = () => {
 
   // Fetch data when pagination changes
   useEffect(() => {
-    if (paginationModel.page > 0 || paginationModel.pageSize !== 25) {
+    if(paginationModel.page > 0 || paginationModel.pageSize !== 25) {
       fetchProducts();
     }
   }, [paginationModel, fetchProducts]);
@@ -469,12 +454,12 @@ const ProductsGrid = () => {
   }, []);
 
   const handleEdit = useCallback((selectedIds) => {
-    if (Array.isArray(selectedIds)) {
-      if (selectedIds.length !== 1) {
+    if(Array.isArray(selectedIds)) {
+      if(selectedIds.length !== 1) {
         toast.warning('Please select one product to edit');
         return;
       }
-      const product = data.find(p => p.sku === selectedIds[0]);
+      const product = data.find(p => p.sku ===selectedIds[0]);
       setSelectedProduct(product);
     } else {
       // Handle direct row click
@@ -484,12 +469,12 @@ const ProductsGrid = () => {
   }, [data]);
 
   const handleViewDetails = useCallback((selectedIds) => {
-    if (Array.isArray(selectedIds)) {
-      if (selectedIds.length !== 1) {
+    if(Array.isArray(selectedIds)) {
+      if(selectedIds.length !== 1) {
         toast.warning('Please select one product to view');
         return;
       }
-      const product = data.find(p => p.sku === selectedIds[0]);
+      const product = data.find(p => p.sku ===selectedIds[0]);
       setSelectedProduct(product);
     } else {
       // Handle direct row click
@@ -499,16 +484,16 @@ const ProductsGrid = () => {
   }, [data]);
 
   const handleDelete = useCallback(async (selectedIds) => {
-    if (selectedIds.length === 0) {
+    if(selectedIds.length ===0) {
       toast.warning('Please select products to delete');
       return;
     }
     
     try {
-      await Promise.all(selectedIds.map(sku => ProductService.deleteProduct(sku)));
+      await Promise.all(selectedIds.map((sku: any: any) => ProductService.deleteProduct(sku)));
       toast.success(`${selectedIds.length} product(s) deleted`);
       fetchProducts();
-    } catch (error) {
+    } catch(error: any) {
       toast.error('Failed to delete products');
     }
   }, [fetchProducts]);
@@ -518,7 +503,7 @@ const ProductsGrid = () => {
       await magentoApi.syncProducts();
       toast.success('Products synchronized');
       fetchProducts();
-    } catch (error) {
+    } catch(error: any) {
       console.error('Sync error:', error);
       toast.error('Sync failed');
     }
@@ -582,7 +567,7 @@ const ProductsGrid = () => {
       label: 'Sync',
       icon: 'sync',
       onClick: handleSync,
-      disabled: localProducts.length === 0
+      disabled: localProducts.length ===0
     },
     {
       label: 'Import CSV',
@@ -605,7 +590,7 @@ const ProductsGrid = () => {
   return (
     <>
       <UnifiedGrid
-        {...getStandardGridProps('magentoProducts', {
+        { ...getStandardGridProps('magentoProducts', {
           gridName: "MagentoProductsGrid",
           columns,
           data,
@@ -629,8 +614,7 @@ const ProductsGrid = () => {
           onSelectionChange: setSelectedRows,
 
           // Configuration
-          toolbarConfig: {
-            ...getStandardToolbarConfig('magentoProducts'),
+          toolbarConfig: { ...getStandardToolbarConfig('magentoProducts'),
             filters: [
               {
                 field: 'category',
@@ -638,7 +622,7 @@ const ProductsGrid = () => {
                 type: 'select',
                 options: [
                   { value: '', label: 'All Categories' },
-                  ...categories.map(cat => ({
+                  ...categories.map((cat: any: any) => ({
                     value: cat.id.toString(),
                     label: cat.label
                   }))
@@ -655,7 +639,7 @@ const ProductsGrid = () => {
                 type: 'select',
                 options: [
                   { value: '', label: 'All Brands' },
-                  ...brands.map(brand => ({
+                  ...brands.map((brand: any: any) => ({
                     value: brand.value || brand.id,
                     label: brand.label || brand.name
                   }))
@@ -689,12 +673,10 @@ const ProductsGrid = () => {
 
       <ProductEditDialog
         open={editDialogOpen}
-        onClose={() => {
-          setEditDialogOpen(false);
-          setSelectedProduct(null);
+        onClose: any,
         }}
         product={selectedProduct}
-        onSave={(updatedProduct) => {
+        onSave: any,
           console.log('💾 Saving product:', updatedProduct);
           toast.success(`Product "${updatedProduct.name}" saved successfully`);
           fetchProducts(); // Refresh the grid
@@ -718,9 +700,9 @@ const ProductsGrid = () => {
       <BulkMediaUploadDialog
         open={bulkMediaDialogOpen}
         onClose={() => setBulkMediaDialogOpen(false)}
-        onComplete={(results) => {
+        onComplete: any,
           console.log('Bulk media upload completed:', results);
-          toast.success(`Media upload completed: ${results.filter(r => r.status === 'success').length} successful`);
+          toast.success(`Media upload completed: ${results.filter((r: any: any) => r.status === 'success').length} successful`);
           setBulkMediaDialogOpen(false);
         }}
       />

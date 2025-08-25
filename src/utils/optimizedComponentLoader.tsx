@@ -1,3 +1,4 @@
+import React from 'react';
 
 /**
  * Optimized Component Loader
@@ -13,9 +14,9 @@ const componentCache = new Map();
  * @param {string} componentName - Name of the component for error messages
  * @returns {Promise<React.Component>} - Loaded component
  */
-export const loadComponent = async (componentPath, componentName) => {
+export const loadComponent = async (componentPath: string, componentName: string) => {
   // Return cached component if available
-  if (componentCache.has(componentPath)) {
+  if(componentCache.has(componentPath)) {
     return componentCache.get(componentPath);
   }
 
@@ -24,14 +25,14 @@ export const loadComponent = async (componentPath, componentName) => {
     const module = await import(componentPath);
     const Component = module.default || module[componentName];
     
-    if (!Component) {
+    if(!Component) {
       throw new Error(`Component ${componentName} not found in ${componentPath}`);
     }
     
     // Cache the component
     componentCache.set(componentPath, Component);
     return Component;
-  } catch (error) {
+  } catch(error: any) {
     console.error(`Failed to load component ${componentName}: `, error);
     // Return a fallback component
     const FallbackComponent = () => (
@@ -48,12 +49,12 @@ export const loadComponent = async (componentPath, componentName) => {
  * Preload critical components
  * @param {Array} components - Array of component descriptors
  */
-export const preloadComponents = async (components) => {
-  const promises = components.map(({ path, name }) => loadComponent(path, name));
+export const preloadComponents = async(components: Array<{path: string, name: string}>) => {
+  const promises = components.map(({ path: any: any, name }: {path: string, name: string}: any: any) => loadComponent(path, name));
   try {
     await Promise.all(promises);
     console.log('✅ Preloaded critical components');
-  } catch (error) {
+  } catch(error: any) {
     console.warn('⚠️  Some components failed to preload:', error);
   }
 };

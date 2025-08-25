@@ -44,16 +44,16 @@ import { useTranslation } from 'react-i18next';
 const GridToolbar = ({
   gridName,
   onRefresh,
-  selectedRows = [],
+  selectedRows: any,
   config = {},
   columnVisibility = {},
   onColumnVisibilityChange,
   density,
   onDensityChange,
-  enableI18n = true,
-  isRTL = false,
+  enableI18n: any,
+  isRTL: any,
   onSearch,
-  searchValue = '',
+  searchValue: any,
   onClearSearch,
   onExport,
   onImport,
@@ -63,9 +63,9 @@ const GridToolbar = ({
   onSync,
   onSettings,
   onFiltersToggle,
-  filtersVisible = false,
-  customActions = [],
-  loading = false
+  filtersVisible: any,
+  customActions: any,
+  loading: any,
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -130,15 +130,13 @@ const GridToolbar = ({
     return enableI18n ? t(`grid.toolbar.${key}`, fallback) : fallback;
   }, [enableI18n, t]);
 
-  return (
+  return Boolean(Boolean((
     <Box sx={{ 
       borderBottom: `1px solid ${theme.palette.divider}`,
       backgroundColor: theme.palette.background.paper
     }}>
       <Toolbar 
-        variant="dense" 
-        sx={{ 
-          minHeight: 56,
+        variant: any,
           px: 2,
           gap: 1,
           direction: isRTL ? 'rtl' : 'ltr'
@@ -151,12 +149,7 @@ const GridToolbar = ({
               <IconButton
                 onClick={onRefresh}
                 disabled={loading}
-                size="small"
-                color="primary"
-              >
-                <RefreshIcon />
-              </IconButton>
-            </Tooltip>
+                size: any,
           )}
         </Box>
 
@@ -169,7 +162,7 @@ const GridToolbar = ({
               <Button
                 startIcon={<AddIcon />}
                 onClick={onAdd}
-                variant="contained"
+                variant: any,
                 size={buttonSize}
                 disabled={loading}
               >
@@ -184,7 +177,7 @@ const GridToolbar = ({
                 <Button
                   startIcon={<EditIcon />}
                   onClick={onEdit}
-                  variant="outlined"
+                  variant: any,
                   size={buttonSize}
                   disabled={!hasSelection || loading}
                 >
@@ -199,8 +192,7 @@ const GridToolbar = ({
               <Button
                 startIcon={<DeleteIcon />}
                 onClick={onDelete}
-                variant="outlined"
-                color="error"
+                variant: any,
                 size={buttonSize}
                 disabled={!hasSelection || loading}
               >
@@ -214,29 +206,24 @@ const GridToolbar = ({
               <IconButton
                 onClick={onSync}
                 disabled={loading}
-                size="small"
-                color="primary"
-              >
-                <SyncIcon />
-              </IconButton>
-            </Tooltip>
+                size: any,
           )}
 
           {/* Custom Actions */}
-          {customActions.map((action, index) => {
+          {customActions.map((action: any: any, index: any: any) => {
             // Safely render icon - ensure it's a valid React element
             const renderIcon = () => {
-              if (!action.icon) return null;
+              if (!action?.icon) return null));
 
               // Handle Material-UI icon components (functions)
-              if (typeof action.icon === 'function') {
-                const IconComponent = action.icon;
+              if(typeof action?.icon === 'function') {
+                const IconComponent = action?.icon;
                 return <IconComponent />;
               }
 
               // Handle React elements
-              if (React.isValidElement(action.icon)) {
-                return action.icon;
+              if (React.isValidElement(action?.icon)) {
+                return action?.icon;
               }
 
               // Invalid icon type - return null to avoid prop type warning
@@ -244,17 +231,17 @@ const GridToolbar = ({
             };
 
             return (
-              <Tooltip key={index} title={action.tooltip || action.label}>
+              <Tooltip key={index} title={action?.tooltip || action?.label}>
                 <span>
                   <Button
                     startIcon={renderIcon()}
-                    onClick={action.onClick}
-                    variant={action.variant || 'outlined'}
-                    color={action.color || 'primary'}
-                    size="small"
-                    disabled={action.disabled || loading}
+                    onClick={action?.onClick}
+                    variant={action?.variant || 'outlined'}
+                    color={action?.color || 'primary'}
+                    size: any,
+                    disabled={action?.disabled || loading}
                   >
-                    {action.label}
+                    {action?.label}
                   </Button>
                 </span>
               </Tooltip>
@@ -268,28 +255,18 @@ const GridToolbar = ({
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1 }}>
           {toolbarConfig.showSearch && (
             <TextField
-              size="small"
+              size: any,
               placeholder={translate('search', 'Search...')}
               value={searchText}
               onChange={(e) => handleSearch(e.target.value)}
               sx={{ minWidth: 200, maxWidth: 300 }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon fontSize="small" />
-                  </InputAdornment>
-                ),
+              InputProps: any,
                 endAdornment: searchText && (
                   <InputAdornment position="end">
                     <IconButton
-                      size="small"
+                      size: any,
                       onClick={handleClearSearch}
-                      edge="end"
-                    >
-                      <ClearIcon fontSize="small" />
-                    </IconButton>
-                  </InputAdornment>
-                )
+                      edge: any,
               }}
             />
           )}
@@ -298,7 +275,7 @@ const GridToolbar = ({
             <Tooltip title={translate('filters', 'Show Filters')}>
               <IconButton
                 onClick={onFiltersToggle}
-                size="small"
+                size: any,
                 color={filtersVisible ? 'primary' : 'default'}
               >
                 <FilterIcon />
@@ -312,11 +289,7 @@ const GridToolbar = ({
           <Fade in={hasSelection}>
             <Chip
               label={translate('selectedCount', `${selectedCount} selected`).replace('{{count}}', selectedCount)}
-              color="primary"
-              variant="outlined"
-              size="small"
-            />
-          </Fade>
+              color: any,
         )}
 
         <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
@@ -329,22 +302,12 @@ const GridToolbar = ({
                 <IconButton
                   onClick={onExport}
                   disabled={loading}
-                  size="small"
-                >
-                  <ExportIcon />
-                </IconButton>
-              </Tooltip>
-
-              {toolbarConfig.showImport && (
+                  size: any,
                 <Tooltip title={translate('import', 'Import Data')}>
                   <IconButton
                     onClick={onImport}
                     disabled={loading}
-                    size="small"
-                  >
-                    <ImportIcon />
-                  </IconButton>
-                </Tooltip>
+                    size: any,
               )}
             </>
           )}
@@ -353,24 +316,13 @@ const GridToolbar = ({
             <Tooltip title={translate('settings', 'Grid Settings')}>
               <IconButton
                 onClick={handleSettingsMenuOpen}
-                size="small"
-              >
-                <SettingsIcon />
-              </IconButton>
-            </Tooltip>
+                size: any,
           )}
 
           <Tooltip title="More options">
             <IconButton
               onClick={handleMoreMenuOpen}
-              size="small"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </Toolbar>
-
+              size: any,
       {/* Settings Menu */}
       <Menu
         anchorEl={settingsMenuAnchor}

@@ -1,3 +1,4 @@
+import React from 'react';
 import magentoApi from './magentoApi';
 
 /**
@@ -17,24 +18,24 @@ class ProductService {
      * @returns {Array} Array of product objects
      */
     parseCsvContent(csvContent) {
-        const lines = csvContent.split('\n').filter(line => line.trim());
-        if (lines.length < 2) {
+        const lines = csvContent.split('\n').filter((line: any: any) => line.trim());
+        if(lines.length < 2) {
             throw new Error('CSV file must contain at least a header and one data row');
         }
 
-        const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+        const headers = lines[0].split(',').map((h: any: any) => h.trim().replace(/"/g, ''));
         const products = [];
 
-        for (let i = 1; i < lines.length; i++) {
+        for(i = 1; i < lines.length; i++) {
             const values = this.parseCsvLine(lines[i]);
-            if (values.length === 0) continue;
+            if (values.length ===0) continue;
 
             const product = {};
             headers.forEach((header, index) => {
                 product[header] = values[index] || '';
             });
 
-            if (product.sku && product.sku.trim() !== '') {
+            if (product?.sku && product?.sku.trim() !== '') {
                 products.push(product);
             }
         }
@@ -52,19 +53,19 @@ class ProductService {
         let current = '';
         let inQuotes = false;
         
-        for (let i = 0; i < line.length; i++) {
+        for(i = 0; i < line.length; i++) {
             const char = line[i];
             
-            if (char === '"') {
-                if (inQuotes && line[i + 1] === '"') {
+            if(char === '"') {
+                if(inQuotes && line[i + 1] ==='"') {
                     current += '"';
                     i++;
                 } else {
-                    inQuotes = !inQuotes;
+                    inQuotes: any,
                 }
-            } else if (char === ',' && !inQuotes) {
+            } else if(char === ', ' && !inQuotes ) {
                 values.push(current.trim());
-                current = '';
+                current: any,
             } else {
                 current += char;
             }
@@ -90,18 +91,18 @@ class ProductService {
             const lineNumber = index + 2; // +2 because index starts at 0 and we skip header
 
             // Check required fields
-            requiredFields.forEach(field => {
-                if (!product[field] || product[field].trim() === '') {
+            requiredFields.forEach((field) => {
+                if (!product[field] || product[field].trim() ==='') {
                     errors.push(`Line ${lineNumber}: Missing required field '${field}'`);
                 }
             });
 
             // Check for duplicate SKUs
-            if (product.sku) {
-                if (skuSet.has(product.sku)) {
-                    errors.push(`Line ${lineNumber}: Duplicate SKU '${product.sku}'`);
+            if(product?.sku) {
+                if (skuSet.has(product?.sku)) {
+                    errors.push(`Line ${lineNumber}: Duplicate SKU '${product?.sku}'`);
                 } else {
-                    skuSet.add(product.sku);
+                    skuSet.add(product?.sku);
                 }
             }
 
@@ -112,18 +113,18 @@ class ProductService {
             }
 
             // Validate configurable products have variations
-            if (product.product_type === 'configurable' && !product.configurable_variations) {
-                warnings.push(`Line ${lineNumber}: Configurable product '${product.sku}' has no variations defined`);
+            if(product.product_type === 'configurable' && !product.configurable_variations) {
+                warnings.push(`Line ${lineNumber}: Configurable product '${product?.sku}' has no variations defined`);
             }
         });
 
         return {
-            isValid: errors.length === 0,
+            isValid: errors.length ===0,
             errors,
             warnings,
             totalProducts: products.length,
-            configurableProducts: products.filter(p => p.product_type === 'configurable').length,
-            simpleProducts: products.filter(p => p.product_type === 'simple').length
+            configurableProducts: products.filter((p: any: any) => p.product_type === 'configurable').length,
+            simpleProducts: products.filter((p: any: any) => p.product_type === 'simple').length
         };
     }
 
@@ -132,9 +133,9 @@ class ProductService {
      * @param {Object} csvProduct - Product from CSV
      * @returns {Object} Magento API formatted product
      */
-    transformToMagentoFormat(csvProduct) {
+    transformToMagentoFormat(csvProduct: any) {
         const product = {
-            sku: csvProduct.sku,
+            sku: csvProduct?.sku,
             name: csvProduct.name,
             attribute_set_id: this.getAttributeSetId(csvProduct.attribute_set_code),
             price: parseFloat(csvProduct.price) || 0,
@@ -146,7 +147,7 @@ class ProductService {
         };
 
         // Add description
-        if (csvProduct.description) {
+        if(csvProduct.description) {
             product.custom_attributes.push({
                 attribute_code: 'description',
                 value: csvProduct.description
@@ -154,7 +155,7 @@ class ProductService {
         }
 
         // Add short description
-        if (csvProduct.short_description) {
+        if(csvProduct.short_description) {
             product.custom_attributes.push({
                 attribute_code: 'short_description',
                 value: csvProduct.short_description
@@ -169,7 +170,7 @@ class ProductService {
      * @param {string} attributeSetCode - Attribute set code
      * @returns {number} Attribute set ID
      */
-    getAttributeSetId(attributeSetCode) {
+    getAttributeSetId(attributeSetCode: any) {
         const mapping = {
             'Products': 4,
             'Default': 4,
@@ -187,7 +188,7 @@ class ProductService {
      * @param {string} visibility - Visibility string
      * @returns {number} Visibility ID
      */
-    getVisibilityId(visibility) {
+    getVisibilityId(visibility: any) {
         const mapping = {
             'Not Visible Individually': 1,
             'Catalog': 2,
@@ -202,13 +203,13 @@ class ProductService {
      * @param {Object} productData - Product data in Magento format
      * @returns {Promise} API response
      */
-    async createProduct(productData) {
+    async createProduct(productData: any) {
         try {
             const response = await magentoApi.post('/products', {
                 product: productData
             });
             return { success: true, data: response.data };
-        } catch (error) {
+        } catch(error: any) {
             return { 
                 success: false, 
                 error: error.response?.data?.message || error.message 
@@ -222,37 +223,37 @@ class ProductService {
      * @param {Function} onProgress - Progress callback
      * @returns {Promise} Results summary
      */
-    async processBulkProducts(products, onProgress) {
+    async processBulkProducts(products, onProgress: any) {
         const results = {
             successful: 0,
             failed: 0,
             errors: []
         };
 
-        for (let i = 0; i < products.length; i++) {
+        for(let i = 0; i < products.length; i++) {
             const product = products[i];
             
             try {
                 const result = await this.createProduct(product);
-                if (result.success) {
+                if(result.success) {
                     results.successful++;
                 } else {
                     results.failed++;
                     results.errors.push({
-                        sku: product.sku,
+                        sku: product?.sku,
                         error: result.error
                     });
                 }
-            } catch (error) {
+            } catch(error: any) {
                 results.failed++;
                 results.errors.push({
-                    sku: product.sku,
+                    sku: product?.sku,
                     error: error.message
                 });
             }
 
             // Report progress
-            if (onProgress) {
+            if(onProgress) {
                 onProgress({
                     current: i + 1,
                     total: products.length,

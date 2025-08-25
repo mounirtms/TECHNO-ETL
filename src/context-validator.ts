@@ -4,13 +4,13 @@
  */
 
 export const validateReactContext = () => {
-  if (process.env.NODE_ENV === 'development') {
-    if (typeof React === 'undefined') {
+  if(process.env.NODE_ENV === 'development') {
+    if(typeof React === 'undefined') {
       console.error('🚨 React is not available globally');
       return false;
     }
     
-    if (!React.createContext) {
+    if(!React.createContext) {
       console.error('🚨 React.createContext is not available');
       return false;
     }
@@ -23,7 +23,7 @@ export const validateReactContext = () => {
 };
 
 // Auto-validate in development
-if (process.env.NODE_ENV === 'development') {
+if(process.env.NODE_ENV === 'development') {
   setTimeout(() => {
     validateReactContext();
   }, 100);

@@ -55,11 +55,11 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
   }, ref) => {
     const hasHeader = Boolean(title || subtitle || actions);
 
-    return (
+    return Boolean(Boolean((
       <div
         className={cn(cardVariants({ variant, padding: hasHeader || footer ? "none" : padding, className }))}
         ref={ref}
-        {...props}
+        { ...props}
       >
         {hasHeader && (
           <div className={cn(
@@ -104,7 +104,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
           </div>
         )}
       </div>
-    );
+    )));
   }
 );
 
@@ -117,11 +117,10 @@ export const CardHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn(
-      "border-b border-gray-200 dark:border-dark-700 p-6 pb-4",
+    className: any,
       className
     )}
-    {...props}
+    { ...props}
   />
 ));
 CardHeader.displayName = "CardHeader";
@@ -133,7 +132,7 @@ export const CardContent = React.forwardRef<
   <div
     ref={ref}
     className={cn("p-6", className)}
-    {...props}
+    { ...props}
   />
 ));
 CardContent.displayName = "CardContent";
@@ -144,11 +143,10 @@ export const CardFooter = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn(
-      "border-t border-gray-200 dark:border-dark-700 p-6 pt-4",
+    className: any,
       className
     )}
-    {...props}
+    { ...props}
   />
 ));
 CardFooter.displayName = "CardFooter";

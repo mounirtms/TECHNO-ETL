@@ -112,32 +112,32 @@ const RecentActivityFeed = () => {
       color: status === 'success' ? 'success' : status === 'warning' ? 'warning' : status === 'error' ? 'error' : 'primary'
     };
 
-    switch (iconType) {
+    switch(iconType) {
       case 'order':
-        return <OrderIcon {...iconProps} />;
+        return <OrderIcon { ...iconProps} />;
       case 'sync':
-        return <SyncIcon {...iconProps} />;
+        return <SyncIcon { ...iconProps} />;
       case 'user':
-        return <UserIcon {...iconProps} />;
+        return <UserIcon { ...iconProps} />;
       case 'product':
-        return <ProductIcon {...iconProps} />;
+        return <ProductIcon { ...iconProps} />;
       case 'upload':
-        return <UploadIcon {...iconProps} />;
+        return <UploadIcon { ...iconProps} />;
       case 'download':
-        return <DownloadIcon {...iconProps} />;
+        return <DownloadIcon { ...iconProps} />;
       case 'settings':
-        return <SettingsIcon {...iconProps} />;
+        return <SettingsIcon { ...iconProps} />;
       case 'warning':
-        return <WarningIcon {...iconProps} />;
+        return <WarningIcon { ...iconProps} />;
       case 'success':
-        return <SuccessIcon {...iconProps} />;
+        return <SuccessIcon { ...iconProps} />;
       default:
-        return <ActivityIcon {...iconProps} />;
+        return <ActivityIcon { ...iconProps} />;
     }
   };
 
   const getStatusColor = (status) => {
-    switch (status) {
+    switch(status) {
       case 'success':
         return 'success';
       case 'warning':
@@ -152,7 +152,7 @@ const RecentActivityFeed = () => {
   };
 
   const getPriorityColor = (priority) => {
-    switch (priority) {
+    switch(priority) {
       case 'high':
         return 'error';
       case 'medium':
@@ -179,7 +179,7 @@ const RecentActivityFeed = () => {
 
   const filteredActivities = filter === 'all' 
     ? activities 
-    : activities.filter(activity => activity.priority === filter);
+    : activities.filter((activity: any: any) => activity.priority ===filter);
 
   const refreshActivities = () => {
     // Simulate new activity
@@ -196,28 +196,23 @@ const RecentActivityFeed = () => {
     setActivities(prev => [newActivity, ...prev.slice(0, 9)]);
   };
 
-  return (
-    <ComponentErrorBoundary
-      componentName="RecentActivityFeed"
-      fallbackMessage="Unable to load recent activities"
-    >
-      <Card sx={{
-        borderRadius: density === 'compact' ? 2 : 3,
+  return(<ComponentErrorBoundary
+      componentName: any,
       height: '100%',
       display: 'flex',
       flexDirection: 'column'
     }}>
       <CardHeader
-        avatar={
-          <Badge badgeContent={activities.filter(a => a.priority === 'high').length} color="error">
+        avatar: any,
+          <Badge badgeContent={activities.filter((a: any: any) => a.priority === 'high').length} color="error">
             <Avatar sx={{ bgcolor: 'info.main' }}>
               <ActivityIcon />
             </Avatar>
           </Badge>
         }
-        title="Recent Activity"
+        title: any,
         subheader={`${activities.length} recent events`}
-        action={
+        action: any,
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Tooltip title="Refresh">
               <IconButton size="small" onClick={refreshActivities}>
@@ -240,16 +235,15 @@ const RecentActivityFeed = () => {
       }}>
         {/* Filter Chips */}
         <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
-          {['all', 'high', 'medium', 'low'].map((filterType) => (
+          {['all', 'high', 'medium', 'low'].map((filterType: any: any) => (
             <Chip
               key={filterType}
               label={filterType === 'all' ? 'All' : `${filterType} priority`}
-              size="small"
-              variant={filter === filterType ? 'filled' : 'outlined'}
-              color={filter === filterType ? 'primary' : 'default'}
+              size: any,
+              variant={filter ===filterType ? 'filled' : 'outlined'}
+              color={filter ===filterType ? 'primary' : 'default'}
               onClick={() => setFilter(filterType)}
-              sx={{ 
-                textTransform: 'capitalize',
+              sx: any,
                 transition: animations ? 'all 0.2s ease' : 'none',
                 '&:hover': animations ? { transform: 'scale(1.05)' } : {}
               }}
@@ -259,11 +253,10 @@ const RecentActivityFeed = () => {
 
         {/* Activity List */}
         <List dense sx={{ maxHeight: 350, overflow: 'auto' }}>
-          {filteredActivities.slice(0, 8).map((activity, index) => (
+          {filteredActivities.slice(0, 8).map((activity: any: any, index: any: any) => (
             <React.Fragment key={activity.id}>
               <ListItem
-                sx={{
-                  borderRadius: 1,
+                sx: any,
                   transition: animations ? 'all 0.2s ease' : 'none',
                   '&:hover': animations ? {
                     bgcolor: 'action.hover',
@@ -273,7 +266,7 @@ const RecentActivityFeed = () => {
               >
                 <ListItemAvatar>
                   <Avatar 
-                    sx={{ 
+                    sx: any,
                       bgcolor: `${getStatusColor(activity.status)}.light`,
                       width: 32,
                       height: 32
@@ -284,22 +277,20 @@ const RecentActivityFeed = () => {
                 </ListItemAvatar>
                 
                 <ListItemText
-                  primary={
+                  primary: any,
                     <span style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                       <Typography variant="body2" fontWeight={500} component="span">
                         {activity.title}
                       </Typography>
                       <Chip
                         label={activity.priority}
-                        size="small"
+                        size: any,
                         color={getPriorityColor(activity.priority)}
                         sx={{ height: 16, fontSize: '0.7rem' }}
                       />
                     </span>
                   }
-                  secondary={
-                    <span>
-                      <Typography variant="caption" color="text.secondary" display="block" component="span">
+                  secondary: any,
                         {activity.description}
                       </Typography>
                       <br />
@@ -325,7 +316,7 @@ const RecentActivityFeed = () => {
           </Box>
         )}
 
-        {filteredActivities.length === 0 && (
+        {filteredActivities.length ===0 && (
           <Box sx={{ textAlign: 'center', py: 4 }}>
             <Typography variant="body2" color="text.secondary">
               No activities found for the selected filter

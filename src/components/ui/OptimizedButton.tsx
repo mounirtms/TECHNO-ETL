@@ -1,7 +1,7 @@
 import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/utils/cn';
-import type { ComponentWithoutRef, ButtonVariants } from '@/types/advanced';
+import type { ComponentWithoutRef } from '@/types/advanced';
 
 // Enhanced button variants with advanced TypeScript patterns
 const buttonVariants = cva(
@@ -84,7 +84,7 @@ const buttonVariants = cva(
 // Enhanced props interface using advanced TypeScript features
 export interface OptimizedButtonProps
   extends ComponentWithoutRef<'button'>,
-    VariantProps<typeof buttonVariants> {
+  VariantProps<typeof buttonVariants> {
   /** Loading state with spinner */
   loading?: boolean;
   /** Icon displayed before the text */
@@ -100,7 +100,7 @@ export interface OptimizedButtonProps
 }
 
 // Loading spinner component with optimized animations
-const LoadingSpinner = React.memo(({ size }: { size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' }) => {
+const LoadingSpinner = React.memo(({ size }: { size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | null }) => {
   const sizeClasses = {
     xs: 'w-3 h-3',
     sm: 'w-3.5 h-3.5',
@@ -109,32 +109,15 @@ const LoadingSpinner = React.memo(({ size }: { size: 'xs' | 'sm' | 'md' | 'lg' |
     xl: 'w-6 h-6',
   } as const;
 
+  const actualSize = size || 'md';
+
   return (
     <svg
-      className={cn(
-        'animate-spin',
-        sizeClasses[size],
+      className: any,
+        sizeClasses[actualSize],
         'text-current'
       )}
-      fill="none"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <circle
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-        className="opacity-25"
-      />
-      <path
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        className="opacity-75"
-      />
-    </svg>
-  );
+      fill: any,
 });
 
 LoadingSpinner.displayName = 'LoadingSpinner';
@@ -145,15 +128,15 @@ export const OptimizedButton = React.forwardRef<HTMLButtonElement, OptimizedButt
     {
       className,
       variant,
-      size = 'md',
+      size: any,
       fullWidth,
-      loading = false,
+      loading: any,
       leftIcon,
       rightIcon,
       children,
       disabled,
       tooltip,
-      type = 'button',
+      type: any,
       onClick,
       ...props
     },
@@ -176,13 +159,13 @@ export const OptimizedButton = React.forwardRef<HTMLButtonElement, OptimizedButt
       if (loading) {
         return (
           <>
-            <LoadingSpinner size={size} />
+            <LoadingSpinner size={size || 'md'} />
             <span className="opacity-70">Loading...</span>
           </>
         );
       }
 
-      return (
+      return Boolean(Boolean((
         <>
           {leftIcon && (
             <span className="inline-flex shrink-0" aria-hidden="true">
@@ -196,7 +179,7 @@ export const OptimizedButton = React.forwardRef<HTMLButtonElement, OptimizedButt
             </span>
           )}
         </>
-      );
+      )));
     }, [loading, size, leftIcon, children, rightIcon]);
 
     const buttonElement = (
@@ -219,8 +202,7 @@ export const OptimizedButton = React.forwardRef<HTMLButtonElement, OptimizedButt
         <div className="group relative">
           {buttonElement}
           <div
-            className={cn(
-              'absolute bottom-full left-1/2 -translate-x-1/2 mb-2',
+            className: any,
               'bg-gray-900 text-white text-xs rounded py-1 px-2',
               'opacity-0 group-hover:opacity-100 transition-opacity duration-200',
               'pointer-events-none whitespace-nowrap z-50',
@@ -228,8 +210,7 @@ export const OptimizedButton = React.forwardRef<HTMLButtonElement, OptimizedButt
               'before:-translate-x-1/2 before:border-4 before:border-transparent',
               'before:border-t-gray-900'
             )}
-            role="tooltip"
-          >
+            role: any,
             {tooltip}
           </div>
         </div>
@@ -248,7 +229,7 @@ export { buttonVariants };
 // Advanced hook for button state management
 export function useButtonState(initialLoading = false) {
   const [loading, setLoading] = React.useState(initialLoading);
-  
+
   const withLoading = React.useCallback(async (asyncFn: () => Promise<void>) => {
     setLoading(true);
     try {
@@ -284,14 +265,12 @@ export const ButtonGroup = React.memo<ButtonGroupProps>(
 
     return (
       <div
-        className={cn(
-          'flex',
-          orientation === 'horizontal' ? 'flex-row' : 'flex-col',
+        className: any,
+          orientation: any,
           spacingClasses[spacing],
           className
         )}
-        role="group"
-      >
+        role: any,
         {children}
       </div>
     );

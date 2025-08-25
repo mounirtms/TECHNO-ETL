@@ -77,7 +77,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
       setPriceData(mockPriceData);
       return mockPriceData;
       
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error fetching price data:', error);
       throw error;
     } finally {
@@ -129,7 +129,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
         data: mockStockData
       };
       
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error syncing stocks:', error);
       throw error;
     } finally {
@@ -143,7 +143,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
   const fetchDashboardData = useCallback(async () => {
     try {
       await fetchAllData();
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error fetching dashboard data:', error);
     }
   }, [fetchAllData]);
@@ -159,7 +159,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
         success: true,
         message: 'Price sync completed successfully'
       };
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error syncing prices:', error);
       throw error;
     } finally {
@@ -171,7 +171,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
    * Refresh all data when dependencies change
    */
   useEffect(() => {
-    if (refreshKey > 0) {
+    if(refreshKey > 0) {
       fetchDashboardData();
     }
   }, [startDate, endDate, refreshKey, fetchDashboardData]);

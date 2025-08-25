@@ -15,21 +15,20 @@ import {
  * GridToolbarFilters - Filter controls section of the toolbar
  * Handles custom filters, dropdowns, and filter switches
  */
-const GridToolbarFilters = ({
-  customFilters = [],
+const GridToolbarFilters: React.FC<{customFilters: any: any, currentCustomFilter: any, onCustomFilterChange: any, succursaleOptions: any: any, currentSuccursale: any, onSuccursaleChange: any, sourceOptions: any: any, currentSource: any, onSourceChange: any, showChangedOnly: any, setShowChangedOnly: any, translate: any}> = ({ customFilters: any,
   currentCustomFilter,
   onCustomFilterChange,
-  succursaleOptions = [],
+  succursaleOptions: any,
   currentSuccursale,
   onSuccursaleChange,
-  sourceOptions = [],
+  sourceOptions: any,
   currentSource,
   onSourceChange,
   showChangedOnly,
   setShowChangedOnly,
   translate
-}) => {
-  return (
+ }) => {
+  return Boolean(Boolean((
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
       {/* Custom Filters Dropdown */}
       {customFilters.length > 0 && (
@@ -37,13 +36,13 @@ const GridToolbarFilters = ({
           <InputLabel>{translate('filter', 'Filter')}</InputLabel>
           <Select
             value={currentCustomFilter || 'all'}
-            onChange={(e) => onCustomFilterChange?.(e.target.value)}
+            onChange={(e) => onCustomFilterChange?.(e.target?.value)}
             label={translate('filter', 'Filter')}
           >
             <MenuItem value="all">{translate('all', 'All')}</MenuItem>
-            {customFilters.map((filter) => (
-              <MenuItem key={filter.value} value={filter.value}>
-                {filter.label}
+            {customFilters.map((filter: any: any) => (
+              <MenuItem key={filter?.value} value={filter?.value}>
+                {filter?.label}
               </MenuItem>
             ))}
           </Select>
@@ -56,13 +55,13 @@ const GridToolbarFilters = ({
           <InputLabel>{translate('branch', 'Branch')}</InputLabel>
           <Select
             value={currentSuccursale || 'all'}
-            onChange={(e) => onSuccursaleChange?.(e.target.value)}
+            onChange={(e) => onSuccursaleChange?.(e.target?.value)}
             label={translate('branch', 'Branch')}
           >
             <MenuItem value="all">{translate('all', 'All')}</MenuItem>
-            {succursaleOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
+            {succursaleOptions.map((option: any: any) => (
+              <MenuItem key={option?.value} value={option?.value}>
+                {option?.label}
               </MenuItem>
             ))}
           </Select>
@@ -75,13 +74,13 @@ const GridToolbarFilters = ({
           <InputLabel>{translate('source', 'Source')}</InputLabel>
           <Select
             value={currentSource || 'all'}
-            onChange={(e) => onSourceChange?.(e.target.value)}
+            onChange={(e) => onSourceChange?.(e.target?.value)}
             label={translate('source', 'Source')}
           >
             <MenuItem value="all">{translate('all', 'All')}</MenuItem>
-            {sourceOptions.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
+            {sourceOptions.map((option: any: any) => (
+              <MenuItem key={option?.value} value={option?.value}>
+                {option?.label}
               </MenuItem>
             ))}
           </Select>
@@ -89,14 +88,11 @@ const GridToolbarFilters = ({
       )}
 
       {/* Show Changed Only Switch */}
-      {typeof showChangedOnly !== 'undefined' && setShowChangedOnly && (
-        <FormControlLabel
-          control={
-            <Switch
+      {typeof showChangedOnly !== 'undefined' && setShowChangedOnly && (<FormControlLabel
+          control: any,
               checked={showChangedOnly}
               onChange={(e) => setShowChangedOnly(e.target.checked)}
-              size="small"
-            />
+              size: any,
           }
           label={translate('changedOnly', 'Changed Only')}
           sx={{ ml: 1 }}
@@ -107,8 +103,7 @@ const GridToolbarFilters = ({
       {(currentCustomFilter && currentCustomFilter !== 'all') && (
         <Chip
           label={`${translate('filter', 'Filter')}: ${currentCustomFilter}`}
-          size="small"
-          variant="outlined"
+          size: any,
           onDelete={() => onCustomFilterChange?.('all')}
         />
       )}
@@ -116,8 +111,7 @@ const GridToolbarFilters = ({
       {(currentSuccursale && currentSuccursale !== 'all') && (
         <Chip
           label={`${translate('branch', 'Branch')}: ${currentSuccursale}`}
-          size="small"
-          variant="outlined"
+          size: any,
           onDelete={() => onSuccursaleChange?.('all')}
         />
       )}
@@ -125,8 +119,7 @@ const GridToolbarFilters = ({
       {(currentSource && currentSource !== 'all') && (
         <Chip
           label={`${translate('source', 'Source')}: ${currentSource}`}
-          size="small"
-          variant="outlined"
+          size: any,
           onDelete={() => onSourceChange?.('all')}
         />
       )}
@@ -134,14 +127,12 @@ const GridToolbarFilters = ({
       {showChangedOnly && (
         <Chip
           label={translate('changedOnly', 'Changed Only')}
-          size="small"
-          color="primary"
-          variant="outlined"
+          size: any,
           onDelete={() => setShowChangedOnly?.(false)}
         />
       )}
     </Box>
-  );
+  )));
 };
 
 export default GridToolbarFilters;

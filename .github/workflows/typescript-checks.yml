@@ -1,0 +1,104 @@
+name: TypeScript Type Checking
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  type-check:
+    name: TypeScript Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TypeScript checks
+        run: npm run type-check:ci
+
+      - name: Upload TypeScript error report
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: typescript-error-report
+          path: typescript-error-report.json
+          retention-days: 7
+          
+      - name: Upload TypeScript error summary
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: typescript-error-summary
+          path: typescript-error-summary.md
+          retention-days: 7
+          
+  type-assertions:
+    name: TypeScript Type Assertions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Install chalk
+        run: npm install chalk glob
+
+      - name: Run Type Assertion Tests
+        run: npm run test:types
+
+      - name: Upload Type Assertion Report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: type-assertion-report
+          path: type-assertion-report.json
+          retention-days: 7
+          
+  build-verify:
+    name: Verify Production Build
+    runs-on: ubuntu-latest
+    needs: [type-check, type-assertions]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify Final Build
+        run: npm run build:verify
+
+      - name: Upload Build Verification Report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: final-build-verification
+          path: final-build-verification.json
+          retention-days: 7

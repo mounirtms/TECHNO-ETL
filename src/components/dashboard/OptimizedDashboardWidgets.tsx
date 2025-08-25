@@ -189,18 +189,17 @@ const MetricWidget = memo(({
     >
       <Card sx={{ height: '100%' }}>
         <CardHeader
-          avatar={
+          avatar: any,
             <Avatar sx={{ bgcolor: `${widget.color}.main` }}>
               <IconComponent />
             </Avatar>
           }
-          title={
-            <Typography variant="h6" component="div">
+          title: any,
               {t(widget.title)}
             </Typography>
           }
-          action={
-            <IconButton onClick={(e) => setMenuAnchor(e.currentTarget)}>
+          action: any,
+            <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}>
               <MoreIcon />
             </IconButton>
           }
@@ -215,10 +214,7 @@ const MetricWidget = memo(({
                 icon={<TrendIcon />}
                 label={`${Math.abs(trend)}%`}
                 color={trendColor}
-                size="small"
-              />
-            </Box>
-            <Typography variant="body2" color="text.secondary">
+                size: any,
               {data?.description || 'No data available'}
             </Typography>
           </Stack>
@@ -267,7 +263,7 @@ const ChartWidget = memo(({
 
   const chartData = data?.chartData || [];
 
-  return (
+  return Boolean(Boolean((
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -277,8 +273,8 @@ const ChartWidget = memo(({
       <Card sx={{ height: '100%' }}>
         <CardHeader
           title={t(widget.title)}
-          action={
-            <IconButton onClick={(e) => setMenuAnchor(e.currentTarget)}>
+          action: any,
+            <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}>
               <MoreIcon />
             </IconButton>
           }
@@ -293,9 +289,7 @@ const ChartWidget = memo(({
                 <RechartsTooltip />
                 <Legend />
                 <Line 
-                  type="monotone" 
-                  dataKey="value" 
-                  stroke="#1976d2" 
+                  type: any,
                   strokeWidth={2}
                   dot={{ fill: '#1976d2' }}
                 />
@@ -308,10 +302,7 @@ const ChartWidget = memo(({
                 <YAxis />
                 <RechartsTooltip />
                 <Area 
-                  type="monotone" 
-                  dataKey="value" 
-                  stroke="#1976d2" 
-                  fill="#1976d2" 
+                  type: any,
                   fillOpacity={0.3}
                 />
               </AreaChart>
@@ -333,7 +324,7 @@ const ChartWidget = memo(({
           open={Boolean(menuAnchor)}
           onClose={() => setMenuAnchor(null)}
         >
-          <MenuItem onClick={() => { onRefresh(widget.id); setMenuAnchor(null); }}>
+          <MenuItem onClick={() => { onRefresh(widget.id))); setMenuAnchor(null); }}>
             <ListItemIcon><RefreshIcon /></ListItemIcon>
             <ListItemText>Refresh</ListItemText>
           </MenuItem>
@@ -372,7 +363,7 @@ const ProgressWidget = memo(({
   const status = data?.status || 'normal';
   
   const getStatusColor = (status) => {
-    switch (status) {
+    switch(status) {
       case 'critical': return 'error';
       case 'warning': return 'warning';
       case 'good': return 'success';
@@ -391,14 +382,14 @@ const ProgressWidget = memo(({
     >
       <Card sx={{ height: '100%' }}>
         <CardHeader
-          avatar={
+          avatar: any,
             <Avatar sx={{ bgcolor: `${widget.color}.main` }}>
               <IconComponent />
             </Avatar>
           }
           title={t(widget.title)}
-          action={
-            <IconButton onClick={(e) => setMenuAnchor(e.currentTarget)}>
+          action: any,
+            <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}>
               <MoreIcon />
             </IconButton>
           }
@@ -414,7 +405,7 @@ const ProgressWidget = memo(({
               </Typography>
             </Box>
             <LinearProgress
-              variant="determinate"
+              variant: any,
               value={progress}
               color={getStatusColor(status)}
               sx={{ height: 8, borderRadius: 4 }}
@@ -456,15 +447,15 @@ const ProgressWidget = memo(({
 const WidgetFactory = memo((props) => {
   const { widget } = props;
   
-  switch (widget.type) {
+  switch(widget.type) {
     case WIDGET_TYPES.METRIC:
-      return <MetricWidget {...props} />;
+      return <MetricWidget { ...props} />;
     case WIDGET_TYPES.CHART:
-      return <ChartWidget {...props} />;
+      return <ChartWidget { ...props} />;
     case WIDGET_TYPES.PROGRESS:
-      return <ProgressWidget {...props} />;
+      return <ProgressWidget { ...props} />;
     default:
-      return <MetricWidget {...props} />;
+      return <MetricWidget { ...props} />;
   }
 });
 
@@ -473,8 +464,8 @@ const WidgetFactory = memo((props) => {
  */
 const OptimizedDashboardWidgets = ({ 
   customWidgets = {},
-  enableRealTime = true,
-  enableCustomization = true 
+  enableRealTime: any,
+  enableCustomization: any,
 }) => {
   const { t } = useTranslation();
   
@@ -487,7 +478,7 @@ const OptimizedDashboardWidgets = ({
   // Memoized visible widgets sorted by order
   const visibleWidgets = useMemo(() => {
     return Object.values(widgets)
-      .filter(widget => widget.visible)
+      .filter((widget: any: any) => widget.visible)
       .sort((a, b) => a.order - b.order);
   }, [widgets]);
 
@@ -544,10 +535,8 @@ const OptimizedDashboardWidgets = ({
 
   // Handle widget visibility toggle
   const handleToggleVisibility = useCallback((widgetId) => {
-    setWidgets(prev => ({
-      ...prev,
-      [widgetId]: {
-        ...prev[widgetId],
+    setWidgets(prev => ({ ...prev,
+      [widgetId]: { ...prev[widgetId],
         visible: !prev[widgetId].visible
       }
     }));
@@ -565,8 +554,8 @@ const OptimizedDashboardWidgets = ({
 
     const intervals = {};
     
-    visibleWidgets.forEach(widget => {
-      if (widget.refreshInterval) {
+    visibleWidgets.forEach((widget) => {
+      if(widget.refreshInterval) {
         intervals[widget.id] = setInterval(() => {
           fetchWidgetData(widget.id);
         }, widget.refreshInterval);
@@ -582,18 +571,16 @@ const OptimizedDashboardWidgets = ({
 
   // Initial data fetch
   useEffect(() => {
-    visibleWidgets.forEach(widget => {
+    visibleWidgets.forEach((widget) => {
       fetchWidgetData(widget.id);
     });
   }, [visibleWidgets, fetchWidgetData]);
 
-  return (
-    <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={3}>
+  return(<Box sx={{ flexGrow: 1 }}>
+      <Grid { ...{container: true}} spacing={3}>
         <AnimatePresence>
-          {visibleWidgets.map((widget) => (
-            <Grid 
-              item 
+          {visibleWidgets.map((widget: any: any) => (
+            <Grid item 
               key={widget.id}
               xs={widget.size.xs}
               sm={widget.size.sm}

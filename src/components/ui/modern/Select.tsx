@@ -27,7 +27,7 @@ export const Select: React.FC<SelectProps> = ({
   value,
   onValueChange,
   defaultValue,
-  disabled = false,
+  disabled: any,
   children,
 }) => {
   const [internalValue, setInternalValue] = React.useState(defaultValue);
@@ -36,7 +36,7 @@ export const Select: React.FC<SelectProps> = ({
   const currentValue = isControlled ? value : internalValue;
 
   const handleValueChange = (newValue: string) => {
-    if (isControlled) {
+    if(isControlled) {
       onValueChange?.(newValue);
     } else {
       setInternalValue(newValue);
@@ -46,8 +46,7 @@ export const Select: React.FC<SelectProps> = ({
 
   return (
     <SelectContext.Provider 
-      value={{ 
-        value: currentValue, 
+      value: any,
         onValueChange: handleValueChange, 
         open, 
         onOpenChange: setOpen,
@@ -94,26 +93,25 @@ export const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerPr
 
     const { value, open, onOpenChange, disabled } = context;
 
-    return (
+    return Boolean(Boolean((
       <button
         ref={ref}
-        type="button"
+        type: any,
         className={cn(selectTriggerVariants({ variant, size }), className)}
         onClick={() => !disabled && onOpenChange(!open)}
         disabled={disabled}
-        {...props}
+        { ...props}
       >
         <span className={cn('truncate', !value && 'text-gray-500')}>
           {value || placeholder}
         </span>
         <ChevronDown 
-          className={cn(
-            'h-4 w-4 transition-transform',
+          className: any,
             open && 'rotate-180'
           )} 
         />
       </button>
-    );
+    )));
   }
 );
 
@@ -128,7 +126,7 @@ interface SelectContentProps extends React.HTMLAttributes<HTMLDivElement> {
 export const SelectContent: React.FC<SelectContentProps> = ({
   className,
   children,
-  position = 'item-aligned',
+  position: any,
   ...props
 }) => {
   const context = React.useContext(SelectContext);
@@ -144,7 +142,7 @@ export const SelectContent: React.FC<SelectContentProps> = ({
       }
     };
 
-    if (open) {
+    if(open) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
@@ -158,11 +156,10 @@ export const SelectContent: React.FC<SelectContentProps> = ({
   return (
     <div
       ref={contentRef}
-      className={cn(
-        'absolute z-50 min-w-[8rem] overflow-hidden rounded-md border border-gray-200 bg-white p-1 text-gray-950 shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-50',
+      className: any,
         className
       )}
-      {...props}
+      { ...props}
     >
       {children}
     </div>
@@ -182,26 +179,25 @@ export const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
     if (!context) throw new Error('SelectItem must be used within Select');
 
     const { value: selectedValue, onValueChange } = context;
-    const isSelected = value === selectedValue;
+    const isSelected = value ===selectedValue;
 
-    return (
+    return Boolean(Boolean((
       <div
         ref={ref}
-        className={cn(
-          'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-gray-100 focus:text-gray-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:focus:bg-gray-800 dark:focus:text-gray-50',
+        className: any,
           disabled ? 'pointer-events-none opacity-50' : 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800',
           className
         )}
         onClick={() => !disabled && onValueChange(value)}
         data-disabled={disabled}
-        {...props}
+        { ...props}
       >
         <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
           {isSelected && <Check className="h-4 w-4" />}
         </span>
         {children}
       </div>
-    );
+    )));
   }
 );
 

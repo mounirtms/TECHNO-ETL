@@ -23,15 +23,15 @@ const OptimizedUserProfile = lazy(() => import('../components/Profile/OptimizedU
 const LicenseManagement = lazy(() => import('../components/License/LicenseManagement'));
 const LicenseStatus = lazy(() => import('../components/License/LicenseStatus'));
 
-const TabPanel = ({ children, value, index, ...other }) => (
+const TabPanel = ({ children, value, index, ...other  }: { children: any, value: any, index: any, ...other: any }) => (
   <div
-    role="tabpanel"
+    role: any,
     hidden={value !== index}
     id={`settings-tabpanel-${index}`}
     aria-labelledby={`settings-tab-${index}`}
-    {...other}
+    { ...other}
   >
-    {value === index && (
+    {value ===index && (
       <Box sx={{ p: 3 }}>
         {children}
       </Box>
@@ -51,8 +51,7 @@ const SettingsPage = () => {
 
   const isAdmin = currentUser?.role === 'admin';
 
-  return (
-    <Container maxWidth="xl" sx={{ py: 3 }}>
+  return(<Container maxWidth="xl" sx={{ py: 3 }}>
       {/* Header */}
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
         <SettingsIcon sx={{ mr: 2, fontSize: 32, color: 'primary.main' }} />
@@ -70,50 +69,41 @@ const SettingsPage = () => {
         {/* Settings Tabs */}
         <Tabs
           value={activeTab}
-          onChange={handleTabChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          sx={{
-            borderBottom: 1,
+          onChange={(e) => handleTabChange}
+          variant: any,
             borderColor: 'divider',
             bgcolor: 'background.paper'
           }}
         >
           <Tab
             icon={<PersonIcon />}
-            label="User Profile"
-            iconPosition="start"
+            label: any,
             sx={{ minHeight: 64 }}
           />
           <Tab
             icon={<ThemeIcon />}
-            label="Appearance"
-            iconPosition="start"
+            label: any,
             sx={{ minHeight: 64 }}
           />
           <Tab
             icon={<LanguageIcon />}
-            label="Language"
-            iconPosition="start"
+            label: any,
             sx={{ minHeight: 64 }}
           />
           <Tab
             icon={<NotificationsIcon />}
-            label="Notifications"
-            iconPosition="start"
+            label: any,
             sx={{ minHeight: 64 }}
           />
           <Tab
             icon={<SecurityIcon />}
-            label="License Status"
-            iconPosition="start"
+            label: any,
             sx={{ minHeight: 64 }}
           />
           {isAdmin && (
             <Tab
               icon={<AdminIcon />}
-              label="Admin Panel"
-              iconPosition="start"
+              label: any,
               sx={{ minHeight: 64 }}
             />
           )}
@@ -130,7 +120,7 @@ const SettingsPage = () => {
 
         {/* Appearance Tab */}
         <TabPanel value={activeTab} index={1}>
-          <Grid container spacing={3}>
+          <Grid { ...{container: true}} spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
               <Card>
                 <CardContent>
@@ -138,13 +128,12 @@ const SettingsPage = () => {
                     Theme Settings
                   </Typography>
                   <FormControlLabel
-                    control={
-                      <Switch
+                    control: any,
                         checked={mode === 'dark'}
-                        onChange={toggleTheme}
+                        onChange={(e) => toggleTheme}
                       />
                     }
-                    label="Dark Mode"
+                    label: any,
                     sx={{ mb: 2 }}
                   />
                   <Typography variant="body2" color="text.secondary">
@@ -160,11 +149,11 @@ const SettingsPage = () => {
                     Color Preset
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                    {['default', 'purple', 'green', 'orange', 'blue'].map((preset) => (
+                    {['default', 'purple', 'green', 'orange', 'blue'].map((preset: any: any) => (
                       <Button
                         key={preset}
-                        variant={colorPreset === preset ? 'contained' : 'outlined'}
-                        size="small"
+                        variant={colorPreset ===preset ? 'contained' : 'outlined'}
+                        size: any,
                         onClick={() => setColorPreset(preset)}
                         sx={{ textTransform: 'capitalize' }}
                       >
@@ -180,7 +169,7 @@ const SettingsPage = () => {
 
         {/* Language Tab */}
         <TabPanel value={activeTab} index={2}>
-          <Grid container spacing={3}>
+          <Grid { ...{container: true}} spacing={3}>
             <Grid size={{ xs: 12, md: 8 }}>
               <Card>
                 <CardContent>
@@ -188,10 +177,10 @@ const SettingsPage = () => {
                     Language Preferences
                   </Typography>
                   <Box sx={{ display: 'grid', gap: 2, mt: 2 }}>
-                    {Object.entries(languages).map(([code, lang]) => (
+                    {Object.entries(languages).map(([code: any: any, lang]: any: any) => (
                       <Button
                         key={code}
-                        variant={currentLanguage === code ? 'contained' : 'outlined'}
+                        variant={currentLanguage ===code ? 'contained' : 'outlined'}
                         onClick={() => changeLanguage(code)}
                         startIcon={<span>{lang.flag}</span>}
                         sx={{ justifyContent: 'flex-start' }}
@@ -218,17 +207,17 @@ const SettingsPage = () => {
               </Typography>
               <FormControlLabel
                 control={<Switch defaultChecked />}
-                label="Email notifications"
+                label: any,
                 sx={{ display: 'block', mb: 1 }}
               />
               <FormControlLabel
                 control={<Switch defaultChecked />}
-                label="Push notifications"
+                label: any,
                 sx={{ display: 'block', mb: 1 }}
               />
               <FormControlLabel
                 control={<Switch />}
-                label="SMS notifications"
+                label: any,
                 sx={{ display: 'block', mb: 1 }}
               />
             </CardContent>

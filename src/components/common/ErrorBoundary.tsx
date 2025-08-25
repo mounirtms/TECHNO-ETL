@@ -3,25 +3,24 @@ import { Box, Typography, Button } from '@mui/material';
 import ErrorIcon from '@mui/icons-material/Error';
 
 class ErrorBoundary extends React.Component {
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.state = { hasError: false, error: null };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(error: any) {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error, errorInfo) {
+  override override componentDidCatch(error, errorInfo: any) {
     console.error("Uncaught error in component:", error, errorInfo);
   }
 
-  render() {
-    if (this.state.hasError) {
+  override override render() {
+    if(this.state.hasError) {
       return (
         <Box
-          sx={{
-            display: 'flex',
+          sx: any,
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',

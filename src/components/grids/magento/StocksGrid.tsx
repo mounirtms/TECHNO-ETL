@@ -31,7 +31,7 @@ const columns = [
         flex: 1,
         valueGetter: (params) => {
             return params?.row?.sales_channels?.length
-                ? params.row.sales_channels.map(channel => `${channel?.type ?? 'Unknown'}: ${channel?.code ?? 'N/A'}`).join(', ')
+                ? params.row.sales_channels.map((channel: any: any) => `${channel?.type ?? 'Unknown'}: ${channel?.code ?? 'N/A'}`).join(', ')
                 : 'None';
         }
     },
@@ -42,7 +42,7 @@ const columns = [
         flex: 1,
         valueGetter: (params) => {
             return params?.row?.source_codes?.length
-                ? params.row.source_codes.join(', ')
+                ? params.row?.source_codes.join(', ')
                 : 'No sources assigned';
         }
     }
@@ -61,7 +61,7 @@ const StocksGrid = () => {
 
             const response = await magentoApi.getStocks(params);
 
-            if (!response) {
+            if(!response) {
                 throw new Error('No response received from the server.');
             }
 
@@ -69,7 +69,7 @@ const StocksGrid = () => {
             const stocksData = response?.data || response;
             setData(stocksData?.items ?? []);
             setTotalCount(stocksData?.total_count ?? 0);
-        } catch (error) {
+        } catch(error: any) {
             console.error('Error fetching stocks:', error);
             setError('Failed to load stocks. Please try again.');
             toast.error('Error loading stocks.');
@@ -86,20 +86,18 @@ const StocksGrid = () => {
         },
         {
             title: 'Stocks with Sources',
-            value: data?.filter(stock => stock?.source_codes?.length > 0)?.length ?? 0,
+            value: data?.filter((stock: any: any) => stock.source_codes?.length > 0)?.length ?? 0,
             color: 'success'
         },
         {
             title: 'Stocks without Sources',
-            value: data?.filter(stock => !stock?.source_codes?.length)?.length ?? 0,
+            value: data?.filter((stock: any: any) => !stock.source_codes?.length)?.length ?? 0,
             color: 'warning'
         }
     ];
 
-    return (
-
-        <UnifiedGrid
-            {...getStandardGridProps('stocks', {
+    return(<UnifiedGrid
+            { ...getStandardGridProps('stocks', {
                 gridName: "StocksGrid",
                 columns: columns,
                 data: data,

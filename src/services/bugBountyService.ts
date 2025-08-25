@@ -85,7 +85,7 @@ class BugBountyService {
   /**
    * Submit a new bug report
    */
-  async submitBug(bugData) {
+  async submitBug(bugData: any) {
     try {
       const timestamp = Date.now();
       const bugId = `bug_${timestamp}_${Math.random().toString(36).substr(2, 9)}`;
@@ -94,7 +94,7 @@ class BugBountyService {
         id: bugId,
         title: bugData.title,
         description: bugData.description,
-        category: bugData.category,
+        category: bugData?.category,
         severity: bugData.severity,
         stepsToReproduce: bugData.stepsToReproduce || [],
         expectedBehavior: bugData.expectedBehavior,
@@ -108,7 +108,7 @@ class BugBountyService {
         },
         attachments: bugData.attachments || [],
         tester: {
-          id: bugData.testerId,
+          id: bugData?.testerId,
           name: bugData.testerName,
           email: bugData.testerEmail,
           experience: bugData.testerExperience || 'beginner'
@@ -118,7 +118,7 @@ class BugBountyService {
         updatedAt: timestamp,
         qualityScore: null,
         reward: {
-          calculated: this.calculateReward(bugData.category, bugData.severity),
+          calculated: this.calculateReward(bugData?.category, bugData.severity),
           final: null,
           paid: false
         },
@@ -134,13 +134,13 @@ class BugBountyService {
       await set(bugRef, bug);
 
       // Update tester stats
-      await this.updateTesterStats(bugData.testerId, 'submitted');
+      await this.updateTesterStats(bugData?.testerId, 'submitted');
 
       // Update global stats
-      await this.updateGlobalStats('submitted', bugData.category);
+      await this.updateGlobalStats('submitted', bugData?.category);
 
       return { success: true, bugId, bug };
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error submitting bug:', error);
       return { success: false, error: error.message };
     }
@@ -149,7 +149,7 @@ class BugBountyService {
   /**
    * Calculate reward based on category and severity
    */
-  calculateReward(category, severity) {
+  calculateReward(category, severity: any) {
     const categoryData = BUG_CATEGORIES[category] || BUG_CATEGORIES.LOW;
     const baseReward = categoryData.baseReward;
     const multiplier = categoryData.multiplier;
@@ -168,7 +168,7 @@ class BugBountyService {
   /**
    * Get all bugs with filtering options
    */
-  async getBugs(filters = {}) {
+  async getBugs(filters: any = {}) {
     try {
       const bugsSnapshot = await get(this.bugsRef);
       if (!bugsSnapshot.exists()) {
@@ -178,21 +178,21 @@ class BugBountyService {
       let bugs = Object.values(bugsSnapshot.val());
 
       // Apply filters
-      if (filters.category) {
-        bugs = bugs.filter(bug => bug.category === filters.category);
+      if(filters?.category) {
+        bugs: any,
       }
-      if (filters.status) {
-        bugs = bugs.filter(bug => bug.status === filters.status);
+      if(filters?.status) {
+        bugs: any,
       }
-      if (filters.testerId) {
-        bugs = bugs.filter(bug => bug.tester.id === filters.testerId);
+      if(filters?.testerId) {
+        bugs: any,
       }
 
       // Sort by submission date (newest first)
       bugs.sort((a, b) => b.submittedAt - a.submittedAt);
 
       return { success: true, bugs };
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error getting bugs:', error);
       return { success: false, error: error.message };
     }
@@ -201,7 +201,7 @@ class BugBountyService {
   /**
    * Update bug status and quality score
    */
-  async updateBugStatus(bugId, status, qualityScore = null, adminNotes = '') {
+  async updateBugStatus(bugId: string, status: string, qualityScore: number | null = null, adminNotes: string = ''): Promise<{success: boolean, error?: string}> {
     try {
       const bugRef = ref(database, `bugBounty/bugs/${bugId}`);
       const bugSnapshot = await get(bugRef);
@@ -218,8 +218,8 @@ class BugBountyService {
       };
 
       // Calculate final reward if confirming bug
-      if (status === BUG_STATUS.CONFIRMED && qualityScore) {
-        const qualityData = Object.values(QUALITY_SCORES).find(q => q.score === qualityScore);
+      if(status ===BUG_STATUS.CONFIRMED && qualityScore) {
+        const qualityData = Object.values(QUALITY_SCORES).find(q => q.score ===qualityScore);
         const qualityMultiplier = qualityData?.multiplier || 1.0;
         updates.qualityScore = qualityScore;
         updates['reward/final'] = Math.round(bug.reward.calculated * qualityMultiplier);
@@ -231,10 +231,10 @@ class BugBountyService {
       await this.updateTesterStats(bug.tester.id, status);
 
       // Update global stats
-      await this.updateGlobalStats(status, bug.category);
+      await this.updateGlobalStats(status, bug?.category);
 
       return { success: true };
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error updating bug status:', error);
       return { success: false, error: error.message };
     }
@@ -243,7 +243,7 @@ class BugBountyService {
   /**
    * Update tester statistics
    */
-  async updateTesterStats(testerId, action) {
+  async updateTesterStats(testerId, action: any) {
     try {
       const testerRef = ref(database, `bugBounty/testers/${testerId}`);
       const testerSnapshot = await get(testerRef);
@@ -259,7 +259,7 @@ class BugBountyService {
       };
 
       // Update based on action
-      switch (action) {
+      switch(action) {
         case 'submitted':
           stats.totalSubmitted++;
           break;
@@ -279,7 +279,7 @@ class BugBountyService {
 
       await set(testerRef, stats);
       return { success: true };
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error updating tester stats:', error);
       return { success: false, error: error.message };
     }
@@ -288,7 +288,7 @@ class BugBountyService {
   /**
    * Update global statistics
    */
-  async updateGlobalStats(action, category) {
+  async updateGlobalStats(action, category: any) {
     try {
       const statsSnapshot = await get(this.statsRef);
       let stats = statsSnapshot.exists() ? statsSnapshot.val() : {
@@ -299,25 +299,25 @@ class BugBountyService {
       };
 
       // Update totals
-      if (action === 'submitted') {
+      if(action === 'submitted') {
         stats.totalBugs++;
       }
 
       // Update by category
-      if (!stats.byCategory[category]) {
+      if(!stats.byCategory[category]) {
         stats.byCategory[category] = 0;
       }
       stats.byCategory[category]++;
 
       // Update by status
-      if (!stats.byStatus[action]) {
+      if(!stats.byStatus[action]) {
         stats.byStatus[action] = 0;
       }
       stats.byStatus[action]++;
 
       await set(this.statsRef, stats);
       return { success: true };
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error updating global stats:', error);
       return { success: false, error: error.message };
     }
@@ -342,7 +342,7 @@ class BugBountyService {
         success: true, 
         leaderboard: testers.slice(0, limit) 
       };
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error getting leaderboard:', error);
       return { success: false, error: error.message };
     }
@@ -362,7 +362,7 @@ class BugBountyService {
       };
 
       return { success: true, stats };
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error getting stats:', error);
       return { success: false, error: error.message };
     }

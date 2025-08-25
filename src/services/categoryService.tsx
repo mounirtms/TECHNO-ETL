@@ -1,3 +1,4 @@
+import React from 'react';
 /**
  * Category Service
  * Handles category data from local JSON file and provides tree utilities
@@ -8,18 +9,59 @@
 
 import categoryData from '../assets/data/category.json';
 
+// TypeScript interfaces
+interface CategoryData {
+  id: number;
+  name: string;
+  parent_id?: number;
+  product_count?: number;
+  is_active: boolean;
+  children_data?: CategoryData[];
+}
+
+interface FlatCategory extends CategoryData {
+  level: number;
+  path: string;
+  hasChildren: boolean;
+  parentPath: string;
+}
+
+interface ComboCategory {
+  id: number;
+  label: string;
+  value: number;
+  level: number;
+  name: string;
+  parent_id?: number;
+  product_count?: number;
+  is_active: boolean;
+}
+
+interface BreadcrumbItem {
+  id: number;
+  name: string;
+  level: number;
+}
+
+interface CategoryStats {
+  total: number;
+  active: number;
+  inactive: number;
+  levels: number;
+  totalProducts: number;
+}
+
 /**
  * Flatten category tree into a flat array with hierarchy information
  */
-const flattenCategories = (categories, level = 0, parentPath = '') => {
-  const result = [];
+const flattenCategories = (categories: CategoryData | CategoryData[], level = 0, parentPath = ''): FlatCategory[] => {
+  const result: FlatCategory[] = [];
   
-  const processCategory = (category, currentLevel, path) => {
+  const processCategory = (category: CategoryData, currentLevel: number, path: string) => {
     const categoryPath = path ? `${path} > ${category.name}` : category.name;
     
     // Add current category
-    result.push({
-      ...category,
+    result.push({ ...category,
       level: currentLevel,
       path: categoryPath,
       hasChildren: category.children_data && category.children_data.length > 0,
@@ -27,15 +69,15 @@ const flattenCategories = (categories, level = 0, parentPath = '') => {
     });
     
     // Process children recursively
-    if (category.children_data && category.children_data.length > 0) {
-      category.children_data.forEach(child => {
+    if(category.children_data && category.children_data.length > 0) {
+      category.children_data.forEach((child) => {
         processCategory(child, currentLevel + 1, categoryPath);
       });
     }
   };
   
   if (Array.isArray(categories)) {
-    categories.forEach(category => processCategory(category, level, parentPath));
+    categories.forEach((category) => processCategory(category, level, parentPath));
   } else {
     processCategory(categories, level, parentPath);
   }
@@ -56,7 +98,7 @@ export const getAllCategories = () => {
 export const getCategoriesForCombo = () => {
   const flatCategories = getAllCategories();
   
-  return flatCategories.map(category => ({
+  return flatCategories.map((category: any: any) => ({
     id: category.id,
     label: category.path,
     value: category.id,
@@ -80,7 +122,7 @@ export const getCategoryTree = () => {
  */
 export const findCategoryById = (id) => {
   const flatCategories = getAllCategories();
-  return flatCategories.find(cat => cat.id === parseInt(id));
+  return flatCategories.find(cat => cat.id ===parseInt(id));
 };
 
 /**
@@ -88,7 +130,7 @@ export const findCategoryById = (id) => {
  */
 export const getCategoryChildren = (parentId) => {
   const flatCategories = getAllCategories();
-  return flatCategories.filter(cat => cat.parent_id === parseInt(parentId));
+  return flatCategories.filter((cat: any: any) => cat.parent_id ===parseInt(parentId));
 };
 
 /**
@@ -101,15 +143,15 @@ export const getCategoryBreadcrumb = (categoryId) => {
   const breadcrumb = [];
   let current = category;
   
-  while (current) {
+  while(current) {
     breadcrumb.unshift({
       id: current.id,
       name: current.name,
       level: current.level
     });
     
-    if (current.parent_id) {
-      current = findCategoryById(current.parent_id);
+    if(current.parent_id) {
+      current: any,
     } else {
       break;
     }
@@ -127,7 +169,7 @@ export const searchCategories = (searchTerm) => {
   const flatCategories = getAllCategories();
   const term = searchTerm.toLowerCase();
   
-  return flatCategories.filter(category =>
+  return flatCategories.filter((category: any: any) =>
     category.name.toLowerCase().includes(term) ||
     category.path.toLowerCase().includes(term)
   );
@@ -138,7 +180,7 @@ export const searchCategories = (searchTerm) => {
  */
 export const getCategoriesByLevel = (level) => {
   const flatCategories = getAllCategories();
-  return flatCategories.filter(cat => cat.level === level);
+  return flatCategories.filter((cat: any: any) => cat.level ===level);
 };
 
 /**
@@ -156,10 +198,10 @@ export const getCategoryStats = () => {
   
   return {
     total: flatCategories.length,
-    active: flatCategories.filter(cat => cat.is_active).length,
-    inactive: flatCategories.filter(cat => !cat.is_active).length,
-    levels: Math.max(...flatCategories.map(cat => cat.level)),
-    totalProducts: flatCategories.reduce((sum, cat) => sum + (cat.product_count || 0), 0)
+    active: flatCategories.filter((cat: any: any) => cat.is_active).length,
+    inactive: flatCategories.filter((cat: any: any) => !cat.is_active).length,
+    levels: Math.max(...flatCategories.map((cat: any: any) => cat.level)),
+    totalProducts: flatCategories.reduce((sum: any: any: any, cat: any: any) => sum + (cat.product_count || 0), 0)
   };
 };
 
@@ -167,8 +209,7 @@ export const getCategoryStats = () => {
  * Format category for display in grids
  */
 export const formatCategoryForGrid = (category) => {
-  return {
-    ...category,
+  return { ...category,
     displayName: `${'  '.repeat(category.level)}${category.name}`,
     statusText: category.is_active ? 'Active' : 'Inactive',
     levelText: `Level ${category.level}`,
@@ -182,7 +223,7 @@ export const formatCategoryForGrid = (category) => {
 export const getVisibleCategories = (expandedIds = new Set()) => {
   const allCategories = getAllCategories();
   
-  return allCategories.filter(category => {
+  return allCategories.filter((category: any: any) => {
     // Always show root level
     if (category.level <= 1) return true;
     

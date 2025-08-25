@@ -40,16 +40,15 @@ const DataGridsPage = lazy(() => import('../pages/DataGridsPage'));
 /**
  * Enhanced Loading Fallback with route information
  */
-const EnhancedLoadingFallback = ({ routeName = 'page' }) => (
+const EnhancedLoadingFallback = ({ routeName = 'page'  }: { routeName = 'page': any }) => (
   <Box
-    sx={{
-      display: 'flex',
+    sx: any,
       justifyContent: 'center',
       alignItems: 'center',
       height: '100vh',
       flexDirection: 'column',
       gap: 2
-    }}
+    } as any}
   >
     <CircularProgress size={40} />
     <Typography variant="body2" color="text.secondary">
@@ -68,7 +67,7 @@ const PostLoginRouter = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (currentUser) {
+    if(currentUser) {
       // Get intended destination from various sources
       const intendedRoute = 
         location.state?.from?.pathname || // From login redirect
@@ -80,7 +79,7 @@ const PostLoginRouter = () => {
       localStorage.removeItem('lastVisitedRoute');
 
       // Navigate to intended destination
-      if (location.pathname === ROUTES.LOGIN) {
+      if(location.pathname ===ROUTES.LOGIN) {
         navigate(intendedRoute, { replace: true });
       }
     }
@@ -118,29 +117,28 @@ class EnhancedRouteErrorBoundary extends React.Component {
     this.state = { hasError: false, error: null, errorInfo: null };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(error: any) {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error, errorInfo) {
+  override componentDidCatch(error, errorInfo: any) {
     console.error('Route Error:', error, errorInfo);
     this.setState({ errorInfo });
 
     // Log error to analytics service
-    if (window.gtag) {
-      window.gtag('event', 'exception', {
+    if(window?.gtag) {
+      window?.gtag('event', 'exception', {
         description: error.toString(),
         fatal: false
       });
     }
   }
 
-  render() {
-    if (this.state.hasError) {
-      return (
+  override render() {
+    if(this.state?.hasError) {
+      return Boolean((
         <Box
-          sx={{
-            display: 'flex',
+          sx: any,
             justifyContent: 'center',
             alignItems: 'center',
             minHeight: '100vh',
@@ -148,7 +146,7 @@ class EnhancedRouteErrorBoundary extends React.Component {
             gap: 2,
             p: 3,
             textAlign: 'center'
-          }}
+          } as any}
         >
           <Typography variant="h5" color="error" gutterBottom>
             Oops! Something went wrong
@@ -156,11 +154,10 @@ class EnhancedRouteErrorBoundary extends React.Component {
           <Typography variant="body1" color="text.secondary" paragraph>
             We encountered an unexpected error while loading this page.
           </Typography>
-          <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+          <Box sx={{ display: 'flex', gap: 2, mt: 2 } as any}>
             <button
               onClick={() => window.location.reload()}
-              style={{
-                padding: '8px 16px',
+              style: any,
                 backgroundColor: '#1976d2',
                 color: 'white',
                 border: 'none',
@@ -172,8 +169,7 @@ class EnhancedRouteErrorBoundary extends React.Component {
             </button>
             <button
               onClick={() => window.location.href = '/dashboard'}
-              style={{
-                padding: '8px 16px',
+              style: any,
                 backgroundColor: '#666',
                 color: 'white',
                 border: 'none',
@@ -185,17 +181,17 @@ class EnhancedRouteErrorBoundary extends React.Component {
             </button>
           </Box>
           {process.env.NODE_ENV === 'development' && (
-            <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.100', borderRadius: 1, maxWidth: 600 }}>
-              <Typography variant="caption" component="pre" sx={{ whiteSpace: 'pre-wrap' }}>
-                {this.state.error && this.state.error.toString()}
+            <Box sx={{ mt: 3, p: 2, bgcolor: 'grey.100', borderRadius: 1, maxWidth: 600 } as any}>
+              <Typography variant="caption" component="pre" sx={{ whiteSpace: 'pre-wrap' } as any}>
+                {this.state?.error && this.state?.error.toString()}
               </Typography>
             </Box>
           )}
         </Box>
-      );
+      ));
     }
 
-    return this.props.children;
+    return this.props?.children;
   }
 }
 
@@ -218,19 +214,13 @@ const EnhancedRouter = () => {
               {/* Public Routes */}
               <Route 
                 path={ROUTES.LOGIN} 
-                element={
-                  <PublicRouteGuard>
-                    <Login />
-                  </PublicRouteGuard>
+                element: any,
                 } 
               />
 
               {/* Protected Routes */}
               <Route 
-                element={
-                  <RouteGuard>
-                    <Layout />
-                  </RouteGuard>
+                element: any,
                 }
               >
                 {/* Root redirect */}
@@ -238,8 +228,7 @@ const EnhancedRouter = () => {
 
                 {/* Core Application Routes */}
                 <Route 
-                  path="dashboard" 
-                  element={
+                  path: any,
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Dashboard" />}>
                       <Dashboard />
                     </Suspense>
@@ -247,8 +236,7 @@ const EnhancedRouter = () => {
                 />
                 
                 <Route 
-                  path="charts" 
-                  element={
+                  path: any,
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Analytics" />}>
                       <ChartsPage />
                     </Suspense>
@@ -256,8 +244,7 @@ const EnhancedRouter = () => {
                 />
                 
                 <Route 
-                  path="products/*" 
-                  element={
+                  path: any,
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Product Management" />}>
                       <ProductManagementPage />
                     </Suspense>
@@ -265,8 +252,7 @@ const EnhancedRouter = () => {
                 />
                 
                 <Route
-                  path="tasks"
-                  element={
+                  path: any,
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Task Management" />}>
                       <TaskPage />
                     </Suspense>
@@ -274,8 +260,7 @@ const EnhancedRouter = () => {
                 />
 
                 <Route
-                  path="analytics"
-                  element={
+                  path: any,
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Looker Studio Analytics" />}>
                       <AnalyticsPage />
                     </Suspense>
@@ -283,8 +268,7 @@ const EnhancedRouter = () => {
                 />
 
                 <Route
-                  path="data-grids"
-                  element={
+                  path: any,
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Data Management" />}>
                       <DataGridsPage />
                     </Suspense>
@@ -292,9 +276,7 @@ const EnhancedRouter = () => {
                 />
                 
                 <Route 
-                  path="inventory" 
-                  element={
-                    <ManagerRouteGuard>
+                  path: any,
                       <Suspense fallback={<EnhancedLoadingFallback routeName="Inventory" />}>
                         <InventoryPage />
                       </Suspense>
@@ -303,8 +285,7 @@ const EnhancedRouter = () => {
                 />
                 
                 <Route 
-                  path="orders" 
-                  element={
+                  path: any,
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Orders" />}>
                       <OrdersPage />
                     </Suspense>
@@ -312,8 +293,7 @@ const EnhancedRouter = () => {
                 />
                 
                 <Route 
-                  path="customers" 
-                  element={
+                  path: any,
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Customers" />}>
                       <CustomersPage />
                     </Suspense>
@@ -321,9 +301,7 @@ const EnhancedRouter = () => {
                 />
                 
                 <Route 
-                  path="reports" 
-                  element={
-                    <ManagerRouteGuard>
+                  path: any,
                       <Suspense fallback={<EnhancedLoadingFallback routeName="Reports" />}>
                         <ReportsPage />
                       </Suspense>
@@ -332,9 +310,7 @@ const EnhancedRouter = () => {
                 />
                 
                 <Route 
-                  path="settings" 
-                  element={
-                    <AdminRouteGuard>
+                  path: any,
                       <Suspense fallback={<EnhancedLoadingFallback routeName="Settings" />}>
                         <SettingsPage />
                       </Suspense>
@@ -345,8 +321,7 @@ const EnhancedRouter = () => {
                 {/* Development Routes */}
                 {process.env.NODE_ENV === 'development' && (
                   <Route 
-                    path="grid-test" 
-                    element={
+                    path: any,
                       <Suspense fallback={<EnhancedLoadingFallback routeName="Grid Test" />}>
                         <GridTestPage />
                       </Suspense>
@@ -356,8 +331,7 @@ const EnhancedRouter = () => {
 
                 {/* 404 for protected routes */}
                 <Route 
-                  path="*" 
-                  element={
+                  path: any,
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Page" />}>
                       <NotFoundPage />
                     </Suspense>

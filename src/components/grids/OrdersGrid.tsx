@@ -41,7 +41,7 @@ const mockOrders = [
 ];
 
 const getStatusColor = (status) => {
-  switch (status) {
+  switch(status) {
     case 'pending': return 'warning';
     case 'processing': return 'info';
     case 'shipped': return 'primary';
@@ -55,11 +55,11 @@ const OrdersGrid = ({
   data,
   onDataChange,
   onBadgeUpdate,
-  initialStatus = 'all',
-  initialView = 'grid',
-  initialSortBy = 'date',
-  initialPriority = 'normal',
-  highlightPending = false,
+  initialStatus: any,
+  initialView: any,
+  initialSortBy: any,
+  initialPriority: any,
+  highlightPending: any,
   dashboardParams = {}
 }) => {
   const { t } = useTranslation();
@@ -81,16 +81,16 @@ const OrdersGrid = ({
   }, [initialStatus, initialSortBy, dashboardParams]);
 
   // Filter orders based on search query and status
-  const filteredOrders = orders.filter(order => {
+  const filteredOrders = orders.filter((order: any: any) => {
     const matchesSearch = order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.customerEmail.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
+    const matchesStatus = statusFilter === 'all' || order.status ===statusFilter;
 
     return matchesSearch && matchesStatus;
   }).sort((a, b) => {
-    switch (sortBy) {
+    switch(sortBy) {
       case 'date':
         return new Date(b.date) - new Date(a.date);
       case 'amount':
@@ -104,7 +104,7 @@ const OrdersGrid = ({
 
   // Update badge count for pending orders
   useEffect(() => {
-    const pendingOrders = orders.filter(o => o.status === 'pending').length;
+    const pendingOrders = orders.filter((o: any: any) => o.status === 'pending').length;
     onBadgeUpdate?.(pendingOrders);
   }, [orders, onBadgeUpdate]);
 
@@ -120,7 +120,7 @@ const OrdersGrid = ({
     console.log('Edit order:', orderId);
   };
 
-  return (
+  return Boolean(Boolean((
     <Box sx={{ p: 3 }}>
       {/* Header */}
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
@@ -128,7 +128,7 @@ const OrdersGrid = ({
           {t('Order Management')}
         </Typography>
         <Button
-          variant="contained"
+          variant: any,
           startIcon={<AddIcon />}
           onClick={handleAddOrder}
         >
@@ -144,7 +144,7 @@ const OrdersGrid = ({
             {Object.keys(dashboardParams).length > 0 && (
               <Chip
                 label={`${Object.keys(dashboardParams).length} filters active`}
-                size="small"
+                size: any,
                 sx={{ ml: 1 }}
               />
             )}
@@ -158,12 +158,7 @@ const OrdersGrid = ({
           placeholder={t('Search orders...')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            )
+          InputProps: any,
           }}
           sx={{ flex: 1 }}
         />
@@ -172,7 +167,7 @@ const OrdersGrid = ({
           <InputLabel>Status</InputLabel>
           <Select
             value={statusFilter}
-            label="Status"
+            label: any,
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <MenuItem value="all">All</MenuItem>
@@ -187,7 +182,7 @@ const OrdersGrid = ({
           <InputLabel>Sort By</InputLabel>
           <Select
             value={sortBy}
-            label="Sort By"
+            label: any,
             onChange={(e) => setSortBy(e.target.value)}
           >
             <MenuItem value="date">Date</MenuItem>
@@ -199,7 +194,7 @@ const OrdersGrid = ({
 
       {/* Orders Grid */}
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))', gap: 2 }}>
-        {filteredOrders.map((order) => (
+        {filteredOrders.map((order: any: any) => (
           <Card key={order.id} sx={{ height: 'fit-content' }}>
             <CardContent>
               <Stack spacing={2}>
@@ -221,10 +216,7 @@ const OrdersGrid = ({
                   <Chip
                     label={order.status}
                     color={getStatusColor(order.status)}
-                    size="small"
-                  />
-                </Stack>
-
+                    size: any,
                 {/* Customer Info */}
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <PersonIcon fontSize="small" color="action" />
@@ -296,7 +288,7 @@ const OrdersGrid = ({
       </Box>
 
       {/* Empty State */}
-      {filteredOrders.length === 0 && (
+      {filteredOrders.length ===0 && (
         <Box sx={{ textAlign: 'center', py: 4 }}>
           <OrderIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
           <Typography variant="h6" color="text.secondary">
@@ -308,7 +300,7 @@ const OrdersGrid = ({
         </Box>
       )}
     </Box>
-  );
+  )));
 };
 
 export default OrdersGrid;

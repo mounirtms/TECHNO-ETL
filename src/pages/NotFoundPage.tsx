@@ -18,8 +18,7 @@ const NotFoundPage = () => {
   return (
     <Container maxWidth="md">
       <Box
-        sx={{
-          display: 'flex',
+        sx: any,
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
@@ -29,8 +28,7 @@ const NotFoundPage = () => {
         }}
       >
         <ErrorOutlineIcon 
-          sx={{ 
-            fontSize: 120, 
+          sx: any,
             color: 'text.secondary',
             opacity: 0.6
           }} 
@@ -51,25 +49,12 @@ const NotFoundPage = () => {
         
         <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
           <Button
-            variant="contained"
+            variant: any,
             startIcon={<HomeIcon />}
             onClick={handleGoHome}
-            size="large"
-          >
-            Go to Dashboard
-          </Button>
-          
-          <Button
-            variant="outlined"
+            size: any,
             onClick={handleGoBack}
-            size="large"
-          >
-            Go Back
-          </Button>
-        </Box>
-      </Box>
-    </Container>
-  );
+            size: any,
 };
 
 export default NotFoundPage;

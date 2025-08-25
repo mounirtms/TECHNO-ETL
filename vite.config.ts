@@ -2,7 +2,7 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { visualizer } from 'rollup-plugin-visualizer';
-import { compression } from 'vite-plugin-compression';
+import compression from 'vite-plugin-compression';
 
 export default defineConfig(({ command, mode }) => {
   // Load environment variables based on mode
@@ -17,7 +17,7 @@ export default defineConfig(({ command, mode }) => {
       react({
         // React automatic JSX runtime
         jsxRuntime: 'automatic'
-        // Let Vite handle React refresh automatically
+        // Let Vite handle React refresh and TypeScript automatically
       }),
 
       // Note: Manual chunk splitting is handled in rollupOptions.output.manualChunks
@@ -71,15 +71,14 @@ export default defineConfig(({ command, mode }) => {
       mainFields: ['browser', 'module', 'main']
     },
 
-    // Development server configuration - Optimized for port 80
+    // Development server configuration
     server: {
       host: '0.0.0.0',
-      port: 3000, // Changed to port 3000 for better compatibility
+      port: 3000,
       strictPort: false,
       cors: true,
       hmr: {
-        overlay: true,
-        port: 24678 // Separate HMR port to avoid conflicts
+        overlay: true
       },
       proxy: {
         // Optimized proxy configuration for all API calls
@@ -188,16 +187,19 @@ export default defineConfig(({ command, mode }) => {
             if (id.includes('/services/')) {
               return 'app-services';
             }
+            
+            // Default return for other files
+            return 'app-main';
           },
           
           // File naming patterns
           chunkFileNames: (chunkInfo) => {
-            const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop().replace('.jsx', '').replace('.js', '') : 'chunk';
+            const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop()?.replace('.jsx', '').replace('.js', '') : 'chunk';
             return `js/[name]-[hash].js`;
           },
           entryFileNames: 'js/[name]-[hash].js',
           assetFileNames: (assetInfo) => {
-            const extType = assetInfo.name.split('.').pop();
+            const extType = assetInfo.name?.split('.').pop() || '';
             if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
               return `images/[name]-[hash].[ext]`;
             }
@@ -228,55 +230,22 @@ export default defineConfig(({ command, mode }) => {
       write: true
     },
 
-    // Aggressive dependency optimization
+    // Simplified dependency optimization
     optimizeDeps: {
-      // Include ALL React-related dependencies to ensure proper bundling
       include: [
         'react',
         'react-dom',
         'react-dom/client',
         'react/jsx-runtime',
         'react-router-dom',
-        'react-is',
-        'prop-types',
-        'scheduler',
-        // Modern UI dependencies
-        'lucide-react',
-        '@heroicons/react',
-        'react-hot-toast',
-        'framer-motion',
-        'clsx',
-        'tailwind-merge',
-        // Material-UI (temporarily for compatibility)
         '@mui/material',
         '@mui/icons-material',
         '@emotion/react',
-        '@emotion/styled',
-        // Date pickers and date-fns
-        'date-fns',
-        '@mui/x-date-pickers',
-        '@mui/x-date-pickers/LocalizationProvider',
-        '@mui/x-date-pickers/AdapterDateFns',
-        '@mui/x-date-pickers/DatePicker'
+        '@emotion/styled'
       ],
-
-      // Exclude problematic dependencies
-      exclude: [
-        'firebase'
-      ],
-
-      // Force optimization
-      force: true,
-
-      // Enhanced ESBuild options
+      exclude: ['firebase'],
       esbuildOptions: {
-        target: 'es2022',
-        define: {
-          global: 'globalThis'
-        },
-        supported: {
-          'top-level-await': true
-        }
+        target: 'es2022'
       }
     },
 

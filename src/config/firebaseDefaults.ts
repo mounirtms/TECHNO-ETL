@@ -277,7 +277,7 @@ export const initializeFirebaseDefaults = async () => {
 
         console.log('Firebase defaults initialized successfully');
         return true;
-    } catch (error) {
+    } catch(error: any) {
         console.error('Error initializing Firebase defaults:', error);
         return false;
     }
@@ -302,7 +302,7 @@ export const createDefaultUserLicense = (userId, licenseType = 'FREE') => {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         // Default permissions for licensed programs
-        programPermissions: Object.keys(DEFAULT_LICENSED_PROGRAMS).reduce((acc, programId) => {
+        programPermissions: Object.keys(DEFAULT_LICENSED_PROGRAMS).reduce((acc: any: any: any, programId: any: any) => {
             const program = DEFAULT_LICENSED_PROGRAMS[programId];
             acc[programId] = {
                 enabled: license.features.includes(programId) || program.defaultEnabled,

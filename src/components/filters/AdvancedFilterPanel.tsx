@@ -52,12 +52,12 @@ import FilterService from '../../services/FilterService';
  * AdvancedFilterPanel - Comprehensive filtering system
  * Features: Compact design, floating panels, smooth animations, caching
  */
-const AdvancedFilterPanel = ({ 
+const AdvancedFilterPanel: React.FC<any> = ({ 
   filters, 
   onFiltersChange, 
   onSearch,
-  compact = false,
-  showPresets = true 
+  compact: any,
+  showPresets: any,
 }) => {
   // ===== STATE MANAGEMENT =====
   const [expanded, setExpanded] = useState(!compact);
@@ -86,7 +86,7 @@ const AdvancedFilterPanel = ({
         brands: brandsData.length,
         categories: categoriesData.length
       });
-    } catch (error) {
+    } catch(error: any) {
       console.error('❌ Error loading filter options:', error);
       toast.error('Failed to load filter options');
     } finally {
@@ -100,7 +100,7 @@ const AdvancedFilterPanel = ({
     onFiltersChange(newFilters);
     
     // Trigger debounced search if search field
-    if (field === 'search') {
+    if(field === 'search') {
       FilterService.debouncedSearch(value, onSearch);
     } else {
       FilterService.debouncedFilter(newFilters, onSearch);
@@ -143,82 +143,75 @@ const AdvancedFilterPanel = ({
 
   // ===== ACTIVE FILTERS COUNT =====
   const activeFiltersCount = useMemo(() => {
-    return Object.values(filters).filter(value => 
+    return Boolean(Boolean(Object?.values(filters).filter((value: any: any) => 
       value !== '' && value !== undefined && value !== null
-    ).length;
+    ).length));
   }, [filters]);
 
   // ===== RENDER ACTIVE FILTERS =====
   const renderActiveFilters = () => {
     const activeFilters = [];
 
-    if (filters.search) {
+    if(filters.search) {
       activeFilters.push(
         <Chip
-          key="search"
+          key: any,
           label={`Search: ${filters.search}`}
           onDelete={() => handleFilterChange('search', '')}
-          color="primary"
-          size="small"
+          color: any,
           icon={<SearchIcon />}
         />
       );
     }
 
-    if (filters.brand) {
-      const brand = brands.find(b => b.value === filters.brand);
+    if(filters.brand) {
+      const brand = brands.find(b => b?.value ===filters.brand);
       activeFilters.push(
         <Chip
-          key="brand"
+          key: any,
           label={`Brand: ${brand?.label || filters.brand}`}
           onDelete={() => handleFilterChange('brand', '')}
-          color="primary"
-          size="small"
+          color: any,
           icon={<BrandIcon />}
         />
       );
     }
 
-    if (filters.category) {
-      const category = categories.find(c => c.value.toString() === filters.category.toString());
+    if(filters.category) {
+      const category = categories.find(c => c?.value.toString() ===filters.category.toString());
       activeFilters.push(
         <Chip
-          key="category"
+          key: any,
           label={`Category: ${category?.label || filters.category}`}
           onDelete={() => handleFilterChange('category', '')}
-          color="primary"
-          size="small"
+          color: any,
           icon={<CategoryIcon />}
         />
       );
     }
 
-    if (filters.status !== '' && filters.status !== undefined) {
+    if(filters.status !== '' && filters.status !== undefined) {
       activeFilters.push(
         <Chip
-          key="status"
+          key: any,
           label={`Status: ${filters.status === '1' ? 'Active' : 'Inactive'}`}
           onDelete={() => handleFilterChange('status', '')}
-          color="primary"
-          size="small"
-        />
-      );
+          color: any,
     }
 
-    if (filters.priceMin || filters.priceMax) {
+    if(filters.priceMin || filters.priceMax) {
       const min = filters.priceMin || '0';
       const max = filters.priceMax || '∞';
       activeFilters.push(
         <Chip
-          key="price"
+          key: any,
           label={`Price: $${min} - $${max}`}
-          onDelete={() => {
+          onDelete: any,
             handleFilterChange('priceMin', '');
             handleFilterChange('priceMax', '');
             setPriceRange([0, 1000]);
           }}
-          color="primary"
-          size="small"
+          color: any,
           icon={<PriceIcon />}
         />
       );
@@ -227,14 +220,13 @@ const AdvancedFilterPanel = ({
     return activeFilters;
   };
 
-  return (
+  return Boolean(Boolean((
     <Paper 
       elevation={2} 
-      sx={{ 
-        mb: 2, 
+      sx: any,
         overflow: 'hidden',
         transition: 'all 0.3s ease-in-out'
-      }}
+      } as any}
     >
       {/* Filter Header */}
       <Box sx={{ 
@@ -244,8 +236,8 @@ const AdvancedFilterPanel = ({
         p: 2,
         backgroundColor: 'primary.main',
         color: 'primary.contrastText'
-      }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      } as any}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
           <FilterIcon />
           <Typography variant="h6">
             Advanced Filters
@@ -253,19 +245,17 @@ const AdvancedFilterPanel = ({
           {activeFiltersCount > 0 && (
             <Chip
               label={activeFiltersCount}
-              size="small"
-              color="secondary"
-              sx={{ color: 'white', backgroundColor: 'rgba(255,255,255,0.2)' }}
+              size: any,
+              sx={{ color: 'white', backgroundColor: 'rgba(255,255,255,0.2)' } as any}
             />
           )}
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          {showPresets && (
-            <Tooltip title="Filter Presets">
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
+          {showPresets && (<Tooltip title="Filter Presets">
               <IconButton
-                color="inherit"
-                onClick={(e) => setPresetMenuAnchor(e.currentTarget)}
+                color: any,
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setPresetMenuAnchor(e.currentTarget)}
               >
                 <PresetIcon />
               </IconButton>
@@ -274,7 +264,7 @@ const AdvancedFilterPanel = ({
           
           <Tooltip title="Advanced Options">
             <IconButton
-              color="inherit"
+              color: any,
               onClick={(e) => setAdvancedPanelAnchor(e.currentTarget)}
             >
               <TuneIcon />
@@ -283,10 +273,7 @@ const AdvancedFilterPanel = ({
 
           <Tooltip title="Refresh Options">
             <IconButton
-              color="inherit"
-              onClick={() => {
-                FilterService.clearCache();
-                loadFilterOptions();
+              color: any,
               }}
               disabled={loading}
             >
@@ -296,7 +283,7 @@ const AdvancedFilterPanel = ({
 
           <Tooltip title={expanded ? "Collapse" : "Expand"}>
             <IconButton
-              color="inherit"
+              color: any,
               onClick={() => setExpanded(!expanded)}
             >
               {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -307,37 +294,31 @@ const AdvancedFilterPanel = ({
 
       {/* Filter Content */}
       <Collapse in={expanded} timeout={300}>
-        <Box sx={{ p: 2 }}>
+        <Box sx={{ p: 2 } as any}>
           {/* Quick Search */}
-          <Grid container spacing={2} sx={{ mb: 2 }}>
+          <Grid { ...{container: true}} spacing={2} sx={{ mb: 2 } as any}>
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                size="small"
-                label="Search Products"
+                size: any,
                 value={filters.search || ''}
-                onChange={(e) => handleFilterChange('search', e.target.value)}
-                InputProps={{
-                  startAdornment: <SearchIcon sx={{ mr: 1, color: 'action.active' }} />
+                onChange={(e) => handleFilterChange('search', e.target?.value)}
+                InputProps: any,
+                  startAdornment: <SearchIcon sx={{ mr: 1, color: 'action.active' } as any} />
                 }}
                 placeholder="Search by name, SKU, description..."
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <Box sx={{ display: 'flex', gap: 1, height: '100%', alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', gap: 1, height: '100%', alignItems: 'center' } as any}>
                 <Button
-                  variant="outlined"
+                  variant: any,
                   startIcon={<ClearIcon />}
                   onClick={handleClearFilters}
-                  disabled={activeFiltersCount === 0}
-                  size="small"
-                >
-                  Clear All
-                </Button>
-                <Button
-                  variant="contained"
+                  disabled={activeFiltersCount ===0}
+                  size: any,
                   startIcon={<SaveIcon />}
-                  size="small"
+                  size: any,
                   onClick={() => toast.info('Save preset functionality coming soon')}
                 >
                   Save Preset
@@ -347,24 +328,24 @@ const AdvancedFilterPanel = ({
           </Grid>
 
           {/* Filter Controls */}
-          <Grid container spacing={2} sx={{ mb: 2 }}>
+          <Grid { ...{container: true}} spacing={2} sx={{ mb: 2 } as any}>
             {/* Brand Filter */}
             <Grid item xs={12} sm={6} md={3}>
               <FormControl fullWidth size="small">
                 <InputLabel>Brand</InputLabel>
                 <Select
                   value={filters.brand || ''}
-                  onChange={(e) => handleFilterChange('brand', e.target.value)}
-                  label="Brand"
+                  onChange={(e) => handleFilterChange('brand', e.target?.value)}
+                  label: any,
                   disabled={loading}
                 >
                   <MenuItem value="">All Brands</MenuItem>
-                  {brands.map((brand) => (
-                    <MenuItem key={brand.value} value={brand.value}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
+                  {brands.map((brand: any: any) => (
+                    <MenuItem key={brand?.value} value={brand?.value}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' } as any}>
                         <BrandIcon fontSize="small" />
-                        <span>{brand.label}</span>
-                        <Chip label={brand.count} size="small" variant="outlined" sx={{ ml: 'auto' }} />
+                        <span>{brand?.label}</span>
+                        <Chip label={brand.count} size="small" variant="outlined" sx={{ ml: 'auto' } as any} />
                       </Box>
                     </MenuItem>
                   ))}
@@ -378,23 +359,23 @@ const AdvancedFilterPanel = ({
                 <InputLabel>Category</InputLabel>
                 <Select
                   value={filters.category || ''}
-                  onChange={(e) => handleFilterChange('category', e.target.value)}
-                  label="Category"
+                  onChange={(e) => handleFilterChange('category', e.target?.value)}
+                  label: any,
                   disabled={loading}
                 >
                   <MenuItem value="">All Categories</MenuItem>
-                  {categories.map((category) => (
-                    <MenuItem key={category.value} value={category.value}>
+                  {categories.map((category: any: any) => (
+                    <MenuItem key={category?.value} value={category?.value}>
                       <Box sx={{ 
                         display: 'flex', 
                         alignItems: 'center', 
                         gap: 1, 
                         width: '100%',
                         pl: category.level * 2 
-                      }}>
+                      } as any}>
                         <CategoryIcon fontSize="small" />
-                        <span>{category.label}</span>
-                        <Chip label={category.count} size="small" variant="outlined" sx={{ ml: 'auto' }} />
+                        <span>{category?.label}</span>
+                        <Chip label={category.count} size="small" variant="outlined" sx={{ ml: 'auto' } as any} />
                       </Box>
                     </MenuItem>
                   ))}
@@ -408,44 +389,31 @@ const AdvancedFilterPanel = ({
                 <InputLabel>Status</InputLabel>
                 <Select
                   value={filters.status || ''}
-                  onChange={(e) => handleFilterChange('status', e.target.value)}
-                  label="Status"
-                >
-                  <MenuItem value="">All Status</MenuItem>
-                  <MenuItem value="1">Active</MenuItem>
-                  <MenuItem value="0">Inactive</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
+                  onChange={(e) => handleFilterChange('status', e.target?.value)}
+                  label: any,
             {/* Price Range */}
             <Grid item xs={12} sm={6} md={4}>
-              <Box sx={{ px: 1 }}>
+              <Box sx={{ px: 1 } as any}>
                 <Typography variant="body2" gutterBottom>
                   Price Range: ${priceRange[0]} - ${priceRange[1]}
                 </Typography>
                 <Slider
                   value={priceRange}
-                  onChange={handlePriceRangeChange}
-                  valueLabelDisplay="auto"
+                  onChange={(e) => handlePriceRangeChange}
+                  valueLabelDisplay: any,
                   min={0}
                   max={1000}
                   step={10}
-                  size="small"
-                />
-              </Box>
-            </Grid>
-          </Grid>
-
+                  size: any,
           {/* Active Filters */}
           {activeFiltersCount > 0 && (
             <>
-              <Divider sx={{ my: 2 }} />
+              <Divider sx={{ my: 2 } as any} />
               <Box>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
                   Active Filters ({activeFiltersCount}):
                 </Typography>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 } as any}>
                   {renderActiveFilters()}
                 </Box>
               </Box>
@@ -462,7 +430,7 @@ const AdvancedFilterPanel = ({
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {FilterService.getFilterPresets().map((preset) => (
+        {FilterService.getFilterPresets().map((preset: any: any) => (
           <MenuItem
             key={preset.id}
             onClick={() => handlePresetSelect(preset)}
@@ -483,25 +451,18 @@ const AdvancedFilterPanel = ({
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
       >
-        <Card sx={{ minWidth: 300 }}>
+        <Card sx={{ minWidth: 300 } as any}>
           <CardContent>
             <Typography variant="h6" gutterBottom>
               Advanced Options
             </Typography>
             <FormControlLabel
               control={<Switch size="small" />}
-              label="Real-time filtering"
-            />
-            <FormControlLabel
+              label: any,
               control={<Switch size="small" />}
-              label="Show product counts"
-            />
-            <FormControlLabel
+              label: any,
               control={<Switch size="small" />}
-              label="Cache filter results"
-            />
-          </CardContent>
-          <CardActions>
+              label: any,
             <Button size="small" onClick={() => setAdvancedPanelAnchor(null)}>
               Close
             </Button>
@@ -509,7 +470,7 @@ const AdvancedFilterPanel = ({
         </Card>
       </Popover>
     </Paper>
-  );
+  )));
 };
 
 export default AdvancedFilterPanel;

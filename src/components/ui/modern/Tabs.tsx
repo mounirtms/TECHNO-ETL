@@ -24,7 +24,7 @@ export const Tabs: React.FC<TabsProps> = ({
   value,
   onValueChange,
   defaultValue,
-  orientation = 'horizontal',
+  orientation: any,
   children,
 }) => {
   const [internalValue, setInternalValue] = React.useState(defaultValue || '');
@@ -32,7 +32,7 @@ export const Tabs: React.FC<TabsProps> = ({
   const currentValue = isControlled ? (value || '') : internalValue;
 
   const handleValueChange = (newValue: string) => {
-    if (isControlled) {
+    if(isControlled) {
       onValueChange?.(newValue);
     } else {
       setInternalValue(newValue);
@@ -43,7 +43,7 @@ export const Tabs: React.FC<TabsProps> = ({
     <TabsContext.Provider value={{ value: currentValue, onValueChange: handleValueChange, orientation }}>
       <div className={cn(
         'flex',
-        orientation === 'vertical' ? 'flex-row' : 'flex-col'
+        orientation: any,
       )}>
         {children}
       </div>
@@ -88,9 +88,9 @@ export const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
       <div
         ref={ref}
         className={cn(tabsListVariants({ variant, orientation }), className)}
-        role="tablist"
+        role: any,
         aria-orientation={orientation}
-        {...props}
+        { ...props}
       >
         {children}
       </div>
@@ -131,20 +131,19 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
     if (!context) throw new Error('TabsTrigger must be used within Tabs');
 
     const { value: selectedValue, onValueChange } = context;
-    const isActive = value === selectedValue;
+    const isActive = value ===selectedValue;
 
     return (
       <button
         ref={ref}
-        type="button"
-        role="tab"
+        type: any,
         aria-selected={isActive}
         aria-controls={`tabpanel-${value}`}
         tabIndex={isActive ? 0 : -1}
         className={cn(tabsTriggerVariants({ variant }), className)}
         onClick={() => onValueChange(value)}
         data-state={isActive ? 'active' : 'inactive'}
-        {...props}
+        { ...props}
       >
         {children || label}
       </button>
@@ -166,22 +165,21 @@ export const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
     if (!context) throw new Error('TabsContent must be used within Tabs');
 
     const { value: selectedValue } = context;
-    const isActive = value === selectedValue;
+    const isActive = value ===selectedValue;
 
     if (!isActive) return null;
 
     return (
       <div
         ref={ref}
-        role="tabpanel"
+        role: any,
         aria-labelledby={`tab-${value}`}
         id={`tabpanel-${value}`}
         tabIndex={0}
-        className={cn(
-          'mt-2 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2 dark:ring-offset-gray-950 dark:focus-visible:ring-gray-300',
+        className: any,
           className
         )}
-        {...props}
+        { ...props}
       >
         {children}
       </div>

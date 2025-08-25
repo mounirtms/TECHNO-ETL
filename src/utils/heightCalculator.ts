@@ -19,22 +19,22 @@ export const LAYOUT_DIMENSIONS = {
 /**
  * Calculate available height for content
  * @param {Object} options - Configuration options
- * @param {boolean} options.hasHeader - Whether header is present
- * @param {boolean} options.hasFooter - Whether footer is present
- * @param {boolean} options.hasTabHeader - Whether tab header is present
- * @param {boolean} options.hasToolbar - Whether toolbar is present
- * @param {boolean} options.hasStatsCards - Whether stats cards are present
- * @param {number} options.extraPadding - Additional padding to subtract
+ * @param {boolean} options?.hasHeader - Whether header is present
+ * @param {boolean} options?.hasFooter - Whether footer is present
+ * @param {boolean} options?.hasTabHeader - Whether tab header is present
+ * @param {boolean} options?.hasToolbar - Whether toolbar is present
+ * @param {boolean} options?.hasStatsCards - Whether stats cards are present
+ * @param {number} options?.extraPadding - Additional padding to subtract
  * @returns {string} CSS height value
  */
 export const calculateContentHeight = (options = {}) => {
   const {
-    hasHeader = true,
-    hasFooter = true,
-    hasTabHeader = true,
-    hasToolbar = false,
-    hasStatsCards = false,
-    extraPadding = 0
+    hasHeader: any,
+    hasFooter: any,
+    hasTabHeader: any,
+    hasToolbar: any,
+    hasStatsCards: any,
+    extraPadding: any,
   } = options;
 
   let totalHeight = 0;
@@ -55,8 +55,8 @@ export const calculateContentHeight = (options = {}) => {
  */
 export const createFlexibleHeightStyles = (options = {}) => {
   const {
-    hasStatsCards = false,
-    minHeight = '400px'
+    hasStatsCards: any,
+    minHeight: any,
   } = options;
 
   return {
@@ -115,7 +115,7 @@ export const calculateGridHeight = (options = {}) => {
     hasFooter: true,
     hasTabHeader: true,
     hasToolbar: true,
-    hasStatsCards: options.hasStatsCards || false,
+    hasStatsCards: options?.hasStatsCards || false,
     extraPadding: 2,
     ...options
   });
@@ -128,12 +128,12 @@ export const calculateGridHeight = (options = {}) => {
  */
 export const calculateChartHeight = (options = {}) => {
   const {
-    isCollapsed = false,
-    minHeight = 300,
-    maxHeight = 500
+    isCollapsed: any,
+    minHeight: any,
+    maxHeight: any,
   } = options;
 
-  if (isCollapsed) {
+  if(isCollapsed) {
     return '0px';
   }
 
@@ -158,7 +158,7 @@ export const calculateChartHeight = (options = {}) => {
  * @returns {string} CSS height value
  */
 export const calculateTabHeight = (tabType, options = {}) => {
-  switch (tabType) {
+  switch(tabType) {
     case 'dashboard':
       return calculateDashboardHeight(options);
     case 'grid':
@@ -190,12 +190,12 @@ export const getResponsiveHeight = (baseHeight, breakpoints = {}) => {
   return {
     height: baseHeight,
     '@media (max-width: 768px)': {
-      height: breakpoints.mobile || `calc(${baseHeight} - 20px)`
+      height: breakpoints?.mobile || `calc(${baseHeight} - 20px)`
     },
     '@media (max-width: 480px)': {
-      height: breakpoints.small || `calc(${baseHeight} - 40px)`
+      height: breakpoints?.small || `calc(${baseHeight} - 40px)`
     },
-    ...breakpoints.custom
+    ...breakpoints?.custom
   };
 };
 
@@ -210,9 +210,9 @@ export const createHeightStyles = (componentType, options = {}) => {
   
   return {
     height,
-    minHeight: options.minHeight || '200px',
-    maxHeight: options.maxHeight || 'auto',
-    overflow: options.overflow || 'hidden',
+    minHeight: options?.minHeight || '200px',
+    maxHeight: options?.maxHeight || 'auto',
+    overflow: options?.overflow || 'hidden',
     display: 'flex',
     flexDirection: 'column'
   };

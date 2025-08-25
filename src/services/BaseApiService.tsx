@@ -1,3 +1,4 @@
+import React from 'react';
 /**
  * Base API Service - Foundation for all API services
  * Implements DRY principles, caching, parameter handling, and error management
@@ -7,8 +8,94 @@
  */
 import { toast } from 'react-toastify';
 
+// Type definitions for BaseApiService
+interface ApiConfig {
+  cacheEnabled?: boolean;
+  cacheDuration?: number;
+  maxCacheSize?: number;
+  retryAttempts?: number;
+  retryDelay?: number;
+  timeout?: number;
+}
+
+interface ApiMetrics {
+  total: number;
+  cache: number;
+  success: number;
+  errors: number;
+  lastError: string | null;
+  avgResponseTime: number;
+}
+
+interface CacheEntry {
+  data: any;
+  timestamp: number;
+  hits: number;
+}
+
+interface ApiState {
+  cache: Map<string, CacheEntry>;
+  metrics: ApiMetrics;
+  settings: Record<string, any>;
+}
+
+interface SearchCriteria {
+  pageSize?: number;
+  currentPage?: number;
+  sortOrders?: Array<{
+    field: string;
+    direction?: 'ASC' | 'DESC';
+  }>;
+  filterGroups?: Array<{
+    filters: Array<{
+      field: string;
+      value: any;
+      conditionType?: string;
+    }>;
+  }>;
+}
+
+interface ApiParams {
+  searchCriteria?: SearchCriteria;
+  params?: Record<string, any>;
+  fieldName?: string;
+  [key: string]: any;
+}
+
+interface ApiResponse {
+  data?: any;
+  items?: any[];
+  total_count?: number;
+  totalCount?: number;
+  search_criteria?: any;
+  searchCriteria?: any;
+}
+
+interface FormattedResponse {
+  items: any[];
+  total_count: number;
+  search_criteria: any;
+  [key: string]: any;
+}
+
+interface ApiError extends Error {
+  response?: {
+    status?: number;
+    data?: {
+      message?: string;
+      error?: string;
+    };
+  };
+  config?: {
+    url?: string;
+  };
+}
+
 export class BaseApiService {
-  constructor(config = {}) {
+  protected config: Required<ApiConfig>;
+  protected state: ApiState;
+
+  constructor(config: ApiConfig = {}) {
     this.config = {
       cacheEnabled: true,
       cacheDuration: 10 * 60 * 1000, // 10 minutes for better caching
@@ -29,7 +116,7 @@ export class BaseApiService {
   }
 
   // ===== CORE INITIALIZATION METHODS =====
-  _createMetrics() {
+  private _createMetrics(): ApiMetrics {
     return {
       total: 0,
       cache: 0,
@@ -40,27 +127,27 @@ export class BaseApiService {
     };
   }
 
-  _loadSettings() {
+  private _loadSettings(): Record<string, any> {
     try {
       const stored = localStorage.getItem('userApiSettings');
       return stored ? JSON.parse(stored) : {};
-    } catch (error) {
+    } catch(error: any) {
       console.warn('Failed to load API settings:', error.message);
       return {};
     }
   }
 
-  _setupCacheCleanup() {
-    if (this.config.cacheEnabled) {
+  private _setupCacheCleanup(): void {
+    if(this.config.cacheEnabled) {
       setInterval(() => this._cleanExpiredCache(), this.config.cacheDuration);
     }
   }
 
-  updateSettings(newSettings) {
+  updateSettings(newSettings: Record<string, any>): void {
     this.state.settings = { ...this.state.settings, ...newSettings };
     try {
       localStorage.setItem('userApiSettings', JSON.stringify(this.state.settings));
-    } catch (error) {
+    } catch(error: any) {
       console.warn('Failed to save API settings:', error.message);
     }
   }
@@ -71,26 +158,26 @@ export class BaseApiService {
    * Smart parameter validation and flattening
    * Handles Magento search criteria and prevents template variable issues
    */
-  validateAndFlattenParams(params = {}) {
-    const flattened = {};
+  validateAndFlattenParams(params: ApiParams = {}): Record<string, any> {
+    const flattened: Record<string, any> = {};
     
     // Handle search criteria structure
-    if (params.searchCriteria) {
-      return this._buildSearchCriteriaParams(params.searchCriteria, params.fieldName);
+    if(params.searchCriteria) {
+      return this._buildSearchCriteriaParams(params.searchCriteria, params?.fieldName);
     }
     
     // Handle nested params object
-    if (params.params) {
+    if(params.params) {
       Object.assign(flattened, this._flattenObject(params.params));
     } else {
       Object.assign(flattened, this._flattenObject(params));
     }
     
     // Validate and clean template variables
-    return this._validateParameterValues(flattened, params.fieldName);
+    return this._validateParameterValues(flattened, params?.fieldName);
   }
 
-  _buildSearchCriteriaParams(criteria, fieldName) {
+  private _buildSearchCriteriaParams(criteria: SearchCriteria, fieldName?: string): Record<string, any> {
     const params = {};
     
     // Handle pagination
@@ -98,7 +185,7 @@ export class BaseApiService {
     if (criteria.currentPage) params['searchCriteria[currentPage]'] = criteria.currentPage;
     
     // Handle sorting with validation
-    if (criteria.sortOrders?.length) {
+    if(criteria.sortOrders?.length) {
       criteria.sortOrders.forEach((sort, index) => {
         if (sort.field && this._isValidFieldName(sort.field)) {
           params[`searchCriteria[sortOrders][${index}][field]`] = sort.field;
@@ -108,9 +195,9 @@ export class BaseApiService {
     }
     
     // Handle filters with comprehensive validation
-    if (criteria.filterGroups?.length) {
+    if(criteria.filterGroups?.length) {
       criteria.filterGroups.forEach((group, groupIndex) => {
-        if (group.filters?.length) {
+        if(group.filters?.length) {
           group.filters.forEach((filter, filterIndex) => {
             if (filter.field && this._isValidFieldName(filter.field)) {
               params[`searchCriteria[filterGroups][${groupIndex}][filters][${filterIndex}][field]`] = filter.field;
@@ -130,18 +217,18 @@ export class BaseApiService {
     return params;
   }
 
-  _flattenObject(obj, prefix = '') {
-    const flattened = {};
+  private _flattenObject(obj, prefix = ''): Record<string, any> {
+    const flattened: Record<string, any> = {};
     
     if (!obj || typeof obj !== 'object') return flattened;
     
-    Object.keys(obj).forEach(key => {
+    Object.keys(obj).forEach((key) => {
       const value = obj[key];
       const newKey = prefix ? `${prefix}[${key}]` : key;
       
       if (value && typeof value === 'object' && !Array.isArray(value)) {
         Object.assign(flattened, this._flattenObject(value, newKey));
-      } else if (value !== undefined && value !== null) {
+      } else if(value !== undefined && value !== null) {
         flattened[newKey] = value;
       }
     });
@@ -149,10 +236,10 @@ export class BaseApiService {
     return flattened;
   }
 
-  _validateParameterValues(params, defaultFieldName = 'name') {
-    const validated = {};
+  private _validateParameterValues(params: Record<string, any>, defaultFieldName = 'name'): Record<string, any> {
+    const validated: Record<string, any> = {};
     
-    Object.keys(params).forEach(key => {
+    Object.keys(params).forEach((key) => {
       const value = params[key];
       
       // Skip invalid template variables
@@ -170,21 +257,21 @@ export class BaseApiService {
     });
     
     // Ensure fieldName exists for Magento API calls
-    if (!validated.fieldName && !validated['searchCriteria[pageSize]']) {
+    if(!validated?.fieldName && !validated['searchCriteria[pageSize]']) {
       validated.fieldName = defaultFieldName;
     }
     
     return validated;
   }
 
-  _isValidFieldName(fieldName) {
-    return fieldName && 
+  private _isValidFieldName(fieldName: string): boolean {
+    return Boolean(Boolean(fieldName && 
            typeof fieldName === 'string' && 
            !this._containsTemplateVariable(fieldName) &&
-           fieldName.trim().length > 0;
+           fieldName.trim().length > 0));
   }
 
-  _containsTemplateVariable(value) {
+  private _containsTemplateVariable(value: string): boolean {
     return value.includes('%fieldName') || 
            value.includes('${') || 
            value.includes('%{') ||
@@ -193,12 +280,12 @@ export class BaseApiService {
 
   // ===== CACHE MANAGEMENT =====
   
-  _getCacheKey(method, endpoint, params) {
+  private _getCacheKey(method: string, endpoint: string, params?: Record<string, any>): string {
     const paramStr = params ? JSON.stringify(params, Object.keys(params).sort()) : '';
     return `${method.toLowerCase()}_${endpoint}_${btoa(paramStr).substring(0, 50)}`;
   }
 
-  _getCachedResponse(cacheKey) {
+  private _getCachedResponse(cacheKey: string): any {
     if (!this.config.cacheEnabled) return null;
     
     const cached = this.state.cache.get(cacheKey);
@@ -209,7 +296,7 @@ export class BaseApiService {
     return null;
   }
 
-  _setCachedResponse(cacheKey, data) {
+  private _setCachedResponse(cacheKey: string, data): void {
     if (!this.config.cacheEnabled) return;
     
     this.state.cache.set(cacheKey, { 
@@ -219,29 +306,29 @@ export class BaseApiService {
     });
     
     // Clean cache if too large
-    if (this.state.cache.size > this.config.maxCacheSize) {
+    if(this.state.cache.size > this.config.maxCacheSize) {
       this._cleanExpiredCache();
     }
   }
 
-  _cleanExpiredCache() {
+  private _cleanExpiredCache(): void {
     const now = Date.now();
     let cleaned = 0;
     
     for (const [key, value] of this.state.cache.entries()) {
-      if (now - value.timestamp > this.config.cacheDuration) {
+      if(now - value.timestamp > this.config.cacheDuration) {
         this.state.cache.delete(key);
         cleaned++;
       }
     }
     
-    if (cleaned > 0) {
+    if(cleaned > 0) {
       console.log(`🗑️ Cleaned ${cleaned} expired cache entries`);
     }
   }
 
-  clearCache(pattern = null) {
-    if (pattern) {
+  clearCache(pattern: string | null = null): void {
+    if(pattern) {
       for (const key of this.state.cache.keys()) {
         if (key.includes(pattern)) {
           this.state.cache.delete(key);
@@ -255,16 +342,16 @@ export class BaseApiService {
 
   // ===== ERROR HANDLING =====
   
-  _handleError(error, method, endpoint) {
+  private _handleError(error: ApiError, method?: string, endpoint?: string): void {
     const errorMessage = this._getErrorMessage(error);
     
     // Only show user-facing errors for non-404 status codes
-    if (error.response?.status !== 404) {
-        if (error.response?.status >= 500) {
+    if(error.response?.status !== 404) {
+        if(error.response?.status >= 500) {
             toast.error(`Server Error: ${errorMessage}`);
-        } else if (error.response?.status === 401) {
+        } else if(error.response?.status ===401) {
             toast.error('Authentication failed. Please check your credentials.');
-        } else if (error.response?.status === 403) {
+        } else if(error.response?.status ===403) {
             toast.error('Access denied. Please check your permissions.');
         } else {
             toast.error(`API Error: ${errorMessage}`);
@@ -279,38 +366,37 @@ export class BaseApiService {
     });
   }
   
-  _getErrorMessage(error) {
-    if (error.response?.data?.message) {
+  private _getErrorMessage(error: ApiError): string {
+    if(error.response?.data?.message) {
       return error.response.data.message;
     }
-    if (error.response?.data?.error) {
+    if(error.response?.data?.error) {
       return error.response.data.error;
     }
-    if (error.message) {
+    if(error.message) {
       return error.message;
     }
     return 'Unknown error occurred';
   }
 
-  _isRetryableError(error) {
+  private _isRetryableError(error: ApiError): boolean {
     const retryableStatuses = [408, 429, 500, 502, 503, 504];
     return error.response?.status && retryableStatuses.includes(error.response.status);
   }
 
   // ===== RETRY LOGIC =====
   
-  async _retryRequest(requestFn, attempts = 0, context = {}) {
+  async _retryRequest(requestFn: () => Promise, attempts = 0, context = {}): Promise {
     try {
       const startTime = Date.now();
       const result = await requestFn();
       
       // Update metrics
       this.state.metrics.success++;
-      this.state.metrics.avgResponseTime = 
-        (this.state.metrics.avgResponseTime + (Date.now() - startTime)) / 2;
+      this.state.metrics.avgResponseTime = (this.state.metrics.avgResponseTime + (Date.now() - startTime)) / 2;
       
       return result;
-    } catch (error) {
+    } catch(error: any) {
       if (attempts < this.config.retryAttempts && this._isRetryableError(error)) {
         const delay = this.config.retryDelay * Math.pow(2, attempts);
         console.log(`🔄 Retry ${attempts + 1}/${this.config.retryAttempts} in ${delay}ms`);
@@ -326,8 +412,8 @@ export class BaseApiService {
 
   // ===== RESPONSE FORMATTING =====
   
-  formatResponse(response, options = {}) {
-    if (!response) {
+  formatResponse(response: ApiResponse | null, options: { additionalFields?: Record<string, any> } = {}): FormattedResponse {
+    if(!response) {
       return {
         items: [],
         total_count: 0,
@@ -348,9 +434,8 @@ export class BaseApiService {
 
   // ===== UTILITY METHODS =====
   
-  getMetrics() {
-    return {
-      ...this.state.metrics,
+  getMetrics(): ApiMetrics & { cacheSize: number; cacheHitRate: string } {
+    return { ...this.state.metrics,
       cacheSize: this.state.cache.size,
       cacheHitRate: this.state.metrics.total > 0 
         ? (this.state.metrics.cache / this.state.metrics.total * 100).toFixed(2) + '%' 
@@ -358,22 +443,22 @@ export class BaseApiService {
     };
   }
 
-  resetMetrics() {
+  resetMetrics(): void {
     this.state.metrics = this._createMetrics();
     console.log('📈 Metrics reset');
   }
 
-  getSettings() {
+  getSettings(): Record<string, any> {
     return { ...this.state.settings };
   }
 
   // Abstract method to be implemented by child classes
-  async request(method, endpoint, data, config) {
+  async request(method: string, endpoint: string, data?: any, config? ): Promise {
     throw new Error('request method must be implemented by child class');
   }
 
   // Standard HTTP methods - to be used by child classes
-  async get(endpoint, params = {}) {
+  async get(endpoint: string, params: ApiParams = {}): Promise {
     this.state.metrics.total++;
     
     const validatedParams = this.validateAndFlattenParams(params);
@@ -381,7 +466,7 @@ export class BaseApiService {
     
     // Check cache first
     const cached = this._getCachedResponse(cacheKey);
-    if (cached) {
+    if(cached) {
       console.log('📦 Cache hit:', endpoint);
       return cached;
     }
@@ -393,17 +478,17 @@ export class BaseApiService {
     return response;
   }
 
-  async post(endpoint, data = {}, config = {}) {
+  async post(endpoint: string, data: any = {}, config = {}): Promise {
     this.state.metrics.total++;
     return this.request('post', endpoint, data, config);
   }
 
-  async put(endpoint, data = {}, config = {}) {
+  async put(endpoint: string, data: any = {}, config = {}): Promise {
     this.state.metrics.total++;
     return this.request('put', endpoint, data, config);
   }
 
-  async delete(endpoint, config = {}) {
+  async delete(endpoint: string, config: any = {}): Promise {
     this.state.metrics.total++;
     return this.request('delete', endpoint, null, config);
   }

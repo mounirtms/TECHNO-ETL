@@ -57,33 +57,28 @@ export const getStandardToolbarTemplate = (gridType = 'default', customActions =
   
   // Grid-specific toolbar configurations
   const typeConfigs = {
-    mdm: {
-      ...baseConfig,
+    mdm: { ...baseConfig,
       showSync: true,
       showSuccursaleFilter: true,
       showSourceFilter: true,
       customLeftActions: ['syncSelected', 'syncAll']
     },
-    magento: {
-      ...baseConfig,
+    magento: { ...baseConfig,
       showAdd: true,
       showBulkActions: true,
       customLeftActions: ['addProduct', 'importCSV', 'bulkEdit']
     },
-    cegid: {
-      ...baseConfig,
+    cegid: { ...baseConfig,
       showSync: true,
       customLeftActions: ['syncCegid']
     },
-    dashboard: {
-      ...baseConfig,
+    dashboard: { ...baseConfig,
       showAdd: false,
       showSync: false
     }
   };
   
-  return {
-    ...baseConfig,
+  return { ...baseConfig,
     ...(typeConfigs[gridType] || {}),
     ...customActions
   };
@@ -174,7 +169,7 @@ export const getStandardColumnTemplates = () => {
 export const validateGridProps = (props, gridName) => {
   const errors = [];
   
-  if (!gridName) {
+  if(!gridName) {
     errors.push('gridName is required');
   }
   
@@ -186,11 +181,11 @@ export const validateGridProps = (props, gridName) => {
     errors.push('data must be an array');
   }
   
-  if (typeof props.getRowId !== 'function') {
+  if(typeof props.getRowId !== 'function') {
     errors.push('getRowId must be a function');
   }
   
-  if (errors.length > 0) {
+  if(errors.length > 0) {
     console.error(`Grid ${gridName} validation errors:`, errors);
     return false;
   }

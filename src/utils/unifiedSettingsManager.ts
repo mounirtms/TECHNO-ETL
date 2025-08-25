@@ -61,11 +61,11 @@ const LEGACY_KEYS = [
 export const getUnifiedSettings = () => {
   try {
     const settings = localStorage.getItem(UNIFIED_SETTINGS_KEY);
-    if (settings) {
+    if(settings) {
       const parsedSettings = JSON.parse(settings);
       return { ...DEFAULT_SETTINGS, ...parsedSettings };
     }
-  } catch (error) {
+  } catch(error: any) {
     console.warn('Error parsing unified settings:', error);
   }
   return { ...DEFAULT_SETTINGS };
@@ -74,46 +74,45 @@ export const getUnifiedSettings = () => {
 /**
  * Save unified settings for anonymous users with optimization
  */
-export const saveUnifiedSettings = (settings) => {
+export const saveUnifiedSettings = (settings: any) => {
   try {
     // Validate settings structure
-    if (!settings || typeof settings !== 'object') {
+    if(!settings || typeof settings !== 'object') {
       console.warn('Invalid settings provided to saveUnifiedSettings');
       return false;
     }
 
     const currentSettings = getUnifiedSettings();
-    const updatedSettings = {
-      ...currentSettings,
+    const updatedSettings = { ...currentSettings,
       ...settings,
       lastModified: Date.now(),
       version: '2.1.0'
     };
 
     // Debounce localStorage writes to prevent excessive I/O
-    if (saveUnifiedSettings._timeout) {
-      clearTimeout(saveUnifiedSettings._timeout);
+    if((saveUnifiedSettings as any)?._timeout) {
+      clearTimeout((saveUnifiedSettings as any)?._timeout);
     }
 
-    saveUnifiedSettings._timeout = setTimeout(() => {
+    (saveUnifiedSettings as any)._timeout = setTimeout(() => {
       try {
         localStorage.setItem(UNIFIED_SETTINGS_KEY, JSON.stringify(updatedSettings));
         console.log('✅ Unified settings saved successfully');
-      } catch (storageError) {
+      } catch(storageError: any) {
         console.error('❌ Failed to save to localStorage:', storageError);
         // Try to clear some space and retry
         try {
           localStorage.removeItem('temp_data');
           localStorage.setItem(UNIFIED_SETTINGS_KEY, JSON.stringify(updatedSettings));
           console.log('✅ Settings saved after cleanup');
-        } catch (retryError) {
+        } catch(retryError: any) {
           console.error('❌ Failed to save even after cleanup:', retryError);
         }
       }
     }, 100); // 100ms debounce
 
     return updatedSettings;
-  } catch (error) {
+  } catch(error: any) {
     console.error('❌ Error saving unified settings:', error);
     return null;
   }
@@ -122,17 +121,17 @@ export const saveUnifiedSettings = (settings) => {
 /**
  * Get user-specific settings (for logged-in users)
  */
-export const getUserSettings = (userId) => {
+export const getUserSettings = (userId: string) => {
   if (!userId) return getUnifiedSettings();
   
   try {
     const userKey = `${USER_SETTINGS_PREFIX}${userId}`;
     const settings = localStorage.getItem(userKey);
-    if (settings) {
+    if(settings) {
       const parsedSettings = JSON.parse(settings);
       return { ...DEFAULT_SETTINGS, ...parsedSettings };
     }
-  } catch (error) {
+  } catch(error: any) {
     console.warn('Error parsing user settings:', error);
   }
   return { ...DEFAULT_SETTINGS };
@@ -141,7 +140,7 @@ export const getUserSettings = (userId) => {
 /**
  * Save user-specific settings (for logged-in users)
  */
-export const saveUserSettings = (userId, settings) => {
+export const saveUserSettings = (userId: string, settings: any) => {
   if (!userId) return saveUnifiedSettings(settings);
   
   try {
@@ -150,7 +149,7 @@ export const saveUserSettings = (userId, settings) => {
     const updatedSettings = { ...currentSettings, ...settings };
     localStorage.setItem(userKey, JSON.stringify(updatedSettings));
     return updatedSettings;
-  } catch (error) {
+  } catch(error: any) {
     console.error('Error saving user settings:', error);
     return null;
   }
@@ -159,8 +158,8 @@ export const saveUserSettings = (userId, settings) => {
 /**
  * Apply language settings to DOM
  */
-export const applyLanguageSettings = (language) => {
-  const languageConfig = {
+export const applyLanguageSettings = (language: string) => {
+  const languageConfig: {[key: string]: {dir: string, code: string}} = {
     en: { dir: 'ltr', code: 'en-US' },
     fr: { dir: 'ltr', code: 'fr-FR' },
     ar: { dir: 'rtl', code: 'ar-SA' }
@@ -173,7 +172,7 @@ export const applyLanguageSettings = (language) => {
   document.documentElement.setAttribute('lang', config.code);
   
   // Add RTL class to body
-  if (config.dir === 'rtl') {
+  if(config.dir === 'rtl') {
     document.body.classList.add('rtl');
     document.body.classList.remove('ltr');
   } else {
@@ -183,8 +182,8 @@ export const applyLanguageSettings = (language) => {
   
   // Add/remove RTL class to root element
   const root = document.getElementById('root');
-  if (root) {
-    if (config.dir === 'rtl') {
+  if(root) {
+    if(config.dir === 'rtl') {
       root.classList.add('rtl-layout');
       root.classList.remove('ltr-layout');
     } else {
@@ -199,7 +198,7 @@ export const applyLanguageSettings = (language) => {
  */
 export const getSystemPreferences = () => {
   const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const browserLang = navigator.language.split('-')[0];
+  const browserLang = navigator?.language.split('-')[0];
   const supportedLanguages = ['en', 'fr', 'ar'];
   
   return {
@@ -218,7 +217,7 @@ export const initializeSettingsSystem = (userId = null) => {
   // Check if migration is needed
   const needsMigration = LEGACY_KEYS.some(key => localStorage.getItem(key) !== null);
   
-  if (needsMigration) {
+  if(needsMigration) {
     migrateLegacySettings(userId);
   }
   
@@ -226,7 +225,7 @@ export const initializeSettingsSystem = (userId = null) => {
   const settings = userId ? getUserSettings(userId) : getUnifiedSettings();
   
   // Apply language settings immediately
-  applyLanguageSettings(settings.language);
+  applyLanguageSettings(settings?.language);
   
   console.log('✅ Settings system initialized:', settings);
   return settings;
@@ -240,7 +239,7 @@ const migrateLegacySettings = (userId = null) => {
   
   try {
     // Collect legacy settings
-    const legacyData = {};
+    const legacyData: any = {};
     
     // Individual keys
     const oldLanguage = localStorage.getItem('language');
@@ -253,31 +252,31 @@ const migrateLegacySettings = (userId = null) => {
     
     // Old unified settings
     const oldUnified = localStorage.getItem('techno-etl-settings');
-    if (oldUnified) {
+    if(oldUnified) {
       try {
         const parsed = JSON.parse(oldUnified);
         Object.assign(legacyData, parsed);
-      } catch (e) {
+      } catch(e: any) {
         console.warn('Failed to parse old unified settings');
       }
     }
     
     // Old user settings
     const oldUserSettings = localStorage.getItem('userSettings');
-    if (oldUserSettings) {
+    if(oldUserSettings) {
       try {
         const parsed = JSON.parse(oldUserSettings);
-        if (parsed.preferences) {
+        if(parsed.preferences) {
           Object.assign(legacyData, parsed.preferences);
         }
-      } catch (e) {
+      } catch(e: any) {
         console.warn('Failed to parse old user settings');
       }
     }
     
     // Save migrated settings
     if (Object.keys(legacyData).length > 0) {
-      if (userId) {
+      if(userId) {
         saveUserSettings(userId, legacyData);
       } else {
         saveUnifiedSettings(legacyData);
@@ -286,14 +285,14 @@ const migrateLegacySettings = (userId = null) => {
     }
     
     // Clean up legacy keys
-    LEGACY_KEYS.forEach(key => {
+    LEGACY_KEYS.forEach((key) => {
       if (localStorage.getItem(key)) {
         localStorage.removeItem(key);
         console.log(`🗑️ Removed legacy key: ${key}`);
       }
     });
     
-  } catch (error) {
+  } catch(error: any) {
     console.error('❌ Error during migration:', error);
   }
 };
@@ -310,13 +309,12 @@ export const getDefaultSettings = () => {
  */
 export const resetToSystemDefaults = (userId = null) => {
   const systemPrefs = getSystemPreferences();
-  const defaultSettings = {
-    ...DEFAULT_SETTINGS,
+  const defaultSettings = { ...DEFAULT_SETTINGS,
     theme: 'system',
-    language: systemPrefs.language
+    language: systemPrefs?.language
   };
 
-  if (userId) {
+  if(userId) {
     return saveUserSettings(userId, defaultSettings);
   } else {
     return saveUnifiedSettings(defaultSettings);
@@ -353,31 +351,35 @@ export const exportSettings = (userId = null) => {
 /**
  * Import settings from backup file
  */
-export const importSettings = (file, userId = null) => {
+export const importSettings = (file: File, userId: string | null = null) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     
     reader.onload = (e) => {
       try {
-        const importData = JSON.parse(e.target.result);
+        const result = e.target?.result as string;
+        if(!result) {
+          throw new Error('Failed to read file');
+        }
+        const importData = JSON.parse(result);
         
-        if (!importData.settings) {
+        if(!importData.settings) {
           throw new Error('Invalid settings file format');
         }
         
         const mergedSettings = { ...DEFAULT_SETTINGS, ...importData.settings };
         
-        if (userId) {
+        if(userId) {
           saveUserSettings(userId, mergedSettings);
         } else {
           saveUnifiedSettings(mergedSettings);
         }
         
         // Apply language settings immediately
-        applyLanguageSettings(mergedSettings.language);
+        applyLanguageSettings(mergedSettings?.language);
         
         resolve(mergedSettings);
-      } catch (error) {
+      } catch(error: any) {
         reject(error);
       }
     };
@@ -393,15 +395,15 @@ export const importSettings = (file, userId = null) => {
 /**
  * Clean up all user data (for logout)
  */
-export const cleanupUserData = (userId) => {
-  if (userId) {
+export const cleanupUserData = (userId: string) => {
+  if(userId) {
     const userKey = `${USER_SETTINGS_PREFIX}${userId}`;
     localStorage.removeItem(userKey);
   }
   
   // Reset to system defaults for anonymous use
   const systemDefaults = resetToSystemDefaults();
-  applyLanguageSettings(systemDefaults.language);
+  applyLanguageSettings(systemDefaults?.language);
   
   return systemDefaults;
 };

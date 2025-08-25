@@ -5,16 +5,28 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
+interface HashParamsResult {
+  params: Record<string, any>;
+  setParams: (newParams: Record<string, any>, replace?: boolean) => void;
+  clearParams: () => void;
+  updateParams: (newParams: Record<string, any>, replace?: boolean) => void;
+  getParam: <T = any>(key: string, defaultValue?: T) => T;
+  hasParam: (key: string) => boolean;
+  removeParam: (key: string) => void;
+  encodeToHash: (params: Record<string, any>) => string;
+  parseHashParams: (hash: string) => Record<string, any>;
+}
+
 /**
  * Custom hook to handle hash-based parameters
- * @returns {Object} { params, setParams, clearParams, updateParams }
+ * @returns {HashParamsResult} Hash parameters utilities
  */
-export const useHashParams = () => {
+export const useHashParams = (): HashParamsResult => {
   const location = useLocation();
-  const [params, setParams] = useState({});
+  const [params, setParams] = useState<Record<string, any>>({});
 
   // Parse hash parameters from URL
-  const parseHashParams = useCallback((hash) => {
+  const parseHashParams = useCallback((hash: string): Record<string, any> => {
     if (!hash || hash === '#') return {};
     
     try {
@@ -22,27 +34,27 @@ export const useHashParams = () => {
       const encodedParams = hash.substring(1);
       const decodedParams = atob(encodedParams);
       return JSON.parse(decodedParams);
-    } catch (error) {
+    } catch(error: any) {
       console.warn('Failed to parse hash parameters:', error);
       return {};
     }
   }, []);
 
   // Encode parameters to hash
-  const encodeToHash = useCallback((params) => {
-    if (!params || Object.keys(params).length === 0) return '';
+  const encodeToHash = useCallback((params: Record<string, any>): string => {
+    if (!params || Object.keys(params).length ===0) return '';
     
     try {
       const encodedParams = btoa(JSON.stringify(params));
       return '#' + encodedParams;
-    } catch (error) {
+    } catch(error: any) {
       console.warn('Failed to encode hash parameters:', error);
       return '';
     }
   }, []);
 
   // Update URL hash without navigation
-  const updateUrlHash = useCallback((newParams) => {
+  const updateUrlHash = useCallback((newParams: Record<string, any>): void => {
     const hash = encodeToHash(newParams);
     const newUrl = window.location.pathname + window.location.search + hash;
     window.history.replaceState(null, '', newUrl);
@@ -58,7 +70,7 @@ export const useHashParams = () => {
   // Initial load - parse hash immediately
   useEffect(() => {
     const initialHash = window.location.hash;
-    if (initialHash) {
+    if(initialHash) {
       const parsedParams = parseHashParams(initialHash);
       console.log('Initial hash params:', initialHash, parsedParams); // Debug log
       setParams(parsedParams);
@@ -66,7 +78,7 @@ export const useHashParams = () => {
   }, [parseHashParams]);
 
   // Update parameters and URL
-  const updateParams = useCallback((newParams, replace = false) => {
+  const updateParams = useCallback((newParams: Record<string, any>, replace: boolean = false): void => {
     const updatedParams = replace ? newParams : { ...params, ...newParams };
     setParams(updatedParams);
     updateUrlHash(updatedParams);
@@ -79,17 +91,17 @@ export const useHashParams = () => {
   }, [updateUrlHash]);
 
   // Get specific parameter with default value
-  const getParam = useCallback((key, defaultValue = null) => {
+  const getParam = useCallback(<T = any>(key: string, defaultValue: T | null = null): T => {
     return params[key] !== undefined ? params[key] : defaultValue;
   }, [params]);
 
   // Check if parameter exists
-  const hasParam = useCallback((key) => {
+  const hasParam = useCallback((key: string): boolean => {
     return params.hasOwnProperty(key);
   }, [params]);
 
   // Remove specific parameter
-  const removeParam = useCallback((key) => {
+  const removeParam = useCallback((key: string): void => {
     const newParams = { ...params };
     delete newParams[key];
     setParams(newParams);
@@ -124,7 +136,7 @@ export const useDashboardParams = () => {
   const getPeriod = () => getParam('period', 'monthly');
   const getCategory = () => getParam('category', 'all');
   const getPriority = () => getParam('priority', 'normal');
-  const isAlert = () => getParam('alert', 'false') === 'true';
+  const isAlert = () => getParam('alert', 'false') ==='true';
 
   // Dashboard-specific parameter setters
   const setView = (view) => updateParams({ view });
@@ -137,11 +149,11 @@ export const useDashboardParams = () => {
   const setAlert = (alert) => updateParams({ alert: alert.toString() });
 
   // Check for specific dashboard states
-  const isLowStockView = () => getFilter() === 'low-stock';
-  const isPendingOrdersView = () => getStatus() === 'pending';
-  const isCategoriesView = () => getView() === 'categories';
-  const isBrandsView = () => getView() === 'brands';
-  const isRevenueView = () => getView() === 'revenue';
+  const isLowStockView = () => getFilter() ==='low-stock';
+  const isPendingOrdersView = () => getStatus() ==='pending';
+  const isCategoriesView = () => getView() ==='categories';
+  const isBrandsView = () => getView() ==='brands';
+  const isRevenueView = () => getView() ==='revenue';
 
   return {
     // All base functionality

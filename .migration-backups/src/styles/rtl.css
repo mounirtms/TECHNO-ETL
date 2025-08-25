@@ -1,0 +1,375 @@
+/**
+ * RTL (Right-to-Left) Styles for TECHNO-ETL
+ * Optimized Arabic language layout support
+ * 
+ * @author Mounir Abderrahmani
+ * @email mounir.ab@techno-dz.com
+ */
+
+/* Root RTL Configuration */
+[dir="rtl"] {
+  --rtl-multiplier: -1;
+  --ltr-multiplier: 1;
+}
+
+[dir="ltr"] {
+  --rtl-multiplier: 1;
+  --ltr-multiplier: -1;
+}
+
+/* Basic RTL Layout */
+[dir="rtl"] body {
+  text-align: right;
+  direction: rtl;
+}
+
+[dir="rtl"] * {
+  direction: inherit;
+}
+
+/* MUI Components RTL Fixes */
+[dir="rtl"] .MuiDrawer-paperAnchorLeft {
+  right: 0;
+  left: auto;
+}
+
+[dir="rtl"] .MuiDrawer-paperAnchorRight {
+  left: 0;
+  right: auto;
+}
+
+/* Sidebar RTL */
+[dir="rtl"] .sidebar {
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+  border-right: none;
+}
+
+[dir="rtl"] .sidebar-collapsed {
+  transform: translateX(100%);
+}
+
+[dir="ltr"] .sidebar-collapsed {
+  transform: translateX(-100%);
+}
+
+/* Navigation RTL */
+[dir="rtl"] .nav-item {
+  padding-left: 0;
+  padding-right: 16px;
+}
+
+[dir="rtl"] .nav-item .nav-icon {
+  margin-left: 12px;
+  margin-right: 0;
+}
+
+[dir="rtl"] .nav-item .nav-text {
+  text-align: right;
+}
+
+/* Header RTL */
+[dir="rtl"] .header-content {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .header-menu-button {
+  margin-left: 8px;
+  margin-right: 0;
+}
+
+[dir="rtl"] .header-user-menu {
+  margin-right: 8px;
+  margin-left: 0;
+}
+
+/* Cards RTL */
+[dir="rtl"] .card-content {
+  text-align: right;
+}
+
+[dir="rtl"] .card-header {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .card-actions {
+  justify-content: flex-start;
+  padding-left: 16px;
+  padding-right: 0;
+}
+
+/* Form RTL */
+[dir="rtl"] .form-control {
+  text-align: right;
+}
+
+[dir="rtl"] .form-label {
+  transform-origin: top right;
+}
+
+[dir="rtl"] .form-input {
+  text-align: right;
+  padding-left: 0;
+  padding-right: 12px;
+}
+
+/* Buttons RTL */
+[dir="rtl"] .button-with-icon {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .button-with-icon .button-icon {
+  margin-left: 8px;
+  margin-right: 0;
+}
+
+/* Grid RTL */
+[dir="rtl"] .grid-container {
+  direction: rtl;
+}
+
+[dir="rtl"] .grid-header {
+  text-align: right;
+}
+
+[dir="rtl"] .grid-cell {
+  text-align: right;
+}
+
+[dir="rtl"] .grid-actions {
+  flex-direction: row-reverse;
+}
+
+/* Toast RTL */
+[dir="rtl"] .Toastify__toast-container {
+  right: auto;
+  left: 1rem;
+}
+
+[dir="rtl"] .Toastify__toast {
+  text-align: right;
+}
+
+/* Tabs RTL */
+[dir="rtl"] .MuiTabs-root {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiTab-root {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .MuiTab-iconWrapper {
+  margin-bottom: 0;
+  margin-left: 6px;
+  margin-right: 0;
+}
+
+/* Dialog RTL */
+[dir="rtl"] .MuiDialog-paper {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiDialogTitle-root {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiDialogContent-root {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiDialogActions-root {
+  flex-direction: row-reverse;
+  padding-left: 24px;
+  padding-right: 8px;
+}
+
+/* Menu RTL */
+[dir="rtl"] .MuiMenu-paper {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiMenuItem-root {
+  text-align: right;
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .MuiListItemIcon-root {
+  margin-left: 16px;
+  margin-right: 0;
+  min-width: 36px;
+}
+
+/* Select RTL */
+[dir="rtl"] .MuiSelect-select {
+  text-align: right;
+  padding-right: 32px;
+  padding-left: 14px;
+}
+
+[dir="rtl"] .MuiSelect-icon {
+  left: 7px;
+  right: auto;
+}
+
+/* Chip RTL */
+[dir="rtl"] .MuiChip-root {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiChip-icon {
+  margin-left: 5px;
+  margin-right: -6px;
+}
+
+[dir="rtl"] .MuiChip-deleteIcon {
+  margin-right: 5px;
+  margin-left: -6px;
+}
+
+/* Progress RTL */
+[dir="rtl"] .MuiLinearProgress-root {
+  transform: scaleX(-1);
+}
+
+/* Snackbar RTL */
+[dir="rtl"] .MuiSnackbar-anchorOriginTopRight {
+  left: 24px;
+  right: auto;
+}
+
+[dir="rtl"] .MuiSnackbar-anchorOriginBottomRight {
+  left: 24px;
+  right: auto;
+}
+
+/* Breadcrumbs RTL */
+[dir="rtl"] .MuiBreadcrumbs-root {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiBreadcrumbs-separator {
+  transform: scaleX(-1);
+}
+
+/* Stepper RTL */
+[dir="rtl"] .MuiStepper-root {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiStepConnector-root {
+  flex: 1 1 auto;
+}
+
+/* Autocomplete RTL */
+[dir="rtl"] .MuiAutocomplete-inputRoot {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .MuiAutocomplete-endAdornment {
+  left: 9px;
+  right: auto;
+}
+
+/* Data Grid RTL */
+[dir="rtl"] .MuiDataGrid-root {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiDataGrid-columnHeaders {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiDataGrid-row {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiDataGrid-cell {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiDataGrid-columnHeaderTitle {
+  text-align: right;
+}
+
+/* Custom RTL Utilities */
+.rtl-flip {
+  transform: scaleX(-1);
+}
+
+.rtl-text-right {
+  text-align: right !important;
+}
+
+.rtl-text-left {
+  text-align: left !important;
+}
+
+.rtl-margin-left {
+  margin-right: var(--spacing, 8px) !important;
+  margin-left: 0 !important;
+}
+
+.rtl-margin-right {
+  margin-left: var(--spacing, 8px) !important;
+  margin-right: 0 !important;
+}
+
+.rtl-padding-left {
+  padding-right: var(--spacing, 8px) !important;
+  padding-left: 0 !important;
+}
+
+.rtl-padding-right {
+  padding-left: var(--spacing, 8px) !important;
+  padding-right: 0 !important;
+}
+
+/* Responsive RTL */
+@media (max-width: 768px) {
+  [dir="rtl"] .mobile-nav {
+    right: auto;
+    left: 0;
+  }
+  
+  [dir="rtl"] .mobile-menu-button {
+    left: 16px;
+    right: auto;
+  }
+}
+
+/* Dark Mode RTL Adjustments */
+[dir="rtl"][data-theme="dark"] .sidebar {
+  border-left-color: rgba(255, 255, 255, 0.12);
+}
+
+[dir="rtl"][data-theme="dark"] .nav-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* High Contrast RTL */
+[dir="rtl"].high-contrast {
+  border-color: #000 !important;
+}
+
+[dir="rtl"].high-contrast .sidebar {
+  border-left-color: #000;
+}
+
+/* Animation RTL */
+[dir="rtl"] .slide-enter {
+  transform: translateX(100%);
+}
+
+[dir="rtl"] .slide-enter-active {
+  transform: translateX(0);
+  transition: transform 300ms ease-in-out;
+}
+
+[dir="rtl"] .slide-exit {
+  transform: translateX(0);
+}
+
+[dir="rtl"] .slide-exit-active {
+  transform: translateX(100%);
+  transition: transform 300ms ease-in-out;
+}

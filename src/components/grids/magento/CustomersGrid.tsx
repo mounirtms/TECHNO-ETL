@@ -56,9 +56,9 @@ const CustomersGrid = () => {
       
       // Calculate stats
       const totalCustomers = customers.length;
-      const activeCustomers = customers.filter(c => c.is_active === 1).length;
+      const activeCustomers = customers.filter((c: any: any) => c.is_active ===1).length;
       const inactiveCustomers = totalCustomers - activeCustomers;
-      const totalOrders = customers.reduce((sum, c) => sum + (c.orders_count || 0), 0);
+      const totalOrders = customers.reduce((sum: any: any, c: any: any) => sum + (c.orders_count || 0), 0);
       
       setStats({
         totalCustomers,
@@ -66,7 +66,7 @@ const CustomersGrid = () => {
         inactiveCustomers,
         totalOrders
       });
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error fetching customers:', error);
       toast.error('Failed to fetch customers');
       setData([]);
@@ -77,8 +77,8 @@ const CustomersGrid = () => {
 
   // ===== 3. EVENT HANDLERS =====
   const handleView = useCallback((records) => {
-    if (records.length === 1) {
-      const customer = data.find(c => c.id === records[0]);
+    if(records.length ===1) {
+      const customer = data.find(c => c?.id ===records[0]);
       setSelectedCustomer(customer);
       setViewDialogOpen(true);
     } else {
@@ -87,8 +87,8 @@ const CustomersGrid = () => {
   }, [data]);
 
   const handleEdit = useCallback((records) => {
-    if (records.length === 1) {
-      const customer = data.find(c => c.id === records[0]);
+    if(records.length ===1) {
+      const customer = data.find(c => c?.id ===records[0]);
       setSelectedCustomer(customer);
       setEditDialogOpen(true);
     } else {
@@ -97,18 +97,18 @@ const CustomersGrid = () => {
   }, [data]);
 
   const handleDelete = useCallback(async (records) => {
-    if (records.length === 0) {
+    if(records.length ===0) {
       toast.warning('Please select customers to delete');
       return;
     }
 
     try {
       for (const customerId of records) {
-        await magentoApi.deleteCustomer(customerId);
+        await magentoApi?.deleteCustomer(customerId);
       }
       toast.success(`Deleted ${records.length} customer(s) successfully`);
       fetchCustomers();
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error deleting customers:', error);
       toast.error('Failed to delete customers');
     }
@@ -116,10 +116,10 @@ const CustomersGrid = () => {
 
   const handleSync = useCallback(async () => {
     try {
-      await magentoApi.syncCustomers();
+      await magentoApi?.syncCustomers();
       toast.success('Customers synchronized successfully');
       fetchCustomers();
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error syncing customers:', error);
       toast.error('Failed to sync customers');
     }
@@ -220,7 +220,7 @@ const CustomersGrid = () => {
       enabled: true,
       label: 'Delete Customer',
       icon: 'delete',
-      onClick: (row) => handleDelete([row.id]),
+      onClick: (row) => handleDelete([row?.id]),
       color: 'error'
     }
   }), [handleDelete]);
@@ -269,7 +269,7 @@ const CustomersGrid = () => {
   return (
     <Box sx={{ height: '100%', width: '100%' }}>
       <UnifiedGrid
-        {...getStandardGridProps('magentoCustomers', {
+        { ...getStandardGridProps('magentoCustomers', {
           gridName: "CustomersGrid",
           columns,
           data,
@@ -301,7 +301,7 @@ const CustomersGrid = () => {
           onFilterChange: handleFilterChange,
 
           // Row configuration
-          getRowId: (row) => row.id,
+          getRowId: (row) => row?.id,
 
           // Error handling
           onError: (error) => toast.error(error.message)

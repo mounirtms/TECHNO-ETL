@@ -1,3 +1,4 @@
+import React from 'react';
 /**
  * Media Upload Service
  * Handles product image uploads and bulk media operations
@@ -8,6 +9,26 @@
 
 import magentoApi from './magentoApi';
 import { toast } from 'react-toastify';
+
+/**
+ * Default matching settings for bulk upload
+ */
+export const DEFAULT_MATCHING_SETTINGS = {
+  caseSensitive: false,
+  exactMatch: false,
+  ignoreExtensions: true,
+  ignoreSeparators: true,
+  allowPartialMatch: true,
+  matchThreshold: 0.8,
+  autoMatch: true,
+  skipUnmatched: false,
+  overwriteExisting: false,
+  validateSKU: true,
+  maxFileSize: 8 * 1024 * 1024, // 8MB
+  allowedTypes: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'],
+  compressionQuality: 0.8,
+  maxDimensions: { width: 1920, height: 1920 }
+};
 
 /**
  * Compress and resize image if needed
@@ -22,7 +43,7 @@ const compressImage = (file, maxWidth = 1920, maxHeight = 1920, quality = 0.8) =
       // Calculate new dimensions
       let { width, height } = img;
 
-      if (width > maxWidth || height > maxHeight) {
+      if(width > maxWidth || height > maxHeight) {
         const ratio = Math.min(maxWidth / width, maxHeight / height);
         width *= ratio;
         height *= ratio;
@@ -52,7 +73,7 @@ const fileToBase64 = (file) => {
     reader.readAsDataURL(file);
     reader.onload = () => {
       // Remove the data:image/jpeg;base64, prefix
-      const base64 = reader.result.split(',')[1];
+      const base64 = reader.result?.split(',')[1];
       resolve(base64);
     };
     reader.onerror = error => reject(error);
@@ -66,7 +87,7 @@ export const uploadProductImage = async (sku, imageFile, imageData = {}) => {
   try {
     // Compress image if it's too large (over 3MB)
     let processedFile = imageFile;
-    if (imageFile.size > 3 * 1024 * 1024) {
+    if(imageFile.size > 3 * 1024 * 1024) {
       console.log(`🗜️ Compressing large image: ${imageFile.name} (${(imageFile.size / 1024 / 1024).toFixed(2)}MB)`);
       processedFile = await compressImage(imageFile, 1920, 1920, 0.8);
       console.log(`✅ Compressed to: ${(processedFile.size / 1024 / 1024).toFixed(2)}MB`);
@@ -82,10 +103,10 @@ export const uploadProductImage = async (sku, imageFile, imageData = {}) => {
     // Prepare the entry object as expected by Magento API
     const entry = {
       media_type: 'image',
-      label: imageData.label || imageFile.name.replace(/\.[^/.]+$/, ""),
-      position: imageData.position || 0,
-      disabled: imageData.disabled || false,
-      types: imageData.types || ['image'],
+      label: imageData?.label || imageFile.name.replace(/\.[^/.]+$/, ""),
+      position: imageData?.position || 0,
+      disabled: imageData?.disabled || false,
+      types: imageData?.types || ['image'],
       content: {
         base64_encoded_data: base64Content,
         type: processedFile.type || imageFile.type,
@@ -102,7 +123,7 @@ export const uploadProductImage = async (sku, imageFile, imageData = {}) => {
       data: response,
       message: `Image uploaded successfully for ${sku}`
     };
-  } catch (error) {
+  } catch(error: any) {
     console.error('Error uploading image:', error);
     return {
       success: false,
@@ -118,10 +139,10 @@ export const uploadProductImage = async (sku, imageFile, imageData = {}) => {
 export const uploadProductImages = async (sku, imageFiles, progressCallback) => {
   const results = [];
   
-  for (let i = 0; i < imageFiles.length; i++) {
+  for(let i = 0; i < imageFiles.length; i++) {
     const file = imageFiles[i];
     
-    if (progressCallback) {
+    if(progressCallback) {
       progressCallback({
         current: i + 1,
         total: imageFiles.length,
@@ -133,7 +154,7 @@ export const uploadProductImages = async (sku, imageFiles, progressCallback) => 
     const result = await uploadProductImage(sku, file, {
       position: i,
       label: file.name.replace(/\.[^/.]+$/, ""), // Remove extension
-      types: i === 0 ? ['image', 'small_image', 'thumbnail'] : ['image']
+      types: i ===0 ? ['image', 'small_image', 'thumbnail'] : ['image']
     });
     
     results.push(result);
@@ -155,39 +176,39 @@ export const parseCSVFile = (file) => {
     reader.onload = (e) => {
       try {
         const csv = e.target.result;
-        const lines = csv.split('\n').filter(line => line.trim());
+        const lines = csv?.split('\n').filter((line: any: any) => line.trim());
         
-        if (lines.length < 2) {
+        if(lines.length < 2) {
           reject(new Error('CSV file must have at least a header and one data row'));
           return;
         }
         
-        const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+        const headers = lines[0]?.split(',').map((h: any: any) => h.trim().toLowerCase());
         const data = [];
         
         // Find required columns
         const skuIndex = headers.findIndex(h => h.includes('sku'));
         const imageIndex = headers.findIndex(h => h.includes('image') || h.includes('photo') || h.includes('picture'));
         
-        if (skuIndex === -1) {
+        if(skuIndex ===-1) {
           reject(new Error('CSV must contain a SKU column'));
           return;
         }
         
-        if (imageIndex === -1) {
+        if(imageIndex ===-1) {
           reject(new Error('CSV must contain an image filename column'));
           return;
         }
         
         // Parse data rows
-        for (let i = 1; i < lines.length; i++) {
-          const values = lines[i].split(',').map(v => v.trim());
+        for(let i = 1; i < lines.length; i++) {
+          const values = lines[i]?.split(',').map((v: any: any) => v.trim());
           
           if (values.length >= Math.max(skuIndex, imageIndex) + 1) {
             const sku = values[skuIndex];
             const imageName = values[imageIndex];
             
-            if (sku && imageName) {
+            if(sku && imageName) {
               data.push({
                 sku: sku,
                 imageName: imageName,
@@ -203,7 +224,7 @@ export const parseCSVFile = (file) => {
           skuColumn: headers[skuIndex],
           imageColumn: headers[imageIndex]
         });
-      } catch (error) {
+      } catch(error: any) {
         reject(new Error(`Error parsing CSV: ${error.message}`));
       }
     };
@@ -224,7 +245,7 @@ export const matchImagesWithCSV = (csvData, imageFiles) => {
   };
   
   const imageFileMap = new Map();
-  imageFiles.forEach(file => {
+  imageFiles.forEach((file) => {
     // Create variations of the filename for matching
     const baseName = file.name.toLowerCase();
     const nameWithoutExt = baseName.replace(/\.[^/.]+$/, "");
@@ -238,7 +259,7 @@ export const matchImagesWithCSV = (csvData, imageFiles) => {
   });
   
   // Match CSV rows with images
-  csvData.data.forEach(row => {
+  csvData.data.forEach((row) => {
     const imageName = row.imageName.toLowerCase();
     const imageNameWithoutExt = imageName.replace(/\.[^/.]+$/, "");
     const normalizedImageName = imageNameWithoutExt.replace(/[-_\s]/g, '');
@@ -247,7 +268,7 @@ export const matchImagesWithCSV = (csvData, imageFiles) => {
                      imageFileMap.get(imageNameWithoutExt) ||
                      imageFileMap.get(normalizedImageName);
     
-    if (matchedFile) {
+    if(matchedFile) {
       matches.push({
         sku: row.sku,
         imageName: row.imageName,
@@ -265,7 +286,7 @@ export const matchImagesWithCSV = (csvData, imageFiles) => {
   });
   
   // Remaining files are unmatched
-  imageFileMap.forEach(file => {
+  imageFileMap.forEach((file) => {
     unmatched.imageFiles.push(file);
   });
   
@@ -291,7 +312,7 @@ export const bulkUploadImages = async (matches, progressCallback) => {
   
   for (const match of matches) {
     try {
-      if (progressCallback) {
+      if(progressCallback) {
         progressCallback({
           current: completed + 1,
           total: matches.length,
@@ -306,15 +327,14 @@ export const bulkUploadImages = async (matches, progressCallback) => {
         types: ['image', 'small_image', 'thumbnail']
       });
       
-      results.push({
-        ...match,
+      results.push({ ...match,
         result,
         status: result.success ? 'success' : 'error'
       });
       
       completed++;
       
-      if (progressCallback) {
+      if(progressCallback) {
         progressCallback({
           current: completed,
           total: matches.length,
@@ -328,9 +348,8 @@ export const bulkUploadImages = async (matches, progressCallback) => {
       // Delay between uploads to prevent server overload
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-    } catch (error) {
-      results.push({
-        ...match,
+    } catch(error: any) {
+      results.push({ ...match,
         result: {
           success: false,
           error: error.message
@@ -361,7 +380,7 @@ export const validateImageFile = (file) => {
     };
   }
 
-  if (file.size > maxSize) {
+  if(file.size > maxSize) {
     return {
       valid: false,
       error: `File size too large. Maximum size: ${maxSize / 1024 / 1024}MB (large images will be compressed automatically)`

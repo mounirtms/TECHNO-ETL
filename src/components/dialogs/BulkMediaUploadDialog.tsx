@@ -1,4 +1,49 @@
 import React, { useState, useCallback } from 'react';
+
+// Type definitions
+interface CSVData {
+  headers: string[];
+  data: any[][];
+}
+
+interface FileWithPreview extends File {
+  preview?: string;
+}
+
+interface UploadProgress {
+  current: number;
+  total: number;
+  sku?: string;
+  fileName?: string;
+  status?: string;
+  stage?: string;
+}
+
+interface UploadStats {
+  successful: number;
+  failed: number;
+  skipped: number;
+  total: number;
+}
+
+interface MatchResult {
+  sku: string;
+  fileName: string;
+  status: string;
+  stage: string;
+}
+
+interface ProcessingState {
+  name: string;
+  data: any[][];
+  skuColumn: number;
+  imageColumn: number;
+  refColumn?: number;
+  size: number;
+  stats: UploadStats;
+  matches: MatchResult[];
+  current: UploadProgress;
+}
 import {
   Dialog,
   DialogTitle,
@@ -63,35 +108,35 @@ import {
 } from '@mui/icons-material';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'react-toastify';
-import mediaUploadService, { DEFAULT_MATCHING_SETTINGS } from '../../services/mediaUploadServiceOptimized';
+import mediaUploadService, { DEFAULT_MATCHING_SETTINGS } from '../../services/mediaUploadService';
 
 /**
  * OPTIMIZED Bulk Media Upload Dialog
  * Enhanced with advanced matching, configurable settings, and professional features
  * Automatically detects and handles both Basic and Professional modes
  */
-const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
+const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => {
   const [activeStep, setActiveStep] = useState(0);
-  const [mode, setMode] = useState('basic'); // Auto-detected based on CSV
-  const [csvFile, setCsvFile] = useState(null);
-  const [csvData, setCsvData] = useState(null);
-  const [imageFiles, setImageFiles] = useState([]);
-  const [matchingResults, setMatchingResults] = useState(null);
-  const [uploadProgress, setUploadProgress] = useState(null);
-  const [uploadResults, setUploadResults] = useState(null);
+  const [mode, setMode] = useState<string>('basic'); // Auto-detected based on CSV
+  const [csvFile, setCsvFile] = useState<File | null>(null);
+  const [csvData, setCsvData] = useState<CSVData | null>(null);
+  const [imageFiles, setImageFiles] = useState<FileWithPreview[]>([]);
+  const [matchingResults, setMatchingResults] = useState<MatchResult[] | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
+  const [uploadResults, setUploadResults] = useState<any[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [settings, setSettings] = useState(DEFAULT_MATCHING_SETTINGS);
   const [showSettings, setShowSettings] = useState(false);
 
   const steps = [
     'Upload CSV File',
-    'Upload Images', 
+    'Upload Images',
     'Review Matches',
     'Upload Process'
   ];
 
   // Auto-detect mode based on CSV columns
-  const detectMode = (csvData) => {
+  const detectMode = (csvData: CSVData) => {
     if (csvData.headers && csvData.headers.includes('ref')) {
       return 'professional';
     }
@@ -99,36 +144,34 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
   };
 
   // CSV Upload with auto-mode detection
-  const onCSVDrop = useCallback(async (acceptedFiles) => {
+  const onCSVDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (!file) return;
 
     setLoading(true);
     try {
       console.log('🧪 OPTIMIZED: Parsing CSV with auto-detection...');
-      
+
       // Try professional mode first
       let data;
       let detectedMode = 'basic';
-      
+
       try {
         data = await mediaUploadService.parseCSVFile(file, 'professional');
-        detectedMode = 'professional';
-        console.log('✅ Professional mode detected (REF column found)');
-      } catch (error) {
+        detectedMode: any,
+      } catch (error: any) {
         console.log('⚠️ Professional mode failed, trying basic mode...');
         data = await mediaUploadService.parseCSVFile(file, 'basic');
-        detectedMode = 'basic';
-        console.log('✅ Basic mode detected');
+        detectedMode: any,
       }
-      
+
       setMode(detectedMode);
       setCsvFile(file);
       setCsvData(data);
-      
+
       toast.success(`CSV parsed successfully: ${data.data.length} products found (${detectedMode} mode auto-detected)`);
       setActiveStep(1);
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ OPTIMIZED: CSV parsing failed:', error);
       toast.error(`CSV parsing failed: ${error.message}`);
     } finally {
@@ -137,7 +180,7 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
   }, []);
 
   // Image Upload
-  const onImageDrop = useCallback(async (acceptedFiles) => {
+  const onImageDrop = useCallback(async (acceptedFiles: File[]) => {
     const validFiles = [];
     const errors = [];
 
@@ -155,7 +198,7 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
     }
 
     setImageFiles(prev => [...prev, ...validFiles]);
-    
+
     if (validFiles.length > 0) {
       toast.success(`${validFiles.length} images added (supports multiple per SKU)`);
     }
@@ -174,18 +217,18 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
       const results = mediaUploadService.matchImagesWithCSV(csvData, imageFiles, settings);
       setMatchingResults(results);
       setActiveStep(2);
-      
-      const strategyInfo = Object.entries(results.stats.matchStrategies)
-        .filter(([_, count]) => count > 0)
-        .map(([strategy, count]) => `${strategy}: ${count}`)
+
+      const strategyInfo = Object.entries(results?.stats?.matchStrategies || {})
+        .filter(([_, count]: any: any) => count > 0)
+        .map(([strategy: any: any, count]: any: any) => `${strategy}: ${count}`)
         .join(', ');
-      
-      toast.success(`Advanced matching complete: ${results.stats.matched} matches found for ${results.stats.uniqueProducts} products`);
-      
+
+      toast.success(`Advanced matching complete: ${results?.stats?.matched || 0} matches found for ${results?.stats?.uniqueProducts || 0} products`);
+
       if (strategyInfo) {
         toast.info(`Strategies used: ${strategyInfo}`);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ OPTIMIZED: Matching failed:', error);
       toast.error(`Matching failed: ${error.message}`);
     } finally {
@@ -195,18 +238,17 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
 
   // Start upload process
   const handleStartUpload = async () => {
-    if (!matchingResults || matchingResults.matches.length === 0) {
+    if (!matchingResults || (matchingResults) || matchingResults.matches.length === 0) {
       toast.error('No matches to upload');
       return;
     }
 
     setActiveStep(3);
-    setUploadProgress({ current: 0, total: matchingResults.matches.length });
+    setUploadProgress({ current: 0, total: matchingResults?.matches.length });
 
     try {
       console.log('🚀 OPTIMIZED: Starting advanced bulk upload...');
-      const results = await mediaUploadService.bulkUploadImages(
-        matchingResults.matches,
+      const results = await mediaUploadService.bulkUploadImages(matchingResults?.matches,
         (progress) => {
           setUploadProgress(progress);
         },
@@ -214,16 +256,16 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
       );
 
       setUploadResults(results);
-      
-      const successful = results.filter(r => r.status === 'success').length;
-      const failed = results.filter(r => r.status === 'error').length;
-      
+
+      const successful = results.filter((r: any: any) => r.status === 'success').length;
+      const failed = results.filter((r: any: any) => r.status === 'error').length;
+
       toast.success(`Upload complete: ${successful} successful, ${failed} failed`);
-      
+
       if (onComplete) {
         onComplete(results);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ OPTIMIZED: Upload failed:', error);
       toast.error(`Upload failed: ${error.message}`);
     }
@@ -248,11 +290,11 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
       const newSettings = { ...prev };
       const keys = path.split('.');
       let current = newSettings;
-      
+
       for (let i = 0; i < keys.length - 1; i++) {
-        current = current[keys[i]];
+        current: any,
       }
-      
+
       current[keys[keys.length - 1]] = value;
       return newSettings;
     });
@@ -278,16 +320,14 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
   });
 
   const removeImage = (index) => {
-    setImageFiles(prev => prev.filter((_, i) => i !== index));
+    setImageFiles(prev => prev.filter((_, i: any: any) => i !== index));
   };
 
-  return (
+  return Boolean(Boolean((
     <Dialog 
       open={open} 
       onClose={onClose} 
-      maxWidth="xl" 
-      fullWidth
-      PaperProps={{
+      maxWidth: any,
         sx: { minHeight: '85vh', maxHeight: '95vh' }
       }}
     >
@@ -298,25 +338,22 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
         bgcolor: 'primary.main',
         color: 'primary.contrastText',
         pr: 1
-      }}>
+      } as any}>
         <UploadIcon />
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ flexGrow: 1 } as any}>
           <Typography variant="h6" component="span">
             Optimized Bulk Media Upload
           </Typography>
-          <Box sx={{ display: 'flex', gap: 1, mt: 0.5 }}>
+          <Box sx={{ display: 'flex', gap: 1, mt: 0.5 } as any}>
             <Chip 
               label={`${mode.charAt(0).toUpperCase() + mode.slice(1)} Mode`}
-              size="small" 
-              sx={{ 
-                bgcolor: mode === 'professional' ? 'secondary.main' : 'info.main',
+              size: any,
                 color: 'white'
-              }} 
+              } as any} 
             />
             <Chip 
-              label="Advanced Matching" 
-              size="small" 
-              sx={{ bgcolor: 'success.main', color: 'white' }} 
+              label: any,
+              sx={{ bgcolor: 'success.main', color: 'white' } as any} 
             />
           </Box>
         </Box>
@@ -324,7 +361,7 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
         <Tooltip title="Configure matching settings">
           <IconButton 
             onClick={() => setShowSettings(!showSettings)}
-            sx={{ color: 'inherit' }}
+            sx={{ color: 'inherit' } as any}
           >
             <Badge color="secondary" variant="dot" invisible={!showSettings}>
               <SettingsIcon />
@@ -334,22 +371,22 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
         
         <IconButton 
           onClick={onClose} 
-          sx={{ color: 'inherit' }}
+          sx={{ color: 'inherit' } as any}
         >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
 
-      <DialogContent dividers sx={{ p: 0, display: 'flex', height: '70vh' }}>
+      <DialogContent dividers sx={{ p: 0, display: 'flex', height: '70vh' } as any}>
         {/* Settings Panel */}
         {showSettings && (
-          <Paper sx={{ width: 320, p: 2, borderRight: 1, borderColor: 'divider', overflow: 'auto' }}>
-            <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Paper sx={{ width: 320, p: 2, borderRight: 1, borderColor: 'divider', overflow: 'auto' } as any}>
+            <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
               <TuneIcon color="primary" />
               Advanced Settings
             </Typography>
             
-            <Alert severity="info" sx={{ mb: 2, fontSize: '0.75rem' }}>
+            <Alert severity="info" sx={{ mb: 2, fontSize: '0.75rem' } as any}>
               Mode auto-detected: <strong>{mode}</strong>
               {mode === 'professional' && ' (REF column found)'}
             </Alert>
@@ -359,18 +396,15 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle2">Matching Strategies</Typography>
               </AccordionSummary>
-              <AccordionDetails sx={{ pt: 0 }}>
+              <AccordionDetails sx={{ pt: 0 } as any}>
                 <FormControlLabel
-                  control={
-                    <Switch
+                  control: any,
                       checked={settings.strategies.exact}
                       onChange={(e) => updateSettings('strategies.exact', e.target.checked)}
-                      size="small"
-                    />
+                      size: any,
                   }
-                  label={
-                    <Tooltip title="Exact filename matching - highest accuracy">
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  label: any,
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 } as any}>
                         <SearchIcon fontSize="small" />
                         <Typography variant="body2">Exact Match</Typography>
                       </Box>
@@ -379,16 +413,13 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                 />
                 
                 <FormControlLabel
-                  control={
-                    <Switch
+                  control: any,
                       checked={settings.strategies.fuzzy}
                       onChange={(e) => updateSettings('strategies.fuzzy', e.target.checked)}
-                      size="small"
-                    />
+                      size: any,
                   }
-                  label={
-                    <Tooltip title="AI-powered similarity matching for variations">
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                  label: any,
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 } as any}>
                         <AIIcon fontSize="small" />
                         <Typography variant="body2">Fuzzy Match</Typography>
                       </Box>
@@ -396,18 +427,14 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                   }
                 />
                 
-                {mode === 'professional' && (
-                  <FormControlLabel
-                    control={
-                      <Switch
+                {mode === 'professional' && (<FormControlLabel
+                    control: any,
                         checked={settings.strategies.ref}
                         onChange={(e) => updateSettings('strategies.ref', e.target.checked)}
-                        size="small"
-                      />
+                        size: any,
                     }
-                    label={
-                      <Tooltip title="Match using REF column (Professional mode)">
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    label: any,
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 } as any}>
                           <CompareIcon fontSize="small" />
                           <Typography variant="body2">REF Column</Typography>
                         </Box>
@@ -423,8 +450,8 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle2">Thresholds</Typography>
               </AccordionSummary>
-              <AccordionDetails sx={{ pt: 0 }}>
-                <Box sx={{ mb: 2 }}>
+              <AccordionDetails sx={{ pt: 0 } as any}>
+                <Box sx={{ mb: 2 } as any}>
                   <Typography variant="body2" gutterBottom>
                     Fuzzy Similarity: {settings.thresholds.fuzzyThreshold}
                   </Typography>
@@ -434,32 +461,25 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                     min={0.5}
                     max={1.0}
                     step={0.05}
-                    marks={[
+                    marks: any,
                       { value: 0.5, label: 'Loose' },
                       { value: 0.7, label: 'Balanced' },
                       { value: 0.9, label: 'Strict' }
                     ]}
-                    size="small"
-                  />
-                </Box>
-              </AccordionDetails>
-            </Accordion>
-
+                    size: any,
             {/* File Handling */}
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle2">File Options</Typography>
               </AccordionSummary>
-              <AccordionDetails sx={{ pt: 0 }}>
+              <AccordionDetails sx={{ pt: 0 } as any}>
                 <FormControlLabel
-                  control={
-                    <Switch
+                  control: any,
                       checked={settings.fileHandling.multipleImages}
                       onChange={(e) => updateSettings('fileHandling.multipleImages', e.target.checked)}
-                      size="small"
-                    />
+                      size: any,
                   }
-                  label={
+                  label: any,
                     <Tooltip title="Support _1, _2, _3 numbering for multiple images per SKU">
                       <Typography variant="body2">Multiple Images</Typography>
                     </Tooltip>
@@ -467,17 +487,12 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                 />
                 
                 <FormControlLabel
-                  control={
-                    <Switch
+                  control: any,
                       checked={settings.upload.processImages}
                       onChange={(e) => updateSettings('upload.processImages', e.target.checked)}
-                      size="small"
-                    />
+                      size: any,
                   }
-                  label={
-                    <Tooltip title="Resize and optimize images before upload">
-                      <Typography variant="body2">Process Images</Typography>
-                    </Tooltip>
+                  label: any,
                   }
                 />
               </AccordionDetails>
@@ -486,7 +501,7 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
         )}
 
         {/* Main Content */}
-        <Box sx={{ flexGrow: 1, p: 3, overflow: 'auto' }}>
+        <Box sx={{ flexGrow: 1, p: 3, overflow: 'auto' } as any}>
           <Stepper activeStep={activeStep} orientation="vertical">
             {/* Step 1: CSV Upload */}
             <Step>
@@ -494,7 +509,7 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                 <Typography variant="h6">Upload CSV File</Typography>
               </StepLabel>
               <StepContent>
-                <Alert severity="info" sx={{ mb: 2 }}>
+                <Alert severity="info" sx={{ mb: 2 } as any}>
                   <Typography variant="body2">
                     <strong>Auto-Detection:</strong> Upload your CSV and the system will automatically detect 
                     whether to use Basic mode (SKU + Image Name) or Professional mode (REF column matching).
@@ -502,19 +517,18 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                 </Alert>
                 
                 <Paper
-                  {...csvDropzone.getRootProps()}
-                  sx={{
-                    p: 4,
+                  { ...csvDropzone.getRootProps()}
+                  sx: any,
                     border: '2px dashed',
                     borderColor: csvDropzone.isDragActive ? 'primary.main' : 'grey.300',
                     bgcolor: csvDropzone.isDragActive ? 'primary.light' : 'background.default',
                     cursor: 'pointer',
                     textAlign: 'center',
                     transition: 'all 0.2s ease'
-                  }}
+                  } as any}
                 >
-                  <input {...csvDropzone.getInputProps()} />
-                  <CSVIcon sx={{ fontSize: 64, color: 'primary.main', mb: 2 }} />
+                  <input { ...csvDropzone.getInputProps()} />
+                  <CSVIcon sx={{ fontSize: 64, color: 'primary.main', mb: 2 } as any} />
                   <Typography variant="h6" gutterBottom>
                     {csvDropzone.isDragActive
                       ? 'Drop CSV file here...'
@@ -527,7 +541,7 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                 </Paper>
 
                 {csvFile && csvData && (
-                  <Alert severity="success" sx={{ mt: 2 }}>
+                  <Alert severity="success" sx={{ mt: 2 } as any}>
                     <Typography variant="body2">
                       <strong>{csvFile.name}</strong> - {csvData.data.length} products loaded
                     </Typography>
@@ -548,19 +562,18 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
               </StepLabel>
               <StepContent>
                 <Paper
-                  {...imageDropzone.getRootProps()}
-                  sx={{
-                    p: 4,
+                  { ...imageDropzone.getRootProps()}
+                  sx: any,
                     border: '2px dashed',
                     borderColor: imageDropzone.isDragActive ? 'success.main' : 'grey.300',
                     bgcolor: imageDropzone.isDragActive ? 'success.light' : 'background.default',
                     cursor: 'pointer',
                     textAlign: 'center',
                     transition: 'all 0.2s ease'
-                  }}
+                  } as any}
                 >
-                  <input {...imageDropzone.getInputProps()} />
-                  <MultiImageIcon sx={{ fontSize: 64, color: 'success.main', mb: 2 }} />
+                  <input { ...imageDropzone.getInputProps()} />
+                  <MultiImageIcon sx={{ fontSize: 64, color: 'success.main', mb: 2 } as any} />
                   <Typography variant="h6" gutterBottom>
                     {imageDropzone.isDragActive
                       ? 'Drop images here...'
@@ -573,46 +586,41 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                 </Paper>
 
                 {imageFiles.length > 0 && (
-                  <Box sx={{ mt: 3 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                  <Box sx={{ mt: 3 } as any}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 } as any}>
                       <Typography variant="subtitle1">
                         Selected Images ({imageFiles.length})
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Total Size: {(imageFiles.reduce((sum, f) => sum + f.size, 0) / 1024 / 1024).toFixed(2)}MB
+                        Total Size: {(imageFiles.reduce((sum: any: any, f: any: any) => sum + f.size, 0) / 1024 / 1024).toFixed(2)}MB
                       </Typography>
                     </Box>
                     
-                    <Box sx={{ maxHeight: 200, overflow: 'auto', border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 1 }}>
-                      <Grid container spacing={1}>
-                        {imageFiles.map((file, index) => (
+                    <Box sx={{ maxHeight: 200, overflow: 'auto', border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 1 } as any}>
+                      <Grid { ...{container: true}} spacing={1}>
+                        {imageFiles.map((file: any: any, index: any: any) => (
                           <Grid item key={index}>
                             <Chip
                               label={file.name}
                               onDelete={() => removeImage(index)}
-                              size="small"
-                              color="primary"
-                              variant="outlined"
-                            />
-                          </Grid>
+                              size: any,
                         ))}
                       </Grid>
                     </Box>
                     
-                    <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+                    <Box sx={{ mt: 2, display: 'flex', gap: 2 } as any}>
                       <Button
-                        variant="contained"
+                        variant: any,
                         onClick={handleMatching}
-                        disabled={!csvData || imageFiles.length === 0 || loading}
+                        disabled={!csvData || imageFiles.length ===0 || loading}
                         startIcon={loading ? <SuccessIcon className="spin" /> : <SearchIcon />}
-                        color="success"
-                      >
+                        color: any,
                         {loading ? 'Processing...' : 'Start Advanced Matching'}
                       </Button>
                       <Button
-                        variant="outlined"
+                        variant: any,
                         onClick={() => setImageFiles([])}
-                        disabled={imageFiles.length === 0}
+                        disabled={imageFiles.length ===0}
                       >
                         Clear All Images
                       </Button>
@@ -631,46 +639,46 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                 {matchingResults && (
                   <Box>
                     {/* Enhanced Statistics Cards */}
-                    <Grid container spacing={2} sx={{ mb: 3 }}>
+                    <Grid { ...{container: true}} spacing={2} sx={{ mb: 3 } as any}>
                       <Grid item xs={6} sm={3}>
-                        <Card sx={{ textAlign: 'center', bgcolor: 'success.light' }}>
-                          <CardContent sx={{ py: 2 }}>
-                            <SuccessIcon sx={{ fontSize: 32, color: 'success.main' }} />
-                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                              {matchingResults.stats.matched}
+                        <Card sx={{ textAlign: 'center', bgcolor: 'success.light' } as any}>
+                          <CardContent sx={{ py: 2 } as any}>
+                            <SuccessIcon sx={{ fontSize: 32, color: 'success.main' } as any} />
+                            <Typography variant="h5" sx={{ fontWeight: 'bold' } as any}>
+                              {matchingResults?.stats.matched}
                             </Typography>
                             <Typography variant="caption">Total Matches</Typography>
                           </CardContent>
                         </Card>
                       </Grid>
                       <Grid item xs={6} sm={3}>
-                        <Card sx={{ textAlign: 'center', bgcolor: 'info.light' }}>
-                          <CardContent sx={{ py: 2 }}>
-                            <MultiImageIcon sx={{ fontSize: 32, color: 'info.main' }} />
-                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                              {matchingResults.stats.uniqueProducts}
+                        <Card sx={{ textAlign: 'center', bgcolor: 'info.light' } as any}>
+                          <CardContent sx={{ py: 2 } as any}>
+                            <MultiImageIcon sx={{ fontSize: 32, color: 'info.main' } as any} />
+                            <Typography variant="h5" sx={{ fontWeight: 'bold' } as any}>
+                              {matchingResults?.stats.uniqueProducts}
                             </Typography>
                             <Typography variant="caption">Products</Typography>
                           </CardContent>
                         </Card>
                       </Grid>
                       <Grid item xs={6} sm={3}>
-                        <Card sx={{ textAlign: 'center', bgcolor: 'warning.light' }}>
-                          <CardContent sx={{ py: 2 }}>
-                            <WarningIcon sx={{ fontSize: 32, color: 'warning.main' }} />
-                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                              {matchingResults.stats.multipleImagesProducts}
+                        <Card sx={{ textAlign: 'center', bgcolor: 'warning.light' } as any}>
+                          <CardContent sx={{ py: 2 } as any}>
+                            <WarningIcon sx={{ fontSize: 32, color: 'warning.main' } as any} />
+                            <Typography variant="h5" sx={{ fontWeight: 'bold' } as any}>
+                              {matchingResults?.stats?.multipleImagesProducts || 0}
                             </Typography>
                             <Typography variant="caption">Multi-Image</Typography>
                           </CardContent>
                         </Card>
                       </Grid>
                       <Grid item xs={6} sm={3}>
-                        <Card sx={{ textAlign: 'center', bgcolor: 'secondary.light' }}>
-                          <CardContent sx={{ py: 2 }}>
-                            <AIIcon sx={{ fontSize: 32, color: 'secondary.main' }} />
-                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-                              {matchingResults.stats.averageSimilarity}
+                        <Card sx={{ textAlign: 'center', bgcolor: 'secondary.light' } as any}>
+                          <CardContent sx={{ py: 2 } as any}>
+                            <AIIcon sx={{ fontSize: 32, color: 'secondary.main' } as any} />
+                            <Typography variant="h5" sx={{ fontWeight: 'bold' } as any}>
+                              {matchingResults?.stats?.averageSimilarity || 0}
                             </Typography>
                             <Typography variant="caption">Avg Similarity</Typography>
                           </CardContent>
@@ -679,34 +687,34 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                     </Grid>
 
                     {/* Strategy Breakdown */}
-                    <Alert severity="success" sx={{ mb: 3 }}>
+                    <Alert severity="success" sx={{ mb: 3 } as any}>
                       <Typography variant="body2">
-                        <strong>Advanced Matching Complete:</strong> Found {matchingResults.stats.matched} matches 
-                        using {Object.values(matchingResults.stats.matchStrategies).filter(v => v > 0).length} strategies.
+                        <strong>Advanced Matching Complete:</strong> Found {matchingResults?.stats.matched} matches 
+                        using {Object.values(matchingResults?.stats.matchStrategies || {}).filter((v: any: any) => v > 0).length} strategies.
                       </Typography>
-                      <Box sx={{ mt: 1, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                        {matchingResults.stats.matchStrategies.ref > 0 && (
-                          <Chip label={`REF: ${matchingResults.stats.matchStrategies.ref}`} color="warning" size="small" />
+                      <Box sx={{ mt: 1, display: 'flex', gap: 1, flexWrap: 'wrap' } as any}>
+                        {(matchingResults?.stats.matchStrategies.ref || 0) > 0 && (
+                          <Chip label={`REF: ${matchingResults?.stats.matchStrategies.ref}`} color="warning" size="small" />
                         )}
-                        {matchingResults.stats.matchStrategies.exact > 0 && (
-                          <Chip label={`Exact: ${matchingResults.stats.matchStrategies.exact}`} color="primary" size="small" />
+                        {(matchingResults?.stats.matchStrategies.exact || 0) > 0 && (
+                          <Chip label={`Exact: ${matchingResults?.stats.matchStrategies.exact}`} color="primary" size="small" />
                         )}
-                        {matchingResults.stats.matchStrategies.fuzzy > 0 && (
-                          <Chip label={`Fuzzy: ${matchingResults.stats.matchStrategies.fuzzy}`} color="success" size="small" />
+                        {matchingResults?.stats.matchStrategies.fuzzy > 0 && (
+                          <Chip label={`Fuzzy: ${matchingResults?.stats.matchStrategies.fuzzy}`} color="success" size="small" />
                         )}
-                        {matchingResults.stats.matchStrategies.product > 0 && (
-                          <Chip label={`Product: ${matchingResults.stats.matchStrategies.product}`} color="info" size="small" />
+                        {matchingResults?.stats.matchStrategies.product > 0 && (
+                          <Chip label={`Product: ${matchingResults?.stats.matchStrategies.product}`} color="info" size="small" />
                         )}
                       </Box>
                     </Alert>
 
                     {/* Matches Table */}
-                    {matchingResults.matches.length > 0 && (
-                      <Box sx={{ mb: 3 }}>
+                    {matchingResults?.matches.length > 0 && (
+                      <Box sx={{ mb: 3 } as any}>
                         <Typography variant="subtitle1" gutterBottom>
-                          Matches to Upload ({matchingResults.matches.length})
+                          Matches to Upload ({matchingResults?.matches.length})
                         </Typography>
-                        <TableContainer component={Paper} sx={{ maxHeight: 300 }}>
+                        <TableContainer component={Paper} sx={{ maxHeight: 300 } as any}>
                           <Table size="small" stickyHeader>
                             <TableHead>
                               <TableRow>
@@ -718,25 +726,21 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                               </TableRow>
                             </TableHead>
                             <TableBody>
-                              {matchingResults.matches.slice(0, 15).map((match, index) => (
+                              {matchingResults?.matches.slice(0, 15).map((match: any: any, index: any: any) => (
                                 <TableRow key={index}>
                                   <TableCell>{match.sku}</TableCell>
                                   <TableCell>{match.file.name}</TableCell>
                                   <TableCell>
                                     <Chip 
                                       label={match.matchStrategy} 
-                                      size="small" 
-                                      color={
-                                        match.matchStrategy === 'ref' ? 'warning' :
-                                        match.matchStrategy === 'exact' ? 'primary' :
-                                        match.matchStrategy === 'fuzzy' ? 'success' : 'info'
+                                      size: any,
                                       }
                                     />
                                   </TableCell>
                                   <TableCell>
                                     {match.imageIndex + 1}/{match.totalImagesForSku}
                                     {match.isMainImage && (
-                                      <Chip label="Main" size="small" color="primary" sx={{ ml: 1 }} />
+                                      <Chip label="Main" size="small" color="primary" sx={{ ml: 1 } as any} />
                                     )}
                                   </TableCell>
                                   <TableCell>{(match.similarity * 100).toFixed(0)}%</TableCell>
@@ -745,23 +749,21 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                             </TableBody>
                           </Table>
                         </TableContainer>
-                        {matchingResults.matches.length > 15 && (
-                          <Typography variant="caption" sx={{ p: 2, display: 'block', textAlign: 'center' }}>
-                            ... and {matchingResults.matches.length - 15} more matches
+                        {matchingResults?.matches.length > 15 && (
+                          <Typography variant="caption" sx={{ p: 2, display: 'block', textAlign: 'center' } as any}>
+                            ... and {matchingResults?.matches.length - 15} more matches
                           </Typography>
                         )}
                       </Box>
                     )}
 
                     <Button
-                      variant="contained"
-                      size="large"
+                      variant: any,
                       onClick={handleStartUpload}
-                      disabled={matchingResults.matches.length === 0}
+                      disabled={matchingResults ? matchingResults.matches.length === 0 : true}
                       startIcon={<UploadIcon />}
-                      color="primary"
-                    >
-                      Start Optimized Upload ({matchingResults.matches.length} images)
+                      color: any,
+                      Start Optimized Upload ({matchingResults?.matches.length} images)
                     </Button>
                   </Box>
                 )}
@@ -775,8 +777,8 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
               </StepLabel>
               <StepContent>
                 {uploadProgress && (
-                  <Box sx={{ mb: 3 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Box sx={{ mb: 3 } as any}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 } as any}>
                       <Typography variant="body2">
                         Progress: {uploadProgress.current} of {uploadProgress.total}
                       </Typography>
@@ -785,9 +787,9 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                       </Typography>
                     </Box>
                     <LinearProgress
-                      variant="determinate"
+                      variant: any,
                       value={(uploadProgress.current / uploadProgress.total) * 100}
-                      sx={{ mb: 2, height: 8, borderRadius: 4 }}
+                      sx={{ mb: 2, height: 8, borderRadius: 4 } as any}
                     />
                     {uploadProgress.sku && (
                       <Box>
@@ -804,16 +806,16 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
 
                 {uploadResults && (
                   <Box>
-                    <Alert severity="success" sx={{ mb: 3 }}>
+                    <Alert severity="success" sx={{ mb: 3 } as any}>
                       <Typography variant="body1" gutterBottom>
                         Optimized upload completed successfully!
                       </Typography>
                       <Typography variant="body2">
-                        {uploadResults.filter(r => r.status === 'success').length} successful, {uploadResults.filter(r => r.status === 'error').length} failed
+                        {uploadResults.filter((r: any: any) => r.status === 'success').length} successful, {uploadResults.filter((r: any: any) => r.status === 'error').length} failed
                       </Typography>
                     </Alert>
                     
-                    <Box sx={{ maxHeight: 400, overflow: 'auto' }}>
+                    <Box sx={{ maxHeight: 400, overflow: 'auto' } as any}>
                       <TableContainer component={Paper}>
                         <Table size="small">
                           <TableHead>
@@ -826,7 +828,7 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {uploadResults.map((result, index) => (
+                            {uploadResults.map((result: any: any, index: any: any) => (
                               <TableRow key={index}>
                                 <TableCell>
                                   {result.status === 'success' ? (
@@ -840,11 +842,7 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                                 <TableCell>
                                   <Chip 
                                     label={result.matchStrategy} 
-                                    size="small" 
-                                    color={
-                                      result.matchStrategy === 'ref' ? 'warning' :
-                                      result.matchStrategy === 'exact' ? 'primary' :
-                                      result.matchStrategy === 'fuzzy' ? 'success' : 'info'
+                                    size: any,
                                     }
                                   />
                                 </TableCell>
@@ -867,7 +865,7 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
         </Box>
       </DialogContent>
 
-      <DialogActions sx={{ p: 2, bgcolor: 'background.paper' }}>
+      <DialogActions sx={{ p: 2, bgcolor: 'background.paper' } as any}>
         <Button onClick={onClose} disabled={loading}>
           {uploadResults ? 'Close' : 'Cancel'}
         </Button>
@@ -878,7 +876,7 @@ const BulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
         )}
       </DialogActions>
     </Dialog>
-  );
+  )));
 };
 
 export default BulkMediaUploadDialog;

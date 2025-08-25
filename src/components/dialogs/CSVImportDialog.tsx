@@ -39,7 +39,7 @@ import {
 } from '../../utils/csvImportUtils';
 import ProductService from '../../services/ProductService';
 
-const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
+const CSVImportDialog: React.FC<any> = ({ open, onClose, onImportComplete }) => {
     const [activeStep, setActiveStep] = useState(0);
     const [csvFile, setCsvFile] = useState(null);
     const [csvData, setCsvData] = useState([]);
@@ -72,7 +72,7 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
                 setCsvData(products);
                 setActiveStep(1);
                 toast.success(`Loaded ${products.length} products from CSV`);
-            } catch (error) {
+            } catch(error: any) {
                 toast.error(`Error parsing CSV: ${error.message}`);
             }
         };
@@ -81,7 +81,7 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
     }, []);
 
     const handleValidation = useCallback(() => {
-        if (csvData.length === 0) return;
+        if (csvData.length ===0) return;
 
         try {
             // Auto-fix common issues if enabled
@@ -101,12 +101,12 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
 
             setActiveStep(2);
             
-            if (validation.isValid) {
+            if(validation.isValid) {
                 toast.success('CSV validation passed successfully');
             } else {
                 toast.warning(`Validation completed with ${validation.errors.length} errors`);
             }
-        } catch (error) {
+        } catch(error: any) {
             toast.error(`Validation error: ${error.message}`);
         }
     }, [csvData, autoFix]);
@@ -124,14 +124,13 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
                 total: { successful: 0, failed: 0, errors: [] }
             };
 
-            const totalProducts = separatedProducts.simpleProducts.length + 
+            const totalProducts = separatedProducts?.simpleProducts.length + 
                                 separatedProducts.configurableProducts.length;
             let processedCount = 0;
 
             // Import simple products first
-            if (separatedProducts.simpleProducts.length > 0) {
-                const simpleResults = await ProductService.processBulkProducts(
-                    separatedProducts.simpleProducts.map(p => ProductService.transformToMagentoFormat(p)),
+            if(separatedProducts?.simpleProducts.length > 0) {
+                const simpleResults = await ProductService.processBulkProducts(separatedProducts?.simpleProducts.map((p: any: any) => ProductService.transformToMagentoFormat(p)),
                     (progress) => {
                         setImportProgress({
                             current: processedCount + progress.current,
@@ -143,15 +142,15 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
                 );
                 
                 results.simple = simpleResults;
-                processedCount += separatedProducts.simpleProducts.length;
+                processedCount += separatedProducts?.simpleProducts.length;
             }
 
             // Import configurable products
-            if (separatedProducts.configurableProducts.length > 0) {
+            if(separatedProducts.configurableProducts.length > 0) {
                 for (const configurableProduct of separatedProducts.configurableProducts) {
                     try {
                         const result = await ProductService.processConfigurableProduct(configurableProduct);
-                        if (result.success) {
+                        if(result.success) {
                             results.configurable.successful++;
                         } else {
                             results.configurable.failed++;
@@ -160,7 +159,7 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
                                 error: result.error
                             });
                         }
-                    } catch (error) {
+                    } catch(error: any) {
                         results.configurable.failed++;
                         results.configurable.errors.push({
                             sku: configurableProduct.sku,
@@ -184,18 +183,18 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
 
             setImportResults(results);
             
-            if (results.total.successful > 0) {
+            if(results.total.successful > 0) {
                 toast.success(`Successfully imported ${results.total.successful} products`);
-                if (onImportComplete) {
+                if(onImportComplete) {
                     onImportComplete(results);
                 }
             }
             
-            if (results.total.failed > 0) {
+            if(results.total.failed > 0) {
                 toast.warning(`${results.total.failed} products failed to import`);
             }
 
-        } catch (error) {
+        } catch(error: any) {
             toast.error(`Import failed: ${error.message}`);
         } finally {
             setImporting(false);
@@ -203,7 +202,7 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
     }, [separatedProducts, validationResult, onImportComplete]);
 
     const handleClose = () => {
-        if (!importing) {
+        if(!importing) {
             // Reset state
             setActiveStep(0);
             setCsvFile(null);
@@ -218,24 +217,21 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
     };
 
     const renderStepContent = () => {
-        switch (activeStep) {
+        switch(activeStep) {
             case 0:
-                return (
-                    <Box sx={{ textAlign: 'center', py: 4 }}>
+                return(<Box sx={{ textAlign: 'center', py: 4 } as any}>
                         <input
-                            accept=".csv"
+                            accept: any,
                             style={{ display: 'none' }}
-                            id="csv-upload"
-                            type="file"
-                            onChange={handleFileUpload}
+                            id: any,
+                            onChange={(e) => handleFileUpload}
                         />
                         <label htmlFor="csv-upload">
                             <Button
-                                variant="contained"
-                                component="span"
+                                variant: any,
                                 startIcon={<UploadIcon />}
-                                size="large"
-                                sx={{ mb: 2 }}
+                                size: any,
+                                sx={{ mb: 2 } as any}
                             >
                                 Select CSV File
                             </Button>
@@ -244,7 +240,7 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
                             Upload a CSV file with product data for Magento import
                         </Typography>
                         {csvFile && (
-                            <Alert severity="info" sx={{ mt: 2 }}>
+                            <Alert severity="info" sx={{ mt: 2 } as any}>
                                 Selected: {csvFile.name} ({csvData.length} products)
                             </Alert>
                         )}
@@ -252,22 +248,17 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
                 );
 
             case 1:
-                return (
-                    <Box sx={{ py: 2 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                return(<Box sx={{ py: 2 } as any}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 } as any}>
                             <FormControlLabel
-                                control={
-                                    <Switch
+                                control: any,
                                         checked={autoFix}
                                         onChange={(e) => setAutoFix(e.target.checked)}
                                     />
                                 }
-                                label="Auto-fix common issues"
-                            />
-                        </Box>
-                        
-                        <Alert severity="info" sx={{ mb: 2 }}>
-                            Ready to validate {csvData.length} products from {csvFile?.name}
+                                label: any,
+                        <Alert severity="info" sx={{ mb: 2 } as any}>
+                            Ready to validate {csvData.length} products from {csvFile.name}
                         </Alert>
                         
                         <Typography variant="body2" color="text.secondary">
@@ -277,36 +268,28 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
                 );
 
             case 2:
-                return validationResult && importSummary ? (
-                    <Box sx={{ py: 2 }}>
+                return Boolean(Boolean(validationResult && importSummary ? (
+                    <Box sx={{ py: 2 } as any}>
                         {/* Validation Summary */}
-                        <Card sx={{ mb: 2 }}>
+                        <Card sx={{ mb: 2 } as any}>
                             <CardContent>
                                 <Typography variant="h6" gutterBottom>
                                     Validation Summary
                                 </Typography>
-                                <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+                                <Box sx={{ display: 'flex', gap: 1, mb: 2 } as any}>
                                     <Chip 
                                         icon={<CheckIcon />} 
                                         label={`${importSummary.validation.validProducts} Valid`} 
-                                        color="success" 
-                                        size="small" 
-                                    />
-                                    {importSummary.validation.errorProducts > 0 && (
-                                        <Chip 
+                                        color: any,
                                             icon={<ErrorIcon />} 
                                             label={`${importSummary.validation.errorProducts} Errors`} 
-                                            color="error" 
-                                            size="small" 
-                                        />
+                                            color: any,
                                     )}
                                     {importSummary.validation.warnings > 0 && (
                                         <Chip 
                                             icon={<WarningIcon />} 
                                             label={`${importSummary.validation.warnings} Warnings`} 
-                                            color="warning" 
-                                            size="small" 
-                                        />
+                                            color: any,
                                     )}
                                 </Box>
                                 
@@ -314,7 +297,7 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
                                 <Typography variant="subtitle2" gutterBottom>
                                     Product Types:
                                 </Typography>
-                                <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+                                <Box sx={{ display: 'flex', gap: 1, mb: 2 } as any}>
                                     <Chip label={`${importSummary.productTypes.simple} Simple`} variant="outlined" size="small" />
                                     <Chip label={`${importSummary.productTypes.configurable} Configurable`} variant="outlined" size="small" />
                                     <Chip label={`${importSummary.productTypes.variations} Variations`} variant="outlined" size="small" />
@@ -324,21 +307,21 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
 
                         {/* Errors and Warnings */}
                         {(validationResult.errors.length > 0 || validationResult.warnings.length > 0) && (
-                            <Card sx={{ mb: 2 }}>
+                            <Card sx={{ mb: 2 } as any}>
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom>
                                         Issues Found
                                     </Typography>
                                     <List dense>
-                                        {validationResult.errors.slice(0, 10).map((error, index) => (
+                                        {validationResult.errors.slice(0, 10).map((error: any: any, index: any: any) => (
                                             <ListItem key={index}>
-                                                <ErrorIcon color="error" sx={{ mr: 1 }} />
+                                                <ErrorIcon color="error" sx={{ mr: 1 } as any} />
                                                 <ListItemText primary={error} />
                                             </ListItem>
                                         ))}
-                                        {validationResult.warnings.slice(0, 5).map((warning, index) => (
+                                        {validationResult.warnings.slice(0, 5).map((warning: any: any, index: any: any) => (
                                             <ListItem key={index}>
-                                                <WarningIcon color="warning" sx={{ mr: 1 }} />
+                                                <WarningIcon color="warning" sx={{ mr: 1 } as any} />
                                                 <ListItemText primary={warning} />
                                             </ListItem>
                                         ))}
@@ -355,9 +338,9 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
                                         Recommendations
                                     </Typography>
                                     <List dense>
-                                        {importSummary.recommendations.map((rec, index) => (
+                                        {importSummary.recommendations.map((rec: any: any, index: any: any) => (
                                             <ListItem key={index}>
-                                                <InfoIcon color="info" sx={{ mr: 1 }} />
+                                                <InfoIcon color="info" sx={{ mr: 1 } as any} />
                                                 <ListItemText primary={rec.message} />
                                             </ListItem>
                                         ))}
@@ -366,23 +349,23 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
                             </Card>
                         )}
                     </Box>
-                ) : null;
+                ) : null));
 
             case 3:
                 return (
-                    <Box sx={{ py: 2 }}>
+                    <Box sx={{ py: 2 } as any}>
                         {importing ? (
                             <Box>
                                 <Typography variant="h6" gutterBottom>
                                     Importing Products...
                                 </Typography>
-                                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 } as any}>
                                     {importProgress.phase}: {importProgress.current} / {importProgress.total}
                                 </Typography>
                                 <LinearProgress 
-                                    variant="determinate" 
+                                    variant: any,
                                     value={(importProgress.current / importProgress.total) * 100} 
-                                    sx={{ mb: 2 }}
+                                    sx={{ mb: 2 } as any}
                                 />
                             </Box>
                         ) : importResults ? (
@@ -392,18 +375,14 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
                                 </Typography>
                                 <Card>
                                     <CardContent>
-                                        <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+                                        <Box sx={{ display: 'flex', gap: 1, mb: 2 } as any}>
                                             <Chip 
                                                 icon={<CheckIcon />} 
                                                 label={`${importResults.total.successful} Successful`} 
-                                                color="success" 
-                                            />
-                                            {importResults.total.failed > 0 && (
-                                                <Chip 
+                                                color: any,
                                                     icon={<ErrorIcon />} 
                                                     label={`${importResults.total.failed} Failed`} 
-                                                    color="error" 
-                                                />
+                                                    color: any,
                                             )}
                                         </Box>
                                         
@@ -413,7 +392,7 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
                                                     Failed Products:
                                                 </Typography>
                                                 <List dense>
-                                                    {importResults.total.errors.slice(0, 10).map((error, index) => (
+                                                    {importResults.total.errors.slice(0, 10).map((error: any: any, index: any: any) => (
                                                         <ListItem key={index}>
                                                             <ListItemText 
                                                                 primary={error.sku} 
@@ -436,15 +415,14 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
         }
     };
 
-    return (
-        <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+    return(<Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
             <DialogTitle>
                 CSV Product Import
             </DialogTitle>
             
             <DialogContent>
-                <Stepper activeStep={activeStep} sx={{ mb: 3 }}>
-                    {steps.map((label) => (
+                <Stepper activeStep={activeStep} sx={{ mb: 3 } as any}>
+                    {steps.map((label: any: any) => (
                         <Step key={label}>
                             <StepLabel>{label}</StepLabel>
                         </Step>
@@ -459,24 +437,20 @@ const CSVImportDialog = ({ open, onClose, onImportComplete }) => {
                     {importResults ? 'Close' : 'Cancel'}
                 </Button>
                 
-                {activeStep === 1 && (
+                {activeStep ===1 && (
                     <Button 
                         onClick={handleValidation} 
-                        variant="contained"
-                        disabled={csvData.length === 0}
+                        variant: any,
+                        disabled={csvData.length ===0}
                     >
                         Validate Data
                     </Button>
                 )}
                 
-                {activeStep === 2 && validationResult?.isValid && (
+                {activeStep ===2 && validationResult.isValid && (
                     <Button 
                         onClick={handleImport} 
-                        variant="contained"
-                        color="primary"
-                    >
-                        Start Import
-                    </Button>
+                        variant: any,
                 )}
             </DialogActions>
         </Dialog>

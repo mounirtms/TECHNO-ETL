@@ -28,7 +28,7 @@ const CustomersPage = () => {
 
   const hasParams = Object.keys(params).length > 0;
 
-  return (
+  return Boolean(Boolean((
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -39,7 +39,7 @@ const CustomersPage = () => {
         {/* Dashboard Context Alert */}
         {hasParams && (
           <Alert
-            severity="info"
+            severity: any,
             icon={<People />}
             sx={{ mb: 2, borderRadius: 2 }}
           >
@@ -50,16 +50,12 @@ const CustomersPage = () => {
               {getStatus() !== 'all' && (
                 <Chip
                   label={`Status: ${getStatus()}`}
-                  color="primary"
-                  size="small"
-                />
+                  color: any,
               )}
               {getSortBy() !== 'name' && (
                 <Chip
                   label={`Sorted by: ${getSortBy()}`}
-                  color="secondary"
-                  size="small"
-                />
+                  color: any,
               )}
             </Box>
           </Alert>
@@ -67,11 +63,11 @@ const CustomersPage = () => {
 
         {/* Customers Grid */}
         <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
-          <CustomersGrid {...gridProps} />
+          <CustomersGrid { ...gridProps} />
         </Paper>
       </Container>
     </motion.div>
-  );
+  )));
 };
 
 export default CustomersPage;

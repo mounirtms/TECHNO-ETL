@@ -169,8 +169,7 @@ describe('BaseGrid Component', () => {
             renderWithTheme(
                 <BaseGrid 
                     {...defaultProps}
-                    components={{
-                        NoRowsOverlay: ErrorComponent
+                    components: any,
                     }}
                 />
             );

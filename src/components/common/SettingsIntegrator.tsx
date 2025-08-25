@@ -14,22 +14,22 @@ import { useEffect, useCallback } from 'react';
 // import { useSettings } from '../../contexts/SettingsContext';
 
 // Simple theme application function
-const applyThemeSettings = (settings: any) => {
+const applyThemeSettings = (settings) => {
   try {
-    if (settings.theme) {
+    if(settings.theme) {
       document.documentElement.setAttribute('data-theme', settings.theme);
     }
-    if (settings.colorPreset) {
+    if(settings.colorPreset) {
       document.documentElement.setAttribute('data-color-preset', settings.colorPreset);
     }
-    if (settings.fontSize) {
+    if(settings.fontSize) {
       document.documentElement.setAttribute('data-font-size', settings.fontSize);
     }
-    if (settings.density) {
+    if(settings.density) {
       document.documentElement.setAttribute('data-density', settings.density);
     }
     console.log('✅ Theme settings applied to DOM');
-  } catch (error) {
+  } catch(error: any) {
     console.error('❌ Failed to apply theme settings:', error);
   }
 };
@@ -45,14 +45,14 @@ const SettingsIntegrator: React.FC = () => {
       try {
         // Get settings from localStorage
         const settings = localStorage.getItem('techno-etl-settings');
-        if (settings) {
+        if(settings) {
           const parsed = JSON.parse(settings);
           console.log('🔄 SettingsIntegrator: Applying settings from localStorage:', parsed);
           
           // Apply to DOM
           applyThemeSettings(parsed);
         }
-      } catch (error) {
+      } catch(error: any) {
         console.warn('Failed to apply settings:', error);
       }
     };
@@ -71,17 +71,17 @@ const SettingsIntegrator: React.FC = () => {
     // Listen for custom settings events
     const handleSettingsChanged = (event: CustomEvent) => {
       console.log('🔄 Settings changed via event, applying to DOM...');
-      if (event.detail) {
+      if(event.detail) {
         applyThemeSettings(event.detail);
       }
     };
 
     window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('settingsChanged' as any, handleSettingsChanged);
+    window.addEventListener('settingsChanged', handleSettingsChanged);
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('settingsChanged' as any, handleSettingsChanged);
+      window.removeEventListener('settingsChanged', handleSettingsChanged);
     };
   }, []);
 

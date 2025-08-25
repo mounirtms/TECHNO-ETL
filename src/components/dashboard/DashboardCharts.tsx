@@ -18,8 +18,8 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'
 /**
  * Custom Tooltip Component for Charts
  */
-const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
+const CustomTooltip = ({ active, payload, label  }: { active: any, payload: any, label: any }) => {
+    if(active && payload && payload.length) {
         return (
             <Box sx={{
                 backgroundColor: 'background.paper',
@@ -32,10 +32,10 @@ const CustomTooltip = ({ active, payload, label }) => {
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
                     {formatTooltipDate(label)}
                 </Typography>
-                {payload.map((entry, index) => (
+                {payload.map((entry: any: any, index: any: any) => (
                     <Typography
                         key={index}
-                        variant="body2"
+                        variant: any,
                         sx={{ color: entry.color }}
                     >
                         {`${entry.name}: ${entry.value}`}
@@ -50,7 +50,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 /**
  * Orders Chart Component
  */
-const OrdersChart = ({ chartData, chartType, visibleCharts }) => {
+const OrdersChart = ({ chartData, chartType, visibleCharts  }: { chartData: any, chartType: any, visibleCharts: any }) => {
     const theme = useTheme();
 
     if (!visibleCharts.orders) return null;
@@ -77,7 +77,7 @@ const OrdersChart = ({ chartData, chartType, visibleCharts }) => {
                     <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
                         <XAxis
-                            dataKey="date"
+                            dataKey: any,
                             stroke={theme.palette.text.secondary}
                             tickMargin={10}
                         />
@@ -85,8 +85,7 @@ const OrdersChart = ({ chartData, chartType, visibleCharts }) => {
                         <RechartsTooltip content={<CustomTooltip />} />
                         <Legend />
                         <Line
-                            type="monotone"
-                            dataKey="orders"
+                            type: any,
                             stroke={theme.palette.primary.main}
                             strokeWidth={3}
                             dot={{ fill: theme.palette.primary.main, strokeWidth: 2, r: 4 }}
@@ -97,7 +96,7 @@ const OrdersChart = ({ chartData, chartType, visibleCharts }) => {
                     <BarChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
                         <XAxis
-                            dataKey="date"
+                            dataKey: any,
                             stroke={theme.palette.text.secondary}
                             tickMargin={10}
                         />
@@ -105,7 +104,7 @@ const OrdersChart = ({ chartData, chartType, visibleCharts }) => {
                         <RechartsTooltip content={<CustomTooltip />} />
                         <Legend />
                         <Bar
-                            dataKey="orders"
+                            dataKey: any,
                             fill={theme.palette.primary.main}
                             radius={[4, 4, 0, 0]}
                             barSize={32}
@@ -120,7 +119,7 @@ const OrdersChart = ({ chartData, chartType, visibleCharts }) => {
 /**
  * Customers Chart Component
  */
-const CustomersChart = ({ customerData, visibleCharts }) => {
+const CustomersChart = ({ customerData, visibleCharts  }: { customerData: any, visibleCharts: any }) => {
     const theme = useTheme();
 
     if (!visibleCharts.customers) return null;
@@ -146,7 +145,7 @@ const CustomersChart = ({ customerData, visibleCharts }) => {
                 <LineChart data={customerData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
                     <XAxis
-                        dataKey="date"
+                        dataKey: any,
                         stroke={theme.palette.text.secondary}
                         tickMargin={10}
                     />
@@ -154,8 +153,7 @@ const CustomersChart = ({ customerData, visibleCharts }) => {
                     <RechartsTooltip content={<CustomTooltip />} />
                     <Legend />
                     <Line
-                        type="monotone"
-                        dataKey="count"
+                        type: any,
                         stroke={theme.palette.success.main}
                         strokeWidth={3}
                         dot={{ fill: theme.palette.success.main, strokeWidth: 2, r: 4 }}
@@ -170,13 +168,12 @@ const CustomersChart = ({ customerData, visibleCharts }) => {
 /**
  * Products by Country Chart Component
  */
-const ProductsByCountryChart = ({ countryData, visibleCharts }) => {
+const ProductsByCountryChart = ({ countryData, visibleCharts  }: { countryData: any, visibleCharts: any }) => {
     const theme = useTheme();
 
     if (!visibleCharts.products) return null;
 
-    return (
-        <Paper sx={{
+    return(<Paper sx={{
             p: 3,
             height: '420px',
             background: theme.palette.background.paper,
@@ -195,23 +192,22 @@ const ProductsByCountryChart = ({ countryData, visibleCharts }) => {
             <ResponsiveContainer width="100%" height="85%">
                 <BarChart
                     data={countryData}
-                    layout="vertical"
+                    layout: any,
                     margin={{ left: 30 }}
                 >
                     <CartesianGrid
-                        strokeDasharray="3 3"
+                        strokeDasharray: any,
                         stroke={theme.palette.divider}
                         horizontal={true}
                         vertical={false}
                     />
                     <XAxis
-                        type="number"
+                        type: any,
                         stroke={theme.palette.text.secondary}
                         tickMargin={10}
                     />
                     <YAxis
-                        dataKey="country_of_manufacture"
-                        type="category"
+                        dataKey: any,
                         stroke={theme.palette.text.secondary}
                         width={100}
                         tickMargin={10}
@@ -222,13 +218,12 @@ const ProductsByCountryChart = ({ countryData, visibleCharts }) => {
                     />
                     <Legend />
                     <Bar
-                        dataKey="count"
-                        name="Products"
+                        dataKey: any,
                         fill={theme.palette.info.main}
                         radius={[0, 4, 4, 0]}
                         barSize={24}
                     >
-                        {countryData.map((entry, index) => (
+                        {countryData.map((entry: any: any, index: any: any) => (
                             <Cell
                                 key={`cell-${index}`}
                                 fill={COLORS[index % COLORS.length]}
@@ -244,13 +239,12 @@ const ProductsByCountryChart = ({ countryData, visibleCharts }) => {
 /**
  * Main Dashboard Charts Component
  */
-const DashboardCharts = ({
-    chartData,
+const DashboardCharts = ({ chartData,
     customerData,
     countryData,
     chartType,
     visibleCharts
-}) => {
+ }: { chartData: any, customerData: any, countryData: any, chartType: any, visibleCharts: any }) => {
     return (
         <>
             {/* Primary Charts */}

@@ -42,10 +42,11 @@ import {
   CheckCircle,
   Warning
 } from '@mui/icons-material';
-import { useCustomTheme } from '../../../contexts/ThemeContext';
-import { useLanguage } from '../../../contexts/LanguageContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useSettings } from '../../../contexts/SettingsContext';
+import { useUserSettings } from '../../../hooks/useUserSettings';
+import { useLanguage, languages } from '../../../contexts/LanguageContext';
+import { useCustomTheme } from '../../../contexts/ThemeContext';
 import { styled } from '@mui/material/styles';
 import { toast } from 'react-toastify';
 
@@ -57,26 +58,22 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 const PreferencesTab = () => {
-    const { 
-        mode, 
-        toggleTheme, 
-        setThemeMode, 
-        fontSize, 
-        setFontSize,
-        colorPreset,
-        setColorPreset,
-        density,
-        setDensity,
-        animations,
-        setAnimations,
-        highContrast,
-        setHighContrast,
-        themePresets
-    } = useCustomTheme();
-    const { currentLanguage, setLanguage, translate, languages } = useLanguage();
     const { currentUser } = useAuth();
     const { settings, updateSettings, saveSettings, resetSettings, exportSettings, importSettings, loading, isDirty } = useSettings();
-    const fileInputRef = useRef(null);
+    const {
+        mode,
+        currentLanguage,
+        fontSize,
+        setThemeMode,
+        setLanguage,
+        setFontSize,
+        saveCurrentPreferences,
+        resetToSystemDefaults
+    } = useUserSettings();
+    const languageContext = useLanguage();
+    const translate = (languageContext)?.translate || ((key: string) => key);
+    const { density, colorPreset, setDensity, setColorPreset } = useCustomTheme();
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [expanded, setExpanded] = useState({
         appearance: true,
@@ -87,61 +84,76 @@ const PreferencesTab = () => {
         advanced: false
     });
 
-    const handleAccordionChange = (panel) => (event, isExpanded) => {
-        setExpanded(prev => ({
-            ...prev,
+    const handleAccordionChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+        setExpanded(prev => ({ ...prev,
             [panel]: isExpanded
         }));
     };
 
-    const handlePreferenceChange = (section, key, value) => {
-        // Update settings in the context
-        updateSettings({ [key]: value }, 'preferences');
-        
-        // Apply theme changes immediately for better UX
-        if (key === 'theme') {
-            setThemeMode(value);
-        } else if (key === 'fontSize') {
-            setFontSize(value);
-        } else if (key === 'colorPreset') {
-            setColorPreset(value);
-        } else if (key === 'density') {
-            setDensity(value);
-        } else if (key === 'animations') {
-            setAnimations(value);
-        } else if (key === 'highContrast') {
-            setHighContrast(value);
-        } else if (key === 'language') {
-            setLanguage(value);
+    const handlePreferenceChange = async(section: string, key: string, value) => {
+        try {
+            // Update settings in the context
+            updateSettings({ [key]: value }, 'preferences');
+            
+            // Apply changes immediately using unified system
+            if(key === 'theme') {
+                setThemeMode(value);
+            } else if(key === 'fontSize') {
+                setFontSize(value);
+            } else if(key === 'language') {
+                setLanguage(value);
+            }
+            
+            // Auto-save after a short delay
+            setTimeout(async () => {
+                await saveCurrentPreferences();
+            }, 1000);
+            
+        } catch(error: any) {
+            console.error('Error updating preference:', error);
+            toast.error('Failed to update preference');
         }
-        
-        console.log(`Preference ${key} changed to:`, value);
     };
 
     const handleSave = async () => {
-        const result = await saveSettings(true);
-        if (result.success) {
-            toast.success('Settings saved successfully!');
+        try {
+            await saveCurrentPreferences();
+            await saveSettings();
+            toast.success('Settings saved successfully');
+        } catch(error: any) {
+            console.error('Error saving settings:', error);
+            toast.error('Failed to save settings');
         }
     };
 
-    const handleReset = () => {
+    const handleReset = async () => {
         if (window.confirm('Are you sure you want to reset all settings to defaults? This action cannot be undone.')) {
-            resetSettings();
+            try {
+                resetToSystemDefaults();
+                resetSettings();
+                toast.info('Settings reset to defaults');
+            } catch(error: any) {
+                console.error('Error resetting settings:', error);
+                toast.error('Failed to reset settings');
+            }
         }
     };
 
     const handleExport = () => {
-        exportSettings();
+        if(exportSettings) {
+            exportSettings();
+        }
     };
 
     const handleImport = () => {
-        fileInputRef.current?.click();
+        if(fileInputRef.current) {
+            fileInputRef.current.click();
+        }
     };
 
-    const handleFileImport = (event) => {
-        const file = event.target.files[0];
-        if (file) {
+    const handleFileImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if(file && importSettings) {
             importSettings(file);
         }
         event.target.value = ''; // Reset file input
@@ -167,38 +179,31 @@ const PreferencesTab = () => {
                         <Chip
                             icon={<Warning />}
                             label={translate('profile.preferences.unsavedChanges')}
-                            color="warning"
-                            size="small"
-                        />
+                            color: any,
                     )}
                     <Button
-                        variant="outlined"
-                        size="small"
+                        variant: any,
                         startIcon={<Download />}
                         onClick={handleExport}
                     >
                         {translate('profile.preferences.export')}
                     </Button>
                     <Button
-                        variant="outlined"
-                        size="small"
+                        variant: any,
                         startIcon={<Upload />}
                         onClick={handleImport}
                     >
                         {translate('profile.preferences.import')}
                     </Button>
                     <Button
-                        variant="outlined"
-                        size="small"
+                        variant: any,
                         startIcon={<RestoreFromTrash />}
                         onClick={handleReset}
-                        color="error"
-                    >
+                        color: any,
                         {translate('profile.preferences.reset')}
                     </Button>
                     <Button
-                        variant="contained"
-                        size="small"
+                        variant: any,
                         startIcon={loading ? <CircularProgress size={16} /> : <Save />}
                         onClick={handleSave}
                         disabled={loading || !isDirty}
@@ -210,17 +215,17 @@ const PreferencesTab = () => {
 
             {/* Hidden file input for import */}
             <input
-                type="file"
+                type: any,
                 ref={fileInputRef}
-                onChange={handleFileImport}
-                accept=".json"
+                onChange={(e) => handleFileImport}
+                accept: any,
                 style={{ display: 'none' }}
             />
 
             {/* Appearance Settings */}
             <Accordion
                 expanded={expanded.appearance}
-                onChange={handleAccordionChange('appearance')}
+                onChange={(e) => handleAccordionChange('appearance')}
             >
                 <AccordionSummary expandIcon={<ExpandMore />}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -236,16 +241,16 @@ const PreferencesTab = () => {
                                 <InputLabel>{translate('profile.preferences.appearance.language.title')}</InputLabel>
                                 <Select
                                     value={prefs.language || 'en'}
-                                    onChange={(e) => {
+                                    onChange: any,
                                         handlePreferenceChange('preferences', 'language', e.target.value);
                                         setLanguage(e.target.value);
                                     }}
                                     label={translate('profile.preferences.appearance.language.title')}
                                 >
-                                    {Object.entries(languages).map(([key, lang]) => (
+                                    {Object.entries(languages).map(([key: any: any, lang]: any: any) => (
                                         <MenuItem key={key} value={key}>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                <span>{lang.flag || '🌐'}</span>
+                                                <span>🌐</span>
                                                 <span>{translate(`profile.preferences.appearance.language.availableLanguages.${key}`) || lang.name}</span>
                                             </Box>
                                         </MenuItem>
@@ -260,9 +265,9 @@ const PreferencesTab = () => {
                                 <InputLabel>{translate('profile.preferences.appearance.theme.title')}</InputLabel>
                                 <Select
                                     value={prefs.theme || mode || 'system'}
-                                    onChange={(e) => {
+                                    onChange: any,
                                         handlePreferenceChange('preferences', 'theme', e.target.value);
-                                        setThemeMode(e.target.value);
+                                        setThemeMode(e.target.value as 'light' | 'dark' | 'system');
                                     }}
                                     label={translate('profile.preferences.appearance.theme.title')}
                                 >
@@ -279,9 +284,9 @@ const PreferencesTab = () => {
                                 <InputLabel>{translate('profile.preferences.appearance.fontSize.title')}</InputLabel>
                                 <Select
                                     value={prefs.fontSize || 'medium'}
-                                    onChange={(e) => {
+                                    onChange: any,
                                         handlePreferenceChange('preferences', 'fontSize', e.target.value);
-                                        setFontSize(e.target.value);
+                                        setFontSize(e.target.value as 'small' | 'medium' | 'large');
                                     }}
                                     label={translate('profile.preferences.appearance.fontSize.title')}
                                 >
@@ -298,7 +303,7 @@ const PreferencesTab = () => {
                                 <InputLabel>{translate('profile.preferences.appearance.density.title')}</InputLabel>
                                 <Select
                                     value={density || 'standard'}
-                                    onChange={(e) => {
+                                    onChange: any,
                                         handlePreferenceChange('preferences', 'density', e.target.value);
                                         setDensity(e.target.value);
                                     }}
@@ -317,25 +322,15 @@ const PreferencesTab = () => {
                                 <InputLabel>Color Theme</InputLabel>
                                 <Select
                                     value={colorPreset || 'techno'}
-                                    onChange={(e) => {
+                                    onChange: any,
                                         handlePreferenceChange('preferences', 'colorPreset', e.target.value);
                                         setColorPreset(e.target.value);
                                     }}
-                                    label="Color Theme"
-                                >
-                                    <MenuItem value="techno">Techno Orange</MenuItem>
-                                    <MenuItem value="blue">Professional Blue</MenuItem>
-                                    <MenuItem value="green">Nature Green</MenuItem>
-                                    <MenuItem value="purple">Creative Purple</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
-
+                                    label: any,
                         {/* Animations */}
                         <Grid size={{ xs: 12 }}>
                             <FormControlLabel
-                                control={
-                                    <Switch
+                                control: any,
                                         checked={prefs.animations !== false}
                                         onChange={(e) => handlePreferenceChange('preferences', 'animations', e.target.checked)}
                                     />
@@ -350,7 +345,7 @@ const PreferencesTab = () => {
             {/* Performance Settings */}
             <Accordion
                 expanded={expanded.performance}
-                onChange={handleAccordionChange('performance')}
+                onChange={(e) => handleAccordionChange('performance')}
             >
                 <AccordionSummary expandIcon={<ExpandMore />}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -370,16 +365,13 @@ const PreferencesTab = () => {
                                 min={10}
                                 max={100}
                                 step={5}
-                                marks={[
+                                marks: any,
                                     { value: 10, label: '10' },
                                     { value: 25, label: '25' },
                                     { value: 50, label: '50' },
                                     { value: 100, label: '100' }
                                 ]}
-                                valueLabelDisplay="auto"
-                            />
-                        </Grid>
-
+                                valueLabelDisplay: any,
                         <Grid size={{ xs: 12, md: 6 }}>
                             <Typography variant="subtitle1" gutterBottom>
                                 {translate('profile.preferences.performance.refreshInterval.title')}
@@ -390,13 +382,13 @@ const PreferencesTab = () => {
                                 min={10}
                                 max={300}
                                 step={10}
-                                marks={[
+                                marks: any,
                                     { value: 10, label: '10s' },
                                     { value: 30, label: '30s' },
                                     { value: 60, label: '1m' },
                                     { value: 300, label: '5m' }
                                 ]}
-                                valueLabelDisplay="auto"
+                                valueLabelDisplay: any,
                                 disabled={!prefs.autoRefresh}
                             />
                         </Grid>
@@ -404,40 +396,36 @@ const PreferencesTab = () => {
                         <Grid size={{ xs: 12 }}>
                             <Stack spacing={2}>
                                 <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={prefs.enableVirtualization !== false}
+                                    control: any,
+                                            checked={(prefs)?.enableVirtualization !== false}
                                             onChange={(e) => handlePreferenceChange('preferences', 'enableVirtualization', e.target.checked)}
                                         />
                                     }
-                                    label={translate('profile.preferences.performance.enableVirtualization.title')}
+                                    label={translate('profile.preferences.performance?.enableVirtualization.title')}
                                 />
                                 <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={prefs.cacheEnabled !== false}
+                                    control: any,
+                                            checked={(prefs)?.cacheEnabled !== false}
                                             onChange={(e) => handlePreferenceChange('preferences', 'cacheEnabled', e.target.checked)}
                                         />
                                     }
-                                    label={translate('profile.preferences.performance.cacheEnabled.title')}
+                                    label={translate('profile.preferences.performance?.cacheEnabled.title')}
                                 />
                                 <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={prefs.autoRefresh === true}
+                                    control: any,
+                                            checked={prefs.autoRefresh ===true}
                                             onChange={(e) => handlePreferenceChange('preferences', 'autoRefresh', e.target.checked)}
                                         />
                                     }
                                     label={translate('profile.preferences.performance.autoRefresh.title')}
                                 />
                                 <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={prefs.lazyLoading !== false}
+                                    control: any,
+                                            checked={(prefs)?.lazyLoading !== false}
                                             onChange={(e) => handlePreferenceChange('preferences', 'lazyLoading', e.target.checked)}
                                         />
                                     }
-                                    label={translate('profile.preferences.performance.lazyLoading.title')}
+                                    label={translate('profile.preferences.performance?.lazyLoading.title')}
                                 />
                             </Stack>
                         </Grid>
@@ -448,7 +436,7 @@ const PreferencesTab = () => {
             {/* Notifications Settings */}
             <Accordion
                 expanded={expanded.notifications}
-                onChange={handleAccordionChange('notifications')}
+                onChange={(e) => handleAccordionChange('notifications')}
             >
                 <AccordionSummary expandIcon={<ExpandMore />}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -460,8 +448,7 @@ const PreferencesTab = () => {
                     <Grid container spacing={3}>
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
-                                control={
-                                    <Switch
+                                control: any,
                                         checked={prefs.emailNotifications !== false}
                                         onChange={(e) => handlePreferenceChange('preferences', 'emailNotifications', e.target.checked)}
                                     />
@@ -471,9 +458,8 @@ const PreferencesTab = () => {
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
-                                control={
-                                    <Switch
-                                        checked={prefs.pushNotifications === true}
+                                control: any,
+                                        checked={prefs.pushNotifications ===true}
                                         onChange={(e) => handlePreferenceChange('preferences', 'pushNotifications', e.target.checked)}
                                     />
                                 }
@@ -482,8 +468,7 @@ const PreferencesTab = () => {
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
-                                control={
-                                    <Switch
+                                control: any,
                                         checked={prefs.soundEnabled !== false}
                                         onChange={(e) => handlePreferenceChange('preferences', 'soundEnabled', e.target.checked)}
                                     />
@@ -498,7 +483,7 @@ const PreferencesTab = () => {
             {/* Accessibility Settings */}
             <Accordion
                 expanded={expanded.accessibility}
-                onChange={handleAccordionChange('accessibility')}
+                onChange={(e) => handleAccordionChange('accessibility')}
             >
                 <AccordionSummary expandIcon={<ExpandMore />}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -510,9 +495,8 @@ const PreferencesTab = () => {
                     <Grid container spacing={3}>
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
-                                control={
-                                    <Switch
-                                        checked={prefs.highContrast === true}
+                                control: any,
+                                        checked={prefs.highContrast ===true}
                                         onChange={(e) => handlePreferenceChange('preferences', 'highContrast', e.target.checked)}
                                     />
                                 }
@@ -521,35 +505,32 @@ const PreferencesTab = () => {
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
-                                control={
-                                    <Switch
-                                        checked={prefs.largeText === true}
+                                control: any,
+                                        checked={(prefs)?.largeText ===true}
                                         onChange={(e) => handlePreferenceChange('preferences', 'largeText', e.target.checked)}
                                     />
                                 }
-                                label={translate('profile.preferences.accessibility.largeText.title')}
+                                label={translate('profile.preferences.accessibility?.largeText.title')}
                             />
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
-                                control={
-                                    <Switch
-                                        checked={prefs.keyboardNavigation !== false}
+                                control: any,
+                                        checked={(prefs)?.keyboardNavigation !== false}
                                         onChange={(e) => handlePreferenceChange('preferences', 'keyboardNavigation', e.target.checked)}
                                     />
                                 }
-                                label={translate('profile.preferences.accessibility.keyboardNavigation.title')}
+                                label={translate('profile.preferences.accessibility?.keyboardNavigation.title')}
                             />
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
-                                control={
-                                    <Switch
-                                        checked={prefs.screenReader === true}
+                                control: any,
+                                        checked={(prefs)?.screenReader ===true}
                                         onChange={(e) => handlePreferenceChange('preferences', 'screenReader', e.target.checked)}
                                     />
                                 }
-                                label={translate('profile.preferences.accessibility.screenReader.title')}
+                                label={translate('profile.preferences.accessibility?.screenReader.title')}
                             />
                         </Grid>
                     </Grid>
@@ -559,7 +540,7 @@ const PreferencesTab = () => {
             {/* Security Settings */}
             <Accordion
                 expanded={expanded.security}
-                onChange={handleAccordionChange('security')}
+                onChange={(e) => handleAccordionChange('security')}
             >
                 <AccordionSummary expandIcon={<ExpandMore />}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -579,30 +560,25 @@ const PreferencesTab = () => {
                                 min={5}
                                 max={120}
                                 step={5}
-                                marks={[
+                                marks: any,
                                     { value: 5, label: '5m' },
                                     { value: 30, label: '30m' },
                                     { value: 60, label: '1h' },
                                     { value: 120, label: '2h' }
                                 ]}
-                                valueLabelDisplay="auto"
-                            />
-                        </Grid>
-
+                                valueLabelDisplay: any,
                         <Grid size={{ xs: 12 }}>
                             <Stack spacing={2}>
                                 <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={prefs.twoFactorEnabled === true}
+                                    control: any,
+                                            checked={prefs.twoFactorEnabled ===true}
                                             onChange={(e) => handlePreferenceChange('preferences', 'twoFactorEnabled', e.target.checked)}
                                         />
                                     }
                                     label={translate('profile.preferences.security.twoFactorEnabled.title')}
                                 />
                                 <FormControlLabel
-                                    control={
-                                        <Switch
+                                    control: any,
                                             checked={prefs.auditLogging !== false}
                                             onChange={(e) => handlePreferenceChange('preferences', 'auditLogging', e.target.checked)}
                                         />

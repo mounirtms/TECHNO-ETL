@@ -1,0 +1,920 @@
+[
+    {
+        "id": 1,
+        "group_id": 1,
+        "default_billing": "10",
+        "default_shipping": "10",
+        "created_at": "2021-04-17 20:28:27",
+        "updated_at": "2021-10-12 11:00:43",
+        "created_in": "Default Store View",
+        "email": "cdzwebdev@gmail.com",
+        "firstname": "Slimane",
+        "lastname": "Chihani",
+        "gender": 1,
+        "store_id": 1,
+        "website_id": 1,
+        "addresses": [
+            {
+                "id": 10,
+                "customer_id": 1,
+                "region": {
+                    "region_code": "16",
+                    "region": "Alger",
+                    "region_id": 874
+                },
+                "region_id": 874,
+                "country_id": "DZ",
+                "street": [
+                    "Lido Alger"
+                ],
+                "telephone": "0554261948",
+                "city": "Mohammadia",
+                "firstname": "Slimane",
+                "lastname": "Chihani",
+                "default_shipping": true,
+                "default_billing": true
+            }
+        ],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "1"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "group_id": 1,
+        "default_billing": "1",
+        "default_shipping": "1",
+        "created_at": "2021-04-19 09:44:05",
+        "updated_at": "2022-12-07 01:00:05",
+        "created_in": "Default Store View",
+        "email": "amine.bo@techno-dz.com",
+        "firstname": "Med",
+        "lastname": "Amine",
+        "gender": 1,
+        "store_id": 1,
+        "website_id": 1,
+        "addresses": [
+            {
+                "id": 1,
+                "customer_id": 2,
+                "region": {
+                    "region_code": "16",
+                    "region": "Alger",
+                    "region_id": 874
+                },
+                "region_id": 874,
+                "country_id": "DZ",
+                "street": [
+                    "280 pins maritimes, alger"
+                ],
+                "telephone": "0560904822",
+                "postcode": "16002",
+                "city": "Bab Ezzouar",
+                "firstname": "Med",
+                "lastname": "Amine",
+                "default_shipping": true,
+                "default_billing": true
+            }
+        ],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "group_id": 1,
+        "default_billing": "301",
+        "default_shipping": "301",
+        "created_at": "2021-04-23 11:05:07",
+        "updated_at": "2022-12-07 01:00:05",
+        "created_in": "Default Store View",
+        "email": "yacine.ho@techno-dz.com",
+        "firstname": "Yacine",
+        "lastname": "HOUACHE",
+        "gender": 1,
+        "store_id": 1,
+        "website_id": 1,
+        "addresses": [
+            {
+                "id": 301,
+                "customer_id": 3,
+                "region": {
+                    "region_code": "16",
+                    "region": "Alger",
+                    "region_id": 874
+                },
+                "region_id": 874,
+                "country_id": "DZ",
+                "street": [
+                    "Pins Maritimes"
+                ],
+                "telephone": "0560995834",
+                "postcode": "-",
+                "city": "Mohammadia",
+                "firstname": "Yacine",
+                "lastname": "HOUACHE",
+                "default_shipping": true,
+                "default_billing": true
+            }
+        ],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "group_id": 1,
+        "default_billing": "2",
+        "default_shipping": "2",
+        "created_at": "2021-04-24 08:00:33",
+        "updated_at": "2024-01-17 14:37:57",
+        "created_in": "Default Store View",
+        "email": "kasm3@hotmail.com",
+        "firstname": "Kacem",
+        "lastname": "BABEKER",
+        "store_id": 1,
+        "website_id": 1,
+        "addresses": [
+            {
+                "id": 2,
+                "customer_id": 4,
+                "region": {
+                    "region_code": "16",
+                    "region": "Alger",
+                    "region_id": 874
+                },
+                "region_id": 874,
+                "country_id": "DZ",
+                "street": [
+                    "280 Pins maritimes El mohammadia"
+                ],
+                "telephone": "0552239707 \/ 0560960692",
+                "postcode": "16000",
+                "city": "Bab Ezzouar",
+                "firstname": "Kacem",
+                "lastname": "BABEKER",
+                "default_shipping": true,
+                "default_billing": true
+            },
+            {
+                "id": 3,
+                "customer_id": 4,
+                "region": {
+                    "region_code": "35",
+                    "region": "Boumerd\u00e8s",
+                    "region_id": 893
+                },
+                "region_id": 893,
+                "country_id": "DZ",
+                "street": [
+                    "Rue Ouled Ali"
+                ],
+                "telephone": "0552239707",
+                "postcode": "35000",
+                "city": "Khemis El Khechna",
+                "firstname": "Kacem",
+                "lastname": "BABEKER"
+            }
+        ],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "group_id": 1,
+        "created_at": "2021-04-24 09:45:56",
+        "updated_at": "2022-12-07 01:00:05",
+        "created_in": "Default Store View",
+        "email": "rostom.bg@techno-dz.com",
+        "firstname": "Ro",
+        "lastname": "Stom",
+        "store_id": 1,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "group_id": 1,
+        "created_at": "2021-04-24 16:46:05",
+        "updated_at": "2022-12-07 01:00:05",
+        "created_in": "Default Store View",
+        "email": "fekihyasmine2005@gmail.com",
+        "firstname": "Fekih",
+        "lastname": "Yasmine",
+        "store_id": 1,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "group_id": 1,
+        "default_billing": "5",
+        "default_shipping": "5",
+        "created_at": "2021-04-25 01:06:50",
+        "updated_at": "2023-01-13 10:27:44",
+        "created_in": "Default Store View",
+        "email": "nananaad.10@gmail.com",
+        "firstname": "manar",
+        "lastname": "adada",
+        "store_id": 1,
+        "website_id": 1,
+        "addresses": [
+            {
+                "id": 5,
+                "customer_id": 7,
+                "region": {
+                    "region_code": "42",
+                    "region": "Tipaza",
+                    "region_id": 900
+                },
+                "region_id": 900,
+                "country_id": "DZ",
+                "street": [
+                    "HAI RABTTA DJELLOUL"
+                ],
+                "telephone": "0540907675",
+                "postcode": "42000",
+                "city": "Tipaza",
+                "firstname": "manar",
+                "lastname": "adada",
+                "default_shipping": true,
+                "default_billing": true
+            }
+        ],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 8,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "yousra.lazghembac2015@gmail.com",
+        "firstname": "Yousra",
+        "lastname": "Lazghem",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 9,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "meriem.betta@gmail.com",
+        "firstname": "Mehdi",
+        "lastname": "Askri",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 10,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "douaabouanani@gmail.com",
+        "firstname": "Douaa",
+        "lastname": "Bouanani",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 11,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "marwabenacerbac@gmail.com",
+        "firstname": "Marwa",
+        "lastname": "Benaceur",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 12,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2023-07-24 23:31:40",
+        "email": "raniablink4@gmail.com",
+        "firstname": "rania",
+        "lastname": "kh",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 13,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "anfalhkb@gmail.com",
+        "firstname": "Anfal",
+        "lastname": "Le",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 14,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "aouaneferiel@gmail.com",
+        "firstname": "Feriel",
+        "lastname": "Aouane",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 15,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "croustille16@gmail.com",
+        "firstname": "Gaci",
+        "lastname": "Imane",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 16,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "miryamhkm@gmail.com",
+        "firstname": "Meryem",
+        "lastname": "Hamrakrouha",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 17,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "aykeniken@gmail.com",
+        "firstname": "Iken Chems",
+        "lastname": "Arroudj",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 18,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "anfel.m.r@hotmail.com",
+        "firstname": "Anfel",
+        "lastname": "Chibane",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 19,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "oumaimakm02@gmail.com",
+        "firstname": "Oumaima",
+        "lastname": "Kemmoum",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 20,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "rosaaouiguer@gmail.com",
+        "firstname": "Rosa",
+        "lastname": "Aouiguer",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 21,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "djemil.yakout@gmail.com",
+        "firstname": "Yakout",
+        "lastname": "Djemil",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 22,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "mirah001@gmail.com",
+        "firstname": "Samira",
+        "lastname": "Hocine",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 23,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "bahdja.tabeti@gmail.com",
+        "firstname": "tbt",
+        "lastname": "bahdja",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 24,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "harmaliabdellah13@gmail.com",
+        "firstname": "Abdellah",
+        "lastname": "Harmali",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 25,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "kokokhawla5@gmail.com",
+        "firstname": "Khawla",
+        "lastname": "Benyettou",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 26,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "dimamehdi36@gmail.com",
+        "firstname": "Mehdi",
+        "lastname": "Dima",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 27,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "radhwan-021@hotmail.com",
+        "firstname": "Radhwan",
+        "lastname": "Boukhiar",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 28,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "zizoujawhara2003@gmail.com",
+        "firstname": "zineb",
+        "lastname": "djenhani",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 29,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "lahoualis2015@gmail.com",
+        "firstname": "liam",
+        "lastname": "lahoual",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 30,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "jijitajiji2015@gmail.com",
+        "firstname": "Jihan",
+        "lastname": "jihan",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 31,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "farahbjnj@gmail.com",
+        "firstname": "farah",
+        "lastname": "farah",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 32,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "chahinez.labdeli@gmail.com",
+        "firstname": "Chahinez",
+        "lastname": "Labdelli",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 33,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "bensmaineyamina3@gmail.com",
+        "firstname": "amina",
+        "lastname": "bensmaine",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 34,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "abensmaine@gmail.com",
+        "firstname": "amina",
+        "lastname": "bensmaine",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 35,
+        "group_id": 1,
+        "created_at": "2021-04-25 10:29:28",
+        "updated_at": "2022-12-07 01:00:05",
+        "email": "mehenaouibaya25@gmail.com",
+        "firstname": "baya",
+        "lastname": "mehenaoui",
+        "store_id": 0,
+        "website_id": 1,
+        "addresses": [],
+        "disable_auto_group_change": 0,
+        "extension_attributes": {
+            "is_subscribed": true
+        },
+        "custom_attributes": [
+            {
+                "attribute_code": "is_builder_account",
+                "value": "0"
+            }
+        ]
+    }
+]

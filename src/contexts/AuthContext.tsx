@@ -13,51 +13,29 @@ import {
   signInWithPopup,
   signOut,
   onAuthStateChanged,
-  type User as FirebaseUser
+  type User as FirebaseUser,
+  Auth,
+  UserCredential
 } from 'firebase/auth';
 import { auth, database } from '../config/firebase';
-import { ref, set, get } from 'firebase/database';
+import { ref, set, get, Database, DatabaseReference } from 'firebase/database';
 import magentoApi from '../services/magentoService';
 import { USER_ROLES, createDefaultUserLicense, initializeFirebaseDefaults } from '../config/firebaseDefaults';
 import firebaseSyncService from '../services/firebaseSyncService';
 
 // Types
-interface User {
-  uid: string;
-  email: string | null;
-  displayName: string | null;
-  isMagentoUser?: boolean;
-  token?: string;
-  role?: string;
-  createdAt?: string;
-  lastLogin?: string;
-}
-
-interface UserSettings {
-  preferences: {
-    language?: string;
-    theme?: string;
-    fontSize?: string;
-    density?: string;
-    animations?: boolean;
-    highContrast?: boolean;
-    colorPreset?: string;
-  };
-  lastSync?: string;
-  userId: string;
-  email?: string | null;
-}
+import { User, UserSettings } from '../types/globalTypes';
 
 interface AuthContextType {
   currentUser: User | null;
   loading: boolean;
-  signInWithGoogle: () => Promise<any>;
+  signInWithGoogle: () => Promise<UserCredential>;
   signInWithMagento: (username: string, password: string) => Promise<User>;
   logout: () => Promise<void>;
   adminToken: string | null;
   isUsingLocalData: boolean;
   validateMagentoToken: (token: string) => Promise<boolean>;
-  saveUserSettings: (settings: any) => void;
+  saveUserSettings: (settings: Record<string, any>) => void;
 }
 
 interface AuthProviderProps {
@@ -68,18 +46,20 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
-  if (!context) {
+  if(!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState(() => {
+    const [currentUser, setCurrentUser] = useState<User | null>(() => {
         const token = localStorage.getItem('adminToken');
-        if (token) {
+        if(token) {
             return {
                 uid: 'magento-user',
+                email: null,
+                displayName: null,
                 isMagentoUser: true,
                 token
             };
@@ -87,12 +67,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return null;
     });
     // Removed navigate to avoid circular dependency
-    const [loading, setLoading] = useState(true);     
-    const [adminToken, setMagentoToken] = useState(() => localStorage.getItem('adminToken'));
-    const [isUsingLocalData, setIsUsingLocalData] = useState(false);
+    const [loading, setLoading] = useState<boolean>(true);     
+    const [adminToken, setMagentoToken] = useState<string | null>(() => localStorage.getItem('adminToken'));
+    const [isUsingLocalData, setIsUsingLocalData] = useState<boolean>(false);
 
     // Helper functions for settings management with local cache priority
-    const initializeUserSettings = useCallback(async (user) => {
+    const initializeUserSettings = useCallback(async (user: User) => {
         try {
             const sanitizedUserId = user.uid.replace(/[.#$\[\]]/g, '_');
             const userSettingsKey = `userSettings_${sanitizedUserId}`;
@@ -100,14 +80,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             // Always prioritize local cache
             const localSettings = localStorage.getItem(userSettingsKey);
             
-            if (localSettings) {
+            if(localSettings) {
                 const parsedSettings = JSON.parse(localSettings);
                 const unifiedSettings = localStorage.getItem('techno-etl-settings');
                 const currentUnified = unifiedSettings ? JSON.parse(unifiedSettings) : {};
                 
                 // Merge user preferences with current unified settings
-                const mergedSettings = {
-                    ...currentUnified,
+                const mergedSettings = { ...currentUnified,
                     ...parsedSettings.preferences,
                     lastSync: parsedSettings.lastSync || new Date().toISOString()
                 };
@@ -120,20 +99,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 const now = new Date();
                 const hoursSinceSync = (now - lastSync) / (1000 * 60 * 60);
                 
-                if (hoursSinceSync > 24) {
+                if(hoursSinceSync > 24) {
                     syncSettingsToFirebase(user, mergedSettings);
                 }
             } else {
                 // If no local cache, try to fetch from Firebase
                 await loadSettingsFromFirebase(user);
             }
-        } catch (error) {
+        } catch(error: any) {
             console.error('Error initializing user settings:', error);
         }
     }, []);
     
     // Sync settings to Firebase (minimal)
-    const syncSettingsToFirebase = async (user, settings) => {
+    const syncSettingsToFirebase = async (user: User, settings: Record<string, any>) => {
         try {
             const sanitizedUserId = user.uid.replace(/[.#$\[\]]/g, '_');
             const settingsRef = ref(database, `userSettings/${sanitizedUserId}`);
@@ -152,13 +131,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             localStorage.setItem(userSettingsKey, JSON.stringify(settingsData));
             
             console.log('Settings synced to Firebase');
-        } catch (error) {
+        } catch(error: any) {
             console.error('Error syncing settings to Firebase:', error);
         }
     };
     
     // Load settings from Firebase
-    const loadSettingsFromFirebase = async (user) => {
+    const loadSettingsFromFirebase = async (user: User) => {
         try {
             const sanitizedUserId = user.uid.replace(/[.#$\[\]]/g, '_');
             const settingsRef = ref(database, `userSettings/${sanitizedUserId}`);
@@ -176,13 +155,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 
                 console.log('Settings loaded from Firebase');
             }
-        } catch (error) {
+        } catch(error: any) {
             console.error('Error loading settings from Firebase:', error);
         }
     };
     
     // Save settings (always local first, sync later)
-    const saveUserSettings = useCallback((settings) => {
+    const saveUserSettings = useCallback((settings: Record<string, any>) => {
         try {
             if (!currentUser) return;
             
@@ -206,7 +185,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             }, 1000);
             
             console.log('Settings saved locally');
-        } catch (error) {
+        } catch(error: any) {
             console.error('Error saving user settings:', error);
         }
     }, [currentUser]);
@@ -216,13 +195,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             // Clear unified settings when user logs out
             localStorage.removeItem('techno-etl-settings');
             console.log('User settings cleared on logout');
-        } catch (error) {
+        } catch(error: any) {
             console.error('Error clearing user settings:', error);
         }
     }, []);
 
     // Register user in database
-    const registerUserInDatabase = async (user) => {
+    const registerUserInDatabase = async (user: User): Promise<void> => {
         try {
             const sanitizedUserId = user.uid.replace(/[.#$\[\]]/g, '_');
             const userRef = ref(database, `users/${sanitizedUserId}`);
@@ -233,7 +212,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 // Check if this is the first user (super_admin)
                 const usersRef = ref(database, 'users');
                 const usersSnapshot = await get(usersRef);
-                const isFirstUser = !usersSnapshot.exists() || Object.keys(usersSnapshot.val() || {}).length === 0;
+                const isFirstUser = !usersSnapshot.exists() || Object.keys(usersSnapshot.val() || {}).length ===0;
                 const role = isFirstUser ? USER_ROLES.SUPER_ADMIN : USER_ROLES.USER;
                 const defaultLicense = createDefaultUserLicense(user.uid, 'FREE');
                 
@@ -250,12 +229,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             } else {
                 // Update last login
                 const userData = snapshot.val();
-                await set(userRef, {
-                    ...userData,
+                await set(userRef, { ...userData,
                     lastLogin: new Date().toISOString()
                 });
             }
-        } catch (error) {
+        } catch(error: any) {
             console.error('Error registering user in database:', error);
         }
     };
@@ -263,9 +241,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Monitor Firebase auth state
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user && !currentUser?.isMagentoUser) {
-                const userObj = {
-                    ...user,
+            if(user && !currentUser?.isMagentoUser) {
+                const userObj = { ...user,
                     isMagentoUser: false
                 };
                 setCurrentUser(userObj);
@@ -283,7 +260,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 
                 // Sync with Firebase
                 firebaseSyncService.syncUserOnLogin(user);
-            } else if (!user && !currentUser?.isMagentoUser) {
+            } else if(!user && !currentUser?.isMagentoUser) {
                 setCurrentUser(null);
                 
                 // Dispatch auth state change event for SettingsContext
@@ -300,8 +277,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return unsubscribe;
     }, [currentUser?.isMagentoUser, initializeUserSettings, clearUserSettings]);
 
-    const validateMagentoToken = async (token) => {
-        if (!token) {
+    const validateMagentoToken = async (token: string): Promise<boolean> => {
+        if(!token) {
             toast.error('No authentication token found');
             return false;
         }
@@ -309,9 +286,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         try {
             const response =   await magentoApi.get('/store/storeConfigs')
 
-            if (!response.ok) {
-                if (response.status === 401) {
-                    toast.warning('Session expired. Using local cached data.', {
+            if(!response.ok) {
+                if(response.status ===401) {
+                    toast?.warning('Session expired. Using local cached data.', {
                         autoClose: 5000,
                         style: { backgroundColor: '#FFA500', color: '#FFFFFF' }
                     });
@@ -320,14 +297,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                     localStorage.removeItem('adminToken');
                     return true; // Allow using local data
                 }
-                toast.warning('Connection issues. Using cached session.');
+                toast?.warning('Connection issues. Using cached session.');
                 return true;
             }
 
             // Reset local data flag if token is valid
             setIsUsingLocalData(false);
             return true;
-        } catch (error) {
+        } catch(error: any) {
             toast.error('Network error. Please check your connection.');
             console.error('Token validation error:', error);
             setIsUsingLocalData(true);
@@ -335,7 +312,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
     };
 
-    const signInWithGoogle = async () => {
+    const signInWithGoogle = async (): Promise<UserCredential> => {
         try {
               
             const provider = new GoogleAuthProvider();
@@ -348,18 +325,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             toast.success('Successfully logged in with Google!');
             // Navigation will be handled by the component using this context
             return result;
-        } catch (error) {
+        } catch(error: any) {
             console.error('Google sign-in error:', error);
             toast.error('Failed to sign in with Google');
             throw error;
         }
     };
 
-    const signInWithMagento = async (username, password) => {
+    const signInWithMagento = async (username: string, password: string): Promise<User> => {
         try {
             const response = await magentoApi.login(username, password);
- debugger
- 
+            // Remove debugger statement
+            
 
             const magentoUser = {
                 uid: username,
@@ -386,16 +363,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             toast.success('Successfully logged in!');
 
             return magentoUser;
-        } catch (error) {
+        } catch(error: any) {
             console.error('Magento login error:', error);
             toast.error(error.message || 'Failed to login. Please check your credentials.');
             throw error;
         }
     };
 
-    const logout = async () => {
+    const logout = async (): Promise<void> => {
         try {
-            if (currentUser?.isMagentoUser) {
+            if(currentUser?.isMagentoUser) {
                 // Clear Magento token
                 setMagentoToken(null);
                 localStorage.removeItem('adminToken');
@@ -412,7 +389,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             
             toast.success('Successfully logged out');
             window.location.href = '/login';  // Force a full page reload to clear all states
-        } catch (error) {
+        } catch(error) {
             console.error('Logout error:', error);
             toast.error('Failed to logout');
             throw error;
@@ -423,21 +400,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     useEffect(() => {
         let mounted = true;
 
-        const initializeAuth = async () => {
+        const initializeAuth = async (): Promise<void> => {
             try {
-                if (adminToken) {
+                if(adminToken) {
                     const isValid = await validateMagentoToken(adminToken);
                 
-                    if (!isValid && mounted) {
+                    if(!isValid && mounted) {
                         setMagentoToken(null);
                         setCurrentUser(null);
                         localStorage.removeItem('adminToken');
                     }
                 }
-            } catch (error) {
+            } catch(error: any) {
                 console.error('Auth initialization error:', error);
             } finally {
-                if (mounted) {
+                if(mounted) {
                     setLoading(false);
                 }
             }
@@ -446,11 +423,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         initializeAuth();
 
         return () => {
-            mounted = false;
+            mounted: any,
         };
     }, [adminToken]);
 
-    const value = {
+    const value: AuthContextType = {
         currentUser,
         loading,
         signInWithGoogle,

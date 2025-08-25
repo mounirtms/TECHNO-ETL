@@ -89,7 +89,7 @@ const ProductManagementPage = () => {
   };
 
   const handleRemoveProductId = (idToRemove) => {
-    setProductIds(prev => prev.filter(id => id !== idToRemove));
+    setProductIds(prev => prev.filter((id: any: any) => id !== idToRemove));
     toast.info(`Product ID ${idToRemove} removed`);
   };
 
@@ -110,7 +110,7 @@ const ProductManagementPage = () => {
   };
 
   const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
+    if(event.key === 'Enter') {
       handleAddProductId();
     }
   };
@@ -122,7 +122,7 @@ const ProductManagementPage = () => {
       const cacheAge = cachedData.lastUpdated ? Date.now() - cachedData.lastUpdated : Infinity;
       const cacheExpiry = 60 * 60 * 1000; // 1 hour
 
-      if (cacheAge < cacheExpiry && cachedData.attributes) {
+      if(cacheAge < cacheExpiry && cachedData.attributes) {
         console.log('Using cached data');
         return cachedData;
       }
@@ -139,7 +139,7 @@ const ProductManagementPage = () => {
 
       setCachedData(freshData);
       return freshData;
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error loading cached data:', error);
       toast.error('Failed to load cached data');
     }
@@ -166,7 +166,7 @@ const ProductManagementPage = () => {
       setProcessingResults(prev => ({ ...prev, renamed: results.renamed }));
       toast.success(`Image renaming completed: ${results.renamed} renamed, ${results.skipped} skipped`);
 
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error renaming images:', error);
       toast.error('Failed to rename images');
     } finally {
@@ -192,7 +192,7 @@ const ProductManagementPage = () => {
       setProcessingResults(prev => ({ ...prev, resized: results.resized }));
       toast.success(`Image resizing completed: ${results.resized} resized to 1200x1200`);
 
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error resizing images:', error);
       toast.error('Failed to resize images');
     } finally {
@@ -205,8 +205,7 @@ const ProductManagementPage = () => {
     loadCachedData();
   }, []);
 
-  return (
-    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', p: 2 }}>
+  return(<Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', p: 2 }}>
       {/* Enhanced Header */}
       
 
@@ -215,9 +214,7 @@ const ProductManagementPage = () => {
         <Tabs
           value={activeTab}
           onChange={(e, newValue) => setActiveTab(newValue)}
-          variant="fullWidth"
-          sx={{
-            bgcolor: 'background.paper',
+          variant: any,
             '& .MuiTab-root': {
               minHeight: 72,
               textTransform: 'none',
@@ -228,26 +225,22 @@ const ProductManagementPage = () => {
         >
           <Tab
             icon={<ProductIcon />}
-            label="Product Management"
-            iconPosition="start"
+            label: any,
             sx={{ gap: 1 }}
           />
           <Tab
             icon={<RenameIcon />}
-            label="Image Renaming"
-            iconPosition="start"
+            label: any,
             sx={{ gap: 1 }}
           />
           <Tab
             icon={<ResizeIcon />}
-            label="Image Resizing"
-            iconPosition="start"
+            label: any,
             sx={{ gap: 1 }}
           />
           <Tab
             icon={<SettingsIcon />}
-            label="Catalog Tools"
-            iconPosition="start"
+            label: any,
             sx={{ gap: 1 }}
           />
         </Tabs>
@@ -256,8 +249,7 @@ const ProductManagementPage = () => {
       {/* Tab Content */}
       <Box sx={{ flexGrow: 1 }}>
         {/* Tab Panel Component */}
-        {activeTab === 0 && (
-          <Paper sx={{ p: 3, borderRadius: 3, height: '100%' }}>
+        {activeTab ===0 && (<Paper sx={{ p: 3, borderRadius: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               Product Selection & Management
             </Typography>
@@ -286,16 +278,16 @@ const ProductManagementPage = () => {
               {/* Add Product ID Input */}
               <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
                 <TextField
-                  label="Product ID"
+                  label: any,
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Enter product ID (e.g., 1140659762)"
-                  size="small"
+                  size: any,
                   sx={{ minWidth: 200 }}
                 />
                 <Button
-                  variant="contained"
+                  variant: any,
                   onClick={handleAddProductId}
                   startIcon={<AddIcon />}
                   disabled={!inputValue.trim()}
@@ -303,53 +295,30 @@ const ProductManagementPage = () => {
                   Add
                 </Button>
                 <Button
-                  variant="outlined"
+                  variant: any,
                   onClick={handleClearAll}
                   startIcon={<ClearIcon />}
-                  disabled={productIds.length === 0}
-                  color="warning"
-                >
-                  Clear All
-                </Button>
-                <Button
-                  variant="contained"
+                  disabled={productIds?.length ===0}
+                  color: any,
                   onClick={() => setEnhancedBulkMediaDialogOpen(true)}
                   startIcon={<TransformIcon />}
-                  color="success"
-                >
-                  Professional Upload
-                </Button>
-                <Button
-                  variant="outlined"
+                  color: any,
                   onClick={() => setBulkMediaDialogOpen(true)}
                   startIcon={<ImageIcon />}
-                  color="info"
-                >
-                  Basic Upload
-                </Button>
-              </Box>
-
+                  color: any,
               {/* Current Product IDs */}
               <Box sx={{ mb: 2 }}>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Selected Product IDs ({productIds.length}):
+                  Selected Product IDs ({productIds?.length}):
                 </Typography>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {productIds.length > 0 ? (
-                    productIds.map((id) => (
+                  {productIds?.length > 0 ? (
+                    productIds.map((id: any: any) => (
                       <Chip
                         key={id}
                         label={id}
                         onDelete={() => handleRemoveProductId(id)}
-                        color="primary"
-                        variant="outlined"
-                        size="small"
-                      />
-                    ))
-                  ) : (
-                    <Typography variant="body2" color="text.secondary" fontStyle="italic">
-                      No product IDs selected. Add some above or switch to "All Products" mode.
-                    </Typography>
+                        color: any,
                   )}
                 </Box>
               </Box>
@@ -384,7 +353,7 @@ const ProductManagementPage = () => {
         )}
 
         {/* Image Renaming Tab */}
-        {activeTab === 1 && (
+        {activeTab ===1 && (
           <Paper sx={{ p: 3, borderRadius: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               Image Renaming Tool
@@ -393,7 +362,7 @@ const ProductManagementPage = () => {
               Rename camera images with ref attributes to longer descriptive names using CSV mapping
             </Typography>
 
-            <Grid container spacing={3}>
+            <Grid { ...{container: true}} spacing={3}>
               <Grid item xs={12} md={6}>
                 <Card sx={{ p: 3, textAlign: 'center' }}>
                   <RenameIcon sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
@@ -404,8 +373,7 @@ const ProductManagementPage = () => {
                     Process camera images and rename them using CSV reference mapping
                   </Typography>
                   <Button
-                    variant="contained"
-                    size="large"
+                    variant: any,
                     onClick={handleRenameImages}
                     disabled={imageProcessing.renaming}
                     startIcon={imageProcessing.renaming ? <CircularProgress size={20} /> : <RenameIcon />}
@@ -426,7 +394,7 @@ const ProductManagementPage = () => {
                       Renamed Images: {processingResults.renamed}
                     </Typography>
                     <LinearProgress
-                      variant="determinate"
+                      variant: any,
                       value={processingResults.renamed > 0 ? (processingResults.renamed / 100) * 100 : 0}
                       sx={{ mt: 1 }}
                     />
@@ -443,7 +411,7 @@ const ProductManagementPage = () => {
         )}
 
         {/* Image Resizing Tab */}
-        {activeTab === 2 && (
+        {activeTab ===2 && (
           <Paper sx={{ p: 3, borderRadius: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               Image Resizing Tool
@@ -452,7 +420,7 @@ const ProductManagementPage = () => {
               Resize images to 1200x1200 pixels with white background padding (preserves all content)
             </Typography>
 
-            <Grid container spacing={3}>
+            <Grid { ...{container: true}} spacing={3}>
               <Grid item xs={12} md={6}>
                 <Card sx={{ p: 3, textAlign: 'center' }}>
                   <ResizeIcon sx={{ fontSize: 48, color: 'info.main', mb: 2 }} />
@@ -463,9 +431,7 @@ const ProductManagementPage = () => {
                     Convert images to 1200x1200 format with aspect ratio preservation
                   </Typography>
                   <Button
-                    variant="contained"
-                    color="info"
-                    size="large"
+                    variant: any,
                     onClick={handleResizeImages}
                     disabled={imageProcessing.resizing}
                     startIcon={imageProcessing.resizing ? <CircularProgress size={20} /> : <ResizeIcon />}
@@ -494,9 +460,9 @@ const ProductManagementPage = () => {
                       Resized Images: {processingResults.resized}
                     </Typography>
                     <LinearProgress
-                      variant="determinate"
+                      variant: any,
                       value={processingResults.resized > 0 ? (processingResults.resized / 100) * 100 : 0}
-                      color="info"
+                      color: any,
                       sx={{ mt: 1 }}
                     />
                   </Box>
@@ -507,7 +473,7 @@ const ProductManagementPage = () => {
         )}
 
         {/* Catalog Tools Tab */}
-        {activeTab === 3 && (
+        {activeTab ===3 && (
           <Paper sx={{ p: 3, borderRadius: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               Catalog Management Tools
@@ -516,7 +482,7 @@ const ProductManagementPage = () => {
               Advanced tools for managing product attributes, brands, and categories with caching
             </Typography>
 
-            <Grid container spacing={3}>
+            <Grid { ...{container: true}} spacing={3}>
               <Grid item xs={12} md={4}>
                 <Card sx={{ p: 3, textAlign: 'center' }}>
                   <CategoryIcon sx={{ fontSize: 48, color: 'success.main', mb: 2 }} />
@@ -573,7 +539,7 @@ const ProductManagementPage = () => {
                 }
               </Typography>
               <Button
-                variant="text"
+                variant: any,
                 onClick={loadCachedData}
                 sx={{ mt: 1 }}
               >
@@ -588,10 +554,10 @@ const ProductManagementPage = () => {
       <EnhancedBulkMediaUploadDialog
         open={enhancedBulkMediaDialogOpen}
         onClose={() => setEnhancedBulkMediaDialogOpen(false)}
-        onComplete={(results) => {
+        onComplete: any,
           console.log('Enhanced bulk media upload completed:', results);
-          const successful = results.filter(r => r.status === 'success').length;
-          const failed = results.filter(r => r.status === 'error').length;
+          const successful = results.filter((r: any: any) => r.status === 'success')?.length;
+          const failed = results.filter((r: any: any) => r.status === 'error')?.length;
           toast.success(`Professional upload completed: ${successful} successful, ${failed} failed`);
           setEnhancedBulkMediaDialogOpen(false);
         }}
@@ -601,9 +567,9 @@ const ProductManagementPage = () => {
       <BulkMediaUploadDialog
         open={bulkMediaDialogOpen}
         onClose={() => setBulkMediaDialogOpen(false)}
-        onComplete={(results) => {
+        onComplete: any,
           console.log('Basic bulk media upload completed:', results);
-          toast.success(`Media upload completed: ${results.filter(r => r.status === 'success').length} successful`);
+          toast.success(`Media upload completed: ${results.filter((r: any: any) => r.status === 'success')?.length} successful`);
           setBulkMediaDialogOpen(false);
         }}
       />

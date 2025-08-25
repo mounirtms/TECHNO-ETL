@@ -1,3 +1,4 @@
+import React from 'react';
 /**
  * Dashboard API Service - Ultra-Advanced Edition
  * Optimized API calls with intelligent routing, caching, monitoring, and error recovery
@@ -18,13 +19,12 @@ const api = axios.create({
 });
 
 // Advanced request interceptor with performance tracking
-api.interceptors.request.use(
-  (config) => {
+api.interceptors.request.use((config) => {
     config.metadata = { 
       startTime: Date.now(),
       requestId: `req_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
     };
-    console.log(`🚀 API Request [${config.metadata.requestId}]: ${config.method?.toUpperCase()} ${config.url}`);
+    console.log(`🚀 API Request [${config?.metadata.requestId}]: ${config?.method?.toUpperCase()} ${config.url}`);
     return config;
   },
   (error) => {
@@ -34,10 +34,9 @@ api.interceptors.request.use(
 );
 
 // Advanced response interceptor with intelligent error handling
-api.interceptors.response.use(
-  (response) => {
-    const duration = Date.now() - response.config.metadata.startTime;
-    const requestId = response.config.metadata.requestId;
+api.interceptors.response.use((response) => {
+    const duration = Date.now() - response.config?.metadata.startTime;
+    const requestId = response.config?.metadata.requestId;
     console.log(`✅ API Response [${requestId}]: ${response.status} ${response.config.url} (${duration}ms)`);
     
     // Add performance metadata
@@ -51,7 +50,7 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    const duration = error.config?.metadata ? Date.now() - error.config.metadata.startTime : 0;
+    const duration = error.config?.metadata ? Date.now() - error.config?.metadata.startTime : 0;
     const requestId = error.config?.metadata?.requestId || 'unknown';
     console.error(`❌ API Error [${requestId}]: ${error.config?.url} (${duration}ms)`, error.message);
     
@@ -95,14 +94,14 @@ class DashboardApiService {
   /**
    * Intelligent service routing based on endpoint type
    */
-  getServiceRoute(serviceType) {
+  getServiceRoute(serviceType: any) {
     return this.serviceRoutes[serviceType] || this.serviceRoutes.dashboard;
   }
 
   /**
    * Advanced request wrapper with automatic routing and error handling
    */
-  async makeRequest(serviceType, endpoint, options = {}) {
+  async makeRequest(serviceType, endpoint, options: any = {}) {
     const route = this.getServiceRoute(serviceType);
     const fullUrl = `${route}${endpoint}`;
     
@@ -111,15 +110,15 @@ class DashboardApiService {
     try {
       const response = await api({
         url: fullUrl,
-        method: options.method || 'GET',
-        data: options.data,
-        params: options.params,
+        method: options?.method || 'GET',
+        data: options?.data,
+        params: options?.params,
         ...options
       });
       
-      this.performanceMetrics.totalDuration += response.metadata.duration;
+      this.performanceMetrics.totalDuration += response?.metadata.duration;
       return response;
-    } catch (error) {
+    } catch(error: any) {
       this.performanceMetrics.errors++;
       throw error;
     }
@@ -128,13 +127,15 @@ class DashboardApiService {
   /**
    * Ultra-advanced cached data retrieval with intelligent cache management
    */
-  async getCachedData(key, fetchFunction, cacheTime = this.cacheTimeout) {
+  async getCachedData(key, fetchFunction, cacheTime: any = this.cacheTimeout ) {
     const cached = this.cache.get(key);
     
     if (cached && Date.now() - cached.timestamp < cacheTime) {
       console.log(`📦 Cache hit: ${key}`);
-      this.performanceMetrics.cacheHits++;
-      return { ...cached.data, cached: true };
+      if (this.performanceMetrics) {
+        this.performanceMetrics.cacheHits++;
+      }
+      return { data: cached.data, cached: true };
     }
 
     try {
@@ -145,11 +146,11 @@ class DashboardApiService {
       });
       console.log(`🔄 Cache updated: ${key}`);
       return { ...data, cached: false };
-    } catch (error) {
+    } catch(error: any) {
       // Return stale cache if available during errors
-      if (cached) {
+      if(cached) {
         console.warn(`⚠️ Using stale cache for ${key} due to error:`, error.message);
-        return { ...cached.data, cached: true, stale: true };
+        return { cacheddata, cached: true, stale: true };
       }
       throw error;
     }
@@ -161,14 +162,14 @@ class DashboardApiService {
   async getDashboardStats() {
     return this.getCachedData('dashboard-stats', async () => {
       const response = await this.makeRequest('task', '/stats');
-      return response.data;
+      return response?.data;
     });
   }
 
   /**
    * Get recent orders through optimized Magento proxy
    */
-  async getRecentOrders(page = 1, limit = 10) {
+  async getRecentOrders(page = 1, limit: any = 10 ) {
     const cacheKey = `orders-${page}-${limit}`;
     return this.getCachedData(cacheKey, async () => {
       const response = await this.makeRequest('magento', '/orders', {
@@ -177,7 +178,7 @@ class DashboardApiService {
           'searchCriteria[currentPage]': page
         }
       });
-      return response.data;
+      return response?.data;
     }, 2 * 60 * 1000); // 2 minutes cache for orders
   }
 
@@ -191,7 +192,7 @@ class DashboardApiService {
           'searchCriteria[pageSize]': 1
         }
       });
-      return response.data;
+      return response?.data;
     });
   }
 
@@ -205,7 +206,7 @@ class DashboardApiService {
           'searchCriteria[pageSize]': 1
         }
       });
-      return response.data;
+      return response?.data;
     });
   }
 
@@ -221,8 +222,8 @@ class DashboardApiService {
       // Clear related cache
       this.clearCache(['dashboard-stats', 'product-stats']);
       
-      return response.data;
-    } catch (error) {
+      return response?.data;
+    } catch(error: any) {
       throw new Error(`Price sync failed: ${error.message}`);
     }
   }
@@ -239,8 +240,8 @@ class DashboardApiService {
       // Clear related cache
       this.clearCache(['dashboard-stats', 'product-stats']);
       
-      return response.data;
-    } catch (error) {
+      return response?.data;
+    } catch(error: any) {
       throw new Error(`Inventory sync failed: ${error.message}`);
     }
   }
@@ -251,7 +252,7 @@ class DashboardApiService {
   async getSyncStatus() {
     return this.getCachedData('sync-status', async () => {
       const response = await this.makeRequest('mdm', '/sources');
-      return response.data;
+      return response?.data;
     }, 30 * 1000); // 30 seconds cache for sync status
   }
 
@@ -262,12 +263,11 @@ class DashboardApiService {
     try {
       const response = await this.makeRequest('health', '');
       
-      return {
-        ...response.data,
+      return { ...response?.data,
         performanceMetrics: this.getPerformanceMetrics(),
         timestamp: new Date().toISOString()
       };
-    } catch (error) {
+    } catch(error: any) {
       return {
         status: 'unhealthy',
         error: error.message,
@@ -281,11 +281,11 @@ class DashboardApiService {
    * Clear specific cache entries
    */
   clearCache(keys = []) {
-    if (keys.length === 0) {
+    if(keys.length ===0) {
       this.cache.clear();
       console.log('🗑️ All cache cleared');
     } else {
-      keys.forEach(key => {
+      keys.forEach((key) => {
         this.cache.delete(key);
         console.log(`🗑️ Cache cleared: ${key}`);
       });
@@ -305,11 +305,10 @@ class DashboardApiService {
       : 0;
     
     const cacheHitRate = this.performanceMetrics.requests > 0 
-      ? (this.performanceMetrics.cacheHits / this.performanceMetrics.requests) * 100 
+      ? (this.performanceMetrics?.cacheHits / this.performanceMetrics.requests) * 100 
       : 0;
 
-    return {
-      ...this.performanceMetrics,
+    return { ...this.performanceMetrics,
       avgDuration: Math.round(avgDuration),
       errorRate: Math.round(errorRate * 100) / 100,
       cacheHitRate: Math.round(cacheHitRate * 100) / 100,
@@ -324,10 +323,10 @@ class DashboardApiService {
     const stats = {
       size: this.cache.size,
       keys: Array.from(this.cache.keys()),
-      entries: Array.from(this.cache.entries()).map(([key, value]) => ({
+      entries: Array.from(this.cache.entries()).map(([key: any: any, value]: any: any) => ({
         key,
         age: Date.now() - value.timestamp,
-        size: JSON.stringify(value.data).length
+        size: JSON.stringify(value?.data).length
       }))
     };
     return stats;
@@ -358,7 +357,7 @@ class DashboardApiService {
         performanceMetrics: this.getPerformanceMetrics(),
         timestamp: new Date().toISOString()
       };
-    } catch (error) {
+    } catch(error: any) {
       console.error('❌ Dashboard batch fetch failed:', error);
       throw error;
     }

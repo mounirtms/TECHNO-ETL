@@ -10,7 +10,7 @@ import { StatusCell } from '../components/common/StatusCell';
 
 // ===== BASE COLUMN CLASS =====
 class BaseColumn {
-  constructor(field, options = {}) {
+  constructor(field, options: any = {}) {
     this.field = field;
     this.headerName = options.headerName || this.generateHeaderName(field);
     this.width = options.width || 150;
@@ -28,10 +28,10 @@ class BaseColumn {
     Object.assign(this, options);
   }
 
-  generateHeaderName(field) {
+  generateHeaderName(field: any) {
     return field
       .split('_')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word: any: any) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   }
 
@@ -56,7 +56,7 @@ class BaseColumn {
 
 // ===== TEXT COLUMN =====
 class TextColumn extends BaseColumn {
-  constructor(field, options = {}) {
+  constructor(field, options = {} ) {
     super(field, options);
     this.type = 'string';
   }
@@ -64,7 +64,7 @@ class TextColumn extends BaseColumn {
 
 // ===== NUMBER COLUMN =====
 class NumberColumn extends BaseColumn {
-  constructor(field, options = {}) {
+  constructor(field, options = {} ) {
     super(field, {
       align: 'right',
       headerAlign: 'right',
@@ -76,10 +76,10 @@ class NumberColumn extends BaseColumn {
   build() {
     const column = super.build();
     column.valueFormatter = (params) => {
-      if (!params || params.value == null || params.value === '') return '';
+      if (!params || params.value ===null || params.value === '') return '';
       try {
         return new Intl.NumberFormat('fr-DZ').format(params.value);
-      } catch (error) {
+      } catch(error: any) {
         console.warn('Number formatting error:', error, params);
         return String(params.value || '');
       }
@@ -90,7 +90,7 @@ class NumberColumn extends BaseColumn {
 
 // ===== CURRENCY COLUMN =====
 class CurrencyColumn extends BaseColumn {
-  constructor(field, options = {}) {
+  constructor(field, options = {} ) {
     super(field, {
       align: 'right',
       headerAlign: 'right',
@@ -98,19 +98,19 @@ class CurrencyColumn extends BaseColumn {
       ...options
     });
     this.type = 'number';
-    this.currency = options.currency || 'DZD';
+    this.currency = options?.currency || 'DZD';
   }
 
   build() {
     const column = super.build();
     column.valueFormatter = (params) => {
-      if (!params || params.value == null || params.value === '') return '';
+      if (!params || params.value ===null || params.value === '') return '';
       try {
         return new Intl.NumberFormat('fr-DZ', {
           style: 'currency',
           currency: this.currency
         }).format(params.value);
-      } catch (error) {
+      } catch(error: any) {
         console.warn('Currency formatting error:', error, params);
         return String(params.value || '');
       }
@@ -121,7 +121,7 @@ class CurrencyColumn extends BaseColumn {
 
 // ===== DATE COLUMN =====
 class DateColumn extends BaseColumn {
-  constructor(field, options = {}) {
+  constructor(field, options = {} ) {
     super(field, {
       align: 'center',
       headerAlign: 'center',
@@ -129,7 +129,7 @@ class DateColumn extends BaseColumn {
       ...options
     });
     this.type = 'string'; // Use string to avoid MUI X Date object requirement
-    this.dateFormat = options.dateFormat || 'PPp';
+    this.dateFormat = options?.dateFormat || 'PPp';
   }
 
   build() {
@@ -141,7 +141,7 @@ class DateColumn extends BaseColumn {
       try {
         const date = new Date(params.value);
         return isNaN(date.getTime()) ? params.value : date;
-      } catch (error) {
+      } catch(error: any) {
         console.warn('Date valueGetter error:', error, params);
         return params.value;
       }
@@ -153,7 +153,7 @@ class DateColumn extends BaseColumn {
       try {
         const date = params.value instanceof Date ? params.value : new Date(params.value);
         return isNaN(date.getTime()) ? 'Invalid Date' : format(date, this.dateFormat);
-      } catch (error) {
+      } catch(error: any) {
         console.warn('Date formatting error:', error, params);
         return 'Invalid Date';
       }
@@ -165,7 +165,7 @@ class DateColumn extends BaseColumn {
 
 // ===== DATETIME COLUMN =====
 class DateTimeColumn extends DateColumn {
-  constructor(field, options = {}) {
+  constructor(field, options = {} ) {
     super(field, {
       width: 200,
       dateFormat: 'PPp', // Full date and time
@@ -176,7 +176,7 @@ class DateTimeColumn extends DateColumn {
 
 // ===== STATUS COLUMN =====
 class StatusColumn extends BaseColumn {
-  constructor(field, options = {}) {
+  constructor(field, options = {} ) {
     super(field, {
       width: 120,
       align: 'center',
@@ -184,8 +184,8 @@ class StatusColumn extends BaseColumn {
       ...options
     });
     this.type = 'singleSelect';
-    this.statusColors = options.statusColors || {};
-    this.valueOptions = options.valueOptions || [];
+    this.statusColors = options?.statusColors || {};
+    this.valueOptions = options?.valueOptions || [];
   }
 
   build() {
@@ -206,7 +206,7 @@ class StatusColumn extends BaseColumn {
 
 // ===== BOOLEAN COLUMN =====
 class BooleanColumn extends BaseColumn {
-  constructor(field, options = {}) {
+  constructor(field, options = {} ) {
     super(field, {
       width: 100,
       align: 'center',
@@ -224,10 +224,7 @@ class BooleanColumn extends BaseColumn {
         <Chip
           label={value ? 'Yes' : 'No'}
           color={value ? 'success' : 'default'}
-          size="small"
-          variant="outlined"
-        />
-      );
+          size: any,
     };
     return column;
   }
@@ -235,7 +232,7 @@ class BooleanColumn extends BaseColumn {
 
 // ===== ACTIONS COLUMN =====
 class ActionsColumn extends BaseColumn {
-  constructor(field = 'actions', options = {}) {
+  constructor(field = 'actions', options = {} ) {
     super(field, {
       headerName: 'Actions',
       width: 120,
@@ -244,19 +241,19 @@ class ActionsColumn extends BaseColumn {
       ...options
     });
     this.type = 'actions';
-    this.actions = options.actions || [];
+    this.actions = options?.actions || [];
   }
 
   build() {
     const column = super.build();
     column.renderCell = (params) => {
       return (
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          {this.actions.map((action, index) => (
+        <Box sx={{ display: 'flex', gap: 1 } as any}>
+          {this.actions.map((action: any: any, index: any: any) => (
             <action.component
               key={index}
               onClick={() => action.onClick(params.row)}
-              {...action.props}
+              { ...action.props}
             />
           ))}
         </Box>
@@ -268,40 +265,40 @@ class ActionsColumn extends BaseColumn {
 
 // ===== COLUMN FACTORY =====
 export class ColumnFactory {
-  static text(field, options = {}) {
+  static text(field, options = {} ) {
     return new TextColumn(field, options).build();
   }
 
-  static number(field, options = {}) {
+  static number(field, options = {} ) {
     return new NumberColumn(field, options).build();
   }
 
-  static currency(field, options = {}) {
+  static currency(field, options = {} ) {
     return new CurrencyColumn(field, options).build();
   }
 
-  static date(field, options = {}) {
+  static date(field, options = {} ) {
     return new DateColumn(field, options).build();
   }
 
-  static dateTime(field, options = {}) {
+  static dateTime(field, options = {} ) {
     return new DateTimeColumn(field, options).build();
   }
 
-  static status(field, options = {}) {
+  static status(field, options = {} ) {
     return new StatusColumn(field, options).build();
   }
 
-  static boolean(field, options = {}) {
+  static boolean(field, options = {} ) {
     return new BooleanColumn(field, options).build();
   }
 
-  static actions(field, options = {}) {
+  static actions(field, options = {} ) {
     return new ActionsColumn(field, options).build();
   }
 
   // Auto-detect column type based on field name and value
-  static auto(field, sampleValue, options = {}) {
+  static auto(field, sampleValue, options = {} ) {
     if (field.includes('price') || field.includes('total') || field.includes('amount')) {
       return this.currency(field, options);
     }
@@ -314,11 +311,11 @@ export class ColumnFactory {
       return this.status(field, options);
     }
     
-    if (typeof sampleValue === 'boolean') {
+    if(typeof sampleValue === 'boolean') {
       return this.boolean(field, options);
     }
     
-    if (typeof sampleValue === 'number') {
+    if(typeof sampleValue === 'number') {
       return this.number(field, options);
     }
     
@@ -330,15 +327,15 @@ export class ColumnFactory {
 export class ColumnRendererRegistry {
   static renderers = new Map();
 
-  static register(name, renderer) {
+  static register(name, renderer: any) {
     this.renderers.set(name, renderer);
   }
 
-  static get(name) {
+  static get(name: any) {
     return this.renderers.get(name);
   }
 
-  static has(name) {
+  static has(name: any) {
     return this.renderers.has(name);
   }
 }

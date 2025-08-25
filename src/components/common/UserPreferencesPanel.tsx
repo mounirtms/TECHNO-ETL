@@ -44,7 +44,7 @@ import {
 import { useUserSettings, useSystemPreferences } from '../../hooks/useUserSettings';
 import { languages } from '../../contexts/LanguageContext';
 
-const UserPreferencesPanel = ({ open, onClose }) => {
+const UserPreferencesPanel: React.FC<{open: any, onClose: any}> = ({ open, onClose  }) => {
   const theme = useTheme();
   const {
     currentUser,
@@ -92,10 +92,10 @@ const UserPreferencesPanel = ({ open, onClose }) => {
     setSaving(true);
     try {
       const result = await saveCurrentPreferences();
-      if (result.success) {
+      if(result.success) {
         onClose();
       }
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error saving preferences:', error);
     } finally {
       setSaving(false);
@@ -106,7 +106,7 @@ const UserPreferencesPanel = ({ open, onClose }) => {
    * Reset to defaults
    */
   const handleReset = () => {
-    if (currentUser) {
+    if(currentUser) {
       resetToSystemDefaults();
     } else {
       applySystemDefaults();
@@ -125,15 +125,10 @@ const UserPreferencesPanel = ({ open, onClose }) => {
     { value: 'large', label: 'Large' }
   ];
 
-  return (
-    <Dialog
+  return(<Dialog
       open={open}
       onClose={onClose}
-      maxWidth="md"
-      fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: 2,
+      maxWidth: any,
           maxHeight: '90vh'
         }
       }}
@@ -171,7 +166,7 @@ const UserPreferencesPanel = ({ open, onClose }) => {
               <Computer />
               System Defaults
             </Typography>
-            <Grid container spacing={2}>
+            <Grid { ...{container: true}} spacing={2}>
               <Grid item xs={12} sm={6}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Typography variant="body2" color="text.secondary">
@@ -179,7 +174,7 @@ const UserPreferencesPanel = ({ open, onClose }) => {
                   </Typography>
                   <Chip 
                     label={systemTheme} 
-                    size="small" 
+                    size: any,
                     icon={systemPrefersDark ? <Brightness4 /> : <Brightness7 />}
                   />
                 </Box>
@@ -191,7 +186,7 @@ const UserPreferencesPanel = ({ open, onClose }) => {
                   </Typography>
                   <Chip 
                     label={languages[systemLanguage]?.name || 'English'} 
-                    size="small" 
+                    size: any,
                     icon={<Language />}
                   />
                 </Box>
@@ -208,16 +203,16 @@ const UserPreferencesPanel = ({ open, onClose }) => {
               Appearance
             </Typography>
             
-            <Grid container spacing={3}>
+            <Grid { ...{container: true}} spacing={3}>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
                   <InputLabel>Theme</InputLabel>
                   <Select
                     value={mode}
-                    label="Theme"
+                    label: any,
                     onChange={(e) => handleThemeChange(e.target.value)}
                   >
-                    {themeOptions.map((option) => (
+                    {themeOptions.map((option: any: any) => (
                       <MenuItem key={option.value} value={option.value}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           {option.icon}
@@ -225,9 +220,7 @@ const UserPreferencesPanel = ({ open, onClose }) => {
                           {option.value === 'system' && (
                             <Chip 
                               label={`(${systemTheme})`} 
-                              size="small" 
-                              variant="outlined" 
-                            />
+                              size: any,
                           )}
                         </Box>
                       </MenuItem>
@@ -241,10 +234,10 @@ const UserPreferencesPanel = ({ open, onClose }) => {
                   <InputLabel>Font Size</InputLabel>
                   <Select
                     value={fontSize}
-                    label="Font Size"
+                    label: any,
                     onChange={(e) => handleFontSizeChange(e.target.value)}
                   >
-                    {fontSizeOptions.map((option) => (
+                    {fontSizeOptions.map((option: any: any) => (
                       <MenuItem key={option.value} value={option.value}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <TextFields />
@@ -271,14 +264,14 @@ const UserPreferencesPanel = ({ open, onClose }) => {
               <InputLabel>Language</InputLabel>
               <Select
                 value={currentLanguage}
-                label="Language"
+                label: any,
                 onChange={(e) => handleLanguageChange(e.target.value)}
               >
-                {Object.entries(languages).map(([code, lang]) => (
+                {Object.entries(languages).map(([code: any: any, lang]: any: any) => (
                   <MenuItem key={code} value={code}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <Typography>{lang.name}</Typography>
-                      {code === systemLanguage && (
+                      {code ===systemLanguage && (
                         <Chip label="System" size="small" variant="outlined" />
                       )}
                     </Box>
@@ -295,7 +288,7 @@ const UserPreferencesPanel = ({ open, onClose }) => {
             <Typography variant="h6" sx={{ mb: 2 }}>
               Current Settings
             </Typography>
-            <Grid container spacing={2}>
+            <Grid { ...{container: true}} spacing={2}>
               <Grid item xs={12} sm={4}>
                 <Typography variant="body2" color="text.secondary">Theme:</Typography>
                 <Typography variant="body1" sx={{ fontWeight: 500 }}>
@@ -324,11 +317,7 @@ const UserPreferencesPanel = ({ open, onClose }) => {
           <Button
             startIcon={<RestoreFromTrash />}
             onClick={handleReset}
-            color="warning"
-          >
-            Reset to Defaults
-          </Button>
-          
+            color: any,
           <Box sx={{ flexGrow: 1 }} />
           
           <Button onClick={onClose}>
@@ -337,7 +326,7 @@ const UserPreferencesPanel = ({ open, onClose }) => {
           
           {currentUser && (
             <Button
-              variant="contained"
+              variant: any,
               startIcon={<Save />}
               onClick={handleSave}
               disabled={saving || loading}

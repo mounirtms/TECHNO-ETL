@@ -66,21 +66,21 @@ const UserMenu = () => {
         try {
             await logout();
             handleClose();
-        } catch (error) {
+        } catch(error: any) {
             console.error('Error logging out:', error);
             toast.error('Failed to logout. Please try again.');
         }
     };
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' } as any}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
                 <Typography variant="subtitle1" sx={{ display: { xs: 'none', sm: 'block' } }}>
                     {currentUser?.displayName || currentUser?.email || translate('common.user')}
                 </Typography>
                 <IconButton
                     onClick={handleMenu}
-                    size="small"
+                    size: any,
                     aria-controls={open ? 'user-menu' : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
@@ -88,8 +88,7 @@ const UserMenu = () => {
                     <Avatar
                         alt={currentUser?.displayName || translate('common.user')}
                         src={currentUser?.photoURL}
-                        sx={{ 
-                            width: 32, 
+                        sx: any,
                             height: 32,
                             border: (theme) => `2px solid ${theme.palette.primary.main}`
                         }}
@@ -98,7 +97,7 @@ const UserMenu = () => {
             </Box>
             <StyledMenu
                 anchorEl={anchorEl}
-                id="user-menu"
+                id: any,
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}

@@ -17,7 +17,7 @@ const DEFAULT_LOCALE = 'ar-DZ'; // Arabic (Algeria)
  */
 export const formatCurrency = (amount, currency = DEFAULT_CURRENCY, locale = DEFAULT_LOCALE, options = {}) => {
   // Handle null, undefined, or invalid amounts
-  if (amount === null || amount === undefined || isNaN(amount)) {
+  if(amount ===null || amount ===undefined || isNaN(amount)) {
     return `0.00 ${currency}`;
   }
 
@@ -45,7 +45,7 @@ export const formatCurrency = (amount, currency = DEFAULT_CURRENCY, locale = DEF
     
     // Return with currency symbol
     return `${formattedAmount} ${currency}`;
-  } catch (error) {
+  } catch(error: any) {
     console.warn('Currency formatting error:', error);
     // Fallback formatting
     return `${numericAmount.toLocaleString('en-US', { 
@@ -64,16 +64,16 @@ export const formatCurrency = (amount, currency = DEFAULT_CURRENCY, locale = DEF
 export const formatCurrencyCompact = (amount, currency = DEFAULT_CURRENCY) => {
   const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
   
-  if (isNaN(numericAmount) || numericAmount === null || numericAmount === undefined) {
+  if (isNaN(numericAmount) || numericAmount ===null || numericAmount ===undefined) {
     return `0 ${currency}`;
   }
 
   // Format large numbers with K, M, B suffixes
-  if (numericAmount >= 1000000000) {
+  if(numericAmount >= 1000000000) {
     return `${(numericAmount / 1000000000).toFixed(1)}B ${currency}`;
-  } else if (numericAmount >= 1000000) {
+  } else if(numericAmount >= 1000000) {
     return `${(numericAmount / 1000000).toFixed(1)}M ${currency}`;
-  } else if (numericAmount >= 1000) {
+  } else if(numericAmount >= 1000) {
     return `${(numericAmount / 1000).toFixed(1)}K ${currency}`;
   } else {
     return `${numericAmount.toFixed(2)} ${currency}`;
@@ -89,7 +89,7 @@ export const formatCurrencyCompact = (amount, currency = DEFAULT_CURRENCY) => {
 export const formatPercentage = (value, decimals = 1) => {
   const numericValue = typeof value === 'string' ? parseFloat(value) : value;
   
-  if (isNaN(numericValue) || numericValue === null || numericValue === undefined) {
+  if (isNaN(numericValue) || numericValue ===null || numericValue ===undefined) {
     return '0.0%';
   }
 
@@ -105,7 +105,7 @@ export const formatPercentage = (value, decimals = 1) => {
 export const formatNumber = (value, decimals = 0) => {
   const numericValue = typeof value === 'string' ? parseFloat(value) : value;
   
-  if (isNaN(numericValue) || numericValue === null || numericValue === undefined) {
+  if (isNaN(numericValue) || numericValue ===null || numericValue ===undefined) {
     return '0';
   }
 
@@ -121,7 +121,7 @@ export const formatNumber = (value, decimals = 0) => {
  * @returns {number} Parsed number value
  */
 export const parseCurrency = (currencyString) => {
-  if (!currencyString || typeof currencyString !== 'string') {
+  if(!currencyString || typeof currencyString !== 'string') {
     return 0;
   }
 

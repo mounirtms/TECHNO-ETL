@@ -109,8 +109,7 @@ export const BASE_GRID_CONFIG = {
 
 // ===== GRID-SPECIFIC TOOLBAR CONFIGURATIONS =====
 export const GRID_TOOLBAR_CONFIGS = {
-  mdm: {
-    ...STANDARD_TOOLBAR_CONFIG,
+  mdm: { ...STANDARD_TOOLBAR_CONFIG,
     showSync: true,
     showSyncStocks: true,
     showSyncAll: true,
@@ -120,8 +119,7 @@ export const GRID_TOOLBAR_CONFIGS = {
     customActions: ['sync-selected', 'sync-stocks', 'sync-all']
   },
 
-  magentoProducts: {
-    ...STANDARD_TOOLBAR_CONFIG,
+  magentoProducts: { ...STANDARD_TOOLBAR_CONFIG,
     showAdd: true,
     showEdit: true,
     showDelete: true,
@@ -130,8 +128,7 @@ export const GRID_TOOLBAR_CONFIGS = {
     customActions: ['add', 'edit', 'delete', 'sync', 'import']
   },
 
-  magentoOrders: {
-    ...STANDARD_TOOLBAR_CONFIG,
+  magentoOrders: { ...STANDARD_TOOLBAR_CONFIG,
     showAdd: false,
     showEdit: true,
     showDelete: false,
@@ -139,8 +136,7 @@ export const GRID_TOOLBAR_CONFIGS = {
     customActions: ['edit', 'cancel', 'fulfill']
   },
 
-  magentoCustomers: {
-    ...STANDARD_TOOLBAR_CONFIG,
+  magentoCustomers: { ...STANDARD_TOOLBAR_CONFIG,
     showAdd: true,
     showEdit: true,
     showDelete: true,
@@ -148,8 +144,7 @@ export const GRID_TOOLBAR_CONFIGS = {
     customActions: ['add', 'edit', 'delete']
   },
 
-  cmsPages: {
-    ...STANDARD_TOOLBAR_CONFIG,
+  cmsPages: { ...STANDARD_TOOLBAR_CONFIG,
     showAdd: true,
     showEdit: true,
     showDelete: true,
@@ -157,8 +152,7 @@ export const GRID_TOOLBAR_CONFIGS = {
     customActions: ['add', 'edit', 'delete']
   },
 
-  sources: {
-    ...STANDARD_TOOLBAR_CONFIG,
+  sources: { ...STANDARD_TOOLBAR_CONFIG,
     showAdd: false,
     showEdit: false,
     showDelete: false,
@@ -166,8 +160,7 @@ export const GRID_TOOLBAR_CONFIGS = {
     customActions: []
   },
 
-  cegid: {
-    ...STANDARD_TOOLBAR_CONFIG,
+  cegid: { ...STANDARD_TOOLBAR_CONFIG,
     showAdd: false,
     showEdit: false,
     showDelete: false,
@@ -179,106 +172,85 @@ export const GRID_TOOLBAR_CONFIGS = {
 // ===== GRID-SPECIFIC CONFIGURATIONS =====
 export const GRID_CONFIGS = {
   // MDM Products Grid
-  mdm: {
-    ...BASE_GRID_CONFIG,
-    pagination: {
-      ...STANDARD_PAGINATION_CONFIG,
+  mdm: { ...BASE_GRID_CONFIG,
+    pagination: { ...STANDARD_PAGINATION_CONFIG,
       defaultPageSize: 50
     },
     toolbar: GRID_TOOLBAR_CONFIGS.mdm,
-    features: {
-      ...STANDARD_FEATURES,
+    features: { ...STANDARD_FEATURES,
       showStatsCards: true,
       enableBulkActions: true
     },
-    performance: {
-      ...PERFORMANCE_CONFIG,
+    performance: { ...PERFORMANCE_CONFIG,
       virtualizationThreshold: 500, // Lower threshold for MDM due to complex data
       enableProgressiveLoading: true,
       chunkSize: 25
     },
-    contextMenuActions: {
-      ...STANDARD_CONTEXT_MENU_ACTIONS,
+    contextMenuActions: { ...STANDARD_CONTEXT_MENU_ACTIONS,
       sync: { enabled: true, icon: 'sync', label: 'Sync to Magento' }
     }
   },
 
   // Magento Products Grid
-  magentoProducts: {
-    ...BASE_GRID_CONFIG,
+  magentoProducts: { ...BASE_GRID_CONFIG,
     toolbar: GRID_TOOLBAR_CONFIGS.magentoProducts,
-    features: {
-      ...STANDARD_FEATURES,
+    features: { ...STANDARD_FEATURES,
       showStatsCards: true
     },
-    performance: {
-      ...PERFORMANCE_CONFIG,
+    performance: { ...PERFORMANCE_CONFIG,
       virtualizationThreshold: 750, // Medium threshold for product grids
       enableLazyLoading: true
     },
-    contextMenuActions: {
-      ...STANDARD_CONTEXT_MENU_ACTIONS,
+    contextMenuActions: { ...STANDARD_CONTEXT_MENU_ACTIONS,
       edit: { enabled: true, icon: 'edit', label: 'Edit Product' },
       delete: { enabled: true, icon: 'delete', label: 'Delete Product' }
     }
   },
 
   // Magento Orders Grid
-  magentoOrders: {
-    ...BASE_GRID_CONFIG,
+  magentoOrders: { ...BASE_GRID_CONFIG,
     toolbar: GRID_TOOLBAR_CONFIGS.magentoOrders,
-    features: {
-      ...STANDARD_FEATURES,
+    features: { ...STANDARD_FEATURES,
       showStatsCards: true
     },
-    contextMenuActions: {
-      ...STANDARD_CONTEXT_MENU_ACTIONS,
+    contextMenuActions: { ...STANDARD_CONTEXT_MENU_ACTIONS,
       edit: { enabled: true, icon: 'edit', label: 'Edit Order' }
     }
   },
 
   // Magento Customers Grid
-  magentoCustomers: {
-    ...BASE_GRID_CONFIG,
+  magentoCustomers: { ...BASE_GRID_CONFIG,
     toolbar: GRID_TOOLBAR_CONFIGS.magentoCustomers,
-    features: {
-      ...STANDARD_FEATURES,
+    features: { ...STANDARD_FEATURES,
       showStatsCards: true
     },
-    contextMenuActions: {
-      ...STANDARD_CONTEXT_MENU_ACTIONS,
+    contextMenuActions: { ...STANDARD_CONTEXT_MENU_ACTIONS,
       edit: { enabled: true, icon: 'edit', label: 'Edit Customer' },
       delete: { enabled: true, icon: 'delete', label: 'Delete Customer' }
     }
   },
 
   // CMS Pages/Blocks Grid
-  cmsPages: {
-    ...BASE_GRID_CONFIG,
+  cmsPages: { ...BASE_GRID_CONFIG,
     toolbar: GRID_TOOLBAR_CONFIGS.cmsPages,
-    contextMenuActions: {
-      ...STANDARD_CONTEXT_MENU_ACTIONS,
+    contextMenuActions: { ...STANDARD_CONTEXT_MENU_ACTIONS,
       edit: { enabled: true, icon: 'edit', label: 'Edit Page' },
       delete: { enabled: true, icon: 'delete', label: 'Delete Page' }
     }
   },
 
   // Sources Grid
-  sources: {
-    ...BASE_GRID_CONFIG,
+  sources: { ...BASE_GRID_CONFIG,
     toolbar: GRID_TOOLBAR_CONFIGS.sources,
-    features: {
-      ...STANDARD_FEATURES,
+    features: { ...STANDARD_FEATURES,
       showStatsCards: true
     }
   },
 
   // Cegid Grid
-  cegid: {
-    ...BASE_GRID_CONFIG,
+  cegid: { ...BASE_GRID_CONFIG,
     toolbar: GRID_TOOLBAR_CONFIGS.cegid,
-    features: {
-      ...STANDARD_FEATURES,
+    features: { ...STANDARD_FEATURES,
       enableRTL: false,
       paginationMode: "client",
       defaultPageSize: 50
@@ -397,8 +369,7 @@ export const getStandardToolbarConfig = (gridType, overrides = {}) => {
  */
 export const getStandardContextMenuActions = (gridType, overrides = {}) => {
   const config = getGridConfig(gridType);
-  return {
-    ...STANDARD_CONTEXT_MENU_ACTIONS,
+  return { ...STANDARD_CONTEXT_MENU_ACTIONS,
     ...config.contextMenuActions,
     ...overrides
   };
@@ -412,50 +383,50 @@ export const validateGridConfig = (gridType, config) => {
   const warnings = [];
 
   // Required validations
-  if (!gridType) {
+  if(!gridType) {
     errors.push('Grid type is required');
-  } else if (!GRID_CONFIGS[gridType]) {
+  } else if(!GRID_CONFIGS[gridType]) {
     warnings.push(`Unknown grid type: ${gridType}. Using default configuration.`);
   }
 
-  if (!config) {
+  if(!config) {
     errors.push('Grid configuration is required');
     return { isValid: false, errors, warnings };
   }
 
   // Features validation
-  if (config.features) {
-    if (typeof config.features.enableVirtualization !== 'undefined' && typeof config.features.enableVirtualization !== 'boolean') {
+  if(config.features) {
+    if(typeof config.features.enableVirtualization !== 'undefined' && typeof config.features.enableVirtualization !== 'boolean') {
       errors.push('features.enableVirtualization must be a boolean');
     }
-    if (typeof config.features.enableCache !== 'undefined' && typeof config.features.enableCache !== 'boolean') {
+    if(typeof config.features.enableCache !== 'undefined' && typeof config.features.enableCache !== 'boolean') {
       errors.push('features.enableCache must be a boolean');
     }
   }
 
   // Toolbar validation
-  if (config.toolbar) {
+  if(config.toolbar) {
     const requiredToolbarProps = ['showRefresh', 'showSearch', 'showSettings'];
-    requiredToolbarProps.forEach(prop => {
-      if (typeof config.toolbar[prop] !== 'undefined' && typeof config.toolbar[prop] !== 'boolean') {
+    requiredToolbarProps.forEach((prop) => {
+      if(typeof config.toolbar[prop] !== 'undefined' && typeof config.toolbar[prop] !== 'boolean') {
         errors.push(`toolbar.${prop} must be a boolean`);
       }
     });
   }
 
   // Performance validation
-  if (config.performance) {
-    if (config.performance.virtualizationThreshold && typeof config.performance.virtualizationThreshold !== 'number') {
+  if(config.performance) {
+    if(config.performance.virtualizationThreshold && typeof config.performance.virtualizationThreshold !== 'number') {
       errors.push('performance.virtualizationThreshold must be a number');
     }
-    if (config.performance.cacheTimeout && typeof config.performance.cacheTimeout !== 'number') {
+    if(config.performance.cacheTimeout && typeof config.performance.cacheTimeout !== 'number') {
       errors.push('performance.cacheTimeout must be a number');
     }
   }
 
   // Pagination validation
-  if (config.pagination) {
-    if (config.pagination.defaultPageSize && typeof config.pagination.defaultPageSize !== 'number') {
+  if(config.pagination) {
+    if(config.pagination.defaultPageSize && typeof config.pagination.defaultPageSize !== 'number') {
       errors.push('pagination.defaultPageSize must be a number');
     }
     if (config.pagination.pageSizeOptions && !Array.isArray(config.pagination.pageSizeOptions)) {
@@ -464,7 +435,7 @@ export const validateGridConfig = (gridType, config) => {
   }
 
   return {
-    isValid: errors.length === 0,
+    isValid: errors.length ===0,
     errors,
     warnings
   };
@@ -478,7 +449,7 @@ export const validateGridProps = (props) => {
   const warnings = [];
 
   // Required props
-  if (!props.gridName) {
+  if(!props.gridName) {
     errors.push('gridName is required');
   }
 
@@ -491,16 +462,16 @@ export const validateGridProps = (props) => {
   }
 
   // Performance warnings
-  if (props.data && props.data.length > 1000 && !props.enableVirtualization) {
+  if(props.data && props.data.length > 1000 && !props.enableVirtualization) {
     warnings.push('Large dataset detected. Consider enabling virtualization for better performance.');
   }
 
-  if (props.columns && props.columns.length > 20) {
+  if(props.columns && props.columns.length > 20) {
     warnings.push('Many columns detected. Consider using column grouping or hiding less important columns.');
   }
 
   return {
-    isValid: errors.length === 0,
+    isValid: errors.length ===0,
     errors,
     warnings
   };
@@ -513,28 +484,28 @@ export const sanitizeGridConfig = (config) => {
   const sanitized = { ...config };
 
   // Ensure required properties exist
-  if (!sanitized.features) {
+  if(!sanitized.features) {
     sanitized.features = { ...STANDARD_FEATURES };
   }
 
-  if (!sanitized.toolbar) {
+  if(!sanitized.toolbar) {
     sanitized.toolbar = { ...STANDARD_TOOLBAR_CONFIG };
   }
 
-  if (!sanitized.pagination) {
+  if(!sanitized.pagination) {
     sanitized.pagination = { ...STANDARD_PAGINATION_CONFIG };
   }
 
-  if (!sanitized.performance) {
+  if(!sanitized.performance) {
     sanitized.performance = { ...PERFORMANCE_CONFIG };
   }
 
   // Sanitize numeric values
-  if (sanitized.pagination.defaultPageSize) {
+  if(sanitized.pagination.defaultPageSize) {
     sanitized.pagination.defaultPageSize = Math.max(1, Math.min(1000, sanitized.pagination.defaultPageSize));
   }
 
-  if (sanitized.performance.virtualizationThreshold) {
+  if(sanitized.performance.virtualizationThreshold) {
     sanitized.performance.virtualizationThreshold = Math.max(100, sanitized.performance.virtualizationThreshold);
   }
 

@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Mounir Icon with Code Symbols - Enhanced Version -->
+  <defs>
+    <!-- Icon gradient -->
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4361ee" />
+      <stop offset="50%" stop-color="#3a0ca3" />
+      <stop offset="100%" stop-color="#7209b7" />
+    </linearGradient>
+    
+    <!-- Glow effect for icon -->
+    <filter id="iconGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur"/>
+      <feFlood flood-color="#4361ee" flood-opacity="0.6" result="color"/>
+      <feComposite in="color" in2="blur" operator="in" result="glow"/>
+      <feComposite in="SourceGraphic" in2="glow" operator="over"/>
+    </filter>
+    
+    <!-- Brace symbol gradient -->
+    <linearGradient id="braceGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f72585" />
+      <stop offset="100%" stop-color="#4361ee" />
+    </linearGradient>
+    
+    <!-- Bracket symbol gradient -->
+    <linearGradient id="bracketGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4cc9f0" />
+      <stop offset="100%" stop-color="#4361ee" />
+    </linearGradient>
+    
+    <!-- Angle bracket gradient -->
+    <linearGradient id="angleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f72585" />
+      <stop offset="100%" stop-color="#7209b7" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Outer hexagon for tech feel -->
+  <polygon points="50,5 85,25 85,75 50,95 15,75 15,25" 
+           fill="none" 
+           stroke="url(#iconGradient)" 
+           stroke-width="1" 
+           opacity="0.2">
+    <animateTransform attributeName="transform" 
+                      type="rotate" 
+                      from="0 50 50" 
+                      to="360 50 50" 
+                      dur="30s" 
+                      repeatCount="indefinite"/>
+  </polygon>
+  
+  <!-- Left angle bracket < -->
+  <text x="25" y="55" 
+        font-family="'Courier New', monospace" 
+        font-size="32" 
+        font-weight="bold" 
+        fill="url(#angleGradient)" 
+        text-anchor="middle" 
+        dominant-baseline="middle"
+        opacity="0.9">
+    &lt;
+  </text>
+  
+  <!-- Left curly brace { -->
+  <text x="38" y="55" 
+        font-family="'Courier New', monospace" 
+        font-size="24" 
+        font-weight="bold" 
+        fill="url(#braceGradient)" 
+        text-anchor="middle" 
+        dominant-baseline="middle">
+    {
+  </text>
+  
+  <!-- Letter "M" -->
+  <text x="50" y="52" 
+        font-family="'Dancing Script', 'Segoe Script', cursive" 
+        font-size="32" 
+        font-weight="700" 
+        fill="url(#iconGradient)" 
+        text-anchor="middle" 
+        dominant-baseline="middle"
+        filter="url(#iconGlow)">
+    MAB
+  </text>
+  
+  <!-- Right curly brace } -->
+  <text x="62" y="55" 
+        font-family="'Courier New', monospace" 
+        font-size="24" 
+        font-weight="bold" 
+        fill="url(#braceGradient)" 
+        text-anchor="middle" 
+        dominant-baseline="middle">
+    }
+  </text>
+  
+  <!-- Right angle bracket > -->
+  <text x="75" y="55" 
+        font-family="'Courier New', monospace" 
+        font-size="32" 
+        font-weight="bold" 
+        fill="url(#angleGradient)" 
+        text-anchor="middle" 
+        dominant-baseline="middle"
+        opacity="0.9">
+    &gt;
+  </text>
+  
+  <!-- Decorative binary code pattern -->
+  <text x="50" y="85" 
+        font-family="'Courier New', monospace" 
+        font-size="6" 
+        fill="url(#bracketGradient)" 
+        text-anchor="middle"
+        opacity="0.5">
+    01001101 01000001 01000010
+  </text>
+  
+  <!-- Central glow point -->
+  <circle cx="50" cy="50" r="3" 
+          fill="url(#iconGradient)" 
+          opacity="0.7">
+    <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite"/>
+  </circle>
+</svg>

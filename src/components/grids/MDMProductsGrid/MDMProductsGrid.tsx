@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Box, LinearProgress, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -75,7 +76,7 @@ const MDMProductsGrid = () => {
         {`Syncing ${current}/${total} items...`}
       </Typography>
       <LinearProgress
-        variant="determinate"
+        variant: any,
         value={(current / total) * 100}
         sx={{ height: 8, borderRadius: 4 }}
       />
@@ -83,16 +84,16 @@ const MDMProductsGrid = () => {
   ), []);
 
   const prepareSourceItemsPayload = useCallback((gridData, sourceMappings) => {
-    return {
+    return Boolean(Boolean({
       sourceItems: gridData
-        .filter(item => item.Code_MDM && item.QteStock !== null && item.Code_Source)
-        .map(item => {
-          const sourceInfo = sourceMappings.find(s => s.code_source === item.Code_Source);
+        .filter((item: any: any) => item?.Code_MDM && item?.QteStock !== null && item.Code_Source)
+        .map((item: any: any) => {
+          const sourceInfo = sourceMappings.find(s => s.code_source ===item.Code_Source)));
           return {
-            sku: item.Code_MDM.toString(),
+            sku: item?.Code_MDM.toString(),
             source_code: sourceInfo?.magentoSource || '',
-            quantity: Math.max(0, Number(item.QteStock) || 0),
-            status: (Number(item.QteStock) || 0) > 0 ? 1 : 0
+            quantity: Math.max(0, Number(item?.QteStock) || 0),
+            status: (Number(item?.QteStock) || 0) > 0 ? 1 : 0
           };
         })
     };
@@ -103,7 +104,7 @@ const MDMProductsGrid = () => {
       const response = await magentoApi.post('inventory/source-items', { sourceItems: items });
       toast.success('Items synced successfully.');
       return response.data;
-    } catch (error) {
+    } catch(error: any) {
       console.error('Batch sync error:', error);
       toast.error(`Sync failed: ${error.message}`);
       throw error;
@@ -112,19 +113,19 @@ const MDMProductsGrid = () => {
 
   // ===== EVENT HANDLERS =====
   const onSyncHandler = useCallback(async () => {
-    if (!selectedBaseGridRows?.length) {
+    if(!selectedBaseGridRows?.length) {
       toast.warning('Please select items to sync');
       return;
     }
 
     try {
       setLoading(true);
-      const selectedData = data.filter(row =>
-        selectedBaseGridRows.includes(`${row.Source}-${row.Code_MDM}`)
+      const selectedData = data.filter((row: any: any) =>
+        selectedBaseGridRows.includes(`${row?.Source}-${row?.Code_MDM}`)
       );
 
       const payload = prepareSourceItemsPayload(selectedData, sourceMapping);
-      if (!payload.sourceItems.length) {
+      if(!payload.sourceItems.length) {
         toast.warning('No valid items to sync.');
         return;
       }
@@ -136,7 +137,7 @@ const MDMProductsGrid = () => {
       });
 
       await processBatch(payload.sourceItems);
-    } catch (error) {
+    } catch(error: any) {
       console.error('Sync failed:', error);
       toast.error('Failed to sync selected items.');
     } finally {
@@ -146,8 +147,8 @@ const MDMProductsGrid = () => {
 
   // ===== MEMOIZED VALUES =====
   const succursaleOptions = useMemo(() => {
-    const uniqueSuccursales = [...new Set(sourceMapping.map(s => s.succursale))];
-    return uniqueSuccursales.map(succ => ({
+    const uniqueSuccursales = [...new Set(sourceMapping.map((s: any: any) => s.succursale))];
+    return uniqueSuccursales.map((succ: any: any) => ({
       value: succ.toString(),
       label: `Branch ${succ}`
     }));
@@ -156,13 +157,13 @@ const MDMProductsGrid = () => {
   const sourceFilterOptions = useMemo(() => {
     const filteredSources = succursaleFilter === 'all'
       ? sourceMapping
-      : sourceMapping.filter(s => s.succursale.toString() === succursaleFilter);
+      : sourceMapping.filter((s: any: any) => s.succursale.toString() ===succursaleFilter);
 
     return [
       { value: 'all', label: 'All Sources' },
-      ...filteredSources.sort((a, b) =>
+      ...filteredSources?.sort((a, b) =>
         a.code_source.toString().localeCompare(b.code_source.toString())
-      ).map(source => ({
+      ).map((source: any: any) => ({
         value: source.code_source.toString(),
         label: source.source
       }))
@@ -178,7 +179,7 @@ const MDMProductsGrid = () => {
       type: 'string',
       sortable: true,
       filterable: true,
-      renderCell: (params) => params.value || ''
+      renderCell: (params) => params?.value || ''
     },
     {
       field: 'Code_JDE',
@@ -186,14 +187,14 @@ const MDMProductsGrid = () => {
       width: 120,
       type: 'string',
       sortable: true,
-      renderCell: (params) => params.value || ''
+      renderCell: (params) => params?.value || ''
     },
     {
       field: 'Code_Fil_JDE',
       headerName: 'JDE Fil.',
       width: 120,
       type: 'string',
-      renderCell: (params) => params.value || ''
+      renderCell: (params) => params?.value || ''
     },
     {
       field: 'TypeProd',
@@ -201,7 +202,7 @@ const MDMProductsGrid = () => {
       width: 120,
       sortable: true,
       filterable: true,
-      renderCell: (params) => params.value || ''
+      renderCell: (params) => params?.value || ''
     },
     {
       field: 'Source',
@@ -209,7 +210,7 @@ const MDMProductsGrid = () => {
       width: 150,
       sortable: true,
       filterable: true,
-      renderCell: (params) => params.value || ''
+      renderCell: (params) => params?.value || ''
     },
     {
       field: 'Succursale',
@@ -217,7 +218,7 @@ const MDMProductsGrid = () => {
       width: 100,
       type: 'number',
       sortable: true,
-      renderCell: (params) => params.value?.toString() || '0'
+      renderCell: (params) => params?.value?.toString() || '0'
     },
     {
       field: 'QteStock',
@@ -226,7 +227,7 @@ const MDMProductsGrid = () => {
       type: 'number',
       sortable: true,
       filterable: true,
-      renderCell: (params) => params.value?.toString() || '0'
+      renderCell: (params) => params?.value?.toString() || '0'
     },
     {
       field: 'Tarif',
@@ -235,14 +236,14 @@ const MDMProductsGrid = () => {
       type: 'number',
       sortable: true,
       renderCell: (params) => {
-        if (!params.value || isNaN(params.value)) return '0.00 DZD';
+        if (!params?.value || isNaN(params?.value)) return '0.00 DZD';
         try {
           return new Intl.NumberFormat('fr-DZ', {
             style: 'currency',
             currency: 'DZD'
-          }).format(params.value);
-        } catch (error) {
-          return `${params.value || 0} DZD`;
+          }).format(params?.value);
+        } catch(error: any) {
+          return `${params?.value || 0} DZD`;
         }
       }
     },
@@ -251,14 +252,14 @@ const MDMProductsGrid = () => {
       headerName: 'Received',
       width: 100,
       type: 'number',
-      renderCell: (params) => params.value?.toString() || '0'
+      renderCell: (params) => params?.value?.toString() || '0'
     },
     {
       field: 'VenteMoyen',
       headerName: 'Avg Sales',
       width: 110,
       type: 'number',
-      renderCell: (params) => (params.value || 0).toFixed(2)
+      renderCell: (params) => (params?.value || 0).toFixed(2)
     },
     {
       field: 'DateDernierMaJ',
@@ -266,11 +267,11 @@ const MDMProductsGrid = () => {
       width: 160,
       type: 'string', // Changed from 'date' to 'string' to avoid Date object requirement
       valueGetter: (params) => {
-        if (!params.value) return '';
+        if (!params?.value) return '';
         try {
-          return new Date(params.value).toLocaleDateString('fr-DZ');
-        } catch (error) {
-          return params.value?.toString() || '';
+          return new Date(params?.value).toLocaleDateString('fr-DZ');
+        } catch(error: any) {
+          return params?.value?.toString() || '';
         }
       }
     },
@@ -279,9 +280,9 @@ const MDMProductsGrid = () => {
       headerName: 'Changed',
       width: 100,
       type: 'boolean',
-      renderCell: (params) => params.value ? '✓' : ''
+      renderCell: (params) => params?.value ? '✓' : ''
     }
-  ].filter(col => columnVisibility[col.field] !== false), [columnVisibility]);
+  ].filter((col: any: any) => columnVisibility[col?.field] !== false), [columnVisibility]);
 
   // Add data validation to prevent grid crashes
   const validatedData = useMemo(() => {
@@ -290,22 +291,21 @@ const MDMProductsGrid = () => {
       return [];
     }
 
-    return data.map((item, index) => {
+    return data.map((item: any: any, index: any: any) => {
       // Ensure each item has required fields and valid data types
-      return {
-        ...item,
-        Code_MDM: item.Code_MDM || `unknown-${index}`,
-        Code_JDE: item.Code_JDE || '',
-        Code_Fil_JDE: item.Code_Fil_JDE || '',
-        TypeProd: item.TypeProd || '',
-        Source: item.Source || '',
-        Succursale: typeof item.Succursale === 'number' ? item.Succursale : 0,
-        QteStock: typeof item.QteStock === 'number' ? item.QteStock : 0,
-        Tarif: typeof item.Tarif === 'number' ? item.Tarif : 0,
-        QteReceptionner: typeof item.QteReceptionner === 'number' ? item.QteReceptionner : 0,
-        VenteMoyen: typeof item.VenteMoyen === 'number' ? item.VenteMoyen : 0,
-        DateDernierMaJ: item.DateDernierMaJ || null,
-        changed: Boolean(item.changed)
+      return { ...item,
+        Code_MDM: item?.Code_MDM || `unknown-${index}`,
+        Code_JDE: item?.Code_JDE || '',
+        Code_Fil_JDE: item?.Code_Fil_JDE || '',
+        TypeProd: item?.TypeProd || '',
+        Source: item?.Source || '',
+        Succursale: typeof item?.Succursale === 'number' ? item?.Succursale : 0,
+        QteStock: typeof item?.QteStock === 'number' ? item?.QteStock : 0,
+        Tarif: typeof item?.Tarif === 'number' ? item?.Tarif : 0,
+        QteReceptionner: typeof item?.QteReceptionner === 'number' ? item?.QteReceptionner : 0,
+        VenteMoyen: typeof item?.VenteMoyen === 'number' ? item?.VenteMoyen : 0,
+        DateDernierMaJ: item?.DateDernierMaJ || null,
+        changed: Boolean(item?.changed)
       };
     });
   }, [data]);
@@ -315,11 +315,11 @@ const MDMProductsGrid = () => {
 
   // ===== DATA FETCHING (moved up to avoid initialization issues) =====
   const fetchProducts = useCallback(async ({
-    page = 0,
-    pageSize = 25,
-    sortModel = [],
+    page: any,
+    pageSize: any,
+    sortModel: any,
     filterModel = { items: [] },
-    search = searchValue
+    search: any,
   }) => {
     setLoading(true);
     try {
@@ -333,8 +333,8 @@ const MDMProductsGrid = () => {
         succursale: succursaleFilter === 'all' ? '' : succursaleFilter || 16,
         sortField: sortParam,
         sortOrder,
-        ...filterModel.items.reduce((acc, filter) => {
-          if (filter.value) acc[filter.field] = filter.value;
+        ...filterModel.items.reduce((acc: any: any: any, filter: any: any) => {
+          if (filter?.value) acc[filter?.field] = filter?.value;
           return acc;
         }, {}),
         ...(showChangedOnly ? { changed: 0 } : {}),
@@ -370,13 +370,13 @@ const MDMProductsGrid = () => {
 
       // Calculate statistics
       const total = totalCount;
-      const inStock = processedData.filter(item => item.QteStock > 0).length;
-      const outOfStock = processedData.filter(item => item.QteStock === 0).length;
-      const lowStock = processedData.filter(item => item.QteStock > 0 && item.QteStock < 2).length;
-      const newChanges = processedData.filter(item => item.changed === 1).length;
-      const synced = processedData.filter(item => item.changed === 0).length;
-      const totalValue = processedData.reduce((acc, curr) =>
-        acc + ((curr.Tarif || 0) * (curr.QteStock || 0)), 0);
+      const inStock = processedData.filter((item: any: any) => item?.QteStock > 0).length;
+      const outOfStock = processedData.filter((item: any: any) => item?.QteStock ===0).length;
+      const lowStock = processedData.filter((item: any: any) => item?.QteStock > 0 && item?.QteStock < 2).length;
+      const newChanges = processedData.filter((item: any: any) => item?.changed ===1).length;
+      const synced = processedData.filter((item: any: any) => item?.changed ===0).length;
+      const totalValue = processedData.reduce((acc: any: any, curr: any: any) =>
+        acc + ((curr?.Tarif || 0) * (curr?.QteStock || 0)), 0);
       const averagePrice = processedData.length > 0 ? totalValue / processedData.length : 0;
 
       setStats({
@@ -392,7 +392,7 @@ const MDMProductsGrid = () => {
         averagePrice
       });
 
-    } catch (error) {
+    } catch(error: any) {
       console.error('API call failed:', error);
       setData([]);
       setStats({
@@ -435,7 +435,7 @@ const MDMProductsGrid = () => {
   // Check if data has changed (you can implement your own logic here)
   const hasChangedData = useMemo(() => {
     // For now, we'll check if there are any items with changed=true
-    return data.some(item => item.changed === true);
+    return data.some(item => item?.changed ===true);
   }, [data]);
 
   // Use standard toolbar configuration with MDM-specific overrides
@@ -468,7 +468,7 @@ const MDMProductsGrid = () => {
 
 
   const onSyncAllHandler = useCallback(async () => {
-    if (sourceFilter === 'all' || !sourceFilter) {
+    if(sourceFilter === 'all' || !sourceFilter) {
       toast.warning('Please select a specific source to sync all items.');
       return;
     }
@@ -484,7 +484,7 @@ const MDMProductsGrid = () => {
       });
       toast.dismiss();
       toast.success(`Sync for source ${sourceFilter} initiated. The process is running in the background.`);
-    } catch (error) {
+    } catch(error: any) {
       toast.dismiss();
       console.error('Sync all failed:', error);
       toast.error(`Failed to initiate sync for source ${sourceFilter}.`);
@@ -494,7 +494,7 @@ const MDMProductsGrid = () => {
   }, [sourceFilter, SyncProgressToast]);
 
   const onSyncStocksHandler = useCallback(async () => {
-    if (sourceFilter === 'all' || !sourceFilter) {
+    if(sourceFilter === 'all' || !sourceFilter) {
       toast.warning('Please select a specific source to sync stocks.');
       return;
     }
@@ -505,7 +505,7 @@ const MDMProductsGrid = () => {
         params: { sourceCode: sourceFilter }
       });
       toast.success(`Changed stocks for source ${sourceFilter} marked for sync.`);
-    } catch (error) {
+    } catch(error: any) {
       console.error('Sync stocks failed:', error);
       toast.error(`Failed to mark changed stocks for source ${sourceFilter}.`);
     } finally {
@@ -525,8 +525,7 @@ const MDMProductsGrid = () => {
   });
 
  
-  const getRowClassName = useCallback((params) =>
-    params.row.changed ? 'row-changed' : '', []);
+  const getRowClassName = useCallback((params) => params.row?.changed ? 'row-changed' : '', []);
 
   // Use react-window for virtualization if data is large
   // (Assuming UnifiedGrid supports virtualization via a prop)
@@ -536,8 +535,7 @@ const MDMProductsGrid = () => {
   const filterPanelHeight = filterPanelExpanded ? 72 : 40; // Estimate: compact panel 40px, expanded ~72px
 
   // ===== RENDER =====
-  return (
-    <>
+  return(<>
       <Box sx={{ flexShrink: 0, mb: 0.5 }}>
         <MDMFilterPanel
           succursaleOptions={succursaleOptions}
@@ -556,7 +554,7 @@ const MDMProductsGrid = () => {
       {/* Main Grid Container with Standard Layout */}
 
       <UnifiedGrid
-        {...getStandardGridProps('mdm', {
+        { ...getStandardGridProps('mdm', {
           gridName: "MDMProductsGrid",
           columns: columns,
           data: validatedData,
@@ -590,10 +588,10 @@ const MDMProductsGrid = () => {
         onColumnVisibilityChange={setColumnVisibility}
         enableFloatingActions={false}
         onSync={onSyncHandler}
-        onSelectionChange={setSelectedBaseGridRows}
+        onSelectionChange={(e) => setSelectedBaseGridRows}
         onSearch={handleSearch}
         searchableFields={['Code_MDM', 'Code_JDE', 'TypeProd', 'Source']}
-        getRowId={(row) => `${row.Source}-${row.Code_MDM}`}
+        getRowId={(row) => `${row?.Source}-${row?.Code_MDM}`}
         getRowClassName={getRowClassName}
         onError={(error) => toast.error(error.message)}
       />

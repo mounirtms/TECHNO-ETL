@@ -42,10 +42,10 @@ interface PerformanceMonitorProps {
 }
 
 const PerformanceMonitor: React.FC<PerformanceMonitorProps> = memo(({
-  componentName = 'Component',
-  showDetails = false,
-  trackMemory = false,
-  renderThreshold = 50,
+  componentName: any,
+  showDetails: any,
+  trackMemory: any,
+  renderThreshold: any,
   children
 }) => {
   const [stats, setStats] = useState<PerformanceStats>({
@@ -70,14 +70,13 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = memo(({
     renderTimes.current.push(renderTime);
     
     // Keep only last 10 render times for average calculation
-    if (renderTimes.current.length > 10) {
+    if(renderTimes.current.length > 10) {
       renderTimes.current = renderTimes.current.slice(-10);
     }
 
-    const avgTime = renderTimes.current.reduce((a, b) => a + b, 0) / renderTimes.current.length;
+    const avgTime = renderTimes.current.reduce((a: any: any, b: any: any) => a + b, 0) / renderTimes.current.length;
 
-    setStats(prev => ({
-      ...prev,
+    setStats(prev => ({ ...prev,
       renderCount: prev.renderCount + 1,
       lastRenderTime: renderTime,
       avgRenderTime: avgTime,
@@ -86,8 +85,8 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = memo(({
   });
 
   const getMemoryUsage = (): number | undefined => {
-    if ('memory' in performance) {
-      return Math.round((performance as any).memory.usedJSHeapSize / 1024 / 1024);
+    if('memory' in performance) {
+      return Math.round((performance).memory.usedJSHeapSize / 1024 / 1024);
     }
     return undefined;
   };
@@ -102,19 +101,18 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = memo(({
     return `${time.toFixed(2)}ms`;
   };
 
-  if (!showDetails) {
+  if(!showDetails) {
     return (
       <>{children}</>
     );
   }
 
-  return (
+  return Boolean(Boolean((
     <Box>
       <Card 
-        sx={{ 
-          mb: 1, 
-          bgcolor: getRenderStatus() === 'error' ? 'error.light' : 
-                  getRenderStatus() === 'warning' ? 'warning.light' : 
+        sx: any,
+          bgcolor: getRenderStatus() ==='error' ? 'error.light' : 
+                  getRenderStatus() ==='warning' ? 'warning.light' : 
                   'success.light',
           opacity: 0.9
         }}
@@ -130,8 +128,7 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = memo(({
               <Tooltip title="Render count">
                 <Chip
                   label={stats.renderCount}
-                  size="small"
-                  variant="outlined"
+                  size: any,
                   sx={{ minWidth: 40, height: 20 }}
                 />
               </Tooltip>
@@ -140,8 +137,8 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = memo(({
                 <Chip
                   icon={<TimerIcon />}
                   label={formatTime(stats.lastRenderTime)}
-                  size="small"
-                  color={getRenderStatus() as any}
+                  size: any,
+                  color={getRenderStatus()}
                   variant={stats.lastRenderTime > renderThreshold ? 'filled' : 'outlined'}
                   sx={{ height: 20 }}
                 />
@@ -152,8 +149,7 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = memo(({
                   <Chip
                     icon={<MemoryIcon />}
                     label={`${stats.memoryUsage}MB`}
-                    size="small"
-                    variant="outlined"
+                    size: any,
                     sx={{ height: 20 }}
                   />
                 </Tooltip>
@@ -161,7 +157,7 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = memo(({
             </Box>
 
             <IconButton
-              size="small"
+              size: any,
               onClick={() => setExpanded(!expanded)}
               sx={{ ml: 1 }}
             >
@@ -189,7 +185,7 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = memo(({
       
       {children}
     </Box>
-  );
+  )));
 });
 
 PerformanceMonitor.displayName = 'PerformanceMonitor';
@@ -208,7 +204,7 @@ export const usePerformanceTracking = (componentName: string) => {
     return () => {
       lastRenderTime.current = performance.now() - start;
       
-      if (lastRenderTime.current > 50) {
+      if(lastRenderTime.current > 50) {
         console.warn(
           `🐌 Slow render detected in ${componentName}: ${lastRenderTime.current.toFixed(2)}ms (render #${renderCount.current})`
         );

@@ -1,60 +1,44 @@
-// Common types for the application
+/**
+ * Techno-ETL Type System
+ * This file serves as the main entry point for all type definitions
+ */
 
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: 'admin' | 'user' | 'manager';
-  avatar?: string;
-  lastLogin?: Date;
-  settings?: UserSettings;
-}
+// Import individual types from our type files
+import type { ApiResponse as ImportedApiResponse } from './api';
+import type { User as ImportedUser } from './globalTypes';
+import type { UserSettings as ImportedUserSettings } from './globalTypes';
+import type { ApiError as ApiErrorType } from './api';
+import type { ApiError as GlobalApiError } from './globalTypes';
+import type { MuiComponentProps as GlobalMuiProps } from './globalTypes';
+import type { BaseComponentProps as BaseCompProps } from './baseComponents';
+import type { MuiComponentProps as BaseMuiProps } from './baseComponents';
+import type { DataGridProps as ComponentDataGridProps } from './components';
+import type { DialogProps as ComponentDialogProps } from './components';
+import type { DataGridProps as MUIDataGridProps } from './muiTypes';
+import type { DialogProps as MUIDialogProps } from './muiTypes';
+import type { CircuitBreakerState as ApiCircuitBreakerState } from './apiServiceTypes';
+import type { ServiceConfig as ApiServiceConfig } from './apiServiceTypes';
 
-export interface UserSettings {
-  theme: 'light' | 'dark' | 'system';
-  language: string;
-  fontSize: 'small' | 'medium' | 'large';
-  density: 'compact' | 'standard' | 'comfortable';
-  animations: boolean;
-  notifications: {
-    email: boolean;
-    push: boolean;
-    sound: boolean;
-  };
-  accessibility: {
-    highContrast: boolean;
-    largeText: boolean;
-    keyboardNavigation: boolean;
-    screenReader: boolean;
-  };
-  performance: {
-    defaultPageSize: number;
-    refreshInterval: number;
-    enableVirtualization: boolean;
-    cacheEnabled: boolean;
-    autoRefresh: boolean;
-    lazyLoading: boolean;
-  };
-  security: {
-    sessionTimeout: number;
-    twoFactorEnabled: boolean;
-    auditLogging: boolean;
-  };
-}
+// Re-export specific types with clear naming to avoid conflicts
+export type TechnoApiResponse = ImportedApiResponse;
+export type TechnoUser = ImportedUser;
+export type TechnoUserSettings = ImportedUserSettings;
+export type TechnoApiError = ApiErrorType;
+export type TechnoSystemError = GlobalApiError;
+export type TechnoDataGridProps = ComponentDataGridProps;
+export type TechnoMuiDataGrid = MUIDataGridProps;
+export type TechnoDialogProps = ComponentDialogProps;
+export type TechnoMuiDialog = MUIDialogProps;
+export type TechnoCircuitBreakerState = ApiCircuitBreakerState;
+export type TechnoServiceConfig = ApiServiceConfig;
+export type TechnoBaseComponentProps = BaseCompProps;
+export type TechnoMuiComponentProps = GlobalMuiProps;
+export type TechnoBaseMuiProps = BaseMuiProps;
 
-export interface ApiResponse<T = any> {
-  success: boolean;
-  data?: T;
-  message?: string;
-  error?: string;
-  metadata?: {
-    page?: number;
-    pageSize?: number;
-    total?: number;
-    hasMore?: boolean;
-  };
-}
+// Export all types from baseComponents directly
+export * from './baseComponents';
 
+// Export grid-specific types
 export interface GridColumn {
   id: string;
   label: string;
@@ -67,7 +51,7 @@ export interface GridColumn {
   minWidth?: number;
   maxWidth?: number;
   align?: 'left' | 'center' | 'right';
-  renderCell?: (value: any, row: any) => React.ReactNode;
+  renderCell?: (value, row) => React.ReactNode;
 }
 
 export interface GridData {
@@ -78,6 +62,7 @@ export interface GridData {
   loading?: boolean;
 }
 
+// Context types
 export interface ThemeContextType {
   mode: 'light' | 'dark' | 'system';
   colorPreset: string;
@@ -110,12 +95,12 @@ export interface Language {
 }
 
 export interface AuthContextType {
-  currentUser: User | null;
+  currentUser: TechnoUser | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<ApiResponse>;
+  login: (email: string, password: string) => Promise<TechnoApiResponse>;
   logout: () => Promise<void>;
-  register: (userData: Partial<User>) => Promise<ApiResponse>;
-  updateUser: (userData: Partial<User>) => Promise<ApiResponse>;
+  register: (userData: Partial<TechnoUser>) => Promise<TechnoApiResponse>;
+  updateUser: (userData: Partial<TechnoUser>) => Promise<TechnoApiResponse>;
   refreshToken: () => Promise<void>;
 }
 
@@ -141,107 +126,3 @@ export interface DashboardStats {
   syncStatus: 'online' | 'offline' | 'syncing' | 'error';
   lastSync: Date;
 }
-
-// Component Props Types
-export interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
-  disabled?: boolean;
-  loading?: boolean;
-  children: React.ReactNode;
-  onClick?: () => void;
-  className?: string;
-  type?: 'button' | 'submit' | 'reset';
-}
-
-export interface InputProps {
-  label?: string;
-  placeholder?: string;
-  value?: string;
-  onChange?: (value: string) => void;
-  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url';
-  required?: boolean;
-  disabled?: boolean;
-  error?: string;
-  className?: string;
-}
-
-export interface CardProps {
-  title?: string;
-  children: React.ReactNode;
-  actions?: React.ReactNode;
-  className?: string;
-  padding?: boolean;
-}
-
-export interface ModalProps {
-  open: boolean;
-  onClose: () => void;
-  title?: string;
-  children: React.ReactNode;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  showCloseButton?: boolean;
-}
-
-// Utility Types
-export type ComponentVariant = 'primary' | 'secondary' | 'success' | 'warning' | 'error';
-export type ComponentSize = 'sm' | 'md' | 'lg';
-export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
-
-// Event Handler Types
-export type EventHandler<T = void> = () => T;
-export type ValueEventHandler<T, R = void> = (value: T) => R;
-export type ChangeEventHandler<T = string> = (event: React.ChangeEvent<T>) => void;
-
-// API Types
-export interface PaginationParams {
-  page?: number;
-  pageSize?: number;
-  sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
-  search?: string;
-  filters?: Record<string, any>;
-}
-
-export interface SyncStatus {
-  status: 'online' | 'offline' | 'syncing' | 'error';
-  lastSync: Date;
-  nextSync?: Date;
-  errorMessage?: string;
-  progress?: number;
-}
-
-// Form Types
-export interface FormField {
-  name: string;
-  label: string;
-  type: 'text' | 'email' | 'password' | 'number' | 'select' | 'checkbox' | 'textarea' | 'date';
-  required?: boolean;
-  placeholder?: string;
-  options?: Array<{ value: any; label: string }>;
-  validation?: (value: any) => string | undefined;
-}
-
-export interface FormData {
-  [key: string]: any;
-}
-
-export interface FormErrors {
-  [key: string]: string;
-}
-
-// Navigation Types
-export interface NavItem {
-  id: string;
-  label: string;
-  path: string;
-  icon?: React.ComponentType;
-  children?: NavItem[];
-  badge?: string | number;
-  disabled?: boolean;
-}
-
-// Export all types for easy importing
-export * from './api';
-export * from './components';
-export * from './contexts';

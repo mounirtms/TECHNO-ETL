@@ -1,15 +1,59 @@
+import React from 'react';
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+
+/**
+ * Grid cache entry metadata interface
+ */
+interface CacheMetadata {
+  version?: number;
+  [key: string]: any;
+}
+
+/**
+ * Grid cache entry interface
+ */
+interface CacheEntry<T> {
+  data: T;
+  metadata: CacheMetadata;
+  timestamp: number;
+  version: number;
+}
+
+/**
+ * Cache stats interface
+ */
+interface CacheStats {
+  size: number;
+  memoryUsage: number;
+}
+
+/**
+ * Grid cache hook result interface
+ */
+interface GridCacheResult<T> {
+  cacheData: T | null;
+  cacheMetadata: CacheMetadata;
+  setCacheData: (data: T, metadata?: CacheMetadata) => void;
+  getCacheData: (metadata?: CacheMetadata) => T | null;
+  clearCache: (specificKey?: CacheMetadata | null) => void;
+  invalidateCache: (pattern?: string | null) => void;
+  cacheStats: CacheStats;
+}
 
 /**
  * Advanced Grid Caching Hook with Enhanced Performance
  * Provides intelligent caching with memory management, cache invalidation, and compression
+ * 
+ * @param gridName - Unique identifier for the grid
+ * @param enableCache - Flag to enable/disable caching
+ * @returns Grid cache operations and state
  */
-export const useGridCache = (gridName, enableCache = true) => {
-  const [cacheData, setCacheDataState] = useState(null);
-  const [cacheMetadata, setCacheMetadata] = useState({});
-  const cacheRef = useRef(new Map());
-  const lastAccessRef = useRef(new Map());
-  const compressionRef = useRef(new Map()); // For compressed cache entries
+export const useGridCache = <T extends any>(gridName: string, enableCache: boolean = true): GridCacheResult<T> => {
+  const [cacheData, setCacheDataState] = useState<T | null>(null);
+  const [cacheMetadata, setCacheMetadata] = useState<CacheMetadata>({});
+  const cacheRef = useRef<Map<string, CacheEntry<T>>>(new Map());
+  const lastAccessRef = useRef<Map<string, number>>(new Map());
+  const compressionRef = useRef<Map<string, any>>(new Map()); // For compressed cache entries
 
   // Memoized cache configuration for performance
   const cacheConfig = useMemo(() => ({
@@ -22,7 +66,7 @@ export const useGridCache = (gridName, enableCache = true) => {
   const { CACHE_DURATION, MAX_CACHE_SIZE, MEMORY_THRESHOLD, COMPRESSION_THRESHOLD } = cacheConfig;
 
   // Memory management
-  const estimateMemoryUsage = useCallback((data) => {
+  const estimateMemoryUsage = useCallback((data ): number => {
     return JSON.stringify(data).length * 2; // Rough estimate in bytes
   }, []);
 
@@ -40,7 +84,7 @@ export const useGridCache = (gridName, enableCache = true) => {
       const cacheEntry = cacheRef.current.get(key);
       if (cacheEntry && (now - lastAccess < CACHE_DURATION)) {
         const memoryUsage = estimateMemoryUsage(cacheEntry.data);
-        if (totalMemory + memoryUsage < MEMORY_THRESHOLD && keysToKeep.length < MAX_CACHE_SIZE) {
+        if(totalMemory + memoryUsage < MEMORY_THRESHOLD && keysToKeep.length < MAX_CACHE_SIZE) {
           keysToKeep.push(key);
           totalMemory += memoryUsage;
         }
@@ -56,7 +100,7 @@ export const useGridCache = (gridName, enableCache = true) => {
     }
   }, [estimateMemoryUsage, CACHE_DURATION, MAX_CACHE_SIZE, MEMORY_THRESHOLD]);
 
-  const setCacheData = useCallback((data, metadata = {}) => {
+  const setCacheData = useCallback((data: T, metadata: CacheMetadata = {}) => {
     if (!enableCache || !gridName) return;
     
     const cacheKey = `${gridName}_${JSON.stringify(metadata)}`;
@@ -74,20 +118,20 @@ export const useGridCache = (gridName, enableCache = true) => {
     setCacheMetadata(metadata);
     
     // Cleanup old cache entries
-    if (cacheRef.current.size > MAX_CACHE_SIZE) {
+    if(cacheRef.current.size > MAX_CACHE_SIZE) {
       cleanupOldCache();
     }
   }, [enableCache, gridName, cleanupOldCache, MAX_CACHE_SIZE]);
 
-  const getCacheData = useCallback((metadata = {}) => {
+  const getCacheData = useCallback((metadata: CacheMetadata = {}): T | null => {
     if (!enableCache || !gridName) return null;
     
     const cacheKey = `${gridName}_${JSON.stringify(metadata)}`;
     const cacheEntry = cacheRef.current.get(cacheKey);
     
-    if (cacheEntry) {
+    if(cacheEntry) {
       const now = Date.now();
-      if (now - cacheEntry.timestamp < CACHE_DURATION) {
+      if(now - cacheEntry.timestamp < CACHE_DURATION) {
         lastAccessRef.current.set(cacheKey, now);
         return cacheEntry.data;
       } else {
@@ -100,8 +144,8 @@ export const useGridCache = (gridName, enableCache = true) => {
     return null;
   }, [enableCache, gridName, CACHE_DURATION]);
 
-  const clearCache = useCallback((specificKey = null) => {
-    if (specificKey) {
+  const clearCache = useCallback((specificKey: CacheMetadata | null = null) => {
+    if(specificKey) {
       const cacheKey = `${gridName}_${JSON.stringify(specificKey)}`;
       cacheRef.current.delete(cacheKey);
       lastAccessRef.current.delete(cacheKey);
@@ -118,8 +162,8 @@ export const useGridCache = (gridName, enableCache = true) => {
     setCacheMetadata({});
   }, [gridName]);
 
-  const invalidateCache = useCallback((pattern = null) => {
-    if (pattern) {
+  const invalidateCache = useCallback((pattern: string | null = null) => {
+    if(pattern) {
       for (const key of cacheRef.current.keys()) {
         if (key.includes(pattern)) {
           cacheRef.current.delete(key);
@@ -147,7 +191,7 @@ export const useGridCache = (gridName, enableCache = true) => {
     cacheStats: {
       size: cacheRef.current.size,
       memoryUsage: Array.from(cacheRef.current.values())
-        .reduce((total, entry) => total + estimateMemoryUsage(entry.data), 0)
+        .reduce((total: any: any: any, entry: any: any) => total + estimateMemoryUsage(entry.data), 0)
     }
   };
 };

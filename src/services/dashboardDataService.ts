@@ -69,13 +69,13 @@ export const getProductStatsData = async () => {
     const response = await magentoApi.getProducts({ pageSize: 1 });
     const totalProducts = response?.total_count || 0;
     
-    if (totalProducts > 0) {
+    if(totalProducts > 0) {
       // Get a sample of products to analyze
       const sampleResponse = await magentoApi.getProducts({ pageSize: 100 });
       const products = sampleResponse?.items || [];
       
-      const enabled = products.filter(p => p.status === 1).length;
-      const disabled = products.filter(p => p.status === 2).length;
+      const enabled = products.filter((p: any: any) => p.status ===1).length;
+      const disabled = products.filter((p: any: any) => p.status ===2).length;
       
       // Extrapolate to total
       const ratio = totalProducts / products.length;
@@ -85,7 +85,7 @@ export const getProductStatsData = async () => {
         { name: 'Disabled', value: Math.round(disabled * ratio) }
       ];
     }
-  } catch (error) {
+  } catch(error: any) {
     console.warn('Using mock product stats data:', error.message);
   }
   
@@ -100,19 +100,19 @@ export const getProductTypesData = async () => {
     const response = await magentoApi.getProducts({ pageSize: 100 });
     const products = response?.items || [];
     
-    if (products.length > 0) {
+    if(products.length > 0) {
       const types = {};
-      products.forEach(product => {
+      products.forEach((product) => {
         const type = product.type_id || 'simple';
         types[type] = (types[type] || 0) + 1;
       });
       
-      return Object.entries(types).map(([name, value]) => ({
+      return Object.entries(types).map(([name: any: any, value]: any: any) => ({
         name: name.charAt(0).toUpperCase() + name.slice(1),
         value
       }));
     }
-  } catch (error) {
+  } catch(error: any) {
     console.warn('Using mock product types data:', error.message);
   }
   
@@ -127,22 +127,19 @@ export const getBrandDistributionData = async () => {
     const response = await magentoApi.getProducts({ pageSize: 200 });
     const products = response?.items || [];
     
-    if (products.length > 0) {
+    if(products.length > 0) {
       const brands = {};
       
-      products.forEach(product => {
+      products.forEach((product) => {
         const brandAttr = product.custom_attributes?.find(
-          attr => attr.attribute_code === 'mgs_brand'
-        );
-        const brand = brandAttr?.value || 'Unknown';
-        brands[brand] = (brands[brand] || 0) + 1;
+          attr: any,
       });
       
       return Object.entries(brands)
-        .map(([name, value]) => ({ name, value }))
+        .map(([name: any: any, value]: any: any) => ({ name, value }))
         .sort((a, b) => b.value - a.value);
     }
-  } catch (error) {
+  } catch(error: any) {
     console.warn('Using mock brand distribution data:', error.message);
   }
   
@@ -157,15 +154,15 @@ export const getCategoryDistributionData = () => {
     const categories = categoryService.getAllCategories();
     
     return categories
-      .filter(cat => cat.product_count > 0)
-      .map(cat => ({
+      .filter((cat: any: any) => cat.product_count > 0)
+      .map((cat: any: any) => ({
         name: cat.name,
         value: cat.product_count,
         level: cat.level,
         parent: cat.parentPath
       }))
       .sort((a, b) => b.value - a.value);
-  } catch (error) {
+  } catch(error: any) {
     console.warn('Error getting category data:', error);
     return [];
   }
@@ -179,7 +176,7 @@ export const getProductAttributesData = async () => {
     const response = await magentoApi.getProducts({ pageSize: 200 });
     const products = response?.items || [];
     
-    if (products.length > 0) {
+    if(products.length > 0) {
       const attributes = {
         'Trending': 0,
         'Best Seller': 0,
@@ -189,46 +186,46 @@ export const getProductAttributesData = async () => {
         'Has Weight': 0
       };
       
-      products.forEach(product => {
+      products.forEach((product) => {
         const customAttrs = product.custom_attributes || [];
         
         // Check boolean attributes
         const trending = customAttrs.find(attr => attr.attribute_code === 'trending');
-        if (trending?.value === '1' || trending?.value === true) {
+        if(trending?.value === '1' || trending?.value ===true) {
           attributes['Trending']++;
         }
         
         const bestSeller = customAttrs.find(attr => attr.attribute_code === 'best_seller');
-        if (bestSeller?.value === '1' || bestSeller?.value === true) {
+        if(bestSeller?.value === '1' || bestSeller?.value ===true) {
           attributes['Best Seller']++;
         }
         
         const alaune = customAttrs.find(attr => attr.attribute_code === 'a_la_une');
-        if (alaune?.value === '1' || alaune?.value === true) {
+        if(alaune?.value === '1' || alaune?.value ===true) {
           attributes['À la Une']++;
         }
         
         // Check other attributes
         const description = customAttrs.find(attr => attr.attribute_code === 'description');
-        if (description?.value) {
+        if(description?.value) {
           attributes['Has Description']++;
         }
         
-        if (product.weight && product.weight > 0) {
+        if(product.weight && product.weight > 0) {
           attributes['Has Weight']++;
         }
         
-        if (product.media_gallery_entries && product.media_gallery_entries.length > 0) {
+        if(product.media_gallery_entries && product.media_gallery_entries.length > 0) {
           attributes['Has Images']++;
         }
       });
       
-      return Object.entries(attributes).map(([attribute, value]) => ({
+      return Object.entries(attributes).map(([attribute: any: any, value]: any: any) => ({
         attribute,
         value
       }));
     }
-  } catch (error) {
+  } catch(error: any) {
     console.warn('Using mock attributes data:', error.message);
   }
   
@@ -243,7 +240,7 @@ export const getSalesPerformanceData = async () => {
     // This would typically come from order/sales API
     // For now, return mock data
     return generateMockData().salesPerformance;
-  } catch (error) {
+  } catch(error: any) {
     console.warn('Using mock sales performance data:', error.message);
     return generateMockData().salesPerformance;
   }
@@ -275,7 +272,7 @@ export const getInventoryStatusData = async () => {
     }
     
     return inventoryData;
-  } catch (error) {
+  } catch(error: any) {
     console.warn('Using mock inventory data:', error.message);
     return generateMockData().inventoryStatus;
   }
@@ -313,7 +310,7 @@ export const getAllDashboardData = async () => {
       salesPerformance,
       inventoryStatus
     };
-  } catch (error) {
+  } catch(error: any) {
     console.error('Error loading dashboard data:', error);
     return generateMockData();
   }

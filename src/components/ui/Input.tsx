@@ -53,13 +53,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const hasError = Boolean(error);
     const actualVariant = hasError ? 'error' : variant;
 
-    return (
+    return Boolean(Boolean((
       <div className={cn("space-y-2", containerClassName)}>
         {label && (
           <label 
             htmlFor={inputId}
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-          >
+            className: any,
             {label}
             {props.required && <span className="text-red-500 ml-1">*</span>}
           </label>
@@ -74,14 +73,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           
           <input
             id={inputId}
-            className={cn(
+            className: any,
               inputVariants({ variant: actualVariant, size }),
               leftIcon && "pl-10",
               rightIcon && "pr-10",
               className
             )}
             ref={ref}
-            {...props}
+            { ...props}
           />
           
           {rightIcon && (
@@ -100,7 +99,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           </p>
         )}
       </div>
-    );
+    )));
   }
 );
 

@@ -31,7 +31,7 @@ const CustomGridToolbar = ({
   filterModel = { items: [] },
   columns,
   gridName,
-  customFilters = [],
+  customFilters: any,
   onSyncAllHandler,
   onCustomFilterChange,
   currentCustomFilter,
@@ -81,16 +81,16 @@ const CustomGridToolbar = ({
   const handleRefresh = async () => {
     try {
       await onRefresh?.();
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error refreshing data:', error);
       onError?.(error);
     }
   };
   // Handle custom filter change
-  const handleCustomFilterChange = async (event) => {
+  const handleCustomFilterChange = async(event) => {
     try {
-      await onCustomFilterChange?.(event.target.value);
-    } catch (error) {
+      await onCustomFilterChange?.(event.target?.value);
+    } catch(error: any) {
       console.error('Error applying filter:', error);
       onError?.(error);
     }
@@ -99,8 +99,7 @@ const CustomGridToolbar = ({
 
 
   // --- Toolbar Layout ---
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', p: 1 }}>
+  return(<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', p: 1 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         {/* Refresh Button */}
         <TooltipWrapper title="Refresh Data">
@@ -116,23 +115,22 @@ const CustomGridToolbar = ({
         {succursaleOptions?.length > 0 && (
           <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
             <InputLabel>Succursale</InputLabel>
-            <Select value={currentSuccursale} onChange={(e) => onSuccursaleChange?.(e.target.value)} label="Succursale" sx={toolbarButtonStyle}>
-              {succursaleOptions.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
+            <Select value={currentSuccursale} onChange={(e) => onSuccursaleChange?.(e.target?.value)} label="Succursale" sx={toolbarButtonStyle}>
+              {succursaleOptions.map((option: any: any) => (
+                <MenuItem key={option?.value} value={option?.value}>
+                  {option?.label}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
         )}
           {/* Source Filter */}
-        {sourceOptions?.length > 0 && (
-          <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
+        {sourceOptions?.length > 0 && (<FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
             <InputLabel>Source</InputLabel>
-            <Select value={currentSource} onChange={(e) => onSourceChange?.(e.target.value)} label="Source" sx={toolbarButtonStyle}>
-              {sourceOptions.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
+            <Select value={currentSource} onChange={(e) => onSourceChange?.(e.target?.value)} label="Source" sx={toolbarButtonStyle}>
+              {sourceOptions.map((option: any: any) => (
+                <MenuItem key={option?.value} value={option?.value}>
+                  {option?.label}
                 </MenuItem>
               ))}
             </Select>
@@ -140,14 +138,12 @@ const CustomGridToolbar = ({
         )}
 
         {/* Inventory Changes Only Checkbox - right after Source filter */}
-        {typeof showChangedOnly !== 'undefined' && typeof setShowChangedOnly === 'function' && canSyncAll && (
-          <TooltipWrapper title="Show only products with inventory changes">
+        {typeof showChangedOnly !== 'undefined' && typeof setShowChangedOnly === 'function' && canSyncAll && (<TooltipWrapper title="Show only products with inventory changes">
             <Box sx={{ display: 'flex', alignItems: 'center', pl: 1 }}>
               <Checkbox
                 checked={showChangedOnly}
-                onChange={e => setShowChangedOnly(e.target.checked)}
-                color="primary"
-                size="small"
+                onChange={(e) => setShowChangedOnly(e.target.checked)}
+                color: any,
                 inputProps={{ 'aria-label': 'Show only products with inventory changes' }}
               />
               <Typography variant="body2" sx={{ whiteSpace: 'nowrap' }}>
@@ -157,13 +153,12 @@ const CustomGridToolbar = ({
           </TooltipWrapper>
         )}
         {/* Custom Filter Dropdown */}
-        {customFilters?.length > 0 && (
-          <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
+        {customFilters?.length > 0 && (<FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
             <InputLabel>Custom Filter</InputLabel>
-            <Select value={currentCustomFilter} onChange={handleCustomFilterChange} label="Custom Filter" sx={toolbarButtonStyle}>
-              {customFilters.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
+            <Select value={currentCustomFilter} onChange={(e) => handleCustomFilterChange} label="Custom Filter" sx={toolbarButtonStyle}>
+              {customFilters.map((option: any: any) => (
+                <MenuItem key={option?.value} value={option?.value}>
+                  {option?.label}
                 </MenuItem>
               ))}
             </Select>
@@ -183,16 +178,16 @@ const CustomGridToolbar = ({
         )}
         {/* Edit Row Button */}
         {canEdit && (
-          <TooltipWrapper title="Edit Row" disabled={selectedCount === 0}>
-            <Button variant="outlined" size="small" onClick={onEdit} sx={toolbarButtonStyle} disabled={selectedCount === 0}>
+          <TooltipWrapper title="Edit Row" disabled={selectedCount ===0}>
+            <Button variant="outlined" size="small" onClick={onEdit} sx={toolbarButtonStyle} disabled={selectedCount ===0}>
               Edit
             </Button>
           </TooltipWrapper>
         )}
         {/* Delete Row Button */}
         {canDelete && (
-          <TooltipWrapper title="Delete Row" disabled={selectedCount === 0}>
-            <Button variant="outlined" size="small" onClick={onDelete} sx={toolbarButtonStyle} disabled={selectedCount === 0}>
+          <TooltipWrapper title="Delete Row" disabled={selectedCount ===0}>
+            <Button variant="outlined" size="small" onClick={onDelete} sx={toolbarButtonStyle} disabled={selectedCount ===0}>
               Delete
             </Button>
           </TooltipWrapper>
@@ -201,8 +196,7 @@ const CustomGridToolbar = ({
         {typeof onSyncStocksHandler === 'function' && canSyncAll && (
           <TooltipWrapper title="Mark changed stocks for sync (selected source)">
             <Button
-              variant="outlined"
-              size="small"
+              variant: any,
               onClick={onSyncStocksHandler}
               sx={toolbarButtonStyle}
               startIcon={<AutorenewIcon />}
@@ -216,9 +210,7 @@ const CustomGridToolbar = ({
         {typeof onSyncAllStockHandler === 'function' && (
           <TooltipWrapper title="Sync all stock (all sources)">
             <Button
-              variant="contained"
-              color="secondary"
-              size="small"
+              variant: any,
               onClick={onSyncAllStockHandler}
               sx={toolbarButtonStyle}
               startIcon={<SyncIcon />}
@@ -229,13 +221,12 @@ const CustomGridToolbar = ({
         )}
         {/* Sync Selected Button */}
         {canSync && (
-          <TooltipWrapper title="Sync Selected Rows" disabled={selectedCount === 0}>
+          <TooltipWrapper title="Sync Selected Rows" disabled={selectedCount ===0}>
             <Button
-              variant="outlined"
-              size="small"
+              variant: any,
               onClick={onSyncHandler}
               sx={toolbarButtonStyle}
-              disabled={selectedCount === 0}
+              disabled={selectedCount ===0}
               startIcon={<SyncIcon />}
             >
               Sync
@@ -246,9 +237,7 @@ const CustomGridToolbar = ({
         {canSyncAll && (
           <TooltipWrapper title="Sync All Items for Source">
             <Button
-              variant="contained"
-              color="primary"
-              size="small"
+              variant: any,
               onClick={onSyncAllHandler}
               sx={toolbarButtonStyle}
               startIcon={<SyncIcon />}

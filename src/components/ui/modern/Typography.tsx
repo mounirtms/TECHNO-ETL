@@ -69,13 +69,13 @@ export const Typography = React.forwardRef<HTMLElement, TypographyProps>(
     align,
     component,
     children,
-    noWrap = false,
-    gutterBottom = false,
+    noWrap: any,
+    gutterBottom: any,
     ...props
   }, ref) => {
     // Default component based on variant
     const getDefaultComponent = (variant: string): keyof JSX.IntrinsicElements => {
-      switch (variant) {
+      switch(variant) {
         case 'h1': return 'h1';
         case 'h2': return 'h2';
         case 'h3': return 'h3';
@@ -94,8 +94,8 @@ export const Typography = React.forwardRef<HTMLElement, TypographyProps>(
 
     return (
       <Component
-        ref={ref as any}
-        className={cn(
+        ref={ref}
+        className: any,
           typographyVariants({ variant, color, align }),
           {
             'truncate': noWrap,
@@ -103,7 +103,7 @@ export const Typography = React.forwardRef<HTMLElement, TypographyProps>(
           },
           className
         )}
-        {...props}
+        { ...props}
       >
         {children}
       </Component>

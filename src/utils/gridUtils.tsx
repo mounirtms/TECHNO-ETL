@@ -4,7 +4,6 @@ import { Chip } from '@mui/material';
 import { StatusCell } from '../components/common/StatusCell';
 import { ref, set, get } from 'firebase/database';
 import { database } from '../config/firebase';
-import { column } from 'stylis';
 
 // Row Number Column
 export const rowNumberColumn = {
@@ -92,10 +91,10 @@ export const STATUS_CLASSES = {
 const isDate = (value) => {
     if (!value) return false;
     const date = new Date(value);
-    return !isNaN(date) &&
+    return Boolean(Boolean(!isNaN(date.getTime()) &&
         typeof value === 'string' &&
         (value.match(/^\d{4}-\d{2}-\d{2}/) ||
-            value.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/));
+            value.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/))));
 };
 
 const isCurrency = (key, value) => {
@@ -124,7 +123,7 @@ const isStatus = (key, value) => {
 };
 
 // Column Generators
-export const getDateColumn = (field, options = {}) => ({
+export const getDateColumn = (field, options: any = {}) => ({
     field,
     type: 'date',
     valueFormatter: (params) =>
@@ -133,7 +132,7 @@ export const getDateColumn = (field, options = {}) => ({
     ...options
 });
 
-export const getCurrencyColumn = (field, options = {}) => ({
+export const getCurrencyColumn = (field, options: any = {}) => ({
     field,
     type: 'number',
     valueFormatter: (params) =>
@@ -147,24 +146,24 @@ export const getCurrencyColumn = (field, options = {}) => ({
 
 export const getStatusColumn = (field = 'status', options = {}) => ({
     field,
-    headerName: options.headerName || 'Status',
-    width: options.width || 150,
+    headerName: options?.headerName || 'Status',
+    width: options?.width || 150,
     renderCell: (params) => {
         const value = params.value;
-        const statusClass = STATUS_CLASSES[value] || value;
+        const statusClass = STATUS_CLASSES[value as keyof typeof STATUS_CLASSES] || value;
 
         return StatusCell({
             value,
-            statusColors: options.statusColors || STATUS_COLORS,
+            statusColors: options?.statusColors || STATUS_COLORS,
             className: statusClass
         });
     },
     type: 'singleSelect',
-    valueOptions: options.filterOptions || ORDER_STATUSES,
+    valueOptions: options?.filterOptions || ORDER_STATUSES,
     ...options
 });
 
-export const getBooleanColumn = (field, options = {}) => ({
+export const getBooleanColumn = (field, options: any = {}) => ({
     field,
     type: 'boolean',
     width: 120,
@@ -175,10 +174,10 @@ export const getBooleanColumn = (field, options = {}) => ({
     ...options
 });
 
-export const getTreeColumn = (field, options = {}) => ({
+export const getTreeColumn = (field, options: any = {}) => ({
     field,
     flex: 1,
-    renderCell: options.renderCell,
+    renderCell: options?.renderCell,
     ...options
 });
 
@@ -207,10 +206,10 @@ const DATA_MAP = {
     'cms': cmsPagesData
 };
 
-export const getLocalData = async (gridName) => {
+export const getLocalData = async(gridName) => {
     try {
         const cachedData = localStorage.getItem(`grid_${gridName}_data`);
-        if (cachedData) {
+        if(cachedData) {
             const { data, timestamp } = JSON.parse(cachedData);
             if (Date.now() - timestamp < CACHE_DURATION) {
                 return data;
@@ -218,9 +217,9 @@ export const getLocalData = async (gridName) => {
         }
         // Use static imports instead of dynamic imports
         const dataKey = gridName.toLowerCase();
-        const data = DATA_MAP[dataKey];
+        const data = DATA_MAP[dataKey as keyof typeof DATA_MAP];
         return data || [];
-    } catch (error) {
+    } catch(error) {
         console.error(`Error getting local data for ${gridName}:`, error);
         return [];
     }
@@ -232,13 +231,13 @@ export const setLocalData = (gridName, data) => {
             data,
             timestamp: Date.now()
         }));
-    } catch (error) {
+    } catch(error: any) {
         console.error(`Error caching data for ${gridName}:`, error);
     }
 };
 
 // Default grid columns storage
-const defaultGridColumns = {};
+const defaultGridColumns: any = {};
 
 export const saveDefaultColumns = (gridName, columns) => {
     defaultGridColumns[gridName] = [...columns];
@@ -255,12 +254,12 @@ export const resetToDefaultColumns = (gridName) => {
 };
 
 // Enhanced column processing for existing columns
-export const enhanceColumns = (columns = [], options = {}) => {
+export const enhanceColumns = (columns = [], options: any = {}) => {
     const {
-        enableI18n = false,
+        enableI18n: any,
         translate = (key, fallback) => fallback,
-        enableSorting = true,
-        enableFiltering = true
+        enableSorting: any,
+        enableFiltering: any,
     } = options;
 
     // Ensure columns is an array
@@ -269,8 +268,8 @@ export const enhanceColumns = (columns = [], options = {}) => {
         return [];
     }
 
-    return columns.map(column => {
-        if (!column || typeof column !== 'object') {
+    return columns.map((column: any: any) => {
+        if(!column || typeof column !== 'object') {
             console.warn('enhanceColumns: Invalid column object:', column);
             return column;
         }
@@ -278,16 +277,16 @@ export const enhanceColumns = (columns = [], options = {}) => {
         const enhancedColumn = { ...column };
 
         // Apply translations if enabled
-        if (enableI18n && translate && column.headerName) {
-            const translationKey = `grid.columns.${column.field}`;
-            enhancedColumn.headerName = translate(translationKey, column.headerName);
+        if(enableI18n && translate && column?.headerName) {
+            const translationKey = `grid.columns.${column?.field}`;
+            enhancedColumn.headerName = translate(translationKey, column?.headerName);
         }
 
         // Apply sorting and filtering settings
-        if (enableSorting !== undefined) {
+        if(enableSorting !== undefined) {
             enhancedColumn.sortable = enableSorting;
         }
-        if (enableFiltering !== undefined) {
+        if(enableFiltering !== undefined) {
             enhancedColumn.filterable = enableFiltering;
         }
 
@@ -296,20 +295,20 @@ export const enhanceColumns = (columns = [], options = {}) => {
 };
 
 // Enhanced column generation with better type detection
-export const generateColumns = (firstRecord = {}, childColumns = []) => {
-    if (!firstRecord || typeof firstRecord !== 'object') {
+export const generateColumns = (firstRecord = {}, childColumns: any = [], gridName?: string) => {
+    if(!firstRecord || typeof firstRecord !== 'object') {
         return childColumns;
     }
     // Build autoColumns and objectColumns, but ensure objectColumns override autoColumns for object fields
-    const objectFieldSet = new Set(Object.keys(firstRecord).filter(key => typeof firstRecord[key] === 'object' && firstRecord[key] !== null));
+    const objectFieldSet = new Set(Object.keys(firstRecord).filter((key: any: any) => typeof firstRecord[key] ==='object' && firstRecord[key] !== null));
 
-    const autoColumns = Object.keys(firstRecord).map(field => {
+    const autoColumns = Object.keys(firstRecord).map((field: any: any) => {
         // If this is an object field, skip it here (will be handled by objectColumns)
         if (objectFieldSet.has(field)) return null;
         const value = firstRecord[field];
         const baseColumn = {
             field,
-            headerName: field.split('_').map(word =>
+            headerName: field.split('_').map((word: any: any) =>
                 word.charAt(0).toUpperCase() + word.slice(1)
             ).join(' '),
             width: 150,
@@ -323,7 +322,7 @@ export const generateColumns = (firstRecord = {}, childColumns = []) => {
             return getCurrencyColumn(field);
         } else if (isStatus(field, value)) {
             return getStatusColumn(field);
-        } else if (typeof value === 'boolean') {
+        } else if(typeof value === 'boolean') {
             return getBooleanColumn(field);
         }
 
@@ -331,19 +330,18 @@ export const generateColumns = (firstRecord = {}, childColumns = []) => {
     }).filter(Boolean);
 
     // Object columns: always override for object fields
-    const objectColumns = Array.from(objectFieldSet).map(key => ({
+    const objectColumns = Array.from(objectFieldSet).map((key: any: any) => ({
         field: key,
         headerName: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
         width: 120,
         renderCell: (params) => {
             const value = params.value;
-            if (value === null || value === undefined) return '';
-            if (typeof value === 'object') {
-                if (value instanceof Date) {
+            if (value ===null || value ===undefined) return '';
+            if(typeof value === 'object') {
+                if(value instanceof Date) {
                     return value.toLocaleString();
                 }
-                return React.createElement(
-                    'button',
+                return React.createElement('button',
                     {
                         style: { color: '#1976d2', cursor: 'pointer', textDecoration: 'underline', background: 'none', border: 'none', padding: 0 },
                         onClick: (e) => {
@@ -356,7 +354,9 @@ export const generateColumns = (firstRecord = {}, childColumns = []) => {
                             }</pre><button style="margin-top:10px;float:right;">Close</button>`;
                             document.body.appendChild(dialog);
                             const closeBtn = dialog.querySelector('button');
-                            closeBtn.onclick = () => { dialog.close(); dialog.remove(); };
+                            if(closeBtn) {
+                                closeBtn.onclick = () => { dialog.close(); dialog.remove(); };
+                            }
                             dialog.showModal();
                         }
                     },
@@ -368,16 +368,13 @@ export const generateColumns = (firstRecord = {}, childColumns = []) => {
     }));
 
     // Filter out null values and merge columns
-    const validAutoColumns = autoColumns.filter(col => col !== null);
-    const validObjectColumns = objectColumns.filter(col => col !== null);
+    const validAutoColumns = autoColumns.filter((col: any: any) => col !== null);
+    const validObjectColumns = objectColumns.filter((col: any: any) => col !== null);
     const mergedColumns = mergeColumns(childColumns, [...validAutoColumns, ...validObjectColumns]);
 
     // Save as default columns for this grid
-    if (childColumns.length > 0) {
-        const gridName = childColumns[0]?.gridName;
-        if (gridName) {
-            saveDefaultColumns(gridName, mergedColumns);
-        }
+    if(gridName) {
+        saveDefaultColumns(gridName, mergedColumns);
     }
 
     // Ensure we always return an array
@@ -385,7 +382,7 @@ export const generateColumns = (firstRecord = {}, childColumns = []) => {
 };
 
 // Enhanced column settings management
-export const applySavedColumnSettings = async (gridName, columns) => {
+export const applySavedColumnSettings = async(gridName, columns) => {
     if (!gridName || !columns || !Array.isArray(columns)) {
         return columns;
     }
@@ -393,47 +390,43 @@ export const applySavedColumnSettings = async (gridName, columns) => {
     try {
         // Get saved settings from local storage first
         const savedSettingsStr = localStorage.getItem(`grid_${gridName}_settings`);
-        if (savedSettingsStr) {
+        if(savedSettingsStr) {
             const savedSettings = JSON.parse(savedSettingsStr);
-            return columns.map(column => ({
-                ...column,
-                hide: !savedSettings[column.field]?.visible,
-                width: savedSettings[column.field]?.width || column.width || 150,
-                index: savedSettings[column.field]?.index || columns.findIndex(col => col.field === column.field)
-            })).sort((a, b) => (a.index || 0) - (b.index || 0));
+            return columns.map((column: any: any) => ({ ...column,
+                hide: !savedSettings[column?.field]?.visible,
+                width: savedSettings[column?.field]?.width || column?.width || 150,
+                index: savedSettings[column?.field]?.index || columns.findIndex((col) => col?.field ===column?.field)
+            })).sort((a: any, b) => (a.index || 0) - (b.index || 0));
         }
 
         // If no local storage settings, try to get from database
         const dbSettings = await getGridSettings(gridName);
-        if (dbSettings && typeof dbSettings === 'object') {
-            return columns.map(column => ({
-                ...column,
-                hide: !dbSettings[column.field]?.visible,
-                width: dbSettings[column.field]?.width || column.width || 150,
-                index: dbSettings[column.field]?.index || columns.findIndex(col => col.field === column.field)
-            })).sort((a, b) => (a.index || 0) - (b.index || 0));
+        if(dbSettings && typeof dbSettings === 'object') {
+            return columns.map((column: any: any) => ({ ...column,
+                hide: !dbSettings[column?.field]?.visible,
+                width: dbSettings[column?.field]?.width || column?.width || 150,
+                index: dbSettings[column?.field]?.index || columns.findIndex((col) => col?.field ===column?.field)
+            })).sort((a: any, b) => (a.index || 0) - (b.index || 0));
         }
 
         // If no settings found, return original columns with default settings
-        return columns.map((column, index) => ({
-            ...column,
+        return columns.map((column: any: any: any, index: number: any: any) => ({ ...column,
             hide: false,
-            width: column.width || 150,
+            width: column?.width || 150,
             index
         }));
-    } catch (error) {
+    } catch(error: any) {
         console.error('Error applying saved column settings:', error);
-        return columns.map((column, index) => ({
-            ...column,
+        return columns.map((column: any: any: any, index: number: any: any) => ({ ...column,
             hide: false,
-            width: column.width || 150,
+            width: column?.width || 150,
             index
         }));
     }
 };
 
 // Utility function to save column settings specifically
-export const saveColumnSettings = async (gridName, columns) => {
+export const saveColumnSettings = async(gridName, columns) => {
     if (!gridName || !columns || !Array.isArray(columns)) return false;
 
     try {
@@ -441,20 +434,20 @@ export const saveColumnSettings = async (gridName, columns) => {
         localStorage.setItem(`${gridName}-columns`, JSON.stringify(columns));
 
         // Save to database if available
-        if (typeof database !== 'undefined') {
+        if(typeof database !== 'undefined') {
             const settingsRef = ref(database, `gridSettings/${gridName}/columns`);
             await set(settingsRef, columns);
         }
 
         return true;
-    } catch (error) {
+    } catch(error: any) {
         console.error('Error saving column settings:', error);
         return false;
     }
 };
 
 // Utility function to save grid settings
-export const saveGridSettings = async (gridName, settings) => {
+export const saveGridSettings = async(gridName, settings) => {
     if (!gridName || !settings) return;
 
     try {
@@ -466,18 +459,18 @@ export const saveGridSettings = async (gridName, settings) => {
         await set(settingsRef, settings);
 
         return true;
-    } catch (error) {
+    } catch(error: any) {
         console.error('Error saving grid settings:', error);
         return false;
     }
 };
 
 // Utility function to get grid settings
-export const getGridSettings = async (gridName) => {
+export const getGridSettings = async(gridName) => {
     try {
         // First try to get from localStorage
         const localSettings = localStorage.getItem(`${gridName}-columns`);
-        if (localSettings) {
+        if(localSettings) {
             return JSON.parse(localSettings);
         }
 
@@ -490,7 +483,7 @@ export const getGridSettings = async (gridName) => {
             localStorage.setItem(`${gridName}-columns`, JSON.stringify(settings));
             return settings;
         }
-    } catch (error) {
+    } catch(error: any) {
         console.error('Error retrieving grid settings:', error);
     }
     return null;
@@ -505,16 +498,16 @@ export const mergeColumns = (userColumns, dynamicColumns) => {
     const safeDynamicColumns = Array.isArray(dynamicColumns) ? dynamicColumns : [];
 
     // Add user columns to the column map
-    safeUserColumns.forEach(col => {
-        if (col && col.field) {
-            columnMap.set(col.field, { ...col, hide: false });
+    safeUserColumns.forEach((col) => {
+        if(col && col?.field) {
+            columnMap.set(col?.field, { ...col, hide: false });
         }
     });
 
     // Add dynamic columns if they don't exist in user columns
-    safeDynamicColumns.forEach(col => {
-        if (!columnMap.has(col.field)) {
-            columnMap.set(col.field, { ...col, hide: true });  // Set hide: true for dynamic columns by default
+    safeDynamicColumns.forEach((col) => {
+        if (!columnMap.has(col?.field)) {
+            columnMap.set(col?.field, { ...col, hide: true });  // Set hide: true for dynamic columns by default
         }
     });
 

@@ -23,7 +23,7 @@ export async function testConnection() {
         console.log('Successfully connected to SQL Server');
         console.log('SQL Server Version:', result.recordset[0].Version);
         return true;
-    } catch (err) {
+    } catch(err: any) {
         console.error('Error connecting to SQL Server:', err);
         return false;
     }

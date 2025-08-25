@@ -41,7 +41,7 @@ import {
     generateImportReport
 } from '../../utils/catalogProcessor';
 
-const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
+const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplete }) => {
     const [activeStep, setActiveStep] = useState(0);
     const [catalogFile, setCatalogFile] = useState(null);
     const [processing, setProcessing] = useState(false);
@@ -78,7 +78,7 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
         try {
             const reader = new FileReader();
             
-            reader.onload = async (e) => {
+            reader.onload = async(e) => {
                 try {
                     const csvContent = e.target.result;
                     console.log('📁 Processing catalog file...');
@@ -91,7 +91,7 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
                     setActiveStep(2);
                     
                     toast.success(`Successfully processed ${processed.statistics.total} products!`);
-                } catch (error) {
+                } catch(error: any) {
                     console.error('Processing error:', error);
                     toast.error(`Processing failed: ${error.message}`);
                 }
@@ -105,7 +105,7 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
             
             reader.readAsText(catalogFile);
             
-        } catch (error) {
+        } catch(error: any) {
             toast.error(`Processing error: ${error.message}`);
             setProcessing(false);
         }
@@ -118,20 +118,20 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
             // Filter products based on selection
             let productsToExport = [];
             
-            if (selectedProductTypes.simple) {
+            if(selectedProductTypes.simple) {
                 productsToExport.push(...processedData.simpleProducts);
             }
             
-            if (selectedProductTypes.configurable) {
+            if(selectedProductTypes.configurable) {
                 productsToExport.push(...processedData.configurableProducts);
             }
 
-            if (productsToExport.length === 0) {
+            if(productsToExport.length ===0) {
                 toast.warning('Please select at least one product type to export');
                 return;
             }
 
-            if (createBatches) {
+            if(createBatches) {
                 // Create batched CSV files
                 const batches = createBatchedCSVs(productsToExport, batchSize);
                 
@@ -166,7 +166,7 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
 
             setActiveStep(3);
             
-            if (onProcessComplete) {
+            if(onProcessComplete) {
                 onProcessComplete({
                     totalProducts: productsToExport.length,
                     batches: createBatches ? Math.ceil(productsToExport.length / batchSize) : 1,
@@ -174,13 +174,13 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
                 });
             }
             
-        } catch (error) {
+        } catch(error: any) {
             toast.error(`CSV generation failed: ${error.message}`);
         }
     }, [processedData, selectedProductTypes, createBatches, batchSize, onProcessComplete]);
 
     const handleClose = () => {
-        if (!processing) {
+        if(!processing) {
             // Reset state
             setActiveStep(0);
             setCatalogFile(null);
@@ -192,24 +192,21 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
     };
 
     const renderStepContent = () => {
-        switch (activeStep) {
+        switch(activeStep) {
             case 0:
-                return (
-                    <Box sx={{ textAlign: 'center', py: 4 }}>
+                return(<Box sx={{ textAlign: 'center', py: 4 } as any}>
                         <input
-                            accept=".csv"
+                            accept: any,
                             style={{ display: 'none' }}
-                            id="catalog-upload"
-                            type="file"
-                            onChange={handleFileUpload}
+                            id: any,
+                            onChange={(e) => handleFileUpload}
                         />
                         <label htmlFor="catalog-upload">
                             <Button
-                                variant="contained"
-                                component="span"
+                                variant: any,
                                 startIcon={<UploadIcon />}
-                                size="large"
-                                sx={{ mb: 2 }}
+                                size: any,
+                                sx={{ mb: 2 } as any}
                             >
                                 Select Catalog CSV
                             </Button>
@@ -218,7 +215,7 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
                             Upload the export_catalog_product.csv file (20MB) to process all products
                         </Typography>
                         {catalogFile && (
-                            <Alert severity="info" sx={{ mt: 2 }}>
+                            <Alert severity="info" sx={{ mt: 2 } as any}>
                                 Selected: {catalogFile.name} ({(catalogFile.size / 1024 / 1024).toFixed(2)} MB)
                             </Alert>
                         )}
@@ -227,12 +224,12 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
 
             case 1:
                 return (
-                    <Box sx={{ py: 2 }}>
-                        <Alert severity="info" sx={{ mb: 2 }}>
-                            Ready to process {catalogFile?.name} and extract all products with proper default values
+                    <Box sx={{ py: 2 } as any}>
+                        <Alert severity="info" sx={{ mb: 2 } as any}>
+                            Ready to process {catalogFile.name} and extract all products with proper default values
                         </Alert>
                         
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 } as any}>
                             This will:
                         </Typography>
                         <List dense>
@@ -251,9 +248,9 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
                         </List>
                         
                         {processing && (
-                            <Box sx={{ mt: 2 }}>
+                            <Box sx={{ mt: 2 } as any}>
                                 <LinearProgress />
-                                <Typography variant="body2" sx={{ mt: 1 }}>
+                                <Typography variant="body2" sx={{ mt: 1 } as any}>
                                     Processing catalog... This may take a few moments for large files.
                                 </Typography>
                             </Box>
@@ -262,65 +259,46 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
                 );
 
             case 2:
-                return importReport ? (
-                    <Box sx={{ py: 2 }}>
+                return importReport ? (<Box sx={{ py: 2 } as any}>
                         {/* Processing Summary */}
-                        <Card sx={{ mb: 2 }}>
+                        <Card sx={{ mb: 2 } as any}>
                             <CardContent>
                                 <Typography variant="h6" gutterBottom>
                                     Processing Summary
                                 </Typography>
-                                <Grid container spacing={2}>
+                                <Grid { ...{container: true}} spacing={2}>
                                     <Grid item xs={6}>
                                         <Chip 
                                             icon={<CheckIcon />} 
                                             label={`${importReport.summary.totalProducts} Total Products`} 
-                                            color="primary" 
-                                            size="small" 
-                                        />
-                                    </Grid>
+                                            color: any,
                                     <Grid item xs={6}>
                                         <Chip 
                                             label={`${importReport.summary.simpleProducts} Simple`} 
-                                            variant="outlined" 
-                                            size="small" 
-                                        />
-                                    </Grid>
+                                            variant: any,
                                     <Grid item xs={6}>
                                         <Chip 
                                             label={`${importReport.summary.configurableProducts} Configurable`} 
-                                            variant="outlined" 
-                                            size="small" 
-                                        />
-                                    </Grid>
+                                            variant: any,
                                     <Grid item xs={6}>
                                         <Chip 
                                             label={`${importReport.validation.totalBrands} Brands`} 
-                                            variant="outlined" 
-                                            size="small" 
-                                        />
-                                    </Grid>
-                                </Grid>
-                            </CardContent>
-                        </Card>
-
+                                            variant: any,
                         {/* Export Options */}
-                        <Card sx={{ mb: 2 }}>
+                        <Card sx={{ mb: 2 } as any}>
                             <CardContent>
                                 <Typography variant="h6" gutterBottom>
                                     Export Options
                                 </Typography>
                                 
-                                <Box sx={{ mb: 2 }}>
+                                <Box sx={{ mb: 2 } as any}>
                                     <Typography variant="subtitle2" gutterBottom>
                                         Product Types:
                                     </Typography>
                                     <FormControlLabel
-                                        control={
-                                            <Switch
+                                        control: any,
                                                 checked={selectedProductTypes.simple}
-                                                onChange={(e) => setSelectedProductTypes(prev => ({
-                                                    ...prev,
+                                                onChange: any,
                                                     simple: e.target.checked
                                                 }))}
                                             />
@@ -328,11 +306,9 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
                                         label={`Simple Products (${importReport.summary.simpleProducts})`}
                                     />
                                     <FormControlLabel
-                                        control={
-                                            <Switch
+                                        control: any,
                                                 checked={selectedProductTypes.configurable}
-                                                onChange={(e) => setSelectedProductTypes(prev => ({
-                                                    ...prev,
+                                                onChange: any,
                                                     configurable: e.target.checked
                                                 }))}
                                             />
@@ -341,26 +317,18 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
                                     />
                                 </Box>
 
-                                <Box sx={{ mb: 2 }}>
+                                <Box sx={{ mb: 2 } as any}>
                                     <FormControlLabel
-                                        control={
-                                            <Switch
+                                        control: any,
                                                 checked={createBatches}
                                                 onChange={(e) => setCreateBatches(e.target.checked)}
                                             />
                                         }
-                                        label="Create Batch Files"
-                                    />
-                                </Box>
-
-                                {createBatches && (
-                                    <TextField
-                                        label="Batch Size"
-                                        type="number"
+                                        label: any,
                                         value={batchSize}
                                         onChange={(e) => setBatchSize(parseInt(e.target.value) || 100)}
-                                        size="small"
-                                        sx={{ width: 120 }}
+                                        size: any,
+                                        sx={{ width: 120 } as any}
                                         inputProps={{ min: 10, max: 500 }}
                                     />
                                 )}
@@ -374,9 +342,9 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
                                     Import Recommendations
                                 </Typography>
                                 <List dense>
-                                    {importReport.recommendations.map((rec, index) => (
+                                    {importReport.recommendations.map((rec: any: any, index: any: any) => (
                                         <ListItem key={index}>
-                                            <InfoIcon color="info" sx={{ mr: 1 }} />
+                                            <InfoIcon color="info" sx={{ mr: 1 } as any} />
                                             <ListItemText primary={rec} />
                                         </ListItem>
                                     ))}
@@ -388,8 +356,8 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
 
             case 3:
                 return (
-                    <Box sx={{ py: 2, textAlign: 'center' }}>
-                        <CheckIcon color="success" sx={{ fontSize: 64, mb: 2 }} />
+                    <Box sx={{ py: 2, textAlign: 'center' } as any}>
+                        <CheckIcon color="success" sx={{ fontSize: 64, mb: 2 } as any} />
                         <Typography variant="h6" gutterBottom>
                             CSV Files Generated Successfully!
                         </Typography>
@@ -405,15 +373,14 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
         }
     };
 
-    return (
-        <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+    return(<Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
             <DialogTitle>
                 Catalog CSV Processor
             </DialogTitle>
             
             <DialogContent>
-                <Stepper activeStep={activeStep} sx={{ mb: 3 }}>
-                    {steps.map((label) => (
+                <Stepper activeStep={activeStep} sx={{ mb: 3 } as any}>
+                    {steps.map((label: any: any) => (
                         <Step key={label}>
                             <StepLabel>{label}</StepLabel>
                         </Step>
@@ -425,13 +392,13 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
             
             <DialogActions>
                 <Button onClick={handleClose} disabled={processing}>
-                    {activeStep === 3 ? 'Close' : 'Cancel'}
+                    {activeStep ===3 ? 'Close' : 'Cancel'}
                 </Button>
                 
-                {activeStep === 1 && (
+                {activeStep ===1 && (
                     <Button 
                         onClick={handleProcessCatalog} 
-                        variant="contained"
+                        variant: any,
                         disabled={!catalogFile || processing}
                         startIcon={processing ? null : <BatchIcon />}
                     >
@@ -439,11 +406,10 @@ const CatalogProcessorDialog = ({ open, onClose, onProcessComplete }) => {
                     </Button>
                 )}
                 
-                {activeStep === 2 && importReport && (
+                {activeStep ===2 && importReport && (
                     <Button 
                         onClick={handleGenerateCSV} 
-                        variant="contained"
-                        color="primary"
+                        variant: any,
                         startIcon={<DownloadIcon />}
                     >
                         Generate CSV Files

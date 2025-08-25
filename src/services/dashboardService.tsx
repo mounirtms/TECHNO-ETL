@@ -1,3 +1,4 @@
+import React from 'react';
 import { subDays, parseISO, isWithinInterval, startOfDay, endOfDay, format } from 'date-fns';
 export const DATE_RANGES = {
     LAST_WEEK: 'last_week',
@@ -27,8 +28,8 @@ const getDateRange = (range) => {
 // Removed prepareChartData: not used in dashboard
 
 // --- Dashboard-specific helpers ---
-export function formatCurrency(value) {
-  if (typeof value !== 'number' || isNaN(value)) return '0.00 DZD';
+export function formatCurrency(value: any) {
+  if(typeof value !== 'number' || isNaN(value)) return '0.00 DZD';
   // Format for Algerian Dinar (DZD) without $ symbol
   return `${value.toLocaleString('en-US', {
     minimumFractionDigits: 2,
@@ -36,56 +37,56 @@ export function formatCurrency(value) {
   })} DZD`;
 }
 
-export function formatDate(date) {
+export function formatDate(date: any) {
   if (!date) return '';
-  const d = typeof date === 'number' ? new Date(date) : new Date(date);
+  const d = typeof date === 'number' ? new Date(date): new Date(date);
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
-export function prepareCustomerChartData(customers, start, end) {
+export function prepareCustomerChartData(customers, start, end: any) {
   const daily = {};
-  customers.forEach(c => {
+  customers.forEach((c) => {
     const date = c.created_at?.split('T')[0];
     if (!date) return;
     if (new Date(c.created_at) < start || new Date(c.created_at) > end) return;
     daily[date] = (daily[date] || 0) + 1;
   });
-  return Object.entries(daily).map(([date, count]) => ({ date, count }));
+  return Object.entries(daily).map(([date: any: any, count]: any: any) => ({ date, count }));
 }
 
-export function formatChartDate(date) {
+export function formatChartDate(date: any) {
   // Accepts timestamp or yyyy-mm-dd
   if (!date) return '';
   if (typeof date === 'number') return format(new Date(date), 'MMM d');
   return format(parseISO(date), 'MMM d');
 }
 
-export function formatTooltipDate(date) {
+export function formatTooltipDate(date: any) {
   if (!date) return '';
 
   try {
     // Handle timestamp numbers
-    if (typeof date === 'number') {
+    if(typeof date === 'number') {
       const dateObj = new Date(date);
       if (isNaN(dateObj.getTime())) return '';
       return format(dateObj, 'MMM d, yyyy');
     }
 
     // Handle string dates
-    if (typeof date === 'string') {
+    if(typeof date === 'string') {
       const dateObj = parseISO(date);
       if (isNaN(dateObj.getTime())) return '';
       return format(dateObj, 'MMM d, yyyy');
     }
 
     // Handle Date objects
-    if (date instanceof Date) {
+    if(date instanceof Date) {
       if (isNaN(date.getTime())) return '';
       return format(date, 'MMM d, yyyy');
     }
 
     return '';
-  } catch (error) {
+  } catch(error: any) {
     console.warn('Invalid date format:', date, error);
     return '';
   }

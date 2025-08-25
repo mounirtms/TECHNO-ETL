@@ -43,7 +43,13 @@ import bugBountyService, { BUG_CATEGORIES } from '../../services/bugBountyServic
 
 const steps = ['Bug Details', 'Steps to Reproduce', 'Environment & Contact'];
 
-const BugReportForm = ({ open, onClose, onSubmit }) => {
+interface BugReportFormProps {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (result: any) => void;
+}
+
+const BugReportForm: React.FC<BugReportFormProps> = ({ open, onClose, onSubmit }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -63,34 +69,30 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
     attachments: []
   });
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
+  const handleInputChange = (field: string, value: string): void => {
+    setFormData(prev => ({ ...prev,
       [field]: value
     }));
   };
 
-  const handleStepChange = (field, index, value) => {
+  const handleStepChange = (field: string, index: number, value: string): void => {
     const newSteps = [...formData.stepsToReproduce];
     newSteps[index] = value;
-    setFormData(prev => ({
-      ...prev,
+    setFormData(prev => ({ ...prev,
       stepsToReproduce: newSteps
     }));
   };
 
   const addStep = () => {
-    setFormData(prev => ({
-      ...prev,
+    setFormData(prev => ({ ...prev,
       stepsToReproduce: [...prev.stepsToReproduce, '']
     }));
   };
 
-  const removeStep = (index) => {
-    if (formData.stepsToReproduce.length > 1) {
-      const newSteps = formData.stepsToReproduce.filter((_, i) => i !== index);
-      setFormData(prev => ({
-        ...prev,
+  const removeStep = (index: number): void => {
+    if(formData.stepsToReproduce.length > 1) {
+      const newSteps = formData.stepsToReproduce.filter((_, i: any: any) => i !== index);
+      setFormData(prev => ({ ...prev,
         stepsToReproduce: newSteps
       }));
     }
@@ -113,8 +115,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
       // Generate tester ID
       const testerId = `tester_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
-      const bugData = {
-        ...formData,
+      const bugData = { ...formData,
         testerId,
         environment: {
           browser: navigator.userAgent,
@@ -126,7 +127,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
 
       const result = await bugBountyService.submitBug(bugData);
       
-      if (result.success) {
+      if(result.success) {
         setSuccess(`Bug report submitted successfully! Bug ID: ${result.bugId}`);
         setTimeout(() => {
           onSubmit?.(result);
@@ -135,7 +136,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
       } else {
         setError(result.error || 'Failed to submit bug report');
       }
-    } catch (err) {
+    } catch(err: any) {
       setError('An unexpected error occurred');
       console.error('Bug submission error:', err);
     } finally {
@@ -163,54 +164,47 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
     onClose();
   };
 
-  const isStepValid = (step) => {
-    switch (step) {
+  const isStepValid = (step: number): boolean => {
+    switch(step) {
       case 0:
-        return formData.title && formData.description && formData.category && formData.severity;
+        return Boolean(Boolean(Boolean(formData.title && formData.description && formData.category && formData.severity)));
       case 1:
-        return formData.stepsToReproduce.some(step => step.trim()) && 
-               formData.expectedBehavior && formData.actualBehavior;
+        return Boolean(Boolean(Boolean(formData.stepsToReproduce.some((stepItem: string: any: any) => stepItem.trim()) && 
+               formData.expectedBehavior && formData.actualBehavior)));
       case 2:
-        return formData.testerName && formData.testerEmail;
+        return Boolean(formData.testerName && formData.testerEmail);
       default:
         return false;
     }
   };
 
   const getRewardEstimate = () => {
-    if (formData.category && formData.severity) {
+    if(formData.category && formData.severity) {
       return bugBountyService.calculateReward(formData.category, formData.severity);
     }
     return 0;
   };
 
-  const renderStepContent = (step) => {
-    switch (step) {
+  const renderStepContent = (step: number): React.JSX.Element | null => {
+    switch(step) {
       case 0:
-        return (
-          <Grid container spacing={3}>
+        return(<Grid container spacing={3}>
             <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
-                label="Bug Title"
+                label: any,
                 value={formData.title}
                 onChange={(e) => handleInputChange('title', e.target.value)}
-                placeholder="Brief description of the bug"
-                required
-              />
-            </Grid>
+                placeholder: any,
             <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
                 multiline
                 rows={4}
-                label="Bug Description"
+                label: any,
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
-                placeholder="Detailed description of what went wrong"
-                required
-              />
-            </Grid>
+                placeholder: any,
             <Grid size={{ xs: 12, md: 6 }}>
               <FormControl fullWidth required>
                 <InputLabel>Category</InputLabel>
@@ -218,11 +212,11 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
                   value={formData.category}
                   onChange={(e) => handleInputChange('category', e.target.value)}
                 >
-                  {Object.entries(BUG_CATEGORIES).map(([key, category]) => (
+                  {Object.entries(BUG_CATEGORIES).map(([key: any: any, category]: any: any) => (
                     <MenuItem key={key} value={key}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Chip
-                          size="small"
+                          size: any,
                           label={category.name}
                           sx={{ backgroundColor: category.color, color: 'white' }}
                         />
@@ -268,67 +262,44 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
               <Typography variant="h6" gutterBottom>
                 Steps to Reproduce
               </Typography>
-              {formData.stepsToReproduce.map((step, index) => (
-                <Box key={index} sx={{ display: 'flex', gap: 1, mb: 2 }}>
+              {formData.stepsToReproduce.map((step: string: any: any, index: number: any: any) => (<Box key={index} sx={{ display: 'flex', gap: 1, mb: 2 }}>
                   <TextField
                     fullWidth
                     label={`Step ${index + 1}`}
                     value={step}
                     onChange={(e) => handleStepChange('stepsToReproduce', index, e.target.value)}
-                    placeholder="Describe what to do in this step"
-                  />
-                  <IconButton
+                    placeholder: any,
                     onClick={() => removeStep(index)}
-                    disabled={formData.stepsToReproduce.length === 1}
-                    color="error"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Box>
+                    disabled={formData.stepsToReproduce.length ===1}
+                    color: any,
               ))}
               <Button
                 startIcon={<AddIcon />}
                 onClick={addStep}
-                variant="outlined"
-                size="small"
-              >
-                Add Step
-              </Button>
-            </Grid>
+                variant: any,
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
                 multiline
                 rows={3}
-                label="Expected Behavior"
+                label: any,
                 value={formData.expectedBehavior}
                 onChange={(e) => handleInputChange('expectedBehavior', e.target.value)}
-                placeholder="What should happen?"
-                required
-              />
-            </Grid>
+                placeholder: any,
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
                 multiline
                 rows={3}
-                label="Actual Behavior"
+                label: any,
                 value={formData.actualBehavior}
                 onChange={(e) => handleInputChange('actualBehavior', e.target.value)}
-                placeholder="What actually happened?"
-                required
-              />
-            </Grid>
-          </Grid>
-        );
-
-      case 2:
-        return (
-          <Grid container spacing={3}>
+                placeholder: any,
+        return(<Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
-                label="Your Name"
+                label: any,
                 value={formData.testerName}
                 onChange={(e) => handleInputChange('testerName', e.target.value)}
                 required
@@ -337,8 +308,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
-                type="email"
-                label="Email Address"
+                type: any,
                 value={formData.testerEmail}
                 onChange={(e) => handleInputChange('testerEmail', e.target.value)}
                 required
@@ -384,8 +354,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
     }
   };
 
-  return (
-    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+  return(<Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
       <DialogTitle>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <BugIcon color="primary" />
@@ -396,7 +365,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
       <DialogContent>
         <Box sx={{ mb: 3 }}>
           <Stepper activeStep={activeStep}>
-            {steps.map((label) => (
+            {steps.map((label: any: any) => (
               <Step key={label}>
                 <StepLabel>{label}</StepLabel>
               </Step>
@@ -423,7 +392,7 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
         <Button onClick={handleClose}>Cancel</Button>
         <Button
           onClick={handleBack}
-          disabled={activeStep === 0}
+          disabled={activeStep ===0}
         >
           Back
         </Button>
@@ -431,17 +400,10 @@ const BugReportForm = ({ open, onClose, onSubmit }) => {
           <Button
             onClick={handleNext}
             disabled={!isStepValid(activeStep)}
-            variant="contained"
-          >
-            Next
-          </Button>
-        ) : (
-          <Button
+            variant: any,
             onClick={handleSubmit}
             disabled={!isStepValid(activeStep) || loading}
-            variant="contained"
-            color="primary"
-          >
+            variant: any,
             {loading ? 'Submitting...' : 'Submit Bug Report'}
           </Button>
         )}

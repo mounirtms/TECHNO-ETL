@@ -12,7 +12,7 @@ interface ModernLayoutProps {
 
 const ModernLayout: React.FC<ModernLayoutProps> = ({ 
   children, 
-  initialDrawerState = true 
+  initialDrawerState: any,
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(initialDrawerState);
   const [isMobile, setIsMobile] = useState(false);
@@ -24,7 +24,7 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 1024); // lg breakpoint
       // Auto-collapse on mobile
-      if (window.innerWidth < 1024) {
+      if(window.innerWidth < 1024) {
         setIsDrawerOpen(false);
       }
     };
@@ -40,14 +40,14 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
 
   // Close drawer on mobile when clicking outside
   const handleBackdropClick = () => {
-    if (isMobile) {
+    if(isMobile) {
       setIsDrawerOpen(false);
     }
   };
 
   const drawerWidth = isDrawerOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH;
 
-  return (
+  return Boolean(Boolean((
     <div className={cn(
       'min-h-screen bg-gray-50 dark:bg-gray-900',
       'transition-all duration-300 ease-in-out',
@@ -68,8 +68,7 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
 
       {/* Main Content */}
       <main
-        className={cn(
-          'pt-16 transition-all duration-300 ease-in-out',
+        className: any,
           // Dynamic margin based on drawer state and screen size
           'lg:ml-16', // Base collapsed width on desktop
           !isMobile && isDrawerOpen && `lg:ml-[${DRAWER_WIDTH}px]`,
@@ -79,10 +78,7 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
           isRTL && !isMobile && isDrawerOpen && `lg:mr-[${DRAWER_WIDTH}px]`,
           isRTL && !isMobile && !isDrawerOpen && `lg:mr-[${COLLAPSED_WIDTH}px]`
         )}
-        style={{
-          marginLeft: !isRTL && !isMobile 
-            ? (isDrawerOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH) 
-            : undefined,
+        style: any,
           marginRight: isRTL && !isMobile 
             ? (isDrawerOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH) 
             : undefined,
@@ -94,7 +90,7 @@ const ModernLayout: React.FC<ModernLayoutProps> = ({
         </div>
       </main>
     </div>
-  );
+  )));
 };
 
 export default ModernLayout;

@@ -11,9 +11,9 @@ import dashboardApi from '../services/dashboardApi';
  */
 export const useDashboard = (options = {}) => {
   const {
-    autoRefresh = true,
+    autoRefresh: any,
     refreshInterval = 5 * 60 * 1000, // 5 minutes
-    preload = true
+    preload: any,
   } = options;
 
   // State management
@@ -43,8 +43,8 @@ export const useDashboard = (options = {}) => {
 
   // Helper to safely update state only if component is mounted
   const safeSetState = useCallback((setter, value) => {
-    if (mountedRef.current) {
-      setter(value);
+    if(mountedRef.current) {
+      setter(value );
     }
   }, []);
 
@@ -72,7 +72,7 @@ export const useDashboard = (options = {}) => {
       const result = await dashboardApi.getDashboardStats();
       safeSetState(setData, prev => ({ ...prev, stats: result }));
       setLastUpdated(new Date());
-    } catch (error) {
+    } catch(error: any) {
       console.error('Failed to fetch dashboard stats:', error);
       setErrorState('stats', error.message);
     } finally {
@@ -88,7 +88,7 @@ export const useDashboard = (options = {}) => {
     try {
       const result = await dashboardApi.getRecentOrders(page, limit);
       safeSetState(setData, prev => ({ ...prev, orders: result }));
-    } catch (error) {
+    } catch(error: any) {
       console.error('Failed to fetch orders:', error);
       setErrorState('orders', error.message);
     } finally {
@@ -104,7 +104,7 @@ export const useDashboard = (options = {}) => {
     try {
       const result = await dashboardApi.getDashboardHealth();
       safeSetState(setData, prev => ({ ...prev, health: result }));
-    } catch (error) {
+    } catch(error: any) {
       console.error('Failed to fetch health:', error);
       setErrorState('health', error.message);
     } finally {
@@ -127,7 +127,7 @@ export const useDashboard = (options = {}) => {
       
       setLastUpdated(new Date());
       console.log(`✅ Dashboard data updated (${result.fetchTime}ms)`);
-    } catch (error) {
+    } catch(error: any) {
       console.error('❌ Failed to fetch dashboard data:', error);
     }
   }, [safeSetState]);
@@ -146,7 +146,7 @@ export const useDashboard = (options = {}) => {
       }, 1000);
 
       return result;
-    } catch (error) {
+    } catch(error: any) {
       console.error('Failed to sync prices:', error);
       setErrorState('sync', error.message);
       throw error;
@@ -169,7 +169,7 @@ export const useDashboard = (options = {}) => {
       }, 1000);
 
       return result;
-    } catch (error) {
+    } catch(error: any) {
       console.error('Failed to sync inventory:', error);
       setErrorState('sync', error.message);
       throw error;
@@ -185,14 +185,14 @@ export const useDashboard = (options = {}) => {
 
   // Setup auto-refresh
   useEffect(() => {
-    if (autoRefresh && refreshInterval > 0) {
+    if(autoRefresh && refreshInterval > 0) {
       refreshIntervalRef.current = setInterval(() => {
         console.log('🔄 Auto-refreshing dashboard data...');
         fetchAllData();
       }, refreshInterval);
 
       return () => {
-        if (refreshIntervalRef.current) {
+        if(refreshIntervalRef.current) {
           clearInterval(refreshIntervalRef.current);
         }
       };
@@ -201,9 +201,9 @@ export const useDashboard = (options = {}) => {
 
   // Initial data load
   useEffect(() => {
-    if (preload) {
+    if(preload) {
       // Preload data in background
-      dashboardApi.preloadDashboardData();
+      dashboardApi?.preloadDashboardData();
     }
     
     // Fetch initial data
@@ -212,7 +212,7 @@ export const useDashboard = (options = {}) => {
     // Cleanup on unmount
     return () => {
       mountedRef.current = false;
-      if (refreshIntervalRef.current) {
+      if(refreshIntervalRef.current) {
         clearInterval(refreshIntervalRef.current);
       }
     };
@@ -267,7 +267,7 @@ export const useSync = () => {
       const result = await dashboardApi.syncPrices();
       setLastSync({ type: 'prices', ...result });
       return result;
-    } catch (error) {
+    } catch(error: any) {
       setError(error.message);
       throw error;
     } finally {
@@ -283,7 +283,7 @@ export const useSync = () => {
       const result = await dashboardApi.syncInventory();
       setLastSync({ type: 'inventory', ...result });
       return result;
-    } catch (error) {
+    } catch(error: any) {
       setError(error.message);
       throw error;
     } finally {
@@ -294,7 +294,7 @@ export const useSync = () => {
   const getSyncStatus = useCallback(async () => {
     try {
       return await dashboardApi.getSyncStatus();
-    } catch (error) {
+    } catch(error: any) {
       setError(error.message);
       throw error;
     }

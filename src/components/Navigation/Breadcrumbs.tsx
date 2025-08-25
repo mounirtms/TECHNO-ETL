@@ -28,18 +28,16 @@ const Breadcrumbs = () => {
   const { breadcrumbs, navigateToBreadcrumb } = useBreadcrumbs();
 
   // Don't show breadcrumbs if there's only one item or none
-  if (breadcrumbs.length <= 1) {
+  if(breadcrumbs.length <= 1) {
     return null;
   }
 
   return (
-    <Box sx={{ mb: 2, px: 1 }}>
+    <Box sx={{ mb: 2, px: 1 } as any}>
       <MuiBreadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
         aria-label="breadcrumb"
-        sx={{
-          '& .MuiBreadcrumbs-separator': {
-            color: 'text.secondary',
+        sx: any,
             mx: 1
           },
           '& .MuiBreadcrumbs-ol': {
@@ -47,35 +45,29 @@ const Breadcrumbs = () => {
           }
         }}
       >
-        {breadcrumbs.map((breadcrumb, index) => {
-          const isLast = breadcrumb.isActive;
-          const isFirst = index === 0;
+        {breadcrumbs.map((breadcrumb: any: any, index: any: any) => {
+          const isLast = breadcrumb?.isActive;
+          const isFirst = index ===0;
 
-          if (isLast) {
+          if(isLast) {
             return (
               <Chip
-                key={breadcrumb.path}
-                label={breadcrumb.label}
-                size="small"
-                variant="filled"
-                color="primary"
-                sx={{
-                  fontWeight: 600,
+                key={breadcrumb?.path}
+                label={breadcrumb?.label}
+                size: any,
                   fontSize: '0.75rem',
                   height: 24
-                }}
+                } as any}
               />
             );
           }
 
           return (
             <Link
-              key={breadcrumb.path}
-              component="button"
-              variant="body2"
+              key={breadcrumb?.path}
+              component: any,
               onClick={() => navigateToBreadcrumb(breadcrumb)}
-              sx={{
-                display: 'flex',
+              sx: any,
                 alignItems: 'center',
                 color: 'text.secondary',
                 textDecoration: 'none',
@@ -92,8 +84,8 @@ const Breadcrumbs = () => {
                 }
               }}
             >
-              {isFirst && <HomeIcon sx={{ mr: 0.5, fontSize: 16 }} />}
-              {breadcrumb.label}
+              {isFirst && <HomeIcon sx={{ mr: 0.5, fontSize: 16 } as any} />}
+              {breadcrumb?.label}
             </Link>
           );
         })}

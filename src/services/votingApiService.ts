@@ -21,10 +21,9 @@ class TaskApiService {
     });
 
     // Add request interceptor for authentication
-    this.api.interceptors.request.use(
-      (config) => {
+    this.api.interceptors.request.use((config) => {
         const token = localStorage.getItem('authToken');
-        if (token) {
+        if(token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
@@ -33,8 +32,7 @@ class TaskApiService {
     );
 
     // Add response interceptor for error handling
-    this.api.interceptors.response.use(
-      (response) => response,
+    this.api.interceptors.response.use((response) => response,
       (error) => {
         console.error('Voting API Error:', error);
         return Promise.reject(error);
@@ -45,29 +43,29 @@ class TaskApiService {
   /**
    * Get all voting features with pagination and filtering
    */
-  async getFeatures(options = {}) {
+  async getFeatures(options: any = {}) {
     try {
       const params = {
-        page: options.page || 1,
-        pageSize: options.pageSize || 25,
-        category: options.category,
-        status: options.status,
-        priority: options.priority,
-        sortBy: options.sortBy || 'vote_count',
-        sortOrder: options.sortOrder || 'DESC',
-        search: options.search
+        page: options?.page || 1,
+        pageSize: options?.pageSize || 25,
+        category: options?.category,
+        status: options?.status,
+        priority: options?.priority,
+        sortBy: options?.sortBy || 'vote_count',
+        sortOrder: options?.sortOrder || 'DESC',
+        search: options?.search
       };
 
       // Remove undefined values
-      Object.keys(params).forEach(key => {
-        if (params[key] === undefined || params[key] === null) {
+      Object.keys(params).forEach((key) => {
+        if(params[key] ===undefined || params[key] ===null) {
           delete params[key];
         }
       });
 
       const response = await this.api.get('/features', { params });
       return response.data;
-    } catch (error) {
+    } catch(error: any) {
       throw this.handleError(error, 'Failed to fetch voting features');
     }
   }
@@ -75,11 +73,11 @@ class TaskApiService {
   /**
    * Get feature by ID
    */
-  async getFeatureById(id) {
+  async getFeatureById(id: any) {
     try {
       const response = await this.api.get(`/features/${id}`);
       return response.data;
-    } catch (error) {
+    } catch(error: any) {
       throw this.handleError(error, 'Failed to fetch feature details');
     }
   }
@@ -87,11 +85,11 @@ class TaskApiService {
   /**
    * Create new voting feature
    */
-  async createFeature(featureData) {
+  async createFeature(featureData: any) {
     try {
       const response = await this.api.post('/features', featureData);
       return response.data;
-    } catch (error) {
+    } catch(error: any) {
       throw this.handleError(error, 'Failed to create feature');
     }
   }
@@ -99,11 +97,11 @@ class TaskApiService {
   /**
    * Update voting feature
    */
-  async updateFeature(id, featureData) {
+  async updateFeature(id, featureData: any) {
     try {
       const response = await this.api.put(`/features/${id}`, featureData);
       return response.data;
-    } catch (error) {
+    } catch(error: any) {
       throw this.handleError(error, 'Failed to update feature');
     }
   }
@@ -111,18 +109,18 @@ class TaskApiService {
   /**
    * Vote for a feature
    */
-  async voteForFeature(featureId, voteType = 'upvote', userInfo = {}) {
+  async voteForFeature(featureId, voteType = 'upvote', userInfo: any = {}) {
     try {
       const voteData = {
         vote_type: voteType,
-        user_id: userInfo.userId || 'anonymous',
-        user_email: userInfo.userEmail,
-        user_name: userInfo.userName || 'Anonymous User'
+        user_id: userInfo?.userId || 'anonymous',
+        user_email: userInfo?.userEmail,
+        user_name: userInfo?.userName || 'Anonymous User'
       };
 
       const response = await this.api.post(`/features/${featureId}/vote`, voteData);
       return response.data;
-    } catch (error) {
+    } catch(error: any) {
       throw this.handleError(error, 'Failed to record vote');
     }
   }
@@ -130,15 +128,15 @@ class TaskApiService {
   /**
    * Remove vote from feature
    */
-  async removeVote(featureId, userInfo = {}) {
+  async removeVote(featureId, userInfo: any = {}) {
     try {
       const response = await this.api.delete(`/features/${featureId}/vote`, {
         data: {
-          user_id: userInfo.userId || 'anonymous'
+          user_id: userInfo?.userId || 'anonymous'
         }
       });
       return response.data;
-    } catch (error) {
+    } catch(error: any) {
       throw this.handleError(error, 'Failed to remove vote');
     }
   }
@@ -146,16 +144,16 @@ class TaskApiService {
   /**
    * Get user votes
    */
-  async getUserVotes(userId, featureIds = null) {
+  async getUserVotes(userId, featureIds: any = null ) {
     try {
       const params = { user_id: userId };
-      if (featureIds && featureIds.length > 0) {
-        params.feature_ids = featureIds.join(',');
+      if(featureIds && featureIds?.length > 0) {
+        params.feature_ids = featureIds?.join(',');
       }
 
       const response = await this.api.get('/user-votes', { params });
       return response.data;
-    } catch (error) {
+    } catch(error: any) {
       throw this.handleError(error, 'Failed to fetch user votes');
     }
   }
@@ -167,7 +165,7 @@ class TaskApiService {
     try {
       const response = await this.api.get('/categories');
       return response.data;
-    } catch (error) {
+    } catch(error: any) {
       throw this.handleError(error, 'Failed to fetch categories');
     }
   }
@@ -179,7 +177,7 @@ class TaskApiService {
     try {
       const response = await this.api.get('/stats');
       return response.data;
-    } catch (error) {
+    } catch(error: any) {
       throw this.handleError(error, 'Failed to fetch voting statistics');
     }
   }
@@ -187,18 +185,18 @@ class TaskApiService {
   /**
    * Add comment to feature
    */
-  async addComment(featureId, comment, userInfo = {}) {
+  async addComment(featureId, comment, userInfo: any = {}) {
     try {
       const commentData = {
         comment,
-        user_id: userInfo.userId || 'anonymous',
-        user_email: userInfo.userEmail,
-        user_name: userInfo.userName || 'Anonymous User'
+        user_id: userInfo?.userId || 'anonymous',
+        user_email: userInfo?.userEmail,
+        user_name: userInfo?.userName || 'Anonymous User'
       };
 
       const response = await this.api.post(`/features/${featureId}/comments`, commentData);
       return response.data;
-    } catch (error) {
+    } catch(error: any) {
       throw this.handleError(error, 'Failed to add comment');
     }
   }
@@ -206,11 +204,11 @@ class TaskApiService {
   /**
    * Get comments for feature
    */
-  async getFeatureComments(featureId) {
+  async getFeatureComments(featureId: any) {
     try {
       const response = await this.api.get(`/features/${featureId}/comments`);
       return response.data;
-    } catch (error) {
+    } catch(error: any) {
       throw this.handleError(error, 'Failed to fetch comments');
     }
   }
@@ -218,13 +216,13 @@ class TaskApiService {
   /**
    * Handle API errors consistently
    */
-  handleError(error, defaultMessage) {
-    if (error.response) {
+  handleError(error, defaultMessage: any) {
+    if(error.response) {
       // Server responded with error status
       const message = error.response.data?.message || defaultMessage;
-      const status = error.response.status;
+      const status = error.response?.status;
       return new Error(`${message} (Status: ${status})`);
-    } else if (error.request) {
+    } else if(error.request) {
       // Request was made but no response received
       return new Error('Network error - please check your connection');
     } else {
@@ -239,7 +237,7 @@ class TaskApiService {
   getCurrentUserInfo() {
     try {
       const userInfo = localStorage.getItem('userInfo');
-      if (userInfo) {
+      if(userInfo) {
         return JSON.parse(userInfo);
       }
       
@@ -249,7 +247,7 @@ class TaskApiService {
         userName: 'Anonymous User',
         userEmail: null
       };
-    } catch (error) {
+    } catch(error: any) {
       console.warn('Failed to get user info:', error);
       return {
         userId: 'anonymous',
@@ -262,15 +260,15 @@ class TaskApiService {
   /**
    * Batch operations for better performance
    */
-  async batchVote(votes) {
+  async batchVote(votes: any) {
     try {
-      const promises = votes.map(vote => 
+      const promises = votes.map((vote: any: any) => 
         this.voteForFeature(vote.featureId, vote.voteType, vote.userInfo)
       );
       
       const results = await Promise.allSettled(promises);
       return results;
-    } catch (error) {
+    } catch(error: any) {
       throw this.handleError(error, 'Failed to process batch votes');
     }
   }
@@ -278,7 +276,7 @@ class TaskApiService {
   /**
    * Search features with advanced filtering
    */
-  async searchFeatures(searchTerm, filters = {}) {
+  async searchFeatures(searchTerm, filters: any = {}) {
     try {
       const searchOptions = {
         search: searchTerm,
@@ -287,7 +285,7 @@ class TaskApiService {
       };
 
       return await this.getFeatures(searchOptions);
-    } catch (error) {
+    } catch(error: any) {
       throw this.handleError(error, 'Failed to search features');
     }
   }

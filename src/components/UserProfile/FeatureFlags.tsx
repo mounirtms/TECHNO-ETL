@@ -12,7 +12,7 @@ import {
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 
-const FeatureFlags = ({ user, onSettingsChange }) => {
+const FeatureFlags = ({ user, onSettingsChange  }: { user: any, onSettingsChange: any }) => {
   const theme = useTheme();
 
   // Feature flags configuration
@@ -237,14 +237,13 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
   // Load feature flags on component mount
   useEffect(() => {
     const savedFlags = localStorage.getItem(`featureFlags_${user?.id}`);
-    if (savedFlags) {
+    if(savedFlags) {
       setFeatureFlags(JSON.parse(savedFlags));
     }
   }, [user]);
 
   const handleFeatureToggle = (featureKey, enabled) => {
-    setFeatureFlags(prev => ({
-      ...prev,
+    setFeatureFlags(prev => ({ ...prev,
       [featureKey]: enabled
     }));
     setIsDirty(true);
@@ -254,20 +253,20 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
     try {
       localStorage.setItem(`featureFlags_${user?.id}`, JSON.stringify(featureFlags));
       
-      if (onSettingsChange) {
+      if(onSettingsChange) {
         onSettingsChange({ featureFlags });
       }
       
       setIsDirty(false);
       setShowSuccess(true);
-    } catch (error) {
+    } catch(error: any) {
       console.error('Failed to save feature flags:', error);
       setShowError(true);
     }
   };
 
   const handleReset = () => {
-    const defaultFlags = Object.keys(featureFlags).reduce((acc, key) => {
+    const defaultFlags = Object.keys(featureFlags).reduce((acc: any: any: any, key: any: any) => {
       acc[key] = false;
       return acc;
     }, {});
@@ -284,7 +283,7 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
     const restartFeatures = [];
     Object.entries(featureCategories).forEach(([categoryKey, category]) => {
       Object.entries(category.features).forEach(([featureKey, feature]) => {
-        if (featureFlags[featureKey] && feature.requiresRestart) {
+        if(featureFlags[featureKey] && feature.requiresRestart) {
           restartFeatures.push(feature.name);
         }
       });
@@ -294,7 +293,7 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
 
   const restartRequired = getFeaturesRequiringRestart().length > 0;
 
-  return (
+  return Boolean(Boolean((
     <Box sx={{ p: 3 }}>
       {/* Header */}
       <Box sx={{ mb: 4 }}>
@@ -310,41 +309,29 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
           <Chip 
             icon={<Flag />} 
             label={`${getEnabledFeaturesCount()} features enabled`} 
-            color="primary" 
-            variant="outlined" 
-          />
-          {restartRequired && (
-            <Chip 
+            color: any,
               icon={<Warning />} 
-              label="Restart required" 
-              color="warning" 
-              variant="filled" 
-            />
+              label: any,
           )}
         </Box>
       </Box>
 
       {/* Feature Categories */}
-      {Object.entries(featureCategories).map(([categoryKey, category]) => (
+      {Object.entries(featureCategories).map(([categoryKey: any: any, category]: any: any) => (
         <Accordion key={categoryKey} defaultExpanded={categoryKey === 'advanced'}>
           <AccordionSummary expandIcon={<ExpandMore />}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               {category.icon}
               <Typography variant="h6">{category.title}</Typography>
               <Chip 
-                size="small" 
-                label={Object.keys(category.features).filter(key => featureFlags[key]).length}
+                size: any,
+                label={Object.keys(category.features).filter((key: any: any) => featureFlags[key]).length}
                 color={category.color}
-                variant="outlined"
-              />
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails>
-            <List>
-              {Object.entries(category.features).map(([featureKey, feature]) => (
+                variant: any,
+              {Object.entries(category.features).map(([featureKey: any: any, feature]: any: any) => (
                 <ListItem key={featureKey} divider>
                   <ListItemText
-                    primary={
+                    primary: any,
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Typography variant="subtitle1" fontWeight={600}>
                           {feature.name}
@@ -359,9 +346,7 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
                         )}
                       </Box>
                     }
-                    secondary={
-                      <Box>
-                        <Typography variant="body2" color="text.secondary">
+                    secondary: any,
                           {feature.description}
                         </Typography>
                         {feature.warning && featureFlags[featureKey] && (
@@ -396,7 +381,7 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
             The following features require an application restart to take effect:
           </Typography>
           <Box component="ul" sx={{ mt: 1, mb: 0 }}>
-            {getFeaturesRequiringRestart().map((featureName, index) => (
+            {getFeaturesRequiringRestart().map((featureName: any: any, index: any: any) => (
               <li key={index}>
                 <Typography variant="body2">{featureName}</Typography>
               </li>
@@ -415,14 +400,14 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
         mt: 3
       }}>
         <Button
-          variant="outlined"
+          variant: any,
           startIcon={<RestoreFromTrash />}
           onClick={handleReset}
         >
           Reset All
         </Button>
         <Button
-          variant="contained"
+          variant: any,
           startIcon={<Save />}
           onClick={handleSave}
           disabled={!isDirty}
@@ -452,7 +437,7 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
         </Alert>
       </Snackbar>
     </Box>
-  );
+  )));
 };
 
 export default FeatureFlags;

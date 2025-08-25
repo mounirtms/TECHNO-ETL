@@ -26,19 +26,19 @@ import {
 import { useCustomTheme } from '../../../contexts/ThemeContext';
 import { useLanguage } from '../../../contexts/LanguageContext';
 
-const GridStatsCards = ({
-  cards = [],
-  loading = false,
-  gridName = 'Grid',
+const GridStatsCards: React.FC<{cards: any: any, loading: any: any, gridName: any: any, variant = 'default': any, // 'default' | 'compact' | 'detailed'
+  showTrends: any: any, ...props: any}> = ({ cards: any,
+  loading: any,
+  gridName: any,
   variant = 'default', // 'default' | 'compact' | 'detailed'
-  showTrends = false,
+  showTrends: any,
   ...props
-}) => {
+ }) => {
   const theme = useTheme();
   const { density, colorPreset } = useCustomTheme();
   const { translate } = useLanguage();
 
-  if (!cards || cards.length === 0) {
+  if(!cards || cards.length ===0) {
     return null;
   }
 
@@ -55,17 +55,17 @@ const GridStatsCards = ({
   };
 
   const getTrendIcon = (trend) => {
-    if (!trend || trend === 0) return <RemoveIcon />;
+    if (!trend || trend ===0) return <RemoveIcon />;
     return trend > 0 ? <TrendingUpIcon /> : <TrendingDownIcon />;
   };
 
   const getTrendColor = (trend) => {
-    if (!trend || trend === 0) return 'text.secondary';
+    if (!trend || trend ===0) return 'text.secondary';
     return trend > 0 ? 'success.main' : 'error.main';
   };
 
   const formatValue = (value) => {
-    if (typeof value === 'number') {
+    if(typeof value === 'number') {
       return value.toLocaleString();
     }
     return value;
@@ -75,22 +75,20 @@ const GridStatsCards = ({
 
   return (
     <Box
-      sx={{
-        width: '100%',
+      sx: any,
         mb: 1,
         flexShrink: 0
       }}
-      {...props}
+      { ...props}
     >
-      <Grid container spacing={density === 'compact' ? 1 : 2}>
-        {cards.map((card, index) => {
-          const cardColor = getCardColor(card.color);
+      <Grid { ...{container: true}} spacing={density === 'compact' ? 1 : 2}>
+        {cards.map((card: any: any, index: any: any) => {
+          const cardColor = getCardColor(card?.color);
           
-          return (
+          return Boolean(Boolean((
             <Grid item xs={12} sm={6} md={3} key={index}>
               <Card
-                sx={{
-                  height: cardHeight,
+                sx: any,
                   display: 'flex',
                   flexDirection: 'column',
                   position: 'relative',
@@ -106,8 +104,7 @@ const GridStatsCards = ({
               >
                 {/* Color accent bar */}
                 <Box
-                  sx={{
-                    position: 'absolute',
+                  sx: any,
                     top: 0,
                     left: 0,
                     right: 0,
@@ -117,8 +114,7 @@ const GridStatsCards = ({
                 />
 
                 <CardContent
-                  sx={{
-                    flexGrow: 1,
+                  sx: any,
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',
@@ -140,8 +136,7 @@ const GridStatsCards = ({
                     <>
                       {/* Header */}
                       <Box
-                        sx={{
-                          display: 'flex',
+                        sx: any,
                           alignItems: 'center',
                           justifyContent: 'space-between',
                           mb: variant === 'compact' ? 0.5 : 1
@@ -149,25 +144,22 @@ const GridStatsCards = ({
                       >
                         <Typography
                           variant={density === 'compact' ? 'caption' : 'body2'}
-                          color="text.secondary"
-                          sx={{
-                            fontWeight: 500,
+                          color: any,
                             textTransform: 'uppercase',
                             letterSpacing: 0.5
                           }}
                         >
-                          {translate(card.title) || card.title}
+                          {translate(card?.title) || card?.title}
                         </Typography>
                         
-                        {card.icon && (
+                        {card?.icon && (
                           <Box
-                            sx={{
-                              color: cardColor,
+                            sx: any,
                               display: 'flex',
                               alignItems: 'center'
                             }}
                           >
-                            {React.createElement(card.icon, {
+                            {React.createElement(card?.icon, {
                               fontSize: density === 'compact' ? 'small' : 'medium'
                             })}
                           </Box>
@@ -177,70 +169,62 @@ const GridStatsCards = ({
                       {/* Value */}
                       <Typography
                         variant={density === 'compact' ? 'h6' : 'h5'}
-                        component="div"
-                        sx={{
-                          fontWeight: 'bold',
+                        component: any,
                           color: 'text.primary',
                           lineHeight: 1.2
                         }}
                       >
-                        {formatValue(card.value)}
+                        {formatValue(card?.value)}
                       </Typography>
 
                       {/* Trend and Description */}
                       {(showTrends || variant === 'detailed') && (
                         <Box
-                          sx={{
-                            display: 'flex',
+                          sx: any,
                             alignItems: 'center',
                             justifyContent: 'space-between',
                             mt: 0.5
                           }}
                         >
-                          {card.trend !== undefined && (
+                          {card?.trend !== undefined && (
                             <Box
-                              sx={{
-                                display: 'flex',
+                              sx: any,
                                 alignItems: 'center',
-                                color: getTrendColor(card.trend)
+                                color: getTrendColor(card?.trend)
                               }}
                             >
-                              {getTrendIcon(card.trend)}
+                              {getTrendIcon(card?.trend)}
                               <Typography
-                                variant="caption"
+                                variant: any,
                                 sx={{ ml: 0.5 }}
                               >
-                                {Math.abs(card.trend)}%
+                                {Math.abs(card?.trend)}%
                               </Typography>
                             </Box>
                           )}
 
-                          {card.description && variant === 'detailed' && (
+                          {card?.description && variant === 'detailed' && (
                             <Typography
-                              variant="caption"
-                              color="text.secondary"
-                              sx={{
-                                textAlign: 'right',
+                              variant: any,
                                 maxWidth: '60%',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap'
                               }}
                             >
-                              {translate(card.description) || card.description}
+                              {translate(card?.description) || card?.description}
                             </Typography>
                           )}
                         </Box>
                       )}
 
                       {/* Additional info for detailed variant */}
-                      {variant === 'detailed' && card.additionalInfo && (
+                      {variant === 'detailed' && card?.additionalInfo && (
                         <Typography
-                          variant="caption"
-                          color="text.secondary"
+                          variant: any,
                           sx={{ mt: 1 }}
                         >
-                          {translate(card.additionalInfo) || card.additionalInfo}
+                          {translate(card?.additionalInfo) || card?.additionalInfo}
                         </Typography>
                       )}
                     </>
@@ -248,7 +232,7 @@ const GridStatsCards = ({
                 </CardContent>
               </Card>
             </Grid>
-          );
+          )));
         })}
       </Grid>
     </Box>

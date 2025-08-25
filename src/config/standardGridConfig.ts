@@ -21,8 +21,7 @@ import {
 } from './gridConfig.js';
 
 // Re-export for backward compatibility
-export const STANDARD_PAGINATION_CONFIG = {
-  ..._STANDARD_PAGINATION_CONFIG,
+export const STANDARD_PAGINATION_CONFIG = { ..._STANDARD_PAGINATION_CONFIG,
   paginationMode: "server", // Override default for backward compatibility
   rowCount: 0 // Default to 0, will be overridden by individual grids
 };
@@ -88,12 +87,11 @@ export const getStandardGridConfig = (overrides = {}) => {
     // Pagination with proper rowCount handling
     ...STANDARD_PAGINATION_CONFIG,
     // Ensure totalCount is properly set for server pagination
-    totalCount: overrides.totalCount || 0,
+    totalCount: overrides?.totalCount || 0,
 
     // Toolbar
-    toolbarConfig: {
-      ...STANDARD_TOOLBAR_CONFIG,
-      ...overrides.toolbarConfig
+    toolbarConfig: { ...STANDARD_TOOLBAR_CONFIG,
+      ...overrides?.toolbarConfig
     },
 
     // View options
@@ -134,10 +132,9 @@ export const getStandardGridProps = (gridType, customConfig = {}) => {
   const props = _getStandardGridProps(mappedGridType, customConfig);
 
   // Override pagination mode for backward compatibility
-  return {
-    ...props,
+  return { ...props,
     paginationMode: "server",
-    totalCount: customConfig.totalCount || 0
+    totalCount: customConfig?.totalCount || 0
   };
 };
 

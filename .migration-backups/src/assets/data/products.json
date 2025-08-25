@@ -1,0 +1,3624 @@
+[
+    {
+        "id": 2673,
+        "sku": "1140611808",
+        "name": "STYLO A PLUME EASYBIRDY \"STABILO\" REF: 5010/12-6",
+        "attribute_set_id": 4,
+        "price": 3950,
+        "status": 2,
+        "visibility": 4,
+        "type_id": "simple",
+        "created_at": "2021-04-18 15:35:27",
+        "updated_at": "2024-10-09 15:16:33",
+        "weight": 333,
+        "extension_attributes": {
+            "website_ids": [
+                1
+            ],
+            "category_links": [
+                {
+                    "position": 0,
+                    "category_id": "95"
+                },
+                {
+                    "position": 0,
+                    "category_id": "40"
+                },
+                {
+                    "position": 0,
+                    "category_id": "96"
+                },
+                {
+                    "position": 0,
+                    "category_id": "38"
+                },
+                {
+                    "position": 964,
+                    "category_id": "8"
+                },
+                {
+                    "position": 0,
+                    "category_id": "784"
+                },
+                {
+                    "position": 0,
+                    "category_id": "773"
+                },
+                {
+                    "position": 0,
+                    "category_id": "3"
+                },
+                {
+                    "position": -1845,
+                    "category_id": "2374"
+                }
+            ],
+            "preorder_info": {
+                "preorder": false,
+                "note": "Pre Order",
+                "cart_label": "Pre Order"
+            }
+        },
+        "product_links": [
+            {
+                "sku": "1140611808",
+                "link_type": "related",
+                "linked_product_sku": "1737506",
+                "linked_product_type": "simple",
+                "position": 5
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "related",
+                "linked_product_sku": "1737906",
+                "linked_product_type": "simple",
+                "position": 4
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "related",
+                "linked_product_sku": "1739906",
+                "linked_product_type": "simple",
+                "position": 3
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "related",
+                "linked_product_sku": "1140591008",
+                "linked_product_type": "simple",
+                "position": 2
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "related",
+                "linked_product_sku": "108945501",
+                "linked_product_type": "simple",
+                "position": 1
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "related",
+                "linked_product_sku": "2272003",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "related",
+                "linked_product_sku": "1562307",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140612958",
+                "linked_product_type": "simple",
+                "position": 5
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140618515",
+                "linked_product_type": "simple",
+                "position": 4
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "crosssell",
+                "linked_product_sku": "1846603",
+                "linked_product_type": "simple",
+                "position": 3
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608134",
+                "linked_product_type": "simple",
+                "position": 2
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "crosssell",
+                "linked_product_sku": "111822630",
+                "linked_product_type": "simple",
+                "position": 1
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "crosssell",
+                "linked_product_sku": "111823636",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140613751",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "crosssell",
+                "linked_product_sku": "111824291",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "crosssell",
+                "linked_product_sku": "1766107",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "crosssell",
+                "linked_product_sku": "2272003",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "crosssell",
+                "linked_product_sku": "1562307",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140611808",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608858",
+                "linked_product_type": "configurable",
+                "position": 0
+            }
+        ],
+        "options": [],
+        "media_gallery_entries": [
+            {
+                "id": 926,
+                "media_type": "image",
+                "label": "STYLO A PLUME EASYBIRDY \"STABILO\" REF: 5010/12-6",
+                "position": 1,
+                "disabled": false,
+                "types": [
+                    "image",
+                    "small_image",
+                    "thumbnail",
+                    "swatch_image"
+                ],
+                "file": "/s/t/stylo-a-plume-easybirdy-stabilo-ref-5010-12-6-0.jpg"
+            },
+            {
+                "id": 927,
+                "media_type": "image",
+                "label": "",
+                "position": 2,
+                "disabled": false,
+                "types": [],
+                "file": "/s/t/stylo-a-plume-easybirdy-stabilo-ref-5010-12-6-2.jpg"
+            },
+            {
+                "id": 928,
+                "media_type": "image",
+                "label": "",
+                "position": 3,
+                "disabled": false,
+                "types": [],
+                "file": "/s/t/stylo-a-plume-easybirdy-stabilo-ref-5010-12-6-5.jpg"
+            },
+            {
+                "id": 929,
+                "media_type": "image",
+                "label": "",
+                "position": 4,
+                "disabled": false,
+                "types": [],
+                "file": "/s/t/stylo-a-plume-easybirdy-stabilo-ref-5010-12-6-4.jpg"
+            },
+            {
+                "id": 930,
+                "media_type": "image",
+                "label": "",
+                "position": 5,
+                "disabled": false,
+                "types": [],
+                "file": "/s/t/stylo-a-plume-easybirdy-stabilo-ref-5010-12-6-3.jpg"
+            }
+        ],
+        "tier_prices": [],
+        "custom_attributes": [
+            {
+                "attribute_code": "gift_message_available",
+                "value": "0"
+            },
+            {
+                "attribute_code": "special_price",
+                "value": "3555.000000"
+            },
+            {
+                "attribute_code": "url_key",
+                "value": "stylo-a-plume-easybirdy-stabilo-ref-5010-12-6"
+            },
+            {
+                "attribute_code": "rma_allowed",
+                "value": "1"
+            },
+            {
+                "attribute_code": "am_available_for_wrapping",
+                "value": "0"
+            },
+            {
+                "attribute_code": "image",
+                "value": "/s/t/stylo-a-plume-easybirdy-stabilo-ref-5010-12-6-0.jpg"
+            },
+            {
+                "attribute_code": "short_description",
+                "value": "STABILO EASYbirdy est le stylo plume ergonomique pensé pour les enfants qui apprennent à écrire."
+            },
+            {
+                "attribute_code": "description",
+                "value": "<p>C'est avec de bons outils que l'on facilite l'apprentissage de l'écriture.</p>\r\n <p>Le stylo-plume STABILO EASYbirdy a été pensé pour les enfants de 7 ans et plus, qu’ils soient droitiers ou gauchers. Sa conception unique offre la possibilité de <strong>régler la plume selon troix axes différents : le stylo s'adapte à la position naturelle d'écriture de l'enfant</strong>. Pour donner toujours plus de plaisir d'écrire.</p>\r\n <p><strong>STABILO EASYbirdy</strong> est disponible en cinq combinaisons de couleurs pour les <strong>droitiers</strong> et trois combinaisons de couleurs pour <strong>les gauchers</strong>.</p>\r\n <p><strong>Rechargeable</strong>, il fonctionne avec des cartouches d'encre standard - une cartouche bleue <strong>effaçable</strong> est d'ailleurs fournie avec le stylo.</p>\r\n <p>Pour ne jamais être à court, le stylo-plume possède une fenêtre sur le corps pour visualiser le niveau d'encre. <strong>Très pratique, il fallait y penser !</strong></p>"
+            },
+            {
+                "attribute_code": "options_container",
+                "value": "container2"
+            },
+            {
+                "attribute_code": "small_image",
+                "value": "/s/t/stylo-a-plume-easybirdy-stabilo-ref-5010-12-6-0.jpg"
+            },
+            {
+                "attribute_code": "special_from_date",
+                "value": "2021-08-13 00:00:00"
+            },
+            {
+                "attribute_code": "meta_title",
+                "value": "STYLO A PLUME EASYBIRDY \"STABILO\" REF: 5010/12-6"
+            },
+            {
+                "attribute_code": "thumbnail",
+                "value": "/s/t/stylo-a-plume-easybirdy-stabilo-ref-5010-12-6-0.jpg"
+            },
+            {
+                "attribute_code": "meta_keyword",
+                "value": "STYLO,PLUME,EASYBIRDY,STABILO,501012-6"
+            },
+            {
+                "attribute_code": "special_to_date",
+                "value": "2021-08-22 00:00:00"
+            },
+            {
+                "attribute_code": "swatch_image",
+                "value": "/s/t/stylo-a-plume-easybirdy-stabilo-ref-5010-12-6-0.jpg"
+            },
+            {
+                "attribute_code": "meta_description",
+                "value": "STABILO EASYbirdy est le stylo plume ergonomique pensé pour les enfants qui apprennent à écrire."
+            },
+            {
+                "attribute_code": "am_offer_item_condition",
+                "value": "1"
+            },
+            {
+                "attribute_code": "msrp_display_actual_price_type",
+                "value": "0"
+            },
+            {
+                "attribute_code": "tax_class_id",
+                "value": "2"
+            },
+            {
+                "attribute_code": "category_ids",
+                "value": [
+                    "95",
+                    "40",
+                    "96",
+                    "38",
+                    "8",
+                    "784",
+                    "773",
+                    "3",
+                    "2374"
+                ]
+            },
+            {
+                "attribute_code": "required_options",
+                "value": "0"
+            },
+            {
+                "attribute_code": "has_options",
+                "value": "0"
+            },
+            {
+                "attribute_code": "image_label",
+                "value": "STYLO A PLUME EASYBIRDY \"STABILO\" REF: 5010/12-6"
+            },
+            {
+                "attribute_code": "mgs_brand",
+                "value": "398"
+            },
+            {
+                "attribute_code": "country_of_manufacture",
+                "value": "DE"
+            },
+            {
+                "attribute_code": "small_image_label",
+                "value": "STYLO A PLUME EASYBIRDY \"STABILO\" REF: 5010/12-6"
+            },
+            {
+                "attribute_code": "thumbnail_label",
+                "value": "STYLO A PLUME EASYBIRDY \"STABILO\" REF: 5010/12-6"
+            },
+            {
+                "attribute_code": "a_la_une",
+                "value": "0"
+            },
+            {
+                "attribute_code": "best_seller",
+                "value": "0"
+            },
+            {
+                "attribute_code": "techno_ref",
+                "value": "5010/12-6"
+            },
+            {
+                "attribute_code": "trending",
+                "value": "0"
+            },
+            {
+                "attribute_code": "hide_quote_buy_button",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amrolepermissions_owner",
+                "value": "0"
+            },
+            {
+                "attribute_code": "am_shipping_type",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amxnotif_hide_alert",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amtoolkit_robots",
+                "value": "default"
+            }
+        ]
+    },
+    {
+        "id": 3253,
+        "sku": "413",
+        "name": "COLLE STICK \"TECHNO\"",
+        "attribute_set_id": 4,
+        "price": 0,
+        "status": 2,
+        "visibility": 4,
+        "type_id": "configurable",
+        "created_at": "2021-04-21 11:12:05",
+        "updated_at": "2024-10-09 15:16:14",
+        "weight": 9999,
+        "extension_attributes": {
+            "website_ids": [
+                1
+            ],
+            "category_links": [
+                {
+                    "position": 0,
+                    "category_id": "3"
+                },
+                {
+                    "position": 0,
+                    "category_id": "140"
+                },
+                {
+                    "position": 0,
+                    "category_id": "141"
+                },
+                {
+                    "position": 0,
+                    "category_id": "142"
+                },
+                {
+                    "position": 0,
+                    "category_id": "11"
+                },
+                {
+                    "position": 0,
+                    "category_id": "143"
+                },
+                {
+                    "position": -48,
+                    "category_id": "2169"
+                },
+                {
+                    "position": -18,
+                    "category_id": "2246"
+                },
+                {
+                    "position": -62,
+                    "category_id": "2165"
+                },
+                {
+                    "position": -58,
+                    "category_id": "2239"
+                },
+                {
+                    "position": -45,
+                    "category_id": "2247"
+                },
+                {
+                    "position": -516,
+                    "category_id": "2374"
+                }
+            ],
+            "configurable_product_options": [
+                {
+                    "id": 182,
+                    "attribute_id": "166",
+                    "label": "Contenance",
+                    "position": 0,
+                    "values": [
+                        {
+                            "value_index": 413
+                        },
+                        {
+                            "value_index": 422
+                        },
+                        {
+                            "value_index": 429
+                        }
+                    ],
+                    "product_id": 3253
+                }
+            ],
+            "configurable_product_links": [
+                793,
+                794,
+                795
+            ],
+            "preorder_info": {
+                "preorder": false,
+                "note": "Pre Order",
+                "cart_label": "Pre Order"
+            }
+        },
+        "product_links": [
+            {
+                "sku": "413",
+                "link_type": "related",
+                "linked_product_sku": "1140599348",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "related",
+                "linked_product_sku": "1140599349",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "related",
+                "linked_product_sku": "1140601437",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "related",
+                "linked_product_sku": "1140600554",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "related",
+                "linked_product_sku": "110436201",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "related",
+                "linked_product_sku": "110350201",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "related",
+                "linked_product_sku": "1956103",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "related",
+                "linked_product_sku": "2078409",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "related",
+                "linked_product_sku": "110281401",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "related",
+                "linked_product_sku": "110281601",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "crosssell",
+                "linked_product_sku": "1285103",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608134",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "crosssell",
+                "linked_product_sku": "136",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "crosssell",
+                "linked_product_sku": "131",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "crosssell",
+                "linked_product_sku": "125",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "crosssell",
+                "linked_product_sku": "99",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "crosssell",
+                "linked_product_sku": "87",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140592073",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140613751",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "crosssell",
+                "linked_product_sku": "1766107",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140619156",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "413",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608858",
+                "linked_product_type": "configurable",
+                "position": 0
+            }
+        ],
+        "options": [],
+        "media_gallery_entries": [
+            {
+                "id": 4803,
+                "media_type": "image",
+                "label": "COLLE STICK \"TECHNO\"",
+                "position": 1,
+                "disabled": false,
+                "types": [
+                    "image",
+                    "small_image",
+                    "thumbnail"
+                ],
+                "file": "/c/o/colle-stick-techno--0.jpg"
+            }
+        ],
+        "tier_prices": [],
+        "custom_attributes": [
+            {
+                "attribute_code": "gift_message_available",
+                "value": "0"
+            },
+            {
+                "attribute_code": "url_key",
+                "value": "colle-stick-techno"
+            },
+            {
+                "attribute_code": "rma_allowed",
+                "value": "1"
+            },
+            {
+                "attribute_code": "am_available_for_wrapping",
+                "value": "0"
+            },
+            {
+                "attribute_code": "image",
+                "value": "/c/o/colle-stick-techno--0.jpg"
+            },
+            {
+                "attribute_code": "short_description",
+                "value": "Petits tubes ronds et pratiques pour une manipulation propre et un contrôle précis ,idéal pour les petits travaux minutieux."
+            },
+            {
+                "attribute_code": "description",
+                "value": "Baton de colle en pvp ; leur mécanisme de torsion circulaire permet de délivrer autant de colle que nécessaire ; séche rapidement ; fermeteur du capuchan par clic ; idéale pour : papier carton ; photo ; textil ; polysyréne."
+            },
+            {
+                "attribute_code": "options_container",
+                "value": "container2"
+            },
+            {
+                "attribute_code": "small_image",
+                "value": "/c/o/colle-stick-techno--0.jpg"
+            },
+            {
+                "attribute_code": "meta_title",
+                "value": "COLLE STICK \"TECHNO\""
+            },
+            {
+                "attribute_code": "thumbnail",
+                "value": "/c/o/colle-stick-techno--0.jpg"
+            },
+            {
+                "attribute_code": "meta_keyword",
+                "value": "COLLE,STICK,TECHNO"
+            },
+            {
+                "attribute_code": "meta_description",
+                "value": "Petits tubes ronds et pratiques pour une manipulation propre et un contrôle précis ,idéal pour les petits travaux minutieux."
+            },
+            {
+                "attribute_code": "am_offer_item_condition",
+                "value": "1"
+            },
+            {
+                "attribute_code": "msrp_display_actual_price_type",
+                "value": "0"
+            },
+            {
+                "attribute_code": "tax_class_id",
+                "value": "2"
+            },
+            {
+                "attribute_code": "category_ids",
+                "value": [
+                    "3",
+                    "140",
+                    "141",
+                    "142",
+                    "11",
+                    "143",
+                    "2169",
+                    "2246",
+                    "2165",
+                    "2239",
+                    "2247",
+                    "2374"
+                ]
+            },
+            {
+                "attribute_code": "required_options",
+                "value": "1"
+            },
+            {
+                "attribute_code": "has_options",
+                "value": "1"
+            },
+            {
+                "attribute_code": "image_label",
+                "value": "COLLE STICK \"TECHNO\""
+            },
+            {
+                "attribute_code": "mgs_brand",
+                "value": "401"
+            },
+            {
+                "attribute_code": "country_of_manufacture",
+                "value": "CN"
+            },
+            {
+                "attribute_code": "small_image_label",
+                "value": "COLLE STICK \"TECHNO\""
+            },
+            {
+                "attribute_code": "thumbnail_label",
+                "value": "COLLE STICK \"TECHNO\""
+            },
+            {
+                "attribute_code": "a_la_une",
+                "value": "0"
+            },
+            {
+                "attribute_code": "best_seller",
+                "value": "0"
+            },
+            {
+                "attribute_code": "trending",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amasty_conf_matrix",
+                "value": "0"
+            },
+            {
+                "attribute_code": "hide_quote_buy_button",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amrolepermissions_owner",
+                "value": "0"
+            },
+            {
+                "attribute_code": "am_shipping_type",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amxnotif_hide_alert",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amtoolkit_robots",
+                "value": "default"
+            }
+        ]
+    },
+    {
+        "id": 3240,
+        "sku": "1140591612",
+        "name": "PATE A MODELER 12 COULEURS SOUS BLISTER \"TECHNO\" REF: 4394",
+        "attribute_set_id": 4,
+        "price": 0,
+        "status": 1,
+        "visibility": 4,
+        "type_id": "configurable",
+        "created_at": "2021-04-21 11:12:05",
+        "updated_at": "2024-09-29 07:53:49",
+        "weight": 9999,
+        "extension_attributes": {
+            "website_ids": [
+                1
+            ],
+            "category_links": [
+                {
+                    "position": 0,
+                    "category_id": "3"
+                },
+                {
+                    "position": 0,
+                    "category_id": "11"
+                }
+            ],
+            "configurable_product_options": [
+                {
+                    "id": 170,
+                    "attribute_id": "160",
+                    "label": "Motif",
+                    "position": 0,
+                    "values": [
+                        {
+                            "value_index": 628
+                        },
+                        {
+                            "value_index": 694
+                        },
+                        {
+                            "value_index": 695
+                        },
+                        {
+                            "value_index": 740
+                        }
+                    ],
+                    "product_id": 3240
+                }
+            ],
+            "configurable_product_links": [
+                747,
+                746,
+                749,
+                748
+            ],
+            "preorder_info": {
+                "preorder": false,
+                "note": "Pre Order",
+                "cart_label": "Pre Order"
+            }
+        },
+        "product_links": [
+            {
+                "sku": "1140591612",
+                "link_type": "related",
+                "linked_product_sku": "1140615572",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1140591612",
+                "link_type": "crosssell",
+                "linked_product_sku": "1846603",
+                "linked_product_type": "simple",
+                "position": 1
+            },
+            {
+                "sku": "1140591612",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608134",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591612",
+                "link_type": "crosssell",
+                "linked_product_sku": "130",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591612",
+                "link_type": "crosssell",
+                "linked_product_sku": "123",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591612",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140592499",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591612",
+                "link_type": "crosssell",
+                "linked_product_sku": "432",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591612",
+                "link_type": "crosssell",
+                "linked_product_sku": "1766107",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591612",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608296",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591612",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608291",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591612",
+                "link_type": "crosssell",
+                "linked_product_sku": "986309",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591612",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608837",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591612",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608858",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1140591612",
+                "link_type": "upsell",
+                "linked_product_sku": "1140591613",
+                "linked_product_type": "configurable",
+                "position": 1
+            },
+            {
+                "sku": "1140591612",
+                "link_type": "upsell",
+                "linked_product_sku": "1140610493",
+                "linked_product_type": "configurable",
+                "position": 0
+            }
+        ],
+        "options": [],
+        "media_gallery_entries": [
+            {
+                "id": 12247,
+                "media_type": "image",
+                "label": null,
+                "position": 2,
+                "disabled": false,
+                "types": [
+                    "image",
+                    "small_image",
+                    "thumbnail",
+                    "amasty_conf_flipper_image",
+                    "sm_hoverimage",
+                    "thumb_degree_image",
+                    "thumb_ar_image"
+                ],
+                "file": "/p/a/pate-a-modeler-12-couleurs-sous-blister-techno-ref-4394.jpg"
+            },
+            {
+                "id": 3735,
+                "media_type": "image",
+                "label": null,
+                "position": 3,
+                "disabled": false,
+                "types": [],
+                "file": "/p/a/pate-a-modeler-12-couleurs-sous-blister-paw-patrol-garcon-techno-ref-4394-0.jpg"
+            }
+        ],
+        "tier_prices": [],
+        "custom_attributes": [
+            {
+                "attribute_code": "gift_message_available",
+                "value": "0"
+            },
+            {
+                "attribute_code": "url_key",
+                "value": "pate-a-modeler-12-couleurs-sous-blister-techno-ref-4394"
+            },
+            {
+                "attribute_code": "rma_allowed",
+                "value": "1"
+            },
+            {
+                "attribute_code": "am_available_for_wrapping",
+                "value": "0"
+            },
+            {
+                "attribute_code": "image",
+                "value": "/p/a/pate-a-modeler-12-couleurs-sous-blister-techno-ref-4394.jpg"
+            },
+            {
+                "attribute_code": "short_description",
+                "value": "A partir de 3 ans ; non toxique sous licence."
+            },
+            {
+                "attribute_code": "description",
+                "value": "<p>En blister a base d'huile, 12 couleurs mélangable sans moules.</p>\r\n <iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/jo1NTWiA9Tw\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>"
+            },
+            {
+                "attribute_code": "options_container",
+                "value": "container2"
+            },
+            {
+                "attribute_code": "small_image",
+                "value": "/p/a/pate-a-modeler-12-couleurs-sous-blister-techno-ref-4394.jpg"
+            },
+            {
+                "attribute_code": "meta_title",
+                "value": "PATE A MODELER 12 COULEURS SOUS BLISTER \"TECHNO\" REF: 4394"
+            },
+            {
+                "attribute_code": "thumbnail",
+                "value": "/p/a/pate-a-modeler-12-couleurs-sous-blister-techno-ref-4394.jpg"
+            },
+            {
+                "attribute_code": "meta_keyword",
+                "value": "PATE,MODELER,12,COULEURS,SOUS,BLISTER,TECHNO,4394"
+            },
+            {
+                "attribute_code": "meta_description",
+                "value": "A partir de 3 ans ; non toxique sous licence."
+            },
+            {
+                "attribute_code": "am_offer_item_condition",
+                "value": "1"
+            },
+            {
+                "attribute_code": "amasty_conf_flipper_image",
+                "value": "/p/a/pate-a-modeler-12-couleurs-sous-blister-techno-ref-4394.jpg"
+            },
+            {
+                "attribute_code": "thumb_degree_image",
+                "value": "/p/a/pate-a-modeler-12-couleurs-sous-blister-techno-ref-4394.jpg"
+            },
+            {
+                "attribute_code": "msrp_display_actual_price_type",
+                "value": "0"
+            },
+            {
+                "attribute_code": "thumb_ar_image",
+                "value": "/p/a/pate-a-modeler-12-couleurs-sous-blister-techno-ref-4394.jpg"
+            },
+            {
+                "attribute_code": "tax_class_id",
+                "value": "2"
+            },
+            {
+                "attribute_code": "category_ids",
+                "value": [
+                    "3",
+                    "11"
+                ]
+            },
+            {
+                "attribute_code": "required_options",
+                "value": "1"
+            },
+            {
+                "attribute_code": "has_options",
+                "value": "1"
+            },
+            {
+                "attribute_code": "mgs_brand",
+                "value": "401"
+            },
+            {
+                "attribute_code": "country_of_manufacture",
+                "value": "TH"
+            },
+            {
+                "attribute_code": "a_la_une",
+                "value": "0"
+            },
+            {
+                "attribute_code": "best_seller",
+                "value": "0"
+            },
+            {
+                "attribute_code": "techno_ref",
+                "value": "4394"
+            },
+            {
+                "attribute_code": "trending",
+                "value": "0"
+            },
+            {
+                "attribute_code": "sm_featured",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amasty_conf_matrix",
+                "value": "0"
+            },
+            {
+                "attribute_code": "hide_quote_buy_button",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amrolepermissions_owner",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amxnotif_hide_alert",
+                "value": "0"
+            },
+            {
+                "attribute_code": "sm_hoverimage",
+                "value": "/p/a/pate-a-modeler-12-couleurs-sous-blister-techno-ref-4394.jpg"
+            },
+            {
+                "attribute_code": "amtoolkit_robots",
+                "value": "default"
+            }
+        ]
+    },
+    {
+        "id": 3241,
+        "sku": "1140591610",
+        "name": "PATE A MODELER 08 COULEURS AVEC 03 MOULES SOUS BLISTER \"TECHNO\" REF: 4392",
+        "attribute_set_id": 4,
+        "price": 0,
+        "status": 1,
+        "visibility": 4,
+        "type_id": "configurable",
+        "created_at": "2021-04-21 11:12:05",
+        "updated_at": "2024-09-29 08:14:59",
+        "weight": 9999,
+        "extension_attributes": {
+            "website_ids": [
+                1
+            ],
+            "category_links": [
+                {
+                    "position": 0,
+                    "category_id": "3"
+                },
+                {
+                    "position": 0,
+                    "category_id": "11"
+                }
+            ],
+            "configurable_product_options": [
+                {
+                    "id": 171,
+                    "attribute_id": "160",
+                    "label": "Motif",
+                    "position": 0,
+                    "values": [
+                        {
+                            "value_index": 628
+                        },
+                        {
+                            "value_index": 694
+                        },
+                        {
+                            "value_index": 695
+                        },
+                        {
+                            "value_index": 740
+                        }
+                    ],
+                    "product_id": 3241
+                }
+            ],
+            "configurable_product_links": [
+                751,
+                750,
+                753,
+                752
+            ],
+            "preorder_info": {
+                "preorder": false,
+                "note": "Pre Order",
+                "cart_label": "Pre Order"
+            }
+        },
+        "product_links": [
+            {
+                "sku": "1140591610",
+                "link_type": "related",
+                "linked_product_sku": "1140615572",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1140591610",
+                "link_type": "crosssell",
+                "linked_product_sku": "1846603",
+                "linked_product_type": "simple",
+                "position": 1
+            },
+            {
+                "sku": "1140591610",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608134",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591610",
+                "link_type": "crosssell",
+                "linked_product_sku": "130",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591610",
+                "link_type": "crosssell",
+                "linked_product_sku": "123",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591610",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140592499",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591610",
+                "link_type": "crosssell",
+                "linked_product_sku": "432",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591610",
+                "link_type": "crosssell",
+                "linked_product_sku": "1766107",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591610",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608296",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591610",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608291",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591610",
+                "link_type": "crosssell",
+                "linked_product_sku": "986309",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591610",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608837",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591610",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608858",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1140591610",
+                "link_type": "upsell",
+                "linked_product_sku": "1140591613",
+                "linked_product_type": "configurable",
+                "position": 1
+            },
+            {
+                "sku": "1140591610",
+                "link_type": "upsell",
+                "linked_product_sku": "1140610493",
+                "linked_product_type": "configurable",
+                "position": 0
+            }
+        ],
+        "options": [],
+        "media_gallery_entries": [
+            {
+                "id": 12249,
+                "media_type": "image",
+                "label": null,
+                "position": 0,
+                "disabled": false,
+                "types": [
+                    "image",
+                    "small_image",
+                    "thumbnail",
+                    "amasty_conf_flipper_image",
+                    "sm_hoverimage",
+                    "thumb_degree_image",
+                    "thumb_ar_image"
+                ],
+                "file": "/p/a/pate-a-modeler-08-couleurs-avec-03-moules-sous-blister-techno-ref-4392.jpg"
+            },
+            {
+                "id": 3730,
+                "media_type": "image",
+                "label": "PATE A MODELER 08 COULEURS AVEC 03 MOULES SOUS BLISTER \"TECHNO\" REF: 4392",
+                "position": 1,
+                "disabled": false,
+                "types": [],
+                "file": "/p/a/pate-a-modeler-08-couleurs-avec-03-moules-sous-blister-paw-patrol-gar_on-techno-ref-4392-0.jpg"
+            }
+        ],
+        "tier_prices": [],
+        "custom_attributes": [
+            {
+                "attribute_code": "gift_message_available",
+                "value": "0"
+            },
+            {
+                "attribute_code": "url_key",
+                "value": "pate-a-modeler-08-couleurs-avec-03-moules-sous-blister-techno-ref-4392"
+            },
+            {
+                "attribute_code": "rma_allowed",
+                "value": "1"
+            },
+            {
+                "attribute_code": "am_available_for_wrapping",
+                "value": "0"
+            },
+            {
+                "attribute_code": "image",
+                "value": "/p/a/pate-a-modeler-08-couleurs-avec-03-moules-sous-blister-techno-ref-4392.jpg"
+            },
+            {
+                "attribute_code": "short_description",
+                "value": "A partir de 3 ans ; non toxique sous licence."
+            },
+            {
+                "attribute_code": "description",
+                "value": "<p>En blister a base d'huile,8 couleurs mélangable ;avec des moules.</p>\r\n <p><strong>Remarque</strong> : En cas de non disponibilité de la variante sélectionnée (couleur ou motif ...) une autre variante (couleur ou motif ...) de la même référence vous sera livrée.</p>\r\n <p><iframe src=\"https://www.youtube.com/embed/jo1NTWiA9Tw\" width=\"560\" height=\"315\" frameborder=\"0\" allowfullscreen=\"allowfullscreen\"></iframe></p>"
+            },
+            {
+                "attribute_code": "options_container",
+                "value": "container2"
+            },
+            {
+                "attribute_code": "small_image",
+                "value": "/p/a/pate-a-modeler-08-couleurs-avec-03-moules-sous-blister-techno-ref-4392.jpg"
+            },
+            {
+                "attribute_code": "meta_title",
+                "value": "PATE A MODELER 08 COULEURS AVEC 03 MOULES SOUS BLISTER \"TECHNO\" REF: 4392"
+            },
+            {
+                "attribute_code": "thumbnail",
+                "value": "/p/a/pate-a-modeler-08-couleurs-avec-03-moules-sous-blister-techno-ref-4392.jpg"
+            },
+            {
+                "attribute_code": "meta_keyword",
+                "value": "PATE,MODELER,08,COULEURS,AVEC,03,MOULES,SOUS,BLISTER,TECHNO,4392"
+            },
+            {
+                "attribute_code": "meta_description",
+                "value": "A partir de 3 ans ; non toxique sous licence."
+            },
+            {
+                "attribute_code": "am_offer_item_condition",
+                "value": "1"
+            },
+            {
+                "attribute_code": "amasty_conf_flipper_image",
+                "value": "/p/a/pate-a-modeler-08-couleurs-avec-03-moules-sous-blister-techno-ref-4392.jpg"
+            },
+            {
+                "attribute_code": "thumb_degree_image",
+                "value": "/p/a/pate-a-modeler-08-couleurs-avec-03-moules-sous-blister-techno-ref-4392.jpg"
+            },
+            {
+                "attribute_code": "msrp_display_actual_price_type",
+                "value": "0"
+            },
+            {
+                "attribute_code": "thumb_ar_image",
+                "value": "/p/a/pate-a-modeler-08-couleurs-avec-03-moules-sous-blister-techno-ref-4392.jpg"
+            },
+            {
+                "attribute_code": "tax_class_id",
+                "value": "2"
+            },
+            {
+                "attribute_code": "category_ids",
+                "value": [
+                    "3",
+                    "11"
+                ]
+            },
+            {
+                "attribute_code": "required_options",
+                "value": "1"
+            },
+            {
+                "attribute_code": "has_options",
+                "value": "1"
+            },
+            {
+                "attribute_code": "image_label",
+                "value": "PATE A MODELER 08 COULEURS AVEC 03 MOULES SOUS BLISTER \"TECHNO\" REF: 4392"
+            },
+            {
+                "attribute_code": "mgs_brand",
+                "value": "401"
+            },
+            {
+                "attribute_code": "country_of_manufacture",
+                "value": "TH"
+            },
+            {
+                "attribute_code": "small_image_label",
+                "value": "PATE A MODELER 08 COULEURS AVEC 03 MOULES SOUS BLISTER \"TECHNO\" REF: 4392"
+            },
+            {
+                "attribute_code": "thumbnail_label",
+                "value": "PATE A MODELER 08 COULEURS AVEC 03 MOULES SOUS BLISTER \"TECHNO\" REF: 4392"
+            },
+            {
+                "attribute_code": "a_la_une",
+                "value": "0"
+            },
+            {
+                "attribute_code": "best_seller",
+                "value": "0"
+            },
+            {
+                "attribute_code": "techno_ref",
+                "value": "4392"
+            },
+            {
+                "attribute_code": "trending",
+                "value": "0"
+            },
+            {
+                "attribute_code": "sm_featured",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amasty_conf_matrix",
+                "value": "0"
+            },
+            {
+                "attribute_code": "hide_quote_buy_button",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amrolepermissions_owner",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amxnotif_hide_alert",
+                "value": "0"
+            },
+            {
+                "attribute_code": "sm_hoverimage",
+                "value": "/p/a/pate-a-modeler-08-couleurs-avec-03-moules-sous-blister-techno-ref-4392.jpg"
+            },
+            {
+                "attribute_code": "amtoolkit_robots",
+                "value": "default"
+            }
+        ]
+    },
+    {
+        "id": 3242,
+        "sku": "1140610493",
+        "name": "PATE A MODELER 12 COULEURS NEON 200g AVEC 04 MOULES ET 01 ROULEAU SOUS BLISTER \"TECHNO\" REF: 4695",
+        "attribute_set_id": 4,
+        "price": 0,
+        "status": 1,
+        "visibility": 4,
+        "type_id": "configurable",
+        "created_at": "2021-04-21 11:12:05",
+        "updated_at": "2024-09-30 07:32:25",
+        "weight": 9999,
+        "extension_attributes": {
+            "website_ids": [
+                1
+            ],
+            "category_links": [
+                {
+                    "position": 0,
+                    "category_id": "3"
+                },
+                {
+                    "position": 0,
+                    "category_id": "11"
+                }
+            ],
+            "configurable_product_options": [
+                {
+                    "id": 172,
+                    "attribute_id": "160",
+                    "label": "Motif",
+                    "position": 0,
+                    "values": [
+                        {
+                            "value_index": 628
+                        },
+                        {
+                            "value_index": 694
+                        },
+                        {
+                            "value_index": 695
+                        },
+                        {
+                            "value_index": 740
+                        }
+                    ],
+                    "product_id": 3242
+                }
+            ],
+            "configurable_product_links": [
+                755,
+                754,
+                757,
+                756
+            ],
+            "preorder_info": {
+                "preorder": false,
+                "note": "Pre Order",
+                "cart_label": "Pre Order"
+            }
+        },
+        "product_links": [
+            {
+                "sku": "1140610493",
+                "link_type": "related",
+                "linked_product_sku": "1140615572",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1140610493",
+                "link_type": "crosssell",
+                "linked_product_sku": "1846603",
+                "linked_product_type": "simple",
+                "position": 1
+            },
+            {
+                "sku": "1140610493",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608134",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140610493",
+                "link_type": "crosssell",
+                "linked_product_sku": "130",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140610493",
+                "link_type": "crosssell",
+                "linked_product_sku": "123",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140610493",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140592499",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140610493",
+                "link_type": "crosssell",
+                "linked_product_sku": "432",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140610493",
+                "link_type": "crosssell",
+                "linked_product_sku": "1766107",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140610493",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608296",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140610493",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608291",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140610493",
+                "link_type": "crosssell",
+                "linked_product_sku": "986309",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140610493",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608837",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140610493",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608858",
+                "linked_product_type": "configurable",
+                "position": 0
+            }
+        ],
+        "options": [],
+        "media_gallery_entries": [
+            {
+                "id": 12252,
+                "media_type": "image",
+                "label": null,
+                "position": 3,
+                "disabled": false,
+                "types": [
+                    "image",
+                    "small_image",
+                    "thumbnail",
+                    "amasty_conf_flipper_image",
+                    "sm_hoverimage",
+                    "thumb_degree_image",
+                    "thumb_ar_image"
+                ],
+                "file": "/p/a/pate-a-modeler-12-couleurs-neon-200g-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4695.jpg"
+            }
+        ],
+        "tier_prices": [],
+        "custom_attributes": [
+            {
+                "attribute_code": "gift_message_available",
+                "value": "0"
+            },
+            {
+                "attribute_code": "url_key",
+                "value": "pate-a-modeler-12-couleurs-neon-200g-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4695"
+            },
+            {
+                "attribute_code": "rma_allowed",
+                "value": "1"
+            },
+            {
+                "attribute_code": "am_available_for_wrapping",
+                "value": "0"
+            },
+            {
+                "attribute_code": "image",
+                "value": "/p/a/pate-a-modeler-12-couleurs-neon-200g-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4695.jpg"
+            },
+            {
+                "attribute_code": "short_description",
+                "value": "A partir de 3 ans ; non toxique sous licence."
+            },
+            {
+                "attribute_code": "description",
+                "value": "<p>En blister a base d'huile ; 12 couleurs neon avec des moules.</p>\r\n <iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/jo1NTWiA9Tw\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>"
+            },
+            {
+                "attribute_code": "options_container",
+                "value": "container2"
+            },
+            {
+                "attribute_code": "small_image",
+                "value": "/p/a/pate-a-modeler-12-couleurs-neon-200g-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4695.jpg"
+            },
+            {
+                "attribute_code": "meta_title",
+                "value": "PATE A MODELER 12 COULEURS NEON 200g AVEC 04 MOULES ET 01 ROULEAU SOUS BLISTER \"TECHNO\" REF: 4695"
+            },
+            {
+                "attribute_code": "thumbnail",
+                "value": "/p/a/pate-a-modeler-12-couleurs-neon-200g-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4695.jpg"
+            },
+            {
+                "attribute_code": "meta_keyword",
+                "value": "PATE,MODELER,12,COULEURS,NEON,200g,AVEC,04,MOULES,ET,01,ROULEAU,SOUS,BLISTER,TECHNO,4695"
+            },
+            {
+                "attribute_code": "meta_description",
+                "value": "A partir de 3 ans ; non toxique sous licence."
+            },
+            {
+                "attribute_code": "am_offer_item_condition",
+                "value": "1"
+            },
+            {
+                "attribute_code": "amasty_conf_flipper_image",
+                "value": "/p/a/pate-a-modeler-12-couleurs-neon-200g-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4695.jpg"
+            },
+            {
+                "attribute_code": "thumb_degree_image",
+                "value": "/p/a/pate-a-modeler-12-couleurs-neon-200g-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4695.jpg"
+            },
+            {
+                "attribute_code": "msrp_display_actual_price_type",
+                "value": "0"
+            },
+            {
+                "attribute_code": "thumb_ar_image",
+                "value": "/p/a/pate-a-modeler-12-couleurs-neon-200g-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4695.jpg"
+            },
+            {
+                "attribute_code": "tax_class_id",
+                "value": "2"
+            },
+            {
+                "attribute_code": "category_ids",
+                "value": [
+                    "3",
+                    "11"
+                ]
+            },
+            {
+                "attribute_code": "required_options",
+                "value": "1"
+            },
+            {
+                "attribute_code": "has_options",
+                "value": "1"
+            },
+            {
+                "attribute_code": "image_label",
+                "value": "PATE A MODELER 12 COULEURS NEON 200g AVEC 04 MOULES ET 01 ROULEAU SOUS BLISTER \"TECHNO\" REF: 4695"
+            },
+            {
+                "attribute_code": "mgs_brand",
+                "value": "401"
+            },
+            {
+                "attribute_code": "country_of_manufacture",
+                "value": "TH"
+            },
+            {
+                "attribute_code": "small_image_label",
+                "value": "PATE A MODELER 12 COULEURS NEON 200g AVEC 04 MOULES ET 01 ROULEAU SOUS BLISTER \"TECHNO\" REF: 4695"
+            },
+            {
+                "attribute_code": "thumbnail_label",
+                "value": "PATE A MODELER 12 COULEURS NEON 200g AVEC 04 MOULES ET 01 ROULEAU SOUS BLISTER \"TECHNO\" REF: 4695"
+            },
+            {
+                "attribute_code": "a_la_une",
+                "value": "0"
+            },
+            {
+                "attribute_code": "best_seller",
+                "value": "0"
+            },
+            {
+                "attribute_code": "techno_ref",
+                "value": "4695"
+            },
+            {
+                "attribute_code": "trending",
+                "value": "0"
+            },
+            {
+                "attribute_code": "sm_featured",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amasty_conf_matrix",
+                "value": "0"
+            },
+            {
+                "attribute_code": "hide_quote_buy_button",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amrolepermissions_owner",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amxnotif_hide_alert",
+                "value": "0"
+            },
+            {
+                "attribute_code": "sm_hoverimage",
+                "value": "/p/a/pate-a-modeler-12-couleurs-neon-200g-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4695.jpg"
+            },
+            {
+                "attribute_code": "amtoolkit_robots",
+                "value": "default"
+            }
+        ]
+    },
+    {
+        "id": 3239,
+        "sku": "1140591613",
+        "name": "PATE A MODELER 12 COULEURS AVEC 04 MOULES ET 01 ROULEAU SOUS BLISTER \"TECHNO\" REF: 4395",
+        "attribute_set_id": 4,
+        "price": 0,
+        "status": 1,
+        "visibility": 4,
+        "type_id": "configurable",
+        "created_at": "2021-04-21 11:12:05",
+        "updated_at": "2024-09-29 07:58:04",
+        "weight": 9999,
+        "extension_attributes": {
+            "website_ids": [
+                1
+            ],
+            "category_links": [
+                {
+                    "position": 0,
+                    "category_id": "3"
+                },
+                {
+                    "position": 0,
+                    "category_id": "11"
+                }
+            ],
+            "configurable_product_options": [
+                {
+                    "id": 169,
+                    "attribute_id": "160",
+                    "label": "Motif",
+                    "position": 0,
+                    "values": [
+                        {
+                            "value_index": 628
+                        },
+                        {
+                            "value_index": 694
+                        },
+                        {
+                            "value_index": 695
+                        },
+                        {
+                            "value_index": 740
+                        }
+                    ],
+                    "product_id": 3239
+                }
+            ],
+            "configurable_product_links": [
+                743,
+                742,
+                745,
+                744
+            ],
+            "preorder_info": {
+                "preorder": false,
+                "note": "Pre Order",
+                "cart_label": "Pre Order"
+            }
+        },
+        "product_links": [
+            {
+                "sku": "1140591613",
+                "link_type": "related",
+                "linked_product_sku": "1140615572",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1140591613",
+                "link_type": "crosssell",
+                "linked_product_sku": "1846603",
+                "linked_product_type": "simple",
+                "position": 4
+            },
+            {
+                "sku": "1140591613",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608134",
+                "linked_product_type": "simple",
+                "position": 3
+            },
+            {
+                "sku": "1140591613",
+                "link_type": "crosssell",
+                "linked_product_sku": "130",
+                "linked_product_type": "simple",
+                "position": 2
+            },
+            {
+                "sku": "1140591613",
+                "link_type": "crosssell",
+                "linked_product_sku": "123",
+                "linked_product_type": "simple",
+                "position": 1
+            },
+            {
+                "sku": "1140591613",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140592499",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591613",
+                "link_type": "crosssell",
+                "linked_product_sku": "432",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591613",
+                "link_type": "crosssell",
+                "linked_product_sku": "1766107",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591613",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608296",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591613",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608291",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591613",
+                "link_type": "crosssell",
+                "linked_product_sku": "986309",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591613",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608837",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140591613",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608858",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1140591613",
+                "link_type": "upsell",
+                "linked_product_sku": "1140610493",
+                "linked_product_type": "configurable",
+                "position": 0
+            }
+        ],
+        "options": [],
+        "media_gallery_entries": [
+            {
+                "id": 12248,
+                "media_type": "image",
+                "label": null,
+                "position": 7,
+                "disabled": false,
+                "types": [
+                    "image",
+                    "small_image",
+                    "thumbnail",
+                    "amasty_conf_flipper_image",
+                    "sm_hoverimage",
+                    "thumb_degree_image",
+                    "thumb_ar_image"
+                ],
+                "file": "/p/a/pate-a-modeler-12-couleurs-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4395.jpg"
+            }
+        ],
+        "tier_prices": [],
+        "custom_attributes": [
+            {
+                "attribute_code": "gift_message_available",
+                "value": "0"
+            },
+            {
+                "attribute_code": "url_key",
+                "value": "pate-a-modeler-12-couleurs-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4395"
+            },
+            {
+                "attribute_code": "rma_allowed",
+                "value": "1"
+            },
+            {
+                "attribute_code": "am_available_for_wrapping",
+                "value": "0"
+            },
+            {
+                "attribute_code": "image",
+                "value": "/p/a/pate-a-modeler-12-couleurs-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4395.jpg"
+            },
+            {
+                "attribute_code": "short_description",
+                "value": "A partir de 3 ans ; non toxique sous licence."
+            },
+            {
+                "attribute_code": "description",
+                "value": "<p>En blister a base d'huile, 12 couleurs mélangable avec des moules et un rouleau.</p>\r\n <iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/jo1NTWiA9Tw\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>"
+            },
+            {
+                "attribute_code": "options_container",
+                "value": "container2"
+            },
+            {
+                "attribute_code": "small_image",
+                "value": "/p/a/pate-a-modeler-12-couleurs-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4395.jpg"
+            },
+            {
+                "attribute_code": "meta_title",
+                "value": "PATE A MODELER 12 COULEURS AVEC 04 MOULES ET 01 ROULEAU SOUS BLISTER \"TECHNO\" REF: 4395"
+            },
+            {
+                "attribute_code": "thumbnail",
+                "value": "/p/a/pate-a-modeler-12-couleurs-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4395.jpg"
+            },
+            {
+                "attribute_code": "meta_keyword",
+                "value": "PATE,MODELER,12,COULEURS,AVEC,04,MOULES,ET,01,ROULEAU,SOUS,BLISTER,TECHNO,4395"
+            },
+            {
+                "attribute_code": "meta_description",
+                "value": "A partir de 3 ans ; non toxique sous licence."
+            },
+            {
+                "attribute_code": "am_offer_item_condition",
+                "value": "1"
+            },
+            {
+                "attribute_code": "amasty_conf_flipper_image",
+                "value": "/p/a/pate-a-modeler-12-couleurs-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4395.jpg"
+            },
+            {
+                "attribute_code": "thumb_degree_image",
+                "value": "/p/a/pate-a-modeler-12-couleurs-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4395.jpg"
+            },
+            {
+                "attribute_code": "msrp_display_actual_price_type",
+                "value": "0"
+            },
+            {
+                "attribute_code": "thumb_ar_image",
+                "value": "/p/a/pate-a-modeler-12-couleurs-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4395.jpg"
+            },
+            {
+                "attribute_code": "tax_class_id",
+                "value": "2"
+            },
+            {
+                "attribute_code": "category_ids",
+                "value": [
+                    "3",
+                    "11"
+                ]
+            },
+            {
+                "attribute_code": "required_options",
+                "value": "1"
+            },
+            {
+                "attribute_code": "has_options",
+                "value": "1"
+            },
+            {
+                "attribute_code": "image_label",
+                "value": "PATE A MODELER 12 COULEURS AVEC 04 MOULES ET 01 ROULEAU SOUS BLISTER \"TECHNO\" REF: 4395"
+            },
+            {
+                "attribute_code": "mgs_brand",
+                "value": "401"
+            },
+            {
+                "attribute_code": "country_of_manufacture",
+                "value": "TH"
+            },
+            {
+                "attribute_code": "small_image_label",
+                "value": "PATE A MODELER 12 COULEURS AVEC 04 MOULES ET 01 ROULEAU SOUS BLISTER \"TECHNO\" REF: 4395"
+            },
+            {
+                "attribute_code": "thumbnail_label",
+                "value": "PATE A MODELER 12 COULEURS AVEC 04 MOULES ET 01 ROULEAU SOUS BLISTER \"TECHNO\" REF: 4395"
+            },
+            {
+                "attribute_code": "a_la_une",
+                "value": "0"
+            },
+            {
+                "attribute_code": "best_seller",
+                "value": "0"
+            },
+            {
+                "attribute_code": "techno_ref",
+                "value": "4395"
+            },
+            {
+                "attribute_code": "trending",
+                "value": "0"
+            },
+            {
+                "attribute_code": "sm_featured",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amasty_conf_matrix",
+                "value": "0"
+            },
+            {
+                "attribute_code": "hide_quote_buy_button",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amrolepermissions_owner",
+                "value": "0"
+            },
+            {
+                "attribute_code": "am_shipping_type",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amxnotif_hide_alert",
+                "value": "0"
+            },
+            {
+                "attribute_code": "sm_hoverimage",
+                "value": "/p/a/pate-a-modeler-12-couleurs-avec-04-moules-et-01-rouleau-sous-blister-techno-ref-4395.jpg"
+            },
+            {
+                "attribute_code": "amtoolkit_robots",
+                "value": "default"
+            }
+        ]
+    },
+    {
+        "id": 2678,
+        "sku": "2189803",
+        "name": "COLLE PATAFIX PROPOWER 21 PASTILLES \"UHU\" REF: 40790-40891-40898",
+        "attribute_set_id": 4,
+        "price": 500,
+        "status": 1,
+        "visibility": 4,
+        "type_id": "simple",
+        "created_at": "2021-04-18 15:35:40",
+        "updated_at": "2024-10-09 15:16:14",
+        "weight": 62,
+        "extension_attributes": {
+            "website_ids": [
+                1
+            ],
+            "category_links": [
+                {
+                    "position": 0,
+                    "category_id": "364"
+                },
+                {
+                    "position": 0,
+                    "category_id": "115"
+                },
+                {
+                    "position": 0,
+                    "category_id": "365"
+                },
+                {
+                    "position": 75,
+                    "category_id": "21"
+                },
+                {
+                    "position": 0,
+                    "category_id": "366"
+                },
+                {
+                    "position": 611,
+                    "category_id": "8"
+                },
+                {
+                    "position": 0,
+                    "category_id": "367"
+                },
+                {
+                    "position": 0,
+                    "category_id": "11"
+                },
+                {
+                    "position": 0,
+                    "category_id": "3"
+                },
+                {
+                    "position": -26,
+                    "category_id": "2168"
+                },
+                {
+                    "position": -2,
+                    "category_id": "2253"
+                },
+                {
+                    "position": -42,
+                    "category_id": "2165"
+                },
+                {
+                    "position": -288,
+                    "category_id": "2224"
+                },
+                {
+                    "position": -41,
+                    "category_id": "2169"
+                },
+                {
+                    "position": -41,
+                    "category_id": "2239"
+                },
+                {
+                    "position": -515,
+                    "category_id": "2374"
+                }
+            ],
+            "preorder_info": {
+                "preorder": false,
+                "note": "Pre Order",
+                "cart_label": "Pre Order"
+            }
+        },
+        "product_links": [
+            {
+                "sku": "2189803",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140591755",
+                "linked_product_type": "simple",
+                "position": 3
+            },
+            {
+                "sku": "2189803",
+                "link_type": "crosssell",
+                "linked_product_sku": "2190003",
+                "linked_product_type": "simple",
+                "position": 2
+            },
+            {
+                "sku": "2189803",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140591750",
+                "linked_product_type": "simple",
+                "position": 1
+            },
+            {
+                "sku": "2189803",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140591749",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "2189803",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140591753",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "2189803",
+                "link_type": "crosssell",
+                "linked_product_sku": "2270203",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "2189803",
+                "link_type": "crosssell",
+                "linked_product_sku": "2270403",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "2189803",
+                "link_type": "crosssell",
+                "linked_product_sku": "2724308",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "2189803",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140591754",
+                "linked_product_type": "simple",
+                "position": 0
+            }
+        ],
+        "options": [],
+        "media_gallery_entries": [
+            {
+                "id": 1450,
+                "media_type": "image",
+                "label": "COLLE PATAFIX PROPOWER 21 PASTILLES \"UHU\" REF: 40790-40891-40898",
+                "position": 0,
+                "disabled": false,
+                "types": [
+                    "image",
+                    "small_image",
+                    "thumbnail",
+                    "swatch_image",
+                    "amasty_conf_flipper_image",
+                    "sm_hoverimage"
+                ],
+                "file": "/c/o/colle-patafix-propower-21-pastilles-uhu-ref-40790-40891-40898-0_1.jpg"
+            },
+            {
+                "id": 1451,
+                "media_type": "image",
+                "label": "",
+                "position": 1,
+                "disabled": false,
+                "types": [],
+                "file": "/c/o/colle-patafix-homedeco-32-pastilles-sous-blister-uhu-ref-47910-40660-2_1_1.jpg"
+            },
+            {
+                "id": 1452,
+                "media_type": "image",
+                "label": "",
+                "position": 2,
+                "disabled": false,
+                "types": [],
+                "file": "/c/o/colle-patafix-homedeco-32-pastilles-sous-blister-uhu-ref-47910-40660-3_1_1.jpg"
+            }
+        ],
+        "tier_prices": [],
+        "custom_attributes": [
+            {
+                "attribute_code": "gift_message_available",
+                "value": "0"
+            },
+            {
+                "attribute_code": "url_key",
+                "value": "colle-patafix-propower-21-pastilles-uhu-ref-40790-40891-40898"
+            },
+            {
+                "attribute_code": "rma_allowed",
+                "value": "1"
+            },
+            {
+                "attribute_code": "am_available_for_wrapping",
+                "value": "0"
+            },
+            {
+                "attribute_code": "image",
+                "value": "/c/o/colle-patafix-propower-21-pastilles-uhu-ref-40790-40891-40898-0_1.jpg"
+            },
+            {
+                "attribute_code": "short_description",
+                "value": "<p>21 Pastilles adhésives ultra-fortes, détachables et réutilisables, Idéale pour usage Interne & Externe.</p>"
+            },
+            {
+                "attribute_code": "description",
+                "value": "<div data-content-type=\"html\" data-appearance=\"default\" data-element=\"main\"><ul>\r\n <li><strong>Ultra-fortes</strong>, <strong>détachables</strong> et <strong>réutilisables</strong></li>\r\n <li>Pour <strong>attacher</strong>, <strong>fixer</strong> et <strong>réparer</strong> les objets</li>\r\n <li>Conviennent pour l'<strong>intérieur</strong> et l'<strong>extérieur</strong></li>\r\n <li>Testées sous contrôle dermatologique</li>\r\n <li>Fabriquées en Allemagne</li>\r\n </ul></div>"
+            },
+            {
+                "attribute_code": "options_container",
+                "value": "container2"
+            },
+            {
+                "attribute_code": "small_image",
+                "value": "/c/o/colle-patafix-propower-21-pastilles-uhu-ref-40790-40891-40898-0_1.jpg"
+            },
+            {
+                "attribute_code": "meta_title",
+                "value": "COLLE PATAFIX PROPOWER 21 PASTILLES \"UHU\" REF: 40790-40891-40898"
+            },
+            {
+                "attribute_code": "thumbnail",
+                "value": "/c/o/colle-patafix-propower-21-pastilles-uhu-ref-40790-40891-40898-0_1.jpg"
+            },
+            {
+                "attribute_code": "meta_keyword",
+                "value": "COLLE,PATAFIX,PROPOWER,21,PASTILLES,UHU,40790-40891-40898"
+            },
+            {
+                "attribute_code": "swatch_image",
+                "value": "/c/o/colle-patafix-propower-21-pastilles-uhu-ref-40790-40891-40898-0_1.jpg"
+            },
+            {
+                "attribute_code": "meta_description",
+                "value": "21 Pastilles adhésives ultra-fortes, détachables et réutilisables, Idéale pour usage Interne & Externe"
+            },
+            {
+                "attribute_code": "am_offer_item_condition",
+                "value": "1"
+            },
+            {
+                "attribute_code": "amasty_conf_flipper_image",
+                "value": "/c/o/colle-patafix-propower-21-pastilles-uhu-ref-40790-40891-40898-0_1.jpg"
+            },
+            {
+                "attribute_code": "msrp_display_actual_price_type",
+                "value": "0"
+            },
+            {
+                "attribute_code": "tax_class_id",
+                "value": "2"
+            },
+            {
+                "attribute_code": "category_ids",
+                "value": [
+                    "364",
+                    "115",
+                    "365",
+                    "21",
+                    "366",
+                    "8",
+                    "367",
+                    "11",
+                    "3",
+                    "2168",
+                    "2253",
+                    "2165",
+                    "2224",
+                    "2169",
+                    "2239",
+                    "2374"
+                ]
+            },
+            {
+                "attribute_code": "required_options",
+                "value": "0"
+            },
+            {
+                "attribute_code": "has_options",
+                "value": "0"
+            },
+            {
+                "attribute_code": "image_label",
+                "value": "COLLE PATAFIX PROPOWER 21 PASTILLES \"UHU\" REF: 40790-40891-40898"
+            },
+            {
+                "attribute_code": "mgs_brand",
+                "value": "404"
+            },
+            {
+                "attribute_code": "country_of_manufacture",
+                "value": "DE"
+            },
+            {
+                "attribute_code": "small_image_label",
+                "value": "COLLE PATAFIX PROPOWER 21 PASTILLES \"UHU\" REF: 40790-40891-40898"
+            },
+            {
+                "attribute_code": "thumbnail_label",
+                "value": "COLLE PATAFIX PROPOWER 21 PASTILLES \"UHU\" REF: 40790-40891-40898"
+            },
+            {
+                "attribute_code": "a_la_une",
+                "value": "0"
+            },
+            {
+                "attribute_code": "best_seller",
+                "value": "0"
+            },
+            {
+                "attribute_code": "techno_ref",
+                "value": "40790-40891-40898"
+            },
+            {
+                "attribute_code": "trending",
+                "value": "0"
+            },
+            {
+                "attribute_code": "sm_featured",
+                "value": "0"
+            },
+            {
+                "attribute_code": "hide_quote_buy_button",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amrolepermissions_owner",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amxnotif_hide_alert",
+                "value": "0"
+            },
+            {
+                "attribute_code": "sm_hoverimage",
+                "value": "/c/o/colle-patafix-propower-21-pastilles-uhu-ref-40790-40891-40898-0_1.jpg"
+            },
+            {
+                "attribute_code": "amtoolkit_robots",
+                "value": "default"
+            }
+        ]
+    },
+    {
+        "id": 300,
+        "sku": "30909",
+        "name": "STYLO ROLLER RETRACTABLE A ENCRE GEL G2 0.7mm NOIR \"PILOT\" REF: BL-G2-7-B",
+        "attribute_set_id": 4,
+        "price": 450,
+        "status": 1,
+        "visibility": 3,
+        "type_id": "simple",
+        "created_at": "2021-04-18 15:31:15",
+        "updated_at": "2024-10-12 14:23:51",
+        "weight": 0.011,
+        "extension_attributes": {
+            "website_ids": [
+                1
+            ],
+            "category_links": [
+                {
+                    "position": 0,
+                    "category_id": "105"
+                },
+                {
+                    "position": 0,
+                    "category_id": "40"
+                },
+                {
+                    "position": 0,
+                    "category_id": "106"
+                },
+                {
+                    "position": 0,
+                    "category_id": "38"
+                },
+                {
+                    "position": 0,
+                    "category_id": "774"
+                },
+                {
+                    "position": 0,
+                    "category_id": "773"
+                },
+                {
+                    "position": 0,
+                    "category_id": "3"
+                },
+                {
+                    "position": 0,
+                    "category_id": "1967"
+                },
+                {
+                    "position": -2114,
+                    "category_id": "2374"
+                }
+            ],
+            "preorder_info": {
+                "preorder": false,
+                "note": "Pre Order",
+                "cart_label": "Pre Order"
+            }
+        },
+        "product_links": [
+            {
+                "sku": "30909",
+                "link_type": "related",
+                "linked_product_sku": "1737106",
+                "linked_product_type": "simple",
+                "position": 9
+            },
+            {
+                "sku": "30909",
+                "link_type": "related",
+                "linked_product_sku": "2341008",
+                "linked_product_type": "simple",
+                "position": 8
+            },
+            {
+                "sku": "30909",
+                "link_type": "related",
+                "linked_product_sku": "2696808",
+                "linked_product_type": "simple",
+                "position": 7
+            },
+            {
+                "sku": "30909",
+                "link_type": "related",
+                "linked_product_sku": "2218103",
+                "linked_product_type": "simple",
+                "position": 6
+            },
+            {
+                "sku": "30909",
+                "link_type": "related",
+                "linked_product_sku": "2204803",
+                "linked_product_type": "simple",
+                "position": 5
+            },
+            {
+                "sku": "30909",
+                "link_type": "related",
+                "linked_product_sku": "2204903",
+                "linked_product_type": "simple",
+                "position": 4
+            },
+            {
+                "sku": "30909",
+                "link_type": "related",
+                "linked_product_sku": "2208203",
+                "linked_product_type": "simple",
+                "position": 3
+            },
+            {
+                "sku": "30909",
+                "link_type": "related",
+                "linked_product_sku": "2272003",
+                "linked_product_type": "simple",
+                "position": 2
+            },
+            {
+                "sku": "30909",
+                "link_type": "related",
+                "linked_product_sku": "1140600834",
+                "linked_product_type": "simple",
+                "position": 1
+            },
+            {
+                "sku": "30909",
+                "link_type": "related",
+                "linked_product_sku": "1140600835",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "30909",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140612958",
+                "linked_product_type": "simple",
+                "position": 9
+            },
+            {
+                "sku": "30909",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140618515",
+                "linked_product_type": "simple",
+                "position": 8
+            },
+            {
+                "sku": "30909",
+                "link_type": "crosssell",
+                "linked_product_sku": "1846603",
+                "linked_product_type": "simple",
+                "position": 7
+            },
+            {
+                "sku": "30909",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608134",
+                "linked_product_type": "simple",
+                "position": 6
+            },
+            {
+                "sku": "30909",
+                "link_type": "crosssell",
+                "linked_product_sku": "111822630",
+                "linked_product_type": "simple",
+                "position": 5
+            },
+            {
+                "sku": "30909",
+                "link_type": "crosssell",
+                "linked_product_sku": "111823636",
+                "linked_product_type": "simple",
+                "position": 4
+            },
+            {
+                "sku": "30909",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140613751",
+                "linked_product_type": "simple",
+                "position": 3
+            },
+            {
+                "sku": "30909",
+                "link_type": "crosssell",
+                "linked_product_sku": "111824291",
+                "linked_product_type": "simple",
+                "position": 2
+            },
+            {
+                "sku": "30909",
+                "link_type": "crosssell",
+                "linked_product_sku": "1766107",
+                "linked_product_type": "simple",
+                "position": 1
+            },
+            {
+                "sku": "30909",
+                "link_type": "crosssell",
+                "linked_product_sku": "2272003",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "30909",
+                "link_type": "crosssell",
+                "linked_product_sku": "1562307",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "30909",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140608858",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "30909",
+                "link_type": "upsell",
+                "linked_product_sku": "1005909",
+                "linked_product_type": "simple",
+                "position": 0
+            }
+        ],
+        "options": [],
+        "media_gallery_entries": [
+            {
+                "id": 10590,
+                "media_type": "image",
+                "label": null,
+                "position": 1,
+                "disabled": false,
+                "types": [
+                    "image",
+                    "small_image",
+                    "thumbnail",
+                    "swatch_image",
+                    "amasty_conf_flipper_image",
+                    "sm_hoverimage",
+                    "thumb_degree_image",
+                    "thumb_ar_image"
+                ],
+                "file": "/b/l/bl-g2-7-b-01.png"
+            }
+        ],
+        "tier_prices": [],
+        "custom_attributes": [
+            {
+                "attribute_code": "gift_message_available",
+                "value": "0"
+            },
+            {
+                "attribute_code": "url_key",
+                "value": "stylo-roller-retractable-a-encre-gel-g2-0-7mm-noir-pilot-ref-bl-g2-7-b"
+            },
+            {
+                "attribute_code": "rma_allowed",
+                "value": "1"
+            },
+            {
+                "attribute_code": "am_available_for_wrapping",
+                "value": "0"
+            },
+            {
+                "attribute_code": "image",
+                "value": "/b/l/bl-g2-7-b-01.png"
+            },
+            {
+                "attribute_code": "short_description",
+                "value": "Eﬃcacité et confort grâce une encre en gel Pilot unique et ultra-souple.\r\n Produit rechargeable plus économique et plus respectueux de l'environnement."
+            },
+            {
+                "attribute_code": "description",
+                "value": "Le G-2 est le stylo encre gel alliant performance technologique et design. Son grip ergonomique permet une excellente prise en main tandis que sa bille en carbure de tungstène ultra résistante est indéformable et inusable. Vous serez séduit par la fluidité de son encre et par l'intensité de ses couleurs."
+            },
+            {
+                "attribute_code": "options_container",
+                "value": "container2"
+            },
+            {
+                "attribute_code": "small_image",
+                "value": "/b/l/bl-g2-7-b-01.png"
+            },
+            {
+                "attribute_code": "meta_title",
+                "value": "STYLO ROLLER RETRACTABLE A ENCRE GEL G2 0.7mm NOIR \"PILOT\" REF: BL-G2-7-B"
+            },
+            {
+                "attribute_code": "thumbnail",
+                "value": "/b/l/bl-g2-7-b-01.png"
+            },
+            {
+                "attribute_code": "meta_keyword",
+                "value": "STYLO,ROLLER,RETRACTABLE,ENCRE,GEL,G2,0.7mm,NOIR,PILOT,BL-G2-7-B"
+            },
+            {
+                "attribute_code": "swatch_image",
+                "value": "/b/l/bl-g2-7-b-01.png"
+            },
+            {
+                "attribute_code": "meta_description",
+                "value": "Eﬃcacité et confort grâce une encre en gel Pilot unique et ultra-souple.\r\n Produit rechargeable plus économique et plus respectueux de l'environnement."
+            },
+            {
+                "attribute_code": "am_offer_item_condition",
+                "value": "1"
+            },
+            {
+                "attribute_code": "amasty_conf_flipper_image",
+                "value": "/b/l/bl-g2-7-b-01.png"
+            },
+            {
+                "attribute_code": "thumb_degree_image",
+                "value": "/b/l/bl-g2-7-b-01.png"
+            },
+            {
+                "attribute_code": "msrp_display_actual_price_type",
+                "value": "0"
+            },
+            {
+                "attribute_code": "thumb_ar_image",
+                "value": "/b/l/bl-g2-7-b-01.png"
+            },
+            {
+                "attribute_code": "tax_class_id",
+                "value": "2"
+            },
+            {
+                "attribute_code": "category_ids",
+                "value": [
+                    "105",
+                    "40",
+                    "106",
+                    "38",
+                    "774",
+                    "773",
+                    "3",
+                    "1967",
+                    "2374"
+                ]
+            },
+            {
+                "attribute_code": "required_options",
+                "value": "0"
+            },
+            {
+                "attribute_code": "has_options",
+                "value": "0"
+            },
+            {
+                "attribute_code": "mgs_brand",
+                "value": "395"
+            },
+            {
+                "attribute_code": "country_of_manufacture",
+                "value": "FR"
+            },
+            {
+                "attribute_code": "a_la_une",
+                "value": "0"
+            },
+            {
+                "attribute_code": "best_seller",
+                "value": "0"
+            },
+            {
+                "attribute_code": "color",
+                "value": "125"
+            },
+            {
+                "attribute_code": "diameter",
+                "value": "545"
+            },
+            {
+                "attribute_code": "techno_ref",
+                "value": "BL-G2-7-B"
+            },
+            {
+                "attribute_code": "trending",
+                "value": "0"
+            },
+            {
+                "attribute_code": "sm_featured",
+                "value": "0"
+            },
+            {
+                "attribute_code": "hide_quote_buy_button",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amrolepermissions_owner",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amxnotif_hide_alert",
+                "value": "0"
+            },
+            {
+                "attribute_code": "sm_hoverimage",
+                "value": "/b/l/bl-g2-7-b-01.png"
+            },
+            {
+                "attribute_code": "amtoolkit_robots",
+                "value": "default"
+            }
+        ]
+    },
+    {
+        "id": 1967,
+        "sku": "1547",
+        "name": "TRIEUR DOCUMENT PASTEL DL 08 COMPARTIMENTS EXTENSIBLE POLYPROPILINE OPAQUE GRIS VIOLINE \"ELBA\" REF: 400091660",
+        "attribute_set_id": 4,
+        "price": 2450,
+        "status": 2,
+        "visibility": 3,
+        "type_id": "simple",
+        "created_at": "2021-04-18 15:34:28",
+        "updated_at": "2024-10-09 15:16:42",
+        "weight": 0.262,
+        "extension_attributes": {
+            "website_ids": [
+                1
+            ],
+            "category_links": [
+                {
+                    "position": 0,
+                    "category_id": "333"
+                },
+                {
+                    "position": 0,
+                    "category_id": "326"
+                },
+                {
+                    "position": 0,
+                    "category_id": "3"
+                },
+                {
+                    "position": -2456,
+                    "category_id": "2374"
+                }
+            ],
+            "preorder_info": {
+                "preorder": false,
+                "note": "Pre Order",
+                "cart_label": "Pre Order"
+            }
+        },
+        "product_links": [
+            {
+                "sku": "1547",
+                "link_type": "related",
+                "linked_product_sku": "1140612955",
+                "linked_product_type": "simple",
+                "position": 1
+            },
+            {
+                "sku": "1547",
+                "link_type": "related",
+                "linked_product_sku": "152",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "related",
+                "linked_product_sku": "148",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "related",
+                "linked_product_sku": "142",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "related",
+                "linked_product_sku": "141",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "related",
+                "linked_product_sku": "167",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "related",
+                "linked_product_sku": "1140621383",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "related",
+                "linked_product_sku": "1140612351",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "related",
+                "linked_product_sku": "1140612354",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "related",
+                "linked_product_sku": "1140612355",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "related",
+                "linked_product_sku": "1140612356",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "related",
+                "linked_product_sku": "1140621390",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "related",
+                "linked_product_sku": "1140612401",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "related",
+                "linked_product_sku": "1140612357",
+                "linked_product_type": "configurable",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "crosssell",
+                "linked_product_sku": "283",
+                "linked_product_type": "simple",
+                "position": 1
+            },
+            {
+                "sku": "1547",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140614982",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140614984",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "crosssell",
+                "linked_product_sku": "489",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "crosssell",
+                "linked_product_sku": "2035009",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "crosssell",
+                "linked_product_sku": "111823636",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140613751",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "crosssell",
+                "linked_product_sku": "111824291",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "crosssell",
+                "linked_product_sku": "2272003",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1547",
+                "link_type": "crosssell",
+                "linked_product_sku": "1562307",
+                "linked_product_type": "simple",
+                "position": 0
+            }
+        ],
+        "options": [],
+        "media_gallery_entries": [],
+        "tier_prices": [],
+        "custom_attributes": [
+            {
+                "attribute_code": "gift_message_available",
+                "value": "0"
+            },
+            {
+                "attribute_code": "url_key",
+                "value": "trieur-document-pastel-dl-08-compartiments-extensible-polypropiline-opaque-gris-violine-elba-ref-400091660"
+            },
+            {
+                "attribute_code": "rma_allowed",
+                "value": "1"
+            },
+            {
+                "attribute_code": "am_available_for_wrapping",
+                "value": "0"
+            },
+            {
+                "attribute_code": "short_description",
+                "value": "La gamme OXFORD Pastel: Le classement, esprit déco ! Sublimés par des couleurs douces et poudrées, soulignés d'une délicate signature argentée."
+            },
+            {
+                "attribute_code": "description",
+                "value": "Le trieur familial Pastel au format DL (enveloppe) se glisse parfaitement dans un sac à main pour protéger et organiser les papiers du quotidien ou de déplacement professionnel (titres de transport, reçus, chéquier, ordonnances…). Il dispose d'une pochette porte-cartes et sa fermeture par élastique s'ajuste à son contenu. Il dispose de 9 compartiments identifiables par un jeu d'étiquettes. Il est disponible en coloris aléatoire parmi 3 couleurs poudrées élégantes et douces \r\n \r\n En cas de non disponibilité de la variante sélectionnée (couleur ou motif ...) une autre variante (couleur ou motif ...) de la même référence vous sera livrée."
+            },
+            {
+                "attribute_code": "options_container",
+                "value": "container2"
+            },
+            {
+                "attribute_code": "meta_title",
+                "value": "TRIEUR DOCUMENT PASTEL DL 08 COMPARTIMENTS EXTENSIBLE POLYPROPILINE OPAQUE GRIS VIOLINE \"ELBA\" REF: 400091660"
+            },
+            {
+                "attribute_code": "meta_keyword",
+                "value": "TRIEUR,DOCUMENT,PASTEL,DL,08,COMPARTIMENTS,EXTENSIBLE,POLYPROPILINE,OPAQUE,GRIS,VIOLINE,ELBA,400091660"
+            },
+            {
+                "attribute_code": "meta_description",
+                "value": "La gamme OXFORD Pastel: Le classement, esprit déco ! Sublimés par des couleurs douces et poudrées, soulignés d'une délicate signature argentée."
+            },
+            {
+                "attribute_code": "am_offer_item_condition",
+                "value": "1"
+            },
+            {
+                "attribute_code": "msrp_display_actual_price_type",
+                "value": "0"
+            },
+            {
+                "attribute_code": "tax_class_id",
+                "value": "2"
+            },
+            {
+                "attribute_code": "category_ids",
+                "value": [
+                    "333",
+                    "326",
+                    "3",
+                    "2374"
+                ]
+            },
+            {
+                "attribute_code": "required_options",
+                "value": "0"
+            },
+            {
+                "attribute_code": "has_options",
+                "value": "0"
+            },
+            {
+                "attribute_code": "mgs_brand",
+                "value": "388"
+            },
+            {
+                "attribute_code": "country_of_manufacture",
+                "value": "FR"
+            },
+            {
+                "attribute_code": "a_la_une",
+                "value": "0"
+            },
+            {
+                "attribute_code": "best_seller",
+                "value": "0"
+            },
+            {
+                "attribute_code": "color",
+                "value": "87"
+            },
+            {
+                "attribute_code": "techno_ref",
+                "value": "400091660"
+            },
+            {
+                "attribute_code": "trending",
+                "value": "0"
+            },
+            {
+                "attribute_code": "hide_quote_buy_button",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amrolepermissions_owner",
+                "value": "0"
+            },
+            {
+                "attribute_code": "am_shipping_type",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amxnotif_hide_alert",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amtoolkit_robots",
+                "value": "0"
+            }
+        ]
+    },
+    {
+        "id": 623,
+        "sku": "1140597668",
+        "name": "TOILE SUR CHASSIS 280g EN COTON 100cmx120cm \"TECHNO\" REF: 4412",
+        "attribute_set_id": 4,
+        "price": 4250,
+        "status": 2,
+        "visibility": 3,
+        "type_id": "simple",
+        "created_at": "2021-04-18 15:31:46",
+        "updated_at": "2024-07-22 09:41:48",
+        "weight": 1.45,
+        "extension_attributes": {
+            "website_ids": [
+                1
+            ],
+            "category_links": [
+                {
+                    "position": 0,
+                    "category_id": "175"
+                },
+                {
+                    "position": 0,
+                    "category_id": "174"
+                },
+                {
+                    "position": 0,
+                    "category_id": "177"
+                },
+                {
+                    "position": 0,
+                    "category_id": "176"
+                },
+                {
+                    "position": 0,
+                    "category_id": "11"
+                },
+                {
+                    "position": 0,
+                    "category_id": "179"
+                },
+                {
+                    "position": 0,
+                    "category_id": "178"
+                },
+                {
+                    "position": 0,
+                    "category_id": "3"
+                },
+                {
+                    "position": 0,
+                    "category_id": "2127"
+                }
+            ],
+            "preorder_info": {
+                "preorder": false,
+                "note": "Pre Order",
+                "cart_label": "Pre Order"
+            }
+        },
+        "product_links": [
+            {
+                "sku": "1140597668",
+                "link_type": "related",
+                "linked_product_sku": "107736601",
+                "linked_product_type": "simple",
+                "position": 3
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "related",
+                "linked_product_sku": "107736701",
+                "linked_product_type": "simple",
+                "position": 2
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "related",
+                "linked_product_sku": "107736901",
+                "linked_product_type": "simple",
+                "position": 1
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "related",
+                "linked_product_sku": "715203",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "related",
+                "linked_product_sku": "107737101",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "related",
+                "linked_product_sku": "107337301",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "related",
+                "linked_product_sku": "1140608880",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "crosssell",
+                "linked_product_sku": "283",
+                "linked_product_type": "simple",
+                "position": 3
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "crosssell",
+                "linked_product_sku": "1846603",
+                "linked_product_type": "simple",
+                "position": 2
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "crosssell",
+                "linked_product_sku": "1841303",
+                "linked_product_type": "simple",
+                "position": 1
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140592499",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140613751",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140592178",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "crosssell",
+                "linked_product_sku": "2462211",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "crosssell",
+                "linked_product_sku": "1766107",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140619156",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140600627",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140616701",
+                "linked_product_type": "simple",
+                "position": 0
+            },
+            {
+                "sku": "1140597668",
+                "link_type": "crosssell",
+                "linked_product_sku": "1140619812",
+                "linked_product_type": "configurable",
+                "position": 0
+            }
+        ],
+        "options": [],
+        "media_gallery_entries": [],
+        "tier_prices": [],
+        "custom_attributes": [
+            {
+                "attribute_code": "gift_message_available",
+                "value": "0"
+            },
+            {
+                "attribute_code": "url_key",
+                "value": "toile-sur-chassis-280g-en-coton-100cmx120cm-techno-ref-4412"
+            },
+            {
+                "attribute_code": "rma_allowed",
+                "value": "1"
+            },
+            {
+                "attribute_code": "am_available_for_wrapping",
+                "value": "0"
+            },
+            {
+                "attribute_code": "short_description",
+                "value": "TOILE SUR CHASSIS 280g 100x120 CM EN COTON"
+            },
+            {
+                "attribute_code": "description",
+                "value": "TOILE SUR CHASSIS 280g 100x120 CM EN COTON\r\n à grain moyen est un support parfaitement adapté à toutes les techniques de création : peinture (acrylique, huile, gouache, vinylique), collage… \r\n Ce châssis est muni de clés permettant de tendre la toile selon le besoin."
+            },
+            {
+                "attribute_code": "options_container",
+                "value": "container2"
+            },
+            {
+                "attribute_code": "meta_title",
+                "value": "TOILE SUR CHASSIS 280g EN COTON 100cmx120cm \"TECHNO\" REF: 4412"
+            },
+            {
+                "attribute_code": "meta_keyword",
+                "value": "TOILE,SUR,CHASSIS,280g,EN,COTON,100cmx120cm,TECHNO,4412"
+            },
+            {
+                "attribute_code": "meta_description",
+                "value": "TOILE SUR CHASSIS 280g 100x120 CM EN COTON"
+            },
+            {
+                "attribute_code": "am_offer_item_condition",
+                "value": "1"
+            },
+            {
+                "attribute_code": "msrp_display_actual_price_type",
+                "value": "0"
+            },
+            {
+                "attribute_code": "tax_class_id",
+                "value": "2"
+            },
+            {
+                "attribute_code": "category_ids",
+                "value": [
+                    "175",
+                    "174",
+                    "177",
+                    "176",
+                    "11",
+                    "179",
+                    "178",
+                    "3",
+                    "2127"
+                ]
+            },
+            {
+                "attribute_code": "required_options",
+                "value": "0"
+            },
+            {
+                "attribute_code": "has_options",
+                "value": "0"
+            },
+            {
+                "attribute_code": "mgs_brand",
+                "value": "401"
+            },
+            {
+                "attribute_code": "country_of_manufacture",
+                "value": "CN"
+            },
+            {
+                "attribute_code": "a_la_une",
+                "value": "0"
+            },
+            {
+                "attribute_code": "best_seller",
+                "value": "0"
+            },
+            {
+                "attribute_code": "dimension",
+                "value": "479"
+            },
+            {
+                "attribute_code": "techno_ref",
+                "value": "4412"
+            },
+            {
+                "attribute_code": "trending",
+                "value": "0"
+            },
+            {
+                "attribute_code": "sm_featured",
+                "value": "0"
+            },
+            {
+                "attribute_code": "hide_quote_buy_button",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amrolepermissions_owner",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amxnotif_hide_alert",
+                "value": "0"
+            },
+            {
+                "attribute_code": "amtoolkit_robots",
+                "value": "default"
+            }
+        ]
+    }
+]

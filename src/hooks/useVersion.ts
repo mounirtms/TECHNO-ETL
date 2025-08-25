@@ -6,7 +6,7 @@ export function useVersion() {
 
   useEffect(() => {
     // In development, we can import directly
-    if (import.meta.env.DEV) {
+    if(import.meta.env.DEV) {
       import('../assets/version.json')
         .then(data => setVersion(data))
         .catch(() => {

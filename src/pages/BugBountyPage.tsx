@@ -17,7 +17,7 @@ const BugBountyPage = () => {
 
     // Set meta description
     const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
+    if(metaDescription) {
       metaDescription.setAttribute('content', 'Join our bug bounty program and help improve TECHNO-ETL while earning rewards for finding and reporting bugs.');
     }
   }, []);

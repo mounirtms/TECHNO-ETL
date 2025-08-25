@@ -19,8 +19,7 @@ const createAxiosInstance = (baseURL) => {
     });
 
     // Request interceptor
-    instance.interceptors.request.use(
-        (config) => {
+    instance.interceptors.request.use((config) => {
             // Remove any CORS headers from client side as they should be set by the server
             delete config.headers['Access-Control-Allow-Origin'];
             delete config.headers['Access-Control-Allow-Methods'];
@@ -34,7 +33,7 @@ const createAxiosInstance = (baseURL) => {
             }
 
             // Add production-specific headers
-            if (import.meta.env.PROD) {
+            if(import.meta.env.PROD) {
                 config.headers['X-Requested-With'] = 'XMLHttpRequest';
                 config.headers['X-App-Domain'] = import.meta.env.VITE_APP_DOMAIN || 'etl.techno-dz.com';
             }
@@ -47,20 +46,19 @@ const createAxiosInstance = (baseURL) => {
     );
 
     // Response interceptor with specific handling for technostationery.com
-    instance.interceptors.response.use(
-        (response) => response,
+    instance.interceptors.response.use((response) => response,
         (error) => {
-            if (error.response) {
-                if (error.response.status === 403) {
+            if(error.response) {
+                if(error.response.status ===403) {
                     console.error('Access Forbidden - Check Magento API permissions');
                     return Promise.reject(new Error('Access Forbidden - Check Magento API permissions'));
                 }
-                if (error.response.status === 401) {
+                if(error.response.status ===401) {
                     console.error('Authentication Error - Invalid or expired token');
                     return Promise.reject(new Error('Authentication Error - Invalid or expired token'));
                 }
                 console.error('Response error:', error.response.data);
-            } else if (error.code === 'ERR_NETWORK') {
+            } else if(error.code === 'ERR_NETWORK') {
                 console.error('Network Error: Unable to connect to technostationery.com. This might be due to CORS or network connectivity issues.');
                 // Provide more helpful error message
                 const errorMessage = 'Unable to connect to technostationery.com. Please ensure:\n' +
@@ -81,20 +79,20 @@ let magentoInstance = null;
 let cegidInstance = null;
 
 export const initializeServices = (settings) => {
-    if (settings.directMagento && settings.directMagento.enableDirectConnection) {
+    if(settings.directMagento && settings.directMagento.enableDirectConnection) {
         console.log('🔄 Direct Magento connection enabled, initializing direct client...');
         directMagentoClient.initialize(settings.directMagento);
     } else {
         console.log('Using Proxy Magento Connection');
-        if (settings.magentoUrl) {
+        if(settings.magentoUrl) {
             // Ensure the Magento URL is properly formatted
             const magentoBaseUrl = settings.magentoUrl.endsWith('/') 
                 ? settings.magentoUrl.slice(0, -1) 
                 : settings.magentoUrl;
-            magentoInstance = createAxiosInstance(magentoBaseUrl);
+            magentoInstance: any,
         }
-        if (settings.cegidUrl) {
-            cegidInstance = createAxiosInstance(settings.cegidUrl);
+        if(settings.cegidUrl) {
+            cegidInstance: any,
         }
     }
 };
@@ -112,7 +110,7 @@ export const magento = {
                     'Content-Type': 'application/json',
                 }
             });
-        } catch (error) {
+        } catch(error: any) {
             console.error(`Error accessing Magento API at ${url}:`, error.message);
             throw error;
         }
@@ -126,7 +124,7 @@ export const magento = {
                     'Content-Type': 'application/json',
                 }
             });
-        } catch (error) {
+        } catch(error: any) {
             console.error(`Error posting to Magento API at ${url}:`, error.message);
             throw error;
         }
@@ -140,12 +138,12 @@ export const magento = {
                     'Content-Type': 'application/json',
                 }
             });
-        } catch (error) {
+        } catch(error: any) {
             console.error(`Error putting to Magento API at ${url}:`, error.message);
             throw error;
         }
     },
-    delete: async (url) => {
+    delete: async(url) => {
         if (!magentoInstance) throw new Error('Magento service not initialized');
         try {
             return await magentoInstance.delete(url, {
@@ -154,7 +152,7 @@ export const magento = {
                     'Content-Type': 'application/json',
                 }
             });
-        } catch (error) {
+        } catch(error: any) {
             console.error(`Error deleting from Magento API at ${url}:`, error.message);
             throw error;
         }
@@ -168,7 +166,7 @@ export const magento = {
                     'Content-Type': 'application/json',
                 }
             });
-        } catch (error) {
+        } catch(error: any) {
             console.error(`Error patching to Magento API at ${url}:`, error.message);
             throw error;
         }
@@ -181,7 +179,7 @@ export const cegid = {
         if (!cegidInstance) throw new Error('Cegid service not initialized');
         try {
             return await cegidInstance.get(url, { params });
-        } catch (error) {
+        } catch(error: any) {
             if (error.message.includes('CORS')) {
                 // Handle CORS specific error for Cegid
                 console.error('Cegid CORS Error:', error.message);
@@ -193,7 +191,7 @@ export const cegid = {
         if (!cegidInstance) throw new Error('Cegid service not initialized');
         try {
             return await cegidInstance.post(url, data);
-        } catch (error) {
+        } catch(error: any) {
             if (error.message.includes('CORS')) {
                 console.error('Cegid CORS Error:', error.message);
             }
@@ -204,18 +202,18 @@ export const cegid = {
         if (!cegidInstance) throw new Error('Cegid service not initialized');
         try {
             return await cegidInstance.put(url, data);
-        } catch (error) {
+        } catch(error: any) {
             if (error.message.includes('CORS')) {
                 console.error('Cegid CORS Error:', error.message);
             }
             throw error;
         }
     },
-    delete: async (url) => {
+    delete: async(url) => {
         if (!cegidInstance) throw new Error('Cegid service not initialized');
         try {
             return await cegidInstance.delete(url);
-        } catch (error) {
+        } catch(error: any) {
             if (error.message.includes('CORS')) {
                 console.error('Cegid CORS Error:', error.message);
             }
@@ -226,7 +224,7 @@ export const cegid = {
         if (!cegidInstance) throw new Error('Cegid service not initialized');
         try {
             return await cegidInstance.patch(url, data);
-        } catch (error) {
+        } catch(error: any) {
             if (error.message.includes('CORS')) {
                 console.error('Cegid CORS Error:', error.message);
             }

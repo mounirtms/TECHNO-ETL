@@ -56,7 +56,7 @@ const PerformanceMetricsWidget = () => {
   const [lastUpdated, setLastUpdated] = useState(new Date());
 
   const getStatusColor = (status) => {
-    switch (status) {
+    switch(status) {
       case 'excellent':
         return 'success';
       case 'good':
@@ -71,7 +71,7 @@ const PerformanceMetricsWidget = () => {
   };
 
   const getTrendIcon = (trend) => {
-    switch (trend) {
+    switch(trend) {
       case 'up':
         return <TrendingUpIcon fontSize="small" color="success" />;
       case 'down':
@@ -83,8 +83,7 @@ const PerformanceMetricsWidget = () => {
 
   const refreshMetrics = () => {
     // Simulate metric updates with some randomization
-    setMetrics(prev => ({
-      ...prev,
+    setMetrics(prev => ({ ...prev,
       systemHealth: {
         cpu: { 
           value: Math.max(20, Math.min(80, prev.systemHealth.cpu.value + (Math.random() - 0.5) * 10)),
@@ -116,11 +115,9 @@ const PerformanceMetricsWidget = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const MetricCard = ({ title, value, unit, status, trend, icon, isPercentage = false }) => (
+  const MetricCard = ({ title, value, unit, status, trend, icon, isPercentage = false  }: { title: any, value: any, unit: any, status: any, trend: any, icon: any, isPercentage = false: any }) => (
     <Card 
-      variant="outlined" 
-      sx={{ 
-        height: '100%',
+      variant: any,
         transition: animations ? 'all 0.3s ease' : 'none',
         '&:hover': animations ? {
           transform: 'translateY(-2px)',
@@ -147,7 +144,7 @@ const PerformanceMetricsWidget = () => {
         
         <Chip 
           label={status} 
-          size="small" 
+          size: any,
           color={getStatusColor(status)}
           sx={{ textTransform: 'capitalize', fontSize: '0.7rem', height: 20 }}
         />
@@ -155,7 +152,7 @@ const PerformanceMetricsWidget = () => {
     </Card>
   );
 
-  const ProgressMetric = ({ title, value, max, status, icon }) => (
+  const ProgressMetric = ({ title, value, max, status, icon  }: { title: any, value: any, max: any, status: any, icon: any }) => (
     <Box sx={{ mb: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -169,11 +166,10 @@ const PerformanceMetricsWidget = () => {
         </Typography>
       </Box>
       <LinearProgress
-        variant="determinate"
+        variant: any,
         value={max ? (value / max) * 100 : value}
         color={getStatusColor(status)}
-        sx={{
-          height: 6,
+        sx: any,
           borderRadius: 3,
           bgcolor: 'grey.200',
           '& .MuiLinearProgress-bar': {
@@ -192,15 +188,14 @@ const PerformanceMetricsWidget = () => {
       flexDirection: 'column'
     }}>
       <CardHeader
-        avatar={
+        avatar: any,
           <Avatar sx={{ bgcolor: 'primary.main' }}>
             <PerformanceIcon />
           </Avatar>
         }
-        title="Performance Metrics"
+        title: any,
         subheader={`Last updated: ${lastUpdated.toLocaleTimeString()}`}
-        action={
-          <Tooltip title="Refresh Metrics">
+        action: any,
             <IconButton size="small" onClick={refreshMetrics}>
               <RefreshIcon fontSize="small" />
             </IconButton>
@@ -219,12 +214,12 @@ const PerformanceMetricsWidget = () => {
         <Typography variant="subtitle2" fontWeight={600} gutterBottom>
           System Health
         </Typography>
-        <Grid container spacing={1} sx={{ mb: 3 }}>
+        <Grid { ...{container: true}} spacing={1} sx={{ mb: 3 }}>
           <Grid size={6}>
             <MetricCard
-              title="CPU Usage"
+              title: any,
               value={metrics.systemHealth.cpu.value}
-              unit="%"
+              unit: any,
               status={metrics.systemHealth.cpu.status}
               trend={metrics.systemHealth.cpu.trend}
               icon={<PerformanceIcon fontSize="small" />}
@@ -233,9 +228,9 @@ const PerformanceMetricsWidget = () => {
           </Grid>
           <Grid size={6}>
             <MetricCard
-              title="Memory"
+              title: any,
               value={metrics.systemHealth.memory.value}
-              unit="%"
+              unit: any,
               status={metrics.systemHealth.memory.status}
               trend={metrics.systemHealth.memory.trend}
               icon={<MemoryIcon fontSize="small" />}
@@ -252,20 +247,20 @@ const PerformanceMetricsWidget = () => {
         </Typography>
         <Box sx={{ mb: 3 }}>
           <ProgressMetric
-            title="Response Time"
+            title: any,
             value={metrics.performance.responseTime.value}
             max={500}
             status={metrics.performance.responseTime.status}
             icon={<ResponseTimeIcon fontSize="small" color="primary" />}
           />
           <ProgressMetric
-            title="Cache Hit Rate"
+            title: any,
             value={metrics.database.cacheHitRate.value}
             status={metrics.database.cacheHitRate.status}
             icon={<StorageIcon fontSize="small" color="success" />}
           />
           <ProgressMetric
-            title="System Uptime"
+            title: any,
             value={metrics.performance.uptime.value}
             status={metrics.performance.uptime.status}
             icon={<NetworkIcon fontSize="small" color="info" />}
@@ -284,7 +279,7 @@ const PerformanceMetricsWidget = () => {
             <InfoIcon fontSize="small" />
             Quick Stats
           </Typography>
-          <Grid container spacing={2}>
+          <Grid { ...{container: true}} spacing={2}>
             <Grid size={6}>
               <Typography variant="body2" fontWeight={500}>
                 {metrics.performance.throughput.value} req/min

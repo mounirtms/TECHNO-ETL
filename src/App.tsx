@@ -17,6 +17,7 @@ import 'react-toastify/dist/ReactToastify.css';
 // Import optimized components
 import UnifiedProvider from './contexts/UnifiedProvider';
 import { optimizedSettingsManager } from './utils/optimizedSettingsManager';
+import { useSettingsInitializer } from './hooks/useSettingsInitializer';
 import './styles/rtl.css';
 
 // Lazy load the optimized router
@@ -38,7 +39,7 @@ const AppLoading = () => (
   >
     <CircularProgress 
       size={40} 
-      sx={{ 
+      sx={{
         color: 'var(--color-primary-500, #F97316)',
         '& .MuiCircularProgress-circle': {
           strokeLinecap: 'round',
@@ -46,7 +47,7 @@ const AppLoading = () => (
       }} 
     />
     <Typography 
-      variant="body2" 
+      variant="body1"
       sx={{
         color: 'var(--color-text-secondary, #666)',
         fontWeight: 500,
@@ -58,8 +59,30 @@ const AppLoading = () => (
   </Box>
 );
 
+// Settings initialization component that runs inside the provider context
+const AppWithSettings: React.FC = () => {
+  const { isInitialized, isLoading, error } = useSettingsInitializer();
+
+  // Show loading state while settings are being initialized
+  if(isLoading && !isInitialized) {
+    return <AppLoading />;
+  }
+
+  // Show error state if settings failed to initialize
+  if(error) {
+    console.error('Settings initialization error:', error);
+    // Continue with app even if settings failed
+  }
+
+  return (
+    <Suspense fallback={<AppLoading />}>
+      <OptimizedRouter />
+    </Suspense>
+  );
+};
+
 const App: React.FC = () => {
-  // Initialize theme on app start
+  // Initialize theme on app start (fallback for non-authenticated users)
   useEffect(() => {
     const settings = optimizedSettingsManager.getSettings();
     optimizedSettingsManager.applyThemeSettings(settings.preferences);
@@ -70,15 +93,13 @@ const App: React.FC = () => {
       <CssBaseline enableColorScheme />
       <BrowserRouter>
         <UnifiedProvider>
-          <Suspense fallback={<AppLoading />}>
-            <OptimizedRouter />
-          </Suspense>
+          <AppWithSettings />
         </UnifiedProvider>
       </BrowserRouter>
       
       {/* Enhanced Toast Container */}
       <ToastContainer
-        position="top-right"
+        position="bottom-right"
         autoClose={4000}
         hideProgressBar={false}
         newestOnTop
@@ -87,19 +108,16 @@ const App: React.FC = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="colored"
-        toastClassName="custom-toast"
-        progressClassName="custom-progress"
+        theme="light"
         style={{
-          fontSize: '14px',
           zIndex: 9999,
         }}
       />
       
       {/* Optimized Mounir Signature */}
       <div 
-        style={{ 
-          position: 'fixed', 
+        style={{
+          position: 'fixed',
           bottom: 16, 
           right: 16, 
           zIndex: 1000,
@@ -112,8 +130,8 @@ const App: React.FC = () => {
         }}
       >
         <a 
-          href="https://mounir1.github.io" 
-          target="_blank" 
+          href="https://mounir1.github.io"
+          target="_blank"
           rel="noopener noreferrer"
           style={{
             display: 'block',
@@ -129,10 +147,10 @@ const App: React.FC = () => {
           }}
         >
           <img 
-            src="/src/assets/images/mab-icon.svg" 
-            alt="Mounir Abderrahmani Signature" 
-            style={{ 
-              width: 32, 
+            src="https://mounir1.github.io/favicon.ico"
+            alt="Mounir Abderrahmani"
+            style={{
+              width: 32,
               height: 32, 
               display: 'block',
               filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',

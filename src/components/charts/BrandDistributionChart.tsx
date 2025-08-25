@@ -2,18 +2,41 @@ import React from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
+// TypeScript interfaces for the chart data
+interface BrandData {
+  name: string;
+  value: number;
+  percentage?: string;
+}
+
+interface BrandDistributionChartProps {
+  data: BrandData[];
+  title?: string;
+}
+
+interface TooltipPayload {
+  value: number;
+  payload: BrandData;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayload[];
+  label?: string;
+}
+
 /**
  * Brand Distribution Chart Component
  * Shows product distribution across different brands
  */
-const BrandDistributionChart = ({ data, title = "Brand Distribution" }) => {
+const BrandDistributionChart: React.FC<BrandDistributionChartProps> = ({ data, title = "Brand Distribution" }) => {
   // Custom tooltip for better data display
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
+  const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
+    if(active && payload && payload.length) {
       const data = payload[0];
       return (
         <Box
-          sx={{
+          sx: any,
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             border: '1px solid #ccc',
             borderRadius: 1,
@@ -38,7 +61,7 @@ const BrandDistributionChart = ({ data, title = "Brand Distribution" }) => {
     return null;
   };
 
-  if (!data || data.length === 0) {
+  if(!data || data.length ===0) {
     return (
       <Card sx={{ height: 400 }}>
         <CardContent>
@@ -46,8 +69,7 @@ const BrandDistributionChart = ({ data, title = "Brand Distribution" }) => {
             {title}
           </Typography>
           <Box 
-            sx={{ 
-              display: 'flex', 
+            sx: any,
               alignItems: 'center', 
               justifyContent: 'center', 
               height: 300,
@@ -62,15 +84,14 @@ const BrandDistributionChart = ({ data, title = "Brand Distribution" }) => {
   }
 
   // Calculate percentages
-  const total = data.reduce((sum, item) => sum + item.value, 0);
-  const dataWithPercentage = data.map(item => ({
-    ...item,
+  const total: number = data.reduce((sum: number: any: any, item: BrandData: any: any) => sum + item.value, 0);
+  const dataWithPercentage: BrandData[] = data.map((item: BrandData: any: any) => ({ ...item,
     percentage: ((item.value / total) * 100).toFixed(1)
   }));
 
   // Sort by value descending and take top 10
-  const sortedData = dataWithPercentage
-    .sort((a, b) => b.value - a.value)
+  const sortedData: BrandData[] = dataWithPercentage
+    .sort((a: BrandData, b: BrandData) => b.value - a.value)
     .slice(0, 10);
 
   return (
@@ -82,8 +103,7 @@ const BrandDistributionChart = ({ data, title = "Brand Distribution" }) => {
         <ResponsiveContainer width="100%" height={300}>
           <BarChart
             data={sortedData}
-            margin={{
-              top: 5,
+            margin: any,
               right: 30,
               left: 20,
               bottom: 60,
@@ -91,9 +111,9 @@ const BrandDistributionChart = ({ data, title = "Brand Distribution" }) => {
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
-              dataKey="name" 
+              dataKey: any,
               angle={-45}
-              textAnchor="end"
+              textAnchor: any,
               height={80}
               interval={0}
               fontSize={12}
@@ -101,8 +121,7 @@ const BrandDistributionChart = ({ data, title = "Brand Distribution" }) => {
             <YAxis />
             <Tooltip content={<CustomTooltip />} />
             <Bar 
-              dataKey="value" 
-              fill="#2196f3"
+              dataKey: any,
               radius={[4, 4, 0, 0]}
             />
           </BarChart>

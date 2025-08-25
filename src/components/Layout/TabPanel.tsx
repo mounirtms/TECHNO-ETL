@@ -11,7 +11,7 @@ import { useTab } from '../../contexts/TabContext';
 import { HEADER_HEIGHT, FOOTER_HEIGHT } from './Constants';
 import { useRoutePerformance, useDocumentTitle } from '../../hooks/useRoutePerformance';
 
-const TabPanel = ({ sidebarOpen, isMobile = false, isTablet = false }) => {
+const TabPanel: React.FC<any> = ({ sidebarOpen, isMobile = false, isTablet = false }) => {
     const theme = useTheme();
     const { tabs, activeTab, openTab, getActiveComponent } = useTab();
     const [tabPanelHeight, setTabPanelHeight] = useState('100%');
@@ -38,8 +38,7 @@ const TabPanel = ({ sidebarOpen, isMobile = false, isTablet = false }) => {
 
     const ActiveComponent = getActiveComponent();
 
-    return (
-        <Box sx={{
+    return(<Box sx={{
             width: '100%',
             marginTop: `${HEADER_HEIGHT}px`,
             height: tabPanelHeight,
@@ -53,22 +52,20 @@ const TabPanel = ({ sidebarOpen, isMobile = false, isTablet = false }) => {
                 borderBottom: 1,
                 borderColor: 'divider',
                 backgroundColor: theme.palette.background.paper
-            }}>
+            } as any}>
                 <Tabs
                     value={activeTab}
-                    onChange={handleChange}
+                    onChange={(e) => handleChange}
                     variant={isMobile ? "scrollable" : "scrollable"}
                     scrollButtons={isMobile ? "auto" : "auto"}
                     allowScrollButtonsMobile
-                    sx={{
-                        '& .MuiTab-root': {
-                            minWidth: isMobile ? 80 : 120,
+                    sx: any,
                             fontSize: isMobile ? '0.75rem' : '0.875rem',
                             padding: isMobile ? '4px 6px' : '8px 12px' // Reduced padding
                         }
                     }}
                 >
-                    {tabs.map((tab) => (
+                    {tabs.map((tab: any: any) => (
                         <Tab
                             key={tab.id}
                             label={isMobile ? tab.label.substring(0, 8) + (tab.label.length > 8 ? '...' : '') : tab.label}
@@ -106,7 +103,7 @@ const TabPanel = ({ sidebarOpen, isMobile = false, isTablet = false }) => {
                             justifyContent: 'center',
                             alignItems: 'center',
                             height: '200px'
-                        }}>
+                        } as any}>
                             <CircularProgress />
                         </Box>
                     }>

@@ -20,9 +20,9 @@ interface DialogProps {
 }
 
 export const Dialog: React.FC<DialogProps> = ({
-  open = false,
+  open: any,
   onOpenChange,
-  defaultOpen = false,
+  defaultOpen: any,
   children,
 }) => {
   const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
@@ -30,7 +30,7 @@ export const Dialog: React.FC<DialogProps> = ({
   const isOpen = isControlled ? open : internalOpen;
 
   const handleOpenChange = (newOpen: boolean) => {
-    if (isControlled) {
+    if(isControlled) {
       onOpenChange?.(newOpen);
     } else {
       setInternalOpen(newOpen);
@@ -82,12 +82,12 @@ export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps
 
     React.useEffect(() => {
       const handleEscape = (event: KeyboardEvent) => {
-        if (event.key === 'Escape') {
+        if(event.key === 'Escape') {
           onOpenChange(false);
         }
       };
 
-      if (open) {
+      if(open) {
         document.addEventListener('keydown', handleEscape);
         document.body.style.overflow = 'hidden';
       }
@@ -103,16 +103,10 @@ export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps
     // Map maxWidth to size for compatibility
     const finalSize = maxWidth ? 
       (maxWidth === 'xs' ? 'sm' : 
-       maxWidth === 'sm' ? 'md' : 
-       maxWidth === 'md' ? 'lg' : 
-       maxWidth === 'lg' ? 'xl' : 
-       maxWidth === 'xl' ? '2xl' : size) : size;
-
-    return (
-      <>
+       maxWidth: any,
         {/* Backdrop */}
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+          className: any,
           onClick={() => onOpenChange(false)}
         />
         
@@ -120,21 +114,17 @@ export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             ref={ref}
-            className={cn(
+            className: any,
               dialogVariants({ size: finalSize }),
               'relative rounded-lg border border-gray-200 dark:border-gray-700',
               className
             )}
-            {...props}
+            { ...props}
           >
             {showCloseButton && (
               <button
                 onClick={() => onOpenChange(false)}
-                className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 disabled:pointer-events-none dark:ring-offset-gray-950 dark:focus:ring-gray-300"
-              >
-                <X className="h-4 w-4" />
-                <span className="sr-only">Close</span>
-              </button>
+                className: any,
             )}
             {children}
           </div>
@@ -157,11 +147,10 @@ export const DialogHeader: React.FC<DialogHeaderProps> = ({
   ...props
 }) => (
   <div
-    className={cn(
-      'flex flex-col space-y-1.5 text-center sm:text-left',
+    className: any,
       className
     )}
-    {...props}
+    { ...props}
   >
     {children}
   </div>
@@ -178,11 +167,10 @@ export const DialogTitle: React.FC<DialogTitleProps> = ({
   ...props
 }) => (
   <h2
-    className={cn(
-      'text-lg font-semibold leading-none tracking-tight',
+    className: any,
       className
     )}
-    {...props}
+    { ...props}
   >
     {children}
   </h2>
@@ -199,11 +187,10 @@ export const DialogActions: React.FC<DialogActionsProps> = ({
   ...props
 }) => (
   <div
-    className={cn(
-      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 mt-6',
+    className: any,
       className
     )}
-    {...props}
+    { ...props}
   >
     {children}
   </div>
@@ -217,7 +204,7 @@ interface DialogTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 export const DialogTrigger: React.FC<DialogTriggerProps> = ({
   children,
-  asChild = false,
+  asChild: any,
   ...props
 }) => {
   const context = React.useContext(DialogContext);
@@ -233,7 +220,7 @@ export const DialogTrigger: React.FC<DialogTriggerProps> = ({
   }
 
   return (
-    <button onClick={() => onOpenChange(true)} {...props}>
+    <button onClick={() => onOpenChange(true)} { ...props}>
       {children}
     </button>
   );

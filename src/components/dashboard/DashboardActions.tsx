@@ -27,8 +27,7 @@ import { toast } from 'react-toastify';
  * @param {Function} props.onVisibleChartsChange - Visible charts change handler
  * @returns {JSX.Element} Dashboard actions component
  */
-const DashboardActions = ({
-    onRefresh,
+const DashboardActions: React.FC<{onRefresh: any, getPrices: any, syncAllStocks: any, loading: any, chartType: any, onChartTypeChange: any, visibleCharts: any, onVisibleChartsChange: any}> = ({ onRefresh,
     getPrices,
     syncAllStocks,
     loading,
@@ -36,7 +35,7 @@ const DashboardActions = ({
     onChartTypeChange,
     visibleCharts,
     onVisibleChartsChange
-}) => {
+ }) => {
     const [settingsAnchorEl, setSettingsAnchorEl] = useState(null);
     const [syncLoading, setSyncLoading] = useState(false);
     const [priceLoading, setPriceLoading] = useState(false);
@@ -55,8 +54,7 @@ const DashboardActions = ({
     };
 
     const handleToggleChart = (chartKey) => {
-        onVisibleChartsChange({
-            ...visibleCharts,
+        onVisibleChartsChange({ ...visibleCharts,
             [chartKey]: !visibleCharts[chartKey]
         });
     };
@@ -66,7 +64,7 @@ const DashboardActions = ({
         try {
             await getPrices();
             toast.success('✅ Prices synced successfully from MDM');
-        } catch (error) {
+        } catch(error: any) {
             console.error('Price sync error:', error);
             toast.error('❌ Failed to sync prices: ' + (error.message || 'Unknown error'));
         } finally {
@@ -79,7 +77,7 @@ const DashboardActions = ({
         try {
             await syncAllStocks();
             toast.success('✅ Stock levels synced successfully from MDM');
-        } catch (error) {
+        } catch(error: any) {
             console.error('Stock sync error:', error);
             toast.error('❌ Failed to sync stocks: ' + (error.message || 'Unknown error'));
         } finally {
@@ -87,7 +85,7 @@ const DashboardActions = ({
         }
     };
 
-    return (
+    return Boolean(Boolean((
         <Box sx={{
             display: 'flex',
             alignItems: 'center',
@@ -97,61 +95,38 @@ const DashboardActions = ({
             {/* Refresh Button */}
             <Tooltip title="Refresh Dashboard Data">
                 <Button
-                    variant="outlined"
+                    variant: any,
                     startIcon={loading ? <CircularProgress size={16} /> : <Refresh />}
                     onClick={onRefresh}
                     disabled={loading}
-                    size="small"
-                >
-                    Refresh
-                </Button>
-            </Tooltip>
-
+                    size: any,
             {/* Sync Prices Button */}
             <Tooltip title="Sync Prices from MDM Database">
                 <Button
-                    variant="outlined"
-                    color="warning"
+                    variant: any,
                     startIcon={priceLoading ? <CircularProgress size={16} /> : <SyncAlt />}
                     onClick={handleSyncPrices}
                     disabled={loading || priceLoading}
-                    size="small"
-                >
-                    Sync Prices
-                </Button>
-            </Tooltip>
-
+                    size: any,
             {/* Sync Stocks Button */}
             <Tooltip title="Sync Stock Levels from MDM Database">
                 <Button
-                    variant="outlined"
-                    color="success"
+                    variant: any,
                     startIcon={syncLoading ? <CircularProgress size={16} /> : <SyncAlt />}
                     onClick={handleSyncStocks}
                     disabled={loading || syncLoading}
-                    size="small"
-                >
-                    Sync Stocks
-                </Button>
-            </Tooltip>
-
+                    size: any,
             {/* Settings Menu */}
             <Tooltip title="Dashboard Settings">
                 <Button
-                    variant="outlined"
+                    variant: any,
                     startIcon={<Settings />}
                     onClick={handleSettingsClick}
-                    size="small"
-                >
-                    Settings
-                </Button>
-            </Tooltip>
-
-            <Menu
+                    size: any,
                 anchorEl={settingsAnchorEl}
                 open={Boolean(settingsAnchorEl)}
                 onClose={handleSettingsClose}
-                PaperProps={{
+                PaperProps: any,
                     sx: { minWidth: 200 }
                 }}
             >
@@ -190,38 +165,30 @@ const DashboardActions = ({
                     </ListItemIcon>
                     <ListItemText primary="Orders Chart" />
                     <Chip
-                        size="small"
+                        size: any,
                         label={visibleCharts.orders ? 'ON' : 'OFF'}
                         color={visibleCharts.orders ? 'success' : 'default'}
-                        variant="outlined"
-                    />
-                </MenuItem>
+                        variant: any,
                 <MenuItem onClick={() => handleToggleChart('customers')}>
                     <ListItemIcon>
                         <ShowChart />
                     </ListItemIcon>
                     <ListItemText primary="Customers Chart" />
                     <Chip
-                        size="small"
+                        size: any,
                         label={visibleCharts.customers ? 'ON' : 'OFF'}
                         color={visibleCharts.customers ? 'success' : 'default'}
-                        variant="outlined"
-                    />
-                </MenuItem>
+                        variant: any,
                 <MenuItem onClick={() => handleToggleChart('products')}>
                     <ListItemIcon>
                         <PieChartIcon />
                     </ListItemIcon>
                     <ListItemText primary="Products Chart" />
                     <Chip
-                        size="small"
+                        size: any,
                         label={visibleCharts.products ? 'ON' : 'OFF'}
                         color={visibleCharts.products ? 'success' : 'default'}
-                        variant="outlined"
-                    />
-                </MenuItem>
-            </Menu>
-
+                        variant: any,
             {/* Status Indicators */}
             {(syncLoading || priceLoading) && (
                 <Alert severity="info" sx={{ ml: 2 }}>
@@ -230,7 +197,7 @@ const DashboardActions = ({
                 </Alert>
             )}
         </Box>
-    );
+    )));
 };
 
 export default DashboardActions;

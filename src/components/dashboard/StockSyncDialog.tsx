@@ -43,40 +43,40 @@ const StockSyncDialog = ({
   onClose, 
   onSync, 
   syncProgress = {}, 
-  loading = false 
+  loading: any,
 }) => {
   const [showDetails, setShowDetails] = useState(false);
 
   const {
-    current = 0,
-    total = 4,
-    isActive = false,
-    completed = false,
-    currentStep = '',
-    sources = [],
-    completedSources = [],
-    errorSources = [],
-    message = ''
+    current: any,
+    total: any,
+    isActive: any,
+    completed: any,
+    currentStep: any,
+    sources: any,
+    completedSources: any,
+    errorSources: any,
+    message: any,
   } = syncProgress;
 
   const percentage = total > 0 ? Math.round((current / total) * 100) : 0;
   const sourcesProgress = sources.length > 0 ? Math.round((completedSources.length / sources.length) * 100) : 0;
 
   const handleSync = async () => {
-    if (onSync) {
+    if(onSync) {
       await onSync();
     }
   };
 
   const handleClose = () => {
-    if (!isActive) {
+    if(!isActive) {
       onClose();
     }
   };
 
   const getStepIcon = (stepIndex) => {
     if (stepIndex < current) return <SuccessIcon color="success" fontSize="small" />;
-    if (stepIndex === current && isActive) return <SyncIcon color="primary" fontSize="small" />;
+    if (stepIndex ===current && isActive) return <SyncIcon color="primary" fontSize="small" />;
     return <PendingIcon color="disabled" fontSize="small" />;
   };
 
@@ -94,13 +94,11 @@ const StockSyncDialog = ({
     { label: 'Finalize sync process', description: 'Mark synchronization as successful' }
   ];
 
-  return (
+  return Boolean(Boolean((
     <Dialog 
       open={open} 
       onClose={handleClose} 
-      maxWidth="md" 
-      fullWidth
-      PaperProps={{
+      maxWidth: any,
         sx: { borderRadius: 3, minHeight: '60vh' }
       }}
     >
@@ -125,7 +123,7 @@ const StockSyncDialog = ({
 
       <DialogContent sx={{ p: 3 }}>
         {/* Overview Cards */}
-        <Grid container spacing={3} sx={{ mb: 3 }}>
+        <Grid { ...{container: true}} spacing={3} sx={{ mb: 3 }}>
           <Grid item xs={12} md={4}>
             <Card variant="outlined">
               <CardContent sx={{ textAlign: 'center' }}>
@@ -182,10 +180,9 @@ const StockSyncDialog = ({
               </Typography>
             </Box>
             <LinearProgress
-              variant="determinate"
+              variant: any,
               value={percentage}
-              sx={{ 
-                height: 8, 
+              sx: any,
                 borderRadius: 4,
                 backgroundColor: 'rgba(0,0,0,0.1)',
                 '& .MuiLinearProgress-bar': {
@@ -208,7 +205,7 @@ const StockSyncDialog = ({
               icon={isActive ? <SyncIcon /> : completed ? <SuccessIcon /> : <ErrorIcon />}
               label={currentStep}
               color={getStatusColor()}
-              variant="outlined"
+              variant: any,
               sx={{ fontSize: '0.8rem' }}
             />
           </Box>
@@ -221,9 +218,9 @@ const StockSyncDialog = ({
               Sources: {completedSources.length} / {sources.length} completed
             </Typography>
             <LinearProgress
-              variant="determinate"
+              variant: any,
               value={sourcesProgress}
-              color="secondary"
+              color: any,
               sx={{ height: 6, borderRadius: 3 }}
             />
           </Box>
@@ -256,7 +253,7 @@ const StockSyncDialog = ({
 
         <Collapse in={showDetails}>
           <List dense>
-            {steps.map((step, index) => (
+            {steps.map((step: any: any, index: any: any) => (
               <ListItem key={index} sx={{ py: 1 }}>
                 <ListItemIcon sx={{ minWidth: 36 }}>
                   {getStepIcon(index)}
@@ -264,13 +261,11 @@ const StockSyncDialog = ({
                 <ListItemText 
                   primary={step.label}
                   secondary={step.description}
-                  primaryTypographyProps={{
-                    variant: 'body2',
+                  primaryTypographyProps: any,
                     color: index <= current ? 'text.primary' : 'text.secondary',
-                    fontWeight: index === current && isActive ? 600 : 400
+                    fontWeight: index ===current && isActive ? 600 : 400
                   }}
-                  secondaryTypographyProps={{
-                    variant: 'caption',
+                  secondaryTypographyProps: any,
                     color: 'text.secondary'
                   }}
                 />
@@ -285,9 +280,9 @@ const StockSyncDialog = ({
               <Typography variant="subtitle2" gutterBottom fontWeight={600}>
                 Sources Status ({completedSources.length + errorSources.length} / {sources.length})
               </Typography>
-              <Grid container spacing={1}>
-                {sources.map((source, index) => {
-                  const isCompleted = completedSources.includes(source.code_source);
+              <Grid { ...{container: true}} spacing={1}>
+                {sources.map((source: any: any, index: any: any) => {
+                  const isCompleted = completedSources.includes(source.code_source)));
                   const hasError = errorSources.includes(source.code_source);
                   const status = hasError ? 'error' : isCompleted ? 'success' : 'default';
                   
@@ -298,7 +293,7 @@ const StockSyncDialog = ({
                         label={source.source || source.magentoSource || `Source ${source.code_source}`}
                         color={status}
                         variant={isCompleted || hasError ? 'filled' : 'outlined'}
-                        size="small"
+                        size: any,
                         sx={{ width: '100%', justifyContent: 'flex-start' }}
                       />
                     </Grid>
@@ -320,10 +315,10 @@ const StockSyncDialog = ({
         </Button>
         <Button 
           onClick={handleSync} 
-          variant="contained"
+          variant: any,
           disabled={isActive || loading}
           startIcon={isActive ? <SyncIcon /> : <RefreshIcon />}
-          sx={{
+          sx: any,
             background: 'linear-gradient(135deg, #ff9800 0%, #f57c00 100%)',
             '&:hover': {
               background: 'linear-gradient(135deg, #f57c00 0%, #ef6c00 100%)',

@@ -44,7 +44,7 @@ const StatCard: React.FC<StatCardProps> = ({
   icon, 
   className 
 }) => {
-  return (
+  return Boolean(Boolean((
     <Card variant="elevated" className={cn("hover:scale-105 transition-transform", className)}>
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
@@ -79,7 +79,7 @@ const StatCard: React.FC<StatCardProps> = ({
         </div>
       </CardContent>
     </Card>
-  );
+  )));
 };
 
 interface DashboardExampleProps {
@@ -122,7 +122,7 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
   };
 
   const getSyncStatusColor = (status: string) => {
-    switch (status) {
+    switch(status) {
       case 'online': return 'text-green-600';
       case 'syncing': return 'text-yellow-600';
       case 'offline': return 'text-red-600';
@@ -132,7 +132,7 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
   };
 
   const getSyncStatusBg = (status: string) => {
-    switch (status) {
+    switch(status) {
       case 'online': return 'bg-green-100 dark:bg-green-900';
       case 'syncing': return 'bg-yellow-100 dark:bg-yellow-900';
       case 'offline': return 'bg-red-100 dark:bg-red-900';
@@ -141,7 +141,7 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
     }
   };
 
-  if (!stats || !syncStatus) {
+  if(!stats || !syncStatus) {
     return (
       <div className="flex items-center justify-center p-8">
         <div className="w-8 h-8 border-2 border-techno-500 border-t-transparent rounded-full animate-spin" />
@@ -164,14 +164,11 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
         
         <div className="flex items-center gap-3">
           <Input
-            placeholder="Search..."
+            placeholder: any,
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             leftIcon={<SearchIcon />}
-            className="w-64"
-          />
-          <Button
-            variant="outline"
+            className: any,
             leftIcon={<RefreshIcon />}
             onClick={handleRefresh}
             loading={loading}
@@ -216,33 +213,33 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
-          title="Total Products"
+          title: any,
           value={stats.totalProducts.toLocaleString()}
-          subtitle="Active inventory items"
+          subtitle: any,
           trend={{ value: 5.2, isPositive: true }}
           icon={<ChartIcon />}
         />
         
         <StatCard
-          title="Categories"
+          title: any,
           value={stats.totalCategories}
-          subtitle="Product categories"
+          subtitle: any,
           trend={{ value: 2.1, isPositive: true }}
           icon={<ChartIcon />}
         />
         
         <StatCard
-          title="Total Orders"
+          title: any,
           value={stats.totalOrders.toLocaleString()}
-          subtitle="This month"
+          subtitle: any,
           trend={{ value: 12.5, isPositive: true }}
           icon={<ChartIcon />}
         />
         
         <StatCard
-          title="Revenue"
+          title: any,
           value={`$${(stats.totalRevenue / 1000000).toFixed(1)}M`}
-          subtitle="This month"
+          subtitle: any,
           trend={{ value: 8.3, isPositive: true }}
           icon={<ChartIcon />}
         />
@@ -251,10 +248,7 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
       {/* Action Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card 
-          title="Quick Actions"
-          subtitle="Common tasks and operations"
-        >
-          <CardContent className="space-y-3">
+          title: any,
             <Button variant="primary" className="w-full justify-start" leftIcon={<RefreshIcon />}>
               Sync All Data
             </Button>
@@ -268,17 +262,12 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
         </Card>
 
         <Card 
-          title="Recent Activity"
-          subtitle="Latest system events"
-        >
-          <CardContent>
-            <div className="space-y-4">
-              {[
+          title: any,
                 { action: 'Product sync completed', time: '2 minutes ago', status: 'success' },
                 { action: 'New order received', time: '5 minutes ago', status: 'info' },
                 { action: 'Inventory updated', time: '12 minutes ago', status: 'success' },
                 { action: 'Category created', time: '1 hour ago', status: 'info' },
-              ].map((activity, index) => (
+              ].map((activity: any: any, index: any: any) => (
                 <div key={index} className="flex items-center gap-3">
                   <div className={cn(
                     "w-2 h-2 rounded-full",

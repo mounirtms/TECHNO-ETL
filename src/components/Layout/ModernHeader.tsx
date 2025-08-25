@@ -34,7 +34,7 @@ export const ModernHeader: React.FC<ModernHeaderProps> = ({
       // await logout(); // Uncomment when logout function is available
       handleProfileMenuClose?.();
       // Optionally redirect to login page
-    } catch (error) {
+    } catch(error: any) {
       console.error('Logout failed', error);
       // Optionally show an error notification
     }
@@ -42,8 +42,7 @@ export const ModernHeader: React.FC<ModernHeaderProps> = ({
 
   return (
     <header
-      className={cn(
-        'fixed top-0 z-50 h-16 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm transition-all duration-300 ease-in-out',
+      className: any,
         'dark:bg-gray-900/80 dark:border-gray-700',
         // Dynamic width and margin based on drawer state
         'sm:ml-16', // Base collapsed width
@@ -53,8 +52,7 @@ export const ModernHeader: React.FC<ModernHeaderProps> = ({
         // Mobile full width
         'w-full ml-0'
       )}
-      style={{
-        width: window.innerWidth >= 640 
+      style: any,
           ? `calc(100% - ${isDrawerCollapsed ? COLLAPSED_WIDTH : DRAWER_WIDTH}px)`
           : '100%',
         marginLeft: window.innerWidth >= 640 
@@ -66,25 +64,16 @@ export const ModernHeader: React.FC<ModernHeaderProps> = ({
         {/* Left side - Menu toggle */}
         <div className="flex items-center gap-4">
           <IconButton
-            size="md"
-            variant="ghost"
+            size: any,
             onClick={handleDrawerToggle}
             aria-label={isDrawerCollapsed ? translate('common.expandMenu') : translate('common.collapseMenu')}
-            className="hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          >
-            {isDrawerCollapsed ? (
-              <ChevronRight className="h-5 w-5" />
-            ) : (
-              <ChevronLeft className="h-5 w-5" />
+            className: any,
             )}
           </IconButton>
 
           {/* App Title */}
           <Typography 
-            variant="h6" 
-            className="font-semibold text-gray-900 dark:text-white hidden sm:block"
-            noWrap
-          >
+            variant: any,
             {translate('common.appTitle')}
           </Typography>
         </div>

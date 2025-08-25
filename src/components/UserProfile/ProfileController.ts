@@ -13,7 +13,7 @@ export const useProfileController = () => {
 
     // Simplified initialization - let SettingsContext handle the heavy lifting
     useEffect(() => {
-        if (!currentUser) {
+        if(!currentUser) {
             setError(null);
             return;
         }
@@ -25,7 +25,7 @@ export const useProfileController = () => {
     // Remove duplicate effects - SettingsContext handles this
 
     const updateUserData = (updates, section) => {
-        if (!currentUser) {
+        if(!currentUser) {
             toast.error('User not authenticated');
             return;
         }
@@ -35,7 +35,7 @@ export const useProfileController = () => {
     };
 
     const saveUserData = async (forceSave = false) => {
-        if (!currentUser) {
+        if(!currentUser) {
             toast.error('User not authenticated');
             return;
         }

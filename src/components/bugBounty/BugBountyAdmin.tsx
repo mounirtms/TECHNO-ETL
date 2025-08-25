@@ -48,14 +48,53 @@ import {
 } from '@mui/icons-material';
 import bugBountyService, { BUG_CATEGORIES, BUG_STATUS, QUALITY_SCORES } from '../../services/bugBountyService';
 
-const BugBountyAdmin = ({ open, onClose }) => {
-  const [bugs, setBugs] = useState([]);
-  const [selectedBug, setSelectedBug] = useState(null);
+interface BugBountyAdminProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+interface Bug {
+  id: string;
+  title: string;
+  category: string;
+  severity: string;
+  submittedAt: string;
+  status: string;
+  qualityScore?: number;
+  description: string;
+  stepsToReproduce: string[];
+  expectedBehavior: string;
+  actualBehavior: string;
+  environment: {
+    browser: string;
+    url: string;
+    screenResolution: string;
+    timestamp: string;
+  };
+  tester: {
+    name: string;
+    email: string;
+  };
+  reward?: {
+    calculated: number;
+    final?: number;
+  };
+}
+
+interface BugDetailDialogProps {
+  bug: Bug | null;
+  open: boolean;
+  onClose: () => void;
+}
+
+const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
+  const [bugs, setBugs] = useState<Bug[]>([]);
+  const [selectedBug, setSelectedBug] = useState<Bug | null>(null);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState('all');
 
   useEffect(() => {
-    if (open) {
+    if(open) {
       loadBugs();
     }
   }, [open, filter]);
@@ -65,30 +104,32 @@ const BugBountyAdmin = ({ open, onClose }) => {
     try {
       const filters = filter === 'all' ? {} : { status: filter };
       const result = await bugBountyService.getBugs(filters);
-      if (result.success) {
-        setBugs(result.bugs);
+      if (result.success && Array.isArray(result.bugs)) {
+        setBugs(result.bugs as Bug[]);
       }
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error loading bugs:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleStatusUpdate = async (bugId, newStatus, qualityScore = null) => {
+  const handleStatusUpdate = async (bugId: string, newStatus: string, qualityScore: number | null = null) => {
     try {
-      const result = await bugBountyService.updateBugStatus(bugId, newStatus, qualityScore);
-      if (result.success) {
+      // Convert qualityScore to null if it's not a valid number
+      const scoreValue = qualityScore && qualityScore > 0 ? qualityScore : null;
+      const result = await bugBountyService.updateBugStatus(bugId, newStatus, scoreValue);
+      if(result.success) {
         loadBugs(); // Refresh the list
         setSelectedBug(null);
       }
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error updating bug status:', error);
     }
   };
 
-  const getStatusColor = (status) => {
-    const colors = {
+  const getStatusColor = (status: string) => {
+    const colors: Record<string, 'info' | 'warning' | 'success' | 'default' | 'error' | 'primary'> = {
       [BUG_STATUS.SUBMITTED]: 'info',
       [BUG_STATUS.UNDER_REVIEW]: 'warning',
       [BUG_STATUS.CONFIRMED]: 'success',
@@ -100,14 +141,14 @@ const BugBountyAdmin = ({ open, onClose }) => {
     return colors[status] || 'default';
   };
 
-  const formatCurrency = (amount) => {
+  const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD'
     }).format(amount);
   };
 
-  const BugDetailDialog = ({ bug, open, onClose }) => {
+  const BugDetailDialog: React.FC<BugDetailDialogProps> = ({ bug, open, onClose }) => {
     const [newStatus, setNewStatus] = useState(bug?.status || '');
     const [qualityScore, setQualityScore] = useState(bug?.qualityScore || 3);
     const [adminNotes, setAdminNotes] = useState('');
@@ -119,8 +160,7 @@ const BugBountyAdmin = ({ open, onClose }) => {
       onClose();
     };
 
-    return (
-      <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    return (<Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <AdminIcon color="primary" />
@@ -134,11 +174,10 @@ const BugBountyAdmin = ({ open, onClose }) => {
             <Typography><strong>ID:</strong> {bug.id}</Typography>
             <Typography><strong>Category:</strong> 
               <Chip
-                size="small"
-                label={BUG_CATEGORIES[bug.category]?.name || bug.category}
-                sx={{ 
-                  ml: 1,
-                  backgroundColor: BUG_CATEGORIES[bug.category]?.color,
+                size: any,
+                label={(BUG_CATEGORIES as Record<string, any>)[bug.category]?.name || bug.category}
+                sx: any,
+                  backgroundColor: (BUG_CATEGORIES as Record<string, any>)[bug.category]?.color,
                   color: 'white'
                 }}
               />
@@ -163,7 +202,7 @@ const BugBountyAdmin = ({ open, onClose }) => {
             </AccordionSummary>
             <AccordionDetails>
               <List>
-                {bug.stepsToReproduce.map((step, index) => (
+                {bug.stepsToReproduce.map((step: any: any, index: any: any) => (
                   <ListItem key={index}>
                     <ListItemText
                       primary={`Step ${index + 1}`}
@@ -228,11 +267,11 @@ const BugBountyAdmin = ({ open, onClose }) => {
               <Typography component="legend">Quality Score</Typography>
               <Rating
                 value={qualityScore}
-                onChange={(event, newValue) => setQualityScore(newValue)}
+                onChange={(event: React.SyntheticEvent, newValue: number | null) => setQualityScore(newValue || 3)}
                 max={5}
               />
               <Typography variant="body2" color="text.secondary">
-                {Object.values(QUALITY_SCORES).find(q => q.score === qualityScore)?.description}
+                {Object.values(QUALITY_SCORES).find(q => q.score ===qualityScore)?.description}
               </Typography>
             </Box>
 
@@ -240,18 +279,16 @@ const BugBountyAdmin = ({ open, onClose }) => {
               fullWidth
               multiline
               rows={3}
-              label="Admin Notes"
+              label: any,
               value={adminNotes}
               onChange={(e) => setAdminNotes(e.target.value)}
-              placeholder="Add notes about this bug report..."
-            />
-
+              placeholder: any,
             <Alert severity="info" sx={{ mt: 2 }}>
               <Typography variant="body2">
-                <strong>Calculated Reward:</strong> {formatCurrency(bug.reward.calculated)}
+                <strong>Calculated Reward:</strong> {formatCurrency(bug.reward?.calculated || 0)}
                 <br />
                 <strong>Final Reward (with quality):</strong> {formatCurrency(
-                  Math.round(bug.reward.calculated * (Object.values(QUALITY_SCORES).find(q => q.score === qualityScore)?.multiplier || 1))
+                  Math.round((bug.reward?.calculated || 0) * (Object.values(QUALITY_SCORES).find(q => q.score ===qualityScore)?.multiplier || 1))
                 )}
               </Typography>
             </Alert>
@@ -262,18 +299,10 @@ const BugBountyAdmin = ({ open, onClose }) => {
           <Button onClick={onClose}>Cancel</Button>
           <Button
             onClick={handleSubmit}
-            variant="contained"
-            color="primary"
-          >
-            Update Bug Status
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
+            variant: any,
   };
 
-  return (
-    <>
+  return(<>
       <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
         <DialogTitle>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -317,8 +346,7 @@ const BugBountyAdmin = ({ open, onClose }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {bugs.map((bug) => (
-                  <TableRow key={bug.id}>
+                {bugs.map((bug: any: any) => (<TableRow key={bug.id}>
                     <TableCell>
                       <Typography variant="body2" noWrap>
                         {bug.title}
@@ -326,10 +354,10 @@ const BugBountyAdmin = ({ open, onClose }) => {
                     </TableCell>
                     <TableCell>
                       <Chip
-                        size="small"
-                        label={BUG_CATEGORIES[bug.category]?.name || bug.category}
-                        sx={{
-                          backgroundColor: BUG_CATEGORIES[bug.category]?.color,
+                        size: any,
+                        label={(BUG_CATEGORIES as Record<string, any>)[bug.category]?.name || bug.category}
+                        sx: any,
+                          backgroundColor: (BUG_CATEGORIES as Record<string, any>)[bug.category]?.color,
                           color: 'white'
                         }}
                       />
@@ -337,7 +365,7 @@ const BugBountyAdmin = ({ open, onClose }) => {
                     <TableCell>{bug.severity}</TableCell>
                     <TableCell>
                       <Chip
-                        size="small"
+                        size: any,
                         label={bug.status.replace('_', ' ').toUpperCase()}
                         color={getStatusColor(bug.status)}
                       />
@@ -351,7 +379,7 @@ const BugBountyAdmin = ({ open, onClose }) => {
                     </TableCell>
                     <TableCell>
                       <Button
-                        size="small"
+                        size: any,
                         onClick={() => setSelectedBug(bug)}
                       >
                         Review

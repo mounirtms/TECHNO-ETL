@@ -101,14 +101,11 @@ const DashboardTestSummary = () => {
             Current Theme Settings (from Preferences Tab)
           </Typography>
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            {Object.entries(currentSettings).map(([key, value]) => (
+            {Object.entries(currentSettings).map(([key: any: any, value]: any: any) => (
               <Chip
                 key={key}
                 label={`${key}: ${value}`}
-                size="small"
-                variant="outlined"
-                color="primary"
-              />
+                size: any,
             ))}
           </Box>
         </Box>
@@ -116,7 +113,7 @@ const DashboardTestSummary = () => {
         <Divider sx={{ my: 2 }} />
 
         {/* Improvements List */}
-        {improvements.map((improvement, index) => (
+        {improvements.map((improvement: any: any, index: any: any) => (
           <Box key={index} sx={{ mb: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
               {improvement.icon}
@@ -125,14 +122,13 @@ const DashboardTestSummary = () => {
               </Typography>
             </Box>
             <List dense>
-              {improvement.items.map((item, itemIndex) => (
+              {improvement.items.map((item: any: any, itemIndex: any: any) => (
                 <ListItem key={itemIndex} sx={{ py: 0.5 }}>
                   <ListItemIcon sx={{ minWidth: 32 }}>
                     <CheckIcon color="success" fontSize="small" />
                   </ListItemIcon>
                   <ListItemText
-                    primary={
-                      <Typography variant="body2" color="text.secondary">
+                    primary: any,
                         {item}
                       </Typography>
                     }

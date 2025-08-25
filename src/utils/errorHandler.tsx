@@ -44,7 +44,7 @@ export const categorizeError = (error) => {
   }
   
   // HTTP status code categorization
-  switch (status) {
+  switch(status) {
     case 400:
       return ERROR_TYPES.VALIDATION;
     case 401:
@@ -68,8 +68,8 @@ export const categorizeError = (error) => {
 /**
  * Get error severity based on type and context
  */
-export const getErrorSeverity = (errorType, context = {}) => {
-  switch (errorType) {
+export const getErrorSeverity = (errorType: string, context: any = {}) => {
+  switch(errorType) {
     case ERROR_TYPES.AUTHENTICATION:
     case ERROR_TYPES.AUTHORIZATION:
       return ERROR_SEVERITY.HIGH;
@@ -89,16 +89,16 @@ export const getErrorSeverity = (errorType, context = {}) => {
 /**
  * Generate user-friendly error message
  */
-export const getUserFriendlyMessage = (error, context = {}) => {
+export const getUserFriendlyMessage = (error, context: any = {}) => {
   const errorType = categorizeError(error);
-  const componentName = context.componentName || 'Component';
+  const componentName = context?.componentName || 'Component';
   
   const messages = {
     [ERROR_TYPES.NETWORK]: 'Unable to connect to the server. Please check your internet connection and try again.',
     [ERROR_TYPES.VALIDATION]: 'Please check your input and try again.',
     [ERROR_TYPES.AUTHENTICATION]: 'Your session has expired. Please log in again.',
     [ERROR_TYPES.AUTHORIZATION]: 'You do not have permission to perform this action.',
-    [ERROR_TYPES.NOT_FOUND]: `The requested ${context.resource || 'resource'} was not found.`,
+    [ERROR_TYPES.NOT_FOUND]: `The requested ${context?.resource || 'resource'} was not found.`,
     [ERROR_TYPES.SERVER]: 'A server error occurred. Our team has been notified. Please try again later.',
     [ERROR_TYPES.CLIENT]: 'An error occurred while processing your request. Please try again.',
     [ERROR_TYPES.UNKNOWN]: `An unexpected error occurred in ${componentName}. Please refresh the page and try again.`
@@ -110,7 +110,7 @@ export const getUserFriendlyMessage = (error, context = {}) => {
 /**
  * Log error with context for debugging
  */
-export const logError = (error, context = {}) => {
+export const logError = (error, context: any = {}) => {
   const errorType = categorizeError(error);
   const severity = getErrorSeverity(errorType, context);
   
@@ -126,7 +126,7 @@ export const logError = (error, context = {}) => {
   };
   
   // Console logging with appropriate level
-  switch (severity) {
+  switch(severity) {
     case ERROR_SEVERITY.CRITICAL:
       console.error('🚨 CRITICAL ERROR:', logData);
       break;
@@ -144,7 +144,7 @@ export const logError = (error, context = {}) => {
   }
   
   // In production, send to error tracking service
-  if (process.env.NODE_ENV === 'production') {
+  if(process.env.NODE_ENV === 'production') {
     // TODO: Send to error tracking service (Sentry, LogRocket, etc.)
   }
   
@@ -154,12 +154,12 @@ export const logError = (error, context = {}) => {
 /**
  * Handle error with user notification
  */
-export const handleError = (error, context = {}) => {
+export const handleError = (error, context: any = {}) => {
   const logData = logError(error, context);
   const userMessage = getUserFriendlyMessage(error, context);
   
   // Show user notification based on severity
-  switch (logData.severity) {
+  switch(logData.severity) {
     case ERROR_SEVERITY.CRITICAL:
     case ERROR_SEVERITY.HIGH:
       toast.error(userMessage, {
@@ -192,8 +192,8 @@ export const handleError = (error, context = {}) => {
 /**
  * Create error handler for specific component
  */
-export const createErrorHandler = (componentName, defaultContext = {}) => {
-  return (error, additionalContext = {}) => {
+export const createErrorHandler = (componentName: string, defaultContext: any = {}) => {
+  return (error: any, additionalContext: any = {}) => {
     const context = {
       componentName,
       ...defaultContext,
@@ -207,10 +207,10 @@ export const createErrorHandler = (componentName, defaultContext = {}) => {
 /**
  * Async wrapper with error handling
  */
-export const withErrorHandling = async (asyncFn, context = {}) => {
+export const withErrorHandling = async (asyncFn: () => Promise<any>, context: any = {}) => {
   try {
     return await asyncFn();
-  } catch (error) {
+  } catch(error: any) {
     handleError(error, context);
     throw error; // Re-throw for component-level handling
   }
@@ -219,12 +219,12 @@ export const withErrorHandling = async (asyncFn, context = {}) => {
 /**
  * React hook for error handling
  */
-export const useErrorHandler = (componentName) => {
+export const useErrorHandler = (componentName: string) => {
   const handleComponentError = createErrorHandler(componentName);
   
   return {
     handleError: handleComponentError,
-    withErrorHandling: (asyncFn, additionalContext = {}) => 
+    withErrorHandling: (asyncFn: () => Promise<any>, additionalContext: any = {}) => 
       withErrorHandling(asyncFn, { componentName, ...additionalContext })
   };
 };
@@ -232,8 +232,8 @@ export const useErrorHandler = (componentName) => {
 /**
  * Default fallback data generators
  */
-export const getFallbackData = (dataType) => {
-  const fallbacks = {
+export const getFallbackData = (dataType: string) => {
+  const fallbacks: Record<string, any> = {
     list: [],
     object: {},
     string: '',

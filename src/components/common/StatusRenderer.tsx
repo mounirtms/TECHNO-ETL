@@ -28,7 +28,7 @@ const StatusRenderer = memo(({ value }) => {
     );
 }, (prevProps, nextProps) => {
     // Only re-render if value actually changed
-    return prevProps.value === nextProps.value;
+    return prevProps.value ===nextProps.value;
 });
 
 StatusRenderer.displayName = 'StatusRenderer';

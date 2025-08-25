@@ -99,10 +99,9 @@ export const useOptimizedComponentTheme = (componentName) => {
     };
 
     // Component-specific optimizations
-    switch (componentName) {
+    switch(componentName) {
       case 'dashboard':
-        return {
-          ...baseTheme,
+        return { ...baseTheme,
           cardElevation: theme.shadows[2],
           cardPadding: theme.spacing(3),
           statCardHeight: 120,
@@ -116,26 +115,23 @@ export const useOptimizedComponentTheme = (componentName) => {
         };
         
       case 'sidebar':
-        return {
-          ...baseTheme,
+        return { ...baseTheme,
           width: 280,
           collapsedWidth: 64,
-          backgroundColor: theme.palette.background.sidebar,
+          backgroundColor: theme.palette.background?.sidebar,
           itemHeight: 48,
           iconSize: 24
         };
         
       case 'header':
-        return {
-          ...baseTheme,
+        return { ...baseTheme,
           height: 64,
-          backgroundColor: theme.palette.background.header,
+          backgroundColor: theme.palette.background?.header,
           elevation: theme.shadows[1]
         };
         
       case 'grid':
-        return {
-          ...baseTheme,
+        return { ...baseTheme,
           headerHeight: 56,
           rowHeight: 52,
           borderColor: theme.palette.divider,

@@ -21,7 +21,7 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import DataObjectIcon from '@mui/icons-material/DataObject';
 
 export const MENU_TREE = [
-    // === CORE DASHBOARD ===
+    // ===CORE DASHBOARD ===
     {
         id: 'core',
         label: 'Dashboard',
@@ -53,7 +53,7 @@ export const MENU_TREE = [
         ]
     },
 
-    // === MDM SYSTEM ===
+    // ===MDM SYSTEM ===
     {
         id: 'mdm',
         label: 'MDM',
@@ -95,7 +95,7 @@ export const MENU_TREE = [
         ]
     },
 
-    // === MAGENTO SYSTEM ===
+    // ===MAGENTO SYSTEM ===
     {
         id: 'magento',
         label: 'Magento',
@@ -197,7 +197,7 @@ export const MENU_TREE = [
         ]
     },
 
-    // === CEGID SYSTEM ===
+    // ===CEGID SYSTEM ===
     {
         id: 'cegid',
         label: 'Cegid',
@@ -219,7 +219,7 @@ export const MENU_TREE = [
         ]
     },
 
-    // === ANALYTICS & REPORTS ===
+    // ===ANALYTICS & REPORTS ===
     {
         id: 'analytics',
         label: 'Analytics & Reports',
@@ -251,7 +251,7 @@ export const MENU_TREE = [
         ]
     },
 
-    // === SECURITY ===
+    // ===SECURITY ===
     {
         id: 'locker',
         label: 'Security',
@@ -283,7 +283,7 @@ export const MENU_TREE = [
         ]
     },
 
-    // === DEVELOPMENT & TESTING ===
+    // ===DEVELOPMENT & TESTING ===
     {
         id: 'development',
         label: 'Development & Testing',
@@ -325,7 +325,7 @@ export const MENU_TREE = [
         ]
     },
 
-    // === USER PROFILE ===
+    // ===USER PROFILE ===
     {
         id: 'profile',
         label: 'Profile',
@@ -347,7 +347,7 @@ export const MENU_TREE = [
         ]
     },
 
-    // === SYSTEM MANAGEMENT ===
+    // ===SYSTEM MANAGEMENT ===
     {
         id: 'system',
         label: 'Management',
@@ -386,11 +386,10 @@ export const MENU_ITEMS = [];
 
 function flattenTree(items) {
     let result = [];
-    items.forEach(item => {
-        if (item.children) {
-            result = result.concat(item.children);
-            result = result.concat(flattenTree(item.children));
-        } else if (item.path) {
+    items.forEach((item) => {
+        if(item.children) {
+            result: any,
+        } else if(item.path) {
             result.push(item);
         }
     });

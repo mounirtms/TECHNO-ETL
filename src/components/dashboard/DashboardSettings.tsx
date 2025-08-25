@@ -35,27 +35,25 @@ import { toast } from 'react-toastify';
  * Dashboard Settings Component
  * Advanced settings for customizing dashboard visibility and behavior
  */
-const DashboardSettings = ({
-  open,
+const DashboardSettings = ({ open,
   onClose,
   settings,
   onSettingsChange,
   onResetSettings
-}) => {
+ }: { open: any, onClose: any, settings: any, onSettingsChange: any, onResetSettings: any }) => {
   const { animations, density } = useCustomTheme();
   const { settings: globalSettings, updateSettings } = useSettings();
   const [localSettings, setLocalSettings] = useState(settings);
 
   // Sync with global settings when dialog opens or settings change
   useEffect(() => {
-    if (open) {
+    if(open) {
       // Initialize with current settings
       setLocalSettings(settings);
 
       // Merge with global settings if available
-      if (globalSettings?.dashboard) {
-        setLocalSettings(prev => ({
-          ...prev,
+      if(globalSettings?.dashboard) {
+        setLocalSettings(prev => ({ ...prev,
           ...globalSettings.dashboard
         }));
       }
@@ -68,15 +66,13 @@ const DashboardSettings = ({
         // Ensure the category exists
         const currentCategory = prev[category] || {};
 
-        return {
-          ...prev,
-          [category]: {
-            ...currentCategory,
+        return { ...prev,
+          [category]: { ...currentCategory,
             [key]: value
           }
         };
       });
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error updating dashboard setting:', error);
     }
   };
@@ -84,7 +80,7 @@ const DashboardSettings = ({
   const handleSave = async () => {
     try {
       // Validate settings before saving
-      if (!localSettings || typeof localSettings !== 'object') {
+      if(!localSettings || typeof localSettings !== 'object') {
         throw new Error('Invalid settings data');
       }
 
@@ -92,7 +88,7 @@ const DashboardSettings = ({
       onSettingsChange(localSettings);
 
       // Save to global unified settings
-      if (updateSettings) {
+      if(updateSettings) {
         await updateSettings({ dashboard: localSettings }, 'dashboard');
         console.log('Dashboard settings saved to unified settings');
       }
@@ -101,7 +97,7 @@ const DashboardSettings = ({
       toast.success('Dashboard settings saved successfully!');
 
       onClose();
-    } catch (error) {
+    } catch(error: any) {
       console.error('Failed to save dashboard settings:', error);
 
       // Show error feedback
@@ -114,7 +110,7 @@ const DashboardSettings = ({
       onResetSettings();
       setLocalSettings(settings);
       toast.success('Dashboard settings reset to defaults!');
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error resetting dashboard settings:', error);
       toast.error('Failed to reset dashboard settings. Please try again.');
     }
@@ -154,11 +150,7 @@ const DashboardSettings = ({
     <Dialog 
       open={open} 
       onClose={onClose} 
-      maxWidth="md" 
-      fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: density === 'compact' ? 2 : 3,
+      maxWidth: any,
           minHeight: density === 'compact' ? '60vh' : '70vh'
         }
       }}
@@ -192,18 +184,11 @@ const DashboardSettings = ({
             </Typography>
             <Chip 
               label={`${Object.values(localSettings.statCards || {}).filter(Boolean).length}/8 visible`}
-              color="primary"
-              size="small"
-            />
-          </Box>
-          
+              color: any,
           <Grid container spacing={2}>
-            {statCardSettings.map((card) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={card.key}>
+            {statCardSettings.map((card: any: any) => (<Grid size={{ xs: 12, sm: 6, md: 4 }} key={card.key}>
                 <Card 
-                  variant="outlined" 
-                  sx={{ 
-                    p: 2, 
+                  variant: any,
                     opacity: localSettings.statCards?.[card.key] ? 1 : 0.5,
                     transition: 'all 0.3s ease'
                   }}
@@ -218,11 +203,7 @@ const DashboardSettings = ({
                     <Switch
                       checked={localSettings.statCards?.[card.key] || false}
                       onChange={(e) => handleSettingChange('statCards', card.key, e.target.checked)}
-                      size="small"
-                    />
-                  </Box>
-                </Card>
-              </Grid>
+                      size: any,
             ))}
           </Grid>
         </Box>
@@ -238,18 +219,11 @@ const DashboardSettings = ({
             </Typography>
             <Chip 
               label={`${Object.values(localSettings.charts || {}).filter(Boolean).length}/8 visible`}
-              color="secondary"
-              size="small"
-            />
-          </Box>
-          
+              color: any,
           <Grid container spacing={2}>
-            {chartSettings.map((chart) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={chart.key}>
+            {chartSettings.map((chart: any: any) => (<Grid size={{ xs: 12, sm: 6, md: 4 }} key={chart.key}>
                 <Card 
-                  variant="outlined" 
-                  sx={{ 
-                    p: 2, 
+                  variant: any,
                     opacity: localSettings.charts?.[chart.key] ? 1 : 0.5,
                     transition: 'all 0.3s ease'
                   }}
@@ -264,11 +238,7 @@ const DashboardSettings = ({
                     <Switch
                       checked={localSettings.charts?.[chart.key] || false}
                       onChange={(e) => handleSettingChange('charts', chart.key, e.target.checked)}
-                      size="small"
-                    />
-                  </Box>
-                </Card>
-              </Grid>
+                      size: any,
             ))}
           </Grid>
         </Box>
@@ -284,18 +254,11 @@ const DashboardSettings = ({
             </Typography>
             <Chip
               label={`${Object.values(localSettings.widgets || {}).filter(Boolean).length}/5 visible`}
-              color="info"
-              size="small"
-            />
-          </Box>
-
+              color: any,
           <Grid container spacing={2}>
-            {widgetSettings.map((widget) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={widget.key}>
+            {widgetSettings.map((widget: any: any) => (<Grid size={{ xs: 12, sm: 6, md: 4 }} key={widget.key}>
                 <Card
-                  variant="outlined"
-                  sx={{
-                    p: 2,
+                  variant: any,
                     opacity: localSettings.widgets?.[widget.key] ? 1 : 0.5,
                     transition: 'all 0.3s ease'
                   }}
@@ -310,11 +273,7 @@ const DashboardSettings = ({
                     <Switch
                       checked={localSettings.widgets?.[widget.key] || false}
                       onChange={(e) => handleSettingChange('widgets', widget.key, e.target.checked)}
-                      size="small"
-                    />
-                  </Box>
-                </Card>
-              </Grid>
+                      size: any,
             ))}
           </Grid>
         </Box>
@@ -332,60 +291,39 @@ const DashboardSettings = ({
           
           <FormGroup>
             <FormControlLabel
-              control={
-                <Switch
+              control: any,
                   checked={localSettings.general?.autoRefresh || false}
                   onChange={(e) => handleSettingChange('general', 'autoRefresh', e.target.checked)}
                 />
               }
-              label="Auto-refresh data every 5 minutes"
-            />
-            <FormControlLabel
-              control={
-                <Switch
+              label: any,
                   checked={localSettings.general?.animations || true}
                   onChange={(e) => handleSettingChange('general', 'animations', e.target.checked)}
                 />
               }
-              label="Enable animations and transitions"
-            />
-            <FormControlLabel
-              control={
-                <Switch
+              label: any,
                   checked={localSettings.general?.compactMode || false}
                   onChange={(e) => handleSettingChange('general', 'compactMode', e.target.checked)}
                 />
               }
-              label="Compact mode (smaller cards and charts)"
-            />
-            <FormControlLabel
-              control={
-                <Switch
+              label: any,
                   checked={localSettings.general?.showTooltips || true}
                   onChange={(e) => handleSettingChange('general', 'showTooltips', e.target.checked)}
                 />
               }
-              label="Show helpful tooltips"
-            />
-          </FormGroup>
-        </Box>
-      </DialogContent>
-
+              label: any,
       <DialogActions sx={{ p: 3, gap: 1 }}>
         <Button 
           onClick={handleReset} 
           startIcon={<RefreshIcon />}
-          color="warning"
-        >
-          Reset to Default
-        </Button>
+          color: any,
         <Box sx={{ flexGrow: 1 }} />
         <Button onClick={onClose}>
           Cancel
         </Button>
         <Button 
           onClick={handleSave} 
-          variant="contained"
+          variant: any,
           startIcon={<SettingsIcon />}
         >
           Save Settings

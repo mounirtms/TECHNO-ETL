@@ -83,7 +83,7 @@ const EnhancedCmsPagesGrid = () => {
             };
 
             // Add status filter with proper field name
-            if (filters.status !== 'all') {
+            if(filters.status !== 'all') {
                 searchCriteria.filterGroups.push({
                     filters: [{
                         field: 'is_active',
@@ -113,7 +113,7 @@ const EnhancedCmsPagesGrid = () => {
 
             // Fetch data based on content type with proper API calls
             let response;
-            if (contentType === 'pages') {
+            if(contentType === 'pages') {
                 // Use proper endpoint for CMS pages
                 response = await magentoApi.get('/cmsPage/search', { searchCriteria });
             } else {
@@ -127,16 +127,16 @@ const EnhancedCmsPagesGrid = () => {
             const cmsData = response?.data || response;
             const items = cmsData?.items || [];
 
-            if (items.length > 0) {
+            if(items.length > 0) {
                 setData(items);
                 
                 // Update professional stats
-                const activeCount = items.filter(item => item.is_active).length;
+                const activeCount = items.filter((item: any: any) => item?.is_active).length;
                 setStats({
                     total: items.length,
                     active: activeCount,
                     inactive: items.length - activeCount,
-                    recentlyModified: items.filter(item => {
+                    recentlyModified: items.filter((item: any: any) => {
                         const updateTime = new Date(item.update_time);
                         const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
                         return updateTime > dayAgo;
@@ -150,7 +150,7 @@ const EnhancedCmsPagesGrid = () => {
                 setData([]);
                 setStats({ total: 0, active: 0, inactive: 0, recentlyModified: 0, totalViews: 0 });
             }
-        } catch (error) {
+        } catch(error: any) {
             console.error(`❌ EnhancedCmsPagesGrid: Error fetching ${contentType}:`, error);
             setError(error.message || `Failed to fetch CMS ${contentType}`);
             setData([]);
@@ -276,11 +276,7 @@ const EnhancedCmsPagesGrid = () => {
             renderCell: (params) => (
                 <Chip 
                     label={params.value} 
-                    size="small" 
-                    variant="outlined" 
-                    color="primary"
-                />
-            )
+                    size: any,
         },
         {
             field: 'is_active',
@@ -290,7 +286,7 @@ const EnhancedCmsPagesGrid = () => {
                 <Chip
                     label={params.value ? 'Active' : 'Inactive'}
                     color={params.value ? 'success' : 'default'}
-                    size="small"
+                    size: any,
                     icon={params.value ? <Visibility /> : <Article />}
                 />
             )
@@ -342,7 +338,7 @@ const EnhancedCmsPagesGrid = () => {
         setSelectedItem(item);
         setFormData(item ? {
             title: item.title || '',
-            identifier: item.identifier || '',
+            identifier: item?.identifier || '',
             content: item.content || '',
             is_active: item.is_active || true,
             meta_title: item.meta_title || '',
@@ -384,14 +380,14 @@ const EnhancedCmsPagesGrid = () => {
     // Enhanced save functionality for POST and PUT operations
     const handleSave = useCallback(async () => {
         try {
-            if (!formData.title || !formData.identifier) {
+            if(!formData.title || !formData?.identifier) {
                 toast.error('Title and Identifier are required');
                 return;
             }
 
             const payload = {
                 title: formData.title,
-                identifier: formData.identifier,
+                identifier: formData?.identifier,
                 content: formData.content,
                 is_active: formData.is_active,
                 meta_title: formData.meta_title,
@@ -402,9 +398,9 @@ const EnhancedCmsPagesGrid = () => {
                 store_id: formData.store_id
             };
 
-            if (selectedItem) {
+            if(selectedItem) {
                 // UPDATE existing item
-                if (contentType === 'pages') {
+                if(contentType === 'pages') {
                     await magentoApi.put(`/cmsPage/${selectedItem.id}`, { page: payload });
                     toast.success('CMS Page updated successfully');
                 } else {
@@ -413,7 +409,7 @@ const EnhancedCmsPagesGrid = () => {
                 }
             } else {
                 // CREATE new item (always POST to Magento API)
-                if (contentType === 'pages') {
+                if(contentType === 'pages') {
                     await magentoApi.post('/cmsPage', { page: payload });
                     toast.success('CMS Page created successfully');
                 } else {
@@ -424,7 +420,7 @@ const EnhancedCmsPagesGrid = () => {
 
             handleCloseDialog();
             fetchData(); // Refresh the grid
-        } catch (error) {
+        } catch(error: any) {
             console.error('Save error:', error);
             toast.error(`Failed to save CMS ${contentType.slice(0, -1)}: ${error.message}`);
         }
@@ -437,7 +433,7 @@ const EnhancedCmsPagesGrid = () => {
         }
 
         try {
-            if (contentType === 'pages') {
+            if(contentType === 'pages') {
                 await magentoApi.delete(`/cmsPage/${id}`);
                 toast.success('CMS Page deleted successfully');
             } else {
@@ -445,7 +441,7 @@ const EnhancedCmsPagesGrid = () => {
                 toast.success('CMS Block deleted successfully');
             }
             fetchData(); // Refresh the grid
-        } catch (error) {
+        } catch(error: any) {
             console.error('Delete error:', error);
             toast.error(`Failed to delete CMS ${contentType.slice(0, -1)}: ${error.message}`);
         }
@@ -461,7 +457,7 @@ const EnhancedCmsPagesGrid = () => {
     }, [fetchData]);
 
     // ===== RENDER =====
-    return (
+    return Boolean(Boolean((
         <Box sx={{ p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
             {/* Professional Header with Content Type Toggle */}
             <Box sx={{ mb: 3 }}>
@@ -490,8 +486,8 @@ const EnhancedCmsPagesGrid = () => {
                 </Box>
 
                 {/* Professional Stats Cards */}
-                <Grid container spacing={2} sx={{ mb: 3 }}>
-                    {statsCards.map((card, index) => (
+                <Grid { ...{container: true}} spacing={2} sx={{ mb: 3 }}>
+                    {statsCards.map((card: any: any, index: any: any) => (
                         <Grid item xs={12} sm={6} md={3} key={index}>
                             <Card sx={{
                                 background: `linear-gradient(135deg, ${card.color === 'primary' ? '#1976d2' :
@@ -544,7 +540,7 @@ const EnhancedCmsPagesGrid = () => {
 
             {/* Enhanced UnifiedGrid */}
             <UnifiedGrid
-                {...getStandardGridProps(contentType === 'pages' ? 'cmsPages' : 'cmsBlocks', {
+                { ...getStandardGridProps(contentType === 'pages' ? 'cmsPages' : 'cmsBlocks', {
                     // Data
                     data,
                     columns,
@@ -560,8 +556,8 @@ const EnhancedCmsPagesGrid = () => {
                     onRowDoubleClick: (params) => handleOpenDialog(params.row),
                     onRefresh: fetchData,
                     onAdd: () => handleOpenDialog(),
-                    onEdit: (items) => items.length === 1 && handleOpenDialog(data.find(item => item.id === items[0])),
-                    onDelete: (items) => items.forEach(id => handleDelete(id)),
+                    onEdit: (items) => items.length ===1 && handleOpenDialog(data.find(item => item.id ===items[0])),
+                    onDelete: (items) => items.forEach((id) => handleDelete(id)),
 
                     // Grid styling
                     sx: {
@@ -580,36 +576,32 @@ const EnhancedCmsPagesGrid = () => {
             <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
                 <DialogTitle>{selectedItem ? `Edit ${contentType === 'pages' ? 'Page' : 'Block'}` : `Add ${contentType === 'pages' ? 'Page' : 'Block'}`}</DialogTitle>
                 <DialogContent>
-                    <Tabs value={activeTab} onChange={(_, v) => setActiveTab(v)} sx={{ mb: 2 }}>
+                    <Tabs value={activeTab} onChange={(e) => (_, v) => setActiveTab(v)} sx={{ mb: 2 }}>
                         <Tab label="General" />
                         <Tab label="Content" />
                         <Tab label="SEO" />
                         <Tab label="Advanced" />
                     </Tabs>
-                    {activeTab === 0 && (
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            <TextField label="Title" value={formData.title} onChange={e => handleFormChange('title', e.target.value)} fullWidth required />
-                            <TextField label="Identifier" value={formData.identifier} onChange={e => handleFormChange('identifier', e.target.value)} fullWidth required />
-                            <FormControlLabel control={<Switch checked={formData.is_active} onChange={e => handleFormChange('is_active', e.target.checked)} />} label="Active" />
+                    {activeTab ===0 && (<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            <TextField label="Title" value={formData.title} onChange={(e) => handleFormChange('title', e.target.value)} fullWidth required />
+                            <TextField label="Identifier" value={formData?.identifier} onChange={(e) => handleFormChange('identifier', e.target.value)} fullWidth required />
+                            <FormControlLabel control={<Switch checked={formData.is_active} onChange={(e) => handleFormChange('is_active', e.target.checked)} />} label="Active" />
                         </Box>
                     )}
-                    {activeTab === 1 && (
-                        <Box sx={{ mt: 2 }}>
-                            <ReactQuill theme="snow" value={formData.content} onChange={v => handleFormChange('content', v)} modules={quillModules} formats={quillFormats} style={{ minHeight: 200 }} />
+                    {activeTab ===1 && (<Box sx={{ mt: 2 }}>
+                            <ReactQuill theme="snow" value={formData.content} onChange={(e) => v => handleFormChange('content', v)} modules={quillModules} formats={quillFormats} style={{ minHeight: 200 }} />
                         </Box>
                     )}
-                    {activeTab === 2 && (
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-                            <TextField label="Meta Title" value={formData.meta_title} onChange={e => handleFormChange('meta_title', e.target.value)} fullWidth />
-                            <TextField label="Meta Description" value={formData.meta_description} onChange={e => handleFormChange('meta_description', e.target.value)} fullWidth />
-                            <TextField label="Meta Keywords" value={formData.meta_keywords} onChange={e => handleFormChange('meta_keywords', e.target.value)} fullWidth />
+                    {activeTab ===2 && (<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                            <TextField label="Meta Title" value={formData.meta_title} onChange={(e) => handleFormChange('meta_title', e.target.value)} fullWidth />
+                            <TextField label="Meta Description" value={formData.meta_description} onChange={(e) => handleFormChange('meta_description', e.target.value)} fullWidth />
+                            <TextField label="Meta Keywords" value={formData.meta_keywords} onChange={(e) => handleFormChange('meta_keywords', e.target.value)} fullWidth />
                         </Box>
                     )}
-                    {activeTab === 3 && (
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-                            <TextField label="URL Key" value={formData.url_key} onChange={e => handleFormChange('url_key', e.target.value)} fullWidth />
-                            <TextField label="Sort Order" type="number" value={formData.sort_order} onChange={e => handleFormChange('sort_order', Number(e.target.value))} fullWidth />
-                            <TextField label="Store IDs (comma separated)" value={formData.store_id ? formData.store_id.join(',') : ''} onChange={e => handleFormChange('store_id', e.target.value.split(',').map(v => v.trim()).filter(Boolean))} fullWidth />
+                    {activeTab ===3 && (<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                            <TextField label="URL Key" value={formData.url_key} onChange={(e) => handleFormChange('url_key', e.target.value)} fullWidth />
+                            <TextField label="Sort Order" type="number" value={formData.sort_order} onChange={(e) => handleFormChange('sort_order', Number(e.target.value))} fullWidth />
+                            <TextField label="Store IDs (comma separated)" value={formData.store_id ? formData.store_id.join(',') : ''} onChange={(e) => handleFormChange('store_id', e.target.value.split(',').map((v: any: any) => v.trim()).filter(Boolean))} fullWidth />
                         </Box>
                     )}
                 </DialogContent>
@@ -624,7 +616,7 @@ const EnhancedCmsPagesGrid = () => {
             {/* 1. Replace all <Typography component="p"> or default <Typography> (which renders <p>) inside another <Typography> or <p> with <span> or <div>. */}
             {/* 2. Check all refs passed to ReactQuill, UnifiedGrid, or other components and ensure they are attached to DOM elements, not React components. */}
         </Box>
-    );
+    )));
 };
 
 export default EnhancedCmsPagesGrid;

@@ -1,0 +1,370 @@
+{
+    "common": {
+        "profile": "Profil",
+        "logout": "Déconnexion",
+        "settings": "Paramètres",
+        "refresh": "Actualiser",
+        "refreshing": "Actualisation...",
+        "changeLanguage": "Changer de langue",
+        "user": "Utilisateur",
+        "expandMenu": "Développer le menu",
+        "collapseMenu": "Réduire le menu",
+        "appTitle": "Techno Papeterie"
+    },
+    "navigation": {
+        "dashboard": "Tableau de Bord",
+        "analytics": "Analyses et Graphiques",
+        "voting": "Vote des Fonctionnalités",
+        "products": "Produits",
+        "productCatalog": "Catalogue de Produits",
+        "mdmProducts": "Produits MDM",
+        "cegidProducts": "Produits Cegid",
+        "customers": "Clients",
+        "orders": "Commandes",
+        "invoices": "Factures",
+        "categories": "Catégories",
+        "stocks": "Stocks",
+        "sources": "Sources",
+        "userProfile": "Profil Utilisateur",
+        "cmsPages": "Pages CMS",
+        "gridTest": "Test de Grille",
+        "core": "Fonctions Principales",
+        "mdm": "Gestion des Données Maître",
+        "mdmStock": "Stock MDM",
+        "mdmSources": "Sources MDM",
+        "magento": "Magento",
+        "cegid": "Cegid",
+        "analyticsReports": "Rapports d'Analyse",
+        "salesAnalytics": "Analyses des Ventes",
+        "inventoryAnalytics": "Analyses des Stocks",
+        "lockerStudio": "Studio Casier",
+        "secureVault": "Coffre-fort Sécurisé",
+        "accessControl": "Contrôle d'Accès",
+        "development": "Développement",
+        "bugBounty": "Chasse aux Bogues",
+        "profile": "Profil",
+        "system": "Système",
+        "licenseManagement": "Gestion des Licences",
+        "licenseStatus": "État des Licences"
+    },
+    "dashboard": {
+        "title": "Tableau de bord",
+        "totalOrders": "Total des commandes",
+        "totalCustomers": "Total des clients",
+        "totalProducts": "Total des produits",
+        "totalSales": "Total des ventes",
+        "salesOverTime": "Ventes au fil du temps",
+        "chartComingSoon": "Graphique à venir",
+        "recentOrders": "Commandes récentes",
+        "noRecentOrders": "Aucune commande récente",
+        "lastWeek": "La semaine dernière",
+        "lastMonth": "Le mois dernier",
+        "lastYear": "L'année dernière",
+        "refresh": "Rafraîchir"
+    },
+    "products": "Produits",
+    "orders": "Commandes",
+    "customers": "Clients",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "profile": {
+        "personalInfo": {
+            "title": "Informations Personnelles",
+            "firstName": "Prénom",
+            "lastName": "Nom de Famille",
+            "email": "Adresse Email",
+            "phone": "Numéro de Téléphone",
+            "birthDate": "Date de Naissance",
+            "gender": "Genre",
+            "address": "Adresse",
+            "city": "Ville",
+            "country": "Pays",
+            "postalCode": "Code Postal"
+        },
+        "preferences": {
+            "title": "Préférences Utilisateur",
+            "description": "Personnalisez votre expérience et gérez les paramètres de l'application",
+            "unsavedChanges": "Modifications Non Sauvegardées",
+            "export": "Exporter",
+            "import": "Importer",
+            "reset": "Réinitialiser",
+            "save": "Sauvegarder",
+            "appearance": {
+                "title": "Apparence",
+                "language": {
+                    "title": "Langue",
+                    "description": "Choisissez votre langue d'interface préférée",
+                    "availableLanguages": {
+                        "en": "Anglais (États-Unis)",
+                        "fr": "Français (France)",
+                        "ar": "Arabe (Moyen-Orient)"
+                    }
+                },
+                "theme": {
+                    "title": "Thème",
+                    "description": "Choisissez l'apparence de l'application",
+                    "light": "Clair",
+                    "dark": "Sombre",
+                    "system": "Système"
+                },
+                "fontSize": {
+                    "title": "Taille de Police",
+                    "description": "Ajuster la taille du texte",
+                    "small": "Petit",
+                    "medium": "Moyen",
+                    "large": "Grand"
+                },
+                "density": {
+                    "title": "Densité de l'Interface",
+                    "description": "Ajuster l'espacement des éléments",
+                    "compact": "Compact",
+                    "standard": "Standard",
+                    "comfortable": "Confortable"
+                },
+                "animations": {
+                    "title": "Activer les animations et transitions",
+                    "description": "Afficher les transitions animées dans l'interface"
+                }
+            },
+            "performance": {
+                "title": "Performance",
+                "defaultPageSize": {
+                    "title": "Taille de Page par Défaut",
+                    "description": "Nombre d'éléments affichés par page"
+                },
+                "refreshInterval": {
+                    "title": "Intervalle de Rafraîchissement Auto (secondes)",
+                    "description": "Taux de rafraîchissement automatique des données"
+                },
+                "enableVirtualization": {
+                    "title": "Activer la virtualisation de grille pour de meilleures performances",
+                    "description": "Améliore les performances avec de gros jeux de données"
+                },
+                "cacheEnabled": {
+                    "title": "Activer la mise en cache des données",
+                    "description": "Stocker les données localement pour un chargement plus rapide"
+                },
+                "autoRefresh": {
+                    "title": "Rafraîchissement automatique des données",
+                    "description": "Rafraîchir les données périodiquement"
+                },
+                "lazyLoading": {
+                    "title": "Activer le chargement paresseux",
+                    "description": "Charger les données seulement quand nécessaire"
+                }
+            },
+            "notifications": {
+                "title": "Notifications",
+                "emailNotifications": {
+                    "title": "Notifications par e-mail",
+                    "description": "Recevoir des notifications par e-mail"
+                },
+                "pushNotifications": {
+                    "title": "Notifications push",
+                    "description": "Notifications push du navigateur"
+                },
+                "soundEnabled": {
+                    "title": "Notifications sonores",
+                    "description": "Jouer des sons avec les notifications"
+                }
+            },
+            "accessibility": {
+                "title": "Accessibilité",
+                "highContrast": {
+                    "title": "Mode contraste élevé",
+                    "description": "Augmenter le contraste pour une meilleure visibilité"
+                },
+                "largeText": {
+                    "title": "Texte large",
+                    "description": "Augmenter la taille du texte dans toute l'application"
+                },
+                "keyboardNavigation": {
+                    "title": "Navigation au clavier",
+                    "description": "Support amélioré de la navigation au clavier"
+                },
+                "screenReader": {
+                    "title": "Support de lecteur d'écran",
+                    "description": "Optimisé pour la compatibilité avec les lecteurs d'écran"
+                }
+            },
+            "security": {
+                "title": "Sécurité",
+                "sessionTimeout": {
+                    "title": "Délai d'Expiration de Session (minutes)",
+                    "description": "Temps avant la déconnexion automatique"
+                },
+                "twoFactorEnabled": {
+                    "title": "Authentification à deux facteurs",
+                    "description": "Couche de sécurité supplémentaire pour votre compte"
+                },
+                "auditLogging": {
+                    "title": "Journalisation d'audit",
+                    "description": "Suivre les activités des utilisateurs"
+                }
+            },
+            "messages": {
+                "settingsSaved": "Paramètres sauvegardés avec succès",
+                "settingsExported": "Paramètres exportés avec succès",
+                "settingsImported": "Paramètres importés avec succès",
+                "settingsReset": "Paramètres réinitialisés aux valeurs par défaut",
+                "invalidFile": "Fichier de paramètres invalide",
+                "confirmReset": "Êtes-vous sûr de vouloir réinitialiser tous les paramètres aux valeurs par défaut ? Cette action ne peut pas être annulée."
+            }
+        },
+        "apiSettings": {
+            "title": "Configuration API",
+            "magento": {
+                "title": "API Magento",
+                "url": "URL Magento",
+                "username": "Nom d'Utilisateur Magento",
+                "password": "Mot de Passe Magento",
+                "token": "Jeton d'Accès",
+                "generateToken": "Générer un Jeton"
+            },
+            "cegid": {
+                "title": "API Cegid",
+                "url": "URL Cegid",
+                "username": "Nom d'Utilisateur Cegid", 
+                "password": "Mot de Passe Cegid",
+                "database": "Nom de la Base de Données",
+                "connect": "Connecter"
+            },
+            "security": {
+                "title": "Paramètres de Sécurité",
+                "twoFactorAuth": "Authentification à Deux Facteurs",
+                "ipRestriction": "Restrictions d'Adresse IP"
+            }
+        },
+        "actions": {
+            "save": "Enregistrer les Modifications",
+            "cancel": "Annuler",
+            "edit": "Modifier le Profil"
+        }
+    },
+    "login": {
+        "welcome": "Bienvenue",
+        "signIn": "Se connecter",
+        "signInWithGoogle": "Se connecter avec Google",
+        "username": "Nom d'utilisateur",
+        "password": "Mot de passe",
+        "forgotPassword": "Mot de passe oublié ?",
+        "or": "ou",
+        "noAccount": "Pas de compte ?",
+        "signUp": "S'inscrire"
+    },
+    "errors": {
+        "networkError": "Erreur réseau",
+        "serverError": "Erreur serveur",
+        "notFound": "Page non trouvée"
+    },
+    "grid": {
+        "common": {
+            "loading": "Chargement...",
+            "noData": "Aucune donnée disponible",
+            "error": "Erreur lors du chargement des données",
+            "refresh": "Actualiser",
+            "export": "Exporter",
+            "import": "Importer",
+            "settings": "Paramètres",
+            "filters": "Filtres",
+            "search": "Rechercher",
+            "clear": "Effacer",
+            "apply": "Appliquer",
+            "cancel": "Annuler",
+            "save": "Enregistrer",
+            "delete": "Supprimer",
+            "edit": "Modifier",
+            "add": "Ajouter",
+            "view": "Voir",
+            "actions": "Actions",
+            "selected": "Sélectionné",
+            "total": "Total",
+            "page": "Page",
+            "of": "de",
+            "rows": "lignes",
+            "rowsPerPage": "Lignes par page",
+            "density": "Densité",
+            "columns": "Colonnes",
+            "sort": "Trier",
+            "filter": "Filtrer",
+            "group": "Grouper",
+            "pin": "Épingler",
+            "hide": "Masquer",
+            "show": "Afficher",
+            "reset": "Réinitialiser",
+            "gridView": "Vue grille",
+            "cardView": "Vue carte"
+        },
+        "toolbar": {
+            "refresh": "Actualiser les données",
+            "add": "Ajouter nouveau",
+            "edit": "Modifier la sélection",
+            "delete": "Supprimer la sélection",
+            "export": "Exporter les données",
+            "import": "Importer les données",
+            "settings": "Paramètres de grille",
+            "filters": "Afficher les filtres",
+            "search": "Rechercher...",
+            "clearFilters": "Effacer tous les filtres",
+            "selectAll": "Tout sélectionner",
+            "deselectAll": "Tout désélectionner",
+            "selectedCount": "{{count}} sélectionné(s)",
+            "sync": "Synchroniser les données"
+        },
+        "contextMenu": {
+            "edit": "Modifier la ligne",
+            "delete": "Supprimer la ligne",
+            "duplicate": "Dupliquer la ligne",
+            "view": "Voir les détails",
+            "export": "Exporter la ligne",
+            "copy": "Copier",
+            "paste": "Coller",
+            "cut": "Couper",
+            "rowActions": "Actions de ligne"
+        },
+        "settings": {
+            "title": "Paramètres de grille",
+            "columns": "Paramètres des colonnes",
+            "visibility": "Visibilité des colonnes",
+            "order": "Ordre des colonnes",
+            "pinning": "Épinglage des colonnes",
+            "density": "Densité des lignes",
+            "compact": "Compact",
+            "standard": "Standard",
+            "comfortable": "Confortable",
+            "autoSize": "Taille automatique des colonnes",
+            "resetLayout": "Réinitialiser la mise en page",
+            "saveLayout": "Enregistrer la mise en page",
+            "loadLayout": "Charger la mise en page",
+            "resetSuccess": "Mise en page de grille réinitialisée avec succès"
+        },
+        "filters": {
+            "title": "Filtres",
+            "addFilter": "Ajouter un filtre",
+            "removeFilter": "Supprimer le filtre",
+            "operator": "Opérateur",
+            "value": "Valeur",
+            "contains": "Contient",
+            "equals": "Égal à",
+            "startsWith": "Commence par",
+            "endsWith": "Se termine par",
+            "isEmpty": "Est vide",
+            "isNotEmpty": "N'est pas vide",
+            "isAnyOf": "Est l'un de",
+            "greaterThan": "Supérieur à",
+            "lessThan": "Inférieur à",
+            "between": "Entre",
+            "and": "Et",
+            "or": "Ou"
+        },
+        "floating": {
+            "add": "Ajouter un nouvel élément",
+            "edit": "Modifier la sélection",
+            "delete": "Supprimer la sélection",
+            "export": "Exporter la sélection",
+            "sync": "Synchroniser les données",
+            "refresh": "Actualiser",
+            "settings": "Paramètres"
+        }
+    }
+}

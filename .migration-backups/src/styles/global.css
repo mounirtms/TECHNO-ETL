@@ -1,0 +1,408 @@
+/* Global Styles */
+:root {
+  /* Core Colors */
+  --primary-color: #1A4B84;
+  --primary-light: #2A6CB4;
+  --primary-dark: #0F2B4D;
+  --secondary-color: #FF6B35;
+  --secondary-light: #FF8B55;
+  --secondary-dark: #E54B15;
+  
+  /* Semantic Colors */
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #17a2b8;
+  
+  /* Neutral Colors */
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+  --gray-100: #f8f9fa;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #ced4da;
+  --gray-500: #adb5bd;
+  
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  
+  /* Animation */
+  --transition-speed: 0.3s;
+  --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Base Styles */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.5;
+  color: var(--dark-color);
+}
+
+/* Optimized Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Animation Classes with will-change */
+.fade-in {
+  will-change: transform, opacity;
+  animation: fadeIn 0.5s var(--transition-timing);
+}
+
+.slide-in {
+  will-change: transform, opacity;
+  animation: slideIn 0.5s var(--transition-timing);
+}
+
+/* Performance Optimized Transitions */
+.transition-all {
+  transition: all var(--transition-speed) var(--transition-timing);
+}
+
+/* Card Styles */
+.hover-card {
+  transition: transform 0.3s var(--transition-timing),
+              box-shadow 0.3s var(--transition-timing);
+  will-change: transform, box-shadow;
+}
+
+.hover-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Button Styles */
+.btn {
+  transition: transform 0.2s var(--transition-timing),
+              box-shadow 0.2s var(--transition-timing),
+              background-color 0.2s var(--transition-timing);
+  will-change: transform, box-shadow;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn:focus {
+  outline: 2px solid var(--primary-light);
+  outline-offset: 2px;
+}
+
+/* Data Grid Optimizations */
+.MuiDataGrid-root .MuiDataGrid-row {
+  transition: background-color 0.2s var(--transition-timing);
+}
+
+.MuiDataGrid-root .MuiDataGrid-row:hover {
+  background-color: var(--gray-100);
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  border: 3px solid var(--gray-200);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 0.8s linear infinite;
+  will-change: transform;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High Contrast Mode */
+@media screen and (forced-colors: active) {
+  .btn {
+    border: 2px solid currentColor;
+  }
+  
+  .hover-card {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Toast Animations */
+.Toastify__toast {
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.Toastify__toast--success {
+  background: var(--success-color);
+}
+
+.Toastify__toast--error {
+  background: var(--danger-color);
+}
+
+.Toastify__toast--info {
+  background: var(--info-color);
+}
+
+.Toastify__toast--warning {
+  background: var(--warning-color);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+}
+
+/* Material-UI Overrides */
+.MuiButton-root {
+  text-transform: none;
+  font-weight: 500;
+  border-radius: 8px;
+}
+
+.MuiPaper-root {
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+/* Form Controls */
+.MuiTextField-root,
+.MuiSelect-root {
+  margin-bottom: 16px;
+}
+
+/* Layout Transitions */
+.layout-transition {
+  transition: margin 0.3s ease, padding 0.3s ease;
+}
+
+/* Dark Mode Transitions */
+.dark-mode-transition {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* RTL Support */
+[dir="rtl"] .slide-in {
+  animation: slideInRtl 0.5s ease-out;
+}
+
+@keyframes slideInRtl {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* ===== ACCESSIBILITY STYLES ===== */
+
+/* High Contrast Mode */
+.high-contrast {
+  --primary-color: #0066cc;
+  --secondary-color: #ff6600;
+  --background-color: #ffffff;
+  --text-color: #000000;
+  --border-color: #000000;
+}
+
+.high-contrast [data-theme="dark"] {
+  --primary-color: #66ccff;
+  --secondary-color: #ffaa66;
+  --background-color: #000000;
+  --text-color: #ffffff;
+  --border-color: #ffffff;
+}
+
+.high-contrast * {
+  border-color: var(--border-color) !important;
+  color: var(--text-color) !important;
+  background-color: var(--background-color) !important;
+}
+
+.high-contrast .MuiButton-root {
+  border: 2px solid var(--border-color) !important;
+  font-weight: bold !important;
+}
+
+.high-contrast .MuiCard-root {
+  border: 2px solid var(--border-color) !important;
+}
+
+.high-contrast .MuiListItemButton-root:hover {
+  background-color: var(--primary-color) !important;
+  color: var(--background-color) !important;
+}
+
+/* No Animations Mode */
+.no-animations * {
+  animation-duration: 0.01ms !important;
+  animation-delay: 0.01ms !important;
+  transition-duration: 0.01ms !important;
+  transition-delay: 0.01ms !important;
+}
+
+.no-animations *::before,
+.no-animations *::after {
+  animation-duration: 0.01ms !important;
+  animation-delay: 0.01ms !important;
+  transition-duration: 0.01ms !important;
+  transition-delay: 0.01ms !important;
+}
+
+/* Large Text Mode */
+.large-text {
+  font-size: 1.125rem !important;
+}
+
+.large-text .MuiTypography-body1 {
+  font-size: 1.25rem !important;
+}
+
+.large-text .MuiTypography-body2 {
+  font-size: 1.125rem !important;
+}
+
+.large-text .MuiButton-root {
+  font-size: 1.125rem !important;
+  padding: 12px 24px !important;
+}
+
+/* Keyboard Navigation Enhancement */
+body:not(.using-mouse) *:focus,
+body:not(.using-mouse) *:focus-visible {
+  outline: 3px solid var(--primary-color, #ff5501) !important;
+  outline-offset: 2px !important;
+}
+
+/* Enhanced focus indicators for high contrast mode */
+.high-contrast body:not(.using-mouse) *:focus,
+.high-contrast body:not(.using-mouse) *:focus-visible {
+  outline: 4px solid var(--primary-color) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 2px var(--background-color) !important;
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip link for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--primary-color, #ff5501);
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 9999;
+  font-weight: bold;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Enhanced button states for accessibility */
+.MuiButton-root:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+/* Improved contrast for form elements */
+.high-contrast .MuiOutlinedInput-root {
+  border: 2px solid var(--border-color) !important;
+}
+
+.high-contrast .MuiOutlinedInput-root:focus-within {
+  border: 3px solid var(--primary-color) !important;
+}
+
+/* Enhanced error states */
+.high-contrast .Mui-error {
+  color: #cc0000 !important;
+  border-color: #cc0000 !important;
+}
+
+/* Progress indicators with better visibility */
+.high-contrast .MuiCircularProgress-root {
+  color: var(--primary-color) !important;
+}
+
+.high-contrast .MuiLinearProgress-root {
+  background-color: var(--background-color) !important;
+  border: 1px solid var(--border-color) !important;
+}

@@ -6,7 +6,7 @@ const HeavyComponent: React.FC = () => {
   // Simulate some heavy computation
   const heavyData = React.useMemo(() => {
     const data = [];
-    for (let i = 0; i < 100; i++) {
+    for(let i = 0; i < 100; i++) {
       data.push({
         id: i,
         value: Math.random() * 1000,
@@ -21,17 +21,14 @@ const HeavyComponent: React.FC = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="mt-6 p-4 bg-background border border-border rounded-xl"
-    >
-      <h4 className="text-sm font-medium text-foreground mb-3">
+      className: any,
         Heavy Component ({heavyData.length} items)
       </h4>
       <div className="grid grid-cols-4 gap-2">
-        {heavyData.slice(0, 8).map((item) => (
+        {heavyData.slice(0, 8).map((item: any: any) => (
           <div
             key={item.id}
-            className="p-2 bg-muted rounded text-xs text-center"
-          >
+            className: any,
             {item.value.toFixed(0)}
           </div>
         ))}

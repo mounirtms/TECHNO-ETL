@@ -28,10 +28,10 @@ import { useTranslation } from 'react-i18next';
  */
 const FloatingActionButtons = ({
   actions = {},
-  selectedRows = [],
-  isRTL = false,
-  enableI18n = true,
-  position = 'bottom-right',
+  selectedRows: any,
+  isRTL: any,
+  enableI18n: any,
+  position: any,
   variant = 'speedDial', // 'speedDial' | 'individual'
   onAction
 }) => {
@@ -52,7 +52,7 @@ const FloatingActionButtons = ({
       icon: EditIcon,
       label: 'Edit Selected',
       color: 'secondary',
-      enabled: (selectedRows) => selectedRows.length === 1,
+      enabled: (selectedRows) => selectedRows.length ===1,
       priority: 2
     },
     delete: {
@@ -93,12 +93,11 @@ const FloatingActionButtons = ({
   };
 
   // Merge with custom actions, ensuring icons are provided
-  const allActions = Object.keys({ ...defaultActions, ...actions }).reduce((acc, key) => {
+  const allActions = Object.keys({ ...defaultActions, ...actions }).reduce((acc: any: any: any, key: any: any) => {
     const defaultAction = defaultActions[key] || {};
     const customAction = actions[key] || {};
 
-    acc[key] = {
-      ...defaultAction,
+    acc[key] = { ...defaultAction,
       ...customAction,
       // Ensure icon is always defined
       icon: customAction.icon || defaultAction.icon || MoreIcon,
@@ -116,7 +115,7 @@ const FloatingActionButtons = ({
 
   // Check if action should be enabled
   const isActionEnabled = useCallback((actionConfig) => {
-    if (typeof actionConfig.enabled === 'function') {
+    if(typeof actionConfig.enabled === 'function') {
       return actionConfig.enabled(selectedRows);
     }
     return actionConfig.enabled !== false;
@@ -124,9 +123,9 @@ const FloatingActionButtons = ({
 
   // Handle action click
   const handleActionClick = useCallback((actionKey, actionConfig) => {
-    if (actionConfig.onClick) {
+    if(actionConfig.onClick) {
       actionConfig.onClick(selectedRows);
-    } else if (onAction) {
+    } else if(onAction) {
       onAction(actionKey, selectedRows);
     }
     setSpeedDialOpen(false);
@@ -139,38 +138,33 @@ const FloatingActionButtons = ({
       zIndex: theme.zIndex.speedDial
     };
 
-    switch (position) {
+    switch(position) {
       case 'bottom-right':
-        return {
-          ...baseStyles,
+        return { ...baseStyles,
           bottom: 16,
           right: isRTL ? 'auto' : 16,
           left: isRTL ? 16 : 'auto'
         };
       case 'bottom-left':
-        return {
-          ...baseStyles,
+        return { ...baseStyles,
           bottom: 16,
           left: isRTL ? 'auto' : 16,
           right: isRTL ? 16 : 'auto'
         };
       case 'top-right':
-        return {
-          ...baseStyles,
+        return { ...baseStyles,
           top: 80,
           right: isRTL ? 'auto' : 16,
           left: isRTL ? 16 : 'auto'
         };
       case 'top-left':
-        return {
-          ...baseStyles,
+        return { ...baseStyles,
           top: 80,
           left: isRTL ? 'auto' : 16,
           right: isRTL ? 16 : 'auto'
         };
       default:
-        return {
-          ...baseStyles,
+        return { ...baseStyles,
           bottom: 16,
           right: isRTL ? 'auto' : 16,
           left: isRTL ? 16 : 'auto'
@@ -180,28 +174,27 @@ const FloatingActionButtons = ({
 
   // Filter and sort actions
   const enabledActions = Object.entries(allActions)
-    .filter(([, actionConfig]) => isActionEnabled(actionConfig))
+    .filter(([, actionConfig]: any: any) => isActionEnabled(actionConfig))
     .sort(([, a], [, b]) => (a.priority || 999) - (b.priority || 999));
 
-  if (enabledActions.length === 0) return null;
+  if (enabledActions.length ===0) return null;
 
   // Speed Dial variant
-  if (variant === 'speedDial') {
+  if(variant === 'speedDial') {
     return (
       <SpeedDial
-        ariaLabel="Grid Actions"
+        ariaLabel: any,
         sx={getPositionStyles()}
         icon={<SpeedDialIcon icon={<MoreIcon />} openIcon={<CloseIcon />} />}
         onClose={() => setSpeedDialOpen(false)}
         onOpen={() => setSpeedDialOpen(true)}
         open={speedDialOpen}
         direction={position.includes('top') ? 'down' : 'up'}
-        FabProps={{
-          color: 'primary',
+        FabProps: any,
           size: 'medium'
         }}
       >
-        {enabledActions.map(([actionKey, actionConfig]) => {
+        {enabledActions.map(([actionKey: any: any, actionConfig]: any: any) => {
           const IconComponent = actionConfig.icon || MoreIcon;
           return (
             <SpeedDialAction
@@ -210,8 +203,7 @@ const FloatingActionButtons = ({
               tooltipTitle={translate(actionKey, actionConfig.label)}
               tooltipPlacement={isRTL ? 'right' : 'left'}
               onClick={() => handleActionClick(actionKey, actionConfig)}
-              FabProps={{
-                color: actionConfig.color || 'default',
+              FabProps: any,
                 size: 'small'
               }}
             />
@@ -224,7 +216,7 @@ const FloatingActionButtons = ({
   // Individual FABs variant
   return (
     <Box sx={getPositionStyles()}>
-      {enabledActions.map(([actionKey, actionConfig], index) => {
+      {enabledActions.map(([actionKey: any: any, actionConfig], index: any: any) => {
         const IconComponent = actionConfig.icon || MoreIcon;
         const bottomOffset = index * 64; // Stack vertically
         
@@ -233,7 +225,7 @@ const FloatingActionButtons = ({
             key={actionKey}
             in={true}
             timeout={200 + index * 100}
-            style={{
+            style: any,
               transitionDelay: `${index * 100}ms`
             }}
           >
@@ -243,10 +235,9 @@ const FloatingActionButtons = ({
             >
               <Fab
                 color={actionConfig.color || 'primary'}
-                size={index === 0 ? 'medium' : 'small'}
+                size={index ===0 ? 'medium' : 'small'}
                 onClick={() => handleActionClick(actionKey, actionConfig)}
-                sx={{
-                  position: 'absolute',
+                sx: any,
                   bottom: bottomOffset,
                   right: 0,
                   transition: theme.transitions.create(['transform', 'box-shadow'], {

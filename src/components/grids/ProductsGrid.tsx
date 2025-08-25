@@ -95,7 +95,7 @@ const mockProducts = [
 ];
 
 const getStatusColor = (status) => {
-  switch (status) {
+  switch(status) {
     case 'active': return 'success';
     case 'low_stock': return 'warning';
     case 'out_of_stock': return 'error';
@@ -105,19 +105,19 @@ const getStatusColor = (status) => {
 };
 
 const getStockStatus = (stock) => {
-  if (stock === 0) return 'out_of_stock';
+  if (stock ===0) return 'out_of_stock';
   if (stock <= 10) return 'low_stock';
   return 'active';
 };
 
-const ProductsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
+const ProductsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}> = ({ data, onDataChange, onBadgeUpdate  }) => {
   const { t } = useTranslation();
   const [products, setProducts] = useState(mockProducts);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
 
   // Filter products based on search query
-  const filteredProducts = products.filter(product =>
+  const filteredProducts = products.filter((product: any: any) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.sku.toLowerCase().includes(searchQuery.toLowerCase())
@@ -125,7 +125,7 @@ const ProductsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
 
   // Update badge count for low stock products
   useEffect(() => {
-    const lowStockProducts = products.filter(p => p.stock <= 10 && p.stock > 0).length;
+    const lowStockProducts = products.filter((p: any: any) => p.stock <= 10 && p.stock > 0).length;
     onBadgeUpdate?.(lowStockProducts);
   }, [products, onBadgeUpdate]);
 
@@ -150,11 +150,11 @@ const ProductsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 !== 0;
 
-    for (let i = 0; i < fullStars; i++) {
+    for(let i = 0; i < fullStars; i++) {
       stars.push(<StarIcon key={i} sx={{ fontSize: 16, color: 'gold' }} />);
     }
 
-    if (hasHalfStar) {
+    if(hasHalfStar) {
       stars.push(<StarIcon key="half" sx={{ fontSize: 16, color: 'gold', opacity: 0.5 }} />);
     }
 
@@ -169,7 +169,7 @@ const ProductsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
           {t('Product Catalog')}
         </Typography>
         <Button
-          variant="contained"
+          variant: any,
           startIcon={<AddIcon />}
           onClick={handleAddProduct}
         >
@@ -183,24 +183,18 @@ const ProductsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
         placeholder={t('Search products...')}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          )
+        InputProps: any,
         }}
         sx={{ mb: 3 }}
       />
 
       {/* Products Grid */}
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 2 }}>
-        {filteredProducts.map((product) => (
+        {filteredProducts.map((product: any: any) => (
           <Card key={product.id} sx={{ height: 'fit-content' }}>
             {/* Product Image */}
             <CardMedia
-              sx={{
-                height: 200,
+              sx: any,
                 bgcolor: 'grey.100',
                 display: 'flex',
                 alignItems: 'center',
@@ -229,10 +223,7 @@ const ProductsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
                   <Chip
                     label={product.status.replace('_', ' ')}
                     color={getStatusColor(product.status)}
-                    size="small"
-                  />
-                </Stack>
-
+                    size: any,
                 {/* Category */}
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <CategoryIcon fontSize="small" color="action" />
@@ -271,9 +262,8 @@ const ProductsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
                       {t('Stock')}
                     </Typography>
                     <Typography 
-                      variant="body2" 
-                      fontWeight="bold"
-                      color={product.stock === 0 ? 'error.main' : product.stock <= 10 ? 'warning.main' : 'success.main'}
+                      variant: any,
+                      color={product.stock ===0 ? 'error.main' : product.stock <= 10 ? 'warning.main' : 'success.main'}
                     >
                       {product.stock} {t('units')}
                     </Typography>
@@ -305,7 +295,7 @@ const ProductsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
       </Box>
 
       {/* Empty State */}
-      {filteredProducts.length === 0 && (
+      {filteredProducts.length ===0 && (
         <Box sx={{ textAlign: 'center', py: 4 }}>
           <ProductIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
           <Typography variant="h6" color="text.secondary">

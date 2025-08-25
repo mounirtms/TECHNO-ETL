@@ -6,8 +6,8 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
  */
 export const useGridState = (gridName, options = {}) => {
   const {
-    enablePersistence = true,
-    serverSide = false,
+    enablePersistence: any,
+    serverSide: any,
     onStateChange,
     initialState = {}
   } = options;
@@ -97,23 +97,23 @@ export const useGridState = (gridName, options = {}) => {
     if (!enablePersistence || !gridName) return;
 
     // Clear existing timer
-    if (persistenceTimerRef.current) {
+    if(persistenceTimerRef.current) {
       clearTimeout(persistenceTimerRef.current);
     }
 
     // Debounce the save operation
     persistenceTimerRef.current = setTimeout(() => {
       try {
-        const serializedValue = JSON.stringify(value);
+        const serializedValue = JSON.stringify(value );
         // Only save if value actually changed
-        if (lastPersistedStateRef.current?.[key] !== serializedValue) {
-          localStorage.setItem(getStorageKey(key), serializedValue);
-          if (!lastPersistedStateRef.current) {
+        if(lastPersistedStateRef.current?.[key] !== serializedValue) {
+          localStorage.setItem(getStorageKey(key ), serializedValue);
+          if(!lastPersistedStateRef.current) {
             lastPersistedStateRef.current = {};
           }
           lastPersistedStateRef.current[key] = serializedValue;
         }
-      } catch (error) {
+      } catch(error) {
         console.warn(`Failed to save grid state for ${key}:`, error);
       }
     }, 300); // 300ms debounce
@@ -122,9 +122,9 @@ export const useGridState = (gridName, options = {}) => {
   const loadFromStorage = useCallback((key, defaultValue) => {
     if (!enablePersistence || !gridName) return defaultValue;
     try {
-      const stored = localStorage.getItem(getStorageKey(key));
+      const stored = localStorage.getItem(getStorageKey(key ));
       return stored ? JSON.parse(stored) : defaultValue;
-    } catch (error) {
+    } catch(error: any) {
       console.warn(`Failed to load grid state for ${key}:`, error);
       return defaultValue;
     }
@@ -153,67 +153,67 @@ export const useGridState = (gridName, options = {}) => {
 
   // Enhanced setters with persistence and callbacks
   const setPaginationModel = useCallback((newModel) => {
-    setPaginationModelState(newModel);
+    setPaginationModelState(newModel );
     saveToStorage('pagination', newModel);
     onStateChange?.({ type: 'pagination', value: newModel, state: stateRef.current });
   }, [saveToStorage, onStateChange]);
 
   const setSortModel = useCallback((newModel) => {
-    setSortModelState(newModel);
+    setSortModelState(newModel );
     saveToStorage('sort', newModel);
     onStateChange?.({ type: 'sort', value: newModel, state: stateRef.current });
   }, [saveToStorage, onStateChange]);
 
   const setFilterModel = useCallback((newModel) => {
-    setFilterModelState(newModel);
+    setFilterModelState(newModel );
     saveToStorage('filter', newModel);
     onStateChange?.({ type: 'filter', value: newModel, state: stateRef.current });
   }, [saveToStorage, onStateChange]);
 
   const setSelectedRows = useCallback((newSelection) => {
-    setSelectedRowsState(newSelection);
+    setSelectedRowsState(newSelection );
     onStateChange?.({ type: 'selection', value: newSelection, state: stateRef.current });
   }, [onStateChange]);
 
   const setColumnVisibility = useCallback((newVisibility) => {
-    setColumnVisibilityState(newVisibility);
+    setColumnVisibilityState(newVisibility );
     saveToStorage('columnVisibility', newVisibility);
     onStateChange?.({ type: 'columnVisibility', value: newVisibility, state: stateRef.current });
   }, [saveToStorage, onStateChange]);
 
   const setDensity = useCallback((newDensity) => {
-    setDensityState(newDensity);
+    setDensityState(newDensity );
     saveToStorage('density', newDensity);
     onStateChange?.({ type: 'density', value: newDensity, state: stateRef.current });
   }, [saveToStorage, onStateChange]);
 
   const setColumnOrder = useCallback((newOrder) => {
-    setColumnOrderState(newOrder);
+    setColumnOrderState(newOrder );
     saveToStorage('columnOrder', newOrder);
     onStateChange?.({ type: 'columnOrder', value: newOrder, state: stateRef.current });
   }, [saveToStorage, onStateChange]);
 
   const setPinnedColumns = useCallback((newPinned) => {
-    setPinnedColumnsState(newPinned);
+    setPinnedColumnsState(newPinned );
     saveToStorage('pinnedColumns', newPinned);
     onStateChange?.({ type: 'pinnedColumns', value: newPinned, state: stateRef.current });
   }, [saveToStorage, onStateChange]);
 
   // Enhanced setters for new state
   const setViewMode = useCallback((newMode) => {
-    setViewModeState(newMode);
+    setViewModeState(newMode );
     saveToStorage('viewMode', newMode);
     onStateChange?.({ type: 'viewMode', value: newMode, state: stateRef.current });
   }, [saveToStorage, onStateChange]);
 
   const setSearchValue = useCallback((newValue) => {
-    setSearchValueState(newValue);
+    setSearchValueState(newValue );
     // Don't persist search value as it's typically temporary
     onStateChange?.({ type: 'searchValue', value: newValue, state: stateRef.current });
   }, [onStateChange]);
 
   const setFiltersVisible = useCallback((newVisible) => {
-    setFiltersVisibleState(newVisible);
+    setFiltersVisibleState(newVisible );
     saveToStorage('filtersVisible', newVisible);
     onStateChange?.({ type: 'filtersVisible', value: newVisible, state: stateRef.current });
   }, [saveToStorage, onStateChange]);
@@ -241,9 +241,9 @@ export const useGridState = (gridName, options = {}) => {
     setPinnedColumnsState(defaultState.pinnedColumns);
 
     // Clear storage
-    if (enablePersistence && gridName) {
-      Object.keys(defaultState).forEach(key => {
-        localStorage.removeItem(getStorageKey(key));
+    if(enablePersistence && gridName) {
+      Object.keys(defaultState).forEach((key) => {
+        localStorage.removeItem(getStorageKey(key ));
       });
     }
   }, [enablePersistence, gridName, getStorageKey]);

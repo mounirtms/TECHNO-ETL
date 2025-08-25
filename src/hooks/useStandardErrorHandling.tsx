@@ -9,47 +9,127 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { handleError, getFallbackData } from '../utils/errorHandler.tsx';
+import { handleError, getFallbackData } from '../utils/errorHandler';
+
+/**
+ * Error info interface
+ */
+interface ErrorInfo {
+  message: string;
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  type?: string;
+  originalError?: any;
+  code?: string;
+  details?: any;
+  timestamp?: number;
+  [key: string]: any;
+}
+
+/**
+ * Error handling options interface
+ */
+interface ErrorHandlingOptions {
+  showToast?: boolean;
+  fallbackDataType?: string | null;
+  maxRetries?: number;
+  retryDelay?: number;
+  onError?: (errorInfo: ErrorInfo, originalError) => void;
+  onRetry?: (retryCount: number) => void;
+  initialData?: any;
+}
+
+/**
+ * Standard error handling result interface
+ */
+interface ErrorHandlingResult {
+  // State
+  error: ErrorInfo | null;
+  loading: boolean;
+  retryCount: number;
+  canRetry: boolean;
+  isCriticalError: boolean;
+  lastOperation: (() => Promise) | null;
+
+  // Actions
+  handleError: (err: any, context?: Record<string, any>) => ErrorInfo;
+  clearError: () => void;
+  retry: () => Promise;
+  executeWithErrorHandling: (operation: () => Promise, context?: Record<string, any>) => Promise;
+  getFallback: () => any;
+  getErrorMessage: () => string | null;
+
+  // Utilities
+  isError: boolean;
+  hasRetried: boolean;
+  maxRetriesReached: boolean;
+}
+
+/**
+ * Data fetching result interface
+ */
+interface DataFetchingResult<T> extends ErrorHandlingResult {
+  data: T | null;
+  setData: React.Dispatch<React.SetStateAction<T | null>>;
+  fetchData: (fetchFunction: () => Promise<T>, context?: Record<string, any>) => Promise<T | null>;
+  refresh: () => Promise<T | null>;
+  initialized: boolean;
+  isEmpty: boolean;
+}
+
+/**
+ * Form error handling result interface
+ */
+interface FormErrorHandlingResult extends ErrorHandlingResult {
+  fieldErrors: Record<string, string>;
+  handleSubmit: (submitFunction: (formData) => Promise, formData: any, context?: Record<string, any>) => Promise;
+  clearFieldErrors: () => void;
+  setFieldError: (field: string, message: string) => void;
+  hasFieldErrors: boolean;
+}
 
 /**
  * Standard error handling hook for components
- * @param {string} componentName - Name of the component using this hook
- * @param {Object} options - Configuration options
- * @returns {Object} Error handling utilities
+ * @param componentName - Name of the component using this hook
+ * @param options - Configuration options
+ * @returns Error handling utilities
  */
-export const useStandardErrorHandling = (componentName, options = {}) => {
+export const useStandardErrorHandling = (
+  componentName: string, 
+  options: ErrorHandlingOptions = {}
+): ErrorHandlingResult => {
   const {
-    showToast = true,
-    fallbackDataType = null,
-    maxRetries = 3,
-    retryDelay = 1000,
-    onError = null,
-    onRetry = null
+    showToast: any,
+    fallbackDataType: any,
+    maxRetries: any,
+    retryDelay: any,
+    onError: any,
+    onRetry: any,
   } = options;
 
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
-  const [lastOperation, setLastOperation] = useState(null);
+  const [error, setError] = useState<ErrorInfo | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [retryCount, setRetryCount] = useState<number>(0);
+  const [lastOperation, setLastOperation] = useState<(() => Promise) | null>(null);
 
   /**
    * Handle error with standardized processing
    */
-  const handleComponentError = useCallback((err, context = {}) => {
+  const handleComponentError = useCallback((err, context: Record<string, any> = {}): ErrorInfo => {
+    // Type assertion for handleError result
     const errorInfo = handleError(err, {
       componentName,
       ...context
-    });
+    }) as ErrorInfo;
 
     setError(errorInfo);
 
     // Call custom error handler if provided
-    if (onError) {
+    if(onError) {
       onError(errorInfo, err);
     }
 
     // Don't show toast if disabled or if it's a low severity error
-    if (!showToast || errorInfo.severity === 'low') {
+    if(!showToast || errorInfo.severity === 'low') {
       return errorInfo;
     }
 
@@ -68,25 +148,25 @@ export const useStandardErrorHandling = (componentName, options = {}) => {
    * Retry last operation
    */
   const retry = useCallback(async () => {
-    if (!lastOperation || retryCount >= maxRetries) {
+    if(!lastOperation || retryCount >= maxRetries) {
       return;
     }
 
     setRetryCount(prev => prev + 1);
     clearError();
 
-    if (onRetry) {
+    if(onRetry) {
       onRetry(retryCount + 1);
     }
 
     // Add delay before retry
-    if (retryDelay > 0) {
+    if(retryDelay > 0) {
       await new Promise(resolve => setTimeout(resolve, retryDelay * (retryCount + 1)));
     }
 
     try {
       return await lastOperation();
-    } catch (err) {
+    } catch(err: any) {
       handleComponentError(err, { isRetry: true, retryCount: retryCount + 1 });
       throw err;
     }
@@ -95,7 +175,7 @@ export const useStandardErrorHandling = (componentName, options = {}) => {
   /**
    * Execute async operation with error handling
    */
-  const executeWithErrorHandling = useCallback(async (operation, context = {}) => {
+  const executeWithErrorHandling = useCallback(async (operation: () => Promise, context: Record<string, any> = {}) => {
     setLoading(true);
     setLastOperation(() => operation);
     clearError();
@@ -103,11 +183,11 @@ export const useStandardErrorHandling = (componentName, options = {}) => {
     try {
       const result = await operation();
       return result;
-    } catch (err) {
+    } catch(err: any) {
       handleComponentError(err, context);
       
       // Return fallback data if specified
-      if (fallbackDataType) {
+      if(fallbackDataType) {
         return getFallbackData(fallbackDataType);
       }
       
@@ -149,6 +229,7 @@ export const useStandardErrorHandling = (componentName, options = {}) => {
     retryCount,
     canRetry,
     isCriticalError,
+    lastOperation,
 
     // Actions
     handleError: handleComponentError,
@@ -168,23 +249,26 @@ export const useStandardErrorHandling = (componentName, options = {}) => {
 /**
  * Hook for data fetching with error handling
  */
-export const useDataFetching = (componentName, options = {}) => {
+export const useDataFetching = <T = any>(
+  componentName: string, 
+  options: ErrorHandlingOptions = {}
+): DataFetchingResult<T> => {
   const errorHandling = useStandardErrorHandling(componentName, options);
-  const [data, setData] = useState(options.initialData || null);
-  const [initialized, setInitialized] = useState(false);
+  const [data, setData] = useState<T | null>(options.initialData || null);
+  const [initialized, setInitialized] = useState<boolean>(false);
 
   /**
    * Fetch data with error handling
    */
-  const fetchData = useCallback(async (fetchFunction, context = {}) => {
+  const fetchData = useCallback(async (fetchFunction: () => Promise<T>, context: Record<string, any> = {}): Promise<T | null> => {
     try {
       const result = await errorHandling.executeWithErrorHandling(fetchFunction, context);
       setData(result);
       setInitialized(true);
       return result;
-    } catch (err) {
+    } catch(err: any) {
       // Error already handled by executeWithErrorHandling
-      if (options.fallbackDataType) {
+      if(options.fallbackDataType) {
         const fallback = errorHandling.getFallback();
         setData(fallback);
         setInitialized(true);
@@ -197,38 +281,40 @@ export const useDataFetching = (componentName, options = {}) => {
   /**
    * Refresh data
    */
-  const refresh = useCallback(async () => {
-    if (errorHandling.lastOperation) {
+  const refresh = useCallback(async (): Promise<T | null> => {
+    if(errorHandling.lastOperation) {
       return await fetchData(errorHandling.lastOperation);
     }
+    return null;
   }, [fetchData, errorHandling.lastOperation]);
 
-  return {
-    ...errorHandling,
+  return Boolean(Boolean({ ...errorHandling,
     data,
     setData,
     fetchData,
     refresh,
     initialized,
-    isEmpty: initialized && (!data || (Array.isArray(data) && data.length === 0))
-  };
+    isEmpty: initialized && (!data || (Array.isArray(data) && data.length ===0))
+  }));
 };
 
 /**
  * Hook for form handling with error handling
  */
-export const useFormErrorHandling = (componentName, options = {}) => {
-  const errorHandling = useStandardErrorHandling(componentName, {
-    ...options,
+export const useFormErrorHandling = (
+  componentName: string, 
+  options: ErrorHandlingOptions = {}
+): FormErrorHandlingResult => {
+  const errorHandling = useStandardErrorHandling(componentName, { ...options,
     showToast: false // Forms usually show inline errors
   });
   
-  const [fieldErrors, setFieldErrors] = useState({});
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   /**
    * Handle form submission with error handling
    */
-  const handleSubmit = useCallback(async (submitFunction, formData, context = {}) => {
+  const handleSubmit = useCallback(async (submitFunction: (formData) => Promise, formData: any, context: Record<string, any> = {}) => {
     setFieldErrors({});
     
     try {
@@ -236,9 +322,9 @@ export const useFormErrorHandling = (componentName, options = {}) => {
         () => submitFunction(formData),
         { ...context, formData }
       );
-    } catch (err) {
+    } catch(err: any) { // Type assertion for error
       // Handle validation errors
-      if (err.status === 400 && err.response?.data?.errors) {
+      if(err.status ===400 && err.response?.data?.errors) {
         setFieldErrors(err.response.data.errors);
       }
       throw err;
@@ -255,15 +341,13 @@ export const useFormErrorHandling = (componentName, options = {}) => {
   /**
    * Set field error
    */
-  const setFieldError = useCallback((field, message) => {
-    setFieldErrors(prev => ({
-      ...prev,
+  const setFieldError = useCallback((field: string, message: string) => {
+    setFieldErrors(prev => ({ ...prev,
       [field]: message
     }));
   }, []);
 
-  return {
-    ...errorHandling,
+  return { ...errorHandling,
     fieldErrors,
     handleSubmit,
     clearFieldErrors,

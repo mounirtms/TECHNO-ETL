@@ -1,0 +1,59 @@
+[
+    {
+      "category": {
+        "parent_id": 2,
+        "name": "الأدوات المكتبية",
+        "is_active": true,
+        "position": 1,
+        "include_in_menu": true,
+        "custom_attributes": [
+          { "attribute_code": "url_key", "value": "stationery-ar" },
+          { 
+            "attribute_code": "store_labels",
+            "value": {
+              "2": "Fournitures de Bureau",
+              "4": "Stationery"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "category": {
+        "parent_id": 3,
+        "name": "أقلام",
+        "is_active": true,
+        "position": 1,
+        "include_in_menu": true,
+        "custom_attributes": [
+          { "attribute_code": "url_key", "value": "pens-ar" },
+          { 
+            "attribute_code": "store_labels",
+            "value": {
+              "2": "Stylos",
+              "4": "Pens"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "category": {
+        "parent_id": 4,
+        "name": "أقلام حبر",
+        "is_active": true,
+        "position": 1,
+        "include_in_menu": true,
+        "custom_attributes": [
+          { "attribute_code": "url_key", "value": "ink-pens-ar" },
+          { 
+            "attribute_code": "store_labels",
+            "value": {
+              "2": "Stylos à Encre",
+              "4": "Ink Pens"
+            }
+          }
+        ]
+      }
+    }
+  ]

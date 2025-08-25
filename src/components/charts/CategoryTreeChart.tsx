@@ -2,18 +2,54 @@ import React from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import { Treemap, ResponsiveContainer, Tooltip } from 'recharts';
 
+// TypeScript interfaces
+interface CategoryData {
+  name: string;
+  value: number;
+  level?: number;
+  parent?: string;
+}
+
+interface CategoryTreeChartProps {
+  data: CategoryData[];
+  title?: string;
+}
+
+interface TooltipPayload {
+  payload: CategoryData;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayload[];
+}
+
+interface CustomContentProps {
+  root: any;
+  depth: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  index: number;
+  payload?: CategoryData;
+  colors: string[];
+  rank?: number;
+  name: string;
+}
+
 /**
  * Category Tree Chart Component
  * Shows category hierarchy and product distribution using treemap
  */
-const CategoryTreeChart = ({ data, title = "Category Distribution" }) => {
+const CategoryTreeChart: React.FC<CategoryTreeChartProps> = ({ data, title = "Category Distribution" }) => {
   // Custom tooltip for treemap
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
+  const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
+    if(active && payload && payload.length) {
       const data = payload[0].payload;
       return (
         <Box
-          sx={{
+          sx: any,
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             border: '1px solid #ccc',
             borderRadius: 1,
@@ -42,19 +78,18 @@ const CategoryTreeChart = ({ data, title = "Category Distribution" }) => {
   };
 
   // Custom content renderer for treemap cells
-  const CustomContent = ({ root, depth, x, y, width, height, index, payload, colors, rank, name }) => {
+  const CustomContent: React.FC<CustomContentProps> = ({ root, depth, x, y, width, height, index, payload, colors, rank, name }) => {
     if (!payload || depth > 2) return null;
 
-    if (depth === 1) {
-      return (
+    if(depth ===1) {
+      return Boolean(Boolean((
         <g>
           <rect
             x={x}
             y={y}
             width={width}
             height={height}
-            style={{
-              fill: colors[Math.floor(index / root.children.length * 6)],
+            style: any,
               stroke: '#fff',
               strokeWidth: 2 / (depth + 1e-10),
               strokeOpacity: 1 / (depth + 1e-10),
@@ -64,11 +99,9 @@ const CategoryTreeChart = ({ data, title = "Category Distribution" }) => {
             <text
               x={x + width / 2}
               y={y + height / 2}
-              textAnchor="middle"
-              fill="#fff"
+              textAnchor: any,
               fontSize={Math.min(width / 8, height / 4, 14)}
-              fontWeight="bold"
-            >
+              fontWeight: any,
               {name}
             </text>
           )}
@@ -76,20 +109,19 @@ const CategoryTreeChart = ({ data, title = "Category Distribution" }) => {
             <text
               x={x + width / 2}
               y={y + height / 2 + 16}
-              textAnchor="middle"
-              fill="#fff"
+              textAnchor: any,
               fontSize={Math.min(width / 12, height / 6, 10)}
             >
               {payload?.value || 0} products
             </text>
           )}
         </g>
-      );
+      )));
     }
     return null;
   };
 
-  if (!data || data.length === 0) {
+  if(!data || data.length ===0) {
     return (
       <Card sx={{ height: 400 }}>
         <CardContent>
@@ -97,8 +129,7 @@ const CategoryTreeChart = ({ data, title = "Category Distribution" }) => {
             {title}
           </Typography>
           <Box 
-            sx={{ 
-              display: 'flex', 
+            sx: any,
               alignItems: 'center', 
               justifyContent: 'center', 
               height: 300,
@@ -114,8 +145,8 @@ const CategoryTreeChart = ({ data, title = "Category Distribution" }) => {
 
   // Filter out categories with no products and sort by value
   const filteredData = data
-    .filter(item => item.value > 0)
-    .sort((a, b) => b.value - a.value)
+    .filter((item: CategoryData: any: any) => item.value > 0)
+    .sort((a: CategoryData, b: CategoryData) => b.value - a.value)
     .slice(0, 20); // Show top 20 categories
 
   const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#8dd1e1', '#d084d0'];
@@ -129,10 +160,9 @@ const CategoryTreeChart = ({ data, title = "Category Distribution" }) => {
         <ResponsiveContainer width="100%" height={300}>
           <Treemap
             data={filteredData}
-            dataKey="value"
+            dataKey: any,
             aspectRatio={4 / 3}
-            stroke="#fff"
-            fill="#8884d8"
+            stroke: any,
             content={<CustomContent colors={colors} />}
           >
             <Tooltip content={<CustomTooltip />} />

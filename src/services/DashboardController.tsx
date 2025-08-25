@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { ref, onValue } from 'firebase/database';
 import { database } from '../config/firebase';
@@ -21,7 +22,7 @@ class DashboardCache {
 
     set(key, data, ttl = this.defaultTTL) {
         // Cleanup if cache is too large
-        if (this.cache.size >= this.maxCacheSize) {
+        if(this.cache.size >= this.maxCacheSize) {
             this.cleanup();
         }
 
@@ -29,7 +30,7 @@ class DashboardCache {
         this.cacheExpiry.set(key, Date.now() + ttl);
     }
 
-    get(key) {
+    get(key: any) {
         const expiry = this.cacheExpiry.get(key);
         if (!expiry || Date.now() > expiry) {
             this.cache.delete(key);
@@ -39,7 +40,7 @@ class DashboardCache {
         return this.cache.get(key);
     }
 
-    has(key) {
+    has(key: any) {
         return this.get(key) !== null;
     }
 
@@ -50,8 +51,8 @@ class DashboardCache {
 
     cleanup() {
         const now = Date.now();
-        for (const [key, expiry] of this.cacheExpiry.entries()) {
-            if (now > expiry) {
+        for(const [key, expiry] of this.cacheExpiry.entries()) {
+            if(now > expiry) {
                 this.cache.delete(key);
                 this.cacheExpiry.delete(key);
             }
@@ -61,7 +62,7 @@ class DashboardCache {
     invalidatePattern(pattern) {
         const regex = new RegExp(pattern);
         for (const key of this.cache.keys()) {
-            if (regex.test(key)) {
+            if(regex.test(key)) {
                 this.cache.delete(key);
                 this.cacheExpiry.delete(key);
             }
@@ -91,7 +92,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
     const [productTypeData, setProductTypeData] = useState([]);
 
     useEffect(() => {
-        if (!currentUser) {
+        if(!currentUser) {
             setLoading(false);
             return;
         }
@@ -102,21 +103,21 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             const unsubscribe = onValue(userPrefsRef, (snapshot) => {
                 const preferences = snapshot.val();
                 
-                if (preferences) {
+                if(preferences) {
                     // Apply language preference
-                    if (preferences.language) {
+                    if(preferences.language) {
                         setLanguage(preferences.language);
                         localStorage.setItem('userLanguage', preferences.language);
                     }
                     
                     // Apply theme preference
-                    if (preferences.theme) {
+                    if(preferences.theme) {
                         // Only set theme if function exists and is different
-                        if (typeof themeCtx.setThemeMode === 'function') {
+                        if(typeof themeCtx.setThemeMode === 'function') {
                             themeCtx.setThemeMode(preferences.theme);
-                        } else if (typeof themeCtx.setMode === 'function') {
-                            themeCtx.setMode(preferences.theme);
-                        } else if (typeof themeCtx.toggleTheme === 'function') {
+                        } else if(typeof themeCtx?.setMode === 'function') {
+                            themeCtx?.setMode(preferences.theme);
+                        } else if(typeof themeCtx.toggleTheme === 'function') {
                             if (themeCtx.mode !== preferences.theme) themeCtx.toggleTheme();
                         }
                         localStorage.setItem('theme', preferences.theme);
@@ -127,11 +128,11 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                     const localTheme = localStorage.getItem('theme') || 'light';
                     
                     setLanguage(localLang);
-                    if (typeof themeCtx.setThemeMode === 'function') {
+                    if(typeof themeCtx.setThemeMode === 'function') {
                         themeCtx.setThemeMode(localTheme);
-                    } else if (typeof themeCtx.setMode === 'function') {
-                        themeCtx.setMode(localTheme);
-                    } else if (typeof themeCtx.toggleTheme === 'function') {
+                    } else if(typeof themeCtx?.setMode === 'function') {
+                        themeCtx?.setMode(localTheme);
+                    } else if(typeof themeCtx.toggleTheme === 'function') {
                         if (themeCtx.mode !== localTheme) themeCtx.toggleTheme();
                     }
                 }
@@ -147,17 +148,17 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                 const localTheme = localStorage.getItem('theme') || 'light';
                 
                 setLanguage(localLang);
-                if (typeof themeCtx.setThemeMode === 'function') {
+                if(typeof themeCtx.setThemeMode === 'function') {
                     themeCtx.setThemeMode(localTheme);
-                } else if (typeof themeCtx.setMode === 'function') {
-                    themeCtx.setMode(localTheme);
-                } else if (typeof themeCtx.toggleTheme === 'function') {
+                } else if(typeof themeCtx?.setMode === 'function') {
+                    themeCtx?.setMode(localTheme);
+                } else if(typeof themeCtx.toggleTheme === 'function') {
                     if (themeCtx.mode !== localTheme) themeCtx.toggleTheme();
                 }
             });
 
             return () => unsubscribe();
-        } catch (err) {
+        } catch(err: any) {
             console.error('Error in dashboard controller:', err);
             setError(err);
             setLoading(false);
@@ -254,11 +255,11 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                 }
 
                 // Process orders efficiently
-                orders.forEach(order => {
+                orders.forEach((order) => {
                     const orderDate = new Date(order.created_at);
-                    if (orderDate >= startDate && orderDate <= endDate) {
+                    if(orderDate >= startDate && orderDate <= endDate) {
                         const timestamp = new Date(orderDate).setHours(0, 0, 0, 0);
-                        if (ordersByTime[timestamp]) {
+                        if(ordersByTime[timestamp]) {
                             ordersByTime[timestamp].count++;
                             const orderTotal = parseFloat(order.grand_total || 0);
                             ordersByTime[timestamp].revenue += orderTotal;
@@ -268,7 +269,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                 });
 
                 return Object.entries(ordersByTime)
-                    .map(([timestamp, data]) => ({
+                    .map(([timestamp: any: any, data]: any: any) => ({
                         date: parseInt(timestamp),
                         orders: data.count || 0,
                         revenue: data.revenue || 0,
@@ -281,12 +282,12 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
 
             // Optimized stats calculation
             const calculateStats = () => {
-                const newCustomers = customers.filter(c => {
+                const newCustomers = customers.filter((c: any: any) => {
                     const createdAt = new Date(c.created_at);
                     return createdAt >= startDate && createdAt <= endDate;
                 }).length;
 
-                const totalValue = products.reduce((acc, p) => {
+                const totalValue = products.reduce((acc: any: any, p: any: any) => {
                     const price = parseFloat(p.price || 0);
                     const qty = parseFloat(p.qty || 0);
                     return acc + (price * qty);
@@ -308,8 +309,8 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             // Optimized best sellers calculation
             const calculateBestSellers = () => {
                 const productMap = new Map();
-                orders.forEach(order => {
-                    (order.items || []).forEach(item => {
+                orders.forEach((order) => {
+                    (order.items || []).forEach((item) => {
                         const sku = item.sku;
                         if (!productMap.has(sku)) {
                             productMap.set(sku, { 
@@ -332,17 +333,15 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             // Optimized country data processing
             const calculateCountryData = () => {
                 const countryCount = new Map();
-                products.forEach(product => {
-                    if (product?.custom_attributes?.length) {
+                products.forEach((product) => {
+                    if(product?.custom_attributes?.length) {
                         const countryAttr = product.custom_attributes.find(
-                            attr => attr?.attribute_code === 'country_of_manufacture'
-                        );
-                        const country = countryAttr?.value || 'Unknown';
+                            attr: any,
                         countryCount.set(country, (countryCount.get(country) || 0) + 1);
                     }
                 });
                 return Array.from(countryCount.entries())
-                    .map(([country, count]) => ({ country_of_manufacture: country, count }))
+                    .map(([country: any: any, count]: any: any) => ({ country_of_manufacture: country, count }))
                     .sort((a, b) => b.count - a.count)
                     .slice(0, 8); // Increased for better insights
             };
@@ -350,12 +349,12 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             // Optimized product type data processing
             const calculateProductTypeData = () => {
                 const typeCount = new Map();
-                products.forEach(product => {
+                products.forEach((product) => {
                     const type = product?.type_id || 'unknown';
                     typeCount.set(type, (typeCount.get(type) || 0) + 1);
                 });
                 return Array.from(typeCount.entries())
-                    .map(([type, count]) => ({
+                    .map(([type: any: any, count]: any: any) => ({
                         name: type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' '),
                         value: count,
                         percentage: products.length > 0 ? (count / products.length) * 100 : 0
@@ -399,7 +398,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             console.log('✅ Dashboard data fetched and cached successfully');
             return cacheData;
 
-        } catch (error) {
+        } catch(error: any) {
             console.error('❌ Dashboard data fetch error:', error);
             const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch dashboard data';
             setError(errorMessage);
@@ -444,8 +443,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             });
             
             // Step 1: Mark stocks for sync (Local MDM level)
-            setSyncProgress(prev => ({ 
-                ...prev, 
+            setSyncProgress(prev => ({ ...prev, 
                 current: 0,
                 currentStep: 'Marking stocks for sync',
                 message: 'Preparing stock data for synchronization...'
@@ -455,8 +453,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             setSyncProgress(prev => ({ ...prev, current: 1 }));
             
             // Step 2: Get all sources
-            setSyncProgress(prev => ({ 
-                ...prev, 
+            setSyncProgress(prev => ({ ...prev, 
                 current: 1,
                 currentStep: 'Fetching source configurations',
                 message: 'Loading source configurations from MDM...'
@@ -465,16 +462,14 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             const sourcesResponse = await axios.get('/api/mdm/sources');
             const sources = sourcesResponse.data?.data || [];
             
-            setSyncProgress(prev => ({ 
-                ...prev, 
+            setSyncProgress(prev => ({ ...prev, 
                 current: 2, 
                 sources: sources,
                 message: `Found ${sources.length} sources to synchronize`
             }));
             
             // Step 3: Sync sources using the consolidated endpoint
-            setSyncProgress(prev => ({ 
-                ...prev, 
+            setSyncProgress(prev => ({ ...prev, 
                 current: 2,
                 currentStep: 'Syncing sources to Magento',
                 message: `Syncing ${sources.length} sources to Magento...`
@@ -484,35 +479,31 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             const completedSources = [];
             const errorSources = [];
             
-            for (let i = 0; i < sources.length; i++) {
+            for(let i = 0; i < sources.length; i++) {
                 const source = sources[i];
                 try {
-                    setSyncProgress(prev => ({ 
-                        ...prev,
-                        message: `Syncing source ${i + 1}/${sources.length}: ${source.magentoSource || source.code_source}`
+                    setSyncProgress(prev => ({ ...prev,
+                        message: `Syncing source ${i + 1}/${sources.length}: ${source.magentoSource || source?.code_source}`
                     }));
                     
                     await axios.post('/api/mdm/sync/source', source);
-                    completedSources.push(source.code_source);
+                    completedSources.push(source?.code_source);
                     
-                    setSyncProgress(prev => ({ 
-                        ...prev,
+                    setSyncProgress(prev => ({ ...prev,
                         completedSources: [...completedSources],
                         message: `Synced ${completedSources.length}/${sources.length} sources`
                     }));
                     
-                } catch (error) {
-                    console.error(`Error syncing source ${source.code_source}:`, error);
-                    errorSources.push(source.code_source);
-                    setSyncProgress(prev => ({ 
-                        ...prev,
+                } catch(error: any) {
+                    console.error(`Error syncing source ${source?.code_source}:`, error);
+                    errorSources.push(source?.code_source);
+                    setSyncProgress(prev => ({ ...prev,
                         errorSources: [...errorSources]
                     }));
                 }
             }
             
-            setSyncProgress(prev => ({ 
-                ...prev, 
+            setSyncProgress(prev => ({ ...prev, 
                 current: 3,
                 completedSources: completedSources,
                 errorSources: errorSources,
@@ -520,8 +511,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             }));
             
             // Step 4: Mark sync as successful
-            setSyncProgress(prev => ({ 
-                ...prev, 
+            setSyncProgress(prev => ({ ...prev, 
                 current: 3,
                 currentStep: 'Finalizing sync process',
                 message: 'Marking sync as successful...'
@@ -530,8 +520,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             await axios.post('/api/mdm/sync/success');
             
             // Complete the sync
-            setSyncProgress(prev => ({ 
-                ...prev, 
+            setSyncProgress(prev => ({ ...prev, 
                 current: 4,
                 completed: true,
                 isActive: false,
@@ -569,18 +558,17 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                 errorSources
             };
             
-        } catch (error) {
+        } catch(error: any) {
             console.error('❌ Stock sync error:', error);
             const errorMessage = error.response?.data?.message || error.message || 'Unknown error';
             
             // Update progress to show error state
-            setSyncProgress(prev => ({ 
-                ...prev, 
+            setSyncProgress(prev => ({ ...prev, 
                 isActive: false,
                 completed: false,
                 currentStep: 'Sync failed',
                 message: `Sync failed: ${errorMessage}`,
-                errorSources: prev.sources.map(s => s.code_source)
+                errorSources: prev.sources.map((s: any: any) => s?.code_source)
             }));
             
             toast.error(`❌ Failed to sync stocks: ${errorMessage}`);
@@ -614,7 +602,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             toast.success('✅ Price sync operation completed successfully');
 
             return response.data;
-        } catch (error) {
+        } catch(error: any) {
             console.error('❌ Price sync error:', error);
             const errorMessage = error.response?.data?.message || error.message || 'Unknown error';
             toast.error(`❌ Failed to sync prices: ${errorMessage}`);

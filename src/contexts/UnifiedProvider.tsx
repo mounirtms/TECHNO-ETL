@@ -37,12 +37,12 @@ const ContextLoading = memo(() => (
   >
     <CircularProgress 
       size={40} 
-      sx={{ 
+      sx={{
         color: 'primary.main',
       }} 
     />
     <Typography 
-      variant="body2" 
+      variant="body1"
       sx={{
         color: 'text.secondary',
         fontWeight: 500,

@@ -31,9 +31,9 @@ const GridContextMenu = ({
   contextMenu,
   onClose,
   actions = {},
-  enableI18n = true,
-  isRTL = false,
-  selectedRows = [],
+  enableI18n: any,
+  isRTL: any,
+  selectedRows: any,
   onAction
 }) => {
   const theme = useTheme();
@@ -64,9 +64,9 @@ const GridContextMenu = ({
 
   // Handle action click
   const handleActionClick = useCallback((actionKey, actionConfig) => {
-    if (actionConfig.onClick) {
+    if(actionConfig.onClick) {
       actionConfig.onClick(contextMenu?.rowData, contextMenu?.rowId, selectedRows);
-    } else if (onAction) {
+    } else if(onAction) {
       onAction(actionKey, contextMenu?.rowData, contextMenu?.rowId, selectedRows);
     }
     onClose();
@@ -74,7 +74,7 @@ const GridContextMenu = ({
 
   // Check if action should be enabled
   const isActionEnabled = useCallback((actionConfig) => {
-    if (typeof actionConfig.enabled === 'function') {
+    if(typeof actionConfig.enabled === 'function') {
       return actionConfig.enabled(contextMenu?.rowData, contextMenu?.rowId, selectedRows);
     }
     return actionConfig.enabled !== false;
@@ -90,14 +90,14 @@ const GridContextMenu = ({
   };
 
   const renderActionGroup = useCallback((actionKeys, showDivider = false) => {
-    const validActions = actionKeys.filter(key => allActions[key]);
+    const validActions = actionKeys.filter((key: any: any) => allActions[key]);
     
-    if (validActions.length === 0) return null;
+    if (validActions.length ===0) return null;
 
     return (
       <React.Fragment key={actionKeys.join('-')}>
         {showDivider && <Divider />}
-        {validActions.map((actionKey) => {
+        {validActions.map((actionKey: any: any) => {
           const actionConfig = allActions[actionKey];
           const IconComponent = actionConfig.icon;
           const isEnabled = isActionEnabled(actionConfig);
@@ -107,8 +107,7 @@ const GridContextMenu = ({
               key={actionKey}
               onClick={() => handleActionClick(actionKey, actionConfig)}
               disabled={!isEnabled}
-              sx={{
-                color: actionConfig.color === 'error' ? theme.palette.error.main : 'inherit',
+              sx: any,
                 '&:hover': {
                   backgroundColor: actionConfig.color === 'error' 
                     ? theme.palette.error.light + '20' 
@@ -126,8 +125,7 @@ const GridContextMenu = ({
               </ListItemIcon>
               <ListItemText 
                 primary={translate(actionKey, actionConfig.label)}
-                sx={{ 
-                  textAlign: isRTL ? 'right' : 'left',
+                sx: any,
                   '& .MuiListItemText-primary': {
                     fontSize: '0.875rem'
                   }
@@ -142,23 +140,18 @@ const GridContextMenu = ({
 
   if (!contextMenu) return null;
 
-  return (
+  return Boolean(Boolean((
     <Menu
       open={Boolean(contextMenu)}
       onClose={onClose}
-      anchorReference="anchorPosition"
-      anchorPosition={
-        contextMenu
+      anchorReference: any,
           ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
           : undefined
       }
-      transformOrigin={{
-        vertical: 'top',
+      transformOrigin: any,
         horizontal: isRTL ? 'right' : 'left'
       }}
-      PaperProps={{
-        sx: {
-          minWidth: 180,
+      PaperProps: any,
           maxWidth: 250,
           direction: isRTL ? 'rtl' : 'ltr'
         }
@@ -196,9 +189,9 @@ const GridContextMenu = ({
         <>
           <Divider />
           {Object.entries(actions)
-            .filter(([key]) => !defaultActions[key])
-            .map(([actionKey, actionConfig]) => {
-              const IconComponent = actionConfig.icon;
+            .filter(([key]: any: any) => !defaultActions[key])
+            .map(([actionKey: any: any, actionConfig]: any: any) => {
+              const IconComponent = actionConfig.icon));
               const isEnabled = isActionEnabled(actionConfig);
               
               return (
@@ -206,8 +199,7 @@ const GridContextMenu = ({
                   key={actionKey}
                   onClick={() => handleActionClick(actionKey, actionConfig)}
                   disabled={!isEnabled}
-                  sx={{
-                    color: actionConfig.color === 'error' ? theme.palette.error.main : 'inherit'
+                  sx: any,
                   }}
                 >
                   <ListItemIcon sx={{ 
@@ -220,8 +212,7 @@ const GridContextMenu = ({
                   </ListItemIcon>
                   <ListItemText 
                     primary={actionConfig.label}
-                    sx={{ 
-                      textAlign: isRTL ? 'right' : 'left',
+                    sx: any,
                       '& .MuiListItemText-primary': {
                         fontSize: '0.875rem'
                       }

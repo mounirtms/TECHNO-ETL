@@ -24,7 +24,7 @@ const ModernUserMenu: React.FC = () => {
       }
     };
 
-    if (isOpen) {
+    if(isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
@@ -42,29 +42,28 @@ const ModernUserMenu: React.FC = () => {
     try {
       await logout();
       setIsOpen(false);
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error logging out:', error);
       toast.error('Failed to logout. Please try again.');
     }
   };
 
   const getUserInitials = (name?: string, email?: string) => {
-    if (name) {
-      return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    if(name) {
+      return name.split(' ').map((n: any: any) => n[0]).join('').toUpperCase().slice(0, 2);
     }
-    if (email) {
+    if(email) {
       return email[0].toUpperCase();
     }
     return 'U';
   };
 
-  return (
+  return Boolean(Boolean((
     <div className="relative" ref={menuRef}>
       {/* User Info and Trigger */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={cn(
-          'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200',
+        className: any,
           'hover:bg-gray-100 dark:hover:bg-gray-800',
           'focus:outline-none focus:ring-2 focus:ring-techno-orange-500 focus:ring-offset-2',
           isOpen && 'bg-gray-100 dark:bg-gray-800'
@@ -76,12 +75,9 @@ const ModernUserMenu: React.FC = () => {
         <div className="relative">
           {currentUser?.photoURL ? (
             <img
-              src={currentUser.photoURL}
+              src={currentUser?.photoURL}
               alt={currentUser?.displayName || translate('common.user')}
-              className="w-8 h-8 rounded-full border-2 border-techno-orange-500 object-cover"
-            />
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-techno-orange-500 border-2 border-techno-orange-500 flex items-center justify-center text-white text-sm font-medium">
+              className: any,
               {getUserInitials(currentUser?.displayName, currentUser?.email)}
             </div>
           )}
@@ -90,16 +86,13 @@ const ModernUserMenu: React.FC = () => {
 
         {/* User Name (hidden on mobile) */}
         <Typography 
-          variant="subtitle1" 
-          className="hidden sm:block font-medium text-gray-900 dark:text-white truncate max-w-32"
-        >
+          variant: any,
           {currentUser?.displayName || currentUser?.email || translate('common.user')}
         </Typography>
 
         {/* Chevron */}
         <ChevronDown 
-          className={cn(
-            'h-4 w-4 text-gray-500 transition-transform duration-200',
+          className: any,
             isOpen && 'rotate-180'
           )} 
         />
@@ -125,8 +118,7 @@ const ModernUserMenu: React.FC = () => {
           <div className="py-1">
             <button
               onClick={handleOpenProfile}
-              className={cn(
-                'w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300',
+              className: any,
                 'hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors'
               )}
             >
@@ -135,12 +127,9 @@ const ModernUserMenu: React.FC = () => {
             </button>
 
             <button
-              onClick={() => {
-                navigate('/settings');
-                setIsOpen(false);
+              onClick: any,
               }}
-              className={cn(
-                'w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-300',
+              className: any,
                 'hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors'
               )}
             >
@@ -153,8 +142,7 @@ const ModernUserMenu: React.FC = () => {
 
             <button
               onClick={handleLogout}
-              className={cn(
-                'w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 dark:text-red-400',
+              className: any,
                 'hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors'
               )}
             >
@@ -165,7 +153,7 @@ const ModernUserMenu: React.FC = () => {
         </div>
       )}
     </div>
-  );
+  )));
 };
 
 export default ModernUserMenu;

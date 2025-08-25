@@ -21,14 +21,13 @@ import { usePerformanceMonitor, optimizeMemory } from '../utils/performanceOptim
 // Loading component
 const LoadingFallback: React.FC<{ routeName?: string }> = ({ routeName = 'page' }) => (
   <Box
-    sx={{
-      display: 'flex',
+    sx: any,
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
       height: '100vh',
       gap: 2,
-    }}
+    } as any}
   >
     <CircularProgress size={40} />
     <Typography variant="body2" color="text.secondary">
@@ -51,25 +50,24 @@ class RouteErrorBoundary extends React.Component<
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+  override override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Route error:', error, errorInfo);
   }
 
-  render() {
-    if (this.state.hasError) {
+  override override render() {
+    if(this.state.hasError) {
       return (
         <Box
-          sx={{
-            display: 'flex',
+          sx: any,
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
             height: '100vh',
             p: 3,
             textAlign: 'center',
-          }}
+          } as any}
         >
-          <Alert severity="error" sx={{ maxWidth: 600 }}>
+          <Alert severity="error" sx={{ maxWidth: 600 } as any}>
             <Typography variant="h6" gutterBottom>
               Something went wrong
             </Typography>
@@ -95,9 +93,9 @@ interface RouteGuardProps {
 
 const RouteGuard: React.FC<RouteGuardProps> = ({
   children,
-  requireAuth = true,
-  requireRoles = [],
-  redirectTo = '/login',
+  requireAuth: any,
+  requireRoles: any,
+  redirectTo: any,
 }) => {
   const { currentUser, loading } = useAuth();
   const navigate = useNavigate();
@@ -106,7 +104,7 @@ const RouteGuard: React.FC<RouteGuardProps> = ({
   useEffect(() => {
     if (loading) return;
 
-    if (requireAuth && !currentUser) {
+    if(requireAuth && !currentUser) {
       // Store intended destination
       const intendedPath = location.pathname + location.search;
       localStorage.setItem('intendedPath', intendedPath);
@@ -114,22 +112,22 @@ const RouteGuard: React.FC<RouteGuardProps> = ({
       return;
     }
 
-    if (requireRoles.length > 0 && currentUser) {
-      const userRoles = Array.isArray(currentUser.roles) ? currentUser.roles : [currentUser.role].filter(Boolean);
+    if(requireRoles.length > 0 && currentUser) {
+      const userRoles = Array.isArray(currentUser?.roles) ? currentUser?.roles : [currentUser.role].filter(Boolean);
       const hasRequiredRole = requireRoles.some(role => userRoles.includes(role));
       
-      if (!hasRequiredRole) {
+      if(!hasRequiredRole) {
         navigate('/unauthorized', { replace: true });
         return;
       }
     }
   }, [currentUser, loading, requireAuth, requireRoles, navigate, location, redirectTo]);
 
-  if (loading) {
+  if(loading) {
     return <LoadingFallback routeName="Authentication" />;
   }
 
-  if (requireAuth && !currentUser) {
+  if(requireAuth && !currentUser) {
     return null; // Navigation will happen in useEffect
   }
 
@@ -167,7 +165,7 @@ const ReportsPage = lazyWithErrorBoundary(() => import('../pages/ReportsPage'), 
 const AnalyticsPage = lazyWithErrorBoundary(() => import('../pages/AnalyticsPage'), 'Analytics');
 const DataGridsPage = lazyWithErrorBoundary(() => import('../pages/DataGridsPage'), 'Data Grids');
 const NotFoundPage = lazyWithErrorBoundary(() => import('../pages/NotFoundPage'), 'Not Found');
-const OptimizedUserProfile = lazyWithErrorBoundary(() => import('../components/UserProfile/OptimizedUserProfile'), 'User Profile');
+const OptimizedUserProfile = lazyWithErrorBoundary(() => import('../components/UserProfile'), 'User Profile');
 
 // Development only
 const GridTestPage = process.env.NODE_ENV === 'development' 
@@ -208,7 +206,7 @@ const ROUTES: RouteDefinition[] = [
 ];
 
 // Add development routes
-if (GridTestPage && process.env.NODE_ENV === 'development') {
+if(GridTestPage && process.env.NODE_ENV === 'development') {
   ROUTES.push({ path: 'grid-test', component: GridTestPage, title: 'Grid Test' });
 }
 
@@ -226,7 +224,7 @@ const PostLoginHandler: React.FC = () => {
     localStorage.removeItem('intendedPath');
 
     // Only redirect if we're on login page
-    if (location.pathname === '/login') {
+    if(location.pathname === '/login') {
       navigate(intendedPath, { replace: true });
     }
   }, [currentUser, navigate, location]);
@@ -245,23 +243,23 @@ const OptimizedRouter: React.FC = () => {
         const basePath = route.path.replace('/*', '');
         return location.pathname.startsWith(basePath);
       }
-      return route.path === location.pathname || (route.path === '/' && location.pathname === '/');
+      return route.path ===location.pathname || (route.path === '/' && location.pathname === '/');
     });
 
-    if (currentRoute) {
+    if(currentRoute) {
       document.title = `${currentRoute.title} | TECHNO-ETL`;
     }
   }, [location]);
 
   // Memoized route elements for performance
   const protectedRoutes = useMemo(() => 
-    ROUTES.filter(route => route.requireAuth !== false).map(route => {
+    ROUTES.filter((route: any: any) => route.requireAuth !== false).map((route: any: any) => {
       const RouteComponent = route.component;
       return (
         <Route
           key={route.path}
           path={route.path}
-          element={
+          element: any,
             <RouteGuard requireRoles={route.requireRoles}>
               <Suspense fallback={<LoadingFallback routeName={route.title} />}>
                 <RouteComponent />
@@ -273,13 +271,13 @@ const OptimizedRouter: React.FC = () => {
     }), []);
 
   const publicRoutes = useMemo(() =>
-    ROUTES.filter(route => route.requireAuth === false).map(route => {
+    ROUTES.filter((route: any: any) => route.requireAuth ===false).map((route: any: any) => {
       const RouteComponent = route.component;
       return (
         <Route
           key={route.path}
           path={route.path}
-          element={
+          element: any,
             <Suspense fallback={<LoadingFallback routeName={route.title} />}>
               <RouteComponent />
             </Suspense>
@@ -300,9 +298,7 @@ const OptimizedRouter: React.FC = () => {
         
         {/* Protected routes wrapped in Layout */}
         <Route
-          path="/*"
-          element={
-            <RouteGuard>
+          path: any,
               <Suspense fallback={<LoadingFallback routeName="Layout" />}>
                 <Layout />
               </Suspense>
@@ -313,16 +309,11 @@ const OptimizedRouter: React.FC = () => {
           
           {/* Special routes */}
           <Route 
-            path="unauthorized" 
-            element={
-              <Alert severity="error">
-                You don't have permission to access this page.
-              </Alert>
+            path: any,
             } 
           />
           <Route
-            path="*"
-            element={
+            path: any,
               <Suspense fallback={<LoadingFallback routeName="Page" />}>
                 <NotFoundPage />
               </Suspense>

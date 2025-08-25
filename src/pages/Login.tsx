@@ -225,13 +225,13 @@ const LoginPage = () => {
 
     useEffect(() => {
         // Redirect to dashboard immediately in dev mode
-        if (skipAuth) {
+        if(skipAuth) {
             navigate('/', { replace: true });
         }
     }, [skipAuth, navigate]);
 
     // If in dev mode, don't render the login page
-    if (skipAuth) {
+    if(skipAuth) {
         return null;
     }
 
@@ -241,14 +241,14 @@ const LoginPage = () => {
             setError(null);
             await signInWithGoogle();
             // Navigation handled by AuthContext
-        } catch (err) {
+        } catch(err: any) {
             setError(err.message);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleEmailPasswordSignIn = async (e) => {
+    const handleEmailPasswordSignIn = async(e) => {
         e.preventDefault();
         try {
             setLoading(true);
@@ -256,7 +256,7 @@ const LoginPage = () => {
 
             await signInWithMagento(email, password);
             // Navigation handled by AuthContext
-        } catch (err) {
+        } catch(err: any) {
             setError(err.message);
         } finally {
             setLoading(false);
@@ -269,7 +269,7 @@ const LoginPage = () => {
     useEffect(() => {
         const generateFloatingElements = () => {
             const elements = [];
-            for (let i = 0; i < 10; i++) {
+            for(let i = 0; i < 10; i++) {
                 elements.push({
                     top: `${Math.random() * 100}%`,
                     left: `${Math.random() * 100}%`,
@@ -285,10 +285,9 @@ const LoginPage = () => {
         generateFloatingElements();
     }, [theme]);
 
-    return (
+    return Boolean(Boolean((
         <Box
-            sx={{
-                display: 'flex',
+            sx: any,
                 flexDirection: 'column',
                 minHeight: '100vh',
                 paddingBottom: `${FOOTER_HEIGHT}px`,
@@ -300,12 +299,11 @@ const LoginPage = () => {
             <AnimatedBackground />
 
             {/* Floating Background Elements */}
-            {floatingElements.map((element, index) => (
+            {floatingElements.map((element: any: any, index: any: any) => (
                 <FloatingElement
                     key={index}
-                    sx={{
-                        ...element,
-                        animationDelay: element.animationDelay,
+                    sx: any,
+                        animationDelay: element?.animationDelay,
                     }}
                 />
             ))}
@@ -313,11 +311,7 @@ const LoginPage = () => {
             <LoginContainer maxWidth="sm">
                 <LoginCard>
                     <Typography
-                        variant="h3"
-                        component="h1"
-                        gutterBottom
-                        sx={{
-                            fontWeight: 'bold',
+                        variant: any,
                             background: `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
@@ -327,16 +321,13 @@ const LoginPage = () => {
                     </Typography>
 
                     <Typography
-                        variant="h6"
-                        color="textSecondary"
-                        gutterBottom
-                    >
+                        variant: any,
                         {translate('login.welcome')}
                     </Typography>
 
                     {error && (
                         <Alert
-                            severity="error"
+                            severity: any,
                             sx={{ width: '100%', mt: 2, mb: 2 }}
                         >
                             {error}
@@ -347,26 +338,13 @@ const LoginPage = () => {
                     <Box component="form" onSubmit={handleEmailPasswordSignIn} sx={{ mt: 2 }}>
                         <TextField
                             fullWidth
-                            label="Email"
-                            type="email"
+                            label: any,
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            margin="normal"
-                            required
-                        />
-                        <TextField
-                            fullWidth
-                            label="Password"
-                            type="password"
+                            margin: any,
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            margin="normal"
-                            required
-                        />
-                        <Button
-                            fullWidth
-                            type="submit"
-                            variant="contained"
+                            margin: any,
                             sx={{ mt: 2, mb: 2 }}
                             disabled={loading}
                         >
@@ -387,7 +365,7 @@ const LoginPage = () => {
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <GoogleButton
                             fullWidth
-                            variant="outlined"
+                            variant: any,
                             startIcon={<GoogleIcon />}
                             onClick={handleGoogleSignIn}
                             disabled={loading}
@@ -419,7 +397,7 @@ const LoginPage = () => {
 
             <Footer isLoginScreen={true} />
         </Box>
-    );
+    )));
 };
 
 export default LoginPage;

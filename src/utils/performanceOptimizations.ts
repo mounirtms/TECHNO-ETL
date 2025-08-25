@@ -3,7 +3,7 @@
  * Provides caching, debouncing, memoization, and other performance enhancements
  */
 
-import { useMemo, useCallback, useRef, useEffect } from 'react';
+import React, { useMemo, useCallback, useRef, useEffect } from 'react';
 
 /**
  * Smart caching utility with TTL and memory management
@@ -67,7 +67,7 @@ class SmartCache {
   }
 
   clear(): void {
-    this.timers.forEach(timer => clearTimeout(timer));
+    this.timers.forEach((timer) => clearTimeout(timer));
     this.timers.clear();
     this.cache.clear();
   }
@@ -92,10 +92,10 @@ export const globalCache = new SmartCache();
  * Debounced function hook
  */
 export const useDebounce = (callback: Function, delay: number) => {
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   return useCallback((...args: any[]) => {
-    if (debounceRef.current) {
+    if(debounceRef.current) {
       clearTimeout(debounceRef.current);
     }
 
@@ -122,7 +122,7 @@ export const useThrottle = (callback: Function, delay: number) => {
 /**
  * Memoized async function hook with cache
  */
-export const useMemoizedAsync = <T>(
+export const useMemoizedAsync: any = <T>(
   asyncFunction: (...args: any[]) => Promise<T>,
   deps: any[],
   cacheKey?: string
@@ -131,7 +131,7 @@ export const useMemoizedAsync = <T>(
     const key = cacheKey || `async-${JSON.stringify(deps)}`;
     const cached = globalCache.get(key);
     
-    if (cached) {
+    if(cached) {
       return Promise.resolve(cached);
     }
 
@@ -153,7 +153,7 @@ export const useLazyLoad = (callback: Function, options = { threshold: 0.1 }) =>
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasLoaded) {
+        if(entry.isIntersecting && !hasLoaded) {
           setIsVisible(true);
           setHasLoaded(true);
           callback();
@@ -162,12 +162,12 @@ export const useLazyLoad = (callback: Function, options = { threshold: 0.1 }) =>
       { threshold: options.threshold }
     );
 
-    if (elementRef.current) {
+    if(elementRef.current) {
       observer.observe(elementRef.current);
     }
 
     return () => {
-      if (elementRef.current) {
+      if(elementRef.current) {
         observer.unobserve(elementRef.current);
       }
     };
@@ -186,9 +186,9 @@ export const usePerformanceMonitor = (componentName: string) => {
     const endTime = performance.now();
     const renderTime = endTime - startTime.current;
     
-    if (renderTime > 100) {
+    if(renderTime > 100) {
       console.warn(`🐌 Slow render detected in ${componentName}: ${renderTime.toFixed(2)}ms`);
-    } else if (renderTime > 50) {
+    } else if(renderTime > 50) {
       console.log(`⚡ ${componentName} rendered in ${renderTime.toFixed(2)}ms`);
     }
   });
@@ -209,7 +209,7 @@ export const optimizeMemory = () => {
   }
 
   // Run garbage collection if available
-  if (window.gc && typeof window.gc === 'function') {
+  if(window.gc && typeof window.gc === 'function') {
     window.gc();
     console.log('🗑️ Manual garbage collection triggered');
   }
@@ -227,20 +227,16 @@ export class BatchProcessor<T> {
 
   constructor(
     processor: (items: T[]) => Promise<void> | void,
-    batchSize = 10,
-    timeout = 1000
-  ) {
-    this.processor = processor;
-    this.batchSize = batchSize;
-    this.timeout = timeout;
+    batchSize: any,
+    timeout: any,
   }
 
   add(item: T): void {
     this.batch.push(item);
 
-    if (this.batch.length >= this.batchSize) {
+    if(this.batch.length >= this.batchSize) {
       this.processBatch();
-    } else if (!this.timer) {
+    } else if(!this.timer) {
       this.timer = setTimeout(() => {
         this.processBatch();
       }, this.timeout);
@@ -248,19 +244,19 @@ export class BatchProcessor<T> {
   }
 
   private async processBatch(): Promise<void> {
-    if (this.timer) {
+    if(this.timer) {
       clearTimeout(this.timer);
       this.timer = undefined;
     }
 
-    if (this.batch.length === 0) return;
+    if (this.batch.length ===0) return;
 
     const items = [...this.batch];
     this.batch = [];
 
     try {
       await this.processor(items);
-    } catch (error) {
+    } catch(error: any) {
       console.error('❌ Batch processing error:', error);
     }
   }
@@ -290,7 +286,7 @@ export const optimizeImage = (
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       
-      if (!ctx) {
+      if(!ctx) {
         reject(new Error('Canvas context not available'));
         return;
       }
@@ -302,7 +298,7 @@ export const optimizeImage = (
       ctx.drawImage(img, 0, 0, width, height);
 
       const format = options.format === 'webp' ? 'image/webp' : 
-                    options.format === 'png' ? 'image/png' : 'image/jpeg';
+                    options.format === "png" ? 'image/png' : 'image/jpeg';
       
       const optimizedUrl = canvas.toDataURL(format, quality);
       resolve(optimizedUrl);
@@ -354,7 +350,7 @@ export const preloadResources = (resources: string[]): Promise<void[]> => {
  * Bundle analyzer helper
  */
 export const analyzeBundleSize = () => {
-  if (process.env.NODE_ENV === 'development') {
+  if(process.env.NODE_ENV === 'development') {
     const scripts = Array.from(document.querySelectorAll('script[src]'));
     const styles = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
     
@@ -364,8 +360,8 @@ export const analyzeBundleSize = () => {
     
     // Estimate total size (rough approximation)
     let totalEstimated = 0;
-    scripts.forEach((script: any) => {
-      if (script.src) {
+    scripts.forEach((script) => {
+      if((script as HTMLScriptElement)?.src) {
         // This is a rough estimation
         totalEstimated += 100; // Assume 100KB per script (very rough)
       }

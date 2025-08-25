@@ -32,13 +32,12 @@ import { useTheme } from '@mui/material/styles';
  * Enhanced Stats Cards Component
  * Professional 8-card dashboard with advanced metrics and animations
  */
-const EnhancedStatsCards = ({ 
-  stats, 
+const EnhancedStatsCards: React.FC<{stats: any, settings: any, loading: any: any, onNavigate: any, onCardAction: any}> = ({ stats, 
   settings, 
-  loading = false, 
+  loading: any,
   onNavigate,
   onCardAction 
-}) => {
+ }) => {
   const theme = useTheme();
 
   // Define all 8 stat cards with enhanced data
@@ -160,28 +159,28 @@ const EnhancedStatsCards = ({
   ];
 
   // Filter cards based on settings
-  const visibleCards = statCards.filter(card => 
+  const visibleCards = statCards.filter((card: any: any) => 
     settings?.statCards?.[card.key] !== false
   );
 
   const getProgressColor = (card) => {
-    if (card.isAlert) {
+    if(card.isAlert) {
       return card.current <= 10 ? 'success' : card.current <= 20 ? 'warning' : 'error';
     }
     return card.color;
   };
 
   const getProgressValue = (card) => {
-    if (card.isAlert) {
+    if(card.isAlert) {
       return Math.max(0, 100 - (card.current / 50) * 100);
     }
     return (card.current / card.target) * 100;
   };
 
-  if (loading) {
+  if(loading) {
     return (
-      <Grid container spacing={3}>
-        {Array.from({ length: 8 }).map((_, index) => (
+      <Grid { ...{container: true}} spacing={3}>
+        {Array.from({ length: 8 }).map((_: any: any, index: any: any) => (
           <Grid size={{ xs: 12, md: 6, lg: 4, xl: 3 }} key={index}>
             <Card sx={{ height: 200, borderRadius: 3 }}>
               <CardContent sx={{ p: 3 }}>
@@ -198,11 +197,10 @@ const EnhancedStatsCards = ({
   }
 
   return (
-    <Grid container spacing={3}>
-      {visibleCards.map((card, index) => (
+    <Grid { ...{container: true}} spacing={3}>
+      {visibleCards.map((card: any: any, index: any: any) => (
         <Grid 
-          size={{ 
-            xs: 12, 
+          size: any,
             md: 6, 
             lg: 4, 
             xl: visibleCards.length <= 4 ? 3 : visibleCards.length <= 6 ? 4 : 3 
@@ -210,8 +208,7 @@ const EnhancedStatsCards = ({
           key={card.key}
         >
           <Card
-            sx={{
-              height: settings?.general?.compactMode ? 180 : 220,
+            sx: any,
               background: `linear-gradient(135deg, ${theme.palette[card.color].light}15, ${theme.palette[card.color].main}08)`,
               border: `1px solid ${theme.palette[card.color].light}30`,
               borderRadius: 3,
@@ -237,7 +234,7 @@ const EnhancedStatsCards = ({
                 mb: 2 
               }}>
                 <Avatar
-                  sx={{
+                  sx: any,
                     bgcolor: `${card.color}.main`,
                     width: settings?.general?.compactMode ? 40 : 56,
                     height: settings?.general?.compactMode ? 40 : 56,
@@ -251,9 +248,7 @@ const EnhancedStatsCards = ({
                 </Avatar>
                 
                 <Box 
-                  className="card-actions"
-                  sx={{ 
-                    display: 'flex', 
+                  className: any,
                     gap: 0.5,
                     opacity: 0,
                     transform: 'translateX(10px)',
@@ -263,10 +258,9 @@ const EnhancedStatsCards = ({
                   <Tooltip title={`View ${card.title.toLowerCase()}`}>
                     <span>
                       <IconButton
-                        size="small"
+                        size: any,
                         onClick={() => onNavigate?.(card.key)}
-                        sx={{
-                          bgcolor: 'background.paper',
+                        sx: any,
                           boxShadow: 1,
                           '&:hover': { boxShadow: 2 }
                         }}
@@ -278,10 +272,9 @@ const EnhancedStatsCards = ({
                   <Tooltip title="More options">
                     <span>
                       <IconButton
-                        size="small"
+                        size: any,
                         onClick={() => onCardAction?.(card.key, 'menu')}
-                        sx={{
-                          bgcolor: 'background.paper',
+                        sx: any,
                           boxShadow: 1,
                           '&:hover': { boxShadow: 2 }
                         }}
@@ -298,20 +291,17 @@ const EnhancedStatsCards = ({
                 <Typography 
                   variant={settings?.general?.compactMode ? "h5" : "h4"} 
                   fontWeight={700} 
-                  color="text.primary" 
-                  gutterBottom
-                >
+                  color: any,
                   {card.value}
                 </Typography>
                 
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                   <Chip
                     label={card.change}
-                    size="small"
+                    size: any,
                     color={card.trend === 'up' ? 'success' : card.isAlert ? 'success' : 'error'}
                     icon={card.trend === 'up' ? <TrendingUp /> : <TrendingDown />}
-                    sx={{ 
-                      fontWeight: 600,
+                    sx: any,
                       '& .MuiChip-icon': {
                         fontSize: '0.875rem'
                       }
@@ -339,7 +329,7 @@ const EnhancedStatsCards = ({
                     {card.isAlert ? 'Status' : 'Progress'}
                   </Typography>
                   <Typography 
-                    variant="caption" 
+                    variant: any,
                     fontWeight={600} 
                     color={`${getProgressColor(card)}.main`}
                   >
@@ -347,11 +337,10 @@ const EnhancedStatsCards = ({
                   </Typography>
                 </Box>
                 <LinearProgress
-                  variant="determinate"
+                  variant: any,
                   value={getProgressValue(card)}
                   color={getProgressColor(card)}
-                  sx={{
-                    height: 8,
+                  sx: any,
                     borderRadius: 4,
                     bgcolor: `${card.color}.light`,
                     '& .MuiLinearProgress-bar': {

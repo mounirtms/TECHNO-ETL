@@ -1,3 +1,4 @@
+import React from 'react';
 /**
  * FilterService - Unified filtering service for product grids
  * Provides caching, debouncing, and Magento 2 integration
@@ -25,7 +26,7 @@ class FilterService {
     console.log(`📦 Cached data for key: ${key}`);
   }
 
-  getCacheData(key) {
+  getCacheData(key: any) {
     const expiry = this.cacheExpiry.get(key);
     if (expiry && Date.now() < expiry) {
       console.log(`✅ Using cached data for key: ${key}`);
@@ -39,7 +40,7 @@ class FilterService {
   }
 
   clearCache(pattern = null) {
-    if (pattern) {
+    if(pattern) {
       // Clear specific pattern
       for (const key of this.cache.keys()) {
         if (key.includes(pattern)) {
@@ -60,7 +61,7 @@ class FilterService {
   async getBrands(useCache = true) {
     const cacheKey = 'filter_brands';
     
-    if (useCache) {
+    if(useCache) {
       const cached = this.getCacheData(cacheKey);
       if (cached) return cached;
     }
@@ -69,7 +70,7 @@ class FilterService {
       const response = await magentoApi.getBrands();
       const brands = response?.items || [];
       
-      const processedBrands = brands.map(brand => ({
+      const processedBrands = brands.map((brand: any: any) => ({
         value: brand.value,
         label: brand.label,
         count: brand.product_count || 0
@@ -77,7 +78,7 @@ class FilterService {
 
       this.setCacheData(cacheKey, processedBrands);
       return processedBrands;
-    } catch (error) {
+    } catch(error: any) {
       console.error('❌ Error fetching brands:', error);
       return this.getMockBrands();
     }
@@ -86,7 +87,7 @@ class FilterService {
   async getCategories(useCache = true) {
     const cacheKey = 'filter_categories';
     
-    if (useCache) {
+    if(useCache) {
       const cached = this.getCacheData(cacheKey);
       if (cached) return cached;
     }
@@ -98,16 +99,16 @@ class FilterService {
       const processedCategories = this.flattenCategories(categories);
       this.setCacheData(cacheKey, processedCategories);
       return processedCategories;
-    } catch (error) {
+    } catch(error: any) {
       console.error('❌ Error fetching categories:', error);
       return this.getMockCategories();
     }
   }
 
-  async getAttributeOptions(attributeCode, useCache = true) {
+  async getAttributeOptions(attributeCode, useCache: any = true ) {
     const cacheKey = `filter_attribute_${attributeCode}`;
     
-    if (useCache) {
+    if(useCache) {
       const cached = this.getCacheData(cacheKey);
       if (cached) return cached;
     }
@@ -116,7 +117,7 @@ class FilterService {
       const response = await magentoApi.getProductAttribute(attributeCode);
       const options = response?.options || [];
       
-      const processedOptions = options.map(option => ({
+      const processedOptions = options.map((option: any: any) => ({
         value: option.value,
         label: option.label,
         count: option.product_count || 0
@@ -124,7 +125,7 @@ class FilterService {
 
       this.setCacheData(cacheKey, processedOptions);
       return processedOptions;
-    } catch (error) {
+    } catch(error: any) {
       console.error(`❌ Error fetching attribute options for ${attributeCode}:`, error);
       return [];
     }
@@ -141,7 +142,7 @@ class FilterService {
     };
 
     // Brand filter
-    if (filters.brand) {
+    if(filters.brand) {
       searchCriteria.filterGroups.push({
         filters: [{
           field: 'mgs_brand',
@@ -152,7 +153,7 @@ class FilterService {
     }
 
     // Category filter
-    if (filters.category) {
+    if(filters.category) {
       searchCriteria.filterGroups.push({
         filters: [{
           field: 'category_id',
@@ -163,7 +164,7 @@ class FilterService {
     }
 
     // Status filter
-    if (filters.status !== undefined && filters.status !== '') {
+    if(filters.status !== undefined && filters.status !== '') {
       searchCriteria.filterGroups.push({
         filters: [{
           field: 'status',
@@ -174,16 +175,16 @@ class FilterService {
     }
 
     // Price range filter
-    if (filters.priceMin || filters.priceMax) {
+    if(filters.priceMin || filters.priceMax) {
       const priceFilters = [];
-      if (filters.priceMin) {
+      if(filters.priceMin) {
         priceFilters.push({
           field: 'price',
           value: filters.priceMin,
           condition_type: 'gteq'
         });
       }
-      if (filters.priceMax) {
+      if(filters.priceMax) {
         priceFilters.push({
           field: 'price',
           value: filters.priceMax,
@@ -194,7 +195,7 @@ class FilterService {
     }
 
     // Text search
-    if (filters.search) {
+    if(filters.search) {
       searchCriteria.filterGroups.push({
         filters: [{
           field: 'name',
@@ -205,7 +206,7 @@ class FilterService {
     }
 
     // Sorting
-    if (filters.sortField) {
+    if(filters.sortField) {
       searchCriteria.sortOrders.push({
         field: filters.sortField,
         direction: filters.sortDirection || 'ASC'
@@ -215,12 +216,12 @@ class FilterService {
     return searchCriteria;
   }
 
-  performSearch(searchTerm, callback) {
+  performSearch(searchTerm, callback: any) {
     console.log('🔍 Performing search:', searchTerm);
     callback(searchTerm);
   }
 
-  performFilter(filters, callback) {
+  performFilter(filters, callback: any) {
     console.log('🔄 Performing filter:', filters);
     callback(filters);
   }
@@ -228,16 +229,16 @@ class FilterService {
   // ===== CLIENT-SIDE FILTERING =====
 
   applyClientFilters(products, filters) {
-    return products.filter(product => {
+    return products.filter((product: any: any) => {
       // Brand filter
-      if (filters.brand && product.brand !== filters.brand) {
+      if(filters.brand && product.brand !== filters.brand) {
         return false;
       }
 
       // Category filter
-      if (filters.category) {
+      if(filters.category) {
         const productCategories = product.categories || [];
-        if (!productCategories.some(cat => cat.id.toString() === filters.category.toString())) {
+        if (!productCategories.some(cat => cat.id.toString() ===filters.category.toString())) {
           return false;
         }
       }
@@ -257,7 +258,7 @@ class FilterService {
       }
 
       // Text search
-      if (filters.search) {
+      if(filters.search) {
         const searchLower = filters.search.toLowerCase();
         const searchFields = [
           product.name,
@@ -279,8 +280,8 @@ class FilterService {
 
   // ===== UTILITY METHODS =====
 
-  flattenCategories(categories, level = 0, result = []) {
-    categories.forEach(category => {
+  flattenCategories(categories, level = 0, result = [] ) {
+    categories.forEach((category) => {
       result.push({
         value: category.id,
         label: category.name,
@@ -288,7 +289,7 @@ class FilterService {
         count: category.product_count || 0
       });
 
-      if (category.children_data && category.children_data.length > 0) {
+      if(category.children_data && category.children_data.length > 0) {
         this.flattenCategories(category.children_data, level + 1, result);
       }
     });

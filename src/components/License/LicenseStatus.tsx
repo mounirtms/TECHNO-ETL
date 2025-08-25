@@ -32,7 +32,7 @@ const LicenseStatus = () => {
     const [error, setError] = useState(null);
 
     const checkCurrentLicense = async () => {
-        if (!currentUser?.uid) {
+        if(!currentUser?.uid) {
             setError('No user authenticated');
             setLoading(false);
             return;
@@ -49,7 +49,7 @@ const LicenseStatus = () => {
 
             setLicenseStatus(hasValidLicense);
             setLicenseDetails(details);
-        } catch (err) {
+        } catch(err: any) {
             setError(err.message);
             console.error('Error checking license:', err);
         } finally {
@@ -71,7 +71,7 @@ const LicenseStatus = () => {
 
             await set_license_status(currentUser.uid, testLicense);
             await checkCurrentLicense();
-        } catch (err) {
+        } catch(err: any) {
             setError(err.message);
         }
     };
@@ -83,7 +83,7 @@ const LicenseStatus = () => {
             setLoading(true);
             await set_license_status(currentUser.uid, { isValid: false });
             await checkCurrentLicense();
-        } catch (err) {
+        } catch(err: any) {
             setError(err.message);
         }
     };
@@ -94,7 +94,7 @@ const LicenseStatus = () => {
             // Test license setup removed for production
             console.log('Test license setup disabled in production');
             await checkCurrentLicense();
-        } catch (err) {
+        } catch(err: any) {
             setError(err.message);
         }
     };
@@ -109,24 +109,24 @@ const LicenseStatus = () => {
     };
 
     const getLicenseIcon = () => {
-        if (licenseStatus === true) return <ValidIcon color="success" />;
-        if (licenseStatus === false) return <InvalidIcon color="error" />;
+        if (licenseStatus ===true) return <ValidIcon color="success" />;
+        if (licenseStatus ===false) return <InvalidIcon color="error" />;
         return <WarningIcon color="warning" />;
     };
 
     const getLicenseStatusText = () => {
-        if (licenseStatus === true) return 'Valid';
-        if (licenseStatus === false) return 'Invalid';
+        if (licenseStatus ===true) return 'Valid';
+        if (licenseStatus ===false) return 'Invalid';
         return 'Unknown';
     };
 
     const getLicenseStatusColor = () => {
-        if (licenseStatus === true) return 'success';
-        if (licenseStatus === false) return 'error';
+        if (licenseStatus ===true) return 'success';
+        if (licenseStatus ===false) return 'error';
         return 'warning';
     };
 
-    if (loading) {
+    if(loading) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
                 <CircularProgress />
@@ -134,19 +134,19 @@ const LicenseStatus = () => {
         );
     }
 
-    return (
+    return Boolean(Boolean((
         <Box p={3}>
             <Typography variant="h4" gutterBottom>
                 License Status
             </Typography>
 
             {error && (
-                <Alert severity="error" sx={{ mb: 2 }}>
+                <Alert severity="error" sx={{ mb: 2 } as any}>
                     {error}
                 </Alert>
             )}
 
-            <Grid container spacing={3}>
+            <Grid { ...{container: true}} spacing={3}>
                 <Grid item xs={12} md={8}>
                     <Card>
                         <CardContent>
@@ -157,24 +157,24 @@ const LicenseStatus = () => {
                                     <Chip 
                                         label={getLicenseStatusText()} 
                                         color={getLicenseStatusColor()}
-                                        sx={{ ml: 1 }}
+                                        sx={{ ml: 1 } as any}
                                     />
                                 </Typography>
                             </Box>
 
                             {licenseDetails && (
                                 <>
-                                    <Divider sx={{ my: 2 }} />
+                                    <Divider sx={{ my: 2 } as any} />
                                     <Typography variant="h6" gutterBottom>
                                         License Details
                                     </Typography>
-                                    <Grid container spacing={2}>
+                                    <Grid { ...{container: true}} spacing={2}>
                                         <Grid item xs={6}>
                                             <Typography variant="body2" color="text.secondary">
                                                 License Type
                                             </Typography>
                                             <Typography variant="body1">
-                                                {licenseDetails.licenseType || 'N/A'}
+                                                {licenseDetails?.licenseType || 'N/A'}
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={6}>
@@ -182,7 +182,7 @@ const LicenseStatus = () => {
                                                 Expiry Date
                                             </Typography>
                                             <Typography variant="body1">
-                                                {formatDate(licenseDetails.expiryDate)}
+                                                {formatDate(licenseDetails?.expiryDate)}
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={6}>
@@ -190,7 +190,7 @@ const LicenseStatus = () => {
                                                 Created
                                             </Typography>
                                             <Typography variant="body1">
-                                                {formatDate(licenseDetails.createdAt)}
+                                                {formatDate(licenseDetails?.createdAt)}
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={6}>
@@ -198,24 +198,22 @@ const LicenseStatus = () => {
                                                 Last Updated
                                             </Typography>
                                             <Typography variant="body1">
-                                                {formatDate(licenseDetails.updatedAt)}
+                                                {formatDate(licenseDetails?.updatedAt)}
                                             </Typography>
                                         </Grid>
                                     </Grid>
 
-                                    {licenseDetails.features && (
+                                    {licenseDetails?.features && (
                                         <>
-                                            <Typography variant="body2" color="text.secondary" sx={{ mt: 2, mb: 1 }}>
+                                            <Typography variant="body2" color="text.secondary" sx={{ mt: 2, mb: 1 } as any}>
                                                 Available Features
                                             </Typography>
                                             <Box display="flex" gap={1} flexWrap="wrap">
-                                                {licenseDetails.features.map((feature, index) => (
+                                                {licenseDetails?.features.map((feature: any: any, index: any: any) => (
                                                     <Chip 
                                                         key={index} 
                                                         label={feature} 
-                                                        size="small" 
-                                                        variant="outlined"
-                                                    />
+                                                        size: any,
                                                 ))}
                                             </Box>
                                         </>
@@ -232,14 +230,13 @@ const LicenseStatus = () => {
                             <Typography variant="h6" gutterBottom>
                                 Test Actions
                             </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 } as any}>
                                 Use these buttons to test license functionality
                             </Typography>
 
                             <Box display="flex" flexDirection="column" gap={2}>
                                 <Button 
-                                    variant="contained" 
-                                    color="success"
+                                    variant: any,
                                     onClick={activateTestLicense}
                                     disabled={loading}
                                 >
@@ -247,8 +244,7 @@ const LicenseStatus = () => {
                                 </Button>
 
                                 <Button 
-                                    variant="contained" 
-                                    color="error"
+                                    variant: any,
                                     onClick={deactivateLicense}
                                     disabled={loading}
                                 >
@@ -256,7 +252,7 @@ const LicenseStatus = () => {
                                 </Button>
 
                                 <Button 
-                                    variant="outlined"
+                                    variant: any,
                                     onClick={checkCurrentLicense}
                                     disabled={loading}
                                 >
@@ -264,7 +260,7 @@ const LicenseStatus = () => {
                                 </Button>
 
                                 <Button 
-                                    variant="outlined"
+                                    variant: any,
                                     onClick={setupAllTestLicenses}
                                     disabled={loading}
                                 >
@@ -287,7 +283,7 @@ const LicenseStatus = () => {
                 </Alert>
             </Box>
         </Box>
-    );
+    )));
 };
 
 export default LicenseStatus;

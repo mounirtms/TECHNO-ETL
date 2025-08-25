@@ -86,7 +86,7 @@ const TaskManagementWidget = () => {
   const [selectedTask, setSelectedTask] = useState(null);
 
   const getStatusIcon = (status) => {
-    switch (status) {
+    switch(status) {
       case 'completed':
         return <CompleteIcon color="success" />;
       case 'in-progress':
@@ -99,7 +99,7 @@ const TaskManagementWidget = () => {
   };
 
   const getStatusColor = (status) => {
-    switch (status) {
+    switch(status) {
       case 'completed':
         return 'success';
       case 'in-progress':
@@ -112,7 +112,7 @@ const TaskManagementWidget = () => {
   };
 
   const getPriorityColor = (priority) => {
-    switch (priority) {
+    switch(priority) {
       case 'high':
         return 'error';
       case 'medium':
@@ -125,8 +125,8 @@ const TaskManagementWidget = () => {
   };
 
   const handleTaskToggle = (taskId) => {
-    setTasks(prev => prev.map(task => 
-      task.id === taskId 
+    setTasks(prev => prev.map((task: any: any) => 
+      task.id ===taskId 
         ? { ...task, status: task.status === 'completed' ? 'pending' : 'completed' }
         : task
     ));
@@ -157,13 +157,13 @@ const TaskManagementWidget = () => {
   };
 
   const handleDeleteTask = () => {
-    if (selectedTask) {
-      setTasks(prev => prev.filter(task => task.id !== selectedTask.id));
+    if(selectedTask) {
+      setTasks(prev => prev.filter((task: any: any) => task.id !== selectedTask.id));
     }
     handleMenuClose();
   };
 
-  const completedTasks = tasks.filter(task => task.status === 'completed').length;
+  const completedTasks = tasks.filter((task: any: any) => task.status === 'completed').length;
   const totalTasks = tasks.length;
   const completionRate = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
@@ -175,20 +175,17 @@ const TaskManagementWidget = () => {
       flexDirection: 'column'
     }}>
       <CardHeader
-        avatar={
+        avatar: any,
           <Avatar sx={{ bgcolor: 'primary.main' }}>
             <TaskIcon />
           </Avatar>
         }
-        title="Task Management"
+        title: any,
         subheader={`${completedTasks}/${totalTasks} tasks completed`}
-        action={
-          <Button
-            size="small"
+        action: any,
             startIcon={<AddIcon />}
             onClick={() => setDialogOpen(true)}
-            sx={{ 
-              transition: animations ? 'all 0.3s ease' : 'none',
+            sx: any,
               '&:hover': animations ? { transform: 'scale(1.05)' } : {}
             }}
           >
@@ -215,10 +212,9 @@ const TaskManagementWidget = () => {
             </Typography>
           </Box>
           <LinearProgress
-            variant="determinate"
+            variant: any,
             value={completionRate}
-            sx={{
-              height: 6,
+            sx: any,
               borderRadius: 3,
               bgcolor: 'grey.200',
               '& .MuiLinearProgress-bar': {
@@ -230,11 +226,10 @@ const TaskManagementWidget = () => {
 
         {/* Task List */}
         <List dense sx={{ maxHeight: 300, overflow: 'auto' }}>
-          {tasks.slice(0, 5).map((task) => (
+          {tasks.slice(0, 5).map((task: any: any) => (
             <ListItem
               key={task.id}
-              sx={{
-                borderRadius: 1,
+              sx: any,
                 mb: 0.5,
                 transition: animations ? 'all 0.2s ease' : 'none',
                 '&:hover': animations ? {
@@ -246,19 +241,17 @@ const TaskManagementWidget = () => {
               <ListItemIcon>
                 <Checkbox
                   checked={task.status === 'completed'}
-                  onChange={() => handleTaskToggle(task.id)}
+                  onChange={(e) => () => handleTaskToggle(task.id)}
                   icon={getStatusIcon(task.status)}
                   checkedIcon={<CompleteIcon color="success" />}
                 />
               </ListItemIcon>
               
               <ListItemText
-                primary={
+                primary: any,
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Typography
-                      variant="body2"
-                      sx={{
-                        textDecoration: task.status === 'completed' ? 'line-through' : 'none',
+                      variant: any,
                         opacity: task.status === 'completed' ? 0.7 : 1
                       }}
                     >
@@ -266,14 +259,13 @@ const TaskManagementWidget = () => {
                     </Typography>
                     <Chip
                       label={task.priority}
-                      size="small"
+                      size: any,
                       color={getPriorityColor(task.priority)}
                       sx={{ height: 16, fontSize: '0.7rem' }}
                     />
                   </Box>
                 }
-                secondary={
-                  <Typography variant="caption" color="text.secondary">
+                secondary: any,
                     {task.description} • Due: {task.dueDate}
                   </Typography>
                 }
@@ -281,7 +273,7 @@ const TaskManagementWidget = () => {
               
               <ListItemSecondaryAction>
                 <IconButton
-                  size="small"
+                  size: any,
                   onClick={(e) => handleMenuClick(e, task)}
                 >
                   <MoreIcon fontSize="small" />
@@ -306,31 +298,21 @@ const TaskManagementWidget = () => {
         <DialogContent>
           <TextField
             autoFocus
-            margin="dense"
-            label="Task Title"
-            fullWidth
-            variant="outlined"
+            margin: any,
             value={newTask.title}
             onChange={(e) => setNewTask(prev => ({ ...prev, title: e.target.value }))}
             sx={{ mb: 2 }}
           />
           <TextField
-            margin="dense"
-            label="Description"
-            fullWidth
-            multiline
+            margin: any,
             rows={2}
-            variant="outlined"
+            variant: any,
             value={newTask.description}
             onChange={(e) => setNewTask(prev => ({ ...prev, description: e.target.value }))}
             sx={{ mb: 2 }}
           />
           <TextField
-            margin="dense"
-            label="Due Date"
-            type="date"
-            fullWidth
-            variant="outlined"
+            margin: any,
             InputLabelProps={{ shrink: true }}
             value={newTask.dueDate}
             onChange={(e) => setNewTask(prev => ({ ...prev, dueDate: e.target.value }))}

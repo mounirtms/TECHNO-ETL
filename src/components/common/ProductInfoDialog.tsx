@@ -7,7 +7,7 @@ import {
     Button,
     Box,
     Typography,
-    Grid,
+    Grid2 as Grid,
     Divider,
     Tabs,
     Tab,
@@ -43,7 +43,7 @@ import { toast } from 'react-toastify';
 
 const MEDIA_PREFIX = 'https://technostationery.com/pub/media/catalog/product';
 
-const ProductInfoDialog = ({ open, onClose, product }) => {
+const ProductInfoDialog = ({ open, onClose, product  }: { open: any, onClose: any, product: any }) => {
     if (!product) return null;
 
     // Safely get the main image
@@ -53,14 +53,13 @@ const ProductInfoDialog = ({ open, onClose, product }) => {
     // Prepare media gallery
     const media = Array.isArray(product?.media_gallery_entries)
         ? product.media_gallery_entries
-            .filter(entry => entry?.media_type === 'image' && entry?.file)
-            .map(entry => ({
-                ...entry,
+            .filter((entry: any: any) => entry?.media_type === 'image' && entry?.file)
+            .map((entry: any: any) => ({ ...entry,
                 url: entry.file.startsWith('http') ? entry.file : MEDIA_PREFIX + entry.file
             }))
         : [];
 
-    return (
+    return Boolean(Boolean((
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
             <DialogTitle sx={{ fontWeight: 700, fontSize: 20, bgcolor: '#f5f5f5' }}>
                 🧾 Product Details & Media
@@ -69,25 +68,20 @@ const ProductInfoDialog = ({ open, onClose, product }) => {
             <DialogContent dividers sx={{ bgcolor: '#fff' }}>
                 {/* Thumbnail on left, details on right */}
                 <Grid container spacing={3} alignItems="flex-start">
-                    <Grid item xs={12} sm={5} md={4}>
+                    <Grid xs={12} sm={5} md={4}>
                         <Box sx={{ width: '100%' }}>
                             <img
                                 src={mainImage}
                                 alt={product?.name || 'Product Image'}
-                                style={{
-                                    width: '100%',
+                                style: any,
                                     height: 'auto',
                                     borderRadius: '8px',
                                     boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                                     cursor: 'pointer'
                                 }}
                                 onClick={() => window.open(mainImage, '_blank')}
-                                title="Click to view full size"
-                            />
-                        </Box>
-                    </Grid>
-
-                    <Grid item xs={12} sm={7} md={8}>
+                                title: any,
+                    <Grid xs={12} sm={7} md={8}>
                         <Typography variant="h6" sx={{ fontWeight: 600 }}>
                             {product?.name || 'Unknown Product'}
                         </Typography>
@@ -137,7 +131,7 @@ const ProductInfoDialog = ({ open, onClose, product }) => {
                 </Button>
             </DialogActions>
         </Dialog>
-    );
+    )));
 };
 
 export default ProductInfoDialog;

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, ReactNode } from 'react';
 import {
   Dialog, DialogTitle, DialogContent, DialogActions, Button, 
   TextField, Box, Typography, IconButton, Tabs, Tab
@@ -6,66 +6,123 @@ import {
 import { Close, Save, Cancel } from '@mui/icons-material';
 
 /**
+ * Field configuration interface
+ */
+interface Field {
+  name: string;
+  label: string;
+  type?: 'text' | 'number' | 'textarea' | 'select' | 'email' | 'url';
+  required?: boolean;
+  disabled?: boolean;
+  multiline?: boolean;
+  rows?: number;
+  helperText?: string;
+  placeholder?: string;
+  options?: { label: string; value: string | number }[];
+  validate?: (value) => string | undefined;
+}
+
+/**
+ * Custom tab interface
+ */
+interface CustomTab {
+  label: string;
+  icon?: ReactNode;
+  content: (props: {
+    formData: Record<string, any>;
+    setFormData: React.Dispatch<React.SetStateAction<Record<string, any>>>;
+    handleFieldChange: (fieldName: string, value) => void;
+    errors: Record<string, string | null>;
+    setErrors: React.Dispatch<React.SetStateAction<Record<string, string | null>>>;
+    activeTab: number;
+  }) => ReactNode;
+}
+
+/**
+ * UnifiedEditWindow Props
+ */
+interface UnifiedEditWindowProps {
+  open: boolean;
+  onClose: () => void;
+  onSave: (data: Record<string, any>) => Promise<void> | void;
+  title: string;
+  data?: Record<string, any>;
+  fields?: Field[];
+  customRenderer?: (props: {
+    formData: Record<string, any>;
+    handleFieldChange: (fieldName: string, value) => void;
+    errors: Record<string, string | null>;
+  }) => ReactNode;
+  customTabs?: CustomTab[];
+  maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
+  fullWidth?: boolean;
+  fullScreen?: boolean;
+  loading?: boolean;
+  saveButtonText?: string;
+  cancelButtonText?: string;
+  showTabs?: boolean;
+  children?: ReactNode;
+}
+
+/**
  * Unified Edit Window Component
  * Provides a flexible, reusable edit dialog that can be customized by child components
  */
-const UnifiedEditWindow = ({
+const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
   open,
   onClose,
   onSave,
   title,
   data,
-  fields = [],
+  fields: any,
   customRenderer,
   customTabs,
-  maxWidth = 'md',
-  fullWidth = true,
-  fullScreen = false,
-  loading = false,
-  saveButtonText = 'Save',
-  cancelButtonText = 'Cancel',
-  showTabs = false,
+  maxWidth: any,
+  fullWidth: any,
+  fullScreen: any,
+  loading: any,
+  saveButtonText: any,
+  cancelButtonText: any,
+  showTabs: any,
   children
 }) => {
-  const [formData, setFormData] = useState(data || {});
-  const [activeTab, setActiveTab] = useState(0);
-  const [errors, setErrors] = useState({});
+  const [formData, setFormData] = useState<Record<string, any>>(data || {});
+  const [activeTab, setActiveTab] = useState<number>(0);
+  const [errors, setErrors] = useState<Record<string, string | null>>({});;
 
   // Handle form field changes
-  const handleFieldChange = useCallback((fieldName, value) => {
-    setFormData(prev => ({
-      ...prev,
+  const handleFieldChange = useCallback((fieldName: string, value) => {
+    setFormData(prev => ({ ...prev,
       [fieldName]: value
     }));
     
     // Clear error for this field
-    if (errors[fieldName]) {
-      setErrors(prev => ({
-        ...prev,
-        [fieldName]: null
+    if(errors[fieldName]) {
+      setErrors(prev => ({ ...prev,
+        [fieldName]: null as unknown as string
       }));
     }
   }, [errors]);
 
   // Validate form data
   const validateForm = useCallback(() => {
-    const newErrors = {};
+    const newErrors: Record<string, string> = {};
     
-    fields.forEach(field => {
-      if (field.required && (!formData[field.name] || formData[field.name].toString().trim() === '')) {
+    fields.forEach((field) => {
+      if (field.required && (!formData[field.name] || formData[field.name].toString().trim() ==='')) {
         newErrors[field.name] = `${field.label} is required`;
       }
       
-      if (field.validate && formData[field.name]) {
+      if(field.validate && formData[field.name]) {
         const validationError = field.validate(formData[field.name]);
-        if (validationError) {
+        if(validationError) {
           newErrors[field.name] = validationError;
         }
       }
     });
     
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return Object.keys(newErrors).length ===0;
   }, [fields, formData]);
 
   // Handle save
@@ -77,7 +134,7 @@ const UnifiedEditWindow = ({
     try {
       await onSave(formData);
       onClose();
-    } catch (error) {
+    } catch(error: any) {
       console.error('Save failed:', error);
       // Handle save error - could set a general error state
     }
@@ -92,87 +149,66 @@ const UnifiedEditWindow = ({
   }, [data, onClose]);
 
   // Default field renderer
-  const renderField = useCallback((field) => {
+  const renderField = useCallback((field: Field) => {
     const value = formData[field.name] || '';
     const error = errors[field.name];
     
-    switch (field.type) {
+    switch(field.type) {
       case 'text':
       case 'email':
       case 'url':
-        return (
-          <TextField
+        return(<TextField
             key={field.name}
             fullWidth
             label={field.label}
             type={field.type}
             value={value}
-            onChange={(e) => handleFieldChange(field.name, e.target.value)}
+            onChange={(e) => (e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange(field.name, e.target.value)}
             error={!!error}
             helperText={error || field.helperText}
             required={field.required}
             disabled={field.disabled}
             multiline={field.multiline}
             rows={field.rows}
-            margin="normal"
-          />
-        );
-      
-      case 'number':
-        return (
-          <TextField
+            margin: any,
             key={field.name}
             fullWidth
             label={field.label}
-            type="number"
+            type: any,
             value={value}
-            onChange={(e) => handleFieldChange(field.name, parseFloat(e.target.value) || 0)}
+            onChange={(e) => (e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange(field.name, parseFloat(e.target.value) || 0)}
             error={!!error}
             helperText={error || field.helperText}
             required={field.required}
             disabled={field.disabled}
-            margin="normal"
-          />
-        );
-      
-      case 'textarea':
-        return (
-          <TextField
+            margin: any,
             key={field.name}
             fullWidth
             label={field.label}
             value={value}
-            onChange={(e) => handleFieldChange(field.name, e.target.value)}
+            onChange={(e) => (e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange(field.name, e.target.value)}
             error={!!error}
             helperText={error || field.helperText}
             required={field.required}
             disabled={field.disabled}
             multiline
             rows={field.rows || 4}
-            margin="normal"
-          />
-        );
-      
-      case 'select':
-        return (
-          <TextField
+            margin: any,
             key={field.name}
             fullWidth
             select
             label={field.label}
             value={value}
-            onChange={(e) => handleFieldChange(field.name, e.target.value)}
+            onChange={(e) => (e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange(field.name, e.target.value)}
             error={!!error}
             helperText={error || field.helperText}
             required={field.required}
             disabled={field.disabled}
-            margin="normal"
-            SelectProps={{
-              native: true
+            margin: any,
             }}
           >
             <option value="">{field.placeholder || 'Select...'}</option>
-            {field.options?.map((option) => (
+            {field.options?.map((option: any: any) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -181,45 +217,43 @@ const UnifiedEditWindow = ({
         );
       
       default:
-        return (
-          <TextField
+        return(<TextField
             key={field.name}
             fullWidth
             label={field.label}
             value={value}
-            onChange={(e) => handleFieldChange(field.name, e.target.value)}
+            onChange={(e) => (e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange(field.name, e.target.value)}
             error={!!error}
             helperText={error || field.helperText}
             required={field.required}
             disabled={field.disabled}
-            margin="normal"
-          />
-        );
+            margin: any,
     }
   }, [formData, errors, handleFieldChange]);
 
   // Render content based on customization options
-  const renderContent = () => {
+  const renderContent = (): ReactNode => {
     // If custom renderer is provided, use it
-    if (customRenderer) {
+    if(customRenderer) {
       return customRenderer({
         formData,
-        setFormData,
         handleFieldChange,
-        errors,
-        setErrors
+        errors
       });
     }
     
     // If children are provided, render them
-    if (children) {
-      return React.cloneElement(children, {
-        formData,
-        setFormData,
-        handleFieldChange,
-        errors,
-        setErrors
-      });
+    if(children) {
+      if (React.isValidElement(children)) {
+        return React.cloneElement(children, {
+          formData,
+          setFormData,
+          handleFieldChange,
+          errors,
+          setErrors
+        } as React.HTMLAttributes<HTMLElement>);
+      }
+      return children;
     }
     
     // Default field rendering
@@ -230,30 +264,29 @@ const UnifiedEditWindow = ({
     );
   };
 
-  return (
-    <Dialog
+  return(<Dialog
       open={open}
       onClose={handleClose}
       maxWidth={maxWidth}
       fullWidth={fullWidth}
       fullScreen={fullScreen}
-      PaperProps={{
-        sx: {
-          minHeight: '400px'
+      aria-labelledby="unified-edit-window-title"
+      PaperProps: any,
         }
       }}
     >
-      <DialogTitle sx={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        borderBottom: 1,
-        borderColor: 'divider'
-      }}>
+      <DialogTitle 
+        id: any,
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          borderBottom: 1,
+          borderColor: 'divider'
+        }}
+      >
         <Typography variant="h6">
           {title}
         </Typography>
-        <IconButton onClick={handleClose} size="small">
+        <IconButton onClick={handleClose} size="small" aria-label="close">
           <Close />
         </IconButton>
       </DialogTitle>
@@ -262,11 +295,11 @@ const UnifiedEditWindow = ({
       {showTabs && customTabs && (
         <Tabs 
           value={activeTab} 
-          onChange={(e, newValue) => setActiveTab(newValue)}
+          onChange={(e) => (e: React.SyntheticEvent, newValue: number) => setActiveTab(newValue)}
           sx={{ borderBottom: 1, borderColor: 'divider' }}
         >
-          {customTabs.map((tab, index) => (
-            <Tab key={index} icon={tab.icon} label={tab.label} />
+          {customTabs.map((tab: any: any, index: any: any) => (
+            <Tab key={index} icon={tab.icon ? tab.icon as React.ReactElement : undefined} label={tab.label} />
           ))}
         </Tabs>
       )}
@@ -298,7 +331,7 @@ const UnifiedEditWindow = ({
         </Button>
         <Button 
           onClick={handleSave} 
-          variant="contained" 
+          variant: any,
           startIcon={<Save />}
           disabled={loading}
         >

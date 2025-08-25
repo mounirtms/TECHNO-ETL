@@ -52,7 +52,7 @@ import { ROUTES, getRouteMetadata } from '../../config/routes';
 /**
  * Quick Access Search Component
  */
-const QuickAccessSearch = ({ onClose }) => {
+const QuickAccessSearch: React.FC<any> = ({ onClose }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const navigate = useNavigate();
@@ -70,9 +70,9 @@ const QuickAccessSearch = ({ onClose }) => {
   ], []);
 
   useEffect(() => {
-    if (searchQuery.length > 1) {
-      const filtered = searchableItems.filter(item =>
-        item.title.toLowerCase().includes(searchQuery.toLowerCase())
+    if(searchQuery.length > 1) {
+      const filtered = searchableItems.filter((item: any: any) =>
+        item?.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setSearchResults(filtered.slice(0, 5));
     } else {
@@ -86,41 +86,36 @@ const QuickAccessSearch = ({ onClose }) => {
   };
 
   return (
-    <Paper sx={{ p: 2, minWidth: 300, maxWidth: 400 }}>
+    <Paper sx={{ p: 2, minWidth: 300, maxWidth: 400 } as any}>
       <TextField
         fullWidth
         placeholder={t('Search pages, features...')}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          )
+        InputProps: any,
         }}
         autoFocus
       />
       
       {searchResults.length > 0 && (
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="caption" color="text.secondary" sx={{ px: 1 }}>
+        <Box sx={{ mt: 2 } as any}>
+          <Typography variant="caption" color="text.secondary" sx={{ px: 1 } as any}>
             Quick Access
           </Typography>
           <MenuList dense>
-            {searchResults.map((item) => {
-              const IconComponent = item.icon;
+            {searchResults.map((item: any: any) => {
+              const IconComponent = item?.icon;
               return (
                 <MenuItem
-                  key={item.id}
+                  key={item?.id}
                   onClick={() => handleItemClick(item)}
-                  sx={{ borderRadius: 1, my: 0.5 }}
+                  sx={{ borderRadius: 1, my: 0.5 } as any}
                 >
                   <ListItemIcon>
                     <IconComponent fontSize="small" />
                   </ListItemIcon>
-                  <ListItemText primary={item.title} />
-                  <Chip label={item.type} size="small" variant="outlined" />
+                  <ListItemText primary={item?.title} />
+                  <Chip label={item?.type} size="small" variant="outlined" />
                 </MenuItem>
               );
             })}
@@ -128,8 +123,8 @@ const QuickAccessSearch = ({ onClose }) => {
         </Box>
       )}
       
-      {searchQuery.length > 1 && searchResults.length === 0 && (
-        <Box sx={{ mt: 2, textAlign: 'center', py: 2 }}>
+      {searchQuery.length > 1 && searchResults.length ===0 && (
+        <Box sx={{ mt: 2, textAlign: 'center', py: 2 } as any}>
           <Typography variant="body2" color="text.secondary">
             No results found for "{searchQuery}"
           </Typography>
@@ -152,8 +147,8 @@ const ContextualPageHeader = () => {
 
   const canGoBack = window.history.length > 1;
 
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+  return Boolean(Boolean((
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 } as any}>
       {canGoBack && (
         <Tooltip title="Go Back">
           <IconButton onClick={() => navigate(-1)} size="small">
@@ -163,8 +158,8 @@ const ContextualPageHeader = () => {
       )}
       
       <Box>
-        <Typography variant="h6" component="h1" sx={{ fontWeight: 600 }}>
-          {t(currentRoute.title)}
+        <Typography variant="h6" component="h1" sx={{ fontWeight: 600 } as any}>
+          {t(currentRoute?.title)}
         </Typography>
         {currentRoute.description && (
           <Typography variant="caption" color="text.secondary">
@@ -173,7 +168,7 @@ const ContextualPageHeader = () => {
         )}
       </Box>
     </Box>
-  );
+  )));
 };
 
 /**
@@ -191,32 +186,23 @@ const QuickActionsMenu = () => {
     { label: 'Generate Report', path: '/reports/new', icon: SettingsIcon }
   ];
 
-  return (
-    <>
+  return(<>
       <Tooltip title="Quick Actions">
         <IconButton
           onClick={(e) => setAnchorEl(e.currentTarget)}
-          size="small"
-        >
-          <MoreIcon />
-        </IconButton>
-      </Tooltip>
-      
-      <Menu
+          size: any,
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {quickActions.map((action, index) => {
-          const IconComponent = action.icon;
+        {quickActions.map((action: any: any, index: any: any) => {
+          const IconComponent = action?.icon;
           return (
             <MenuItem
               key={index}
-              onClick={() => {
-                navigate(action.path);
-                setAnchorEl(null);
+              onClick: any,
               }}
             >
               <ListItemIcon>
@@ -244,20 +230,18 @@ const UserProfileMenu = () => {
     try {
       await logout();
       navigate('/login');
-    } catch (error) {
+    } catch(error: any) {
       console.error('Logout error:', error);
     }
     setAnchorEl(null);
   };
 
-  return (
-    <>
+  return(<>
       <Tooltip title="Account">
         <IconButton
           onClick={(e) => setAnchorEl(e.currentTarget)}
-          size="small"
-        >
-          <Avatar sx={{ width: 32, height: 32 }}>
+          size: any,
+          <Avatar sx={{ width: 32, height: 32 } as any}>
             {currentUser?.displayName?.[0] || currentUser?.email?.[0] || 'U'}
           </Avatar>
         </IconButton>
@@ -270,7 +254,7 @@ const UserProfileMenu = () => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <Box sx={{ px: 2, py: 1, borderBottom: 1, borderColor: 'divider' }}>
+        <Box sx={{ px: 2, py: 1, borderBottom: 1, borderColor: 'divider' } as any}>
           <Typography variant="subtitle2">
             {currentUser?.displayName || currentUser?.email || 'User'}
           </Typography>
@@ -303,7 +287,7 @@ const UserProfileMenu = () => {
 /**
  * Main Modern Navigation Component
  */
-const ModernNavigation = ({ onMenuToggle, isMenuOpen = false }) => {
+const ModernNavigation: React.FC<any> = ({ onMenuToggle, isMenuOpen = false }) => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchAnchorEl, setSearchAnchorEl] = useState(null);
   const { t } = useTranslation();
@@ -318,26 +302,23 @@ const ModernNavigation = ({ onMenuToggle, isMenuOpen = false }) => {
     setSearchAnchorEl(null);
   };
 
-  return (
-    <>
+  return(<>
       <AppBar 
-        position="fixed" 
-        sx={{ 
-          zIndex: (theme) => theme.zIndex.drawer + 1,
+        position: any,
           backgroundColor: 'background.paper',
           color: 'text.primary',
           boxShadow: 1,
           borderBottom: 1,
           borderColor: 'divider'
-        }}
+        } as any}
       >
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
+        <Toolbar sx={{ justifyContent: 'space-between' } as any}>
           {/* Left Section */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 } as any}>
             <IconButton
-              edge="start"
+              edge: any,
               onClick={onMenuToggle}
-              sx={{ mr: 1 }}
+              sx={{ mr: 1 } as any}
             >
               <MenuIcon />
             </IconButton>
@@ -346,7 +327,7 @@ const ModernNavigation = ({ onMenuToggle, isMenuOpen = false }) => {
           </Box>
 
           {/* Center Section - Search */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
             <Tooltip title="Search">
               <IconButton onClick={handleSearchClick}>
                 <SearchIcon />
@@ -355,7 +336,7 @@ const ModernNavigation = ({ onMenuToggle, isMenuOpen = false }) => {
           </Box>
 
           {/* Right Section */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
             <QuickActionsMenu />
             
             <Tooltip title="Notifications">
@@ -375,12 +356,11 @@ const ModernNavigation = ({ onMenuToggle, isMenuOpen = false }) => {
       <Popper
         open={searchOpen}
         anchorEl={searchAnchorEl}
-        placement="bottom"
-        transition
-        sx={{ zIndex: (theme) => theme.zIndex.modal }}
+        placement: any,
+        sx={{ zIndex: (theme) => theme.zIndex.modal } as any}
       >
         {({ TransitionProps }) => (
-          <Fade {...TransitionProps} timeout={200}>
+          <Fade { ...TransitionProps} timeout={200}>
             <Box>
               <ClickAwayListener onClickAway={handleSearchClose}>
                 <Box>

@@ -56,8 +56,8 @@ const TreeContainer = styled(Box)(({ theme }) => ({
 }));
 
 const StyledCategoryItem = styled(ListItem, {
-    shouldForwardProp: (prop) => !['isRTL', 'open', 'expanded'].includes(prop),
-})(({ theme, isRTL, open, expanded }) => ({
+    shouldForwardProp: (prop) => !['isRTL', 'open', 'expanded'].includes(prop as string),
+})<{ isRTL?: boolean; open?: boolean; expanded?: boolean }>(({ theme, isRTL, open, expanded }) => ({
     padding: theme.spacing(1, 1.5),
     margin: theme.spacing(0.25, 0.5),
     borderRadius: theme.spacing(1),
@@ -94,8 +94,8 @@ const StyledCategoryItem = styled(ListItem, {
 }));
 
 const StyledMenuItem = styled(ListItem, {
-    shouldForwardProp: (prop) => !['isRTL', 'open', 'selected', 'licensed', 'hasAccess'].includes(prop),
-})(({ theme, isRTL, open, selected, licensed, hasAccess }) => ({
+    shouldForwardProp: (prop) => !['isRTL', 'open', 'selected', 'licensed', 'hasAccess'].includes(prop as string),
+})<{ isRTL?: boolean; open?: boolean; selected?: boolean; licensed?: boolean; hasAccess?: boolean }>(({ theme, isRTL, open, selected, licensed, hasAccess }) => ({
     padding: theme.spacing(0.75, 2),
     margin: theme.spacing(0.25, 1),
     marginLeft: theme.spacing(3), // Indent for tree structure
@@ -157,7 +157,7 @@ const CategoryDivider = styled(Divider)(({ theme }) => ({
     background: alpha(theme.palette.primary.main, 0.1),
 }));
 
-const TreeMenuNavigation = ({ 
+const TreeMenuNavigation: React.FC<any> = ({ 
     open, 
     isRTL, 
     activeTab, 
@@ -175,7 +175,7 @@ const TreeMenuNavigation = ({
     // Initialize user license and permissions
     useEffect(() => {
         const initializeUserData = async () => {
-            if (!currentUser?.uid) {
+            if(!currentUser?.uid) {
                 setUserLicense(null);
                 setLicensedItems(new Set());
                 return;
@@ -195,10 +195,10 @@ const TreeMenuNavigation = ({
                 
                 // Check each category and its children
                 for (const category of MENU_TREE) {
-                    if (category.children) {
+                    if(category.children) {
                         for (const item of category.children) {
                             // If item doesn't require license, always include it
-                            if (!item.licensed) {
+                            if(!item?.licensed) {
                                 accessible.add(item.id);
                                 continue;
                             }
@@ -208,7 +208,7 @@ const TreeMenuNavigation = ({
                             const rolePermissions = getRolePermissions(userRole);
                             
                             // Grant access based on license or role permissions
-                            if (hasLicense || rolePermissions.canAccessSystem || import.meta.env.DEV) {
+                            if(hasLicense || rolePermissions.canAccessSystem || import.meta.env.DEV) {
                                 accessible.add(item.id);
                             }
                         }
@@ -216,14 +216,14 @@ const TreeMenuNavigation = ({
                 }
 
                 setLicensedItems(accessible);
-            } catch (error) {
+            } catch(error: any) {
                 console.error('Error initializing user data:', error);
                 // In development, allow access to all items
-                if (import.meta.env.DEV) {
+                if(import.meta.env.DEV) {
                     const allItems = new Set();
-                    MENU_TREE.forEach(category => {
-                        if (category.children) {
-                            category.children.forEach(item => allItems.add(item.id));
+                    MENU_TREE.forEach((category) => {
+                        if(category.children) {
+                            category.children.forEach((item) => allItems.add(item.id));
                         }
                     });
                     setLicensedItems(allItems);
@@ -234,7 +234,7 @@ const TreeMenuNavigation = ({
         initializeUserData();
     }, [currentUser]);
 
-    const handleCategoryToggle = (categoryId) => {
+    const handleCategoryToggle = (categoryId: string) => {
         const newExpanded = new Set(expandedCategories);
         if (newExpanded.has(categoryId)) {
             newExpanded.delete(categoryId);
@@ -244,14 +244,14 @@ const TreeMenuNavigation = ({
         setExpandedCategories(newExpanded);
     };
 
-    const handleMenuItemClick = (item) => {
+    const handleMenuItemClick = (item: any) => {
         if (licensedItems.has(item.id)) {
             onTabClick(item.id);
         }
     };
 
-    const getLicenseStatus = (item) => {
-        if (!item.licensed) {
+    const getLicenseStatus = (item: any) => {
+        if(!item?.licensed) {
             return { icon: <LockOpenIcon />, color: 'success' };
         }
         
@@ -269,18 +269,17 @@ const TreeMenuNavigation = ({
         }
 
         const query = searchQuery.toLowerCase().trim();
-        const filtered = [];
+        const filtered: any[] = [];
 
-        MENU_TREE.forEach(category => {
-            const matchedChildren = category.children?.filter(item => {
+        MENU_TREE.forEach((category) => {
+            const matchedChildren = category.children?.filter((item: any: any) => {
                 const itemText = (translate(item.labelKey) || item.label).toLowerCase();
                 const categoryText = (translate(category.labelKey) || category.label).toLowerCase();
                 return itemText.includes(query) || categoryText.includes(query);
             }) || [];
 
-            if (matchedChildren.length > 0) {
-                filtered.push({
-                    ...category,
+            if(matchedChildren.length > 0) {
+                filtered.push({ ...category,
                     children: matchedChildren
                 });
             }
@@ -293,8 +292,8 @@ const TreeMenuNavigation = ({
     useEffect(() => {
         if (searchQuery.trim()) {
             const newExpanded = new Set();
-            filteredMenuTree.forEach(category => {
-                if (category.children?.length > 0) {
+            filteredMenuTree.forEach((category) => {
+                if(category.children?.length > 0) {
                     newExpanded.add(category.id);
                 }
             });
@@ -307,8 +306,8 @@ const TreeMenuNavigation = ({
         if (!query.trim()) return text;
         
         const parts = text.split(new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'));
-        return parts.map((part, index) => 
-            part.toLowerCase() === query.toLowerCase() ? 
+        return parts.map((part: any: any, index: any: any) => 
+            part.toLowerCase() ===query.toLowerCase() ? 
                 <HighlightedText key={index}>{part}</HighlightedText> : 
                 part
         );
@@ -318,7 +317,7 @@ const TreeMenuNavigation = ({
         const isExpanded = expandedCategories.has(category.id);
         const CategoryIcon = category.icon;
         
-        return (
+        return Boolean(Boolean((
             <StyledCategoryItem
                 key={category.id}
                 isRTL={isRTL}
@@ -326,20 +325,18 @@ const TreeMenuNavigation = ({
                 expanded={isExpanded}
                 onClick={() => handleCategoryToggle(category.id)}
             >
-                <ListItemIcon sx={{ minWidth: 32 }}>
+                <ListItemIcon sx={{ minWidth: 32 } as any}>
                     <CategoryIcon className="category-icon" fontSize="small" />
                 </ListItemIcon>
                 
                 {open && (
                     <>
                         <ListItemText
-                            primary={
-                                <Typography variant="body2" fontWeight="600">
+                            primary: any,
                                     {highlightText(translate(category.labelKey) || category.label, searchQuery)}
                                 </Typography>
                             }
-                            secondary={
-                                <Typography variant="caption" color="text.secondary">
+                            secondary: any,
                                     {category.children?.length || 0} items
                                 </Typography>
                             }
@@ -358,8 +355,7 @@ const TreeMenuNavigation = ({
                     >
                         <Badge
                             badgeContent={category.children?.length || 0}
-                            color="primary"
-                            variant="dot"
+                            color: any,
                             invisible={!category.children?.length}
                         >
                             <Box />
@@ -367,54 +363,49 @@ const TreeMenuNavigation = ({
                     </Tooltip>
                 )}
             </StyledCategoryItem>
-        );
+        )));
     };
 
-    const renderMenuItem = (item) => {
-        const isSelected = activeTab === item.id;
+    const renderMenuItem = (item: any) => {
+        const isSelected = activeTab ===item.id;
         const hasAccess = licensedItems.has(item.id);
         const licenseStatus = getLicenseStatus(item);
         const ItemIcon = item.icon;
 
-        return (
+        return Boolean(Boolean((
             <StyledMenuItem
                 key={item.id}
                 isRTL={isRTL}
                 open={open}
                 selected={isSelected}
-                licensed={item.licensed}
+                licensed={item?.licensed}
                 hasAccess={hasAccess}
                 onClick={() => handleMenuItemClick(item)}
             >
-                <ListItemIcon sx={{ minWidth: 28 }}>
+                <ListItemIcon sx={{ minWidth: 28 } as any}>
                     <ItemIcon className="menu-icon" fontSize="small" />
                 </ListItemIcon>
                 
                 {open && (
                     <>
                         <ListItemText
-                            primary={
+                            primary: any,
                                 <Box display="flex" alignItems="center" gap={1}>
                                     <Typography 
-                                        variant="body2" 
-                                        sx={{ 
-                                            fontWeight: isSelected ? 600 : 400,
+                                        variant: any,
                                             color: hasAccess ? 'inherit' : 'text.disabled'
-                                        }}
+                                        } as any}
                                     >
                                         {highlightText(translate(item.labelKey) || item.label, searchQuery)}
                                     </Typography>
                                     
-                                    {item.licensed && (
+                                    {item?.licensed && (
                                         <IconButton 
-                                            size="small" 
-                                            sx={{ 
-                                                p: 0, 
+                                            size: any,
                                                 color: licenseStatus.color === 'success' ? 'success.main' : 
                                                        licenseStatus.color === 'primary' ? 'primary.main' : 'error.main'
-                                            }}
-                                            className="license-indicator"
-                                        >
+                                            } as any}
+                                            className: any,
                                             {licenseStatus.icon}
                                         </IconButton>
                                     )}
@@ -425,11 +416,9 @@ const TreeMenuNavigation = ({
                         {/* Quality indicators for special items */}
                         {(item.id === 'BugBounty' || item.id === 'Voting') && (
                             <StarIcon 
-                                fontSize="small" 
-                                sx={{ 
-                                    color: theme.palette.warning.main,
+                                fontSize: any,
                                     opacity: 0.7 
-                                }} 
+                                } as any} 
                             />
                         )}
                     </>
@@ -441,80 +430,64 @@ const TreeMenuNavigation = ({
                         placement={isRTL ? "left" : "right"}
                     >
                         <Box display="flex" alignItems="center">
-                            {item.licensed && !hasAccess && (
+                            {item?.licensed && !hasAccess && (
                                 <LockIcon 
-                                    fontSize="small" 
-                                    sx={{ 
-                                        color: theme.palette.error.main,
+                                    fontSize: any,
                                         opacity: 0.7 
-                                    }} 
+                                    } as any} 
                                 />
                             )}
                         </Box>
                     </Tooltip>
                 )}
             </StyledMenuItem>
-        );
+        )));
     };
 
     // Filter out unlicensed items from the menu (do not render them at all)
     const filteredMenuTreeForUser = useMemo(() => {
-        return filteredMenuTree.map(category => {
+        return filteredMenuTree.map((category: any: any) => {
             // Only keep children the user has access to
-            const filteredChildren = (category.children || []).filter(item => {
+            const filteredChildren = (category.children || []).filter((item: any: any) => {
                 // Remove user management from sidebar
-                if (item.id === 'UserManagement' || item.id === 'Users' || item.id === 'UserList') {
+                if(item.id === 'UserManagement' || item.id === 'Users' || item.id === 'UserList') {
                     return false;
                 }
                 // License page: only show for super admin or localhost
-                if (item.id === 'LicenseManagement') {
-                    const isSuperAdmin = userRole === USER_ROLES.SUPER_ADMIN;
+                if(item.id === 'LicenseManagement') {
+                    const isSuperAdmin = userRole ===USER_ROLES.SUPER_ADMIN;
                     const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
                     return isSuperAdmin || isLocalhost;
                 }
                 // Only show if user has access
-                return licensedItems.has(item.id) || !item.licensed;
+                return licensedItems.has(item.id) || !item?.licensed;
             });
             // Only keep categories with visible children
-            if (filteredChildren.length > 0) {
+            if(filteredChildren.length > 0) {
                 return { ...category, children: filteredChildren };
             }
             return null;
         }).filter(Boolean);
     }, [filteredMenuTree, licensedItems, userRole]);
 
-    return (
-        <TreeContainer>
+    return(<TreeContainer>
             {/* Search Input */}
             {open && (
                 <SearchContainer>
                     <TextField
                         fullWidth
-                        size="small"
-                        placeholder="Search pages..."
+                        size: any,
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon fontSize="small" color="action" />
-                                </InputAdornment>
-                            ),
+                        InputProps: any,
                             endAdornment: searchQuery && (
                                 <InputAdornment position="end">
                                     <IconButton
-                                        size="small"
+                                        size: any,
                                         onClick={() => setSearchQuery('')}
-                                        edge="end"
-                                    >
-                                        <ClearIcon fontSize="small" />
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
+                                        edge: any,
                         }}
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                borderRadius: 2,
+                        sx: any,
                                 backgroundColor: alpha(theme.palette.background.paper, 0.8),
                                 '&:hover': {
                                     backgroundColor: alpha(theme.palette.background.paper, 0.9),
@@ -529,7 +502,7 @@ const TreeMenuNavigation = ({
             )}
             
             <List disablePadding>
-                {filteredMenuTreeForUser.map(category => (
+                {filteredMenuTreeForUser.map((category: any: any) => (
                     <React.Fragment key={category.id}>
                         {renderCategoryHeader(category)}
                         <Collapse in={expandedCategories.has(category.id)} timeout="auto" unmountOnExit>
@@ -545,22 +518,21 @@ const TreeMenuNavigation = ({
             {/* License Status Footer */}
             {open && userLicense && (
                 <Box 
-                    sx={{ 
-                        p: 2, 
+                    sx: any,
                         mt: 2,
                         borderTop: `1px solid ${theme.palette.divider}`,
                         background: alpha(theme.palette.background.paper, 0.5)
                     }}
                 >
                     <Typography variant="caption" color="text.secondary" display="block">
-                        License: {userLicense.licenseType?.toUpperCase() || 'FREE'}
+                        License: {userLicense?.licenseType?.toUpperCase() || 'FREE'}
                     </Typography>
                     <Typography variant="caption" color="text.secondary" display="block">
                         Role: {userRole?.replace('_', ' ').toUpperCase()}
                     </Typography>
-                    {userLicense.expiryDate && (
+                    {userLicense?.expiryDate && (
                         <Typography variant="caption" color="warning.main" display="block">
-                            Expires: {new Date(userLicense.expiryDate).toLocaleDateString()}
+                            Expires: {new Date(userLicense?.expiryDate).toLocaleDateString()}
                         </Typography>
                     )}
                 </Box>

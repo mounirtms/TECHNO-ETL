@@ -120,7 +120,7 @@ const RoadmapGrid = () => {
       // Try to load from service
       const data = await votingService.getRoadmap();
       setRoadmapData(data);
-    } catch (err) {
+    } catch(err: any) {
       console.warn('Roadmap service unavailable, using fallback data:', err);
 
       // Provide fallback roadmap data
@@ -234,7 +234,7 @@ const RoadmapGrid = () => {
   const toggleSection = (status) => {
     setExpandedSections(prev => {
       const newSet = new Set(prev);
-      if (newSet.has(status)) {
+      if(newSet.has(status)) {
         newSet.delete(status);
       } else {
         newSet.add(status);
@@ -249,10 +249,10 @@ const RoadmapGrid = () => {
   const progressStats = useMemo(() => {
     if (!roadmapData) return null;
 
-    const total = roadmapData.totalFeatures;
-    const completed = roadmapData.byStatus.completed?.length || 0;
-    const inProgress = roadmapData.byStatus.in_progress?.length || 0;
-    const approved = roadmapData.byStatus.approved?.length || 0;
+    const total = roadmapData?.totalFeatures;
+    const completed = roadmapData?.byStatus.completed?.length || 0;
+    const inProgress = roadmapData?.byStatus.in_progress?.length || 0;
+    const approved = roadmapData?.byStatus.approved?.length || 0;
 
     return {
       total,
@@ -269,7 +269,7 @@ const RoadmapGrid = () => {
     loadRoadmap();
   }, []);
 
-  if (loading) {
+  if(loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight={400}>
         <Typography>Loading roadmap...</Typography>
@@ -277,7 +277,7 @@ const RoadmapGrid = () => {
     );
   }
 
-  if (error) {
+  if(error) {
     return (
       <Alert severity="error" sx={{ m: 2 }}>
         {error}
@@ -298,7 +298,7 @@ const RoadmapGrid = () => {
 
         {/* Progress Overview */}
         {progressStats && (
-          <Grid container spacing={3}>
+          <Grid { ...{container: true}} spacing={3}>
             <Grid item xs={12} md={3}>
               <Card sx={{ textAlign: 'center', p: 2 }}>
                 <Typography variant="h3" color="primary">
@@ -338,7 +338,7 @@ const RoadmapGrid = () => {
                   Completion Rate
                 </Typography>
                 <LinearProgress 
-                  variant="determinate" 
+                  variant: any,
                   value={progressStats.completionRate} 
                   sx={{ mt: 1 }}
                 />
@@ -349,7 +349,7 @@ const RoadmapGrid = () => {
       </Paper>
 
       {/* Roadmap Timeline */}
-      <Grid container spacing={3}>
+      <Grid { ...{container: true}} spacing={3}>
         {/* Timeline View */}
         <Grid item xs={12} lg={8}>
           <Paper sx={{ p: 3 }}>
@@ -358,13 +358,12 @@ const RoadmapGrid = () => {
             </Typography>
             
             <Timeline>
-              {Object.entries(STATUS_CONFIG).map(([status, config], index) => {
+              {Object.entries(STATUS_CONFIG).map(([status: any: any, config], index: any: any) => {
                 const features = roadmapData?.byStatus[status] || [];
                 const StatusIcon = config.icon;
-                const isLast = index === Object.keys(STATUS_CONFIG).length - 1;
+                const isLast = index ===Object.keys(STATUS_CONFIG).length - 1;
 
-                return (
-                  <TimelineItem key={status}>
+                return(<TimelineItem key={status}>
                     <TimelineSeparator>
                       <TimelineDot color={config.color}>
                         <StatusIcon />
@@ -374,7 +373,7 @@ const RoadmapGrid = () => {
                     <TimelineContent>
                       <Accordion 
                         expanded={expandedSections.has(status)}
-                        onChange={() => toggleSection(status)}
+                        onChange={(e) => () => toggleSection(status)}
                         sx={{ mb: 2 }}
                       >
                         <AccordionSummary expandIcon={<ExpandMore />}>
@@ -396,10 +395,10 @@ const RoadmapGrid = () => {
                           
                           {features.length > 0 ? (
                             <Stack spacing={2}>
-                              {features.map((feature) => {
+                              {features.map((feature: any: any) => {
                                 const CategoryIcon = CATEGORY_ICONS[feature.category] || Lightbulb;
                                 
-                                return (
+                                return Boolean(Boolean((
                                   <motion.div
                                     key={feature.id}
                                     initial={{ opacity: 0, x: -20 }}
@@ -419,39 +418,28 @@ const RoadmapGrid = () => {
                                           <Stack direction="row" spacing={1} alignItems="center">
                                             <Chip 
                                               label={feature.category} 
-                                              size="small" 
-                                              variant="outlined"
-                                            />
-                                            <Chip 
+                                              size: any,
                                               label={feature.priority} 
-                                              size="small" 
-                                              color={feature.priority === 'high' ? 'error' : 
+                                              size: any,
                                                      feature.priority === 'medium' ? 'warning' : 'success'}
                                             />
                                             {feature.vote_count > 0 && (
                                               <Tooltip title="Community votes">
                                                 <Chip 
                                                   label={`${feature.vote_count} votes`} 
-                                                  size="small" 
-                                                  color="primary"
-                                                  variant="outlined"
-                                                />
-                                              </Tooltip>
+                                                  size: any,
                                             )}
                                             {feature.target_release && (
                                               <Chip 
                                                 label={`v${feature.target_release}`} 
-                                                size="small" 
-                                                color="info"
-                                                variant="outlined"
-                                              />
+                                                size: any,
                                             )}
                                           </Stack>
                                         </Box>
                                       </Stack>
                                     </Card>
                                   </motion.div>
-                                );
+                                )));
                               })}
                             </Stack>
                           ) : (
@@ -478,7 +466,7 @@ const RoadmapGrid = () => {
             
             {roadmapData?.byCategory && (
               <Stack spacing={2}>
-                {Object.entries(roadmapData.byCategory).map(([category, features]) => {
+                {Object.entries(roadmapData?.byCategory).map(([category: any: any, features]: any: any) => {
                   const CategoryIcon = CATEGORY_ICONS[category] || Lightbulb;
                   
                   return (
@@ -510,9 +498,9 @@ const RoadmapGrid = () => {
               Recent Updates
             </Typography>
             
-            {roadmapData?.recentActivity && roadmapData.recentActivity.length > 0 ? (
+            {roadmapData?.recentActivity && roadmapData?.recentActivity.length > 0 ? (
               <Stack spacing={2}>
-                {roadmapData.recentActivity.slice(0, 5).map((activity, index) => (
+                {roadmapData?.recentActivity.slice(0, 5).map((activity: any: any, index: any: any) => (
                   <Box key={index} sx={{ pb: 1, borderBottom: index < 4 ? 1 : 0, borderColor: 'divider' }}>
                     <Typography variant="body2" gutterBottom>
                       {activity.title}
@@ -520,7 +508,7 @@ const RoadmapGrid = () => {
                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                       <Chip 
                         label={STATUS_CONFIG[activity.status]?.label || activity.status} 
-                        size="small" 
+                        size: any,
                         color={STATUS_CONFIG[activity.status]?.color || 'default'}
                       />
                       <Typography variant="caption" color="text.secondary">

@@ -35,25 +35,24 @@ import {
  * - Clear all filters option
  * - Professional styling
  */
-const MDMFilterPanel = ({
-  succursaleOptions = [],
+const MDMFilterPanel: React.FC<{succursaleOptions: any: any, succursaleFilter: any, onSuccursaleChange: any, sourceFilterOptions: any: any, sourceFilter: any, onSourceChange: any, showChangedOnly: any, onShowChangedOnlyChange: any, isExpanded: any: any, onToggleExpanded: any}> = ({ succursaleOptions: any,
   succursaleFilter,
   onSuccursaleChange,
-  sourceFilterOptions = [],
+  sourceFilterOptions: any,
   sourceFilter,
   onSourceChange,
   showChangedOnly,
   onShowChangedOnlyChange,
-  isExpanded = false,
+  isExpanded: any,
   onToggleExpanded
-}) => {
+ }) => {
   const theme = useTheme();
   const [localExpanded, setLocalExpanded] = useState(isExpanded);
 
   const handleToggle = () => {
     const newExpanded = !localExpanded;
     setLocalExpanded(newExpanded);
-    if (onToggleExpanded) {
+    if(onToggleExpanded) {
       onToggleExpanded(newExpanded);
     }
   };
@@ -71,10 +70,10 @@ const MDMFilterPanel = ({
     showChangedOnly
   ].filter(Boolean).length;
 
-  return (
+  return Boolean(Boolean((
     <Paper 
       elevation={0}
-      sx={{
+      sx: any,
         mb: 1, // Less margin for compactness
         border: `1px solid ${theme.palette.divider}`,
         borderRadius: 2,
@@ -87,8 +86,7 @@ const MDMFilterPanel = ({
     >
       {/* Filter Header */}
       <Box
-        sx={{
-          display: 'flex',
+        sx: any,
           alignItems: 'center',
           justifyContent: 'space-between',
           px: 1.5,
@@ -111,21 +109,16 @@ const MDMFilterPanel = ({
           {filterCount > 0 && (
             <Chip 
               label={filterCount} 
-              size="small" 
-              color="primary" 
+              size: any,
               sx={{ minWidth: 24, height: 20 }}
             />
           )}
         </Box>
         
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          {hasActiveFilters && (
-            <Tooltip title="Clear all filters">
+          {hasActiveFilters && (<Tooltip title="Clear all filters">
               <IconButton 
-                size="small" 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleClearFilters();
+                size: any,
                 }}
                 sx={{ color: theme.palette.text.secondary }}
               >
@@ -153,16 +146,12 @@ const MDMFilterPanel = ({
 
             {/* Branch Filter - Enhanced Combobox */}
             <FormControl
-              size="small"
-              sx={{
-                minWidth: 180,
+              size: any,
                 '@media (max-width: 768px)': { minWidth: '100%' }
               }}
             >
               <InputLabel
-                id="branch-filter-label"
-                sx={{
-                  display: 'flex',
+                id: any,
                   alignItems: 'center',
                   fontSize: '0.875rem',
                   fontWeight: 500
@@ -172,31 +161,27 @@ const MDMFilterPanel = ({
                 Branch
               </InputLabel>
               <Select
-                labelId="branch-filter-label"
+                labelId: any,
                 value={succursaleFilter}
-                onChange={(e) => onSuccursaleChange(e.target.value)}
-                label="Branch"
-                sx={{
-                  '& .MuiSelect-select': {
-                    display: 'flex',
+                onChange={(e) => onSuccursaleChange(e.target?.value)}
+                label: any,
                     alignItems: 'center',
                     gap: 1
                   }
                 }}
               >
-                {succursaleOptions.map((option) => (
+                {succursaleOptions.map((option: any: any) => (
                   <MenuItem
-                    key={option.value}
-                    value={option.value}
-                    sx={{
-                      display: 'flex',
+                    key={option?.value}
+                    value={option?.value}
+                    sx: any,
                       alignItems: 'center',
                       gap: 1,
                       py: 1
                     }}
                   >
                     <BranchIcon fontSize="small" color="primary" />
-                    {option.label}
+                    {option?.label}
                   </MenuItem>
                 ))}
               </Select>
@@ -204,16 +189,12 @@ const MDMFilterPanel = ({
 
             {/* Source Filter - Enhanced Combobox */}
             <FormControl
-              size="small"
-              sx={{
-                minWidth: 180,
+              size: any,
                 '@media (max-width: 768px)': { minWidth: '100%' }
               }}
             >
               <InputLabel
-                id="source-filter-label"
-                sx={{
-                  display: 'flex',
+                id: any,
                   alignItems: 'center',
                   fontSize: '0.875rem',
                   fontWeight: 500
@@ -223,31 +204,27 @@ const MDMFilterPanel = ({
                 Source
               </InputLabel>
               <Select
-                labelId="source-filter-label"
+                labelId: any,
                 value={sourceFilter}
-                onChange={(e) => onSourceChange(e.target.value)}
-                label="Source"
-                sx={{
-                  '& .MuiSelect-select': {
-                    display: 'flex',
+                onChange={(e) => onSourceChange(e.target?.value)}
+                label: any,
                     alignItems: 'center',
                     gap: 1
                   }
                 }}
               >
-                {sourceFilterOptions.map((option) => (
+                {sourceFilterOptions.map((option: any: any) => (
                   <MenuItem
-                    key={option.value}
-                    value={option.value}
-                    sx={{
-                      display: 'flex',
+                    key={option?.value}
+                    value={option?.value}
+                    sx: any,
                       alignItems: 'center',
                       gap: 1,
                       py: 1
                     }}
                   >
                     <SourceIcon fontSize="small" color="secondary" />
-                    {option.label}
+                    {option?.label}
                   </MenuItem>
                 ))}
               </Select>
@@ -255,15 +232,12 @@ const MDMFilterPanel = ({
 
             {/* Changed Only Switch - Compact */}
             <FormControlLabel
-              control={
-                <Switch
+              control: any,
                   checked={showChangedOnly}
                   onChange={(e) => onShowChangedOnlyChange(e.target.checked)}
-                  color="primary"
-                  size="small"
-                />
+                  color: any,
               }
-              label={
+              label: any,
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                   <ChangedIcon fontSize="small" />
                   <Typography variant="body2" fontWeight={500}>
@@ -271,8 +245,7 @@ const MDMFilterPanel = ({
                   </Typography>
                 </Box>
               }
-              sx={{
-                ml: 1,
+              sx: any,
                 '@media (max-width: 768px)': {
                   ml: 0,
                   justifyContent: 'center'
@@ -292,30 +265,23 @@ const MDMFilterPanel = ({
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                   {succursaleFilter !== '16' && (
                     <Chip
-                      label={`Branch: ${succursaleOptions.find(o => o.value === succursaleFilter)?.label || succursaleFilter}`}
-                      size="small"
+                      label={`Branch: ${succursaleOptions.find(o => o?.value ===succursaleFilter)?.label || succursaleFilter}`}
+                      size: any,
                       onDelete={() => onSuccursaleChange('16')}
-                      color="primary"
-                      variant="outlined"
-                    />
+                      color: any,
                   )}
                   {sourceFilter !== 'all' && (
                     <Chip
-                      label={`Source: ${sourceFilterOptions.find(o => o.value === sourceFilter)?.label || sourceFilter}`}
-                      size="small"
+                      label={`Source: ${sourceFilterOptions.find(o => o?.value ===sourceFilter)?.label || sourceFilter}`}
+                      size: any,
                       onDelete={() => onSourceChange('all')}
-                      color="primary"
-                      variant="outlined"
-                    />
+                      color: any,
                   )}
                   {showChangedOnly && (
                     <Chip
-                      label="Changed Only"
-                      size="small"
+                      label: any,
                       onDelete={() => onShowChangedOnlyChange(false)}
-                      color="primary"
-                      variant="outlined"
-                    />
+                      color: any,
                   )}
                 </Box>
               </Box>
@@ -324,7 +290,7 @@ const MDMFilterPanel = ({
         </Box>
       </Collapse>
     </Paper>
-  );
+  )));
 };
 
 export default MDMFilterPanel;

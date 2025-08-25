@@ -11,8 +11,7 @@ import arLocale from '../assets/locale/ar.json';
 // Enhanced locale resources with grid-specific translations
 const resources = {
   en: {
-    translation: {
-      ...enLocale,
+    translation: { ...enLocale,
       grid: {
         common: {
           loading: 'Loading...',
@@ -126,8 +125,7 @@ const resources = {
     }
   },
   fr: {
-    translation: {
-      ...frLocale,
+    translation: { ...frLocale,
       grid: {
         common: {
           loading: 'Chargement...',
@@ -188,8 +186,7 @@ const resources = {
     }
   },
   ar: {
-    translation: {
-      ...arLocale,
+    translation: { ...arLocale,
       grid: {
         common: {
           loading: 'جاري التحميل...',
@@ -294,7 +291,7 @@ i18n
 // Helper functions
 export const getCurrentLanguage = () => i18n.language;
 export const getDirection = () => i18n.dir();
-export const isRTL = () => i18n.dir() === 'rtl';
+export const isRTL = () => i18n.dir() ==='rtl';
 export const changeLanguage = (lng) => i18n.changeLanguage(lng);
 
 // Language configuration

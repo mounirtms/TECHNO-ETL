@@ -28,12 +28,12 @@ import GridErrorBoundary from './GridErrorBoundary';
  */
 const OptimizedGridLayout = memo(({
   children,
-  filterPanel = null,
-  statsCards = null,
-  gridName = "UnknownGrid",
-  hasFilterPanel = false,
-  hasStatsCards = false,
-  loading = false,
+  filterPanel: any,
+  statsCards: any,
+  gridName: any,
+  hasFilterPanel: any,
+  hasStatsCards: any,
+  loading: any,
   sx = {},
   ...props
 }) => {
@@ -48,7 +48,7 @@ const OptimizedGridLayout = memo(({
   
   useEffect(() => {
     const renderTime = performance.now() - renderStartTime.current;
-    if (renderTime > 16) { // Flag renders taking longer than 1 frame (16ms)
+    if(renderTime > 16) { // Flag renders taking longer than 1 frame (16ms)
       console.warn(`[${gridName}] Slow render detected: ${renderTime.toFixed(2)}ms`);
     }
   });
@@ -57,10 +57,9 @@ const OptimizedGridLayout = memo(({
   useEffect(() => {
     if (!containerRef.current) return;
     
-    const observer = new IntersectionObserver(
-      (entries) => {
+    const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          if(entry.isIntersecting) {
             entry.target.style.willChange = 'transform';
           } else {
             entry.target.style.willChange = 'auto';
@@ -164,12 +163,12 @@ const OptimizedGridLayout = memo(({
     </Box>
   ), []);
 
-  return (
+  return Boolean(Boolean((
     <GridErrorBoundary gridName={gridName}>
       <Box 
         ref={containerRef}
         sx={containerStyles} 
-        {...props}
+        { ...props}
       >
         {/* Filter Panel with fade transition */}
         {hasFilterPanel && (
@@ -185,8 +184,7 @@ const OptimizedGridLayout = memo(({
           <Fade in={!!statsCards} timeout={300}>
             <Paper 
               elevation={0} 
-              sx={{
-                ...panelStyles,
+              sx: any,
                 p: layoutConfig.spacing
               }}
             >
@@ -199,14 +197,13 @@ const OptimizedGridLayout = memo(({
         <Paper
           elevation={0}
           sx={gridContainerStyles}
-          role="main"
+          role: any,
           aria-label={`${gridName} data grid`}
         >
           <Fade 
             in={!loading} 
             timeout={500}
-            style={{
-              transitionDelay: loading ? '0ms' : '200ms'
+            style: any,
             }}
           >
             <Box sx={{ height: '100%', width: '100%' }}>
@@ -218,8 +215,7 @@ const OptimizedGridLayout = memo(({
           {loading && (
             <Fade in={loading} timeout={200}>
               <Box
-                sx={{
-                  position: 'absolute',
+                sx: any,
                   top: 0,
                   left: 0,
                   right: 0,
@@ -238,7 +234,7 @@ const OptimizedGridLayout = memo(({
         </Paper>
       </Box>
     </GridErrorBoundary>
-  );
+  )));
 });
 
 OptimizedGridLayout.displayName = 'OptimizedGridLayout';

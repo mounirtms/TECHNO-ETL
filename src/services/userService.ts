@@ -95,7 +95,7 @@ export const saveUserSettings = async (userId, settings) => {
             success: true,
             message: 'User settings saved successfully'
         };
-    } catch (error) {
+    } catch(error: any) {
         console.error('Error saving user settings:', error);
         throw {
             success: false,
@@ -114,22 +114,22 @@ export const applyUserPreferences = (data, contexts = {}) => {
 
   try {
     // Apply language settings
-    if (prefs.language && setLanguage) {
+    if(prefs.language && setLanguage) {
       setLanguage(prefs.language);
       const langConfig = languages[prefs.language];
-      if (langConfig) {
+      if(langConfig) {
         document.documentElement.setAttribute('lang', langConfig.code);
         document.documentElement.setAttribute('dir', langConfig.dir);
       }
     }
 
     // Apply theme settings
-    if (prefs.theme && setTheme) {
+    if(prefs.theme && setTheme) {
       let themeToApply = prefs.theme;
 
       // Handle system theme preference
-      if (prefs.theme === 'system') {
-        themeToApply = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      if(prefs.theme === 'system') {
+        themeToApply: any,
       }
 
       setTheme(themeToApply);
@@ -137,26 +137,26 @@ export const applyUserPreferences = (data, contexts = {}) => {
     }
 
     // Apply font size settings
-    if (prefs.fontSize && setFontSize) {
+    if(prefs.fontSize && setFontSize) {
       setFontSize(prefs.fontSize);
       localStorage.setItem('fontSize', prefs.fontSize);
     }
 
     // Apply accessibility settings
-    if (prefs.highContrast) {
+    if(prefs.highContrast) {
       document.documentElement.classList.add('high-contrast');
     } else {
       document.documentElement.classList.remove('high-contrast');
     }
 
-    if (prefs.largeText) {
+    if(prefs.largeText) {
       document.documentElement.classList.add('large-text');
     } else {
       document.documentElement.classList.remove('large-text');
     }
 
     // Apply animation preferences
-    if (!prefs.animations) {
+    if(!prefs.animations) {
       document.documentElement.classList.add('no-animations');
     } else {
       document.documentElement.classList.remove('no-animations');
@@ -166,7 +166,7 @@ export const applyUserPreferences = (data, contexts = {}) => {
     updateApiServicesSettings(data.apiSettings);
 
     console.log('User preferences applied successfully:', prefs);
-  } catch (error) {
+  } catch(error: any) {
     console.error('Error applying user preferences:', error);
   }
 };
@@ -178,7 +178,7 @@ const updateApiServicesSettings = (apiSettings) => {
   try {
     // Dynamically import and update services
     import('../services/unifiedMagentoService').then(({ default: unifiedMagentoService }) => {
-      if (apiSettings.magento) {
+      if(apiSettings.magento) {
         unifiedMagentoService.initializeMagento(apiSettings.magento);
       }
     }).catch(error => {
@@ -187,7 +187,7 @@ const updateApiServicesSettings = (apiSettings) => {
     
     // Update other services as needed
     console.log('API services updated with new settings');
-  } catch (error) {
+  } catch(error: any) {
     console.error('Error updating API services:', error);
   }
 };
@@ -212,7 +212,7 @@ export const getUserProfileData = (userId, callback) => {
 export const getUserSettings = () => {
     try {
         const stored = localStorage.getItem('userSettings');
-        if (stored) {
+        if(stored) {
             const parsed = JSON.parse(stored);
             // Merge with defaults to ensure all properties exist
             return {
@@ -221,7 +221,7 @@ export const getUserSettings = () => {
                 preferences: { ...defaultUserSettings.preferences, ...parsed.preferences }
             };
         }
-    } catch (error) {
+    } catch(error: any) {
         console.error('Error parsing stored user settings:', error);
     }
     return defaultUserSettings;
@@ -233,7 +233,7 @@ export const saveSettingsLocally = (settings) => {
         localStorage.setItem('userSettings', JSON.stringify(settings));
         localStorage.setItem('settingsLastModified', Date.now().toString());
         return true;
-    } catch (error) {
+    } catch(error: any) {
         console.error('Error saving settings locally:', error);
         return false;
     }

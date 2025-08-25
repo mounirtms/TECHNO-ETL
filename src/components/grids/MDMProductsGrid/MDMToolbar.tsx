@@ -1,3 +1,4 @@
+import React from 'react';
 /**
  * MDM Toolbar Component
  * Professional toolbar for MDM Products Grid with standardized actions
@@ -25,16 +26,15 @@ import {
  * @param {number} props.selectedCount - Number of selected items
  * @returns {Object} Toolbar configuration object
  */
-const useMDMToolbarConfig = ({
-  onRefresh,
+const useMDMToolbarConfig: React.FC<{onRefresh: any, onSync: any, onSyncStocks: any, onSyncAll: any, onExport: any, loading: any: any, selectedCount: any: any, hasChangedData: any: any, : any}> = ({ onRefresh,
   onSync,
   onSyncStocks,
   onSyncAll,
   onExport,
-  loading = false,
-  selectedCount = 0,
-  hasChangedData = false
-}) => {
+  loading: any,
+  selectedCount: any,
+  hasChangedData: any,
+ }) => {
   return useMemo(() => ({
     showRefresh: true,
     showSync: true,
@@ -125,22 +125,21 @@ const useMDMToolbarConfig = ({
  * @param {number} props.selectedCount - Number of selected items
  * @returns {Array} Array of custom action configurations
  */
-const useMDMCustomActions = ({
-  onRefresh,
+const useMDMCustomActions: React.FC<{onRefresh: any, onSync: any, onSyncStocks: any, onSyncAll: any, loading: any: any, selectedCount: any: any, hasChangedData: any: any, : any}> = ({ onRefresh,
   onSync,
   onSyncStocks,
   onSyncAll,
-  loading = false,
-  selectedCount = 0,
-  hasChangedData = false
-}) => {
+  loading: any,
+  selectedCount: any,
+  hasChangedData: any,
+ }) => {
   return useMemo(() => [
     {
       id: 'sync-selected',
       label: selectedCount > 0 ? `Sync (${selectedCount})` : 'Sync',
       icon: SyncIcon,
       onClick: onSync,
-      disabled: loading || selectedCount === 0,
+      disabled: loading || selectedCount ===0,
       tooltip: selectedCount > 0
         ? `Sync ${selectedCount} selected items to Magento`
         : 'Select items to sync to Magento',
@@ -183,7 +182,7 @@ const useMDMCustomActions = ({
  * @param {Function} props.onEdit - Edit handler function
  * @returns {Object} Context menu actions configuration
  */
-const useMDMContextMenuActions = ({ onSync, onView, onEdit }) => {
+const useMDMContextMenuActions: React.FC<{onSync: any, onView: any, onEdit: any}> = ({ onSync, onView, onEdit  }) => {
   return useMemo(() => ({
     view: {
       enabled: true,

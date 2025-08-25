@@ -6,7 +6,7 @@
  * @email mounir.ab@techno-dz.com
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, ReactNode, MouseEvent } from 'react';
 import {
   Box,
   Toolbar,
@@ -39,14 +39,66 @@ import {
 import { useLanguage } from '../../../contexts/LanguageContext';
 import { useCustomTheme } from '../../../contexts/ThemeContext';
 
-const GridToolbar = ({
+// Interface for the Language context
+interface LanguageContextProps {
+  translate: (key: string) => string;
+  currentLanguage: string;
+  direction: 'ltr' | 'rtl';
+}
+
+// Interface for the Theme context
+interface CustomThemeProps {
+  density: 'compact' | 'standard' | 'comfortable';
+  mode: 'light' | 'dark';
+}
+
+// Custom action type definition
+interface CustomAction {
+  label: string;
+  icon?: ReactNode;
+  onClick?: (selectedRows?: any[]) => void;
+  disabled?: boolean;
+}
+
+// GridToolbar props interface
+interface GridToolbarProps {
+  gridName?: string;
+  config?: {
+    showSearch?: boolean;
+    showRefresh?: boolean;
+    showFilter?: boolean;
+    showColumns?: boolean;
+    showExport?: boolean;
+    showImport?: boolean;
+    showAdd?: boolean;
+    showEdit?: boolean;
+    showDelete?: boolean;
+    title?: string;
+    [key: string]: any;
+  };
+  customActions?: CustomAction[];
+  contextMenuActions?: CustomAction[];
+  selectedRows?: any[];
+  onRefresh?: () => void;
+  loading?: boolean;
+  onSearch?: (value: string) => void;
+  onFilter?: () => void;
+  onExport?: () => void;
+  onImport?: () => void;
+  onAdd?: () => void;
+  onEdit?: (row?) => void;
+  onDelete?: (rows?: any[]) => void;
+  [key: string]: any;
+}
+
+const GridToolbar: React.FC<GridToolbarProps> = ({
   gridName,
   config = {},
-  customActions = [],
-  contextMenuActions = [],
-  selectedRows = [],
+  customActions: any,
+  contextMenuActions: any,
+  selectedRows: any,
   onRefresh,
-  loading = false,
+  loading: any,
   onSearch,
   onFilter,
   onExport,
@@ -56,13 +108,13 @@ const GridToolbar = ({
   onDelete,
   ...props
 }) => {
-  const { translate } = useLanguage();
-  const { density } = useCustomTheme();
+  const { translate } = useLanguage() as LanguageContextProps;
+  const { density } = useCustomTheme() as CustomThemeProps;
   
   // State
   const [searchValue, setSearchValue] = useState('');
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [filterAnchorEl, setFilterAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLElement | null>(null);
 
   // Default configuration
   const defaultConfig = {
@@ -81,7 +133,7 @@ const GridToolbar = ({
   const finalConfig = { ...defaultConfig, ...config };
 
   // Event handlers
-  const handleSearch = useCallback((value) => {
+  const handleSearch = useCallback((value: string) => {
     setSearchValue(value);
     onSearch?.(value);
   }, [onSearch]);
@@ -90,7 +142,7 @@ const GridToolbar = ({
     onRefresh?.();
   }, [onRefresh]);
 
-  const handleMenuOpen = useCallback((event) => {
+  const handleMenuOpen = useCallback((event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   }, []);
 
@@ -98,7 +150,7 @@ const GridToolbar = ({
     setAnchorEl(null);
   }, []);
 
-  const handleFilterOpen = useCallback((event) => {
+  const handleFilterOpen = useCallback((event: MouseEvent<HTMLButtonElement>) => {
     setFilterAnchorEl(event.currentTarget);
   }, []);
 
@@ -112,13 +164,13 @@ const GridToolbar = ({
   }, [onAdd]);
 
   const handleEdit = useCallback(() => {
-    if (selectedRows.length === 1) {
+    if(selectedRows.length ===1) {
       onEdit?.(selectedRows[0]);
     }
   }, [onEdit, selectedRows]);
 
   const handleDelete = useCallback(() => {
-    if (selectedRows.length > 0) {
+    if(selectedRows.length > 0) {
       onDelete?.(selectedRows);
     }
   }, [onDelete, selectedRows]);
@@ -131,29 +183,26 @@ const GridToolbar = ({
     onImport?.();
   }, [onImport]);
 
-  return (
+  return Boolean(Boolean((
     <Box
-      sx={{
-        borderBottom: 1,
+      sx: any,
         borderColor: 'divider',
         backgroundColor: 'background.paper'
       }}
     >
       <Toolbar
         variant={density === 'compact' ? 'dense' : 'regular'}
-        sx={{
-          gap: 1,
+        sx: any,
           minHeight: density === 'compact' ? 48 : 64
         }}
       >
         {/* Title */}
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          {translate(finalConfig.title) || finalConfig.title}
+          {translate(finalConfig.title || '') || finalConfig.title || gridName}
           {selectedRows.length > 0 && (
             <Chip
               label={`${selectedRows.length} selected`}
-              size="small"
-              color="primary"
+              size: any,
               sx={{ ml: 1 }}
             />
           )}
@@ -162,16 +211,11 @@ const GridToolbar = ({
         {/* Search */}
         {finalConfig.showSearch && (
           <TextField
-            size="small"
+            size: any,
             placeholder={translate('common.search') || 'Search...'}
             value={searchValue}
-            onChange={(e) => handleSearch(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              )
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearch(e.target.value)}
+            InputProps: any,
             }}
             sx={{ minWidth: 200 }}
           />
@@ -212,7 +256,7 @@ const GridToolbar = ({
           {finalConfig.showAdd && (
             <Tooltip title={translate('common.add') || 'Add'}>
               <Button
-                variant="contained"
+                variant: any,
                 startIcon={<AddIcon />}
                 onClick={handleAdd}
                 size={density === 'compact' ? 'small' : 'medium'}
@@ -240,8 +284,8 @@ const GridToolbar = ({
             <Tooltip title={translate('common.delete') || 'Delete'}>
               <IconButton
                 onClick={handleDelete}
-                disabled={selectedRows.length === 0}
-                color="error"
+                disabled={selectedRows.length ===0}
+                color: any,
                 size={density === 'compact' ? 'small' : 'medium'}
               >
                 <Badge badgeContent={selectedRows.length} color="error">
@@ -272,7 +316,7 @@ const GridToolbar = ({
           >
             {/* Export */}
             {finalConfig.showExport && (
-              <MenuItem onClick={() => { handleExport(); handleMenuClose(); }}>
+              <MenuItem onClick={() => { handleExport())); handleMenuClose(); }}>
                 <ExportIcon sx={{ mr: 1 }} />
                 {translate('common.export') || 'Export'}
               </MenuItem>
@@ -298,12 +342,10 @@ const GridToolbar = ({
             {customActions.length > 0 && (
               <>
                 <Divider />
-                {customActions.map((action, index) => (
+                {customActions.map((action: any: any, index: any: any) => (
                   <MenuItem
                     key={index}
-                    onClick={() => {
-                      action.onClick?.(selectedRows);
-                      handleMenuClose();
+                    onClick: any,
                     }}
                     disabled={action.disabled}
                   >

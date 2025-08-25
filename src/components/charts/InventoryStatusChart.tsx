@@ -2,17 +2,40 @@ import React from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
+interface InventoryDataItem {
+  category: string;
+  inStock: number;
+  lowStock: number;
+  outOfStock: number;
+  totalValue: number;
+}
+
+interface InventoryStatusChartProps {
+  data: InventoryDataItem[];
+  title?: string;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    name: string;
+    value: number;
+    color: string;
+  }>;
+  label?: string;
+}
+
 /**
  * Inventory Status Chart Component
  * Shows inventory levels, stock status, and reorder points
  */
-const InventoryStatusChart = ({ data, title = "Inventory Status" }) => {
+const InventoryStatusChart: React.FC<InventoryStatusChartProps> = ({ data, title = "Inventory Status" }) => {
   // Custom tooltip for inventory chart
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
+  const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
+    if(active && payload && payload.length) {
+      return Boolean(Boolean((
         <Box
-          sx={{
+          sx: any,
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             border: '1px solid #ccc',
             borderRadius: 1,
@@ -23,7 +46,7 @@ const InventoryStatusChart = ({ data, title = "Inventory Status" }) => {
           <Typography variant="body2" fontWeight="bold">
             {label}
           </Typography>
-          {payload.map((entry, index) => (
+          {payload?.map((entry: any: any, index: any: any) => (
             <Typography key={index} variant="body2" style={{ color: entry.color }}>
               {entry.name}: {entry.value}
               {entry.name.includes('Stock') && ' units'}
@@ -31,12 +54,12 @@ const InventoryStatusChart = ({ data, title = "Inventory Status" }) => {
             </Typography>
           ))}
         </Box>
-      );
+      )));
     }
     return null;
   };
 
-  if (!data || data.length === 0) {
+  if(!data || data.length ===0) {
     return (
       <Card sx={{ height: 400 }}>
         <CardContent>
@@ -44,8 +67,7 @@ const InventoryStatusChart = ({ data, title = "Inventory Status" }) => {
             {title}
           </Typography>
           <Box 
-            sx={{ 
-              display: 'flex', 
+            sx: any,
               alignItems: 'center', 
               justifyContent: 'center', 
               height: 300,
@@ -74,40 +96,22 @@ const InventoryStatusChart = ({ data, title = "Inventory Status" }) => {
             <Tooltip content={<CustomTooltip />} />
             <Legend />
             <Bar
-              yAxisId="left"
-              dataKey="inStock"
-              fill="#4caf50"
-              name="In Stock"
+              yAxisId: any,
               radius={[2, 2, 0, 0]}
             />
             <Bar
-              yAxisId="left"
-              dataKey="lowStock"
-              fill="#ff9800"
-              name="Low Stock"
+              yAxisId: any,
               radius={[2, 2, 0, 0]}
             />
             <Bar
-              yAxisId="left"
-              dataKey="outOfStock"
-              fill="#f44336"
-              name="Out of Stock"
+              yAxisId: any,
               radius={[2, 2, 0, 0]}
             />
             <Line
-              yAxisId="right"
-              type="monotone"
-              dataKey="totalValue"
-              stroke="#2196f3"
+              yAxisId: any,
               strokeWidth={3}
               dot={{ fill: '#2196f3', strokeWidth: 2, r: 4 }}
-              name="Total Value"
-            />
-          </ComposedChart>
-        </ResponsiveContainer>
-      </CardContent>
-    </Card>
-  );
+              name: any,
 };
 
 export default InventoryStatusChart;

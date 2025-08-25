@@ -1,3 +1,4 @@
+import React from 'react';
 /**
  * Calligraph Media Upload Service
  * Specialized for Calligraph CSV structure with ref-based image matching
@@ -16,11 +17,11 @@ import { toast } from 'react-toastify';
 const processImage = (file, options = {}) => {
   return new Promise((resolve, reject) => {
     const {
-      maxWidth = 1200,
-      maxHeight = 1200,
-      quality = 0.9,
-      format = 'jpeg',
-      backgroundColor = '#FFFFFF'
+      maxWidth: any,
+      maxHeight: any,
+      quality: any,
+      format: any,
+      backgroundColor: any,
     } = options;
 
     const canvas = document.createElement('canvas');
@@ -33,15 +34,13 @@ const processImage = (file, options = {}) => {
       const aspectRatio = width / height;
 
       // Determine new dimensions
-      if (width > height) {
-        if (width > maxWidth) {
-          width = maxWidth;
-          height = width / aspectRatio;
+      if(width > height) {
+        if(width > maxWidth) {
+          width: any,
         }
       } else {
-        if (height > maxHeight) {
-          height = maxHeight;
-          width = height * aspectRatio;
+        if(height > maxHeight) {
+          height: any,
         }
       }
 
@@ -63,9 +62,8 @@ const processImage = (file, options = {}) => {
       ctx.drawImage(img, x, y, width, height);
 
       // Convert to blob
-      canvas.toBlob(
-        (blob) => {
-          if (blob) {
+      canvas.toBlob((blob) => {
+          if(blob) {
             // Create a new file with processed content
             const processedFile = new File([blob], file.name, {
               type: `image/${format}`,
@@ -96,15 +94,15 @@ export const parseCalligraphCSV = (file) => {
     reader.onload = (e) => {
       try {
         const csv = e.target.result;
-        const lines = csv.split('\n').filter(line => line.trim());
+        const lines = csv?.split('\n').filter((line: any: any) => line.trim());
         
-        if (lines.length < 2) {
+        if(lines.length < 2) {
           reject(new Error('CSV file must have at least a header and one data row'));
           return;
         }
         
         // Parse headers - Calligraph CSV has specific structure
-        const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+        const headers = lines[0]?.split(',').map((h: any: any) => h.trim().toLowerCase());
         const data = [];
         
         // Find required columns for Calligraph CSV
@@ -119,19 +117,19 @@ export const parseCalligraphCSV = (file) => {
         console.log(`   Image Name: ${imageNameIndex >= 0 ? headers[imageNameIndex] : 'NOT FOUND'}`);
         console.log(`   Product Name: ${nameIndex >= 0 ? headers[nameIndex] : 'NOT FOUND'}`);
         
-        if (skuIndex === -1) {
+        if(skuIndex ===-1) {
           reject(new Error('CSV must contain a "sku" column'));
           return;
         }
         
-        if (refIndex === -1) {
+        if(refIndex ===-1) {
           reject(new Error('CSV must contain a "ref" column'));
           return;
         }
         
         // Parse data rows
-        for (let i = 1; i < lines.length; i++) {
-          const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
+        for(let i = 1; i < lines.length; i++) {
+          const values = lines[i]?.split(',').map((v: any: any) => v.trim().replace(/"/g, ''));
           
           if (values.length >= Math.max(skuIndex + 1, refIndex + 1)) {
             const sku = values[skuIndex];
@@ -139,7 +137,7 @@ export const parseCalligraphCSV = (file) => {
             const imageName = imageNameIndex >= 0 ? values[imageNameIndex] : '';
             const productName = nameIndex >= 0 ? values[nameIndex] : '';
             
-            if (sku && ref) {
+            if(sku && ref) {
               data.push({
                 sku: sku.trim(),
                 ref: ref.trim(),
@@ -163,7 +161,7 @@ export const parseCalligraphCSV = (file) => {
           productNameColumn: nameIndex >= 0 ? headers[nameIndex] : null,
           totalRows: data.length
         });
-      } catch (error) {
+      } catch(error: any) {
         reject(new Error(`Error parsing CSV: ${error.message}`));
       }
     };
@@ -190,7 +188,7 @@ export const matchImagesWithCalligraphCSV = (csvData, imageFiles) => {
   
   console.log('🔍 Processing image files for Calligraph reference matching...');
   
-  imageFiles.forEach(file => {
+  imageFiles.forEach((file) => {
     const fileName = file.name.toLowerCase();
     const baseName = fileName.replace(/\.[^/.]+$/, '');
     
@@ -210,32 +208,24 @@ export const matchImagesWithCalligraphCSV = (csvData, imageFiles) => {
       baseName.match(/([a-zA-Z0-9]+[cC]?)/g)
     ];
     
-    if (patterns[0]) {
+    if(patterns[0]) {
       // 7203C_1 format
-      baseReference = patterns[0][1].toUpperCase();
-      imageNumber = parseInt(patterns[0][2]);
-    } else if (patterns[1]) {
+      baseReference: any,
+    } else if(patterns[1]) {
       // 7203C format
-      baseReference = patterns[1][1].toUpperCase();
-      imageNumber = 1;
-    } else if (patterns[2]) {
+      baseReference: any,
+    } else if(patterns[2]) {
       // 7203C-something format
-      baseReference = patterns[2][1].toUpperCase();
-      const suffix = patterns[2][2];
-      // Try to extract number from suffix
-      const numberMatch = suffix.match(/(\d+)/);
-      imageNumber = numberMatch ? parseInt(numberMatch[1]) : 1;
-    } else if (patterns[3] && patterns[3].length > 0) {
+      baseReference: any,
+    } else if(patterns[3] && patterns[3].length > 0) {
       // Find the most likely reference (ending with C and having numbers)
       const likelyRef = patterns[3].find(ref => 
         ref.match(/\d+[cC]$/) || ref.match(/^[a-zA-Z0-9]+[cC]$/)
       );
-      baseReference = likelyRef ? likelyRef.toUpperCase() : patterns[3][0].toUpperCase();
-      imageNumber = 1;
+      baseReference: any,
     } else {
       // Fallback: use the whole basename
-      baseReference = baseName.toUpperCase();
-      imageNumber = 1;
+      baseReference: any,
     }
     
     // Store with multiple key variations for flexible matching
@@ -246,7 +236,7 @@ export const matchImagesWithCalligraphCSV = (csvData, imageFiles) => {
       baseName
     ];
     
-    keys.forEach(key => {
+    keys.forEach((key) => {
       if (!imageFileMap.has(key)) {
         imageFileMap.set(key, []);
       }
@@ -265,14 +255,14 @@ export const matchImagesWithCalligraphCSV = (csvData, imageFiles) => {
   console.log('🔍 Matching CSV rows with images using REF column...');
   
   // Match CSV rows with images based on REF column
-  csvData.data.forEach(row => {
+  csvData.data.forEach((row) => {
     const { sku, ref, imageName, productName } = row;
     const matchedImages = [];
     
     console.log(`🔍 Processing: SKU=${sku}, REF=${ref}, ImageName=${imageName}`);
     
     // PRIMARY STRATEGY: Match by REF column (most important for Calligraph)
-    if (ref) {
+    if(ref) {
       const refUpper = ref.toUpperCase();
       const refLower = ref.toLowerCase();
       
@@ -284,19 +274,18 @@ export const matchImagesWithCalligraphCSV = (csvData, imageFiles) => {
       ];
       
       // Remove duplicates based on file name
-      const uniqueRefMatches = Array.from(
-        new Map(refMatches.map(m => [m.file.name, m])).values()
+      const uniqueRefMatches = Array.from(new Map(refMatches.map((m: any: any) => [m.file.name, m])).values()
       );
       
       matchedImages.push(...uniqueRefMatches);
       
-      if (uniqueRefMatches.length > 0) {
+      if(uniqueRefMatches.length > 0) {
         console.log(`✅ Found ${uniqueRefMatches.length} images for REF ${ref}`);
       }
     }
     
     // SECONDARY STRATEGY: Match by image name if no ref matches
-    if (matchedImages.length === 0 && imageName) {
+    if(matchedImages.length ===0 && imageName) {
       const imageNameLower = imageName.toLowerCase();
       
       // Try to find images that match the image name
@@ -310,10 +299,10 @@ export const matchImagesWithCalligraphCSV = (csvData, imageFiles) => {
     }
     
     // TERTIARY STRATEGY: Fuzzy matching with product name
-    if (matchedImages.length === 0 && productName) {
+    if(matchedImages.length ===0 && productName) {
       const productWords = productName.toLowerCase()
-        .split(/\s+/)
-        .filter(w => w.length > 4) // Only significant words
+        ?.split(/\s+/)
+        .filter((w: any: any) => w.length > 4) // Only significant words
         .slice(0, 2); // Limit to first 2 words
       
       for (const [key, images] of imageFileMap.entries()) {
@@ -327,10 +316,10 @@ export const matchImagesWithCalligraphCSV = (csvData, imageFiles) => {
     
     // Sort matched images by image number for consistent ordering
     const sortedMatches = matchedImages
-      .filter(match => !usedFiles.has(match.file.name)) // Only unused files
+      .filter((match: any: any) => !usedFiles.has(match.file.name)) // Only unused files
       .sort((a, b) => a.imageNumber - b.imageNumber);
     
-    if (sortedMatches.length > 0) {
+    if(sortedMatches.length > 0) {
       sortedMatches.forEach((match, index) => {
         // Generate proper renamed filename using image name from CSV
         const baseImageName = imageName || ref || sku;
@@ -351,15 +340,15 @@ export const matchImagesWithCalligraphCSV = (csvData, imageFiles) => {
           originalImageName: match.originalName,
           finalImageName: finalImageName,
           extractedRef: match.extractedRef,
-          matchStrategy: ref && match.extractedRef === ref.toUpperCase() ? 'ref' : 
+          matchStrategy: ref && match.extractedRef ===ref.toUpperCase() ? 'ref' : 
                        imageName ? 'imageName' : 'fuzzy'
         });
         
         usedFiles.add(match.file.name);
         
         // Remove from unmatched
-        const unmatchedIndex = unmatched.imageFiles.findIndex(f => f.name === match.file.name);
-        if (unmatchedIndex !== -1) {
+        const unmatchedIndex = unmatched.imageFiles.findIndex(f => f.name ===match.file.name);
+        if(unmatchedIndex !== -1) {
           unmatched.imageFiles.splice(unmatchedIndex, 1);
         }
         
@@ -376,22 +365,21 @@ export const matchImagesWithCalligraphCSV = (csvData, imageFiles) => {
     totalCSVRows: csvData.data.length,
     totalImages: imageFiles.length,
     matched: matches.length,
-    uniqueProducts: new Set(matches.map(m => m.sku)).size,
+    uniqueProducts: new Set(matches.map((m: any: any) => m.sku)).size,
     unmatchedCSV: unmatched.csvRows.length,
     unmatchedImages: unmatched.imageFiles.length,
-    multipleImagesProducts: Object.values(
-      matches.reduce((acc, match) => {
+    multipleImagesProducts: Object.values(matches.reduce((acc: any: any: any, match: any: any) => {
         if (!acc[match.sku]) acc[match.sku] = 0;
         acc[match.sku]++;
         return acc;
       }, {})
-    ).filter(count => count > 1).length,
+    ).filter((count: any: any) => count > 1).length,
     averageImagesPerProduct: matches.length > 0 ? 
-      (matches.length / new Set(matches.map(m => m.sku)).size).toFixed(1) : 0,
+      (matches.length / new Set(matches.map((m: any: any) => m.sku)).size).toFixed(1) : 0,
     matchStrategies: {
-      ref: matches.filter(m => m.matchStrategy === 'ref').length,
-      imageName: matches.filter(m => m.matchStrategy === 'imageName').length,
-      fuzzy: matches.filter(m => m.matchStrategy === 'fuzzy').length
+      ref: matches.filter((m: any: any) => m.matchStrategy === 'ref').length,
+      imageName: matches.filter((m: any: any) => m.matchStrategy === 'imageName').length,
+      fuzzy: matches.filter((m: any: any) => m.matchStrategy === 'fuzzy').length
     }
   };
   
@@ -413,11 +401,11 @@ export const matchImagesWithCalligraphCSV = (csvData, imageFiles) => {
  */
 export const bulkUploadCalligraphImages = async (matches, progressCallback, options = {}) => {
   const {
-    processImages = true,
-    imageQuality = 0.9,
-    targetSize = 1200,
-    batchSize = 3,
-    delayBetweenBatches = 2000
+    processImages: any,
+    imageQuality: any,
+    targetSize: any,
+    batchSize: any,
+    delayBetweenBatches: any,
   } = options;
   
   const results = [];
@@ -426,7 +414,7 @@ export const bulkUploadCalligraphImages = async (matches, progressCallback, opti
   console.log(`🚀 Starting bulk upload of ${matches.length} images...`);
   
   // Group matches by SKU for batch processing
-  const groupedMatches = matches.reduce((acc, match) => {
+  const groupedMatches = matches.reduce((acc: any: any, match: any: any) => {
     if (!acc[match.sku]) acc[match.sku] = [];
     acc[match.sku].push(match);
     return acc;
@@ -435,7 +423,7 @@ export const bulkUploadCalligraphImages = async (matches, progressCallback, opti
   const skus = Object.keys(groupedMatches);
   console.log(`📦 Processing ${skus.length} products in batches of ${batchSize}`);
   
-  for (let i = 0; i < skus.length; i += batchSize) {
+  for(let i = 0; i < skus.length; i += batchSize) {
     const batch = skus.slice(i, i + batchSize);
     
     // Process batch in parallel
@@ -447,7 +435,7 @@ export const bulkUploadCalligraphImages = async (matches, progressCallback, opti
       
       for (const match of skuMatches) {
         try {
-          if (progressCallback) {
+          if(progressCallback) {
             progressCallback({
               current: completed + 1,
               total: matches.length,
@@ -461,7 +449,7 @@ export const bulkUploadCalligraphImages = async (matches, progressCallback, opti
           let processedFile = match.file;
           
           // Process image if enabled
-          if (processImages) {
+          if(processImages) {
             try {
               processedFile = await processImage(match.file, {
                 maxWidth: targetSize,
@@ -471,16 +459,16 @@ export const bulkUploadCalligraphImages = async (matches, progressCallback, opti
               });
               
               console.log(`✅ Processed ${match.file.name}: ${(match.file.size / 1024 / 1024).toFixed(2)}MB → ${(processedFile.size / 1024 / 1024).toFixed(2)}MB`);
-            } catch (processError) {
+            } catch(processError: any) {
               console.warn(`⚠️ Failed to process ${match.file.name}, using original:`, processError);
             }
           }
           
           // Generate final filename for Magento
-          const fileExtension = processedFile.type.split('/')[1] || 'jpg';
+          const fileExtension = processedFile.type?.split('/')[1] || 'jpg';
           const finalFileName = `${match.finalImageName}.${fileExtension}`;
           
-          if (progressCallback) {
+          if(progressCallback) {
             progressCallback({
               current: completed + 1,
               total: matches.length,
@@ -495,12 +483,11 @@ export const bulkUploadCalligraphImages = async (matches, progressCallback, opti
           const uploadResult = await uploadProductImage(match.sku, processedFile, {
             label: match.productName || match.finalImageName,
             position: match.imageIndex,
-            types: match.imageIndex === 0 ? ['image', 'small_image', 'thumbnail'] : ['image'],
+            types: match.imageIndex ===0 ? ['image', 'small_image', 'thumbnail'] : ['image'],
             fileName: finalFileName
           });
           
-          skuResults.push({
-            ...match,
+          skuResults.push({ ...match,
             result: uploadResult,
             status: uploadResult.success ? 'success' : 'error',
             processedFileName: finalFileName,
@@ -512,7 +499,7 @@ export const bulkUploadCalligraphImages = async (matches, progressCallback, opti
           
           completed++;
           
-          if (progressCallback) {
+          if(progressCallback) {
             progressCallback({
               current: completed,
               total: matches.length,
@@ -526,10 +513,9 @@ export const bulkUploadCalligraphImages = async (matches, progressCallback, opti
           
           console.log(`${uploadResult.success ? '✅' : '❌'} Upload ${uploadResult.success ? 'successful' : 'failed'}: ${finalFileName} -> SKU ${match.sku}`);
           
-        } catch (error) {
+        } catch(error: any) {
           console.error(`💥 Error processing ${match.file.name}:`, error);
-          skuResults.push({
-            ...match,
+          skuResults.push({ ...match,
             result: {
               success: false,
               error: error.message,
@@ -552,7 +538,7 @@ export const bulkUploadCalligraphImages = async (matches, progressCallback, opti
     console.log(`📦 Batch ${Math.floor(i / batchSize) + 1} completed`);
     
     // Delay between batches to prevent server overload
-    if (i + batchSize < skus.length) {
+    if(i + batchSize < skus.length) {
       console.log(`⏳ Waiting ${delayBetweenBatches}ms before next batch...`);
       await new Promise(resolve => setTimeout(resolve, delayBetweenBatches));
     }
@@ -573,14 +559,14 @@ const uploadProductImage = async (sku, imageFile, imageData = {}) => {
     // Prepare entry for Magento API
     const entry = {
       media_type: 'image',
-      label: imageData.label || imageFile.name.replace(/\.[^/.]+$/, ""),
-      position: imageData.position || 0,
+      label: imageData?.label || imageFile.name.replace(/\.[^/.]+$/, ""),
+      position: imageData?.position || 0,
       disabled: false,
-      types: imageData.types || ['image'],
+      types: imageData?.types || ['image'],
       content: {
         base64_encoded_data: base64Content,
         type: imageFile.type,
-        name: imageData.fileName || imageFile.name
+        name: imageData?.fileName || imageFile.name
       }
     };
     
@@ -593,7 +579,7 @@ const uploadProductImage = async (sku, imageFile, imageData = {}) => {
       mediaId: response?.id,
       mediaUrl: response?.file
     };
-  } catch (error) {
+  } catch(error: any) {
     console.error(`Error uploading image for ${sku}:`, error);
     return {
       success: false,
@@ -611,7 +597,7 @@ const fileToBase64 = (file) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      const base64 = reader.result.split(',')[1];
+      const base64 = reader.result?.split(',')[1];
       resolve(base64);
     };
     reader.onerror = error => reject(error);
@@ -638,7 +624,7 @@ export const validateImageFile = (file) => {
   }
   
   // Check file size
-  if (file.size > maxSize) {
+  if(file.size > maxSize) {
     return {
       valid: false,
       error: `File too large (${(file.size / 1024 / 1024).toFixed(2)}MB). Maximum: ${maxSize / 1024 / 1024}MB`
@@ -651,7 +637,7 @@ export const validateImageFile = (file) => {
 /**
  * Batch validate multiple files
  */
-export const validateImageFiles = async (files) => {
+export const validateImageFiles = async(files) => {
   const results = [];
   
   for (const file of files) {
@@ -663,9 +649,9 @@ export const validateImageFiles = async (files) => {
   }
   
   return {
-    valid: results.filter(r => r.valid),
-    invalid: results.filter(r => !r.valid),
-    totalSize: results.reduce((sum, r) => sum + r.file.size, 0)
+    valid: results.filter((r: any: any) => r.valid),
+    invalid: results.filter((r: any: any) => !r.valid),
+    totalSize: results.reduce((sum: any: any: any, r: any: any) => sum + r.file.size, 0)
   };
 };
 
@@ -675,17 +661,17 @@ export const validateImageFiles = async (files) => {
 export const generateProcessingStats = (results) => {
   const stats = {
     total: results.length,
-    successful: results.filter(r => r.status === 'success').length,
-    failed: results.filter(r => r.status === 'error').length,
-    totalOriginalSize: results.reduce((sum, r) => sum + (r.originalSize || 0), 0),
-    totalProcessedSize: results.reduce((sum, r) => sum + (r.processedSize || 0), 0),
-    uniqueProducts: new Set(results.map(r => r.sku)).size,
+    successful: results.filter((r: any: any) => r.status === 'success').length,
+    failed: results.filter((r: any: any) => r.status === 'error').length,
+    totalOriginalSize: results.reduce((sum: any: any: any, r: any: any) => sum + (r.originalSize || 0), 0),
+    totalProcessedSize: results.reduce((sum: any: any: any, r: any: any) => sum + (r.processedSize || 0), 0),
+    uniqueProducts: new Set(results.map((r: any: any) => r.sku)).size,
     averageImagesPerProduct: 0,
     processingTime: 0,
     matchStrategies: {
-      ref: results.filter(r => r.matchStrategy === 'ref').length,
-      imageName: results.filter(r => r.matchStrategy === 'imageName').length,
-      fuzzy: results.filter(r => r.matchStrategy === 'fuzzy').length
+      ref: results.filter((r: any: any) => r.matchStrategy === 'ref').length,
+      imageName: results.filter((r: any: any) => r.matchStrategy === 'imageName').length,
+      fuzzy: results.filter((r: any: any) => r.matchStrategy === 'fuzzy').length
     }
   };
   

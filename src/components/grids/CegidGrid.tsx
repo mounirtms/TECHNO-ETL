@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState } from 'react';
 import { Box } from '@mui/material';
 import { toast } from 'react-toastify';
@@ -19,7 +20,7 @@ const CegidGrid = () => {
             const results = await cegidApi.searchProducts(params);
             setProducts(results || []); // Ensure we always set an array
             toast.success(`Found ${results?.length || 0} products`);
-        } catch (error) {
+        } catch(error: any) {
             console.error('Search failed:', error);
             setProducts([]); // Reset to empty array on error
             toast.error('Failed to search products');
@@ -39,9 +40,8 @@ const CegidGrid = () => {
         { field: 'store', headerName: 'Store', width: 100 }
     ];
 
-    return (
-        <UnifiedGrid
-                {...getStandardGridProps('cegid', {
+    return(<UnifiedGrid
+                { ...getStandardGridProps('cegid', {
                     gridName: "CegidProducts",
                     columns,
                     data: products,
@@ -51,11 +51,11 @@ const CegidGrid = () => {
                     onRefresh: handleSearch,
                     onRowDoubleClick: (params) => {
                         console.log('Viewing Cegid product:', params.row);
-                        toast.info(`Viewing product: ${params.row.reference}`);
+                        toast.info(`Viewing product: ${params.row?.reference}`);
                     },
                     onExport: (selectedRows) => {
                         const exportData = selectedRows.length > 0
-                            ? products.filter(product => selectedRows.includes(product.reference))
+                            ? products.filter((product: any: any) => selectedRows.includes(product?.reference))
                             : products;
                         console.log('Exporting Cegid products:', exportData);
                         toast.success(`Exported ${exportData.length} products`);
@@ -68,7 +68,7 @@ const CegidGrid = () => {
                             {
                                 name: 'reference',
                                 label: 'Reference',
-                                value: searchParams.reference,
+                                value: searchParams?.reference,
                                 onChange: (value) => setSearchParams(prev => ({ ...prev, reference: value }))
                             },
                             {

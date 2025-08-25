@@ -11,10 +11,9 @@ import { ROUTES, requiresAuth, getRouteMetadata } from '../config/routes';
 /**
  * Loading component for route transitions
  */
-const RouteLoading = ({ message = 'Loading...' }) => (
+const RouteLoading = ({ message = 'Loading...' }: { message?: string }) => (
   <Box
-    sx={{
-      display: 'flex',
+    sx: any,
       justifyContent: 'center',
       alignItems: 'center',
       height: '100vh',
@@ -32,7 +31,7 @@ const RouteLoading = ({ message = 'Loading...' }) => (
 /**
  * Enhanced Route Guard with role-based access control
  */
-export const RouteGuard = ({ children, requiredRole = null, fallbackPath = ROUTES.DASHBOARD }) => {
+export const RouteGuard: React.FC<any> = ({ children, requiredRole = null, fallbackPath = ROUTES.DASHBOARD }) => {
   const { currentUser, loading } = useAuth();
   const location = useLocation();
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -48,25 +47,25 @@ export const RouteGuard = ({ children, requiredRole = null, fallbackPath = ROUTE
       // Check if route requires authentication
       const routeRequiresAuth = requiresAuth(location.pathname);
       
-      if (!routeRequiresAuth) {
+      if(!routeRequiresAuth) {
         setIsAuthorized(true);
         setAuthLoading(false);
         return;
       }
       
       // Check if user is authenticated
-      if (!currentUser) {
+      if(!currentUser) {
         setIsAuthorized(false);
         setAuthLoading(false);
         return;
       }
       
       // Check role-based access if required
-      if (requiredRole) {
+      if(requiredRole) {
         const userRole = currentUser.role || 'user';
         const hasRequiredRole = Array.isArray(requiredRole) 
-          ? requiredRole.includes(userRole)
-          : userRole === requiredRole;
+          ? requiredRole?.includes(userRole)
+          : userRole ===requiredRole;
         
         setIsAuthorized(hasRequiredRole);
       } else {
@@ -80,7 +79,7 @@ export const RouteGuard = ({ children, requiredRole = null, fallbackPath = ROUTE
   }, [currentUser, loading, location.pathname, requiredRole]);
 
   // Show loading while checking authorization
-  if (loading || authLoading) {
+  if(loading || authLoading) {
     return <RouteLoading message="Checking permissions..." />;
   }
 
@@ -90,7 +89,7 @@ export const RouteGuard = ({ children, requiredRole = null, fallbackPath = ROUTE
   }
 
   // Redirect if not authorized for this route
-  if (!isAuthorized && currentUser) {
+  if(!isAuthorized && currentUser) {
     return <Navigate to={fallbackPath} replace />;
   }
 
@@ -100,16 +99,16 @@ export const RouteGuard = ({ children, requiredRole = null, fallbackPath = ROUTE
 /**
  * Public Route Guard - redirects authenticated users
  */
-export const PublicRouteGuard = ({ children, redirectTo = ROUTES.DASHBOARD }) => {
+export const PublicRouteGuard: React.FC<any> = ({ children, redirectTo = ROUTES.DASHBOARD }) => {
   const { currentUser, loading } = useAuth();
   const location = useLocation();
 
-  if (loading) {
+  if(loading) {
     return <RouteLoading message="Checking authentication..." />;
   }
 
   // Redirect authenticated users away from public routes
-  if (currentUser) {
+  if(currentUser) {
     const intendedDestination = location.state?.from?.pathname || redirectTo;
     return <Navigate to={intendedDestination} replace />;
   }
@@ -120,7 +119,7 @@ export const PublicRouteGuard = ({ children, redirectTo = ROUTES.DASHBOARD }) =>
 /**
  * Admin Route Guard - requires admin role
  */
-export const AdminRouteGuard = ({ children }) => {
+export const AdminRouteGuard: React.FC<any> = ({ children }) => {
   return (
     <RouteGuard requiredRole={['admin', 'super_admin']} fallbackPath={ROUTES.DASHBOARD}>
       {children}
@@ -131,7 +130,7 @@ export const AdminRouteGuard = ({ children }) => {
 /**
  * Manager Route Guard - requires manager or admin role
  */
-export const ManagerRouteGuard = ({ children }) => {
+export const ManagerRouteGuard: React.FC<any> = ({ children }) => {
   return (
     <RouteGuard requiredRole={['manager', 'admin', 'super_admin']} fallbackPath={ROUTES.DASHBOARD}>
       {children}
@@ -142,7 +141,7 @@ export const ManagerRouteGuard = ({ children }) => {
 /**
  * Route Metadata Provider - provides route information to components
  */
-export const RouteMetadataProvider = ({ children }) => {
+export const RouteMetadataProvider: React.FC<any> = ({ children }) => {
   const location = useLocation();
   const metadata = getRouteMetadata(location.pathname);
 
@@ -152,7 +151,7 @@ export const RouteMetadataProvider = ({ children }) => {
     
     // Update meta description
     const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
+    if(metaDescription) {
       metaDescription.setAttribute('content', metadata.description);
     }
   }, [metadata]);
@@ -163,7 +162,7 @@ export const RouteMetadataProvider = ({ children }) => {
 /**
  * Route Transition Wrapper - handles smooth transitions between routes
  */
-export const RouteTransition = ({ children, transitionKey }) => {
+export const RouteTransition: React.FC<any> = ({ children, transitionKey }) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
@@ -174,8 +173,7 @@ export const RouteTransition = ({ children, transitionKey }) => {
 
   return (
     <Box
-      sx={{
-        opacity: isTransitioning ? 0.7 : 1,
+      sx: any,
         transition: 'opacity 0.15s ease-in-out',
         minHeight: '100%'
       }}
@@ -193,7 +191,7 @@ export const DeepLinkHandler = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (currentUser) {
+    if(currentUser) {
       // Store the current route for restoration after logout/login
       localStorage.setItem('lastVisitedRoute', location.pathname + location.search);
     }
@@ -210,7 +208,7 @@ export const RouteAnalytics = () => {
   const { currentUser } = useAuth();
 
   useEffect(() => {
-    if (currentUser && location.pathname !== ROUTES.LOGIN) {
+    if(currentUser && location.pathname !== ROUTES.LOGIN) {
       // Track route visit
       const routeData = {
         path: location.pathname,
@@ -224,7 +222,7 @@ export const RouteAnalytics = () => {
       visits.push(routeData);
       
       // Keep only last 100 visits
-      if (visits.length > 100) {
+      if(visits.length > 100) {
         visits.splice(0, visits.length - 100);
       }
       

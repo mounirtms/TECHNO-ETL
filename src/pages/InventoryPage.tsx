@@ -41,7 +41,7 @@ const InventoryPage = () => {
         {/* Low Stock Alert */}
         {isLowStockView() && (
           <Alert
-            severity="warning"
+            severity: any,
             icon={<Warning />}
             sx={{ mb: 2, borderRadius: 2 }}
           >
@@ -50,9 +50,7 @@ const InventoryPage = () => {
                 Dashboard alert: Showing items with low stock levels that need immediate attention
               </Typography>
               <Chip
-                label="Low Stock Alert"
-                color="warning"
-                size="small"
+                label: any,
                 icon={<Inventory />}
               />
             </Box>
@@ -61,7 +59,7 @@ const InventoryPage = () => {
 
         {/* Inventory Grid */}
         <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
-          <InventoryGrid {...gridProps} />
+          <InventoryGrid { ...gridProps} />
         </Paper>
       </Container>
     </motion.div>

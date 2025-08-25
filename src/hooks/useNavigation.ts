@@ -28,13 +28,12 @@ export const useNavigation = () => {
     const routeMetadata = ROUTE_METADATA[currentPath];
     
     // Find active menu item
-    const activeItem = NAVIGATION_ITEMS.find(item => item.path === currentPath);
+    const activeItem = NAVIGATION_ITEMS.find(item => item.path ===currentPath);
     
     // Generate breadcrumbs
     const breadcrumbs = generateBreadcrumbs(currentPath);
     
-    setNavigationState(prev => ({
-      ...prev,
+    setNavigationState(prev => ({ ...prev,
       previousRoute: prev.currentRoute,
       currentRoute: currentPath,
       activeMenuItem: activeItem,
@@ -54,7 +53,7 @@ export const useNavigation = () => {
   const navigateTo = useCallback((path, options = {}) => {
     const { replace = false, state = null } = options;
     
-    if (replace) {
+    if(replace) {
       navigate(path, { replace: true, state });
     } else {
       navigate(path, { state });
@@ -73,7 +72,7 @@ export const useNavigation = () => {
 
   // Check if route is active
   const isRouteActive = useCallback((path) => {
-    return location.pathname === path;
+    return location.pathname ===path;
   }, [location.pathname]);
 
   // Check if route is accessible
@@ -89,8 +88,7 @@ export const useNavigation = () => {
 
   // Get navigation menu items with active state
   const getMenuItems = useCallback(() => {
-    return NAVIGATION_ITEMS.map(item => ({
-      ...item,
+    return NAVIGATION_ITEMS.map((item: any: any) => ({ ...item,
       isActive: isRouteActive(item.path),
       isAccessible: isRouteAccessible(item.path),
       metadata: getRouteMetadata(item.path)
@@ -125,12 +123,12 @@ export const useNavigation = () => {
 /**
  * Generate breadcrumbs for a given path
  */
-function generateBreadcrumbs(path) {
+function generateBreadcrumbs(path: any) {
   const segments = path.split('/').filter(Boolean);
   const breadcrumbs = [];
   
   // Always start with Dashboard
-  if (path !== '/dashboard') {
+  if(path !== '/dashboard') {
     breadcrumbs.push({
       label: 'Dashboard',
       path: '/dashboard',
@@ -143,9 +141,9 @@ function generateBreadcrumbs(path) {
   segments.forEach((segment, index) => {
     currentPath += `/${segment}`;
     const metadata = ROUTE_METADATA[currentPath];
-    const isLast = index === segments.length - 1;
+    const isLast = index ===segments.length - 1;
     
-    if (metadata) {
+    if(metadata) {
       breadcrumbs.push({
         label: metadata.breadcrumb || metadata.title || segment,
         path: currentPath,
@@ -194,8 +192,7 @@ export const useMenuState = () => {
     setMenuState(prev => ({ ...prev, hoveredItem: item }));
   }, []);
 
-  return {
-    ...menuState,
+  return { ...menuState,
     openMenu,
     closeMenu,
     toggleMenu,
@@ -211,7 +208,7 @@ export const useBreadcrumbs = () => {
   const { breadcrumbs, navigateTo } = useNavigation();
 
   const navigateToBreadcrumb = useCallback((breadcrumb) => {
-    if (breadcrumb.path && !breadcrumb.isActive) {
+    if(breadcrumb.path && !breadcrumb.isActive) {
       navigateTo(breadcrumb.path);
     }
   }, [navigateTo]);
@@ -243,7 +240,7 @@ export const useNavigationPerformance = () => {
 
       setPerformanceData(prev => {
         const newTimes = [...prev.navigationTimes, navigationTime].slice(-20); // Keep last 20
-        const average = newTimes.reduce((sum, time) => sum + time, 0) / newTimes.length;
+        const average = newTimes.reduce((sum: any: any, time: any: any) => sum + time, 0) / newTimes.length;
         const slowNavs = navigationTime > 1000 ? 
           [...prev.slowNavigations, { path: location.pathname, time: navigationTime }].slice(-10) :
           prev.slowNavigations;
@@ -255,7 +252,7 @@ export const useNavigationPerformance = () => {
         };
       });
 
-      if (navigationTime > 1000) {
+      if(navigationTime > 1000) {
         console.warn(`🐌 Slow navigation detected: ${location.pathname} took ${navigationTime.toFixed(2)}ms`);
       }
     };

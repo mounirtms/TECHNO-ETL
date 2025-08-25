@@ -13,7 +13,7 @@ export const useOptimizedTranslation = (enableI18n = true) => {
   // Memoized translation function with caching
   const translate = useCallback((key, fallback = key) => {
     // Return fallback immediately if i18n is disabled
-    if (!enableI18n) {
+    if(!enableI18n) {
       return fallback;
     }
 
@@ -28,11 +28,11 @@ export const useOptimizedTranslation = (enableI18n = true) => {
       // Cache successful translations
       translationCache.current.set(cacheKey, result);
       return result;
-    } catch (error) {
+    } catch(error: any) {
       // Only log unique errors to prevent spam
-      if (!errorCache.current.has(key)) {
+      if (!errorCache.current.has(key )) {
         console.warn(`Translation failed for key: ${key}`, error);
-        errorCache.current.add(key);
+        errorCache.current.add(key );
       }
       return fallback;
     }

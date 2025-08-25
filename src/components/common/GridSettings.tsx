@@ -53,7 +53,7 @@ const GridSettings = ({
   onClose,
   onSave,
   gridId,
-  columns = [],
+  columns: any,
   currentSettings = {},
   onReset
 }) => {
@@ -106,22 +106,21 @@ const GridSettings = ({
 
   // Initialize settings from props
   useEffect(() => {
-    if (currentSettings) {
+    if(currentSettings) {
       setSettings(prev => ({ ...prev, ...currentSettings }));
     }
     
     // Initialize column visibility and order
-    if (columns.length > 0) {
+    if(columns.length > 0) {
       const visibility = {};
       const order = [];
       
-      columns.forEach(col => {
-        visibility[col.field] = col.visible !== false;
-        order.push(col.field);
+      columns.forEach((col) => {
+        visibility[col?.field] = col.visible !== false;
+        order.push(col?.field);
       });
       
-      setSettings(prev => ({
-        ...prev,
+      setSettings(prev => ({ ...prev,
         columnVisibility: { ...prev.columnVisibility, ...visibility },
         columnOrder: prev.columnOrder.length > 0 ? prev.columnOrder : order
       }));
@@ -132,8 +131,7 @@ const GridSettings = ({
    * Handle settings change
    */
   const handleSettingChange = (key, value) => {
-    setSettings(prev => ({
-      ...prev,
+    setSettings(prev => ({ ...prev,
       [key]: value
     }));
   };
@@ -142,10 +140,8 @@ const GridSettings = ({
    * Handle column visibility toggle
    */
   const handleColumnVisibilityChange = (field, visible) => {
-    setSettings(prev => ({
-      ...prev,
-      columnVisibility: {
-        ...prev.columnVisibility,
+    setSettings(prev => ({ ...prev,
+      columnVisibility: { ...prev.columnVisibility,
         [field]: visible
       }
     }));
@@ -161,8 +157,7 @@ const GridSettings = ({
     const [reorderedItem] = newOrder.splice(result.source.index, 1);
     newOrder.splice(result.destination.index, 0, reorderedItem);
 
-    setSettings(prev => ({
-      ...prev,
+    setSettings(prev => ({ ...prev,
       columnOrder: newOrder
     }));
   };
@@ -176,7 +171,7 @@ const GridSettings = ({
     localStorage.setItem(storageKey, JSON.stringify(settings));
     
     // Call parent save handler
-    if (onSave) {
+    if(onSave) {
       onSave(settings);
     }
     
@@ -222,7 +217,7 @@ const GridSettings = ({
     const storageKey = `gridSettings_${gridId}`;
     localStorage.removeItem(storageKey);
     
-    if (onReset) {
+    if(onReset) {
       onReset();
     }
   };
@@ -247,13 +242,13 @@ const GridSettings = ({
    */
   const handleImportSettings = (event) => {
     const file = event.target.files[0];
-    if (file) {
+    if(file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
           const importedSettings = JSON.parse(e.target.result);
           setSettings(prev => ({ ...prev, ...importedSettings }));
-        } catch (error) {
+        } catch(error: any) {
           console.error('Error importing settings:', error);
         }
       };
@@ -261,15 +256,10 @@ const GridSettings = ({
     }
   };
 
-  return (
-    <Dialog
+  return(<Dialog
       open={open}
       onClose={onClose}
-      maxWidth="md"
-      fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: 2,
+      maxWidth: any,
           maxHeight: '90vh'
         }
       }}
@@ -289,48 +279,37 @@ const GridSettings = ({
           {/* Quick Actions */}
           <Stack direction="row" spacing={1} sx={{ mb: 3 }}>
             <Button
-              size="small"
+              size: any,
               startIcon={<Download />}
               onClick={handleExportSettings}
             >
               Export
             </Button>
             <Button
-              size="small"
+              size: any,
               startIcon={<Upload />}
-              component="label"
-            >
-              Import
-              <input
-                type="file"
-                hidden
-                accept=".json"
-                onChange={handleImportSettings}
+              component: any,
+                onChange={(e) => handleImportSettings}
               />
             </Button>
             <Button
-              size="small"
+              size: any,
               startIcon={<RestoreFromTrash />}
               onClick={handleReset}
-              color="warning"
-            >
-              Reset
-            </Button>
-          </Stack>
-
+              color: any,
           {/* Display Settings */}
           <Accordion defaultExpanded>
             <AccordionSummary expandIcon={<ExpandMore />}>
               <Typography variant="h6">Display Settings</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Grid container spacing={3}>
+              <Grid { ...{container: true}} spacing={3}>
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth size="small">
                     <InputLabel>Page Size</InputLabel>
                     <Select
                       value={settings.pageSize}
-                      label="Page Size"
+                      label: any,
                       onChange={(e) => handleSettingChange('pageSize', e.target.value)}
                     >
                       <MenuItem value={10}>10 rows</MenuItem>
@@ -346,7 +325,7 @@ const GridSettings = ({
                     <InputLabel>Density</InputLabel>
                     <Select
                       value={settings.density}
-                      label="Density"
+                      label: any,
                       onChange={(e) => handleSettingChange('density', e.target.value)}
                     >
                       <MenuItem value="compact">Compact</MenuItem>
@@ -359,47 +338,27 @@ const GridSettings = ({
                 <Grid item xs={12}>
                   <Stack spacing={1}>
                     <FormControlLabel
-                      control={
-                        <Switch
+                      control: any,
                           checked={settings.showToolbar}
                           onChange={(e) => handleSettingChange('showToolbar', e.target.checked)}
                         />
                       }
-                      label="Show Toolbar"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
+                      label: any,
                           checked={settings.showFooter}
                           onChange={(e) => handleSettingChange('showFooter', e.target.checked)}
                         />
                       }
-                      label="Show Footer"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
+                      label: any,
                           checked={settings.alternateRowColors}
                           onChange={(e) => handleSettingChange('alternateRowColors', e.target.checked)}
                         />
                       }
-                      label="Alternate Row Colors"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
+                      label: any,
                           checked={settings.showBorders}
                           onChange={(e) => handleSettingChange('showBorders', e.target.checked)}
                         />
                       }
-                      label="Show Borders"
-                    />
-                  </Stack>
-                </Grid>
-              </Grid>
-            </AccordionDetails>
-          </Accordion>
-
+                      label: any,
           {/* Column Settings */}
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
@@ -413,9 +372,9 @@ const GridSettings = ({
               <DragDropContext onDragEnd={handleColumnReorder}>
                 <Droppable droppableId="columns">
                   {(provided) => (
-                    <Box {...provided.droppableProps} ref={provided.innerRef}>
-                      {settings.columnOrder.map((field, index) => {
-                        const column = columns.find(col => col.field === field);
+                    <Box { ...provided.droppableProps} ref={provided.innerRef}>
+                      {settings.columnOrder.map((field: any: any, index: any: any) => {
+                        const column = columns.find(col => col?.field ===field);
                         if (!column) return null;
                         
                         return (
@@ -423,9 +382,8 @@ const GridSettings = ({
                             {(provided, snapshot) => (
                               <Card
                                 ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                sx={{
-                                  mb: 1,
+                                { ...provided.draggableProps}
+                                sx: any,
                                   backgroundColor: snapshot.isDragging 
                                     ? theme.palette.action.hover 
                                     : 'inherit'
@@ -433,18 +391,16 @@ const GridSettings = ({
                               >
                                 <CardContent sx={{ py: 1, '&:last-child': { pb: 1 } }}>
                                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                    <Box {...provided.dragHandleProps}>
+                                    <Box { ...provided.dragHandleProps}>
                                       <DragIndicator color="action" />
                                     </Box>
                                     
                                     <Typography sx={{ flexGrow: 1 }}>
-                                      {column.headerName || column.field}
+                                      {column.headerName || column?.field}
                                     </Typography>
                                     
                                     <IconButton
-                                      size="small"
-                                      onClick={() => handleColumnVisibilityChange(
-                                        field, 
+                                      size: any,
                                         !settings.columnVisibility[field]
                                       )}
                                     >
@@ -473,82 +429,51 @@ const GridSettings = ({
               <Typography variant="h6">Features</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Grid container spacing={2}>
+              <Grid { ...{container: true}} spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <Stack spacing={1}>
                     <FormControlLabel
-                      control={
-                        <Switch
+                      control: any,
                           checked={settings.enableFiltering}
                           onChange={(e) => handleSettingChange('enableFiltering', e.target.checked)}
                         />
                       }
-                      label="Enable Filtering"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
+                      label: any,
                           checked={settings.enableSorting}
                           onChange={(e) => handleSettingChange('enableSorting', e.target.checked)}
                         />
                       }
-                      label="Enable Sorting"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
+                      label: any,
                           checked={settings.enableColumnReordering}
                           onChange={(e) => handleSettingChange('enableColumnReordering', e.target.checked)}
                         />
                       }
-                      label="Column Reordering"
-                    />
-                  </Stack>
-                </Grid>
-                
+                      label: any,
                 <Grid item xs={12} sm={6}>
                   <Stack spacing={1}>
                     <FormControlLabel
-                      control={
-                        <Switch
+                      control: any,
                           checked={settings.enableExport}
                           onChange={(e) => handleSettingChange('enableExport', e.target.checked)}
                         />
                       }
-                      label="Enable Export"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
+                      label: any,
                           checked={settings.virtualization}
                           onChange={(e) => handleSettingChange('virtualization', e.target.checked)}
                         />
                       }
-                      label="Virtualization"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
+                      label: any,
                           checked={settings.enableSelection}
                           onChange={(e) => handleSettingChange('enableSelection', e.target.checked)}
                         />
                       }
-                      label="Row Selection"
-                    />
-                  </Stack>
-                </Grid>
-              </Grid>
-            </AccordionDetails>
-          </Accordion>
-        </Box>
-      </DialogContent>
-
+                      label: any,
       <DialogActions sx={{ p: 3, borderTop: `1px solid ${theme.palette.divider}` }}>
         <Button onClick={onClose}>
           Cancel
         </Button>
         <Button
-          variant="contained"
+          variant: any,
           onClick={handleSave}
           startIcon={<Save />}
         >
@@ -571,11 +496,11 @@ export const useGridSettings = (gridId, defaultSettings = {}) => {
     const storageKey = `gridSettings_${gridId}`;
     const savedSettings = localStorage.getItem(storageKey);
 
-    if (savedSettings) {
+    if(savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
         setSettings(prev => ({ ...prev, ...parsed }));
-      } catch (error) {
+      } catch(error: any) {
         console.error('Error loading grid settings:', error);
       }
     }

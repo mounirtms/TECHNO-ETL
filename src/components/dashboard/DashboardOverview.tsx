@@ -28,7 +28,7 @@ import { useCustomTheme } from '../../contexts/ThemeContext';
  * Dashboard Overview Component
  * Displays key metrics and KPIs in a clean, professional layout
  */
-const DashboardOverview = ({ stats, onNavigate }) => {
+const DashboardOverview = ({ stats, onNavigate  }: { stats: any, onNavigate: any }) => {
   const theme = useTheme();
   const { animations, density } = useCustomTheme();
 
@@ -86,11 +86,10 @@ const DashboardOverview = ({ stats, onNavigate }) => {
     <Box>
       {/* Main Metrics */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        {metricCards.map((metric, index) => (
+        {metricCards.map((metric: any: any, index: any: any) => (
           <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
             <Card
-              sx={{
-                height: '100%',
+              sx: any,
                 background: `linear-gradient(135deg, ${theme.palette[metric.color].light}15, ${theme.palette[metric.color].main}08)`,
                 border: `1px solid ${theme.palette[metric.color].light}30`,
                 borderRadius: density === 'compact' ? 2 : 3,
@@ -105,7 +104,7 @@ const DashboardOverview = ({ stats, onNavigate }) => {
               <CardContent sx={{ p: density === 'compact' ? 2 : 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: density === 'compact' ? 1 : 2 }}>
                   <Avatar
-                    sx={{
+                    sx: any,
                       bgcolor: `${metric.color}.main`,
                       width: 48,
                       height: 48,
@@ -117,7 +116,7 @@ const DashboardOverview = ({ stats, onNavigate }) => {
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Chip
                       label={metric.change}
-                      size="small"
+                      size: any,
                       color={metric.trend === 'up' ? 'success' : 'error'}
                       icon={metric.trend === 'up' ? <TrendingUp /> : <TrendingDown />}
                       sx={{ fontWeight: 600 }}
@@ -148,11 +147,10 @@ const DashboardOverview = ({ stats, onNavigate }) => {
                     </Typography>
                   </Box>
                   <LinearProgress
-                    variant="determinate"
+                    variant: any,
                     value={metric.progress}
                     color={metric.color}
-                    sx={{
-                      height: 6,
+                    sx: any,
                       borderRadius: 3,
                       bgcolor: `${metric.color}.light`,
                       '& .MuiLinearProgress-bar': {
@@ -180,11 +178,11 @@ const DashboardOverview = ({ stats, onNavigate }) => {
           </Box>
           
           <Grid container spacing={3}>
-            {quickStats.map((stat, index) => (
+            {quickStats.map((stat: any: any, index: any: any) => (
               <Grid size={{ xs: 6, sm: 3 }} key={index}>
                 <Box sx={{ textAlign: 'center' }}>
                   <Typography
-                    variant="h5"
+                    variant: any,
                     fontWeight={700}
                     color={`${stat.color}.main`}
                     gutterBottom

@@ -105,14 +105,14 @@ const mockInventory = [
 ];
 
 const getStockStatus = (currentStock, minStock, reorderPoint) => {
-  if (currentStock === 0) return { status: 'out_of_stock', color: 'error', label: 'Out of Stock' };
+  if (currentStock ===0) return { status: 'out_of_stock', color: 'error', label: 'Out of Stock' };
   if (currentStock <= minStock) return { status: 'critical', color: 'error', label: 'Critical' };
   if (currentStock <= reorderPoint) return { status: 'low', color: 'warning', label: 'Low Stock' };
   return { status: 'good', color: 'success', label: 'Good' };
 };
 
 const getTrendIcon = (trend) => {
-  switch (trend) {
+  switch(trend) {
     case 'increasing': return <TrendingUpIcon fontSize="small" color="success" />;
     case 'decreasing': return <TrendingDownIcon fontSize="small" color="warning" />;
     case 'critical': return <WarningIcon fontSize="small" color="error" />;
@@ -124,11 +124,11 @@ const InventoryGrid = ({
   data,
   onDataChange,
   onBadgeUpdate,
-  initialFilter = 'all',
-  initialView = 'grid',
-  initialSortBy = 'name',
-  showAlert = false,
-  highlightLowStock = false,
+  initialFilter: any,
+  initialView: any,
+  initialSortBy: any,
+  showAlert: any,
+  highlightLowStock: any,
   dashboardParams = {}
 }) => {
   const { t } = useTranslation();
@@ -151,25 +151,25 @@ const InventoryGrid = ({
   }, [initialFilter, initialSortBy, highlightLowStock, dashboardParams]);
 
   // Filter inventory based on search query and filter
-  const filteredInventory = inventory.filter(item => {
+  const filteredInventory = inventory.filter((item: any: any) => {
     const matchesSearch = item.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.warehouse.toLowerCase().includes(searchQuery.toLowerCase());
 
     let matchesFilter = true;
-    if (filter === 'low-stock') {
+    if(filter === 'low-stock') {
       const status = getStockStatus(item.currentStock, item.minStock, item.reorderPoint);
-      matchesFilter = status.status === 'critical' || status.status === 'low' || status.status === 'out_of_stock';
-    } else if (filter === 'out-of-stock') {
-      matchesFilter = item.currentStock === 0;
-    } else if (filter === 'critical') {
+      matchesFilter: any,
+    } else if(filter === 'out-of-stock') {
+      matchesFilter: any,
+    } else if(filter === 'critical') {
       const status = getStockStatus(item.currentStock, item.minStock, item.reorderPoint);
-      matchesFilter = status.status === 'critical';
+      matchesFilter: any,
     }
 
     return matchesSearch && matchesFilter;
   }).sort((a, b) => {
-    switch (sortBy) {
+    switch(sortBy) {
       case 'name':
         return a.productName.localeCompare(b.productName);
       case 'stock-level':
@@ -185,7 +185,7 @@ const InventoryGrid = ({
 
   // Update badge count for low stock items
   useEffect(() => {
-    const lowStockItems = inventory.filter(item => {
+    const lowStockItems = inventory.filter((item: any: any) => {
       const status = getStockStatus(item.currentStock, item.minStock, item.reorderPoint);
       return status.status === 'critical' || status.status === 'low' || status.status === 'out_of_stock';
     }).length;
@@ -212,7 +212,7 @@ const InventoryGrid = ({
           {t('Inventory Management')}
         </Typography>
         <Button
-          variant="contained"
+          variant: any,
           startIcon={<AddIcon />}
           onClick={handleAddInventory}
         >
@@ -226,9 +226,7 @@ const InventoryGrid = ({
           <Typography variant="body2">
             Dashboard alert: Showing items with low stock levels
             <Chip
-              label="Low Stock Filter Active"
-              color="warning"
-              size="small"
+              label: any,
               sx={{ ml: 1 }}
             />
           </Typography>
@@ -241,12 +239,7 @@ const InventoryGrid = ({
           placeholder={t('Search inventory...')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            )
+          InputProps: any,
           }}
           sx={{ flex: 1 }}
         />
@@ -255,7 +248,7 @@ const InventoryGrid = ({
           <InputLabel>Filter</InputLabel>
           <Select
             value={filter}
-            label="Filter"
+            label: any,
             onChange={(e) => setFilter(e.target.value)}
           >
             <MenuItem value="all">All Items</MenuItem>
@@ -269,7 +262,7 @@ const InventoryGrid = ({
           <InputLabel>Sort By</InputLabel>
           <Select
             value={sortBy}
-            label="Sort By"
+            label: any,
             onChange={(e) => setSortBy(e.target.value)}
           >
             <MenuItem value="name">Name</MenuItem>
@@ -282,7 +275,7 @@ const InventoryGrid = ({
 
       {/* Inventory Grid */}
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: 2 }}>
-        {filteredInventory.map((item) => {
+        {filteredInventory.map((item: any: any) => {
           const stockStatus = getStockStatus(item.currentStock, item.minStock, item.reorderPoint);
           const stockPercentage = (item.currentStock / item.maxStock) * 100;
 
@@ -310,11 +303,7 @@ const InventoryGrid = ({
                       <Chip
                         label={stockStatus.label}
                         color={stockStatus.color}
-                        size="small"
-                      />
-                    </Stack>
-                  </Stack>
-
+                        size: any,
                   {/* Warehouse and Location */}
                   <Stack spacing={1}>
                     <Stack direction="row" justifyContent="space-between">
@@ -346,7 +335,7 @@ const InventoryGrid = ({
                       </Typography>
                     </Stack>
                     <LinearProgress
-                      variant="determinate"
+                      variant: any,
                       value={Math.min(stockPercentage, 100)}
                       color={stockStatus.color}
                       sx={{ height: 8, borderRadius: 4 }}
@@ -384,8 +373,7 @@ const InventoryGrid = ({
                   {/* Actions */}
                   <Stack direction="row" spacing={1} sx={{ pt: 1 }}>
                     <Button
-                      size="small"
-                      variant="outlined"
+                      size: any,
                       onClick={() => handleRestock(item.id)}
                       disabled={item.currentStock >= item.maxStock}
                     >
@@ -405,7 +393,7 @@ const InventoryGrid = ({
       </Box>
 
       {/* Empty State */}
-      {filteredInventory.length === 0 && (
+      {filteredInventory.length ===0 && (
         <Box sx={{ textAlign: 'center', py: 4 }}>
           <WarehouseIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
           <Typography variant="h6" color="text.secondary">

@@ -9,7 +9,7 @@ import {
 } from '@mui/icons-material';
 
 // Generic placeholder component
-const PlaceholderComponent = ({ title, description, icon: Icon, color = "primary" }) => (
+const PlaceholderComponent = ({ title, description, icon: Icon, color = "primary"  }: { title: any, description: any, icon: Icon: any, color = "primary": any }) => (
     <Box p={3}>
         <Card>
             <CardContent>
@@ -48,59 +48,18 @@ const PlaceholderComponent = ({ title, description, icon: Icon, color = "primary
 // Sales Analytics Component
 export const SalesAnalytics = () => (
     <PlaceholderComponent
-        title="Sales Analytics"
+        title: any,
         description="Comprehensive sales analytics dashboard with real-time insights, revenue tracking, and performance metrics."
         icon={AnalyticsIcon}
-        color="success"
-    />
-);
-
-// Inventory Analytics Component
-export const InventoryAnalytics = () => (
-    <PlaceholderComponent
-        title="Inventory Analytics"
+        color: any,
         description="Advanced inventory analytics with stock level monitoring, demand forecasting, and optimization recommendations."
         icon={InventoryIcon}
-        color="warning"
-    />
-);
-
-// Secure Vault Component
-export const SecureVault = () => (
-    <PlaceholderComponent
-        title="Secure Vault"
-        description="Encrypted document and data storage with advanced security features and access controls."
+        color: any,
         icon={SecurityIcon}
-        color="error"
-    />
-);
-
-// Access Control Component
-export const AccessControl = () => (
-    <PlaceholderComponent
-        title="Access Control"
-        description="Comprehensive user access management system with role-based permissions and security monitoring."
+        color: any,
         icon={AdminIcon}
-        color="primary"
-    />
-);
-
-// MDM Stock Component
-export const MDMStock = () => (
-    <PlaceholderComponent
-        title="MDM Stock Management"
-        description="Master Data Management for stock levels across all channels with real-time synchronization."
+        color: any,
         icon={InventoryIcon}
-        color="info"
-    />
-);
-
-// MDM Sources Component
-export const MDMSources = () => (
-    <PlaceholderComponent
-        title="MDM Sources"
-        description="Master Data Management for data sources and warehouse management with integration capabilities."
+        color: any,
         icon={WarehouseIcon}
-        color="secondary"
-    />
-);
+        color: any,

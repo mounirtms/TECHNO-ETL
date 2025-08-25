@@ -1,3 +1,4 @@
+import React from 'react';
 import { database } from '../config/firebase';
 import { ref, get, set } from 'firebase/database';
 
@@ -16,16 +17,16 @@ const sanitizeKey = (userId) => {
  * @param {string} userId - The user ID whose license status needs to be verified.
  * @returns {Promise<boolean>} - Returns true if the user has a valid license, false otherwise.
  */
-export const check_license_status = async (userId) => {
+export const check_license_status = async(userId) => {
     try {
         // Validate input
-        if (!userId || typeof userId !== 'string') {
+        if(!userId || typeof userId !== 'string') {
             console.warn('Invalid userId provided to check_license_status:', userId);
             return false;
         }
 
         // For localhost development, always return true
-        if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+        if(typeof window !== 'undefined' && window.location.hostname === 'localhost') {
             console.log('🔓 Development mode: License check bypassed for localhost');
             return true;
         }
@@ -48,7 +49,7 @@ export const check_license_status = async (userId) => {
             // Additional license data validation
             const hasRequiredFields = licenseData.createdAt && licenseData.licenseType;
             
-            if (isValid && isNotExpired && hasRequiredFields) {
+            if(isValid && isNotExpired && hasRequiredFields) {
                 console.log('✅ Valid license found for user:', userId);
                 return true;
             } else {
@@ -65,10 +66,10 @@ export const check_license_status = async (userId) => {
         
         return false;
 
-    } catch (error) {
+    } catch(error: any) {
         console.error('❌ Error checking license status:', error);
         // For development, be more lenient with errors
-        if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+        if(typeof window !== 'undefined' && window.location.hostname === 'localhost') {
             console.warn('🔧 Development mode: Allowing access despite license check error');
             return true;
         }
@@ -82,7 +83,7 @@ export const check_license_status = async (userId) => {
  * @param {object} licenseData - License data including isValid, expiryDate, etc.
  * @returns {Promise<boolean>} - Returns true if successfully set
  */
-export const set_license_status = async (userId, licenseData) => {
+export const set_license_status = async (userId: string, licenseData: any) => {
     try {
         const sanitizedUserId = sanitizeKey(userId);
         const licenseRef = ref(database, `licenses/${sanitizedUserId}`);
@@ -95,7 +96,7 @@ export const set_license_status = async (userId, licenseData) => {
             ...licenseData
         });
         return true;
-    } catch (error) {
+    } catch(error: any) {
         console.error('Error setting license status:', error);
         return false;
     }
@@ -106,7 +107,7 @@ export const set_license_status = async (userId, licenseData) => {
  * @param {string} userId - The user ID
  * @returns {Promise<object|null>} - Returns license data or null
  */
-export const get_license_details = async (userId) => {
+export const get_license_details = async(userId: string) => {
     try {
         const sanitizedUserId = sanitizeKey(userId);
         const licenseRef = ref(database, `licenses/${sanitizedUserId}`);
@@ -116,7 +117,7 @@ export const get_license_details = async (userId) => {
             return snapshot.val();
         }
         return null;
-    } catch (error) {
+    } catch(error: any) {
         console.error('Error getting license details:', error);
         return null;
     }

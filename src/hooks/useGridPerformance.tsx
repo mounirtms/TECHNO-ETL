@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 
 /**
@@ -6,14 +7,14 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
  */
 export const useGridPerformance = (options = {}) => {
   const {
-    data = [],
-    pageSize = 100,
-    virtualizeThreshold = 1000,
-    enableVirtualization = true,
-    enableLazyLoading = true,
-    enableMemoryOptimization = true,
+    data: any,
+    pageSize: any,
+    virtualizeThreshold: any,
+    enableVirtualization: any,
+    enableLazyLoading: any,
+    enableMemoryOptimization: any,
     onLoadMore,
-    getRowHeight = () => 52
+    getRowHeight: any,
   } = options;
 
   const [virtualizedData, setVirtualizedData] = useState([]);
@@ -29,7 +30,7 @@ export const useGridPerformance = (options = {}) => {
   // Memory monitoring
   const estimateMemoryUsage = useCallback((dataSet) => {
     try {
-      return JSON.stringify(dataSet).length * 2; // Rough estimate in bytes
+      return JSON.stringify(dataSet ).length * 2; // Rough estimate in bytes
     } catch {
       return dataSet.length * 1000; // Fallback estimate
     }
@@ -37,7 +38,7 @@ export const useGridPerformance = (options = {}) => {
 
   // Virtualization calculations
   const virtualConfig = useMemo(() => {
-    if (!enableVirtualization || data.length < virtualizeThreshold) {
+    if(!enableVirtualization || data.length < virtualizeThreshold) {
       return {
         shouldVirtualize: false,
         itemHeight: getRowHeight(),
@@ -61,7 +62,7 @@ export const useGridPerformance = (options = {}) => {
 
   // Lazy loading implementation
   const loadPage = useCallback(async (pageIndex) => {
-    if (!enableLazyLoading || loadingRef.current || loadedPages.has(pageIndex)) {
+    if (!enableLazyLoading || loadingRef.current || loadedPages.has(pageIndex )) {
       return;
     }
 
@@ -69,7 +70,7 @@ export const useGridPerformance = (options = {}) => {
     setIsLoading(true);
 
     try {
-      if (onLoadMore) {
+      if(onLoadMore) {
         await onLoadMore({
           page: pageIndex,
           pageSize,
@@ -78,7 +79,7 @@ export const useGridPerformance = (options = {}) => {
       }
       
       setLoadedPages(prev => new Set([...prev, pageIndex]));
-    } catch (error) {
+    } catch(error: any) {
       console.error('Failed to load page:', pageIndex, error);
     } finally {
       loadingRef.current = false;
@@ -90,13 +91,12 @@ export const useGridPerformance = (options = {}) => {
   useEffect(() => {
     if (!enableLazyLoading || !scrollElementRef.current) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
+    const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const pageIndex = parseInt(entry.target.dataset.page, 10);
-            if (!isNaN(pageIndex)) {
-              loadPage(pageIndex);
+          if(entry.isIntersecting) {
+            const pageIndex = parseInt(entry.target?.dataset.page, 10);
+            if (!isNaN(pageIndex )) {
+              loadPage(pageIndex );
             }
           }
         });
@@ -111,13 +111,13 @@ export const useGridPerformance = (options = {}) => {
     observerRef.current = observer;
 
     return () => {
-      observer.disconnect();
+      observer?.disconnect();
     };
   }, [enableLazyLoading, loadPage]);
 
   // Virtualized data calculation
   useEffect(() => {
-    if (!virtualConfig.shouldVirtualize) {
+    if(!virtualConfig.shouldVirtualize) {
       setVirtualizedData(data);
       return;
     }
@@ -141,16 +141,16 @@ export const useGridPerformance = (options = {}) => {
     // Memory threshold check (50MB)
     const MEMORY_THRESHOLD = 50 * 1024 * 1024;
     
-    if (currentMemoryUsage > MEMORY_THRESHOLD) {
+    if(currentMemoryUsage > MEMORY_THRESHOLD) {
       console.warn('Grid memory usage high:', currentMemoryUsage / 1024 / 1024, 'MB');
       
       // Trigger garbage collection hint
-      if (window.gc) {
+      if(window.gc) {
         window.gc();
       }
       
       // Reduce visible range if possible
-      if (virtualConfig.shouldVirtualize) {
+      if(virtualConfig.shouldVirtualize) {
         setVisibleRange(prev => ({
           start: prev.start,
           end: Math.min(prev.end, prev.start + Math.floor(virtualConfig.visibleCount * 0.8))
@@ -163,7 +163,7 @@ export const useGridPerformance = (options = {}) => {
   const handleScroll = useCallback((event) => {
     if (!virtualConfig.shouldVirtualize) return;
 
-    const scrollTop = event.target.scrollTop;
+    const scrollTop = event.target?.scrollTop;
     const { itemHeight, visibleCount } = virtualConfig;
     
     const startIndex = Math.floor(scrollTop / itemHeight);
@@ -172,7 +172,7 @@ export const useGridPerformance = (options = {}) => {
     setVisibleRange({ start: startIndex, end: endIndex });
 
     // Lazy loading trigger
-    if (enableLazyLoading) {
+    if(enableLazyLoading) {
       const currentPage = Math.floor(endIndex / pageSize);
       const nextPage = currentPage + 1;
       
@@ -192,8 +192,8 @@ export const useGridPerformance = (options = {}) => {
 
   // Get visible items with positioning
   const getVisibleItems = useCallback(() => {
-    if (!virtualConfig.shouldVirtualize) {
-      return virtualizedData.map((item, index) => ({
+    if(!virtualConfig.shouldVirtualize) {
+      return virtualizedData.map((item: any: any, index: any: any) => ({
         item,
         index,
         style: {}
@@ -203,7 +203,7 @@ export const useGridPerformance = (options = {}) => {
     const { start } = visibleRange;
     const { itemHeight } = virtualConfig;
 
-    return virtualizedData.map((item, virtualIndex) => {
+    return virtualizedData.map((item: any: any, virtualIndex: any: any) => {
       const actualIndex = start - virtualConfig.overscan + virtualIndex;
       return {
         item,
@@ -235,8 +235,8 @@ export const useGridPerformance = (options = {}) => {
   // Cleanup
   useEffect(() => {
     return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
+      if(observerRef.current) {
+        observerRef.current?.disconnect();
       }
     };
   }, []);
@@ -276,24 +276,23 @@ export const useGridPerformance = (options = {}) => {
  */
 export const useColumnOptimization = (columns = [], visibleColumns = {}) => {
   const optimizedColumns = useMemo(() => {
-    return columns.filter(col => {
+    return columns.filter((col: any: any) => {
       // Hide columns that are explicitly hidden
-      if (visibleColumns[col.field] === false) {
+      if(visibleColumns[col?.field] ===false) {
         return false;
       }
       
       // Always show pinned columns
-      if (col.pinned) {
+      if(col?.pinned) {
         return true;
       }
       
       return true;
-    }).map(col => ({
-      ...col,
+    }).map((col: any: any) => ({ ...col,
       // Optimize cell rendering for large datasets
-      renderCell: col.renderCell ? (params) => {
+      renderCell: col?.renderCell ? (params) => {
         // Memoize cell content
-        return React.memo(col.renderCell)(params);
+        return React.memo(col?.renderCell)(params);
       } : undefined
     }));
   }, [columns, visibleColumns]);
@@ -310,7 +309,7 @@ export const useDebounceFilter = (initialValue = '', delay = 300) => {
   const timeoutRef = useRef(null);
 
   useEffect(() => {
-    if (timeoutRef.current) {
+    if(timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
 
@@ -319,7 +318,7 @@ export const useDebounceFilter = (initialValue = '', delay = 300) => {
     }, delay);
 
     return () => {
-      if (timeoutRef.current) {
+      if(timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
     };

@@ -59,11 +59,11 @@ const OrdersGrid = () => {
 
       // Calculate stats
       const totalOrders = orders.length;
-      const pendingOrders = orders.filter(o => o.status === 'pending').length;
-      const processingOrders = orders.filter(o => o.status === 'processing').length;
-      const completedOrders = orders.filter(o => o.status === 'complete').length;
-      const cancelledOrders = orders.filter(o => o.status === 'canceled').length;
-      const totalRevenue = orders.reduce((sum, o) => sum + (parseFloat(o.grand_total) || 0), 0);
+      const pendingOrders = orders.filter((o: any: any) => o.status === 'pending').length;
+      const processingOrders = orders.filter((o: any: any) => o.status === 'processing').length;
+      const completedOrders = orders.filter((o: any: any) => o.status === 'complete').length;
+      const cancelledOrders = orders.filter((o: any: any) => o.status === 'canceled').length;
+      const totalRevenue = orders.reduce((sum: any: any, o: any: any) => sum + (parseFloat(o.grand_total) || 0), 0);
 
       setStats({
         totalOrders,
@@ -73,7 +73,7 @@ const OrdersGrid = () => {
         cancelledOrders,
         totalRevenue
       });
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error fetching orders:', error);
       toast.error('Failed to fetch orders');
       setData([]);
@@ -84,8 +84,8 @@ const OrdersGrid = () => {
 
   // ===== 3. EVENT HANDLERS =====
   const handleView = useCallback((records) => {
-    if (records.length === 1) {
-      const order = data.find(o => o.entity_id === records[0]);
+    if(records.length ===1) {
+      const order = data.find(o => o?.entity_id ===records[0]);
       setSelectedOrder(order);
       setViewDialogOpen(true);
     } else {
@@ -94,8 +94,8 @@ const OrdersGrid = () => {
   }, [data]);
 
   const handleEdit = useCallback((records) => {
-    if (records.length === 1) {
-      const order = data.find(o => o.entity_id === records[0]);
+    if(records.length ===1) {
+      const order = data.find(o => o?.entity_id ===records[0]);
       setSelectedOrder(order);
       setEditDialogOpen(true);
     } else {
@@ -104,18 +104,18 @@ const OrdersGrid = () => {
   }, [data]);
 
   const handleCancel = useCallback(async (records) => {
-    if (records.length === 0) {
+    if(records.length ===0) {
       toast.warning('Please select orders to cancel');
       return;
     }
 
     try {
       for (const orderId of records) {
-        await magentoApi.cancelOrder(orderId);
+        await magentoApi?.cancelOrder(orderId);
       }
       toast.success(`Cancelled ${records.length} order(s) successfully`);
       fetchOrders();
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error cancelling orders:', error);
       toast.error('Failed to cancel orders');
     }
@@ -123,10 +123,10 @@ const OrdersGrid = () => {
 
   const handleSync = useCallback(async () => {
     try {
-      await magentoApi.syncOrders();
+      await magentoApi?.syncOrders();
       toast.success('Orders synchronized successfully');
       fetchOrders();
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error syncing orders:', error);
       toast.error('Failed to sync orders');
     }
@@ -201,7 +201,7 @@ const OrdersGrid = () => {
       icon: <CancelIcon />,
       color: 'error',
       variant: 'outlined',
-      disabled: selectedRows.length === 0
+      disabled: selectedRows.length ===0
     },
     {
       label: 'Sync Orders',
@@ -236,7 +236,7 @@ const OrdersGrid = () => {
       enabled: true,
       label: 'Cancel Order',
       icon: 'cancel',
-      onClick: (row) => handleCancel([row.entity_id]),
+      onClick: (row) => handleCancel([row?.entity_id]),
       color: 'error'
     }
   }), [handleCancel]);
@@ -298,7 +298,7 @@ const OrdersGrid = () => {
   // ===== 10. RENDER =====
   return (
     <UnifiedGrid
-      {...getStandardGridProps('magentoOrders', {
+      { ...getStandardGridProps('magentoOrders', {
         gridName: "OrdersGrid",
         columns,
         data,

@@ -31,7 +31,7 @@ const columns = [
                 color: params?.row?.enabled ? 'green' : 'red',
                 fontWeight: 'bold'
             }}>
-                {params?.row?.enabled ? 'Enabled' : 'Disabled'}
+                {params?.row.enabled ? 'Enabled' : 'Disabled'}
             </div>
         )
     },
@@ -97,7 +97,7 @@ const columns = [
     }
 ];
 
-const SourcesGrid = ({ productId }) => {
+const SourcesGrid: React.FC<{productId: any}> = ({ productId  }) => {
     const [loading, setLoading] = useState(false);
     const [totalCount, setTotalCount] = useState(0);
     const [data, setData] = useState([]);
@@ -115,7 +115,7 @@ const SourcesGrid = ({ productId }) => {
                 currentPage: params?.page ? params.page + 1 : 1
             };
 
-            if (productId) {
+            if(productId) {
                 searchCriteria.filterGroups.push({
                     filters: [{
                         field: 'product_id',
@@ -125,8 +125,8 @@ const SourcesGrid = ({ productId }) => {
                 });
             }
 
-            if (filters?.enabled !== undefined) {
-                const isEnabled = filters.enabled === 'true' || filters.enabled === true;
+            if(filters.enabled !== undefined) {
+                const isEnabled = filters.enabled === 'true' || filters.enabled ===true;
                 searchCriteria.filterGroups.push({
                     filters: [{
                         field: 'enabled',
@@ -138,13 +138,13 @@ const SourcesGrid = ({ productId }) => {
 
             const response = await magentoApi.getSources(searchCriteria);
 
-            if (!response) {
+            if(!response) {
                 throw new Error('No response received from the server.');
             }
 
             setData(response?.items ?? []);
             setTotalCount(response?.total_count ?? 0);
-        } catch (error) {
+        } catch(error: any) {
             console.error('Error fetching sources:', error);
             setError('Failed to load sources. Please try again.'); // Set error message
             toast.error('Error loading sources.'); // Show toast notification
@@ -161,19 +161,18 @@ const SourcesGrid = ({ productId }) => {
         },
         {
             title: 'Active Sources',
-            value: data?.filter(source => source?.enabled)?.length ?? 0,
+            value: data?.filter((source: any: any) => source.enabled)?.length ?? 0,
             color: 'success'
         },
         {
             title: 'Inactive Sources',
-            value: data?.filter(source => !source?.enabled)?.length ?? 0,
+            value: data?.filter((source: any: any) => !source.enabled)?.length ?? 0,
             color: 'error'
         }
     ];
 
-    return (
-        <UnifiedGrid
-            {...getStandardGridProps('sources', {
+    return(<UnifiedGrid
+            { ...getStandardGridProps('sources', {
                 gridName: "SourcesGrid",
                 columns,
                 data,
@@ -188,7 +187,7 @@ const SourcesGrid = ({ productId }) => {
                 },
                 onExport: (selectedRows) => {
                     const exportData = selectedRows.length > 0
-                        ? data.filter(source => selectedRows.includes(source.source_code))
+                        ? data.filter((source: any: any) => selectedRows.includes(source.source_code))
                         : data;
                     console.log('Exporting sources:', exportData);
                     toast.success(`Exported ${exportData.length} sources`);
@@ -215,7 +214,7 @@ const SourcesGrid = ({ productId }) => {
                 onFilterChange: setFilters,
 
                 // Row configuration
-                getRowId: (row) => row?.source_code ?? Math.random().toString(36).substr(2, 9),
+                getRowId: (row) => row.source_code ?? Math.random().toString(36).substr(2, 9),
 
                 // Error handling
                 onError: (error) => {

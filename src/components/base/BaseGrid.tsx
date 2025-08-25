@@ -15,146 +15,53 @@ import {
   useTheme,
   useMediaQuery
 } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
-import PropTypes from 'prop-types';
+import { DataGrid, GridRowsProp, GridColDef, GridSortModel, GridFilterModel } from '@mui/x-data-grid';
 
 // Advanced components
 import BaseToolbar from './BaseToolbar';
 import BaseCard from './BaseCard';
 import TooltipWrapper from '../common/TooltipWrapper';
 
-// TypeScript interfaces
-interface BaseGridProps {
-  // Data props
-  data?: any[];
-  columns?: any[];
-  loading?: boolean;
-  error?: Error | null;
-  
-  // Grid configuration
-  gridName?: string;
-  gridType?: string;
-  height?: number;
-  autoHeight?: boolean;
-  
-  // Pagination
-  pagination?: boolean;
-  pageSize?: number;
-  pageSizeOptions?: number[];
-  
-  // Selection
-  checkboxSelection?: boolean;
-  disableSelectionOnClick?: boolean;
-  selectionModel?: any[];
-  onSelectionModelChange?: (selection: any[]) => void;
-  
-  // Sorting and filtering
-  sortModel?: any[];
-  onSortModelChange?: (model: any[]) => void;
-  filterModel?: any;
-  onFilterModelChange?: (model: any) => void;
-  
-  // Toolbar configuration
-  showToolbar?: boolean;
-  toolbarConfig?: any;
-  customActions?: any[];
-  customLeftActions?: any[];
-  
-  // Stats cards
-  showStatsCards?: boolean;
-  gridCards?: any[];
-  
-  // Event handlers
-  onRefresh?: () => void;
-  onAdd?: () => void;
-  onEdit?: (row: any) => void;
-  onDelete?: (rows: any[]) => void;
-  onExport?: () => void;
-  onImport?: () => void;
-  onRowClick?: (params: any) => void;
-  onRowDoubleClick?: (params: any) => void;
-  onCellClick?: (params: any) => void;
-  
-  // Advanced features
-  enableVirtualization?: boolean;
-  enableRealTimeUpdates?: boolean;
-  updateInterval?: number;
-  
-  // Styling
-  density?: string;
-  sx?: any;
-  
-  // Accessibility
-  ariaLabel?: string;
-  
-  // Error handling
-  onError?: (error: any, context?: string) => void;
-  
-  // Custom components
-  NoRowsOverlay?: React.ComponentType<any>;
-  LoadingOverlay?: React.ComponentType<any>;
-  ErrorOverlay?: React.ComponentType<any>;
-  
-  // Advanced props
-  getRowId?: (row: any) => any;
-  getRowClassName?: (params: any) => string;
-  getCellClassName?: (params: any) => string;
-  isRowSelectable?: (params: any) => boolean;
-  
-  [key: string]: any;
-}
+// Import types from the centralized type definitions
+import { BaseGridProps, GridCard, ToolbarConfig } from '../../types/baseComponents';
 
-/**
- * Advanced BaseGrid Component
- * 
- * Provides a comprehensive foundation for all grid components with:
- * - Responsive design and mobile optimization
- * - Virtual scrolling for performance
- * - Real-time data updates
- * - Advanced caching and state management
- * - Accessibility compliance
- * - Error boundary integration
- */
+// TypeScript interfaces
 const BaseGrid: React.FC<BaseGridProps> = ({
   // Data props
-  data = [],
-  columns = [],
-  loading = false,
-  error = null,
-  
+  data: any,
+  columns: any,
+  loading: any,
+  error: any,
   // Grid configuration
-  gridName = 'BaseGrid',
-  gridType = 'default',
-  height = 600,
-  autoHeight = false,
-  
+  gridName: any,
+  gridType: any,
+  height: any,
+  autoHeight: any,
   // Pagination
-  pagination = true,
-  pageSize = 25,
+  pagination: any,
+  pageSize: any,
   pageSizeOptions = [10, 25, 50, 100],
   
   // Selection
-  checkboxSelection = false,
-  disableSelectionOnClick = false,
-  selectionModel = [],
+  checkboxSelection: any,
+  disableSelectionOnClick: any,
+  selectionModel: any,
   onSelectionModelChange,
   
   // Sorting and filtering
-  sortModel = [],
+  sortModel: any,
   onSortModelChange,
   filterModel = { items: [] },
   onFilterModelChange,
   
   // Toolbar configuration
-  showToolbar = true,
+  showToolbar: any,
   toolbarConfig = {},
-  customActions = [],
-  customLeftActions = [],
-  
+  customActions: any,
+  customLeftActions: any,
   // Stats cards
-  showStatsCards = false,
-  gridCards = [],
-  
+  showStatsCards: any,
+  gridCards: any,
   // Event handlers
   onRefresh,
   onAdd,
@@ -167,12 +74,11 @@ const BaseGrid: React.FC<BaseGridProps> = ({
   onCellClick,
   
   // Advanced features
-  enableVirtualization = true,
-  enableRealTimeUpdates = false,
-  updateInterval = 30000,
-  
+  enableVirtualization: any,
+  enableRealTimeUpdates: any,
+  updateInterval: any,
   // Styling
-  density = 'standard',
+  density: any,
   sx = {},
   
   // Accessibility
@@ -208,8 +114,7 @@ const BaseGrid: React.FC<BaseGridProps> = ({
   
   // Performance optimization - memoized columns
   const optimizedColumns = useMemo(() => {
-    return columns.map(column => ({
-      ...column,
+    return columns.map((column: any: any) => ({ ...column,
       // Add default responsive behavior
       minWidth: column.minWidth || (isMobile ? 100 : 150),
       flex: column.flex || (isMobile && !column.width ? 1 : column.flex),
@@ -244,37 +149,37 @@ const BaseGrid: React.FC<BaseGridProps> = ({
     onError?.(error, context);
   }, [gridName, onError]);
 
-  const handleSelectionChange = useCallback((newSelection) => {
+  const handleSelectionChange = useCallback((newSelection: any[]) => {
     try {
       setInternalSelectionModel(newSelection);
       onSelectionModelChange?.(newSelection);
-    } catch (error) {
+    } catch(error: any) {
       handleError(error, 'selection change');
     }
   }, [onSelectionModelChange, handleError]);
 
-  const handleSortChange = useCallback((newSortModel) => {
+  const handleSortChange = useCallback((newSortModel: GridSortModel) => {
     try {
       setInternalSortModel(newSortModel);
       onSortModelChange?.(newSortModel);
-    } catch (error) {
+    } catch(error: any) {
       handleError(error, 'sort change');
     }
   }, [onSortModelChange, handleError]);
 
-  const handleFilterChange = useCallback((newFilterModel) => {
+  const handleFilterChange = useCallback((newFilterModel: GridFilterModel) => {
     try {
       setInternalFilterModel(newFilterModel);
       onFilterModelChange?.(newFilterModel);
-    } catch (error) {
+    } catch(error: any) {
       handleError(error, 'filter change');
     }
   }, [onFilterModelChange, handleError]);
 
-  const handlePageSizeChange = useCallback((newPageSize) => {
+  const handlePageSizeChange = useCallback((newPageSize: number) => {
     try {
       setInternalPageSize(newPageSize);
-    } catch (error) {
+    } catch(error: any) {
       handleError(error, 'page size change');
     }
   }, [handleError]);
@@ -287,76 +192,84 @@ const BaseGrid: React.FC<BaseGridProps> = ({
   }, [height, autoHeight, isMobile]);
 
   // Grid configuration
-  const gridConfig = useMemo(() => ({
-    // Core configuration
-    rows: data,
-    columns: optimizedColumns,
-    loading,
+  // Configure DataGrid props to be compatible with MUI DataGrid
+  const gridConfig = useMemo(() => {
+    // Define the base configuration
+    const config: any = {
+      // Core configuration
+      rows: data,
+      columns: optimizedColumns,
+      loading,
+      
+      // Pagination - make sure it's true or undefined, not false
+      ...(pagination ? { pagination: true } : {}),
+      pageSize: internalPageSize,
+      rowsPerPageOptions: pageSizeOptions,
+      onPageSizeChange: handlePageSizeChange,
+      
+      // Selection
+      checkboxSelection,
+      disableSelectionOnClick,
+      selectionModel: internalSelectionModel,
+      onSelectionModelChange: handleSelectionChange,
+      isRowSelectable,
+      
+      // Sorting and filtering
+      sortModel: internalSortModel,
+      onSortModelChange: handleSortChange,
+      filterModel: internalFilterModel,
+      onFilterModelChange: handleFilterChange,
+      
+      // Events
+      onRowClick,
+      onRowDoubleClick,
+      onCellClick,
+      
+      // Performance
+      disableVirtualization: !enableVirtualization,
+      
+      // Styling
+      // Convert density to supported MUI DataGrid density value
+      density: (density === 'standard' || density === 'compact' || density === 'comfortable') 
+        ? density as 'standard' | 'compact' | 'comfortable'
+        : 'standard',
+      getRowId,
+      getRowClassName,
+      getCellClassName,
+      
+      // Accessibility
+      'aria-label': ariaLabel || `${gridName} data grid`,
+      
+      // Error handling
+      onError: handleError,
+      
+      // Custom overlays
+      components: {
+        NoRowsOverlay: NoRowsOverlay || (() => (
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+            <Typography variant="body1" color="text.secondary">
+              No data available
+            </Typography>
+          </Box>
+        )),
+        LoadingOverlay: LoadingOverlay || (() => (
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+            <Skeleton variant="rectangular" width="100%" height={200} />
+          </Box>
+        )),
+        ErrorOverlay: ErrorOverlay || (() => (
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+            <Alert severity="error">
+              An error occurred while loading data
+            </Alert>
+          </Box>
+        ))
+      },
+    };
     
-    // Pagination
-    pagination,
-    pageSize: internalPageSize,
-    rowsPerPageOptions: pageSizeOptions,
-    onPageSizeChange: handlePageSizeChange,
-    
-    // Selection
-    checkboxSelection,
-    disableSelectionOnClick,
-    selectionModel: internalSelectionModel,
-    onSelectionModelChange: handleSelectionChange,
-    isRowSelectable,
-    
-    // Sorting and filtering
-    sortModel: internalSortModel,
-    onSortModelChange: handleSortChange,
-    filterModel: internalFilterModel,
-    onFilterModelChange: handleFilterChange,
-    
-    // Events
-    onRowClick,
-    onRowDoubleClick,
-    onCellClick,
-    
-    // Performance
-    disableVirtualization: !enableVirtualization,
-    
-    // Styling
-    density,
-    getRowId,
-    getRowClassName,
-    getCellClassName,
-    
-    // Accessibility
-    'aria-label': ariaLabel || `${gridName} data grid`,
-    
-    // Error handling
-    onError: handleError,
-    
-    // Custom overlays
-    components: {
-      NoRowsOverlay: NoRowsOverlay || (() => (
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-          <Typography variant="body1" color="text.secondary">
-            No data available
-          </Typography>
-        </Box>
-      )),
-      LoadingOverlay: LoadingOverlay || (() => (
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-          <Skeleton variant="rectangular" width="100%" height={200} />
-        </Box>
-      )),
-      ErrorOverlay: ErrorOverlay || (() => (
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-          <Alert severity="error">
-            An error occurred while loading data
-          </Alert>
-        </Box>
-      ))
-    },
-    
-    ...otherProps
-  }), [
+    // Add other props from otherProps to ensure all valid props are passed to DataGrid
+    return { ...otherProps, ...config };
+  }, [
     data, optimizedColumns, loading, pagination, internalPageSize, pageSizeOptions,
     checkboxSelection, disableSelectionOnClick, internalSelectionModel,
     internalSortModel, internalFilterModel, onRowClick, onRowDoubleClick,
@@ -373,8 +286,7 @@ const BaseGrid: React.FC<BaseGridProps> = ({
     return (
       <Box sx={{ mb: 2 }}>
         <Box 
-          sx={{ 
-            display: 'grid',
+          sx: any,
             gridTemplateColumns: {
               xs: '1fr',
               sm: 'repeat(2, 1fr)',
@@ -383,17 +295,24 @@ const BaseGrid: React.FC<BaseGridProps> = ({
             gap: 2
           }}
         >
-          {gridCards.map((card, index) => (
-            <BaseCard
-              key={index}
-              title={card.title}
-              value={card.value}
-              icon={card.icon}
-              color={card.color}
-              loading={loading}
-              {...card}
-            />
-          ))}
+          {gridCards.map((card: any: any, index: any: any) => {
+            // Create a safely typed version of the card
+            const typedCard: any = { ...card,
+              loading: loading,
+              icon: typeof card.icon === 'function' ? card.icon : undefined
+            };
+            
+            // Remove the color property if it's not of the expected type
+            if(card.color && typeof card.color === 'string') {
+              // Check if color is one of the valid colors, otherwise remove it
+              const validColors = ['primary', 'secondary', 'success', 'warning', 'error', 'info'];
+              if (!validColors.includes(card.color)) {
+                delete typedCard.color;
+              }
+            }
+            
+            return <BaseCard key={index} { ...typedCard} />;
+          })}
         </Box>
       </Box>
     );
@@ -403,8 +322,7 @@ const BaseGrid: React.FC<BaseGridProps> = ({
   const renderToolbar = () => {
     if (!showToolbar) return null;
     
-    return (
-      <BaseToolbar
+    return(<BaseToolbar
         gridName={gridName}
         gridType={gridType}
         config={toolbarConfig}
@@ -414,13 +332,13 @@ const BaseGrid: React.FC<BaseGridProps> = ({
         onRefresh={onRefresh}
         onAdd={onAdd}
         onEdit={onEdit}
-        onDelete={onDelete}
+        onDelete={(rows) => onDelete?.(rows || [])}
         onExport={onExport}
         onImport={onImport}
         loading={loading}
         columnVisibility={columnVisibility}
         onColumnVisibilityChange={setColumnVisibility}
-        density={density}
+        density={density as 'compact' | 'standard' | 'comfortable'}
         realTimeEnabled={realTimeEnabled}
         onRealTimeToggle={setRealTimeEnabled}
       />
@@ -428,7 +346,7 @@ const BaseGrid: React.FC<BaseGridProps> = ({
   };
 
   // Error boundary
-  if (error) {
+  if(error) {
     return (
       <Paper sx={{ p: 3, ...sx }}>
         <Alert severity="error" sx={{ mb: 2 }}>
@@ -454,8 +372,7 @@ const BaseGrid: React.FC<BaseGridProps> = ({
       {/* Main Grid */}
       <Paper 
         elevation={1}
-        sx={{ 
-          height: gridHeight,
+        sx: any,
           width: '100%',
           '& .MuiDataGrid-root': {
             border: 'none',
@@ -486,91 +403,13 @@ const BaseGrid: React.FC<BaseGridProps> = ({
           <div style={{ height: '100%', width: '100%' }}>
             <DataGrid
               ref={gridRef}
-              {...gridConfig}
+              { ...gridConfig}
             />
           </div>
         </Fade>
       </Paper>
     </Box>
   );
-};
-
-BaseGrid.propTypes = {
-  // Data props
-  data: PropTypes.array,
-  columns: PropTypes.array,
-  loading: PropTypes.bool,
-  error: PropTypes.object,
-  
-  // Grid configuration
-  gridName: PropTypes.string,
-  gridType: PropTypes.string,
-  height: PropTypes.number,
-  autoHeight: PropTypes.bool,
-  
-  // Pagination
-  pagination: PropTypes.bool,
-  pageSize: PropTypes.number,
-  pageSizeOptions: PropTypes.array,
-  
-  // Selection
-  checkboxSelection: PropTypes.bool,
-  disableSelectionOnClick: PropTypes.bool,
-  selectionModel: PropTypes.array,
-  onSelectionModelChange: PropTypes.func,
-  
-  // Sorting and filtering
-  sortModel: PropTypes.array,
-  onSortModelChange: PropTypes.func,
-  filterModel: PropTypes.object,
-  onFilterModelChange: PropTypes.func,
-  
-  // Toolbar configuration
-  showToolbar: PropTypes.bool,
-  toolbarConfig: PropTypes.object,
-  customActions: PropTypes.array,
-  customLeftActions: PropTypes.array,
-  
-  // Stats cards
-  showStatsCards: PropTypes.bool,
-  gridCards: PropTypes.array,
-  
-  // Event handlers
-  onRefresh: PropTypes.func,
-  onAdd: PropTypes.func,
-  onEdit: PropTypes.func,
-  onDelete: PropTypes.func,
-  onExport: PropTypes.func,
-  onImport: PropTypes.func,
-  onRowClick: PropTypes.func,
-  onRowDoubleClick: PropTypes.func,
-  onCellClick: PropTypes.func,
-  
-  // Advanced features
-  enableVirtualization: PropTypes.bool,
-  enableRealTimeUpdates: PropTypes.bool,
-  updateInterval: PropTypes.number,
-  
-  // Styling
-  density: PropTypes.oneOf(['compact', 'standard', 'comfortable']),
-  sx: PropTypes.object,
-  
-  // Accessibility
-  ariaLabel: PropTypes.string,
-  
-  // Error handling
-  onError: PropTypes.func,
-  
-  // Custom components
-  NoRowsOverlay: PropTypes.elementType,
-  LoadingOverlay: PropTypes.elementType,
-  ErrorOverlay: PropTypes.elementType,
-  
-  // Advanced props
-  getRowId: PropTypes.func,
-  getRowClassName: PropTypes.func,
-  getCellClassName: PropTypes.func,
-  isRowSelectable: PropTypes.func
 };
 
 export default BaseGrid;

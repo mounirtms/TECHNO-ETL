@@ -14,7 +14,7 @@
 
 import React, { useState, useCallback, useEffect, useMemo, useRef, forwardRef, useImperativeHandle } from 'react';
 import { Box, Tooltip, ToggleButton, ToggleButtonGroup, Alert } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRowId, GridSortModel, GridFilterModel, GridPaginationModel, GridRowSelectionModel } from '@mui/x-data-grid';
 import GridViewIcon from '@mui/icons-material/GridView';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import CustomGridToolbar from './CustomGridToolbar';
@@ -26,7 +26,7 @@ import { StatsCards } from './StatsCards';
 import GridCardView from './GridCardView';
 
 // Show deprecation warning in development
-if (process.env.NODE_ENV === 'development') {
+if(process.env.NODE_ENV === 'development') {
   console.warn(
     'BaseGrid is deprecated. Please use UnifiedGrid instead. ' +
     'See migration guide in the component documentation.'
@@ -34,13 +34,38 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Throw error in production to prevent usage
-if (process.env.NODE_ENV === 'production') {
+if(process.env.NODE_ENV === 'production') {
   throw new Error(
     'BaseGrid is deprecated and disabled in production. ' +
     'Please migrate to UnifiedGrid from ../common/UnifiedGrid'
   );
 }
-const BaseGrid = ({
+
+interface BaseGridProps {
+    gridName: string;
+    columns: GridColDef[];
+    data: any[];
+    loading: boolean;
+    onRefresh?: (params) => Promise<void>;
+    childFilterModel?: any;
+    filterOptions?: any[];
+    currentFilter?: any;
+    onFilterChange?: (newFilterModel: GridFilterModel) => void;
+    totalCount?: number;
+    defaultPageSize?: number;
+    totalItemsCount?: number;
+    preColumns?: GridColDef[];
+    endColumns?: GridColDef[];
+    gridCards?: any[];
+    showCardView?: boolean;
+    initialVisibleColumns?: string[];
+    onError?: (error: Error) => void;
+    toolbarProps?: any;
+    onSelectionChange?: (selectedIds: GridRowId[]) => void;
+    getRowId?: (row) => GridRowId;
+}
+
+const BaseGrid: React.FC<BaseGridProps> = ({
     gridName,
     columns: gridColumns,
     data,
@@ -51,32 +76,32 @@ const BaseGrid = ({
     currentFilter,
     onFilterChange,
     totalCount,
-    defaultPageSize = 25,
-    totalItemsCount = 0,
-    preColumns = [],
-    endColumns = [],
-    gridCards = [],
-    showCardView = true,
-    initialVisibleColumns = [],
+    defaultPageSize: any,
+    totalItemsCount: any,
+    preColumns: any,
+    endColumns: any,
+    gridCards: any,
+    showCardView: any,
+    initialVisibleColumns: any,
     onError,
     toolbarProps,
     onSelectionChange,
-    getRowId = (row) => row.id || row.entity_id,
+    getRowId: any,
     ...props
 }) => {
-    const [columns, setColumns] = useState(gridColumns);
-    const [sortModel, setSortModel] = useState([{ field: 'created_at', sort: 'desc' }]);
-    const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: defaultPageSize });
-    const [selectedRecord, setSelectedRecord] = useState(null);
+    const [columns, setColumns] = useState<GridColDef[]>(gridColumns);
+    const [sortModel, setSortModel] = useState<GridSortModel>([{ field: 'created_at', sort: 'desc' }]);
+    const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({ page: 0, pageSize: defaultPageSize });
+    const [selectedRecord, setSelectedRecord] = useState<any | null>(null);
     const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
     const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
-    const [filterModel, setFilterModel] = useState({ items: [] });
+    const [filterModel, setFilterModel] = useState<GridFilterModel>({ items: [] });
     const [gridHeight, setGridHeight] = useState('100%');
     const [localLoading, setLocalLoading] = useState(false);
     const [pageSize, setPageSize] = useState(25);
     const [page, setPage] = useState(0);
     const isMounted = useRef(false);
-    const [selectedRows, setSelectedRows] = useState([]);
+    const [selectedRows, setSelectedRows] = useState<GridRowSelectionModel>([]);
     const [viewMode, setViewMode] = useState(() => {
         try {
             return localStorage.getItem(`${gridName}_viewMode`) || 'list';
@@ -88,7 +113,7 @@ const BaseGrid = ({
     const safeData = useMemo(() => {
         try {
             return Array.isArray(data) ? data : [];
-        } catch (error) {
+        } catch(error: any) {
             console.error('Error processing data:', error);
             onError?.(error);
             return [];
@@ -108,7 +133,7 @@ const BaseGrid = ({
                 sortModel,
                 filterModel
             });
-        } catch (err) {
+        } catch(err: any) {
             console.error('Error refreshing grid:', err);
             onError?.(err);
         } finally {
@@ -116,15 +141,16 @@ const BaseGrid = ({
             isMounted.current = false;
         }
     };
-    const handleFilterChange = (newFilterModel) => {
+    const handleFilterModelChange = (newFilterModel: GridFilterModel) => {
         setPaginationModel(prev => ({ ...prev, page: 0 }));
         setFilterModel(newFilterModel);
+        onFilterChange?.(newFilterModel);
     };
     
-    const handleSortModelChange = (newSortModel) => {
+    const handleSortModelChange = (newSortModel: GridSortModel) => {
         setSortModel((prevSortModel) => {
             // Check if new sort model is different from the previous one
-            const isSame = JSON.stringify(prevSortModel) === JSON.stringify(newSortModel);
+            const isSame = JSON.stringify(prevSortModel) ===JSON.stringify(newSortModel);
             if (isSame) return prevSortModel; // Prevent unnecessary re-renders
     
             return [...newSortModel]; // Only update state if different
@@ -133,30 +159,29 @@ const BaseGrid = ({
     
     
 
-    const handlePaginationModelChange = (newModel) => {
+    const handlePaginationModelChange = (newModel: GridPaginationModel) => {
         console.log("Pagination Changed:", newModel);
         setPaginationModel(newModel);
     };
 
-    const handleViewModeChange = (event, newMode) => {
-        if (newMode !== null) {
+    const handleViewModeChange = (event: React.MouseEvent<HTMLElement>, newMode: string | null) => {
+        if(newMode !== null) {
             try {
                 setViewMode(newMode);
                 localStorage.setItem(`${gridName}_viewMode`, newMode);
-            } catch (error) {
+            } catch(error: any) {
                 console.error('Error saving view mode:', error);
             }
         }
     };
 
-    const handleSelectionChange = useCallback((newSelection) => {
-        const selectedSet = new Set(newSelection);
-        setSelectedRows(selectedSet);
-        onSelectionChange?.(Array.from(selectedSet)); // Pass as an array
+    const handleSelectionChange = useCallback((newSelection: GridRowSelectionModel) => {
+        setSelectedRows(newSelection);
+        onSelectionChange?.(newSelection as GridRowId[]);
     }, [onSelectionChange]);
  
     const getSelectedData = useCallback(() => {
-        return safeData.filter(row => selectedRows.includes(getRowId(row)));
+        return safeData.filter((row: any: any) => (selectedRows as GridRowId[]).includes(getRowId(row)));
     }, [safeData, selectedRows, getRowId]);
 
     const handleRowDoubleClick = (params) => {
@@ -177,7 +202,7 @@ const BaseGrid = ({
                 if (savedColumns && Array.isArray(savedColumns)) {
                     setColumns(savedColumns || gridColumns);
                 }
-            } catch (error) {
+            } catch(error: any) {
                 console.error('Error loading column settings:', error);
                 setColumns(gridColumns);
             }
@@ -186,15 +211,18 @@ const BaseGrid = ({
     }, [gridName, gridColumns]);
 
 
-    rowNumberColumn.renderCell = (params) => {
-        return params.api.getRowIndexRelativeToVisibleRows(params.id) + 1;
-    };
+    // Configure row number column if provided
+    if(rowNumberColumn) {
+        rowNumberColumn.renderCell = (params) => {
+            return params.api.getRowIndexRelativeToVisibleRows(params.id) + 1;
+        };
+    }
 
 
     const finalColumns = useMemo(() => {
 
         return [rowNumberColumn, ...preColumns, ...columns, ...endColumns];
-    }, [columns, preColumns, endColumns, selectedRows]);
+    }, [columns, preColumns, endColumns]);
 
     useEffect(() => {
         const calculateGridHeight = () => {
@@ -222,17 +250,17 @@ const BaseGrid = ({
             }}>
                 <CustomGridToolbar
                     onRefresh={handleRefresh}
-                    onFilter={handleFilterChange}
+                    onFilter={handleFilterModelChange}
                     customFilters={filterOptions}
                     currentCustomFilter={currentFilter}
-                    onCustomFilterChange={handleFilterChange}
+                    onCustomFilterChange={handleFilterModelChange}
                     gridName={gridName}
 
                     columns={finalColumns}
                     onOpenSettings={() => setSettingsDialogOpen(true)}
-                    selectedCount={selectedRows.size}
+                    selectedCount={(selectedRows as GridRowId[]).length}
                     gridMethods={gridMethods}
-                    {...toolbarProps}
+                    { ...toolbarProps}
                 />
 
 
@@ -241,28 +269,10 @@ const BaseGrid = ({
                         value={viewMode}
                         exclusive
                         onChange={handleViewModeChange}
-                        size="small"
-                    >
-
-                        <ToggleButton value="list" aria-label="list view">
-                            <Tooltip title="List View">
-                                <ViewListIcon />
-                            </Tooltip>
-                        </ToggleButton>
-
-                        <ToggleButton value="grid" aria-label="grid view">
-                            <Tooltip title="Grid View">
-                                <GridViewIcon />
-                            </Tooltip>
-                        </ToggleButton>
-                    </ToggleButtonGroup>
-                </Box>
-
-            </Box>
-        )
+                        size: any,
     };
 
-    return (
+    return Boolean(Boolean((
         <Box sx={{
             height: gridHeight,
             width: '100%',
@@ -271,8 +281,7 @@ const BaseGrid = ({
             gap: 1
         }}>
             {toolbarComponents.toolbar()}
-            {viewMode === 'list' ? (
-                <DataGrid
+            {viewMode === 'list' ? (<DataGrid
                     rows={safeData}
                     columns={finalColumns}
                     loading={loading || localLoading}
@@ -284,7 +293,7 @@ const BaseGrid = ({
                     onPaginationModelChange={handlePaginationModelChange}
                     sortModel={sortModel}
                     filterModel={filterModel}
-                    onFilterModelChange={handleFilterChange}
+                    onFilterModelChange={handleFilterModelChange}
                     checkboxSelection
                     onRowSelectionModelChange={(newSelection) => handleSelectionChange(newSelection)}
                     sortingOrder={['asc', 'desc']}  // Allows sorting in both directions
@@ -293,13 +302,11 @@ const BaseGrid = ({
                     getRowId={getRowId}
                     onRowDoubleClick={handleRowDoubleClick}
                     components={toolbarComponents}
-                    slotProps={{
-                        toolbar: {
-                          showQuickFilter: true,
+                    slotProps: any,
                         },
                       }}
-                    {...childFilterModel}
-                    {...props}
+                    { ...childFilterModel}
+                    { ...props}
                 />
             ) : (
                 <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -313,7 +320,7 @@ const BaseGrid = ({
                         </Box>
                     ) : (
                         <Box sx={{ flexGrow: 1, overflow: 'auto', p: 1 }}>
-                            {safeData.map((row, index) => (
+                            {safeData.map((row: any: any, index: any: any) => (
                                 <Box key={getRowId(row) || index}>
                                     {JSON.stringify(row)}
                                 </Box>
@@ -334,29 +341,30 @@ const BaseGrid = ({
             )}
             {/* Settings Dialog - Temporarily disabled due to compilation issues */}
             {false && (
-                <SettingsDialog
-                    open={settingsDialogOpen}
-                    onClose={() => setSettingsDialogOpen(false)}
-                    columns={finalColumns}
-                    gridName={gridName}
-                    defaultColumns={gridColumns}
-                    onSave={async (newSettings) => {
-                        try {
-                            const updatedColumns = columns.map(col => ({
-                                ...col,
-                                hide: !newSettings[col.field]?.visible,
-                                width: newSettings[col.field]?.width || col.width,
-                                index: newSettings[col.field]?.index
-                            })).sort((a, b) => (a.index || 0) - (b.index || 0));
+                <div />
+                // <SettingsDialog
+                //     open={settingsDialogOpen}
+                //     onClose={() => setSettingsDialogOpen(false)}
+                //     columns={finalColumns}
+                //     gridName={gridName}
+                //     defaultColumns={gridColumns}
+                //     onSave={async(newSettings) => {
+                //         try {
+                //             const updatedColumns = columns.map((col: any: any) => ({
+                //                 ...col,
+                //                 hide: !newSettings[col.field]?.visible,
+                //                 width: newSettings[col.field]?.width || col.width,
+                //                 index: newSettings[col.field]?.index
+                //             })).sort((a, b) => (a.index || 0) - (b.index || 0))));
 
-                            setColumns(updatedColumns);
-                            setSettingsDialogOpen(false);
-                        } catch (error) {
-                            console.error('Error applying column settings:', error);
-                            onError?.(error);
-                        }
-                    }}
-                />
+                //             setColumns(updatedColumns);
+                //             setSettingsDialogOpen(false);
+                //         } catch(error: any) {
+                //             console.error('Error applying column settings:', error);
+                //             onError?.(error);
+                //         }
+                //     }}
+                // />
             )}
         </Box>
     );

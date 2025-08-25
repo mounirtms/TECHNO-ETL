@@ -108,16 +108,15 @@ const TAB_CONFIG = {
 /**
  * Tab Loading Component
  */
-const TabLoading = ({ tabName }) => (
+const TabLoading = ({ tabName  }: { tabName: any }) => (
   <Box
-    sx={{
-      display: 'flex',
+    sx: any,
       justifyContent: 'center',
       alignItems: 'center',
       height: 400,
       flexDirection: 'column',
       gap: 2
-    }}
+    } as any}
   >
     <CircularProgress size={40} />
     <Typography variant="body2" color="text.secondary">
@@ -129,23 +128,23 @@ const TabLoading = ({ tabName }) => (
 /**
  * Tab Panel Component with lazy loading
  */
-const TabPanel = ({ children, value, index, tabId, ...other }) => {
+const TabPanel: React.FC<any> = ({ children, value, index, tabId, ...other }) => {
   return (
     <div
-      role="tabpanel"
+      role: any,
       hidden={value !== index}
       id={`grid-tabpanel-${index}`}
       aria-labelledby={`grid-tab-${index}`}
-      {...other}
+      { ...other}
     >
-      {value === index && (
+      {value ===index && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.2 }}
         >
-          <Box sx={{ py: 3 }}>
+          <Box sx={{ py: 3 } as any}>
             <Suspense fallback={<TabLoading tabName={TAB_CONFIG[tabId]?.label || 'Content'} />}>
               {children}
             </Suspense>
@@ -159,26 +158,25 @@ const TabPanel = ({ children, value, index, tabId, ...other }) => {
 /**
  * Enhanced Tab with badge and actions
  */
-const EnhancedTab = ({ 
+const EnhancedTab: React.FC<any> = ({ 
   tab, 
   index, 
   isActive, 
   onRefresh, 
   onClose, 
-  badgeCount = 0,
+  badgeCount: any,
   ...props 
 }) => {
   const { t } = useTranslation();
   const IconComponent = tab.icon;
 
-  return (
-    <Tab
-      {...props}
-      icon={
+  return(<Tab
+      { ...props}
+      icon: any,
         <Stack direction="row" alignItems="center" spacing={1}>
           <Badge 
             badgeContent={badgeCount} 
-            color="error" 
+            color: any,
             invisible={!badgeCount}
             sx={{ '& .MuiBadge-badge': { fontSize: '0.6rem', minWidth: 16, height: 16 } }}
           >
@@ -187,26 +185,19 @@ const EnhancedTab = ({
           {isActive && tab.refreshable && (
             <Tooltip title="Refresh">
               <IconButton
-                size="small"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onRefresh(tab.id);
+                size: any,
                 }}
-                sx={{ ml: 1, p: 0.5 }}
+                sx={{ ml: 1, p: 0.5 } as any}
               >
                 <RefreshIcon fontSize="small" />
               </IconButton>
             </Tooltip>
           )}
-          {isActive && tab.closable && (
-            <Tooltip title="Close">
+          {isActive && tab.closable && (<Tooltip title="Close">
               <IconButton
-                size="small"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClose(tab.id);
+                size: any,
                 }}
-                sx={{ ml: 1, p: 0.5 }}
+                sx={{ ml: 1, p: 0.5 } as any}
               >
                 <CloseIcon fontSize="small" />
               </IconButton>
@@ -217,8 +208,7 @@ const EnhancedTab = ({
       label={t(tab.label)}
       id={`grid-tab-${index}`}
       aria-controls={`grid-tabpanel-${index}`}
-      sx={{
-        minHeight: 64,
+      sx: any,
         '&.Mui-selected': {
           backgroundColor: 'action.selected'
         }
@@ -230,10 +220,10 @@ const EnhancedTab = ({
 /**
  * Main Grid Tab Navigation Component
  */
-const GridTabNavigation = ({ 
+const GridTabNavigation: React.FC<any> = ({ 
   defaultTabs = ['customers', 'orders', 'products', 'inventory'],
-  enableDynamicTabs = true,
-  maxTabs = 8
+  enableDynamicTabs: any,
+  maxTabs: any,
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -248,7 +238,7 @@ const GridTabNavigation = ({
 
   // Memoized tab configurations
   const availableTabs = useMemo(() => {
-    return openTabs.map(tabId => TAB_CONFIG[tabId]).filter(Boolean);
+    return openTabs.map((tabId: any: any) => TAB_CONFIG[tabId]).filter(Boolean);
   }, [openTabs]);
 
   // Initialize tab data and badges
@@ -262,7 +252,7 @@ const GridTabNavigation = ({
         initialData[tabId] = null;
         
         // Set initial badge counts
-        switch (tabId) {
+        switch(tabId) {
           case 'orders':
             initialBadges[tabId] = 5; // Pending orders
             break;
@@ -285,7 +275,7 @@ const GridTabNavigation = ({
   useEffect(() => {
     const currentPath = location.pathname;
     const tabIndex = availableTabs.findIndex(tab => currentPath.startsWith(tab.path));
-    if (tabIndex !== -1 && tabIndex !== activeTab) {
+    if(tabIndex !== -1 && tabIndex !== activeTab) {
       setActiveTab(tabIndex);
     }
   }, [location.pathname, availableTabs, activeTab]);
@@ -294,22 +284,20 @@ const GridTabNavigation = ({
   const handleTabChange = useCallback((event, newValue) => {
     setActiveTab(newValue);
     const selectedTab = availableTabs[newValue];
-    if (selectedTab) {
+    if(selectedTab) {
       navigate(selectedTab.path);
     }
   }, [availableTabs, navigate]);
 
   // Handle tab refresh
   const handleTabRefresh = useCallback((tabId) => {
-    setTabData(prev => ({
-      ...prev,
+    setTabData(prev => ({ ...prev,
       [tabId]: null // Reset data to trigger reload
     }));
     
     // Simulate data refresh
     setTimeout(() => {
-      setTabData(prev => ({
-        ...prev,
+      setTabData(prev => ({ ...prev,
         [tabId]: { refreshed: true, timestamp: Date.now() }
       }));
     }, 1000);
@@ -320,23 +308,23 @@ const GridTabNavigation = ({
     if (openTabs.length <= 1) return; // Don't close last tab
     
     const tabIndex = openTabs.indexOf(tabId);
-    const newOpenTabs = openTabs.filter(id => id !== tabId);
+    const newOpenTabs = openTabs.filter((id: any: any) => id !== tabId);
     
     setOpenTabs(newOpenTabs);
     
     // Adjust active tab if necessary
-    if (tabIndex === activeTab) {
+    if(tabIndex ===activeTab) {
       const newActiveTab = Math.max(0, Math.min(activeTab, newOpenTabs.length - 1));
       setActiveTab(newActiveTab);
       navigate(TAB_CONFIG[newOpenTabs[newActiveTab]]?.path || '/dashboard');
-    } else if (tabIndex < activeTab) {
+    } else if(tabIndex < activeTab) {
       setActiveTab(activeTab - 1);
     }
   }, [openTabs, activeTab, navigate]);
 
   // Handle add new tab
   const handleAddTab = useCallback((tabId) => {
-    if (openTabs.includes(tabId) || openTabs.length >= maxTabs) return;
+    if(openTabs.includes(tabId) || openTabs.length >= maxTabs) return;
     
     const newOpenTabs = [...openTabs, tabId].sort((a, b) => 
       (TAB_CONFIG[a]?.order || 999) - (TAB_CONFIG[b]?.order || 999)
@@ -355,28 +343,26 @@ const GridTabNavigation = ({
   // Get available tabs for adding
   const availableTabsForAdding = useMemo(() => {
     return Object.values(TAB_CONFIG)
-      .filter(tab => !openTabs.includes(tab.id))
+      .filter((tab: any: any) => !openTabs.includes(tab.id))
       .sort((a, b) => a.order - b.order);
   }, [openTabs]);
 
-  return (
-    <Box sx={{ width: '100%' }}>
+  return(<Box sx={{ width: '100%' } as any}>
       {/* Tab Navigation */}
-      <Paper sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <Paper sx={{ borderBottom: 1, borderColor: 'divider' } as any}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' } as any}>
           <Tabs
             value={activeTab}
-            onChange={handleTabChange}
-            variant="scrollable"
-            scrollButtons="auto"
-            sx={{ flexGrow: 1 }}
+            onChange={(e) => handleTabChange}
+            variant: any,
+            sx={{ flexGrow: 1 } as any}
           >
-            {availableTabs.map((tab, index) => (
+            {availableTabs.map((tab: any: any, index: any: any) => (
               <EnhancedTab
                 key={tab.id}
                 tab={tab}
                 index={index}
-                isActive={activeTab === index}
+                isActive={activeTab ===index}
                 onRefresh={handleTabRefresh}
                 onClose={handleTabClose}
                 badgeCount={badgeCounts[tab.id] || 0}
@@ -385,22 +371,16 @@ const GridTabNavigation = ({
           </Tabs>
 
           {/* Add Tab Button */}
-          {enableDynamicTabs && availableTabsForAdding.length > 0 && (
-            <Box sx={{ px: 1 }}>
+          {enableDynamicTabs && availableTabsForAdding.length > 0 && (<Box sx={{ px: 1 } as any}>
               <Tooltip title="Add Tab">
                 <IconButton
-                  onClick={(e) => setMenuAnchor(e.currentTarget)}
-                  size="small"
-                >
-                  <AddIcon />
-                </IconButton>
-              </Tooltip>
-              <Menu
+                  onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}
+                  size: any,
                 anchorEl={menuAnchor}
                 open={Boolean(menuAnchor)}
                 onClose={() => setMenuAnchor(null)}
               >
-                {availableTabsForAdding.map((tab) => {
+                {availableTabsForAdding.map((tab: any: any) => {
                   const IconComponent = tab.icon;
                   return (
                     <MenuItem
@@ -422,10 +402,9 @@ const GridTabNavigation = ({
 
       {/* Tab Panels */}
       <AnimatePresence mode="wait">
-        {availableTabs.map((tab, index) => {
+        {availableTabs.map((tab: any: any, index: any: any) => {
           const TabComponent = tab.component;
-          return (
-            <TabPanel
+          return(<TabPanel
               key={tab.id}
               value={activeTab}
               index={index}
@@ -433,10 +412,10 @@ const GridTabNavigation = ({
             >
               <TabComponent
                 data={tabData[tab.id]}
-                onDataChange={(newData) => 
+                onDataChange: any,
                   setTabData(prev => ({ ...prev, [tab.id]: newData }))
                 }
-                onBadgeUpdate={(count) =>
+                onBadgeUpdate: any,
                   setBadgeCounts(prev => ({ ...prev, [tab.id]: count }))
                 }
               />

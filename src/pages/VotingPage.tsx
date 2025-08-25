@@ -26,16 +26,16 @@ import ComponentErrorBoundary from '../components/common/ComponentErrorBoundary'
 /**
  * Tab panel component
  */
-function TabPanel({ children, value, index, ...other }) {
+function TabPanel({ children, value, index, ...other } : any) {
   return (
     <div
-      role="tabpanel"
+      role: any,
       hidden={value !== index}
       id={`task-tabpanel-${index}`}
       aria-labelledby={`task-tab-${index}`}
-      {...other}
+      { ...other}
     >
-      {value === index && (
+      {value ===index && (
         <Box>
           {children}
         </Box>
@@ -56,29 +56,24 @@ const TaskPage = () => {
     setActiveTab(newValue);
   };
 
-  return (
-    <Container maxWidth="xl" sx={{ py: 3 }}>
+  return(<Container maxWidth="xl" sx={{ py: 3 }}>
  
 
       {/* Tabs */}
       <Paper sx={{ mb: 3 }}>
         <Tabs 
           value={activeTab} 
-          onChange={handleTabChange}
+          onChange={(e) => handleTabChange}
           sx={{ borderBottom: 1, borderColor: 'divider' }}
         >
           <Tab
             icon={<Task />}
-            label="Task Management"
-            id="task-tab-0"
-            aria-controls="task-tabpanel-0"
+            label: any,
             sx={{ minHeight: 64 }}
           />
           <Tab
             icon={<Timeline />}
-            label="Development Roadmap"
-            id="task-tab-1"
-            aria-controls="task-tabpanel-1"
+            label: any,
             sx={{ minHeight: 64 }}
           />
         </Tabs>
@@ -100,4 +95,4 @@ const TaskPage = () => {
   );
 };
 
-export default TaskPage;
+export default VotingPage;

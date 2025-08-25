@@ -9,11 +9,11 @@ import { check_license_status, get_license_details } from '../../utils/licenseUt
 import { USER_ROLES, getRolePermissions } from '../../config/firebaseDefaults';
 
 // Grid Permission Context
-const GridPermissionContext = createContext();
+const GridPermissionContext = createContext<any>(null);
 
 export const useGridPermissions = () => {
     const context = useContext(GridPermissionContext);
-    if (!context) {
+    if(!context) {
         throw new Error('useGridPermissions must be used within a GridPermissionProvider');
     }
     return context;
@@ -79,7 +79,7 @@ export const COMPONENT_PERMISSIONS = {
     // MDM System
     'MDMProductsGrid': {
         requiredLicense: true,
-        minimumRole: USER_ROLES.EDITOR,
+        minimumRole: USER_ROLES.ADMIN,
         basePermissions: {
             canView: true,
             canRead: true,
@@ -92,7 +92,7 @@ export const COMPONENT_PERMISSIONS = {
     },
     'MDMStock': {
         requiredLicense: true,
-        minimumRole: USER_ROLES.EDITOR,
+        minimumRole: USER_ROLES.ADMIN,
         basePermissions: {
             canView: true,
             canRead: true,
@@ -119,7 +119,7 @@ export const COMPONENT_PERMISSIONS = {
     // Magento System
     'ProductsGrid': {
         requiredLicense: true,
-        minimumRole: USER_ROLES.EDITOR,
+        minimumRole: USER_ROLES.ADMIN,
         basePermissions: {
             canView: true,
             canRead: true,
@@ -143,7 +143,7 @@ export const COMPONENT_PERMISSIONS = {
     },
     'CustomersGrid': {
         requiredLicense: true,
-        minimumRole: USER_ROLES.EDITOR,
+        minimumRole: USER_ROLES.ADMIN,
         basePermissions: {
             canView: true,
             canRead: true,
@@ -191,7 +191,7 @@ export const COMPONENT_PERMISSIONS = {
 /**
  * Enhanced Permission Provider with Professional Features
  */
-export const GridPermissionProvider = ({ children }) => {
+export const GridPermissionProvider: React.FC<{children: any}> = ({ children  }) => {
     const { currentUser } = useAuth();
     
     // Permission cache for performance
@@ -210,7 +210,7 @@ export const GridPermissionProvider = ({ children }) => {
         
         try {
             // For development/localhost, always return true
-            if (window.location.hostname === 'localhost' || import.meta.env.DEV) {
+            if(window.location.hostname === 'localhost' || import.meta.env.DEV) {
                 permissionCache.set(cacheKey, true);
                 return true;
             }
@@ -218,7 +218,7 @@ export const GridPermissionProvider = ({ children }) => {
             const hasLicense = await check_license_status(currentUser.uid);
             permissionCache.set(cacheKey, hasLicense);
             return hasLicense;
-        } catch (error) {
+        } catch(error: any) {
             console.error('License check failed:', error);
             return false;
         }
@@ -228,7 +228,7 @@ export const GridPermissionProvider = ({ children }) => {
      * Get user role and validate hierarchy
      */
     const getUserRole = useCallback(() => {
-        if (!currentUser) return USER_ROLES.GUEST;
+        if (!currentUser) return USER_ROLES.VIEWER;
         return currentUser.role || USER_ROLES.USER;
     }, [currentUser]);
     
@@ -238,9 +238,9 @@ export const GridPermissionProvider = ({ children }) => {
     const checkRolePermission = useCallback((minimumRole) => {
         const userRole = getUserRole();
         const roleHierarchy = {
-            [USER_ROLES.GUEST]: 0,
+            [USER_ROLES.VIEWER]: 0,
             [USER_ROLES.USER]: 1,
-            [USER_ROLES.EDITOR]: 2,
+            [USER_ROLES.ADMIN]: 2,
             [USER_ROLES.ADMIN]: 3,
             [USER_ROLES.SUPER_ADMIN]: 4
         };
@@ -254,24 +254,22 @@ export const GridPermissionProvider = ({ children }) => {
     const calculatePermissions = useCallback(async (componentId, customPermissions = {}) => {
         const componentConfig = COMPONENT_PERMISSIONS[componentId];
         
-        if (!componentConfig) {
+        if(!componentConfig) {
             console.warn(`No permission configuration found for component: ${componentId}`);
             return { ...DEFAULT_GRID_PERMISSIONS, ...customPermissions };
         }
         
         // Base permissions from configuration
-        let permissions = {
-            ...DEFAULT_GRID_PERMISSIONS,
+        let permissions = { ...DEFAULT_GRID_PERMISSIONS,
             ...componentConfig.basePermissions,
             ...customPermissions
         };
         
         // Check license requirement
-        if (componentConfig.requiredLicense) {
+        if(componentConfig.requiredLicense) {
             const hasLicense = await checkLicense(componentId);
-            if (!hasLicense) {
-                return {
-                    ...DEFAULT_GRID_PERMISSIONS,
+            if(!hasLicense) {
+                return { ...DEFAULT_GRID_PERMISSIONS,
                     canView: false,
                     level: PERMISSION_LEVELS.NONE,
                     licenseRequired: true
@@ -281,9 +279,8 @@ export const GridPermissionProvider = ({ children }) => {
         
         // Check role requirement
         const hasRolePermission = checkRolePermission(componentConfig.minimumRole);
-        if (!hasRolePermission) {
-            return {
-                ...DEFAULT_GRID_PERMISSIONS,
+        if(!hasRolePermission) {
+            return { ...DEFAULT_GRID_PERMISSIONS,
                 canView: false,
                 level: PERMISSION_LEVELS.NONE,
                 insufficientRole: true,
@@ -294,10 +291,9 @@ export const GridPermissionProvider = ({ children }) => {
         // Apply user-specific license details
         try {
             const licenseDetails = await get_license_details(currentUser?.uid);
-            if (licenseDetails) {
+            if(licenseDetails) {
                 // Override permissions based on license details
-                permissions = {
-                    ...permissions,
+                permissions: any,
                     canRead: permissions.canRead && (licenseDetails.canRead !== false),
                     canEdit: permissions.canEdit && (licenseDetails.canEdit !== false),
                     canDelete: permissions.canDelete && (licenseDetails.canDelete !== false),
@@ -305,7 +301,7 @@ export const GridPermissionProvider = ({ children }) => {
                     licenseValid: licenseDetails.isValid
                 };
             }
-        } catch (error) {
+        } catch(error: any) {
             console.warn('Failed to get license details:', error);
         }
         
@@ -411,15 +407,15 @@ export const withPermissions = (WrappedComponent, componentId, requiredPermissio
         React.useEffect(() => {
             const checkPermissions = async () => {
                 try {
-                    const permissionPromises = requiredPermissions.map(permission => 
+                    const permissionPromises = requiredPermissions.map((permission: any: any) => 
                         hasPermission(componentId, permission, props.customPermissions)
                     );
                     
                     const results = await Promise.all(permissionPromises);
-                    const hasAllPermissions = results.every(result => result === true);
+                    const hasAllPermissions = results.every(result => result ===true);
                     
                     setAllowed(hasAllPermissions);
-                } catch (error) {
+                } catch(error: any) {
                     console.error('Permission check failed:', error);
                     setAllowed(false);
                 } finally {
@@ -430,11 +426,11 @@ export const withPermissions = (WrappedComponent, componentId, requiredPermissio
             checkPermissions();
         }, [hasPermission, props.customPermissions]);
         
-        if (loading) {
+        if(loading) {
             return <div>Checking permissions...</div>;
         }
         
-        if (!allowed) {
+        if(!allowed) {
             return (
                 <div style={{ 
                     padding: '20px', 
@@ -451,7 +447,7 @@ export const withPermissions = (WrappedComponent, componentId, requiredPermissio
             );
         }
         
-        return <WrappedComponent {...props} ref={ref} componentId={componentId} />;
+        return <WrappedComponent { ...props} ref={ref} componentId={componentId} />;
     });
 };
 

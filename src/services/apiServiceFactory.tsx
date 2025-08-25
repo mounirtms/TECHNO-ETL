@@ -1,16 +1,33 @@
+import React from 'react';
 /**
  * API Service Factory - Ultra-Advanced Service Management
  * Centralized service creation with intelligent routing, caching, and monitoring
  * Uses cutting-edge patterns for maximum performance and reliability
  */
 
-import axios from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import {
+  ServiceType,
+  ServiceConfig,
+  ServiceConfigRegistry,
+  CircuitBreaker as ICircuitBreaker,
+  CircuitBreakerState,
+  CircuitBreakerStatus,
+  ServiceHealth,
+  SystemMetrics,
+  EnhancedAxiosInstance,
+  RequestMetadata,
+  EnhancedRequestConfig,
+  EnhancedResponse,
+  EnhancedError,
+  ApiServiceFactoryInterface
+} from '../types/apiServiceTypes';
 
 /**
  * Service Configuration Registry
  * Defines routing and configuration for different service types
  */
-const SERVICE_CONFIG = {
+const SERVICE_CONFIG: ServiceConfigRegistry = {
   dashboard: {
     baseURL: 'http://localhost:5000/api/dashboard',
     timeout: 10000,
@@ -49,19 +66,20 @@ const SERVICE_CONFIG = {
  * Circuit Breaker Implementation
  * Prevents cascading failures by monitoring service health
  */
-class CircuitBreaker {
-  constructor(name, threshold = 5, timeout = 60000) {
-    this.name = name;
-    this.threshold = threshold;
-    this.timeout = timeout;
+class CircuitBreaker implements ICircuitBreaker {
+  public failureCount: number;
+  public lastFailureTime: number | null;
+  public state: CircuitBreakerState;
+
+  constructor(public name: string, public threshold: number = 5, public timeout: number = 60000) {
     this.failureCount = 0;
     this.lastFailureTime = null;
     this.state = 'CLOSED'; // CLOSED, OPEN, HALF_OPEN
   }
 
-  async execute(operation) {
-    if (this.state === 'OPEN') {
-      if (Date.now() - this.lastFailureTime > this.timeout) {
+  async execute<T>(operation: () => Promise<T>): Promise<T> {
+    if(this.state === 'OPEN') {
+      if (Date.now() - (this.lastFailureTime || 0) > this.timeout) {
         this.state = 'HALF_OPEN';
         console.log(`🔄 Circuit breaker ${this.name} transitioning to HALF_OPEN`);
       } else {
@@ -73,7 +91,7 @@ class CircuitBreaker {
       const result = await operation();
       this.onSuccess();
       return result;
-    } catch (error) {
+    } catch(error: any) {
       this.onFailure();
       throw error;
     }
@@ -88,13 +106,13 @@ class CircuitBreaker {
     this.failureCount++;
     this.lastFailureTime = Date.now();
     
-    if (this.failureCount >= this.threshold) {
+    if(this.failureCount >= this.threshold) {
       this.state = 'OPEN';
       console.warn(`🚨 Circuit breaker ${this.name} is now OPEN`);
     }
   }
 
-  getState() {
+  getState(): CircuitBreakerStatus {
     return {
       name: this.name,
       state: this.state,
@@ -108,7 +126,20 @@ class CircuitBreaker {
  * Advanced API Service Factory Class
  * Creates and manages API service instances with intelligent features
  */
-class ApiServiceFactory {
+class ApiServiceFactory implements ApiServiceFactoryInterface {
+  private services: Map<string, EnhancedAxiosInstance>;
+  private circuitBreakers: Map<string, CircuitBreaker>;
+  private globalMetrics: {
+    totalRequests: number;
+    totalErrors: number;
+    totalDuration: number;
+    serviceMetrics: Record<string, {
+      requests: number;
+      errors: number;
+      totalDuration: number;
+    }>;
+  };
+
   constructor() {
     this.services = new Map();
     this.circuitBreakers = new Map();
@@ -118,9 +149,9 @@ class ApiServiceFactory {
       totalDuration: 0,
       serviceMetrics: {}
     };
-    
-    // Initialize circuit breakers for each service
-    Object.keys(SERVICE_CONFIG).forEach(serviceType => {
+
+    // Initialize circuit breakers for each service type
+    Object.keys(SERVICE_CONFIG).forEach((serviceType) => {
       this.circuitBreakers.set(serviceType, new CircuitBreaker(serviceType));
     });
   }
@@ -128,11 +159,11 @@ class ApiServiceFactory {
   /**
    * Create or retrieve a service instance
    */
-  getService(serviceType, customConfig = {}) {
+  getService(serviceType: ServiceType, customConfig: Partial<ServiceConfig> = {}): EnhancedAxiosInstance {
     const cacheKey = `${serviceType}_${JSON.stringify(customConfig)}`;
     
     if (this.services.has(cacheKey)) {
-      return this.services.get(cacheKey);
+      return this.services.get(cacheKey)!;
     }
 
     const service = this.createService(serviceType, customConfig);
@@ -144,14 +175,13 @@ class ApiServiceFactory {
   /**
    * Create a new service instance with advanced configuration
    */
-  createService(serviceType, customConfig = {}) {
-    const config = {
-      ...SERVICE_CONFIG[serviceType],
+  createService(serviceType: ServiceType, customConfig: Partial<ServiceConfig> = {}): EnhancedAxiosInstance {
+    const config = { ...SERVICE_CONFIG[serviceType],
       ...customConfig
     };
 
     // Handle Magento direct URL override
-    if (serviceType === 'magento' && customConfig.directUrl && config.allowDirectUrl) {
+    if(serviceType === 'magento' && customConfig.directUrl && config.allowDirectUrl) {
       config.baseURL = customConfig.directUrl;
       console.log(`🔗 Using direct Magento URL: ${config.baseURL}`);
     }
@@ -167,19 +197,20 @@ class ApiServiceFactory {
         'X-Version': '2.0.0',
         ...customConfig.headers
       }
-    });
+    }) as EnhancedAxiosInstance;
 
     // Add request interceptor
     axiosInstance.interceptors.request.use(
-      (requestConfig) => {
-        requestConfig.metadata = {
+      (requestConfig: AxiosRequestConfig): EnhancedRequestConfig => {
+        const enhancedConfig = requestConfig as EnhancedRequestConfig;
+        enhancedConfig.metadata = {
           startTime: Date.now(),
           serviceType,
           requestId: `${serviceType}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
         };
         
         this.globalMetrics.totalRequests++;
-        if (!this.globalMetrics.serviceMetrics[serviceType]) {
+        if(!this.globalMetrics.serviceMetrics[serviceType]) {
           this.globalMetrics.serviceMetrics[serviceType] = {
             requests: 0,
             errors: 0,
@@ -188,8 +219,8 @@ class ApiServiceFactory {
         }
         this.globalMetrics.serviceMetrics[serviceType].requests++;
         
-        console.log(`🚀 ${serviceType.toUpperCase()} Request [${requestConfig.metadata.requestId}]: ${requestConfig.method?.toUpperCase()} ${requestConfig.url}`);
-        return requestConfig;
+        console.log(`🚀 ${serviceType.toUpperCase()} Request [${enhancedConfig.metadata.requestId}]: ${enhancedConfig.method?.toUpperCase()} ${enhancedConfig.url}`);
+        return enhancedConfig;
       },
       (error) => {
         console.error(`❌ ${serviceType.toUpperCase()} Request Error:`, error);
@@ -199,55 +230,60 @@ class ApiServiceFactory {
 
     // Add response interceptor with circuit breaker
     axiosInstance.interceptors.response.use(
-      (response) => {
-        const duration = Date.now() - response.config.metadata.startTime;
-        const requestId = response.config.metadata.requestId;
+      (response: AxiosResponse): EnhancedResponse => {
+        const enhancedResponse = response as EnhancedResponse;
+        const duration = Date.now() - (enhancedResponse.config.metadata?.startTime || 0);
+        const requestId = enhancedResponse.config.metadata?.requestId || 'unknown';
         
         this.globalMetrics.totalDuration += duration;
         this.globalMetrics.serviceMetrics[serviceType].totalDuration += duration;
         
-        console.log(`✅ ${serviceType.toUpperCase()} Response [${requestId}]: ${response.status} (${duration}ms)`);
+        console.log(`✅ ${serviceType.toUpperCase()} Response [${requestId}]: ${enhancedResponse.status} (${duration}ms)`);
         
         // Add metadata to response
-        response.metadata = {
+        enhancedResponse.metadata = {
           duration,
           requestId,
           serviceType,
           timestamp: new Date().toISOString()
         };
         
-        return response;
+        return enhancedResponse;
       },
-      (error) => {
-        const duration = error.config?.metadata ? Date.now() - error.config.metadata.startTime : 0;
-        const requestId = error.config?.metadata?.requestId || 'unknown';
+      (error): Promise<never> => {
+        const enhancedError = error as EnhancedError;
+        const duration = enhancedError.config?.metadata ? Date.now() - enhancedError.config.metadata.startTime : 0;
+        const requestId = enhancedError.config?.metadata?.requestId || 'unknown';
         
         this.globalMetrics.totalErrors++;
-        if (this.globalMetrics.serviceMetrics[serviceType]) {
+        if(this.globalMetrics.serviceMetrics[serviceType]) {
           this.globalMetrics.serviceMetrics[serviceType].errors++;
         }
         
-        console.error(`❌ ${serviceType.toUpperCase()} Error [${requestId}]: ${error.message} (${duration}ms)`);
+        console.error(`❌ ${serviceType.toUpperCase()} Error [${requestId}]: ${enhancedError.message} (${duration}ms)`);
         
         // Add metadata to error
-        error.metadata = {
+        enhancedError.metadata = {
           duration,
           requestId,
           serviceType,
           timestamp: new Date().toISOString(),
-          retryable: this.isRetryableError(error)
+          retryable: this.isRetryableError(enhancedError)
         };
         
-        return Promise.reject(error);
+        return Promise.reject(enhancedError);
       }
     );
 
     // Add circuit breaker wrapper
     const circuitBreaker = this.circuitBreakers.get(serviceType);
+    if(!circuitBreaker) {
+      throw new Error(`Circuit breaker for ${serviceType} not found`);
+    }
     const originalRequest = axiosInstance.request.bind(axiosInstance);
     
-    axiosInstance.request = async (requestConfig) => {
-      return circuitBreaker.execute(() => originalRequest(requestConfig));
+    axiosInstance.request = async <T = any, R = AxiosResponse<T>>(requestConfig: AxiosRequestConfig): Promise<R> => {
+      return circuitBreaker.execute(() => originalRequest(requestConfig)) as Promise<R>;
     };
 
     // Add service-specific methods
@@ -262,7 +298,7 @@ class ApiServiceFactory {
   /**
    * Get service health information
    */
-  getServiceHealth(serviceType) {
+  getServiceHealth(serviceType: ServiceType): ServiceHealth {
     const circuitBreaker = this.circuitBreakers.get(serviceType);
     const metrics = this.globalMetrics.serviceMetrics[serviceType] || {
       requests: 0,
@@ -276,12 +312,11 @@ class ApiServiceFactory {
     return {
       serviceType,
       circuitBreaker: circuitBreaker.getState(),
-      metrics: {
-        ...metrics,
+      metrics: { ...metrics,
         errorRate: Math.round(errorRate * 100) / 100,
         avgDuration: Math.round(avgDuration)
       },
-      healthy: circuitBreaker.state === 'CLOSED' && errorRate < 10,
+      healthy: circuitBreaker?.state === 'CLOSED' && errorRate < 10,
       timestamp: new Date().toISOString()
     };
   }
@@ -289,10 +324,10 @@ class ApiServiceFactory {
   /**
    * Get comprehensive system metrics
    */
-  getSystemMetrics() {
+  getSystemMetrics(): SystemMetrics {
     const services = {};
     
-    Object.keys(SERVICE_CONFIG).forEach(serviceType => {
+    Object.keys(SERVICE_CONFIG).forEach((serviceType) => {
       services[serviceType] = this.getServiceHealth(serviceType);
     });
 
@@ -305,8 +340,7 @@ class ApiServiceFactory {
       : 0;
 
     return {
-      global: {
-        ...this.globalMetrics,
+      global: { ...this.globalMetrics,
         errorRate: Math.round(totalErrorRate * 100) / 100,
         avgDuration: Math.round(avgDuration)
       },
@@ -318,32 +352,32 @@ class ApiServiceFactory {
   /**
    * Determine if an error is retryable
    */
-  isRetryableError(error) {
+  isRetryableError(error: EnhancedError): boolean {
     if (error.code === 'ECONNABORTED') return true; // Timeout
     if (error.response?.status >= 500) return true; // Server errors
-    if (error.response?.status === 429) return true; // Rate limiting
+    if (error.response?.status ===429) return true; // Rate limiting
     return false;
   }
 
   /**
    * Clear cache for a specific service
    */
-  clearServiceCache(serviceType) {
+  clearServiceCache(serviceType: ServiceType): void {
     const keysToDelete = [];
-    for (const [key] of this.services) {
+    for([key] of this.services) {
       if (key.startsWith(serviceType)) {
         keysToDelete.push(key);
       }
     }
     
-    keysToDelete.forEach(key => this.services.delete(key));
+    keysToDelete.forEach((key) => this.services.delete(key));
     console.log(`🗑️ Cleared cache for ${serviceType} service`);
   }
 
   /**
    * Clear all service caches
    */
-  clearAllCaches() {
+  clearAllCaches(): void {
     this.services.clear();
     console.log('🗑️ All service caches cleared');
   }
@@ -351,7 +385,7 @@ class ApiServiceFactory {
   /**
    * Reset all metrics
    */
-  resetMetrics() {
+  resetMetrics(): void {
     this.globalMetrics = {
       totalRequests: 0,
       totalErrors: 0,
@@ -360,7 +394,7 @@ class ApiServiceFactory {
     };
     
     // Reset circuit breakers
-    this.circuitBreakers.forEach(cb => {
+    this.circuitBreakers.forEach((cb) => {
       cb.failureCount = 0;
       cb.state = 'CLOSED';
       cb.lastFailureTime = null;
@@ -372,23 +406,23 @@ class ApiServiceFactory {
   /**
    * Convenience methods for specific services
    */
-  getDashboardService(customConfig = {}) {
+  getDashboardService(customConfig: Partial<ServiceConfig> = {}): EnhancedAxiosInstance {
     return this.getService('dashboard', customConfig);
   }
 
-  getMDMService(customConfig = {}) {
+  getMDMService(customConfig: Partial<ServiceConfig> = {}): EnhancedAxiosInstance {
     return this.getService('mdm', customConfig);
   }
 
-  getTaskService(customConfig = {}) {
+  getTaskService(customConfig: Partial<ServiceConfig> = {}): EnhancedAxiosInstance {
     return this.getService('task', customConfig);
   }
 
-  getMagentoService(customConfig = {}) {
+  getMagentoService(customConfig: Partial<ServiceConfig> = {}): EnhancedAxiosInstance {
     return this.getService('magento', customConfig);
   }
 
-  getHealthService(customConfig = {}) {
+  getHealthService(customConfig: Partial<ServiceConfig> = {}): EnhancedAxiosInstance {
     return this.getService('health', customConfig);
   }
 }

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useCallback, useMemo } from 'react';
 import { Box } from '@mui/material';
 import { toast } from 'react-toastify';
@@ -21,7 +22,7 @@ import { generateColumns } from '../../../utils/gridUtils';
  * InvoiceGrid Component
  * Displays invoice data in a grid format with status cards
  */
-const InvoicesGrid = ({ orderId }) => {
+const InvoicesGrid: React.FC<{orderId: any}> = ({ orderId  }) => {
     // State management
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
@@ -74,7 +75,7 @@ const InvoicesGrid = ({ orderId }) => {
                 currentPage: page + 1
             };
 
-            if (orderId) {
+            if(orderId) {
                 searchCriteria.filterGroups.push({
                     filters: [{
                         field: 'order_id',
@@ -84,7 +85,7 @@ const InvoicesGrid = ({ orderId }) => {
                 });
             }
 
-            if (filter?.state) {
+            if(filter?.state) {
                 searchCriteria.filterGroups.push({
                     filters: [{
                         field: 'state',
@@ -100,7 +101,7 @@ const InvoicesGrid = ({ orderId }) => {
             const items = invoicesData?.items || [];
             setData(items);
             updateStats(items);
-        } catch (error) {
+        } catch(error: any) {
             toast.error(error.message || 'Failed to load invoices');
             throw error;
         } finally {
@@ -110,7 +111,7 @@ const InvoicesGrid = ({ orderId }) => {
 
     // Update invoice statistics
     const updateStats = useCallback((invoices) => {
-        const newStats = invoices.reduce((acc, invoice) => ({
+        const newStats = invoices.reduce((acc: any: any, invoice: any: any) => ({
             total: acc.total + 1,
             paid: acc.paid + (invoice.state === 'paid' ? 1 : 0),
             pending: acc.pending + (invoice.state === 'pending' ? 1 : 0)
@@ -122,9 +123,8 @@ const InvoicesGrid = ({ orderId }) => {
         setStats(newStats);
     }, []);
 
-    return (
-         <UnifiedGrid
-                {...getStandardGridProps('magentoOrders', {
+    return(<UnifiedGrid
+                { ...getStandardGridProps('magentoOrders', {
                     gridName: "InvoicesGrid",
                     columns,
                     data,
@@ -167,7 +167,7 @@ const InvoicesGrid = ({ orderId }) => {
                             enabled: true,
                             onClick: (rowData) => {
                                 console.log('Viewing invoice:', rowData);
-                                toast.info(`Viewing invoice: ${rowData.increment_id}`);
+                                toast.info(`Viewing invoice: ${rowData?.increment_id}`);
                             }
                         }
                     }),
@@ -179,7 +179,7 @@ const InvoicesGrid = ({ orderId }) => {
                     },
                     onExport: (selectedRows) => {
                         const exportData = selectedRows.length > 0
-                            ? data.filter(invoice => selectedRows.includes(invoice.increment_id))
+                            ? data.filter((invoice: any: any) => selectedRows.includes(invoice?.increment_id))
                             : data;
                         console.log('Exporting invoices:', exportData);
                         toast.success(`Exported ${exportData.length} invoices`);

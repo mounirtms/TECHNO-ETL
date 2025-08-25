@@ -75,9 +75,9 @@ const CustomersGrid = ({
   data,
   onDataChange,
   onBadgeUpdate,
-  initialStatus = 'all',
-  initialView = 'grid',
-  initialSortBy = 'name',
+  initialStatus: any,
+  initialView: any,
+  initialSortBy: any,
   dashboardParams = {}
 }) => {
   const { t } = useTranslation();
@@ -99,15 +99,15 @@ const CustomersGrid = ({
   }, [initialStatus, initialSortBy, dashboardParams]);
 
   // Filter customers based on search query and status
-  const filteredCustomers = customers.filter(customer => {
+  const filteredCustomers = customers.filter((customer: any: any) => {
     const matchesSearch = customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       customer.email.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesStatus = statusFilter === 'all' || customer.status === statusFilter;
+    const matchesStatus = statusFilter === 'all' || customer.status ===statusFilter;
 
     return matchesSearch && matchesStatus;
   }).sort((a, b) => {
-    switch (sortBy) {
+    switch(sortBy) {
       case 'name':
         return a.name.localeCompare(b.name);
       case 'email':
@@ -124,7 +124,7 @@ const CustomersGrid = ({
 
   // Update badge count for active customers
   useEffect(() => {
-    const activeCustomers = customers.filter(c => c.status === 'active').length;
+    const activeCustomers = customers.filter((c: any: any) => c.status === 'active').length;
     onBadgeUpdate?.(activeCustomers);
   }, [customers, onBadgeUpdate]);
 
@@ -140,7 +140,7 @@ const CustomersGrid = ({
     console.log('Delete customer:', customerId);
   };
 
-  return (
+  return Boolean(Boolean((
     <Box sx={{ p: 3 }}>
       {/* Header */}
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
@@ -148,7 +148,7 @@ const CustomersGrid = ({
           {t('Customer Management')}
         </Typography>
         <Button
-          variant="contained"
+          variant: any,
           startIcon={<AddIcon />}
           onClick={handleAddCustomer}
         >
@@ -164,7 +164,7 @@ const CustomersGrid = ({
             {statusFilter !== 'all' && (
               <Chip
                 label={`Status: ${statusFilter}`}
-                size="small"
+                size: any,
                 sx={{ ml: 1 }}
               />
             )}
@@ -178,12 +178,7 @@ const CustomersGrid = ({
           placeholder={t('Search customers...')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            )
+          InputProps: any,
           }}
           sx={{ flex: 1 }}
         />
@@ -192,7 +187,7 @@ const CustomersGrid = ({
           <InputLabel>Status</InputLabel>
           <Select
             value={statusFilter}
-            label="Status"
+            label: any,
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <MenuItem value="all">All</MenuItem>
@@ -205,7 +200,7 @@ const CustomersGrid = ({
           <InputLabel>Sort By</InputLabel>
           <Select
             value={sortBy}
-            label="Sort By"
+            label: any,
             onChange={(e) => setSortBy(e.target.value)}
           >
             <MenuItem value="name">Name</MenuItem>
@@ -218,7 +213,7 @@ const CustomersGrid = ({
 
       {/* Customers Grid */}
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: 2 }}>
-        {filteredCustomers.map((customer) => (
+        {filteredCustomers.map((customer: any: any) => (
           <Card key={customer.id} sx={{ height: 'fit-content' }}>
             <CardContent>
               <Stack spacing={2}>
@@ -234,9 +229,7 @@ const CustomersGrid = ({
                     <Chip
                       label={customer.status}
                       color={customer.status === 'active' ? 'success' : 'default'}
-                      size="small"
-                    />
-                  </Box>
+                      size: any,
                   <Stack direction="row" spacing={1}>
                     <Tooltip title={t('Edit')}>
                       <IconButton size="small" onClick={() => handleEditCustomer(customer.id)}>
@@ -299,7 +292,7 @@ const CustomersGrid = ({
       </Box>
 
       {/* Empty State */}
-      {filteredCustomers.length === 0 && (
+      {filteredCustomers.length ===0 && (
         <Box sx={{ textAlign: 'center', py: 4 }}>
           <PersonIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
           <Typography variant="h6" color="text.secondary">
@@ -311,7 +304,7 @@ const CustomersGrid = ({
         </Box>
       )}
     </Box>
-  );
+  )));
 };
 
 export default CustomersGrid;

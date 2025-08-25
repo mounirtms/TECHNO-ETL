@@ -12,7 +12,7 @@ export interface SettingsService {
   export(): Promise<string>;
   import(data: string): Promise<void>;
   migrate(fromVersion: string, toVersion: string): Promise<void>;
-  validate(settings: any): Promise<ValidationResult>;
+  validate(settings): Promise<ValidationResult>;
 }
 
 export interface ValidationResult {
@@ -36,9 +36,9 @@ export interface ValidationWarning {
 // API service types
 export interface ApiService {
   get<T = any>(url: string, params?: Record<string, any>): Promise<T>;
-  post<T = any>(url: string, data?: any): Promise<T>;
-  put<T = any>(url: string, data?: any): Promise<T>;
-  patch<T = any>(url: string, data?: any): Promise<T>;
+  post<T = any>(url: string, data?): Promise<T>;
+  put<T = any>(url: string, data?): Promise<T>;
+  patch<T = any>(url: string, data?): Promise<T>;
   delete<T = any>(url: string): Promise<T>;
   upload(url: string, file: File, onProgress?: (progress: number) => void): Promise<any>;
   download(url: string, filename?: string): Promise<void>;
@@ -47,7 +47,7 @@ export interface ApiService {
   setBaseURL(baseURL: string): void;
   setTimeout(timeout: number): void;
   setRetryAttempts(attempts: number): void;
-  addInterceptor(type: 'request' | 'response', interceptor: any): void;
+  addInterceptor(type: 'request' | 'response', interceptor): void;
   removeInterceptor(type: 'request' | 'response', id: string): void;
 }
 
@@ -68,11 +68,11 @@ export interface CacheService {
 
 // Logger service types
 export interface LoggerService {
-  debug(message: string, meta?: any): void;
-  info(message: string, meta?: any): void;
-  warn(message: string, meta?: any): void;
-  error(message: string, error?: Error, meta?: any): void;
-  fatal(message: string, error?: Error, meta?: any): void;
+  debug(message: string, meta? ): void;
+  info(message: string, meta? ): void;
+  warn(message: string, meta? ): void;
+  error(message: string, error?: Error, meta? ): void;
+  fatal(message: string, error?: Error, meta? ): void;
   setLevel(level: LogLevel): void;
   addTransport(transport: LogTransport): void;
   removeTransport(name: string): void;
@@ -449,15 +449,15 @@ export interface AnalyticsContext {
 
 // Export service factory type
 export interface ServiceFactory {
-  createApiService(config: any): ApiService;
-  createCacheService(config: any): CacheService;
-  createLoggerService(config: any): LoggerService;
-  createAuthService(config: any): AuthService;
-  createNotificationService(config: any): NotificationService;
-  createFileService(config: any): FileService;
-  createSearchService(config: any): SearchService;
-  createThemeService(config: any): ThemeService;
-  createAnalyticsService(config: any): AnalyticsService;
+  createApiService(config): ApiService;
+  createCacheService(config): CacheService;
+  createLoggerService(config): LoggerService;
+  createAuthService(config): AuthService;
+  createNotificationService(config): NotificationService;
+  createFileService(config): FileService;
+  createSearchService(config): SearchService;
+  createThemeService(config): ThemeService;
+  createAnalyticsService(config): AnalyticsService;
 }
 
 // Service registry type

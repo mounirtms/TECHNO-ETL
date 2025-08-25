@@ -30,7 +30,7 @@ const OrdersPage = () => {
     setGridProps(newProps);
   }, [getStatus, getView, getSortBy, getPriority, isPendingOrdersView, params]);
 
-  return (
+  return Boolean(Boolean((
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -41,7 +41,7 @@ const OrdersPage = () => {
         {/* Dashboard Context Alert */}
         {isPendingOrdersView() && (
           <Alert
-            severity="warning"
+            severity: any,
             icon={<Warning />}
             sx={{ mb: 2, borderRadius: 2 }}
           >
@@ -49,11 +49,9 @@ const OrdersPage = () => {
               <Typography variant="body2">
                 Showing pending orders that require immediate attention
               </Typography>
-              {getPriority() === 'high' && (
+              {getPriority() ==='high' && (
                 <Chip
-                  label="High Priority"
-                  color="error"
-                  size="small"
+                  label: any,
                   icon={<PriorityHigh />}
                 />
               )}
@@ -63,11 +61,11 @@ const OrdersPage = () => {
 
         {/* Orders Grid */}
         <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
-          <OrdersGrid {...gridProps} />
+          <OrdersGrid { ...gridProps} />
         </Paper>
       </Container>
     </motion.div>
-  );
+  )));
 };
 
 export default OrdersPage;

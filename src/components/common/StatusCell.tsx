@@ -13,7 +13,7 @@ export const StatusCell = memo(({ value, statusColors = {}, className }) => {
         const color = statusColors[status] || 'default';
 
         // Switch case for determining the color based on the color string
-        switch (color) {
+        switch(color) {
             case 'success':
                 return theme.palette.success.main;
             case 'error':
@@ -31,9 +31,9 @@ export const StatusCell = memo(({ value, statusColors = {}, className }) => {
     return (
         <Chip
             label={value?.toString().replace(/_/g, ' ')}  // Replace underscores with spaces for better display
-            size="small"
+            size: any,
             className={String(className)}  // Conditionally apply custom CSS classes
-            sx={{
+            sx: any,
                 backgroundColor: `${getStatusColor(value)}15`,  // Add some transparency to the background
                 color: getStatusColor(value),  // Set the text color based on the status
                 borderRadius: '4px',  // Apply consistent border-radius
@@ -44,7 +44,7 @@ export const StatusCell = memo(({ value, statusColors = {}, className }) => {
     );
 }, (prevProps, nextProps) => {
     // Custom comparison for better performance
-    return prevProps.value === nextProps.value &&
-           prevProps.className === nextProps.className &&
-           JSON.stringify(prevProps.statusColors) === JSON.stringify(nextProps.statusColors);
+    return Boolean(Boolean(prevProps.value ===nextProps.value &&
+           prevProps.className ===nextProps.className &&
+           JSON.stringify(prevProps.statusColors) ===JSON.stringify(nextProps.statusColors)));
 });

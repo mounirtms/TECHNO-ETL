@@ -70,7 +70,7 @@ interface ThemeContextType extends ThemeConfig {
   setHighContrast: (enabled: boolean) => void;
   setCustomizations: (customizations: Record<string, any>) => void;
   initializeTheme: () => void;
-  applyUserThemeSettings: (userSettings: any) => void;
+  applyUserThemeSettings: (userSettings) => void;
   colors: ThemeColors;
   isRTL: boolean;
   isDark: boolean;
@@ -294,7 +294,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       const settings = getUnifiedSettings();
       const shouldFollowSystem = !settings?.theme || settings.theme === 'system';
 
-      if (shouldFollowSystem) {
+      if(shouldFollowSystem) {
         console.log('🎨 ThemeContext: System theme changed to:', e.matches ? 'dark' : 'light');
         setConfig(prev => ({ ...prev, mode: e.matches ? 'dark' : 'light' }));
       }
@@ -314,28 +314,28 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     const root = document.documentElement;
     
     // Set dark/light mode class for Tailwind
-    if (config.mode === 'dark') {
+    if(config.mode === 'dark') {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
 
     // High contrast
-    if (config.highContrast) {
+    if(config.highContrast) {
       root.classList.add('high-contrast');
     } else {
       root.classList.remove('high-contrast');
     }
     
     // Animations
-    if (!config.animations) {
+    if(!config.animations) {
       root.classList.add('no-animations');
     } else {
       root.classList.remove('no-animations');
     }
 
     // RTL
-    if (isRTL) {
+    if(isRTL) {
       root.setAttribute('dir', 'rtl');
     } else {
       root.setAttribute('dir', 'ltr');
@@ -357,7 +357,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     // Debounce the save operation to prevent excessive calls
     const saveTimeout = setTimeout(() => {
       // Only log in development or if it's a significant change
-      if (process.env.NODE_ENV === 'development') {
+      if(process.env.NODE_ENV === 'development') {
         console.log('🎨 ThemeContext: Saving unified settings:', settingsToSave);
       }
       saveUnifiedSettings(settingsToSave);
@@ -378,7 +378,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
   // Set specific theme mode
   const setThemeMode = useCallback((mode: 'light' | 'dark' | 'system') => {
-    if (mode === 'system') {
+    if(mode === 'system') {
       const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       setConfig(prev => ({ ...prev, mode: systemPrefersDark ? 'dark' : 'light' }));
     } else {
@@ -412,19 +412,18 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
   const initializeTheme = useCallback(() => {
     const settings = getUnifiedSettings();
-    if (settings) {
+    if(settings) {
       console.log('Initializing theme from unified settings:', settings);
       setConfig(initializeFromSettings());
     }
   }, []);
 
   // Apply user settings from login - legacy compatibility
-  const applyUserThemeSettings = useCallback((userSettings: any) => {
-    if (userSettings?.preferences) {
+  const applyUserThemeSettings = useCallback((userSettings) => {
+    if(userSettings?.preferences) {
       const { theme, fontSize: userFontSize, colorPreset: userColorPreset, density: userDensity, animations: userAnimations, highContrast: userHighContrast } = userSettings.preferences;
 
-      setConfig(prev => ({
-        ...prev,
+      setConfig(prev => ({ ...prev,
         ...(theme && { mode: theme === 'system' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme }),
         ...(userFontSize && { fontSize: userFontSize }),
         ...(userColorPreset && { colorPreset: userColorPreset }),
@@ -443,10 +442,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       setIsRTL(newRTL);
     };
     
-    window.addEventListener('languageRTLChanged' as any, handleRTLChange);
+    window.addEventListener('languageRTLChanged', handleRTLChange);
     
     return () => {
-      window.removeEventListener('languageRTLChanged' as any, handleRTLChange);
+      window.removeEventListener('languageRTLChanged', handleRTLChange);
     };
   }, []);
 
@@ -454,7 +453,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   useEffect(() => {
     const handleSettingsChange = (event: CustomEvent) => {
       const settings = event.detail;
-      if (settings) {
+      if(settings) {
         console.log('🎨 ThemeContext: Received settings change event:', settings);
         const newConfig = {
           mode: settings.theme === 'system' ? 
@@ -477,20 +476,19 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       setConfig(refreshedConfig);
     };
     
-    window.addEventListener('settingsChanged' as any, handleSettingsChange);
-    window.addEventListener('themeRefresh' as any, handleThemeRefresh);
+    window.addEventListener('settingsChanged', handleSettingsChange);
+    window.addEventListener('themeRefresh', handleThemeRefresh);
     
     return () => {
-      window.removeEventListener('settingsChanged' as any, handleSettingsChange);
-      window.removeEventListener('themeRefresh' as any, handleThemeRefresh);
+      window.removeEventListener('settingsChanged', handleSettingsChange);
+      window.removeEventListener('themeRefresh', handleThemeRefresh);
     };
   }, [config, initializeFromSettings]);
 
   // Get current colors for the active preset
   const colors = useMemo(() => colorPresets[config.colorPreset], [config.colorPreset]);
 
-  const contextValue: ThemeContextType = useMemo(() => ({
-    ...config,
+  const contextValue: ThemeContextType = useMemo(() => ({ ...config,
     toggleTheme,
     setThemeMode,
     setFontSize,
@@ -517,7 +515,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
 export const useCustomTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
-  if (context === undefined) {
+  if(context === undefined) {
     throw new Error('useCustomTheme must be used within a ThemeProvider');
   }
   return context;

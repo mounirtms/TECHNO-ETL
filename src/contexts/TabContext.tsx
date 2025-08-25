@@ -1,7 +1,10 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, ReactNode, ComponentType } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material'; // Add Box import for error rendering
-import { MENU_TREE, MENU_ITEMS } from '../components/Layout/MenuTree';
+import { MENU_TREE, MENU_ITEMS as MenuItemsImport } from '../components/Layout/MenuTree';
+
+// Cast MENU_ITEMS to the correct type
+const MENU_ITEMS = MenuItemsImport as MenuItem[];
 
 // Import components lazily to avoid circular dependencies
 import { lazy } from 'react';
@@ -26,10 +29,38 @@ const BugBountyPage = lazy(() => import('../pages/BugBountyPage'));
 const LicenseManagement = lazy(() => import('../components/License/LicenseManagement'));
 const LicenseStatus = lazy(() => import('../components/License/LicenseStatus'));
 
+// Define interfaces for Tabs system
+interface Tab {
+  id: string;
+  label: string;
+  component: string;
+  closeable: boolean;
+  icon?: React.ElementType;
+  path?: string;
+}
+
+interface MenuItem {
+  id: string;
+  label: string;
+  icon?: React.ElementType;
+  path?: string;
+  hidden?: boolean;
+  licensed?: boolean;
+  category?: string;
+}
+
+interface TabContextType {
+  tabs: Tab[];
+  activeTab: string;
+  openTab: (tabId: string, skipNavigation?: boolean) => void;
+  closeTab: (tabId: string) => void;
+  getActiveComponent: () => React.ComponentType<any>;
+}
+
 // Create a reusable function for importing placeholder components
 const importPlaceholder = (componentName: string) => 
   import('../components/placeholders/PlaceholderComponents')
-    .then(module => ({ default: (module as any)[componentName] }));
+    .then(module => ({ default: (module)[componentName] }));
 
 // Lazy load placeholder components
 const SalesAnalytics = lazy(() => importPlaceholder('SalesAnalytics'));
@@ -70,11 +101,11 @@ const URL_TO_TAB_MAP: { [key: string]: string } = {
 
 // Tab ID to URL mapping
 const TAB_TO_URL_MAP = Object.fromEntries(
-    Object.entries(URL_TO_TAB_MAP).map(([url, tabId]) => [tabId, url])
+    Object.entries(URL_TO_TAB_MAP).map(([url: any, tabId]: any) => [tabId, url])
 );
 
 // Component mapping
-const COMPONENT_MAP = {
+const COMPONENT_MAP: Record<string, React.ComponentType<any>> = {
     Dashboard: Dashboard,
     Charts: ChartsPage,
     Voting: VotingPage,
@@ -102,17 +133,18 @@ const COMPONENT_MAP = {
     UserProfile: UserProfile
 };
 
-const TabContext = createContext();
+// Create the context
+const TabContext = createContext<TabContextType | null>(null);
 
-export const TabProvider = ({ children, sidebarOpen }: { children: React.ReactNode; sidebarOpen: boolean }) => {
+export const TabProvider = ({ children, sidebarOpen }: { children: ReactNode; sidebarOpen: boolean }) => {
     const location = useLocation();
     const navigate = useNavigate();
 
     // Get initial tab from current URL or default to Dashboard
-    const getInitialTabFromURL = () => {
+    const getInitialTabFromURL = (): MenuItem => {
         const tabId = URL_TO_TAB_MAP[location.pathname];
-        if (tabId) {
-            const menuItem = MENU_ITEMS.find(item => item.id === tabId);
+        if(tabId) {
+            const menuItem = MENU_ITEMS.find(item => item.id ===tabId);
             if (menuItem) return menuItem;
         }
         return MENU_ITEMS.find(item => item.id === 'Dashboard') || MENU_ITEMS[0];
@@ -120,7 +152,7 @@ export const TabProvider = ({ children, sidebarOpen }: { children: React.ReactNo
 
     const initialTab = getInitialTabFromURL();
 
-    const [tabs, setTabs] = useState([
+    const [tabs, setTabs] = useState<Tab[]>([
         {
             id: initialTab.id,
             label: initialTab.label,
@@ -128,21 +160,21 @@ export const TabProvider = ({ children, sidebarOpen }: { children: React.ReactNo
             closeable: false
         }
     ]);
-    const [activeTab, setActiveTab] = useState(initialTab.id);
+    const [activeTab, setActiveTab] = useState<string>(initialTab.id);
 
     // Sync tab changes with URL
     useEffect(() => {
         const currentTabId = URL_TO_TAB_MAP[location.pathname];
-        if (currentTabId && currentTabId !== activeTab) {
+        if(currentTabId && currentTabId !== activeTab) {
             // Skip navigation to prevent infinite loop
-            const tabExists = tabs.some(tab => tab.id === currentTabId);
-            if (!tabExists) {
-                const newTab = MENU_ITEMS.find(item => item.id === currentTabId);
-                if (newTab && COMPONENT_MAP[newTab.id]) {
+            const tabExists = tabs.some(tab => tab.id ===currentTabId);
+            if(!tabExists) {
+                const newTab = MENU_ITEMS.find(item => item.id ===currentTabId);
+                if(newTab && COMPONENT_MAP[newTab.id]) {
                     setTabs(prevTabs => [
                         ...prevTabs,
-                        {
-                            ...newTab,
+                        { ...newTab,
+                            component: newTab.id, // Add the component property
                             closeable: newTab.id !== 'Dashboard'
                         }
                     ]);
@@ -152,21 +184,21 @@ export const TabProvider = ({ children, sidebarOpen }: { children: React.ReactNo
         }
     }, [location.pathname, activeTab, tabs]);
 
-    const openTab = (tabId, skipNavigation = false) => {
-        const tabExists = tabs.some(tab => tab.id === tabId);
+    const openTab = (tabId: string, skipNavigation = false) => {
+        const tabExists = tabs.some(tab => tab.id ===tabId);
 
-        if (!tabExists) {
-            const newTab = MENU_ITEMS.find(item => item.id === tabId);
-            if (newTab) {
-                if (!COMPONENT_MAP[newTab.id]) {
+        if(!tabExists) {
+            const newTab = MENU_ITEMS.find(item => item.id ===tabId);
+            if(newTab) {
+                if(!COMPONENT_MAP[newTab.id]) {
                     console.error(`No component found for tab: ${newTab.id}`);
                     return;
                 }
 
                 setTabs(prevTabs => [
                     ...prevTabs,
-                    {
-                        ...newTab,
+                    { ...newTab,
+                        component: newTab.id, // Add the component property
                         closeable: newTab.id !== 'Dashboard' // Dashboard is never closeable
                     }
                 ]);
@@ -176,29 +208,29 @@ export const TabProvider = ({ children, sidebarOpen }: { children: React.ReactNo
         setActiveTab(tabId);
 
         // Navigate to corresponding URL if not skipping navigation
-        if (!skipNavigation) {
+        if(!skipNavigation) {
             const url = TAB_TO_URL_MAP[tabId];
-            if (url && location.pathname !== url) {
+            if(url && location.pathname !== url) {
                 navigate(url);
             }
         }
     };
 
-    const closeTab = (tabId) => {
+    const closeTab = (tabId: string) => {
         if (tabId === 'Dashboard') return;
 
-        setTabs(prevTabs => prevTabs.filter(tab => tab.id !== tabId));
+        setTabs(prevTabs => prevTabs.filter((tab: any: any) => tab.id !== tabId));
 
-        if (activeTab === tabId) {
+        if(activeTab ===tabId) {
             setActiveTab('Dashboard');
             navigate('/dashboard');
         }
     };
 
-    const getActiveComponent = () => {
-        const activeTabItem = tabs.find(tab => tab.id === activeTab);
+    const getActiveComponent = (): React.ComponentType<any> => {
+        const activeTabItem = tabs.find(tab => tab.id ===activeTab);
         
-        if (!activeTabItem) {
+        if(!activeTabItem) {
             console.warn(`No tab found for activeTab: ${activeTab}`);
             return () => (
                 <Box sx={{ p: 2, textAlign: 'center', color: 'error.main' }}>
@@ -209,7 +241,7 @@ export const TabProvider = ({ children, sidebarOpen }: { children: React.ReactNo
 
         const Component = COMPONENT_MAP[activeTabItem.id];
         
-        if (!Component) {
+        if(!Component) {
             console.warn(`No component mapped for tab: ${activeTabItem.id}`);
             return () => (
                 <Box sx={{ p: 2, textAlign: 'center', color: 'error.main' }}>
@@ -234,9 +266,14 @@ export const TabProvider = ({ children, sidebarOpen }: { children: React.ReactNo
     );
 };
 
-export const useTab = () => {
+/**
+ * Custom hook to access the tab context
+ * @returns The TabContext value
+ * @throws Error if used outside of a TabProvider
+ */
+export const useTab = (): TabContextType => {
     const context = useContext(TabContext);
-    if (!context) {
+    if(!context) {
         throw new Error('useTab must be used within a TabProvider');
     }
     return context;

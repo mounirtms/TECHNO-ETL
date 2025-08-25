@@ -1,3 +1,4 @@
+import React from 'react';
 /**
  * Catalog CSV Processor
  * Processes the full export_catalog_product.csv and creates import-ready CSV
@@ -5,24 +6,24 @@
 
 // Simple CSV parser for catalog processing
 const parseCSVContent = (csvContent) => {
-  const lines = csvContent.split('\n').filter(line => line.trim());
-  if (lines.length < 2) {
+  const lines = csvContent.split('\n').filter((line: any: any) => line.trim());
+  if(lines.length < 2) {
     throw new Error('CSV file must contain at least a header and one data row');
   }
 
-  const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+  const headers = lines[0].split(',').map((h: any: any) => h.trim().replace(/"/g, ''));
   const products = [];
 
-  for (let i = 1; i < lines.length; i++) {
+  for(let i = 1; i < lines.length; i++) {
     const values = parseCsvLine(lines[i]);
-    if (values.length === 0) continue;
+    if (values.length ===0) continue;
 
     const product = {};
     headers.forEach((header, index) => {
       product[header] = values[index] || '';
     });
 
-    if (product.sku && product.sku.trim() !== '') {
+    if (product?.sku && product?.sku.trim() !== '') {
       products.push(product);
     }
   }
@@ -36,19 +37,19 @@ const parseCsvLine = (line) => {
   let current = '';
   let inQuotes = false;
 
-  for (let i = 0; i < line.length; i++) {
+  for(let i = 0; i < line.length; i++) {
     const char = line[i];
 
-    if (char === '"') {
-      if (inQuotes && line[i + 1] === '"') {
+    if(char === '"') {
+      if(inQuotes && line[i + 1] ==='"') {
         current += '"';
         i++;
       } else {
-        inQuotes = !inQuotes;
+        inQuotes: any,
       }
-    } else if (char === ',' && !inQuotes) {
+    } else if(char === ", " && !inQuotes) {
       values.push(current.trim());
-      current = '';
+      current: any,
     } else {
       current += char;
     }
@@ -78,10 +79,10 @@ const DEFAULT_VALUES = {
 export const extractValidBrands = (catalogData) => {
   const brands = new Set();
   
-  catalogData.forEach(product => {
-    if (product.additional_attributes) {
+  catalogData.forEach((product) => {
+    if(product.additional_attributes) {
       const brandMatch = product.additional_attributes.match(/mgs_brand=([^,]+)/);
-      if (brandMatch) {
+      if(brandMatch) {
         brands.add(brandMatch[1]);
       }
     }
@@ -96,10 +97,10 @@ export const extractValidBrands = (catalogData) => {
 export const extractValidDimensions = (catalogData) => {
   const dimensions = new Set();
   
-  catalogData.forEach(product => {
-    if (product.additional_attributes) {
+  catalogData.forEach((product) => {
+    if(product.additional_attributes) {
       const dimensionMatch = product.additional_attributes.match(/dimension=([^,]+)/);
-      if (dimensionMatch) {
+      if(dimensionMatch) {
         dimensions.add(dimensionMatch[1]);
       }
     }
@@ -114,11 +115,11 @@ export const extractValidDimensions = (catalogData) => {
 export const extractValidCategories = (catalogData) => {
   const categories = new Set();
   
-  catalogData.forEach(product => {
-    if (product.categories) {
+  catalogData.forEach((product) => {
+    if(product.categories) {
       // Split categories and add each unique category path
       const categoryPaths = product.categories.split(',');
-      categoryPaths.forEach(path => {
+      categoryPaths.forEach((path) => {
         if (path.trim()) {
           categories.add(path.trim());
         }
@@ -137,13 +138,13 @@ export const normalizeProductData = (product, validBrands, validDimensions) => {
   
   // Apply default values for missing fields
   Object.entries(DEFAULT_VALUES).forEach(([key, defaultValue]) => {
-    if (!normalized[key] || normalized[key].trim() === '') {
+    if (!normalized[key] || normalized[key].trim() ==='') {
       normalized[key] = defaultValue;
     }
   });
   
   // Ensure product_type is lowercase
-  if (normalized.product_type) {
+  if(normalized.product_type) {
     normalized.product_type = normalized.product_type.toLowerCase();
   }
   
@@ -169,7 +170,7 @@ export const normalizeProductData = (product, validBrands, validDimensions) => {
   }
   
   // Fix additional_attributes
-  if (normalized.additional_attributes) {
+  if(normalized.additional_attributes) {
     let attributes = normalized.additional_attributes;
     
     // Validate brand
@@ -196,7 +197,7 @@ export const normalizeProductData = (product, validBrands, validDimensions) => {
 /**
  * Process the full catalog and create import-ready CSV
  */
-export const processCatalogToImportCSV = async (catalogCsvContent) => {
+export const processCatalogToImportCSV = async(catalogCsvContent) => {
   try {
     console.log('🔄 Processing catalog CSV...');
     
@@ -214,13 +215,13 @@ export const processCatalogToImportCSV = async (catalogCsvContent) => {
     console.log(`✅ Found ${validCategories.length} valid categories`);
     
     // Normalize all products
-    const normalizedProducts = catalogData.map(product => 
+    const normalizedProducts = catalogData.map((product: any: any) => 
       normalizeProductData(product, validBrands, validDimensions)
     );
     
     // Separate by product type
-    const simpleProducts = normalizedProducts.filter(p => p.product_type === 'simple');
-    const configurableProducts = normalizedProducts.filter(p => p.product_type === 'configurable');
+    const simpleProducts = normalizedProducts.filter((p: any: any) => p.product_type === 'simple');
+    const configurableProducts = normalizedProducts.filter((p: any: any) => p.product_type === 'configurable');
     
     console.log(`📦 Simple products: ${simpleProducts.length}`);
     console.log(`⚙️ Configurable products: ${configurableProducts.length}`);
@@ -242,7 +243,7 @@ export const processCatalogToImportCSV = async (catalogCsvContent) => {
       }
     };
     
-  } catch (error) {
+  } catch(error: any) {
     console.error('❌ Error processing catalog:', error);
     throw error;
   }
@@ -252,7 +253,7 @@ export const processCatalogToImportCSV = async (catalogCsvContent) => {
  * Convert products array to CSV string
  */
 export const convertProductsToCSV = (products) => {
-  if (!products || products.length === 0) {
+  if(!products || products.length ===0) {
     return '';
   }
   
@@ -262,8 +263,8 @@ export const convertProductsToCSV = (products) => {
   // Create CSV content
   const csvLines = [
     headers.join(','), // Header row
-    ...products.map(product => 
-      headers.map(header => {
+    ...products.map((product: any: any) => 
+      headers.map((header: any: any) => {
         const value = product[header] || '';
         // Escape commas and quotes in values
         if (value.toString().includes(',') || value.toString().includes('"')) {
@@ -283,7 +284,7 @@ export const convertProductsToCSV = (products) => {
 export const createBatchedCSVs = (products, batchSize = 100) => {
   const batches = [];
   
-  for (let i = 0; i < products.length; i += batchSize) {
+  for(let i = 0; i < products.length; i += batchSize) {
     const batch = products.slice(i, i + batchSize);
     const csvContent = convertProductsToCSV(batch);
     

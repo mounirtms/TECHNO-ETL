@@ -75,8 +75,7 @@ const OptimizedDashboard = () => {
   const processedData = useMemo(() => {
     if (!dashboardData) return null;
     
-    return performance.trackExpensiveCalculation(
-      'processDashboardData',
+    return performance.trackExpensiveCalculation('processDashboardData',
       (data) => ({
         salesData: processGridRows(data.sales || [], {
           revenue: (value) => parseFloat(value),
@@ -97,8 +96,7 @@ const OptimizedDashboard = () => {
 
   // Toggle section expansion
   const toggleSection = useCallback((section) => {
-    setExpandedSections(prev => ({
-      ...prev,
+    setExpandedSections(prev => ({ ...prev,
       [section]: !prev[section]
     }));
   }, []);
@@ -132,7 +130,7 @@ const OptimizedDashboard = () => {
       });
       
       toast.success(t('dashboard.refreshSuccess') || 'Dashboard refreshed successfully');
-    } catch (error) {
+    } catch(error: any) {
       toast.error(t('dashboard.refreshError') || 'Failed to refresh dashboard');
       console.error('Dashboard refresh error:', error);
     } finally {
@@ -155,7 +153,7 @@ const OptimizedDashboard = () => {
   ], [muiTheme.palette]);
 
   // Render loading state
-  if (loading && !dashboardData) {
+  if(loading && !dashboardData) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
         <CircularProgress />
@@ -166,7 +164,7 @@ const OptimizedDashboard = () => {
     );
   }
 
-  return (
+  return Boolean(Boolean((
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box sx={{ p: 3 }}>
         {/* Dashboard Header */}
@@ -183,7 +181,7 @@ const OptimizedDashboard = () => {
           <Box sx={{ display: 'flex', gap: 1 }}>
             <IconButton 
               onClick={refreshData}
-              color="primary"
+              color: any,
               disabled={loading}
             >
               <RefreshIcon />
@@ -200,14 +198,14 @@ const OptimizedDashboard = () => {
             <DatePicker
               label={t('dashboard.startDate') || 'Start Date'}
               value={dateRange.start}
-              onChange={(newValue) => setDateRange(prev => ({ ...prev, start: newValue }))}
-              renderInput={(params) => <TextField {...params} />}
+              onChange={(e) => (newValue) => setDateRange(prev => ({ ...prev, start: newValue }))}
+              renderInput={(params) => <TextField { ...params} />}
             />
             <DatePicker
               label={t('dashboard.endDate') || 'End Date'}
               value={dateRange.end}
-              onChange={(newValue) => setDateRange(prev => ({ ...prev, end: newValue }))}
-              renderInput={(params) => <TextField {...params} />}
+              onChange={(e) => (newValue) => setDateRange(prev => ({ ...prev, end: newValue }))}
+              renderInput={(params) => <TextField { ...params} />}
             />
           </Box>
         </Paper>
@@ -215,9 +213,7 @@ const OptimizedDashboard = () => {
         {/* Stats Cards */}
         {processedData && (
           <MemoizedStatsCards
-            data={[
-              {
-                title: t('dashboard.sales') || 'Total Sales',
+            data: any,
                 value: '$24,569',
                 change: '+12.5%',
                 icon: <TrendingUp />,
@@ -251,7 +247,7 @@ const OptimizedDashboard = () => {
         <Divider sx={{ my: 3 }} />
 
         {/* Charts Section */}
-        <Grid container spacing={3}>
+        <Grid { ...{container: true}} spacing={3}>
           {/* Sales Chart */}
           <Grid size={12}>
             <Paper sx={{ p: 2 }}>
@@ -265,7 +261,7 @@ const OptimizedDashboard = () => {
               </Box>
               
               <Collapse in={expandedSections.sales}>
-                {processedData?.salesData && (
+                {processedData.salesData && (
                   <Box sx={{ height: 400 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={processedData.salesData}>
@@ -275,15 +271,13 @@ const OptimizedDashboard = () => {
                         <RechartsTooltip />
                         <Legend />
                         <Line 
-                          type="monotone" 
-                          dataKey="revenue" 
+                          type: any,
                           stroke={chartColors[0]} 
                           activeDot={{ r: 8 }} 
                           name={t('dashboard.revenue') || 'Revenue'}
                         />
                         <Line 
-                          type="monotone" 
-                          dataKey="growth" 
+                          type: any,
                           stroke={chartColors[1]} 
                           name={t('dashboard.growth') || 'Growth %'}
                         />
@@ -308,7 +302,7 @@ const OptimizedDashboard = () => {
               </Box>
               
               <Collapse in={expandedSections.inventory}>
-                {processedData?.inventoryData && (
+                {processedData.inventoryData && (
                   <Box sx={{ height: 300 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={processedData.inventoryData}>
@@ -318,12 +312,12 @@ const OptimizedDashboard = () => {
                         <RechartsTooltip />
                         <Legend />
                         <Bar 
-                          dataKey="stock" 
+                          dataKey: any,
                           fill={chartColors[2]} 
                           name={t('dashboard.stock') || 'Stock'} 
                         />
                         <Bar 
-                          dataKey="price" 
+                          dataKey: any,
                           fill={chartColors[3]} 
                           name={t('dashboard.price') || 'Price'} 
                         />
@@ -353,16 +347,13 @@ const OptimizedDashboard = () => {
                       <PieChart>
                         <Pie
                           data={processedData.customerData}
-                          cx="50%"
-                          cy="50%"
+                          cx: any,
                           labelLine={false}
                           outerRadius={80}
-                          fill="#8884d8"
-                          dataKey="value"
-                          nameKey="name"
+                          fill: any,
                           label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                         >
-                          {processedData.customerData.map((entry, index) => (
+                          {processedData.customerData.map((entry: any: any, index: any: any) => (
                             <Cell key={`cell-${index}`} fill={chartColors[index % chartColors.length]} />
                           ))}
                         </Pie>
@@ -378,7 +369,7 @@ const OptimizedDashboard = () => {
         </Grid>
       </Box>
     </LocalizationProvider>
-  );
+  )));
 };
 
 export default memo(OptimizedDashboard);

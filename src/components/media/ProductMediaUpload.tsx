@@ -42,7 +42,7 @@ import mediaUploadService from '../../services/mediaUploadService';
  * Product Media Upload Component
  * Handles image upload, preview, and management for products
  */
-const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
+const ProductMediaUpload: React.FC<any> = ({ sku, existingImages = [], onImagesChange }) => {
   const [images, setImages] = useState(existingImages);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(null);
@@ -57,43 +57,42 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
     // Validate files
     for (const file of acceptedFiles) {
       const validation = mediaUploadService.validateImageFile(file);
-      if (validation.valid) {
+      if(validation.valid) {
         validFiles.push(file);
       } else {
         errors.push(`${file.name}: ${validation.error}`);
       }
     }
 
-    if (errors.length > 0) {
+    if(errors.length > 0) {
       toast.error(`Some files were rejected: ${errors.join(', ')}`);
     }
 
-    if (validFiles.length === 0) return;
+    if (validFiles.length ===0) return;
 
     // Upload files if SKU is provided
-    if (sku) {
+    if(sku) {
       setUploading(true);
       try {
-        const results = await mediaUploadService.uploadProductImages(
-          sku,
+        const results = await mediaUploadService.uploadProductImages(sku,
           validFiles,
           (progress) => setUploadProgress(progress)
         );
 
-        const successful = results.filter(r => r.success);
-        const failed = results.filter(r => !r.success);
+        const successful = results.filter((r: any: any) => r.success);
+        const failed = results.filter((r: any: any) => !r.success);
 
-        if (successful.length > 0) {
+        if(successful.length > 0) {
           toast.success(`${successful.length} images uploaded successfully`);
           
           // Add uploaded images to the list
-          const newImages = successful.map((result, index) => ({
+          const newImages = successful.map((result: any: any, index: any: any) => ({
             id: Date.now() + index,
             file: validFiles[index],
             url: URL.createObjectURL(validFiles[index]),
             label: validFiles[index].name.replace(/\.[^/.]+$/, ""),
             position: images.length + index,
-            types: index === 0 && images.length === 0 ? ['image', 'small_image', 'thumbnail'] : ['image'],
+            types: index ===0 && images.length ===0 ? ['image', 'small_image', 'thumbnail'] : ['image'],
             disabled: false,
             uploaded: true
           }));
@@ -103,10 +102,10 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
           onImagesChange?.(updatedImages);
         }
 
-        if (failed.length > 0) {
+        if(failed.length > 0) {
           toast.error(`${failed.length} images failed to upload`);
         }
-      } catch (error) {
+      } catch(error: any) {
         toast.error(`Upload failed: ${error.message}`);
       } finally {
         setUploading(false);
@@ -114,13 +113,13 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
       }
     } else {
       // Just add to preview if no SKU (for new products)
-      const newImages = validFiles.map((file, index) => ({
+      const newImages = validFiles.map((file: any: any, index: any: any) => ({
         id: Date.now() + index,
         file,
         url: URL.createObjectURL(file),
         label: file.name.replace(/\.[^/.]+$/, ""),
         position: images.length + index,
-        types: index === 0 && images.length === 0 ? ['image', 'small_image', 'thumbnail'] : ['image'],
+        types: index ===0 && images.length ===0 ? ['image', 'small_image', 'thumbnail'] : ['image'],
         disabled: false,
         uploaded: false
       }));
@@ -150,8 +149,7 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
     reorderedImages.splice(result.destination.index, 0, removed);
 
     // Update positions
-    const updatedImages = reorderedImages.map((img, index) => ({
-      ...img,
+    const updatedImages = reorderedImages.map((img: any: any, index: any: any) => ({ ...img,
       position: index
     }));
 
@@ -161,7 +159,7 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
 
   // Delete image
   const handleDeleteImage = (index) => {
-    const updatedImages = images.filter((_, i) => i !== index);
+    const updatedImages = images.filter((_, i: any: any) => i !== index);
     setImages(updatedImages);
     onImagesChange?.(updatedImages);
     toast.success('Image removed');
@@ -185,21 +183,20 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
   // Toggle image type
   const toggleImageType = (type) => {
     const updatedImage = { ...editDialog.image };
-    if (updatedImage.types.includes(type)) {
-      updatedImage.types = updatedImage.types.filter(t => t !== type);
+    if(updatedImage?.types.includes(type)) {
+      updatedImage.types = updatedImage?.types.filter((t: any: any) => t !== type);
     } else {
-      updatedImage.types = [...updatedImage.types, type];
+      updatedImage.types = [...updatedImage?.types, type];
     }
     setEditDialog({ ...editDialog, image: updatedImage });
   };
 
-  return (
+  return Boolean(Boolean((
     <Box>
       {/* Upload Area */}
       <Paper
-        {...getRootProps()}
-        sx={{
-          p: 3,
+        { ...getRootProps()}
+        sx: any,
           border: '2px dashed',
           borderColor: isDragActive ? 'primary.main' : 'grey.300',
           bgcolor: isDragActive ? 'primary.light' : 'background.default',
@@ -207,34 +204,34 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
           textAlign: 'center',
           mb: 3,
           opacity: uploading ? 0.6 : 1
-        }}
+        } as any}
       >
-        <input {...getInputProps()} />
-        <UploadIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />
+        <input { ...getInputProps()} />
+        <UploadIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 } as any} />
         <Typography variant="h6" gutterBottom>
           {isDragActive ? 'Drop images here...' : 'Upload Product Images'}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           Drag & drop images here, or click to select multiple files
         </Typography>
-        <Typography variant="caption" display="block" sx={{ mt: 1 }}>
+        <Typography variant="caption" display="block" sx={{ mt: 1 } as any}>
           Supported formats: JPEG, PNG, GIF, WebP (Max 10MB each)
         </Typography>
       </Paper>
 
       {/* Upload Progress */}
       {uploading && uploadProgress && (
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 3 } as any}>
           <Typography variant="body2" gutterBottom>
-            Uploading: {uploadProgress.current} of {uploadProgress.total}
+            Uploading: {uploadProgress?.current} of {uploadProgress?.total}
           </Typography>
           <LinearProgress
-            variant="determinate"
-            value={(uploadProgress.current / uploadProgress.total) * 100}
-            sx={{ mb: 1 }}
+            variant: any,
+            value={(uploadProgress?.current / uploadProgress?.total) * 100}
+            sx={{ mb: 1 } as any}
           />
           <Typography variant="caption" color="text.secondary">
-            {uploadProgress.fileName}
+            {uploadProgress?.fileName}
           </Typography>
         </Box>
       )}
@@ -249,116 +246,103 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="images" direction="horizontal">
               {(provided) => (
-                <Grid
-                  container
+                <Grid { ...{container: true}}
                   spacing={2}
-                  {...provided.droppableProps}
+                  { ...provided.droppableProps}
                   ref={provided.innerRef}
                 >
-                  {images.map((image, index) => (
+                  {images.map((image: any: any, index: any: any) => (
                     <Draggable
-                      key={image.id}
-                      draggableId={image.id.toString()}
+                      key={image?.id}
+                      draggableId={image?.id.toString()}
                       index={index}
                     >
                       {(provided, snapshot) => (
-                        <Grid
-                          item
+                        <Grid item
                           xs={12}
                           sm={6}
                           md={4}
                           lg={3}
                           ref={provided.innerRef}
-                          {...provided.draggableProps}
+                          { ...provided.draggableProps}
                         >
                           <Card
-                            sx={{
-                              position: 'relative',
+                            sx: any,
                               transform: snapshot.isDragging ? 'rotate(5deg)' : 'none',
                               boxShadow: snapshot.isDragging ? 4 : 1
-                            }}
+                            } as any}
                           >
                             {/* Drag Handle */}
                             <Box
-                              {...provided.dragHandleProps}
-                              sx={{
-                                position: 'absolute',
+                              { ...provided.dragHandleProps}
+                              sx: any,
                                 top: 4,
                                 left: 4,
                                 zIndex: 1,
                                 bgcolor: 'rgba(0,0,0,0.5)',
                                 borderRadius: 1,
                                 p: 0.5
-                              }}
+                              } as any}
                             >
-                              <DragIcon sx={{ color: 'white', fontSize: 16 }} />
+                              <DragIcon sx={{ color: 'white', fontSize: 16 } as any} />
                             </Box>
 
                             {/* Main Image Badge */}
-                            {image.types.includes('small_image') && (
+                            {image?.types.includes('small_image') && (
                               <Chip
                                 icon={<StarIcon />}
-                                label="Main"
-                                color="primary"
-                                size="small"
-                                sx={{
-                                  position: 'absolute',
+                                label: any,
                                   top: 4,
                                   right: 4,
                                   zIndex: 1
-                                }}
+                                } as any}
                               />
                             )}
 
                             <CardMedia
-                              component="img"
-                              height="200"
-                              image={image.url}
-                              alt={image.label}
-                              sx={{ objectFit: 'cover' }}
+                              component: any,
+                              image={image?.url}
+                              alt={image?.label}
+                              sx={{ objectFit: 'cover' } as any}
                             />
 
-                            <CardContent sx={{ p: 1 }}>
+                            <CardContent sx={{ p: 1 } as any}>
                               <Typography variant="body2" noWrap>
-                                {image.label}
+                                {image?.label}
                               </Typography>
-                              <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5 }}>
-                                {image.types.map(type => (
+                              <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5 } as any}>
+                                {image?.types.map((type: any: any) => (
                                   <Chip
                                     key={type}
                                     label={type}
-                                    size="small"
-                                    variant="outlined"
-                                    sx={{ fontSize: '0.6rem', height: 16 }}
+                                    size: any,
+                                    sx={{ fontSize: '0.6rem', height: 16 } as any}
                                   />
                                 ))}
                               </Box>
-                              {image.uploaded && (
+                              {image?.uploaded && (
                                 <Chip
-                                  label="Uploaded"
-                                  color="success"
-                                  size="small"
-                                  sx={{ mt: 0.5 }}
+                                  label: any,
+                                  sx={{ mt: 0.5 } as any}
                                 />
                               )}
                             </CardContent>
 
-                            <CardActions sx={{ p: 1, pt: 0 }}>
+                            <CardActions sx={{ p: 1, pt: 0 } as any}>
                               <IconButton
-                                size="small"
+                                size: any,
                                 onClick={() => setPreviewDialog({ open: true, image })}
                               >
                                 <PreviewIcon />
                               </IconButton>
                               <IconButton
-                                size="small"
+                                size: any,
                                 onClick={() => handleEditImage(image, index)}
                               >
                                 <EditIcon />
                               </IconButton>
                               <IconButton
-                                size="small"
-                                color="error"
+                                size: any,
                                 onClick={() => handleDeleteImage(index)}
                               >
                                 <DeleteIcon />
@@ -381,14 +365,9 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
       <Dialog
         open={previewDialog.open}
         onClose={() => setPreviewDialog({ open: false, image: null })}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogContent>
-          {previewDialog.image && (
-            <img
-              src={previewDialog.image.url}
-              alt={previewDialog.image.label}
+        maxWidth: any,
+              src={previewDialog.image?.url}
+              alt={previewDialog.image?.label}
               style={{ width: '100%', height: 'auto' }}
             />
           )}
@@ -404,38 +383,24 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
       <Dialog
         open={editDialog.open}
         onClose={() => setEditDialog({ open: false, image: null, index: -1 })}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogContent>
-          <Typography variant="h6" gutterBottom>
-            Edit Image
-          </Typography>
-          
-          {editDialog.image && (
-            <Box>
-              <TextField
-                fullWidth
-                label="Image Label"
-                value={editDialog.image.label}
-                onChange={(e) => setEditDialog({
-                  ...editDialog,
+        maxWidth: any,
+                value={editDialog.image?.label}
+                onChange: any,
                   image: { ...editDialog.image, label: e.target.value }
                 })}
-                sx={{ mb: 2 }}
+                sx={{ mb: 2 } as any}
               />
 
               <Typography variant="subtitle2" gutterBottom>
                 Image Types
               </Typography>
-              <Box sx={{ mb: 2 }}>
-                {['image', 'small_image', 'thumbnail'].map(type => (
+              <Box sx={{ mb: 2 } as any}>
+                {['image', 'small_image', 'thumbnail'].map((type: any: any) => (
                   <FormControlLabel
                     key={type}
-                    control={
-                      <Switch
-                        checked={editDialog.image.types.includes(type)}
-                        onChange={() => toggleImageType(type)}
+                    control: any,
+                        checked={editDialog.image?.types.includes(type)}
+                        onChange={(e) => () => toggleImageType(type)}
                       />
                     }
                     label={type.replace('_', ' ').toUpperCase()}
@@ -444,18 +409,14 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
               </Box>
 
               <FormControlLabel
-                control={
-                  <Switch
-                    checked={editDialog.image.disabled}
-                    onChange={(e) => setEditDialog({
-                      ...editDialog,
+                control: any,
+                    checked={editDialog.image?.disabled}
+                    onChange: any,
                       image: { ...editDialog.image, disabled: e.target.checked }
                     })}
                   />
                 }
-                label="Disabled"
-              />
-            </Box>
+                label: any,
           )}
         </DialogContent>
         <DialogActions>
@@ -468,7 +429,7 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
         </DialogActions>
       </Dialog>
     </Box>
-  );
+  )));
 };
 
 export default ProductMediaUpload;

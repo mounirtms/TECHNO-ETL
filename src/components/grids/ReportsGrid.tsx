@@ -102,7 +102,7 @@ const mockReports = [
 ];
 
 const getStatusColor = (status) => {
-  switch (status) {
+  switch(status) {
     case 'ready': return 'success';
     case 'generating': return 'info';
     case 'scheduled': return 'warning';
@@ -112,7 +112,7 @@ const getStatusColor = (status) => {
 };
 
 const getChartIcon = (chartType) => {
-  switch (chartType) {
+  switch(chartType) {
     case 'line': return <LineChartIcon />;
     case 'bar': return <BarChartIcon />;
     case 'pie': return <PieChartIcon />;
@@ -120,14 +120,14 @@ const getChartIcon = (chartType) => {
   }
 };
 
-const ReportsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
+const ReportsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}> = ({ data, onDataChange, onBadgeUpdate  }) => {
   const { t } = useTranslation();
   const [reports, setReports] = useState(mockReports);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
 
   // Filter reports based on search query
-  const filteredReports = reports.filter(report =>
+  const filteredReports = reports.filter((report: any: any) =>
     report.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     report.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
     report.type.toLowerCase().includes(searchQuery.toLowerCase())
@@ -135,7 +135,7 @@ const ReportsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
 
   // Update badge count for ready reports
   useEffect(() => {
-    const readyReports = reports.filter(r => r.status === 'ready').length;
+    const readyReports = reports.filter((r: any: any) => r.status === 'ready').length;
     onBadgeUpdate?.(readyReports);
   }, [reports, onBadgeUpdate]);
 
@@ -155,7 +155,7 @@ const ReportsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
     console.log('Schedule report:', reportId);
   };
 
-  return (
+  return Boolean(Boolean((
     <Box sx={{ p: 3 }}>
       {/* Header */}
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
@@ -163,7 +163,7 @@ const ReportsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
           {t('Reports & Analytics')}
         </Typography>
         <Button
-          variant="contained"
+          variant: any,
           startIcon={<AddIcon />}
           onClick={handleCreateReport}
         >
@@ -177,19 +177,14 @@ const ReportsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
         placeholder={t('Search reports...')}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          )
+        InputProps: any,
         }}
         sx={{ mb: 3 }}
       />
 
       {/* Reports Grid */}
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: 2 }}>
-        {filteredReports.map((report) => (
+        {filteredReports.map((report: any: any) => (
           <Card key={report.id} sx={{ height: 'fit-content' }}>
             <CardContent>
               <Stack spacing={2}>
@@ -211,10 +206,7 @@ const ReportsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
                   <Chip
                     label={report.status}
                     color={getStatusColor(report.status)}
-                    size="small"
-                  />
-                </Stack>
-
+                    size: any,
                 {/* Category and Type */}
                 <Stack direction="row" spacing={1}>
                   <Chip label={report.category} variant="outlined" size="small" />
@@ -273,7 +265,7 @@ const ReportsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
                 <Stack direction="row" spacing={1} sx={{ pt: 1 }}>
                   <Tooltip title={t('View Report')}>
                     <IconButton 
-                      size="small" 
+                      size: any,
                       onClick={() => handleViewReport(report.id)}
                       disabled={report.status !== 'ready'}
                     >
@@ -282,7 +274,7 @@ const ReportsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
                   </Tooltip>
                   <Tooltip title={t('Download Report')}>
                     <IconButton 
-                      size="small" 
+                      size: any,
                       onClick={() => handleDownloadReport(report.id)}
                       disabled={report.status !== 'ready'}
                     >
@@ -323,7 +315,7 @@ const ReportsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
       </Box>
 
       {/* Empty State */}
-      {filteredReports.length === 0 && (
+      {filteredReports.length ===0 && (
         <Box sx={{ textAlign: 'center', py: 4 }}>
           <ReportIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
           <Typography variant="h6" color="text.secondary">
@@ -335,7 +327,7 @@ const ReportsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
         </Box>
       )}
     </Box>
-  );
+  )));
 };
 
 export default ReportsGrid;

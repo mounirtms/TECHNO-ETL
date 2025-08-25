@@ -11,7 +11,7 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   CHARTS: '/charts',
   PRODUCTS: '/products',
-  TASKS: '/tasks',
+  VOTING: '/voting',
   INVENTORY: '/inventory',
   ORDERS: '/orders',
   CUSTOMERS: '/customers',
@@ -50,12 +50,12 @@ export const ROUTE_METADATA = {
     requiresAuth: true,
     breadcrumb: 'Products'
   },
-  [ROUTES.TASKS]: {
-    title: 'Task Management',
-    description: 'Task management and project tracking system',
-    icon: 'Task',
+  [ROUTES.VOTING]: {
+    title: 'Voting & Tasks',
+    description: 'Voting system and task management',
+    icon: 'HowToVote',
     requiresAuth: true,
-    breadcrumb: 'Tasks'
+    breadcrumb: 'Voting'
   },
   [ROUTES.INVENTORY]: {
     title: 'Inventory Management',
@@ -140,7 +140,7 @@ export const requiresAuth = (path) => {
  * Get all protected routes
  */
 export const getProtectedRoutes = () => {
-  return Object.keys(ROUTE_METADATA).filter(route => 
+  return Object.keys(ROUTE_METADATA).filter((route: any: any) => 
     ROUTE_METADATA[route].requiresAuth !== false
   );
 };
@@ -279,9 +279,9 @@ export const NAVIGATION_ITEMS = [
     submenu: []
   },
   {
-    path: ROUTES.TASKS,
-    label: 'Tasks',
-    icon: 'Task',
+    path: ROUTES.VOTING,
+    label: 'Voting',
+    icon: 'HowToVote',
     order: 9,
     badge: null,
     submenu: []

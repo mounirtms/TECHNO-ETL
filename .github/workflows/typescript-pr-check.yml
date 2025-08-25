@@ -1,0 +1,96 @@
+name: TypeScript PR Check
+
+on:
+  pull_request:
+    branches: [ main, master, develop ]
+    paths:
+      - '**.ts'
+      - '**.tsx'
+      - 'tsconfig.json'
+      - 'package.json'
+      - '.github/workflows/**'
+
+jobs:
+  typescript-pr-check:
+    name: TypeScript PR Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TypeScript checker
+        run: npx tsc --noEmit --pretty false --generateTrace .ts-trace
+
+      - name: Install ts-prcheck
+        if: ${{ failure() }}
+        run: npm install -g @ts-error-translator/cli
+
+      - name: Generate PR annotations
+        if: ${{ failure() }}
+        run: |
+          npx ts-error-translator -p .ts-trace -o ts-errors.json
+          node -e "
+            const fs = require('fs');
+            const errors = JSON.parse(fs.readFileSync('ts-errors.json', 'utf8'));
+            
+            // Format for GitHub Actions
+            errors.forEach(error => {
+              const file = error.file;
+              const line = error.line;
+              const col = error.character;
+              const message = error.messageText;
+              const code = error.code;
+              
+              // GitHub Actions annotation format
+              console.log(`::error file=${file},line=${line},col=${col}::TS${code}: ${message}`);
+            });
+          "
+
+      - name: Summarize TypeScript errors
+        if: ${{ failure() }}
+        run: |
+          echo "## TypeScript Check Failed ❌" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          ERROR_COUNT=$(jq '. | length' ts-errors.json)
+          echo "Found $ERROR_COUNT TypeScript errors" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "### Most Common Error Types" >> $GITHUB_STEP_SUMMARY
+          node -e "
+            const fs = require('fs');
+            const errors = JSON.parse(fs.readFileSync('ts-errors.json', 'utf8'));
+            
+            // Count by error code
+            const errorCounts = {};
+            errors.forEach(error => {
+              const code = error.code;
+              errorCounts[code] = (errorCounts[code] || 0) + 1;
+            });
+            
+            // Sort by frequency
+            const sortedErrors = Object.entries(errorCounts)
+              .sort((a, b) => b[1] - a[1])
+              .slice(0, 5);
+            
+            // Output markdown table
+            console.log('| Error Code | Count | Description |');
+            console.log('|------------|-------|-------------|');
+            
+            sortedErrors.forEach(([code, count]) => {
+              // Get a representative message for this error code
+              const sampleError = errors.find(e => e.code === code);
+              const message = sampleError ? sampleError.messageText.split('.')[0] : 'Unknown error';
+              console.log(`| TS${code} | ${count} | ${message} |`);
+            });
+          " >> $GITHUB_STEP_SUMMARY

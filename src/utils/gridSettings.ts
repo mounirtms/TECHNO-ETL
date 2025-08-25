@@ -9,7 +9,7 @@ export const saveGridSettings = (gridName, settings) => {
     try {
         const serializedSettings = JSON.stringify(settings);
         localStorage.setItem(`gridSettings_${gridName}`, serializedSettings);
-    } catch (error) {
+    } catch(error: any) {
         console.error(`Error saving grid settings for ${gridName}:`, error);
     }
 };
@@ -22,11 +22,11 @@ export const saveGridSettings = (gridName, settings) => {
 export const loadGridSettings = (gridName) => {
     try {
         const serializedSettings = localStorage.getItem(`gridSettings_${gridName}`);
-        if (serializedSettings === null) {
+        if(serializedSettings ===null) {
             return null;
         }
         return JSON.parse(serializedSettings);
-    } catch (error) {
+    } catch(error: any) {
         console.error(`Error loading grid settings for ${gridName}:`, error);
         return null;
     }

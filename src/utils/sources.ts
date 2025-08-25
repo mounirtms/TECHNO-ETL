@@ -151,8 +151,8 @@ const sourceMapping = [
     }
 ];
 
-export const getSourceInfo = (code) => {
-    return sourceMapping.find(item => item.code_source === code || item.succursale === code);
+export const getSourceInfo = (code: any) => {
+    return sourceMapping.find(item => item.code_source ===code || item.succursale ===code);
 };
 
 export const getAllSources = () => sourceMapping;

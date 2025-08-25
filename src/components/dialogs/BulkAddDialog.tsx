@@ -19,14 +19,14 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { toast } from 'react-toastify';
 
-const BulkAddDialog = ({ open, onClose, onUpload }) => {
+const BulkAddDialog: React.FC<any> = ({ open, onClose, onUpload }) => {
     const [files, setFiles] = useState([]);
 
     const onDrop = useCallback(acceptedFiles => {
         // Only accept one file for now
-        if (acceptedFiles.length > 0) {
+        if(acceptedFiles.length > 0) {
             const file = acceptedFiles[0];
-            if (file.type !== 'text/csv') {
+            if(file.type !== 'text/csv') {
                 toast.error('Only .csv files are accepted.');
                 return;
             }
@@ -43,7 +43,7 @@ const BulkAddDialog = ({ open, onClose, onUpload }) => {
     });
 
     const handleUpload = () => {
-        if (files.length > 0) {
+        if(files.length > 0) {
             onUpload(files[0]);
             onClose();
         } else {
@@ -60,8 +60,8 @@ const BulkAddDialog = ({ open, onClose, onUpload }) => {
             <DialogTitle>Bulk Add Products from CSV</DialogTitle>
             <DialogContent>
                 <Box
-                    {...getRootProps()}
-                    sx={{
+                    { ...getRootProps()}
+                    sx: any,
                         border: `2px dashed ${isDragActive ? 'primary.main' : 'grey.500'}`,
                         borderRadius: 2,
                         p: 4,
@@ -71,8 +71,8 @@ const BulkAddDialog = ({ open, onClose, onUpload }) => {
                         backgroundColor: isDragActive ? 'action.hover' : 'transparent'
                     }}
                 >
-                    <input {...getInputProps()} />
-                    <CloudUploadIcon sx={{ fontSize: 48, color: 'grey.500' }} />
+                    <input { ...getInputProps()} />
+                    <CloudUploadIcon sx={{ fontSize: 48, color: 'grey.500' } as any} />
                     <Typography>
                         {isDragActive ? 'Drop the file here ...' : 'Drag \'n\' drop a CSV file here, or click to select a file'}
                     </Typography>
@@ -80,7 +80,7 @@ const BulkAddDialog = ({ open, onClose, onUpload }) => {
                 {files.length > 0 && (
                     <List>
                         <ListItem
-                            secondaryAction={
+                            secondaryAction: any,
                                 <IconButton edge="end" aria-label="delete" onClick={handleRemoveFile}>
                                     <DeleteIcon />
                                 </IconButton>
@@ -99,7 +99,7 @@ const BulkAddDialog = ({ open, onClose, onUpload }) => {
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button onClick={handleUpload} variant="contained" disabled={files.length === 0}>
+                <Button onClick={handleUpload} variant="contained" disabled={files.length ===0}>
                     Upload
                 </Button>
             </DialogActions>

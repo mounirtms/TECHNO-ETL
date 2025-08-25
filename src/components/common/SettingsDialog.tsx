@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, List, ListItem, ListItemText, Checkbox, Switch, FormControlLabel } from '@mui/material';
 
-const SettingsDialog = ({ open, onClose, columns, onSave, gridName, defaultColumns }) => {
+const SettingsDialog: React.FC<{open: any, onClose: any, columns: any, onSave: any, gridName: any, defaultColumns: any}> = ({ open, onClose, columns, onSave, gridName, defaultColumns  }) => {
     const [visibleColumns, setVisibleColumns] = useState({});
 
     useEffect(() => {
-        if (open) {
+        if(open) {
             const initialVisibility = {};
-            columns.forEach(col => {
+            columns.forEach((col) => {
                 initialVisibility[col.field] = !col.hide;
             });
             setVisibleColumns(initialVisibility);
@@ -19,8 +19,7 @@ const SettingsDialog = ({ open, onClose, columns, onSave, gridName, defaultColum
     };
 
     const handleSave = () => {
-        const updatedColumns = columns.map(col => ({
-            ...col,
+        const updatedColumns = columns.map((col: any: any) => ({ ...col,
             hide: !visibleColumns[col.field]
         }));
         onSave(updatedColumns);
@@ -32,15 +31,14 @@ const SettingsDialog = ({ open, onClose, columns, onSave, gridName, defaultColum
         onClose();
     };
 
-    return (
-        <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
+    return(<Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
             <DialogTitle>Column Settings</DialogTitle>
             <DialogContent dividers>
                 <List>
-                    {columns.map((col) => (
+                    {columns.map((col: any: any) => (
                         <ListItem key={col.field} dense button onClick={() => handleToggle(col.field)}>
                             <Checkbox
-                                edge="start"
+                                edge: any,
                                 checked={!!visibleColumns[col.field]}
                                 tabIndex={-1}
                                 disableRipple

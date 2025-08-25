@@ -17,7 +17,7 @@ interface ModernSidebarProps {
 const ModernSidebar: React.FC<ModernSidebarProps> = ({ 
   open, 
   toggleDrawer, 
-  isRTL = false 
+  isRTL: any,
 }) => {
   const { activeTab, openTab } = useTab();
   const { translate } = useLanguage();
@@ -32,15 +32,14 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({
       {/* Mobile overlay */}
       {open && (
         <div 
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          className: any,
           onClick={toggleDrawer}
         />
       )}
       
       {/* Sidebar */}
       <aside
-        className={cn(
-          'fixed top-0 h-full z-40 transition-all duration-300 ease-in-out',
+        className: any,
           'bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl',
           'border-r border-gray-200 dark:border-gray-700',
           'shadow-lg',
@@ -54,8 +53,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({
           // RTL support
           isRTL ? 'right-0 border-r-0 border-l' : 'left-0'
         )}
-        style={{
-          width: open ? DRAWER_WIDTH : COLLAPSED_WIDTH,
+        style: any,
         }}
       >
         {/* Logo Container */}
@@ -65,9 +63,7 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({
         )}>
           <img
             src={open ? logoTechno : technoIcon}
-            alt="Techno ETL Logo"
-            className={cn(
-              'transition-all duration-300 ease-in-out',
+            alt: any,
               open ? 'h-8 w-auto' : 'h-8 w-8',
               'object-contain'
             )}

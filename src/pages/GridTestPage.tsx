@@ -113,8 +113,7 @@ const GridTestPage = () => {
 
   // Handle configuration changes
   const handleConfigChange = useCallback((key, value) => {
-    setGridConfig(prev => ({
-      ...prev,
+    setGridConfig(prev => ({ ...prev,
       [key]: value
     }));
   }, []);
@@ -140,7 +139,7 @@ const GridTestPage = () => {
       URL.revokeObjectURL(url);
       
       setShowSuccess(true);
-    } catch (error) {
+    } catch(error: any) {
       console.error('Export failed:', error);
       setShowError(true);
     }
@@ -155,14 +154,14 @@ const GridTestPage = () => {
     reader.onload = (e) => {
       try {
         const config = JSON.parse(e.target.result);
-        if (config.gridType && config.configuration) {
+        if(config.gridType && config.configuration) {
           setSelectedGridType(config.gridType);
           setGridConfig(config.configuration);
           setShowSuccess(true);
         } else {
           throw new Error('Invalid configuration format');
         }
-      } catch (error) {
+      } catch(error: any) {
         console.error('Import failed:', error);
         setShowError(true);
       }
@@ -217,7 +216,7 @@ const GridTestPage = () => {
       setTestResults(prev => [testResult, ...prev.slice(0, 9)]);
       setShowSuccess(true);
       
-    } catch (error) {
+    } catch(error: any) {
       console.error('Performance test failed:', error);
       setShowError(true);
     } finally {
@@ -234,8 +233,7 @@ const GridTestPage = () => {
     }
   });
 
-  return (
-    <Box sx={{ p: 3, height: '100%', overflow: 'auto' }}>
+  return(<Box sx={{ p: 3, height: '100%', overflow: 'auto' }}>
       {/* Header */}
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" sx={{ mb: 1, fontWeight: 600 }}>
@@ -246,18 +244,18 @@ const GridTestPage = () => {
         </Typography>
       </Box>
 
-      <Grid container spacing={3}>
+      <Grid { ...{container: true}} spacing={3}>
         {/* Configuration Panel */}
         <Grid item xs={12} md={4}>
           <Card>
             <CardHeader
-              title={
+              title: any,
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Settings />
                   <Typography variant="h6">Grid Configuration</Typography>
                 </Box>
               }
-              action={
+              action: any,
                 <Box sx={{ display: 'flex', gap: 1 }}>
                   <Tooltip title="Export Config">
                     <IconButton onClick={handleExportConfig} size="small">
@@ -268,10 +266,8 @@ const GridTestPage = () => {
                     <IconButton component="label" size="small">
                       <Upload />
                       <input
-                        type="file"
-                        accept=".json"
-                        hidden
-                        onChange={handleImportConfig}
+                        type: any,
+                        onChange={(e) => handleImportConfig}
                       />
                     </IconButton>
                   </Tooltip>
@@ -290,9 +286,8 @@ const GridTestPage = () => {
                 <Select
                   value={selectedGridType}
                   onChange={(e) => setSelectedGridType(e.target.value)}
-                  label="Grid Type"
-                >
-                  {Object.entries(gridTypes).map(([key, config]) => (
+                  label: any,
+                  {Object.entries(gridTypes).map(([key: any: any, config]: any: any) => (
                     <MenuItem key={key} value={key}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <GridView fontSize="small" />
@@ -313,63 +308,37 @@ const GridTestPage = () => {
                 <AccordionDetails>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <FormControlLabel
-                      control={
-                        <Switch
+                      control: any,
                           checked={gridConfig.showStatsCards}
                           onChange={(e) => handleConfigChange('showStatsCards', e.target.checked)}
                         />
                       }
-                      label="Show Stats Cards"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
+                      label: any,
                           checked={gridConfig.enableVirtualization}
                           onChange={(e) => handleConfigChange('enableVirtualization', e.target.checked)}
                         />
                       }
-                      label="Enable Virtualization"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
+                      label: any,
                           checked={gridConfig.enableSearch}
                           onChange={(e) => handleConfigChange('enableSearch', e.target.checked)}
                         />
                       }
-                      label="Enable Search"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
+                      label: any,
                           checked={gridConfig.enableToolbar}
                           onChange={(e) => handleConfigChange('enableToolbar', e.target.checked)}
                         />
                       }
-                      label="Enable Toolbar"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
+                      label: any,
                           checked={gridConfig.enablePagination}
                           onChange={(e) => handleConfigChange('enablePagination', e.target.checked)}
                         />
                       }
-                      label="Enable Pagination"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
+                      label: any,
                           checked={gridConfig.enableSelection}
                           onChange={(e) => handleConfigChange('enableSelection', e.target.checked)}
                         />
                       }
-                      label="Enable Selection"
-                    />
-                  </Box>
-                </AccordionDetails>
-              </Accordion>
-
+                      label: any,
               {/* Performance Settings */}
               <Accordion>
                 <AccordionSummary expandIcon={<ExpandMore />}>
@@ -380,32 +349,17 @@ const GridTestPage = () => {
                 <AccordionDetails>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <TextField
-                      label="Page Size"
-                      type="number"
+                      label: any,
                       value={gridConfig.pageSize}
                       onChange={(e) => handleConfigChange('pageSize', parseInt(e.target.value) || 25)}
-                      size="small"
-                    />
-                    <FormControl size="small">
-                      <InputLabel>Density</InputLabel>
-                      <Select
+                      size: any,
                         value={gridConfig.density}
                         onChange={(e) => handleConfigChange('density', e.target.value)}
-                        label="Density"
-                      >
-                        <MenuItem value="compact">Compact</MenuItem>
-                        <MenuItem value="standard">Standard</MenuItem>
-                        <MenuItem value="comfortable">Comfortable</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Box>
-                </AccordionDetails>
-              </Accordion>
-
+                        label: any,
               {/* Performance Testing */}
               <Box sx={{ mt: 3, pt: 2, borderTop: `1px solid ${theme.palette.divider}` }}>
                 <Button
-                  variant="contained"
+                  variant: any,
                   startIcon={isRunningTest ? <Pause /> : <PlayArrow />}
                   onClick={handleRunPerformanceTest}
                   disabled={isRunningTest}
@@ -420,7 +374,7 @@ const GridTestPage = () => {
           {/* Performance Metrics */}
           <Card sx={{ mt: 2 }}>
             <CardHeader
-              title={
+              title: any,
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Analytics />
                   <Typography variant="h6">Performance Metrics</Typography>
@@ -428,7 +382,7 @@ const GridTestPage = () => {
               }
             />
             <CardContent>
-              <Grid container spacing={2}>
+              <Grid { ...{container: true}} spacing={2}>
                 <Grid item xs={6}>
                   <Box sx={{ textAlign: 'center' }}>
                     <Typography variant="h4" color="primary">
@@ -478,7 +432,7 @@ const GridTestPage = () => {
         <Grid item xs={12} md={8}>
           <Card sx={{ height: 'calc(100vh - 200px)' }}>
             <CardHeader
-              title={
+              title: any,
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <GridView />
                   <Typography variant="h6">
@@ -486,16 +440,12 @@ const GridTestPage = () => {
                   </Typography>
                   <Chip 
                     label={selectedGridType.toUpperCase()} 
-                    size="small" 
-                    color="primary" 
-                    variant="outlined" 
-                  />
-                </Box>
+                    size: any,
               }
             />
             <CardContent sx={{ height: 'calc(100% - 80px)', p: 1 }}>
               <UnifiedGrid
-                {...getStandardGridProps(selectedGridType, {
+                { ...getStandardGridProps(selectedGridType, {
                   data: currentGridData.sampleData,
                   columns: currentGridData.columns,
                   gridName: `Test${selectedGridType}Grid`,

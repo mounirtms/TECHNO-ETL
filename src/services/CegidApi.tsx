@@ -5,7 +5,42 @@ const cegidUrl = import.meta.env.VITE_Cegid_API_URL;
 const cegidUsername = import.meta.env.VITE_Cegid_ADMIN_USERNAME;
 const cegidPassword = import.meta.env.VITE_Cegid_ADMIN_PASSWORD;
 
-async function getProductsFromCegid() {
+// Define types for Cegid API data
+interface CegidItem {
+  ItemCode: string[];
+  Description: string[];
+  Price: string[];
+  Stock: string[];
+  Store: string[];
+  Status: string[];
+}
+
+interface CegidInventory {
+  Items: CegidItem[];
+}
+
+interface CegidResponse {
+  Inventory: CegidInventory;
+}
+
+interface CegidProduct {
+  itemCode: string;
+  description: string;
+  price: string;
+  stock: string;
+  store: string;
+  status: string;
+}
+
+interface SoapResponse {
+  response: {
+    body: string;
+    statusCode: number;
+    headers: Record<string, string>;
+  };
+}
+
+async function getProductsFromCegid(): Promise<CegidProduct[]> {
     const wsdl = await fetch('/assets/CegidApi/InventoryService.wsdl').then(res => res.text());
 
     const headers = {
@@ -20,7 +55,7 @@ async function getProductsFromCegid() {
         </soap:Body>
     </soap:Envelope>`;
 
-    const { response } = await soapRequest({
+    const { response }: SoapResponse = await soapRequest({
         url: cegidUrl,
         headers: headers,
         xml: xml,
@@ -28,14 +63,14 @@ async function getProductsFromCegid() {
 
     const { body, statusCode } = response;
 
-    if (statusCode !== 200) {
+    if(statusCode !== 200) {
         throw new Error(`Cegid API error ${statusCode}: ${body}`);
     }
 
     const parser = new xml2js.Parser();
-    const parsedData = await parser.parseStringPromise(body);
+    const parsedData = await parser.parseStringPromise(body) as CegidResponse;
 
-    const transformedMagentoData = parsedData.Inventory.Items.map(item => ({
+    const transformedMagentoData: CegidProduct[] = parsedData.Inventory.Items.map((item: any: any) => ({
         itemCode: item.ItemCode[0],
         description: item.Description[0],
         price: item.Price[0],
@@ -47,4 +82,4 @@ async function getProductsFromCegid() {
     return transformedMagentoData;
 }
 
-export { getProductsFromCegid };
+export { getProductsFromCegid, type CegidProduct };

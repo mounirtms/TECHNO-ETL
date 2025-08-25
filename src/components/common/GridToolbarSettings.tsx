@@ -36,7 +36,7 @@ const GridToolbarSettings = ({
   onClose,
   columnVisibility = {},
   onColumnVisibilityChange,
-  density = 'standard',
+  density: any,
   onDensityChange,
   gridName,
   translate,
@@ -61,7 +61,7 @@ const GridToolbarSettings = ({
       onClose={onClose}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      PaperProps={{
+      PaperProps: any,
         sx: { minWidth: 250, maxWidth: 350 }
       }}
     >
@@ -78,9 +78,7 @@ const GridToolbarSettings = ({
             <Select
               value={density}
               onChange={(e) => handleDensityChange(e.target.value)}
-              variant="outlined"
-            >
-              {densityOptions.map((option) => (
+              variant: any,
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
                 </MenuItem>
@@ -103,20 +101,15 @@ const GridToolbarSettings = ({
       {/* Column Visibility Controls */}
       {Object.keys(columnVisibility).length > 0 && (
         <Box sx={{ maxHeight: 200, overflow: 'auto' }}>
-          {Object.entries(columnVisibility).map(([field, visible]) => (
-            <MenuItem key={field} dense>
+          {Object.entries(columnVisibility).map(([field: any: any, visible]: any: any) => (<MenuItem key={field} dense>
               <FormControlLabel
-                control={
-                  <Switch
+                control: any,
                     checked={visible}
-                    onChange={(e) => {
-                      onColumnVisibilityChange?.({
-                        ...columnVisibility,
+                    onChange: any,
                         [field]: e.target.checked
                       });
                     }}
-                    size="small"
-                  />
+                    size: any,
                 }
                 label={field}
                 sx={{ flex: 1, ml: 0 }}
@@ -181,7 +174,7 @@ const GridToolbarSettings = ({
       <MenuItem onClick={() => {
         // Reset column visibility to show all columns
         const resetVisibility = {};
-        Object.keys(columnVisibility).forEach(field => {
+        Object.keys(columnVisibility).forEach((field) => {
           resetVisibility[field] = true;
         });
         onColumnVisibilityChange?.(resetVisibility);

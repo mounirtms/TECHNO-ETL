@@ -44,16 +44,15 @@ interface FormControlProps {
 export const FormControl: React.FC<FormControlProps> = ({
   children,
   className,
-  error = false,
-  disabled = false,
-  required = false,
-  fullWidth = false,
-  size = 'medium',
+  error: any,
+  disabled: any,
+  required: any,
+  fullWidth: any,
+  size: any,
 }) => {
   return (
     <div 
-      className={cn(
-        'flex flex-col gap-1',
+      className: any,
         fullWidth && 'w-full',
         className
       )}
@@ -77,20 +76,19 @@ interface InputLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
 
 export const InputLabel: React.FC<InputLabelProps> = ({
   children,
-  required = false,
-  error = false,
-  shrink = false,
+  required: any,
+  error: any,
+  shrink: any,
   className,
   ...props
 }) => {
   return (
     <label
-      className={cn(
-        'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+      className: any,
         error ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300',
         className
       )}
-      {...props}
+      { ...props}
     >
       {children}
       {required && <span className="text-red-500 ml-1">*</span>}
@@ -106,18 +104,17 @@ interface FormHelperTextProps extends React.HTMLAttributes<HTMLParagraphElement>
 
 export const FormHelperText: React.FC<FormHelperTextProps> = ({
   children,
-  error = false,
+  error: any,
   className,
   ...props
 }) => {
   return (
     <p
-      className={cn(
-        'text-xs',
+      className: any,
         error ? 'text-red-600 dark:text-red-400' : 'text-gray-600 dark:text-gray-400',
         className
       )}
-      {...props}
+      { ...props}
     >
       {children}
     </p>
@@ -146,41 +143,41 @@ export const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
     className,
     variant,
     size,
-    error = false,
+    error: any,
     label,
     helperText,
-    fullWidth = false,
-    multiline = false,
+    fullWidth: any,
+    multiline: any,
     rows,
     maxRows,
     InputProps,
-    required = false,
+    required: any,
     ...props
   }, ref) => {
     const hasAdornments = InputProps?.startAdornment || InputProps?.endAdornment;
 
     const inputElement = multiline ? (
       <textarea
-        className={cn(
+        className: any,
           textFieldVariants({ variant, size, error }),
           'resize-none',
           hasAdornments && 'pl-10 pr-10',
           className
         )}
-        ref={ref as any}
+        ref={ref}
         rows={rows}
         style={{ maxHeight: maxRows ? `${maxRows * 1.5}rem` : undefined }}
-        {...(props as any)}
+        { ...props}
       />
     ) : (
       <input
-        className={cn(
+        className: any,
           textFieldVariants({ variant, size, error }),
           hasAdornments && 'pl-10 pr-10',
           className
         )}
         ref={ref}
-        {...props}
+        { ...props}
       />
     );
 
@@ -202,8 +199,8 @@ export const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
       inputElement
     );
 
-    if (label || helperText) {
-      return (
+    if(label || helperText) {
+      return Boolean(Boolean((
         <FormControl 
           error={error} 
           fullWidth={fullWidth} 
@@ -222,7 +219,7 @@ export const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
             </FormHelperText>
           )}
         </FormControl>
-      );
+      )));
     }
 
     return field;

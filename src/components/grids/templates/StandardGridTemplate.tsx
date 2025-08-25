@@ -58,11 +58,11 @@ const StandardGridTemplate = () => {
       
       // Calculate stats
       const total = response.data?.length || 0;
-      const active = response.data?.filter(item => item.status === 'active').length || 0;
+      const active = response.data?.filter((item: any: any) => item.status === 'active').length || 0;
       const inactive = total - active;
       
       setStats({ total, active, inactive });
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error fetching data:', error);
       toast.error('Failed to fetch data');
       setData([]);
@@ -78,7 +78,7 @@ const StandardGridTemplate = () => {
   }, []);
 
   const handleEdit = useCallback((records) => {
-    if (records.length === 1) {
+    if(records.length ===1) {
       setSelectedRecord(records[0]);
       setEditDialogOpen(true);
     } else {
@@ -87,7 +87,7 @@ const StandardGridTemplate = () => {
   }, []);
 
   const handleDelete = useCallback(async (records) => {
-    if (records.length === 0) {
+    if(records.length ===0) {
       toast.warning('Please select records to delete');
       return;
     }
@@ -97,7 +97,7 @@ const StandardGridTemplate = () => {
       await apiService.deleteRecords(records);
       toast.success(`Deleted ${records.length} record(s)`);
       fetchData();
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error deleting records:', error);
       toast.error('Failed to delete records');
     }
@@ -109,7 +109,7 @@ const StandardGridTemplate = () => {
       await apiService.syncData();
       toast.success('Data synchronized successfully');
       fetchData();
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error syncing data:', error);
       toast.error('Failed to sync data');
     }
@@ -143,9 +143,7 @@ const StandardGridTemplate = () => {
         <Chip
           label={params.value}
           color={params.value === 'active' ? 'success' : 'default'}
-          size="small"
-        />
-      )
+          size: any,
     },
     {
       field: 'created_at',
@@ -249,10 +247,9 @@ const StandardGridTemplate = () => {
   }, [fetchData]);
 
   // ===== 10. RENDER =====
-  return (
-    <Box sx={{ height: '100%', width: '100%' }}>
+  return(<Box sx={{ height: '100%', width: '100%' }}>
       <UnifiedGrid
-        gridName="StandardGrid"
+        gridName: any,
         columns={columns}
         data={data}
         loading={loading}
@@ -270,7 +267,7 @@ const StandardGridTemplate = () => {
         // View options
         showStatsCards={true}
         showCardView={true}
-        defaultViewMode="grid"
+        defaultViewMode: any,
         gridCards={statusCards}
         totalCount={stats.total}
         defaultPageSize={25}
@@ -293,7 +290,7 @@ const StandardGridTemplate = () => {
         onEdit={handleEdit}
         onDelete={handleDelete}
         onSync={handleSync}
-        onSelectionChange={setSelectedRows}
+        onSelectionChange={(e) => setSelectedRows}
         onExport={(exportData, selectedRows) => {
           console.log('Exporting data:', exportData);
           toast.success(`Exported ${exportData.length} records`);

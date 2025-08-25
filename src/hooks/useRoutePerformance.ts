@@ -21,7 +21,7 @@ export const useRoutePerformance = () => {
 
     // Measure route load time after component mount
     const measureRouteLoad = () => {
-      if (navigationStartTime.current) {
+      if(navigationStartTime.current) {
         const loadTime = performance.now() - navigationStartTime.current;
         
         // Store metrics
@@ -35,8 +35,8 @@ export const useRoutePerformance = () => {
         console.log(`⚡ Route ${currentRoute} loaded in ${loadTime.toFixed(2)}ms`);
 
         // Send to analytics if needed
-        if (window.gtag) {
-          window.gtag('event', 'page_view', {
+        if(window?.gtag) {
+          window?.gtag('event', 'page_view', {
             page_title: document.title,
             page_location: window.location.href,
             custom_map: {
@@ -46,7 +46,7 @@ export const useRoutePerformance = () => {
         }
 
         // Performance warning for slow routes
-        if (loadTime > 1000) {
+        if(loadTime > 1000) {
           console.warn(`⚠️ Slow route detected: ${currentRoute} took ${loadTime.toFixed(2)}ms`);
         }
       }
@@ -75,8 +75,8 @@ export const useRoutePerformance = () => {
 export const useRoutePreloader = () => {
   const preloadedRoutes = useRef(new Set());
 
-  const preloadRoute = async (routePath) => {
-    if (preloadedRoutes.current.has(routePath)) {
+  const preloadRoute = async(routePath) => {
+    if (preloadedRoutes.current.has(routePath )) {
       return; // Already preloaded
     }
 
@@ -95,12 +95,12 @@ export const useRoutePreloader = () => {
       };
 
       const loader = routeComponentMap[routePath];
-      if (loader) {
+      if(loader) {
         await loader();
-        preloadedRoutes.current.add(routePath);
+        preloadedRoutes.current.add(routePath );
         console.log(`📦 Preloaded route: ${routePath}`);
       }
-    } catch (error) {
+    } catch(error: any) {
       console.error(`❌ Failed to preload route ${routePath}:`, error);
     }
   };
@@ -108,7 +108,7 @@ export const useRoutePreloader = () => {
   const preloadCommonRoutes = () => {
     // Preload commonly accessed routes
     const commonRoutes = ['/dashboard', '/products', '/charts'];
-    commonRoutes.forEach(route => {
+    commonRoutes.forEach((route) => {
       setTimeout(() => preloadRoute(route), 100);
     });
   };
@@ -145,7 +145,7 @@ export const useDocumentTitle = () => {
 
     // Update meta description based on route
     const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
+    if(metaDescription) {
       const descriptions = {
         '/dashboard': 'TECHNO-ETL Dashboard - Overview and system statistics',
         '/products': 'Product Management System - Manage your product catalog',

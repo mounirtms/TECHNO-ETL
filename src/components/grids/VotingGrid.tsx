@@ -93,7 +93,7 @@ const PRIORITY_CONFIG = {
 /**
  * VotingGrid Component
  */
-const VotingGrid = ({ userId = 'current_user' }) => {
+const VotingGrid: React.FC<{userId = 'current_user': any}> = ({ userId = 'current_user'  }) => {
   const { t } = useTranslation();
   const [features, setFeatures] = useState([]);
   const [userVotes, setUserVotes] = useState(new Set());
@@ -134,8 +134,8 @@ const VotingGrid = ({ userId = 'current_user' }) => {
       ]);
       
       setFeatures(featuresData);
-      setUserVotes(new Set(votesData.map(vote => vote.feature_id)));
-    } catch (err) {
+      setUserVotes(new Set(votesData.map((vote: any: any) => vote.feature_id)));
+    } catch(err: any) {
       setError(err.message);
       showSnackbar('Failed to load data', 'error');
     } finally {
@@ -146,11 +146,11 @@ const VotingGrid = ({ userId = 'current_user' }) => {
   /**
    * Handle voting for a feature
    */
-  const handleVote = async (featureId) => {
+  const handleVote = async(featureId) => {
     try {
       const hasVoted = userVotes.has(featureId);
       
-      if (hasVoted) {
+      if(hasVoted) {
         await votingService.removeVote(featureId, userId);
         setUserVotes(prev => {
           const newSet = new Set(prev);
@@ -165,16 +165,15 @@ const VotingGrid = ({ userId = 'current_user' }) => {
       }
       
       // Update vote count in features
-      setFeatures(prev => prev.map(feature => {
-        if (feature.id === featureId) {
-          return {
-            ...feature,
-            vote_count: hasVoted ? feature.vote_count - 1 : feature.vote_count + 1
+      setFeatures(prev => prev.map((feature: any: any) => {
+        if(feature?.id ===featureId) {
+          return { ...feature,
+            vote_count: hasVoted ? feature?.vote_count - 1 : feature?.vote_count + 1
           };
         }
         return feature;
       }));
-    } catch (err) {
+    } catch(err: any) {
       showSnackbar('Failed to update vote', 'error');
     }
   };
@@ -184,8 +183,7 @@ const VotingGrid = ({ userId = 'current_user' }) => {
    */
   const handleCreateFeature = async () => {
     try {
-      const createdFeature = await votingService.createFeature({
-        ...newFeature,
+      const createdFeature = await votingService.createFeature({ ...newFeature,
         created_by: userId
       });
       
@@ -193,7 +191,7 @@ const VotingGrid = ({ userId = 'current_user' }) => {
       setCreateDialogOpen(false);
       setNewFeature({ title: '', description: '', category: 'general', priority: 'medium' });
       showSnackbar('Feature created successfully', 'success');
-    } catch (err) {
+    } catch(err: any) {
       showSnackbar('Failed to create feature', 'error');
     }
   };
@@ -212,14 +210,14 @@ const VotingGrid = ({ userId = 'current_user' }) => {
     let filtered = [...features];
     
     // Apply filters
-    if (filters.status) {
-      filtered = filtered.filter(f => f.status === filters.status);
+    if(filters?.status) {
+      filtered: any,
     }
-    if (filters.category) {
-      filtered = filtered.filter(f => f.category === filters.category);
+    if(filters?.category) {
+      filtered: any,
     }
-    if (filters.priority) {
-      filtered = filtered.filter(f => f.priority === filters.priority);
+    if(filters?.priority) {
+      filtered: any,
     }
     
     // Apply sorting
@@ -227,12 +225,11 @@ const VotingGrid = ({ userId = 'current_user' }) => {
       let aVal = a[sortBy];
       let bVal = b[sortBy];
       
-      if (sortBy === 'vote_count') {
-        aVal = parseInt(aVal) || 0;
-        bVal = parseInt(bVal) || 0;
+      if(sortBy === 'vote_count') {
+        aVal: any,
       }
       
-      if (sortOrder === 'asc') {
+      if(sortOrder === 'asc') {
         return aVal > bVal ? 1 : -1;
       } else {
         return aVal < bVal ? 1 : -1;
@@ -247,7 +244,7 @@ const VotingGrid = ({ userId = 'current_user' }) => {
     loadData();
   }, [loadData]);
 
-  if (loading) {
+  if(loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight={400}>
         <Typography>Loading features...</Typography>
@@ -255,7 +252,7 @@ const VotingGrid = ({ userId = 'current_user' }) => {
     );
   }
 
-  if (error) {
+  if(error) {
     return (
       <Alert severity="error" sx={{ m: 2 }}>
         {error}
@@ -271,21 +268,21 @@ const VotingGrid = ({ userId = 'current_user' }) => {
         
           <Stack direction="row" spacing={1}>
             <Button
-              variant="outlined"
+              variant: any,
               startIcon={<FilterList />}
               onClick={() => setFilterDialogOpen(true)}
             >
               Filter
             </Button>
             <Button
-              variant="outlined"
+              variant: any,
               startIcon={<Sort />}
               onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
             >
               Sort {sortOrder === 'asc' ? '↑' : '↓'}
             </Button>
             <Button
-              variant="contained"
+              variant: any,
               startIcon={<Add />}
               onClick={() => setCreateDialogOpen(true)}
             >
@@ -296,16 +293,16 @@ const VotingGrid = ({ userId = 'current_user' }) => {
       </Paper>
 
       {/* Features Grid */}
-      <Grid container spacing={3}>
+      <Grid { ...{container: true}} spacing={3}>
         <AnimatePresence>
-          {sortedAndFilteredFeatures.map((feature) => {
-            const statusConfig = STATUS_CONFIG[feature.status] || STATUS_CONFIG.proposed;
-            const priorityConfig = PRIORITY_CONFIG[feature.priority] || PRIORITY_CONFIG.medium;
-            const hasVoted = userVotes.has(feature.id);
+          {sortedAndFilteredFeatures.map((feature: any: any) => {
+            const statusConfig = STATUS_CONFIG[feature?.status] || STATUS_CONFIG.proposed;
+            const priorityConfig = PRIORITY_CONFIG[feature?.priority] || PRIORITY_CONFIG.medium;
+            const hasVoted = userVotes.has(feature?.id);
             const StatusIcon = statusConfig.icon;
 
             return (
-              <Grid item xs={12} md={6} lg={4} key={feature.id}>
+              <Grid item xs={12} md={6} lg={4} key={feature?.id}>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -313,8 +310,7 @@ const VotingGrid = ({ userId = 'current_user' }) => {
                   transition={{ duration: 0.3 }}
                 >
                   <Card 
-                    sx={{ 
-                      height: '100%',
+                    sx: any,
                       display: 'flex',
                       flexDirection: 'column',
                       transition: 'transform 0.2s, box-shadow 0.2s',
@@ -331,33 +327,25 @@ const VotingGrid = ({ userId = 'current_user' }) => {
                           icon={<StatusIcon />}
                           label={statusConfig.label}
                           color={statusConfig.color}
-                          size="small"
-                        />
-                        <Chip
+                          size: any,
                           label={priorityConfig.label}
                           color={priorityConfig.color}
-                          size="small"
-                          variant="outlined"
-                        />
-                      </Stack>
-
+                          size: any,
                       {/* Title and description */}
                       <Typography variant="h6" gutterBottom>
-                        {feature.title}
+                        {feature?.title}
                       </Typography>
                       <Typography 
-                        variant="body2" 
-                        color="text.secondary" 
+                        variant: any,
                         sx={{ mb: 2, minHeight: 60 }}
                       >
-                        {feature.description}
+                        {feature?.description}
                       </Typography>
 
                       {/* Category */}
                       <Chip
-                        label={feature.category}
-                        size="small"
-                        variant="outlined"
+                        label={feature?.category}
+                        size: any,
                         sx={{ mb: 2 }}
                       />
 
@@ -368,10 +356,9 @@ const VotingGrid = ({ userId = 'current_user' }) => {
                         <Stack direction="row" alignItems="center" spacing={1}>
                           <Tooltip title={hasVoted ? 'Remove vote' : 'Vote for this feature'}>
                             <IconButton
-                              onClick={() => handleVote(feature.id)}
+                              onClick={() => handleVote(feature?.id)}
                               color={hasVoted ? 'primary' : 'default'}
-                              sx={{
-                                transition: 'all 0.2s',
+                              sx: any,
                                 '&:hover': {
                                   transform: 'scale(1.1)'
                                 }
@@ -380,7 +367,7 @@ const VotingGrid = ({ userId = 'current_user' }) => {
                               {hasVoted ? <ThumbUp /> : <ThumbUpOutlined />}
                             </IconButton>
                           </Tooltip>
-                          <Badge badgeContent={feature.vote_count || 0} color="primary">
+                          <Badge badgeContent={feature?.vote_count || 0} color="primary">
                             <Typography variant="body2" color="text.secondary">
                               votes
                             </Typography>
@@ -388,7 +375,7 @@ const VotingGrid = ({ userId = 'current_user' }) => {
                         </Stack>
                         
                         <Typography variant="caption" color="text.secondary">
-                          {new Date(feature.created_date).toLocaleDateString()}
+                          {new Date(feature?.created_date).toLocaleDateString()}
                         </Typography>
                       </Stack>
                     </CardContent>
@@ -401,7 +388,7 @@ const VotingGrid = ({ userId = 'current_user' }) => {
       </Grid>
 
       {/* Empty state */}
-      {sortedAndFilteredFeatures.length === 0 && (
+      {sortedAndFilteredFeatures.length ===0 && (
         <Paper sx={{ p: 6, textAlign: 'center', mt: 3 }}>
           <Typography variant="h6" color="text.secondary" gutterBottom>
             No features found
@@ -410,7 +397,7 @@ const VotingGrid = ({ userId = 'current_user' }) => {
             Try adjusting your filters or be the first to suggest a new feature!
           </Typography>
           <Button
-            variant="contained"
+            variant: any,
             startIcon={<Add />}
             onClick={() => setCreateDialogOpen(true)}
           >
@@ -423,22 +410,18 @@ const VotingGrid = ({ userId = 'current_user' }) => {
       <Dialog 
         open={createDialogOpen} 
         onClose={() => setCreateDialogOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Suggest New Feature</DialogTitle>
-        <DialogContent>
+        maxWidth: any,
           <Stack spacing={3} sx={{ mt: 1 }}>
             <TextField
-              label="Feature Title"
-              value={newFeature.title}
+              label: any,
+              value={newFeature?.title}
               onChange={(e) => setNewFeature(prev => ({ ...prev, title: e.target.value }))}
               fullWidth
               required
             />
             <TextField
-              label="Description"
-              value={newFeature.description}
+              label: any,
+              value={newFeature?.description}
               onChange={(e) => setNewFeature(prev => ({ ...prev, description: e.target.value }))}
               multiline
               rows={4}
@@ -448,38 +431,17 @@ const VotingGrid = ({ userId = 'current_user' }) => {
             <FormControl fullWidth>
               <InputLabel>Category</InputLabel>
               <Select
-                value={newFeature.category}
+                value={newFeature?.category}
                 onChange={(e) => setNewFeature(prev => ({ ...prev, category: e.target.value }))}
-                label="Category"
-              >
-                <MenuItem value="general">General</MenuItem>
-                <MenuItem value="ui-ux">UI/UX</MenuItem>
-                <MenuItem value="performance">Performance</MenuItem>
-                <MenuItem value="features">Features</MenuItem>
-                <MenuItem value="security">Security</MenuItem>
-                <MenuItem value="integration">Integration</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl fullWidth>
-              <InputLabel>Priority</InputLabel>
-              <Select
-                value={newFeature.priority}
+                label: any,
+                value={newFeature?.priority}
                 onChange={(e) => setNewFeature(prev => ({ ...prev, priority: e.target.value }))}
-                label="Priority"
-              >
-                <MenuItem value="low">Low</MenuItem>
-                <MenuItem value="medium">Medium</MenuItem>
-                <MenuItem value="high">High</MenuItem>
-              </Select>
-            </FormControl>
-          </Stack>
-        </DialogContent>
-        <DialogActions>
+                label: any,
           <Button onClick={() => setCreateDialogOpen(false)}>Cancel</Button>
           <Button 
             onClick={handleCreateFeature}
-            variant="contained"
-            disabled={!newFeature.title || !newFeature.description}
+            variant: any,
+            disabled={!newFeature?.title || !newFeature?.description}
           >
             Create Feature
           </Button>
@@ -490,21 +452,15 @@ const VotingGrid = ({ userId = 'current_user' }) => {
       <Dialog 
         open={filterDialogOpen} 
         onClose={() => setFilterDialogOpen(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Filter Features</DialogTitle>
-        <DialogContent>
+        maxWidth: any,
           <Stack spacing={3} sx={{ mt: 1 }}>
             <FormControl fullWidth>
               <InputLabel>Status</InputLabel>
               <Select
-                value={filters.status}
+                value={filters?.status}
                 onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                label="Status"
-              >
-                <MenuItem value="">All</MenuItem>
-                {Object.entries(STATUS_CONFIG).map(([key, config]) => (
+                label: any,
+                {Object.entries(STATUS_CONFIG).map(([key: any: any, config]: any: any) => (
                   <MenuItem key={key} value={key}>{config.label}</MenuItem>
                 ))}
               </Select>
@@ -512,12 +468,10 @@ const VotingGrid = ({ userId = 'current_user' }) => {
             <FormControl fullWidth>
               <InputLabel>Priority</InputLabel>
               <Select
-                value={filters.priority}
+                value={filters?.priority}
                 onChange={(e) => setFilters(prev => ({ ...prev, priority: e.target.value }))}
-                label="Priority"
-              >
-                <MenuItem value="">All</MenuItem>
-                {Object.entries(PRIORITY_CONFIG).map(([key, config]) => (
+                label: any,
+                {Object.entries(PRIORITY_CONFIG).map(([key: any: any, config]: any: any) => (
                   <MenuItem key={key} value={key}>{config.label}</MenuItem>
                 ))}
               </Select>
@@ -527,18 +481,7 @@ const VotingGrid = ({ userId = 'current_user' }) => {
               <Select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                label="Sort By"
-              >
-                <MenuItem value="vote_count">Vote Count</MenuItem>
-                <MenuItem value="created_date">Date Created</MenuItem>
-                <MenuItem value="title">Title</MenuItem>
-                <MenuItem value="priority">Priority</MenuItem>
-              </Select>
-            </FormControl>
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => {
+                label: any,
             setFilters({ status: '', category: '', priority: '' });
             setSortBy('vote_count');
             setSortOrder('desc');

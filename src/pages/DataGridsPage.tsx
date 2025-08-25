@@ -43,7 +43,7 @@ import GridTabNavigation from '../components/Navigation/GridTabNavigation';
 /**
  * Page Header Component
  */
-const DataGridsHeader = ({ isFullscreen, onToggleFullscreen, onExport, onImport, onRefreshAll }) => {
+const DataGridsHeader = ({ isFullscreen, onToggleFullscreen, onExport, onImport, onRefreshAll  }: { isFullscreen: any, onToggleFullscreen: any, onExport: any, onImport: any, onRefreshAll: any }) => {
   const { t } = useTranslation();
   const [menuAnchor, setMenuAnchor] = useState(null);
 
@@ -62,25 +62,11 @@ const DataGridsHeader = ({ isFullscreen, onToggleFullscreen, onExport, onImport,
           <Stack direction="row" spacing={1}>
             <Chip 
               label={t('Real-time Updates')} 
-              color="success" 
-              size="small" 
-              variant="outlined" 
-            />
-            <Chip 
+              color: any,
               label={t('Auto-save Enabled')} 
-              color="info" 
-              size="small" 
-              variant="outlined" 
-            />
-            <Chip 
+              color: any,
               label={t('5 Active Grids')} 
-              color="primary" 
-              size="small" 
-              variant="outlined" 
-            />
-          </Stack>
-        </Box>
-
+              color: any,
         {/* Action Buttons */}
         <Stack direction="row" spacing={1}>
           <Tooltip title={t('Refresh All Grids')}>
@@ -96,7 +82,7 @@ const DataGridsHeader = ({ isFullscreen, onToggleFullscreen, onExport, onImport,
           </Tooltip>
           
           <Tooltip title={t('More Options')}>
-            <IconButton onClick={(e) => setMenuAnchor(e.currentTarget)}>
+            <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}>
               <MoreIcon />
             </IconButton>
           </Tooltip>
@@ -129,7 +115,7 @@ const DataGridsHeader = ({ isFullscreen, onToggleFullscreen, onExport, onImport,
 /**
  * Performance Metrics Component
  */
-const PerformanceMetrics = ({ metrics }) => {
+const PerformanceMetrics = ({ metrics  }: { metrics: any }) => {
   const { t } = useTranslation();
 
   return (
@@ -213,7 +199,7 @@ const DataGridsPage = () => {
 
   // Handle fullscreen toggle
   const handleToggleFullscreen = () => {
-    if (!isFullscreen) {
+    if(!isFullscreen) {
       document.documentElement.requestFullscreen?.();
     } else {
       document.exitFullscreen?.();

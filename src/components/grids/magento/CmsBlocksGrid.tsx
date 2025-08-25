@@ -63,7 +63,7 @@ const CmsBlocksGrid = () => {
             // Handle {data: {items: []}} response structure
             const blocksData = response?.data || response;
             setData(blocksData?.items || []);
-        } catch (error) {
+        } catch(error: any) {
             toast.error('Failed to fetch CMS blocks');
         } finally {
             setLoading(false);
@@ -84,17 +84,16 @@ const CmsBlocksGrid = () => {
             toast.success('Block content updated');
             setEditDialogOpen(false);
             fetchBlocks();
-        } catch (error) {
+        } catch(error: any) {
             toast.error('Failed to update block');
         } finally {
             setLoading(false);
         }
     };
 
-    return (
-        <Box sx={{ height: '100%' }}>
+    return(<Box sx={{ height: '100%' }}>
             <UnifiedGrid
-                gridName="CmsBlocksGrid"
+                gridName: any,
                 columns={columns}
                 data={data}
                 loading={loading}
@@ -102,20 +101,20 @@ const CmsBlocksGrid = () => {
                 currentFilter={filters}
                 onFilterChange={setFilters}
                 getRowId={(row) => row.identifier}
-                defaultSortModel={[
+                defaultSortModel: any,
                     { field: 'creation_time', sort: 'desc' }
                 ]}
                 defaultPageSize={10}
                 pageSizeOptions={[10, 25, 50, 100]}
-                onRowDoubleClick={(params) => {
+                onRowDoubleClick: any,
                     window.alert(`Viewing details for: ${params.row.title}`);
                 }}
             />
             <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} maxWidth="md" fullWidth>
                 <DialogTitle>Edit Block Content</DialogTitle>
                 <DialogContent>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>{editBlock?.title}</Typography>
-                    <ReactQuill theme="snow" value={editContent} onChange={setEditContent} style={{ minHeight: 200 }} />
+                    <Typography variant="subtitle2" sx={{ mb: 1 }}>{editBlock.title}</Typography>
+                    <ReactQuill theme="snow" value={editContent} onChange={(e) => setEditContent} style={{ minHeight: 200 }} />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>

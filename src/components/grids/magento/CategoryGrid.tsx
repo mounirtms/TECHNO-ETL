@@ -18,7 +18,7 @@ import CategoryEditDialog from '../../dialogs/CategoryEditDialog';
  * CategoryGrid Component
  * Displays category data in a tree-like grid format
  */
-const CategoryGrid = ({ productId }) => {
+const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
     // State management
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
@@ -40,37 +40,36 @@ const CategoryGrid = ({ productId }) => {
         console.log(`🔄 Processing categories at level ${level}:`, categories);
 
         // Handle different data structures
-        if (!categories) {
+        if(!categories) {
             console.log('⚠️ No categories provided');
             return result;
         }
 
         if (!Array.isArray(categories)) {
             console.log('📦 Converting single category to array');
-            categories = [categories];
+            categories: any,
         }
 
         categories.forEach((category, index) => {
-            if (!category || !category.id) {
+            if(!category || !category?.id) {
                 console.log('⚠️ Skipping invalid category:', category);
                 return;
             }
 
             // Create a unique path-based identifier
-            const currentPath = parentPath ? `${parentPath}-${category.id}` : `${category.id}`;
-            console.log(`🏷️ Processing category: ${category.name} (ID: ${category.id}, Path: ${currentPath})`);
+            const currentPath = parentPath ? `${parentPath}-${category?.id}` : `${category?.id}`;
+            console.log(`🏷️ Processing category: ${category.name} (ID: ${category?.id}, Path: ${currentPath})`);
 
-            const processedCategory = {
-                ...category,
+            const processedCategory = { ...category,
                 // Use the path-based identifier to ensure uniqueness
                 id: currentPath,
                 // Preserve original Magento id for reference
-                originalId: category.id,
+                originalId: category?.id,
                 level,
                 parentId,
                 has_children: category.children_data?.length > 0 || category.children?.length > 0,
                 // Add tree display properties
-                name: category.name || `Category ${category.id}`,
+                name: category.name || `Category ${category?.id}`,
                 position: category.position || 0,
                 is_active: category.is_active !== undefined ? category.is_active : true,
                 product_count: category.product_count || 0
@@ -81,12 +80,12 @@ const CategoryGrid = ({ productId }) => {
 
             // Handle children from either children_data or children property
             const children = category.children_data || category.children || [];
-            if (children.length > 0) {
+            if(children.length > 0) {
                 console.log(`👶 Processing ${children.length} children for ${category.name}`);
                 processCategories(
                     children,
                     level + 1,
-                    category.id,
+                    category?.id,
                     result,
                     currentPath
                 );
@@ -116,14 +115,14 @@ const CategoryGrid = ({ productId }) => {
 
     // Update visible data when expansion state changes
     useEffect(() => {
-        if (allCategories.length > 0) {
+        if(allCategories.length > 0) {
             console.log('🔄 Updating visible categories based on expansion state');
-            const visibleCategories = allCategories.filter(cat => {
+            const visibleCategories = allCategories?.filter((cat: any: any) => {
                 // Root categories are always visible
-                if (cat.level === 0) return true;
+                if (cat?.level ===0) return true;
 
                 // Check if parent is expanded
-                return expandedRows.has(cat.parentId);
+                return expandedRows.has(cat?.parentId);
             });
             console.log('👁️ Updated visible categories:', visibleCategories);
             setData(visibleCategories);
@@ -140,10 +139,9 @@ const CategoryGrid = ({ productId }) => {
             const row = params.row;
             const isExpanded = expandedRows.has(row.originalId);
             const hasChildren = row.has_children;
-            const level = row.level || 0;
+            const level = row?.level || 0;
 
-            return (
-                <Box sx={{
+            return(<Box sx={{
                     display: 'flex',
                     alignItems: 'center',
                     pl: level * 3, // Indent based on level
@@ -153,14 +151,11 @@ const CategoryGrid = ({ productId }) => {
                     {/* Expand/Collapse Button */}
                     {hasChildren ? (
                         <Box
-                            component="span"
-                            onClick={(e) => {
-                                e.stopPropagation();
+                            component: any,
                                 console.log(`🔄 Toggling expansion for category: ${row.name} (ID: ${row.originalId})`);
                                 handleRowExpand(row.originalId);
                             }}
-                            sx={{
-                                display: 'flex',
+                            sx: any,
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 cursor: 'pointer',
@@ -185,21 +180,17 @@ const CategoryGrid = ({ productId }) => {
 
                     {/* Category Icon */}
                     <CategoryIcon
-                        fontSize="small"
-                        sx={{
-                            mr: 1,
-                            color: level === 0 ? 'primary.main' : 'action.active',
-                            opacity: level === 0 ? 1 : 0.7
+                        fontSize: any,
+                            color: level ===0 ? 'primary.main' : 'action.active',
+                            opacity: level ===0 ? 1 : 0.7
                         }}
                     />
 
                     {/* Category Name */}
                     <Box
-                        component="span"
-                        sx={{
-                            fontWeight: level === 0 ? 600 : 400,
-                            color: level === 0 ? 'primary.main' : 'text.primary',
-                            fontSize: level === 0 ? '0.95rem' : '0.875rem'
+                        component: any,
+                            color: level ===0 ? 'primary.main' : 'text.primary',
+                            fontSize: level ===0 ? '0.95rem' : '0.875rem'
                         }}
                     >
                         {params.value || `Category ${row.originalId}`}
@@ -208,9 +199,7 @@ const CategoryGrid = ({ productId }) => {
                     {/* Level indicator for debugging */}
                     {process.env.NODE_ENV === 'development' && (
                         <Box
-                            component="span"
-                            sx={{
-                                ml: 1,
+                            component: any,
                                 px: 0.5,
                                 py: 0.25,
                                 backgroundColor: 'action.hover',
@@ -255,11 +244,9 @@ const CategoryGrid = ({ productId }) => {
         const mergedColumns = mergeColumns(visibleColumns, generatedColumns);
 
         // Ensure proper column configuration
-        return mergedColumns.map(col => ({
-
-            ...col,
+        return mergedColumns.map((col: any: any) => ({ ...col,
             // Keep visible columns as is, hide generated ones
-            hide: visibleColumns.some(vc => vc.field === col.field) ? false : true
+            hide: visibleColumns.some(vc => vc.field ===col.field) ? false : true
         }));
     }, [data, visibleColumns]);
 
@@ -275,19 +262,18 @@ const CategoryGrid = ({ productId }) => {
 
             // Apply filters if provided
             const { filter = {} } = params;
-            if (filter?.is_active !== undefined) {
-                const isActive = filter.is_active === 'true' || filter.is_active === true;
-                visibleCategories = visibleCategories.filter(cat => cat.is_active === isActive);
+            if(filter?.is_active !== undefined) {
+                const isActive = filter.is_active === 'true' || filter.is_active ===true;
+                visibleCategories: any,
             }
 
             // Apply search filter if provided
-            if (filter?.search) {
-                visibleCategories = categoryService.searchCategories(filter.search)
-                    .filter(cat => categoryService.getVisibleCategories(expandedRows).includes(cat));
+            if(filter?.search) {
+                visibleCategories: any,
             }
 
             // Format categories for grid display
-            const formattedCategories = visibleCategories.map(category =>
+            const formattedCategories = visibleCategories.map((category: any: any) =>
                 categoryService.formatCategoryForGrid(category)
             );
 
@@ -302,7 +288,7 @@ const CategoryGrid = ({ productId }) => {
                 visible: formattedCategories.length,
                 expanded: Array.from(expandedRows)
             });
-        } catch (error) {
+        } catch(error: any) {
             toast.error(error.message || 'Failed to load categories');
             throw error;
         } finally {
@@ -312,7 +298,7 @@ const CategoryGrid = ({ productId }) => {
 
     // Update category statistics
     const updateStats = useCallback((categories) => {
-        const newStats = categories.reduce((acc, category) => ({
+        const newStats = categories.reduce((acc: any: any, category: any: any) => ({
             total: acc.total + 1,
             active: acc.active + (category.is_active ? 1 : 0),
             inactive: acc.inactive + (!category.is_active ? 1 : 0)
@@ -324,10 +310,9 @@ const CategoryGrid = ({ productId }) => {
         setStats(newStats);
     }, []);
 
-    return (
-        <Box>
+    return(<Box>
             <UnifiedGrid
-            gridName="CategoryGrid"
+            gridName: any,
             columns={visibleColumns}
             data={data}
             loading={loading}
@@ -342,9 +327,7 @@ const CategoryGrid = ({ productId }) => {
 
             // View options
             showStatsCards={true}
-            gridCards={[
-                {
-                    title: 'Total Categories',
+            gridCards: any,
                     value: stats.total,
                     icon: CategoryIcon,
                     color: 'primary'
@@ -366,8 +349,7 @@ const CategoryGrid = ({ productId }) => {
             pageSizeOptions={[10, 25, 50, 100]}
 
             // Toolbar configuration
-            toolbarConfig={{
-                showRefresh: true,
+            toolbarConfig: any,
                 showAdd: true,
                 showEdit: true,
                 showDelete: true,
@@ -378,9 +360,7 @@ const CategoryGrid = ({ productId }) => {
             }}
 
             // Context menu
-            contextMenuActions={{
-                edit: {
-                    enabled: true,
+            contextMenuActions: any,
                     onClick: (rowData) => {
                         console.log('Editing category:', rowData);
                         const category = categoryService.findCategoryById(rowData.id);
@@ -408,13 +388,11 @@ const CategoryGrid = ({ productId }) => {
 
             // Floating actions (disabled by default)
             enableFloatingActions={false}
-            floatingActions={{
-                add: {
-                    enabled: true,
+            floatingActions: any,
                     priority: 1
                 },
                 edit: {
-                    enabled: (selectedRows) => selectedRows.length === 1,
+                    enabled: (selectedRows) => selectedRows.length ===1,
                     priority: 2
                 },
                 export: {
@@ -425,24 +403,19 @@ const CategoryGrid = ({ productId }) => {
 
             // Event handlers
             onRefresh={handleRefresh}
-            onAdd={() => {
-                console.log('Adding new category');
-                toast.info('Add category functionality coming soon');
+            onAdd: any,
             }}
-            onEdit={(rowData) => {
+            onEdit: any,
                 console.log('Editing category:', rowData);
                 const category = categoryService.findCategoryById(rowData.id);
                 setSelectedCategory(category);
                 setEditDialogOpen(true);
             }}
-            onDelete={(selectedRows) => {
+            onDelete: any,
                 console.log('Deleting categories:', selectedRows);
                 toast.info(`Deleting ${selectedRows.length} categories`);
             }}
-            onExport={(selectedRows) => {
-                const exportData = selectedRows.length > 0
-                    ? data.filter(category => selectedRows.includes(category.id))
-                    : data;
+            onExport: any,
                 console.log('Exporting categories:', exportData);
                 toast.success(`Exported ${exportData.length} categories`);
             }}
@@ -458,7 +431,7 @@ const CategoryGrid = ({ productId }) => {
             sortModel={[{ field: 'name', sort: 'asc' }]}
 
             // Error handling
-            onError={(error) => {
+            onError: any,
                 console.error('Category Grid Error:', error);
                 toast.error('Error loading categories');
             }}
@@ -467,12 +440,10 @@ const CategoryGrid = ({ productId }) => {
         {/* Category Edit Dialog */}
         <CategoryEditDialog
             open={editDialogOpen}
-            onClose={() => {
-                setEditDialogOpen(false);
-                setSelectedCategory(null);
+            onClose: any,
             }}
             category={selectedCategory}
-            onSave={(updatedCategory) => {
+            onSave: any,
                 console.log('💾 Saving category:', updatedCategory);
                 toast.success(`Category "${updatedCategory.name}" saved successfully`);
                 handleRefresh(); // Refresh the grid

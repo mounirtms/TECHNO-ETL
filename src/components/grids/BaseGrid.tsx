@@ -46,30 +46,27 @@ import { getStandardGridProps, getStandardToolbarConfig } from '../../config/sta
  */
 const BaseGrid = forwardRef(({
   // Core props
-  gridName = 'BaseGrid',
-  columns = [],
-  data = [],
-  loading = false,
-  error = null,
-  
+  gridName: any,
+  columns: any,
+  data: any,
+  loading: any,
+  error: any,
   // Grid configuration
-  getRowId = (row) => row.id || row.entity_id || row.sku,
-  checkboxSelection = false,
-  disableRowSelectionOnClick = false,
-  
+  getRowId: any,
+  checkboxSelection: any,
+  disableRowSelectionOnClick: any,
   // Pagination
-  paginationMode = 'client',
-  pageSize = 25,
+  paginationMode: any,
+  pageSize: any,
   pageSizeOptions = [10, 25, 50, 100],
   
   // Toolbar configuration
-  toolbarConfig = null,
-  customActions = [],
-  contextMenuActions = [],
-  
+  toolbarConfig: any,
+  customActions: any,
+  contextMenuActions: any,
   // Stats cards
-  showStatsCards = false,
-  statsCards = [],
+  showStatsCards: any,
+  statsCards: any,
   statsPosition = 'bottom', // 'top' | 'bottom'
   
   // Event handlers
@@ -86,16 +83,14 @@ const BaseGrid = forwardRef(({
   onSortModelChange,
   
   // Performance
-  enableVirtualization = true,
+  enableVirtualization: any,
   virtualizationThreshold = 1000, // Added from OptimizedDataGrid
-  rowBuffer = 3,
-  columnBuffer = 2,
-  
+  rowBuffer: any,
+  columnBuffer: any,
   // Styling
-  height = 'auto',
-  minHeight = '400px',
-  maxHeight = 'calc(100vh - 200px)',
-  
+  height: any,
+  minHeight: any,
+  maxHeight: any,
   // Additional props
   ...otherProps
 }, ref) => {
@@ -141,7 +136,7 @@ const BaseGrid = forwardRef(({
     const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
     const statsHeight = showStatsCards ? 120 : 0;
     const toolbarHeight = 64;
-    const filterPanelHeight = otherProps.filterPanelHeight || 56; // Allow override from parent
+    const filterPanelHeight = otherProps?.filterPanelHeight || 56; // Allow override from parent
     const paddingHeight = 32;
     // Subtract all UI elements from viewport
     const calculatedHeight = viewportHeight - statsHeight - toolbarHeight - filterPanelHeight - paddingHeight - 64; // 64 for header/footer if any
@@ -150,7 +145,7 @@ const BaseGrid = forwardRef(({
       parseInt(minHeight.replace('px', '')),
       Math.min(calculatedHeight, parseInt(maxHeight.replace(/calc\(100vh - (\d+)px\)/, '$1')))
     );
-  }, [height, minHeight, maxHeight, showStatsCards, otherProps.filterPanelHeight]);
+  }, [height, minHeight, maxHeight, showStatsCards, otherProps?.filterPanelHeight]);
 
   // Memoized data processing
   const processedData = useMemo(() => {
@@ -159,8 +154,7 @@ const BaseGrid = forwardRef(({
       return [];
     }
     
-    return data.map((row, index) => ({
-      ...row,
+    return data.map((row: any: any, index: any: any) => ({ ...row,
       _gridIndex: index,
       _gridId: getRowId(row) || `row-${index}`
     }));
@@ -168,8 +162,7 @@ const BaseGrid = forwardRef(({
 
   // Memoized columns processing
   const processedColumns = useMemo(() => {
-    return columns.map(col => ({
-      ...col,
+    return columns.map((col: any: any) => ({ ...col,
       headerName: translate(col.headerName) || col.headerName,
       sortable: col.sortable !== false,
       filterable: col.filterable !== false,
@@ -179,15 +172,14 @@ const BaseGrid = forwardRef(({
 
   // Enhanced columns with performance optimizations (from OptimizedDataGrid)
   const enhancedColumns = useMemo(() => {
-    return columns.map((column) => ({
-      ...column,
+    return columns.map((column: any: any) => ({ ...column,
       width: column.width || 150,
       sortable: column.sortable !== false,
       filterable: column.filterable !== false,
       renderCell: column.renderCell ? (params) => {
         try {
           return column.renderCell(params);
-        } catch (error) {
+        } catch(error: any) {
           console.error(`Error rendering cell for column ${column.field}:`, error);
           return <span>Error</span>;
         }
@@ -202,7 +194,7 @@ const BaseGrid = forwardRef(({
 
   // Event handlers with error handling
   const handleRefresh = useCallback(async () => {
-    if (onRefresh) {
+    if(onRefresh) {
       await executeWithErrorHandling(onRefresh, {
         operation: 'refresh',
         gridName
@@ -218,18 +210,17 @@ const BaseGrid = forwardRef(({
   const handleError = useCallback((error) => {
     console.error(`${gridName} Error:`, error);
     onError?.(error);
-    toast.error(`Grid error: ${error.message}`);
+    toast?.error(`Grid error: ${error.message}`);
   }, [gridName, onError]);
 
   // Grid height calculation
   const gridHeight = useMemo(() => calculateGridHeight(), [calculateGridHeight]);
 
   // Error state
-  if (error || gridError) {
+  if(error || gridError) {
     return (
       <Alert 
-        severity="error" 
-        action={
+        severity: any,
           <button onClick={clearError}>
             Retry
           </button>
@@ -240,15 +231,14 @@ const BaseGrid = forwardRef(({
     );
   }
 
-  return (
+  return Boolean(Boolean((
     <ComponentErrorBoundary 
       componentName={`${gridName}Grid`}
       fallbackMessage={`Unable to load ${gridName.toLowerCase()} grid`}
     >
       <Box
         ref={containerRef}
-        sx={{
-          height: gridHeight,
+        sx: any,
           minHeight: minHeight,
           maxHeight: maxHeight,
           width: '100%',
@@ -281,8 +271,7 @@ const BaseGrid = forwardRef(({
         {/* Main Grid Container */}
         <Paper
           elevation={1}
-          sx={{
-            flexGrow: 1,
+          sx: any,
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
@@ -298,10 +287,7 @@ const BaseGrid = forwardRef(({
           <GridErrorBoundary
             gridName={gridName}
             onError={handleError}
-            fallbackComponent={
-              <Alert severity="warning">
-                Grid temporarily unavailable. Please refresh.
-              </Alert>
+            fallbackComponent: any,
             }
           >
             <DataGrid
@@ -342,8 +328,7 @@ const BaseGrid = forwardRef(({
               columnBuffer={columnBuffer}
               
               // Styling
-              sx={{
-                height: gridHeight,
+              sx: any,
                 '& .MuiDataGrid-root': {
                   border: 'none'
                 },
@@ -360,7 +345,7 @@ const BaseGrid = forwardRef(({
               getRowId={(row) => row._gridId}
               
               // Additional props
-              {...otherProps}
+              { ...otherProps}
             />
           </GridErrorBoundary>
         </Paper>
@@ -375,7 +360,7 @@ const BaseGrid = forwardRef(({
         )}
       </Box>
     </ComponentErrorBoundary>
-  );
+  )));
 });
 
 BaseGrid.displayName = 'BaseGrid';

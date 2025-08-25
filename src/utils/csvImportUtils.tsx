@@ -1,3 +1,4 @@
+import React from 'react';
 /**
  * CSV Import Utilities for Magento Product Import
  * Handles validation, transformation, and bulk import operations
@@ -45,8 +46,8 @@ export const validateMagentoCSV = (products) => {
         const productWarnings = [];
         
         // Check required fields
-        requiredFields.forEach(field => {
-            if (!product[field] || product[field].trim() === '') {
+        requiredFields.forEach((field) => {
+            if (!product[field] || product[field].trim() ==='') {
                 productErrors.push(`Line ${lineNumber}: Missing required field '${field}'`);
             }
         });
@@ -62,8 +63,8 @@ export const validateMagentoCSV = (products) => {
         }
         
         // Check for configurable product variations
-        if (product.product_type === 'configurable' && !product.configurable_variations) {
-            productWarnings.push(`Line ${lineNumber}: Configurable product '${product.sku}' has no variations defined`);
+        if(product.product_type === 'configurable' && !product.configurable_variations) {
+            productWarnings.push(`Line ${lineNumber}: Configurable product '${product?.sku}' has no variations defined`);
         }
         
         // Validate weight (should be numeric)
@@ -77,14 +78,14 @@ export const validateMagentoCSV = (products) => {
         }
 
         // Validate price (required and should be numeric)
-        if (!product.price || product.price.trim() === '') {
+        if (!product.price || product.price.trim() ==='') {
             productErrors.push(`Line ${lineNumber}: Price is required and cannot be empty`);
         } else if (isNaN(parseFloat(product.price))) {
             productErrors.push(`Line ${lineNumber}: Price '${product.price}' is not a valid number`);
         }
 
         // Validate additional attributes
-        if (product.additional_attributes) {
+        if(product.additional_attributes) {
             const attributeErrors = validateAdditionalAttributes(product.additional_attributes, lineNumber, validBrands, dimensionPatterns);
             productErrors.push(...attributeErrors.errors);
             productWarnings.push(...attributeErrors.warnings);
@@ -95,9 +96,8 @@ export const validateMagentoCSV = (products) => {
         warnings.push(...productWarnings);
         
         // Add to valid products if no critical errors
-        if (productErrors.length === 0) {
-            validProducts.push({
-                ...product,
+        if(productErrors.length ===0) {
+            validProducts.push({ ...product,
                 lineNumber,
                 warnings: productWarnings
             });
@@ -105,7 +105,7 @@ export const validateMagentoCSV = (products) => {
     });
     
     return {
-        isValid: errors.length === 0,
+        isValid: errors.length ===0,
         errors,
         warnings,
         validProducts,
@@ -121,21 +121,21 @@ export const validateMagentoCSV = (products) => {
  * @returns {Array} Fixed product objects
  */
 export const autoFixCSVIssues = (products) => {
-    return products.map(product => {
+    return products.map((product: any: any) => {
         const fixed = { ...product };
 
         // Fix product type case
-        if (fixed.product_type) {
+        if(fixed.product_type) {
             fixed.product_type = fixed.product_type.toLowerCase();
         }
 
         // Fix product_online field (should be 1 or 2, not 2 or 1)
-        if (fixed.product_online === '2') {
+        if(fixed.product_online === '2') {
             fixed.product_online = '1'; // Enable product
         }
 
         // Fix visibility format
-        if (fixed.visibility === 'Catalog, Search') {
+        if(fixed.visibility === "Catalog, Search") {
             fixed.visibility = 'Search'; // Use simpler format
         }
 
@@ -157,7 +157,7 @@ export const autoFixCSVIssues = (products) => {
         }
 
         // Fix brand values - ensure they match valid Magento attribute values
-        if (fixed.additional_attributes) {
+        if(fixed.additional_attributes) {
             // Fix common brand name issues
             fixed.additional_attributes = fixed.additional_attributes
                 .replace(/mgs_brand=CALLIGRAPHE/g, 'mgs_brand=CALLIGRAPHE')
@@ -198,7 +198,7 @@ export const autoFixCSVIssues = (products) => {
  */
 export const transformToMagentoAPI = (csvProduct) => {
     const product = {
-        sku: csvProduct.sku,
+        sku: csvProduct?.sku,
         name: csvProduct.name,
         attribute_set_id: getAttributeSetId(csvProduct.attribute_set_code),
         price: parseFloat(csvProduct.price) || 0,
@@ -210,7 +210,7 @@ export const transformToMagentoAPI = (csvProduct) => {
     };
     
     // Add description
-    if (csvProduct.description) {
+    if(csvProduct.description) {
         product.custom_attributes.push({
             attribute_code: 'description',
             value: csvProduct.description
@@ -218,7 +218,7 @@ export const transformToMagentoAPI = (csvProduct) => {
     }
     
     // Add short description
-    if (csvProduct.short_description) {
+    if(csvProduct.short_description) {
         product.custom_attributes.push({
             attribute_code: 'short_description',
             value: csvProduct.short_description
@@ -226,7 +226,7 @@ export const transformToMagentoAPI = (csvProduct) => {
     }
     
     // Add country of manufacture
-    if (csvProduct.country_of_manufacture) {
+    if(csvProduct.country_of_manufacture) {
         product.custom_attributes.push({
             attribute_code: 'country_of_manufacture',
             value: csvProduct.country_of_manufacture
@@ -234,12 +234,12 @@ export const transformToMagentoAPI = (csvProduct) => {
     }
     
     // Parse additional attributes
-    if (csvProduct.additional_attributes) {
+    if(csvProduct.additional_attributes) {
         parseAdditionalAttributes(csvProduct.additional_attributes, product.custom_attributes);
     }
     
     // Add stock information
-    if (csvProduct.qty) {
+    if(csvProduct.qty) {
         product.extension_attributes = {
             stock_item: {
                 qty: parseInt(csvProduct.qty) || 0,
@@ -265,23 +265,23 @@ const validateAdditionalAttributes = (attributesString, lineNumber, validBrands,
     const warnings = [];
 
     const pairs = attributesString.split(',');
-    pairs.forEach(pair => {
+    pairs.forEach((pair) => {
         const [key, value] = pair.split('=');
-        if (key && value) {
+        if(key && value) {
             const attrKey = key.trim();
             const attrValue = value.trim();
 
             // Validate brand attribute
-            if (attrKey === 'mgs_brand') {
+            if(attrKey === 'mgs_brand') {
                 if (!validBrands.includes(attrValue)) {
                     errors.push(`Line ${lineNumber}: Invalid brand '${attrValue}'. Valid brands: ${validBrands.slice(0, 10).join(', ')}...`);
                 }
             }
 
             // Validate dimension attribute
-            if (attrKey === 'dimension') {
+            if(attrKey === 'dimension') {
                 const isValidDimension = dimensionPatterns.some(pattern => pattern.test(attrValue));
-                if (!isValidDimension) {
+                if(!isValidDimension) {
                     errors.push(`Line ${lineNumber}: Invalid dimension format '${attrValue}'. Expected formats: 17x22cm, 50mmx50mm, 51 mm, Standard, etc.`);
                 }
             }
@@ -300,9 +300,9 @@ const validateAdditionalAttributes = (attributesString, lineNumber, validBrands,
  */
 const parseAdditionalAttributes = (attributesString, customAttributes) => {
     const pairs = attributesString.split(',');
-    pairs.forEach(pair => {
+    pairs.forEach((pair) => {
         const [key, value] = pair.split('=');
-        if (key && value) {
+        if(key && value) {
             customAttributes.push({
                 attribute_code: key.trim(),
                 value: value.trim()
@@ -354,18 +354,18 @@ export const separateProductTypes = (products) => {
     const configurableProducts = [];
     const variationProducts = [];
     
-    products.forEach(product => {
-        if (product.product_type === 'configurable') {
+    products.forEach((product) => {
+        if(product.product_type === 'configurable') {
             configurableProducts.push(product);
-        } else if (product.product_type === 'simple') {
+        } else if(product.product_type === 'simple') {
             // Check if this is a variation of a configurable product
             const isVariation = products.some(p => 
                 p.product_type === 'configurable' && 
                 p.configurable_variations && 
-                p.configurable_variations.includes(product.sku)
+                p.configurable_variations.includes(product?.sku)
             );
             
-            if (isVariation) {
+            if(isVariation) {
                 variationProducts.push(product);
             } else {
                 simpleProducts.push(product);
@@ -414,28 +414,28 @@ export const generateImportSummary = (validationResult, separatedProducts) => {
 const generateRecommendations = (validationResult, separatedProducts) => {
     const recommendations = [];
     
-    if (validationResult.errors.length > 0) {
+    if(validationResult.errors.length > 0) {
         recommendations.push({
             type: 'error',
             message: `Fix ${validationResult.errors.length} critical errors before importing`
         });
     }
     
-    if (validationResult.warnings.length > 0) {
+    if(validationResult.warnings.length > 0) {
         recommendations.push({
             type: 'warning',
             message: `Review ${validationResult.warnings.length} warnings for better import quality`
         });
     }
     
-    if (separatedProducts.simpleProducts.length > 0) {
+    if(separatedProducts.simpleProducts.length > 0) {
         recommendations.push({
             type: 'info',
             message: `Start with ${separatedProducts.simpleProducts.length} simple products first`
         });
     }
     
-    if (separatedProducts.configurableProducts.length > 0) {
+    if(separatedProducts.configurableProducts.length > 0) {
         recommendations.push({
             type: 'info',
             message: `Import ${separatedProducts.configurableProducts.length} configurable products after simple products`
@@ -451,24 +451,24 @@ const generateRecommendations = (validationResult, separatedProducts) => {
  * @returns {Array} Array of product objects
  */
 export const parseCSVContent = (csvContent) => {
-    const lines = csvContent.split('\n').filter(line => line.trim());
-    if (lines.length < 2) {
+    const lines = csvContent.split('\n').filter((line: any: any) => line.trim());
+    if(lines.length < 2) {
         throw new Error('CSV file must contain at least a header and one data row');
     }
 
-    const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+    const headers = lines[0].split(',').map((h: any: any) => h.trim().replace(/"/g, ''));
     const products = [];
 
-    for (let i = 1; i < lines.length; i++) {
+    for(let i = 1; i < lines.length; i++) {
         const values = parseCsvLine(lines[i]);
-        if (values.length === 0) continue;
+        if (values.length ===0) continue;
 
         const product = {};
         headers.forEach((header, index) => {
             product[header] = values[index] || '';
         });
 
-        if (product.sku && product.sku.trim() !== '') {
+        if (product?.sku && product?.sku.trim() !== '') {
             products.push(product);
         }
     }
@@ -486,19 +486,19 @@ const parseCsvLine = (line) => {
     let current = '';
     let inQuotes = false;
 
-    for (let i = 0; i < line.length; i++) {
+    for(let i = 0; i < line.length; i++) {
         const char = line[i];
 
-        if (char === '"') {
-            if (inQuotes && line[i + 1] === '"') {
+        if(char === '"') {
+            if(inQuotes && line[i + 1] ==='"') {
                 current += '"';
                 i++;
             } else {
-                inQuotes = !inQuotes;
+                inQuotes: any,
             }
-        } else if (char === ',' && !inQuotes) {
+        } else if(char === ", " && !inQuotes) {
             values.push(current.trim());
-            current = '';
+            current: any,
         } else {
             current += char;
         }

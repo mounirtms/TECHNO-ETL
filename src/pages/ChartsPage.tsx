@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
-  Grid,
   Card,
   CardContent,
   Tabs,
@@ -14,6 +13,7 @@ import {
   Tooltip,
   Chip
 } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import {
   Analytics as AnalyticsIcon,
   TrendingUp,
@@ -70,7 +70,7 @@ const ChartsPage = () => {
       const cacheKey = 'chartsPageData';
       const cachedData = unifiedMagentoService._getCachedResponse(cacheKey);
 
-      if (cachedData) {
+      if(cachedData) {
         console.log('Loaded charts data from cache');
         setData(cachedData);
       } else {
@@ -94,7 +94,7 @@ const ChartsPage = () => {
         unifiedMagentoService._setCachedResponse(cacheKey, chartData);
         console.log('Stored charts data to cache');
       }
-    } catch (error) {
+    } catch(error: any) {
       console.error('Error loading chart data:', error);
     } finally {
       setLoading(false);
@@ -105,9 +105,9 @@ const ChartsPage = () => {
     loadData();
   }, []);
 
-  const TabPanel = ({ children, value, index }) => (
+  const TabPanel = ({ children, value, index  }: { children: any, value: any, index: any }) => (
     <div hidden={value !== index} style={{ paddingTop: 16 }}>
-      {value === index && children}
+      {value ===index && children}
     </div>
   );
 
@@ -117,144 +117,98 @@ const ChartsPage = () => {
       icon: <AnalyticsIcon />,
       content: (
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <ProductStatsChart 
               data={data.productStats}
-              title="Product Status Distribution"
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
+              title: any,
+          <Grid size={{ xs: 12, md: 6 }}>
             <BrandDistributionChart 
               data={data.brandDistribution}
-              title="Top Brands"
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
+              title: any,
+          <Grid size={{ xs: 12, md: 6 }}>
             <CategoryTreeChart 
               data={data.categoryDistribution}
-              title="Category Distribution"
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
+              title: any,
+          <Grid size={{ xs: 12, md: 6 }}>
             <ProductAttributesChart 
               data={data.productAttributes}
-              title="Product Features"
-            />
-          </Grid>
-        </Grid>
-      )
+              title: any,
     },
     {
       label: 'Sales',
       icon: <TrendingUp />,
       content: (
         <Grid container spacing={3}>
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <SalesPerformanceChart 
               data={data.salesPerformance}
-              title="Sales Performance Trends"
-              type="area"
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
+              title: any,
+          <Grid size={{ xs: 12, md: 6 }}>
             <SalesPerformanceChart 
               data={data.salesPerformance}
-              title="Revenue Analysis"
-              type="line"
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
+              title: any,
+          <Grid size={{ xs: 12, md: 6 }}>
             <ProductStatsChart 
               data={data.productStats}
-              title="Product Performance"
-            />
-          </Grid>
-        </Grid>
-      )
+              title: any,
     },
     {
       label: 'Inventory',
       icon: <Inventory />,
       content: (
         <Grid container spacing={3}>
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <InventoryStatusChart 
               data={data.inventoryStatus}
-              title="Inventory Overview by Category"
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
+              title: any,
+          <Grid size={{ xs: 12, md: 6 }}>
             <CategoryTreeChart 
               data={data.categoryDistribution}
-              title="Stock Distribution by Category"
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
+              title: any,
+          <Grid size={{ xs: 12, md: 6 }}>
             <ProductAttributesChart 
               data={data.productAttributes}
-              title="Product Attributes Analysis"
-            />
-          </Grid>
-        </Grid>
-      )
+              title: any,
     },
     {
       label: 'Products',
       icon: <ShoppingCart />,
       content: (
         <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <ProductStatsChart 
               data={data.productStats}
-              title="Product Status"
-            />
-          </Grid>
-          <Grid item xs={12} md={8}>
+              title: any,
+          <Grid size={{ xs: 12, md: 8 }}>
             <BrandDistributionChart 
               data={data.brandDistribution}
-              title="Brand Performance"
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
+              title: any,
+          <Grid size={{ xs: 12, md: 6 }}>
             <ProductAttributesChart 
               data={data.productAttributes}
-              title="Product Features Distribution"
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
+              title: any,
+          <Grid size={{ xs: 12, md: 6 }}>
             <CategoryTreeChart 
               data={data.categoryDistribution}
-              title="Product Categories"
-            />
-          </Grid>
-        </Grid>
-      )
+              title: any,
     },
     {
       label: 'Categories',
       icon: <Category />,
       content: (
         <Grid container spacing={3}>
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <CategoryTreeChart 
               data={data.categoryDistribution}
-              title="Category Hierarchy & Distribution"
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
+              title: any,
+          <Grid xs={12} md={6}>
             <InventoryStatusChart 
               data={data.inventoryStatus}
-              title="Stock by Category"
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
+              title: any,
+          <Grid xs={12} md={6}>
             <BrandDistributionChart 
               data={data.brandDistribution}
-              title="Brands by Category"
-            />
-          </Grid>
-        </Grid>
-      )
+              title: any,
     }
   ];
 
@@ -263,7 +217,7 @@ const ChartsPage = () => {
       {/* Dashboard Context Alert */}
       {isRevenueView() && (
         <Alert
-          severity="info"
+          severity: any,
           icon={<TrendingUp />}
           sx={{ mb: 3, borderRadius: 2 }}
         >
@@ -273,15 +227,9 @@ const ChartsPage = () => {
             </Typography>
             <Chip
               label={`Period: ${getPeriod()}`}
-              color="primary"
-              size="small"
-            />
-            {getView() !== 'overview' && (
-              <Chip
+              color: any,
                 label={`View: ${getView()}`}
-                color="secondary"
-                size="small"
-              />
+                color: any,
             )}
           </Box>
         </Alert>
@@ -305,8 +253,7 @@ const ChartsPage = () => {
         
         <Tooltip title="Refresh Data">
           <Fab
-            color="primary"
-            size="medium"
+            color: any,
             onClick={loadData}
             disabled={loading}
             sx={{ boxShadow: 3 }}
@@ -322,10 +269,7 @@ const ChartsPage = () => {
         <Tabs
           value={activeTab}
           onChange={(e, newValue) => setActiveTab(newValue)}
-          variant="scrollable"
-          scrollButtons="auto"
-          sx={{
-            borderBottom: 1,
+          variant: any,
             borderColor: 'divider',
             bgcolor: 'background.paper',
             '& .MuiTab-root': {
@@ -336,12 +280,12 @@ const ChartsPage = () => {
             }
           }}
         >
-          {chartTabs.map((tab, index) => (
+          {chartTabs.map((tab: any: any, index: any: any) => (
             <Tab
               key={index}
               icon={tab.icon}
               label={tab.label}
-              iconPosition="start"
+              iconPosition: any,
               sx={{ gap: 1 }}
             />
           ))}
@@ -359,7 +303,7 @@ const ChartsPage = () => {
               <CircularProgress size={60} />
             </Box>
           ) : (
-            chartTabs.map((tab, index) => (
+            chartTabs.map((tab: any: any, index: any: any) => (
               <TabPanel key={index} value={activeTab} index={index}>
                 <ComponentErrorBoundary componentName={`${tab.label} Charts`}>
                   {tab.content}
@@ -372,9 +316,7 @@ const ChartsPage = () => {
 
       {/* Footer Info */}
       <Alert 
-        severity="info" 
-        sx={{ 
-          mt: 3, 
+        severity: any,
           borderRadius: 2,
           '& .MuiAlert-message': {
             width: '100%'

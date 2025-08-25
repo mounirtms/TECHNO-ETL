@@ -1,0 +1,345 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Color scheme CSS variables */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 24 74% 58%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 24 74% 58%;
+    
+    /* Font configuration */
+    font-family: "Inter Variable", Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+    font-weight: 400;
+    
+    /* Modern font rendering */
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    
+    /* Container queries support */
+    container-type: inline-size;
+  }
+  
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 24 74% 58%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 24 74% 58%;
+  }
+  
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+    height: 100%;
+  }
+  
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    height: 100%;
+    /* Modern font display */
+    font-display: swap;
+    /* Smooth transitions for RTL/LTR changes */
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  }
+  
+  #root {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    @apply bg-background;
+  }
+}
+.row-changed {
+  background-color: #fff3cd !important; /* A light yellow, good for highlighting */
+  font-weight: 500;
+}
+
+/* Optional: Style for changed rows on hover */
+.row-changed:hover {
+  background-color: #ffeeba !important;
+}
+
+/* Accessibility Styles */
+.high-contrast {
+  filter: contrast(150%) brightness(1.2);
+}
+
+.high-contrast * {
+  border-color: #000 !important;
+}
+
+.large-text {
+  font-size: 1.2em !important;
+}
+
+.large-text * {
+  font-size: inherit !important;
+}
+
+/* Animation Control */
+.no-animations,
+.no-animations * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Focus Styles for Keyboard Navigation */
+*:focus-visible {
+  outline: 2px solid #1976d2 !important;
+  outline-offset: 2px !important;
+}
+
+/* Screen Reader Only Content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Font Size Classes */
+.font-small {
+  font-size: 0.875rem;
+}
+
+.font-medium {
+  font-size: 1rem;
+}
+
+.font-large {
+  font-size: 1.125rem;
+}
+
+/* Density Classes */
+.density-compact {
+  --spacing-unit: 4px;
+}
+
+.density-standard {
+  --spacing-unit: 8px;
+}
+
+.density-comfortable {
+  --spacing-unit: 12px;
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiDrawer-paperAnchorLeft {
+  right: 0;
+  left: auto;
+}
+
+[dir="rtl"] .MuiDrawer-paperAnchorDockedLeft {
+  border-right: none;
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[dir="rtl"] .MuiAppBar-root {
+  padding-left: 0;
+  padding-right: 240px;
+}
+
+[dir="rtl"] .MuiListItemIcon-root {
+  margin-right: 0;
+  margin-left: 16px;
+  min-width: auto;
+}
+
+[dir="rtl"] .MuiListItemText-root {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiChip-root {
+  margin-left: 8px;
+  margin-right: 0;
+}
+
+[dir="rtl"] .MuiButton-startIcon {
+  margin-left: 8px;
+  margin-right: -4px;
+}
+
+[dir="rtl"] .MuiButton-endIcon {
+  margin-right: 8px;
+  margin-left: -4px;
+}
+
+[dir="rtl"] .MuiAccordionSummary-expandIconWrapper {
+  transform: rotate(-90deg);
+}
+
+[dir="rtl"] .MuiAccordionSummary-expandIconWrapper.Mui-expanded {
+  transform: rotate(90deg);
+}
+
+/* RTL Typography */
+[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4, [dir="rtl"] h5, [dir="rtl"] h6 {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiTypography-body1,
+[dir="rtl"] .MuiTypography-body2,
+[dir="rtl"] .MuiTypography-caption,
+[dir="rtl"] .MuiTypography-subtitle1,
+[dir="rtl"] .MuiTypography-subtitle2 {
+  text-align: right;
+}
+
+/* RTL Form Controls */
+[dir="rtl"] .MuiFormControlLabel-root {
+  margin-left: 0;
+  margin-right: -11px;
+}
+
+[dir="rtl"] .MuiFormControlLabel-labelPlacementStart {
+  flex-direction: row;
+}
+
+[dir="rtl"] .MuiInputAdornment-positionStart {
+  margin-left: 8px;
+  margin-right: 0;
+}
+
+[dir="rtl"] .MuiInputAdornment-positionEnd {
+  margin-right: 8px;
+  margin-left: 0;
+}
+
+/* RTL Grid and Layout */
+[dir="rtl"] .MuiGrid-container {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiStack-root {
+  direction: rtl;
+}
+
+/* RTL Menu and Navigation */
+[dir="rtl"] .MuiMenu-paper {
+  transform-origin: top right;
+}
+
+[dir="rtl"] .MuiMenuItem-root {
+  text-align: right;
+  justify-content: flex-end;
+}
+
+[dir="rtl"] .MuiListItem-root {
+  text-align: right;
+}
+
+/* RTL Tabs */
+[dir="rtl"] .MuiTabs-root {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiTab-root {
+  text-align: right;
+}
+
+/* RTL Data Grid */
+[dir="rtl"] .MuiDataGrid-root {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiDataGrid-columnHeaders {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiDataGrid-row {
+  direction: rtl;
+}
+
+/* RTL Floating Action Button */
+[dir="rtl"] .MuiFab-root {
+  left: 16px;
+  right: auto;
+}
+
+/* RTL/LTR Smooth Transitions - Prevent Flickering */
+html[dir="rtl"] {
+  transition: all 0.3s ease-in-out;
+}
+
+html[dir="ltr"] {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Prevent layout jumping during language transitions */
+.MuiAppBar-root,
+.MuiDrawer-root,
+.MuiMenu-root,
+.MuiPaper-root {
+  transition: all 0.3s ease-in-out !important;
+}
+
+/* Smooth menu transitions for RTL */
+[dir="rtl"] .MuiMenu-paper {
+  transform-origin: top right !important;
+  transition: transform 0.3s ease-in-out !important;
+}
+
+[dir="ltr"] .MuiMenu-paper {
+  transform-origin: top left !important;
+  transition: transform 0.3s ease-in-out !important;
+}

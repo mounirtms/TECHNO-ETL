@@ -4,7 +4,7 @@
  * Features: Adaptive UI, intelligent actions, real-time monitoring, accessibility
  */
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, ReactNode } from 'react';
 import {
   Box,
   Toolbar,
@@ -24,7 +24,9 @@ import {
   useTheme,
   useMediaQuery,
   Fade,
-  Collapse
+  Collapse,
+  SxProps,
+  Theme
 } from '@mui/material';
 import {
   Refresh as RefreshIcon,
@@ -41,10 +43,12 @@ import {
   Pause as PauseIcon,
   Speed as PerformanceIcon
 } from '@mui/icons-material';
-import PropTypes from 'prop-types';
 
 // Components
 import TooltipWrapper from '../common/TooltipWrapper';
+
+// Import types from the centralized type definitions
+import { BaseToolbarProps, ActionButton, ToolbarConfig } from '../../types/baseComponents';
 
 /**
  * Advanced BaseToolbar Component
@@ -56,17 +60,16 @@ import TooltipWrapper from '../common/TooltipWrapper';
  * - Performance optimization
  * - Accessibility compliance
  */
-const BaseToolbar = ({
+const BaseToolbar: React.FC<BaseToolbarProps> = ({
   // Basic props
-  gridName = 'BaseGrid',
-  gridType = 'default',
+  gridName: any,
+  gridType: any,
   config = {},
 
   // Actions
-  customActions = [],
-  customLeftActions = [],
-  selectedRows = [],
-
+  customActions: any,
+  customLeftActions: any,
+  selectedRows: any,
   // Event handlers
   onRefresh,
   onAdd,
@@ -78,29 +81,27 @@ const BaseToolbar = ({
   onClearSearch,
 
   // Search
-  searchValue = '',
-  searchPlaceholder = 'Search...',
-
+  searchValue: any,
+  searchPlaceholder: any,
   // State
-  loading = false,
-
+  loading: any,
   // Grid controls
   columnVisibility = {},
   onColumnVisibilityChange,
-  density = 'standard',
+  density: any,
   onDensityChange,
 
   // Real-time features
-  realTimeEnabled = false,
+  realTimeEnabled: any,
   onRealTimeToggle,
   onSelectionModelChange,
 
   // Styling
-  compact = false,
+  compact: any,
   sx = {},
 
   // Advanced features
-  showPerformanceMetrics = false,
+  showPerformanceMetrics: any,
   performanceMetrics = {}
 }) => {
   const theme = useTheme();
@@ -108,7 +109,7 @@ const BaseToolbar = ({
 
   // Local state
   const [searchText, setSearchText] = useState(searchValue);
-  const [moreMenuAnchor, setMoreMenuAnchor] = useState(null);
+  const [moreMenuAnchor, setMoreMenuAnchor] = useState<HTMLElement | null>(null);
   const [filtersVisible] = useState(false);
 
   // Configuration with intelligent defaults
@@ -145,7 +146,7 @@ const BaseToolbar = ({
   }, [compact, isMobile]);
 
   // Event handlers
-  const handleSearchChange = useCallback((event) => {
+  const handleSearchChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setSearchText(value);
   }, []);
@@ -154,8 +155,8 @@ const BaseToolbar = ({
     onSearch?.(searchText);
   }, [onSearch, searchText]);
 
-  const handleSearchKeyPress = useCallback((event) => {
-    if (event.key === 'Enter') {
+  const handleSearchKeyPress = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
+    if(event.key === 'Enter') {
       event.preventDefault();
       handleSearchSubmit();
     }
@@ -167,7 +168,7 @@ const BaseToolbar = ({
     onClearSearch?.();
   }, [onSearch, onClearSearch]);
 
-  const handleMoreMenuOpen = useCallback((event) => {
+  const handleMoreMenuOpen = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setMoreMenuAnchor(event.currentTarget);
   }, []);
 
@@ -175,7 +176,7 @@ const BaseToolbar = ({
     setMoreMenuAnchor(null);
   }, []);
 
-  const handleSettingsMenuOpen = useCallback((event) => {
+  const handleSettingsMenuOpen = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     console.log('Settings menu clicked:', event.currentTarget);
     // Settings functionality to be implemented
   }, []);
@@ -186,10 +187,10 @@ const BaseToolbar = ({
   }, [realTimeEnabled, onRealTimeToggle]);
 
   // Action groups for responsive design
-  const primaryActions = useMemo(() => {
-    const actions = [];
+  const primaryActions = useMemo((): ActionButton[] => {
+    const actions: ActionButton[] = [];
 
-    if (toolbarConfig.showRefresh) {
+    if(toolbarConfig.showRefresh) {
       actions.push({
         key: 'refresh',
         icon: <RefreshIcon />,
@@ -200,7 +201,7 @@ const BaseToolbar = ({
       });
     }
 
-    if (toolbarConfig.showAdd) {
+    if(toolbarConfig.showAdd) {
       actions.push({
         key: 'add',
         icon: <AddIcon />,
@@ -214,26 +215,26 @@ const BaseToolbar = ({
     return actions;
   }, [toolbarConfig, onRefresh, onAdd, loading]);
 
-  const selectionActions = useMemo(() => {
-    const actions = [];
+  const selectionActions = useMemo((): ActionButton[] => {
+    const actions: ActionButton[] = [];
 
-    if (toolbarConfig.showEdit && hasSelection) {
+    if(toolbarConfig.showEdit && hasSelection) {
       actions.push({
         key: 'edit',
         icon: <EditIcon />,
         label: `Edit (${selectedCount})`,
-        onClick: onEdit,
+        onClick: () => selectedRows.length ===1 ? onEdit?.(selectedRows[0]) : undefined,
         disabled: loading || selectedCount !== 1,
         priority: 2
       });
     }
 
-    if (toolbarConfig.showDelete && hasSelection) {
+    if(toolbarConfig.showDelete && hasSelection) {
       actions.push({
         key: 'delete',
         icon: <DeleteIcon />,
         label: `Delete (${selectedCount})`,
-        onClick: onDelete,
+        onClick: () => onDelete?.(selectedRows),
         disabled: loading,
         priority: 2,
         color: 'error'
@@ -241,12 +242,12 @@ const BaseToolbar = ({
     }
 
     return actions;
-  }, [toolbarConfig, hasSelection, selectedCount, onEdit, onDelete, loading]);
+  }, [toolbarConfig, hasSelection, selectedCount, onEdit, onDelete, loading, selectedRows]);
 
-  const utilityActions = useMemo(() => {
-    const actions = [];
+  const utilityActions = useMemo((): ActionButton[] => {
+    const actions: ActionButton[] = [];
 
-    if (toolbarConfig.showExport) {
+    if(toolbarConfig.showExport) {
       actions.push({
         key: 'export',
         icon: <ExportIcon />,
@@ -257,7 +258,7 @@ const BaseToolbar = ({
       });
     }
 
-    if (toolbarConfig.showImport) {
+    if(toolbarConfig.showImport) {
       actions.push({
         key: 'import',
         icon: <ImportIcon />,
@@ -272,7 +273,7 @@ const BaseToolbar = ({
   }, [toolbarConfig, onExport, onImport, loading]);
 
   // Render action button
-  const renderActionButton = useCallback((action) => {
+  const renderActionButton = useCallback((action: ActionButton) => {
     const ButtonComponent = action.variant === 'text' ? Button : IconButton;
 
     return (
@@ -281,16 +282,29 @@ const BaseToolbar = ({
         title={action.label}
         disabled={action.disabled}
       >
-        <ButtonComponent
-          onClick={action.onClick}
-          disabled={action.disabled}
-          size={buttonSize}
-          color={action.color || 'primary'}
-          variant={action.variant || 'text'}
-        >
-          {action.icon}
-          {action.variant === 'text' && action.label}
-        </ButtonComponent>
+        <span>
+          {action.variant === 'text' ? (
+            <Button
+              onClick={action.onClick}
+              disabled={action.disabled}
+              size={buttonSize}
+              color={action.color || 'primary'}
+              variant={action.variant || 'text'}
+            >
+              {action.icon}
+              {action.label}
+            </Button>
+          ) : (
+            <IconButton
+              onClick={action.onClick}
+              disabled={action.disabled}
+              size={buttonSize}
+              color={action.color || 'primary'}
+            >
+              {action.icon}
+            </IconButton>
+          )}
+        </span>
       </TooltipWrapper>
     );
   }, [buttonSize]);
@@ -307,19 +321,13 @@ const BaseToolbar = ({
         maxWidth: isMobile ? 200 : 350
       }}>
         <TextField
-          size="small"
+          size: any,
           placeholder={searchPlaceholder}
           value={searchText}
           onChange={handleSearchChange}
           onKeyDown={handleSearchKeyPress}
           sx={{ flex: 1 }}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
+          slotProps: any,
               endAdornment: searchText && (
                 <InputAdornment position="end">
                   <IconButton size="small" onClick={handleClearSearch}>
@@ -343,12 +351,11 @@ const BaseToolbar = ({
         title={realTimeEnabled ? 'Disable Real-time Updates' : 'Enable Real-time Updates'}
       >
         <ToggleButton
-          value="realtime"
+          value: any,
           selected={realTimeEnabled}
           onChange={handleRealTimeToggle}
           size={buttonSize}
-          color="primary"
-        >
+          color: any,
           {realTimeEnabled ? <PauseIcon /> : <RealTimeIcon />}
         </ToggleButton>
       </TooltipWrapper>
@@ -362,8 +369,8 @@ const BaseToolbar = ({
     return (
       <TooltipWrapper title="Performance Metrics">
         <Badge
-          badgeContent={performanceMetrics.responseTime || 0}
-          color={performanceMetrics.responseTime > 1000 ? 'error' : 'success'}
+          badgeContent={performanceMetrics?.responseTime || 0}
+          color={performanceMetrics?.responseTime && performanceMetrics.responseTime > 1000 ? 'error' : 'success'}
           max={9999}
         >
           <IconButton size={buttonSize}>
@@ -382,9 +389,7 @@ const BaseToolbar = ({
       <Fade in={hasSelection}>
         <Chip
           label={`${selectedCount} selected`}
-          size="small"
-          color="primary"
-          variant="outlined"
+          size: any,
           onDelete={hasSelection ? () => onSelectionModelChange?.([]) : undefined}
         />
       </Fade>
@@ -395,7 +400,11 @@ const BaseToolbar = ({
   const renderMobileMenu = () => {
     if (!isMobile) return null;
 
-    const overflowActions = [...utilityActions, ...customActions];
+    // Only include custom actions that match the ActionButton shape
+    const customActionButtons: ActionButton[] = [];
+    // We can't directly filter ReactNode to ActionButton, so we'll just use the utility actions
+    
+    const overflowActions: ActionButton[] = [...utilityActions, ...customActionButtons];
 
     return (
       <>
@@ -413,12 +422,10 @@ const BaseToolbar = ({
           open={Boolean(moreMenuAnchor)}
           onClose={handleMoreMenuClose}
         >
-          {overflowActions.map((action) => (
+          {overflowActions.map((action: any: any) => (
             <MenuItem
               key={action.key}
-              onClick={() => {
-                action.onClick?.();
-                handleMoreMenuClose();
+              onClick: any,
               }}
               disabled={action.disabled}
             >
@@ -426,21 +433,24 @@ const BaseToolbar = ({
               <ListItemText primary={action.label} />
             </MenuItem>
           ))}
+          
+          {/* Render custom actions separately if they exist */}
+          {customActions.map((action: any: any, index: any: any) => (
+            <MenuItem key={`custom-${index}`}>{action}</MenuItem>
+          ))}
         </Menu>
       </>
     );
   };
 
-  return (
+  return Boolean(Boolean((
     <Box sx={{
       borderBottom: `1px solid ${theme.palette.divider}`,
       backgroundColor: theme.palette.background.paper,
       ...sx
     }}>
       <Toolbar
-        variant="dense"
-        sx={{
-          minHeight: compact ? 44 : 56,
+        variant: any,
           px: compact ? 1 : 2,
           py: 0.5,
           gap: 1,
@@ -459,7 +469,7 @@ const BaseToolbar = ({
         {customLeftActions.length > 0 && (
           <>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              {customLeftActions.map((action, index) => (
+              {customLeftActions.map((action: any: any, index: any: any) => (
                 <Box key={index}>{action}</Box>
               ))}
             </Box>
@@ -526,54 +536,9 @@ const BaseToolbar = ({
         </Box>
       </Collapse>
     </Box>
-  );
+  )));
 };
 
-BaseToolbar.propTypes = {
-  // Basic props
-  gridName: PropTypes.string,
-  gridType: PropTypes.string,
-  config: PropTypes.object,
 
-  // Actions
-  customActions: PropTypes.array,
-  customLeftActions: PropTypes.array,
-  selectedRows: PropTypes.array,
-
-  // Event handlers
-  onRefresh: PropTypes.func,
-  onAdd: PropTypes.func,
-  onEdit: PropTypes.func,
-  onDelete: PropTypes.func,
-  onExport: PropTypes.func,
-  onImport: PropTypes.func,
-  onSearch: PropTypes.func,
-  onClearSearch: PropTypes.func,
-
-  // Search
-  searchValue: PropTypes.string,
-  searchPlaceholder: PropTypes.string,
-
-  // State
-  loading: PropTypes.bool,
-
-  // Grid controls
-  columnVisibility: PropTypes.object,
-  onColumnVisibilityChange: PropTypes.func,
-  density: PropTypes.oneOf(['compact', 'standard', 'comfortable']),
-  onDensityChange: PropTypes.func,
-
-  // Real-time features
-  realTimeEnabled: PropTypes.bool,
-  onRealTimeToggle: PropTypes.func,
-
-  // Styling
-  compact: PropTypes.bool,
-  sx: PropTypes.object,
-
-  // Advanced features
-  showPerformanceMetrics: PropTypes.bool,
-  performanceMetrics: PropTypes.object
-};
 
 export default BaseToolbar;

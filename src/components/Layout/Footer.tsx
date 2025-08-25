@@ -21,7 +21,7 @@ const FooterContainer = styled(({
         component={component}
         data-login-screen={isLoginScreen}
         data-local-data={isUsingLocalData}
-        {...props}
+        { ...props}
     />
 ))(({ theme, sidebarOpen, isLoginScreen, isUsingLocalData }) => {
     const baseStyles = {
@@ -62,7 +62,7 @@ const AnimatedLink = styled(Link)(({ theme }) => ({
     }
 }));
 
-const Footer = ({ sidebarOpen, isLoginScreen = false }) => {
+const Footer: React.FC<any> = ({ sidebarOpen, isLoginScreen = false }) => {
     const { language } = useLanguage();
     const { isUsingLocalData } = useAuth();
     const versionInfo = useVersion();
@@ -70,39 +70,21 @@ const Footer = ({ sidebarOpen, isLoginScreen = false }) => {
 
     return (
         <FooterContainer
-            component="footer"
+            component: any,
             sidebarOpen={sidebarOpen}
             isLoginScreen={isLoginScreen}
             isUsingLocalData={isUsingLocalData}
         >
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' } as any}>
                 <Typography variant="body2">
                     {currentYear}
                     <AnimatedLink
-                        href="https://technostationery.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Techno Stationery
-                    </AnimatedLink>
-                </Typography>
-            </Box>
-
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        href: any,
+            <Box sx={{ display: 'flex', alignItems: 'center' } as any}>
                 <Typography variant="body2">
                     <AnimatedLink
-                        href="./docs"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Documentation
-                    </AnimatedLink>
-                </Typography>
-            </Box>
-
-            <Box>
-                <Typography variant="body2">
-                    {versionInfo ? `v${versionInfo.fullVersion}` : 'Loading version...'}
+                        href: any,
+                    {versionInfo ? `v${versionInfo?.fullVersion}` : 'Loading version...'}
                 </Typography>
             </Box>
         </FooterContainer>

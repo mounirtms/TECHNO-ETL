@@ -44,14 +44,13 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
  * ColumnCustomization - Advanced column management
  * Features: Show/hide, reorder, width adjustment, alignment, formatting
  */
-const ColumnCustomization = ({ 
-  open, 
+const ColumnCustomization: React.FC<{open: any, onClose: any, columns: any, onColumnsChange: any, columnSettings: any, onColumnSettingsChange: any}> = ({ open, 
   onClose, 
   columns, 
   onColumnsChange,
   columnSettings,
   onColumnSettingsChange 
-}) => {
+ }) => {
   // ===== STATE MANAGEMENT =====
   const [localColumns, setLocalColumns] = useState(columns);
   const [localSettings, setLocalSettings] = useState(columnSettings || {});
@@ -60,8 +59,8 @@ const ColumnCustomization = ({
   // ===== COLUMN OPERATIONS =====
   const handleColumnVisibilityToggle = useCallback((columnField) => {
     setLocalColumns(prev => 
-      prev.map(col => 
-        col.field === columnField 
+      prev.map((col: any: any) => 
+        col.field ===columnField 
           ? { ...col, hide: !col.hide }
           : col
       )
@@ -80,8 +79,8 @@ const ColumnCustomization = ({
 
   const handleColumnWidthChange = useCallback((columnField, width) => {
     setLocalColumns(prev =>
-      prev.map(col =>
-        col.field === columnField
+      prev.map((col: any: any) =>
+        col.field ===columnField
           ? { ...col, width: width }
           : col
       )
@@ -90,8 +89,8 @@ const ColumnCustomization = ({
 
   const handleColumnAlignmentChange = useCallback((columnField, align) => {
     setLocalColumns(prev =>
-      prev.map(col =>
-        col.field === columnField
+      prev.map((col: any: any) =>
+        col.field ===columnField
           ? { ...col, align: align }
           : col
       )
@@ -99,10 +98,8 @@ const ColumnCustomization = ({
   }, []);
 
   const handleColumnFormatChange = useCallback((columnField, format) => {
-    setLocalSettings(prev => ({
-      ...prev,
-      [columnField]: {
-        ...prev[columnField],
+    setLocalSettings(prev => ({ ...prev,
+      [columnField]: { ...prev[columnField],
         format: format
       }
     }));
@@ -123,7 +120,7 @@ const ColumnCustomization = ({
 
   const handleReset = useCallback(() => {
     // Reset to default configuration
-    const defaultColumns = columns.map(col => ({ ...col, hide: false }));
+    const defaultColumns = columns.map((col: any: any) => ({ ...col, hide: false }));
     setLocalColumns(defaultColumns);
     setLocalSettings({});
     
@@ -133,55 +130,42 @@ const ColumnCustomization = ({
 
   // ===== COMPUTED VALUES =====
   const visibleColumnsCount = useMemo(() => 
-    localColumns.filter(col => !col.hide).length
+    localColumns.filter((col: any: any) => !col.hide).length
   , [localColumns]);
 
   const totalColumnsCount = localColumns.length;
 
   // ===== RENDER COLUMN ITEM =====
   const renderColumnItem = (column, index) => (
-    <Draggable key={column.field} draggableId={column.field} index={index}>
-      {(provided, snapshot) => (
-        <ListItem
+    <Draggable key={column?.field} draggableId={column?.field} index={index}>
+      {(provided, snapshot) => (<ListItem
           ref={provided.innerRef}
-          {...provided.draggableProps}
-          sx={{
-            backgroundColor: snapshot.isDragging ? 'action.hover' : 'transparent',
+          { ...provided.draggableProps}
+          sx: any,
             border: snapshot.isDragging ? '1px dashed' : 'none',
             borderColor: 'primary.main',
             borderRadius: 1,
             mb: 0.5
           }}
         >
-          <ListItemIcon {...provided.dragHandleProps}>
+          <ListItemIcon { ...provided.dragHandleProps}>
             <DragHandleIcon color="action" />
           </ListItemIcon>
           
           <ListItemIcon>
             <Checkbox
               checked={!column.hide}
-              onChange={() => handleColumnVisibilityToggle(column.field)}
-              color="primary"
-            />
-          </ListItemIcon>
-          
-          <ListItemText
-            primary={column.headerName || column.field}
-            secondary={
+              onChange={(e) => () => handleColumnVisibilityToggle(column?.field)}
+              color: any,
+            primary={column?.headerName || column?.field}
+            secondary: any,
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
-                <Chip label={column.field} size="small" variant="outlined" />
+                <Chip label={column?.field} size="small" variant="outlined" />
                 <Chip 
-                  label={`Width: ${column.width || 'Auto'}`} 
-                  size="small" 
-                  variant="outlined" 
-                />
-                {column.type && (
-                  <Chip 
-                    label={column.type} 
-                    size="small" 
-                    color="primary" 
-                    variant="outlined" 
-                  />
+                  label={`Width: ${column?.width || 'Auto'}`} 
+                  size: any,
+                    label={column?.type} 
+                    size: any,
                 )}
               </Box>
             }
@@ -190,7 +174,7 @@ const ColumnCustomization = ({
           <ListItemSecondaryAction>
             <Tooltip title="Column Settings">
               <IconButton
-                size="small"
+                size: any,
                 onClick={() => setSelectedColumn(column)}
               >
                 <SettingsIcon />
@@ -206,46 +190,39 @@ const ColumnCustomization = ({
   const renderColumnSettings = () => {
     if (!selectedColumn) return null;
 
-    const columnSetting = localSettings[selectedColumn.field] || {};
+    const columnSetting = localSettings[selectedColumn?.field] || {};
 
-    return (
-      <Paper sx={{ p: 2, mt: 2 }}>
+    return(<Paper sx={{ p: 2, mt: 2 }}>
         <Typography variant="h6" gutterBottom>
-          Settings for: {selectedColumn.headerName || selectedColumn.field}
+          Settings for: {selectedColumn?.headerName || selectedColumn?.field}
         </Typography>
         
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {/* Width Setting */}
           <Box>
             <Typography variant="body2" gutterBottom>
-              Column Width: {selectedColumn.width || 150}px
+              Column Width: {selectedColumn?.width || 150}px
             </Typography>
             <Slider
-              value={selectedColumn.width || 150}
-              onChange={(e, value) => handleColumnWidthChange(selectedColumn.field, value)}
+              value={selectedColumn?.width || 150}
+              onChange={(e, value) => handleColumnWidthChange(selectedColumn?.field, value)}
               min={50}
               max={500}
               step={10}
-              valueLabelDisplay="auto"
-            />
-          </Box>
-
+              valueLabelDisplay: any,
           {/* Alignment Setting */}
           <Box>
             <Typography variant="body2" gutterBottom>
               Text Alignment
             </Typography>
             <Box sx={{ display: 'flex', gap: 1 }}>
-              {['left', 'center', 'right'].map((align) => (
+              {['left', 'center', 'right'].map((align: any: any) => (
                 <Button
                   key={align}
-                  variant={selectedColumn.align === align ? 'contained' : 'outlined'}
-                  size="small"
-                  onClick={() => handleColumnAlignmentChange(selectedColumn.field, align)}
-                  startIcon={
-                    align === 'left' ? <AlignLeftIcon /> :
-                    align === 'center' ? <AlignCenterIcon /> :
-                    <AlignRightIcon />
+                  variant={selectedColumn?.align ===align ? 'contained' : 'outlined'}
+                  size: any,
+                  onClick={() => handleColumnAlignmentChange(selectedColumn?.field, align)}
+                  startIcon: any,
                   }
                 >
                   {align}
@@ -255,23 +232,14 @@ const ColumnCustomization = ({
           </Box>
 
           {/* Format Setting */}
-          {selectedColumn.type && (
-            <FormControl fullWidth size="small">
+          {selectedColumn?.type && (<FormControl fullWidth size="small">
               <InputLabel>Display Format</InputLabel>
               <Select
                 value={columnSetting.format || 'default'}
-                onChange={(e) => handleColumnFormatChange(selectedColumn.field, e.target.value)}
-                label="Display Format"
-              >
-                <MenuItem value="default">Default</MenuItem>
-                {selectedColumn.type === 'number' && (
-                  <>
-                    <MenuItem value="currency">Currency</MenuItem>
-                    <MenuItem value="percentage">Percentage</MenuItem>
-                    <MenuItem value="decimal">Decimal (2 places)</MenuItem>
-                  </>
+                onChange={(e) => handleColumnFormatChange(selectedColumn?.field, e.target.value)}
+                label: any,
                 )}
-                {selectedColumn.type === 'date' && (
+                {selectedColumn?.type === 'date' && (
                   <>
                     <MenuItem value="short">Short Date</MenuItem>
                     <MenuItem value="long">Long Date</MenuItem>
@@ -288,11 +256,8 @@ const ColumnCustomization = ({
               Allow Sorting
             </Typography>
             <Switch
-              checked={selectedColumn.sortable !== false}
-              onChange={(e) => {
-                setLocalColumns(prev =>
-                  prev.map(col =>
-                    col.field === selectedColumn.field
+              checked={selectedColumn?.sortable !== false}
+              onChange: any,
                       ? { ...col, sortable: e.target.checked }
                       : col
                   )
@@ -308,11 +273,8 @@ const ColumnCustomization = ({
               Allow Filtering
             </Typography>
             <Switch
-              checked={selectedColumn.filterable !== false}
-              onChange={(e) => {
-                setLocalColumns(prev =>
-                  prev.map(col =>
-                    col.field === selectedColumn.field
+              checked={selectedColumn?.filterable !== false}
+              onChange: any,
                       ? { ...col, filterable: e.target.checked }
                       : col
                   )
@@ -323,7 +285,7 @@ const ColumnCustomization = ({
           </Box>
 
           <Button
-            variant="outlined"
+            variant: any,
             onClick={() => setSelectedColumn(null)}
             fullWidth
           >
@@ -334,8 +296,7 @@ const ColumnCustomization = ({
     );
   };
 
-  return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+  return(<Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -347,14 +308,7 @@ const ColumnCustomization = ({
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Chip
               label={`${visibleColumnsCount}/${totalColumnsCount} visible`}
-              color="primary"
-              size="small"
-            />
-          </Box>
-        </Box>
-      </DialogTitle>
-      
-      <DialogContent>
+              color: any,
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           Drag to reorder columns, use checkboxes to show/hide, and click settings to customize individual columns.
         </Typography>
@@ -363,11 +317,11 @@ const ColumnCustomization = ({
           <Droppable droppableId="columns">
             {(provided) => (
               <List
-                {...provided.droppableProps}
+                { ...provided.droppableProps}
                 ref={provided.innerRef}
                 sx={{ maxHeight: 400, overflow: 'auto' }}
               >
-                {localColumns.map((column, index) => renderColumnItem(column, index))}
+                {localColumns.map((column: any: any, index: any: any) => renderColumnItem(column, index))}
                 {provided.placeholder}
               </List>
             )}

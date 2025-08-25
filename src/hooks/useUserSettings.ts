@@ -1,6 +1,6 @@
 /**
  * Enhanced User Settings Hook
- * Provides comprehensive user settings management with system defaults
+ * Provides comprehensive user settings management with unified settings system integration
  */
 
 import { useCallback, useEffect, useState } from 'react';
@@ -9,12 +9,101 @@ import { useCustomTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { toast } from 'react-toastify';
+import { 
+  applyAllSettings, 
+  syncAllSettings, 
+  getMergedSettings,
+  applyThemeSettings,
+  applyLanguageSettings
+} from '../utils/settingsUtils';
 
-export const useUserSettings = () => {
-  const { currentUser } = useAuth();
-  const { mode, setThemeMode, fontSize, setFontSize, applyUserThemeSettings } = useCustomTheme();
-  const { currentLanguage, setLanguage, applyUserLanguageSettings } = useLanguage();
-  const { settings, updateSettings, saveSettings, loading } = useSettings();
+// Types for user settings
+interface UserPreferences {
+  theme?: 'light' | 'dark' | 'system';
+  language?: string;
+  fontSize?: 'small' | 'medium' | 'large';
+}
+
+interface UserSettings {
+  preferences?: UserPreferences;
+  [key: string]: any;
+}
+
+interface User {
+  uid: string;
+  [key: string]: any;
+}
+
+interface AuthContextProps {
+  currentUser: User | null;
+}
+
+interface ThemeContextProps {
+  mode: 'light' | 'dark';
+  setThemeMode: (mode: 'light' | 'dark' | 'system') => void;
+  fontSize: 'small' | 'medium' | 'large';
+  setFontSize: (size: 'small' | 'medium' | 'large') => void;
+  applyUserThemeSettings: (settings) => void;
+}
+
+interface LanguageContextProps {
+  currentLanguage: string;
+  setLanguage: (language: string) => void;
+  applyUserLanguageSettings: (settings) => void;
+}
+
+interface SettingsContextProps {
+  settings: UserSettings | null;
+  updateSettings: (newSettings: Partial<UserSettings>, scope?: string) => void;
+  saveSettings: () => Promise;
+  loading: boolean;
+}
+
+interface UserSettingsResult {
+  currentUser: User | null;
+  mode: 'light' | 'dark';
+  currentLanguage: string;
+  fontSize: 'small' | 'medium' | 'large';
+  settings: UserSettings | null;
+  loading: boolean;
+  isInitialized: boolean;
+  applySystemDefaults: () => void;
+  applyUserSettings: (userSettings: UserSettings) => void;
+  saveCurrentPreferences: () => Promise<{ success: boolean; error?: string }>;
+  resetToSystemDefaults: () => void;
+  setThemeMode: (mode: 'light' | 'dark' | 'system') => void;
+  setFontSize: (size: 'small' | 'medium' | 'large') => void;
+  setLanguage: (language: string) => void;
+  updateSettings: (newSettings: Partial<UserSettings>, scope?: string) => void;
+  saveSettings: () => Promise;
+}
+
+export const useUserSettings = (): UserSettingsResult => {
+  const authContext = useAuth();
+  const themeContext = useCustomTheme();
+  const languageContext = useLanguage();
+  const settingsContext = useSettings();
+  
+  // Safe type assertions with fallbacks
+  const { currentUser } = (authContext as AuthContextProps) || { currentUser: null };
+  const { 
+    mode,
+    setThemeMode = () => {}, 
+    fontSize,
+    setFontSize = () => {}, 
+    applyUserThemeSettings = () => {} 
+  } = (themeContext as ThemeContextProps) || {};
+  const { 
+    currentLanguage,
+    setLanguage = () => {}, 
+    applyUserLanguageSettings = () => {} 
+  } = (languageContext as LanguageContextProps) || {};
+  const { 
+    settings,
+    updateSettings = () => {}, 
+    saveSettings = async () => ({}), 
+    loading,
+  } = (settingsContext as SettingsContextProps) || {};
   
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -43,47 +132,35 @@ export const useUserSettings = () => {
   }, [setThemeMode, setLanguage, setFontSize]);
 
   /**
-   * Apply user settings after login
+   * Apply user settings after login with unified system
    */
-  const applyUserSettings = useCallback((userSettings) => {
+  const applyUserSettings = useCallback((userSettings: UserSettings) => {
     if (!userSettings?.preferences) return;
 
     const { preferences } = userSettings;
     
     try {
-      // Apply theme settings
-      if (preferences.theme) {
-        if (preferences.theme === 'system') {
-          const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          setThemeMode(systemPrefersDark ? 'dark' : 'light');
-        } else {
-          setThemeMode(preferences.theme);
-        }
-      }
-
-      // Apply language settings
-      if (preferences.language) {
-        setLanguage(preferences.language);
-      }
-
-      // Apply font size settings
-      if (preferences.fontSize) {
-        setFontSize(preferences.fontSize);
-      }
-
-      console.log('Applied user settings:', preferences);
+      // Use unified settings application
+      applyAllSettings(userSettings);
       
-    } catch (error) {
+      // Emit settings sync event for other components
+      window.dispatchEvent(new CustomEvent('settingsSync', {
+        detail: { userSettings, userId: currentUser?.uid }
+      }));
+      
+      console.log('User settings applied successfully with unified system:', preferences);
+      
+    } catch(error: any) {
       console.error('Error applying user settings:', error);
       toast.error('Failed to apply some user preferences');
     }
-  }, [setThemeMode, setLanguage, setFontSize]);
+  }, [currentUser?.uid]);
 
   /**
-   * Save current preferences to user settings
+   * Save current preferences to user settings with unified sync
    */
-  const saveCurrentPreferences = useCallback(async () => {
-    if (!currentUser) return;
+  const saveCurrentPreferences = useCallback(async (): Promise<{ success: boolean; error?: string }> => {
+    if (!currentUser) return { success: false, error: 'No user authenticated' };
 
     const currentPreferences = {
       theme: mode,
@@ -92,56 +169,78 @@ export const useUserSettings = () => {
     };
 
     try {
-      await updateSettings({ preferences: currentPreferences }, 'preferences');
-      await saveSettings();
-      
-      // Also save to user-specific storage
-      const userSettingsKey = `userSettings_${currentUser.uid}`;
-      const existingSettings = JSON.parse(localStorage.getItem(userSettingsKey) || '{}');
-      const updatedSettings = {
-        ...existingSettings,
-        preferences: {
-          ...existingSettings.preferences,
+      // Build complete settings object
+      const completeSettings = { ...settings,
+        preferences: { ...settings?.preferences,
           ...currentPreferences
         }
       };
-      localStorage.setItem(userSettingsKey, JSON.stringify(updatedSettings));
       
-      return { success: true };
-    } catch (error) {
+      // Use unified sync system
+      const success = syncAllSettings(completeSettings, currentUser.uid);
+      
+      if(success) {
+        // Update contexts
+        updateSettings({ preferences: currentPreferences }, 'preferences');
+        await saveSettings();
+        
+        // Emit sync event for other components
+        window.dispatchEvent(new CustomEvent('settingsSync', {
+          detail: { userSettings: completeSettings, userId: currentUser.uid }
+        }));
+        
+        return { success: true };
+      } else {
+        throw new Error('Failed to sync settings');
+      }
+    } catch(error: any) {
       console.error('Error saving preferences:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: (error as Error).message };
     }
-  }, [currentUser, mode, currentLanguage, fontSize, updateSettings, saveSettings]);
+  }, [currentUser, mode, currentLanguage, fontSize, settings, updateSettings, saveSettings]);
 
   /**
-   * Reset to system defaults
+   * Reset to system defaults and clear all user preferences
    */
   const resetToSystemDefaults = useCallback(() => {
-    applySystemDefaults();
-    
-    if (currentUser) {
-      // Update user settings to reflect system defaults
-      const systemDefaults = {
-        theme: 'system',
-        language: navigator.language.split('-')[0] === 'fr' ? 'fr' : 'en',
-        fontSize: 'medium'
-      };
+    try {
+      applySystemDefaults();
       
-      updateSettings({ preferences: systemDefaults }, 'preferences');
+      if(currentUser) {
+        // Get default settings and apply them
+        const defaultSettings = getMergedSettings();
+        syncAllSettings(defaultSettings, currentUser.uid);
+        
+        // Update user settings to reflect system defaults
+        const systemDefaults: UserPreferences = {
+          theme: 'system',
+          language: navigator.language.split('-')[0] ==='fr' ? 'fr' : 'en',
+          fontSize: 'medium'
+        };
+        
+        updateSettings({ preferences: systemDefaults }, 'preferences');
+        
+        // Emit sync event
+        window.dispatchEvent(new CustomEvent('settingsSync', {
+          detail: { userSettings: { preferences: systemDefaults }, userId: currentUser.uid }
+        }));
+      }
+      
+      toast.info('Settings reset to system defaults');
+    } catch(error: any) {
+      console.error('Error resetting to defaults:', error);
+      toast.error('Failed to reset settings');
     }
-    
-    toast.info('Settings reset to system defaults');
   }, [applySystemDefaults, currentUser, updateSettings]);
 
   /**
    * Initialize settings based on user state
    */
   useEffect(() => {
-    if (!isInitialized) {
-      if (currentUser) {
+    if(!isInitialized) {
+      if(currentUser) {
         // User is logged in - apply their settings
-        if (settings?.preferences) {
+        if(settings?.preferences) {
           applyUserSettings(settings);
         }
       } else {
@@ -158,11 +257,11 @@ export const useUserSettings = () => {
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     
-    const handleSystemThemeChange = (e) => {
+    const handleSystemThemeChange = (e: MediaQueryListEvent) => {
       // Only apply if user preference is set to 'system' or no user is logged in
       const shouldFollowSystem = !currentUser || settings?.preferences?.theme === 'system';
       
-      if (shouldFollowSystem) {
+      if(shouldFollowSystem) {
         setThemeMode(e.matches ? 'dark' : 'light');
       }
     };
@@ -175,7 +274,7 @@ export const useUserSettings = () => {
    * Auto-save preferences when they change (for logged-in users)
    */
   useEffect(() => {
-    if (currentUser && isInitialized) {
+    if(currentUser && isInitialized) {
       const timeoutId = setTimeout(() => {
         saveCurrentPreferences();
       }, 2000); // 2-second debounce
@@ -216,9 +315,23 @@ export const useUserSettings = () => {
 /**
  * Hook for components that need to react to theme/language changes
  */
-export const useAppearanceSettings = () => {
-  const { mode, fontSize } = useCustomTheme();
-  const { currentLanguage } = useLanguage();
+interface AppearanceSettingsResult {
+  isDark: boolean;
+  theme: 'light' | 'dark';
+  fontSize: 'small' | 'medium' | 'large';
+  language: string;
+  isRTL: boolean;
+}
+
+export const useAppearanceSettings = (): AppearanceSettingsResult => {
+  const themeContext = useCustomTheme();
+  const languageContext = useLanguage();
+  
+  const { mode, fontSize } = themeContext;
+  // Use safe access for language context properties with proper type checking
+  const currentLanguage = (languageContext && 'currentLanguage' in languageContext) 
+    ? (languageContext as LanguageContextProps).currentLanguage 
+    : 'en';
   
   return {
     isDark: mode === 'dark',
@@ -232,12 +345,18 @@ export const useAppearanceSettings = () => {
 /**
  * Hook for getting system preferences
  */
-export const useSystemPreferences = () => {
-  const [systemTheme, setSystemTheme] = useState(() => {
+interface SystemPreferencesResult {
+  systemTheme: 'light' | 'dark';
+  systemLanguage: string;
+  systemPrefersDark: boolean;
+}
+
+export const useSystemPreferences = (): SystemPreferencesResult => {
+  const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>(() => {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
   
-  const [systemLanguage] = useState(() => {
+  const [systemLanguage] = useState<string>(() => {
     const browserLang = navigator.language.split('-')[0];
     return ['en', 'fr', 'ar'].includes(browserLang) ? browserLang : 'en';
   });
@@ -245,7 +364,7 @@ export const useSystemPreferences = () => {
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     
-    const handleChange = (e) => {
+    const handleChange = (e: MediaQueryListEvent) => {
       setSystemTheme(e.matches ? 'dark' : 'light');
     };
 

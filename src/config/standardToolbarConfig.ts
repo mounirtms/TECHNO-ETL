@@ -109,8 +109,7 @@ export const STANDARD_TOOLBAR_CONFIGS = {
 export const getStandardToolbarConfig = (gridType, overrides = {}) => {
   const baseConfig = STANDARD_TOOLBAR_CONFIGS[gridType] || STANDARD_TOOLBAR_CONFIGS.magento;
   
-  return {
-    ...baseConfig,
+  return { ...baseConfig,
     ...overrides
   };
 };
@@ -244,8 +243,7 @@ export const STANDARD_FILTER_CONFIGS = {
 export const getStandardFilterConfig = (gridType, overrides = {}) => {
   const baseConfig = STANDARD_FILTER_CONFIGS[gridType] || STANDARD_FILTER_CONFIGS.magento;
   
-  return {
-    ...baseConfig,
+  return { ...baseConfig,
     ...overrides
   };
 };
@@ -287,8 +285,8 @@ export const STANDARD_EXPORT_OPTIONS = {
  * @returns {Object} Complete toolbar configuration
  */
 export const createToolbarConfig = (gridType, customConfig = {}) => {
-  const toolbarConfig = getStandardToolbarConfig(gridType, customConfig.toolbar);
-  const filterConfig = getStandardFilterConfig(gridType, customConfig.filters);
+  const toolbarConfig = getStandardToolbarConfig(gridType, customConfig?.toolbar);
+  const filterConfig = getStandardFilterConfig(gridType, customConfig?.filters);
   const customActions = STANDARD_CUSTOM_ACTIONS[gridType] || [];
   
   return {
@@ -296,9 +294,8 @@ export const createToolbarConfig = (gridType, customConfig = {}) => {
     filters: filterConfig,
     customActions: customActions,
     exportOptions: STANDARD_EXPORT_OPTIONS,
-    handlers: {
-      ...STANDARD_ACTION_HANDLERS,
-      ...customConfig.handlers
+    handlers: { ...STANDARD_ACTION_HANDLERS,
+      ...customConfig?.handlers
     }
   };
 };

@@ -8,7 +8,7 @@ import {
   getSystemPreferences
 } from '../utils/settingsUtils';
 
-const LanguageContext = createContext();
+const LanguageContext = createContext<any>(null);
 
 export const languages = {
   en: {
@@ -33,13 +33,13 @@ export const languages = {
 
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
-  if (!context) {
+  if(!context) {
     throw new Error('useLanguage must be used within a LanguageProvider');
   }
   return context;
 };
 
-export const LanguageProvider = ({ children }) => {
+export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState(() => {
     console.log('🌐 Initializing LanguageProvider...');
     
@@ -48,13 +48,13 @@ export const LanguageProvider = ({ children }) => {
       const settings = getUnifiedSettings();
       console.log('🌐 Settings received:', settings);
       
-      if (settings?.preferences?.language && languages[settings.preferences.language]) {
+      if(settings?.preferences?.language && languages[settings.preferences.language]) {
         console.log('🌐 Using preferences language:', settings.preferences.language);
         return settings.preferences.language;
       }
 
       // Also check top-level language for backward compatibility
-      if (settings?.language && languages[settings.language]) {
+      if(settings?.language && languages[settings.language]) {
         console.log('🌐 Using top-level language:', settings.language);
         return settings.language;
       }
@@ -64,11 +64,11 @@ export const LanguageProvider = ({ children }) => {
       const systemPrefs = getSystemPreferences();
       console.log('🌐 System preferences:', systemPrefs);
       
-      if (systemPrefs?.language && languages[systemPrefs.language]) {
+      if(systemPrefs?.language && languages[systemPrefs.language]) {
         console.log('🌐 Using system language:', systemPrefs.language);
         return systemPrefs.language;
       }
-    } catch (error) {
+    } catch(error: any) {
       console.error('Failed to get language settings:', error);
     }
     
@@ -80,7 +80,7 @@ export const LanguageProvider = ({ children }) => {
   // Memoized language configuration to prevent unnecessary re-renders
   const currentLangConfig = useMemo(() => {
     const config = languages[currentLanguage];
-    if (!config) {
+    if(!config) {
       console.warn(`Invalid language: ${currentLanguage}, falling back to English`);
       return languages.en;
     }
@@ -90,7 +90,7 @@ export const LanguageProvider = ({ children }) => {
   // Persistent RTL support - ensure it works across all tabs and components
   useEffect(() => {
     // Safety check to ensure currentLangConfig is valid
-    if (!currentLangConfig || !currentLangConfig.dir || !currentLangConfig.code) {
+    if(!currentLangConfig || !currentLangConfig.dir || !currentLangConfig.code) {
       console.warn('Invalid currentLangConfig:', currentLangConfig);
       return;
     }
@@ -104,7 +104,7 @@ export const LanguageProvider = ({ children }) => {
       document.documentElement.setAttribute('lang', currentLangConfig.code);
       
       // Add RTL class to body for additional styling
-      if (isRTL) {
+      if(isRTL) {
         document.body.classList.add('rtl');
         document.body.classList.remove('ltr');
       } else {
@@ -114,8 +114,8 @@ export const LanguageProvider = ({ children }) => {
       
       // Add/remove RTL class to root element
       const root = document.getElementById('root');
-      if (root) {
-        if (isRTL) {
+      if(root) {
+        if(isRTL) {
           root.classList.add('rtl-layout');
           root.classList.remove('ltr-layout');
         } else {
@@ -126,7 +126,7 @@ export const LanguageProvider = ({ children }) => {
 
       // Add smooth transition class
       document.body.style.transition = 'all 0.3s ease-in-out';
-      if (root) {
+      if(root) {
         root.style.transition = 'all 0.3s ease-in-out';
       }
 
@@ -146,7 +146,7 @@ export const LanguageProvider = ({ children }) => {
       // Remove transition after animation completes
       setTimeout(() => {
         document.body.style.transition = '';
-        if (root) {
+        if(root) {
           root.style.transition = '';
         }
       }, 300);
@@ -157,7 +157,7 @@ export const LanguageProvider = ({ children }) => {
 
   // Enhanced setLanguage function with smooth transitions
   const setLanguage = useCallback((lang) => {
-    if (languages[lang]) {
+    if(languages[lang]) {
       setCurrentLanguage(lang);
       // The useEffect above will handle the DOM updates and storage
     }
@@ -165,9 +165,9 @@ export const LanguageProvider = ({ children }) => {
 
   // Apply user language settings from login
   const applyUserLanguageSettings = useCallback((userSettings) => {
-    if (userSettings?.preferences?.language) {
+    if(userSettings?.preferences?.language) {
       const userLanguage = userSettings.preferences.language;
-      if (languages[userLanguage]) {
+      if(languages[userLanguage]) {
         setLanguage(userLanguage);
       }
     }
@@ -176,12 +176,12 @@ export const LanguageProvider = ({ children }) => {
   // Memoized translate function with caching to prevent excessive logging
   const translate = useCallback((key) => {
     // Safety checks
-    if (!key || typeof key !== 'string') {
+    if(!key || typeof key !== 'string') {
       console.warn('Invalid translation key:', key);
       return key || '';
     }
 
-    if (!currentLangConfig || !currentLangConfig.locale) {
+    if(!currentLangConfig || !currentLangConfig.locale) {
       console.warn('Translation attempted before language config loaded');
       return key;
     }
@@ -189,9 +189,9 @@ export const LanguageProvider = ({ children }) => {
     const keys = key.split('.');
     let value = currentLangConfig.locale;
 
-    for (const k of keys) {
-      if (value && value[k]) {
-        value = value[k];
+    for(const k of keys) {
+      if(value && value[k]) {
+        value: any,
       } else {
         // Only log unique missing translations to prevent spam
         if (!translate._loggedMissing) translate._loggedMissing = new Set();
