@@ -17,7 +17,7 @@ class GridErrorBoundary extends React.Component {
     return { hasError: true };
   }
 
-  override override componentDidCatch(error, errorInfo: any) {
+  override componentDidCatch(error: Error, errorInfo: any) {
     this.setState({
       error,
       errorInfo
@@ -32,7 +32,7 @@ class GridErrorBoundary extends React.Component {
     }
   }
 
-  handleRetry: any,
+  handleRetry
       error: null,
       errorInfo: null,
       retryCount: this.state?.retryCount + 1
@@ -44,12 +44,12 @@ class GridErrorBoundary extends React.Component {
     }
   };
 
-  override override render() {
+  override render() {
     if(this.state.hasError) {
-      return Boolean(Boolean((
+      return (
         <Paper 
           elevation={2} 
-          sx: any,
+          sx={{
             m: 2, 
             textAlign: 'center',
             minHeight: '200px',
@@ -86,7 +86,7 @@ class GridErrorBoundary extends React.Component {
           
           <Box sx={{ display: 'flex', gap: 2 }}>
             <Button 
-              variant: any,
+              variant="body2"
               startIcon={<Refresh />}
               onClick={this.handleRetry}
               disabled={this.state?.retryCount >= 3}
@@ -96,7 +96,7 @@ class GridErrorBoundary extends React.Component {
             
             {this.props.fallbackComponent && (
               <Button 
-                variant: any,
+                variant="body2"
                 onClick={() => this.setState({ hasError: false })}
               >
                 Use Fallback

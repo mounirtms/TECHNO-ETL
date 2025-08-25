@@ -33,7 +33,7 @@ class ComponentErrorBoundary extends React.Component {
     return { hasError: true, error };
   }
 
-  override override componentDidCatch(error: any, errorInfo: any) {
+  override componentDidCatch(error: Error, errorInfo: any) {
     console.error('Component Error:', error, errorInfo);
     this.setState({ errorInfo });
 
@@ -50,24 +50,24 @@ class ComponentErrorBoundary extends React.Component {
     }
   }
 
-  handleRetry: any,
+  handleRetry
       error: null,
       errorInfo: null,
       retryCount: prevState?.retryCount + 1
     }));
   };
 
-  handleGoHome: any,
+  handleGoHome
   };
 
-  override override render() {
+  override render() {
     if(this.state.hasError) {
       const { componentName = 'Component', fallbackMessage, showRetry = true } = this.props;
       
-      return Boolean(Boolean((
+      return (
         <Paper 
           elevation={1} 
-          sx: any,
+          sx={{
             m: 2, 
             textAlign: 'center',
             borderRadius: 2,
@@ -90,7 +90,7 @@ class ComponentErrorBoundary extends React.Component {
             <Stack direction="row" spacing={2}>
               {showRetry && (
                 <Button
-                  variant: any,
+                  variant="body2"
                   startIcon={<Refresh />}
                   onClick={this.handleRetry}
                   disabled={this.state?.retryCount >= 3}
@@ -100,7 +100,7 @@ class ComponentErrorBoundary extends React.Component {
               )}
               
               <Button
-                variant: any,
+                variant="body2"
                 startIcon={<Home />}
                 onClick={this.handleGoHome}
               >
@@ -111,7 +111,7 @@ class ComponentErrorBoundary extends React.Component {
             {/* Development error details */}
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <Box 
-                sx: any,
+                sx={{
                   p: 2, 
                   bgcolor: 'grey.100', 
                   borderRadius: 1, 

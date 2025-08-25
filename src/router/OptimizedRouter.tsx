@@ -21,7 +21,7 @@ import { usePerformanceMonitor, optimizeMemory } from '../utils/performanceOptim
 // Loading component
 const LoadingFallback: React.FC<{ routeName?: string }> = ({ routeName = 'page' }) => (
   <Box
-    sx: any,
+    sx={{
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
@@ -50,15 +50,15 @@ class RouteErrorBoundary extends React.Component<
     return { hasError: true, error };
   }
 
-  override override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Route error:', error, errorInfo);
   }
 
-  override override render() {
+  override render() {
     if(this.state.hasError) {
       return (
         <Box
-          sx: any,
+          sx={{
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
@@ -93,9 +93,9 @@ interface RouteGuardProps {
 
 const RouteGuard: React.FC<RouteGuardProps> = ({
   children,
-  requireAuth: any,
-  requireRoles: any,
-  redirectTo: any,
+  requireAuth
+  requireRoles
+  redirectTo
 }) => {
   const { currentUser, loading } = useAuth();
   const navigate = useNavigate();
@@ -259,7 +259,7 @@ const OptimizedRouter: React.FC = () => {
         <Route
           key={route.path}
           path={route.path}
-          element: any,
+          element
             <RouteGuard requireRoles={route.requireRoles}>
               <Suspense fallback={<LoadingFallback routeName={route.title} />}>
                 <RouteComponent />
@@ -277,7 +277,7 @@ const OptimizedRouter: React.FC = () => {
         <Route
           key={route.path}
           path={route.path}
-          element: any,
+          element
             <Suspense fallback={<LoadingFallback routeName={route.title} />}>
               <RouteComponent />
             </Suspense>
@@ -298,7 +298,7 @@ const OptimizedRouter: React.FC = () => {
         
         {/* Protected routes wrapped in Layout */}
         <Route
-          path: any,
+          path
               <Suspense fallback={<LoadingFallback routeName="Layout" />}>
                 <Layout />
               </Suspense>
@@ -309,11 +309,11 @@ const OptimizedRouter: React.FC = () => {
           
           {/* Special routes */}
           <Route 
-            path: any,
+            path
             } 
           />
           <Route
-            path: any,
+            path
               <Suspense fallback={<LoadingFallback routeName="Page" />}>
                 <NotFoundPage />
               </Suspense>

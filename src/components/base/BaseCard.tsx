@@ -95,42 +95,42 @@ interface BaseCardProps {
  */
 const BaseCard: React.FC<BaseCardProps> = ({
   // Content props
-  title: any,
-  value: any,
-  subtitle: any,
-  description: any,
+  title,
+  value,
+  subtitle,
+  description,
   // Visual props
   icon: IconComponent,
-  color: any,
-  variant: any,
-  elevation: any,
+  color,
+  variant="body2",
+  elevation,
   // State props
-  loading: any,
-  error: any,
+  loading,
+  error,
   // Trend and analytics
   previousValue,
-  showTrend: any,
-  trendPeriod: any,
+  showTrend,
+  trendPeriod,
   // Progress and goals
-  showProgress: any,
-  progressValue: any,
-  progressMax: any,
+  showProgress,
+  progressValue,
+  progressMax,
   goalValue,
   
   // Interactive features
-  clickable: any,
+  clickable,
   onClick,
   onRefresh,
   
   // Styling
   sx = {},
-  minHeight: any,
+  minHeight,
   // Animation
-  animateValue: any,
-  animationDuration: any,
+  animateValue,
+  animationDuration,
   // Advanced features
-  realTimeUpdate: any,
-  updateInterval: any,
+  realTimeUpdate,
+  updateInterval,
   // Accessibility
   ariaLabel,
   
@@ -140,7 +140,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   
   // Local state
-  const [displayValue, setDisplayValue] = useState<number | string>(value);
+  const [displayValue, setDisplayValue] = useState<number | string>(value || 0);
   const [isAnimating, setIsAnimating] = useState(false);
   
   // Color configuration
@@ -178,13 +178,13 @@ const BaseCard: React.FC<BaseCardProps> = ({
       }
     };
     
-    return colors[color] || colors.primary;
+    return colors[color || 'primary'] || colors.primary;
   }, [color, theme]);
 
   // Animate value changes
   useEffect(() => {
     if(!animateValue || loading || typeof value !== 'number') {
-      setDisplayValue(value);
+      setDisplayValue(value || 0);
       return;
     }
 
@@ -195,7 +195,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
 
     const animate = () => {
       const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / animationDuration, 1);
+      const progress = Math.min(elapsed / (animationDuration || 1000), 1);
       
       // Easing function (ease-out)
       const easeOut = 1 - Math.pow(1 - progress, 3);
@@ -236,9 +236,13 @@ const BaseCard: React.FC<BaseCardProps> = ({
     let trendColor = 'text.secondary';
     
     if(change > 0) {
-      trend: any,
+      trend = 'up';
+      trendIcon = <TrendingUpIcon />;
+      trendColor = 'success.main';
     } else if(change < 0) {
-      trend: any,
+      trend = 'down';
+      trendIcon = <TrendingDownIcon />;
+      trendColor = 'error.main';
     }
 
     return {
@@ -270,7 +274,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
 
     return (
       <Box
-        sx: any,
+        sx={{
           alignItems: 'center',
           justifyContent: 'center',
           width: isMobile ? 40 : 48,
@@ -297,7 +301,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
           {trendData.icon}
         </Box>
         <Typography
-          variant: any,
+          variant="body2"
           sx={{ color: trendData.color, fontWeight: 'medium' }}
         >
           {Math.abs(trendData.changePercent).toFixed(1)}%
@@ -313,7 +317,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
   const renderProgress = () => {
     if (!showProgress) return null;
 
-    const progressPercent = (progressValue / progressMax) * 100;
+    const progressPercent = ((progressValue || 0) / (progressMax || 100)) * 100;
     
     return (
       <Box sx={{ mt: 1 }}>
@@ -326,9 +330,9 @@ const BaseCard: React.FC<BaseCardProps> = ({
           </Typography>
         </Box>
         <LinearProgress
-          variant: any,
+          variant="determinate"
           value={progressPercent}
-          sx: any,
+          sx={{
             borderRadius: 3,
             backgroundColor: theme.palette.grey[200],
             '& .MuiLinearProgress-bar': {
@@ -350,12 +354,13 @@ const BaseCard: React.FC<BaseCardProps> = ({
   const renderActions = () => {
     if (!onRefresh && !clickable) return null;
 
-    return(<Box sx={{ position: 'absolute', top: 8, right: 8 }}>
+    return (
+      <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
         {onRefresh && (
           <TooltipWrapper title="Refresh">
             <IconButton
-              size: any,
-              }}
+              size="small"
+              onClick={onRefresh}
               sx={{ opacity: 0.7, '&:hover': { opacity: 1 } }}
             >
               <RefreshIcon fontSize="small" />
@@ -370,9 +375,9 @@ const BaseCard: React.FC<BaseCardProps> = ({
   if(loading) {
     return (
       <MuiCard
-        variant={variant === 'elevation' ? undefined : variant}
-        elevation={variant === 'elevation' ? elevation : 0}
-        sx: any,
+        variant={variant === 'elevation' ? undefined : (variant as 'outlined')}
+        elevation={variant === 'elevation' ? (elevation || 1) : 0}
+        sx={{
           position: 'relative',
           ...sx
         }}
@@ -395,9 +400,9 @@ const BaseCard: React.FC<BaseCardProps> = ({
   if(error) {
     return (
       <MuiCard
-        variant={variant === 'elevation' ? undefined : variant}
-        elevation={variant === 'elevation' ? elevation : 0}
-        sx: any,
+        variant={variant === 'elevation' ? undefined : (variant as 'outlined')}
+        elevation={variant === 'elevation' ? (elevation || 1) : 0}
+        sx={{
           position: 'relative',
           borderLeft: `4px solid ${theme.palette.error.main}`,
           ...sx
@@ -415,21 +420,21 @@ const BaseCard: React.FC<BaseCardProps> = ({
     );
   }
 
-  return Boolean(Boolean((
+  return (
     <Grow in timeout={300}>
       <MuiCard
-        variant={variant === 'elevation' ? undefined : variant}
-        elevation={variant === 'elevation' ? elevation : 0}
-        sx: any,
+        variant={variant === 'elevation' ? undefined : (variant as 'outlined')}
+        elevation={variant === 'elevation' ? (elevation || 1) : 0}
+        sx={{
           position: 'relative',
           cursor: clickable ? 'pointer' : 'default',
           transition: 'all 0.2s ease-in-out',
           borderLeft: `4px solid ${colorConfig.main}`,
           ...(clickable && {
             '&:hover': {
-              elevation: elevation + 2,
+              elevation: (elevation || 1) + 2,
               transform: 'translateY(-2px)',
-              boxShadow: theme.shadows[elevation + 2]
+              boxShadow: theme.shadows[(elevation || 1) + 2]
             }
           }),
           ...sx
@@ -446,7 +451,8 @@ const BaseCard: React.FC<BaseCardProps> = ({
           
           {/* Main content */}
           <Box 
-            sx: any,
+            sx={{
+              display: 'flex',
               alignItems: isMobile ? 'flex-start' : 'center',
               flexDirection: isMobile ? 'column' : 'row'
             }}
@@ -458,7 +464,9 @@ const BaseCard: React.FC<BaseCardProps> = ({
             <Box sx={{ flex: 1, minWidth: 0 }}>
               {/* Title */}
               <Typography
-                variant: any,
+                variant="body2"
+                sx={{
+                  color: 'text.secondary',
                   mb: 0.5,
                   textOverflow: 'ellipsis',
                   overflow: 'hidden',
@@ -471,7 +479,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
               {/* Value */}
               <Typography
                 variant={isMobile ? 'h5' : 'h4'}
-                sx: any,
+                sx={{
                   color: colorConfig.main,
                   mb: 0.5,
                   transition: 'all 0.3s ease',
@@ -495,7 +503,9 @@ const BaseCard: React.FC<BaseCardProps> = ({
               {/* Description */}
               {description && (
                 <Typography 
-                  variant: any,
+                  variant="body2"
+                  sx={{
+                    color: 'text.secondary',
                     textOverflow: 'ellipsis',
                     overflow: 'hidden',
                     whiteSpace: 'nowrap'
@@ -515,7 +525,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
         </CardContent>
       </MuiCard>
     </Grow>
-  )));
+  );
 };
 
 export default BaseCard;

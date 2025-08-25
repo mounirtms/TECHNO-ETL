@@ -12,15 +12,15 @@ class ErrorBoundary extends React.Component {
     return { hasError: true, error };
   }
 
-  override override componentDidCatch(error, errorInfo: any) {
+  override componentDidCatch(error: Error, errorInfo: any) {
     console.error("Uncaught error in component:", error, errorInfo);
   }
 
-  override override render() {
+  override render() {
     if(this.state.hasError) {
       return (
         <Box
-          sx: any,
+          sx={{
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
