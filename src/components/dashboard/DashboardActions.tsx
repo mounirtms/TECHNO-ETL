@@ -27,7 +27,7 @@ import { toast } from 'react-toastify';
  * @param {Function} props.onVisibleChartsChange - Visible charts change handler
  * @returns {JSX.Element} Dashboard actions component
  */
-const DashboardActions: React.FC<{onRefresh: any, getPrices: any, syncAllStocks: any, loading: any, chartType: any, onChartTypeChange: any, visibleCharts: any, onVisibleChartsChange: any}> = ({ onRefresh,
+const DashboardActions: React.FC<{onRefresh getPrices syncAllStocks loading chartType onChartTypeChange visibleCharts onVisibleChartsChange: any}> = ({ onRefresh,
     getPrices,
     syncAllStocks,
     loading,
@@ -85,8 +85,9 @@ const DashboardActions: React.FC<{onRefresh: any, getPrices: any, syncAllStocks:
         }
     };
 
-    return Boolean(Boolean((
+    return Boolean((
         <Box sx={{
+            display: "flex",
             display: 'flex',
             alignItems: 'center',
             gap: 2,
@@ -95,38 +96,38 @@ const DashboardActions: React.FC<{onRefresh: any, getPrices: any, syncAllStocks:
             {/* Refresh Button */}
             <Tooltip title="Refresh Dashboard Data">
                 <Button
-                    variant: any,
+                    variant="body2"
                     startIcon={loading ? <CircularProgress size={16} /> : <Refresh />}
                     onClick={onRefresh}
                     disabled={loading}
-                    size: any,
+                    size="small"
             {/* Sync Prices Button */}
             <Tooltip title="Sync Prices from MDM Database">
                 <Button
-                    variant: any,
+                    variant="body2"
                     startIcon={priceLoading ? <CircularProgress size={16} /> : <SyncAlt />}
                     onClick={handleSyncPrices}
                     disabled={loading || priceLoading}
-                    size: any,
+                    size="small"
             {/* Sync Stocks Button */}
             <Tooltip title="Sync Stock Levels from MDM Database">
                 <Button
-                    variant: any,
+                    variant="body2"
                     startIcon={syncLoading ? <CircularProgress size={16} /> : <SyncAlt />}
                     onClick={handleSyncStocks}
                     disabled={loading || syncLoading}
-                    size: any,
+                    size="small"
             {/* Settings Menu */}
             <Tooltip title="Dashboard Settings">
                 <Button
-                    variant: any,
+                    variant="body2"
                     startIcon={<Settings />}
                     onClick={handleSettingsClick}
-                    size: any,
+                    size="small"
                 anchorEl={settingsAnchorEl}
                 open={Boolean(settingsAnchorEl)}
                 onClose={handleSettingsClose}
-                PaperProps: any,
+                PaperProps
                     sx: { minWidth: 200 }
                 }}
             >
@@ -165,39 +166,39 @@ const DashboardActions: React.FC<{onRefresh: any, getPrices: any, syncAllStocks:
                     </ListItemIcon>
                     <ListItemText primary="Orders Chart" />
                     <Chip
-                        size: any,
+                        size="small"
                         label={visibleCharts.orders ? 'ON' : 'OFF'}
                         color={visibleCharts.orders ? 'success' : 'default'}
-                        variant: any,
+                        variant="body2"
                 <MenuItem onClick={() => handleToggleChart('customers')}>
                     <ListItemIcon>
                         <ShowChart />
                     </ListItemIcon>
                     <ListItemText primary="Customers Chart" />
                     <Chip
-                        size: any,
+                        size="small"
                         label={visibleCharts.customers ? 'ON' : 'OFF'}
                         color={visibleCharts.customers ? 'success' : 'default'}
-                        variant: any,
+                        variant="body2"
                 <MenuItem onClick={() => handleToggleChart('products')}>
                     <ListItemIcon>
                         <PieChartIcon />
                     </ListItemIcon>
                     <ListItemText primary="Products Chart" />
                     <Chip
-                        size: any,
+                        size="small"
                         label={visibleCharts.products ? 'ON' : 'OFF'}
                         color={visibleCharts.products ? 'success' : 'default'}
-                        variant: any,
+                        variant="body2"
             {/* Status Indicators */}
             {(syncLoading || priceLoading) && (
-                <Alert severity="info" sx={{ ml: 2 }}>
+                <Alert severity="info" sx={{ display: "flex", ml: 2 }}>
                     {syncLoading && 'Syncing stock levels...'}
                     {priceLoading && 'Syncing prices...'}
                 </Alert>
             )}
         </Box>
-    )));
+    )))));
 };
 
 export default DashboardActions;

@@ -162,9 +162,9 @@ const PreferencesTab = () => {
     const prefs = settings?.preferences || {};
 
     return (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ display: "flex", p: 3 }}>
             {/* Header with Actions */}
-            <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
+            <Box sx={{ display: "flex", mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
                 <Box>
                     <Typography variant="h5" gutterBottom>
                         {translate('profile.preferences.title')}
@@ -179,31 +179,31 @@ const PreferencesTab = () => {
                         <Chip
                             icon={<Warning />}
                             label={translate('profile.preferences.unsavedChanges')}
-                            color: any,
+                            color
                     )}
                     <Button
-                        variant: any,
+                        variant="body2"
                         startIcon={<Download />}
                         onClick={handleExport}
                     >
                         {translate('profile.preferences.export')}
                     </Button>
                     <Button
-                        variant: any,
+                        variant="body2"
                         startIcon={<Upload />}
                         onClick={handleImport}
                     >
                         {translate('profile.preferences.import')}
                     </Button>
                     <Button
-                        variant: any,
+                        variant="body2"
                         startIcon={<RestoreFromTrash />}
                         onClick={handleReset}
-                        color: any,
+                        color
                         {translate('profile.preferences.reset')}
                     </Button>
                     <Button
-                        variant: any,
+                        variant="body2"
                         startIcon={loading ? <CircularProgress size={16} /> : <Save />}
                         onClick={handleSave}
                         disabled={loading || !isDirty}
@@ -215,10 +215,10 @@ const PreferencesTab = () => {
 
             {/* Hidden file input for import */}
             <input
-                type: any,
+                type
                 ref={fileInputRef}
                 onChange={(e) => handleFileImport}
-                accept: any,
+                accept
                 style={{ display: 'none' }}
             />
 
@@ -228,7 +228,7 @@ const PreferencesTab = () => {
                 onChange={(e) => handleAccordionChange('appearance')}
             >
                 <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Palette color="primary" />
                         <Typography variant="h6">{translate('profile.preferences.appearance.title')}</Typography>
                     </Box>
@@ -241,15 +241,15 @@ const PreferencesTab = () => {
                                 <InputLabel>{translate('profile.preferences.appearance.language.title')}</InputLabel>
                                 <Select
                                     value={prefs.language || 'en'}
-                                    onChange: any,
+                                    onChange
                                         handlePreferenceChange('preferences', 'language', e.target.value);
                                         setLanguage(e.target.value);
                                     }}
                                     label={translate('profile.preferences.appearance.language.title')}
                                 >
-                                    {Object.entries(languages).map(([key: any: any, lang]: any: any) => (
+                                    {Object.entries(languages).map(([key: any lang]: any: any: any: any) => (
                                         <MenuItem key={key} value={key}>
-                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                                                 <span>🌐</span>
                                                 <span>{translate(`profile.preferences.appearance.language.availableLanguages.${key}`) || lang.name}</span>
                                             </Box>
@@ -265,7 +265,7 @@ const PreferencesTab = () => {
                                 <InputLabel>{translate('profile.preferences.appearance.theme.title')}</InputLabel>
                                 <Select
                                     value={prefs.theme || mode || 'system'}
-                                    onChange: any,
+                                    onChange
                                         handlePreferenceChange('preferences', 'theme', e.target.value);
                                         setThemeMode(e.target.value as 'light' | 'dark' | 'system');
                                     }}
@@ -284,7 +284,7 @@ const PreferencesTab = () => {
                                 <InputLabel>{translate('profile.preferences.appearance.fontSize.title')}</InputLabel>
                                 <Select
                                     value={prefs.fontSize || 'medium'}
-                                    onChange: any,
+                                    onChange
                                         handlePreferenceChange('preferences', 'fontSize', e.target.value);
                                         setFontSize(e.target.value as 'small' | 'medium' | 'large');
                                     }}
@@ -303,7 +303,7 @@ const PreferencesTab = () => {
                                 <InputLabel>{translate('profile.preferences.appearance.density.title')}</InputLabel>
                                 <Select
                                     value={density || 'standard'}
-                                    onChange: any,
+                                    onChange
                                         handlePreferenceChange('preferences', 'density', e.target.value);
                                         setDensity(e.target.value);
                                     }}
@@ -322,15 +322,15 @@ const PreferencesTab = () => {
                                 <InputLabel>Color Theme</InputLabel>
                                 <Select
                                     value={colorPreset || 'techno'}
-                                    onChange: any,
+                                    onChange
                                         handlePreferenceChange('preferences', 'colorPreset', e.target.value);
                                         setColorPreset(e.target.value);
                                     }}
-                                    label: any,
+                                    label
                         {/* Animations */}
                         <Grid size={{ xs: 12 }}>
                             <FormControlLabel
-                                control: any,
+                                control
                                         checked={prefs.animations !== false}
                                         onChange={(e) => handlePreferenceChange('preferences', 'animations', e.target.checked)}
                                     />
@@ -348,7 +348,7 @@ const PreferencesTab = () => {
                 onChange={(e) => handleAccordionChange('performance')}
             >
                 <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Speed color="primary" />
                         <Typography variant="h6">{translate('profile.preferences.performance.title')}</Typography>
                     </Box>
@@ -365,13 +365,13 @@ const PreferencesTab = () => {
                                 min={10}
                                 max={100}
                                 step={5}
-                                marks: any,
+                                marks
                                     { value: 10, label: '10' },
                                     { value: 25, label: '25' },
                                     { value: 50, label: '50' },
                                     { value: 100, label: '100' }
                                 ]}
-                                valueLabelDisplay: any,
+                                valueLabelDisplay
                         <Grid size={{ xs: 12, md: 6 }}>
                             <Typography variant="subtitle1" gutterBottom>
                                 {translate('profile.preferences.performance.refreshInterval.title')}
@@ -382,13 +382,13 @@ const PreferencesTab = () => {
                                 min={10}
                                 max={300}
                                 step={10}
-                                marks: any,
+                                marks
                                     { value: 10, label: '10s' },
                                     { value: 30, label: '30s' },
                                     { value: 60, label: '1m' },
                                     { value: 300, label: '5m' }
                                 ]}
-                                valueLabelDisplay: any,
+                                valueLabelDisplay
                                 disabled={!prefs.autoRefresh}
                             />
                         </Grid>
@@ -396,7 +396,7 @@ const PreferencesTab = () => {
                         <Grid size={{ xs: 12 }}>
                             <Stack spacing={2}>
                                 <FormControlLabel
-                                    control: any,
+                                    control
                                             checked={(prefs)?.enableVirtualization !== false}
                                             onChange={(e) => handlePreferenceChange('preferences', 'enableVirtualization', e.target.checked)}
                                         />
@@ -404,7 +404,7 @@ const PreferencesTab = () => {
                                     label={translate('profile.preferences.performance?.enableVirtualization.title')}
                                 />
                                 <FormControlLabel
-                                    control: any,
+                                    control
                                             checked={(prefs)?.cacheEnabled !== false}
                                             onChange={(e) => handlePreferenceChange('preferences', 'cacheEnabled', e.target.checked)}
                                         />
@@ -412,7 +412,7 @@ const PreferencesTab = () => {
                                     label={translate('profile.preferences.performance?.cacheEnabled.title')}
                                 />
                                 <FormControlLabel
-                                    control: any,
+                                    control
                                             checked={prefs.autoRefresh ===true}
                                             onChange={(e) => handlePreferenceChange('preferences', 'autoRefresh', e.target.checked)}
                                         />
@@ -420,7 +420,7 @@ const PreferencesTab = () => {
                                     label={translate('profile.preferences.performance.autoRefresh.title')}
                                 />
                                 <FormControlLabel
-                                    control: any,
+                                    control
                                             checked={(prefs)?.lazyLoading !== false}
                                             onChange={(e) => handlePreferenceChange('preferences', 'lazyLoading', e.target.checked)}
                                         />
@@ -439,7 +439,7 @@ const PreferencesTab = () => {
                 onChange={(e) => handleAccordionChange('notifications')}
             >
                 <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Notifications color="primary" />
                         <Typography variant="h6">{translate('profile.preferences.notifications.title')}</Typography>
                     </Box>
@@ -448,7 +448,7 @@ const PreferencesTab = () => {
                     <Grid container spacing={3}>
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
-                                control: any,
+                                control
                                         checked={prefs.emailNotifications !== false}
                                         onChange={(e) => handlePreferenceChange('preferences', 'emailNotifications', e.target.checked)}
                                     />
@@ -458,7 +458,7 @@ const PreferencesTab = () => {
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
-                                control: any,
+                                control
                                         checked={prefs.pushNotifications ===true}
                                         onChange={(e) => handlePreferenceChange('preferences', 'pushNotifications', e.target.checked)}
                                     />
@@ -468,7 +468,7 @@ const PreferencesTab = () => {
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
-                                control: any,
+                                control
                                         checked={prefs.soundEnabled !== false}
                                         onChange={(e) => handlePreferenceChange('preferences', 'soundEnabled', e.target.checked)}
                                     />
@@ -486,7 +486,7 @@ const PreferencesTab = () => {
                 onChange={(e) => handleAccordionChange('accessibility')}
             >
                 <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Accessibility color="primary" />
                         <Typography variant="h6">{translate('profile.preferences.accessibility.title')}</Typography>
                     </Box>
@@ -495,7 +495,7 @@ const PreferencesTab = () => {
                     <Grid container spacing={3}>
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
-                                control: any,
+                                control
                                         checked={prefs.highContrast ===true}
                                         onChange={(e) => handlePreferenceChange('preferences', 'highContrast', e.target.checked)}
                                     />
@@ -505,7 +505,7 @@ const PreferencesTab = () => {
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
-                                control: any,
+                                control
                                         checked={(prefs)?.largeText ===true}
                                         onChange={(e) => handlePreferenceChange('preferences', 'largeText', e.target.checked)}
                                     />
@@ -515,7 +515,7 @@ const PreferencesTab = () => {
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
-                                control: any,
+                                control
                                         checked={(prefs)?.keyboardNavigation !== false}
                                         onChange={(e) => handlePreferenceChange('preferences', 'keyboardNavigation', e.target.checked)}
                                     />
@@ -525,7 +525,7 @@ const PreferencesTab = () => {
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6 }}>
                             <FormControlLabel
-                                control: any,
+                                control
                                         checked={(prefs)?.screenReader ===true}
                                         onChange={(e) => handlePreferenceChange('preferences', 'screenReader', e.target.checked)}
                                     />
@@ -543,7 +543,7 @@ const PreferencesTab = () => {
                 onChange={(e) => handleAccordionChange('security')}
             >
                 <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Security color="primary" />
                         <Typography variant="h6">{translate('profile.preferences.security.title')}</Typography>
                     </Box>
@@ -560,17 +560,17 @@ const PreferencesTab = () => {
                                 min={5}
                                 max={120}
                                 step={5}
-                                marks: any,
+                                marks
                                     { value: 5, label: '5m' },
                                     { value: 30, label: '30m' },
                                     { value: 60, label: '1h' },
                                     { value: 120, label: '2h' }
                                 ]}
-                                valueLabelDisplay: any,
+                                valueLabelDisplay
                         <Grid size={{ xs: 12 }}>
                             <Stack spacing={2}>
                                 <FormControlLabel
-                                    control: any,
+                                    control
                                             checked={prefs.twoFactorEnabled ===true}
                                             onChange={(e) => handlePreferenceChange('preferences', 'twoFactorEnabled', e.target.checked)}
                                         />
@@ -578,7 +578,7 @@ const PreferencesTab = () => {
                                     label={translate('profile.preferences.security.twoFactorEnabled.title')}
                                 />
                                 <FormControlLabel
-                                    control: any,
+                                    control
                                             checked={prefs.auditLogging !== false}
                                             onChange={(e) => handlePreferenceChange('preferences', 'auditLogging', e.target.checked)}
                                         />

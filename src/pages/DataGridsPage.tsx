@@ -43,18 +43,18 @@ import GridTabNavigation from '../components/Navigation/GridTabNavigation';
 /**
  * Page Header Component
  */
-const DataGridsHeader = ({ isFullscreen, onToggleFullscreen, onExport, onImport, onRefreshAll  }: { isFullscreen: any, onToggleFullscreen: any, onExport: any, onImport: any, onRefreshAll: any }) => {
+const DataGridsHeader = ({ isFullscreen, onToggleFullscreen, onExport, onImport, onRefreshAll  }: { isFullscreen onToggleFullscreen onExport onImport onRefreshAll: any }) => {
   const { t } = useTranslation();
   const [menuAnchor, setMenuAnchor] = useState(null);
 
   return (
-    <Box sx={{ mb: 3 }}>
+    <Box sx={{ display: "flex", mb: 3 }}>
       <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
         <Box>
           <Typography variant="h4" component="h1" gutterBottom>
             {t('Data Management')}
           </Typography>
-          <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
+          <Typography variant="h6" color="text.secondary" sx={{ display: "flex", mb: 2 }}>
             {t('Comprehensive data grid interface with advanced features')}
           </Typography>
           
@@ -62,11 +62,11 @@ const DataGridsHeader = ({ isFullscreen, onToggleFullscreen, onExport, onImport,
           <Stack direction="row" spacing={1}>
             <Chip 
               label={t('Real-time Updates')} 
-              color: any,
+              color
               label={t('Auto-save Enabled')} 
-              color: any,
+              color
               label={t('5 Active Grids')} 
-              color: any,
+              color
         {/* Action Buttons */}
         <Stack direction="row" spacing={1}>
           <Tooltip title={t('Refresh All Grids')}>
@@ -82,7 +82,7 @@ const DataGridsHeader = ({ isFullscreen, onToggleFullscreen, onExport, onImport,
           </Tooltip>
           
           <Tooltip title={t('More Options')}>
-            <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}>
+            <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}>
               <MoreIcon />
             </IconButton>
           </Tooltip>
@@ -119,7 +119,7 @@ const PerformanceMetrics = ({ metrics  }: { metrics: any }) => {
   const { t } = useTranslation();
 
   return (
-    <Paper sx={{ p: 2, mb: 3, bgcolor: 'background.default' }}>
+    <Paper sx={{ display: "flex", p: 2, mb: 3, bgcolor: 'background.default' }}>
       <Typography variant="subtitle2" gutterBottom>
         {t('Performance Metrics')}
       </Typography>
@@ -232,7 +232,7 @@ const DataGridsPage = () => {
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
     >
-      <Container maxWidth="xl" sx={{ py: 3 }}>
+      <Container maxWidth="xl" sx={{ display: "flex", py: 3 }}>
         {/* Page Header */}
         <DataGridsHeader
           isFullscreen={isFullscreen}
@@ -246,7 +246,7 @@ const DataGridsPage = () => {
         <PerformanceMetrics metrics={performanceMetrics} />
 
         {/* Main Grid Navigation */}
-        <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
+        <Paper sx={{ display: "flex", borderRadius: 2, overflow: 'hidden' }}>
           <GridTabNavigation
             key={refreshKey}
             defaultTabs={['customers', 'orders', 'products', 'inventory']}
@@ -256,7 +256,7 @@ const DataGridsPage = () => {
         </Paper>
 
         {/* Footer Information */}
-        <Box sx={{ mt: 3, textAlign: 'center' }}>
+        <Box sx={{ display: "flex", mt: 3, textAlign: 'center' }}>
           <Typography variant="caption" color="text.secondary">
             {t('Data grids powered by TECHNO-ETL with real-time synchronization and intelligent caching')}
           </Typography>

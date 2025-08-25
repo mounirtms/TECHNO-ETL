@@ -61,7 +61,7 @@ const ProductAttributesGrid = () => {
       headerName: 'Attribute Code', 
       width: 150,
       renderCell: (params) => (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
           <CodeIcon fontSize="small" color="primary" />
           <Typography variant="body2" fontFamily="monospace">
             {params.value}
@@ -73,7 +73,7 @@ const ProductAttributesGrid = () => {
       headerName: 'Default Label', 
       flex: 1,
       renderCell: (params) => (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
           <LabelIcon fontSize="small" color="action" />
           <Typography variant="body2">
             {params.value}
@@ -99,7 +99,7 @@ const ProductAttributesGrid = () => {
           <Chip
             label={params.value}
             color={inputTypeColors[params.value] || 'default'}
-            size: any,
+            size="small"
       }
     },
     {
@@ -110,7 +110,7 @@ const ProductAttributesGrid = () => {
         <Chip
           label={params.value ? 'Yes' : 'No'}
           color={params.value ? 'error' : 'default'}
-          size: any,
+          size="small"
           variant={params.value ? 'filled' : 'outlined'}
         />
       )
@@ -123,7 +123,7 @@ const ProductAttributesGrid = () => {
         <Chip
           label={params.value ? 'Custom' : 'System'}
           color={params.value ? 'primary' : 'secondary'}
-          size: any,
+          size="small"
     },
     {
       field: 'scope',
@@ -139,7 +139,7 @@ const ProductAttributesGrid = () => {
           <Chip
             label={params.value}
             color={scopeColors[params.value] || 'default'}
-            size: any,
+            size="small"
       }
     },
     {
@@ -149,10 +149,10 @@ const ProductAttributesGrid = () => {
       sortable: false,
       filterable: false,
       renderCell: (params) => (
-        <Box sx={{ display: 'flex', gap: 0.5 }}>
+        <Box sx={{ display: "flex", display: 'flex', gap: 0.5 }}>
           <Tooltip title="View Details">
             <IconButton
-              size: any,
+              size="small"
               onClick={() => handleViewAttribute(params.row)}
             >
               <ViewIcon fontSize="small" />
@@ -160,7 +160,7 @@ const ProductAttributesGrid = () => {
           </Tooltip>
           <Tooltip title="Edit Attribute">
             <IconButton
-              size: any,
+              size="small"
               onClick={() => handleEditAttribute(params.row)}
               disabled={!params.row.is_user_defined}
             >
@@ -169,7 +169,7 @@ const ProductAttributesGrid = () => {
           </Tooltip>
           <Tooltip title="Manage Options">
             <IconButton
-              size: any,
+              size="small"
               onClick={() => handleManageOptions(params.row)}
               disabled={!['select', 'multiselect'].includes(params.row.frontend_input)}
             >
@@ -204,7 +204,7 @@ const ProductAttributesGrid = () => {
 
   // ===== STATISTICS UPDATE =====
   const updateStats = useCallback((attributes) => {
-    const newStats = attributes.reduce((acc: any: any, attr: any: any) => ({
+    const newStats = attributes.reduce((acc: any attr: any: any: any: any) => ({
       total: acc.total + 1,
       system: acc.system + (!attr.is_user_defined ? 1 : 0),
       userDefined: acc.userDefined + (attr.is_user_defined ? 1 : 0),
@@ -248,7 +248,7 @@ const ProductAttributesGrid = () => {
   }, [fetchAttributes]);
 
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ display: "flex", height: '100%', display: 'flex', flexDirection: 'column' }}>
       <UnifiedGrid
         { ...getStandardGridProps('productAttributes', {
           // Data
@@ -312,7 +312,7 @@ const ProductAttributesGrid = () => {
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
         attribute={selectedAttribute}
-        onSave: any,
+        onSave
           console.log('💾 Saving attribute:', updatedAttribute);
           toast.success('Attribute updated successfully');
           fetchAttributes();
@@ -325,7 +325,7 @@ const ProductAttributesGrid = () => {
         open={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
         attribute={null}
-        onSave: any,
+        onSave
           console.log('➕ Creating attribute:', newAttribute);
           toast.success('Attribute created successfully');
           fetchAttributes();
@@ -337,7 +337,7 @@ const ProductAttributesGrid = () => {
 };
 
 // ===== ATTRIBUTE DIALOG COMPONENT =====
-const AttributeDialog: React.FC<{open: any, onClose: any, attribute: any, onSave: any}> = ({ open, onClose, attribute, onSave  }) => {
+const AttributeDialog: React.FC<{open onClose attribute onSave: any}> = ({ open, onClose, attribute, onSave  }) => {
   const [formData, setFormData] = useState({
     attribute_code: '',
     frontend_label: '',
@@ -371,16 +371,16 @@ const AttributeDialog: React.FC<{open: any, onClose: any, attribute: any, onSave
         {attribute ? `Edit Attribute: ${attribute.frontend_label}` : 'Create New Attribute'}
       </DialogTitle>
       <DialogContent>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+        <Box sx={{ display: "flex", display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
           <TextField
-            label: any,
+            label
             value={formData.attribute_code}
             onChange={(e) => setFormData({ ...formData, attribute_code: e.target.value })}
             disabled={!!attribute}
             fullWidth
           />
           <TextField
-            label: any,
+            label
             value={formData.frontend_label}
             onChange={(e) => setFormData({ ...formData, frontend_label: e.target.value })}
             fullWidth
@@ -412,12 +412,12 @@ const AttributeDialog: React.FC<{open: any, onClose: any, attribute: any, onSave
             </Select>
           </FormControl>
           <FormControlLabel
-            control: any,
+            control
                 checked={formData.is_required}
                 onChange={(e) => setFormData({ ...formData, is_required: e.target.checked })}
               />
             }
-            label: any,
+            label
         <Button onClick={onClose}>Cancel</Button>
         <Button onClick={handleSave} variant="contained">
           {attribute ? 'Update' : 'Create'}

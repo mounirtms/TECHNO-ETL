@@ -89,10 +89,10 @@ export const initializeServices = (settings) => {
             const magentoBaseUrl = settings.magentoUrl.endsWith('/') 
                 ? settings.magentoUrl.slice(0, -1) 
                 : settings.magentoUrl;
-            magentoInstance: any,
+            magentoInstance
         }
         if(settings.cegidUrl) {
-            cegidInstance: any,
+            cegidInstance
         }
     }
 };

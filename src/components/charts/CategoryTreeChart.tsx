@@ -49,7 +49,7 @@ const CategoryTreeChart: React.FC<CategoryTreeChartProps> = ({ data, title = "Ca
       const data = payload[0].payload;
       return (
         <Box
-          sx: any,
+          sx={{
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             border: '1px solid #ccc',
             borderRadius: 1,
@@ -82,14 +82,14 @@ const CategoryTreeChart: React.FC<CategoryTreeChartProps> = ({ data, title = "Ca
     if (!payload || depth > 2) return null;
 
     if(depth ===1) {
-      return Boolean(Boolean((
+      return Boolean((
         <g>
           <rect
             x={x}
             y={y}
             width={width}
             height={height}
-            style: any,
+            style
               stroke: '#fff',
               strokeWidth: 2 / (depth + 1e-10),
               strokeOpacity: 1 / (depth + 1e-10),
@@ -99,9 +99,9 @@ const CategoryTreeChart: React.FC<CategoryTreeChartProps> = ({ data, title = "Ca
             <text
               x={x + width / 2}
               y={y + height / 2}
-              textAnchor: any,
+              textAnchor
               fontSize={Math.min(width / 8, height / 4, 14)}
-              fontWeight: any,
+              fontWeight
               {name}
             </text>
           )}
@@ -109,28 +109,27 @@ const CategoryTreeChart: React.FC<CategoryTreeChartProps> = ({ data, title = "Ca
             <text
               x={x + width / 2}
               y={y + height / 2 + 16}
-              textAnchor: any,
+              textAnchor
               fontSize={Math.min(width / 12, height / 6, 10)}
             >
               {payload?.value || 0} products
             </text>
           )}
         </g>
-      )));
+      )))));
     }
     return null;
   };
 
   if(!data || data.length ===0) {
     return (
-      <Card sx={{ height: 400 }}>
+      <Card sx={{ display: "flex", height: 400 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
             {title}
           </Typography>
           <Box 
-            sx: any,
-              alignItems: 'center', 
+            sx={{
               justifyContent: 'center', 
               height: 300,
               color: 'text.secondary'
@@ -145,14 +144,14 @@ const CategoryTreeChart: React.FC<CategoryTreeChartProps> = ({ data, title = "Ca
 
   // Filter out categories with no products and sort by value
   const filteredData = data
-    .filter((item: CategoryData: any: any) => item.value > 0)
+    .filter((item: CategoryData: any: any: any: any) => item.value > 0)
     .sort((a: CategoryData, b: CategoryData) => b.value - a.value)
     .slice(0, 20); // Show top 20 categories
 
   const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#8dd1e1', '#d084d0'];
 
   return (
-    <Card sx={{ height: 400 }}>
+    <Card sx={{ display: "flex", height: 400 }}>
       <CardContent>
         <Typography variant="h6" gutterBottom>
           {title}
@@ -160,9 +159,9 @@ const CategoryTreeChart: React.FC<CategoryTreeChartProps> = ({ data, title = "Ca
         <ResponsiveContainer width="100%" height={300}>
           <Treemap
             data={filteredData}
-            dataKey: any,
+            dataKey
             aspectRatio={4 / 3}
-            stroke: any,
+            stroke
             content={<CustomContent colors={colors} />}
           >
             <Tooltip content={<CustomTooltip />} />

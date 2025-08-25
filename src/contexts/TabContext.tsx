@@ -250,7 +250,7 @@ export const TabProvider = ({ children, sidebarOpen }: { children: ReactNode; si
         if(!activeTabItem) {
             console.warn(`No tab found for activeTab: ${activeTab}`);
             return () => (
-                <Box sx={{ p: 2, textAlign: 'center', color: 'error.main' }}>
+                <Box sx={{ display: "flex", p: 2, textAlign: 'center', color: 'error.main' }}>
                     No component found for this tab.
                 </Box>
             );
@@ -261,7 +261,7 @@ export const TabProvider = ({ children, sidebarOpen }: { children: ReactNode; si
         if(!Component) {
             console.warn(`No component mapped for tab: ${activeTabItem.id}`);
             return () => (
-                <Box sx={{ p: 2, textAlign: 'center', color: 'error.main' }}>
+                <Box sx={{ display: "flex", p: 2, textAlign: 'center', color: 'error.main' }}>
                     Component not found for {activeTabItem.label}
                 </Box>
             );

@@ -191,7 +191,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
     for(const k of keys) {
       if(value && value[k]) {
-        value: any,
+        value
       } else {
         // Only log unique missing translations to prevent spam
         if (!translate._loggedMissing) translate._loggedMissing = new Set();

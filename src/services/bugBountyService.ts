@@ -85,7 +85,7 @@ class BugBountyService {
   /**
    * Submit a new bug report
    */
-  async submitBug(bugData: any) {
+  async submitBug(bugData) {
     try {
       const timestamp = Date.now();
       const bugId = `bug_${timestamp}_${Math.random().toString(36).substr(2, 9)}`;
@@ -140,7 +140,7 @@ class BugBountyService {
       await this.updateGlobalStats('submitted', bugData?.category);
 
       return { success: true, bugId, bug };
-    } catch(error: any) {
+    } catch (error) {
       console.error('Error submitting bug:', error);
       return { success: false, error: error.message };
     }
@@ -149,7 +149,7 @@ class BugBountyService {
   /**
    * Calculate reward based on category and severity
    */
-  calculateReward(category, severity: any) {
+  calculateReward(category, severity) {
     const categoryData = BUG_CATEGORIES[category] || BUG_CATEGORIES.LOW;
     const baseReward = categoryData.baseReward;
     const multiplier = categoryData.multiplier;
@@ -168,7 +168,7 @@ class BugBountyService {
   /**
    * Get all bugs with filtering options
    */
-  async getBugs(filters: any = {}) {
+  async getBugs(filters = {}) {
     try {
       const bugsSnapshot = await get(this.bugsRef);
       if (!bugsSnapshot.exists()) {
@@ -179,20 +179,20 @@ class BugBountyService {
 
       // Apply filters
       if(filters?.category) {
-        bugs: any,
+        bugs
       }
       if(filters?.status) {
-        bugs: any,
+        bugs
       }
       if(filters?.testerId) {
-        bugs: any,
+        bugs
       }
 
       // Sort by submission date (newest first)
       bugs.sort((a, b) => b.submittedAt - a.submittedAt);
 
       return { success: true, bugs };
-    } catch(error: any) {
+    } catch (error) {
       console.error('Error getting bugs:', error);
       return { success: false, error: error.message };
     }
@@ -234,7 +234,7 @@ class BugBountyService {
       await this.updateGlobalStats(status, bug?.category);
 
       return { success: true };
-    } catch(error: any) {
+    } catch (error) {
       console.error('Error updating bug status:', error);
       return { success: false, error: error.message };
     }
@@ -243,7 +243,7 @@ class BugBountyService {
   /**
    * Update tester statistics
    */
-  async updateTesterStats(testerId, action: any) {
+  async updateTesterStats(testerId, action) {
     try {
       const testerRef = ref(database, `bugBounty/testers/${testerId}`);
       const testerSnapshot = await get(testerRef);
@@ -279,7 +279,7 @@ class BugBountyService {
 
       await set(testerRef, stats);
       return { success: true };
-    } catch(error: any) {
+    } catch (error) {
       console.error('Error updating tester stats:', error);
       return { success: false, error: error.message };
     }
@@ -288,7 +288,7 @@ class BugBountyService {
   /**
    * Update global statistics
    */
-  async updateGlobalStats(action, category: any) {
+  async updateGlobalStats(action, category) {
     try {
       const statsSnapshot = await get(this.statsRef);
       let stats = statsSnapshot.exists() ? statsSnapshot.val() : {
@@ -317,7 +317,7 @@ class BugBountyService {
 
       await set(this.statsRef, stats);
       return { success: true };
-    } catch(error: any) {
+    } catch (error) {
       console.error('Error updating global stats:', error);
       return { success: false, error: error.message };
     }
@@ -342,7 +342,7 @@ class BugBountyService {
         success: true, 
         leaderboard: testers.slice(0, limit) 
       };
-    } catch(error: any) {
+    } catch (error) {
       console.error('Error getting leaderboard:', error);
       return { success: false, error: error.message };
     }
@@ -362,7 +362,7 @@ class BugBountyService {
       };
 
       return { success: true, stats };
-    } catch(error: any) {
+    } catch (error) {
       console.error('Error getting stats:', error);
       return { success: false, error: error.message };
     }

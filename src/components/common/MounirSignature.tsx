@@ -54,7 +54,7 @@ const RoleText = styled(Typography)(({ theme }) => ({
   fontSize: '0.8rem',
 }));
 
-const MounirSignature = ({ type = 'signature', showText = true, showRole = true  }: { type = 'signature': any, showText = true: any, showRole = true: any }) => {
+const MounirSignature = ({ type = 'signature', showText = true, showRole = true  }: { type = 'signature': any, showText = true showRole = true: any }) => {
   const theme = useTheme();
   
   const signatureData = {
@@ -82,7 +82,7 @@ const MounirSignature = ({ type = 'signature', showText = true, showRole = true 
 
   const currentSignature = signatureData[type] || signatureData.signature;
 
-  return Boolean(Boolean((
+  return Boolean((
     <SignatureContainer theme={theme}>
       <SignatureImage 
         src={currentSignature.src} 
@@ -101,7 +101,7 @@ const MounirSignature = ({ type = 'signature', showText = true, showRole = true 
         </RoleText>
       )}
     </SignatureContainer>
-  )));
+  )))));
 };
 
 export default MounirSignature;

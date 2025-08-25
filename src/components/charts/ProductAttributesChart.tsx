@@ -32,7 +32,7 @@ const ProductAttributesChart: React.FC<ProductAttributesChartProps> = ({ data, t
     if(active && payload && payload.length) {
       return (
         <Box
-          sx: any,
+          sx={{
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             border: '1px solid #ccc',
             borderRadius: 1,
@@ -43,7 +43,7 @@ const ProductAttributesChart: React.FC<ProductAttributesChartProps> = ({ data, t
           <Typography variant="body2" fontWeight="bold">
             {label}
           </Typography>
-          {payload?.map((entry: any: any, index: any: any) => (
+          {payload?.map((entry: any index: any: any: any: any) => (
             <Typography key={index} variant="body2" style={{ color: entry.color }}>
               {entry.name}: {entry.value}
             </Typography>
@@ -56,14 +56,13 @@ const ProductAttributesChart: React.FC<ProductAttributesChartProps> = ({ data, t
 
   if(!data || data.length ===0) {
     return (
-      <Card sx={{ height: 400 }}>
+      <Card sx={{ display: "flex", height: 400 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
             {title}
           </Typography>
           <Box 
-            sx: any,
-              alignItems: 'center', 
+            sx={{
               justifyContent: 'center', 
               height: 300,
               color: 'text.secondary'
@@ -77,7 +76,7 @@ const ProductAttributesChart: React.FC<ProductAttributesChartProps> = ({ data, t
   }
 
   return (
-    <Card sx={{ height: 400 }}>
+    <Card sx={{ display: "flex", height: 400 }}>
       <CardContent>
         <Typography variant="h6" gutterBottom>
           {title}
@@ -92,7 +91,7 @@ const ProductAttributesChart: React.FC<ProductAttributesChartProps> = ({ data, t
               tick={false}
             />
             <Radar
-              name: any,
+              name
               fillOpacity={0.3}
               strokeWidth={2}
             />

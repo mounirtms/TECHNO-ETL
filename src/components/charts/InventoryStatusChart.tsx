@@ -33,9 +33,9 @@ const InventoryStatusChart: React.FC<InventoryStatusChartProps> = ({ data, title
   // Custom tooltip for inventory chart
   const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
     if(active && payload && payload.length) {
-      return Boolean(Boolean((
+      return Boolean((
         <Box
-          sx: any,
+          sx={{
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             border: '1px solid #ccc',
             borderRadius: 1,
@@ -46,7 +46,7 @@ const InventoryStatusChart: React.FC<InventoryStatusChartProps> = ({ data, title
           <Typography variant="body2" fontWeight="bold">
             {label}
           </Typography>
-          {payload?.map((entry: any: any, index: any: any) => (
+          {payload?.map((entry: any index: any: any: any: any) => (
             <Typography key={index} variant="body2" style={{ color: entry.color }}>
               {entry.name}: {entry.value}
               {entry.name.includes('Stock') && ' units'}
@@ -54,21 +54,20 @@ const InventoryStatusChart: React.FC<InventoryStatusChartProps> = ({ data, title
             </Typography>
           ))}
         </Box>
-      )));
+      )))));
     }
     return null;
   };
 
   if(!data || data.length ===0) {
     return (
-      <Card sx={{ height: 400 }}>
+      <Card sx={{ display: "flex", height: 400 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
             {title}
           </Typography>
           <Box 
-            sx: any,
-              alignItems: 'center', 
+            sx={{
               justifyContent: 'center', 
               height: 300,
               color: 'text.secondary'
@@ -82,7 +81,7 @@ const InventoryStatusChart: React.FC<InventoryStatusChartProps> = ({ data, title
   }
 
   return (
-    <Card sx={{ height: 400 }}>
+    <Card sx={{ display: "flex", height: 400 }}>
       <CardContent>
         <Typography variant="h6" gutterBottom>
           {title}
@@ -96,22 +95,22 @@ const InventoryStatusChart: React.FC<InventoryStatusChartProps> = ({ data, title
             <Tooltip content={<CustomTooltip />} />
             <Legend />
             <Bar
-              yAxisId: any,
+              yAxisId
               radius={[2, 2, 0, 0]}
             />
             <Bar
-              yAxisId: any,
+              yAxisId
               radius={[2, 2, 0, 0]}
             />
             <Bar
-              yAxisId: any,
+              yAxisId
               radius={[2, 2, 0, 0]}
             />
             <Line
-              yAxisId: any,
+              yAxisId
               strokeWidth={3}
               dot={{ fill: '#2196f3', strokeWidth: 2, r: 4 }}
-              name: any,
+              name
 };
 
 export default InventoryStatusChart;

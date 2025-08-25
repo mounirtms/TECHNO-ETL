@@ -176,14 +176,14 @@ export const parseCSVFile = (file) => {
     reader.onload = (e) => {
       try {
         const csv = e.target.result;
-        const lines = csv?.split('\n').filter((line: any: any) => line.trim());
+        const lines = csv?.split('\n').filter((line: any: any: any: any) => line.trim());
         
         if(lines.length < 2) {
           reject(new Error('CSV file must have at least a header and one data row'));
           return;
         }
         
-        const headers = lines[0]?.split(',').map((h: any: any) => h.trim().toLowerCase());
+        const headers = lines[0]?.split(',').map((h: any: any: any: any) => h.trim().toLowerCase());
         const data = [];
         
         // Find required columns
@@ -202,7 +202,7 @@ export const parseCSVFile = (file) => {
         
         // Parse data rows
         for(let i = 1; i < lines.length; i++) {
-          const values = lines[i]?.split(',').map((v: any: any) => v.trim());
+          const values = lines[i]?.split(',').map((v: any: any: any: any) => v.trim());
           
           if (values.length >= Math.max(skuIndex, imageIndex) + 1) {
             const sku = values[skuIndex];

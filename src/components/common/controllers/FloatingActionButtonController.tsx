@@ -10,9 +10,9 @@ interface FloatingActionButtonControllerProps {
 
 const FloatingActionButtonController: React.FC<FloatingActionButtonControllerProps> = ({ 
     children,
-    position: any,
-    offset: any,
-    zIndex: any,
+    position
+    offset
+    zIndex
 }) => {
     // Logic for the floating action button will be added here
     return <>{children}</>;

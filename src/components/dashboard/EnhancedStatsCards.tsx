@@ -32,9 +32,9 @@ import { useTheme } from '@mui/material/styles';
  * Enhanced Stats Cards Component
  * Professional 8-card dashboard with advanced metrics and animations
  */
-const EnhancedStatsCards: React.FC<{stats: any, settings: any, loading: any: any, onNavigate: any, onCardAction: any}> = ({ stats, 
+const EnhancedStatsCards: React.FC<{stats settings loading: any onNavigate onCardAction: any}> = ({ stats, 
   settings, 
-  loading: any,
+  loading
   onNavigate,
   onCardAction 
  }) => {
@@ -159,7 +159,7 @@ const EnhancedStatsCards: React.FC<{stats: any, settings: any, loading: any: any
   ];
 
   // Filter cards based on settings
-  const visibleCards = statCards.filter((card: any: any) => 
+  const visibleCards = statCards.filter((card: any: any: any: any) => 
     settings?.statCards?.[card.key] !== false
   );
 
@@ -180,14 +180,14 @@ const EnhancedStatsCards: React.FC<{stats: any, settings: any, loading: any: any
   if(loading) {
     return (
       <Grid { ...{container: true}} spacing={3}>
-        {Array.from({ length: 8 }).map((_: any: any, index: any: any) => (
+        {Array.from({ length: 8 }).map((_: any index: any: any: any: any) => (
           <Grid size={{ xs: 12, md: 6, lg: 4, xl: 3 }} key={index}>
-            <Card sx={{ height: 200, borderRadius: 3 }}>
-              <CardContent sx={{ p: 3 }}>
+            <Card sx={{ display: "flex", height: 200, borderRadius: 3 }}>
+              <CardContent sx={{ display: "flex", p: 3 }}>
                 <Skeleton variant="circular" width={48} height={48} />
-                <Skeleton variant="text" width="60%" sx={{ mt: 2 }} />
+                <Skeleton variant="text" width="60%" sx={{ display: "flex", mt: 2 }} />
                 <Skeleton variant="text" width="40%" />
-                <Skeleton variant="rectangular" height={6} sx={{ mt: 2 }} />
+                <Skeleton variant="rectangular" height={6} sx={{ display: "flex", mt: 2 }} />
               </CardContent>
             </Card>
           </Grid>
@@ -198,17 +198,16 @@ const EnhancedStatsCards: React.FC<{stats: any, settings: any, loading: any: any
 
   return (
     <Grid { ...{container: true}} spacing={3}>
-      {visibleCards.map((card: any: any, index: any: any) => (
+      {visibleCards.map((card: any index: any: any: any: any) => (
         <Grid 
-          size: any,
-            md: 6, 
+          size="small"
             lg: 4, 
             xl: visibleCards.length <= 4 ? 3 : visibleCards.length <= 6 ? 4 : 3 
           }} 
           key={card.key}
         >
           <Card
-            sx: any,
+            sx={{
               background: `linear-gradient(135deg, ${theme.palette[card.color].light}15, ${theme.palette[card.color].main}08)`,
               border: `1px solid ${theme.palette[card.color].light}30`,
               borderRadius: 3,
@@ -225,16 +224,17 @@ const EnhancedStatsCards: React.FC<{stats: any, settings: any, loading: any: any
               } : {}
             }}
           >
-            <CardContent sx={{ p: settings?.general?.compactMode ? 2 : 3, height: '100%' }}>
+            <CardContent sx={{ display: "flex", p: settings?.general?.compactMode ? 2 : 3, height: '100%' }}>
               {/* Header */}
               <Box sx={{ 
+                display: "flex", 
                 display: 'flex', 
                 alignItems: 'flex-start', 
                 justifyContent: 'space-between', 
                 mb: 2 
               }}>
                 <Avatar
-                  sx: any,
+                  sx={{
                     bgcolor: `${card.color}.main`,
                     width: settings?.general?.compactMode ? 40 : 56,
                     height: settings?.general?.compactMode ? 40 : 56,
@@ -248,7 +248,7 @@ const EnhancedStatsCards: React.FC<{stats: any, settings: any, loading: any: any
                 </Avatar>
                 
                 <Box 
-                  className: any,
+                  className
                     gap: 0.5,
                     opacity: 0,
                     transform: 'translateX(10px)',
@@ -258,10 +258,9 @@ const EnhancedStatsCards: React.FC<{stats: any, settings: any, loading: any: any
                   <Tooltip title={`View ${card.title.toLowerCase()}`}>
                     <span>
                       <IconButton
-                        size: any,
+                        size="small"
                         onClick={() => onNavigate?.(card.key)}
-                        sx: any,
-                          boxShadow: 1,
+                        sx={{
                           '&:hover': { boxShadow: 2 }
                         }}
                       >
@@ -272,10 +271,9 @@ const EnhancedStatsCards: React.FC<{stats: any, settings: any, loading: any: any
                   <Tooltip title="More options">
                     <span>
                       <IconButton
-                        size: any,
+                        size="small"
                         onClick={() => onCardAction?.(card.key, 'menu')}
-                        sx: any,
-                          boxShadow: 1,
+                        sx={{
                           '&:hover': { boxShadow: 2 }
                         }}
                       >
@@ -287,23 +285,21 @@ const EnhancedStatsCards: React.FC<{stats: any, settings: any, loading: any: any
               </Box>
 
               {/* Value and Change */}
-              <Box sx={{ mb: 2 }}>
+              <Box sx={{ display: "flex", mb: 2 }}>
                 <Typography 
                   variant={settings?.general?.compactMode ? "h5" : "h4"} 
                   fontWeight={700} 
-                  color: any,
+                  color
                   {card.value}
                 </Typography>
                 
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                   <Chip
                     label={card.change}
-                    size: any,
+                    size="small"
                     color={card.trend === 'up' ? 'success' : card.isAlert ? 'success' : 'error'}
                     icon={card.trend === 'up' ? <TrendingUp /> : <TrendingDown />}
-                    sx: any,
-                      '& .MuiChip-icon': {
-                        fontSize: '0.875rem'
+                    sx={{
                       }
                     }}
                   />
@@ -320,6 +316,7 @@ const EnhancedStatsCards: React.FC<{stats: any, settings: any, loading: any: any
               {/* Progress */}
               <Box>
                 <Box sx={{ 
+                  display: "flex", 
                   display: 'flex', 
                   justifyContent: 'space-between', 
                   alignItems: 'center', 
@@ -329,7 +326,7 @@ const EnhancedStatsCards: React.FC<{stats: any, settings: any, loading: any: any
                     {card.isAlert ? 'Status' : 'Progress'}
                   </Typography>
                   <Typography 
-                    variant: any,
+                    variant="body2"
                     fontWeight={600} 
                     color={`${getProgressColor(card)}.main`}
                   >
@@ -337,11 +334,10 @@ const EnhancedStatsCards: React.FC<{stats: any, settings: any, loading: any: any
                   </Typography>
                 </Box>
                 <LinearProgress
-                  variant: any,
+                  variant="body2"
                   value={getProgressValue(card)}
                   color={getProgressColor(card)}
-                  sx: any,
-                    borderRadius: 4,
+                  sx={{
                     bgcolor: `${card.color}.light`,
                     '& .MuiLinearProgress-bar': {
                       borderRadius: 4,

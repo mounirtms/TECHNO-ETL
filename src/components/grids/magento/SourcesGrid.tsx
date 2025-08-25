@@ -161,12 +161,12 @@ const SourcesGrid: React.FC<{productId: any}> = ({ productId  }) => {
         },
         {
             title: 'Active Sources',
-            value: data?.filter((source: any: any) => source.enabled)?.length ?? 0,
+            value: data?.filter((source: any: any: any: any) => source.enabled)?.length ?? 0,
             color: 'success'
         },
         {
             title: 'Inactive Sources',
-            value: data?.filter((source: any: any) => !source.enabled)?.length ?? 0,
+            value: data?.filter((source: any: any: any: any) => !source.enabled)?.length ?? 0,
             color: 'error'
         }
     ];
@@ -187,7 +187,7 @@ const SourcesGrid: React.FC<{productId: any}> = ({ productId  }) => {
                 },
                 onExport: (selectedRows) => {
                     const exportData = selectedRows.length > 0
-                        ? data.filter((source: any: any) => selectedRows.includes(source.source_code))
+                        ? data.filter((source: any: any: any: any) => selectedRows.includes(source.source_code))
                         : data;
                     console.log('Exporting sources:', exportData);
                     toast.success(`Exported ${exportData.length} sources`);

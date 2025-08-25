@@ -271,17 +271,17 @@ class MagentoApi extends BaseApiService  {
   getLocalDataResponse(endpoint: any) {
     let localData;
     if (endpoint.includes('products')) {
-      localData: any,
+      localData
     } else if (endpoint.includes('customers')) {
-      localData: any,
+      localData
     } else if (endpoint.includes('orders')) {
-      localData: any,
+      localData
     } else if (endpoint.includes('invoices')) {
-      localData: any,
+      localData
     } else if (endpoint.includes('categories')) {
-      localData: any,
+      localData
     } else if (endpoint.includes('cms')) {
-      localData: any,
+      localData
     }
 
     // Apply basic filtering if params are provided
@@ -322,7 +322,7 @@ class MagentoApi extends BaseApiService  {
 
       if(response?.data?.items) {
         const enrichedResponse = {
-          items: response?.data.items.map((order: any: any) => ({ ...order,
+          items: response?.data.items.map((order: any: any: any: any) => ({ ...order,
             id: order.entity_id || order.id,
             status: order.status || 'pending',
             customer_name: order.customer_firstname 
@@ -376,7 +376,7 @@ class MagentoApi extends BaseApiService  {
 
       if(response?.data?.items) {
         const enrichedResponse = {
-          items: response?.data.items.map((customer: any: any) => ({ ...customer,
+          items: response?.data.items.map((customer: any: any: any: any) => ({ ...customer,
             id: customer.id || customer.entity_id,
             name: customer.firstname 
               ? `${customer.firstname} ${customer.lastname}`.trim()
@@ -643,7 +643,7 @@ class MagentoApi extends BaseApiService  {
 
     const addIds = (categories) => {
       if(Array.isArray(categories)) {
-        return categories.map((category: any: any) => {
+        return categories.map((category: any: any: any: any) => {
           const categoryWithId = { ...category,
             id: category.id || currentId++
           };
@@ -1385,7 +1385,7 @@ class MagentoApi extends BaseApiService  {
     if (response.status)
       switch(response.status) {
         case 400:
-          errorMessage: any,
+          errorMessage
       }
     console.log(errorMessage)
   }

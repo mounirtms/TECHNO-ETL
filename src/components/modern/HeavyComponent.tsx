@@ -21,14 +21,14 @@ const HeavyComponent: React.FC = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className: any,
+      className
         Heavy Component ({heavyData.length} items)
       </h4>
       <div className="grid grid-cols-4 gap-2">
-        {heavyData.slice(0, 8).map((item: any: any) => (
+        {heavyData.slice(0, 8).map((item: any: any: any: any) => (
           <div
             key={item.id}
-            className: any,
+            className
             {item.value.toFixed(0)}
           </div>
         ))}

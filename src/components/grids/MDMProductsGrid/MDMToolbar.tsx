@@ -26,14 +26,14 @@ import {
  * @param {number} props.selectedCount - Number of selected items
  * @returns {Object} Toolbar configuration object
  */
-const useMDMToolbarConfig: React.FC<{onRefresh: any, onSync: any, onSyncStocks: any, onSyncAll: any, onExport: any, loading: any: any, selectedCount: any: any, hasChangedData: any: any, : any}> = ({ onRefresh,
+const useMDMToolbarConfig: React.FC<{onRefresh onSync onSyncStocks onSyncAll onExport loading: any selectedCount: any hasChangedData: any : any}> = ({ onRefresh,
   onSync,
   onSyncStocks,
   onSyncAll,
   onExport,
-  loading: any,
-  selectedCount: any,
-  hasChangedData: any,
+  loading
+  selectedCount
+  hasChangedData
  }) => {
   return useMemo(() => ({
     showRefresh: true,
@@ -125,13 +125,13 @@ const useMDMToolbarConfig: React.FC<{onRefresh: any, onSync: any, onSyncStocks: 
  * @param {number} props.selectedCount - Number of selected items
  * @returns {Array} Array of custom action configurations
  */
-const useMDMCustomActions: React.FC<{onRefresh: any, onSync: any, onSyncStocks: any, onSyncAll: any, loading: any: any, selectedCount: any: any, hasChangedData: any: any, : any}> = ({ onRefresh,
+const useMDMCustomActions: React.FC<{onRefresh onSync onSyncStocks onSyncAll loading: any selectedCount: any hasChangedData: any : any}> = ({ onRefresh,
   onSync,
   onSyncStocks,
   onSyncAll,
-  loading: any,
-  selectedCount: any,
-  hasChangedData: any,
+  loading
+  selectedCount
+  hasChangedData
  }) => {
   return useMemo(() => [
     {
@@ -182,7 +182,7 @@ const useMDMCustomActions: React.FC<{onRefresh: any, onSync: any, onSyncStocks: 
  * @param {Function} props.onEdit - Edit handler function
  * @returns {Object} Context menu actions configuration
  */
-const useMDMContextMenuActions: React.FC<{onSync: any, onView: any, onEdit: any}> = ({ onSync, onView, onEdit  }) => {
+const useMDMContextMenuActions: React.FC<{onSync onView onEdit: any}> = ({ onSync, onView, onEdit  }) => {
   return useMemo(() => ({
     view: {
       enabled: true,

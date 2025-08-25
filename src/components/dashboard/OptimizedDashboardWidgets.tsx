@@ -187,26 +187,26 @@ const MetricWidget = memo(({
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
     >
-      <Card sx={{ height: '100%' }}>
+      <Card sx={{ display: "flex", height: '100%' }}>
         <CardHeader
-          avatar: any,
-            <Avatar sx={{ bgcolor: `${widget.color}.main` }}>
+          avatar
+            <Avatar sx={{ display: "flex", bgcolor: `${widget.color}.main` }}>
               <IconComponent />
             </Avatar>
           }
-          title: any,
+          title
               {t(widget.title)}
             </Typography>
           }
-          action: any,
-            <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}>
+          action
+            <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}>
               <MoreIcon />
             </IconButton>
           }
         />
         <CardContent>
           <Stack spacing={2}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Typography variant="h4" component="div" fontWeight="bold">
                 {data?.value || '0'}
               </Typography>
@@ -214,7 +214,7 @@ const MetricWidget = memo(({
                 icon={<TrendIcon />}
                 label={`${Math.abs(trend)}%`}
                 color={trendColor}
-                size: any,
+                size="small"
               {data?.description || 'No data available'}
             </Typography>
           </Stack>
@@ -263,18 +263,18 @@ const ChartWidget = memo(({
 
   const chartData = data?.chartData || [];
 
-  return Boolean(Boolean((
+  return Boolean((
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
     >
-      <Card sx={{ height: '100%' }}>
+      <Card sx={{ display: "flex", height: '100%' }}>
         <CardHeader
           title={t(widget.title)}
-          action: any,
-            <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}>
+          action
+            <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}>
               <MoreIcon />
             </IconButton>
           }
@@ -289,7 +289,7 @@ const ChartWidget = memo(({
                 <RechartsTooltip />
                 <Legend />
                 <Line 
-                  type: any,
+                  type
                   strokeWidth={2}
                   dot={{ fill: '#1976d2' }}
                 />
@@ -302,7 +302,7 @@ const ChartWidget = memo(({
                 <YAxis />
                 <RechartsTooltip />
                 <Area 
-                  type: any,
+                  type
                   fillOpacity={0.3}
                 />
               </AreaChart>
@@ -324,7 +324,7 @@ const ChartWidget = memo(({
           open={Boolean(menuAnchor)}
           onClose={() => setMenuAnchor(null)}
         >
-          <MenuItem onClick={() => { onRefresh(widget.id))); setMenuAnchor(null); }}>
+          <MenuItem onClick={() => { onRefresh(widget.id))))); setMenuAnchor(null); }}>
             <ListItemIcon><RefreshIcon /></ListItemIcon>
             <ListItemText>Refresh</ListItemText>
           </MenuItem>
@@ -380,23 +380,23 @@ const ProgressWidget = memo(({
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
     >
-      <Card sx={{ height: '100%' }}>
+      <Card sx={{ display: "flex", height: '100%' }}>
         <CardHeader
-          avatar: any,
-            <Avatar sx={{ bgcolor: `${widget.color}.main` }}>
+          avatar
+            <Avatar sx={{ display: "flex", bgcolor: `${widget.color}.main` }}>
               <IconComponent />
             </Avatar>
           }
           title={t(widget.title)}
-          action: any,
-            <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}>
+          action
+            <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}>
               <MoreIcon />
             </IconButton>
           }
         />
         <CardContent>
           <Stack spacing={2}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Typography variant="body2" color="text.secondary">
                 {data?.label || 'Progress'}
               </Typography>
@@ -405,10 +405,10 @@ const ProgressWidget = memo(({
               </Typography>
             </Box>
             <LinearProgress
-              variant: any,
+              variant="body2"
               value={progress}
               color={getStatusColor(status)}
-              sx={{ height: 8, borderRadius: 4 }}
+              sx={{ display: "flex", height: 8, borderRadius: 4 }}
             />
             <Typography variant="caption" color="text.secondary">
               {data?.description || 'No description available'}
@@ -464,8 +464,8 @@ const WidgetFactory = memo((props) => {
  */
 const OptimizedDashboardWidgets = ({ 
   customWidgets = {},
-  enableRealTime: any,
-  enableCustomization: any,
+  enableRealTime
+  enableCustomization
 }) => {
   const { t } = useTranslation();
   
@@ -478,7 +478,7 @@ const OptimizedDashboardWidgets = ({
   // Memoized visible widgets sorted by order
   const visibleWidgets = useMemo(() => {
     return Object.values(widgets)
-      .filter((widget: any: any) => widget.visible)
+      .filter((widget: any: any: any: any) => widget.visible)
       .sort((a, b) => a.order - b.order);
   }, [widgets]);
 
@@ -576,10 +576,10 @@ const OptimizedDashboardWidgets = ({
     });
   }, [visibleWidgets, fetchWidgetData]);
 
-  return(<Box sx={{ flexGrow: 1 }}>
+  return(<Box sx={{ display: "flex", flexGrow: 1 }}>
       <Grid { ...{container: true}} spacing={3}>
         <AnimatePresence>
-          {visibleWidgets.map((widget: any: any) => (
+          {visibleWidgets.map((widget: any: any: any: any) => (
             <Grid item 
               key={widget.id}
               xs={widget.size.xs}

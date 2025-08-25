@@ -77,12 +77,12 @@ const COLORS = {
 /**
  * Enhanced Metric Card with animations and trends
  */
-export const ProfessionalMetricCard: React.FC<{title: any, value: any, previousValue: any, icon: Icon: any, color: any: any, loading: any: any, subtitle: any, trend: any, onClick: any, actions: any}> = ({ title,
+export const ProfessionalMetricCard: React.FC<{title value previousValue icon: Icon color: any loading: any subtitle trend onClick actions: any}> = ({ title,
   value,
   previousValue,
   icon: Icon,
-  color: any,
-  loading: any,
+  color
+  loading
   subtitle,
   trend,
   onClick,
@@ -98,7 +98,7 @@ export const ProfessionalMetricCard: React.FC<{title: any, value: any, previousV
   
   const isPositiveTrend = trendPercentage >= 0;
 
-  return Boolean(Boolean((
+  return Boolean((
     <motion.div
       whileHover={{ y: -4, scale: 1.02 }}
       transition={{ duration: 0.2 }}
@@ -106,8 +106,7 @@ export const ProfessionalMetricCard: React.FC<{title: any, value: any, previousV
       onHoverEnd={() => setIsHovered(false)}
     >
       <Card
-        sx: any,
-          background: COLORS.gradient[color] || COLORS.gradient.primary,
+        sx={{
           color: 'white',
           cursor: onClick ? 'pointer' : 'default',
           position: 'relative',
@@ -127,10 +126,10 @@ export const ProfessionalMetricCard: React.FC<{title: any, value: any, previousV
         }}
         onClick={onClick}
       >
-        <CardContent sx={{ position: 'relative', zIndex: 1 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+        <CardContent sx={{ display: "flex", position: 'relative', zIndex: 1 }}>
+          <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
             <Avatar
-              sx: any,
+              sx={{
                 bgcolor: 'rgba(255, 255, 255, 0.2)',
                 color: 'white',
                 width: 48,
@@ -141,38 +140,38 @@ export const ProfessionalMetricCard: React.FC<{title: any, value: any, previousV
             </Avatar>
             
             {actions && (
-              <IconButton size="small" sx={{ color: 'white' }}>
+              <IconButton size="small" sx={{ display: "flex", color: 'white' }}>
                 <MoreVert />
               </IconButton>
             )}
           </Box>
 
-          <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.9)', mb: 1 }}>
+          <Typography variant="h6" sx={{ display: "flex", color: 'rgba(255, 255, 255, 0.9)', mb: 1 }}>
             {title}
           </Typography>
 
           {loading ? (
-            <Skeleton variant="text" width="60%" height={40} sx={{ bgcolor: 'rgba(255, 255, 255, 0.2)' }} />
+            <Skeleton variant="text" width="60%" height={40} sx={{ display: "flex", bgcolor: 'rgba(255, 255, 255, 0.2)' }} />
           ) : (
-            <Typography variant="h3" sx={{ fontWeight: 700, mb: 1 }}>
+            <Typography variant="h3" sx={{ display: "flex", fontWeight: 700, mb: 1 }}>
               {typeof value === 'number' ? value.toLocaleString() : value}
             </Typography>
           )}
 
           {subtitle && (
-            <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 1 }}>
+            <Typography variant="body2" sx={{ display: "flex", color: 'rgba(255, 255, 255, 0.8)', mb: 1 }}>
               {subtitle}
             </Typography>
           )}
 
           {trend && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
               {isPositiveTrend ? (
-                <TrendingUp sx={{ color: '#4caf50', fontSize: 20 }} />
+                <TrendingUp sx={{ display: "flex", color: '#4caf50', fontSize: 20 }} />
               ) : (
-                <TrendingDown sx={{ color: '#f44336', fontSize: 20 }} />
+                <TrendingDown sx={{ display: "flex", color: '#f44336', fontSize: 20 }} />
               )}
-              <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.9)' }}>
+              <Typography variant="body2" sx={{ display: "flex", color: 'rgba(255, 255, 255, 0.9)' }}>
                 {Math.abs(trendPercentage)}% {trend}
               </Typography>
             </Box>
@@ -180,19 +179,19 @@ export const ProfessionalMetricCard: React.FC<{title: any, value: any, previousV
         </CardContent>
       </Card>
     </motion.div>
-  )));
+  )))));
 };
 
 /**
  * Professional Chart Widget with enhanced styling
  */
-export const ProfessionalChartWidget: React.FC<{title: any, data: any, chartType: any: any, loading: any: any, height: any: any, showLegend: any: any, color: any: any, onRefresh: any, onExpand: any}> = ({ title,
+export const ProfessionalChartWidget: React.FC<{title data chartType: any loading: any height: any showLegend: any color: any onRefresh onExpand: any}> = ({ title,
   data,
-  chartType: any,
-  loading: any,
-  height: any,
-  showLegend: any,
-  color: any,
+  chartType
+  loading
+  height
+  showLegend
+  color
   onRefresh,
   onExpand
  }) => {
@@ -201,7 +200,7 @@ export const ProfessionalChartWidget: React.FC<{title: any, data: any, chartType
   const renderChart = () => {
     if(loading) {
       return (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height }}>
+        <Box sx={{ display: "flex", display: 'flex', justifyContent: 'center', alignItems: 'center', height }}>
           <CircularProgress />
         </Box>
       );
@@ -226,14 +225,14 @@ export const ProfessionalChartWidget: React.FC<{title: any, data: any, chartType
             <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
             <YAxis stroke={theme.palette.text.secondary} />
             <RechartsTooltip 
-              contentStyle: any,
+              contentStyle
                 border: `1px solid ${theme.palette.divider}`,
                 borderRadius: theme.shape.borderRadius
               }}
             />
             {showLegend && <Legend />}
             <Area
-              type: any,
+              type
               stroke={COLORS[color]}
               fill={`url(#gradient-${color})`}
               strokeWidth={3}
@@ -248,7 +247,7 @@ export const ProfessionalChartWidget: React.FC<{title: any, data: any, chartType
             <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
             <YAxis stroke={theme.palette.text.secondary} />
             <RechartsTooltip 
-              contentStyle: any,
+              contentStyle
                 border: `1px solid ${theme.palette.divider}`,
                 borderRadius: theme.shape.borderRadius
               }}
@@ -263,13 +262,13 @@ export const ProfessionalChartWidget: React.FC<{title: any, data: any, chartType
           <PieChart { ...chartProps}>
             <Pie
               data={data}
-              cx: any,
+              cx
               outerRadius={80}
               fill={COLORS[color]}
-              dataKey: any,
+              dataKey
               label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
             >
-              {data.map((entry: any: any, index: any: any) => (
+              {data.map((entry: any index: any: any: any: any) => (
                 <Cell key={`cell-${index}`} fill={Object.values(COLORS)[index % Object.values(COLORS).length]} />
               ))}
             </Pie>
@@ -284,14 +283,14 @@ export const ProfessionalChartWidget: React.FC<{title: any, data: any, chartType
             <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
             <YAxis stroke={theme.palette.text.secondary} />
             <RechartsTooltip 
-              contentStyle: any,
+              contentStyle
                 border: `1px solid ${theme.palette.divider}`,
                 borderRadius: theme.shape.borderRadius
               }}
             />
             {showLegend && <Legend />}
             <Line
-              type: any,
+              type
               stroke={COLORS[color]}
               strokeWidth={3}
               dot={{ fill: COLORS[color], strokeWidth: 2, r: 4 }}
@@ -302,11 +301,11 @@ export const ProfessionalChartWidget: React.FC<{title: any, data: any, chartType
     }
   };
 
-  return Boolean(Boolean((
-    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <CardContent sx={{ pb: 1 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+  return Boolean((
+    <Card sx={{ display: "flex", height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <CardContent sx={{ display: "flex", pb: 1 }}>
+        <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography variant="h6" sx={{ display: "flex", fontWeight: 600 }}>
             {title}
           </Typography>
           <Stack direction="row" spacing={1}>
@@ -328,45 +327,45 @@ export const ProfessionalChartWidget: React.FC<{title: any, data: any, chartType
         </Box>
       </CardContent>
 
-      <CardContent sx={{ flexGrow: 1, pt: 0 }}>
+      <CardContent sx={{ display: "flex", flexGrow: 1, pt: 0 }}>
         <ResponsiveContainer width="100%" height={height}>
           {renderChart()}
         </ResponsiveContainer>
       </CardContent>
     </Card>
-  )));
+  )))));
 };
 
 /**
  * Professional Progress Widget
  */
-export const ProfessionalProgressWidget: React.FC<{title: any, items: any, loading: any: any, : any}> = ({ title,
+export const ProfessionalProgressWidget: React.FC<{title items loading: any : any}> = ({ title,
   items,
-  loading: any,
+  loading
  }) => {
   const theme = useTheme();
 
-  return(<Card sx={{ height: '100%' }}>
+  return(<Card sx={{ display: "flex", height: '100%' }}>
       <CardContent>
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
+        <Typography variant="h6" sx={{ display: "flex", fontWeight: 600, mb: 3 }}>
           {title}
         </Typography>
 
         {loading ? (
           <Stack spacing={2}>
-            {[1, 2, 3].map((i: any: any) => (
+            {[1, 2, 3].map((i: any: any: any: any) => (
               <Box key={i}>
                 <Skeleton variant="text" width="60%" />
-                <Skeleton variant="rectangular" height={8} sx={{ mt: 1 }} />
+                <Skeleton variant="rectangular" height={8} sx={{ display: "flex", mt: 1 }} />
               </Box>
             ))}
           </Stack>
         ) : (
           <Stack spacing={3}>
-            {items.map((item: any: any, index: any: any) => (
+            {items.map((item: any index: any: any: any: any) => (
               <Box key={index}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                  <Typography variant="body2" sx={{ display: "flex", fontWeight: 500 }}>
                     {item.label}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
@@ -374,10 +373,9 @@ export const ProfessionalProgressWidget: React.FC<{title: any, items: any, loadi
                   </Typography>
                 </Box>
                 <LinearProgress
-                  variant: any,
+                  variant="body2"
                   value={item.value}
-                  sx: any,
-                    borderRadius: 4,
+                  sx={{
                     backgroundColor: alpha(theme.palette.primary.main, 0.1),
                     '& .MuiLinearProgress-bar': {
                       borderRadius: 4,
@@ -397,16 +395,16 @@ export const ProfessionalProgressWidget: React.FC<{title: any, items: any, loadi
 /**
  * Professional Status Widget
  */
-export const ProfessionalStatusWidget: React.FC<{title: any, items: any, loading: any: any, : any}> = ({ title,
+export const ProfessionalStatusWidget: React.FC<{title items loading: any : any}> = ({ title,
   items,
-  loading: any,
+  loading
  }) => {
   const getStatusIcon = (status) => {
     switch(status) {
-      case 'success': return <CheckCircle sx={{ color: COLORS.success }} />;
-      case 'warning': return <Warning sx={{ color: COLORS.warning }} />;
-      case 'error': return <Error sx={{ color: COLORS.error }} />;
-      default: return <Info sx={{ color: COLORS.info }} />;
+      case 'success': return <CheckCircle sx={{ display: "flex", color: COLORS.success }} />;
+      case 'warning': return <Warning sx={{ display: "flex", color: COLORS.warning }} />;
+      case 'error': return <Error sx={{ display: "flex", color: COLORS.error }} />;
+      default: return <Info sx={{ display: "flex", color: COLORS.info }} />;
     }
   };
 
@@ -419,16 +417,16 @@ export const ProfessionalStatusWidget: React.FC<{title: any, items: any, loading
     }
   };
 
-  return(<Card sx={{ height: '100%' }}>
+  return(<Card sx={{ display: "flex", height: '100%' }}>
       <CardContent>
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 3 }}>
+        <Typography variant="h6" sx={{ display: "flex", fontWeight: 600, mb: 3 }}>
           {title}
         </Typography>
 
         {loading ? (
           <Stack spacing={2}>
-            {[1, 2, 3, 4].map((i: any: any) => (
-              <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {[1, 2, 3, 4].map((i: any: any: any: any) => (
+              <Box key={i} sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Skeleton variant="circular" width={24} height={24} />
                 <Skeleton variant="text" width="70%" />
               </Box>
@@ -436,11 +434,11 @@ export const ProfessionalStatusWidget: React.FC<{title: any, items: any, loading
           </Stack>
         ) : (
           <Stack spacing={2}>
-            {items.map((item: any: any, index: any: any) => (
-              <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {items.map((item: any index: any: any: any: any) => (
+              <Box key={index} sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2 }}>
                 {getStatusIcon(item.status)}
-                <Box sx={{ flexGrow: 1 }}>
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                <Box sx={{ display: "flex", flexGrow: 1 }}>
+                  <Typography variant="body2" sx={{ display: "flex", fontWeight: 500 }}>
                     {item.label}
                   </Typography>
                   {item.description && (
@@ -452,7 +450,7 @@ export const ProfessionalStatusWidget: React.FC<{title: any, items: any, loading
                 {item.badge && (
                   <Chip
                     label={item.badge}
-                    size: any,
+                    size="small"
                       backgroundColor: alpha(getStatusColor(item.status), 0.1),
                       color: getStatusColor(item.status),
                       fontWeight: 600

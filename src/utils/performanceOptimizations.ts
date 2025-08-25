@@ -14,7 +14,7 @@ class SmartCache {
   private readonly defaultTTL = 5 * 60 * 1000; // 5 minutes
   private readonly maxSize = 100;
 
-  set(key: string, value: any, ttl?: number): void {
+  set(key: string, value ttl?: number): void {
     // Clear old timer if exists
     if (this.timers.has(key)) {
       clearTimeout(this.timers.get(key));
@@ -227,8 +227,8 @@ export class BatchProcessor<T> {
 
   constructor(
     processor: (items: T[]) => Promise<void> | void,
-    batchSize: any,
-    timeout: any,
+    batchSize
+    timeout
   }
 
   add(item: T): void {
@@ -298,7 +298,7 @@ export const optimizeImage = (
       ctx.drawImage(img, 0, 0, width, height);
 
       const format = options.format === 'webp' ? 'image/webp' : 
-                    options.format === "png" ? 'image/png' : 'image/jpeg';
+                    options.format = == "png" ? 'image/png' : 'image/jpeg';
       
       const optimizedUrl = canvas.toDataURL(format, quality);
       resolve(optimizedUrl);

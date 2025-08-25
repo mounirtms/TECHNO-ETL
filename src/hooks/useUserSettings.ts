@@ -43,19 +43,19 @@ interface ThemeContextProps {
   setThemeMode: (mode: 'light' | 'dark' | 'system') => void;
   fontSize: 'small' | 'medium' | 'large';
   setFontSize: (size: 'small' | 'medium' | 'large') => void;
-  applyUserThemeSettings: (settings) => void;
+  applyUserThemeSettings: (settings: any) => void;
 }
 
 interface LanguageContextProps {
   currentLanguage: string;
   setLanguage: (language: string) => void;
-  applyUserLanguageSettings: (settings) => void;
+  applyUserLanguageSettings: (settings: any) => void;
 }
 
 interface SettingsContextProps {
   settings: UserSettings | null;
   updateSettings: (newSettings: Partial<UserSettings>, scope?: string) => void;
-  saveSettings: () => Promise;
+  saveSettings: () => Promise<any>;
   loading: boolean;
 }
 
@@ -75,7 +75,7 @@ interface UserSettingsResult {
   setFontSize: (size: 'small' | 'medium' | 'large') => void;
   setLanguage: (language: string) => void;
   updateSettings: (newSettings: Partial<UserSettings>, scope?: string) => void;
-  saveSettings: () => Promise;
+  saveSettings: () => Promise<any>;
 }
 
 export const useUserSettings = (): UserSettingsResult => {
@@ -150,7 +150,7 @@ export const useUserSettings = (): UserSettingsResult => {
       
       console.log('User settings applied successfully with unified system:', preferences);
       
-    } catch(error: any) {
+    } catch (error) {
       console.error('Error applying user settings:', error);
       toast.error('Failed to apply some user preferences');
     }
@@ -193,7 +193,7 @@ export const useUserSettings = (): UserSettingsResult => {
       } else {
         throw new Error('Failed to sync settings');
       }
-    } catch(error: any) {
+    } catch (error) {
       console.error('Error saving preferences:', error);
       return { success: false, error: (error as Error).message };
     }
@@ -227,7 +227,7 @@ export const useUserSettings = (): UserSettingsResult => {
       }
       
       toast.info('Settings reset to system defaults');
-    } catch(error: any) {
+    } catch (error) {
       console.error('Error resetting to defaults:', error);
       toast.error('Failed to reset settings');
     }

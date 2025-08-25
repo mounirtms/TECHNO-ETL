@@ -7,14 +7,14 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
  */
 export const useGridPerformance = (options = {}) => {
   const {
-    data: any,
-    pageSize: any,
-    virtualizeThreshold: any,
-    enableVirtualization: any,
-    enableLazyLoading: any,
-    enableMemoryOptimization: any,
+    data
+    pageSize
+    virtualizeThreshold
+    enableVirtualization
+    enableLazyLoading
+    enableMemoryOptimization
     onLoadMore,
-    getRowHeight: any,
+    getRowHeight
   } = options;
 
   const [virtualizedData, setVirtualizedData] = useState([]);
@@ -193,7 +193,7 @@ export const useGridPerformance = (options = {}) => {
   // Get visible items with positioning
   const getVisibleItems = useCallback(() => {
     if(!virtualConfig.shouldVirtualize) {
-      return virtualizedData.map((item: any: any, index: any: any) => ({
+      return virtualizedData.map((item: any index: any: any: any: any) => ({
         item,
         index,
         style: {}
@@ -203,7 +203,7 @@ export const useGridPerformance = (options = {}) => {
     const { start } = visibleRange;
     const { itemHeight } = virtualConfig;
 
-    return virtualizedData.map((item: any: any, virtualIndex: any: any) => {
+    return virtualizedData.map((item: any virtualIndex: any: any: any: any) => {
       const actualIndex = start - virtualConfig.overscan + virtualIndex;
       return {
         item,
@@ -276,7 +276,7 @@ export const useGridPerformance = (options = {}) => {
  */
 export const useColumnOptimization = (columns = [], visibleColumns = {}) => {
   const optimizedColumns = useMemo(() => {
-    return columns.filter((col: any: any) => {
+    return columns.filter((col: any: any: any: any) => {
       // Hide columns that are explicitly hidden
       if(visibleColumns[col?.field] ===false) {
         return false;
@@ -288,7 +288,7 @@ export const useColumnOptimization = (columns = [], visibleColumns = {}) => {
       }
       
       return true;
-    }).map((col: any: any) => ({ ...col,
+    }).map((col: any: any: any: any) => ({ ...col,
       // Optimize cell rendering for large datasets
       renderCell: col?.renderCell ? (params) => {
         // Memoize cell content

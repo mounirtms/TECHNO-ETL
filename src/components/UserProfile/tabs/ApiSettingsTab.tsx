@@ -305,13 +305,13 @@ const ApiSettingsTab = () => {
                 console.log('🔄 Using direct connection for login');
                 // Initialize direct client with current settings
                 directMagentoClient.initialize(formData.magento);
-                token: any,
+                token
                     formData.magento.password
                 );
             } else {
                 console.log('🔄 Using backend proxy for login');
                 // Use backend proxy (original magentoService login)
-                token: any,
+                token
                     formData.magento.password,
                     formData.magento.url
                 );
@@ -471,16 +471,16 @@ const ApiSettingsTab = () => {
                 icon={getStatusIcon()}
                 label={status?.testing ? 'Testing...' : (status?.status || 'Not tested')}
                 color={getStatusColor()}
-                size: any,
+                size="small"
     };
 
-    return(<Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 } as any}>
+    return(<Box sx={{ display: "flex", maxWidth: 1200, mx: 'auto', p: 3 } as any}>
             {/* Header */}
-            <Box sx={{ mb: 4 } as any}>
-                <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 } as any}>
-                    <Api color="primary" sx={{ fontSize: 32 } as any} />
+            <Box sx={{ display: "flex", mb: 4 } as any}>
+                <Stack direction="row" alignItems="center" spacing={2} sx={{ display: "flex", mb: 2 } as any}>
+                    <Api color="primary" sx={{ display: "flex", fontSize: 32 } as any} />
                     <Box>
-                        <Typography variant="h4" sx={{ fontWeight: 600, color: 'primary.main' } as any}>
+                        <Typography variant="h4" sx={{ display: "flex", fontWeight: 600, color: 'primary.main' } as any}>
                             API Configuration
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
@@ -494,8 +494,7 @@ const ApiSettingsTab = () => {
             <Accordion 
                 expanded={expandedSection === 'magento'} 
                 onChange={(e) => () => setExpandedSection(expandedSection === 'magento' ? null : 'magento')}
-                sx: any,
-                    boxShadow: 2,
+                sx={{
                     '&:before': { display: 'none' },
                     borderRadius: 2,
                     overflow: 'hidden'
@@ -503,31 +502,30 @@ const ApiSettingsTab = () => {
             >
                 <AccordionSummary 
                     expandIcon={<ExpandMore />}
-                    sx: any,
-                        color: 'white',
+                    sx={{
                         minHeight: 64,
                         '&:hover': { bgcolor: 'primary.dark' },
                         '& .MuiAccordionSummary-content': { alignItems: 'center' }
                     }}
                 >
-                    <Stack direction="row" alignItems="center" spacing={2} sx={{ flex: 1 } as any}>
-                        <Api sx={{ fontSize: 28 } as any} />
-                        <Box sx={{ flex: 1 } as any}>
-                            <Typography variant="h6" sx={{ fontWeight: 600 } as any}>
+                    <Stack direction="row" alignItems="center" spacing={2} sx={{ display: "flex", flex: 1 } as any}>
+                        <Api sx={{ display: "flex", fontSize: 28 } as any} />
+                        <Box sx={{ display: "flex", flex: 1 } as any}>
+                            <Typography variant="h6" sx={{ display: "flex", fontWeight: 600 } as any}>
                                 Magento E-commerce API
                             </Typography>
-                            <Typography variant="body2" sx={{ opacity: 0.9 } as any}>
+                            <Typography variant="body2" sx={{ display: "flex", opacity: 0.9 } as any}>
                                 {formData.magento.enableDirectConnection ? '🚀 Direct Connection' : '📡 Proxy Connection'}
                             </Typography>
                         </Box>
                         <ConnectionStatus service="magento" status={connectionTests.magento} />
                         <FormControlLabel
-                            control: any,
+                            control
                                     checked={formData.magento.enableDirectConnection}
-                                    onChange: any,
+                                    onChange
                                         handleInputChange('magento', 'enableDirectConnection', e.target.checked);
                                     }}
-                                    sx: any,
+                                    sx={{
                                         },
                                         '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
                                             backgroundColor: 'rgba(255,255,255,0.3)',
@@ -535,13 +533,13 @@ const ApiSettingsTab = () => {
                                     }}
                                 />
                             }
-                            label: any,
-                            sx={{ color: 'white', mr: 0 } as any}
+                            label
+                            sx={{ display: "flex", color: 'white', mr: 0 } as any}
                             onClick={(e) => e.stopPropagation()}
                         />
                     </Stack>
                 </AccordionSummary>
-                <AccordionDetails sx={{ p: 3 } as any}>
+                <AccordionDetails sx={{ display: "flex", p: 3 } as any}>
                     <Stack spacing={3}>
                         {/* Connection Mode Info */}
                         <Alert 
@@ -560,17 +558,17 @@ const ApiSettingsTab = () => {
 
                         {/* Direct Connection Settings */}
                         <Collapse in={formData.magento.enableDirectConnection}>
-                            <Paper sx={{ p: 3, bgcolor: 'grey.50', borderRadius: 2 } as any}>
+                            <Paper sx={{ display: "flex", p: 3, bgcolor: 'grey.50', borderRadius: 2 } as any}>
                                 <Stack spacing={3}>
                                     {/* URL and Auth Mode */}
                                     <Grid { ...{container: true}} spacing={2}>
                                         <Grid size={{ xs: 12, md: 8 }}>
                                             <TextField
-                                                size: any,
+                                                size="small"
                                                 value={formData.magento.url}
                                                 onChange={(e) => handleInputChange('magento', 'url', e.target.value)}
-                                                placeholder: any,
-                                                    startAdornment: <Api sx={{ color: 'text.secondary', mr: 1 } as any} />
+                                                placeholder
+                                                    startAdornment: <Api sx={{ display: "flex", color: 'text.secondary', mr: 1 } as any} />
                                                 }}
                                             />
                                         </Grid>
@@ -580,7 +578,7 @@ const ApiSettingsTab = () => {
                                                 <Select
                                                     value={formData.magento.authMode}
                                                     onChange={(e) => handleInputChange('magento', 'authMode', e.target.value)}
-                                                    label: any,
+                                                    label
                                                         <Stack direction="row" alignItems="center" spacing={1}>
                                                             <Security fontSize="small" />
                                                             <span>Basic Auth</span>
@@ -599,33 +597,33 @@ const ApiSettingsTab = () => {
 
                                     {/* Basic Auth Fields */}
                                     <Collapse in={formData.magento.authMode === 'basic'}>
-                                        <Card sx={{ p: 2, bgcolor: 'background.paper' } as any}>
-                                            <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-                                                <Typography variant="subtitle2" sx={{ mb: 2, color: 'primary.main', fontWeight: 600 } as any}>
+                                        <Card sx={{ display: "flex", p: 2, bgcolor: 'background.paper' } as any}>
+                                            <CardContent sx={{ display: "flex", p: 2, '&:last-child': { pb: 2 } }}>
+                                                <Typography variant="subtitle2" sx={{ display: "flex", mb: 2, color: 'primary.main', fontWeight: 600 } as any}>
                                                     Basic Authentication
                                                 </Typography>
                                                 <Grid { ...{container: true}} spacing={2}>
                                                     <Grid size={{ xs: 12, sm: 6 }}>
                                                         <TextField
-                                                            size: any,
+                                                            size="small"
                                                             value={formData.magento.username}
                                                             onChange={(e) => handleInputChange('magento', 'username', e.target.value)}
                                                         />
                                                     </Grid>
                                                     <Grid size={{ xs: 12, sm: 6 }}>
                                                         <TextField
-                                                            size: any,
+                                                            size="small"
                                                             value={formData.magento.password}
                                                             onChange={(e) => handleInputChange('magento', 'password', e.target.value)}
                                                         />
                                                     </Grid>
                                                     <Grid size={12}>
                                                         <Button
-                                                            variant: any,
+                                                            variant="body2"
                                                             onClick={handleMagentoBasicAuth}
                                                             disabled={connectionTests.magento.testing}
                                                             startIcon={connectionTests.magento.testing ? <CircularProgress size={20} /> : <Security />}
-                                                            sx={{ borderRadius: 2 } as any}
+                                                            sx={{ display: "flex", borderRadius: 2 } as any}
                                                         >
                                                             {connectionTests.magento.testing ? 'Authenticating...' : 'Get Access Token'}
                                                         </Button>
@@ -637,9 +635,9 @@ const ApiSettingsTab = () => {
 
                                     {/* OAuth Fields */}
                                     <Collapse in={formData.magento.authMode === 'oauth'}>
-                                        <Card sx={{ p: 2, bgcolor: 'background.paper' } as any}>
-                                            <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-                                                <Typography variant="subtitle2" sx={{ mb: 2, color: 'primary.main', fontWeight: 600 } as any}>
+                                        <Card sx={{ display: "flex", p: 2, bgcolor: 'background.paper' } as any}>
+                                            <CardContent sx={{ display: "flex", p: 2, '&:last-child': { pb: 2 } }}>
+                                                <Typography variant="subtitle2" sx={{ display: "flex", mb: 2, color: 'primary.main', fontWeight: 600 } as any}>
                                                     OAuth 1.0 Configuration
                                                 </Typography>
                                                 <Grid { ...{container: true}} spacing={2}>
@@ -648,9 +646,9 @@ const ApiSettingsTab = () => {
                                                         ['consumerSecret', 'Consumer Secret'],
                                                         ['accessToken', 'Access Token'],
                                                         ['accessTokenSecret', 'Access Token Secret'],
-                                                    ].map(([key: any: any, label]: any: any) => (<Grid size={{ xs: 12, sm: 6 }} key={key}>
+                                                    ].map(([key: any label]: any: any: any: any) => (<Grid size={{ xs: 12, sm: 6 }} key={key}>
                                                             <TextField
-                                                                size: any,
+                                                                size="small"
                                                                 label={label}
                                                                 value={formData.magento[key] || ''}
                                                                 onChange={(e) => handleInputChange('magento', key, e.target.value)}
@@ -660,11 +658,11 @@ const ApiSettingsTab = () => {
                                                     ))}
                                                     <Grid size={12}>
                                                         <Button
-                                                            variant: any,
+                                                            variant="body2"
                                                             onClick={handleMagentoOAuthConnect}
                                                             disabled={connectionTests.magento.testing}
                                                             startIcon={connectionTests.magento.testing ? <CircularProgress size={20} /> : <Security />}
-                                                            sx={{ borderRadius: 2 } as any}
+                                                            sx={{ display: "flex", borderRadius: 2 } as any}
                                                         >
                                                             {connectionTests.magento.testing ? 'Connecting...' : 'Connect OAuth'}
                                                         </Button>
@@ -675,14 +673,14 @@ const ApiSettingsTab = () => {
                                     </Collapse>
 
                                     {/* CORS Setup Guide */}
-                                    <Alert severity="warning" icon={<Warning />} sx={{ borderRadius: 2 } as any}>
-                                        <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 } as any}>
+                                    <Alert severity="warning" icon={<Warning />} sx={{ display: "flex", borderRadius: 2 } as any}>
+                                        <Typography variant="subtitle2" sx={{ display: "flex", fontWeight: 600, mb: 1 } as any}>
                                             CORS Configuration Required
                                         </Typography>
-                                        <Typography variant="body2" sx={{ mb: 1 } as any}>
+                                        <Typography variant="body2" sx={{ display: "flex", mb: 1 } as any}>
                                             Add these headers to your Magento server for direct connection:
                                         </Typography>
-                                        <Paper sx={{ p: 2, bgcolor: 'grey.900', color: 'white', fontFamily: 'monospace', fontSize: '0.75rem' } as any}>
+                                        <Paper sx={{ display: "flex", p: 2, bgcolor: 'grey.900', color: 'white', fontFamily: 'monospace', fontSize: '0.75rem' } as any}>
                                             Access-Control-Allow-Origin: {window.location.origin}<br />
                                             Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS<br />
                                             Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With
@@ -695,9 +693,9 @@ const ApiSettingsTab = () => {
                         {/* Action Buttons */}
                         <Stack direction="row" spacing={2} justifyContent="flex-end">
                             <Button
-                                variant: any,
+                                variant="body2"
                                 startIcon={<Refresh />}
-                                onClick: any,
+                                onClick
                                         updateConnectionTest('magento', { testing: true, status: 'testing' });
                                         const result = await magentoService.testConnection();
                                         if(result.success) {
@@ -711,9 +709,9 @@ const ApiSettingsTab = () => {
                                         updateConnectionTest('magento', { testing: false, lastTest: new Date().toISOString() });
                                     }
                                 }}
-                                disabled: any,
+                                disabled
                                 }
-                                sx={{ borderRadius: 2 } as any}
+                                sx={{ display: "flex", borderRadius: 2 } as any}
                             >
                                 {connectionTests.magento.testing ? 'Testing...' : 'Test Connection'}
                             </Button>

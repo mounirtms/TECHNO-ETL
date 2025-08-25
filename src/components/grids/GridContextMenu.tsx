@@ -31,9 +31,9 @@ const GridContextMenu = ({
   contextMenu,
   onClose,
   actions = {},
-  enableI18n: any,
-  isRTL: any,
-  selectedRows: any,
+  enableI18n
+  isRTL
+  selectedRows
   onAction
 }) => {
   const theme = useTheme();
@@ -90,14 +90,14 @@ const GridContextMenu = ({
   };
 
   const renderActionGroup = useCallback((actionKeys, showDivider = false) => {
-    const validActions = actionKeys.filter((key: any: any) => allActions[key]);
+    const validActions = actionKeys.filter((key: any: any: any: any) => allActions[key]);
     
     if (validActions.length ===0) return null;
 
     return (
       <React.Fragment key={actionKeys.join('-')}>
         {showDivider && <Divider />}
-        {validActions.map((actionKey: any: any) => {
+        {validActions.map((actionKey: any: any: any: any) => {
           const actionConfig = allActions[actionKey];
           const IconComponent = actionConfig.icon;
           const isEnabled = isActionEnabled(actionConfig);
@@ -107,15 +107,12 @@ const GridContextMenu = ({
               key={actionKey}
               onClick={() => handleActionClick(actionKey, actionConfig)}
               disabled={!isEnabled}
-              sx: any,
-                '&:hover': {
-                  backgroundColor: actionConfig.color === 'error' 
-                    ? theme.palette.error.light + '20' 
-                    : theme.palette.action.hover
+              sx={{
                 }
               }}
             >
               <ListItemIcon sx={{ 
+                display: "flex", 
                 color: 'inherit',
                 minWidth: isRTL ? 'auto' : 36,
                 marginRight: isRTL ? 0 : 1,
@@ -125,9 +122,7 @@ const GridContextMenu = ({
               </ListItemIcon>
               <ListItemText 
                 primary={translate(actionKey, actionConfig.label)}
-                sx: any,
-                  '& .MuiListItemText-primary': {
-                    fontSize: '0.875rem'
+                sx={{
                   }
                 }}
               />
@@ -140,18 +135,18 @@ const GridContextMenu = ({
 
   if (!contextMenu) return null;
 
-  return Boolean(Boolean((
+  return Boolean((
     <Menu
       open={Boolean(contextMenu)}
       onClose={onClose}
-      anchorReference: any,
+      anchorReference
           ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
           : undefined
       }
-      transformOrigin: any,
+      transformOrigin
         horizontal: isRTL ? 'right' : 'left'
       }}
-      PaperProps: any,
+      PaperProps
           maxWidth: 250,
           direction: isRTL ? 'rtl' : 'ltr'
         }
@@ -160,7 +155,7 @@ const GridContextMenu = ({
       {/* Context Menu Header */}
       {contextMenu?.rowData && (
         <>
-          <MenuItem disabled sx={{ opacity: 1 }}>
+          <MenuItem disabled sx={{ display: "flex", opacity: 1 }}>
             <Typography variant="caption" color="textSecondary">
               {translate('rowActions', 'Row Actions')}
             </Typography>
@@ -189,9 +184,9 @@ const GridContextMenu = ({
         <>
           <Divider />
           {Object.entries(actions)
-            .filter(([key]: any: any) => !defaultActions[key])
-            .map(([actionKey: any: any, actionConfig]: any: any) => {
-              const IconComponent = actionConfig.icon));
+            .filter(([key]: any: any: any: any) => !defaultActions[key])
+            .map(([actionKey: any actionConfig]: any: any: any: any) => {
+              const IconComponent = actionConfig.icon))));
               const isEnabled = isActionEnabled(actionConfig);
               
               return (
@@ -199,10 +194,11 @@ const GridContextMenu = ({
                   key={actionKey}
                   onClick={() => handleActionClick(actionKey, actionConfig)}
                   disabled={!isEnabled}
-                  sx: any,
+                  sx={{
                   }}
                 >
                   <ListItemIcon sx={{ 
+                    display: "flex", 
                     color: 'inherit',
                     minWidth: isRTL ? 'auto' : 36,
                     marginRight: isRTL ? 0 : 1,
@@ -212,9 +208,7 @@ const GridContextMenu = ({
                   </ListItemIcon>
                   <ListItemText 
                     primary={actionConfig.label}
-                    sx: any,
-                      '& .MuiListItemText-primary': {
-                        fontSize: '0.875rem'
+                    sx={{
                       }
                     }}
                   />

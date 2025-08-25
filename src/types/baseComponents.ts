@@ -200,7 +200,7 @@ export interface BaseGridProps {
   ariaLabel?: string;
   
   // Error handling
-  onError?: (error: any, context?: string) => void;
+  onError?: (error context?: string) => void;
   
   // Custom components
   NoRowsOverlay?: React.ComponentType<any>;

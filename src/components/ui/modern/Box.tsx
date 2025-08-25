@@ -13,7 +13,7 @@ interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
  */
 export const Box = React.forwardRef<HTMLDivElement, BoxProps>(
   ({ 
-    component: any,
+    component
     className, 
     sx, 
     children, 
@@ -41,7 +41,7 @@ export const Box = React.forwardRef<HTMLDivElement, BoxProps>(
     return (
       <Component
         ref={ref}
-        className: any,
+        className
           // Convert sx props to Tailwind
           sx && sxToTailwind(sx),
           className

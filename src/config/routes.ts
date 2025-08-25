@@ -140,7 +140,7 @@ export const requiresAuth = (path) => {
  * Get all protected routes
  */
 export const getProtectedRoutes = () => {
-  return Object.keys(ROUTE_METADATA).filter((route: any: any) => 
+  return Object.keys(ROUTE_METADATA).filter((route) => 
     ROUTE_METADATA[route].requiresAuth !== false
   );
 };

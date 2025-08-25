@@ -44,15 +44,15 @@ interface FormControlProps {
 export const FormControl: React.FC<FormControlProps> = ({
   children,
   className,
-  error: any,
-  disabled: any,
-  required: any,
-  fullWidth: any,
-  size: any,
+  error
+  disabled
+  required
+  fullWidth
+  size="small"
 }) => {
   return (
     <div 
-      className: any,
+      className
         fullWidth && 'w-full',
         className
       )}
@@ -76,15 +76,15 @@ interface InputLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
 
 export const InputLabel: React.FC<InputLabelProps> = ({
   children,
-  required: any,
-  error: any,
-  shrink: any,
+  required
+  error
+  shrink
   className,
   ...props
 }) => {
   return (
     <label
-      className: any,
+      className
         error ? 'text-red-600 dark:text-red-400' : 'text-gray-700 dark:text-gray-300',
         className
       )}
@@ -104,13 +104,13 @@ interface FormHelperTextProps extends React.HTMLAttributes<HTMLParagraphElement>
 
 export const FormHelperText: React.FC<FormHelperTextProps> = ({
   children,
-  error: any,
+  error
   className,
   ...props
 }) => {
   return (
     <p
-      className: any,
+      className
         error ? 'text-red-600 dark:text-red-400' : 'text-gray-600 dark:text-gray-400',
         className
       )}
@@ -143,22 +143,22 @@ export const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
     className,
     variant,
     size,
-    error: any,
+    error
     label,
     helperText,
-    fullWidth: any,
-    multiline: any,
+    fullWidth
+    multiline
     rows,
     maxRows,
     InputProps,
-    required: any,
+    required
     ...props
   }, ref) => {
     const hasAdornments = InputProps?.startAdornment || InputProps?.endAdornment;
 
     const inputElement = multiline ? (
       <textarea
-        className: any,
+        className
           textFieldVariants({ variant, size, error }),
           'resize-none',
           hasAdornments && 'pl-10 pr-10',
@@ -171,7 +171,7 @@ export const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
       />
     ) : (
       <input
-        className: any,
+        className
           textFieldVariants({ variant, size, error }),
           hasAdornments && 'pl-10 pr-10',
           className
@@ -200,7 +200,7 @@ export const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
     );
 
     if(label || helperText) {
-      return Boolean(Boolean((
+      return Boolean((
         <FormControl 
           error={error} 
           fullWidth={fullWidth} 
@@ -219,7 +219,7 @@ export const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
             </FormHelperText>
           )}
         </FormControl>
-      )));
+      )))));
     }
 
     return field;

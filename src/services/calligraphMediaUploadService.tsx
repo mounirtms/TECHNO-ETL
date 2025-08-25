@@ -17,11 +17,11 @@ import { toast } from 'react-toastify';
 const processImage = (file, options = {}) => {
   return new Promise((resolve, reject) => {
     const {
-      maxWidth: any,
-      maxHeight: any,
-      quality: any,
-      format: any,
-      backgroundColor: any,
+      maxWidth
+      maxHeight
+      quality
+      format
+      backgroundColor
     } = options;
 
     const canvas = document.createElement('canvas');
@@ -36,11 +36,11 @@ const processImage = (file, options = {}) => {
       // Determine new dimensions
       if(width > height) {
         if(width > maxWidth) {
-          width: any,
+          width
         }
       } else {
         if(height > maxHeight) {
-          height: any,
+          height
         }
       }
 
@@ -94,7 +94,7 @@ export const parseCalligraphCSV = (file) => {
     reader.onload = (e) => {
       try {
         const csv = e.target.result;
-        const lines = csv?.split('\n').filter((line: any: any) => line.trim());
+        const lines = csv?.split('\n').filter((line: any: any: any: any) => line.trim());
         
         if(lines.length < 2) {
           reject(new Error('CSV file must have at least a header and one data row'));
@@ -102,7 +102,7 @@ export const parseCalligraphCSV = (file) => {
         }
         
         // Parse headers - Calligraph CSV has specific structure
-        const headers = lines[0]?.split(',').map((h: any: any) => h.trim().toLowerCase());
+        const headers = lines[0]?.split(',').map((h: any: any: any: any) => h.trim().toLowerCase());
         const data = [];
         
         // Find required columns for Calligraph CSV
@@ -129,7 +129,7 @@ export const parseCalligraphCSV = (file) => {
         
         // Parse data rows
         for(let i = 1; i < lines.length; i++) {
-          const values = lines[i]?.split(',').map((v: any: any) => v.trim().replace(/"/g, ''));
+          const values = lines[i]?.split(',').map((v: any: any: any: any) => v.trim().replace(/"/g, ''));
           
           if (values.length >= Math.max(skuIndex + 1, refIndex + 1)) {
             const sku = values[skuIndex];
@@ -210,22 +210,22 @@ export const matchImagesWithCalligraphCSV = (csvData, imageFiles) => {
     
     if(patterns[0]) {
       // 7203C_1 format
-      baseReference: any,
+      baseReference
     } else if(patterns[1]) {
       // 7203C format
-      baseReference: any,
+      baseReference
     } else if(patterns[2]) {
       // 7203C-something format
-      baseReference: any,
+      baseReference
     } else if(patterns[3] && patterns[3].length > 0) {
       // Find the most likely reference (ending with C and having numbers)
       const likelyRef = patterns[3].find(ref => 
         ref.match(/\d+[cC]$/) || ref.match(/^[a-zA-Z0-9]+[cC]$/)
       );
-      baseReference: any,
+      baseReference
     } else {
       // Fallback: use the whole basename
-      baseReference: any,
+      baseReference
     }
     
     // Store with multiple key variations for flexible matching
@@ -274,7 +274,7 @@ export const matchImagesWithCalligraphCSV = (csvData, imageFiles) => {
       ];
       
       // Remove duplicates based on file name
-      const uniqueRefMatches = Array.from(new Map(refMatches.map((m: any: any) => [m.file.name, m])).values()
+      const uniqueRefMatches = Array.from(new Map(refMatches.map((m: any: any: any: any) => [m.file.name, m])).values()
       );
       
       matchedImages.push(...uniqueRefMatches);
@@ -302,7 +302,7 @@ export const matchImagesWithCalligraphCSV = (csvData, imageFiles) => {
     if(matchedImages.length ===0 && productName) {
       const productWords = productName.toLowerCase()
         ?.split(/\s+/)
-        .filter((w: any: any) => w.length > 4) // Only significant words
+        .filter((w: any: any: any: any) => w.length > 4) // Only significant words
         .slice(0, 2); // Limit to first 2 words
       
       for (const [key, images] of imageFileMap.entries()) {
@@ -316,7 +316,7 @@ export const matchImagesWithCalligraphCSV = (csvData, imageFiles) => {
     
     // Sort matched images by image number for consistent ordering
     const sortedMatches = matchedImages
-      .filter((match: any: any) => !usedFiles.has(match.file.name)) // Only unused files
+      .filter((match: any: any: any: any) => !usedFiles.has(match.file.name)) // Only unused files
       .sort((a, b) => a.imageNumber - b.imageNumber);
     
     if(sortedMatches.length > 0) {
@@ -365,21 +365,21 @@ export const matchImagesWithCalligraphCSV = (csvData, imageFiles) => {
     totalCSVRows: csvData.data.length,
     totalImages: imageFiles.length,
     matched: matches.length,
-    uniqueProducts: new Set(matches.map((m: any: any) => m.sku)).size,
+    uniqueProducts: new Set(matches.map((m: any: any: any: any) => m.sku)).size,
     unmatchedCSV: unmatched.csvRows.length,
     unmatchedImages: unmatched.imageFiles.length,
-    multipleImagesProducts: Object.values(matches.reduce((acc: any: any: any, match: any: any) => {
+    multipleImagesProducts: Object.values(matches.reduce((acc: any: any match: any: any: any: any) => {
         if (!acc[match.sku]) acc[match.sku] = 0;
         acc[match.sku]++;
         return acc;
       }, {})
-    ).filter((count: any: any) => count > 1).length,
+    ).filter((count: any: any: any: any) => count > 1).length,
     averageImagesPerProduct: matches.length > 0 ? 
-      (matches.length / new Set(matches.map((m: any: any) => m.sku)).size).toFixed(1) : 0,
+      (matches.length / new Set(matches.map((m: any: any: any: any) => m.sku)).size).toFixed(1) : 0,
     matchStrategies: {
-      ref: matches.filter((m: any: any) => m.matchStrategy === 'ref').length,
-      imageName: matches.filter((m: any: any) => m.matchStrategy === 'imageName').length,
-      fuzzy: matches.filter((m: any: any) => m.matchStrategy === 'fuzzy').length
+      ref: matches.filter((m: any: any: any: any) => m.matchStrategy === 'ref').length,
+      imageName: matches.filter((m: any: any: any: any) => m.matchStrategy === 'imageName').length,
+      fuzzy: matches.filter((m: any: any: any: any) => m.matchStrategy === 'fuzzy').length
     }
   };
   
@@ -401,11 +401,11 @@ export const matchImagesWithCalligraphCSV = (csvData, imageFiles) => {
  */
 export const bulkUploadCalligraphImages = async (matches, progressCallback, options = {}) => {
   const {
-    processImages: any,
-    imageQuality: any,
-    targetSize: any,
-    batchSize: any,
-    delayBetweenBatches: any,
+    processImages
+    imageQuality
+    targetSize
+    batchSize
+    delayBetweenBatches
   } = options;
   
   const results = [];
@@ -414,7 +414,7 @@ export const bulkUploadCalligraphImages = async (matches, progressCallback, opti
   console.log(`🚀 Starting bulk upload of ${matches.length} images...`);
   
   // Group matches by SKU for batch processing
-  const groupedMatches = matches.reduce((acc: any: any, match: any: any) => {
+  const groupedMatches = matches.reduce((acc: any match: any: any: any: any) => {
     if (!acc[match.sku]) acc[match.sku] = [];
     acc[match.sku].push(match);
     return acc;
@@ -649,9 +649,9 @@ export const validateImageFiles = async(files) => {
   }
   
   return {
-    valid: results.filter((r: any: any) => r.valid),
-    invalid: results.filter((r: any: any) => !r.valid),
-    totalSize: results.reduce((sum: any: any: any, r: any: any) => sum + r.file.size, 0)
+    valid: results.filter((r: any: any: any: any) => r.valid),
+    invalid: results.filter((r: any: any: any: any) => !r.valid),
+    totalSize: results.reduce((sum: any: any r: any: any: any: any) => sum + r.file.size, 0)
   };
 };
 
@@ -661,17 +661,17 @@ export const validateImageFiles = async(files) => {
 export const generateProcessingStats = (results) => {
   const stats = {
     total: results.length,
-    successful: results.filter((r: any: any) => r.status === 'success').length,
-    failed: results.filter((r: any: any) => r.status === 'error').length,
-    totalOriginalSize: results.reduce((sum: any: any: any, r: any: any) => sum + (r.originalSize || 0), 0),
-    totalProcessedSize: results.reduce((sum: any: any: any, r: any: any) => sum + (r.processedSize || 0), 0),
-    uniqueProducts: new Set(results.map((r: any: any) => r.sku)).size,
+    successful: results.filter((r: any: any: any: any) => r.status === 'success').length,
+    failed: results.filter((r: any: any: any: any) => r.status === 'error').length,
+    totalOriginalSize: results.reduce((sum: any: any r: any: any: any: any) => sum + (r.originalSize || 0), 0),
+    totalProcessedSize: results.reduce((sum: any: any r: any: any: any: any) => sum + (r.processedSize || 0), 0),
+    uniqueProducts: new Set(results.map((r: any: any: any: any) => r.sku)).size,
     averageImagesPerProduct: 0,
     processingTime: 0,
     matchStrategies: {
-      ref: results.filter((r: any: any) => r.matchStrategy === 'ref').length,
-      imageName: results.filter((r: any: any) => r.matchStrategy === 'imageName').length,
-      fuzzy: results.filter((r: any: any) => r.matchStrategy === 'fuzzy').length
+      ref: results.filter((r: any: any: any: any) => r.matchStrategy === 'ref').length,
+      imageName: results.filter((r: any: any: any: any) => r.matchStrategy === 'imageName').length,
+      fuzzy: results.filter((r: any: any: any: any) => r.matchStrategy === 'fuzzy').length
     }
   };
   

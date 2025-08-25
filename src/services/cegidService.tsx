@@ -106,7 +106,7 @@ class CegidApi {
 
     // Cegid Connection Method with Basic Authentication
     async handleCegidConnect(url = this.credentials.url,
-        username: any,
+        username
         password = this.credentials.password, database: any = this.credentials.database
      ) {
         try {
@@ -308,7 +308,7 @@ class CegidApi {
             // Parse individual product entries
             const productEntries = productsMatch[1].match(/<Item>(.*?)<\/Item>/g) || [];
 
-            return productEntries.map((entry: any: any) => {
+            return productEntries.map((entry: any: any: any: any) => {
                 const reference = entry.match(/<Reference>(.*?)<\/Reference>/)?.[1] || '';
                 const description = entry.match(/<Description>(.*?)<\/Description>/)?.[1] || '';
                 const family = entry.match(/<Family>(.*?)<\/Family>/)?.[1] || '';

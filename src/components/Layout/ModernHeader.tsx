@@ -42,7 +42,7 @@ export const ModernHeader: React.FC<ModernHeaderProps> = ({
 
   return (
     <header
-      className: any,
+      className
         'dark:bg-gray-900/80 dark:border-gray-700',
         // Dynamic width and margin based on drawer state
         'sm:ml-16', // Base collapsed width
@@ -52,7 +52,7 @@ export const ModernHeader: React.FC<ModernHeaderProps> = ({
         // Mobile full width
         'w-full ml-0'
       )}
-      style: any,
+      style
           ? `calc(100% - ${isDrawerCollapsed ? COLLAPSED_WIDTH : DRAWER_WIDTH}px)`
           : '100%',
         marginLeft: window.innerWidth >= 640 
@@ -64,16 +64,16 @@ export const ModernHeader: React.FC<ModernHeaderProps> = ({
         {/* Left side - Menu toggle */}
         <div className="flex items-center gap-4">
           <IconButton
-            size: any,
+            size="small"
             onClick={handleDrawerToggle}
             aria-label={isDrawerCollapsed ? translate('common.expandMenu') : translate('common.collapseMenu')}
-            className: any,
+            className
             )}
           </IconButton>
 
           {/* App Title */}
           <Typography 
-            variant: any,
+            variant="body2"
             {translate('common.appTitle')}
           </Typography>
         </div>

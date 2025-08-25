@@ -388,7 +388,7 @@ function flattenTree(items) {
     let result = [];
     items.forEach((item) => {
         if(item.children) {
-            result: any,
+            result
         } else if(item.path) {
             result.push(item);
         }

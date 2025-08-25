@@ -220,7 +220,7 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
         <Chip
           label={params.value || 'Unknown'}
           color={params.value && params.value !== 'Unknown' ? 'primary' : 'default'}
-          size: any,
+          size="small"
           icon={<BrandIcon />}
         />
       )
@@ -233,7 +233,7 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
         <Chip
           label={params.value ===1 ? 'Active' : 'Inactive'}
           color={params.value ===1 ? 'success' : 'default'}
-          size: any,
+          size="small"
     },
     {
       field: 'type_id',
@@ -242,7 +242,7 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
       renderCell: (params) => (
         <Chip
           label={params.value || 'Simple'}
-          color: any,
+          color
     },
     {
       field: 'actions',
@@ -251,10 +251,10 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
       sortable: false,
       filterable: false,
       renderCell: (params) => (
-        <Box sx={{ display: 'flex', gap: 0.5 }}>
+        <Box sx={{ display: "flex", display: 'flex', gap: 0.5 }}>
           <TooltipWrapper title="View Details">
             <IconButton
-              size: any,
+              size="small"
               onClick={() => handleViewProduct(params.row)}
             >
               <ViewIcon fontSize="small" />
@@ -262,7 +262,7 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
           </TooltipWrapper>
           <TooltipWrapper title="Edit Product">
             <IconButton
-              size: any,
+              size="small"
               onClick={() => handleEditProduct(params.row)}
             >
               <EditIcon fontSize="small" />
@@ -270,7 +270,7 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
           </TooltipWrapper>
           <TooltipWrapper title="Manage Categories">
             <IconButton
-              size: any,
+              size="small"
               onClick={() => handleManageCategories(params.row)}
             >
               <AssignmentIcon fontSize="small" />
@@ -314,7 +314,7 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
       if(selectedProducts.length > 0) {
         // Fetch specific products
         console.log('📦 Fetching specific products:', selectedProducts);
-        productsData: any,
+        productsData
                 additional_attributes: additionalAttrs?.additional_attributes || [],
                 brand: additionalAttrs?.additional_attributes?.find(attr => attr.attribute_code === 'mgs_brand').label || 'Unknown'
               } || {
@@ -345,7 +345,7 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
       } else {
         // Fetch all products
         const response = await magentoApi.getProducts(params);
-        productsData: any,
+        productsData
                 additional_attributes: additionalAttrs?.additional_attributes || [],
                 brand: additionalAttrs?.additional_attributes?.find(attr => attr.attribute_code === 'mgs_brand').label || 'Unknown'
               };
@@ -374,7 +374,7 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
 
   // ===== FILTERING LOGIC =====
   const applyFilters = useCallback((productsData) => {
-    return productsData.filter((product: any: any) => {
+    return productsData.filter((product: any: any: any: any) => {
       // Brand filter
       if(filters.brand && product.brand !== filters.brand) {
         return false;
@@ -404,7 +404,7 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
 
   // ===== STATISTICS UPDATE =====
   const updateStats = useCallback((productsData) => {
-    const newStats = productsData.reduce((acc: any: any, product: any: any) => ({
+    const newStats = productsData.reduce((acc: any product: any: any: any: any) => ({
       total: acc.total + 1,
       active: acc.active + (product.status ===1 ? 1 : 0),
       inactive: acc.inactive + (product.status !== 1 ? 1 : 0),
@@ -569,10 +569,10 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
     }
   };
 
-  return Boolean(Boolean((
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+  return Boolean((
+    <Box sx={{ display: "flex", height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
-      <Paper sx={{ mb: 2, p: 2 }}>
+      <Paper sx={{ display: "flex", mb: 2, p: 2 }}>
         <Typography variant="h5" gutterBottom>
           Product Management System
         </Typography>
@@ -582,7 +582,7 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
         
         {/* Selected Products Info */}
         {selectedProducts.length > 0 && (
-          <Alert severity="info" sx={{ mt: 2 }}>
+          <Alert severity="info" sx={{ display: "flex", mt: 2 }}>
             <Typography variant="body2">
               Working with {selectedProducts.length} selected products: {selectedProducts.join(', ')}
             </Typography>
@@ -592,25 +592,25 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
 
       {/* Built-in Filters */}
       {currentTab ===0 && (
-        <Card sx={{ mb: 2 }}>
+        <Card sx={{ display: "flex", mb: 2 }}>
           <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+              <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                 <FilterIcon color="primary" />
                 <Typography variant="h6">
                   Product Filters
                 </Typography>
               </Box>
-              <Box sx={{ display: 'flex', gap: 1 }}>
+              <Box sx={{ display: "flex", display: 'flex', gap: 1 }}>
                 <Button
-                  variant: any,
+                  variant="body2"
                   startIcon={<BrandIcon />}
                   onClick={handleOpenBrandManagement}
                 >
                   Manage Brands
                 </Button>
                 <Button
-                  variant: any,
+                  variant="body2"
                   startIcon={<ClearIcon />}
                   onClick={handleClearFilters}
                   disabled={!Object.values(filters).some(v => v !== '' && !(typeof v === 'object' && !v.min && !v.max))}
@@ -628,13 +628,13 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
                   <Select
                     value={filters.brand}
                     onChange={(e) => handleFilterChange('brand', e.target.value)}
-                    label: any,
+                    label
                     disabled={brandsLoading}
                   >
                     <MenuItem value="">All Brands</MenuItem>
-                    {brands.map((brand: any: any) => (
+                    {brands.map((brand: any: any: any: any) => (
                       <MenuItem key={brand.value} value={brand.label}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                           <BrandIcon fontSize="small" />
                           {brand.label}
                         </Box>
@@ -651,7 +651,7 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
                   <Select
                     value={filters.status}
                     onChange={(e) => handleFilterChange('status', e.target.value)}
-                    label: any,
+                    label
               {/* Type Filter */}
               <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                 <FormControl fullWidth size="small">
@@ -659,18 +659,18 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
                   <Select
                     value={filters.type}
                     onChange={(e) => handleFilterChange('type', e.target.value)}
-                    label: any,
+                    label
               {/* Price Range */}
               <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                 <TextField
-                  label: any,
+                  label
                   value={filters.priceRange.min}
                   onChange={(e) => handlePriceRangeChange('min', e.target.value)}
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 6, md: 2 }}>
                 <TextField
-                  label: any,
+                  label
                   value={filters.priceRange.max}
                   onChange={(e) => handlePriceRangeChange('max', e.target.value)}
                 />
@@ -678,30 +678,30 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
 
               {/* Active Filters Display */}
               <Grid size={12}>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
+                <Box sx={{ display: "flex", display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
                   {filters.brand && (
                     <Chip
                       label={`Brand: ${filters.brand}`}
                       onDelete={() => handleFilterChange('brand', '')}
-                      color: any,
+                      color
                   )}
                   {filters.status !== '' && (
                     <Chip
                       label={`Status: ${filters.status === '1' ? 'Active' : 'Inactive'}`}
                       onDelete={() => handleFilterChange('status', '')}
-                      color: any,
+                      color
                   )}
                   {filters.type && (
                     <Chip
                       label={`Type: ${filters.type}`}
                       onDelete={() => handleFilterChange('type', '')}
-                      color: any,
+                      color
                   )}
                   {(filters.priceRange.min || filters.priceRange.max) && (
                     <Chip
                       label={`Price: ${filters.priceRange.min || '0'} - ${filters.priceRange.max || '∞'}`}
                       onDelete={() => handlePriceRangeChange('min', '') || handlePriceRangeChange('max', '')}
-                      color: any,
+                      color
                   )}
                 </Box>
               </Grid>
@@ -711,23 +711,21 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
       )}
 
       {/* Tabs */}
-      <Paper sx={{ mb: 2 }}>
+      <Paper sx={{ display: "flex", mb: 2 }}>
         <Tabs
           value={currentTab}
           onChange={(e) => handleTabChange}
-          variant: any,
-          {tabs.map((tab: any: any, index: any: any) => (
-            <Tab
+          variant="body2"
               key={index}
               label={tab.label}
               icon={tab.icon}
-              iconPosition: any,
+              iconPosition
           ))}
         </Tabs>
       </Paper>
 
       {/* Tab Content */}
-      <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
+      <Box sx={{ display: "flex", flexGrow: 1, overflow: 'hidden' }}>
         {renderTabContent()}
       </Box>
 
@@ -746,12 +744,12 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
       />
 
       {/* Floating Action Buttons */}
-      <Box sx={{ position: 'fixed', bottom: 24, right: 24, zIndex: 1000 }}>
+      <Box sx={{ display: "flex", position: 'fixed', bottom: 24, right: 24, zIndex: 1000 }}>
         <Stack spacing={2}>
           {/* Quick Actions FAB */}
           <TooltipWrapper title="Quick Actions" placement="left">
             <Fab
-              color: any,
+              color
               onClick={(e) => openFloatingWindow('quickActions', e)}
             >
               <AddIcon />
@@ -760,11 +758,11 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
 
           {/* Bulk Operations FAB */}
           <TooltipWrapper 
-            title: any,
+            title
             disabled={selectedProducts.length ===0}
           >
             <Fab
-              color: any,
+              color
               onClick={(e) => openFloatingWindow('bulkOperations', e)}
               disabled={selectedProducts.length ===0}
             >
@@ -775,7 +773,7 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
           {/* Data Management FAB */}
           <TooltipWrapper title="Data Management" placement="left">
             <Fab
-              color: any,
+              color
               onClick={(e) => openFloatingWindow('dataManagement', e)}
             >
               <RefreshIcon />
@@ -792,15 +790,15 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
         anchorOrigin={{ vertical: 'center', horizontal: 'left' }}
         transformOrigin={{ vertical: 'center', horizontal: 'right' }}
       >
-        <Paper sx={{ p: 2, minWidth: 250 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+        <Paper sx={{ display: "flex", p: 2, minWidth: 250 }}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
             <Typography variant="h6">Quick Actions</Typography>
             <IconButton size="small" onClick={() => closeFloatingWindow('quickActions')}>
               <CloseIcon />
             </IconButton>
           </Box>
           <List dense>
-            <ListItem button onClick={() => { /* Add Product */ closeFloatingWindow('quickActions'))); }}>
+            <ListItem button onClick={() => { /* Add Product */ closeFloatingWindow('quickActions'))))); }}>
               <ListItemIcon><AddIcon /></ListItemIcon>
               <ListItemText primary="Add Product" />
             </ListItem>
@@ -828,14 +826,14 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
         anchorOrigin={{ vertical: 'center', horizontal: 'left' }}
         transformOrigin={{ vertical: 'center', horizontal: 'right' }}
       >
-        <Paper sx={{ p: 2, minWidth: 250 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+        <Paper sx={{ display: "flex", p: 2, minWidth: 250 }}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
             <Typography variant="h6">Bulk Operations</Typography>
             <IconButton size="small" onClick={() => closeFloatingWindow('bulkOperations')}>
               <CloseIcon />
             </IconButton>
           </Box>
-          <Alert severity="info" sx={{ mb: 2 }}>
+          <Alert severity="info" sx={{ display: "flex", mb: 2 }}>
             {selectedProducts.length} products selected
           </Alert>
           <List dense>
@@ -867,14 +865,14 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
         anchorOrigin={{ vertical: 'center', horizontal: 'left' }}
         transformOrigin={{ vertical: 'center', horizontal: 'right' }}
       >
-        <Paper sx={{ p: 2, minWidth: 280 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+        <Paper sx={{ display: "flex", p: 2, minWidth: 280 }}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
             <Typography variant="h6">Data Management</Typography>
             <IconButton size="small" onClick={() => closeFloatingWindow('dataManagement')}>
               <CloseIcon />
             </IconButton>
           </Box>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 2 }}>
             Manually refresh data from Magento
           </Typography>
           <List dense>
@@ -916,7 +914,7 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
 };
 
 // ===== PRODUCT DETAIL DIALOG =====
-const ProductDetailDialog: React.FC<{open: any, onClose: any, product: any}> = ({ open, onClose, product  }) => {
+const ProductDetailDialog: React.FC<{open onClose product: any}> = ({ open, onClose, product  }) => {
   if (!product) return null;
 
   return (
@@ -925,10 +923,10 @@ const ProductDetailDialog: React.FC<{open: any, onClose: any, product: any}> = (
         Product Details: {product.name}
       </DialogTitle>
       <DialogContent>
-        <Grid { ...{container: true}} spacing={2} sx={{ mt: 1 }}>
+        <Grid { ...{container: true}} spacing={2} sx={{ display: "flex", mt: 1 }}>
           <Grid size={6}>
             <TextField
-              label: any,
+              label
               value={product.id}
               fullWidth
               disabled
@@ -936,7 +934,7 @@ const ProductDetailDialog: React.FC<{open: any, onClose: any, product: any}> = (
           </Grid>
           <Grid size={6}>
             <TextField
-              label: any,
+              label
               value={product.sku}
               fullWidth
               disabled
@@ -944,7 +942,7 @@ const ProductDetailDialog: React.FC<{open: any, onClose: any, product: any}> = (
           </Grid>
           <Grid size={12}>
             <TextField
-              label: any,
+              label
               value={product.name}
               fullWidth
               disabled
@@ -952,7 +950,7 @@ const ProductDetailDialog: React.FC<{open: any, onClose: any, product: any}> = (
           </Grid>
           <Grid size={6}>
             <TextField
-              label: any,
+              label
               value={product.price || 0}
               fullWidth
               disabled
@@ -960,7 +958,7 @@ const ProductDetailDialog: React.FC<{open: any, onClose: any, product: any}> = (
           </Grid>
           <Grid size={6}>
             <TextField
-              label: any,
+              label
               value={product.status ===1 ? 'Active' : 'Inactive'}
               fullWidth
               disabled
@@ -968,7 +966,7 @@ const ProductDetailDialog: React.FC<{open: any, onClose: any, product: any}> = (
           </Grid>
           <Grid size={6}>
             <TextField
-              label: any,
+              label
               value={product.type_id || 'simple'}
               fullWidth
               disabled

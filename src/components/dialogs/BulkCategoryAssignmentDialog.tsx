@@ -37,7 +37,7 @@ import magentoApi from '../../services/magentoApi';
 const BulkCategoryAssignmentDialog: React.FC<any> = ({ 
   open, 
   onClose, 
-  selectedProducts: any,
+  selectedProducts
   onAssignmentComplete 
 }) => {
   // ===== STATE =====
@@ -149,52 +149,51 @@ const BulkCategoryAssignmentDialog: React.FC<any> = ({
 
   // ===== RENDER CATEGORY TREE =====
   const renderCategoryTree = useCallback((categoryList, level = 0) => {
-    return categoryList.map((category: any: any) => {
+    return categoryList.map((category: any: any: any: any) => {
       const hasChildren = category.children_data && category.children_data.length > 0;
       const isExpanded = expandedCategories.has(category.id);
       const isSelected = selectedCategories.has(category.id);
       
-      return Boolean(Boolean((
+      return Boolean((
         <React.Fragment key={category.id}>
           <ListItem
-            sx: any,
-              py: 0.5,
+            sx={{
               '&:hover': { backgroundColor: 'action.hover' }
             }}
           >
-            <ListItemIcon sx={{ minWidth: 32 } as any}>
+            <ListItemIcon sx={{ display: "flex", minWidth: 32 } as any}>
               {hasChildren ? (
                 <IconButton
-                  size: any,
+                  size="small"
                   onClick={() => handleCategoryExpand(category.id)}
                 >
                   {isExpanded ? <ExpandLessIcon /> : <ChevronRightIcon />}
                 </IconButton>
               ) : (
-                <Box sx={{ width: 32 } as any} />
+                <Box sx={{ display: "flex", width: 32 } as any} />
               )}
             </ListItemIcon>
             
             <FormControlLabel
-              control: any,
+              control
                   checked={isSelected}
                   onChange={(e) => () => handleCategoryToggle(category.id)}
-                  size: any,
+                  size="small"
               }
-              label: any,
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
+              label
+                <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
                   <CategoryIcon fontSize="small" color={level ===0 ? 'primary' : 'action'} />
                   <Typography variant="body2" fontWeight={level ===0 ? 600 : 400}>
                     {category?.name}
                   </Typography>
                   <Chip
                     label={`ID: ${category.id}`}
-                    size: any,
-                    sx={{ fontSize: '0.7rem', height: 20 } as any}
+                    size="small"
+                    sx={{ display: "flex", fontSize: '0.7rem', height: 20 } as any}
                   />
                 </Box>
               }
-              sx={{ flexGrow: 1, ml: 0 } as any}
+              sx={{ display: "flex", flexGrow: 1, ml: 0 } as any}
             />
           </ListItem>
           
@@ -204,14 +203,14 @@ const BulkCategoryAssignmentDialog: React.FC<any> = ({
             </Collapse>
           )}
         </React.Fragment>
-      )));
+      )))));
     });
   }, [expandedCategories, selectedCategories, handleCategoryExpand, handleCategoryToggle]);
 
-  return Boolean(Boolean((
+  return Boolean((
     <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
       <DialogTitle>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
           <CategoryIcon />
           <Typography variant="h6">
             Bulk Category Assignment
@@ -220,47 +219,47 @@ const BulkCategoryAssignmentDialog: React.FC<any> = ({
       </DialogTitle>
       
       <DialogContent>
-        <Alert severity="info" sx={{ mb: 2 } as any}>
+        <Alert severity="info" sx={{ display: "flex", mb: 2 } as any}>
           Assign categories to {selectedProducts.length} selected products
         </Alert>
 
         {/* Selected Products Summary */}
-        <Box sx={{ mb: 2 } as any}>
+        <Box sx={{ display: "flex", mb: 2 } as any}>
           <Typography variant="subtitle2" gutterBottom>
             Selected Products ({selectedProducts.length}):
           </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, maxHeight: 100, overflow: 'auto' } as any}>
-            {selectedProducts.slice(0, 10).map((product: any: any) => (
+          <Box sx={{ display: "flex", display: 'flex', flexWrap: 'wrap', gap: 1, maxHeight: 100, overflow: 'auto' } as any}>
+            {selectedProducts.slice(0, 10).map((product: any: any: any: any) => (
               <Chip
                 key={product?.sku}
                 label={product?.name || product?.sku}
-                size: any,
+                size="small"
             ))}
             {selectedProducts.length > 10 && (
               <Chip
                 label={`+${selectedProducts.length - 10} more`}
-                size: any,
+                size="small"
             )}
           </Box>
         </Box>
 
-        <Divider sx={{ my: 2 } as any} />
+        <Divider sx={{ display: "flex", my: 2 } as any} />
 
         {/* Selected Categories */}
         {selectedCategories.size > 0 && (
-          <Box sx={{ mb: 2 } as any}>
+          <Box sx={{ display: "flex", mb: 2 } as any}>
             <Typography variant="subtitle2" gutterBottom>
               Selected Categories ({selectedCategories.size}):
             </Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 } as any}>
-              {Array.from(selectedCategories).map((categoryId: any: any) => {
-                const category = findCategoryById(categories, categoryId)));
+            <Box sx={{ display: "flex", display: 'flex', flexWrap: 'wrap', gap: 1 } as any}>
+              {Array.from(selectedCategories).map((categoryId: any: any: any: any) => {
+                const category = findCategoryById(categories, categoryId)))));
                 return (
                   <Chip
                     key={categoryId}
                     label={category?.name || `Category ${categoryId}`}
                     onDelete={() => handleCategoryToggle(categoryId)}
-                    color: any,
+                    color
               })}
             </Box>
           </Box>
@@ -275,6 +274,7 @@ const BulkCategoryAssignmentDialog: React.FC<any> = ({
           <LinearProgress />
         ) : (
           <Box sx={{ 
+            display: "flex", 
             maxHeight: 400, 
             overflowY: 'auto',
             border: '1px solid',
@@ -288,9 +288,9 @@ const BulkCategoryAssignmentDialog: React.FC<any> = ({
         )}
 
         {saving && (
-          <Box sx={{ mt: 2 } as any}>
+          <Box sx={{ display: "flex", mt: 2 } as any}>
             <LinearProgress />
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 } as any}>
+            <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mt: 1 } as any}>
               Assigning categories to products...
             </Typography>
           </Box>
@@ -303,7 +303,7 @@ const BulkCategoryAssignmentDialog: React.FC<any> = ({
         </Button>
         <Button 
           onClick={handleSave} 
-          variant: any,
+          variant="body2"
           disabled={selectedCategories.size ===0 || saving}
           startIcon={<SaveIcon />}
         >

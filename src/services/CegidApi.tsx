@@ -70,7 +70,7 @@ async function getProductsFromCegid(): Promise<CegidProduct[]> {
     const parser = new xml2js.Parser();
     const parsedData = await parser.parseStringPromise(body) as CegidResponse;
 
-    const transformedMagentoData: CegidProduct[] = parsedData.Inventory.Items.map((item: any: any) => ({
+    const transformedMagentoData: CegidProduct[] = parsedData.Inventory.Items.map((item: any: any: any: any) => ({
         itemCode: item.ItemCode[0],
         description: item.Description[0],
         price: item.Price[0],

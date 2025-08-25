@@ -44,16 +44,16 @@ import { useTranslation } from 'react-i18next';
 const GridToolbar = ({
   gridName,
   onRefresh,
-  selectedRows: any,
+  selectedRows
   config = {},
   columnVisibility = {},
   onColumnVisibilityChange,
   density,
   onDensityChange,
-  enableI18n: any,
-  isRTL: any,
+  enableI18n
+  isRTL
   onSearch,
-  searchValue: any,
+  searchValue
   onClearSearch,
   onExport,
   onImport,
@@ -63,9 +63,9 @@ const GridToolbar = ({
   onSync,
   onSettings,
   onFiltersToggle,
-  filtersVisible: any,
-  customActions: any,
-  loading: any,
+  filtersVisible
+  customActions
+  loading
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -130,39 +130,39 @@ const GridToolbar = ({
     return enableI18n ? t(`grid.toolbar.${key}`, fallback) : fallback;
   }, [enableI18n, t]);
 
-  return Boolean(Boolean((
+  return Boolean((
     <Box sx={{ 
+      display: "flex", 
       borderBottom: `1px solid ${theme.palette.divider}`,
       backgroundColor: theme.palette.background.paper
     }}>
       <Toolbar 
-        variant: any,
-          px: 2,
+        variant="body2"
           gap: 1,
           direction: isRTL ? 'rtl' : 'ltr'
         }}
       >
         {/* Section 1: Refresh */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
           {toolbarConfig.showRefresh && (
             <Tooltip title={translate('refresh', 'Refresh Data')}>
               <IconButton
                 onClick={onRefresh}
                 disabled={loading}
-                size: any,
+                size="small"
           )}
         </Box>
 
-        <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+        <Divider orientation="vertical" flexItem sx={{ display: "flex", mx: 1 }} />
 
         {/* Section 2: Action Buttons */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: spacing }}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: spacing }}>
           {toolbarConfig.showAdd && (
             <Tooltip title={translate('add', 'Add New')}>
               <Button
                 startIcon={<AddIcon />}
                 onClick={onAdd}
-                variant: any,
+                variant="body2"
                 size={buttonSize}
                 disabled={loading}
               >
@@ -177,7 +177,7 @@ const GridToolbar = ({
                 <Button
                   startIcon={<EditIcon />}
                   onClick={onEdit}
-                  variant: any,
+                  variant="body2"
                   size={buttonSize}
                   disabled={!hasSelection || loading}
                 >
@@ -192,7 +192,7 @@ const GridToolbar = ({
               <Button
                 startIcon={<DeleteIcon />}
                 onClick={onDelete}
-                variant: any,
+                variant="body2"
                 size={buttonSize}
                 disabled={!hasSelection || loading}
               >
@@ -206,14 +206,14 @@ const GridToolbar = ({
               <IconButton
                 onClick={onSync}
                 disabled={loading}
-                size: any,
+                size="small"
           )}
 
           {/* Custom Actions */}
-          {customActions.map((action: any: any, index: any: any) => {
+          {customActions.map((action: any index: any: any: any: any) => {
             // Safely render icon - ensure it's a valid React element
             const renderIcon = () => {
-              if (!action?.icon) return null));
+              if (!action?.icon) return null))));
 
               // Handle Material-UI icon components (functions)
               if(typeof action?.icon === 'function') {
@@ -238,7 +238,7 @@ const GridToolbar = ({
                     onClick={action?.onClick}
                     variant={action?.variant || 'outlined'}
                     color={action?.color || 'primary'}
-                    size: any,
+                    size="small"
                     disabled={action?.disabled || loading}
                   >
                     {action?.label}
@@ -249,24 +249,24 @@ const GridToolbar = ({
           })}
         </Box>
 
-        <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+        <Divider orientation="vertical" flexItem sx={{ display: "flex", mx: 1 }} />
 
         {/* Section 3: Search and Filters */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1 }}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1, flex: 1 }}>
           {toolbarConfig.showSearch && (
             <TextField
-              size: any,
+              size="small"
               placeholder={translate('search', 'Search...')}
               value={searchText}
               onChange={(e) => handleSearch(e.target.value)}
-              sx={{ minWidth: 200, maxWidth: 300 }}
-              InputProps: any,
+              sx={{ display: "flex", minWidth: 200, maxWidth: 300 }}
+              InputProps
                 endAdornment: searchText && (
                   <InputAdornment position="end">
                     <IconButton
-                      size: any,
+                      size="small"
                       onClick={handleClearSearch}
-                      edge: any,
+                      edge
               }}
             />
           )}
@@ -275,7 +275,7 @@ const GridToolbar = ({
             <Tooltip title={translate('filters', 'Show Filters')}>
               <IconButton
                 onClick={onFiltersToggle}
-                size: any,
+                size="small"
                 color={filtersVisible ? 'primary' : 'default'}
               >
                 <FilterIcon />
@@ -289,25 +289,25 @@ const GridToolbar = ({
           <Fade in={hasSelection}>
             <Chip
               label={translate('selectedCount', `${selectedCount} selected`).replace('{{count}}', selectedCount)}
-              color: any,
+              color
         )}
 
-        <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+        <Divider orientation="vertical" flexItem sx={{ display: "flex", mx: 1 }} />
 
         {/* Section 5: Settings and More */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
           {(toolbarConfig.showExport || toolbarConfig.showImport) && (
             <>
               <Tooltip title={translate('export', 'Export Data')}>
                 <IconButton
                   onClick={onExport}
                   disabled={loading}
-                  size: any,
+                  size="small"
                 <Tooltip title={translate('import', 'Import Data')}>
                   <IconButton
                     onClick={onImport}
                     disabled={loading}
-                    size: any,
+                    size="small"
               )}
             </>
           )}
@@ -316,13 +316,13 @@ const GridToolbar = ({
             <Tooltip title={translate('settings', 'Grid Settings')}>
               <IconButton
                 onClick={handleSettingsMenuOpen}
-                size: any,
+                size="small"
           )}
 
           <Tooltip title="More options">
             <IconButton
               onClick={handleMoreMenuOpen}
-              size: any,
+              size="small"
       {/* Settings Menu */}
       <Menu
         anchorEl={settingsMenuAnchor}

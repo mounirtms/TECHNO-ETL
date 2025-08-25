@@ -77,9 +77,9 @@ export const OptimizedLoadingFallback: React.FC<{
   showProgress?: boolean;
   timeout?: number;
 }> = ({ 
-  routeName: any,
-  showProgress: any,
-  timeout: any,
+  routeName
+  showProgress
+  timeout
 }) => {
   usePerformanceMonitor(`Loading-${routeName}`);
   const [showTimeout, setShowTimeout] = useState(false);
@@ -95,8 +95,7 @@ export const OptimizedLoadingFallback: React.FC<{
   if(showTimeout) {
     return (
       <Box
-        sx: any,
-          justifyContent: 'center',
+        sx={{
           alignItems: 'center',
           height: '100vh',
           flexDirection: 'column',
@@ -116,8 +115,7 @@ export const OptimizedLoadingFallback: React.FC<{
 
   return (
     <Box
-      sx: any,
-        justifyContent: 'center',
+      sx={{
         alignItems: 'center',
         height: '100vh',
         flexDirection: 'column',
@@ -218,7 +216,7 @@ export const RouteTransition: React.FC<{
 
   return (
     <Box
-      sx: any,
+      sx={{
         transition: `opacity ${duration}ms ease-in-out`,
         minHeight: '100vh'
       }}

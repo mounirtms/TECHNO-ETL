@@ -31,7 +31,7 @@ class BaseColumn {
   generateHeaderName(field: any) {
     return field
       .split('_')
-      .map((word: any: any) => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word: any: any: any: any) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   }
 
@@ -224,7 +224,7 @@ class BooleanColumn extends BaseColumn {
         <Chip
           label={value ? 'Yes' : 'No'}
           color={value ? 'success' : 'default'}
-          size: any,
+          size="small"
     };
     return column;
   }
@@ -248,8 +248,8 @@ class ActionsColumn extends BaseColumn {
     const column = super.build();
     column.renderCell = (params) => {
       return (
-        <Box sx={{ display: 'flex', gap: 1 } as any}>
-          {this.actions.map((action: any: any, index: any: any) => (
+        <Box sx={{ display: "flex", display: 'flex', gap: 1 } as any}>
+          {this.actions.map((action: any index: any: any: any: any) => (
             <action.component
               key={index}
               onClick={() => action.onClick(params.row)}

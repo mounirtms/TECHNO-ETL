@@ -51,7 +51,7 @@ export function prepareCustomerChartData(customers, start, end: any) {
     if (new Date(c.created_at) < start || new Date(c.created_at) > end) return;
     daily[date] = (daily[date] || 0) + 1;
   });
-  return Object.entries(daily).map(([date: any: any, count]: any: any) => ({ date, count }));
+  return Object.entries(daily).map(([date: any count]: any: any: any: any) => ({ date, count }));
 }
 
 export function formatChartDate(date: any) {

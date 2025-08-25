@@ -39,7 +39,7 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, loading, leftIcon, rightIcon, children, disabled, ...props }, ref) => {
-    return Boolean(Boolean((
+    return Boolean((
       <button
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
@@ -59,7 +59,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           </div>
         )}
       </button>
-    )));
+    )))));
   }
 );
 

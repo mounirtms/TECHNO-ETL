@@ -53,7 +53,7 @@ const CalligraphDebugPage = () => {
   // Image Upload Handler
   const onImageDrop = async(acceptedFiles) => {
     setImageFiles(prev => [...prev, ...acceptedFiles]);
-    console.log('📁 DEBUGGING: Added images:', acceptedFiles.map((f: any: any) => f?.name));
+    console.log('📁 DEBUGGING: Added images:', acceptedFiles.map((f: any: any: any: any) => f?.name));
   };
 
   // Test Matching
@@ -94,13 +94,13 @@ const CalligraphDebugPage = () => {
     multiple: true
   });
 
-  return Boolean(Boolean((
-    <Box sx={{ p: 3 }}>
+  return Boolean((
+    <Box sx={{ display: "flex", p: 3 }}>
       <Typography variant="h4" gutterBottom>
         🐛 Calligraph Debug Center
       </Typography>
       
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+      <Typography variant="body1" color="text.secondary" sx={{ display: "flex", mb: 3 }}>
         This debug page helps identify and fix CSV parsing and image matching issues.
         Upload your files and see detailed parsing information.
       </Typography>
@@ -116,8 +116,7 @@ const CalligraphDebugPage = () => {
               
               <Paper
                 { ...csvDropzone.getRootProps()}
-                sx: any,
-                  border: '2px dashed',
+                sx={{
                   borderColor: csvDropzone.isDragActive ? 'primary.main' : 'grey.300',
                   bgcolor: csvDropzone.isDragActive ? 'primary.light' : 'background.default',
                   cursor: 'pointer',
@@ -153,8 +152,7 @@ const CalligraphDebugPage = () => {
               
               <Paper
                 { ...imageDropzone.getRootProps()}
-                sx: any,
-                  border: '2px dashed',
+                sx={{
                   borderColor: imageDropzone.isDragActive ? 'info.main' : 'grey.300',
                   bgcolor: imageDropzone.isDragActive ? 'info.light' : 'background.default',
                   cursor: 'pointer',
@@ -182,19 +180,19 @@ const CalligraphDebugPage = () => {
 
         {/* Test Matching Button */}
         <Grid item xs={12}>
-          <Box sx={{ textAlign: 'center', mb: 3 }}>
+          <Box sx={{ display: "flex", textAlign: 'center', mb: 3 }}>
             <Button
-              variant: any,
+              variant="body2"
               onClick={testMatching}
               disabled={!csvData || imageFiles.length ===0 || loading}
-              color: any,
-        <Alert severity="info" sx={{ mb: 3 }}>
+              color
+        <Alert severity="info" sx={{ display: "flex", mb: 3 }}>
           Processing...
         </Alert>
       )}
 
       {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
+        <Alert severity="error" sx={{ display: "flex", mb: 3 }}>
           <Typography variant="body2">
             <strong>Error:</strong> {error}
           </Typography>
@@ -203,12 +201,12 @@ const CalligraphDebugPage = () => {
 
       {/* CSV Data Display */}
       {csvData && (
-        <Paper sx={{ p: 3, mb: 3 }}>
+        <Paper sx={{ display: "flex", p: 3, mb: 3 }}>
           <Typography variant="h6" gutterBottom>
             📊 CSV Parsing Results
           </Typography>
           
-          <Grid { ...{container: true}} spacing={2} sx={{ mb: 2 }}>
+          <Grid { ...{container: true}} spacing={2} sx={{ display: "flex", mb: 2 }}>
             <Grid item xs={6} sm={3}>
               <Chip label={`${csvData?.totalRows} Products`} color="primary" />
             </Grid>
@@ -229,19 +227,19 @@ const CalligraphDebugPage = () => {
           <List dense>
             <ListItem>
               <ListItemText 
-                primary: any,
+                primary
                 secondary={csvData?.skuColumn || 'Not found'} 
               />
             </ListItem>
             <ListItem>
               <ListItemText 
-                primary: any,
+                primary
                 secondary={csvData?.refColumn || 'Not found'} 
               />
             </ListItem>
             <ListItem>
               <ListItemText 
-                primary: any,
+                primary
                 secondary={csvData?.imageNameColumn || 'Not found'} 
               />
             </ListItem>
@@ -251,7 +249,7 @@ const CalligraphDebugPage = () => {
             📝 Sample Products:
           </Typography>
           <List dense>
-            {csvData?.data.slice(0, 5).map((item: any: any, index: any: any) => (
+            {csvData?.data.slice(0, 5).map((item: any index: any: any: any: any) => (
               <ListItem key={index}>
                 <ListItemText 
                   primary={`SKU: ${item.sku} | REF: ${item.ref}`}
@@ -265,17 +263,17 @@ const CalligraphDebugPage = () => {
 
       {/* Image Files Display */}
       {imageFiles.length > 0 && (
-        <Paper sx={{ p: 3, mb: 3 }}>
+        <Paper sx={{ display: "flex", p: 3, mb: 3 }}>
           <Typography variant="h6" gutterBottom>
             📁 Uploaded Images
           </Typography>
           
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-            {imageFiles.map((file: any: any, index: any: any) => (
+          <Box sx={{ display: "flex", display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {imageFiles.map((file: any index: any: any: any: any) => (
               <Chip 
                 key={index}
                 label={file?.name}
-                variant: any,
+                variant="body2"
             ))}
           </Box>
         </Paper>
@@ -283,15 +281,15 @@ const CalligraphDebugPage = () => {
 
       {/* Matching Results Display */}
       {matchingResults && (
-        <Paper sx={{ p: 3 }}>
+        <Paper sx={{ display: "flex", p: 3 }}>
           <Typography variant="h6" gutterBottom>
             🎯 Matching Results
           </Typography>
           
-          <Grid { ...{container: true}} spacing={2} sx={{ mb: 3 }}>
+          <Grid { ...{container: true}} spacing={2} sx={{ display: "flex", mb: 3 }}>
             <Grid item xs={6} sm={3}>
-              <Card sx={{ textAlign: 'center', bgcolor: 'success.light' }}>
-                <CardContent sx={{ py: 2 }}>
+              <Card sx={{ display: "flex", textAlign: 'center', bgcolor: 'success.light' }}>
+                <CardContent sx={{ display: "flex", py: 2 }}>
                   <Typography variant="h4" color="success.main">
                     {matchingResults?.stats.matched}
                   </Typography>
@@ -300,8 +298,8 @@ const CalligraphDebugPage = () => {
               </Card>
             </Grid>
             <Grid item xs={6} sm={3}>
-              <Card sx={{ textAlign: 'center', bgcolor: 'info.light' }}>
-                <CardContent sx={{ py: 2 }}>
+              <Card sx={{ display: "flex", textAlign: 'center', bgcolor: 'info.light' }}>
+                <CardContent sx={{ display: "flex", py: 2 }}>
                   <Typography variant="h4" color="info.main">
                     {matchingResults?.stats.uniqueProducts}
                   </Typography>
@@ -310,8 +308,8 @@ const CalligraphDebugPage = () => {
               </Card>
             </Grid>
             <Grid item xs={6} sm={3}>
-              <Card sx={{ textAlign: 'center', bgcolor: 'warning.light' }}>
-                <CardContent sx={{ py: 2 }}>
+              <Card sx={{ display: "flex", textAlign: 'center', bgcolor: 'warning.light' }}>
+                <CardContent sx={{ display: "flex", py: 2 }}>
                   <Typography variant="h4" color="warning.main">
                     {matchingResults?.stats?.unmatchedCSV}
                   </Typography>
@@ -320,8 +318,8 @@ const CalligraphDebugPage = () => {
               </Card>
             </Grid>
             <Grid item xs={6} sm={3}>
-              <Card sx={{ textAlign: 'center', bgcolor: 'error.light' }}>
-                <CardContent sx={{ py: 2 }}>
+              <Card sx={{ display: "flex", textAlign: 'center', bgcolor: 'error.light' }}>
+                <CardContent sx={{ display: "flex", py: 2 }}>
                   <Typography variant="h4" color="error.main">
                     {matchingResults?.stats?.unmatchedImages}
                   </Typography>
@@ -334,16 +332,16 @@ const CalligraphDebugPage = () => {
           <Typography variant="subtitle1" gutterBottom>
             🎯 Match Strategies:
           </Typography>
-          <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+          <Box sx={{ display: "flex", display: 'flex', gap: 1, mb: 2 }}>
             <Chip 
               label={`REF: ${matchingResults?.stats.matchStrategies.ref}`} 
-              color: any,
+              color
               label={`Image Name: ${matchingResults?.stats.matchStrategies.imageName}`} 
-              color: any,
+              color
               label={`Fuzzy: ${matchingResults?.stats.matchStrategies.fuzzy}`} 
-              color: any,
-          <List dense sx={{ maxHeight: 300, overflow: 'auto' }}>
-            {matchingResults?.matches.slice(0, 10).map((match: any: any, index: any: any) => (
+              color
+          <List dense sx={{ display: "flex", maxHeight: 300, overflow: 'auto' }}>
+            {matchingResults?.matches.slice(0, 10).map((match: any index: any: any: any: any) => (
               <ListItem key={index}>
                 <ListItemText 
                   primary={`${match.file?.name} → ${match.finalImageName}`}
@@ -355,11 +353,11 @@ const CalligraphDebugPage = () => {
 
           {matchingResults?.unmatched.csvRows.length > 0 && (
             <>
-              <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
+              <Typography variant="subtitle1" gutterBottom sx={{ display: "flex", mt: 2 }}>
                 ❌ Unmatched CSV Rows:
               </Typography>
-              <List dense sx={{ maxHeight: 200, overflow: 'auto' }}>
-                {matchingResults?.unmatched.csvRows.slice(0, 5).map((row: any: any, index: any: any) => (
+              <List dense sx={{ display: "flex", maxHeight: 200, overflow: 'auto' }}>
+                {matchingResults?.unmatched.csvRows.slice(0, 5).map((row: any index: any: any: any: any) => (
                   <ListItem key={index}>
                     <ListItemText 
                       primary={`SKU: ${row.sku} | REF: ${row.ref}`}
@@ -373,7 +371,7 @@ const CalligraphDebugPage = () => {
         </Paper>
       )}
     </Box>
-  )));
+  )))));
 };
 
 export default CalligraphDebugPage;

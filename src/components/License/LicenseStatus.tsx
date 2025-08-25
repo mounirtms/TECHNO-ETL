@@ -134,14 +134,14 @@ const LicenseStatus = () => {
         );
     }
 
-    return Boolean(Boolean((
+    return Boolean((
         <Box p={3}>
             <Typography variant="h4" gutterBottom>
                 License Status
             </Typography>
 
             {error && (
-                <Alert severity="error" sx={{ mb: 2 } as any}>
+                <Alert severity="error" sx={{ display: "flex", mb: 2 } as any}>
                     {error}
                 </Alert>
             )}
@@ -157,14 +157,14 @@ const LicenseStatus = () => {
                                     <Chip 
                                         label={getLicenseStatusText()} 
                                         color={getLicenseStatusColor()}
-                                        sx={{ ml: 1 } as any}
+                                        sx={{ display: "flex", ml: 1 } as any}
                                     />
                                 </Typography>
                             </Box>
 
                             {licenseDetails && (
                                 <>
-                                    <Divider sx={{ my: 2 } as any} />
+                                    <Divider sx={{ display: "flex", my: 2 } as any} />
                                     <Typography variant="h6" gutterBottom>
                                         License Details
                                     </Typography>
@@ -205,15 +205,15 @@ const LicenseStatus = () => {
 
                                     {licenseDetails?.features && (
                                         <>
-                                            <Typography variant="body2" color="text.secondary" sx={{ mt: 2, mb: 1 } as any}>
+                                            <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mt: 2, mb: 1 } as any}>
                                                 Available Features
                                             </Typography>
                                             <Box display="flex" gap={1} flexWrap="wrap">
-                                                {licenseDetails?.features.map((feature: any: any, index: any: any) => (
+                                                {licenseDetails?.features.map((feature: any index: any: any: any: any) => (
                                                     <Chip 
                                                         key={index} 
                                                         label={feature} 
-                                                        size: any,
+                                                        size="small"
                                                 ))}
                                             </Box>
                                         </>
@@ -230,13 +230,13 @@ const LicenseStatus = () => {
                             <Typography variant="h6" gutterBottom>
                                 Test Actions
                             </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 } as any}>
+                            <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 2 } as any}>
                                 Use these buttons to test license functionality
                             </Typography>
 
                             <Box display="flex" flexDirection="column" gap={2}>
                                 <Button 
-                                    variant: any,
+                                    variant="body2"
                                     onClick={activateTestLicense}
                                     disabled={loading}
                                 >
@@ -244,7 +244,7 @@ const LicenseStatus = () => {
                                 </Button>
 
                                 <Button 
-                                    variant: any,
+                                    variant="body2"
                                     onClick={deactivateLicense}
                                     disabled={loading}
                                 >
@@ -252,7 +252,7 @@ const LicenseStatus = () => {
                                 </Button>
 
                                 <Button 
-                                    variant: any,
+                                    variant="body2"
                                     onClick={checkCurrentLicense}
                                     disabled={loading}
                                 >
@@ -260,7 +260,7 @@ const LicenseStatus = () => {
                                 </Button>
 
                                 <Button 
-                                    variant: any,
+                                    variant="body2"
                                     onClick={setupAllTestLicenses}
                                     disabled={loading}
                                 >
@@ -283,7 +283,7 @@ const LicenseStatus = () => {
                 </Alert>
             </Box>
         </Box>
-    )));
+    )))));
 };
 
 export default LicenseStatus;

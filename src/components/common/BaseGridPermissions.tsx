@@ -293,7 +293,7 @@ export const GridPermissionProvider: React.FC<{children: any}> = ({ children  })
             const licenseDetails = await get_license_details(currentUser?.uid);
             if(licenseDetails) {
                 // Override permissions based on license details
-                permissions: any,
+                permissions
                     canRead: permissions.canRead && (licenseDetails.canRead !== false),
                     canEdit: permissions.canEdit && (licenseDetails.canEdit !== false),
                     canDelete: permissions.canDelete && (licenseDetails.canDelete !== false),
@@ -407,7 +407,7 @@ export const withPermissions = (WrappedComponent, componentId, requiredPermissio
         React.useEffect(() => {
             const checkPermissions = async () => {
                 try {
-                    const permissionPromises = requiredPermissions.map((permission: any: any) => 
+                    const permissionPromises = requiredPermissions.map((permission: any: any: any: any) => 
                         hasPermission(componentId, permission, props.customPermissions)
                     );
                     

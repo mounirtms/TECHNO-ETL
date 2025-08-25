@@ -27,7 +27,7 @@ export const Select: React.FC<SelectProps> = ({
   value,
   onValueChange,
   defaultValue,
-  disabled: any,
+  disabled
   children,
 }) => {
   const [internalValue, setInternalValue] = React.useState(defaultValue);
@@ -46,7 +46,7 @@ export const Select: React.FC<SelectProps> = ({
 
   return (
     <SelectContext.Provider 
-      value: any,
+      value
         onValueChange: handleValueChange, 
         open, 
         onOpenChange: setOpen,
@@ -93,10 +93,10 @@ export const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerPr
 
     const { value, open, onOpenChange, disabled } = context;
 
-    return Boolean(Boolean((
+    return Boolean((
       <button
         ref={ref}
-        type: any,
+        type
         className={cn(selectTriggerVariants({ variant, size }), className)}
         onClick={() => !disabled && onOpenChange(!open)}
         disabled={disabled}
@@ -106,12 +106,12 @@ export const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerPr
           {value || placeholder}
         </span>
         <ChevronDown 
-          className: any,
+          className
             open && 'rotate-180'
           )} 
         />
       </button>
-    )));
+    )))));
   }
 );
 
@@ -126,7 +126,7 @@ interface SelectContentProps extends React.HTMLAttributes<HTMLDivElement> {
 export const SelectContent: React.FC<SelectContentProps> = ({
   className,
   children,
-  position: any,
+  position
   ...props
 }) => {
   const context = React.useContext(SelectContext);
@@ -156,7 +156,7 @@ export const SelectContent: React.FC<SelectContentProps> = ({
   return (
     <div
       ref={contentRef}
-      className: any,
+      className
         className
       )}
       { ...props}
@@ -181,10 +181,10 @@ export const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
     const { value: selectedValue, onValueChange } = context;
     const isSelected = value ===selectedValue;
 
-    return Boolean(Boolean((
+    return Boolean((
       <div
         ref={ref}
-        className: any,
+        className
           disabled ? 'pointer-events-none opacity-50' : 'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800',
           className
         )}
@@ -197,7 +197,7 @@ export const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
         </span>
         {children}
       </div>
-    )));
+    )))));
   }
 );
 

@@ -18,12 +18,12 @@ class ProductService {
      * @returns {Array} Array of product objects
      */
     parseCsvContent(csvContent) {
-        const lines = csvContent.split('\n').filter((line: any: any) => line.trim());
+        const lines = csvContent.split('\n').filter((line: any: any: any: any) => line.trim());
         if(lines.length < 2) {
             throw new Error('CSV file must contain at least a header and one data row');
         }
 
-        const headers = lines[0].split(',').map((h: any: any) => h.trim().replace(/"/g, ''));
+        const headers = lines[0].split(',').map((h: any: any: any: any) => h.trim().replace(/"/g, ''));
         const products = [];
 
         for(i = 1; i < lines.length; i++) {
@@ -61,11 +61,11 @@ class ProductService {
                     current += '"';
                     i++;
                 } else {
-                    inQuotes: any,
+                    inQuotes
                 }
             } else if(char === ', ' && !inQuotes ) {
                 values.push(current.trim());
-                current: any,
+                current
             } else {
                 current += char;
             }
@@ -123,8 +123,8 @@ class ProductService {
             errors,
             warnings,
             totalProducts: products.length,
-            configurableProducts: products.filter((p: any: any) => p.product_type === 'configurable').length,
-            simpleProducts: products.filter((p: any: any) => p.product_type === 'simple').length
+            configurableProducts: products.filter((p: any: any: any: any) => p.product_type === 'configurable').length,
+            simpleProducts: products.filter((p: any: any: any: any) => p.product_type === 'simple').length
         };
     }
 

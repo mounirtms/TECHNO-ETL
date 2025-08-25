@@ -79,14 +79,14 @@ const ProductMediaUpload: React.FC<any> = ({ sku, existingImages = [], onImagesC
           (progress) => setUploadProgress(progress)
         );
 
-        const successful = results.filter((r: any: any) => r.success);
-        const failed = results.filter((r: any: any) => !r.success);
+        const successful = results.filter((r: any: any: any: any) => r.success);
+        const failed = results.filter((r: any: any: any: any) => !r.success);
 
         if(successful.length > 0) {
           toast.success(`${successful.length} images uploaded successfully`);
           
           // Add uploaded images to the list
-          const newImages = successful.map((result: any: any, index: any: any) => ({
+          const newImages = successful.map((result: any index: any: any: any: any) => ({
             id: Date.now() + index,
             file: validFiles[index],
             url: URL.createObjectURL(validFiles[index]),
@@ -113,7 +113,7 @@ const ProductMediaUpload: React.FC<any> = ({ sku, existingImages = [], onImagesC
       }
     } else {
       // Just add to preview if no SKU (for new products)
-      const newImages = validFiles.map((file: any: any, index: any: any) => ({
+      const newImages = validFiles.map((file: any index: any: any: any: any) => ({
         id: Date.now() + index,
         file,
         url: URL.createObjectURL(file),
@@ -149,7 +149,7 @@ const ProductMediaUpload: React.FC<any> = ({ sku, existingImages = [], onImagesC
     reorderedImages.splice(result.destination.index, 0, removed);
 
     // Update positions
-    const updatedImages = reorderedImages.map((img: any: any, index: any: any) => ({ ...img,
+    const updatedImages = reorderedImages.map((img: any index: any: any: any: any) => ({ ...img,
       position: index
     }));
 
@@ -159,7 +159,7 @@ const ProductMediaUpload: React.FC<any> = ({ sku, existingImages = [], onImagesC
 
   // Delete image
   const handleDeleteImage = (index) => {
-    const updatedImages = images.filter((_, i: any: any) => i !== index);
+    const updatedImages = images.filter((_, i: any: any: any: any) => i !== index);
     setImages(updatedImages);
     onImagesChange?.(updatedImages);
     toast.success('Image removed');
@@ -184,20 +184,19 @@ const ProductMediaUpload: React.FC<any> = ({ sku, existingImages = [], onImagesC
   const toggleImageType = (type) => {
     const updatedImage = { ...editDialog.image };
     if(updatedImage?.types.includes(type)) {
-      updatedImage.types = updatedImage?.types.filter((t: any: any) => t !== type);
+      updatedImage.types = updatedImage?.types.filter((t: any: any: any: any) => t !== type);
     } else {
       updatedImage.types = [...updatedImage?.types, type];
     }
     setEditDialog({ ...editDialog, image: updatedImage });
   };
 
-  return Boolean(Boolean((
+  return Boolean((
     <Box>
       {/* Upload Area */}
       <Paper
         { ...getRootProps()}
-        sx: any,
-          border: '2px dashed',
+        sx={{
           borderColor: isDragActive ? 'primary.main' : 'grey.300',
           bgcolor: isDragActive ? 'primary.light' : 'background.default',
           cursor: uploading ? 'not-allowed' : 'pointer',
@@ -207,28 +206,28 @@ const ProductMediaUpload: React.FC<any> = ({ sku, existingImages = [], onImagesC
         } as any}
       >
         <input { ...getInputProps()} />
-        <UploadIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 } as any} />
+        <UploadIcon sx={{ display: "flex", fontSize: 48, color: 'text.secondary', mb: 1 } as any} />
         <Typography variant="h6" gutterBottom>
           {isDragActive ? 'Drop images here...' : 'Upload Product Images'}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           Drag & drop images here, or click to select multiple files
         </Typography>
-        <Typography variant="caption" display="block" sx={{ mt: 1 } as any}>
+        <Typography variant="caption" display="block" sx={{ display: "flex", mt: 1 } as any}>
           Supported formats: JPEG, PNG, GIF, WebP (Max 10MB each)
         </Typography>
       </Paper>
 
       {/* Upload Progress */}
       {uploading && uploadProgress && (
-        <Box sx={{ mb: 3 } as any}>
+        <Box sx={{ display: "flex", mb: 3 } as any}>
           <Typography variant="body2" gutterBottom>
             Uploading: {uploadProgress?.current} of {uploadProgress?.total}
           </Typography>
           <LinearProgress
-            variant: any,
+            variant="body2"
             value={(uploadProgress?.current / uploadProgress?.total) * 100}
-            sx={{ mb: 1 } as any}
+            sx={{ display: "flex", mb: 1 } as any}
           />
           <Typography variant="caption" color="text.secondary">
             {uploadProgress?.fileName}
@@ -251,7 +250,7 @@ const ProductMediaUpload: React.FC<any> = ({ sku, existingImages = [], onImagesC
                   { ...provided.droppableProps}
                   ref={provided.innerRef}
                 >
-                  {images.map((image: any: any, index: any: any) => (
+                  {images.map((image: any index: any: any: any: any) => (
                     <Draggable
                       key={image?.id}
                       draggableId={image?.id.toString()}
@@ -267,16 +266,14 @@ const ProductMediaUpload: React.FC<any> = ({ sku, existingImages = [], onImagesC
                           { ...provided.draggableProps}
                         >
                           <Card
-                            sx: any,
-                              transform: snapshot.isDragging ? 'rotate(5deg)' : 'none',
+                            sx={{
                               boxShadow: snapshot.isDragging ? 4 : 1
                             } as any}
                           >
                             {/* Drag Handle */}
                             <Box
                               { ...provided.dragHandleProps}
-                              sx: any,
-                                top: 4,
+                              sx={{
                                 left: 4,
                                 zIndex: 1,
                                 bgcolor: 'rgba(0,0,0,0.5)',
@@ -284,14 +281,14 @@ const ProductMediaUpload: React.FC<any> = ({ sku, existingImages = [], onImagesC
                                 p: 0.5
                               } as any}
                             >
-                              <DragIcon sx={{ color: 'white', fontSize: 16 } as any} />
+                              <DragIcon sx={{ display: "flex", color: 'white', fontSize: 16 } as any} />
                             </Box>
 
                             {/* Main Image Badge */}
                             {image?.types.includes('small_image') && (
                               <Chip
                                 icon={<StarIcon />}
-                                label: any,
+                                label
                                   top: 4,
                                   right: 4,
                                   zIndex: 1
@@ -300,49 +297,49 @@ const ProductMediaUpload: React.FC<any> = ({ sku, existingImages = [], onImagesC
                             )}
 
                             <CardMedia
-                              component: any,
+                              component
                               image={image?.url}
                               alt={image?.label}
-                              sx={{ objectFit: 'cover' } as any}
+                              sx={{ display: "flex", objectFit: 'cover' } as any}
                             />
 
-                            <CardContent sx={{ p: 1 } as any}>
+                            <CardContent sx={{ display: "flex", p: 1 } as any}>
                               <Typography variant="body2" noWrap>
                                 {image?.label}
                               </Typography>
-                              <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5 } as any}>
-                                {image?.types.map((type: any: any) => (
+                              <Box sx={{ display: "flex", display: 'flex', gap: 0.5, mt: 0.5 } as any}>
+                                {image?.types.map((type: any: any: any: any) => (
                                   <Chip
                                     key={type}
                                     label={type}
-                                    size: any,
-                                    sx={{ fontSize: '0.6rem', height: 16 } as any}
+                                    size="small"
+                                    sx={{ display: "flex", fontSize: '0.6rem', height: 16 } as any}
                                   />
                                 ))}
                               </Box>
                               {image?.uploaded && (
                                 <Chip
-                                  label: any,
-                                  sx={{ mt: 0.5 } as any}
+                                  label
+                                  sx={{ display: "flex", mt: 0.5 } as any}
                                 />
                               )}
                             </CardContent>
 
-                            <CardActions sx={{ p: 1, pt: 0 } as any}>
+                            <CardActions sx={{ display: "flex", p: 1, pt: 0 } as any}>
                               <IconButton
-                                size: any,
+                                size="small"
                                 onClick={() => setPreviewDialog({ open: true, image })}
                               >
                                 <PreviewIcon />
                               </IconButton>
                               <IconButton
-                                size: any,
+                                size="small"
                                 onClick={() => handleEditImage(image, index)}
                               >
                                 <EditIcon />
                               </IconButton>
                               <IconButton
-                                size: any,
+                                size="small"
                                 onClick={() => handleDeleteImage(index)}
                               >
                                 <DeleteIcon />
@@ -365,7 +362,7 @@ const ProductMediaUpload: React.FC<any> = ({ sku, existingImages = [], onImagesC
       <Dialog
         open={previewDialog.open}
         onClose={() => setPreviewDialog({ open: false, image: null })}
-        maxWidth: any,
+        maxWidth
               src={previewDialog.image?.url}
               alt={previewDialog.image?.label}
               style={{ width: '100%', height: 'auto' }}
@@ -383,22 +380,22 @@ const ProductMediaUpload: React.FC<any> = ({ sku, existingImages = [], onImagesC
       <Dialog
         open={editDialog.open}
         onClose={() => setEditDialog({ open: false, image: null, index: -1 })}
-        maxWidth: any,
+        maxWidth
                 value={editDialog.image?.label}
-                onChange: any,
+                onChange
                   image: { ...editDialog.image, label: e.target.value }
                 })}
-                sx={{ mb: 2 } as any}
+                sx={{ display: "flex", mb: 2 } as any}
               />
 
               <Typography variant="subtitle2" gutterBottom>
                 Image Types
               </Typography>
-              <Box sx={{ mb: 2 } as any}>
-                {['image', 'small_image', 'thumbnail'].map((type: any: any) => (
+              <Box sx={{ display: "flex", mb: 2 } as any}>
+                {['image', 'small_image', 'thumbnail'].map((type: any: any: any: any) => (
                   <FormControlLabel
                     key={type}
-                    control: any,
+                    control
                         checked={editDialog.image?.types.includes(type)}
                         onChange={(e) => () => toggleImageType(type)}
                       />
@@ -409,14 +406,14 @@ const ProductMediaUpload: React.FC<any> = ({ sku, existingImages = [], onImagesC
               </Box>
 
               <FormControlLabel
-                control: any,
+                control
                     checked={editDialog.image?.disabled}
-                    onChange: any,
+                    onChange
                       image: { ...editDialog.image, disabled: e.target.checked }
                     })}
                   />
                 }
-                label: any,
+                label
           )}
         </DialogContent>
         <DialogActions>
@@ -429,7 +426,7 @@ const ProductMediaUpload: React.FC<any> = ({ sku, existingImages = [], onImagesC
         </DialogActions>
       </Dialog>
     </Box>
-  )));
+  )))));
 };
 
 export default ProductMediaUpload;

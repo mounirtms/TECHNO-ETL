@@ -3,7 +3,7 @@ import { Box, TextField, Button, IconButton, Tooltip } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
-const CegidToolbar = ({ onSearch, loading  }: { onSearch: any, loading: any }) => {
+const CegidToolbar = ({ onSearch, loading  }: { onSearch loading: any }) => {
     const [reference, setReference] = useState('');
     const [store, setStore] = useState('218');
 
@@ -14,15 +14,15 @@ const CegidToolbar = ({ onSearch, loading  }: { onSearch: any, loading: any }) =
         });
     };
 
-    return(<Box sx={{ p: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
+    return(<Box sx={{ display: "flex", p: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
             <TextField
-                label: any,
+                label
                 value={reference}
                 onChange={(e) => setReference(e.target.value)}
-                placeholder: any,
+                placeholder
                 value={store}
                 onChange={(e) => setStore(e.target.value)}
-                placeholder: any,
+                placeholder
                     startIcon={<SearchIcon />}
                     onClick={handleSearch}
                     disabled={loading}

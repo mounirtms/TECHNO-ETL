@@ -47,7 +47,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
 
         if (!Array.isArray(categories)) {
             console.log('📦 Converting single category to array');
-            categories: any,
+            categories
         }
 
         categories.forEach((category, index) => {
@@ -117,7 +117,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
     useEffect(() => {
         if(allCategories.length > 0) {
             console.log('🔄 Updating visible categories based on expansion state');
-            const visibleCategories = allCategories?.filter((cat: any: any) => {
+            const visibleCategories = allCategories?.filter((cat: any: any: any: any) => {
                 // Root categories are always visible
                 if (cat?.level ===0) return true;
 
@@ -142,6 +142,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
             const level = row?.level || 0;
 
             return(<Box sx={{
+                    display: "flex",
                     display: 'flex',
                     alignItems: 'center',
                     pl: level * 3, // Indent based on level
@@ -151,12 +152,11 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
                     {/* Expand/Collapse Button */}
                     {hasChildren ? (
                         <Box
-                            component: any,
+                            component
                                 console.log(`🔄 Toggling expansion for category: ${row.name} (ID: ${row.originalId})`);
                                 handleRowExpand(row.originalId);
                             }}
-                            sx: any,
-                                alignItems: 'center',
+                            sx={{
                                 justifyContent: 'center',
                                 cursor: 'pointer',
                                 mr: 1,
@@ -175,12 +175,12 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
                             }
                         </Box>
                     ) : (
-                        <Box sx={{ width: 20, mr: 1 }} /> // Spacer for alignment
+                        <Box sx={{ display: "flex", width: 20, mr: 1 }} /> // Spacer for alignment
                     )}
 
                     {/* Category Icon */}
                     <CategoryIcon
-                        fontSize: any,
+                        fontSize
                             color: level ===0 ? 'primary.main' : 'action.active',
                             opacity: level ===0 ? 1 : 0.7
                         }}
@@ -188,7 +188,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
 
                     {/* Category Name */}
                     <Box
-                        component: any,
+                        component
                             color: level ===0 ? 'primary.main' : 'text.primary',
                             fontSize: level ===0 ? '0.95rem' : '0.875rem'
                         }}
@@ -199,7 +199,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
                     {/* Level indicator for debugging */}
                     {process.env.NODE_ENV === 'development' && (
                         <Box
-                            component: any,
+                            component
                                 px: 0.5,
                                 py: 0.25,
                                 backgroundColor: 'action.hover',
@@ -244,7 +244,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
         const mergedColumns = mergeColumns(visibleColumns, generatedColumns);
 
         // Ensure proper column configuration
-        return mergedColumns.map((col: any: any) => ({ ...col,
+        return mergedColumns.map((col: any: any: any: any) => ({ ...col,
             // Keep visible columns as is, hide generated ones
             hide: visibleColumns.some(vc => vc.field ===col.field) ? false : true
         }));
@@ -264,16 +264,16 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
             const { filter = {} } = params;
             if(filter?.is_active !== undefined) {
                 const isActive = filter.is_active === 'true' || filter.is_active ===true;
-                visibleCategories: any,
+                visibleCategories
             }
 
             // Apply search filter if provided
             if(filter?.search) {
-                visibleCategories: any,
+                visibleCategories
             }
 
             // Format categories for grid display
-            const formattedCategories = visibleCategories.map((category: any: any) =>
+            const formattedCategories = visibleCategories.map((category: any: any: any: any) =>
                 categoryService.formatCategoryForGrid(category)
             );
 
@@ -298,7 +298,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
 
     // Update category statistics
     const updateStats = useCallback((categories) => {
-        const newStats = categories.reduce((acc: any: any, category: any: any) => ({
+        const newStats = categories.reduce((acc: any category: any: any: any: any) => ({
             total: acc.total + 1,
             active: acc.active + (category.is_active ? 1 : 0),
             inactive: acc.inactive + (!category.is_active ? 1 : 0)
@@ -312,7 +312,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
 
     return(<Box>
             <UnifiedGrid
-            gridName: any,
+            gridName
             columns={visibleColumns}
             data={data}
             loading={loading}
@@ -327,7 +327,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
 
             // View options
             showStatsCards={true}
-            gridCards: any,
+            gridCards
                     value: stats.total,
                     icon: CategoryIcon,
                     color: 'primary'
@@ -349,7 +349,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
             pageSizeOptions={[10, 25, 50, 100]}
 
             // Toolbar configuration
-            toolbarConfig: any,
+            toolbarConfig
                 showAdd: true,
                 showEdit: true,
                 showDelete: true,
@@ -360,7 +360,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
             }}
 
             // Context menu
-            contextMenuActions: any,
+            contextMenuActions
                     onClick: (rowData) => {
                         console.log('Editing category:', rowData);
                         const category = categoryService.findCategoryById(rowData.id);
@@ -388,7 +388,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
 
             // Floating actions (disabled by default)
             enableFloatingActions={false}
-            floatingActions: any,
+            floatingActions
                     priority: 1
                 },
                 edit: {
@@ -403,19 +403,19 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
 
             // Event handlers
             onRefresh={handleRefresh}
-            onAdd: any,
+            onAdd
             }}
-            onEdit: any,
+            onEdit
                 console.log('Editing category:', rowData);
                 const category = categoryService.findCategoryById(rowData.id);
                 setSelectedCategory(category);
                 setEditDialogOpen(true);
             }}
-            onDelete: any,
+            onDelete
                 console.log('Deleting categories:', selectedRows);
                 toast.info(`Deleting ${selectedRows.length} categories`);
             }}
-            onExport: any,
+            onExport
                 console.log('Exporting categories:', exportData);
                 toast.success(`Exported ${exportData.length} categories`);
             }}
@@ -431,7 +431,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
             sortModel={[{ field: 'name', sort: 'asc' }]}
 
             // Error handling
-            onError: any,
+            onError
                 console.error('Category Grid Error:', error);
                 toast.error('Error loading categories');
             }}
@@ -440,10 +440,10 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
         {/* Category Edit Dialog */}
         <CategoryEditDialog
             open={editDialogOpen}
-            onClose: any,
+            onClose
             }}
             category={selectedCategory}
-            onSave: any,
+            onSave
                 console.log('💾 Saving category:', updatedCategory);
                 toast.success(`Category "${updatedCategory.name}" saved successfully`);
                 handleRefresh(); // Refresh the grid

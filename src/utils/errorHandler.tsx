@@ -193,7 +193,7 @@ export const handleError = (error, context: any = {}) => {
  * Create error handler for specific component
  */
 export const createErrorHandler = (componentName: string, defaultContext: any = {}) => {
-  return (error: any, additionalContext: any = {}) => {
+  return (error additionalContext: any = {}) => {
     const context = {
       componentName,
       ...defaultContext,

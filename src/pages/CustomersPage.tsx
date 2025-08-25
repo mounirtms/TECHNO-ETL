@@ -28,46 +28,46 @@ const CustomersPage = () => {
 
   const hasParams = Object.keys(params).length > 0;
 
-  return Boolean(Boolean((
+  return Boolean((
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
     >
-      <Container maxWidth="xl" sx={{ py: 3 }}>
+      <Container maxWidth="xl" sx={{ display: "flex", py: 3 }}>
         {/* Dashboard Context Alert */}
         {hasParams && (
           <Alert
-            severity: any,
+            severity
             icon={<People />}
-            sx={{ mb: 2, borderRadius: 2 }}
+            sx={{ display: "flex", mb: 2, borderRadius: 2 }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
               <Typography variant="body2">
                 Dashboard navigation: Viewing customers
               </Typography>
               {getStatus() !== 'all' && (
                 <Chip
                   label={`Status: ${getStatus()}`}
-                  color: any,
+                  color
               )}
               {getSortBy() !== 'name' && (
                 <Chip
                   label={`Sorted by: ${getSortBy()}`}
-                  color: any,
+                  color
               )}
             </Box>
           </Alert>
         )}
 
         {/* Customers Grid */}
-        <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
+        <Paper sx={{ display: "flex", borderRadius: 2, overflow: 'hidden' }}>
           <CustomersGrid { ...gridProps} />
         </Paper>
       </Container>
     </motion.div>
-  )));
+  )))));
 };
 
 export default CustomersPage;

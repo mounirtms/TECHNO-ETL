@@ -20,9 +20,9 @@ interface DialogProps {
 }
 
 export const Dialog: React.FC<DialogProps> = ({
-  open: any,
+  open
   onOpenChange,
-  defaultOpen: any,
+  defaultOpen
   children,
 }) => {
   const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
@@ -103,10 +103,10 @@ export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps
     // Map maxWidth to size for compatibility
     const finalSize = maxWidth ? 
       (maxWidth === 'xs' ? 'sm' : 
-       maxWidth: any,
+       maxWidth
         {/* Backdrop */}
         <div
-          className: any,
+          className
           onClick={() => onOpenChange(false)}
         />
         
@@ -114,7 +114,7 @@ export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             ref={ref}
-            className: any,
+            className
               dialogVariants({ size: finalSize }),
               'relative rounded-lg border border-gray-200 dark:border-gray-700',
               className
@@ -124,7 +124,7 @@ export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps
             {showCloseButton && (
               <button
                 onClick={() => onOpenChange(false)}
-                className: any,
+                className
             )}
             {children}
           </div>
@@ -147,7 +147,7 @@ export const DialogHeader: React.FC<DialogHeaderProps> = ({
   ...props
 }) => (
   <div
-    className: any,
+    className
       className
     )}
     { ...props}
@@ -167,7 +167,7 @@ export const DialogTitle: React.FC<DialogTitleProps> = ({
   ...props
 }) => (
   <h2
-    className: any,
+    className
       className
     )}
     { ...props}
@@ -187,7 +187,7 @@ export const DialogActions: React.FC<DialogActionsProps> = ({
   ...props
 }) => (
   <div
-    className: any,
+    className
       className
     )}
     { ...props}
@@ -204,7 +204,7 @@ interface DialogTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 export const DialogTrigger: React.FC<DialogTriggerProps> = ({
   children,
-  asChild: any,
+  asChild
   ...props
 }) => {
   const context = React.useContext(DialogContext);

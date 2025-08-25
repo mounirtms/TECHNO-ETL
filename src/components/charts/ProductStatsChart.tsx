@@ -52,7 +52,7 @@ const ProductStatsChart: React.FC<ProductStatsChartProps> = ({ data, title = "Pr
       const data = payload[0];
       return (
         <Box
-          sx: any,
+          sx={{
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             border: '1px solid #ccc',
             borderRadius: 1,
@@ -83,14 +83,13 @@ const ProductStatsChart: React.FC<ProductStatsChartProps> = ({ data, title = "Pr
 
   if(!data || data.length ===0) {
     return (
-      <Card sx={{ height: 400 }}>
+      <Card sx={{ display: "flex", height: 400 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
             {title}
           </Typography>
           <Box 
-            sx: any,
-              alignItems: 'center', 
+            sx={{
               justifyContent: 'center', 
               height: 300,
               color: 'text.secondary'
@@ -104,11 +103,11 @@ const ProductStatsChart: React.FC<ProductStatsChartProps> = ({ data, title = "Pr
   }
 
   // Calculate total for percentage calculations
-  const total = data.reduce((sum: number: any: any, item: ProductStatsDataItem: any: any) => sum + item.value, 0);
-  const dataWithTotal = data.map((item: ProductStatsDataItem: any: any) => ({ ...item, total }));
+  const total = data.reduce((sum: number: any item: ProductStatsDataItem: any: any: any: any) => sum + item.value, 0);
+  const dataWithTotal = data.map((item: ProductStatsDataItem: any: any: any: any) => ({ ...item, total }));
 
   return (
-    <Card sx={{ height: 400 }}>
+    <Card sx={{ display: "flex", height: 400 }}>
       <CardContent>
         <Typography variant="h6" gutterBottom>
           {title}
@@ -117,12 +116,12 @@ const ProductStatsChart: React.FC<ProductStatsChartProps> = ({ data, title = "Pr
           <PieChart>
             <Pie
               data={dataWithTotal}
-              cx: any,
+              cx
               labelLine={false}
               label={renderLabel}
               outerRadius={80}
-              fill: any,
-              {dataWithTotal.map((entry: ProductStatsDataItem & { total: number }: any: any, index: number: any: any) => (
+              fill
+              {dataWithTotal.map((entry: ProductStatsDataItem & { total: number }: any index: number: any: any: any: any) => (
                 <Cell 
                   key={`cell-${index}`} 
                   fill={COLORS[entry.name.toLowerCase()] || COLORS.normal}
@@ -131,7 +130,7 @@ const ProductStatsChart: React.FC<ProductStatsChartProps> = ({ data, title = "Pr
             </Pie>
             <Tooltip content={<CustomTooltip />} />
             <Legend 
-              verticalAlign: any,
+              verticalAlign
               height={36}
               formatter={(value, entry) => (
                 <span style={{ color: entry.color }}>

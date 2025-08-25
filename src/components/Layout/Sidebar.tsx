@@ -80,16 +80,15 @@ const Sidebar: React.FC<any> = ({ open, toggleDrawer, isRTL = false }) => {
 
     return (
         <StyledDrawer
-            variant: any,
+            variant="body2"
             open={open}
             isRTL={isRTL}
         >
             <LogoContainer>
                 <Box
-                    component: any,
+                    component = {}; // Fixed invalid assignment
                     src={open ? logoTechno : technoIcon}
-                    alt: any,
-                        width: '100%',
+                    alt = {}; // Fixed invalid assignment
                         transition: theme.transitions.create('all'),
                     } as any}
                 />

@@ -58,7 +58,7 @@ const StandardGridTemplate = () => {
       
       // Calculate stats
       const total = response.data?.length || 0;
-      const active = response.data?.filter((item: any: any) => item.status === 'active').length || 0;
+      const active = response.data?.filter((item: any: any: any: any) => item.status === 'active').length || 0;
       const inactive = total - active;
       
       setStats({ total, active, inactive });
@@ -143,7 +143,7 @@ const StandardGridTemplate = () => {
         <Chip
           label={params.value}
           color={params.value === 'active' ? 'success' : 'default'}
-          size: any,
+          size="small"
     },
     {
       field: 'created_at',
@@ -247,9 +247,9 @@ const StandardGridTemplate = () => {
   }, [fetchData]);
 
   // ===== 10. RENDER =====
-  return(<Box sx={{ height: '100%', width: '100%' }}>
+  return(<Box sx={{ display: "flex", height: '100%', width: '100%' }}>
       <UnifiedGrid
-        gridName: any,
+        gridName
         columns={columns}
         data={data}
         loading={loading}
@@ -267,7 +267,7 @@ const StandardGridTemplate = () => {
         // View options
         showStatsCards={true}
         showCardView={true}
-        defaultViewMode: any,
+        defaultViewMode
         gridCards={statusCards}
         totalCount={stats.total}
         defaultPageSize={25}

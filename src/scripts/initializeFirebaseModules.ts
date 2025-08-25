@@ -40,7 +40,7 @@ const initializeModulesInFirebase = async () => {
     }
 
     console.log('Modules initialized.')
-  } catch(error: any) {
+  } catch (error) {
     console.error('Error initializing modules in Firebase:', error);
   }
 };

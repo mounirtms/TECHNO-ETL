@@ -74,16 +74,16 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
   onSave,
   title,
   data,
-  fields: any,
+  fields
   customRenderer,
   customTabs,
-  maxWidth: any,
-  fullWidth: any,
-  fullScreen: any,
-  loading: any,
-  saveButtonText: any,
-  cancelButtonText: any,
-  showTabs: any,
+  maxWidth
+  fullWidth
+  fullScreen
+  loading
+  saveButtonText
+  cancelButtonText
+  showTabs
   children
 }) => {
   const [formData, setFormData] = useState<Record<string, any>>(data || {});
@@ -170,18 +170,18 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
             disabled={field.disabled}
             multiline={field.multiline}
             rows={field.rows}
-            margin: any,
+            margin
             key={field.name}
             fullWidth
             label={field.label}
-            type: any,
+            type
             value={value}
             onChange={(e) => (e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange(field.name, parseFloat(e.target.value) || 0)}
             error={!!error}
             helperText={error || field.helperText}
             required={field.required}
             disabled={field.disabled}
-            margin: any,
+            margin
             key={field.name}
             fullWidth
             label={field.label}
@@ -193,7 +193,7 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
             disabled={field.disabled}
             multiline
             rows={field.rows || 4}
-            margin: any,
+            margin
             key={field.name}
             fullWidth
             select
@@ -204,11 +204,11 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
             helperText={error || field.helperText}
             required={field.required}
             disabled={field.disabled}
-            margin: any,
+            margin
             }}
           >
             <option value="">{field.placeholder || 'Select...'}</option>
-            {field.options?.map((option: any: any) => (
+            {field.options?.map((option: any: any: any: any) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -227,7 +227,7 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
             helperText={error || field.helperText}
             required={field.required}
             disabled={field.disabled}
-            margin: any,
+            margin
     }
   }, [formData, errors, handleFieldChange]);
 
@@ -258,7 +258,7 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
     
     // Default field rendering
     return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+      <Box sx={{ display: "flex", display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
         {fields.map(renderField)}
       </Box>
     );
@@ -271,12 +271,12 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
       fullWidth={fullWidth}
       fullScreen={fullScreen}
       aria-labelledby="unified-edit-window-title"
-      PaperProps: any,
+      PaperProps
         }
       }}
     >
       <DialogTitle 
-        id: any,
+        id
           justifyContent: 'space-between', 
           alignItems: 'center',
           borderBottom: 1,
@@ -296,15 +296,15 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
         <Tabs 
           value={activeTab} 
           onChange={(e) => (e: React.SyntheticEvent, newValue: number) => setActiveTab(newValue)}
-          sx={{ borderBottom: 1, borderColor: 'divider' }}
+          sx={{ display: "flex", borderBottom: 1, borderColor: 'divider' }}
         >
-          {customTabs.map((tab: any: any, index: any: any) => (
+          {customTabs.map((tab: any index: any: any: any: any) => (
             <Tab key={index} icon={tab.icon ? tab.icon as React.ReactElement : undefined} label={tab.label} />
           ))}
         </Tabs>
       )}
 
-      <DialogContent sx={{ p: 3, minHeight: '300px' }}>
+      <DialogContent sx={{ display: "flex", p: 3, minHeight: '300px' }}>
         {showTabs && customTabs ? (
           // Render tab content
           customTabs[activeTab]?.content({
@@ -321,7 +321,7 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
         )}
       </DialogContent>
 
-      <DialogActions sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
+      <DialogActions sx={{ display: "flex", p: 2, borderTop: 1, borderColor: 'divider' }}>
         <Button 
           onClick={handleClose} 
           startIcon={<Cancel />}
@@ -331,7 +331,7 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
         </Button>
         <Button 
           onClick={handleSave} 
-          variant: any,
+          variant="body2"
           startIcon={<Save />}
           disabled={loading}
         >

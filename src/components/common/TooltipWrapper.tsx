@@ -16,10 +16,10 @@ import { TooltipWrapperProps } from '../../types/baseComponents';
  */
 const TooltipWrapper = ({ 
   children, 
-  disabled: any,
+  disabled
   title, 
-  placement: any,
-  arrow: any,
+  placement
+  arrow
   ...tooltipProps 
 }: TooltipWrapperProps) => {
   // If the children is not a valid React element, wrap it in a span
@@ -36,7 +36,7 @@ const TooltipWrapper = ({
         { ...tooltipProps}
       >
         <span 
-          style: any,
+          style
             cursor: 'not-allowed'
           }}
         >

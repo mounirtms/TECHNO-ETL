@@ -31,7 +31,7 @@ const columns = [
         flex: 1,
         valueGetter: (params) => {
             return params?.row?.sales_channels?.length
-                ? params.row.sales_channels.map((channel: any: any) => `${channel?.type ?? 'Unknown'}: ${channel?.code ?? 'N/A'}`).join(', ')
+                ? params.row.sales_channels.map((channel: any: any: any: any) => `${channel?.type ?? 'Unknown'}: ${channel?.code ?? 'N/A'}`).join(', ')
                 : 'None';
         }
     },
@@ -86,12 +86,12 @@ const StocksGrid = () => {
         },
         {
             title: 'Stocks with Sources',
-            value: data?.filter((stock: any: any) => stock.source_codes?.length > 0)?.length ?? 0,
+            value: data?.filter((stock: any: any: any: any) => stock.source_codes?.length > 0)?.length ?? 0,
             color: 'success'
         },
         {
             title: 'Stocks without Sources',
-            value: data?.filter((stock: any: any) => !stock.source_codes?.length)?.length ?? 0,
+            value: data?.filter((stock: any: any: any: any) => !stock.source_codes?.length)?.length ?? 0,
             color: 'warning'
         }
     ];

@@ -46,7 +46,7 @@ interface BaseGridProps {
     columns: GridColDef[];
     data: any[];
     loading: boolean;
-    onRefresh?: (params) => Promise<void>;
+    onRefresh?: (params: any) => Promise<void>;
     childFilterModel?: any;
     filterOptions?: any[];
     currentFilter?: any;
@@ -62,7 +62,7 @@ interface BaseGridProps {
     onError?: (error: Error) => void;
     toolbarProps?: any;
     onSelectionChange?: (selectedIds: GridRowId[]) => void;
-    getRowId?: (row) => GridRowId;
+    getRowId?: (row: any) => GridRowId;
 }
 
 const BaseGrid: React.FC<BaseGridProps> = ({
@@ -76,17 +76,17 @@ const BaseGrid: React.FC<BaseGridProps> = ({
     currentFilter,
     onFilterChange,
     totalCount,
-    defaultPageSize: any,
-    totalItemsCount: any,
-    preColumns: any,
-    endColumns: any,
-    gridCards: any,
-    showCardView: any,
-    initialVisibleColumns: any,
+    defaultPageSize = 25,
+    totalItemsCount,
+    preColumns = [],
+    endColumns = [],
+    gridCards = [],
+    showCardView = false,
+    initialVisibleColumns = [],
     onError,
     toolbarProps,
     onSelectionChange,
-    getRowId: any,
+    getRowId = (row: any) => row.id,
     ...props
 }) => {
     const [columns, setColumns] = useState<GridColDef[]>(gridColumns);
@@ -181,10 +181,10 @@ const BaseGrid: React.FC<BaseGridProps> = ({
     }, [onSelectionChange]);
  
     const getSelectedData = useCallback(() => {
-        return safeData.filter((row: any: any) => (selectedRows as GridRowId[]).includes(getRowId(row)));
+        return safeData.filter((row: any) => (selectedRows as GridRowId[]).includes(getRowId ? getRowId(row) : row.id));
     }, [safeData, selectedRows, getRowId]);
 
-    const handleRowDoubleClick = (params) => {
+    const handleRowDoubleClick = (params: any) => {
         setSelectedRecord(params.row);
         setDetailsDialogOpen(true);
     };
@@ -243,6 +243,7 @@ const BaseGrid: React.FC<BaseGridProps> = ({
     const toolbarComponents = {
         toolbar: () => (
             <Box sx={{
+                display: "flex",
                 p: 1,
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -264,16 +265,28 @@ const BaseGrid: React.FC<BaseGridProps> = ({
                 />
 
 
-                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                <Box sx={{ display: "flex", display: 'flex', gap: 1, alignItems: 'center' }}>
                     <ToggleButtonGroup
                         value={viewMode}
                         exclusive
                         onChange={handleViewModeChange}
-                        size: any,
+                        size="small"
+                    >
+                        <ToggleButton value="list">
+                            <GridViewIcon />
+                        </ToggleButton>
+                        <ToggleButton value="card">
+                            <ViewListIcon />
+                        </ToggleButton>
+                    </ToggleButtonGroup>
+                </Box>
+            </Box>
+        ),
     };
 
-    return Boolean(Boolean((
+    return Boolean((
         <Box sx={{
+            display: "flex",
             height: gridHeight,
             width: '100%',
             display: 'flex',
@@ -302,16 +315,16 @@ const BaseGrid: React.FC<BaseGridProps> = ({
                     getRowId={getRowId}
                     onRowDoubleClick={handleRowDoubleClick}
                     components={toolbarComponents}
-                    slotProps: any,
-                        },
+                    slotProps={{
+                        toolbar: toolbarComponents.toolbar,
                       }}
                     { ...childFilterModel}
                     { ...props}
                 />
             ) : (
-                <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                <Box sx={{ display: "flex", height: '100%', display: 'flex', flexDirection: 'column' }}>
                     {!showCardView ? (
-                        <Box sx={{ flexGrow: 1, overflow: 'auto', p: 1 }}>
+                        <Box sx={{ display: "flex", flexGrow: 1, overflow: 'auto', p: 1 }}>
                             <GridCardView
                                 data={safeData}
                                 type={gridName}
@@ -319,9 +332,9 @@ const BaseGrid: React.FC<BaseGridProps> = ({
                             />
                         </Box>
                     ) : (
-                        <Box sx={{ flexGrow: 1, overflow: 'auto', p: 1 }}>
-                            {safeData.map((row: any: any, index: any: any) => (
-                                <Box key={getRowId(row) || index}>
+                        <Box sx={{ display: "flex", flexGrow: 1, overflow: 'auto', p: 1 }}>
+                            {safeData.map((row = {}; // Fixed invalid assignment index: any) => (
+                                <Box key={getRowId ? getRowId(row) : index}>
                                     {JSON.stringify(row)}
                                 </Box>
                             ))}
@@ -350,12 +363,12 @@ const BaseGrid: React.FC<BaseGridProps> = ({
                 //     defaultColumns={gridColumns}
                 //     onSave={async(newSettings) => {
                 //         try {
-                //             const updatedColumns = columns.map((col: any: any) => ({
+                //             const updatedColumns = columns.map((col: any) => ({
                 //                 ...col,
                 //                 hide: !newSettings[col.field]?.visible,
                 //                 width: newSettings[col.field]?.width || col.width,
                 //                 index: newSettings[col.field]?.index
-                //             })).sort((a, b) => (a.index || 0) - (b.index || 0))));
+                //             })).sort((a, b) => (a.index || 0) - (b.index || 0))))));
 
                 //             setColumns(updatedColumns);
                 //             setSettingsDialogOpen(false);

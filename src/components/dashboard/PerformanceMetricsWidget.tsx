@@ -115,19 +115,18 @@ const PerformanceMetricsWidget = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const MetricCard = ({ title, value, unit, status, trend, icon, isPercentage = false  }: { title: any, value: any, unit: any, status: any, trend: any, icon: any, isPercentage = false: any }) => (
+  const MetricCard = ({ title, value, unit, status, trend, icon, isPercentage = false  }: { title value unit status trend icon isPercentage = false: any }) => (
     <Card 
-      variant: any,
-        transition: animations ? 'all 0.3s ease' : 'none',
+      variant="body2"
         '&:hover': animations ? {
           transform: 'translateY(-2px)',
           boxShadow: 2
         } : {}
       }}
     >
-      <CardContent sx={{ p: density === 'compact' ? 1.5 : 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-          <Avatar sx={{ bgcolor: `${getStatusColor(status)}.light`, width: 32, height: 32 }}>
+      <CardContent sx={{ display: "flex", p: density === 'compact' ? 1.5 : 2 }}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+          <Avatar sx={{ display: "flex", bgcolor: `${getStatusColor(status)}.light`, width: 32, height: 32 }}>
             {icon}
           </Avatar>
           {trend && getTrendIcon(trend)}
@@ -138,24 +137,24 @@ const PerformanceMetricsWidget = () => {
           {unit && <Typography component="span" variant="body2" color="text.secondary"> {unit}</Typography>}
         </Typography>
         
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+        <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 1 }}>
           {title}
         </Typography>
         
         <Chip 
           label={status} 
-          size: any,
+          size="small"
           color={getStatusColor(status)}
-          sx={{ textTransform: 'capitalize', fontSize: '0.7rem', height: 20 }}
+          sx={{ display: "flex", textTransform: 'capitalize', fontSize: '0.7rem', height: 20 }}
         />
       </CardContent>
     </Card>
   );
 
-  const ProgressMetric = ({ title, value, max, status, icon  }: { title: any, value: any, max: any, status: any, icon: any }) => (
-    <Box sx={{ mb: 2 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+  const ProgressMetric = ({ title, value, max, status, icon  }: { title value max status icon: any }) => (
+    <Box sx={{ display: "flex", mb: 2 }}>
+      <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
           {icon}
           <Typography variant="body2" fontWeight={500}>
             {title}
@@ -166,11 +165,10 @@ const PerformanceMetricsWidget = () => {
         </Typography>
       </Box>
       <LinearProgress
-        variant: any,
+        variant="body2"
         value={max ? (value / max) * 100 : value}
         color={getStatusColor(status)}
-        sx: any,
-          borderRadius: 3,
+        sx={{
           bgcolor: 'grey.200',
           '& .MuiLinearProgress-bar': {
             borderRadius: 3
@@ -182,29 +180,31 @@ const PerformanceMetricsWidget = () => {
 
   return (
     <Card sx={{ 
+      display: "flex", 
       borderRadius: density === 'compact' ? 2 : 3,
       height: '100%',
       display: 'flex',
       flexDirection: 'column'
     }}>
       <CardHeader
-        avatar: any,
-          <Avatar sx={{ bgcolor: 'primary.main' }}>
+        avatar
+          <Avatar sx={{ display: "flex", bgcolor: 'primary.main' }}>
             <PerformanceIcon />
           </Avatar>
         }
-        title: any,
+        title
         subheader={`Last updated: ${lastUpdated.toLocaleTimeString()}`}
-        action: any,
+        action
             <IconButton size="small" onClick={refreshMetrics}>
               <RefreshIcon fontSize="small" />
             </IconButton>
           </Tooltip>
         }
-        sx={{ pb: 1 }}
+        sx={{ display: "flex", pb: 1 }}
       />
 
       <CardContent sx={{ 
+        display: "flex", 
         flexGrow: 1, 
         pt: 0, 
         p: density === 'compact' ? 1 : 2,
@@ -214,12 +214,12 @@ const PerformanceMetricsWidget = () => {
         <Typography variant="subtitle2" fontWeight={600} gutterBottom>
           System Health
         </Typography>
-        <Grid { ...{container: true}} spacing={1} sx={{ mb: 3 }}>
+        <Grid { ...{container: true}} spacing={1} sx={{ display: "flex", mb: 3 }}>
           <Grid size={6}>
             <MetricCard
-              title: any,
+              title
               value={metrics.systemHealth.cpu.value}
-              unit: any,
+              unit
               status={metrics.systemHealth.cpu.status}
               trend={metrics.systemHealth.cpu.trend}
               icon={<PerformanceIcon fontSize="small" />}
@@ -228,9 +228,9 @@ const PerformanceMetricsWidget = () => {
           </Grid>
           <Grid size={6}>
             <MetricCard
-              title: any,
+              title
               value={metrics.systemHealth.memory.value}
-              unit: any,
+              unit
               status={metrics.systemHealth.memory.status}
               trend={metrics.systemHealth.memory.trend}
               icon={<MemoryIcon fontSize="small" />}
@@ -239,28 +239,28 @@ const PerformanceMetricsWidget = () => {
           </Grid>
         </Grid>
 
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ display: "flex", my: 2 }} />
 
         {/* Performance Metrics */}
         <Typography variant="subtitle2" fontWeight={600} gutterBottom>
           Application Performance
         </Typography>
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ display: "flex", mb: 3 }}>
           <ProgressMetric
-            title: any,
+            title
             value={metrics.performance.responseTime.value}
             max={500}
             status={metrics.performance.responseTime.status}
             icon={<ResponseTimeIcon fontSize="small" color="primary" />}
           />
           <ProgressMetric
-            title: any,
+            title
             value={metrics.database.cacheHitRate.value}
             status={metrics.database.cacheHitRate.status}
             icon={<StorageIcon fontSize="small" color="success" />}
           />
           <ProgressMetric
-            title: any,
+            title
             value={metrics.performance.uptime.value}
             status={metrics.performance.uptime.status}
             icon={<NetworkIcon fontSize="small" color="info" />}
@@ -269,13 +269,14 @@ const PerformanceMetricsWidget = () => {
 
         {/* Quick Stats */}
         <Box sx={{ 
+          display: "flex", 
           bgcolor: 'grey.50', 
           borderRadius: 2, 
           p: 1.5,
           border: '1px solid',
           borderColor: 'grey.200'
         }}>
-          <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1 }}>
+          <Typography variant="caption" color="text.secondary" sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 0.5, mb: 1 }}>
             <InfoIcon fontSize="small" />
             Quick Stats
           </Typography>

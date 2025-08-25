@@ -53,7 +53,7 @@ const GridSettings = ({
   onClose,
   onSave,
   gridId,
-  columns: any,
+  columns
   currentSettings = {},
   onReset
 }) => {
@@ -259,12 +259,13 @@ const GridSettings = ({
   return(<Dialog
       open={open}
       onClose={onClose}
-      maxWidth: any,
+      maxWidth
           maxHeight: '90vh'
         }
       }}
     >
       <DialogTitle sx={{ 
+        display: "flex", 
         display: 'flex', 
         alignItems: 'center', 
         gap: 1,
@@ -274,29 +275,29 @@ const GridSettings = ({
         Grid Settings - {gridId}
       </DialogTitle>
 
-      <DialogContent sx={{ p: 0 }}>
-        <Box sx={{ p: 3 }}>
+      <DialogContent sx={{ display: "flex", p: 0 }}>
+        <Box sx={{ display: "flex", p: 3 }}>
           {/* Quick Actions */}
-          <Stack direction="row" spacing={1} sx={{ mb: 3 }}>
+          <Stack direction="row" spacing={1} sx={{ display: "flex", mb: 3 }}>
             <Button
-              size: any,
+              size="small"
               startIcon={<Download />}
               onClick={handleExportSettings}
             >
               Export
             </Button>
             <Button
-              size: any,
+              size="small"
               startIcon={<Upload />}
-              component: any,
+              component
                 onChange={(e) => handleImportSettings}
               />
             </Button>
             <Button
-              size: any,
+              size="small"
               startIcon={<RestoreFromTrash />}
               onClick={handleReset}
-              color: any,
+              color
           {/* Display Settings */}
           <Accordion defaultExpanded>
             <AccordionSummary expandIcon={<ExpandMore />}>
@@ -309,7 +310,7 @@ const GridSettings = ({
                     <InputLabel>Page Size</InputLabel>
                     <Select
                       value={settings.pageSize}
-                      label: any,
+                      label
                       onChange={(e) => handleSettingChange('pageSize', e.target.value)}
                     >
                       <MenuItem value={10}>10 rows</MenuItem>
@@ -325,7 +326,7 @@ const GridSettings = ({
                     <InputLabel>Density</InputLabel>
                     <Select
                       value={settings.density}
-                      label: any,
+                      label
                       onChange={(e) => handleSettingChange('density', e.target.value)}
                     >
                       <MenuItem value="compact">Compact</MenuItem>
@@ -338,34 +339,34 @@ const GridSettings = ({
                 <Grid item xs={12}>
                   <Stack spacing={1}>
                     <FormControlLabel
-                      control: any,
+                      control
                           checked={settings.showToolbar}
                           onChange={(e) => handleSettingChange('showToolbar', e.target.checked)}
                         />
                       }
-                      label: any,
+                      label
                           checked={settings.showFooter}
                           onChange={(e) => handleSettingChange('showFooter', e.target.checked)}
                         />
                       }
-                      label: any,
+                      label
                           checked={settings.alternateRowColors}
                           onChange={(e) => handleSettingChange('alternateRowColors', e.target.checked)}
                         />
                       }
-                      label: any,
+                      label
                           checked={settings.showBorders}
                           onChange={(e) => handleSettingChange('showBorders', e.target.checked)}
                         />
                       }
-                      label: any,
+                      label
           {/* Column Settings */}
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMore />}>
               <Typography variant="h6">Column Settings</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Typography variant="subtitle2" sx={{ mb: 2 }}>
+              <Typography variant="subtitle2" sx={{ display: "flex", mb: 2 }}>
                 Drag to reorder columns, toggle visibility
               </Typography>
               
@@ -373,7 +374,7 @@ const GridSettings = ({
                 <Droppable droppableId="columns">
                   {(provided) => (
                     <Box { ...provided.droppableProps} ref={provided.innerRef}>
-                      {settings.columnOrder.map((field: any: any, index: any: any) => {
+                      {settings.columnOrder.map((field: any index: any: any: any: any) => {
                         const column = columns.find(col => col?.field ===field);
                         if (!column) return null;
                         
@@ -383,25 +384,21 @@ const GridSettings = ({
                               <Card
                                 ref={provided.innerRef}
                                 { ...provided.draggableProps}
-                                sx: any,
-                                  backgroundColor: snapshot.isDragging 
-                                    ? theme.palette.action.hover 
-                                    : 'inherit'
+                                sx={{
                                 }}
                               >
-                                <CardContent sx={{ py: 1, '&:last-child': { pb: 1 } }}>
-                                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                <CardContent sx={{ display: "flex", py: 1, '&:last-child': { pb: 1 } }}>
+                                  <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2 }}>
                                     <Box { ...provided.dragHandleProps}>
                                       <DragIndicator color="action" />
                                     </Box>
                                     
-                                    <Typography sx={{ flexGrow: 1 }}>
+                                    <Typography sx={{ display: "flex", flexGrow: 1 }}>
                                       {column.headerName || column?.field}
                                     </Typography>
                                     
                                     <IconButton
-                                      size: any,
-                                        !settings.columnVisibility[field]
+                                      size="small"
                                       )}
                                     >
                                       {settings.columnVisibility[field] ? 
@@ -433,47 +430,47 @@ const GridSettings = ({
                 <Grid item xs={12} sm={6}>
                   <Stack spacing={1}>
                     <FormControlLabel
-                      control: any,
+                      control
                           checked={settings.enableFiltering}
                           onChange={(e) => handleSettingChange('enableFiltering', e.target.checked)}
                         />
                       }
-                      label: any,
+                      label
                           checked={settings.enableSorting}
                           onChange={(e) => handleSettingChange('enableSorting', e.target.checked)}
                         />
                       }
-                      label: any,
+                      label
                           checked={settings.enableColumnReordering}
                           onChange={(e) => handleSettingChange('enableColumnReordering', e.target.checked)}
                         />
                       }
-                      label: any,
+                      label
                 <Grid item xs={12} sm={6}>
                   <Stack spacing={1}>
                     <FormControlLabel
-                      control: any,
+                      control
                           checked={settings.enableExport}
                           onChange={(e) => handleSettingChange('enableExport', e.target.checked)}
                         />
                       }
-                      label: any,
+                      label
                           checked={settings.virtualization}
                           onChange={(e) => handleSettingChange('virtualization', e.target.checked)}
                         />
                       }
-                      label: any,
+                      label
                           checked={settings.enableSelection}
                           onChange={(e) => handleSettingChange('enableSelection', e.target.checked)}
                         />
                       }
-                      label: any,
-      <DialogActions sx={{ p: 3, borderTop: `1px solid ${theme.palette.divider}` }}>
+                      label
+      <DialogActions sx={{ display: "flex", p: 3, borderTop: `1px solid ${theme.palette.divider}` }}>
         <Button onClick={onClose}>
           Cancel
         </Button>
         <Button
-          variant: any,
+          variant="body2"
           onClick={handleSave}
           startIcon={<Save />}
         >

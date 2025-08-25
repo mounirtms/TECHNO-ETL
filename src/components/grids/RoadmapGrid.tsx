@@ -279,16 +279,16 @@ const RoadmapGrid = () => {
 
   if(error) {
     return (
-      <Alert severity="error" sx={{ m: 2 }}>
+      <Alert severity="error" sx={{ display: "flex", m: 2 }}>
         {error}
       </Alert>
     );
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ display: "flex", p: 3 }}>
       {/* Header */}
-      <Paper sx={{ p: 3, mb: 3 }}>
+      <Paper sx={{ display: "flex", p: 3, mb: 3 }}>
         <Typography variant="h4" gutterBottom>
           Development Roadmap
         </Typography>
@@ -300,7 +300,7 @@ const RoadmapGrid = () => {
         {progressStats && (
           <Grid { ...{container: true}} spacing={3}>
             <Grid item xs={12} md={3}>
-              <Card sx={{ textAlign: 'center', p: 2 }}>
+              <Card sx={{ display: "flex", textAlign: 'center', p: 2 }}>
                 <Typography variant="h3" color="primary">
                   {progressStats.total}
                 </Typography>
@@ -310,7 +310,7 @@ const RoadmapGrid = () => {
               </Card>
             </Grid>
             <Grid item xs={12} md={3}>
-              <Card sx={{ textAlign: 'center', p: 2 }}>
+              <Card sx={{ display: "flex", textAlign: 'center', p: 2 }}>
                 <Typography variant="h3" color="success.main">
                   {progressStats.completed}
                 </Typography>
@@ -320,7 +320,7 @@ const RoadmapGrid = () => {
               </Card>
             </Grid>
             <Grid item xs={12} md={3}>
-              <Card sx={{ textAlign: 'center', p: 2 }}>
+              <Card sx={{ display: "flex", textAlign: 'center', p: 2 }}>
                 <Typography variant="h3" color="warning.main">
                   {progressStats.activeWork}
                 </Typography>
@@ -330,7 +330,7 @@ const RoadmapGrid = () => {
               </Card>
             </Grid>
             <Grid item xs={12} md={3}>
-              <Card sx={{ textAlign: 'center', p: 2 }}>
+              <Card sx={{ display: "flex", textAlign: 'center', p: 2 }}>
                 <Typography variant="h3" color="info.main">
                   {Math.round(progressStats.completionRate)}%
                 </Typography>
@@ -338,9 +338,9 @@ const RoadmapGrid = () => {
                   Completion Rate
                 </Typography>
                 <LinearProgress 
-                  variant: any,
+                  variant="body2"
                   value={progressStats.completionRate} 
-                  sx={{ mt: 1 }}
+                  sx={{ display: "flex", mt: 1 }}
                 />
               </Card>
             </Grid>
@@ -352,13 +352,13 @@ const RoadmapGrid = () => {
       <Grid { ...{container: true}} spacing={3}>
         {/* Timeline View */}
         <Grid item xs={12} lg={8}>
-          <Paper sx={{ p: 3 }}>
+          <Paper sx={{ display: "flex", p: 3 }}>
             <Typography variant="h5" gutterBottom>
               Development Timeline
             </Typography>
             
             <Timeline>
-              {Object.entries(STATUS_CONFIG).map(([status: any: any, config], index: any: any) => {
+              {Object.entries(STATUS_CONFIG).map(([status: any config]: any = {}; // Fixed invalid assignment index: any: any: any: any) => {
                 const features = roadmapData?.byStatus[status] || [];
                 const StatusIcon = config.icon;
                 const isLast = index ===Object.keys(STATUS_CONFIG).length - 1;
@@ -374,7 +374,7 @@ const RoadmapGrid = () => {
                       <Accordion 
                         expanded={expandedSections.has(status)}
                         onChange={(e) => () => toggleSection(status)}
-                        sx={{ mb: 2 }}
+                        sx={{ display: "flex", mb: 2 }}
                       >
                         <AccordionSummary expandIcon={<ExpandMore />}>
                           <Stack direction="row" alignItems="center" spacing={2} width="100%">
@@ -395,17 +395,17 @@ const RoadmapGrid = () => {
                           
                           {features.length > 0 ? (
                             <Stack spacing={2}>
-                              {features.map((feature: any: any) => {
+                              {features.map((feature: any: any: any: any) => {
                                 const CategoryIcon = CATEGORY_ICONS[feature.category] || Lightbulb;
                                 
-                                return Boolean(Boolean((
+                                return Boolean((
                                   <motion.div
                                     key={feature.id}
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ duration: 0.3 }}
                                   >
-                                    <Card variant="outlined" sx={{ p: 2 }}>
+                                    <Card variant="outlined" sx={{ display: "flex", p: 2 }}>
                                       <Stack direction="row" spacing={2} alignItems="flex-start">
                                         <CategoryIcon color="action" />
                                         <Box flexGrow={1}>
@@ -418,28 +418,28 @@ const RoadmapGrid = () => {
                                           <Stack direction="row" spacing={1} alignItems="center">
                                             <Chip 
                                               label={feature.category} 
-                                              size: any,
+                                              size="small"
                                               label={feature.priority} 
-                                              size: any,
-                                                     feature.priority === 'medium' ? 'warning' : 'success'}
+                                              size="small"
+                                                     feature.priority = == 'medium' ? 'warning' : 'success'}
                                             />
                                             {feature.vote_count > 0 && (
                                               <Tooltip title="Community votes">
                                                 <Chip 
                                                   label={`${feature.vote_count} votes`} 
-                                                  size: any,
+                                                  size="small"
                                             )}
                                             {feature.target_release && (
                                               <Chip 
                                                 label={`v${feature.target_release}`} 
-                                                size: any,
+                                                size="small"
                                             )}
                                           </Stack>
                                         </Box>
                                       </Stack>
                                     </Card>
                                   </motion.div>
-                                )));
+                                )))));
                               })}
                             </Stack>
                           ) : (
@@ -459,18 +459,18 @@ const RoadmapGrid = () => {
 
         {/* Category Breakdown */}
         <Grid item xs={12} lg={4}>
-          <Paper sx={{ p: 3 }}>
+          <Paper sx={{ display: "flex", p: 3 }}>
             <Typography variant="h5" gutterBottom>
               Features by Category
             </Typography>
             
             {roadmapData?.byCategory && (
               <Stack spacing={2}>
-                {Object.entries(roadmapData?.byCategory).map(([category: any: any, features]: any: any) => {
+                {Object.entries(roadmapData?.byCategory).map(([category: any features]: any: any: any: any) => {
                   const CategoryIcon = CATEGORY_ICONS[category] || Lightbulb;
                   
                   return (
-                    <Card key={category} variant="outlined" sx={{ p: 2 }}>
+                    <Card key={category} variant="outlined" sx={{ display: "flex", p: 2 }}>
                       <Stack direction="row" alignItems="center" spacing={2}>
                         <CategoryIcon color="primary" />
                         <Box flexGrow={1}>
@@ -493,22 +493,22 @@ const RoadmapGrid = () => {
           </Paper>
 
           {/* Recent Activity */}
-          <Paper sx={{ p: 3, mt: 3 }}>
+          <Paper sx={{ display: "flex", p: 3, mt: 3 }}>
             <Typography variant="h5" gutterBottom>
               Recent Updates
             </Typography>
             
             {roadmapData?.recentActivity && roadmapData?.recentActivity.length > 0 ? (
               <Stack spacing={2}>
-                {roadmapData?.recentActivity.slice(0, 5).map((activity: any: any, index: any: any) => (
-                  <Box key={index} sx={{ pb: 1, borderBottom: index < 4 ? 1 : 0, borderColor: 'divider' }}>
+                {roadmapData?.recentActivity.slice(0, 5).map((activity: any index: any: any: any: any) => (
+                  <Box key={index} sx={{ display: "flex", pb: 1, borderBottom: index < 4 ? 1 : 0, borderColor: 'divider' }}>
                     <Typography variant="body2" gutterBottom>
                       {activity.title}
                     </Typography>
                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                       <Chip 
                         label={STATUS_CONFIG[activity.status]?.label || activity.status} 
-                        size: any,
+                        size="small"
                         color={STATUS_CONFIG[activity.status]?.color || 'default'}
                       />
                       <Typography variant="caption" color="text.secondary">

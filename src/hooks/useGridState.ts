@@ -6,8 +6,8 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
  */
 export const useGridState = (gridName, options = {}) => {
   const {
-    enablePersistence: any,
-    serverSide: any,
+    enablePersistence
+    serverSide
     onStateChange,
     initialState = {}
   } = options;
@@ -124,7 +124,7 @@ export const useGridState = (gridName, options = {}) => {
     try {
       const stored = localStorage.getItem(getStorageKey(key ));
       return stored ? JSON.parse(stored) : defaultValue;
-    } catch(error: any) {
+    } catch (error) {
       console.warn(`Failed to load grid state for ${key}:`, error);
       return defaultValue;
     }

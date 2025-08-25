@@ -114,16 +114,16 @@ export const useSettings = (): SettingsContextType => {
 export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) => {
     // For now, we'll avoid the auth dependency and work with anonymous users
     // The auth state can be passed through event listeners or props if needed
-    const [currentUser, setCurrentUser] = useState(null);
+    const [currentUser, setCurrentUser] = useState<any>(null);
     
     // Listen for auth changes through custom events to avoid circular dependency
     useEffect(() => {
-        const handleAuthChange = (event: CustomEvent<{ currentUser: any }>) => {
-            setCurrentUser(event.detail?.currentUser || null);
+        const handleAuthChange = (event: CustomEvent) => {
+            setCurrentUser((event as CustomEvent).detail?.currentUser || null);
         };
         
-        window.addEventListener('authStateChanged', handleAuthChange);
-        return () => window.removeEventListener('authStateChanged', handleAuthChange);
+        window.addEventListener('authStateChanged', handleAuthChange as EventListener);
+        return () => window.removeEventListener('authStateChanged', handleAuthChange as EventListener);
     }, []);
 
     // Initialize settings with defaults first
@@ -151,24 +151,30 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
                 if(currentUser) {
                     // Try to get user settings with fallback
                     try {
-                        initialSettings: any,
+                        const userSettings = getUserSettings(currentUser.uid);
+                        if (!userSettings || Object.keys(userSettings).length === 0) {
                             console.warn('Empty user settings, using defaults');
-                            initialSettings: any,
+                            initialSettings = {};
+                        } else {
+                            initialSettings = userSettings;
                         }
                     } catch(userError: any) {
                         console.warn('Failed to load user settings, using defaults:', userError);
-                        initialSettings: any,
+                        initialSettings = {};
                     }
                 } else {
                     // Try to get unified settings with fallback
                     try {
-                        initialSettings: any,
+                        const unifiedSettings = getUnifiedSettings();
+                        if (!unifiedSettings || Object.keys(unifiedSettings).length === 0) {
                             console.warn('Empty unified settings, using defaults');
-                            initialSettings: any,
+                            initialSettings = {};
+                        } else {
+                            initialSettings = unifiedSettings;
                         }
                     } catch(unifiedError: any) {
                         console.warn('Failed to load unified settings, using defaults:', unifiedError);
-                        initialSettings: any,
+                        initialSettings = {};
                     }
                 }
 
@@ -285,7 +291,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
                 // For now, we'll simulate remote loading with local storage
                 const remoteSettings = localStorage.getItem(`userSettings_${currentUser.uid}`);
                 if(remoteSettings) {
-                    userSettings: any,
+                    userSettings = JSON.parse(remoteSettings);
                 }
             } catch(remoteError: any) {
                 console.warn('Failed to load remote settings, using local:', remoteError);
@@ -293,7 +299,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
 
             // Fallback to local settings
             if(!userSettings) {
-                userSettings: any,
+                userSettings = getUserSettings(currentUser.uid);
             }
 
             // Merge with defaults to ensure all properties exist
@@ -409,16 +415,18 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
             if(section) {
                 // Update specific section with safe property access
                 const currentSection = prevSettings[section] || {};
-                newSettings: any,
+                newSettings = {
+                    ...prevSettings,
                     [section]: { ...currentSection,
                         ...updates
                     }
                 };
             } else {
                 // Merge all updates
-                newSettings: any,
+                newSettings = {
+                    ...prevSettings,
                     ...updates
-                });
+                };
             }
 
             // Save to unified storage - sync preferences to theme storage
@@ -441,15 +449,11 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
                     console.error('Error syncing to unified theme storage:', error);
                 }
             }
-
-            // Also save to legacy settings storage
-            saveUnifiedSettings(newSettings);
-
+            
+            setIsDirty(true);
             return newSettings;
         });
-
-        setIsDirty(true);
-    }, [saveUnifiedSettings]);
+    }, []);
 
     const saveSettings = useCallback(async (forceSave: boolean = false): Promise<SaveResult> => {
         if(!isDirty && !forceSave) {
@@ -463,7 +467,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
             if(currentUser) {
                 localSaved = saveUserSettings(currentUser.uid, settings);
             } else {
-                localSaved: any,
+                localSaved = saveUnifiedSettings(settings);
             }
 
             if(!localSaved) {

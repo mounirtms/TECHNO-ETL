@@ -9,18 +9,18 @@ import {
 } from '@mui/icons-material';
 
 // Generic placeholder component
-const PlaceholderComponent = ({ title, description, icon: Icon, color = "primary"  }: { title: any, description: any, icon: Icon: any, color = "primary": any }) => (
+const PlaceholderComponent = ({ title, description, icon: Icon, color = "primary"  }: { title description icon: Icon color = "primary": any }) => (
     <Box p={3}>
         <Card>
             <CardContent>
                 <Box display="flex" alignItems="center" gap={2} mb={2}>
-                    <Icon color={color} sx={{ fontSize: 40 }} />
+                    <Icon color={color} sx={{ display: "flex", fontSize: 40 }} />
                     <Typography variant="h4" color={color}>
                         {title}
                     </Typography>
                 </Box>
                 
-                <Alert severity="info" sx={{ mb: 2 }}>
+                <Alert severity="info" sx={{ display: "flex", mb: 2 }}>
                     This module is currently under development and will be available soon.
                 </Alert>
                 
@@ -48,18 +48,18 @@ const PlaceholderComponent = ({ title, description, icon: Icon, color = "primary
 // Sales Analytics Component
 export const SalesAnalytics = () => (
     <PlaceholderComponent
-        title: any,
+        title
         description="Comprehensive sales analytics dashboard with real-time insights, revenue tracking, and performance metrics."
         icon={AnalyticsIcon}
-        color: any,
+        color
         description="Advanced inventory analytics with stock level monitoring, demand forecasting, and optimization recommendations."
         icon={InventoryIcon}
-        color: any,
+        color
         icon={SecurityIcon}
-        color: any,
+        color
         icon={AdminIcon}
-        color: any,
+        color
         icon={InventoryIcon}
-        color: any,
+        color
         icon={WarehouseIcon}
         color: any,

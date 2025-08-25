@@ -33,9 +33,9 @@ const SalesPerformanceChart: React.FC<SalesPerformanceChartProps> = ({ data, tit
   // Custom tooltip for performance chart
   const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
     if(active && payload && payload.length) {
-      return Boolean(Boolean((
+      return Boolean((
         <Box
-          sx: any,
+          sx={{
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             border: '1px solid #ccc',
             borderRadius: 1,
@@ -46,7 +46,7 @@ const SalesPerformanceChart: React.FC<SalesPerformanceChartProps> = ({ data, tit
           <Typography variant="body2" fontWeight="bold">
             {label}
           </Typography>
-          {payload?.map((entry: any: any, index: any: any) => (
+          {payload?.map((entry: any index: any: any: any: any) => (
             <Typography key={index} variant="body2" style={{ color: entry.color }}>
               {entry.name}: {entry.value}
               {entry.name.includes('Revenue') && ' DA'}
@@ -54,21 +54,20 @@ const SalesPerformanceChart: React.FC<SalesPerformanceChartProps> = ({ data, tit
             </Typography>
           ))}
         </Box>
-      )));
+      )))));
     }
     return null;
   };
 
   if(!data || data.length ===0) {
     return (
-      <Card sx={{ height: 400 }}>
+      <Card sx={{ display: "flex", height: 400 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
             {title}
           </Typography>
           <Box 
-            sx: any,
-              alignItems: 'center', 
+            sx={{
               justifyContent: 'center', 
               height: 300,
               color: 'text.secondary'
@@ -91,11 +90,11 @@ const SalesPerformanceChart: React.FC<SalesPerformanceChartProps> = ({ data, tit
           <Tooltip content={<CustomTooltip />} />
           <Legend />
           <Area
-            type: any,
+            type
             fillOpacity={0.6}
-            name: any,
+            name
             fillOpacity={0.6}
-            name: any,
+            name
     }
 
     return (
@@ -106,20 +105,20 @@ const SalesPerformanceChart: React.FC<SalesPerformanceChartProps> = ({ data, tit
         <Tooltip content={<CustomTooltip />} />
         <Legend />
         <Line
-          type: any,
+          type
           strokeWidth={3}
           dot={{ fill: '#8884d8', strokeWidth: 2, r: 4 }}
-          name: any,
+          name
           strokeWidth={3}
           dot={{ fill: '#82ca9d', strokeWidth: 2, r: 4 }}
-          name: any,
+          name
           strokeWidth={3}
           dot={{ fill: '#ffc658', strokeWidth: 2, r: 4 }}
-          name: any,
+          name
   };
 
   return (
-    <Card sx={{ height: 400 }}>
+    <Card sx={{ display: "flex", height: 400 }}>
       <CardContent>
         <Typography variant="h6" gutterBottom>
           {title}

@@ -34,7 +34,7 @@ export const useHashParams = (): HashParamsResult => {
       const encodedParams = hash.substring(1);
       const decodedParams = atob(encodedParams);
       return JSON.parse(decodedParams);
-    } catch(error: any) {
+    } catch (error) {
       console.warn('Failed to parse hash parameters:', error);
       return {};
     }
@@ -47,7 +47,7 @@ export const useHashParams = (): HashParamsResult => {
     try {
       const encodedParams = btoa(JSON.stringify(params));
       return '#' + encodedParams;
-    } catch(error: any) {
+    } catch (error) {
       console.warn('Failed to encode hash parameters:', error);
       return '';
     }

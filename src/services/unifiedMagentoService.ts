@@ -40,23 +40,23 @@ class UnifiedMagentoService extends BaseApiService  {
     try {
       const settings = this.state.settings?.magento;
       if (settings) this.initializeMagento(settings);
-    } catch(error: any) {
+    } catch (error) {
       console.warn('Failed to load Magento settings:', error.message);
     }
   }
 
   // Public initialize method (alias for initializeMagento for compatibility)
-  initialize(settings: any) {
+  initialize(settings) {
     return this.initializeMagento(settings);
   }
 
-  initializeMagento(settings: any) {
+  initializeMagento(settings) {
     // Update parent settings
     try {
       if(this.updateSettings) {
         this.updateSettings({ magento: settings });
       }
-    } catch(error: any) {
+    } catch (error) {
       console.warn('Failed to update parent settings:', error.message);
     }
     
@@ -66,7 +66,7 @@ class UnifiedMagentoService extends BaseApiService  {
       try {
         directMagentoClient.initialize(settings);
         console.log('✅ Direct Magento connection enabled');
-      } catch(error: any) {
+      } catch (error) {
         console.error('❌ Direct Magento connection failed:', error.message);
         this.magentoState.directEnabled = false;
       }
@@ -76,7 +76,7 @@ class UnifiedMagentoService extends BaseApiService  {
   }
 
   // Override main request method with intelligent routing
-  async request(method, endpoint, data, config: any = {}) {
+  async request(method, endpoint, data, config = {}) {
     const startTime = Date.now();
     
     try {
@@ -90,7 +90,7 @@ class UnifiedMagentoService extends BaseApiService  {
                 this.magentoState.directMetrics.success++;
                 this.state.metrics.success++;
                 return { data: response };
-            } catch(directError: any) {
+            } catch (directError) {
                 console.warn(`❌ Direct connection failed for ${endpoint}:`, directError.message);
                 this.magentoState.directMetrics.errors++;
                 
@@ -103,7 +103,7 @@ class UnifiedMagentoService extends BaseApiService  {
         
         // Fallback to proxy connection
         console.log(`🔄 Proxy API call: ${method.toUpperCase()} ${endpoint}`);
-        response: any,
+        response
             url: endpoint,
             data,
             ...config
@@ -114,7 +114,7 @@ class UnifiedMagentoService extends BaseApiService  {
         
         return response;
         
-    } catch(error: any) {
+    } catch (error) {
         const duration = Date.now() - startTime;
         this.state.metrics.errors++;
         this.state.metrics.lastError = {
@@ -146,7 +146,7 @@ class UnifiedMagentoService extends BaseApiService  {
 }
 
   // Override HTTP methods to use parent's parameter validation
-  async get(endpoint, params: any = {}) {
+  async get(endpoint, params = {}) {
     return super.get(endpoint, params);
   }
 
@@ -170,7 +170,7 @@ class UnifiedMagentoService extends BaseApiService  {
         mode: this.state?.directEnabled ? 'Direct' : 'Proxy',
         response
       };
-    } catch(error: any) {
+    } catch (error) {
       return {
         success: false,
         message: this._getErrorMessage(error),

@@ -33,7 +33,7 @@ class FirebaseSyncService {
             
             console.log('Firebase schema initialized successfully');
             return true;
-        } catch(error: any) {
+        } catch (error) {
             console.error('Error initializing Firebase schema:', error);
             return false;
         }
@@ -96,7 +96,7 @@ class FirebaseSyncService {
     /**
      * Sync user data with Firebase on login
      */
-    async syncUserOnLogin(user: any) {
+    async syncUserOnLogin(user) {
         try {
             const sanitizedUserId = user.uid.replace(/[.#$\[\]]/g, '_');
             const userRef = ref(this.database, `users/${sanitizedUserId}`);
@@ -143,7 +143,7 @@ class FirebaseSyncService {
             }
             
             return true;
-        } catch(error: any) {
+        } catch (error) {
             console.error('Error syncing user on login:', error);
             return false;
         }
@@ -152,7 +152,7 @@ class FirebaseSyncService {
     /**
      * Get user role and permissions
      */
-    async getUserRole(userId: any) {
+    async getUserRole(userId) {
         try {
             const sanitizedUserId = userId.replace(/[.#$\[\]]/g, '_');
             const userRef = ref(this.database, `users/${sanitizedUserId}`);
@@ -164,7 +164,7 @@ class FirebaseSyncService {
             }
             
             return USER_ROLES.USER;
-        } catch(error: any) {
+        } catch (error) {
             console.error('Error getting user role:', error);
             return USER_ROLES.USER;
         }
@@ -173,7 +173,7 @@ class FirebaseSyncService {
     /**
      * Check if user has required role for menu access
      */
-    async hasRequiredRole(userId, requiredRole: any) {
+    async hasRequiredRole(userId, requiredRole) {
         try {
             const userRole = await this.getUserRole(userId);
             const roleHierarchy = {
@@ -211,7 +211,7 @@ class FirebaseSyncService {
             
             console.log('Schema pushed to Firebase successfully');
             return true;
-        } catch(error: any) {
+        } catch (error) {
             console.error('Error pushing schema to Firebase:', error);
             return false;
         }

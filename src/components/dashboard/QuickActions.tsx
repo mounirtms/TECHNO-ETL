@@ -129,21 +129,20 @@ const QuickActions = ({ onAction  }: { onAction: any }) => {
   return (
     <Box>
       {/* Primary Actions */}
-      <Card sx={{ borderRadius: density === 'compact' ? 2 : 3, mb: density === 'compact' ? 2 : 3 }}>
-        <CardContent sx={{ p: density === 'compact' ? 2 : 3 }}>
+      <Card sx={{ display: "flex", borderRadius: density === 'compact' ? 2 : 3, mb: density === 'compact' ? 2 : 3 }}>
+        <CardContent sx={{ display: "flex", p: density === 'compact' ? 2 : 3 }}>
           <Typography variant="h6" fontWeight={600} gutterBottom>
             Quick Actions
           </Typography>
           
           <Grid container spacing={2}>
-            {primaryActions.map((action: any: any, index: any: any) => (
+            {primaryActions.map((action: any index: any: any: any: any) => (
               <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
                 <Button
                   fullWidth
-                  variant: any,
+                  variant="body2"
                   onClick={action.action}
-                  sx: any,
-                    borderRadius: density === 'compact' ? 1 : 2,
+                  sx={{
                     flexDirection: 'column',
                     gap: 1,
                     borderColor: `${action.color}.light`,
@@ -161,7 +160,7 @@ const QuickActions = ({ onAction  }: { onAction: any }) => {
                   }}
                 >
                   <Avatar
-                    sx: any,
+                    sx={{
                       bgcolor: `${action.color}.main`,
                       width: 32,
                       height: 32
@@ -169,7 +168,7 @@ const QuickActions = ({ onAction  }: { onAction: any }) => {
                   >
                     {action.icon}
                   </Avatar>
-                  <Box sx={{ textAlign: 'center' }}>
+                  <Box sx={{ display: "flex", textAlign: 'center' }}>
                     <Typography variant="body2" fontWeight={600}>
                       {action.title}
                     </Typography>
@@ -185,18 +184,17 @@ const QuickActions = ({ onAction  }: { onAction: any }) => {
       </Card>
 
       {/* Quick Links */}
-      <Card sx={{ borderRadius: 3, mb: 3 }}>
-        <CardContent sx={{ p: 3 }}>
+      <Card sx={{ display: "flex", borderRadius: 3, mb: 3 }}>
+        <CardContent sx={{ display: "flex", p: 3 }}>
           <Typography variant="h6" fontWeight={600} gutterBottom>
             Quick Navigation
           </Typography>
           
           <Grid container spacing={2}>
-            {quickLinks.map((link: any: any, index: any: any) => (
+            {quickLinks.map((link: any index: any: any: any: any) => (
               <Grid size={{ xs: 6, sm: 3 }} key={index}>
                 <Card
-                  sx: any,
-                    transition: 'all 0.3s ease',
+                  sx={{
                     border: `1px solid ${theme.palette[link.color].light}30`,
                     '&:hover': {
                       transform: 'translateY(-2px)',
@@ -206,9 +204,9 @@ const QuickActions = ({ onAction  }: { onAction: any }) => {
                   }}
                   onClick={() => navigate(link.route)}
                 >
-                  <CardContent sx={{ textAlign: 'center', p: 2 }}>
+                  <CardContent sx={{ display: "flex", textAlign: 'center', p: 2 }}>
                     <Avatar
-                      sx: any,
+                      sx={{
                         bgcolor: `${link.color}.main`,
                         width: 40,
                         height: 40,
@@ -233,21 +231,20 @@ const QuickActions = ({ onAction  }: { onAction: any }) => {
       </Card>
 
       {/* Recent Actions */}
-      <Card sx={{ borderRadius: 3 }}>
-        <CardContent sx={{ p: 3 }}>
+      <Card sx={{ display: "flex", borderRadius: 3 }}>
+        <CardContent sx={{ display: "flex", p: 3 }}>
           <Typography variant="h6" fontWeight={600} gutterBottom>
             More Actions
           </Typography>
           
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {recentActions.map((action: any: any, index: any: any) => (
+          <Box sx={{ display: "flex", display: 'flex', flexDirection: 'column', gap: 1 }}>
+            {recentActions.map((action: any index: any: any: any: any) => (
               <Box key={index}>
                 <Button
                   fullWidth
-                  variant: any,
+                  variant="body2"
                   onClick={action.action}
-                  sx: any,
-                    gap: 2,
+                  sx={{
                     p: 2,
                     borderRadius: 2,
                     textAlign: 'left',
@@ -259,15 +256,14 @@ const QuickActions = ({ onAction  }: { onAction: any }) => {
                   }}
                 >
                   <Avatar
-                    sx: any,
-                      color: 'text.secondary',
+                    sx={{
                       width: 36,
                       height: 36
                     }}
                   >
                     {action.icon}
                   </Avatar>
-                  <Box sx={{ flexGrow: 1 }}>
+                  <Box sx={{ display: "flex", flexGrow: 1 }}>
                     <Typography variant="body1" fontWeight={500}>
                       {action.title}
                     </Typography>
@@ -276,7 +272,7 @@ const QuickActions = ({ onAction  }: { onAction: any }) => {
                     </Typography>
                   </Box>
                 </Button>
-                {index < recentActions.length - 1 && <Divider sx={{ my: 0.5 }} />}
+                {index < recentActions.length - 1 && <Divider sx={{ display: "flex", my: 0.5 }} />}
               </Box>
             ))}
           </Box>

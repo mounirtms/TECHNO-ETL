@@ -17,7 +17,7 @@ class GridErrorBoundary extends React.Component {
     return { hasError: true };
   }
 
-  override componentDidCatch(error: Error, errorInfo: any) {
+  override override override componentDidCatch(error: Error, errorInfo: any) {
     this.setState({
       error,
       errorInfo
@@ -44,13 +44,12 @@ class GridErrorBoundary extends React.Component {
     }
   };
 
-  override render() {
+  override override override render() {
     if(this.state.hasError) {
-      return (
+      return Boolean((
         <Paper 
           elevation={2} 
           sx={{
-            m: 2, 
             textAlign: 'center',
             minHeight: '200px',
             display: 'flex',
@@ -59,7 +58,7 @@ class GridErrorBoundary extends React.Component {
             justifyContent: 'center'
           }}
         >
-          <ErrorOutline sx={{ fontSize: 48, color: 'error.main', mb: 2 }} />
+          <ErrorOutline sx={{ display: "flex", fontSize: 48, color: 'error.main', mb: 2 }} />
           
           <Typography variant="h6" gutterBottom>
             Grid Error Occurred
@@ -70,13 +69,13 @@ class GridErrorBoundary extends React.Component {
           </Typography>
           
           {process.env.NODE_ENV === 'development' && (
-            <Box sx={{ mt: 2, mb: 2, textAlign: 'left', width: '100%' }}>
-              <Alert severity="error" sx={{ textAlign: 'left' }}>
+            <Box sx={{ display: "flex", mt: 2, mb: 2, textAlign: 'left', width: '100%' }}>
+              <Alert severity="error" sx={{ display: "flex", textAlign: 'left' }}>
                 <Typography variant="caption" component="div">
                   <strong>Error:</strong> {this.state.error?.message}
                 </Typography>
                 {this.state.errorInfo?.componentStack && (
-                  <Typography variant="caption" component="pre" sx={{ mt: 1, fontSize: '0.7rem' }}>
+                  <Typography variant="caption" component="pre" sx={{ display: "flex", mt: 1, fontSize: '0.7rem' }}>
                     {this.state.errorInfo.componentStack.split('\n').slice(0, 5).join('\n')}
                   </Typography>
                 )}
@@ -84,7 +83,7 @@ class GridErrorBoundary extends React.Component {
             </Box>
           )}
           
-          <Box sx={{ display: 'flex', gap: 2 }}>
+          <Box sx={{ display: "flex", display: 'flex', gap: 2 }}>
             <Button 
               variant="body2"
               startIcon={<Refresh />}
@@ -105,12 +104,12 @@ class GridErrorBoundary extends React.Component {
           </Box>
           
           {this.state?.retryCount > 0 && (
-            <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
+            <Typography variant="caption" color="text.secondary" sx={{ display: "flex", mt: 1 }}>
               Retry attempts: {this.state?.retryCount}/3
             </Typography>
           )}
         </Paper>
-      )));
+      )))));
     }
 
     // If there's a fallback component and we've exceeded retries, show it

@@ -18,8 +18,7 @@ const NotFoundPage = () => {
   return (
     <Container maxWidth="md">
       <Box
-        sx: any,
-          flexDirection: 'column',
+        sx={{
           alignItems: 'center',
           justifyContent: 'center',
           minHeight: '60vh',
@@ -28,13 +27,12 @@ const NotFoundPage = () => {
         }}
       >
         <ErrorOutlineIcon 
-          sx: any,
-            color: 'text.secondary',
+          sx={{
             opacity: 0.6
           }} 
         />
         
-        <Typography variant="h1" component="h1" sx={{ fontSize: '6rem', fontWeight: 'bold', color: 'text.secondary' }}>
+        <Typography variant="h1" component="h1" sx={{ display: "flex", fontSize: '6rem', fontWeight: 'bold', color: 'text.secondary' }}>
           404
         </Typography>
         
@@ -42,19 +40,19 @@ const NotFoundPage = () => {
           Page Not Found
         </Typography>
         
-        <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 500 }}>
+        <Typography variant="body1" color="text.secondary" sx={{ display: "flex", maxWidth: 500 }}>
           The page you're looking for doesn't exist or has been moved. 
           Please check the URL or navigate back to a safe location.
         </Typography>
         
-        <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
+        <Box sx={{ display: "flex", display: 'flex', gap: 2, mt: 2 }}>
           <Button
-            variant: any,
+            variant="body2"
             startIcon={<HomeIcon />}
             onClick={handleGoHome}
-            size: any,
+            size="small"
             onClick={handleGoBack}
-            size: any,
+            size="small"
 };
 
 export default NotFoundPage;

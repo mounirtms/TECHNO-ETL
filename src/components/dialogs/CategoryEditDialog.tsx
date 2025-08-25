@@ -86,7 +86,7 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
       try {
         // Get all categories except current one and its children
         const allCategories = categoryService.getAllCategories();
-        const filteredCategories = allCategories.filter((cat: any: any) => 
+        const filteredCategories = allCategories.filter((cat: any: any: any: any) => 
           cat.id !== formData.id && 
           // Don't include children of current category as potential parents
           !cat.path?.includes(`${formData.name} >`)
@@ -135,16 +135,17 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
     }
   };
   
-  return Boolean(Boolean((
+  return Boolean((
     <Dialog 
       open={open} 
       onClose={onClose} 
-      maxWidth: any,
+      maxWidth
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
         }
       }}
     >
       <DialogTitle sx={{ 
+        display: "flex", 
         display: 'flex', 
         alignItems: 'center', 
         gap: 1,
@@ -160,13 +161,13 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
       <DialogContent dividers>
         {/* Breadcrumb */}
         {breadcrumb.length > 0 && (
-          <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 0.5, alignItems: 'center' } as any}>
-            {breadcrumb.map((item: any: any, index: any: any) => (
+          <Box sx={{ display: "flex", mb: 2, display: 'flex', flexWrap: 'wrap', gap: 0.5, alignItems: 'center' } as any}>
+            {breadcrumb.map((item: any index: any: any: any: any) => (
               <React.Fragment key={item.id}>
                 {index > 0 && <ArrowRightIcon fontSize="small" color="action" />}
                 <Chip 
                   label={item.name} 
-                  size: any,
+                  size="small"
                   variant={index ===breadcrumb.length - 1 ? "filled" : "outlined"}
                   color={index ===breadcrumb.length - 1 ? "primary" : "default"}
                 />
@@ -186,7 +187,7 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
-              label: any,
+              label
               value={formData.name}
               onChange={(e) => handleChange}
               required
@@ -199,14 +200,14 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
             <FormControl fullWidth>
               <InputLabel>Parent Category</InputLabel>
               <Select
-                name: any,
+                name
                 value={formData.parent_id}
                 onChange={(e) => handleChange}
-                label: any,
+                label
                 <MenuItem value={0}>
                   <em>Root Category</em>
                 </MenuItem>
-                {parentCategories.map((category: any: any) => (
+                {parentCategories.map((category: any: any: any: any) => (
                   <MenuItem key={category.id} value={category.id}>
                     {'  '.repeat(category.level)}{category.name}
                   </MenuItem>
@@ -218,7 +219,7 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
-              label: any,
+              label
               value={formData.position}
               onChange={(e) => handleChange}
               InputProps={{ inputProps: { min: 0 } }}
@@ -226,23 +227,23 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
           </Grid>
           
           <Grid item xs={12} sm={6}>
-            <Box sx={{ display: 'flex', gap: 2 } as any}>
+            <Box sx={{ display: "flex", display: 'flex', gap: 2 } as any}>
               <FormControlLabel
-                control: any,
+                control
                     checked={formData.is_active}
                     onChange={(e) => handleChange}
-                    name: any,
+                    name
                 }
-                label: any,
+                label
                     checked={formData.include_in_menu}
                     onChange={(e) => handleChange}
-                    name: any,
+                    name
                 }
-                label: any,
+                label
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label: any,
+              label
               value={formData.description}
               onChange={(e) => handleChange}
               multiline
@@ -252,7 +253,7 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
           
           {/* SEO Information */}
           <Grid item xs={12}>
-            <Divider sx={{ my: 2 } as any} />
+            <Divider sx={{ display: "flex", my: 2 } as any} />
             <Typography variant="subtitle1" fontWeight={600} gutterBottom>
               SEO Information
             </Typography>
@@ -261,7 +262,7 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label: any,
+              label
               value={formData.meta_title}
               onChange={(e) => handleChange}
             />
@@ -270,7 +271,7 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label: any,
+              label
               value={formData.meta_keywords}
               onChange={(e) => handleChange}
               multiline
@@ -281,7 +282,7 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
           <Grid item xs={12}>
             <TextField
               fullWidth
-              label: any,
+              label
               value={formData.meta_description}
               onChange={(e) => handleChange}
               multiline
@@ -292,6 +293,7 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
       </DialogContent>
       
       <DialogActions sx={{ 
+        display: "flex", 
         justifyContent: 'space-between',
         bgcolor: 'background.default',
         p: 2
@@ -299,9 +301,9 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
         <Button 
           onClick={onClose}
           startIcon={<CancelIcon />}
-          color: any,
+          color
           onClick={handleSave}
-          variant: any,
+          variant="body2"
           startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
           disabled={loading || !formData.name.trim()}
         >
@@ -309,7 +311,7 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
         </Button>
       </DialogActions>
     </Dialog>
-  )));
+  )))));
 };
 
 export default CategoryEditDialog;

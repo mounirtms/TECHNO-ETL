@@ -100,7 +100,7 @@ const ProductsGrid = () => {
         try {
           if (!params?.row?.custom_attributes) return '-';
           const technoRef = params.row.custom_attributes.find(
-            attr: any,
+            attr
         } catch(error: any) {
           console.warn('Error getting techno_ref:', error);
           return '-';
@@ -148,7 +148,7 @@ const ProductsGrid = () => {
         try {
           if (!params?.row?.custom_attributes) return '-';
           const brand = params.row.custom_attributes.find(
-            attr: any,
+            attr
         } catch(error: any) {
           console.warn('Error getting brand:', error);
           return '-';
@@ -164,7 +164,7 @@ const ProductsGrid = () => {
         try {
           if (!params?.row?.custom_attributes) return '-';
           const country = params.row.custom_attributes.find(
-            attr: any,
+            attr
         } catch(error: any) {
           console.warn('Error getting country:', error);
           return '-';
@@ -181,7 +181,7 @@ const ProductsGrid = () => {
           if (!params?.row?.custom_attributes) return [];
 
           const categoryIds = params.row.custom_attributes.find(
-            attr: any,
+            attr
         } catch(error: any) {
           console.warn('Error getting category IDs:', error);
           return [];
@@ -195,7 +195,7 @@ const ProductsGrid = () => {
             return <span style={{ color: '#999', fontSize: '0.75rem' }}>No categories</span>;
           }
 
-          const categoryNames = categoryIds.slice(0, 2).map((id: any: any) => {
+          const categoryNames = categoryIds.slice(0, 2).map((id: any: any: any: any) => {
             try {
               const category = categories.find(cat => cat.id.toString() ===id.toString());
               return category ? category.name : `ID:${id}`;
@@ -207,10 +207,10 @@ const ProductsGrid = () => {
 
           return (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2px' }}>
-              {categoryNames.map((name: any: any, index: any: any) => (
+              {categoryNames.map((name: any index: any: any: any: any) => (
                 <span
                   key={index}
-                  style: any,
+                  style
                     backgroundColor: '#e3f2fd',
                     color: '#1976d2',
                     padding: '2px 6px',
@@ -243,7 +243,7 @@ const ProductsGrid = () => {
         try {
           if (!params?.row?.custom_attributes) return false;
           const trending = params.row.custom_attributes.find(
-            attr: any,
+            attr
         } catch(error) {
           console.warn('Error getting trending value:', error);
           return false;
@@ -267,7 +267,7 @@ const ProductsGrid = () => {
         try {
           if (!params?.row?.custom_attributes) return false;
           const bestSeller = params.row.custom_attributes.find(
-            attr: any,
+            attr
         } catch(error) {
           console.warn('Error getting best_seller value:', error);
           return false;
@@ -291,7 +291,7 @@ const ProductsGrid = () => {
         try {
           if (!params?.row?.custom_attributes) return false;
           const alaune = params.row.custom_attributes.find(
-            attr: any,
+            attr
         } catch(error) {
           console.warn('Error getting a_la_une value:', error);
           return false;
@@ -379,10 +379,10 @@ const ProductsGrid = () => {
       setData(products);
       setStats({
         total: totalCount,
-        active: products.filter((p: any: any) => p.status ===1).length,
-        inactive: products.filter((p: any: any) => p.status ===2).length,
+        active: products.filter((p: any: any: any: any) => p.status ===1).length,
+        inactive: products.filter((p: any: any: any: any) => p.status ===2).length,
         localProducts: localProducts.length,
-        syncedProducts: products.filter((p: any: any) => !p.isLocal).length
+        syncedProducts: products.filter((p: any: any: any: any) => !p.isLocal).length
       });
     } catch(error: any) {
       console.error('Failed to fetch products:', error);
@@ -490,7 +490,7 @@ const ProductsGrid = () => {
     }
     
     try {
-      await Promise.all(selectedIds.map((sku: any: any) => ProductService.deleteProduct(sku)));
+      await Promise.all(selectedIds.map((sku: any: any: any: any) => ProductService.deleteProduct(sku)));
       toast.success(`${selectedIds.length} product(s) deleted`);
       fetchProducts();
     } catch(error: any) {
@@ -622,7 +622,7 @@ const ProductsGrid = () => {
                 type: 'select',
                 options: [
                   { value: '', label: 'All Categories' },
-                  ...categories.map((cat: any: any) => ({
+                  ...categories.map((cat: any: any: any: any) => ({
                     value: cat.id.toString(),
                     label: cat.label
                   }))
@@ -639,7 +639,7 @@ const ProductsGrid = () => {
                 type: 'select',
                 options: [
                   { value: '', label: 'All Brands' },
-                  ...brands.map((brand: any: any) => ({
+                  ...brands.map((brand: any: any: any: any) => ({
                     value: brand.value || brand.id,
                     label: brand.label || brand.name
                   }))
@@ -673,10 +673,10 @@ const ProductsGrid = () => {
 
       <ProductEditDialog
         open={editDialogOpen}
-        onClose: any,
+        onClose
         }}
         product={selectedProduct}
-        onSave: any,
+        onSave
           console.log('💾 Saving product:', updatedProduct);
           toast.success(`Product "${updatedProduct.name}" saved successfully`);
           fetchProducts(); // Refresh the grid
@@ -700,9 +700,9 @@ const ProductsGrid = () => {
       <BulkMediaUploadDialog
         open={bulkMediaDialogOpen}
         onClose={() => setBulkMediaDialogOpen(false)}
-        onComplete: any,
+        onComplete
           console.log('Bulk media upload completed:', results);
-          toast.success(`Media upload completed: ${results.filter((r: any: any) => r.status === 'success').length} successful`);
+          toast.success(`Media upload completed: ${results.filter((r: any: any: any: any) => r.status === 'success').length} successful`);
           setBulkMediaDialogOpen(false);
         }}
       />

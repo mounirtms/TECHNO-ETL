@@ -78,7 +78,7 @@ const UserProfile = () => {
 
     if(error) {
         return (
-            <Alert severity="error" sx={{ m: 2 } as any}>
+            <Alert severity="error" sx={{ display: "flex", m: 2 } as any}>
                 Error loading profile: {error?.message}
             </Alert>
         );
@@ -118,12 +118,12 @@ const UserProfile = () => {
         }
     };
 
-    return(<Paper elevation={3} sx={{ maxWidth: 1200, margin: 'auto', mt: 2 } as any}>
+    return(<Paper elevation={3} sx={{ display: "flex", maxWidth: 1200, margin: 'auto', mt: 2 } as any}>
             <Tabs
                 value={activeTab}
                 onChange={(e) => handleTabChange}
-                variant: any,
-                sx={{ borderBottom: 1, borderColor: 'divider' } as any}
+                variant="body2"
+                sx={{ display: "flex", borderBottom: 1, borderColor: 'divider' } as any}
             >
                 <Tab icon={<ApiIcon />} label="API Settings" value={0} />
                 <Tab icon={<LanguageIcon />} label="Preferences" value={1} />
@@ -131,8 +131,7 @@ const UserProfile = () => {
             </Tabs>
             <Box
                 ref={contentRef}
-                sx: any,
-                    flexGrow: 1,
+                sx={{
                     height: 'calc(100vh - 200px)', // 固定高度而非最小高度
                     overflowY: 'hidden' // 隐藏垂直滚动条
                 } as any}
@@ -142,7 +141,7 @@ const UserProfile = () => {
                         in={!loading && mounted}
                         timeout={300}
                     >
-                        <Box sx={{ height: '100%' } as any}>
+                        <Box sx={{ display: "flex", height: '100%' } as any}>
                             {renderActiveTab()}
                         </Box>
                     </Fade>
@@ -151,8 +150,7 @@ const UserProfile = () => {
 
             {/* Loading backdrop */}
             <Backdrop
-                sx: any,
-                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                sx={{
                     position: 'absolute'
                 } as any}
                 open={loading}
@@ -170,11 +168,11 @@ const UserProfile = () => {
                 <Alert 
                     icon={<SaveIcon />}
                     severity={isDirty ? "warning" : "success"}
-                    sx={{ width: '100%' } as any}
+                    sx={{ display: "flex", width: '100%' } as any}
                 >
                     {isDirty ? "Changes not saved" : "All changes saved"}
                     {lastSyncTime && (
-                        <Box component="span" sx={{ ml: 1, fontSize: '0.8em', opacity: 0.8 } as any}>
+                        <Box component="span" sx={{ display: "flex", ml: 1, fontSize: '0.8em', opacity: 0.8 } as any}>
                             Last synced: {new Date(parseInt(lastSyncTime)).toLocaleTimeString()}
                         </Box>
                     )}

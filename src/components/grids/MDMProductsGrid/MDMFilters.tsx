@@ -54,28 +54,28 @@ const FilterFormControl = styled(FormControl)(({ theme }) => ({
  * @param {boolean} props.loading - Loading state
  * @returns {JSX.Element} MDM filters component
  */
-const MDMFilters: React.FC<{sourceFilter: any, onSourceChange: any, succursaleFilter: any, onSuccursaleChange: any, showChangedOnly: any, onShowChangedOnlyChange: any, sources: any: any, branches: any: any, loading: any: any, : any}> = ({ sourceFilter,
+const MDMFilters: React.FC<{sourceFilter onSourceChange succursaleFilter onSuccursaleChange showChangedOnly onShowChangedOnlyChange sources: any branches: any loading: any : any}> = ({ sourceFilter,
   onSourceChange,
   succursaleFilter,
   onSuccursaleChange,
   showChangedOnly,
   onShowChangedOnlyChange,
-  sources: any,
-  branches: any,
-  loading: any,
+  sources
+  branches
+  loading
  }) => {
   return(<FilterContainer>
       {/* Source Filter */}
       <FilterFormControl size="small" disabled={loading}>
         <InputLabel id="source-filter-label">Source</InputLabel>
         <Select
-          labelId: any,
+          labelId
           value={sourceFilter || 'all'}
-          label: any,
+          label
           onChange={(e) => onSourceChange?.(e.target?.value)}
         >
           <MenuItem value="all">All Sources</MenuItem>
-          {sources.map((source: any: any) => (
+          {sources.map((source: any: any: any: any) => (
             <MenuItem key={source?.value} value={source?.value}>
               {source?.label}
             </MenuItem>
@@ -87,13 +87,13 @@ const MDMFilters: React.FC<{sourceFilter: any, onSourceChange: any, succursaleFi
       <FilterFormControl size="small" disabled={loading}>
         <InputLabel id="branch-filter-label">Branch</InputLabel>
         <Select
-          labelId: any,
+          labelId
           value={succursaleFilter || 'all'}
-          label: any,
+          label
           onChange={(e) => onSuccursaleChange?.(e.target?.value)}
         >
           <MenuItem value="all">All Branches</MenuItem>
-          {branches.map((branch: any: any) => (
+          {branches.map((branch: any: any: any: any) => (
             <MenuItem key={branch?.value} value={branch?.value}>
               {branch?.label}
             </MenuItem>
@@ -103,13 +103,13 @@ const MDMFilters: React.FC<{sourceFilter: any, onSourceChange: any, succursaleFi
 
       {/* Show Changed Only Filter */}
       <FormControlLabel
-        control: any,
+        control
             checked={showChangedOnly}
             onChange={(e) => onShowChangedOnlyChange?.(e.target.checked)}
             disabled={loading}
-            size: any,
+            size="small"
         }
-        label: any,
+        label
           '& .MuiFormControlLabel-label': {
             fontSize: '0.875rem',
             fontWeight: 500
@@ -119,6 +119,7 @@ const MDMFilters: React.FC<{sourceFilter: any, onSourceChange: any, succursaleFi
 
       {/* Filter Summary */}
       <Box sx={{ 
+        display: "flex", 
         ml: 'auto', 
         display: 'flex', 
         alignItems: 'center',
@@ -126,17 +127,17 @@ const MDMFilters: React.FC<{sourceFilter: any, onSourceChange: any, succursaleFi
         fontSize: '0.875rem'
       }}>
         {sourceFilter && sourceFilter !== 'all' && (
-          <Box component="span" sx={{ mr: 1 }}>
+          <Box component="span" sx={{ display: "flex", mr: 1 }}>
             Source: {sources.find(s => s?.value ===sourceFilter)?.label || sourceFilter}
           </Box>
         )}
         {succursaleFilter && succursaleFilter !== 'all' && (
-          <Box component="span" sx={{ mr: 1 }}>
+          <Box component="span" sx={{ display: "flex", mr: 1 }}>
             Branch: {branches.find(b => b?.value ===succursaleFilter)?.label || succursaleFilter}
           </Box>
         )}
         {showChangedOnly && (
-          <Box component="span" sx={{ mr: 1 }}>
+          <Box component="span" sx={{ display: "flex", mr: 1 }}>
             Recent Changes Only
           </Box>
         )}

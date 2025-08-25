@@ -110,14 +110,14 @@ const getStockStatus = (stock) => {
   return 'active';
 };
 
-const ProductsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}> = ({ data, onDataChange, onBadgeUpdate  }) => {
+const ProductsGrid: React.FC<{data onDataChange onBadgeUpdate: any}> = ({ data, onDataChange, onBadgeUpdate  }) => {
   const { t } = useTranslation();
   const [products, setProducts] = useState(mockProducts);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
 
   // Filter products based on search query
-  const filteredProducts = products.filter((product: any: any) =>
+  const filteredProducts = products.filter((product: any: any: any: any) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.sku.toLowerCase().includes(searchQuery.toLowerCase())
@@ -125,7 +125,7 @@ const ProductsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}>
 
   // Update badge count for low stock products
   useEffect(() => {
-    const lowStockProducts = products.filter((p: any: any) => p.stock <= 10 && p.stock > 0).length;
+    const lowStockProducts = products.filter((p: any: any: any: any) => p.stock <= 10 && p.stock > 0).length;
     onBadgeUpdate?.(lowStockProducts);
   }, [products, onBadgeUpdate]);
 
@@ -151,25 +151,25 @@ const ProductsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}>
     const hasHalfStar = rating % 1 !== 0;
 
     for(let i = 0; i < fullStars; i++) {
-      stars.push(<StarIcon key={i} sx={{ fontSize: 16, color: 'gold' }} />);
+      stars.push(<StarIcon key={i} sx={{ display: "flex", fontSize: 16, color: 'gold' }} />);
     }
 
     if(hasHalfStar) {
-      stars.push(<StarIcon key="half" sx={{ fontSize: 16, color: 'gold', opacity: 0.5 }} />);
+      stars.push(<StarIcon key="half" sx={{ display: "flex", fontSize: 16, color: 'gold', opacity: 0.5 }} />);
     }
 
     return stars;
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ display: "flex", p: 3 }}>
       {/* Header */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ display: "flex", mb: 3 }}>
         <Typography variant="h5" component="h2">
           {t('Product Catalog')}
         </Typography>
         <Button
-          variant: any,
+          variant="body2"
           startIcon={<AddIcon />}
           onClick={handleAddProduct}
         >
@@ -183,19 +183,18 @@ const ProductsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}>
         placeholder={t('Search products...')}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        InputProps: any,
+        InputProps
         }}
-        sx={{ mb: 3 }}
+        sx={{ display: "flex", mb: 3 }}
       />
 
       {/* Products Grid */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 2 }}>
-        {filteredProducts.map((product: any: any) => (
-          <Card key={product.id} sx={{ height: 'fit-content' }}>
+      <Box sx={{ display: "flex", display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 2 }}>
+        {filteredProducts.map((product: any: any: any: any) => (
+          <Card key={product.id} sx={{ display: "flex", height: 'fit-content' }}>
             {/* Product Image */}
             <CardMedia
-              sx: any,
-                bgcolor: 'grey.100',
+              sx={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
@@ -204,7 +203,7 @@ const ProductsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}>
               {product.image ? (
                 <img src={product.image} alt={product.name} style={{ maxHeight: '100%', maxWidth: '100%' }} />
               ) : (
-                <ProductIcon sx={{ fontSize: 64, color: 'grey.400' }} />
+                <ProductIcon sx={{ display: "flex", fontSize: 64, color: 'grey.400' }} />
               )}
             </CardMedia>
 
@@ -212,7 +211,7 @@ const ProductsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}>
               <Stack spacing={2}>
                 {/* Product Header */}
                 <Stack direction="row" alignItems="flex-start" justifyContent="space-between">
-                  <Box sx={{ flexGrow: 1 }}>
+                  <Box sx={{ display: "flex", flexGrow: 1 }}>
                     <Typography variant="h6" component="div" noWrap>
                       {product.name}
                     </Typography>
@@ -223,7 +222,7 @@ const ProductsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}>
                   <Chip
                     label={product.status.replace('_', ' ')}
                     color={getStatusColor(product.status)}
-                    size: any,
+                    size="small"
                 {/* Category */}
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <CategoryIcon fontSize="small" color="action" />
@@ -234,7 +233,7 @@ const ProductsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}>
 
                 {/* Rating */}
                 <Stack direction="row" alignItems="center" spacing={1}>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <Box sx={{ display: "flex", display: 'flex', alignItems: 'center' }}>
                     {renderStars(product.rating)}
                   </Box>
                   <Typography variant="body2" color="text.secondary">
@@ -244,6 +243,7 @@ const ProductsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}>
 
                 {/* Description */}
                 <Typography variant="body2" color="text.secondary" sx={{ 
+                  display: "flex", 
                   display: '-webkit-box',
                   WebkitLineClamp: 2,
                   WebkitBoxOrient: 'vertical',
@@ -257,12 +257,12 @@ const ProductsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}>
                   <Typography variant="h6" color="primary" fontWeight="bold">
                     {product.price}
                   </Typography>
-                  <Box sx={{ textAlign: 'right' }}>
+                  <Box sx={{ display: "flex", textAlign: 'right' }}>
                     <Typography variant="caption" color="text.secondary">
                       {t('Stock')}
                     </Typography>
                     <Typography 
-                      variant: any,
+                      variant="body2"
                       color={product.stock ===0 ? 'error.main' : product.stock <= 10 ? 'warning.main' : 'success.main'}
                     >
                       {product.stock} {t('units')}
@@ -271,7 +271,7 @@ const ProductsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}>
                 </Stack>
 
                 {/* Actions */}
-                <Stack direction="row" spacing={1} sx={{ pt: 1 }}>
+                <Stack direction="row" spacing={1} sx={{ display: "flex", pt: 1 }}>
                   <Tooltip title={t('View Details')}>
                     <IconButton size="small" onClick={() => handleViewProduct(product.id)}>
                       <ViewIcon />
@@ -296,8 +296,8 @@ const ProductsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}>
 
       {/* Empty State */}
       {filteredProducts.length ===0 && (
-        <Box sx={{ textAlign: 'center', py: 4 }}>
-          <ProductIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
+        <Box sx={{ display: "flex", textAlign: 'center', py: 4 }}>
+          <ProductIcon sx={{ display: "flex", fontSize: 64, color: 'text.secondary', mb: 2 }} />
           <Typography variant="h6" color="text.secondary">
             {searchQuery ? t('No products found') : t('No products yet')}
           </Typography>

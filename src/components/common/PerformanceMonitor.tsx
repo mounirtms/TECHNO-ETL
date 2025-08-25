@@ -42,10 +42,10 @@ interface PerformanceMonitorProps {
 }
 
 const PerformanceMonitor: React.FC<PerformanceMonitorProps> = memo(({
-  componentName: any,
-  showDetails: any,
-  trackMemory: any,
-  renderThreshold: any,
+  componentName
+  showDetails
+  trackMemory
+  renderThreshold
   children
 }) => {
   const [stats, setStats] = useState<PerformanceStats>({
@@ -74,7 +74,7 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = memo(({
       renderTimes.current = renderTimes.current.slice(-10);
     }
 
-    const avgTime = renderTimes.current.reduce((a: any: any, b: any: any) => a + b, 0) / renderTimes.current.length;
+    const avgTime = renderTimes.current.reduce((a: any b: any: any: any: any) => a + b, 0) / renderTimes.current.length;
 
     setStats(prev => ({ ...prev,
       renderCount: prev.renderCount + 1,
@@ -107,19 +107,16 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = memo(({
     );
   }
 
-  return Boolean(Boolean((
+  return Boolean((
     <Box>
       <Card 
-        sx: any,
-          bgcolor: getRenderStatus() ==='error' ? 'error.light' : 
-                  getRenderStatus() ==='warning' ? 'warning.light' : 
-                  'success.light',
+        sx={{
           opacity: 0.9
         }}
       >
-        <CardContent sx={{ py: 1, px: 2, '&:last-child': { pb: 1 } }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <CardContent sx={{ display: "flex", py: 1, px: 2, '&:last-child': { pb: 1 } }}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
               <PerformanceIcon fontSize="small" />
               <Typography variant="caption" fontWeight={600}>
                 {componentName}
@@ -128,8 +125,8 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = memo(({
               <Tooltip title="Render count">
                 <Chip
                   label={stats.renderCount}
-                  size: any,
-                  sx={{ minWidth: 40, height: 20 }}
+                  size="small"
+                  sx={{ display: "flex", minWidth: 40, height: 20 }}
                 />
               </Tooltip>
 
@@ -137,10 +134,10 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = memo(({
                 <Chip
                   icon={<TimerIcon />}
                   label={formatTime(stats.lastRenderTime)}
-                  size: any,
+                  size="small"
                   color={getRenderStatus()}
                   variant={stats.lastRenderTime > renderThreshold ? 'filled' : 'outlined'}
-                  sx={{ height: 20 }}
+                  sx={{ display: "flex", height: 20 }}
                 />
               </Tooltip>
 
@@ -149,24 +146,24 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = memo(({
                   <Chip
                     icon={<MemoryIcon />}
                     label={`${stats.memoryUsage}MB`}
-                    size: any,
-                    sx={{ height: 20 }}
+                    size="small"
+                    sx={{ display: "flex", height: 20 }}
                   />
                 </Tooltip>
               )}
             </Box>
 
             <IconButton
-              size: any,
+              size="small"
               onClick={() => setExpanded(!expanded)}
-              sx={{ ml: 1 }}
+              sx={{ display: "flex", ml: 1 }}
             >
               {expanded ? <ExpandLess /> : <ExpandMore />}
             </IconButton>
           </Box>
 
           <Collapse in={expanded}>
-            <Box sx={{ mt: 1, pt: 1, borderTop: 1, borderColor: 'divider' }}>
+            <Box sx={{ display: "flex", mt: 1, pt: 1, borderTop: 1, borderColor: 'divider' }}>
               <Typography variant="caption" color="text.secondary" display="block">
                 Average render time: {formatTime(stats.avgRenderTime)}
               </Typography>
@@ -185,7 +182,7 @@ const PerformanceMonitor: React.FC<PerformanceMonitorProps> = memo(({
       
       {children}
     </Box>
-  )));
+  )))));
 });
 
 PerformanceMonitor.displayName = 'PerformanceMonitor';

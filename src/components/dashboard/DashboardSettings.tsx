@@ -40,7 +40,7 @@ const DashboardSettings = ({ open,
   settings,
   onSettingsChange,
   onResetSettings
- }: { open: any, onClose: any, settings: any, onSettingsChange: any, onResetSettings: any }) => {
+ }: { open onClose settings onSettingsChange onResetSettings: any }) => {
   const { animations, density } = useCustomTheme();
   const { settings: globalSettings, updateSettings } = useSettings();
   const [localSettings, setLocalSettings] = useState(settings);
@@ -150,12 +150,13 @@ const DashboardSettings = ({ open,
     <Dialog 
       open={open} 
       onClose={onClose} 
-      maxWidth: any,
+      maxWidth
           minHeight: density === 'compact' ? '60vh' : '70vh'
         }
       }}
     >
       <DialogTitle sx={{ 
+        display: "flex", 
         display: 'flex', 
         alignItems: 'center', 
         gap: 2, 
@@ -168,34 +169,33 @@ const DashboardSettings = ({ open,
           <Typography variant="h6" fontWeight={600}>
             Dashboard Settings
           </Typography>
-          <Typography variant="body2" sx={{ opacity: 0.9 }}>
+          <Typography variant="body2" sx={{ display: "flex", opacity: 0.9 }}>
             Customize your dashboard layout and visibility
           </Typography>
         </Box>
       </DialogTitle>
 
-      <DialogContent sx={{ p: 3 }}>
+      <DialogContent sx={{ display: "flex", p: 3 }}>
         {/* Stats Cards Settings */}
-        <Box sx={{ mb: 4 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+        <Box sx={{ display: "flex", mb: 4 }}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
             <StatsIcon color="primary" />
             <Typography variant="h6" fontWeight={600}>
               Statistics Cards
             </Typography>
             <Chip 
               label={`${Object.values(localSettings.statCards || {}).filter(Boolean).length}/8 visible`}
-              color: any,
+              color
           <Grid container spacing={2}>
-            {statCardSettings.map((card: any: any) => (<Grid size={{ xs: 12, sm: 6, md: 4 }} key={card.key}>
+            {statCardSettings.map((card: any: any: any: any) => (<Grid size={{ xs: 12, sm: 6, md: 4 }} key={card.key}>
                 <Card 
-                  variant: any,
-                    opacity: localSettings.statCards?.[card.key] ? 1 : 0.5,
+                  variant="body2"
                     transition: 'all 0.3s ease'
                   }}
                 >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Typography variant="h6">{card.icon}</Typography>
-                    <Box sx={{ flexGrow: 1 }}>
+                    <Box sx={{ display: "flex", flexGrow: 1 }}>
                       <Typography variant="body2" fontWeight={500}>
                         {card.label}
                       </Typography>
@@ -203,34 +203,33 @@ const DashboardSettings = ({ open,
                     <Switch
                       checked={localSettings.statCards?.[card.key] || false}
                       onChange={(e) => handleSettingChange('statCards', card.key, e.target.checked)}
-                      size: any,
+                      size="small"
             ))}
           </Grid>
         </Box>
 
-        <Divider sx={{ my: 3 }} />
+        <Divider sx={{ display: "flex", my: 3 }} />
 
         {/* Charts Settings */}
-        <Box sx={{ mb: 4 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+        <Box sx={{ display: "flex", mb: 4 }}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
             <ChartIcon color="secondary" />
             <Typography variant="h6" fontWeight={600}>
               Analytics Charts
             </Typography>
             <Chip 
               label={`${Object.values(localSettings.charts || {}).filter(Boolean).length}/8 visible`}
-              color: any,
+              color
           <Grid container spacing={2}>
-            {chartSettings.map((chart: any: any) => (<Grid size={{ xs: 12, sm: 6, md: 4 }} key={chart.key}>
+            {chartSettings.map((chart: any: any: any: any) => (<Grid size={{ xs: 12, sm: 6, md: 4 }} key={chart.key}>
                 <Card 
-                  variant: any,
-                    opacity: localSettings.charts?.[chart.key] ? 1 : 0.5,
+                  variant="body2"
                     transition: 'all 0.3s ease'
                   }}
                 >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Typography variant="h6">{chart.icon}</Typography>
-                    <Box sx={{ flexGrow: 1 }}>
+                    <Box sx={{ display: "flex", flexGrow: 1 }}>
                       <Typography variant="body2" fontWeight={500}>
                         {chart.label}
                       </Typography>
@@ -238,34 +237,33 @@ const DashboardSettings = ({ open,
                     <Switch
                       checked={localSettings.charts?.[chart.key] || false}
                       onChange={(e) => handleSettingChange('charts', chart.key, e.target.checked)}
-                      size: any,
+                      size="small"
             ))}
           </Grid>
         </Box>
 
-        <Divider sx={{ my: 3 }} />
+        <Divider sx={{ display: "flex", my: 3 }} />
 
         {/* Widgets Settings */}
-        <Box sx={{ mb: 4 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+        <Box sx={{ display: "flex", mb: 4 }}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
             <DashboardIcon color="info" />
             <Typography variant="h6" fontWeight={600}>
               Dashboard Widgets
             </Typography>
             <Chip
               label={`${Object.values(localSettings.widgets || {}).filter(Boolean).length}/5 visible`}
-              color: any,
+              color
           <Grid container spacing={2}>
-            {widgetSettings.map((widget: any: any) => (<Grid size={{ xs: 12, sm: 6, md: 4 }} key={widget.key}>
+            {widgetSettings.map((widget: any: any: any: any) => (<Grid size={{ xs: 12, sm: 6, md: 4 }} key={widget.key}>
                 <Card
-                  variant: any,
-                    opacity: localSettings.widgets?.[widget.key] ? 1 : 0.5,
+                  variant="body2"
                     transition: 'all 0.3s ease'
                   }}
                 >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Typography variant="h6">{widget.icon}</Typography>
-                    <Box sx={{ flexGrow: 1 }}>
+                    <Box sx={{ display: "flex", flexGrow: 1 }}>
                       <Typography variant="body2" fontWeight={500}>
                         {widget.label}
                       </Typography>
@@ -273,16 +271,16 @@ const DashboardSettings = ({ open,
                     <Switch
                       checked={localSettings.widgets?.[widget.key] || false}
                       onChange={(e) => handleSettingChange('widgets', widget.key, e.target.checked)}
-                      size: any,
+                      size="small"
             ))}
           </Grid>
         </Box>
 
-        <Divider sx={{ my: 3 }} />
+        <Divider sx={{ display: "flex", my: 3 }} />
 
         {/* General Settings */}
         <Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
             <DashboardIcon color="info" />
             <Typography variant="h6" fontWeight={600}>
               General Settings
@@ -291,39 +289,39 @@ const DashboardSettings = ({ open,
           
           <FormGroup>
             <FormControlLabel
-              control: any,
+              control
                   checked={localSettings.general?.autoRefresh || false}
                   onChange={(e) => handleSettingChange('general', 'autoRefresh', e.target.checked)}
                 />
               }
-              label: any,
+              label
                   checked={localSettings.general?.animations || true}
                   onChange={(e) => handleSettingChange('general', 'animations', e.target.checked)}
                 />
               }
-              label: any,
+              label
                   checked={localSettings.general?.compactMode || false}
                   onChange={(e) => handleSettingChange('general', 'compactMode', e.target.checked)}
                 />
               }
-              label: any,
+              label
                   checked={localSettings.general?.showTooltips || true}
                   onChange={(e) => handleSettingChange('general', 'showTooltips', e.target.checked)}
                 />
               }
-              label: any,
-      <DialogActions sx={{ p: 3, gap: 1 }}>
+              label
+      <DialogActions sx={{ display: "flex", p: 3, gap: 1 }}>
         <Button 
           onClick={handleReset} 
           startIcon={<RefreshIcon />}
-          color: any,
-        <Box sx={{ flexGrow: 1 }} />
+          color
+        <Box sx={{ display: "flex", flexGrow: 1 }} />
         <Button onClick={onClose}>
           Cancel
         </Button>
         <Button 
           onClick={handleSave} 
-          variant: any,
+          variant="body2"
           startIcon={<SettingsIcon />}
         >
           Save Settings

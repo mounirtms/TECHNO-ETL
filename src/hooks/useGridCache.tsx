@@ -191,7 +191,7 @@ export const useGridCache = <T extends any>(gridName: string, enableCache: boole
     cacheStats: {
       size: cacheRef.current.size,
       memoryUsage: Array.from(cacheRef.current.values())
-        .reduce((total: any: any: any, entry: any: any) => total + estimateMemoryUsage(entry.data), 0)
+        .reduce((total: any: any entry: any: any: any: any) => total + estimateMemoryUsage(entry.data), 0)
     }
   };
 };

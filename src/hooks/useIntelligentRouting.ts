@@ -163,7 +163,7 @@ export const useIntelligentRouting = () => {
     
     const userRole = getUserRole();
     
-    return Object.keys(ROUTE_PERMISSIONS).filter((route: any: any) => 
+    return Object.keys(ROUTE_PERMISSIONS).filter((route) => 
       hasRouteAccess(route, userRole)
     );
   }, [currentUser, getUserRole, hasRouteAccess]);
@@ -178,11 +178,11 @@ export const useIntelligentRouting = () => {
     // Get recent routes from localStorage
     const routeVisits = JSON.parse(localStorage.getItem('routeVisits') || '[]');
     const recentRoutes = routeVisits
-      .filter((visit: any: any) => visit.userId ===currentUser?.uid)
+      .filter((visit) => visit.userId ===currentUser?.uid)
       .slice(-10)
-      .map((visit: any: any) => visit.path)
-      .filter((path, index, arr: any: any) => arr.indexOf(path ) ===index) // Remove duplicates
-      .filter((path: any: any) => path !== currentPath && hasRouteAccess(path, userRole));
+      .map((visit) => visit.path)
+      .filter((path, index, arr) => arr.indexOf(path ) ===index) // Remove duplicates
+      .filter((path) => path !== currentPath && hasRouteAccess(path, userRole));
     
     // Role-based suggestions
     const roleSuggestions = {
@@ -197,7 +197,7 @@ export const useIntelligentRouting = () => {
     
     return {
       recent: recentRoutes.slice(0, 3),
-      suggested: suggestions.filter((route: any: any) => 
+      suggested: suggestions.filter((route) => 
         route !== currentPath && hasRouteAccess(route, userRole)
       ).slice(0, 3)
     };
@@ -314,7 +314,7 @@ export const useNavigationAnalytics = () => {
       }
 
       localStorage.setItem('navigationAnalytics', JSON.stringify(analytics));
-    } catch(error: any) {
+    } catch (error) {
       console.warn('Analytics tracking error:', error);
     }
   }, [location, currentUser]);

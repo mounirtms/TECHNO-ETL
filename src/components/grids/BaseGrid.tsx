@@ -46,27 +46,27 @@ import { getStandardGridProps, getStandardToolbarConfig } from '../../config/sta
  */
 const BaseGrid = forwardRef(({
   // Core props
-  gridName: any,
-  columns: any,
-  data: any,
-  loading: any,
-  error: any,
+  gridName
+  columns
+  data
+  loading
+  error
   // Grid configuration
-  getRowId: any,
-  checkboxSelection: any,
-  disableRowSelectionOnClick: any,
+  getRowId
+  checkboxSelection
+  disableRowSelectionOnClick
   // Pagination
-  paginationMode: any,
-  pageSize: any,
+  paginationMode
+  pageSize
   pageSizeOptions = [10, 25, 50, 100],
   
   // Toolbar configuration
-  toolbarConfig: any,
-  customActions: any,
-  contextMenuActions: any,
+  toolbarConfig
+  customActions
+  contextMenuActions
   // Stats cards
-  showStatsCards: any,
-  statsCards: any,
+  showStatsCards
+  statsCards
   statsPosition = 'bottom', // 'top' | 'bottom'
   
   // Event handlers
@@ -83,14 +83,14 @@ const BaseGrid = forwardRef(({
   onSortModelChange,
   
   // Performance
-  enableVirtualization: any,
+  enableVirtualization
   virtualizationThreshold = 1000, // Added from OptimizedDataGrid
-  rowBuffer: any,
-  columnBuffer: any,
+  rowBuffer
+  columnBuffer
   // Styling
-  height: any,
-  minHeight: any,
-  maxHeight: any,
+  height
+  minHeight
+  maxHeight
   // Additional props
   ...otherProps
 }, ref) => {
@@ -154,7 +154,7 @@ const BaseGrid = forwardRef(({
       return [];
     }
     
-    return data.map((row: any: any, index: any: any) => ({ ...row,
+    return data.map((row: any index: any: any: any: any) => ({ ...row,
       _gridIndex: index,
       _gridId: getRowId(row) || `row-${index}`
     }));
@@ -162,7 +162,7 @@ const BaseGrid = forwardRef(({
 
   // Memoized columns processing
   const processedColumns = useMemo(() => {
-    return columns.map((col: any: any) => ({ ...col,
+    return columns.map((col: any: any: any: any) => ({ ...col,
       headerName: translate(col.headerName) || col.headerName,
       sortable: col.sortable !== false,
       filterable: col.filterable !== false,
@@ -172,7 +172,7 @@ const BaseGrid = forwardRef(({
 
   // Enhanced columns with performance optimizations (from OptimizedDataGrid)
   const enhancedColumns = useMemo(() => {
-    return columns.map((column: any: any) => ({ ...column,
+    return columns.map((column: any: any: any: any) => ({ ...column,
       width: column.width || 150,
       sortable: column.sortable !== false,
       filterable: column.filterable !== false,
@@ -220,7 +220,7 @@ const BaseGrid = forwardRef(({
   if(error || gridError) {
     return (
       <Alert 
-        severity: any,
+        severity
           <button onClick={clearError}>
             Retry
           </button>
@@ -231,15 +231,14 @@ const BaseGrid = forwardRef(({
     );
   }
 
-  return Boolean(Boolean((
+  return Boolean((
     <ComponentErrorBoundary 
       componentName={`${gridName}Grid`}
       fallbackMessage={`Unable to load ${gridName.toLowerCase()} grid`}
     >
       <Box
         ref={containerRef}
-        sx: any,
-          minHeight: minHeight,
+        sx={{
           maxHeight: maxHeight,
           width: '100%',
           display: 'flex',
@@ -271,15 +270,14 @@ const BaseGrid = forwardRef(({
         {/* Main Grid Container */}
         <Paper
           elevation={1}
-          sx: any,
-            display: 'flex',
+          sx={{
             flexDirection: 'column',
             overflow: 'hidden',
             borderRadius: density === 'compact' ? 1 : 2
           }}
         >
           {loading && (
-            <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}>
+            <Box sx={{ display: "flex", position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}>
               <Skeleton variant="rectangular" height={4} />
             </Box>
           )}
@@ -287,7 +285,7 @@ const BaseGrid = forwardRef(({
           <GridErrorBoundary
             gridName={gridName}
             onError={handleError}
-            fallbackComponent: any,
+            fallbackComponent
             }
           >
             <DataGrid
@@ -328,9 +326,7 @@ const BaseGrid = forwardRef(({
               columnBuffer={columnBuffer}
               
               // Styling
-              sx: any,
-                '& .MuiDataGrid-root': {
-                  border: 'none'
+              sx={{
                 },
                 '& .MuiDataGrid-cell': {
                   borderBottom: `1px solid ${theme.palette.divider}`
@@ -360,7 +356,7 @@ const BaseGrid = forwardRef(({
         )}
       </Box>
     </ComponentErrorBoundary>
-  )));
+  )))));
 });
 
 BaseGrid.displayName = 'BaseGrid';

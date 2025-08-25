@@ -91,7 +91,7 @@ const BugReportForm: React.FC<BugReportFormProps> = ({ open, onClose, onSubmit }
 
   const removeStep = (index: number): void => {
     if(formData.stepsToReproduce.length > 1) {
-      const newSteps = formData.stepsToReproduce.filter((_, i: any: any) => i !== index);
+      const newSteps = formData.stepsToReproduce.filter((_, i: any: any: any: any) => i !== index);
       setFormData(prev => ({ ...prev,
         stepsToReproduce: newSteps
       }));
@@ -167,10 +167,10 @@ const BugReportForm: React.FC<BugReportFormProps> = ({ open, onClose, onSubmit }
   const isStepValid = (step: number): boolean => {
     switch(step) {
       case 0:
-        return Boolean(Boolean(Boolean(formData.title && formData.description && formData.category && formData.severity)));
+        return Boolean((Boolean(formData.title && formData.description && formData.category && formData.severity)))));
       case 1:
-        return Boolean(Boolean(Boolean(formData.stepsToReproduce.some((stepItem: string: any: any) => stepItem.trim()) && 
-               formData.expectedBehavior && formData.actualBehavior)));
+        return Boolean((Boolean(formData.stepsToReproduce.some((stepItem: string: any: any: any: any) => stepItem.trim()) && 
+               formData.expectedBehavior && formData.actualBehavior)))));
       case 2:
         return Boolean(formData.testerName && formData.testerEmail);
       default:
@@ -192,19 +192,19 @@ const BugReportForm: React.FC<BugReportFormProps> = ({ open, onClose, onSubmit }
             <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
-                label: any,
+                label
                 value={formData.title}
                 onChange={(e) => handleInputChange('title', e.target.value)}
-                placeholder: any,
+                placeholder
             <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
                 multiline
                 rows={4}
-                label: any,
+                label
                 value={formData.description}
                 onChange={(e) => handleInputChange('description', e.target.value)}
-                placeholder: any,
+                placeholder
             <Grid size={{ xs: 12, md: 6 }}>
               <FormControl fullWidth required>
                 <InputLabel>Category</InputLabel>
@@ -212,13 +212,13 @@ const BugReportForm: React.FC<BugReportFormProps> = ({ open, onClose, onSubmit }
                   value={formData.category}
                   onChange={(e) => handleInputChange('category', e.target.value)}
                 >
-                  {Object.entries(BUG_CATEGORIES).map(([key: any: any, category]: any: any) => (
+                  {Object.entries(BUG_CATEGORIES).map(([key: any category]: any: any: any: any) => (
                     <MenuItem key={key} value={key}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Chip
-                          size: any,
+                          size="small"
                           label={category.name}
-                          sx={{ backgroundColor: category.color, color: 'white' }}
+                          sx={{ display: "flex", backgroundColor: category.color, color: 'white' }}
                         />
                         <Typography variant="body2">{category.description}</Typography>
                       </Box>
@@ -262,44 +262,44 @@ const BugReportForm: React.FC<BugReportFormProps> = ({ open, onClose, onSubmit }
               <Typography variant="h6" gutterBottom>
                 Steps to Reproduce
               </Typography>
-              {formData.stepsToReproduce.map((step: string: any: any, index: number: any: any) => (<Box key={index} sx={{ display: 'flex', gap: 1, mb: 2 }}>
+              {formData.stepsToReproduce.map((step: string: any index: number: any: any: any: any) => (<Box key={index} sx={{ display: "flex", display: 'flex', gap: 1, mb: 2 }}>
                   <TextField
                     fullWidth
                     label={`Step ${index + 1}`}
                     value={step}
                     onChange={(e) => handleStepChange('stepsToReproduce', index, e.target.value)}
-                    placeholder: any,
+                    placeholder
                     onClick={() => removeStep(index)}
                     disabled={formData.stepsToReproduce.length ===1}
-                    color: any,
+                    color
               ))}
               <Button
                 startIcon={<AddIcon />}
                 onClick={addStep}
-                variant: any,
+                variant="body2"
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
                 multiline
                 rows={3}
-                label: any,
+                label
                 value={formData.expectedBehavior}
                 onChange={(e) => handleInputChange('expectedBehavior', e.target.value)}
-                placeholder: any,
+                placeholder
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
                 multiline
                 rows={3}
-                label: any,
+                label
                 value={formData.actualBehavior}
                 onChange={(e) => handleInputChange('actualBehavior', e.target.value)}
-                placeholder: any,
+                placeholder
         return(<Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
-                label: any,
+                label
                 value={formData.testerName}
                 onChange={(e) => handleInputChange('testerName', e.target.value)}
                 required
@@ -308,7 +308,7 @@ const BugReportForm: React.FC<BugReportFormProps> = ({ open, onClose, onSubmit }
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
-                type: any,
+                type
                 value={formData.testerEmail}
                 onChange={(e) => handleInputChange('testerEmail', e.target.value)}
                 required
@@ -356,16 +356,16 @@ const BugReportForm: React.FC<BugReportFormProps> = ({ open, onClose, onSubmit }
 
   return(<Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
       <DialogTitle>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
           <BugIcon color="primary" />
           <Typography variant="h6">Report a Bug</Typography>
         </Box>
       </DialogTitle>
 
       <DialogContent>
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ display: "flex", mb: 3 }}>
           <Stepper activeStep={activeStep}>
-            {steps.map((label: any: any) => (
+            {steps.map((label: any: any: any: any) => (
               <Step key={label}>
                 <StepLabel>{label}</StepLabel>
               </Step>
@@ -374,13 +374,13 @@ const BugReportForm: React.FC<BugReportFormProps> = ({ open, onClose, onSubmit }
         </Box>
 
         {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
+          <Alert severity="error" sx={{ display: "flex", mb: 2 }}>
             {error}
           </Alert>
         )}
 
         {success && (
-          <Alert severity="success" sx={{ mb: 2 }}>
+          <Alert severity="success" sx={{ display: "flex", mb: 2 }}>
             {success}
           </Alert>
         )}
@@ -400,10 +400,10 @@ const BugReportForm: React.FC<BugReportFormProps> = ({ open, onClose, onSubmit }
           <Button
             onClick={handleNext}
             disabled={!isStepValid(activeStep)}
-            variant: any,
+            variant="body2"
             onClick={handleSubmit}
             disabled={!isStepValid(activeStep) || loading}
-            variant: any,
+            variant="body2"
             {loading ? 'Submitting...' : 'Submit Bug Report'}
           </Button>
         )}

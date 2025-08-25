@@ -2,7 +2,7 @@ import React from 'react';
 import { TablePagination } from '@mui/material';
 import { useLanguage } from '../../contexts/LanguageContext';
 
-const CustomPagination = ({ rowCount, totalCount, paginationModel, onPaginationModelChange  }: { rowCount: any, totalCount: any, paginationModel: any, onPaginationModelChange: any }) => {
+const CustomPagination = ({ rowCount, totalCount, paginationModel, onPaginationModelChange  }: { rowCount totalCount paginationModel onPaginationModelChange: any }) => {
     const { translate, currentLanguage } = useLanguage();
     const isRTL = currentLanguage === 'ar';
     
@@ -14,14 +14,14 @@ const CustomPagination = ({ rowCount, totalCount, paginationModel, onPaginationM
 
     return (
         <TablePagination
-            component: any,
+            component
             count={validCount}
             page={paginationModel.page || 0}
             onPageChange={(event, newPage) => {
                 onPaginationModelChange({ ...paginationModel, page: newPage });
             }}
             rowsPerPage={paginationModel.pageSize || 25}
-            onRowsPerPageChange: any,
+            onRowsPerPageChange
                 onPaginationModelChange({ pageSize: parseInt(event.target.value, 10), page: 0 });
             }}
             rowsPerPageOptions={[10, 25, 50, 100]}
@@ -31,7 +31,7 @@ const CustomPagination = ({ rowCount, totalCount, paginationModel, onPaginationM
                     ? translate('grid.displayedRows').replace('{from}', from).replace('{to}', to).replace('{count}', count)
                     : `${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`
             }
-            sx: any,
+            sx={{
                 },
                 '& .MuiTablePagination-spacer': {
                     order: isRTL ? 1 : 0,

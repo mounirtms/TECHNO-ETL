@@ -39,6 +39,7 @@ const TabPanel: React.FC<any> = ({ sidebarOpen, isMobile = false, isTablet = fal
     const ActiveComponent = getActiveComponent();
 
     return(<Box sx={{
+            display: "flex",
             width: '100%',
             marginTop: `${HEADER_HEIGHT}px`,
             height: tabPanelHeight,
@@ -49,23 +50,23 @@ const TabPanel: React.FC<any> = ({ sidebarOpen, isMobile = false, isTablet = fal
 
 
             <Box sx={{
+                display: "flex",
                 borderBottom: 1,
                 borderColor: 'divider',
                 backgroundColor: theme.palette.background.paper
             } as any}>
                 <Tabs
                     value={activeTab}
-                    onChange={(e) => handleChange}
+                    onChange={handleChange}
                     variant={isMobile ? "scrollable" : "scrollable"}
                     scrollButtons={isMobile ? "auto" : "auto"}
                     allowScrollButtonsMobile
-                    sx: any,
-                            fontSize: isMobile ? '0.75rem' : '0.875rem',
+                    sx={{
                             padding: isMobile ? '4px 6px' : '8px 12px' // Reduced padding
                         }
                     }}
                 >
-                    {tabs.map((tab: any: any) => (
+                    {tabs.map((tab: any: any: any) => (
                         <Tab
                             key={tab.id}
                             label={isMobile ? tab.label.substring(0, 8) + (tab.label.length > 8 ? '...' : '') : tab.label}
@@ -75,6 +76,7 @@ const TabPanel: React.FC<any> = ({ sidebarOpen, isMobile = false, isTablet = fal
                 </Tabs>
             </Box>
             <Box sx={{
+                display: "flex",
                 flexGrow: 1,
                 overflow: 'auto',
                 p: {
@@ -99,6 +101,7 @@ const TabPanel: React.FC<any> = ({ sidebarOpen, isMobile = false, isTablet = fal
                 {ActiveComponent ? (
                     <Suspense fallback={
                         <Box sx={{
+                            display: "flex",
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',

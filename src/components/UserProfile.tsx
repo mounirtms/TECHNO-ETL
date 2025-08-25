@@ -22,28 +22,28 @@ const UserProfile = () => {
   };
 
   return (
-    <Paper elevation={3} sx={{ maxWidth: 1200, margin: 'auto', mt: 2, p: 3 } as any}>
-      <Typography variant="h5" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
+    <Paper elevation={3} sx={{ display: "flex", maxWidth: 1200, margin: 'auto', mt: 2, p: 3 } as any}>
+      <Typography variant="h5" gutterBottom sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
         <Person color="primary" />
         User Profile
       </Typography>
       
-      <Alert severity="info" sx={{ mb: 3 } as any}>
+      <Alert severity="info" sx={{ display: "flex", mb: 3 } as any}>
         Simplified user profile interface. Full functionality is being loaded.
       </Alert>
       
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 } as any}>
+      <Box sx={{ display: "flex", display: 'flex', flexDirection: 'column', gap: 3 } as any}>
         {/* Quick Theme Toggle */}
         <Box>
-          <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
+          <Typography variant="h6" gutterBottom sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
             <Settings color="primary" />
             Quick Settings
           </Typography>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' } as any}>
+          <Box sx={{ display: "flex", display: 'flex', gap: 2, flexWrap: 'wrap' } as any}>
             <Button
               variant={mode === 'light' ? 'contained' : 'outlined'}
               onClick={() => handleThemeToggle()}
-              size: any,
+              size="small"
               {mode === 'light' ? 'Light Theme' : 'Dark Theme'}
             </Button>
           </Box>
@@ -51,17 +51,17 @@ const UserProfile = () => {
 
         {/* Quick Language Selector */}
         <Box>
-          <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
+          <Typography variant="h6" gutterBottom sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
             <Language color="primary" />
             Language
           </Typography>
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' } as any}>
-            {Object.entries(languages).map(([code: any: any, lang]: any: any) => (
+          <Box sx={{ display: "flex", display: 'flex', gap: 1, flexWrap: 'wrap' } as any}>
+            {Object.entries(languages).map(([code: any lang]: any: any: any: any) => (
               <Button
                 key={code}
                 variant={currentLanguage ===code ? 'contained' : 'outlined'}
                 onClick={() => handleLanguageChange(code)}
-                size: any,
+                size="small"
                 {lang.name}
               </Button>
             ))}

@@ -100,7 +100,7 @@ export const useRoutePreloader = () => {
         preloadedRoutes.current.add(routePath );
         console.log(`📦 Preloaded route: ${routePath}`);
       }
-    } catch(error: any) {
+    } catch (error) {
       console.error(`❌ Failed to preload route ${routePath}:`, error);
     }
   };

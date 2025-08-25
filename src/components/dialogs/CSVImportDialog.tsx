@@ -130,7 +130,7 @@ const CSVImportDialog: React.FC<any> = ({ open, onClose, onImportComplete }) => 
 
             // Import simple products first
             if(separatedProducts?.simpleProducts.length > 0) {
-                const simpleResults = await ProductService.processBulkProducts(separatedProducts?.simpleProducts.map((p: any: any) => ProductService.transformToMagentoFormat(p)),
+                const simpleResults = await ProductService.processBulkProducts(separatedProducts?.simpleProducts.map((p: any: any: any: any) => ProductService.transformToMagentoFormat(p)),
                     (progress) => {
                         setImportProgress({
                             current: processedCount + progress.current,
@@ -219,19 +219,19 @@ const CSVImportDialog: React.FC<any> = ({ open, onClose, onImportComplete }) => 
     const renderStepContent = () => {
         switch(activeStep) {
             case 0:
-                return(<Box sx={{ textAlign: 'center', py: 4 } as any}>
+                return(<Box sx={{ display: "flex", textAlign: 'center', py: 4 } as any}>
                         <input
-                            accept: any,
+                            accept
                             style={{ display: 'none' }}
-                            id: any,
+                            id
                             onChange={(e) => handleFileUpload}
                         />
                         <label htmlFor="csv-upload">
                             <Button
-                                variant: any,
+                                variant="body2"
                                 startIcon={<UploadIcon />}
-                                size: any,
-                                sx={{ mb: 2 } as any}
+                                size="small"
+                                sx={{ display: "flex", mb: 2 } as any}
                             >
                                 Select CSV File
                             </Button>
@@ -240,7 +240,7 @@ const CSVImportDialog: React.FC<any> = ({ open, onClose, onImportComplete }) => 
                             Upload a CSV file with product data for Magento import
                         </Typography>
                         {csvFile && (
-                            <Alert severity="info" sx={{ mt: 2 } as any}>
+                            <Alert severity="info" sx={{ display: "flex", mt: 2 } as any}>
                                 Selected: {csvFile.name} ({csvData.length} products)
                             </Alert>
                         )}
@@ -248,16 +248,16 @@ const CSVImportDialog: React.FC<any> = ({ open, onClose, onImportComplete }) => 
                 );
 
             case 1:
-                return(<Box sx={{ py: 2 } as any}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 } as any}>
+                return(<Box sx={{ display: "flex", py: 2 } as any}>
+                        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', mb: 2 } as any}>
                             <FormControlLabel
-                                control: any,
+                                control
                                         checked={autoFix}
                                         onChange={(e) => setAutoFix(e.target.checked)}
                                     />
                                 }
-                                label: any,
-                        <Alert severity="info" sx={{ mb: 2 } as any}>
+                                label
+                        <Alert severity="info" sx={{ display: "flex", mb: 2 } as any}>
                             Ready to validate {csvData.length} products from {csvFile.name}
                         </Alert>
                         
@@ -268,28 +268,28 @@ const CSVImportDialog: React.FC<any> = ({ open, onClose, onImportComplete }) => 
                 );
 
             case 2:
-                return Boolean(Boolean(validationResult && importSummary ? (
-                    <Box sx={{ py: 2 } as any}>
+                return Boolean((validationResult && importSummary ? (
+                    <Box sx={{ display: "flex", py: 2 } as any}>
                         {/* Validation Summary */}
-                        <Card sx={{ mb: 2 } as any}>
+                        <Card sx={{ display: "flex", mb: 2 } as any}>
                             <CardContent>
                                 <Typography variant="h6" gutterBottom>
                                     Validation Summary
                                 </Typography>
-                                <Box sx={{ display: 'flex', gap: 1, mb: 2 } as any}>
+                                <Box sx={{ display: "flex", display: 'flex', gap: 1, mb: 2 } as any}>
                                     <Chip 
                                         icon={<CheckIcon />} 
                                         label={`${importSummary.validation.validProducts} Valid`} 
-                                        color: any,
+                                        color
                                             icon={<ErrorIcon />} 
                                             label={`${importSummary.validation.errorProducts} Errors`} 
-                                            color: any,
+                                            color
                                     )}
                                     {importSummary.validation.warnings > 0 && (
                                         <Chip 
                                             icon={<WarningIcon />} 
                                             label={`${importSummary.validation.warnings} Warnings`} 
-                                            color: any,
+                                            color
                                     )}
                                 </Box>
                                 
@@ -297,7 +297,7 @@ const CSVImportDialog: React.FC<any> = ({ open, onClose, onImportComplete }) => 
                                 <Typography variant="subtitle2" gutterBottom>
                                     Product Types:
                                 </Typography>
-                                <Box sx={{ display: 'flex', gap: 1, mb: 2 } as any}>
+                                <Box sx={{ display: "flex", display: 'flex', gap: 1, mb: 2 } as any}>
                                     <Chip label={`${importSummary.productTypes.simple} Simple`} variant="outlined" size="small" />
                                     <Chip label={`${importSummary.productTypes.configurable} Configurable`} variant="outlined" size="small" />
                                     <Chip label={`${importSummary.productTypes.variations} Variations`} variant="outlined" size="small" />
@@ -307,21 +307,21 @@ const CSVImportDialog: React.FC<any> = ({ open, onClose, onImportComplete }) => 
 
                         {/* Errors and Warnings */}
                         {(validationResult.errors.length > 0 || validationResult.warnings.length > 0) && (
-                            <Card sx={{ mb: 2 } as any}>
+                            <Card sx={{ display: "flex", mb: 2 } as any}>
                                 <CardContent>
                                     <Typography variant="h6" gutterBottom>
                                         Issues Found
                                     </Typography>
                                     <List dense>
-                                        {validationResult.errors.slice(0, 10).map((error: any: any, index: any: any) => (
+                                        {validationResult.errors.slice(0, 10).map((error: any index: any: any: any: any) => (
                                             <ListItem key={index}>
-                                                <ErrorIcon color="error" sx={{ mr: 1 } as any} />
+                                                <ErrorIcon color="error" sx={{ display: "flex", mr: 1 } as any} />
                                                 <ListItemText primary={error} />
                                             </ListItem>
                                         ))}
-                                        {validationResult.warnings.slice(0, 5).map((warning: any: any, index: any: any) => (
+                                        {validationResult.warnings.slice(0, 5).map((warning: any index: any: any: any: any) => (
                                             <ListItem key={index}>
-                                                <WarningIcon color="warning" sx={{ mr: 1 } as any} />
+                                                <WarningIcon color="warning" sx={{ display: "flex", mr: 1 } as any} />
                                                 <ListItemText primary={warning} />
                                             </ListItem>
                                         ))}
@@ -338,9 +338,9 @@ const CSVImportDialog: React.FC<any> = ({ open, onClose, onImportComplete }) => 
                                         Recommendations
                                     </Typography>
                                     <List dense>
-                                        {importSummary.recommendations.map((rec: any: any, index: any: any) => (
+                                        {importSummary.recommendations.map((rec: any index: any: any: any: any) => (
                                             <ListItem key={index}>
-                                                <InfoIcon color="info" sx={{ mr: 1 } as any} />
+                                                <InfoIcon color="info" sx={{ display: "flex", mr: 1 } as any} />
                                                 <ListItemText primary={rec.message} />
                                             </ListItem>
                                         ))}
@@ -349,23 +349,23 @@ const CSVImportDialog: React.FC<any> = ({ open, onClose, onImportComplete }) => 
                             </Card>
                         )}
                     </Box>
-                ) : null));
+                ) : null))));
 
             case 3:
                 return (
-                    <Box sx={{ py: 2 } as any}>
+                    <Box sx={{ display: "flex", py: 2 } as any}>
                         {importing ? (
                             <Box>
                                 <Typography variant="h6" gutterBottom>
                                     Importing Products...
                                 </Typography>
-                                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 } as any}>
+                                <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 2 } as any}>
                                     {importProgress.phase}: {importProgress.current} / {importProgress.total}
                                 </Typography>
                                 <LinearProgress 
-                                    variant: any,
+                                    variant="body2"
                                     value={(importProgress.current / importProgress.total) * 100} 
-                                    sx={{ mb: 2 } as any}
+                                    sx={{ display: "flex", mb: 2 } as any}
                                 />
                             </Box>
                         ) : importResults ? (
@@ -375,14 +375,14 @@ const CSVImportDialog: React.FC<any> = ({ open, onClose, onImportComplete }) => 
                                 </Typography>
                                 <Card>
                                     <CardContent>
-                                        <Box sx={{ display: 'flex', gap: 1, mb: 2 } as any}>
+                                        <Box sx={{ display: "flex", display: 'flex', gap: 1, mb: 2 } as any}>
                                             <Chip 
                                                 icon={<CheckIcon />} 
                                                 label={`${importResults.total.successful} Successful`} 
-                                                color: any,
+                                                color
                                                     icon={<ErrorIcon />} 
                                                     label={`${importResults.total.failed} Failed`} 
-                                                    color: any,
+                                                    color
                                             )}
                                         </Box>
                                         
@@ -392,7 +392,7 @@ const CSVImportDialog: React.FC<any> = ({ open, onClose, onImportComplete }) => 
                                                     Failed Products:
                                                 </Typography>
                                                 <List dense>
-                                                    {importResults.total.errors.slice(0, 10).map((error: any: any, index: any: any) => (
+                                                    {importResults.total.errors.slice(0, 10).map((error: any index: any: any: any: any) => (
                                                         <ListItem key={index}>
                                                             <ListItemText 
                                                                 primary={error.sku} 
@@ -421,8 +421,8 @@ const CSVImportDialog: React.FC<any> = ({ open, onClose, onImportComplete }) => 
             </DialogTitle>
             
             <DialogContent>
-                <Stepper activeStep={activeStep} sx={{ mb: 3 } as any}>
-                    {steps.map((label: any: any) => (
+                <Stepper activeStep={activeStep} sx={{ display: "flex", mb: 3 } as any}>
+                    {steps.map((label: any: any: any: any) => (
                         <Step key={label}>
                             <StepLabel>{label}</StepLabel>
                         </Step>
@@ -440,7 +440,7 @@ const CSVImportDialog: React.FC<any> = ({ open, onClose, onImportComplete }) => 
                 {activeStep ===1 && (
                     <Button 
                         onClick={handleValidation} 
-                        variant: any,
+                        variant="body2"
                         disabled={csvData.length ===0}
                     >
                         Validate Data
@@ -450,7 +450,7 @@ const CSVImportDialog: React.FC<any> = ({ open, onClose, onImportComplete }) => 
                 {activeStep ===2 && validationResult.isValid && (
                     <Button 
                         onClick={handleImport} 
-                        variant: any,
+                        variant="body2"
                 )}
             </DialogActions>
         </Dialog>

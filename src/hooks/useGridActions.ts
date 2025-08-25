@@ -27,8 +27,8 @@ export const useGridActions = ({
   onSync,
   onExport,
   onSearch,
-  selectedRows: any,
-  data: any,
+  selectedRows,
+  data,
   gridName,
   searchableFields = ['sku', 'name', 'Code_MDM', 'reference']
 }: UseGridActionsProps) => {
@@ -37,7 +37,7 @@ export const useGridActions = ({
     try {
       await onRefresh?.();
       toast.success('Data refreshed successfully');
-    } catch(error: any) {
+    } catch (error) {
       console.error('Error refreshing data:', error);
       toast.error('Failed to refresh data');
     }
@@ -47,7 +47,7 @@ export const useGridActions = ({
   const handleAdd = useCallback(async () => {
     try {
       await onAdd?.();
-    } catch(error: any) {
+    } catch (error) {
       console.error('Error adding record:', error);
       toast.error('Failed to add record');
     }
@@ -62,7 +62,7 @@ export const useGridActions = ({
     
     try {
       await onEdit?.(selectedRows);
-    } catch(error: any) {
+    } catch (error) {
       console.error('Error editing record:', error);
       toast.error('Failed to edit record');
     }
@@ -78,7 +78,7 @@ export const useGridActions = ({
     try {
       await onDelete?.(selectedRows);
       toast.success(`Deleted ${selectedRows.length} record(s)`);
-    } catch(error: any) {
+    } catch (error) {
       console.error('Error deleting records:', error);
       toast.error('Failed to delete records');
     }
@@ -89,7 +89,7 @@ export const useGridActions = ({
     try {
       await onSync?.();
       toast.success('Sync completed successfully');
-    } catch(error: any) {
+    } catch (error) {
       console.error('Error syncing data:', error);
       toast.error('Failed to sync data');
     }
@@ -99,12 +99,12 @@ export const useGridActions = ({
   const handleExport = useCallback(async () => {
     try {
       const exportData = selectedRows.length > 0
-        ? data.filter((item: any: any) => selectedRows.includes(item?.id || item?.entity_id))
+        ? data.filter((item) => selectedRows.includes(item?.id || item?.entity_id))
         : data;
 
       await onExport?.(exportData, selectedRows);
       toast.success(`Exported ${exportData.length} record(s)`);
-    } catch(error: any) {
+    } catch (error) {
       console.error('Error exporting data:', error);
       toast.error('Failed to export data');
     }
@@ -122,7 +122,7 @@ export const useGridActions = ({
         toast.info(`Searching in: ${fieldsText}`);
         console.log(`Search "${searchValue}" in fields:`, searchableFields);
       }
-    } catch(error: any) {
+    } catch (error) {
       console.error('Error searching data:', error);
       toast.error('Search failed');
     }

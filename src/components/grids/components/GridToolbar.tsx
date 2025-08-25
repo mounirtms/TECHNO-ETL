@@ -94,11 +94,11 @@ interface GridToolbarProps {
 const GridToolbar: React.FC<GridToolbarProps> = ({
   gridName,
   config = {},
-  customActions: any,
-  contextMenuActions: any,
-  selectedRows: any,
+  customActions
+  contextMenuActions
+  selectedRows
   onRefresh,
-  loading: any,
+  loading
   onSearch,
   onFilter,
   onExport,
@@ -183,27 +183,25 @@ const GridToolbar: React.FC<GridToolbarProps> = ({
     onImport?.();
   }, [onImport]);
 
-  return Boolean(Boolean((
+  return Boolean((
     <Box
-      sx: any,
-        borderColor: 'divider',
+      sx={{
         backgroundColor: 'background.paper'
       }}
     >
       <Toolbar
         variant={density === 'compact' ? 'dense' : 'regular'}
-        sx: any,
-          minHeight: density === 'compact' ? 48 : 64
+        sx={{
         }}
       >
         {/* Title */}
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" component="div" sx={{ display: "flex", flexGrow: 1 }}>
           {translate(finalConfig.title || '') || finalConfig.title || gridName}
           {selectedRows.length > 0 && (
             <Chip
               label={`${selectedRows.length} selected`}
-              size: any,
-              sx={{ ml: 1 }}
+              size="small"
+              sx={{ display: "flex", ml: 1 }}
             />
           )}
         </Typography>
@@ -211,18 +209,18 @@ const GridToolbar: React.FC<GridToolbarProps> = ({
         {/* Search */}
         {finalConfig.showSearch && (
           <TextField
-            size: any,
+            size="small"
             placeholder={translate('common.search') || 'Search...'}
             value={searchValue}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearch(e.target.value)}
-            InputProps: any,
+            InputProps
             }}
-            sx={{ minWidth: 200 }}
+            sx={{ display: "flex", minWidth: 200 }}
           />
         )}
 
         {/* Primary Actions */}
-        <Box sx={{ display: 'flex', gap: 1 }}>
+        <Box sx={{ display: "flex", display: 'flex', gap: 1 }}>
           {/* Refresh */}
           {finalConfig.showRefresh && (
             <Tooltip title={translate('common.refresh') || 'Refresh'}>
@@ -256,7 +254,7 @@ const GridToolbar: React.FC<GridToolbarProps> = ({
           {finalConfig.showAdd && (
             <Tooltip title={translate('common.add') || 'Add'}>
               <Button
-                variant: any,
+                variant="body2"
                 startIcon={<AddIcon />}
                 onClick={handleAdd}
                 size={density === 'compact' ? 'small' : 'medium'}
@@ -285,7 +283,7 @@ const GridToolbar: React.FC<GridToolbarProps> = ({
               <IconButton
                 onClick={handleDelete}
                 disabled={selectedRows.length ===0}
-                color: any,
+                color
                 size={density === 'compact' ? 'small' : 'medium'}
               >
                 <Badge badgeContent={selectedRows.length} color="error">
@@ -316,8 +314,8 @@ const GridToolbar: React.FC<GridToolbarProps> = ({
           >
             {/* Export */}
             {finalConfig.showExport && (
-              <MenuItem onClick={() => { handleExport())); handleMenuClose(); }}>
-                <ExportIcon sx={{ mr: 1 }} />
+              <MenuItem onClick={() => { handleExport())))); handleMenuClose(); }}>
+                <ExportIcon sx={{ display: "flex", mr: 1 }} />
                 {translate('common.export') || 'Export'}
               </MenuItem>
             )}
@@ -325,7 +323,7 @@ const GridToolbar: React.FC<GridToolbarProps> = ({
             {/* Import */}
             {finalConfig.showImport && (
               <MenuItem onClick={() => { handleImport(); handleMenuClose(); }}>
-                <ImportIcon sx={{ mr: 1 }} />
+                <ImportIcon sx={{ display: "flex", mr: 1 }} />
                 {translate('common.import') || 'Import'}
               </MenuItem>
             )}
@@ -333,7 +331,7 @@ const GridToolbar: React.FC<GridToolbarProps> = ({
             {/* Columns */}
             {finalConfig.showColumns && (
               <MenuItem onClick={handleMenuClose}>
-                <ColumnsIcon sx={{ mr: 1 }} />
+                <ColumnsIcon sx={{ display: "flex", mr: 1 }} />
                 {translate('common.columns') || 'Columns'}
               </MenuItem>
             )}
@@ -342,14 +340,14 @@ const GridToolbar: React.FC<GridToolbarProps> = ({
             {customActions.length > 0 && (
               <>
                 <Divider />
-                {customActions.map((action: any: any, index: any: any) => (
+                {customActions.map((action: any index: any: any: any: any) => (
                   <MenuItem
                     key={index}
-                    onClick: any,
+                    onClick
                     }}
                     disabled={action.disabled}
                   >
-                    {action.icon && <Box sx={{ mr: 1 }}>{action.icon}</Box>}
+                    {action.icon && <Box sx={{ display: "flex", mr: 1 }}>{action.icon}</Box>}
                     {action.label}
                   </MenuItem>
                 ))}

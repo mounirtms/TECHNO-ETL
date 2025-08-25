@@ -15,24 +15,24 @@ import {
  * GridToolbarFilters - Filter controls section of the toolbar
  * Handles custom filters, dropdowns, and filter switches
  */
-const GridToolbarFilters: React.FC<{customFilters: any: any, currentCustomFilter: any, onCustomFilterChange: any, succursaleOptions: any: any, currentSuccursale: any, onSuccursaleChange: any, sourceOptions: any: any, currentSource: any, onSourceChange: any, showChangedOnly: any, setShowChangedOnly: any, translate: any}> = ({ customFilters: any,
+const GridToolbarFilters: React.FC<{customFilters: any currentCustomFilter onCustomFilterChange succursaleOptions: any currentSuccursale onSuccursaleChange sourceOptions: any currentSource onSourceChange showChangedOnly setShowChangedOnly translate: any}> = ({ customFilters
   currentCustomFilter,
   onCustomFilterChange,
-  succursaleOptions: any,
+  succursaleOptions
   currentSuccursale,
   onSuccursaleChange,
-  sourceOptions: any,
+  sourceOptions
   currentSource,
   onSourceChange,
   showChangedOnly,
   setShowChangedOnly,
   translate
  }) => {
-  return Boolean(Boolean((
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+  return Boolean((
+    <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
       {/* Custom Filters Dropdown */}
       {customFilters.length > 0 && (
-        <FormControl size="small" sx={{ minWidth: 120 }}>
+        <FormControl size="small" sx={{ display: "flex", minWidth: 120 }}>
           <InputLabel>{translate('filter', 'Filter')}</InputLabel>
           <Select
             value={currentCustomFilter || 'all'}
@@ -40,7 +40,7 @@ const GridToolbarFilters: React.FC<{customFilters: any: any, currentCustomFilter
             label={translate('filter', 'Filter')}
           >
             <MenuItem value="all">{translate('all', 'All')}</MenuItem>
-            {customFilters.map((filter: any: any) => (
+            {customFilters.map((filter: any: any: any: any) => (
               <MenuItem key={filter?.value} value={filter?.value}>
                 {filter?.label}
               </MenuItem>
@@ -51,7 +51,7 @@ const GridToolbarFilters: React.FC<{customFilters: any: any, currentCustomFilter
 
       {/* Succursale (Branch) Filter */}
       {succursaleOptions.length > 0 && (
-        <FormControl size="small" sx={{ minWidth: 120 }}>
+        <FormControl size="small" sx={{ display: "flex", minWidth: 120 }}>
           <InputLabel>{translate('branch', 'Branch')}</InputLabel>
           <Select
             value={currentSuccursale || 'all'}
@@ -59,7 +59,7 @@ const GridToolbarFilters: React.FC<{customFilters: any: any, currentCustomFilter
             label={translate('branch', 'Branch')}
           >
             <MenuItem value="all">{translate('all', 'All')}</MenuItem>
-            {succursaleOptions.map((option: any: any) => (
+            {succursaleOptions.map((option: any: any: any: any) => (
               <MenuItem key={option?.value} value={option?.value}>
                 {option?.label}
               </MenuItem>
@@ -70,7 +70,7 @@ const GridToolbarFilters: React.FC<{customFilters: any: any, currentCustomFilter
 
       {/* Source Filter */}
       {sourceOptions.length > 0 && (
-        <FormControl size="small" sx={{ minWidth: 120 }}>
+        <FormControl size="small" sx={{ display: "flex", minWidth: 120 }}>
           <InputLabel>{translate('source', 'Source')}</InputLabel>
           <Select
             value={currentSource || 'all'}
@@ -78,7 +78,7 @@ const GridToolbarFilters: React.FC<{customFilters: any: any, currentCustomFilter
             label={translate('source', 'Source')}
           >
             <MenuItem value="all">{translate('all', 'All')}</MenuItem>
-            {sourceOptions.map((option: any: any) => (
+            {sourceOptions.map((option: any: any: any: any) => (
               <MenuItem key={option?.value} value={option?.value}>
                 {option?.label}
               </MenuItem>
@@ -89,13 +89,13 @@ const GridToolbarFilters: React.FC<{customFilters: any: any, currentCustomFilter
 
       {/* Show Changed Only Switch */}
       {typeof showChangedOnly !== 'undefined' && setShowChangedOnly && (<FormControlLabel
-          control: any,
+          control
               checked={showChangedOnly}
               onChange={(e) => setShowChangedOnly(e.target.checked)}
-              size: any,
+              size="small"
           }
           label={translate('changedOnly', 'Changed Only')}
-          sx={{ ml: 1 }}
+          sx={{ display: "flex", ml: 1 }}
         />
       )}
 
@@ -103,7 +103,7 @@ const GridToolbarFilters: React.FC<{customFilters: any: any, currentCustomFilter
       {(currentCustomFilter && currentCustomFilter !== 'all') && (
         <Chip
           label={`${translate('filter', 'Filter')}: ${currentCustomFilter}`}
-          size: any,
+          size="small"
           onDelete={() => onCustomFilterChange?.('all')}
         />
       )}
@@ -111,7 +111,7 @@ const GridToolbarFilters: React.FC<{customFilters: any: any, currentCustomFilter
       {(currentSuccursale && currentSuccursale !== 'all') && (
         <Chip
           label={`${translate('branch', 'Branch')}: ${currentSuccursale}`}
-          size: any,
+          size="small"
           onDelete={() => onSuccursaleChange?.('all')}
         />
       )}
@@ -119,7 +119,7 @@ const GridToolbarFilters: React.FC<{customFilters: any: any, currentCustomFilter
       {(currentSource && currentSource !== 'all') && (
         <Chip
           label={`${translate('source', 'Source')}: ${currentSource}`}
-          size: any,
+          size="small"
           onDelete={() => onSourceChange?.('all')}
         />
       )}
@@ -127,12 +127,12 @@ const GridToolbarFilters: React.FC<{customFilters: any: any, currentCustomFilter
       {showChangedOnly && (
         <Chip
           label={translate('changedOnly', 'Changed Only')}
-          size: any,
+          size="small"
           onDelete={() => setShowChangedOnly?.(false)}
         />
       )}
     </Box>
-  )));
+  )))));
 };
 
 export default GridToolbarFilters;

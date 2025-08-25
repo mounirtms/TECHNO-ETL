@@ -20,7 +20,7 @@ declare module 'easy-soap-request' {
   }
 
   function soapRequest(options: SoapRequestOptions): Promise<SoapResponse>;
-  export: any,
+  export
 }
 
 declare module 'xml2js' {

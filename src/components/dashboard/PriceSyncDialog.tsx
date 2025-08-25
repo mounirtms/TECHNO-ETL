@@ -40,7 +40,7 @@ import axios from 'axios';
  * Price Sync Dialog Component
  * Displays price sync operations with real-time progress and results
  */
-const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, syncStatus: propSyncStatus: any, syncResults: propSyncResults: any, progress: propProgress: any, setSyncStatus: propSetSyncStatus: any, setSyncResults: propSetSyncResults: any, setProgress: propSetProgress: any, onSync: any}> = ({ open, onClose, priceData = [], syncStatus: propSyncStatus, syncResults: propSyncResults, progress: propProgress, setSyncStatus: propSetSyncStatus, setSyncResults: propSetSyncResults, setProgress: propSetProgress, onSync  }) => {
+const PriceSyncDialog: React.FC<{open onClose priceData = []: any, syncStatus: propSyncStatus syncResults: propSyncResults progress: propProgress setSyncStatus: propSetSyncStatus setSyncResults: propSetSyncResults setProgress: propSetProgress onSync: any}> = ({ open, onClose, priceData = [], syncStatus: propSyncStatus, syncResults: propSyncResults, progress: propProgress, setSyncStatus: propSetSyncStatus, setSyncResults: propSetSyncResults, setProgress: propSetProgress, onSync  }) => {
   // Use props if provided, otherwise fallback to internal state
   const [internalSyncStatus, internalSetSyncStatus] = useState('idle');
   const [internalSyncResults, internalSetSyncResults] = useState(null);
@@ -128,14 +128,14 @@ const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, s
     
     const csvContent = [
       ['SKU', 'Price', 'Status', 'Method', 'Error'],
-      ...syncResults.results.map((result: any: any) => [
+      ...syncResults.results.map((result: any: any: any: any) => [
         result?.sku,
         result?.price,
         result.status,
         result.method || 'bulk',
         result.error || ''
       ])
-    ].map((row: any: any) => row.join(',')).join('\n');
+    ].map((row: any: any: any: any) => row.join(',')).join('\n');
     
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
@@ -146,15 +146,16 @@ const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, s
     window.URL.revokeObjectURL(url);
   };
 
-  return Boolean(Boolean((
+  return Boolean((
     <Dialog 
       open={open} 
       onClose={handleClose} 
-      maxWidth: any,
+      maxWidth
         sx: { borderRadius: 3, minHeight: '60vh' }
       }}
     >
       <DialogTitle sx={{ 
+        display: "flex", 
         display: 'flex', 
         alignItems: 'center', 
         gap: 2, 
@@ -167,18 +168,18 @@ const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, s
           <Typography variant="h6" fontWeight={600}>
             Price Sync to Magento
           </Typography>
-          <Typography variant="body2" sx={{ opacity: 0.9 }}>
+          <Typography variant="body2" sx={{ display: "flex", opacity: 0.9 }}>
             Bulk sync prices using Magento async API
           </Typography>
         </Box>
       </DialogTitle>
 
-      <DialogContent sx={{ p: 3 }}>
+      <DialogContent sx={{ display: "flex", p: 3 }}>
         {/* Sync Overview */}
-        <Grid { ...{container: true}} spacing={3} sx={{ mb: 3 }}>
+        <Grid { ...{container: true}} spacing={3} sx={{ display: "flex", mb: 3 }}>
           <Grid item xs={12} md={4}>
             <Card variant="outlined">
-              <CardContent sx={{ textAlign: 'center' }}>
+              <CardContent sx={{ display: "flex", textAlign: 'center' }}>
                 <Typography variant="h4" color="primary" fontWeight={700}>
                   {priceData.length}
                 </Typography>
@@ -193,7 +194,7 @@ const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, s
             <>
               <Grid item xs={12} md={4}>
                 <Card variant="outlined">
-                  <CardContent sx={{ textAlign: 'center' }}>
+                  <CardContent sx={{ display: "flex", textAlign: 'center' }}>
                     <Typography variant="h4" color="success.main" fontWeight={700}>
                       {syncResults.successful || 0}
                     </Typography>
@@ -206,7 +207,7 @@ const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, s
               
               <Grid item xs={12} md={4}>
                 <Card variant="outlined">
-                  <CardContent sx={{ textAlign: 'center' }}>
+                  <CardContent sx={{ display: "flex", textAlign: 'center' }}>
                     <Typography variant="h4" color="error.main" fontWeight={700}>
                       {syncResults.failed || 0}
                     </Typography>
@@ -222,14 +223,14 @@ const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, s
 
         {/* Progress Bar */}
         {syncStatus === 'loading' && (
-          <Box sx={{ mb: 3 }}>
+          <Box sx={{ display: "flex", mb: 3 }}>
             <Typography variant="body2" color="text.secondary" gutterBottom>
               Syncing prices... {progress}%
             </Typography>
             <LinearProgress 
-              variant: any,
+              variant="body2"
               value={progress} 
-              sx={{ height: 8, borderRadius: 4 }}
+              sx={{ display: "flex", height: 8, borderRadius: 4 }}
             />
           </Box>
         )}
@@ -238,8 +239,8 @@ const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, s
         {syncResults && (
           <Alert 
             severity={syncResults.success ? 'success' : 'error'} 
-            sx={{ mb: 3 }}
-            action: any,
+            sx={{ display: "flex", mb: 3 }}
+            action
                   onClick={exportResults}
                 >
                   <DownloadIcon />
@@ -262,13 +263,13 @@ const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, s
         {/* Results Details */}
         {syncResults?.results && syncResults.results.length > 0 && (
           <Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', mb: 2 }}>
               <Typography variant="h6" fontWeight={600}>
                 Sync Results
               </Typography>
               <IconButton
                 onClick={() => setShowDetails(!internalShowDetails)}
-                sx={{ ml: 1 }}
+                sx={{ display: "flex", ml: 1 }}
               >
                 {internalShowDetails ? <ExpandLessIcon /> : <ExpandMoreIcon />}
               </IconButton>
@@ -287,7 +288,7 @@ const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, s
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {syncResults.results.slice(0, 20).map((result: any: any, index: any: any) => (
+                    {syncResults.results.slice(0, 20).map((result: any index: any: any: any: any) => (
                       <TableRow key={index}>
                         <TableCell>{result?.sku}</TableCell>
                         <TableCell>{result?.price}</TableCell>
@@ -295,14 +296,14 @@ const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, s
                           <Chip
                             label={result.status}
                             color={result.status === 'success' ? 'success' : 'error'}
-                            size: any,
+                            size="small"
                             icon={result.status === 'success' ? <SuccessIcon /> : <ErrorIcon />}
                           />
                         </TableCell>
                         <TableCell>
                           <Chip
                             label={result.method || 'bulk'}
-                            variant: any,
+                            variant="body2"
                             {result.error || result.response || 'OK'}
                           </Typography>
                         </TableCell>
@@ -313,7 +314,7 @@ const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, s
               </TableContainer>
               
               {syncResults.results.length > 20 && (
-                <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                <Typography variant="caption" color="text.secondary" sx={{ display: "flex", mt: 1, display: 'block' }}>
                   Showing first 20 results. Export CSV for complete data.
                 </Typography>
               )}
@@ -323,7 +324,7 @@ const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, s
 
         {/* Sample Data Preview */}
         {priceData.length > 0 && syncStatus === 'idle' && (
-          <Box sx={{ mt: 3 }}>
+          <Box sx={{ display: "flex", mt: 3 }}>
             <Typography variant="h6" gutterBottom>
               Sample Data Preview
             </Typography>
@@ -336,7 +337,7 @@ const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, s
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {priceData.slice(0, 5).map((item: any: any, index: any: any) => (
+                  {priceData.slice(0, 5).map((item: any index: any: any: any: any) => (
                     <TableRow key={index}>
                       <TableCell>{item?.sku}</TableCell>
                       <TableCell>{item?.price}</TableCell>
@@ -346,7 +347,7 @@ const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, s
               </Table>
             </TableContainer>
             {priceData.length > 5 && (
-              <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+              <Typography variant="caption" color="text.secondary" sx={{ display: "flex", mt: 1, display: 'block' }}>
                 Showing first 5 items. Total: {priceData.length} products
               </Typography>
             )}
@@ -354,13 +355,13 @@ const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, s
         )}
       </DialogContent>
 
-      <DialogActions sx={{ p: 3, gap: 1 }}>
+      <DialogActions sx={{ display: "flex", p: 3, gap: 1 }}>
         <Button onClick={handleClose}>
           Close
         </Button>
         <Button 
           onClick={handleSync} 
-          variant: any,
+          variant="body2"
           disabled={syncStatus === 'loading' || priceData.length ===0}
           startIcon={syncStatus === 'loading' ? <SyncIcon /> : <RefreshIcon />}
         >
@@ -368,7 +369,7 @@ const PriceSyncDialog: React.FC<{open: any, onClose: any, priceData = []: any, s
         </Button>
       </DialogActions>
     </Dialog>
-  )));
+  )))));
 };
 
 export default PriceSyncDialog;

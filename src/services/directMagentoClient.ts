@@ -131,7 +131,7 @@ class DirectMagentoClient {
                 data: response.data,
                 message: 'Direct connection to Magento successful'
             };
-        } catch(error: any) {
+        } catch (error) {
             console.error('❌ Direct Magento connection failed:', error);
             throw new Error(`Connection test failed: ${error.message}`);
         }
@@ -142,13 +142,13 @@ class DirectMagentoClient {
      * @param {string} endpoint - API endpoint
      * @param {Object} params - Query parameters
      */
-    async get(endpoint, params: any = {}) {
+    async get(endpoint, params = {}) {
         this.checkInitialization();
         
         try {
             const response = await this.instance.get(endpoint, { params });
             return response.data;
-        } catch(error: any) {
+        } catch (error) {
             console.error(`Direct Magento GET error (${endpoint}):`, error);
             throw error;
         }
@@ -159,13 +159,13 @@ class DirectMagentoClient {
      * @param {string} endpoint - API endpoint
      * @param {Object} data - Request body
      */
-    async post(endpoint, data: any = {}) {
+    async post(endpoint, data = {}) {
         this.checkInitialization();
         
         try {
             const response = await this.instance.post(endpoint, data);
             return response.data;
-        } catch(error: any) {
+        } catch (error) {
             console.error(`Direct Magento POST error (${endpoint}):`, error);
             throw error;
         }
@@ -176,13 +176,13 @@ class DirectMagentoClient {
      * @param {string} endpoint - API endpoint
      * @param {Object} data - Request body
      */
-    async put(endpoint, data: any = {}) {
+    async put(endpoint, data = {}) {
         this.checkInitialization();
         
         try {
             const response = await this.instance.put(endpoint, data);
             return response.data;
-        } catch(error: any) {
+        } catch (error) {
             console.error(`Direct Magento PUT error (${endpoint}):`, error);
             throw error;
         }
@@ -192,13 +192,13 @@ class DirectMagentoClient {
      * Generic DELETE request
      * @param {string} endpoint - API endpoint
      */
-    async delete(endpoint: any) {
+    async delete(endpoint) {
         this.checkInitialization();
         
         try {
             const response = await this.instance.delete(endpoint);
             return response.data;
-        } catch(error: any) {
+        } catch (error) {
             console.error(`Direct Magento DELETE error (${endpoint}):`, error);
             throw error;
         }
@@ -208,7 +208,7 @@ class DirectMagentoClient {
      * Get products with search criteria
      * @param {Object} searchCriteria - Magento search criteria
      */
-    async getProducts(searchCriteria: any = {}) {
+    async getProducts(searchCriteria = {}) {
         const params = this.buildSearchCriteriaParams(searchCriteria);
         return await this.get('/products', params);
     }
@@ -217,7 +217,7 @@ class DirectMagentoClient {
      * Get single product by SKU
      * @param {string} sku - Product SKU
      */
-    async getProduct(sku: any) {
+    async getProduct(sku) {
         return await this.get(`/products/${encodeURIComponent(sku)}`);
     }
 
@@ -225,7 +225,7 @@ class DirectMagentoClient {
      * Create a new product
      * @param {Object} productData - Product data
      */
-    async createProduct(productData: any) {
+    async createProduct(productData) {
         return await this.post('/products', { product: productData });
     }
 
@@ -234,7 +234,7 @@ class DirectMagentoClient {
      * @param {string} sku - Product SKU
      * @param {Object} productData - Updated product data
      */
-    async updateProduct(sku, productData: any) {
+    async updateProduct(sku, productData) {
         return await this.put(`/products/${encodeURIComponent(sku)}`, { product: productData });
     }
 
@@ -242,7 +242,7 @@ class DirectMagentoClient {
      * Delete product
      * @param {string} sku - Product SKU
      */
-    async deleteProduct(sku: any) {
+    async deleteProduct(sku) {
         return await this.delete(`/products/${encodeURIComponent(sku)}`);
     }
 
@@ -250,7 +250,7 @@ class DirectMagentoClient {
      * Get categories
      * @param {Object} searchCriteria - Search criteria
      */
-    async getCategories(searchCriteria: any = {}) {
+    async getCategories(searchCriteria = {}) {
         const params = this.buildSearchCriteriaParams(searchCriteria);
         return await this.get('/categories/list', params);
     }
@@ -259,7 +259,7 @@ class DirectMagentoClient {
      * Get orders
      * @param {Object} searchCriteria - Search criteria
      */
-    async getOrders(searchCriteria: any = {}) {
+    async getOrders(searchCriteria = {}) {
         const params = this.buildSearchCriteriaParams(searchCriteria);
         return await this.get('/orders', params);
     }
@@ -268,7 +268,7 @@ class DirectMagentoClient {
      * Get customers
      * @param {Object} searchCriteria - Search criteria
      */
-    async getCustomers(searchCriteria: any = {}) {
+    async getCustomers(searchCriteria = {}) {
         const params = this.buildSearchCriteriaParams(searchCriteria);
         return await this.get('/customers/search', params);
     }
@@ -291,7 +291,7 @@ class DirectMagentoClient {
      * Get source items (inventory)
      * @param {Object} searchCriteria - Search criteria
      */
-    async getSourceItems(searchCriteria: any = {}) {
+    async getSourceItems(searchCriteria = {}) {
         const params = this.buildSearchCriteriaParams(searchCriteria);
         return await this.get('/inventory/source-items', params);
     }
@@ -301,7 +301,7 @@ class DirectMagentoClient {
      * @param {Object} criteria - Search criteria object
      * @returns {Object} Formatted parameters
      */
-    buildSearchCriteriaParams(criteria: any) {
+    buildSearchCriteriaParams(criteria) {
         const params = {};
         
         // Handle pagination
@@ -341,7 +341,7 @@ class DirectMagentoClient {
      * @param {string} username - Admin username  
      * @param {string} password - Admin password
      */
-    async login(username, password: any) {
+    async login(username, password) {
         if(!this.baseURL) {
             throw new Error('Magento URL not configured');
         }
@@ -369,7 +369,7 @@ class DirectMagentoClient {
             toast.success('Successfully connected to Magento directly!');
             
             return token;
-        } catch(error: any) {
+        } catch (error) {
             console.error('❌ Direct Magento login failed:', error);
             if(error.response?.status ===401) {
                 throw new Error('Invalid username or password');

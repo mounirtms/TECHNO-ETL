@@ -148,7 +148,7 @@ const BugBountyDashboard = () => {
 
   // Memoized calculations for performance
   const totalRewards = useMemo(() => {
-    return bugs.reduce((total: number: any: any, bug: Bug: any: any) => {
+    return bugs.reduce((total: number: any bug: Bug: any: any: any: any) => {
       return total + (bug.reward?.final || bug.reward?.calculated || 0);
     }, 0);
   }, [bugs]);
@@ -251,27 +251,27 @@ const BugBountyDashboard = () => {
 
   // Enhanced loading skeleton
   const LoadingSkeleton = () => (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Box sx={{ mb: 4 }}>
+    <Container maxWidth="lg" sx={{ display: "flex", mt: 4, mb: 4 }}>
+      <Box sx={{ display: "flex", mb: 4 }}>
         <Skeleton variant="text" width="60%" height={60} />
         <Skeleton variant="text" width="40%" height={30} />
         <Skeleton
-          variant: any,
+          variant="body2"
           height={60}
-          sx={{ mt: 2 }}
+          sx={{ display: "flex", mt: 2 }}
         />
       </Box>
 
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        {[1, 2, 3, 4].map((item: any: any) => (
+      <Grid container spacing={3} sx={{ display: "flex", mb: 4 }}>
+        {[1, 2, 3, 4].map((item: any: any: any: any) => (
           <Grid xs={12} sm={6} md={3} key={item}>
             <Card>
               <CardContent>
                 <Skeleton variant="circular" width={40} height={40} />
                 <Skeleton
-                  variant: any,
+                  variant="body2"
                   height={40}
-                  sx={{ mt: 1 }}
+                  sx={{ display: "flex", mt: 1 }}
                 />
                 <Skeleton variant="text" width="60%" height={20} />
               </CardContent>
@@ -286,9 +286,9 @@ const BugBountyDashboard = () => {
             <CardContent>
               <Skeleton variant="text" width="30%" height={30} />
               <Skeleton
-                variant: any,
+                variant="body2"
                 height={300}
-                sx={{ mt: 2 }}
+                sx={{ display: "flex", mt: 2 }}
               />
             </CardContent>
           </Card>
@@ -298,9 +298,9 @@ const BugBountyDashboard = () => {
             <CardContent>
               <Skeleton variant="text" width="40%" height={30} />
               <Skeleton
-                variant: any,
+                variant="body2"
                 height={200}
-                sx={{ mt: 2 }}
+                sx={{ display: "flex", mt: 2 }}
               />
             </CardContent>
           </Card>
@@ -313,13 +313,12 @@ const BugBountyDashboard = () => {
     return <LoadingSkeleton />;
   }
 
-  return Boolean(Boolean((
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+  return Boolean((
+    <Container maxWidth="lg" sx={{ display: "flex", mt: 4, mb: 4 }}>
       {/* Enhanced Header */}
-      <Box sx={{ mb: 4 }}>
+      <Box sx={{ display: "flex", mb: 4 }}>
         <Box
-          sx: any,
-            justifyContent: "space-between",
+          sx={{
             alignItems: "flex-start",
             flexWrap: "wrap",
             gap: 2,
@@ -327,7 +326,7 @@ const BugBountyDashboard = () => {
         >
           <Box>
             <Typography
-              variant: any,
+              variant="body2"
                 background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
                 backgroundClip: "text",
                 WebkitBackgroundClip: "text",
@@ -342,12 +341,12 @@ const BugBountyDashboard = () => {
             </Typography>
           </Box>
 
-          <Box sx={{ display: "flex", gap: 1 }}>
+          <Box sx={{ display: "flex", display: "flex", gap: 1 }}>
             <Tooltip title="Refresh Data">
               <IconButton
                 onClick={handleRefresh}
                 disabled={refreshing}
-                color: any,
+                color
                   "@keyframes spin": {
                     "0%": { transform: "rotate(0deg)" },
                     "100%": { transform: "rotate(360deg)" },
@@ -359,10 +358,10 @@ const BugBountyDashboard = () => {
             </Tooltip>
 
             <Button
-              variant: any,
+              variant="body2"
               startIcon={<AdminIcon />}
               onClick={() => setAdminPanelOpen(true)}
-              sx={{ minWidth: "auto" }}
+              sx={{ display: "flex", minWidth: "auto" }}
             >
               Admin
             </Button>
@@ -370,7 +369,7 @@ const BugBountyDashboard = () => {
         </Box>
 
         <Alert
-          severity: any,
+          severity
             background: `linear-gradient(135deg, ${theme.palette.info.light}15, ${theme.palette.info.main}10)`,
             border: `1px solid ${theme.palette.info.main}30`,
           }}
@@ -382,7 +381,7 @@ const BugBountyDashboard = () => {
               information, and earn rewards based on severity and quality. All
               reports are reviewed by our team.
             </Typography>
-            <Typography variant="body2" component="div" sx={{ mt: 1 }}>
+            <Typography variant="body2" component="div" sx={{ display: "flex", mt: 1 }}>
               <strong>💰 Rewards range from $25 to $3,375</strong> based on
               category, severity, and quality!
             </Typography>
@@ -392,9 +391,9 @@ const BugBountyDashboard = () => {
         {/* Error Display */}
         {error && (
           <Alert
-            severity: any,
-            sx={{ mt: 2 }}
-            action: any,
+            severity
+            sx={{ display: "flex", mt: 2 }}
+            action
                 <Button color="inherit" size="small" onClick={retry}>
                   Retry
                 </Button>
@@ -408,7 +407,7 @@ const BugBountyDashboard = () => {
       </Box>
 
       {/* Enhanced Stats Cards */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
+      <Grid container spacing={3} sx={{ display: "flex", mb: 4 }}>
         {[
           {
             title: "Total Bugs Reported",
@@ -438,12 +437,11 @@ const BugBountyDashboard = () => {
             color: theme.palette.info.main,
             gradient: `linear-gradient(135deg, ${theme.palette.info.main}, ${theme.palette.info.dark})`,
           },
-        ].map((stat: any: any, index: any: any) => (
+        ].map((stat: any index: any: any: any: any) => (
           <Grid xs={12} sm={6} md={3} key={stat.title}>
             <Zoom in={!loading} style={{ transitionDelay: `${index * 100}ms` }}>
               <Card
-                sx: any,
-                  color: "white",
+                sx={{
                   position: "relative",
                   overflow: "hidden",
                   cursor: "pointer",
@@ -467,15 +465,14 @@ const BugBountyDashboard = () => {
               >
                 <CardContent>
                   <Box
-                    sx: any,
-                      alignItems: "center",
+                    sx={{
                       gap: 2,
                       position: "relative",
                       zIndex: 1,
                     }}
                   >
                     <Avatar
-                      sx: any,
+                      sx={{
                         bgcolor: "rgba(255,255,255,0.2)",
                         color: "white",
                         width: 56,
@@ -486,14 +483,14 @@ const BugBountyDashboard = () => {
                     </Avatar>
                     <Box>
                       <Typography
-                        variant: any,
-                        sx={{ fontWeight: "bold", color: "white" }}
+                        variant="body2"
+                        sx={{ display: "flex", fontWeight: "bold", color: "white" }}
                       >
                         {stat.value}
                       </Typography>
                       <Typography
-                        variant: any,
-                        sx={{ color: "rgba(255,255,255,0.9)" }}
+                        variant="body2"
+                        sx={{ display: "flex", color: "rgba(255,255,255,0.9)" }}
                       >
                         {stat.title}
                       </Typography>
@@ -508,32 +505,31 @@ const BugBountyDashboard = () => {
 
       {/* Enhanced Reward Categories */}
       <Card
-        sx: any,
+        sx={{
           background: `linear-gradient(135deg, ${theme.palette.background.paper}, ${theme.palette.grey[50]})`,
           border: `1px solid ${theme.palette.divider}`,
         }}
       >
         <CardContent>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
-            <Avatar sx={{ bgcolor: theme.palette.warning.main }}>
+          <Box sx={{ display: "flex", display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
+            <Avatar sx={{ display: "flex", bgcolor: theme.palette.warning.main }}>
               <MoneyIcon />
             </Avatar>
-            <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+            <Typography variant="h5" sx={{ display: "flex", fontWeight: "bold" }}>
               💰 Reward Categories
             </Typography>
           </Box>
 
           <Grid container spacing={3}>
-            {Object.entries(BUG_CATEGORIES as Record<string, any>).map(([key: any: any, category], index: any: any) => (
+            {Object.entries(BUG_CATEGORIES as Record<string, any>).map(([key: any category]: any = {}; // Fixed invalid assignment index: any: any: any: any) => (
               <Grid xs={12} sm={6} md={4} key={key}>
                 <Slide
                   in={!loading}
-                  direction: any,
+                  direction
                   style={{ transitionDelay: `${index * 150}ms` }}
                 >
                   <Card
-                    variant: any,
-                      transition: "all 0.3s ease-in-out",
+                    variant="body2"
                       cursor: "pointer",
                       "&:hover": {
                         transform: "translateY(-2px)",
@@ -544,41 +540,38 @@ const BugBountyDashboard = () => {
                   >
                     <CardContent>
                       <Box
-                        sx: any,
-                          alignItems: "center",
+                        sx={{
                           gap: 1,
                           mb: 2,
                         }}
                       >
                         <Chip
                           label={category.name}
-                          sx: any,
-                            color: "white",
+                          sx={{
                             fontWeight: "bold",
                           }}
                         />
                         <Badge
                           badgeContent={`${category.multiplier}x`}
-                          color: any,
-                          sx={{ ml: "auto" }}
+                          color
+                          sx={{ display: "flex", ml: "auto" }}
                         >
                           <Typography
-                            variant: any,
-                            sx={{ fontWeight: "bold" }}
+                            variant="body2"
+                            sx={{ display: "flex", fontWeight: "bold" }}
                           >
                             {formatCurrency(category.baseReward)}
                           </Typography>
                         </Badge>
                       </Box>
                       <Typography
-                        variant: any,
-                        sx={{ lineHeight: 1.6 }}
+                        variant="body2"
+                        sx={{ display: "flex", lineHeight: 1.6 }}
                       >
                         {category.description}
                       </Typography>
                       <Box
-                        sx: any,
-                          pt: 2,
+                        sx={{
                           borderTop: `1px solid ${theme.palette.divider}`,
                         }}
                       >
@@ -604,17 +597,16 @@ const BugBountyDashboard = () => {
           <Card>
             <CardContent>
               <Box
-                sx: any,
-                  justifyContent: "space-between",
+                sx={{
                   alignItems: "center",
                   mb: 3,
                 }}
               >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                  <Avatar sx={{ bgcolor: theme.palette.info.main }}>
+                <Box sx={{ display: "flex", display: "flex", alignItems: "center", gap: 2 }}>
+                  <Avatar sx={{ display: "flex", bgcolor: theme.palette.info.main }}>
                     <TimelineIcon />
                   </Avatar>
-                  <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                  <Typography variant="h5" sx={{ display: "flex", fontWeight: "bold" }}>
                     Recent Bug Reports
                   </Typography>
                   {refreshing && <CircularProgress size={20} />}
@@ -622,32 +614,31 @@ const BugBountyDashboard = () => {
                 <Button
                   startIcon={<VisibilityIcon />}
                   onClick={() => setLeaderboardOpen(true)}
-                  variant: any,
+                  variant="body2"
                 component={Paper}
-                sx: any,
-                  overflow: "hidden",
+                sx={{
                   border: `1px solid ${theme.palette.divider}`,
                 }}
               >
                 <Table>
                   <TableHead>
-                    <TableRow sx={{ backgroundColor: theme.palette.grey[50] }}>
-                      <TableCell sx={{ fontWeight: "bold" }}>Title</TableCell>
-                      <TableCell sx={{ fontWeight: "bold" }}>
+                    <TableRow sx={{ display: "flex", backgroundColor: theme.palette.grey[50] }}>
+                      <TableCell sx={{ display: "flex", fontWeight: "bold" }}>Title</TableCell>
+                      <TableCell sx={{ display: "flex", fontWeight: "bold" }}>
                         Category
                       </TableCell>
-                      <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
-                      <TableCell sx={{ fontWeight: "bold" }}>Reward</TableCell>
-                      <TableCell sx={{ fontWeight: "bold" }}>
+                      <TableCell sx={{ display: "flex", fontWeight: "bold" }}>Status</TableCell>
+                      <TableCell sx={{ display: "flex", fontWeight: "bold" }}>Reward</TableCell>
+                      <TableCell sx={{ display: "flex", fontWeight: "bold" }}>
                         Submitted
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {recentBugs.map((bug: Bug: any: any, index: number: any: any) => (
+                    {recentBugs.map((bug: Bug: any index: number: any: any: any: any) => (
                       <TableRow
                         key={bug.id}
-                        sx: any,
+                        sx={{
                           },
                           "&:nth-of-type(odd)": {
                             backgroundColor: theme.palette.action.hover + "20",
@@ -656,15 +647,14 @@ const BugBountyDashboard = () => {
                       >
                         <TableCell>
                           <Box
-                            sx: any,
-                              alignItems: "center",
+                            sx={{
                               gap: 1,
                             }}
                           >
                             {getStatusIcon(bug.status)}
                             <Typography
-                              variant: any,
-                              sx={{ maxWidth: 200 }}
+                              variant="body2"
+                              sx={{ display: "flex", maxWidth: 200 }}
                             >
                               {bug.title}
                             </Typography>
@@ -672,10 +662,10 @@ const BugBountyDashboard = () => {
                         </TableCell>
                         <TableCell>
                           <Chip
-                            size: any,
+                            size="small"
                               (BUG_CATEGORIES as Record<string, any>)[bug.category]?.name || bug.category
                             }
-                            sx: any,
+                            sx={{
                                 (BUG_CATEGORIES as Record<string, any>)[bug.category]?.color,
                               color: "white",
                               fontWeight: "bold",
@@ -684,11 +674,10 @@ const BugBountyDashboard = () => {
                         </TableCell>
                         <TableCell>
                           <Chip
-                            size: any,
+                            size="small"
                             label={bug.status.replace("_", " ").toUpperCase()}
                             color={getStatusColor(bug.status)}
-                            variant: any,
-                              color: theme.palette.success.main,
+                            variant="body2"
                             }}
                           >
                             {formatCurrency(
@@ -705,7 +694,7 @@ const BugBountyDashboard = () => {
                     ))}
                     {recentBugs.length ===0 && (
                       <TableRow>
-                        <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
+                        <TableCell colSpan={5} align="center" sx={{ display: "flex", py: 4 }}>
                           <Typography variant="body2" color="text.secondary">
                             No bug reports yet. Be the first to submit one!
                           </Typography>
@@ -720,32 +709,31 @@ const BugBountyDashboard = () => {
         </Grid>
 
         <Grid xs={12} md={4}>
-          <Card sx={{ height: "fit-content" }}>
+          <Card sx={{ display: "flex", height: "fit-content" }}>
             <CardContent>
               <Box
-                sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}
+                sx={{ display: "flex", display: "flex", alignItems: "center", gap: 2, mb: 3 }}
               >
-                <Avatar sx={{ bgcolor: theme.palette.warning.main }}>
+                <Avatar sx={{ display: "flex", bgcolor: theme.palette.warning.main }}>
                   <TrophyIcon />
                 </Avatar>
-                <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                <Typography variant="h5" sx={{ display: "flex", fontWeight: "bold" }}>
                   🏆 Top Testers
                 </Typography>
               </Box>
 
-              <List sx={{ p: 0 }}>
-                {topTesters.map((tester: Tester: any: any, index: number: any: any) => {
+              <List sx={{ display: "flex", p: 0 }}>
+                {topTesters.map((tester: Tester: any index: number: any: any: any: any) => {
                   const rankColors: { [key: number]: string } = {
                     0: theme.palette.warning.main, // Gold
                     1: theme.palette.grey[400], // Silver
                     2: "#CD7F32", // Bronze
-                  }));
+                  }))));
 
                   return (
                     <React.Fragment key={tester.id}>
                       <ListItem
-                        sx: any,
-                          mb: 1,
+                        sx={{
                           backgroundColor:
                             index < 3
                               ? `${rankColors[index]}10`
@@ -758,30 +746,26 @@ const BugBountyDashboard = () => {
                       >
                         <ListItemAvatar>
                           <Avatar
-                            sx: any,
-                              fontWeight: "bold",
+                            sx={{
                             }}
                           >
                             {index < 3 ? ["🥇", "🥈", "🥉"][index] : index + 1}
                           </Avatar>
                         </ListItemAvatar>
                         <ListItemText
-                          primary: any,
-                              sx={{ fontWeight: index < 3 ? "bold" : "normal" }}
+                          primary
+                              sx={{ display: "flex", fontWeight: index < 3 ? "bold" : "normal" }}
                             >
                               {tester.name || `Tester ${tester.id.slice(-6)}`}
                             </Typography>
                           }
-                          secondary: any,
+                          secondary
                                 {tester.totalConfirmed} confirmed bugs
                               </Typography>
                               <Chip
-                                size: any,
+                                size="small"
                                 label={tester.rank}
-                                sx: any,
-                                  backgroundColor:
-                                    rankColors[index] ||
-                                    theme.palette.primary.main,
+                                sx={{
                                   color: "white",
                                   fontSize: "0.7rem",
                                 }}
@@ -792,13 +776,13 @@ const BugBountyDashboard = () => {
                       </ListItem>
 
                       {index < topTesters.length - 1 && (
-                        <Divider key={`divider-${tester.id}`} sx={{ my: 1 }} />
+                        <Divider key={`divider-${tester.id}`} sx={{ display: "flex", my: 1 }} />
                       )}
                     </React.Fragment>
                   );
                 })}
                 {topTesters.length ===0 && (
-                  <Box sx={{ textAlign: "center", py: 4 }}>
+                  <Box sx={{ display: "flex", textAlign: "center", py: 4 }}>
                     <Typography variant="body2" color="text.secondary">
                       No testers yet. Be the first!
                     </Typography>
@@ -810,7 +794,7 @@ const BugBountyDashboard = () => {
             <CardActions>
               <Button
                 fullWidth
-                variant: any,
+                variant="body2"
                 onClick={() => setLeaderboardOpen(true)}
                 startIcon={<VisibilityIcon />}
               >
@@ -825,7 +809,7 @@ const BugBountyDashboard = () => {
       <Tooltip title="Report a Bug" placement="left">
         <Zoom in={!loading}>
           <Fab
-            color: any,
+            color
               bottom: 24,
               right: 24,
               background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
@@ -838,7 +822,7 @@ const BugBountyDashboard = () => {
             }}
             onClick={() => setReportFormOpen(true)}
           >
-            <AddIcon sx={{ fontSize: 28 }} />
+            <AddIcon sx={{ display: "flex", fontSize: 28 }} />
           </Fab>
         </Zoom>
       </Tooltip>
@@ -855,11 +839,12 @@ const BugBountyDashboard = () => {
         <DialogTitle>🏆 Bug Bounty Leaderboard</DialogTitle>
         <DialogContent>
           <List>
-            {leaderboard.map((tester: Tester: any: any, index: number: any: any) => (
+            {leaderboard.map((tester: Tester: any index: number: any: any: any: any) => (
               <React.Fragment key={tester.id}>
                 <ListItem key={`listitem-${tester.id}`}>
                   <ListItemAvatar>
                     <Avatar sx={{ 
+                      display: "flex", 
                       bgcolor: index < 3 ? theme.palette.warning.main : theme.palette.primary.main 
                     }}>
                       {index + 1}
@@ -867,7 +852,7 @@ const BugBountyDashboard = () => {
                   </ListItemAvatar>
                   <ListItemText
                     primary={tester.name || `Tester ${tester.id.slice(-6)}`}
-                    secondary: any,
+                    secondary
                           {tester.totalConfirmed} confirmed bugs • {tester.rank} rank
                         </Typography>
                         <Typography variant="body2" color="text.secondary">

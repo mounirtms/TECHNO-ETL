@@ -277,7 +277,7 @@ export const initializeFirebaseDefaults = async () => {
 
         console.log('Firebase defaults initialized successfully');
         return true;
-    } catch(error: any) {
+    } catch (error) {
         console.error('Error initializing Firebase defaults:', error);
         return false;
     }
@@ -286,7 +286,7 @@ export const initializeFirebaseDefaults = async () => {
 /**
  * Create default user license
  */
-export const createDefaultUserLicense = (userId, licenseType = 'FREE') => {
+export const createDefaultUserLicense = (userId: string, licenseType: keyof typeof LICENSE_TYPES = 'FREE') => {
     const license = LICENSE_TYPES[licenseType];
     const expiryDate = license.duration 
         ? new Date(Date.now() + license.duration * 24 * 60 * 60 * 1000).toISOString()
@@ -302,8 +302,8 @@ export const createDefaultUserLicense = (userId, licenseType = 'FREE') => {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         // Default permissions for licensed programs
-        programPermissions: Object.keys(DEFAULT_LICENSED_PROGRAMS).reduce((acc: any: any: any, programId: any: any) => {
-            const program = DEFAULT_LICENSED_PROGRAMS[programId];
+        programPermissions: Object.keys(DEFAULT_LICENSED_PROGRAMS).reduce((acc, programId) => {
+            const program = DEFAULT_LICENSED_PROGRAMS[programId as keyof typeof DEFAULT_LICENSED_PROGRAMS];
             acc[programId] = {
                 enabled: license.features.includes(programId) || program.defaultEnabled,
                 permissions: { ...program.permissions }
@@ -324,7 +324,7 @@ export const createDefaultUserLicense = (userId, licenseType = 'FREE') => {
 /**
  * Get user role permissions
  */
-export const getRolePermissions = (role) => {
+export const getRolePermissions = (role: string) => {
     const roleLevel = ROLE_HIERARCHY[role] || 0;
     
     return {

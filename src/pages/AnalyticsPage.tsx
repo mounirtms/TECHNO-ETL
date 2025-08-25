@@ -82,7 +82,7 @@ const LOOKER_DASHBOARDS = {
 /**
  * LookerStudioEmbed Component
  */
-const LookerStudioEmbed: React.FC<{dashboard: any, isFullscreen: any, onLoad: any, onError: any}> = ({ dashboard, isFullscreen, onLoad, onError  }) => {
+const LookerStudioEmbed: React.FC<{dashboard isFullscreen onLoad onError: any}> = ({ dashboard, isFullscreen, onLoad, onError  }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -98,10 +98,9 @@ const LookerStudioEmbed: React.FC<{dashboard: any, isFullscreen: any, onLoad: an
     onError?.();
   };
 
-  return Boolean(Boolean((
+  return Boolean((
     <Box
-      sx: any,
-        width: '100%',
+      sx={{
         height: isFullscreen ? '100vh' : dashboard.defaultSize.height,
         border: '1px solid',
         borderColor: 'divider',
@@ -112,8 +111,7 @@ const LookerStudioEmbed: React.FC<{dashboard: any, isFullscreen: any, onLoad: an
     >
       {loading && (
         <Box
-          sx: any,
-            top: 0,
+          sx={{
             left: 0,
             right: 0,
             bottom: 0,
@@ -135,8 +133,7 @@ const LookerStudioEmbed: React.FC<{dashboard: any, isFullscreen: any, onLoad: an
 
       {error && (
         <Box
-          sx: any,
-            top: 0,
+          sx={{
             left: 0,
             right: 0,
             bottom: 0,
@@ -147,14 +144,14 @@ const LookerStudioEmbed: React.FC<{dashboard: any, isFullscreen: any, onLoad: an
             zIndex: 1
           }}
         >
-          <Alert severity="error" sx={{ maxWidth: 400 }}>
+          <Alert severity="error" sx={{ display: "flex", maxWidth: 400 }}>
             <Typography variant="h6">Dashboard Load Error</Typography>
             <Typography variant="body2">{error}</Typography>
             <Button
-              variant: any,
+              variant="body2"
               startIcon={<Refresh />}
               onClick={() => window.location.reload()}
-              sx={{ mt: 1 }}
+              sx={{ display: "flex", mt: 1 }}
             >
               Retry
             </Button>
@@ -164,16 +161,16 @@ const LookerStudioEmbed: React.FC<{dashboard: any, isFullscreen: any, onLoad: an
 
       <iframe
         src={dashboard.url}
-        width: any,
+        width
         style={{ border: 0 }}
         allowFullScreen
-        sandbox: any,
+        sandbox
         onLoad={handleLoad}
         onError={handleError}
         title={dashboard.title}
       />
     </Box>
-  )));
+  )))));
 };
 
 /**
@@ -231,8 +228,7 @@ const AnalyticsPage = () => {
   if(isFullscreen) {
     return (
       <Box
-        sx: any,
-          top: 0,
+        sx={{
           left: 0,
           right: 0,
           bottom: 0,
@@ -241,8 +237,7 @@ const AnalyticsPage = () => {
         }}
       >
         <Box
-          sx: any,
-            top: 16,
+          sx={{
             right: 16,
             zIndex: 10000,
             display: 'flex',
@@ -252,8 +247,7 @@ const AnalyticsPage = () => {
           <Tooltip title="Exit Fullscreen">
             <IconButton
               onClick={handleFullscreenToggle}
-              sx: any,
-                boxShadow: 2,
+              sx={{
                 '&:hover': { bgcolor: 'background.paper' }
               }}
             >
@@ -273,12 +267,12 @@ const AnalyticsPage = () => {
   }
 
   return (
-    <Container maxWidth="xl" sx={{ py: 3 }}>
+    <Container maxWidth="xl" sx={{ display: "flex", py: 3 }}>
       {/* Header */}
-      <Paper sx={{ p: 3, mb: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Analytics sx={{ fontSize: 32, color: 'primary.main' }} />
+      <Paper sx={{ display: "flex", p: 3, mb: 3 }}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Analytics sx={{ display: "flex", fontSize: 32, color: 'primary.main' }} />
             <Box>
               <Typography variant="h4" component="h1" gutterBottom>
                 Analytics Dashboard
@@ -324,7 +318,7 @@ const AnalyticsPage = () => {
 
         {/* Dashboard Selection */}
         <Stack direction="row" spacing={2} flexWrap="wrap">
-          {Object.entries(LOOKER_DASHBOARDS).map(([key: any: any, dashboard]: any: any) => (
+          {Object.entries(LOOKER_DASHBOARDS).map(([key: any dashboard]: any: any: any: any) => (
             <Chip
               key={key}
               icon={dashboard.icon}
@@ -332,16 +326,16 @@ const AnalyticsPage = () => {
               variant={selectedDashboard ===key ? "filled" : "outlined"}
               color={selectedDashboard ===key ? "primary" : "default"}
               onClick={() => setSelectedDashboard(key)}
-              sx={{ mb: 1 }}
+              sx={{ display: "flex", mb: 1 }}
             />
           ))}
         </Stack>
       </Paper>
 
       {/* Dashboard Info */}
-      <Card sx={{ mb: 3 }}>
+      <Card sx={{ display: "flex", mb: 3 }}>
         <CardContent>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
             {currentDashboard.icon}
             <Box>
               <Typography variant="h6">{currentDashboard.title}</Typography>
@@ -368,16 +362,16 @@ const AnalyticsPage = () => {
       <Dialog open={settingsOpen} onClose={() => setSettingsOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Dashboard Settings</DialogTitle>
         <DialogContent>
-          <Stack spacing={3} sx={{ mt: 1 }}>
+          <Stack spacing={3} sx={{ display: "flex", mt: 1 }}>
             <FormControlLabel
-              control: any,
+              control
                   checked={autoRefresh}
                   onChange={(e) => setAutoRefresh(e.target.checked)}
                 />
               }
-              label: any,
+              label
                   value={refreshInterval}
-                  label: any,
+                  label
                   onChange={(e) => setRefreshInterval(e.target.value)}
                 >
                   <MenuItem value={60}>1 minute</MenuItem>
@@ -392,10 +386,10 @@ const AnalyticsPage = () => {
               <InputLabel>Default Dashboard</InputLabel>
               <Select
                 value={selectedDashboard}
-                label: any,
+                label
                 onChange={(e) => setSelectedDashboard(e.target.value)}
               >
-                {Object.entries(LOOKER_DASHBOARDS).map(([key: any: any, dashboard]: any: any) => (
+                {Object.entries(LOOKER_DASHBOARDS).map(([key: any dashboard]: any: any: any: any) => (
                   <MenuItem key={key} value={key}>
                     {dashboard.title}
                   </MenuItem>

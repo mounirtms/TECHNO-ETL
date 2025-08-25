@@ -59,11 +59,11 @@ const OrdersGrid = () => {
 
       // Calculate stats
       const totalOrders = orders.length;
-      const pendingOrders = orders.filter((o: any: any) => o.status === 'pending').length;
-      const processingOrders = orders.filter((o: any: any) => o.status === 'processing').length;
-      const completedOrders = orders.filter((o: any: any) => o.status === 'complete').length;
-      const cancelledOrders = orders.filter((o: any: any) => o.status === 'canceled').length;
-      const totalRevenue = orders.reduce((sum: any: any, o: any: any) => sum + (parseFloat(o.grand_total) || 0), 0);
+      const pendingOrders = orders.filter((o: any: any: any: any) => o.status === 'pending').length;
+      const processingOrders = orders.filter((o: any: any: any: any) => o.status === 'processing').length;
+      const completedOrders = orders.filter((o: any: any: any: any) => o.status === 'complete').length;
+      const cancelledOrders = orders.filter((o: any: any: any: any) => o.status === 'canceled').length;
+      const totalRevenue = orders.reduce((sum: any o: any: any: any: any) => sum + (parseFloat(o.grand_total) || 0), 0);
 
       setStats({
         totalOrders,

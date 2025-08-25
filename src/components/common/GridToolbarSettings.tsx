@@ -36,7 +36,7 @@ const GridToolbarSettings = ({
   onClose,
   columnVisibility = {},
   onColumnVisibilityChange,
-  density: any,
+  density
   onDensityChange,
   gridName,
   translate,
@@ -61,7 +61,7 @@ const GridToolbarSettings = ({
       onClose={onClose}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      PaperProps: any,
+      PaperProps
         sx: { minWidth: 250, maxWidth: 350 }
       }}
     >
@@ -70,7 +70,7 @@ const GridToolbarSettings = ({
         <ListItemIcon>
           <DensityIcon />
         </ListItemIcon>
-        <Box sx={{ flex: 1 }}>
+        <Box sx={{ display: "flex", flex: 1 }}>
           <Typography variant="subtitle2" gutterBottom>
             {translate('density', 'Row Density')}
           </Typography>
@@ -78,7 +78,7 @@ const GridToolbarSettings = ({
             <Select
               value={density}
               onChange={(e) => handleDensityChange(e.target.value)}
-              variant: any,
+              variant="body2"
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
                 </MenuItem>
@@ -100,19 +100,19 @@ const GridToolbarSettings = ({
 
       {/* Column Visibility Controls */}
       {Object.keys(columnVisibility).length > 0 && (
-        <Box sx={{ maxHeight: 200, overflow: 'auto' }}>
-          {Object.entries(columnVisibility).map(([field: any: any, visible]: any: any) => (<MenuItem key={field} dense>
+        <Box sx={{ display: "flex", maxHeight: 200, overflow: 'auto' }}>
+          {Object.entries(columnVisibility).map(([field: any visible]: any: any: any: any) => (<MenuItem key={field} dense>
               <FormControlLabel
-                control: any,
+                control
                     checked={visible}
-                    onChange: any,
+                    onChange
                         [field]: e.target.checked
                       });
                     }}
-                    size: any,
+                    size="small"
                 }
                 label={field}
-                sx={{ flex: 1, ml: 0 }}
+                sx={{ display: "flex", flex: 1, ml: 0 }}
               />
             </MenuItem>
           ))}

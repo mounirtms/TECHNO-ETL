@@ -62,14 +62,14 @@ import { BaseToolbarProps, ActionButton, ToolbarConfig } from '../../types/baseC
  */
 const BaseToolbar: React.FC<BaseToolbarProps> = ({
   // Basic props
-  gridName: any,
-  gridType: any,
+  gridName,
+  gridType,
   config = {},
 
   // Actions
-  customActions: any,
-  customLeftActions: any,
-  selectedRows: any,
+  customActions,
+  customLeftActions,
+  selectedRows,
   // Event handlers
   onRefresh,
   onAdd,
@@ -81,27 +81,27 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
   onClearSearch,
 
   // Search
-  searchValue: any,
-  searchPlaceholder: any,
+  searchValue,
+  searchPlaceholder,
   // State
-  loading: any,
+  loading,
   // Grid controls
   columnVisibility = {},
   onColumnVisibilityChange,
-  density: any,
+  density,
   onDensityChange,
 
   // Real-time features
-  realTimeEnabled: any,
+  realTimeEnabled,
   onRealTimeToggle,
   onSelectionModelChange,
 
   // Styling
-  compact: any,
+  compact,
   sx = {},
 
   // Advanced features
-  showPerformanceMetrics: any,
+  showPerformanceMetrics,
   performanceMetrics = {}
 }) => {
   const theme = useTheme();
@@ -315,21 +315,20 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
 
     return (
       <Box sx={{
+        display: "flex",
         display: 'flex',
         alignItems: 'center',
         minWidth: isMobile ? 150 : 250,
         maxWidth: isMobile ? 200 : 350
       }}>
         <TextField
-          size: any,
+          size="small"
           placeholder={searchPlaceholder}
           value={searchText}
           onChange={handleSearchChange}
           onKeyDown={handleSearchKeyPress}
-          sx={{ flex: 1 }}
-          slotProps: any,
-              endAdornment: searchText && (
-                <InputAdornment position="end">
+          sx={{ display: "flex", flex: 1 }}
+          slotProps = {}; // Fixed invalid assignment
                   <IconButton size="small" onClick={handleClearSearch}>
                     <ClearIcon />
                   </IconButton>
@@ -351,11 +350,11 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
         title={realTimeEnabled ? 'Disable Real-time Updates' : 'Enable Real-time Updates'}
       >
         <ToggleButton
-          value: any,
+          value = {}; // Fixed invalid assignment
           selected={realTimeEnabled}
           onChange={handleRealTimeToggle}
           size={buttonSize}
-          color: any,
+          color = {}; // Fixed invalid assignment
           {realTimeEnabled ? <PauseIcon /> : <RealTimeIcon />}
         </ToggleButton>
       </TooltipWrapper>
@@ -389,7 +388,7 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
       <Fade in={hasSelection}>
         <Chip
           label={`${selectedCount} selected`}
-          size: any,
+          size="small"
           onDelete={hasSelection ? () => onSelectionModelChange?.([]) : undefined}
         />
       </Fade>
@@ -422,10 +421,10 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
           open={Boolean(moreMenuAnchor)}
           onClose={handleMoreMenuClose}
         >
-          {overflowActions.map((action: any: any) => (
+          {overflowActions.map((action: any: any: any) => (
             <MenuItem
               key={action.key}
-              onClick: any,
+              onClick = {}; // Fixed invalid assignment
               }}
               disabled={action.disabled}
             >
@@ -435,7 +434,7 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
           ))}
           
           {/* Render custom actions separately if they exist */}
-          {customActions.map((action: any: any, index: any: any) => (
+          {customActions.map((action: any: any = {}; // Fixed invalid assignment index: number: any: any) => (
             <MenuItem key={`custom-${index}`}>{action}</MenuItem>
           ))}
         </Menu>
@@ -443,15 +442,15 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
     );
   };
 
-  return Boolean(Boolean((
+  return Boolean((
     <Box sx={{
+      display: "flex",
       borderBottom: `1px solid ${theme.palette.divider}`,
       backgroundColor: theme.palette.background.paper,
       ...sx
     }}>
       <Toolbar
-        variant: any,
-          px: compact ? 1 : 2,
+        variant="body2"
           py: 0.5,
           gap: 1,
           flexWrap: isMobile ? 'wrap' : 'nowrap',
@@ -468,8 +467,8 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
         {/* Section 1: Custom Left Actions */}
         {customLeftActions.length > 0 && (
           <>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              {customLeftActions.map((action: any: any, index: any: any) => (
+            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
+              {customLeftActions.map((action: any: any = {}; // Fixed invalid assignment index: number: any: any) => (
                 <Box key={index}>{action}</Box>
               ))}
             </Box>
@@ -478,7 +477,7 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
         )}
 
         {/* Section 2: Primary Actions */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
           {primaryActions.map(renderActionButton)}
           {renderRealTimeControls()}
         </Box>
@@ -488,7 +487,7 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
         {/* Section 3: Selection Actions */}
         {selectionActions.length > 0 && (
           <>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
               {selectionActions.map(renderActionButton)}
             </Box>
             {!isMobile && <Divider orientation="vertical" flexItem />}
@@ -499,10 +498,10 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
         {renderSearch()}
 
         {/* Spacer */}
-        <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{ display: "flex", flexGrow: 1 }} />
 
         {/* Section 5: Utility Actions & Info */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
           {renderSelectionInfo()}
           {renderPerformanceMetrics()}
 
@@ -528,7 +527,7 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
 
       {/* Collapsible Filters Section */}
       <Collapse in={filtersVisible}>
-        <Box sx={{ p: 2, borderTop: `1px solid ${theme.palette.divider}` }}>
+        <Box sx={{ display: "flex", p: 2, borderTop: `1px solid ${theme.palette.divider}` }}>
           {/* Filter controls would go here */}
           <Typography variant="body2" color="text.secondary">
             Advanced filters coming soon...

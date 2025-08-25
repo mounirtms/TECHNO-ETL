@@ -178,7 +178,7 @@ const BrandManagementDialog: React.FC<any> = ({ open, onClose, onBrandsUpdated }
   }, [open, fetchBrands]);
 
   // ===== FILTERED BRANDS =====
-  const filteredBrands = brands.filter((brand: any: any) =>
+  const filteredBrands = brands.filter((brand: any: any: any: any) =>
     brand.label.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -188,22 +188,22 @@ const BrandManagementDialog: React.FC<any> = ({ open, onClose, onBrandsUpdated }
     
     return(<ListItem key={brand?.value} divider>
         {isEditing ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', gap: 1 } as any}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', width: '100%', gap: 1 } as any}>
             <TextField
-              size: any,
+              size="small"
               defaultValue={brand.label}
-              onKeyPress: any,
+              onKeyPress
                   handleEditBrand(brand?.value, e.target?.value);
                 }
               }}
-              sx={{ flexGrow: 1 } as any}
+              sx={{ display: "flex", flexGrow: 1 } as any}
               autoFocus
             />
             <IconButton
-              size: any,
+              size="small"
                 handleEditBrand(brand?.value, input?.value);
               }}
-              color: any,
+              color
               onClick={() => setEditingBrand(null)}
             >
               <CancelIcon fontSize="small" />
@@ -212,16 +212,16 @@ const BrandManagementDialog: React.FC<any> = ({ open, onClose, onBrandsUpdated }
         ) : (
           <>
             <ListItemText
-              primary: any,
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
+              primary
+                <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
                   <BrandIcon fontSize="small" color="primary" />
                   <Typography variant="body1">
                     {brand.label}
                   </Typography>
                   <Chip
                     label={brand?.value}
-                    size: any,
-                    sx={{ fontSize: '0.75rem' } as any}
+                    size="small"
+                    sx={{ display: "flex", fontSize: '0.75rem' } as any}
                   />
                 </Box>
               }
@@ -230,7 +230,7 @@ const BrandManagementDialog: React.FC<any> = ({ open, onClose, onBrandsUpdated }
             <ListItemSecondaryAction>
               <Tooltip title="Edit Brand">
                 <IconButton
-                  size: any,
+                  size="small"
                   onClick={() => setEditingBrand(brand?.value)}
                   disabled={loading}
                 >
@@ -239,10 +239,10 @@ const BrandManagementDialog: React.FC<any> = ({ open, onClose, onBrandsUpdated }
               </Tooltip>
               <Tooltip title="Delete Brand">
                 <IconButton
-                  size: any,
+                  size="small"
                   onClick={() => handleDeleteBrand(brand?.value, brand.label)}
                   disabled={loading}
-                  color: any,
+                  color
         )}
       </ListItem>
     );
@@ -250,15 +250,15 @@ const BrandManagementDialog: React.FC<any> = ({ open, onClose, onBrandsUpdated }
 
   return(<Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' } as any}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between' } as any}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
             <BrandIcon color="primary" />
             <Typography variant="h6">
               Brand Management
             </Typography>
             <Chip
               label={`${brands.length} brands`}
-              size: any,
+              size="small"
             <IconButton onClick={handleRefresh} disabled={loading}>
               <RefreshIcon />
             </IconButton>
@@ -267,24 +267,24 @@ const BrandManagementDialog: React.FC<any> = ({ open, onClose, onBrandsUpdated }
       </DialogTitle>
       
       <DialogContent>
-        <Box sx={{ mb: 2 } as any}>
-          <Alert severity="info" sx={{ mb: 2 } as any}>
+        <Box sx={{ display: "flex", mb: 2 } as any}>
+          <Alert severity="info" sx={{ display: "flex", mb: 2 } as any}>
             Manage brands for the <code>mgs_brand</code> additional attribute. 
             Changes will be cached and available immediately in filters.
           </Alert>
 
           {/* Search and Add Controls */}
-          <Box sx={{ display: 'flex', gap: 2, mb: 2 } as any}>
+          <Box sx={{ display: "flex", display: 'flex', gap: 2, mb: 2 } as any}>
             <TextField
-              placeholder: any,
+              placeholder
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target?.value)}
-              size: any,
+              size="small"
               }}
-              sx={{ flexGrow: 1 } as any}
+              sx={{ display: "flex", flexGrow: 1 } as any}
             />
             <Button
-              variant: any,
+              variant="body2"
               startIcon={<AddIcon />}
               onClick={() => setShowAddForm(!showAddForm)}
               disabled={loading}
@@ -294,24 +294,24 @@ const BrandManagementDialog: React.FC<any> = ({ open, onClose, onBrandsUpdated }
           </Box>
 
           {/* Add Brand Form */}
-          {showAddForm && (<Box sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1, mb: 2 } as any}>
+          {showAddForm && (<Box sx={{ display: "flex", p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 1, mb: 2 } as any}>
               <Typography variant="subtitle2" gutterBottom>
                 Add New Brand
               </Typography>
-              <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' } as any}>
+              <Box sx={{ display: "flex", display: 'flex', gap: 2, alignItems: 'center' } as any}>
                 <TextField
-                  label: any,
+                  label
                   value={newBrandName}
                   onChange={(e) => setNewBrandName(e.target?.value)}
-                  onKeyPress: any,
+                  onKeyPress
                     }
                   }}
-                  size: any,
-                  sx={{ flexGrow: 1 } as any}
+                  size="small"
+                  sx={{ display: "flex", flexGrow: 1 } as any}
                   autoFocus
                 />
                 <Button
-                  variant: any,
+                  variant="body2"
                   onClick={handleAddBrand}
                   disabled={loading || !newBrandName.trim()}
                   startIcon={<SaveIcon />}
@@ -319,7 +319,7 @@ const BrandManagementDialog: React.FC<any> = ({ open, onClose, onBrandsUpdated }
                   Add
                 </Button>
                 <Button
-                  variant: any,
+                  variant="body2"
                   }}
                   startIcon={<CancelIcon />}
                 >
@@ -331,17 +331,17 @@ const BrandManagementDialog: React.FC<any> = ({ open, onClose, onBrandsUpdated }
         </Box>
 
         {/* Brands List */}
-        <Box sx={{ maxHeight: 400, overflow: 'auto' } as any}>
+        <Box sx={{ display: "flex", maxHeight: 400, overflow: 'auto' } as any}>
           {loading && brands.length ===0 ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 } as any}>
+            <Box sx={{ display: "flex", display: 'flex', justifyContent: 'center', p: 3 } as any}>
               <CircularProgress />
             </Box>
           ) : filteredBrands.length > 0 ? (
             <List>
-              {filteredBrands.map((brand: any: any, index: any: any) => renderBrandItem(brand, index))}
+              {filteredBrands.map((brand: any index: any: any: any: any) => renderBrandItem(brand, index))}
             </List>
           ) : (
-            <Box sx={{ textAlign: 'center', p: 3 } as any}>
+            <Box sx={{ display: "flex", textAlign: 'center', p: 3 } as any}>
               <Typography variant="body2" color="text.secondary">
                 {searchTerm ? 'No brands match your search' : 'No brands available'}
               </Typography>

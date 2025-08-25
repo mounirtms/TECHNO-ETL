@@ -80,9 +80,9 @@ const DashboardTestSummary = () => {
   };
 
   return (
-    <Card sx={{ borderRadius: 3, mb: 3 }}>
-      <CardContent sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+    <Card sx={{ display: "flex", borderRadius: 3, mb: 3 }}>
+      <CardContent sx={{ display: "flex", p: 3 }}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
           <DashboardIcon color="primary" />
           <Typography variant="h6" fontWeight={600}>
             Dashboard Integration Test Summary
@@ -90,45 +90,45 @@ const DashboardTestSummary = () => {
           <Chip label="All Tests Passed" color="success" />
         </Box>
 
-        <Alert severity="success" sx={{ mb: 3 }}>
+        <Alert severity="success" sx={{ display: "flex", mb: 3 }}>
           Dashboard has been successfully enhanced with unified theme integration, 
           improved settings persistence, and new interactive widgets.
         </Alert>
 
         {/* Current Theme Settings */}
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ display: "flex", mb: 3 }}>
           <Typography variant="subtitle2" fontWeight={600} gutterBottom>
             Current Theme Settings (from Preferences Tab)
           </Typography>
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            {Object.entries(currentSettings).map(([key: any: any, value]: any: any) => (
+          <Box sx={{ display: "flex", display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+            {Object.entries(currentSettings).map(([key: any value]: any: any: any: any) => (
               <Chip
                 key={key}
                 label={`${key}: ${value}`}
-                size: any,
+                size="small"
             ))}
           </Box>
         </Box>
 
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{ display: "flex", my: 2 }} />
 
         {/* Improvements List */}
-        {improvements.map((improvement: any: any, index: any: any) => (
-          <Box key={index} sx={{ mb: 3 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+        {improvements.map((improvement: any index: any: any: any: any) => (
+          <Box key={index} sx={{ display: "flex", mb: 3 }}>
+            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
               {improvement.icon}
               <Typography variant="subtitle2" fontWeight={600}>
                 {improvement.category}
               </Typography>
             </Box>
             <List dense>
-              {improvement.items.map((item: any: any, itemIndex: any: any) => (
-                <ListItem key={itemIndex} sx={{ py: 0.5 }}>
-                  <ListItemIcon sx={{ minWidth: 32 }}>
+              {improvement.items.map((item: any itemIndex: any: any: any: any) => (
+                <ListItem key={itemIndex} sx={{ display: "flex", py: 0.5 }}>
+                  <ListItemIcon sx={{ display: "flex", minWidth: 32 }}>
                     <CheckIcon color="success" fontSize="small" />
                   </ListItemIcon>
                   <ListItemText
-                    primary: any,
+                    primary
                         {item}
                       </Typography>
                     }

@@ -28,7 +28,7 @@ export const useOptimizedTranslation = (enableI18n = true) => {
       // Cache successful translations
       translationCache.current.set(cacheKey, result);
       return result;
-    } catch(error: any) {
+    } catch (error) {
       // Only log unique errors to prevent spam
       if (!errorCache.current.has(key )) {
         console.warn(`Translation failed for key: ${key}`, error);

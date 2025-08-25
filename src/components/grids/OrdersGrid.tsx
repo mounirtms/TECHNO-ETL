@@ -55,11 +55,11 @@ const OrdersGrid = ({
   data,
   onDataChange,
   onBadgeUpdate,
-  initialStatus: any,
-  initialView: any,
-  initialSortBy: any,
-  initialPriority: any,
-  highlightPending: any,
+  initialStatus
+  initialView
+  initialSortBy
+  initialPriority
+  highlightPending
   dashboardParams = {}
 }) => {
   const { t } = useTranslation();
@@ -81,7 +81,7 @@ const OrdersGrid = ({
   }, [initialStatus, initialSortBy, dashboardParams]);
 
   // Filter orders based on search query and status
-  const filteredOrders = orders.filter((order: any: any) => {
+  const filteredOrders = orders.filter((order: any: any: any: any) => {
     const matchesSearch = order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.customerEmail.toLowerCase().includes(searchQuery.toLowerCase());
@@ -104,7 +104,7 @@ const OrdersGrid = ({
 
   // Update badge count for pending orders
   useEffect(() => {
-    const pendingOrders = orders.filter((o: any: any) => o.status === 'pending').length;
+    const pendingOrders = orders.filter((o: any: any: any: any) => o.status === 'pending').length;
     onBadgeUpdate?.(pendingOrders);
   }, [orders, onBadgeUpdate]);
 
@@ -120,15 +120,15 @@ const OrdersGrid = ({
     console.log('Edit order:', orderId);
   };
 
-  return Boolean(Boolean((
-    <Box sx={{ p: 3 }}>
+  return Boolean((
+    <Box sx={{ display: "flex", p: 3 }}>
       {/* Header */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ display: "flex", mb: 3 }}>
         <Typography variant="h5" component="h2">
           {t('Order Management')}
         </Typography>
         <Button
-          variant: any,
+          variant="body2"
           startIcon={<AddIcon />}
           onClick={handleAddOrder}
         >
@@ -138,14 +138,14 @@ const OrdersGrid = ({
 
       {/* Dashboard Context Alert */}
       {highlightPending && (
-        <Alert severity="info" sx={{ mb: 2 }}>
+        <Alert severity="info" sx={{ display: "flex", mb: 2 }}>
           <Typography variant="body2">
             Dashboard navigation: Showing {statusFilter} orders
             {Object.keys(dashboardParams).length > 0 && (
               <Chip
                 label={`${Object.keys(dashboardParams).length} filters active`}
-                size: any,
-                sx={{ ml: 1 }}
+                size="small"
+                sx={{ display: "flex", ml: 1 }}
               />
             )}
           </Typography>
@@ -153,21 +153,21 @@ const OrdersGrid = ({
       )}
 
       {/* Search and Filters */}
-      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ mb: 3 }}>
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ display: "flex", mb: 3 }}>
         <TextField
           placeholder={t('Search orders...')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          InputProps: any,
+          InputProps
           }}
-          sx={{ flex: 1 }}
+          sx={{ display: "flex", flex: 1 }}
         />
 
-        <FormControl sx={{ minWidth: 120 }}>
+        <FormControl sx={{ display: "flex", minWidth: 120 }}>
           <InputLabel>Status</InputLabel>
           <Select
             value={statusFilter}
-            label: any,
+            label
             onChange={(e) => setStatusFilter(e.target.value)}
           >
             <MenuItem value="all">All</MenuItem>
@@ -178,11 +178,11 @@ const OrdersGrid = ({
           </Select>
         </FormControl>
 
-        <FormControl sx={{ minWidth: 120 }}>
+        <FormControl sx={{ display: "flex", minWidth: 120 }}>
           <InputLabel>Sort By</InputLabel>
           <Select
             value={sortBy}
-            label: any,
+            label
             onChange={(e) => setSortBy(e.target.value)}
           >
             <MenuItem value="date">Date</MenuItem>
@@ -193,15 +193,15 @@ const OrdersGrid = ({
       </Stack>
 
       {/* Orders Grid */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))', gap: 2 }}>
-        {filteredOrders.map((order: any: any) => (
-          <Card key={order.id} sx={{ height: 'fit-content' }}>
+      <Box sx={{ display: "flex", display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))', gap: 2 }}>
+        {filteredOrders.map((order: any: any: any: any) => (
+          <Card key={order.id} sx={{ display: "flex", height: 'fit-content' }}>
             <CardContent>
               <Stack spacing={2}>
                 {/* Order Header */}
                 <Stack direction="row" alignItems="center" justifyContent="space-between">
                   <Stack direction="row" alignItems="center" spacing={2}>
-                    <Avatar sx={{ bgcolor: 'primary.main' }}>
+                    <Avatar sx={{ display: "flex", bgcolor: 'primary.main' }}>
                       <OrderIcon />
                     </Avatar>
                     <Box>
@@ -216,7 +216,7 @@ const OrdersGrid = ({
                   <Chip
                     label={order.status}
                     color={getStatusColor(order.status)}
-                    size: any,
+                    size="small"
                 {/* Customer Info */}
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <PersonIcon fontSize="small" color="action" />
@@ -269,7 +269,7 @@ const OrdersGrid = ({
                 </Stack>
 
                 {/* Actions */}
-                <Stack direction="row" spacing={1} sx={{ pt: 1 }}>
+                <Stack direction="row" spacing={1} sx={{ display: "flex", pt: 1 }}>
                   <Tooltip title={t('View Details')}>
                     <IconButton size="small" onClick={() => handleViewOrder(order.id)}>
                       <ViewIcon />
@@ -289,8 +289,8 @@ const OrdersGrid = ({
 
       {/* Empty State */}
       {filteredOrders.length ===0 && (
-        <Box sx={{ textAlign: 'center', py: 4 }}>
-          <OrderIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
+        <Box sx={{ display: "flex", textAlign: 'center', py: 4 }}>
+          <OrderIcon sx={{ display: "flex", fontSize: 64, color: 'text.secondary', mb: 2 }} />
           <Typography variant="h6" color="text.secondary">
             {searchQuery ? t('No orders found') : t('No orders yet')}
           </Typography>
@@ -300,7 +300,7 @@ const OrdersGrid = ({
         </Box>
       )}
     </Box>
-  )));
+  )))));
 };
 
 export default OrdersGrid;

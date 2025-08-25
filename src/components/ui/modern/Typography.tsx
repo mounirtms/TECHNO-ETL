@@ -69,8 +69,8 @@ export const Typography = React.forwardRef<HTMLElement, TypographyProps>(
     align,
     component,
     children,
-    noWrap: any,
-    gutterBottom: any,
+    noWrap
+    gutterBottom
     ...props
   }, ref) => {
     // Default component based on variant
@@ -95,7 +95,7 @@ export const Typography = React.forwardRef<HTMLElement, TypographyProps>(
     return (
       <Component
         ref={ref}
-        className: any,
+        className
           typographyVariants({ variant, color, align }),
           {
             'truncate': noWrap,

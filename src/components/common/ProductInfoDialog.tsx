@@ -43,7 +43,7 @@ import { toast } from 'react-toastify';
 
 const MEDIA_PREFIX = 'https://technostationery.com/pub/media/catalog/product';
 
-const ProductInfoDialog = ({ open, onClose, product  }: { open: any, onClose: any, product: any }) => {
+const ProductInfoDialog = ({ open, onClose, product  }: { open onClose product: any }) => {
     if (!product) return null;
 
     // Safely get the main image
@@ -53,36 +53,36 @@ const ProductInfoDialog = ({ open, onClose, product  }: { open: any, onClose: an
     // Prepare media gallery
     const media = Array.isArray(product?.media_gallery_entries)
         ? product.media_gallery_entries
-            .filter((entry: any: any) => entry?.media_type === 'image' && entry?.file)
-            .map((entry: any: any) => ({ ...entry,
+            .filter((entry: any: any: any: any) => entry?.media_type === 'image' && entry?.file)
+            .map((entry: any: any: any: any) => ({ ...entry,
                 url: entry.file.startsWith('http') ? entry.file : MEDIA_PREFIX + entry.file
             }))
         : [];
 
-    return Boolean(Boolean((
+    return Boolean((
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-            <DialogTitle sx={{ fontWeight: 700, fontSize: 20, bgcolor: '#f5f5f5' }}>
+            <DialogTitle sx={{ display: "flex", fontWeight: 700, fontSize: 20, bgcolor: '#f5f5f5' }}>
                 🧾 Product Details & Media
             </DialogTitle>
 
-            <DialogContent dividers sx={{ bgcolor: '#fff' }}>
+            <DialogContent dividers sx={{ display: "flex", bgcolor: '#fff' }}>
                 {/* Thumbnail on left, details on right */}
                 <Grid container spacing={3} alignItems="flex-start">
                     <Grid xs={12} sm={5} md={4}>
-                        <Box sx={{ width: '100%' }}>
+                        <Box sx={{ display: "flex", width: '100%' }}>
                             <img
                                 src={mainImage}
                                 alt={product?.name || 'Product Image'}
-                                style: any,
+                                style
                                     height: 'auto',
                                     borderRadius: '8px',
                                     boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                                     cursor: 'pointer'
                                 }}
                                 onClick={() => window.open(mainImage, '_blank')}
-                                title: any,
+                                title
                     <Grid xs={12} sm={7} md={8}>
-                        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                        <Typography variant="h6" sx={{ display: "flex", fontWeight: 600 }}>
                             {product?.name || 'Unknown Product'}
                         </Typography>
                         <Typography variant="subtitle2" color="text.secondary">
@@ -94,9 +94,9 @@ const ProductInfoDialog = ({ open, onClose, product  }: { open: any, onClose: an
                         <Typography variant="body2">
                             Status: {product?.status === 'enabled' ? 'Enabled' : 'Disabled'}
                         </Typography>
-                        <Typography variant="body2" sx={{ mt: 2 }}>
+                        <Typography variant="body2" sx={{ display: "flex", mt: 2 }}>
                             <strong>Price:</strong>{' '}
-                            <Typography component="span" variant="h6" sx={{ color: 'green', fontWeight: 700 }}>
+                            <Typography component="span" variant="h6" sx={{ display: "flex", color: 'green', fontWeight: 700 }}>
                                 {product?.price} DA
                             </Typography>
                         </Typography>
@@ -105,9 +105,9 @@ const ProductInfoDialog = ({ open, onClose, product  }: { open: any, onClose: an
 
                 {/* Description */}
                 {product?.description && (
-                    <Box sx={{ mt: 4 }}>
+                    <Box sx={{ display: "flex", mt: 4 }}>
                         <Typography variant="subtitle1" fontWeight={600}>📄 Description:</Typography>
-                        <Typography variant="body2" sx={{ mt: 0.5, whiteSpace: 'pre-line' }}>
+                        <Typography variant="body2" sx={{ display: "flex", mt: 0.5, whiteSpace: 'pre-line' }}>
                             {product.description}
                         </Typography>
                     </Box>
@@ -116,8 +116,8 @@ const ProductInfoDialog = ({ open, onClose, product  }: { open: any, onClose: an
                 {/* Media Gallery */}
                 {media.length > 1 && (
                     <>
-                        <Divider sx={{ my: 3 }} />
-                        <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
+                        <Divider sx={{ display: "flex", my: 3 }} />
+                        <Typography variant="subtitle1" sx={{ display: "flex", mb: 2, fontWeight: 600 }}>
                             📷 Additional Images
                         </Typography>
                         
@@ -125,13 +125,13 @@ const ProductInfoDialog = ({ open, onClose, product  }: { open: any, onClose: an
                 )}
             </DialogContent>
 
-            <DialogActions sx={{ bgcolor: '#f5f5f5' }}>
+            <DialogActions sx={{ display: "flex", bgcolor: '#f5f5f5' }}>
                 <Button onClick={onClose} variant="contained" color="primary">
                     Close
                 </Button>
             </DialogActions>
         </Dialog>
-    )));
+    )))));
 };
 
 export default ProductInfoDialog;

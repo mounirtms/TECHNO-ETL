@@ -162,21 +162,21 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
 
     return (<Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
             <AdminIcon color="primary" />
             <Typography variant="h6">Bug Review: {bug.title}</Typography>
           </Box>
         </DialogTitle>
         
         <DialogContent>
-          <Box sx={{ mb: 3 }}>
+          <Box sx={{ display: "flex", mb: 3 }}>
             <Typography variant="h6" gutterBottom>Bug Information</Typography>
             <Typography><strong>ID:</strong> {bug.id}</Typography>
             <Typography><strong>Category:</strong> 
               <Chip
-                size: any,
+                size="small"
                 label={(BUG_CATEGORIES as Record<string, any>)[bug.category]?.name || bug.category}
-                sx: any,
+                sx={{
                   backgroundColor: (BUG_CATEGORIES as Record<string, any>)[bug.category]?.color,
                   color: 'white'
                 }}
@@ -202,7 +202,7 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
             </AccordionSummary>
             <AccordionDetails>
               <List>
-                {bug.stepsToReproduce.map((step: any: any, index: any: any) => (
+                {bug.stepsToReproduce.map((step: any index: any: any: any: any) => (
                   <ListItem key={index}>
                     <ListItemText
                       primary={`Step ${index + 1}`}
@@ -219,7 +219,7 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
               <Typography variant="h6">Expected vs Actual Behavior</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+              <Box sx={{ display: "flex", display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
                 <Box>
                   <Typography variant="subtitle2" color="success.main">Expected:</Typography>
                   <Typography>{bug.expectedBehavior}</Typography>
@@ -244,10 +244,10 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
             </AccordionDetails>
           </Accordion>
 
-          <Box sx={{ mt: 3 }}>
+          <Box sx={{ display: "flex", mt: 3 }}>
             <Typography variant="h6" gutterBottom>Admin Review</Typography>
             
-            <FormControl fullWidth sx={{ mb: 2 }}>
+            <FormControl fullWidth sx={{ display: "flex", mb: 2 }}>
               <InputLabel>Status</InputLabel>
               <Select
                 value={newStatus}
@@ -263,7 +263,7 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
               </Select>
             </FormControl>
 
-            <Box sx={{ mb: 2 }}>
+            <Box sx={{ display: "flex", mb: 2 }}>
               <Typography component="legend">Quality Score</Typography>
               <Rating
                 value={qualityScore}
@@ -279,11 +279,11 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
               fullWidth
               multiline
               rows={3}
-              label: any,
+              label
               value={adminNotes}
               onChange={(e) => setAdminNotes(e.target.value)}
-              placeholder: any,
-            <Alert severity="info" sx={{ mt: 2 }}>
+              placeholder
+            <Alert severity="info" sx={{ display: "flex", mt: 2 }}>
               <Typography variant="body2">
                 <strong>Calculated Reward:</strong> {formatCurrency(bug.reward?.calculated || 0)}
                 <br />
@@ -299,21 +299,21 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
           <Button onClick={onClose}>Cancel</Button>
           <Button
             onClick={handleSubmit}
-            variant: any,
+            variant="body2"
   };
 
   return(<>
       <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
         <DialogTitle>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
             <AdminIcon color="primary" />
             <Typography variant="h6">Bug Bounty Admin Panel</Typography>
           </Box>
         </DialogTitle>
 
         <DialogContent>
-          <Box sx={{ mb: 2 }}>
-            <FormControl sx={{ minWidth: 200 }}>
+          <Box sx={{ display: "flex", mb: 2 }}>
+            <FormControl sx={{ display: "flex", minWidth: 200 }}>
               <InputLabel>Filter by Status</InputLabel>
               <Select
                 value={filter}
@@ -346,7 +346,7 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {bugs.map((bug: any: any) => (<TableRow key={bug.id}>
+                {bugs.map((bug: any: any: any: any) => (<TableRow key={bug.id}>
                     <TableCell>
                       <Typography variant="body2" noWrap>
                         {bug.title}
@@ -354,9 +354,9 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
                     </TableCell>
                     <TableCell>
                       <Chip
-                        size: any,
+                        size="small"
                         label={(BUG_CATEGORIES as Record<string, any>)[bug.category]?.name || bug.category}
-                        sx: any,
+                        sx={{
                           backgroundColor: (BUG_CATEGORIES as Record<string, any>)[bug.category]?.color,
                           color: 'white'
                         }}
@@ -365,7 +365,7 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
                     <TableCell>{bug.severity}</TableCell>
                     <TableCell>
                       <Chip
-                        size: any,
+                        size="small"
                         label={bug.status.replace('_', ' ').toUpperCase()}
                         color={getStatusColor(bug.status)}
                       />
@@ -379,7 +379,7 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
                     </TableCell>
                     <TableCell>
                       <Button
-                        size: any,
+                        size="small"
                         onClick={() => setSelectedBug(bug)}
                       >
                         Review

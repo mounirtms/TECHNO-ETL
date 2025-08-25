@@ -13,8 +13,7 @@ import { ROUTES, requiresAuth, getRouteMetadata } from '../config/routes';
  */
 const RouteLoading = ({ message = 'Loading...' }: { message?: string }) => (
   <Box
-    sx: any,
-      justifyContent: 'center',
+    sx={{
       alignItems: 'center',
       height: '100vh',
       flexDirection: 'column',
@@ -173,8 +172,7 @@ export const RouteTransition: React.FC<any> = ({ children, transitionKey }) => {
 
   return (
     <Box
-      sx: any,
-        transition: 'opacity 0.15s ease-in-out',
+      sx={{
         minHeight: '100%'
       }}
     >

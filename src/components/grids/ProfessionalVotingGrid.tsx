@@ -183,7 +183,7 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
    */
   const loadUserVotes = useCallback(async () => {
     try {
-      const featureIds = features.map((f: any: any) => f?.id);
+      const featureIds = features.map((f: any: any: any: any) => f?.id);
       if (featureIds.length ===0) return;
 
       const response = await votingApiService.getUserVotes(userId, featureIds);
@@ -260,11 +260,12 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
       flex: 2,
       minWidth: 250,
       renderCell: (params) => (
-        <Box sx={{ py: 1 }}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
+        <Box sx={{ display: "flex", py: 1 }}>
+          <Typography variant="subtitle2" sx={{ display: "flex", fontWeight: 600, mb: 0.5 }}>
             {params.value}
           </Typography>
           <Typography variant="caption" color="text.secondary" sx={{ 
+            display: "flex", 
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
@@ -285,7 +286,7 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
           <Chip
             icon={<IconComponent />}
             label={params.value}
-            size: any,
+            size="small"
               backgroundColor: alpha(params.row.category_color || '#2196F3', 0.1),
               color: params.row.category_color || '#2196F3',
               border: `1px solid ${alpha(params.row.category_color || '#2196F3', 0.3)}`
@@ -301,7 +302,7 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
       renderCell: (params) => (
         <Chip
           label={params.value}
-          size: any,
+          size="small"
             backgroundColor: alpha(PRIORITY_COLORS[params.value] || '#2196F3', 0.1),
             color: PRIORITY_COLORS[params.value] || '#2196F3',
             fontWeight: 600
@@ -316,7 +317,7 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
       renderCell: (params) => (
         <Chip
           label={params.value}
-          size: any,
+          size="small"
             backgroundColor: alpha(STATUS_COLORS[params.value] || '#2196F3', 0.1),
             color: STATUS_COLORS[params.value] || '#2196F3',
             fontWeight: 500
@@ -332,7 +333,7 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
       renderCell: (params) => (
         <Badge
           badgeContent={params.value}
-          color: any,
+          color
               fontWeight: 600
             }
           }}
@@ -354,9 +355,9 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
           <Stack direction="row" spacing={0.5}>
             <Tooltip title="Upvote">
               <IconButton
-                size: any,
+                size="small"
                 onClick={() => handleVote(featureId, 'upvote')}
-                sx: any,
+                sx={{
                   backgroundColor: userVote === 'upvote' ? alpha(theme.palette.success.main, 0.1) : 'transparent'
                 }}
               >
@@ -365,9 +366,9 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
             </Tooltip>
             <Tooltip title="Downvote">
               <IconButton
-                size: any,
+                size="small"
                 onClick={() => handleVote(featureId, 'downvote')}
-                sx: any,
+                sx={{
                   backgroundColor: userVote === 'downvote' ? alpha(theme.palette.error.main, 0.1) : 'transparent'
                 }}
               >
@@ -376,7 +377,7 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
             </Tooltip>
             <Tooltip title="Comments">
               <IconButton
-                size: any,
+                size="small"
                 onClick={() => setSelectedFeature(params.row)}
               >
                 <Comment fontSize="small" />
@@ -403,17 +404,17 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
     }
   }, [loadUserVotes]);
 
-  return(<Box sx={{ height: '100%', width: '100%' }}>
+  return(<Box sx={{ display: "flex", height: '100%', width: '100%' }}>
       {/* Header with filters and actions */}
-      <Paper sx={{ p: 2, mb: 2 }}>
+      <Paper sx={{ display: "flex", p: 2, mb: 2 }}>
         <Grid { ...{container: true}} spacing={2} alignItems="center">
           <Grid item xs={12} md={3}>
             <TextField
               fullWidth
-              size: any,
+              size="small"
               value={filterModel.search}
               onChange={(e) => setFilterModel(prev => ({ ...prev, search: e.target.value }))}
-              InputProps: any,
+              InputProps
               }}
             />
           </Grid>
@@ -423,11 +424,11 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
               <InputLabel>Category</InputLabel>
               <Select
                 value={filterModel.category}
-                label: any,
+                label
                 onChange={(e) => setFilterModel(prev => ({ ...prev, category: e.target.value }))}
               >
                 <MenuItem value="">All Categories</MenuItem>
-                {categories.map((cat: any: any) => (
+                {categories.map((cat: any: any: any: any) => (
                   <MenuItem key={cat?.id} value={cat?.id}>{cat?.name}</MenuItem>
                 ))}
               </Select>
@@ -439,11 +440,11 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
               <InputLabel>Status</InputLabel>
               <Select
                 value={filterModel.status}
-                label: any,
+                label
                 onChange={(e) => setFilterModel(prev => ({ ...prev, status: e.target.value }))}
               >
                 <MenuItem value="">All Statuses</MenuItem>
-                {Object.keys(STATUS_COLORS).map((status: any: any) => (
+                {Object.keys(STATUS_COLORS).map((status: any: any: any: any) => (
                   <MenuItem key={status} value={status}>{status}</MenuItem>
                 ))}
               </Select>
@@ -455,11 +456,11 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
               <InputLabel>Priority</InputLabel>
               <Select
                 value={filterModel.priority}
-                label: any,
+                label
                 onChange={(e) => setFilterModel(prev => ({ ...prev, priority: e.target.value }))}
               >
                 <MenuItem value="">All Priorities</MenuItem>
-                {Object.keys(PRIORITY_COLORS).map((priority: any: any) => (
+                {Object.keys(PRIORITY_COLORS).map((priority: any: any: any: any) => (
                   <MenuItem key={priority} value={priority}>{priority}</MenuItem>
                 ))}
               </Select>
@@ -469,29 +470,29 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
           <Grid item xs={12} md={3}>
             <Stack direction="row" spacing={1}>
               <Button
-                variant: any,
+                variant="body2"
                 startIcon={<Refresh />}
                 onClick={handleRefresh}
                 disabled={refreshing}
-                size: any,
+                size="small"
                 startIcon={<Add />}
                 onClick={() => setCreateDialogOpen(true)}
-                size: any,
+                size="small"
                 startIcon={<Settings />}
                 onClick={() => setSettingsDialogOpen(true)}
-                size: any,
+                size="small"
       {/* Error Alert */}
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
+        <Alert severity="error" sx={{ display: "flex", mb: 2 }} onClose={() => setError(null)}>
           {error}
         </Alert>
       )}
 
       {/* Loading Progress */}
-      {loading && <LinearProgress sx={{ mb: 2 }} />}
+      {loading && <LinearProgress sx={{ display: "flex", mb: 2 }} />}
 
       {/* Data Grid */}
-      <Paper sx={{ height: 600, width: '100%' }}>
+      <Paper sx={{ display: "flex", height: 600, width: '100%' }}>
         <DataGrid
           rows={features}
           columns={columns}
@@ -501,12 +502,11 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
           onSortModelChange={setSortModel}
           rowCount={totalCount}
           loading={loading}
-          paginationMode: any,
+          paginationMode
           pageSizeOptions={[10, 25, 50, 100]}
           disableRowSelectionOnClick
           getRowHeight={() => 80}
-          sx: any,
-            '& .MuiDataGrid-cell': {
+          sx={{
               borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
             },
             '& .MuiDataGrid-row:hover': {
@@ -525,7 +525,7 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
         <Alert
           onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
           severity={snackbar.severity}
-          sx={{ width: '100%' }}
+          sx={{ display: "flex", width: '100%' }}
         >
           {snackbar.message}
         </Alert>
@@ -536,10 +536,10 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
         open={settingsDialogOpen}
         onClose={() => setSettingsDialogOpen(false)}
         onSave={saveSettings}
-        gridId: any,
+        gridId
         columns={columns}
         currentSettings={gridSettings}
-        onReset: any,
+        onReset
           saveSettings({});
           showSnackbar('Settings reset to defaults', 'info');
         }}

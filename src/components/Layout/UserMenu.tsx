@@ -73,14 +73,14 @@ const UserMenu = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' } as any}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
-                <Typography variant="subtitle1" sx={{ display: { xs: 'none', sm: 'block' } }}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', textAlign: 'center' } as any}>
+            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
+                <Typography variant="subtitle1" sx={{ display: "flex", display: { xs: 'none', sm: 'block' } }}>
                     {currentUser?.displayName || currentUser?.email || translate('common.user')}
                 </Typography>
                 <IconButton
                     onClick={handleMenu}
-                    size: any,
+                    size="small"
                     aria-controls={open ? 'user-menu' : undefined}
                     aria-haspopup="true"
                     aria-expanded={open ? 'true' : undefined}
@@ -88,8 +88,7 @@ const UserMenu = () => {
                     <Avatar
                         alt={currentUser?.displayName || translate('common.user')}
                         src={currentUser?.photoURL}
-                        sx: any,
-                            height: 32,
+                        sx={{
                             border: (theme) => `2px solid ${theme.palette.primary.main}`
                         }}
                     />
@@ -97,7 +96,7 @@ const UserMenu = () => {
             </Box>
             <StyledMenu
                 anchorEl={anchorEl}
-                id: any,
+                id
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}

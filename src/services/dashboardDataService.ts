@@ -74,8 +74,8 @@ export const getProductStatsData = async () => {
       const sampleResponse = await magentoApi.getProducts({ pageSize: 100 });
       const products = sampleResponse?.items || [];
       
-      const enabled = products.filter((p: any: any) => p.status ===1).length;
-      const disabled = products.filter((p: any: any) => p.status ===2).length;
+      const enabled = products.filter((p) => p.status ===1).length;
+      const disabled = products.filter((p) => p.status ===2).length;
       
       // Extrapolate to total
       const ratio = totalProducts / products.length;
@@ -85,7 +85,7 @@ export const getProductStatsData = async () => {
         { name: 'Disabled', value: Math.round(disabled * ratio) }
       ];
     }
-  } catch(error: any) {
+  } catch (error) {
     console.warn('Using mock product stats data:', error.message);
   }
   
@@ -107,12 +107,12 @@ export const getProductTypesData = async () => {
         types[type] = (types[type] || 0) + 1;
       });
       
-      return Object.entries(types).map(([name: any: any, value]: any: any) => ({
+      return Object.entries(types).map(([name, value]) => ({
         name: name.charAt(0).toUpperCase() + name.slice(1),
         value
       }));
     }
-  } catch(error: any) {
+  } catch (error) {
     console.warn('Using mock product types data:', error.message);
   }
   
@@ -132,14 +132,19 @@ export const getBrandDistributionData = async () => {
       
       products.forEach((product) => {
         const brandAttr = product.custom_attributes?.find(
-          attr: any,
+          (attr) => attr.attribute_code === 'brand'
+        );
+        if (brandAttr?.value) {
+          const brand = brandAttr.value;
+          brands[brand] = (brands[brand] || 0) + 1;
+        }
       });
       
       return Object.entries(brands)
-        .map(([name: any: any, value]: any: any) => ({ name, value }))
+        .map(([name, value]) => ({ name, value }))
         .sort((a, b) => b.value - a.value);
     }
-  } catch(error: any) {
+  } catch (error) {
     console.warn('Using mock brand distribution data:', error.message);
   }
   
@@ -154,15 +159,15 @@ export const getCategoryDistributionData = () => {
     const categories = categoryService.getAllCategories();
     
     return categories
-      .filter((cat: any: any) => cat.product_count > 0)
-      .map((cat: any: any) => ({
+      .filter((cat) => cat.product_count > 0)
+      .map((cat) => ({
         name: cat.name,
         value: cat.product_count,
         level: cat.level,
         parent: cat.parentPath
       }))
       .sort((a, b) => b.value - a.value);
-  } catch(error: any) {
+  } catch (error) {
     console.warn('Error getting category data:', error);
     return [];
   }
@@ -220,12 +225,12 @@ export const getProductAttributesData = async () => {
         }
       });
       
-      return Object.entries(attributes).map(([attribute: any: any, value]: any: any) => ({
+      return Object.entries(attributes).map(([attribute, value]) => ({
         attribute,
         value
       }));
     }
-  } catch(error: any) {
+  } catch (error) {
     console.warn('Using mock attributes data:', error.message);
   }
   
@@ -240,7 +245,7 @@ export const getSalesPerformanceData = async () => {
     // This would typically come from order/sales API
     // For now, return mock data
     return generateMockData().salesPerformance;
-  } catch(error: any) {
+  } catch (error) {
     console.warn('Using mock sales performance data:', error.message);
     return generateMockData().salesPerformance;
   }
@@ -272,7 +277,7 @@ export const getInventoryStatusData = async () => {
     }
     
     return inventoryData;
-  } catch(error: any) {
+  } catch (error) {
     console.warn('Using mock inventory data:', error.message);
     return generateMockData().inventoryStatus;
   }
@@ -310,7 +315,7 @@ export const getAllDashboardData = async () => {
       salesPerformance,
       inventoryStatus
     };
-  } catch(error: any) {
+  } catch (error) {
     console.error('Error loading dashboard data:', error);
     return generateMockData();
   }

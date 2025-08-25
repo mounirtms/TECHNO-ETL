@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, List, ListItem, ListItemText, Checkbox, Switch, FormControlLabel } from '@mui/material';
 
-const SettingsDialog: React.FC<{open: any, onClose: any, columns: any, onSave: any, gridName: any, defaultColumns: any}> = ({ open, onClose, columns, onSave, gridName, defaultColumns  }) => {
+const SettingsDialog: React.FC<{open onClose columns onSave gridName defaultColumns: any}> = ({ open, onClose, columns, onSave, gridName, defaultColumns  }) => {
     const [visibleColumns, setVisibleColumns] = useState({});
 
     useEffect(() => {
@@ -19,7 +19,7 @@ const SettingsDialog: React.FC<{open: any, onClose: any, columns: any, onSave: a
     };
 
     const handleSave = () => {
-        const updatedColumns = columns.map((col: any: any) => ({ ...col,
+        const updatedColumns = columns.map((col: any: any: any: any) => ({ ...col,
             hide: !visibleColumns[col.field]
         }));
         onSave(updatedColumns);
@@ -35,10 +35,10 @@ const SettingsDialog: React.FC<{open: any, onClose: any, columns: any, onSave: a
             <DialogTitle>Column Settings</DialogTitle>
             <DialogContent dividers>
                 <List>
-                    {columns.map((col: any: any) => (
+                    {columns.map((col: any: any: any: any) => (
                         <ListItem key={col.field} dense button onClick={() => handleToggle(col.field)}>
                             <Checkbox
-                                edge: any,
+                                edge
                                 checked={!!visibleColumns[col.field]}
                                 tabIndex={-1}
                                 disableRipple

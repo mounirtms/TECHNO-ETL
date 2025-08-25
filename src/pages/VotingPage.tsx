@@ -29,7 +29,7 @@ import ComponentErrorBoundary from '../components/common/ComponentErrorBoundary'
 function TabPanel({ children, value, index, ...other } : any) {
   return (
     <div
-      role: any,
+      role
       hidden={value !== index}
       id={`task-tabpanel-${index}`}
       aria-labelledby={`task-tab-${index}`}
@@ -56,25 +56,25 @@ const TaskPage = () => {
     setActiveTab(newValue);
   };
 
-  return(<Container maxWidth="xl" sx={{ py: 3 }}>
+  return(<Container maxWidth="xl" sx={{ display: "flex", py: 3 }}>
  
 
       {/* Tabs */}
-      <Paper sx={{ mb: 3 }}>
+      <Paper sx={{ display: "flex", mb: 3 }}>
         <Tabs 
           value={activeTab} 
           onChange={(e) => handleTabChange}
-          sx={{ borderBottom: 1, borderColor: 'divider' }}
+          sx={{ display: "flex", borderBottom: 1, borderColor: 'divider' }}
         >
           <Tab
             icon={<Task />}
-            label: any,
-            sx={{ minHeight: 64 }}
+            label
+            sx={{ display: "flex", minHeight: 64 }}
           />
           <Tab
             icon={<Timeline />}
-            label: any,
-            sx={{ minHeight: 64 }}
+            label
+            sx={{ display: "flex", minHeight: 64 }}
           />
         </Tabs>
       </Paper>

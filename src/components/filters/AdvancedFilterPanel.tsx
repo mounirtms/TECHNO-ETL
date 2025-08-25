@@ -56,8 +56,8 @@ const AdvancedFilterPanel: React.FC<any> = ({
   filters, 
   onFiltersChange, 
   onSearch,
-  compact: any,
-  showPresets: any,
+  compact
+  showPresets
 }) => {
   // ===== STATE MANAGEMENT =====
   const [expanded, setExpanded] = useState(!compact);
@@ -143,9 +143,9 @@ const AdvancedFilterPanel: React.FC<any> = ({
 
   // ===== ACTIVE FILTERS COUNT =====
   const activeFiltersCount = useMemo(() => {
-    return Boolean(Boolean(Object?.values(filters).filter((value: any: any) => 
+    return Boolean((Object?.values(filters).filter((value: any: any: any: any) => 
       value !== '' && value !== undefined && value !== null
-    ).length));
+    ).length))));
   }, [filters]);
 
   // ===== RENDER ACTIVE FILTERS =====
@@ -155,10 +155,10 @@ const AdvancedFilterPanel: React.FC<any> = ({
     if(filters.search) {
       activeFilters.push(
         <Chip
-          key: any,
+          key
           label={`Search: ${filters.search}`}
           onDelete={() => handleFilterChange('search', '')}
-          color: any,
+          color
           icon={<SearchIcon />}
         />
       );
@@ -168,10 +168,10 @@ const AdvancedFilterPanel: React.FC<any> = ({
       const brand = brands.find(b => b?.value ===filters.brand);
       activeFilters.push(
         <Chip
-          key: any,
+          key
           label={`Brand: ${brand?.label || filters.brand}`}
           onDelete={() => handleFilterChange('brand', '')}
-          color: any,
+          color
           icon={<BrandIcon />}
         />
       );
@@ -181,10 +181,10 @@ const AdvancedFilterPanel: React.FC<any> = ({
       const category = categories.find(c => c?.value.toString() ===filters.category.toString());
       activeFilters.push(
         <Chip
-          key: any,
+          key
           label={`Category: ${category?.label || filters.category}`}
           onDelete={() => handleFilterChange('category', '')}
-          color: any,
+          color
           icon={<CategoryIcon />}
         />
       );
@@ -193,10 +193,10 @@ const AdvancedFilterPanel: React.FC<any> = ({
     if(filters.status !== '' && filters.status !== undefined) {
       activeFilters.push(
         <Chip
-          key: any,
+          key
           label={`Status: ${filters.status === '1' ? 'Active' : 'Inactive'}`}
           onDelete={() => handleFilterChange('status', '')}
-          color: any,
+          color
     }
 
     if(filters.priceMin || filters.priceMax) {
@@ -204,14 +204,14 @@ const AdvancedFilterPanel: React.FC<any> = ({
       const max = filters.priceMax || '∞';
       activeFilters.push(
         <Chip
-          key: any,
+          key
           label={`Price: $${min} - $${max}`}
-          onDelete: any,
+          onDelete
             handleFilterChange('priceMin', '');
             handleFilterChange('priceMax', '');
             setPriceRange([0, 1000]);
           }}
-          color: any,
+          color
           icon={<PriceIcon />}
         />
       );
@@ -220,16 +220,16 @@ const AdvancedFilterPanel: React.FC<any> = ({
     return activeFilters;
   };
 
-  return Boolean(Boolean((
+  return Boolean((
     <Paper 
       elevation={2} 
-      sx: any,
-        overflow: 'hidden',
+      sx={{
         transition: 'all 0.3s ease-in-out'
       } as any}
     >
       {/* Filter Header */}
       <Box sx={{ 
+        display: "flex", 
         display: 'flex', 
         alignItems: 'center', 
         justifyContent: 'space-between', 
@@ -237,7 +237,7 @@ const AdvancedFilterPanel: React.FC<any> = ({
         backgroundColor: 'primary.main',
         color: 'primary.contrastText'
       } as any}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
           <FilterIcon />
           <Typography variant="h6">
             Advanced Filters
@@ -245,17 +245,17 @@ const AdvancedFilterPanel: React.FC<any> = ({
           {activeFiltersCount > 0 && (
             <Chip
               label={activeFiltersCount}
-              size: any,
-              sx={{ color: 'white', backgroundColor: 'rgba(255,255,255,0.2)' } as any}
+              size="small"
+              sx={{ display: "flex", color: 'white', backgroundColor: 'rgba(255,255,255,0.2)' } as any}
             />
           )}
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
           {showPresets && (<Tooltip title="Filter Presets">
               <IconButton
-                color: any,
-                onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setPresetMenuAnchor(e.currentTarget)}
+                color
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setPresetMenuAnchor(e.currentTarget)}
               >
                 <PresetIcon />
               </IconButton>
@@ -264,7 +264,7 @@ const AdvancedFilterPanel: React.FC<any> = ({
           
           <Tooltip title="Advanced Options">
             <IconButton
-              color: any,
+              color
               onClick={(e) => setAdvancedPanelAnchor(e.currentTarget)}
             >
               <TuneIcon />
@@ -273,7 +273,7 @@ const AdvancedFilterPanel: React.FC<any> = ({
 
           <Tooltip title="Refresh Options">
             <IconButton
-              color: any,
+              color
               }}
               disabled={loading}
             >
@@ -283,7 +283,7 @@ const AdvancedFilterPanel: React.FC<any> = ({
 
           <Tooltip title={expanded ? "Collapse" : "Expand"}>
             <IconButton
-              color: any,
+              color
               onClick={() => setExpanded(!expanded)}
             >
               {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -294,31 +294,31 @@ const AdvancedFilterPanel: React.FC<any> = ({
 
       {/* Filter Content */}
       <Collapse in={expanded} timeout={300}>
-        <Box sx={{ p: 2 } as any}>
+        <Box sx={{ display: "flex", p: 2 } as any}>
           {/* Quick Search */}
-          <Grid { ...{container: true}} spacing={2} sx={{ mb: 2 } as any}>
+          <Grid { ...{container: true}} spacing={2} sx={{ display: "flex", mb: 2 } as any}>
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                size: any,
+                size="small"
                 value={filters.search || ''}
                 onChange={(e) => handleFilterChange('search', e.target?.value)}
-                InputProps: any,
-                  startAdornment: <SearchIcon sx={{ mr: 1, color: 'action.active' } as any} />
+                InputProps
+                  startAdornment: <SearchIcon sx={{ display: "flex", mr: 1, color: 'action.active' } as any} />
                 }}
                 placeholder="Search by name, SKU, description..."
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <Box sx={{ display: 'flex', gap: 1, height: '100%', alignItems: 'center' } as any}>
+              <Box sx={{ display: "flex", display: 'flex', gap: 1, height: '100%', alignItems: 'center' } as any}>
                 <Button
-                  variant: any,
+                  variant="body2"
                   startIcon={<ClearIcon />}
                   onClick={handleClearFilters}
                   disabled={activeFiltersCount ===0}
-                  size: any,
+                  size="small"
                   startIcon={<SaveIcon />}
-                  size: any,
+                  size="small"
                   onClick={() => toast.info('Save preset functionality coming soon')}
                 >
                   Save Preset
@@ -328,7 +328,7 @@ const AdvancedFilterPanel: React.FC<any> = ({
           </Grid>
 
           {/* Filter Controls */}
-          <Grid { ...{container: true}} spacing={2} sx={{ mb: 2 } as any}>
+          <Grid { ...{container: true}} spacing={2} sx={{ display: "flex", mb: 2 } as any}>
             {/* Brand Filter */}
             <Grid item xs={12} sm={6} md={3}>
               <FormControl fullWidth size="small">
@@ -336,16 +336,16 @@ const AdvancedFilterPanel: React.FC<any> = ({
                 <Select
                   value={filters.brand || ''}
                   onChange={(e) => handleFilterChange('brand', e.target?.value)}
-                  label: any,
+                  label
                   disabled={loading}
                 >
                   <MenuItem value="">All Brands</MenuItem>
-                  {brands.map((brand: any: any) => (
+                  {brands.map((brand: any: any: any: any) => (
                     <MenuItem key={brand?.value} value={brand?.value}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' } as any}>
+                      <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1, width: '100%' } as any}>
                         <BrandIcon fontSize="small" />
                         <span>{brand?.label}</span>
-                        <Chip label={brand.count} size="small" variant="outlined" sx={{ ml: 'auto' } as any} />
+                        <Chip label={brand.count} size="small" variant="outlined" sx={{ display: "flex", ml: 'auto' } as any} />
                       </Box>
                     </MenuItem>
                   ))}
@@ -360,13 +360,14 @@ const AdvancedFilterPanel: React.FC<any> = ({
                 <Select
                   value={filters.category || ''}
                   onChange={(e) => handleFilterChange('category', e.target?.value)}
-                  label: any,
+                  label
                   disabled={loading}
                 >
                   <MenuItem value="">All Categories</MenuItem>
-                  {categories.map((category: any: any) => (
+                  {categories.map((category: any: any: any: any) => (
                     <MenuItem key={category?.value} value={category?.value}>
                       <Box sx={{ 
+                        display: "flex", 
                         display: 'flex', 
                         alignItems: 'center', 
                         gap: 1, 
@@ -375,7 +376,7 @@ const AdvancedFilterPanel: React.FC<any> = ({
                       } as any}>
                         <CategoryIcon fontSize="small" />
                         <span>{category?.label}</span>
-                        <Chip label={category.count} size="small" variant="outlined" sx={{ ml: 'auto' } as any} />
+                        <Chip label={category.count} size="small" variant="outlined" sx={{ display: "flex", ml: 'auto' } as any} />
                       </Box>
                     </MenuItem>
                   ))}
@@ -390,30 +391,30 @@ const AdvancedFilterPanel: React.FC<any> = ({
                 <Select
                   value={filters.status || ''}
                   onChange={(e) => handleFilterChange('status', e.target?.value)}
-                  label: any,
+                  label
             {/* Price Range */}
             <Grid item xs={12} sm={6} md={4}>
-              <Box sx={{ px: 1 } as any}>
+              <Box sx={{ display: "flex", px: 1 } as any}>
                 <Typography variant="body2" gutterBottom>
                   Price Range: ${priceRange[0]} - ${priceRange[1]}
                 </Typography>
                 <Slider
                   value={priceRange}
                   onChange={(e) => handlePriceRangeChange}
-                  valueLabelDisplay: any,
+                  valueLabelDisplay
                   min={0}
                   max={1000}
                   step={10}
-                  size: any,
+                  size="small"
           {/* Active Filters */}
           {activeFiltersCount > 0 && (
             <>
-              <Divider sx={{ my: 2 } as any} />
+              <Divider sx={{ display: "flex", my: 2 } as any} />
               <Box>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
                   Active Filters ({activeFiltersCount}):
                 </Typography>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 } as any}>
+                <Box sx={{ display: "flex", display: 'flex', flexWrap: 'wrap', gap: 1 } as any}>
                   {renderActiveFilters()}
                 </Box>
               </Box>
@@ -430,7 +431,7 @@ const AdvancedFilterPanel: React.FC<any> = ({
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {FilterService.getFilterPresets().map((preset: any: any) => (
+        {FilterService.getFilterPresets().map((preset: any: any: any: any) => (
           <MenuItem
             key={preset.id}
             onClick={() => handlePresetSelect(preset)}
@@ -451,18 +452,18 @@ const AdvancedFilterPanel: React.FC<any> = ({
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
       >
-        <Card sx={{ minWidth: 300 } as any}>
+        <Card sx={{ display: "flex", minWidth: 300 } as any}>
           <CardContent>
             <Typography variant="h6" gutterBottom>
               Advanced Options
             </Typography>
             <FormControlLabel
               control={<Switch size="small" />}
-              label: any,
+              label
               control={<Switch size="small" />}
-              label: any,
+              label
               control={<Switch size="small" />}
-              label: any,
+              label
             <Button size="small" onClick={() => setAdvancedPanelAnchor(null)}>
               Close
             </Button>
@@ -470,7 +471,7 @@ const AdvancedFilterPanel: React.FC<any> = ({
         </Card>
       </Popover>
     </Paper>
-  )));
+  )))));
 };
 
 export default AdvancedFilterPanel;

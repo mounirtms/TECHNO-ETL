@@ -148,15 +148,15 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
 
   const handleUpdateFilter = (filterId, updates) => {
     setNewPreset(prev => ({ ...prev,
-      filters: prev.filters.map((filter: any: any) =>
-        filter.id ===filterId ? { ...filter, ...updates } : filter
+      filters: prev.filters.map((filter: any: any: any: any) =>
+        filter.id = ==filterId ? { ...filter, ...updates } : filter
       )
     }));
   };
 
   const handleRemoveFilter = (filterId) => {
     setNewPreset(prev => ({ ...prev,
-      filters: prev.filters.filter((filter: any: any) => filter?.id !== filterId)
+      filters: prev.filters.filter((filter: any: any: any: any) => filter?.id !== filterId)
     }));
   };
 
@@ -232,9 +232,9 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
     switch(fieldType) {
       case 'number':
         if(filter?.operator === 'between') {
-          return(<Box sx={{ display: 'flex', gap: 1, alignItems: 'center' } as any}>
+          return(<Box sx={{ display: "flex", display: 'flex', gap: 1, alignItems: 'center' } as any}>
               <TextField
-                size: any,
+                size="small"
                 value={filter.value?.min || ''}
                 onChange={(e) => handleUpdateFilter(filter?.id, {
                   value: { ...filter.value, min: e.target.value }
@@ -242,7 +242,7 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
               />
               <Typography variant="body2">to</Typography>
               <TextField
-                size: any,
+                size="small"
                 value={filter.value?.max || ''}
                 onChange={(e) => handleUpdateFilter(filter?.id, {
                   value: { ...filter.value, max: e.target.value }
@@ -252,7 +252,7 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
           );
         }
         return(<TextField
-            size: any,
+            size="small"
             value={filter.value || ''}
             onChange={(e) => handleUpdateFilter(filter?.id, { value: e.target.value })}
           />
@@ -261,9 +261,9 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
       case 'date':
         if(filter?.operator === 'between') {
           return(<LocalizationProvider dateAdapter={AdapterDateFns}>
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' } as any}>
+              <Box sx={{ display: "flex", display: 'flex', gap: 1, alignItems: 'center' } as any}>
                 <DatePicker
-                  label: any,
+                  label
                   value={filter.value?.from || null}
                   onChange={(e) => (date) => handleUpdateFilter(filter?.id, {
                     value: { ...filter.value, from: date }
@@ -271,7 +271,7 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
                   renderInput={(params) => <TextField { ...params} size="small" />}
                 />
                 <DatePicker
-                  label: any,
+                  label
                   value={filter.value?.to || null}
                   onChange={(e) => (date) => handleUpdateFilter(filter?.id, {
                     value: { ...filter.value, to: date }
@@ -284,7 +284,7 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
         }
         return(<LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
-              label: any,
+              label
               value={filter.value || null}
               onChange={(e) => (date) => handleUpdateFilter(filter?.id, { value: date })}
               renderInput={(params) => <TextField { ...params} size="small" />}
@@ -293,7 +293,7 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
         );
 
       case 'boolean':
-        return(<FormControl size="small" sx={{ minWidth: 120 } as any}>
+        return(<FormControl size="small" sx={{ display: "flex", minWidth: 120 } as any}>
             <Select
               value={filter.value || 'true'}
               onChange={(e) => handleUpdateFilter(filter?.id, { value: e.target.value })}
@@ -306,7 +306,7 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
 
       default:
         return(<TextField
-            size: any,
+            size="small"
             value={filter.value || ''}
             onChange={(e) => handleUpdateFilter(filter?.id, { value: e.target.value })}
           />
@@ -315,10 +315,10 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
   };
 
   return (
-    <Box sx={{ p: 3 } as any}>
+    <Box sx={{ display: "flex", p: 3 } as any}>
       {/* Header */}
-      <Box sx={{ mb: 4 } as any}>
-        <Typography variant="h5" sx={{ mb: 1, fontWeight: 600 } as any}>
+      <Box sx={{ display: "flex", mb: 4 } as any}>
+        <Typography variant="h5" sx={{ display: "flex", mb: 1, fontWeight: 600 } as any}>
           Filter Presets & Advanced Filtering
         </Typography>
         <Typography variant="body1" color="text.secondary">
@@ -327,15 +327,15 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
       </Box>
 
       {/* Filter Presets List */}
-      <Card sx={{ mb: 3 } as any}>
+      <Card sx={{ display: "flex", mb: 3 } as any}>
         <CardHeader
-          title: any,
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
+          title
+            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
               <FilterList />
               <Typography variant="h6">Saved Filter Presets</Typography>
             </Box>
           }
-          action: any,
+          action
               startIcon={<Add />}
               onClick={() => setShowPresetDialog(true)}
             >
@@ -345,27 +345,27 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
         />
         <CardContent>
           {Object.values(filterPresets).length ===0 ? (
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 } as any}>
+            <Typography variant="body2" color="text.secondary" sx={{ display: "flex", textAlign: 'center', py: 4 } as any}>
               No filter presets created yet. Click "Create Preset" to get started.
             </Typography>
           ) : (
             <List>
-              {Object.values(filterPresets).map((preset: any: any) => (
+              {Object.values(filterPresets).map((preset: any: any: any: any) => (
                 <ListItem key={preset?.id} divider>
                   <ListItemText
-                    primary: any,
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
+                    primary
+                      <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
                         <Typography variant="subtitle1" fontWeight={600}>
                           {preset.name}
                         </Typography>
                         <Chip 
-                          size: any,
+                          size="small"
                           label={preset.gridType.toUpperCase()} 
-                          color: any,
+                          color
                           label={`${preset.filters.length} filters`} 
-                          variant: any,
+                          variant="body2"
                           label={preset.logic} 
-                          color: any,
+                          color
                     }
                     secondary={`Created: ${new Date(preset?.createdAt).toLocaleDateString()}`}
                   />
@@ -390,6 +390,7 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
 
       {/* Action Buttons */}
       <Box sx={{ 
+        display: "flex", 
         display: 'flex', 
         gap: 2, 
         justifyContent: 'flex-end',
@@ -397,7 +398,7 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
         borderTop: `1px solid ${theme.palette.divider}`
       }}>
         <Button
-          variant: any,
+          variant="body2"
           startIcon={<Save />}
           onClick={handleSaveAllSettings}
         >
@@ -409,15 +410,15 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
       <Dialog 
         open={showPresetDialog} 
         onClose={() => setShowPresetDialog(false)}
-        maxWidth: any,
+        maxWidth
           {editingPreset ? 'Edit Filter Preset' : 'Create Filter Preset'}
         </DialogTitle>
         <DialogContent>
-          <Grid { ...{container: true}} spacing={2} sx={{ mt: 1 } as any}>
+          <Grid { ...{container: true}} spacing={2} sx={{ display: "flex", mt: 1 } as any}>
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label: any,
+                label
                 value={newPreset.name}
                 onChange={(e) => setNewPreset(prev => ({ ...prev, name: e.target.value }))}
                 required
@@ -429,15 +430,15 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
                 <Select
                   value={newPreset.gridType}
                   onChange={(e) => setNewPreset(prev => ({ ...prev, gridType: e.target.value }))}
-                  label: any,
-          <Divider sx={{ my: 3 } as any} />
+                  label
+          <Divider sx={{ display: "flex", my: 3 } as any} />
 
           {/* Filter Logic */}
-          <Box sx={{ mb: 2 } as any}>
+          <Box sx={{ display: "flex", mb: 2 } as any}>
             <FormControlLabel
-              control: any,
+              control
                   checked={newPreset.logic === 'OR'}
-                  onChange: any,
+                  onChange
                     logic: e.target.checked ? 'OR' : 'AND' 
                   }))}
                 />
@@ -447,22 +448,22 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
           </Box>
 
           {/* Filters */}
-          <Box sx={{ mb: 2 } as any}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 } as any}>
+          <Box sx={{ display: "flex", mb: 2 } as any}>
+            <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 } as any}>
               <Typography variant="h6">Filters</Typography>
               <Button startIcon={<Add />} onClick={handleAddFilter}>
                 Add Filter
               </Button>
             </Box>
 
-            {newPreset.filters.map((filter: any: any, index: any: any) => (<Card key={filter?.id} sx={{ mb: 2, p: 2 } as any}>
+            {newPreset.filters.map((filter: any index: any: any: any: any) => (<Card key={filter?.id} sx={{ display: "flex", mb: 2, p: 2 } as any}>
                 <Grid { ...{container: true}} spacing={2} alignItems="center">
                   <Grid item xs={12} md={3}>
                     <FormControl fullWidth size="small">
                       <InputLabel>Field</InputLabel>
                       <Select
                         value={filter?.field}
-                        onChange: any,
+                        onChange
                           const fieldType = getFieldType(newPreset.gridType, e.target.value);
                           handleUpdateFilter(filter?.id, { 
                             field: e.target.value,
@@ -470,7 +471,7 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
                             operator: filterOperators[fieldType]?.[0]?.value || 'contains'
                           });
                         }}
-                        label: any,
+                        label
                           <MenuItem key={field?.field} value={field?.field}>
                             {field.label}
                           </MenuItem>
@@ -485,7 +486,7 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
                       <Select
                         value={filter?.operator}
                         onChange={(e) => handleUpdateFilter(filter?.id, { operator: e.target.value })}
-                        label: any,
+                        label
                           <MenuItem key={op.value} value={op.value}>
                             {op.label}
                           </MenuItem>
@@ -501,7 +502,7 @@ const GridFilterSettings: React.FC<any> = ({ user, onSettingsChange }) => {
                   <Grid item xs={12} md={1}>
                     <IconButton 
                       onClick={() => handleRemoveFilter(filter?.id)}
-                      color: any,
+                      color
             ))}
           </Box>
         </DialogContent>

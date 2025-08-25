@@ -98,7 +98,7 @@ export const getAllCategories = () => {
 export const getCategoriesForCombo = () => {
   const flatCategories = getAllCategories();
   
-  return flatCategories.map((category: any: any) => ({
+  return flatCategories.map((category: any: any: any: any) => ({
     id: category.id,
     label: category.path,
     value: category.id,
@@ -130,7 +130,7 @@ export const findCategoryById = (id) => {
  */
 export const getCategoryChildren = (parentId) => {
   const flatCategories = getAllCategories();
-  return flatCategories.filter((cat: any: any) => cat.parent_id ===parseInt(parentId));
+  return flatCategories.filter((cat: any: any: any: any) => cat.parent_id ===parseInt(parentId));
 };
 
 /**
@@ -151,7 +151,7 @@ export const getCategoryBreadcrumb = (categoryId) => {
     });
     
     if(current.parent_id) {
-      current: any,
+      current
     } else {
       break;
     }
@@ -169,7 +169,7 @@ export const searchCategories = (searchTerm) => {
   const flatCategories = getAllCategories();
   const term = searchTerm.toLowerCase();
   
-  return flatCategories.filter((category: any: any) =>
+  return flatCategories.filter((category: any: any: any: any) =>
     category.name.toLowerCase().includes(term) ||
     category.path.toLowerCase().includes(term)
   );
@@ -180,7 +180,7 @@ export const searchCategories = (searchTerm) => {
  */
 export const getCategoriesByLevel = (level) => {
   const flatCategories = getAllCategories();
-  return flatCategories.filter((cat: any: any) => cat.level ===level);
+  return flatCategories.filter((cat: any: any: any: any) => cat.level ===level);
 };
 
 /**
@@ -198,10 +198,10 @@ export const getCategoryStats = () => {
   
   return {
     total: flatCategories.length,
-    active: flatCategories.filter((cat: any: any) => cat.is_active).length,
-    inactive: flatCategories.filter((cat: any: any) => !cat.is_active).length,
-    levels: Math.max(...flatCategories.map((cat: any: any) => cat.level)),
-    totalProducts: flatCategories.reduce((sum: any: any: any, cat: any: any) => sum + (cat.product_count || 0), 0)
+    active: flatCategories.filter((cat: any: any: any: any) => cat.is_active).length,
+    inactive: flatCategories.filter((cat: any: any: any: any) => !cat.is_active).length,
+    levels: Math.max(...flatCategories.map((cat: any: any: any: any) => cat.level)),
+    totalProducts: flatCategories.reduce((sum: any: any cat: any: any: any: any) => sum + (cat.product_count || 0), 0)
   };
 };
 
@@ -223,7 +223,7 @@ export const formatCategoryForGrid = (category) => {
 export const getVisibleCategories = (expandedIds = new Set()) => {
   const allCategories = getAllCategories();
   
-  return allCategories.filter((category: any: any) => {
+  return allCategories.filter((category: any: any: any: any) => {
     // Always show root level
     if (category.level <= 1) return true;
     

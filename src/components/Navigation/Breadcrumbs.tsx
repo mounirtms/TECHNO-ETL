@@ -33,19 +33,18 @@ const Breadcrumbs = () => {
   }
 
   return (
-    <Box sx={{ mb: 2, px: 1 } as any}>
+    <Box sx={{ display: "flex", mb: 2, px: 1 } as any}>
       <MuiBreadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
         aria-label="breadcrumb"
-        sx: any,
-            mx: 1
+        sx={{
           },
           '& .MuiBreadcrumbs-ol': {
             alignItems: 'center'
           }
         }}
       >
-        {breadcrumbs.map((breadcrumb: any: any, index: any: any) => {
+        {breadcrumbs.map((breadcrumb: any index: any: any: any: any) => {
           const isLast = breadcrumb?.isActive;
           const isFirst = index ===0;
 
@@ -54,8 +53,7 @@ const Breadcrumbs = () => {
               <Chip
                 key={breadcrumb?.path}
                 label={breadcrumb?.label}
-                size: any,
-                  fontSize: '0.75rem',
+                size="small"
                   height: 24
                 } as any}
               />
@@ -65,10 +63,9 @@ const Breadcrumbs = () => {
           return (
             <Link
               key={breadcrumb?.path}
-              component: any,
+              component
               onClick={() => navigateToBreadcrumb(breadcrumb)}
-              sx: any,
-                alignItems: 'center',
+              sx={{
                 color: 'text.secondary',
                 textDecoration: 'none',
                 border: 'none',
@@ -84,7 +81,7 @@ const Breadcrumbs = () => {
                 }
               }}
             >
-              {isFirst && <HomeIcon sx={{ mr: 0.5, fontSize: 16 } as any} />}
+              {isFirst && <HomeIcon sx={{ display: "flex", mr: 0.5, fontSize: 16 } as any} />}
               {breadcrumb?.label}
             </Link>
           );

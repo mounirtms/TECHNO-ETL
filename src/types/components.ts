@@ -184,8 +184,8 @@ export interface GridColumn<T = any> {
   align?: 'left' | 'center' | 'right';
   type?: 'text' | 'number' | 'date' | 'boolean' | 'actions' | 'custom';
   format?: (value, row: T) => ReactNode;
-  render?: (value: any, row: T, index: number) => ReactNode;
-  cellProps?: (value: any, row: T) => Record<string, any>;
+  render?: (value row: T, index: number) => ReactNode;
+  cellProps?: (value row: T) => Record<string, any>;
   headerProps?: Record<string, any>;
 }
 

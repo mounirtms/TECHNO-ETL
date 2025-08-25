@@ -91,9 +91,9 @@ const CmsBlocksGrid = () => {
         }
     };
 
-    return(<Box sx={{ height: '100%' }}>
+    return(<Box sx={{ display: "flex", height: '100%' }}>
             <UnifiedGrid
-                gridName: any,
+                gridName
                 columns={columns}
                 data={data}
                 loading={loading}
@@ -101,19 +101,19 @@ const CmsBlocksGrid = () => {
                 currentFilter={filters}
                 onFilterChange={setFilters}
                 getRowId={(row) => row.identifier}
-                defaultSortModel: any,
+                defaultSortModel
                     { field: 'creation_time', sort: 'desc' }
                 ]}
                 defaultPageSize={10}
                 pageSizeOptions={[10, 25, 50, 100]}
-                onRowDoubleClick: any,
+                onRowDoubleClick
                     window.alert(`Viewing details for: ${params.row.title}`);
                 }}
             />
             <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} maxWidth="md" fullWidth>
                 <DialogTitle>Edit Block Content</DialogTitle>
                 <DialogContent>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>{editBlock.title}</Typography>
+                    <Typography variant="subtitle2" sx={{ display: "flex", mb: 1 }}>{editBlock.title}</Typography>
                     <ReactQuill theme="snow" value={editContent} onChange={(e) => setEditContent} style={{ minHeight: 200 }} />
                 </DialogContent>
                 <DialogActions>

@@ -63,7 +63,7 @@ export const useSettingsInitializer = (): SettingsInitializerResult => {
 
       setIsInitialized(true);
       console.log('Settings initialized successfully');
-    } catch(err: any) {
+    } catch (err) {
       console.error('Failed to initialize settings:', err);
       setError((err as Error).message);
       toast.error('Failed to load user preferences');

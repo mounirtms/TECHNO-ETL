@@ -26,6 +26,7 @@ interface UnifiedProviderProps {
 const ContextLoading = memo(() => (
   <Box
     sx={{
+      display: "flex",
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
@@ -38,12 +39,14 @@ const ContextLoading = memo(() => (
     <CircularProgress 
       size={40} 
       sx={{
+        display: "flex",
         color: 'primary.main',
       }} 
     />
     <Typography 
       variant="body1"
       sx={{
+        display: "flex",
         color: 'text.secondary',
         fontWeight: 500,
       }}

@@ -59,7 +59,7 @@ export const useSettingsIntegration = () => {
       applyThemeSettings(preferences);
 
       console.log('✅ Settings applied to all contexts:', preferences);
-    } catch(error: any) {
+    } catch (error) {
       console.error('❌ Failed to apply settings to contexts:', error);
     }
   }, [setThemeMode, setFontSize, setColorPreset, setDensity, setAnimations, setHighContrast, setLanguage]);
@@ -75,7 +75,7 @@ export const useSettingsIntegration = () => {
         updateSettingsContext(userSettings);
         
         toast.success('Settings loaded successfully');
-      } catch(error: any) {
+      } catch (error) {
         console.error('Failed to load user settings:', error);
         toast.error('Failed to load user settings');
       }
@@ -105,7 +105,7 @@ export const useSettingsIntegration = () => {
       }
       
       throw new Error('Failed to save settings');
-    } catch(error: any) {
+    } catch (error) {
       console.error('Save settings error:', error);
       toast.error('Failed to save settings');
       return false;
@@ -129,7 +129,7 @@ export const useSettingsIntegration = () => {
     try {
       const settings = optimizedSettingsManager.getSettings(currentUser?.uid);
       applySettingsToContexts(settings);
-    } catch(error: any) {
+    } catch (error) {
       console.error('Failed to initialize settings:', error);
     }
   }, [currentUser, applySettingsToContexts]);

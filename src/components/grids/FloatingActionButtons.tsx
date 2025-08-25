@@ -28,10 +28,10 @@ import { useTranslation } from 'react-i18next';
  */
 const FloatingActionButtons = ({
   actions = {},
-  selectedRows: any,
-  isRTL: any,
-  enableI18n: any,
-  position: any,
+  selectedRows
+  isRTL
+  enableI18n
+  position
   variant = 'speedDial', // 'speedDial' | 'individual'
   onAction
 }) => {
@@ -93,7 +93,7 @@ const FloatingActionButtons = ({
   };
 
   // Merge with custom actions, ensuring icons are provided
-  const allActions = Object.keys({ ...defaultActions, ...actions }).reduce((acc: any: any: any, key: any: any) => {
+  const allActions = Object.keys({ ...defaultActions, ...actions }).reduce((acc: any: any key: any: any: any: any) => {
     const defaultAction = defaultActions[key] || {};
     const customAction = actions[key] || {};
 
@@ -174,7 +174,7 @@ const FloatingActionButtons = ({
 
   // Filter and sort actions
   const enabledActions = Object.entries(allActions)
-    .filter(([, actionConfig]: any: any) => isActionEnabled(actionConfig))
+    .filter(([, actionConfig]: any: any: any: any) => isActionEnabled(actionConfig))
     .sort(([, a], [, b]) => (a.priority || 999) - (b.priority || 999));
 
   if (enabledActions.length ===0) return null;
@@ -183,18 +183,18 @@ const FloatingActionButtons = ({
   if(variant === 'speedDial') {
     return (
       <SpeedDial
-        ariaLabel: any,
+        ariaLabel
         sx={getPositionStyles()}
         icon={<SpeedDialIcon icon={<MoreIcon />} openIcon={<CloseIcon />} />}
         onClose={() => setSpeedDialOpen(false)}
         onOpen={() => setSpeedDialOpen(true)}
         open={speedDialOpen}
         direction={position.includes('top') ? 'down' : 'up'}
-        FabProps: any,
+        FabProps
           size: 'medium'
         }}
       >
-        {enabledActions.map(([actionKey: any: any, actionConfig]: any: any) => {
+        {enabledActions.map(([actionKey: any actionConfig]: any: any: any: any) => {
           const IconComponent = actionConfig.icon || MoreIcon;
           return (
             <SpeedDialAction
@@ -203,7 +203,7 @@ const FloatingActionButtons = ({
               tooltipTitle={translate(actionKey, actionConfig.label)}
               tooltipPlacement={isRTL ? 'right' : 'left'}
               onClick={() => handleActionClick(actionKey, actionConfig)}
-              FabProps: any,
+              FabProps
                 size: 'small'
               }}
             />
@@ -216,7 +216,7 @@ const FloatingActionButtons = ({
   // Individual FABs variant
   return (
     <Box sx={getPositionStyles()}>
-      {enabledActions.map(([actionKey: any: any, actionConfig], index: any: any) => {
+      {enabledActions.map(([actionKey: any actionConfig]: any = {}; // Fixed invalid assignment index: any: any: any: any) => {
         const IconComponent = actionConfig.icon || MoreIcon;
         const bottomOffset = index * 64; // Stack vertically
         
@@ -225,7 +225,7 @@ const FloatingActionButtons = ({
             key={actionKey}
             in={true}
             timeout={200 + index * 100}
-            style: any,
+            style
               transitionDelay: `${index * 100}ms`
             }}
           >
@@ -237,8 +237,7 @@ const FloatingActionButtons = ({
                 color={actionConfig.color || 'primary'}
                 size={index ===0 ? 'medium' : 'small'}
                 onClick={() => handleActionClick(actionKey, actionConfig)}
-                sx: any,
-                  bottom: bottomOffset,
+                sx={{
                   right: 0,
                   transition: theme.transitions.create(['transform', 'box-shadow'], {
                     duration: theme.transitions.duration.short

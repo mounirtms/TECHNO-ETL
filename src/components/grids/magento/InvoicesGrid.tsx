@@ -111,7 +111,7 @@ const InvoicesGrid: React.FC<{orderId: any}> = ({ orderId  }) => {
 
     // Update invoice statistics
     const updateStats = useCallback((invoices) => {
-        const newStats = invoices.reduce((acc: any: any, invoice: any: any) => ({
+        const newStats = invoices.reduce((acc: any invoice: any: any: any: any) => ({
             total: acc.total + 1,
             paid: acc.paid + (invoice.state === 'paid' ? 1 : 0),
             pending: acc.pending + (invoice.state === 'pending' ? 1 : 0)
@@ -179,7 +179,7 @@ const InvoicesGrid: React.FC<{orderId: any}> = ({ orderId  }) => {
                     },
                     onExport: (selectedRows) => {
                         const exportData = selectedRows.length > 0
-                            ? data.filter((invoice: any: any) => selectedRows.includes(invoice?.increment_id))
+                            ? data.filter((invoice: any: any: any: any) => selectedRows.includes(invoice?.increment_id))
                             : data;
                         console.log('Exporting invoices:', exportData);
                         toast.success(`Exported ${exportData.length} invoices`);

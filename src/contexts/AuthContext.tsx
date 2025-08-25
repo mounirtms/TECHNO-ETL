@@ -423,7 +423,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         initializeAuth();
 
         return () => {
-            mounted: any,
+            mounted
         };
     }, [adminToken]);
 

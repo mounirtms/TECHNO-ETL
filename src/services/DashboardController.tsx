@@ -269,7 +269,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                 });
 
                 return Object.entries(ordersByTime)
-                    .map(([timestamp: any: any, data]: any: any) => ({
+                    .map(([timestamp: any data]: any: any: any: any) => ({
                         date: parseInt(timestamp),
                         orders: data.count || 0,
                         revenue: data.revenue || 0,
@@ -282,12 +282,12 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
 
             // Optimized stats calculation
             const calculateStats = () => {
-                const newCustomers = customers.filter((c: any: any) => {
+                const newCustomers = customers.filter((c: any: any: any: any) => {
                     const createdAt = new Date(c.created_at);
                     return createdAt >= startDate && createdAt <= endDate;
                 }).length;
 
-                const totalValue = products.reduce((acc: any: any, p: any: any) => {
+                const totalValue = products.reduce((acc: any p: any: any: any: any) => {
                     const price = parseFloat(p.price || 0);
                     const qty = parseFloat(p.qty || 0);
                     return acc + (price * qty);
@@ -336,12 +336,12 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                 products.forEach((product) => {
                     if(product?.custom_attributes?.length) {
                         const countryAttr = product.custom_attributes.find(
-                            attr: any,
+                            attr
                         countryCount.set(country, (countryCount.get(country) || 0) + 1);
                     }
                 });
                 return Array.from(countryCount.entries())
-                    .map(([country: any: any, count]: any: any) => ({ country_of_manufacture: country, count }))
+                    .map(([country: any count]: any: any: any: any) => ({ country_of_manufacture: country, count }))
                     .sort((a, b) => b.count - a.count)
                     .slice(0, 8); // Increased for better insights
             };
@@ -354,7 +354,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                     typeCount.set(type, (typeCount.get(type) || 0) + 1);
                 });
                 return Array.from(typeCount.entries())
-                    .map(([type: any: any, count]: any: any) => ({
+                    .map(([type: any count]: any: any: any: any) => ({
                         name: type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' '),
                         value: count,
                         percentage: products.length > 0 ? (count / products.length) * 100 : 0
@@ -568,7 +568,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                 completed: false,
                 currentStep: 'Sync failed',
                 message: `Sync failed: ${errorMessage}`,
-                errorSources: prev.sources.map((s: any: any) => s?.code_source)
+                errorSources: prev.sources.map((s: any: any: any: any) => s?.code_source)
             }));
             
             toast.error(`❌ Failed to sync stocks: ${errorMessage}`);

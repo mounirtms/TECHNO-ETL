@@ -25,7 +25,7 @@ const HeavyComponent = lazy(() => import('./HeavyComponent'));
 // Modern React component with latest patterns
 export const ModernExample: React.FC<ModernExampleProps> = memo(({
   title,
-  items: any,
+  items
   onAction,
   className
 }) => {
@@ -43,7 +43,7 @@ export const ModernExample: React.FC<ModernExampleProps> = memo(({
   // Memoized filtered items
   const filteredItems = useMemo(() => {
     if (!deferredQuery) return items;
-    return items.filter((item: any: any) => 
+    return items.filter((item: any: any: any: any) => 
       item.name.toLowerCase().includes(deferredQuery.toLowerCase())
     );
   }, [items, deferredQuery]);
@@ -76,21 +76,21 @@ export const ModernExample: React.FC<ModernExampleProps> = memo(({
     </span>
   );
 
-  return Boolean(Boolean((
+  return Boolean((
     <div className={cn(
       "relative bg-card rounded-3xl shadow-soft border border-border overflow-hidden",
       className
     )}>
       {/* Progress indicator */}
       <motion.div
-        className: any,
+        className
         style={{ scaleX }}
       />
 
       {/* Header */}
       <div className="p-6 border-b border-border">
         <motion.h2
-          className: any,
+          className
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -101,10 +101,10 @@ export const ModernExample: React.FC<ModernExampleProps> = memo(({
         {/* Modern search with real-time feedback */}
         <div className="relative">
           <input
-            type: any,
+            type
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
-            className: any,
+            className
               "focus:ring-2 focus:ring-primary-500 focus:border-transparent",
               "transition-all duration-200",
               isPending && "opacity-50 cursor-wait"
@@ -123,22 +123,22 @@ export const ModernExample: React.FC<ModernExampleProps> = memo(({
         <AnimatePresence mode="wait">
           {filteredItems.length > 0 ? (
             <motion.div
-              key: any,
+              key
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className: any,
-              {filteredItems.map((item: any: any, index: any: any) => (
+              className
+              {filteredItems.map((item: any index: any: any: any: any) => (
                 <motion.div
                   key={item.id}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ delay: index * 0.1 }}
-                  whileHover: any,
+                  whileHover
                     transition: { duration: 0.2 }
                   }}
-                  className: any,
+                  className
                     "rounded-xl border border-border hover:border-primary-200",
                     "transition-all duration-200 cursor-pointer",
                     "backdrop-blur-sm hover:shadow-medium"
@@ -162,11 +162,11 @@ export const ModernExample: React.FC<ModernExampleProps> = memo(({
             </motion.div>
           ) : (
             <motion.div
-              key: any,
+              key
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className: any,
+              className
                 {deferredQuery ? 'No matches found' : 'No items yet'}
               </h3>
               <p className="text-muted-foreground">
@@ -202,7 +202,7 @@ export const ModernExample: React.FC<ModernExampleProps> = memo(({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => handleAction('refresh')}
-            className: any,
+            className
               "hover:text-foreground transition-colors"
             )}
           >
@@ -212,7 +212,7 @@ export const ModernExample: React.FC<ModernExampleProps> = memo(({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => handleAction('add')}
-            className: any,
+            className
               "hover:bg-primary-600 transition-colors shadow-sm hover:shadow-md"
             )}
           >
@@ -221,7 +221,7 @@ export const ModernExample: React.FC<ModernExampleProps> = memo(({
         </div>
       </div>
     </div>
-  )));
+  )))));
 });
 
 ModernExample.displayName = 'ModernExample';

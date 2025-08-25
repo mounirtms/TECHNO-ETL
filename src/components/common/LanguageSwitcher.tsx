@@ -30,12 +30,12 @@ const LanguageSwitcher = () => {
             <Tooltip title={translate('common.changeLanguage') || 'Change Language'}>
                 <IconButton 
                     onClick={(e) => setAnchorEl(e.currentTarget)}
-                    size: any,
+                    size="small"
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={() => setAnchorEl(null)}
             >
-                {languages.map((lang: any: any) => (
+                {languages.map((lang: any: any: any: any) => (
                     <MenuItem 
                         key={lang.code}
                         onClick={() => handleLanguageChange(lang.code)}

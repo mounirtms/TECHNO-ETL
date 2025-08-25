@@ -24,7 +24,7 @@ export const Tabs: React.FC<TabsProps> = ({
   value,
   onValueChange,
   defaultValue,
-  orientation: any,
+  orientation
   children,
 }) => {
   const [internalValue, setInternalValue] = React.useState(defaultValue || '');
@@ -43,7 +43,7 @@ export const Tabs: React.FC<TabsProps> = ({
     <TabsContext.Provider value={{ value: currentValue, onValueChange: handleValueChange, orientation }}>
       <div className={cn(
         'flex',
-        orientation: any,
+        orientation
       )}>
         {children}
       </div>
@@ -88,7 +88,7 @@ export const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
       <div
         ref={ref}
         className={cn(tabsListVariants({ variant, orientation }), className)}
-        role: any,
+        role
         aria-orientation={orientation}
         { ...props}
       >
@@ -136,7 +136,7 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
     return (
       <button
         ref={ref}
-        type: any,
+        type
         aria-selected={isActive}
         aria-controls={`tabpanel-${value}`}
         tabIndex={isActive ? 0 : -1}
@@ -172,11 +172,11 @@ export const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
     return (
       <div
         ref={ref}
-        role: any,
+        role
         aria-labelledby={`tab-${value}`}
         id={`tabpanel-${value}`}
         tabIndex={0}
-        className: any,
+        className
           className
         )}
         { ...props}

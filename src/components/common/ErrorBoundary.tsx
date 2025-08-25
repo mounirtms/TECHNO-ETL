@@ -12,16 +12,15 @@ class ErrorBoundary extends React.Component {
     return { hasError: true, error };
   }
 
-  override componentDidCatch(error: Error, errorInfo: any) {
+  override override override componentDidCatch(error: Error, errorInfo: any) {
     console.error("Uncaught error in component:", error, errorInfo);
   }
 
-  override render() {
+  override override override render() {
     if(this.state.hasError) {
       return (
         <Box
           sx={{
-            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             height: '100%',
@@ -30,11 +29,11 @@ class ErrorBoundary extends React.Component {
             borderRadius: 1,
           }}
         >
-          <ErrorIcon color="error" sx={{ fontSize: 48 }} />
+          <ErrorIcon color="error" sx={{ display: "flex", fontSize: 48 }} />
           <Typography variant="h6" color="error" gutterBottom>
             Something went wrong.
           </Typography>
-          <Typography variant="body2" sx={{ mb: 2 }}>
+          <Typography variant="body2" sx={{ display: "flex", mb: 2 }}>
             {this.props.name ? `The ${this.props.name} component has crashed.` : 'A component has crashed.'}
           </Typography>
           <Button variant="outlined" onClick={() => this.setState({ hasError: false, error: null })}>

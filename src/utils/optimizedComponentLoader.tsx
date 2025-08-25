@@ -50,7 +50,7 @@ export const loadComponent = async (componentPath: string, componentName: string
  * @param {Array} components - Array of component descriptors
  */
 export const preloadComponents = async(components: Array<{path: string, name: string}>) => {
-  const promises = components.map(({ path: any: any, name }: {path: string, name: string}: any: any) => loadComponent(path, name));
+  const promises = components.map(({ path: any name }: {path: string: any = {}; // Fixed invalid assignment name: string}: any: any: any: any) => loadComponent(path, name));
   try {
     await Promise.all(promises);
     console.log('✅ Preloaded critical components');

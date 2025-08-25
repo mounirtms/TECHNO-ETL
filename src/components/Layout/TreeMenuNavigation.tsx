@@ -272,7 +272,7 @@ const TreeMenuNavigation: React.FC<any> = ({
         const filtered: any[] = [];
 
         MENU_TREE.forEach((category) => {
-            const matchedChildren = category.children?.filter((item: any: any) => {
+            const matchedChildren = category.children?.filter((item: any: any: any: any) => {
                 const itemText = (translate(item.labelKey) || item.label).toLowerCase();
                 const categoryText = (translate(category.labelKey) || category.label).toLowerCase();
                 return itemText.includes(query) || categoryText.includes(query);
@@ -306,7 +306,7 @@ const TreeMenuNavigation: React.FC<any> = ({
         if (!query.trim()) return text;
         
         const parts = text.split(new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'));
-        return parts.map((part: any: any, index: any: any) => 
+        return parts.map((part: any index: any: any: any: any) => 
             part.toLowerCase() ===query.toLowerCase() ? 
                 <HighlightedText key={index}>{part}</HighlightedText> : 
                 part
@@ -317,7 +317,7 @@ const TreeMenuNavigation: React.FC<any> = ({
         const isExpanded = expandedCategories.has(category.id);
         const CategoryIcon = category.icon;
         
-        return Boolean(Boolean((
+        return Boolean((
             <StyledCategoryItem
                 key={category.id}
                 isRTL={isRTL}
@@ -325,18 +325,18 @@ const TreeMenuNavigation: React.FC<any> = ({
                 expanded={isExpanded}
                 onClick={() => handleCategoryToggle(category.id)}
             >
-                <ListItemIcon sx={{ minWidth: 32 } as any}>
+                <ListItemIcon sx={{ display: "flex", minWidth: 32 } as any}>
                     <CategoryIcon className="category-icon" fontSize="small" />
                 </ListItemIcon>
                 
                 {open && (
                     <>
                         <ListItemText
-                            primary: any,
+                            primary
                                     {highlightText(translate(category.labelKey) || category.label, searchQuery)}
                                 </Typography>
                             }
-                            secondary: any,
+                            secondary
                                     {category.children?.length || 0} items
                                 </Typography>
                             }
@@ -355,7 +355,7 @@ const TreeMenuNavigation: React.FC<any> = ({
                     >
                         <Badge
                             badgeContent={category.children?.length || 0}
-                            color: any,
+                            color
                             invisible={!category.children?.length}
                         >
                             <Box />
@@ -363,7 +363,7 @@ const TreeMenuNavigation: React.FC<any> = ({
                     </Tooltip>
                 )}
             </StyledCategoryItem>
-        )));
+        )))));
     };
 
     const renderMenuItem = (item: any) => {
@@ -372,7 +372,7 @@ const TreeMenuNavigation: React.FC<any> = ({
         const licenseStatus = getLicenseStatus(item);
         const ItemIcon = item.icon;
 
-        return Boolean(Boolean((
+        return Boolean((
             <StyledMenuItem
                 key={item.id}
                 isRTL={isRTL}
@@ -382,18 +382,17 @@ const TreeMenuNavigation: React.FC<any> = ({
                 hasAccess={hasAccess}
                 onClick={() => handleMenuItemClick(item)}
             >
-                <ListItemIcon sx={{ minWidth: 28 } as any}>
+                <ListItemIcon sx={{ display: "flex", minWidth: 28 } as any}>
                     <ItemIcon className="menu-icon" fontSize="small" />
                 </ListItemIcon>
                 
                 {open && (
                     <>
                         <ListItemText
-                            primary: any,
+                            primary
                                 <Box display="flex" alignItems="center" gap={1}>
                                     <Typography 
-                                        variant: any,
-                                            color: hasAccess ? 'inherit' : 'text.disabled'
+                                        variant="body2"
                                         } as any}
                                     >
                                         {highlightText(translate(item.labelKey) || item.label, searchQuery)}
@@ -401,11 +400,9 @@ const TreeMenuNavigation: React.FC<any> = ({
                                     
                                     {item?.licensed && (
                                         <IconButton 
-                                            size: any,
-                                                color: licenseStatus.color === 'success' ? 'success.main' : 
-                                                       licenseStatus.color === 'primary' ? 'primary.main' : 'error.main'
+                                            size="small"
                                             } as any}
-                                            className: any,
+                                            className
                                             {licenseStatus.icon}
                                         </IconButton>
                                     )}
@@ -416,7 +413,7 @@ const TreeMenuNavigation: React.FC<any> = ({
                         {/* Quality indicators for special items */}
                         {(item.id === 'BugBounty' || item.id === 'Voting') && (
                             <StarIcon 
-                                fontSize: any,
+                                fontSize
                                     opacity: 0.7 
                                 } as any} 
                             />
@@ -432,7 +429,7 @@ const TreeMenuNavigation: React.FC<any> = ({
                         <Box display="flex" alignItems="center">
                             {item?.licensed && !hasAccess && (
                                 <LockIcon 
-                                    fontSize: any,
+                                    fontSize
                                         opacity: 0.7 
                                     } as any} 
                                 />
@@ -441,14 +438,14 @@ const TreeMenuNavigation: React.FC<any> = ({
                     </Tooltip>
                 )}
             </StyledMenuItem>
-        )));
+        )))));
     };
 
     // Filter out unlicensed items from the menu (do not render them at all)
     const filteredMenuTreeForUser = useMemo(() => {
-        return filteredMenuTree.map((category: any: any) => {
+        return filteredMenuTree.map((category: any: any: any: any) => {
             // Only keep children the user has access to
-            const filteredChildren = (category.children || []).filter((item: any: any) => {
+            const filteredChildren = (category.children || []).filter((item: any: any: any: any) => {
                 // Remove user management from sidebar
                 if(item.id === 'UserManagement' || item.id === 'Users' || item.id === 'UserList') {
                     return false;
@@ -476,18 +473,18 @@ const TreeMenuNavigation: React.FC<any> = ({
                 <SearchContainer>
                     <TextField
                         fullWidth
-                        size: any,
+                        size="small"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        InputProps: any,
+                        InputProps
                             endAdornment: searchQuery && (
                                 <InputAdornment position="end">
                                     <IconButton
-                                        size: any,
+                                        size="small"
                                         onClick={() => setSearchQuery('')}
-                                        edge: any,
+                                        edge
                         }}
-                        sx: any,
+                        sx={{
                                 backgroundColor: alpha(theme.palette.background.paper, 0.8),
                                 '&:hover': {
                                     backgroundColor: alpha(theme.palette.background.paper, 0.9),
@@ -502,7 +499,7 @@ const TreeMenuNavigation: React.FC<any> = ({
             )}
             
             <List disablePadding>
-                {filteredMenuTreeForUser.map((category: any: any) => (
+                {filteredMenuTreeForUser.map((category: any: any: any: any) => (
                     <React.Fragment key={category.id}>
                         {renderCategoryHeader(category)}
                         <Collapse in={expandedCategories.has(category.id)} timeout="auto" unmountOnExit>
@@ -518,8 +515,7 @@ const TreeMenuNavigation: React.FC<any> = ({
             {/* License Status Footer */}
             {open && userLicense && (
                 <Box 
-                    sx: any,
-                        mt: 2,
+                    sx={{
                         borderTop: `1px solid ${theme.palette.divider}`,
                         background: alpha(theme.palette.background.paper, 0.5)
                     }}

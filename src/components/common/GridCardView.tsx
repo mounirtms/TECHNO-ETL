@@ -73,7 +73,7 @@ const GridCardView: React.FC<{data = []: any, type = 'product': any}> = ({ data 
     const renderProductCard = (item) => (
         <Grid item xs={12} sm={6} md={4} lg={3} key={item.id || item.sku}>
             <StyledCard>
-                <Box sx={{ position: 'relative' }}>
+                <Box sx={{ display: "flex", position: 'relative' }}>
                     <StyledCardMedia
                         image={item.image || 'https://via.placeholder.com/300x400?text=No+Image'}
                         title={item.name}
@@ -83,7 +83,7 @@ const GridCardView: React.FC<{data = []: any, type = 'product': any}> = ({ data 
                             key={item.id || item.sku}
                             label={item.status}
                             color={getStatusColor(item.status)}
-                            size: any,
+                            size="small"
                     )}
                 </Box>
                 <CardContent>
@@ -100,7 +100,7 @@ const GridCardView: React.FC<{data = []: any, type = 'product': any}> = ({ data 
                             <Typography variant="body2">
                                 {item.price ? `$${parseFloat(item.price).toFixed(2)}` : 'N/A'}
                                 {item.special_price && (
-                                    <Typography component="span" color="error.main" sx={{ ml: 1 }}>
+                                    <Typography component="span" color="error.main" sx={{ display: "flex", ml: 1 }}>
                                         ${parseFloat(item.special_price).toFixed(2)}
                                     </Typography>
                                 )}
@@ -186,9 +186,9 @@ const GridCardView: React.FC<{data = []: any, type = 'product': any}> = ({ data 
     );
 
     return (
-        <Box sx={{ p: 2 }}>
+        <Box sx={{ display: "flex", p: 2 }}>
                 <Grid { ...{container: true}} spacing={3}>
-                {data.map((item: any: any, index: any: any) => {
+                {data.map((item: any index: any: any: any: any) => {
                     switch(type) {
                         case 'ProductsGrid':
                             return renderProductCard(item);

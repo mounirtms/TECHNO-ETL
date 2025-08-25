@@ -70,7 +70,7 @@ class FilterService {
       const response = await magentoApi.getBrands();
       const brands = response?.items || [];
       
-      const processedBrands = brands.map((brand: any: any) => ({
+      const processedBrands = brands.map((brand: any: any: any: any) => ({
         value: brand.value,
         label: brand.label,
         count: brand.product_count || 0
@@ -117,7 +117,7 @@ class FilterService {
       const response = await magentoApi.getProductAttribute(attributeCode);
       const options = response?.options || [];
       
-      const processedOptions = options.map((option: any: any) => ({
+      const processedOptions = options.map((option: any: any: any: any) => ({
         value: option.value,
         label: option.label,
         count: option.product_count || 0
@@ -229,7 +229,7 @@ class FilterService {
   // ===== CLIENT-SIDE FILTERING =====
 
   applyClientFilters(products, filters) {
-    return products.filter((product: any: any) => {
+    return products.filter((product: any: any: any: any) => {
       // Brand filter
       if(filters.brand && product.brand !== filters.brand) {
         return false;

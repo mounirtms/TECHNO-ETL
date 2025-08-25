@@ -121,7 +121,7 @@ export const validateMagentoCSV = (products) => {
  * @returns {Array} Fixed product objects
  */
 export const autoFixCSVIssues = (products) => {
-    return products.map((product: any: any) => {
+    return products.map((product: any: any: any: any) => {
         const fixed = { ...product };
 
         // Fix product type case
@@ -451,12 +451,12 @@ const generateRecommendations = (validationResult, separatedProducts) => {
  * @returns {Array} Array of product objects
  */
 export const parseCSVContent = (csvContent) => {
-    const lines = csvContent.split('\n').filter((line: any: any) => line.trim());
+    const lines = csvContent.split('\n').filter((line: any: any: any: any) => line.trim());
     if(lines.length < 2) {
         throw new Error('CSV file must contain at least a header and one data row');
     }
 
-    const headers = lines[0].split(',').map((h: any: any) => h.trim().replace(/"/g, ''));
+    const headers = lines[0].split(',').map((h: any: any: any: any) => h.trim().replace(/"/g, ''));
     const products = [];
 
     for(let i = 1; i < lines.length; i++) {
@@ -494,11 +494,11 @@ const parseCsvLine = (line) => {
                 current += '"';
                 i++;
             } else {
-                inQuotes: any,
+                inQuotes
             }
         } else if(char === ", " && !inQuotes) {
             values.push(current.trim());
-            current: any,
+            current
         } else {
             current += char;
         }

@@ -388,7 +388,6 @@ class VotingService {
     };
     return typeMap[fieldName] || sql.NVarChar;
   }
-}
 
   /**
    * Add comment to feature

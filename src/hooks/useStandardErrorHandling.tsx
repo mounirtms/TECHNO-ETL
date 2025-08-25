@@ -51,7 +51,7 @@ interface ErrorHandlingResult {
   lastOperation: (() => Promise) | null;
 
   // Actions
-  handleError: (err: any, context?: Record<string, any>) => ErrorInfo;
+  handleError: (err context?: Record<string, any>) => ErrorInfo;
   clearError: () => void;
   retry: () => Promise;
   executeWithErrorHandling: (operation: () => Promise, context?: Record<string, any>) => Promise;
@@ -81,7 +81,7 @@ interface DataFetchingResult<T> extends ErrorHandlingResult {
  */
 interface FormErrorHandlingResult extends ErrorHandlingResult {
   fieldErrors: Record<string, string>;
-  handleSubmit: (submitFunction: (formData) => Promise, formData: any, context?: Record<string, any>) => Promise;
+  handleSubmit: (submitFunction: (formData) => Promise, formData context?: Record<string, any>) => Promise;
   clearFieldErrors: () => void;
   setFieldError: (field: string, message: string) => void;
   hasFieldErrors: boolean;
@@ -98,12 +98,12 @@ export const useStandardErrorHandling = (
   options: ErrorHandlingOptions = {}
 ): ErrorHandlingResult => {
   const {
-    showToast: any,
-    fallbackDataType: any,
-    maxRetries: any,
-    retryDelay: any,
-    onError: any,
-    onRetry: any,
+    showToast
+    fallbackDataType
+    maxRetries
+    retryDelay
+    onError
+    onRetry
   } = options;
 
   const [error, setError] = useState<ErrorInfo | null>(null);
@@ -288,14 +288,14 @@ export const useDataFetching = <T = any>(
     return null;
   }, [fetchData, errorHandling.lastOperation]);
 
-  return Boolean(Boolean({ ...errorHandling,
+  return Boolean(({ ...errorHandling,
     data,
     setData,
     fetchData,
     refresh,
     initialized,
     isEmpty: initialized && (!data || (Array.isArray(data) && data.length ===0))
-  }));
+  }))));
 };
 
 /**
@@ -314,7 +314,7 @@ export const useFormErrorHandling = (
   /**
    * Handle form submission with error handling
    */
-  const handleSubmit = useCallback(async (submitFunction: (formData) => Promise, formData: any, context: Record<string, any> = {}) => {
+  const handleSubmit = useCallback(async (submitFunction: (formData) => Promise, formData context: Record<string, any> = {}) => {
     setFieldErrors({});
     
     try {

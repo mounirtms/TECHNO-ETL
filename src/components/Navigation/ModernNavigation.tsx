@@ -71,7 +71,7 @@ const QuickAccessSearch: React.FC<any> = ({ onClose }) => {
 
   useEffect(() => {
     if(searchQuery.length > 1) {
-      const filtered = searchableItems.filter((item: any: any) =>
+      const filtered = searchableItems.filter((item: any: any: any: any) =>
         item?.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setSearchResults(filtered.slice(0, 5));
@@ -86,30 +86,30 @@ const QuickAccessSearch: React.FC<any> = ({ onClose }) => {
   };
 
   return (
-    <Paper sx={{ p: 2, minWidth: 300, maxWidth: 400 } as any}>
+    <Paper sx={{ display: "flex", p: 2, minWidth: 300, maxWidth: 400 } as any}>
       <TextField
         fullWidth
         placeholder={t('Search pages, features...')}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        InputProps: any,
+        InputProps
         }}
         autoFocus
       />
       
       {searchResults.length > 0 && (
-        <Box sx={{ mt: 2 } as any}>
-          <Typography variant="caption" color="text.secondary" sx={{ px: 1 } as any}>
+        <Box sx={{ display: "flex", mt: 2 } as any}>
+          <Typography variant="caption" color="text.secondary" sx={{ display: "flex", px: 1 } as any}>
             Quick Access
           </Typography>
           <MenuList dense>
-            {searchResults.map((item: any: any) => {
+            {searchResults.map((item: any: any: any: any) => {
               const IconComponent = item?.icon;
               return (
                 <MenuItem
                   key={item?.id}
                   onClick={() => handleItemClick(item)}
-                  sx={{ borderRadius: 1, my: 0.5 } as any}
+                  sx={{ display: "flex", borderRadius: 1, my: 0.5 } as any}
                 >
                   <ListItemIcon>
                     <IconComponent fontSize="small" />
@@ -124,7 +124,7 @@ const QuickAccessSearch: React.FC<any> = ({ onClose }) => {
       )}
       
       {searchQuery.length > 1 && searchResults.length ===0 && (
-        <Box sx={{ mt: 2, textAlign: 'center', py: 2 } as any}>
+        <Box sx={{ display: "flex", mt: 2, textAlign: 'center', py: 2 } as any}>
           <Typography variant="body2" color="text.secondary">
             No results found for "{searchQuery}"
           </Typography>
@@ -147,8 +147,8 @@ const ContextualPageHeader = () => {
 
   const canGoBack = window.history.length > 1;
 
-  return Boolean(Boolean((
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 } as any}>
+  return Boolean((
+    <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2 } as any}>
       {canGoBack && (
         <Tooltip title="Go Back">
           <IconButton onClick={() => navigate(-1)} size="small">
@@ -158,7 +158,7 @@ const ContextualPageHeader = () => {
       )}
       
       <Box>
-        <Typography variant="h6" component="h1" sx={{ fontWeight: 600 } as any}>
+        <Typography variant="h6" component="h1" sx={{ display: "flex", fontWeight: 600 } as any}>
           {t(currentRoute?.title)}
         </Typography>
         {currentRoute.description && (
@@ -168,7 +168,7 @@ const ContextualPageHeader = () => {
         )}
       </Box>
     </Box>
-  )));
+  )))));
 };
 
 /**
@@ -190,19 +190,19 @@ const QuickActionsMenu = () => {
       <Tooltip title="Quick Actions">
         <IconButton
           onClick={(e) => setAnchorEl(e.currentTarget)}
-          size: any,
+          size="small"
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {quickActions.map((action: any: any, index: any: any) => {
+        {quickActions.map((action: any index: any: any: any: any) => {
           const IconComponent = action?.icon;
           return (
             <MenuItem
               key={index}
-              onClick: any,
+              onClick
               }}
             >
               <ListItemIcon>
@@ -240,8 +240,8 @@ const UserProfileMenu = () => {
       <Tooltip title="Account">
         <IconButton
           onClick={(e) => setAnchorEl(e.currentTarget)}
-          size: any,
-          <Avatar sx={{ width: 32, height: 32 } as any}>
+          size="small"
+          <Avatar sx={{ display: "flex", width: 32, height: 32 } as any}>
             {currentUser?.displayName?.[0] || currentUser?.email?.[0] || 'U'}
           </Avatar>
         </IconButton>
@@ -254,7 +254,7 @@ const UserProfileMenu = () => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <Box sx={{ px: 2, py: 1, borderBottom: 1, borderColor: 'divider' } as any}>
+        <Box sx={{ display: "flex", px: 2, py: 1, borderBottom: 1, borderColor: 'divider' } as any}>
           <Typography variant="subtitle2">
             {currentUser?.displayName || currentUser?.email || 'User'}
           </Typography>
@@ -304,7 +304,7 @@ const ModernNavigation: React.FC<any> = ({ onMenuToggle, isMenuOpen = false }) =
 
   return(<>
       <AppBar 
-        position: any,
+        position
           backgroundColor: 'background.paper',
           color: 'text.primary',
           boxShadow: 1,
@@ -312,13 +312,13 @@ const ModernNavigation: React.FC<any> = ({ onMenuToggle, isMenuOpen = false }) =
           borderColor: 'divider'
         } as any}
       >
-        <Toolbar sx={{ justifyContent: 'space-between' } as any}>
+        <Toolbar sx={{ display: "flex", justifyContent: 'space-between' } as any}>
           {/* Left Section */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 } as any}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2 } as any}>
             <IconButton
-              edge: any,
+              edge
               onClick={onMenuToggle}
-              sx={{ mr: 1 } as any}
+              sx={{ display: "flex", mr: 1 } as any}
             >
               <MenuIcon />
             </IconButton>
@@ -327,7 +327,7 @@ const ModernNavigation: React.FC<any> = ({ onMenuToggle, isMenuOpen = false }) =
           </Box>
 
           {/* Center Section - Search */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
             <Tooltip title="Search">
               <IconButton onClick={handleSearchClick}>
                 <SearchIcon />
@@ -336,7 +336,7 @@ const ModernNavigation: React.FC<any> = ({ onMenuToggle, isMenuOpen = false }) =
           </Box>
 
           {/* Right Section */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
             <QuickActionsMenu />
             
             <Tooltip title="Notifications">
@@ -356,8 +356,8 @@ const ModernNavigation: React.FC<any> = ({ onMenuToggle, isMenuOpen = false }) =
       <Popper
         open={searchOpen}
         anchorEl={searchAnchorEl}
-        placement: any,
-        sx={{ zIndex: (theme) => theme.zIndex.modal } as any}
+        placement
+        sx={{ display: "flex", zIndex: (theme) => theme.zIndex.modal } as any}
       >
         {({ TransitionProps }) => (
           <Fade { ...TransitionProps} timeout={200}>

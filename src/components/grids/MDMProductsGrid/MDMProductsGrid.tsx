@@ -71,24 +71,24 @@ const MDMProductsGrid = () => {
 
   // ===== UTILITY FUNCTIONS (moved up to avoid initialization issues) =====
   const SyncProgressToast = useCallback(({ current, total }) => (
-    <Box sx={{ width: '100%', p: 1 }}>
-      <Typography variant="caption" sx={{ display: 'block', mb: 1 }}>
+    <Box sx={{ display: "flex", width: '100%', p: 1 }}>
+      <Typography variant="caption" sx={{ display: "flex", display: 'block', mb: 1 }}>
         {`Syncing ${current}/${total} items...`}
       </Typography>
       <LinearProgress
-        variant: any,
+        variant="body2"
         value={(current / total) * 100}
-        sx={{ height: 8, borderRadius: 4 }}
+        sx={{ display: "flex", height: 8, borderRadius: 4 }}
       />
     </Box>
   ), []);
 
   const prepareSourceItemsPayload = useCallback((gridData, sourceMappings) => {
-    return Boolean(Boolean({
+    return Boolean(({
       sourceItems: gridData
-        .filter((item: any: any) => item?.Code_MDM && item?.QteStock !== null && item.Code_Source)
-        .map((item: any: any) => {
-          const sourceInfo = sourceMappings.find(s => s.code_source ===item.Code_Source)));
+        .filter((item: any: any: any: any) => item?.Code_MDM && item?.QteStock !== null && item.Code_Source)
+        .map((item: any: any: any: any) => {
+          const sourceInfo = sourceMappings.find(s => s.code_source ===item.Code_Source)))));
           return {
             sku: item?.Code_MDM.toString(),
             source_code: sourceInfo?.magentoSource || '',
@@ -120,7 +120,7 @@ const MDMProductsGrid = () => {
 
     try {
       setLoading(true);
-      const selectedData = data.filter((row: any: any) =>
+      const selectedData = data.filter((row: any: any: any: any) =>
         selectedBaseGridRows.includes(`${row?.Source}-${row?.Code_MDM}`)
       );
 
@@ -147,8 +147,8 @@ const MDMProductsGrid = () => {
 
   // ===== MEMOIZED VALUES =====
   const succursaleOptions = useMemo(() => {
-    const uniqueSuccursales = [...new Set(sourceMapping.map((s: any: any) => s.succursale))];
-    return uniqueSuccursales.map((succ: any: any) => ({
+    const uniqueSuccursales = [...new Set(sourceMapping.map((s: any: any: any: any) => s.succursale))];
+    return uniqueSuccursales.map((succ: any: any: any: any) => ({
       value: succ.toString(),
       label: `Branch ${succ}`
     }));
@@ -157,13 +157,13 @@ const MDMProductsGrid = () => {
   const sourceFilterOptions = useMemo(() => {
     const filteredSources = succursaleFilter === 'all'
       ? sourceMapping
-      : sourceMapping.filter((s: any: any) => s.succursale.toString() ===succursaleFilter);
+      : sourceMapping.filter((s: any: any: any: any) => s.succursale.toString() ===succursaleFilter);
 
     return [
       { value: 'all', label: 'All Sources' },
       ...filteredSources?.sort((a, b) =>
         a.code_source.toString().localeCompare(b.code_source.toString())
-      ).map((source: any: any) => ({
+      ).map((source: any: any: any: any) => ({
         value: source.code_source.toString(),
         label: source.source
       }))
@@ -282,7 +282,7 @@ const MDMProductsGrid = () => {
       type: 'boolean',
       renderCell: (params) => params?.value ? '✓' : ''
     }
-  ].filter((col: any: any) => columnVisibility[col?.field] !== false), [columnVisibility]);
+  ].filter((col: any: any: any: any) => columnVisibility[col?.field] !== false), [columnVisibility]);
 
   // Add data validation to prevent grid crashes
   const validatedData = useMemo(() => {
@@ -291,7 +291,7 @@ const MDMProductsGrid = () => {
       return [];
     }
 
-    return data.map((item: any: any, index: any: any) => {
+    return data.map((item: any index: any: any: any: any) => {
       // Ensure each item has required fields and valid data types
       return { ...item,
         Code_MDM: item?.Code_MDM || `unknown-${index}`,
@@ -315,11 +315,11 @@ const MDMProductsGrid = () => {
 
   // ===== DATA FETCHING (moved up to avoid initialization issues) =====
   const fetchProducts = useCallback(async ({
-    page: any,
-    pageSize: any,
-    sortModel: any,
+    page
+    pageSize
+    sortModel
     filterModel = { items: [] },
-    search: any,
+    search
   }) => {
     setLoading(true);
     try {
@@ -333,7 +333,7 @@ const MDMProductsGrid = () => {
         succursale: succursaleFilter === 'all' ? '' : succursaleFilter || 16,
         sortField: sortParam,
         sortOrder,
-        ...filterModel.items.reduce((acc: any: any: any, filter: any: any) => {
+        ...filterModel.items.reduce((acc: any: any filter: any: any: any: any) => {
           if (filter?.value) acc[filter?.field] = filter?.value;
           return acc;
         }, {}),
@@ -370,12 +370,12 @@ const MDMProductsGrid = () => {
 
       // Calculate statistics
       const total = totalCount;
-      const inStock = processedData.filter((item: any: any) => item?.QteStock > 0).length;
-      const outOfStock = processedData.filter((item: any: any) => item?.QteStock ===0).length;
-      const lowStock = processedData.filter((item: any: any) => item?.QteStock > 0 && item?.QteStock < 2).length;
-      const newChanges = processedData.filter((item: any: any) => item?.changed ===1).length;
-      const synced = processedData.filter((item: any: any) => item?.changed ===0).length;
-      const totalValue = processedData.reduce((acc: any: any, curr: any: any) =>
+      const inStock = processedData.filter((item: any: any: any: any) => item?.QteStock > 0).length;
+      const outOfStock = processedData.filter((item: any: any: any: any) => item?.QteStock ===0).length;
+      const lowStock = processedData.filter((item: any: any: any: any) => item?.QteStock > 0 && item?.QteStock < 2).length;
+      const newChanges = processedData.filter((item: any: any: any: any) => item?.changed ===1).length;
+      const synced = processedData.filter((item: any: any: any: any) => item?.changed ===0).length;
+      const totalValue = processedData.reduce((acc: any curr: any: any: any: any) =>
         acc + ((curr?.Tarif || 0) * (curr?.QteStock || 0)), 0);
       const averagePrice = processedData.length > 0 ? totalValue / processedData.length : 0;
 
@@ -536,7 +536,7 @@ const MDMProductsGrid = () => {
 
   // ===== RENDER =====
   return(<>
-      <Box sx={{ flexShrink: 0, mb: 0.5 }}>
+      <Box sx={{ display: "flex", flexShrink: 0, mb: 0.5 }}>
         <MDMFilterPanel
           succursaleOptions={succursaleOptions}
           succursaleFilter={succursaleFilter}

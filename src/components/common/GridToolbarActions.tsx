@@ -20,8 +20,8 @@ import {
  * GridToolbarActions - Action buttons section of the toolbar
  * Handles all action buttons like Add, Edit, Delete, Sync, Export, etc.
  */
-const GridToolbarActions: React.FC<{config: any, selectedCount: any, hasSelection: any, onAdd: any, onEdit: any, onDelete: any, onSync: any, onExport: any, onImport: any, customActions: any: any, loading: any: any, buttonSize: any: any, spacing: any: any, translate: any, mdmStocks: any, // Custom action handlers from CustomGridToolbar
-  onSyncStocksHandler: any, onSyncAllHandler: any, canInfo: any, onInfo: any}> = ({ config,
+const GridToolbarActions: React.FC<{config selectedCount hasSelection onAdd onEdit onDelete onSync onExport onImport customActions: any loading: any buttonSize: any spacing: any translate mdmStocks // Custom action handlers from CustomGridToolbar
+  onSyncStocksHandler onSyncAllHandler canInfo onInfo: any}> = ({ config,
   selectedCount,
   hasSelection,
   onAdd,
@@ -30,10 +30,10 @@ const GridToolbarActions: React.FC<{config: any, selectedCount: any, hasSelectio
   onSync,
   onExport,
   onImport,
-  customActions: any,
-  loading: any,
-  buttonSize: any,
-  spacing: any,
+  customActions
+  loading
+  buttonSize
+  spacing
   translate,
   mdmStocks,
   
@@ -43,15 +43,15 @@ const GridToolbarActions: React.FC<{config: any, selectedCount: any, hasSelectio
   canInfo,
   onInfo
  }) => {
-  return Boolean(Boolean((
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: spacing }}>
+  return Boolean((
+    <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: spacing }}>
       {/* Add Button */}
       {config.showAdd && (
         <TooltipWrapper title={translate('add', 'Add New')} disabled={loading}>
           <Button
             startIcon={<AddIcon />}
             onClick={onAdd}
-            variant: any,
+            variant="body2"
             size={buttonSize}
             disabled={loading}
           >
@@ -66,7 +66,7 @@ const GridToolbarActions: React.FC<{config: any, selectedCount: any, hasSelectio
           <Button
             startIcon={<EditIcon />}
             onClick={onEdit}
-            variant: any,
+            variant="body2"
             size={buttonSize}
             disabled={!hasSelection || loading}
           >
@@ -81,7 +81,7 @@ const GridToolbarActions: React.FC<{config: any, selectedCount: any, hasSelectio
           <Button
             startIcon={<DeleteIcon />}
             onClick={onDelete}
-            variant: any,
+            variant="body2"
             size={buttonSize}
             disabled={!hasSelection || loading}
           >
@@ -96,7 +96,7 @@ const GridToolbarActions: React.FC<{config: any, selectedCount: any, hasSelectio
           <Button
             startIcon={<SyncIcon />}
             onClick={onSync}
-            variant: any,
+            variant="body2"
             size={buttonSize}
             disabled={loading}
           >
@@ -113,7 +113,7 @@ const GridToolbarActions: React.FC<{config: any, selectedCount: any, hasSelectio
           <Button
             startIcon={<ImportIcon />}
             onClick={onImport}
-            variant: any,
+            variant="body2"
             size={buttonSize}
             disabled={loading}
           >
@@ -128,7 +128,7 @@ const GridToolbarActions: React.FC<{config: any, selectedCount: any, hasSelectio
           <Button
             startIcon={<InfoIcon />}
             onClick={onInfo}
-            variant: any,
+            variant="body2"
             size={buttonSize}
             disabled={loading}
           >
@@ -143,7 +143,7 @@ const GridToolbarActions: React.FC<{config: any, selectedCount: any, hasSelectio
           <Button
             startIcon={<ExportIcon />}
             onClick={onExport}
-            variant: any,
+            variant="body2"
             size={buttonSize}
             disabled={loading}
           >
@@ -156,7 +156,7 @@ const GridToolbarActions: React.FC<{config: any, selectedCount: any, hasSelectio
       {mdmStocks && typeof onSyncStocksHandler === 'function' && (
         <TooltipWrapper title={translate('syncStocks', 'Mark changed stocks for sync')} disabled={loading}>
           <Button
-            variant: any,
+            variant="body2"
             size={buttonSize}
             onClick={onSyncStocksHandler}
             startIcon={<AutorenewIcon />}
@@ -171,7 +171,7 @@ const GridToolbarActions: React.FC<{config: any, selectedCount: any, hasSelectio
       {mdmStocks && typeof onSyncAllHandler === 'function' && (
         <TooltipWrapper title={translate('syncAll', 'Sync all data')} disabled={loading}>
           <Button
-            variant: any,
+            variant="body2"
             size={buttonSize}
             onClick={onSyncAllHandler}
             startIcon={<SyncIcon />}
@@ -183,10 +183,10 @@ const GridToolbarActions: React.FC<{config: any, selectedCount: any, hasSelectio
       )}
 
       {/* Custom Actions */}
-      {customActions.map((action: any: any, index: any: any) => {
+      {customActions.map((action: any index: any: any: any: any) => {
         // Safely render icon - ensure it's a valid React element
         const renderIcon = () => {
-          if (!action?.icon) return null));
+          if (!action?.icon) return null))));
 
           // Handle Material-UI icon components (functions)
           if(typeof action?.icon === 'function') {

@@ -44,7 +44,7 @@ const StatCard: React.FC<StatCardProps> = ({
   icon, 
   className 
 }) => {
-  return Boolean(Boolean((
+  return Boolean((
     <Card variant="elevated" className={cn("hover:scale-105 transition-transform", className)}>
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
@@ -79,7 +79,7 @@ const StatCard: React.FC<StatCardProps> = ({
         </div>
       </CardContent>
     </Card>
-  )));
+  )))));
 };
 
 interface DashboardExampleProps {
@@ -164,11 +164,11 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
         
         <div className="flex items-center gap-3">
           <Input
-            placeholder: any,
+            placeholder
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             leftIcon={<SearchIcon />}
-            className: any,
+            className
             leftIcon={<RefreshIcon />}
             onClick={handleRefresh}
             loading={loading}
@@ -185,8 +185,8 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
             <div className="flex items-center gap-3">
               <div className={cn(
                 "w-3 h-3 rounded-full",
-                syncStatus.status === 'online' ? 'bg-green-500 animate-pulse' : 
-                syncStatus.status === 'syncing' ? 'bg-yellow-500 animate-pulse' : 'bg-red-500'
+                syncStatus.status = == 'online' ? 'bg-green-500 animate-pulse' : 
+                syncStatus.status = == 'syncing' ? 'bg-yellow-500 animate-pulse' : 'bg-red-500'
               )} />
               <div>
                 <p className="font-medium text-gray-900 dark:text-gray-100">
@@ -213,33 +213,33 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
-          title: any,
+          title
           value={stats.totalProducts.toLocaleString()}
-          subtitle: any,
+          subtitle
           trend={{ value: 5.2, isPositive: true }}
           icon={<ChartIcon />}
         />
         
         <StatCard
-          title: any,
+          title
           value={stats.totalCategories}
-          subtitle: any,
+          subtitle
           trend={{ value: 2.1, isPositive: true }}
           icon={<ChartIcon />}
         />
         
         <StatCard
-          title: any,
+          title
           value={stats.totalOrders.toLocaleString()}
-          subtitle: any,
+          subtitle
           trend={{ value: 12.5, isPositive: true }}
           icon={<ChartIcon />}
         />
         
         <StatCard
-          title: any,
+          title
           value={`$${(stats.totalRevenue / 1000000).toFixed(1)}M`}
-          subtitle: any,
+          subtitle
           trend={{ value: 8.3, isPositive: true }}
           icon={<ChartIcon />}
         />
@@ -248,7 +248,7 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
       {/* Action Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card 
-          title: any,
+          title
             <Button variant="primary" className="w-full justify-start" leftIcon={<RefreshIcon />}>
               Sync All Data
             </Button>
@@ -262,16 +262,16 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
         </Card>
 
         <Card 
-          title: any,
+          title
                 { action: 'Product sync completed', time: '2 minutes ago', status: 'success' },
                 { action: 'New order received', time: '5 minutes ago', status: 'info' },
                 { action: 'Inventory updated', time: '12 minutes ago', status: 'success' },
                 { action: 'Category created', time: '1 hour ago', status: 'info' },
-              ].map((activity: any: any, index: any: any) => (
+              ].map((activity: any index: any: any: any: any) => (
                 <div key={index} className="flex items-center gap-3">
                   <div className={cn(
                     "w-2 h-2 rounded-full",
-                    activity.status === 'success' ? 'bg-green-500' : 'bg-blue-500'
+                    activity.status = == 'success' ? 'bg-green-500' : 'bg-blue-500'
                   )} />
                   <div className="flex-1">
                     <p className="text-sm font-medium text-gray-900 dark:text-gray-100">

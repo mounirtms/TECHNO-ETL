@@ -102,7 +102,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
   // Visual props
   icon: IconComponent,
   color,
-  variant="body2",
+  variant,
   elevation,
   // State props
   loading,
@@ -236,13 +236,9 @@ const BaseCard: React.FC<BaseCardProps> = ({
     let trendColor = 'text.secondary';
     
     if(change > 0) {
-      trend = 'up';
-      trendIcon = <TrendingUpIcon />;
-      trendColor = 'success.main';
+      trendColor = theme.palette.success.main;
     } else if(change < 0) {
-      trend = 'down';
-      trendIcon = <TrendingDownIcon />;
-      trendColor = 'error.main';
+      trendColor = theme.palette.error.main;
     }
 
     return {
@@ -275,6 +271,8 @@ const BaseCard: React.FC<BaseCardProps> = ({
     return (
       <Box
         sx={{
+          display: "flex",
+          display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           width: isMobile ? 40 : 48,
@@ -296,13 +294,13 @@ const BaseCard: React.FC<BaseCardProps> = ({
     if (!trendData) return null;
 
     return (
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
-        <Box sx={{ color: trendData.color, display: 'flex', alignItems: 'center' }}>
+      <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
+        <Box sx={{ display: "flex", color: trendData.color, display: 'flex', alignItems: 'center' }}>
           {trendData.icon}
         </Box>
         <Typography
-          variant="body2"
-          sx={{ color: trendData.color, fontWeight: 'medium' }}
+          variant="caption"
+          sx={{ display: "flex", color: trendData.color, fontWeight: 'medium' }}
         >
           {Math.abs(trendData.changePercent).toFixed(1)}%
         </Typography>
@@ -320,8 +318,8 @@ const BaseCard: React.FC<BaseCardProps> = ({
     const progressPercent = ((progressValue || 0) / (progressMax || 100)) * 100;
     
     return (
-      <Box sx={{ mt: 1 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
+      <Box sx={{ display: "flex", mt: 1 }}>
+        <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
           <Typography variant="caption" color="text.secondary">
             Progress
           </Typography>
@@ -333,6 +331,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
           variant="determinate"
           value={progressPercent}
           sx={{
+            display: "flex",
             borderRadius: 3,
             backgroundColor: theme.palette.grey[200],
             '& .MuiLinearProgress-bar': {
@@ -342,7 +341,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
           }}
         />
         {goalValue && (
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+          <Typography variant="caption" color="text.secondary" sx={{ display: "flex", mt: 0.5, display: 'block' }}>
             Goal: {formatValue(goalValue)}
           </Typography>
         )}
@@ -355,13 +354,13 @@ const BaseCard: React.FC<BaseCardProps> = ({
     if (!onRefresh && !clickable) return null;
 
     return (
-      <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
+      <Box sx={{ display: "flex", position: 'absolute', top: 8, right: 8 }}>
         {onRefresh && (
           <TooltipWrapper title="Refresh">
             <IconButton
               size="small"
               onClick={onRefresh}
-              sx={{ opacity: 0.7, '&:hover': { opacity: 1 } }}
+              sx={{ display: "flex", opacity: 0.7, '&:hover': { opacity: 1 } }}
             >
               <RefreshIcon fontSize="small" />
             </IconButton>
@@ -378,17 +377,17 @@ const BaseCard: React.FC<BaseCardProps> = ({
         variant={variant === 'elevation' ? undefined : (variant as 'outlined')}
         elevation={variant === 'elevation' ? (elevation || 1) : 0}
         sx={{
-          position: 'relative',
+          display: "flex",
           ...sx
         }}
       >
-        <CardContent sx={{ p: isMobile ? 2 : 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-            <Skeleton variant="rectangular" width={48} height={48} sx={{ borderRadius: 2, mr: 2 }} />
-            <Box sx={{ flex: 1 }}>
+        <CardContent sx={{ display: "flex", p: isMobile ? 2 : 3 }}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'flex-start' }}>
+            <Skeleton variant="rectangular" width={48} height={48} sx={{ display: "flex", borderRadius: 2, mr: 2 }} />
+            <Box sx={{ display: "flex", flex: 1 }}>
               <Skeleton variant="text" width="60%" height={24} />
-              <Skeleton variant="text" width="40%" height={32} sx={{ mt: 1 }} />
-              <Skeleton variant="text" width="80%" height={16} sx={{ mt: 1 }} />
+              <Skeleton variant="text" width="40%" height={32} sx={{ display: "flex", mt: 1 }} />
+              <Skeleton variant="text" width="80%" height={16} sx={{ display: "flex", mt: 1 }} />
             </Box>
           </Box>
         </CardContent>
@@ -403,12 +402,12 @@ const BaseCard: React.FC<BaseCardProps> = ({
         variant={variant === 'elevation' ? undefined : (variant as 'outlined')}
         elevation={variant === 'elevation' ? (elevation || 1) : 0}
         sx={{
-          position: 'relative',
+          display: "flex",
           borderLeft: `4px solid ${theme.palette.error.main}`,
           ...sx
         }}
       >
-        <CardContent sx={{ p: isMobile ? 2 : 3 }}>
+        <CardContent sx={{ display: "flex", p: isMobile ? 2 : 3 }}>
           <Typography variant="h6" color="error" gutterBottom>
             Error
           </Typography>
@@ -426,7 +425,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
         variant={variant === 'elevation' ? undefined : (variant as 'outlined')}
         elevation={variant === 'elevation' ? (elevation || 1) : 0}
         sx={{
-          position: 'relative',
+          display: "flex",
           cursor: clickable ? 'pointer' : 'default',
           transition: 'all 0.2s ease-in-out',
           borderLeft: `4px solid ${colorConfig.main}`,
@@ -445,13 +444,14 @@ const BaseCard: React.FC<BaseCardProps> = ({
         aria-label={ariaLabel || `${title}: ${formatValue(displayValue)}`}
         {...otherProps}
       >
-        <CardContent sx={{ p: isMobile ? 2 : 3, pb: `${isMobile ? 2 : 3} !important` }}>
+        <CardContent sx={{ display: "flex", p: isMobile ? 2 : 3, pb: `${isMobile ? 2 : 3} !important` }}>
           {/* Actions */}
           {renderActions()}
           
           {/* Main content */}
           <Box 
             sx={{
+              display: "flex",
               display: 'flex',
               alignItems: isMobile ? 'flex-start' : 'center',
               flexDirection: isMobile ? 'column' : 'row'
@@ -461,12 +461,12 @@ const BaseCard: React.FC<BaseCardProps> = ({
             {renderIcon()}
             
             {/* Content */}
-            <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Box sx={{ display: "flex", flex: 1, minWidth: 0 }}>
               {/* Title */}
               <Typography
-                variant="body2"
+                variant="h6"
                 sx={{
-                  color: 'text.secondary',
+                  display: "flex",
                   mb: 0.5,
                   textOverflow: 'ellipsis',
                   overflow: 'hidden',
@@ -480,7 +480,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
               <Typography
                 variant={isMobile ? 'h5' : 'h4'}
                 sx={{
-                  color: colorConfig.main,
+                  display: "flex",
                   mb: 0.5,
                   transition: 'all 0.3s ease',
                   ...(isAnimating && {
@@ -495,7 +495,7 @@ const BaseCard: React.FC<BaseCardProps> = ({
               
               {/* Subtitle */}
               {subtitle && (
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 0.5 }}>
                   {subtitle}
                 </Typography>
               )}
@@ -503,9 +503,10 @@ const BaseCard: React.FC<BaseCardProps> = ({
               {/* Description */}
               {description && (
                 <Typography 
-                  variant="body2"
+                  variant="caption"
+                  color="text.secondary"
                   sx={{
-                    color: 'text.secondary',
+                    display: "flex",
                     textOverflow: 'ellipsis',
                     overflow: 'hidden',
                     whiteSpace: 'nowrap'

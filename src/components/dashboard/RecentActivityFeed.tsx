@@ -179,7 +179,7 @@ const RecentActivityFeed = () => {
 
   const filteredActivities = filter === 'all' 
     ? activities 
-    : activities.filter((activity: any: any) => activity.priority ===filter);
+    : activities.filter((activity: any: any: any: any) => activity.priority ===filter);
 
   const refreshActivities = () => {
     // Simulate new activity
@@ -197,23 +197,23 @@ const RecentActivityFeed = () => {
   };
 
   return(<ComponentErrorBoundary
-      componentName: any,
+      componentName
       height: '100%',
       display: 'flex',
       flexDirection: 'column'
     }}>
       <CardHeader
-        avatar: any,
-          <Badge badgeContent={activities.filter((a: any: any) => a.priority === 'high').length} color="error">
-            <Avatar sx={{ bgcolor: 'info.main' }}>
+        avatar
+          <Badge badgeContent={activities.filter((a: any: any: any: any) => a.priority === 'high').length} color="error">
+            <Avatar sx={{ display: "flex", bgcolor: 'info.main' }}>
               <ActivityIcon />
             </Avatar>
           </Badge>
         }
-        title: any,
+        title
         subheader={`${activities.length} recent events`}
-        action: any,
-          <Box sx={{ display: 'flex', gap: 1 }}>
+        action
+          <Box sx={{ display: "flex", display: 'flex', gap: 1 }}>
             <Tooltip title="Refresh">
               <IconButton size="small" onClick={refreshActivities}>
                 <RefreshIcon fontSize="small" />
@@ -224,27 +224,27 @@ const RecentActivityFeed = () => {
             </IconButton>
           </Box>
         }
-        sx={{ pb: 1 }}
+        sx={{ display: "flex", pb: 1 }}
       />
 
       <CardContent sx={{ 
+        display: "flex", 
         flexGrow: 1, 
         pt: 0, 
         p: density === 'compact' ? 1 : 2,
         '&:last-child': { pb: density === 'compact' ? 1 : 2 }
       }}>
         {/* Filter Chips */}
-        <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
-          {['all', 'high', 'medium', 'low'].map((filterType: any: any) => (
+        <Box sx={{ display: "flex", display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+          {['all', 'high', 'medium', 'low'].map((filterType: any: any: any: any) => (
             <Chip
               key={filterType}
               label={filterType === 'all' ? 'All' : `${filterType} priority`}
-              size: any,
+              size="small"
               variant={filter ===filterType ? 'filled' : 'outlined'}
               color={filter ===filterType ? 'primary' : 'default'}
               onClick={() => setFilter(filterType)}
-              sx: any,
-                transition: animations ? 'all 0.2s ease' : 'none',
+              sx={{
                 '&:hover': animations ? { transform: 'scale(1.05)' } : {}
               }}
             />
@@ -252,12 +252,11 @@ const RecentActivityFeed = () => {
         </Box>
 
         {/* Activity List */}
-        <List dense sx={{ maxHeight: 350, overflow: 'auto' }}>
-          {filteredActivities.slice(0, 8).map((activity: any: any, index: any: any) => (
+        <List dense sx={{ display: "flex", maxHeight: 350, overflow: 'auto' }}>
+          {filteredActivities.slice(0, 8).map((activity: any index: any: any: any: any) => (
             <React.Fragment key={activity.id}>
               <ListItem
-                sx: any,
-                  transition: animations ? 'all 0.2s ease' : 'none',
+                sx={{
                   '&:hover': animations ? {
                     bgcolor: 'action.hover',
                     transform: 'translateX(4px)'
@@ -266,7 +265,7 @@ const RecentActivityFeed = () => {
               >
                 <ListItemAvatar>
                   <Avatar 
-                    sx: any,
+                    sx={{
                       bgcolor: `${getStatusColor(activity.status)}.light`,
                       width: 32,
                       height: 32
@@ -277,20 +276,20 @@ const RecentActivityFeed = () => {
                 </ListItemAvatar>
                 
                 <ListItemText
-                  primary: any,
+                  primary
                     <span style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                       <Typography variant="body2" fontWeight={500} component="span">
                         {activity.title}
                       </Typography>
                       <Chip
                         label={activity.priority}
-                        size: any,
+                        size="small"
                         color={getPriorityColor(activity.priority)}
-                        sx={{ height: 16, fontSize: '0.7rem' }}
+                        sx={{ display: "flex", height: 16, fontSize: '0.7rem' }}
                       />
                     </span>
                   }
-                  secondary: any,
+                  secondary
                         {activity.description}
                       </Typography>
                       <br />
@@ -302,14 +301,14 @@ const RecentActivityFeed = () => {
                 />
               </ListItem>
               {index < filteredActivities.slice(0, 8).length - 1 && (
-                <Divider variant="inset" component="li" sx={{ ml: 6 }} />
+                <Divider variant="inset" component="li" sx={{ display: "flex", ml: 6 }} />
               )}
             </React.Fragment>
           ))}
         </List>
 
         {filteredActivities.length > 8 && (
-          <Box sx={{ textAlign: 'center', mt: 2 }}>
+          <Box sx={{ display: "flex", textAlign: 'center', mt: 2 }}>
             <Button size="small" color="primary">
               View All Activities ({filteredActivities.length})
             </Button>
@@ -317,7 +316,7 @@ const RecentActivityFeed = () => {
         )}
 
         {filteredActivities.length ===0 && (
-          <Box sx={{ textAlign: 'center', py: 4 }}>
+          <Box sx={{ display: "flex", textAlign: 'center', py: 4 }}>
             <Typography variant="body2" color="text.secondary">
               No activities found for the selected filter
             </Typography>

@@ -15,7 +15,7 @@ const errorLogCache = new Set();
 /**
  * Generate cache key for data
  */
-const generateCacheKey = (data: any, options: any) => {
+const generateCacheKey = (data = {}; // Fixed invalid assignment options: any): string => {
   try {
     return JSON.stringify({ data: Array.isArray(data) ? data.length : typeof data, options });
   } catch {
@@ -26,7 +26,7 @@ const generateCacheKey = (data: any, options: any) => {
 /**
  * Optimized data validator with caching
  */
-export const validateGridData = (data: any, options: any = {}) => {
+export const validateGridData = (data = {}; // Fixed invalid assignment options: any = {}): any => {
   const cacheKey = generateCacheKey(data, options);
   
   // Return cached result if available
@@ -35,11 +35,11 @@ export const validateGridData = (data: any, options: any = {}) => {
   }
 
   const {
-    expectedType: any,
-    allowEmpty: any,
-    requiredFields: any,
+    expectedType = 'array',
+    allowEmpty = false,
+    requiredFields = [],
     transformers = {},
-    fallbackValue: any,
+    fallbackValue = []
   } = options;
 
   try {
@@ -98,12 +98,12 @@ export const validateGridData = (data: any, options: any = {}) => {
     // Apply transformers
     let transformedData = data;
     if(Array.isArray(data) && Object.keys(transformers).length > 0) {
-      transformedData: any,
+      transformedData = data.map((item: any) => {
         const transformed = { ...item };
         Object.entries(transformers).forEach(([field, transformer]) => {
           if(field in transformed && typeof transformer === 'function') {
             try {
-              transformed[field] = transformer(transformed[field]);
+              transformed[field] = (transformer as any)(transformed[field]);
             } catch(error: any) {
               const errorKey = `transform-error-${field}`;
               if (!errorLogCache.has(errorKey)) {
@@ -153,14 +153,14 @@ export const validateGridData = (data: any, options: any = {}) => {
 /**
  * Optimized data fetcher with caching and deduplication
  */
-export const fetchGridData = async (url: string, options: any = {}) => {
+export const fetchGridData = async (url: string, options: any = {}): Promise<any> => {
   const {
-    method: any,
+    method = 'GET',
     headers = {},
-    body: any,
-    timeout: any,
-    retries: any,
-    cacheTimeout: any,
+    body,
+    timeout = 10000,
+    retries = 3,
+    cacheTimeout = 300000
   } = options;
 
   const cacheKey = `${method}-${url}-${JSON.stringify(body)}`;
@@ -175,7 +175,7 @@ export const fetchGridData = async (url: string, options: any = {}) => {
     }
   }
 
-  const fetchWithTimeout = async (fetchUrl: string, fetchOptions: any, timeoutMs: number) => {
+  const fetchWithTimeout = async (fetchUrl: string, fetchOptions = {}; // Fixed invalid assignment timeoutMs: number): Promise<Response> => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -218,7 +218,7 @@ export const fetchGridData = async (url: string, options: any = {}) => {
       return data;
 
     } catch(error: any) {
-      lastError: any,
+      lastError = error;
         await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
       }
     }
@@ -285,7 +285,7 @@ export const gridDataHandlers = {
   },
 
   // Generic handler for other data types
-  generic: (data: any, options: any = {}) => {
+  generic: (data options: any = {}) => {
     return validateGridData(data, options);
   }
 };

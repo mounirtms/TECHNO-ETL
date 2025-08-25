@@ -27,6 +27,7 @@ const OptimizedRouter = lazy(() => import('./router/OptimizedRouter'));
 const AppLoading = () => (
   <Box
     sx={{
+      display: "flex",
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
@@ -40,6 +41,7 @@ const AppLoading = () => (
     <CircularProgress 
       size={40} 
       sx={{
+        display: "flex",
         color: 'var(--color-primary-500, #F97316)',
         '& .MuiCircularProgress-circle': {
           strokeLinecap: 'round',
@@ -49,6 +51,7 @@ const AppLoading = () => (
     <Typography 
       variant="body1"
       sx={{
+        display: "flex",
         color: 'var(--color-text-secondary, #666)',
         fontWeight: 500,
         letterSpacing: '0.5px'

@@ -210,9 +210,9 @@ const UserProfileSettings: React.FC<UserProfileSettingsProps> = ({ user, onSetti
           // Determine which section this setting belongs to
           let section = 'preferences';
           if (['cacheEnabled', 'lazyLoading', 'compressionEnabled', 'enableVirtualization'].includes(key)) {
-            section: any,
+            section
           } else if (['keyboardNavigation', 'screenReader'].includes(key)) {
-            section: any,
+            section
           }
           
           updateGlobalSettings({ [key]: value }, section);
@@ -335,7 +335,7 @@ const UserProfileSettings: React.FC<UserProfileSettingsProps> = ({ user, onSetti
   const SettingsSection: React.FC<SettingsSectionProps> = ({ title, icon, children }) => (
     <Accordion defaultExpanded>
       <AccordionSummary expandIcon={<ExpandMore />}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
           {icon}
           <Typography variant="h6">{title}</Typography>
         </Box>
@@ -349,13 +349,13 @@ const UserProfileSettings: React.FC<UserProfileSettingsProps> = ({ user, onSetti
   );
 
   const SettingItem: React.FC<SettingItemProps> = ({ label, description, children, fullWidth = false }) => (
-    <Grid size={{ xs: 12, md: fullWidth ? 12 : 6 }} sx={{ display: 'flex', flexDirection: 'column' }}>
-      <Box sx={{ mb: 2 }}>
-        <Typography variant="subtitle2" sx={{ mb: 0.5, fontWeight: 600 }}>
+    <Grid size={{ xs: 12, md: fullWidth ? 12 : 6 }} sx={{ display: "flex", display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ display: "flex", mb: 2 }}>
+        <Typography variant="subtitle2" sx={{ display: "flex", mb: 0.5, fontWeight: 600 }}>
           {label}
         </Typography>
         {description && (
-          <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+          <Typography variant="caption" color="text.secondary" sx={{ display: "flex", mb: 1, display: 'block' }}>
             {description}
           </Typography>
         )}
@@ -366,29 +366,29 @@ const UserProfileSettings: React.FC<UserProfileSettingsProps> = ({ user, onSetti
 
   const TabPanel: React.FC<TabPanelProps> = ({ children, value, index, ...other }) => (
     <div
-      role: any,
+      role
       hidden={value !== index}
       id={`settings-tabpanel-${index}`}
       aria-labelledby={`settings-tab-${index}`}
       { ...other}
     >
-      {value ===index && <Box sx={{ py: 3 }}>{children}</Box>}
+      {value ===index && <Box sx={{ display: "flex", py: 3 }}>{children}</Box>}
     </div>
   );
 
   // Show loading state while settings are being loaded
   if(userSettingsLoading) {
     return (
-      <Box sx={{ p: 3, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
+      <Box sx={{ display: "flex", p: 3, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
         <Typography>Loading settings...</Typography>
       </Box>
     );
   }
 
-  return(<Box sx={{ p: 3, maxWidth: 1200, mx: 'auto' }}>
+  return(<Box sx={{ display: "flex", p: 3, maxWidth: 1200, mx: 'auto' }}>
       {/* Header */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" sx={{ mb: 1, fontWeight: 600 }}>
+      <Box sx={{ display: "flex", mb: 4 }}>
+        <Typography variant="h4" sx={{ display: "flex", mb: 1, fontWeight: 600 }}>
           User Settings
         </Typography>
         <Typography variant="body1" color="text.secondary">
@@ -397,7 +397,7 @@ const UserProfileSettings: React.FC<UserProfileSettingsProps> = ({ user, onSetti
       </Box>
 
       {/* Tab Navigation */}
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+      <Box sx={{ display: "flex", borderBottom: 1, borderColor: 'divider', mb: 3 }}>
         <Tabs
           value={activeTab}
           onChange={(e, newValue) => setActiveTab(newValue)}
@@ -405,13 +405,13 @@ const UserProfileSettings: React.FC<UserProfileSettingsProps> = ({ user, onSetti
         >
           <Tab
             icon={<Settings />}
-            label: any,
+            label
             icon={<ViewColumn />}
-            label: any,
+            label
             icon={<FilterList />}
-            label: any,
+            label
             icon={<Settings />}
-            label: any,
+            label
       {/* Tab Panels */}
       <TabPanel value={activeTab} index={0}>
         {/* General Settings */}
@@ -419,18 +419,18 @@ const UserProfileSettings: React.FC<UserProfileSettingsProps> = ({ user, onSetti
         {/* Appearance Settings */}
         <SettingsSection title="Appearance" icon={<Palette />}>
           <SettingItem 
-            label: any,
+            label
                 value={settings.theme}
                 onChange={(e) => handleSettingChange('theme', e.target.value)}
               >
                 <MenuItem value="light">
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Brightness7 fontSize="small" />
                     Light
                   </Box>
                 </MenuItem>
                 <MenuItem value="dark">
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Brightness4 fontSize="small" />
                     Dark
                   </Box>
@@ -441,7 +441,7 @@ const UserProfileSettings: React.FC<UserProfileSettingsProps> = ({ user, onSetti
           </SettingItem>
 
           <SettingItem 
-            label: any,
+            label
                 value={settings.language}
                 onChange={(e) => handleSettingChange('language', e.target.value)}
               >
@@ -453,7 +453,7 @@ const UserProfileSettings: React.FC<UserProfileSettingsProps> = ({ user, onSetti
           </SettingItem>
 
           <SettingItem 
-            label: any,
+            label
                 value={settings.density}
                 onChange={(e) => handleSettingChange('density', e.target.value)}
               >
@@ -465,16 +465,16 @@ const UserProfileSettings: React.FC<UserProfileSettingsProps> = ({ user, onSetti
           </SettingItem>
 
           <SettingItem 
-            label: any,
+            label
                   checked={settings.animations}
                   onChange={(e) => handleSettingChange('animations', e.target.checked)}
                 />
               }
-              label: any,
+              label
         {/* Grid Preferences */}
         <SettingsSection title="Grid Preferences" icon={<GridView />}>
           <SettingItem 
-            label: any,
+            label
                 value={settings.defaultPageSize}
                 onChange={(e) => handleSettingChange('defaultPageSize', e.target.value)}
               >
@@ -487,36 +487,36 @@ const UserProfileSettings: React.FC<UserProfileSettingsProps> = ({ user, onSetti
           </SettingItem>
 
           <SettingItem 
-            label: any,
+            label
                   checked={settings.enableVirtualization}
                   onChange={(e) => handleSettingChange('enableVirtualization', e.target.checked)}
                 />
               }
-              label: any,
+              label
                   checked={settings.showStatsCards}
                   onChange={(e) => handleSettingChange('showStatsCards', e.target.checked)}
                 />
               }
-              label: any,
+              label
                   checked={settings.autoRefresh}
                   onChange={(e) => handleSettingChange('autoRefresh', e.target.checked)}
                 />
               }
-              label: any,
-              <Box sx={{ px: 2 }}>
+              label
+              <Box sx={{ display: "flex", px: 2 }}>
                 <Slider
                   value={settings.refreshInterval}
                   onChange={(e, value) => handleSettingChange('refreshInterval', value)}
                   min={10}
                   max={300}
                   step={10}
-                  marks: any,
+                  marks
                     { value: 10, label: '10s' },
                     { value: 60, label: '1m' },
                     { value: 180, label: '3m' },
                     { value: 300, label: '5m' }
                   ]}
-                  valueLabelDisplay: any,
+                  valueLabelDisplay
                   valueLabelFormat={(value) => `${value}s`}
                 />
               </Box>
@@ -527,45 +527,45 @@ const UserProfileSettings: React.FC<UserProfileSettingsProps> = ({ user, onSetti
         {/* Performance Settings */}
         <SettingsSection title="Performance" icon={<Speed />}>
           <SettingItem
-            label: any,
+            label
                   checked={settings.cacheEnabled}
                   onChange={(e) => handleSettingChange('cacheEnabled', e.target.checked)}
                 />
               }
-              label: any,
+              label
                   checked={settings.lazyLoading}
                   onChange={(e) => handleSettingChange('lazyLoading', e.target.checked)}
                 />
               }
-              label: any,
+              label
                   checked={settings.compressionEnabled}
                   onChange={(e) => handleSettingChange('compressionEnabled', e.target.checked)}
                 />
               }
-              label: any,
+              label
         {/* Notifications Settings */}
         <SettingsSection title="Notifications" icon={<Notifications />}>
           <SettingItem
-            label: any,
+            label
                   checked={settings.emailNotifications}
                   onChange={(e) => handleSettingChange('emailNotifications', e.target.checked)}
                 />
               }
-              label: any,
+              label
                   checked={settings.pushNotifications}
                   onChange={(e) => handleSettingChange('pushNotifications', e.target.checked)}
                 />
               }
-              label: any,
+              label
                   checked={settings.soundEnabled}
                   onChange={(e) => handleSettingChange('soundEnabled', e.target.checked)}
                 />
               }
-              label: any,
+              label
         {/* Security Settings */}
         <SettingsSection title="Security" icon={<Security />}>
           <SettingItem
-            label: any,
+            label
                 value={settings.sessionTimeout}
                 onChange={(e) => handleSettingChange('sessionTimeout', e.target.value)}
               >
@@ -579,43 +579,44 @@ const UserProfileSettings: React.FC<UserProfileSettingsProps> = ({ user, onSetti
           </SettingItem>
 
           <SettingItem
-            label: any,
+            label
                   checked={settings.twoFactorEnabled}
                   onChange={(e) => handleSettingChange('twoFactorEnabled', e.target.checked)}
                 />
               }
-              label: any,
+              label
                   checked={settings.auditLogging}
                   onChange={(e) => handleSettingChange('auditLogging', e.target.checked)}
                 />
               }
-              label: any,
+              label
         {/* Accessibility Settings */}
         <SettingsSection title="Accessibility" icon={<Accessibility />}>
           <SettingItem
-            label: any,
+            label
                   checked={settings.highContrast}
                   onChange={(e) => handleSettingChange('highContrast', e.target.checked)}
                 />
               }
-              label: any,
+              label
                   checked={settings.largeText}
                   onChange={(e) => handleSettingChange('largeText', e.target.checked)}
                 />
               }
-              label: any,
+              label
                   checked={settings.keyboardNavigation}
                   onChange={(e) => handleSettingChange('keyboardNavigation', e.target.checked)}
                 />
               }
-              label: any,
+              label
                   checked={settings.screenReader}
                   onChange={(e) => handleSettingChange('screenReader', e.target.checked)}
                 />
               }
-              label: any,
+              label
         {/* Action Buttons */}
         <Box sx={{
+          display: "flex",
           display: 'flex',
           gap: 2,
           justifyContent: 'flex-end',
@@ -623,14 +624,14 @@ const UserProfileSettings: React.FC<UserProfileSettingsProps> = ({ user, onSetti
           borderTop: `1px solid ${theme.palette.divider}`
         }}>
           <Button
-            variant: any,
+            variant="body2"
             startIcon={<RestoreFromTrash />}
             onClick={handleReset}
           >
             Reset to Defaults
           </Button>
           <Button
-            variant: any,
+            variant="body2"
             startIcon={<Save />}
             onClick={handleSave}
             disabled={!isDirty}

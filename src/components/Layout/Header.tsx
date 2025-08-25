@@ -25,7 +25,7 @@ export const Header = ({ isDrawerCollapsed,
     handleProfileMenuOpen,
     handleProfileMenuClose,
     anchorEl
- }: { isDrawerCollapsed: any, handleDrawerToggle: any, handleProfileMenuOpen: any, handleProfileMenuClose: any, anchorEl: any }) => {
+ }: { isDrawerCollapsed: boolean; handleDrawerToggle: () => void; handleProfileMenuOpen: (event: any) => void; handleProfileMenuClose: () => void; anchorEl: any }) => {
     const { currentUser } = useAuth();
     const { openTab } = useTab();
     const { currentLanguage, translate } = useLanguage();
@@ -44,9 +44,9 @@ export const Header = ({ isDrawerCollapsed,
 
     return (
         <StyledAppBar
-            position: any,
+            position = {}; // Fixed invalid assignment
             open={!isDrawerCollapsed}
-            sx: any,
+            sx={{
                     sm: `calc(100% - ${isDrawerCollapsed ? COLLAPSED_WIDTH : DRAWER_WIDTH}px)`
                 },
                 marginLeft: {
@@ -60,17 +60,16 @@ export const Header = ({ isDrawerCollapsed,
         >
             <Toolbar>
                 <IconButton
-                    size: any,
+                    size="small"
                     aria-label={isDrawerCollapsed ? translate('common.expandMenu') : translate('common.collapseMenu')}
                     onClick={handleDrawerToggle}
-                    sx: any,
-                        display: 'flex' // Always show the toggle button
+                    sx={{
                     }}
                 >
                     {isDrawerCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                 </IconButton>
 
-                <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+                <Typography variant="h6" noWrap component="div" sx={{ display: "flex", flexGrow: 1 }}>
                     {translate('common.appTitle')}
                 </Typography>
 

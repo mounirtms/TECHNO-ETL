@@ -109,17 +109,17 @@ const COLOR_PALETTES = {
  * Enhanced Pie Chart with animations and professional styling
  */
 export const EnhancedPieChart: React.FC<EnhancedPieChartProps> = ({
-  data: any,
+  data
   title,
-  loading: any,
-  height: any,
-  showLegend: any,
-  colorPalette: any,
+  loading
+  height
+  showLegend
+  colorPalette
   onRefresh,
   onExport,
   subtitle,
-  showPercentages: any,
-  animationDuration: any,
+  showPercentages
+  animationDuration
 }) => {
   const theme = useTheme();
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -129,13 +129,13 @@ export const EnhancedPieChart: React.FC<EnhancedPieChartProps> = ({
 
   // Calculate total for percentages
   const total = useMemo(() => 
-    data.reduce((sum: number: any: any, item: ChartDataItem: any: any) => sum + (item?.value || 0), 0), 
+    data.reduce((sum: number: any item: ChartDataItem: any: any: any: any) => sum + (item?.value || 0), 0), 
     [data]
   );
 
   // Enhanced data with percentages
   const enhancedData = useMemo(() => 
-    data.map((item: ChartDataItem: any: any, index: number: any: any) => ({ ...item,
+    data.map((item: ChartDataItem: any index: number: any: any: any: any) => ({ ...item,
       percentage: total > 0 ? ((item?.value / total) * 100).toFixed(1) : '0',
       color: colors[index % colors.length]
     })), 
@@ -147,7 +147,7 @@ export const EnhancedPieChart: React.FC<EnhancedPieChartProps> = ({
       const data = payload[0].payload;
       return (
         <Box
-          sx: any,
+          sx={{
             border: `1px solid ${theme.palette.divider}`,
             borderRadius: 2,
             p: 2,
@@ -155,7 +155,7 @@ export const EnhancedPieChart: React.FC<EnhancedPieChartProps> = ({
             minWidth: 150
           }}
         >
-          <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+          <Typography variant="subtitle2" sx={{ display: "flex", fontWeight: 600, mb: 1 }}>
             {data.name}
           </Typography>
           <Typography variant="body2" color="primary">
@@ -182,9 +182,9 @@ export const EnhancedPieChart: React.FC<EnhancedPieChartProps> = ({
       <text
         x={x}
         y={y}
-        fill: any,
+        fill
         textAnchor={x > cx ? 'start' : 'end'}
-        dominantBaseline: any,
+        dominantBaseline
         fontSize={12}
         fontWeight={600}
       >
@@ -193,17 +193,17 @@ export const EnhancedPieChart: React.FC<EnhancedPieChartProps> = ({
     );
   };
 
-  return Boolean(Boolean((
+  return Boolean((
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <CardContent sx={{ pb: 1 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+      <Card sx={{ display: "flex", height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <CardContent sx={{ display: "flex", pb: 1 }}>
+          <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
             <Box>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+              <Typography variant="h6" sx={{ display: "flex", fontWeight: 600, mb: 0.5 }}>
                 {title}
               </Typography>
               {subtitle && (
@@ -215,8 +215,8 @@ export const EnhancedPieChart: React.FC<EnhancedPieChartProps> = ({
             
             <Box>
               <IconButton
-                size: any,
-                onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}
+                size="small"
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}
               >
                 <MoreVert />
               </IconButton>
@@ -227,7 +227,7 @@ export const EnhancedPieChart: React.FC<EnhancedPieChartProps> = ({
                 onClose={() => setMenuAnchor(null)}
               >
                 {onRefresh && (
-                  <MenuItem onClick={() => { onRefresh())); setMenuAnchor(null); }}>
+                  <MenuItem onClick={() => { onRefresh())))); setMenuAnchor(null); }}>
                     <ListItemIcon><Refresh /></ListItemIcon>
                     <ListItemText>Refresh</ListItemText>
                   </MenuItem>
@@ -243,15 +243,15 @@ export const EnhancedPieChart: React.FC<EnhancedPieChartProps> = ({
           </Box>
 
           {/* Summary Stats */}
-          <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap' }}>
+          <Stack direction="row" spacing={1} sx={{ display: "flex", mb: 2, flexWrap: 'wrap' }}>
             <Chip
               label={`Total: ${total.toLocaleString()}`}
-              size: any,
+              size="small"
               label={`Categories: ${data.length}`}
-              size: any,
-        <CardContent sx={{ flexGrow: 1, pt: 0 }}>
+              size="small"
+        <CardContent sx={{ display: "flex", flexGrow: 1, pt: 0 }}>
           {loading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height }}>
+            <Box sx={{ display: "flex", display: 'flex', justifyContent: 'center', alignItems: 'center', height }}>
               <CircularProgress />
             </Box>
           ) : (
@@ -259,23 +259,23 @@ export const EnhancedPieChart: React.FC<EnhancedPieChartProps> = ({
               <PieChart>
                 <Pie
                   data={enhancedData}
-                  cx: any,
+                  cx
                   labelLine={false}
                   label={showPercentages ? (props: any) => <CustomLabel {...props} /> : false}
                   outerRadius={80}
-                  fill: any,
+                  fill
                   animationBegin={0}
                   animationDuration={animationDuration}
                   onMouseEnter={(_, index) => setActiveIndex(index)}
                   onMouseLeave={() => setActiveIndex(-1)}
                 >
-                  {enhancedData.map((entry: any: any, index: any: any) => (
+                  {enhancedData.map((entry: any index: any: any: any: any) => (
                     <Cell
                       key={`cell-${index}`}
                       fill={entry.color}
                       stroke={activeIndex ===index ? theme.palette.common.white : 'none'}
                       strokeWidth={activeIndex ===index ? 2 : 0}
-                      style: any,
+                      style
                         cursor: 'pointer'
                       }}
                     />
@@ -284,7 +284,7 @@ export const EnhancedPieChart: React.FC<EnhancedPieChartProps> = ({
                 <RechartsTooltip content={<CustomTooltip />} />
                 {showLegend && (
                   <Legend
-                    verticalAlign: any,
+                    verticalAlign
                     height={36}
                     formatter={(value, entry) => (
                       <span style={{ color: entry.color, fontWeight: 500 }}>
@@ -305,30 +305,30 @@ export const EnhancedPieChart: React.FC<EnhancedPieChartProps> = ({
 /**
  * Enhanced Bar Chart with animations and professional styling
  */
-export const EnhancedBarChart: React.FC<{data: any: any, title: any, loading: any: any, height: any: any, xAxisKey: any: any, yAxisKey: any: any, colorPalette: any: any, onRefresh: any, onExport: any, subtitle: any, showGrid: any: any, animationDuration: any: any, : any}> = ({ data: any,
+export const EnhancedBarChart: React.FC<{data: any title loading: any height: any xAxisKey: any yAxisKey: any colorPalette: any onRefresh onExport subtitle showGrid: any animationDuration: any : any}> = ({ data
   title,
-  loading: any,
-  height: any,
-  xAxisKey: any,
-  yAxisKey: any,
-  colorPalette: any,
+  loading
+  height
+  xAxisKey
+  yAxisKey
+  colorPalette
   onRefresh,
   onExport,
   subtitle,
-  showGrid: any,
-  animationDuration: any,
+  showGrid
+  animationDuration
  }) => {
   const theme = useTheme();
   const [menuAnchor, setMenuAnchor] = useState(null);
 
   const colors = COLOR_PALETTES[colorPalette] || COLOR_PALETTES.primary;
 
-  const CustomTooltip: React.FC<{active: any, payload: any, label: any}> = ({ active, payload, label  }) => {
+  const CustomTooltip: React.FC<{active payload label: any}> = ({ active, payload, label  }) => {
     if(active && payload && payload.length) {
       const data = payload[0];
       return (
         <Box
-          sx: any,
+          sx={{
             border: `1px solid ${theme.palette.divider}`,
             borderRadius: 2,
             p: 2,
@@ -336,7 +336,7 @@ export const EnhancedBarChart: React.FC<{data: any: any, title: any, loading: an
             minWidth: 150
           }}
         >
-          <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+          <Typography variant="subtitle2" sx={{ display: "flex", fontWeight: 600, mb: 1 }}>
             {label}
           </Typography>
           <Typography variant="body2" color="primary">
@@ -348,17 +348,17 @@ export const EnhancedBarChart: React.FC<{data: any: any, title: any, loading: an
     return null;
   };
 
-  return Boolean(Boolean((
+  return Boolean((
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <CardContent sx={{ pb: 1 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+      <Card sx={{ display: "flex", height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <CardContent sx={{ display: "flex", pb: 1 }}>
+          <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
             <Box>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+              <Typography variant="h6" sx={{ display: "flex", fontWeight: 600, mb: 0.5 }}>
                 {title}
               </Typography>
               {subtitle && (
@@ -369,8 +369,8 @@ export const EnhancedBarChart: React.FC<{data: any: any, title: any, loading: an
             </Box>
             
             <IconButton
-              size: any,
-              onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}
+              size="small"
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}
             >
               <MoreVert />
             </IconButton>
@@ -381,7 +381,7 @@ export const EnhancedBarChart: React.FC<{data: any: any, title: any, loading: an
               onClose={() => setMenuAnchor(null)}
             >
               {onRefresh && (
-                <MenuItem onClick={() => { onRefresh())); setMenuAnchor(null); }}>
+                <MenuItem onClick={() => { onRefresh())))); setMenuAnchor(null); }}>
                   <ListItemIcon><Refresh /></ListItemIcon>
                   <ListItemText>Refresh</ListItemText>
                 </MenuItem>
@@ -396,9 +396,9 @@ export const EnhancedBarChart: React.FC<{data: any: any, title: any, loading: an
           </Box>
         </CardContent>
 
-        <CardContent sx={{ flexGrow: 1, pt: 0 }}>
+        <CardContent sx={{ display: "flex", flexGrow: 1, pt: 0 }}>
           {loading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height }}>
+            <Box sx={{ display: "flex", display: 'flex', justifyContent: 'center', alignItems: 'center', height }}>
               <CircularProgress />
             </Box>
           ) : (
@@ -406,7 +406,7 @@ export const EnhancedBarChart: React.FC<{data: any: any, title: any, loading: an
               <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                 {showGrid && (
                   <CartesianGrid 
-                    strokeDasharray: any,
+                    strokeDasharray
                     stroke={alpha(theme.palette.divider, 0.3)} 
                   />
                 )}
@@ -438,19 +438,19 @@ export const EnhancedBarChart: React.FC<{data: any: any, title: any, loading: an
 /**
  * Enhanced Line Chart with trend analysis
  */
-export const EnhancedLineChart: React.FC<{data: any: any, title: any, loading: any: any, height: any: any, xAxisKey: any: any, yAxisKey: any: any, colorPalette: any: any, onRefresh: any, onExport: any, subtitle: any, showGrid: any: any, showTrend: any: any, animationDuration: any: any, : any}> = ({ data: any,
+export const EnhancedLineChart: React.FC<{data: any title loading: any height: any xAxisKey: any yAxisKey: any colorPalette: any onRefresh onExport subtitle showGrid: any showTrend: any animationDuration: any : any}> = ({ data
   title,
-  loading: any,
-  height: any,
-  xAxisKey: any,
-  yAxisKey: any,
-  colorPalette: any,
+  loading
+  height
+  xAxisKey
+  yAxisKey
+  colorPalette
   onRefresh,
   onExport,
   subtitle,
-  showGrid: any,
-  showTrend: any,
-  animationDuration: any,
+  showGrid
+  showTrend
+  animationDuration
  }) => {
   const theme = useTheme();
   const [menuAnchor, setMenuAnchor] = useState(null);
@@ -471,12 +471,12 @@ export const EnhancedLineChart: React.FC<{data: any: any, title: any, loading: a
     };
   }, [data, yAxisKey]);
 
-  const CustomTooltip: React.FC<{active: any, payload: any, label: any}> = ({ active, payload, label  }) => {
+  const CustomTooltip: React.FC<{active payload label: any}> = ({ active, payload, label  }) => {
     if(active && payload && payload.length) {
       const data = payload[0];
       return (
         <Box
-          sx: any,
+          sx={{
             border: `1px solid ${theme.palette.divider}`,
             borderRadius: 2,
             p: 2,
@@ -484,7 +484,7 @@ export const EnhancedLineChart: React.FC<{data: any: any, title: any, loading: a
             minWidth: 150
           }}
         >
-          <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+          <Typography variant="subtitle2" sx={{ display: "flex", fontWeight: 600, mb: 1 }}>
             {label}
           </Typography>
           <Typography variant="body2" color="primary">
@@ -496,17 +496,17 @@ export const EnhancedLineChart: React.FC<{data: any: any, title: any, loading: a
     return null;
   };
 
-  return Boolean(Boolean((
+  return Boolean((
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <CardContent sx={{ pb: 1 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+      <Card sx={{ display: "flex", height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <CardContent sx={{ display: "flex", pb: 1 }}>
+          <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
             <Box>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+              <Typography variant="h6" sx={{ display: "flex", fontWeight: 600, mb: 0.5 }}>
                 {title}
               </Typography>
               {subtitle && (
@@ -517,8 +517,8 @@ export const EnhancedLineChart: React.FC<{data: any: any, title: any, loading: a
             </Box>
 
             <IconButton
-              size: any,
-              onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}
+              size="small"
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}
             >
               <MoreVert />
             </IconButton>
@@ -529,7 +529,7 @@ export const EnhancedLineChart: React.FC<{data: any: any, title: any, loading: a
               onClose={() => setMenuAnchor(null)}
             >
               {onRefresh && (
-                <MenuItem onClick={() => { onRefresh())); setMenuAnchor(null); }}>
+                <MenuItem onClick={() => { onRefresh())))); setMenuAnchor(null); }}>
                   <ListItemIcon><Refresh /></ListItemIcon>
                   <ListItemText>Refresh</ListItemText>
                 </MenuItem>
@@ -545,21 +545,21 @@ export const EnhancedLineChart: React.FC<{data: any: any, title: any, loading: a
 
           {/* Trend Indicator */}
           {showTrend && trend && (
-            <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+            <Stack direction="row" spacing={1} sx={{ display: "flex", mb: 2 }}>
               <Chip
                 icon={trend.isPositive ? <TrendingUp /> : <TrendingDown />}
                 label={`${trend.isPositive ? '+' : ''}${trend.percentage}%`}
-                size: any,
+                size="small"
                 color={trend.isPositive ? 'success' : 'error'}
-                variant: any,
+                variant="body2"
                 label={`${trend.isPositive ? '+' : ''}${trend.change.toLocaleString()}`}
-                size: any,
+                size="small"
           )}
         </CardContent>
 
-        <CardContent sx={{ flexGrow: 1, pt: 0 }}>
+        <CardContent sx={{ display: "flex", flexGrow: 1, pt: 0 }}>
           {loading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height }}>
+            <Box sx={{ display: "flex", display: 'flex', justifyContent: 'center', alignItems: 'center', height }}>
               <CircularProgress />
             </Box>
           ) : (
@@ -567,7 +567,7 @@ export const EnhancedLineChart: React.FC<{data: any: any, title: any, loading: a
               <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                 {showGrid && (
                   <CartesianGrid
-                    strokeDasharray: any,
+                    strokeDasharray
                     stroke={alpha(theme.palette.divider, 0.3)}
                   />
                 )}
@@ -582,7 +582,7 @@ export const EnhancedLineChart: React.FC<{data: any: any, title: any, loading: a
                 />
                 <RechartsTooltip content={<CustomTooltip />} />
                 <Line
-                  type: any,
+                  type
                   dataKey={yAxisKey}
                   stroke={colors[0]}
                   strokeWidth={3}

@@ -100,12 +100,13 @@ const StatsCardContent = styled(Box)(({ theme }) => ({
     minWidth: 0 
 }));
 
-const StatCard: React.FC<{title: any, value: any, icon: Icon: any, color = 'primary': any, active: any, onClick: any}> = ({ title, value, icon: Icon, color = 'primary', active, onClick  }) => {
+const StatCard: React.FC<{title value icon: Icon color = 'primary': any, active onClick: any}> = ({ title, value, icon: Icon, color = 'primary', active, onClick  }) => {
     const theme = useTheme();
 
     return (
         <StyledCard active={active} onClick={onClick} color={color}>
             <CardContent sx={{
+                display: "flex",
                 p: 2,
                 height: '100%',
                 display: 'flex',
@@ -113,13 +114,14 @@ const StatCard: React.FC<{title: any, value: any, icon: Icon: any, color = 'prim
                 justifyContent: 'space-between'
             }}>
                 <Box sx={{ 
+                    display: "flex", 
                     display: 'flex', 
                     alignItems: 'center',
                     width: '100%'
                 }}>
                     {Icon && (
                         <Icon
-                            sx: any,
+                            sx={{
                                 fontSize: 20, // Smaller, more professional
                                 color: theme.palette[color].main,
                                 mr: 1.5,
@@ -128,14 +130,14 @@ const StatCard: React.FC<{title: any, value: any, icon: Icon: any, color = 'prim
                         />
                     )}
                     <Box sx={{ 
+                        display: "flex", 
                         display: 'flex', 
                         flexDirection: 'column', 
                         overflow: 'hidden',
                         width: 'calc(100% - 50px)'
                     }}>
                         <Typography
-                            variant: any,
-                                whiteSpace: 'nowrap',
+                            variant="body2"
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 width: '100%'
@@ -144,8 +146,7 @@ const StatCard: React.FC<{title: any, value: any, icon: Icon: any, color = 'prim
                             {title}
                         </Typography>
                         <Typography
-                            variant: any,
-                                whiteSpace: 'nowrap',
+                            variant="body2"
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 width: '100%'
@@ -172,7 +173,7 @@ const StatsCards: React.FC<{cards: any}> = ({ cards  }) => {
     return (
         <StatsCardContainer>
             <StatsCardWrapper>
-                {cards.map((card: any: any, index: any: any) => {
+                {cards.map((card: any index: any: any: any: any) => {
                     const Icon = card.icon;
 
                     // Professional and responsive icon rendering
@@ -180,6 +181,7 @@ const StatsCards: React.FC<{cards: any}> = ({ cards  }) => {
                         // Handle Material-UI icon components (functions)
                         if(typeof Icon === 'function') {
                             return <Icon sx={{
+                                display: "flex",
                                 fontSize: { xs: 16, sm: 18, md: 20 }, // Professional sizing
                                 opacity: 0.9,
                                 color: 'inherit'
@@ -203,6 +205,7 @@ const StatsCards: React.FC<{cards: any}> = ({ cards  }) => {
                             // Try to render the icon type as a string
                             return (
                                 <Box sx={{
+                                    display: "flex",
                                     fontSize: { xs: 16, sm: 18, md: 20 },
                                     opacity: 0.9,
                                     color: 'inherit',
@@ -219,6 +222,7 @@ const StatsCards: React.FC<{cards: any}> = ({ cards  }) => {
                         if(typeof Icon === 'string') {
                             return (
                                 <Box sx={{
+                                    display: "flex",
                                     fontSize: { xs: 16, sm: 18, md: 20 },
                                     opacity: 0.9,
                                     color: 'inherit'
@@ -231,6 +235,7 @@ const StatsCards: React.FC<{cards: any}> = ({ cards  }) => {
                         // Professional fallback icon
                         return (
                             <Box sx={{
+                                display: "flex",
                                 fontSize: { xs: 16, sm: 18, md: 20 },
                                 opacity: 0.9,
                                 color: 'inherit',
@@ -246,6 +251,7 @@ const StatsCards: React.FC<{cards: any}> = ({ cards  }) => {
                     return (
                         <StatsCard key={index} color={card.color || 'primary'}>
                             <Box sx={{
+                                display: "flex",
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -263,8 +269,7 @@ const StatsCards: React.FC<{cards: any}> = ({ cards  }) => {
                             </Box>
                             <StatsCardContent>
                                 <Typography
-                                    variant: any,
-                                        letterSpacing: 0.2,
+                                    variant="body2"
                                         opacity: 0.8,
                                         textTransform: 'uppercase',
                                         fontSize: { xs: 9, sm: 10, md: 11 },
@@ -280,7 +285,7 @@ const StatsCards: React.FC<{cards: any}> = ({ cards  }) => {
                                     {card.title}
                                 </Typography>
                                 <Typography
-                                    variant: any,
+                                    variant="body2"
                                         fontSize: 16, // Fixed 16px as requested
                                         letterSpacing: 0.2,
                                         lineHeight: 1.2,

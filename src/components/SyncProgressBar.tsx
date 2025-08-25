@@ -41,15 +41,15 @@ const SyncProgressBar: React.FC<any> = ({ progressData }) => {
   if (!progressData?.isActive && !progressData?.completed) return null;
 
   const {
-    current: any,
-    total: any,
-    isActive: any,
-    completed: any,
-    currentStep: any,
-    sources: any,
-    completedSources: any,
-    errorSources: any,
-    message: any,
+    current
+    total
+    isActive
+    completed
+    currentStep
+    sources
+    completedSources
+    errorSources
+    message
   } = progressData;
 
   const percentage = total > 0 ? Math.round((current / total) * 100) : 0;
@@ -68,25 +68,25 @@ const SyncProgressBar: React.FC<any> = ({ progressData }) => {
     'Finalizing sync process'
   ];
 
-  return Boolean(Boolean((
-    <Card sx={{ mt: 2, borderRadius: 2 } as any}>
+  return Boolean((
+    <Card sx={{ display: "flex", mt: 2, borderRadius: 2 } as any}>
       <CardContent>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 } as any}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 } as any}>
           <Typography variant="h6" color="primary" fontWeight={600}>
             📦 Stock Synchronization Progress
           </Typography>
           <IconButton 
-            size: any,
+            size="small"
             onClick={() => setShowDetails(!showDetails)}
-            sx={{ transform: showDetails ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' } as any}
+            sx={{ display: "flex", transform: showDetails ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' } as any}
           >
             <ExpandMoreIcon />
           </IconButton>
         </Box>
 
         {/* Main Progress */}
-        <Box sx={{ mb: 3 } as any}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 } as any}>
+        <Box sx={{ display: "flex", mb: 3 } as any}>
+          <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 } as any}>
             <Typography variant="body2" color="text.secondary">
               Overall Progress: {current} / {total} Steps
             </Typography>
@@ -95,10 +95,9 @@ const SyncProgressBar: React.FC<any> = ({ progressData }) => {
             </Typography>
           </Box>
           <LinearProgress
-            variant: any,
+            variant="body2"
             value={percentage}
-            sx: any,
-              borderRadius: 4,
+            sx={{
               backgroundColor: 'rgba(0,0,0,0.1)',
               '& .MuiLinearProgress-bar': {
                 borderRadius: 4,
@@ -112,54 +111,54 @@ const SyncProgressBar: React.FC<any> = ({ progressData }) => {
 
         {/* Current Step */}
         {currentStep && (
-          <Box sx={{ mb: 2 } as any}>
+          <Box sx={{ display: "flex", mb: 2 } as any}>
             <Chip 
               icon={isActive ? <SyncIcon /> : <CheckIcon />}
               label={currentStep}
               color={isActive ? 'primary' : 'success'}
-              variant: any,
-              sx={{ fontSize: '0.8rem' } as any}
+              variant="body2"
+              sx={{ display: "flex", fontSize: '0.8rem' } as any}
             />
           </Box>
         )}
 
         {/* Sources Progress */}
         {sources.length > 0 && (
-          <Box sx={{ mb: 2 } as any}>
+          <Box sx={{ display: "flex", mb: 2 } as any}>
             <Typography variant="body2" color="text.secondary" gutterBottom>
               Sources: {completedSources.length} / {sources.length} completed
             </Typography>
             <LinearProgress
-              variant: any,
+              variant="body2"
               value={sourcesProgress}
-              color: any,
-              sx={{ height: 6, borderRadius: 3 } as any}
+              color
+              sx={{ display: "flex", height: 6, borderRadius: 3 } as any}
             />
           </Box>
         )}
 
         {/* Status Message */}
         {message && (
-          <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' } as any}>
+          <Typography variant="body2" color="text.secondary" sx={{ display: "flex", fontStyle: 'italic' } as any}>
             {message}
           </Typography>
         )}
 
         <Collapse in={showDetails}>
-          <Box sx={{ mt: 3, pt: 2, borderTop: '1px solid', borderColor: 'divider' } as any}>
+          <Box sx={{ display: "flex", mt: 3, pt: 2, borderTop: '1px solid', borderColor: 'divider' } as any}>
             {/* Step Details */}
             <Typography variant="subtitle2" gutterBottom fontWeight={600}>
               Process Steps
             </Typography>
             <List dense>
-              {steps.map((step: any: any, index: any: any) => (
-                <ListItem key={index} sx={{ py: 0.5 } as any}>
-                  <ListItemIcon sx={{ minWidth: 36 } as any}>
+              {steps.map((step: any index: any: any: any: any) => (
+                <ListItem key={index} sx={{ display: "flex", py: 0.5 } as any}>
+                  <ListItemIcon sx={{ display: "flex", minWidth: 36 } as any}>
                     {getStepIcon(index)}
                   </ListItemIcon>
                   <ListItemText 
                     primary={step}
-                    primaryTypographyProps: any,
+                    primaryTypographyProps
                       color: index <= current ? 'text.primary' : 'text.secondary',
                       fontWeight: index ===current ? 600 : 400
                     }}
@@ -170,13 +169,13 @@ const SyncProgressBar: React.FC<any> = ({ progressData }) => {
 
             {/* Sources Status */}
             {sources.length > 0 && (
-              <Box sx={{ mt: 2 } as any}>
+              <Box sx={{ display: "flex", mt: 2 } as any}>
                 <Typography variant="subtitle2" gutterBottom fontWeight={600}>
                   Sources Status ({completedSources.length + errorSources.length} / {sources.length})
                 </Typography>
                 <Grid { ...{container: true}} spacing={1}>
-                  {sources.map((source: any: any, index: any: any) => {
-                    const isCompleted = completedSources.includes(source.code || source.code_source)));
+                  {sources.map((source: any index: any: any: any: any) => {
+                    const isCompleted = completedSources.includes(source.code || source.code_source)))));
                     const hasError = errorSources.includes(source.code || source.code_source);
                     const status = hasError ? 'error' : isCompleted ? 'success' : 'default';
                     
@@ -187,8 +186,8 @@ const SyncProgressBar: React.FC<any> = ({ progressData }) => {
                           label={source.name || source.magentoSource || source.code}
                           color={status}
                           variant={isCompleted || hasError ? 'filled' : 'outlined'}
-                          size: any,
-                          sx={{ width: '100%', justifyContent: 'flex-start' } as any}
+                          size="small"
+                          sx={{ display: "flex", width: '100%', justifyContent: 'flex-start' } as any}
                         />
                       </Grid>
                     );

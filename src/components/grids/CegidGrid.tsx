@@ -55,7 +55,7 @@ const CegidGrid = () => {
                     },
                     onExport: (selectedRows) => {
                         const exportData = selectedRows.length > 0
-                            ? products.filter((product: any: any) => selectedRows.includes(product?.reference))
+                            ? products.filter((product: any: any: any: any) => selectedRows.includes(product?.reference))
                             : products;
                         console.log('Exporting Cegid products:', exportData);
                         toast.success(`Exported ${exportData.length} products`);

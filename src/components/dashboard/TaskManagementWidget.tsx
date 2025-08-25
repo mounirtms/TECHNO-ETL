@@ -125,8 +125,8 @@ const TaskManagementWidget = () => {
   };
 
   const handleTaskToggle = (taskId) => {
-    setTasks(prev => prev.map((task: any: any) => 
-      task.id ===taskId 
+    setTasks(prev => prev.map((task: any: any: any: any) => 
+      task.id = ==taskId 
         ? { ...task, status: task.status === 'completed' ? 'pending' : 'completed' }
         : task
     ));
@@ -158,52 +158,54 @@ const TaskManagementWidget = () => {
 
   const handleDeleteTask = () => {
     if(selectedTask) {
-      setTasks(prev => prev.filter((task: any: any) => task.id !== selectedTask.id));
+      setTasks(prev => prev.filter((task: any: any: any: any) => task.id !== selectedTask.id));
     }
     handleMenuClose();
   };
 
-  const completedTasks = tasks.filter((task: any: any) => task.status === 'completed').length;
+  const completedTasks = tasks.filter((task: any: any: any: any) => task.status === 'completed').length;
   const totalTasks = tasks.length;
   const completionRate = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
   return (
     <Card sx={{ 
+      display: "flex", 
       borderRadius: density === 'compact' ? 2 : 3,
       height: '100%',
       display: 'flex',
       flexDirection: 'column'
     }}>
       <CardHeader
-        avatar: any,
-          <Avatar sx={{ bgcolor: 'primary.main' }}>
+        avatar
+          <Avatar sx={{ display: "flex", bgcolor: 'primary.main' }}>
             <TaskIcon />
           </Avatar>
         }
-        title: any,
+        title
         subheader={`${completedTasks}/${totalTasks} tasks completed`}
-        action: any,
+        action
             startIcon={<AddIcon />}
             onClick={() => setDialogOpen(true)}
-            sx: any,
+            sx={{
               '&:hover': animations ? { transform: 'scale(1.05)' } : {}
             }}
           >
             Add Task
           </Button>
         }
-        sx={{ pb: 1 }}
+        sx={{ display: "flex", pb: 1 }}
       />
 
       <CardContent sx={{ 
+        display: "flex", 
         flexGrow: 1, 
         pt: 0, 
         p: density === 'compact' ? 1 : 2,
         '&:last-child': { pb: density === 'compact' ? 1 : 2 }
       }}>
         {/* Progress Overview */}
-        <Box sx={{ mb: 2 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+        <Box sx={{ display: "flex", mb: 2 }}>
+          <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
             <Typography variant="body2" color="text.secondary">
               Overall Progress
             </Typography>
@@ -212,10 +214,9 @@ const TaskManagementWidget = () => {
             </Typography>
           </Box>
           <LinearProgress
-            variant: any,
+            variant="body2"
             value={completionRate}
-            sx: any,
-              borderRadius: 3,
+            sx={{
               bgcolor: 'grey.200',
               '& .MuiLinearProgress-bar': {
                 borderRadius: 3
@@ -225,12 +226,11 @@ const TaskManagementWidget = () => {
         </Box>
 
         {/* Task List */}
-        <List dense sx={{ maxHeight: 300, overflow: 'auto' }}>
-          {tasks.slice(0, 5).map((task: any: any) => (
+        <List dense sx={{ display: "flex", maxHeight: 300, overflow: 'auto' }}>
+          {tasks.slice(0, 5).map((task: any: any: any: any) => (
             <ListItem
               key={task.id}
-              sx: any,
-                mb: 0.5,
+              sx={{
                 transition: animations ? 'all 0.2s ease' : 'none',
                 '&:hover': animations ? {
                   bgcolor: 'action.hover',
@@ -248,24 +248,23 @@ const TaskManagementWidget = () => {
               </ListItemIcon>
               
               <ListItemText
-                primary: any,
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                primary
+                  <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Typography
-                      variant: any,
-                        opacity: task.status === 'completed' ? 0.7 : 1
+                      variant="body2"
                       }}
                     >
                       {task.title}
                     </Typography>
                     <Chip
                       label={task.priority}
-                      size: any,
+                      size="small"
                       color={getPriorityColor(task.priority)}
-                      sx={{ height: 16, fontSize: '0.7rem' }}
+                      sx={{ display: "flex", height: 16, fontSize: '0.7rem' }}
                     />
                   </Box>
                 }
-                secondary: any,
+                secondary
                     {task.description} • Due: {task.dueDate}
                   </Typography>
                 }
@@ -273,7 +272,7 @@ const TaskManagementWidget = () => {
               
               <ListItemSecondaryAction>
                 <IconButton
-                  size: any,
+                  size="small"
                   onClick={(e) => handleMenuClick(e, task)}
                 >
                   <MoreIcon fontSize="small" />
@@ -284,7 +283,7 @@ const TaskManagementWidget = () => {
         </List>
 
         {tasks.length > 5 && (
-          <Box sx={{ textAlign: 'center', mt: 1 }}>
+          <Box sx={{ display: "flex", textAlign: 'center', mt: 1 }}>
             <Button size="small" color="primary">
               View All Tasks ({tasks.length})
             </Button>
@@ -298,21 +297,21 @@ const TaskManagementWidget = () => {
         <DialogContent>
           <TextField
             autoFocus
-            margin: any,
+            margin
             value={newTask.title}
             onChange={(e) => setNewTask(prev => ({ ...prev, title: e.target.value }))}
-            sx={{ mb: 2 }}
+            sx={{ display: "flex", mb: 2 }}
           />
           <TextField
-            margin: any,
+            margin
             rows={2}
-            variant: any,
+            variant="body2"
             value={newTask.description}
             onChange={(e) => setNewTask(prev => ({ ...prev, description: e.target.value }))}
-            sx={{ mb: 2 }}
+            sx={{ display: "flex", mb: 2 }}
           />
           <TextField
-            margin: any,
+            margin
             InputLabelProps={{ shrink: true }}
             value={newTask.dueDate}
             onChange={(e) => setNewTask(prev => ({ ...prev, dueDate: e.target.value }))}
@@ -331,11 +330,11 @@ const TaskManagementWidget = () => {
         onClose={handleMenuClose}
       >
         <MenuItem onClick={handleMenuClose}>
-          <EditIcon fontSize="small" sx={{ mr: 1 }} />
+          <EditIcon fontSize="small" sx={{ display: "flex", mr: 1 }} />
           Edit
         </MenuItem>
         <MenuItem onClick={handleDeleteTask}>
-          <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
+          <DeleteIcon fontSize="small" sx={{ display: "flex", mr: 1 }} />
           Delete
         </MenuItem>
       </Menu>

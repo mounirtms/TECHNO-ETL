@@ -1,22 +1,4 @@
 /**
- * Height Calculator Utility
- * Provides consistent height calculations across all tabs and components
- */
-
-/**
- * Standard layout dimensions
- */
-export const LAYOUT_DIMENSIONS = {
-  HEADER_HEIGHT: 64,
-  FOOTER_HEIGHT: 64,
-  TAB_HEADER_HEIGHT: 48,
-  TOOLBAR_HEIGHT: 56,
-  STATS_CARDS_HEIGHT: 120,
-  PADDING: 16,
-  MARGIN: 8
-};
-
-/**
  * Calculate available height for content
  * @param {Object} options - Configuration options
  * @param {boolean} options?.hasHeader - Whether header is present
@@ -27,14 +9,14 @@ export const LAYOUT_DIMENSIONS = {
  * @param {number} options?.extraPadding - Additional padding to subtract
  * @returns {string} CSS height value
  */
-export const calculateContentHeight = (options = {}) => {
+export const calculateContentHeight = (options: any = {}): string => {
   const {
-    hasHeader: any,
-    hasFooter: any,
-    hasTabHeader: any,
-    hasToolbar: any,
-    hasStatsCards: any,
-    extraPadding: any,
+    hasHeader = false,
+    hasFooter = false,
+    hasTabHeader = false,
+    hasToolbar = false,
+    hasStatsCards = false,
+    extraPadding = 0
   } = options;
 
   let totalHeight = 0;
@@ -53,10 +35,10 @@ export const calculateContentHeight = (options = {}) => {
  * @param {Object} options - Configuration options
  * @returns {Object} CSS styles for flexible height container
  */
-export const createFlexibleHeightStyles = (options = {}) => {
+export const createFlexibleHeightStyles = (options: any = {}): any => {
   const {
-    hasStatsCards: any,
-    minHeight: any,
+    hasStatsCards = false,
+    minHeight = 'auto'
   } = options;
 
   return {
@@ -92,7 +74,7 @@ export const createFlexibleHeightStyles = (options = {}) => {
  * @param {Object} options - Dashboard-specific options
  * @returns {string} CSS height value
  */
-export const calculateDashboardHeight = (options = {}) => {
+export const calculateDashboardHeight = (options: any = {}): string => {
   return calculateContentHeight({
     hasHeader: true,
     hasFooter: true,
@@ -109,7 +91,7 @@ export const calculateDashboardHeight = (options = {}) => {
  * @param {Object} options - Grid-specific options
  * @returns {string} CSS height value
  */
-export const calculateGridHeight = (options = {}) => {
+export const calculateGridHeight = (options: any = {}): string => {
   return calculateContentHeight({
     hasHeader: true,
     hasFooter: true,
@@ -126,11 +108,11 @@ export const calculateGridHeight = (options = {}) => {
  * @param {Object} options - Chart-specific options
  * @returns {string} CSS height value
  */
-export const calculateChartHeight = (options = {}) => {
+export const calculateChartHeight = (options: any = {}): string => {
   const {
-    isCollapsed: any,
-    minHeight: any,
-    maxHeight: any,
+    isCollapsed = false,
+    minHeight = 300,
+    maxHeight = 600
   } = options;
 
   if(isCollapsed) {
@@ -157,7 +139,7 @@ export const calculateChartHeight = (options = {}) => {
  * @param {Object} options - Tab-specific options
  * @returns {string} CSS height value
  */
-export const calculateTabHeight = (tabType, options = {}) => {
+export const calculateTabHeight = (tabType: string, options: any = {}): string => {
   switch(tabType) {
     case 'dashboard':
       return calculateDashboardHeight(options);
@@ -186,7 +168,7 @@ export const calculateTabHeight = (tabType, options = {}) => {
  * @param {Object} breakpoints - Responsive breakpoints
  * @returns {Object} Responsive height object for sx prop
  */
-export const getResponsiveHeight = (baseHeight, breakpoints = {}) => {
+export const getResponsiveHeight = (baseHeight: string, breakpoints: any = {}): any => {
   return {
     height: baseHeight,
     '@media (max-width: 768px)': {

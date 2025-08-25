@@ -61,7 +61,7 @@ const BulkAddDialog: React.FC<any> = ({ open, onClose, onUpload }) => {
             <DialogContent>
                 <Box
                     { ...getRootProps()}
-                    sx: any,
+                    sx={{
                         border: `2px dashed ${isDragActive ? 'primary.main' : 'grey.500'}`,
                         borderRadius: 2,
                         p: 4,
@@ -72,7 +72,7 @@ const BulkAddDialog: React.FC<any> = ({ open, onClose, onUpload }) => {
                     }}
                 >
                     <input { ...getInputProps()} />
-                    <CloudUploadIcon sx={{ fontSize: 48, color: 'grey.500' } as any} />
+                    <CloudUploadIcon sx={{ display: "flex", fontSize: 48, color: 'grey.500' } as any} />
                     <Typography>
                         {isDragActive ? 'Drop the file here ...' : 'Drag \'n\' drop a CSV file here, or click to select a file'}
                     </Typography>
@@ -80,7 +80,7 @@ const BulkAddDialog: React.FC<any> = ({ open, onClose, onUpload }) => {
                 {files.length > 0 && (
                     <List>
                         <ListItem
-                            secondaryAction: any,
+                            secondaryAction
                                 <IconButton edge="end" aria-label="delete" onClick={handleRemoveFile}>
                                     <DeleteIcon />
                                 </IconButton>

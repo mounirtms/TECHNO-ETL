@@ -56,9 +56,9 @@ const CustomersGrid = () => {
       
       // Calculate stats
       const totalCustomers = customers.length;
-      const activeCustomers = customers.filter((c: any: any) => c.is_active ===1).length;
+      const activeCustomers = customers.filter((c: any: any: any: any) => c.is_active ===1).length;
       const inactiveCustomers = totalCustomers - activeCustomers;
-      const totalOrders = customers.reduce((sum: any: any, c: any: any) => sum + (c.orders_count || 0), 0);
+      const totalOrders = customers.reduce((sum: any c: any: any: any: any) => sum + (c.orders_count || 0), 0);
       
       setStats({
         totalCustomers,
@@ -267,7 +267,7 @@ const CustomersGrid = () => {
 
   // ===== 10. RENDER =====
   return (
-    <Box sx={{ height: '100%', width: '100%' }}>
+    <Box sx={{ display: "flex", height: '100%', width: '100%' }}>
       <UnifiedGrid
         { ...getStandardGridProps('magentoCustomers', {
           gridName: "CustomersGrid",

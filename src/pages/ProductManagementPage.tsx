@@ -89,7 +89,7 @@ const ProductManagementPage = () => {
   };
 
   const handleRemoveProductId = (idToRemove) => {
-    setProductIds(prev => prev.filter((id: any: any) => id !== idToRemove));
+    setProductIds(prev => prev.filter((id: any: any: any: any) => id !== idToRemove));
     toast.info(`Product ID ${idToRemove} removed`);
   };
 
@@ -205,18 +205,16 @@ const ProductManagementPage = () => {
     loadCachedData();
   }, []);
 
-  return(<Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', p: 2 }}>
+  return(<Box sx={{ display: "flex", height: '100vh', display: 'flex', flexDirection: 'column', p: 2 }}>
       {/* Enhanced Header */}
       
 
       {/* Enhanced Tabs */}
-      <Paper sx={{ borderRadius: 3, overflow: 'hidden', mb: 3 }}>
+      <Paper sx={{ display: "flex", borderRadius: 3, overflow: 'hidden', mb: 3 }}>
         <Tabs
           value={activeTab}
           onChange={(e, newValue) => setActiveTab(newValue)}
-          variant: any,
-            '& .MuiTab-root': {
-              minHeight: 72,
+          variant="body2"
               textTransform: 'none',
               fontSize: '1rem',
               fontWeight: 500
@@ -225,37 +223,37 @@ const ProductManagementPage = () => {
         >
           <Tab
             icon={<ProductIcon />}
-            label: any,
-            sx={{ gap: 1 }}
+            label
+            sx={{ display: "flex", gap: 1 }}
           />
           <Tab
             icon={<RenameIcon />}
-            label: any,
-            sx={{ gap: 1 }}
+            label
+            sx={{ display: "flex", gap: 1 }}
           />
           <Tab
             icon={<ResizeIcon />}
-            label: any,
-            sx={{ gap: 1 }}
+            label
+            sx={{ display: "flex", gap: 1 }}
           />
           <Tab
             icon={<SettingsIcon />}
-            label: any,
-            sx={{ gap: 1 }}
+            label
+            sx={{ display: "flex", gap: 1 }}
           />
         </Tabs>
       </Paper>
 
       {/* Tab Content */}
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ display: "flex", flexGrow: 1 }}>
         {/* Tab Panel Component */}
-        {activeTab ===0 && (<Paper sx={{ p: 3, borderRadius: 3, height: '100%' }}>
+        {activeTab ===0 && (<Paper sx={{ display: "flex", p: 3, borderRadius: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               Product Selection & Management
             </Typography>
           
           {/* Mode Toggle */}
-          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+          <Box sx={{ display: "flex", display: 'flex', gap: 2, mb: 2 }}>
             <Button
               variant={!showAllProducts ? 'contained' : 'outlined'}
               onClick={handleShowSpecificProducts}
@@ -276,18 +274,18 @@ const ProductManagementPage = () => {
           {!showAllProducts && (
             <>
               {/* Add Product ID Input */}
-              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <Box sx={{ display: "flex", display: 'flex', gap: 2, mb: 2 }}>
                 <TextField
-                  label: any,
+                  label
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Enter product ID (e.g., 1140659762)"
-                  size: any,
-                  sx={{ minWidth: 200 }}
+                  size="small"
+                  sx={{ display: "flex", minWidth: 200 }}
                 />
                 <Button
-                  variant: any,
+                  variant="body2"
                   onClick={handleAddProductId}
                   startIcon={<AddIcon />}
                   disabled={!inputValue.trim()}
@@ -295,30 +293,30 @@ const ProductManagementPage = () => {
                   Add
                 </Button>
                 <Button
-                  variant: any,
+                  variant="body2"
                   onClick={handleClearAll}
                   startIcon={<ClearIcon />}
                   disabled={productIds?.length ===0}
-                  color: any,
+                  color
                   onClick={() => setEnhancedBulkMediaDialogOpen(true)}
                   startIcon={<TransformIcon />}
-                  color: any,
+                  color
                   onClick={() => setBulkMediaDialogOpen(true)}
                   startIcon={<ImageIcon />}
-                  color: any,
+                  color
               {/* Current Product IDs */}
-              <Box sx={{ mb: 2 }}>
+              <Box sx={{ display: "flex", mb: 2 }}>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
                   Selected Product IDs ({productIds?.length}):
                 </Typography>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                <Box sx={{ display: "flex", display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                   {productIds?.length > 0 ? (
-                    productIds.map((id: any: any) => (
+                    productIds.map((id: any: any: any: any) => (
                       <Chip
                         key={id}
                         label={id}
                         onDelete={() => handleRemoveProductId(id)}
-                        color: any,
+                        color
                   )}
                 </Box>
               </Box>
@@ -335,7 +333,7 @@ const ProductManagementPage = () => {
           )}
 
             {/* Main Content */}
-            <Box sx={{ flexGrow: 1, overflow: 'hidden', mt: 2 }}>
+            <Box sx={{ display: "flex", flexGrow: 1, overflow: 'hidden', mt: 2 }}>
               <ProductManagementGrid
                 initialProductIds={showAllProducts ? [] : productIds}
                 key={showAllProducts ? 'all' : productIds.join(',')} // Force re-render when switching modes
@@ -343,7 +341,7 @@ const ProductManagementPage = () => {
             </Box>
 
             {/* Footer Info */}
-            <Alert severity="info" sx={{ mt: 2 }}>
+            <Alert severity="info" sx={{ display: "flex", mt: 2 }}>
               <Typography variant="body2">
                 💡 <strong>Tip:</strong> Use the tabs above to switch between Products Overview, Attributes Management, and Category Assignment.
                 Double-click any product to view details, or use the action buttons for specific operations.
@@ -354,26 +352,26 @@ const ProductManagementPage = () => {
 
         {/* Image Renaming Tab */}
         {activeTab ===1 && (
-          <Paper sx={{ p: 3, borderRadius: 3, height: '100%' }}>
+          <Paper sx={{ display: "flex", p: 3, borderRadius: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               Image Renaming Tool
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 3 }}>
               Rename camera images with ref attributes to longer descriptive names using CSV mapping
             </Typography>
 
             <Grid { ...{container: true}} spacing={3}>
               <Grid item xs={12} md={6}>
-                <Card sx={{ p: 3, textAlign: 'center' }}>
-                  <RenameIcon sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
+                <Card sx={{ display: "flex", p: 3, textAlign: 'center' }}>
+                  <RenameIcon sx={{ display: "flex", fontSize: 48, color: 'primary.main', mb: 2 }} />
                   <Typography variant="h6" gutterBottom>
                     Rename Images
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 3 }}>
                     Process camera images and rename them using CSV reference mapping
                   </Typography>
                   <Button
-                    variant: any,
+                    variant="body2"
                     onClick={handleRenameImages}
                     disabled={imageProcessing.renaming}
                     startIcon={imageProcessing.renaming ? <CircularProgress size={20} /> : <RenameIcon />}
@@ -385,18 +383,18 @@ const ProductManagementPage = () => {
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <Card sx={{ p: 3 }}>
+                <Card sx={{ display: "flex", p: 3 }}>
                   <Typography variant="h6" gutterBottom>
                     Processing Results
                   </Typography>
-                  <Box sx={{ mb: 2 }}>
+                  <Box sx={{ display: "flex", mb: 2 }}>
                     <Typography variant="body2" color="text.secondary">
                       Renamed Images: {processingResults.renamed}
                     </Typography>
                     <LinearProgress
-                      variant: any,
+                      variant="body2"
                       value={processingResults.renamed > 0 ? (processingResults.renamed / 100) * 100 : 0}
-                      sx={{ mt: 1 }}
+                      sx={{ display: "flex", mt: 1 }}
                     />
                   </Box>
                   <Typography variant="body2" color="text.secondary">
@@ -412,26 +410,26 @@ const ProductManagementPage = () => {
 
         {/* Image Resizing Tab */}
         {activeTab ===2 && (
-          <Paper sx={{ p: 3, borderRadius: 3, height: '100%' }}>
+          <Paper sx={{ display: "flex", p: 3, borderRadius: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               Image Resizing Tool
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 3 }}>
               Resize images to 1200x1200 pixels with white background padding (preserves all content)
             </Typography>
 
             <Grid { ...{container: true}} spacing={3}>
               <Grid item xs={12} md={6}>
-                <Card sx={{ p: 3, textAlign: 'center' }}>
-                  <ResizeIcon sx={{ fontSize: 48, color: 'info.main', mb: 2 }} />
+                <Card sx={{ display: "flex", p: 3, textAlign: 'center' }}>
+                  <ResizeIcon sx={{ display: "flex", fontSize: 48, color: 'info.main', mb: 2 }} />
                   <Typography variant="h6" gutterBottom>
                     Resize Images
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 3 }}>
                     Convert images to 1200x1200 format with aspect ratio preservation
                   </Typography>
                   <Button
-                    variant: any,
+                    variant="body2"
                     onClick={handleResizeImages}
                     disabled={imageProcessing.resizing}
                     startIcon={imageProcessing.resizing ? <CircularProgress size={20} /> : <ResizeIcon />}
@@ -443,11 +441,11 @@ const ProductManagementPage = () => {
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <Card sx={{ p: 3 }}>
+                <Card sx={{ display: "flex", p: 3 }}>
                   <Typography variant="h6" gutterBottom>
                     Resize Settings
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 2 }}>
                     🎯 Target Size: 1200x1200 pixels<br/>
                     🖼️ Method: Aspect ratio preservation<br/>
                     🎨 Background: White padding<br/>
@@ -455,15 +453,15 @@ const ProductManagementPage = () => {
                     📁 Source: /renamed_images<br/>
                     📁 Output: /resized_images
                   </Typography>
-                  <Box sx={{ mt: 2 }}>
+                  <Box sx={{ display: "flex", mt: 2 }}>
                     <Typography variant="body2" color="text.secondary">
                       Resized Images: {processingResults.resized}
                     </Typography>
                     <LinearProgress
-                      variant: any,
+                      variant="body2"
                       value={processingResults.resized > 0 ? (processingResults.resized / 100) * 100 : 0}
-                      color: any,
-                      sx={{ mt: 1 }}
+                      color
+                      sx={{ display: "flex", mt: 1 }}
                     />
                   </Box>
                 </Card>
@@ -474,22 +472,22 @@ const ProductManagementPage = () => {
 
         {/* Catalog Tools Tab */}
         {activeTab ===3 && (
-          <Paper sx={{ p: 3, borderRadius: 3, height: '100%' }}>
+          <Paper sx={{ display: "flex", p: 3, borderRadius: 3, height: '100%' }}>
             <Typography variant="h6" gutterBottom>
               Catalog Management Tools
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 3 }}>
               Advanced tools for managing product attributes, brands, and categories with caching
             </Typography>
 
             <Grid { ...{container: true}} spacing={3}>
               <Grid item xs={12} md={4}>
-                <Card sx={{ p: 3, textAlign: 'center' }}>
-                  <CategoryIcon sx={{ fontSize: 48, color: 'success.main', mb: 2 }} />
+                <Card sx={{ display: "flex", p: 3, textAlign: 'center' }}>
+                  <CategoryIcon sx={{ display: "flex", fontSize: 48, color: 'success.main', mb: 2 }} />
                   <Typography variant="h6" gutterBottom>
                     Categories
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 2 }}>
                     Cached: {cachedData.categories?.length || 0} categories
                   </Typography>
                   <Button variant="outlined" color="success" fullWidth>
@@ -499,12 +497,12 @@ const ProductManagementPage = () => {
               </Grid>
 
               <Grid item xs={12} md={4}>
-                <Card sx={{ p: 3, textAlign: 'center' }}>
-                  <BrandIcon sx={{ fontSize: 48, color: 'warning.main', mb: 2 }} />
+                <Card sx={{ display: "flex", p: 3, textAlign: 'center' }}>
+                  <BrandIcon sx={{ display: "flex", fontSize: 48, color: 'warning.main', mb: 2 }} />
                   <Typography variant="h6" gutterBottom>
                     Brands
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 2 }}>
                     Cached: {cachedData.brands?.length || 0} brands
                   </Typography>
                   <Button variant="outlined" color="warning" fullWidth>
@@ -514,12 +512,12 @@ const ProductManagementPage = () => {
               </Grid>
 
               <Grid item xs={12} md={4}>
-                <Card sx={{ p: 3, textAlign: 'center' }}>
-                  <SettingsIcon sx={{ fontSize: 48, color: 'secondary.main', mb: 2 }} />
+                <Card sx={{ display: "flex", p: 3, textAlign: 'center' }}>
+                  <SettingsIcon sx={{ display: "flex", fontSize: 48, color: 'secondary.main', mb: 2 }} />
                   <Typography variant="h6" gutterBottom>
                     Attributes
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 2 }}>
                     Cached: {cachedData.attributes?.length || 0} attributes
                   </Typography>
                   <Button variant="outlined" color="secondary" fullWidth>
@@ -529,9 +527,9 @@ const ProductManagementPage = () => {
               </Grid>
             </Grid>
 
-            <Divider sx={{ my: 3 }} />
+            <Divider sx={{ display: "flex", my: 3 }} />
 
-            <Box sx={{ textAlign: 'center' }}>
+            <Box sx={{ display: "flex", textAlign: 'center' }}>
               <Typography variant="body2" color="text.secondary">
                 Cache Status: {cachedData.lastUpdated ?
                   `Updated ${new Date(cachedData.lastUpdated).toLocaleTimeString()}` :
@@ -539,9 +537,9 @@ const ProductManagementPage = () => {
                 }
               </Typography>
               <Button
-                variant: any,
+                variant="body2"
                 onClick={loadCachedData}
-                sx={{ mt: 1 }}
+                sx={{ display: "flex", mt: 1 }}
               >
                 Refresh Cache
               </Button>
@@ -554,10 +552,10 @@ const ProductManagementPage = () => {
       <EnhancedBulkMediaUploadDialog
         open={enhancedBulkMediaDialogOpen}
         onClose={() => setEnhancedBulkMediaDialogOpen(false)}
-        onComplete: any,
+        onComplete
           console.log('Enhanced bulk media upload completed:', results);
-          const successful = results.filter((r: any: any) => r.status === 'success')?.length;
-          const failed = results.filter((r: any: any) => r.status === 'error')?.length;
+          const successful = results.filter((r: any: any: any: any) => r.status === 'success')?.length;
+          const failed = results.filter((r: any: any: any: any) => r.status === 'error')?.length;
           toast.success(`Professional upload completed: ${successful} successful, ${failed} failed`);
           setEnhancedBulkMediaDialogOpen(false);
         }}
@@ -567,9 +565,9 @@ const ProductManagementPage = () => {
       <BulkMediaUploadDialog
         open={bulkMediaDialogOpen}
         onClose={() => setBulkMediaDialogOpen(false)}
-        onComplete: any,
+        onComplete
           console.log('Basic bulk media upload completed:', results);
-          toast.success(`Media upload completed: ${results.filter((r: any: any) => r.status === 'success')?.length} successful`);
+          toast.success(`Media upload completed: ${results.filter((r: any: any: any: any) => r.status === 'success')?.length} successful`);
           setBulkMediaDialogOpen(false);
         }}
       />

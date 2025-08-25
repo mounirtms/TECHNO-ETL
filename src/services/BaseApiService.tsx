@@ -265,10 +265,10 @@ export class BaseApiService {
   }
 
   private _isValidFieldName(fieldName: string): boolean {
-    return Boolean(Boolean(fieldName && 
+    return Boolean((fieldName && 
            typeof fieldName === 'string' && 
            !this._containsTemplateVariable(fieldName) &&
-           fieldName.trim().length > 0));
+           fieldName.trim().length > 0))));
   }
 
   private _containsTemplateVariable(value: string): boolean {

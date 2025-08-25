@@ -95,7 +95,7 @@ export const saveUserSettings = async (userId, settings) => {
             success: true,
             message: 'User settings saved successfully'
         };
-    } catch(error: any) {
+    } catch (error) {
         console.error('Error saving user settings:', error);
         throw {
             success: false,
@@ -129,7 +129,7 @@ export const applyUserPreferences = (data, contexts = {}) => {
 
       // Handle system theme preference
       if(prefs.theme === 'system') {
-        themeToApply: any,
+        themeToApply
       }
 
       setTheme(themeToApply);
@@ -166,7 +166,7 @@ export const applyUserPreferences = (data, contexts = {}) => {
     updateApiServicesSettings(data.apiSettings);
 
     console.log('User preferences applied successfully:', prefs);
-  } catch(error: any) {
+  } catch (error) {
     console.error('Error applying user preferences:', error);
   }
 };
@@ -187,7 +187,7 @@ const updateApiServicesSettings = (apiSettings) => {
     
     // Update other services as needed
     console.log('API services updated with new settings');
-  } catch(error: any) {
+  } catch (error) {
     console.error('Error updating API services:', error);
   }
 };
@@ -221,7 +221,7 @@ export const getUserSettings = () => {
                 preferences: { ...defaultUserSettings.preferences, ...parsed.preferences }
             };
         }
-    } catch(error: any) {
+    } catch (error) {
         console.error('Error parsing stored user settings:', error);
     }
     return defaultUserSettings;
@@ -233,7 +233,7 @@ export const saveSettingsLocally = (settings) => {
         localStorage.setItem('userSettings', JSON.stringify(settings));
         localStorage.setItem('settingsLastModified', Date.now().toString());
         return true;
-    } catch(error: any) {
+    } catch (error) {
         console.error('Error saving settings locally:', error);
         return false;
     }

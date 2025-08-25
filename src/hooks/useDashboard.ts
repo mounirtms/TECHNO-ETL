@@ -11,9 +11,9 @@ import dashboardApi from '../services/dashboardApi';
  */
 export const useDashboard = (options = {}) => {
   const {
-    autoRefresh: any,
+    autoRefresh
     refreshInterval = 5 * 60 * 1000, // 5 minutes
-    preload: any,
+    preload
   } = options;
 
   // State management
@@ -72,7 +72,7 @@ export const useDashboard = (options = {}) => {
       const result = await dashboardApi.getDashboardStats();
       safeSetState(setData, prev => ({ ...prev, stats: result }));
       setLastUpdated(new Date());
-    } catch(error: any) {
+    } catch (error) {
       console.error('Failed to fetch dashboard stats:', error);
       setErrorState('stats', error.message);
     } finally {
@@ -88,7 +88,7 @@ export const useDashboard = (options = {}) => {
     try {
       const result = await dashboardApi.getRecentOrders(page, limit);
       safeSetState(setData, prev => ({ ...prev, orders: result }));
-    } catch(error: any) {
+    } catch (error) {
       console.error('Failed to fetch orders:', error);
       setErrorState('orders', error.message);
     } finally {
@@ -104,7 +104,7 @@ export const useDashboard = (options = {}) => {
     try {
       const result = await dashboardApi.getDashboardHealth();
       safeSetState(setData, prev => ({ ...prev, health: result }));
-    } catch(error: any) {
+    } catch (error) {
       console.error('Failed to fetch health:', error);
       setErrorState('health', error.message);
     } finally {
@@ -127,7 +127,7 @@ export const useDashboard = (options = {}) => {
       
       setLastUpdated(new Date());
       console.log(`✅ Dashboard data updated (${result.fetchTime}ms)`);
-    } catch(error: any) {
+    } catch (error) {
       console.error('❌ Failed to fetch dashboard data:', error);
     }
   }, [safeSetState]);
@@ -146,7 +146,7 @@ export const useDashboard = (options = {}) => {
       }, 1000);
 
       return result;
-    } catch(error: any) {
+    } catch (error) {
       console.error('Failed to sync prices:', error);
       setErrorState('sync', error.message);
       throw error;
@@ -169,7 +169,7 @@ export const useDashboard = (options = {}) => {
       }, 1000);
 
       return result;
-    } catch(error: any) {
+    } catch (error) {
       console.error('Failed to sync inventory:', error);
       setErrorState('sync', error.message);
       throw error;
@@ -267,7 +267,7 @@ export const useSync = () => {
       const result = await dashboardApi.syncPrices();
       setLastSync({ type: 'prices', ...result });
       return result;
-    } catch(error: any) {
+    } catch (error) {
       setError(error.message);
       throw error;
     } finally {
@@ -283,7 +283,7 @@ export const useSync = () => {
       const result = await dashboardApi.syncInventory();
       setLastSync({ type: 'inventory', ...result });
       return result;
-    } catch(error: any) {
+    } catch (error) {
       setError(error.message);
       throw error;
     } finally {
@@ -294,7 +294,7 @@ export const useSync = () => {
   const getSyncStatus = useCallback(async () => {
     try {
       return await dashboardApi.getSyncStatus();
-    } catch(error: any) {
+    } catch (error) {
       setError(error.message);
       throw error;
     }

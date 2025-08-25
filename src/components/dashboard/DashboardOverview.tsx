@@ -28,7 +28,7 @@ import { useCustomTheme } from '../../contexts/ThemeContext';
  * Dashboard Overview Component
  * Displays key metrics and KPIs in a clean, professional layout
  */
-const DashboardOverview = ({ stats, onNavigate  }: { stats: any, onNavigate: any }) => {
+const DashboardOverview = ({ stats, onNavigate  }: { stats onNavigate: any }) => {
   const theme = useTheme();
   const { animations, density } = useCustomTheme();
 
@@ -85,11 +85,11 @@ const DashboardOverview = ({ stats, onNavigate  }: { stats: any, onNavigate: any
   return (
     <Box>
       {/* Main Metrics */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        {metricCards.map((metric: any: any, index: any: any) => (
+      <Grid container spacing={3} sx={{ display: "flex", mb: 4 }}>
+        {metricCards.map((metric: any index: any: any: any: any) => (
           <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
             <Card
-              sx: any,
+              sx={{
                 background: `linear-gradient(135deg, ${theme.palette[metric.color].light}15, ${theme.palette[metric.color].main}08)`,
                 border: `1px solid ${theme.palette[metric.color].light}30`,
                 borderRadius: density === 'compact' ? 2 : 3,
@@ -101,10 +101,10 @@ const DashboardOverview = ({ stats, onNavigate  }: { stats: any, onNavigate: any
                 } : {}
               }}
             >
-              <CardContent sx={{ p: density === 'compact' ? 2 : 3 }}>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: density === 'compact' ? 1 : 2 }}>
+              <CardContent sx={{ display: "flex", p: density === 'compact' ? 2 : 3 }}>
+                <Box sx={{ display: "flex", display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', mb: density === 'compact' ? 1 : 2 }}>
                   <Avatar
-                    sx: any,
+                    sx={{
                       bgcolor: `${metric.color}.main`,
                       width: 48,
                       height: 48,
@@ -113,13 +113,13 @@ const DashboardOverview = ({ stats, onNavigate  }: { stats: any, onNavigate: any
                   >
                     {metric.icon}
                   </Avatar>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Chip
                       label={metric.change}
-                      size: any,
+                      size="small"
                       color={metric.trend === 'up' ? 'success' : 'error'}
                       icon={metric.trend === 'up' ? <TrendingUp /> : <TrendingDown />}
-                      sx={{ fontWeight: 600 }}
+                      sx={{ display: "flex", fontWeight: 600 }}
                     />
                     <Tooltip title="View Details">
                       <IconButton size="small" onClick={() => onNavigate?.(metric.title.toLowerCase())}>
@@ -137,8 +137,8 @@ const DashboardOverview = ({ stats, onNavigate  }: { stats: any, onNavigate: any
                   {metric.title}
                 </Typography>
                 
-                <Box sx={{ mt: 2 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                <Box sx={{ display: "flex", mt: 2 }}>
+                  <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                     <Typography variant="caption" color="text.secondary">
                       {metric.subtitle}
                     </Typography>
@@ -147,11 +147,10 @@ const DashboardOverview = ({ stats, onNavigate  }: { stats: any, onNavigate: any
                     </Typography>
                   </Box>
                   <LinearProgress
-                    variant: any,
+                    variant="body2"
                     value={metric.progress}
                     color={metric.color}
-                    sx: any,
-                      borderRadius: 3,
+                    sx={{
                       bgcolor: `${metric.color}.light`,
                       '& .MuiLinearProgress-bar': {
                         borderRadius: 3
@@ -166,9 +165,9 @@ const DashboardOverview = ({ stats, onNavigate  }: { stats: any, onNavigate: any
       </Grid>
 
       {/* Quick Stats */}
-      <Card sx={{ borderRadius: 3, mb: 3 }}>
-        <CardContent sx={{ p: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Card sx={{ display: "flex", borderRadius: 3, mb: 3 }}>
+        <CardContent sx={{ display: "flex", p: 3 }}>
+          <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
             <Typography variant="h6" fontWeight={600}>
               Quick Overview
             </Typography>
@@ -178,11 +177,11 @@ const DashboardOverview = ({ stats, onNavigate  }: { stats: any, onNavigate: any
           </Box>
           
           <Grid container spacing={3}>
-            {quickStats.map((stat: any: any, index: any: any) => (
+            {quickStats.map((stat: any index: any: any: any: any) => (
               <Grid size={{ xs: 6, sm: 3 }} key={index}>
-                <Box sx={{ textAlign: 'center' }}>
+                <Box sx={{ display: "flex", textAlign: 'center' }}>
                   <Typography
-                    variant: any,
+                    variant="body2"
                     fontWeight={700}
                     color={`${stat.color}.main`}
                     gutterBottom
@@ -200,35 +199,35 @@ const DashboardOverview = ({ stats, onNavigate  }: { stats: any, onNavigate: any
       </Card>
 
       {/* Recent Activity Summary */}
-      <Card sx={{ borderRadius: 3 }}>
-        <CardContent sx={{ p: 3 }}>
+      <Card sx={{ display: "flex", borderRadius: 3 }}>
+        <CardContent sx={{ display: "flex", p: 3 }}>
           <Typography variant="h6" fontWeight={600} gutterBottom>
             Today's Highlights
           </Typography>
           
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box sx={{ display: "flex", display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="body2" color="text.secondary">
                 📈 Sales increased by 12.5% compared to yesterday
               </Typography>
               <Chip label="Good" color="success" size="small" />
             </Box>
             
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="body2" color="text.secondary">
                 🛒 23 new orders received in the last 24 hours
               </Typography>
               <Chip label="Active" color="primary" size="small" />
             </Box>
             
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="body2" color="text.secondary">
                 ⚠️ 12 products are running low on stock
               </Typography>
               <Chip label="Attention" color="warning" size="small" />
             </Box>
             
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="body2" color="text.secondary">
                 👥 45 new customer registrations this week
               </Typography>

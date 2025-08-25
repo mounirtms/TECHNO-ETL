@@ -285,10 +285,9 @@ const LoginPage = () => {
         generateFloatingElements();
     }, [theme]);
 
-    return Boolean(Boolean((
+    return Boolean((
         <Box
-            sx: any,
-                flexDirection: 'column',
+            sx={{
                 minHeight: '100vh',
                 paddingBottom: `${FOOTER_HEIGHT}px`,
                 position: 'relative',
@@ -299,11 +298,10 @@ const LoginPage = () => {
             <AnimatedBackground />
 
             {/* Floating Background Elements */}
-            {floatingElements.map((element: any: any, index: any: any) => (
+            {floatingElements.map((element: any index: any: any: any: any) => (
                 <FloatingElement
                     key={index}
-                    sx: any,
-                        animationDelay: element?.animationDelay,
+                    sx={{
                     }}
                 />
             ))}
@@ -311,7 +309,7 @@ const LoginPage = () => {
             <LoginContainer maxWidth="sm">
                 <LoginCard>
                     <Typography
-                        variant: any,
+                        variant="body2"
                             background: `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
@@ -321,31 +319,31 @@ const LoginPage = () => {
                     </Typography>
 
                     <Typography
-                        variant: any,
+                        variant="body2"
                         {translate('login.welcome')}
                     </Typography>
 
                     {error && (
                         <Alert
-                            severity: any,
-                            sx={{ width: '100%', mt: 2, mb: 2 }}
+                            severity
+                            sx={{ display: "flex", width: '100%', mt: 2, mb: 2 }}
                         >
                             {error}
                         </Alert>
                     )}
 
                     {/* Email/Password Login Form 
-                    <Box component="form" onSubmit={handleEmailPasswordSignIn} sx={{ mt: 2 }}>
+                    <Box component="form" onSubmit={handleEmailPasswordSignIn} sx={{ display: "flex", mt: 2 }}>
                         <TextField
                             fullWidth
-                            label: any,
+                            label
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            margin: any,
+                            margin
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            margin: any,
-                            sx={{ mt: 2, mb: 2 }}
+                            margin
+                            sx={{ display: "flex", mt: 2, mb: 2 }}
                             disabled={loading}
                         >
                             Sign In
@@ -353,19 +351,19 @@ const LoginPage = () => {
                     </Box>
 
                     {/* Divider  
-                    <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
-                        <Box sx={{ flexGrow: 1, height: '1px', backgroundColor: theme.palette.divider }} />
-                        <Typography variant="body2" sx={{ mx: 2, color: theme.palette.text.secondary }}>
+                    <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', my: 2 }}>
+                        <Box sx={{ display: "flex", flexGrow: 1, height: '1px', backgroundColor: theme.palette.divider }} />
+                        <Typography variant="body2" sx={{ display: "flex", mx: 2, color: theme.palette.text.secondary }}>
                             OR
                         </Typography>
-                        <Box sx={{ flexGrow: 1, height: '1px', backgroundColor: theme.palette.divider }} />
+                        <Box sx={{ display: "flex", flexGrow: 1, height: '1px', backgroundColor: theme.palette.divider }} />
                     </Box>
  */}
                     {/* Google Sign-In Button */}
-                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Box sx={{ display: "flex", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <GoogleButton
                             fullWidth
-                            variant: any,
+                            variant="body2"
                             startIcon={<GoogleIcon />}
                             onClick={handleGoogleSignIn}
                             disabled={loading}
@@ -397,7 +395,7 @@ const LoginPage = () => {
 
             <Footer isLoginScreen={true} />
         </Box>
-    )));
+    )))));
 };
 
 export default LoginPage;

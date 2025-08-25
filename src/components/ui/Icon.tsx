@@ -192,8 +192,8 @@ export const Icon = React.memo<IconProps>(
     size, 
     color, 
     className, 
-    spin: any,
-    strokeWidth: any,
+    spin
+    strokeWidth
     'aria-label': ariaLabel,
     'data-testid': testId,
     ...props 
@@ -207,7 +207,7 @@ export const Icon = React.memo<IconProps>(
 
     return (
       <IconComponent
-        className: any,
+        className
           iconVariants({ size, color }),
           spin && 'animate-spin',
           className
@@ -287,7 +287,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       icon, 
       iconSize, 
       variant, 
-      loading: any,
+      loading
       tooltip, 
       className, 
       disabled,
@@ -333,7 +333,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
     const buttonElement = (
       <button
         ref={ref}
-        type: any,
+        type
         className={cn(iconButtonVariants({ variant, size: variant as ComponentSize }), className)}
         disabled={disabled || loading}
         onClick={handleClick}
@@ -350,12 +350,12 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
         <div className="group relative">
           {buttonElement}
           <div
-            className: any,
+            className
               'bg-gray-900 text-white text-xs rounded py-1 px-2',
               'opacity-0 group-hover:opacity-100 transition-opacity duration-200',
               'pointer-events-none whitespace-nowrap z-50'
             )}
-            role: any,
+            role
             {tooltip}
           </div>
         </div>

@@ -86,20 +86,20 @@ const BugBountyTest = () => {
     }
   };
 
-  return Boolean(Boolean((
-    <Card sx={{ maxWidth: 600, mx: 'auto', mt: 4 }}>
+  return Boolean((
+    <Card sx={{ display: "flex", maxWidth: 600, mx: 'auto', mt: 4 }}>
       <CardContent>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
           <TestIcon color="primary" />
           <Typography variant="h6">Bug Bounty System Test</Typography>
         </Box>
         
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+        <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 3 }}>
           This test verifies Firebase connectivity and bug bounty functionality.
         </Typography>
 
         <Button
-          variant: any,
+          variant="body2"
           onClick={runTest}
           disabled={testing}
           startIcon={testing ? <CircularProgress size={20} /> : <TestIcon />}
@@ -111,13 +111,13 @@ const BugBountyTest = () => {
         {result && (
           <Alert 
             severity={result.success ? 'success' : 'error'} 
-            sx={{ mt: 2 }}
+            sx={{ display: "flex", mt: 2 }}
           >
             <Typography variant="body2">
               <strong>{result.message}</strong>
             </Typography>
             {result.details && (
-              <Box sx={{ mt: 1 }}>
+              <Box sx={{ display: "flex", mt: 1 }}>
                 <Typography variant="caption" component="pre">
                   {JSON.stringify(result.details, null, 2)}
                 </Typography>
@@ -127,7 +127,7 @@ const BugBountyTest = () => {
         )}
       </CardContent>
     </Card>
-  )));
+  )))));
 };
 
 export default BugBountyTest;

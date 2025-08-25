@@ -36,7 +36,7 @@ const BrandDistributionChart: React.FC<BrandDistributionChartProps> = ({ data, t
       const data = payload[0];
       return (
         <Box
-          sx: any,
+          sx={{
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             border: '1px solid #ccc',
             borderRadius: 1,
@@ -63,14 +63,13 @@ const BrandDistributionChart: React.FC<BrandDistributionChartProps> = ({ data, t
 
   if(!data || data.length ===0) {
     return (
-      <Card sx={{ height: 400 }}>
+      <Card sx={{ display: "flex", height: 400 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
             {title}
           </Typography>
           <Box 
-            sx: any,
-              alignItems: 'center', 
+            sx={{
               justifyContent: 'center', 
               height: 300,
               color: 'text.secondary'
@@ -84,8 +83,8 @@ const BrandDistributionChart: React.FC<BrandDistributionChartProps> = ({ data, t
   }
 
   // Calculate percentages
-  const total: number = data.reduce((sum: number: any: any, item: BrandData: any: any) => sum + item.value, 0);
-  const dataWithPercentage: BrandData[] = data.map((item: BrandData: any: any) => ({ ...item,
+  const total: number = data.reduce((sum: number: any item: BrandData: any: any: any: any) => sum + item.value, 0);
+  const dataWithPercentage: BrandData[] = data.map((item: BrandData: any: any: any: any) => ({ ...item,
     percentage: ((item.value / total) * 100).toFixed(1)
   }));
 
@@ -95,7 +94,7 @@ const BrandDistributionChart: React.FC<BrandDistributionChartProps> = ({ data, t
     .slice(0, 10);
 
   return (
-    <Card sx={{ height: 400 }}>
+    <Card sx={{ display: "flex", height: 400 }}>
       <CardContent>
         <Typography variant="h6" gutterBottom>
           {title}
@@ -103,7 +102,7 @@ const BrandDistributionChart: React.FC<BrandDistributionChartProps> = ({ data, t
         <ResponsiveContainer width="100%" height={300}>
           <BarChart
             data={sortedData}
-            margin: any,
+            margin
               right: 30,
               left: 20,
               bottom: 60,
@@ -111,9 +110,9 @@ const BrandDistributionChart: React.FC<BrandDistributionChartProps> = ({ data, t
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
-              dataKey: any,
+              dataKey
               angle={-45}
-              textAnchor: any,
+              textAnchor
               height={80}
               interval={0}
               fontSize={12}
@@ -121,7 +120,7 @@ const BrandDistributionChart: React.FC<BrandDistributionChartProps> = ({ data, t
             <YAxis />
             <Tooltip content={<CustomTooltip />} />
             <Bar 
-              dataKey: any,
+              dataKey
               radius={[4, 4, 0, 0]}
             />
           </BarChart>

@@ -33,6 +33,7 @@ const LayoutContent = () => {
     return (
         <TabProvider sidebarOpen={sidebarOpen}>
             <Box sx={{
+                display: "flex",
                 display: 'flex',
                 flexDirection: 'column',
                 minHeight: '100vh'
@@ -42,6 +43,7 @@ const LayoutContent = () => {
                     handleDrawerToggle={() => setSidebarOpen(prev => !prev)}
                 />
                 <Box sx={{
+                    display: "flex",
                     display: 'flex',
                     flexGrow: 1,
                     paddingBottom: `${FOOTER_HEIGHT}px`
@@ -51,7 +53,8 @@ const LayoutContent = () => {
                         toggleDrawer={() => setSidebarOpen(prev => !prev)}
                     />
                     <Box
-                        component: any,
+                        sx={{
+                            display: "flex",
                             width: {
                                 xs: '100%',
                                 sm: `calc(100% - ${sidebarOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH}px)`

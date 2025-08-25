@@ -33,7 +33,7 @@ class ComponentErrorBoundary extends React.Component {
     return { hasError: true, error };
   }
 
-  override componentDidCatch(error: Error, errorInfo: any) {
+  override override override componentDidCatch(error: Error, errorInfo: any) {
     console.error('Component Error:', error, errorInfo);
     this.setState({ errorInfo });
 
@@ -60,15 +60,14 @@ class ComponentErrorBoundary extends React.Component {
   handleGoHome
   };
 
-  override render() {
+  override override override render() {
     if(this.state.hasError) {
       const { componentName = 'Component', fallbackMessage, showRetry = true } = this.props;
       
-      return (
+      return Boolean((
         <Paper 
           elevation={1} 
           sx={{
-            m: 2, 
             textAlign: 'center',
             borderRadius: 2,
             border: '1px solid',
@@ -76,9 +75,9 @@ class ComponentErrorBoundary extends React.Component {
           }}
         >
           <Stack spacing={2} alignItems="center">
-            <ErrorOutline color="error" sx={{ fontSize: 48 }} />
+            <ErrorOutline color="error" sx={{ display: "flex", fontSize: 48 }} />
             
-            <Alert severity="error" sx={{ width: '100%' }}>
+            <Alert severity="error" sx={{ display: "flex", width: '100%' }}>
               <AlertTitle>Error in {componentName}</AlertTitle>
               {fallbackMessage || `There was an error loading the ${componentName.toLowerCase()}.`}
             </Alert>
@@ -112,7 +111,6 @@ class ComponentErrorBoundary extends React.Component {
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <Box 
                 sx={{
-                  p: 2, 
                   bgcolor: 'grey.100', 
                   borderRadius: 1, 
                   maxWidth: '100%',
@@ -120,6 +118,7 @@ class ComponentErrorBoundary extends React.Component {
                 }}
               >
                 <Typography variant="caption" component="pre" sx={{ 
+                  display: "flex", 
                   whiteSpace: 'pre-wrap',
                   fontSize: '0.75rem',
                   fontFamily: 'monospace'
@@ -137,7 +136,7 @@ class ComponentErrorBoundary extends React.Component {
             )}
           </Stack>
         </Paper>
-      )));
+      )))));
     }
 
     return this.props.children;

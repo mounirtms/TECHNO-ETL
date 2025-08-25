@@ -19,7 +19,7 @@ import { formatCurrency } from '../../services/dashboardService';
  * @param {boolean} props.loading - Loading state
  * @returns {JSX.Element} Dashboard statistics cards
  */
-const DashboardStats = ({ stats, loading  }: { stats: any, loading: any }) => {
+const DashboardStats = ({ stats, loading  }: { stats loading: any }) => {
     // Prepare stats cards configuration
     const statsCards = [
         {
@@ -89,16 +89,16 @@ const DashboardStats = ({ stats, loading  }: { stats: any, loading: any }) => {
     ];
 
     if(loading) {
-        return(<Box sx={{ mt: 3 }}>
+        return(<Box sx={{ display: "flex", mt: 3 }}>
                 <StatsCards 
-                    cards={statsCards.map((card: any: any) => ({ ...card, value: '...' }))} 
+                    cards={statsCards.map((card: any: any: any: any) => ({ ...card, value: '...' }))} 
                 />
             </Box>
         );
     }
 
     return (
-        <Box sx={{ mt: 3 }}>
+        <Box sx={{ display: "flex", mt: 3 }}>
             <StatsCards cards={statsCards.slice(0, 8)} />
         </Box>
     );

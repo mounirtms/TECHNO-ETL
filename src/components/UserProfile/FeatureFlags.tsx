@@ -12,7 +12,7 @@ import {
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 
-const FeatureFlags = ({ user, onSettingsChange  }: { user: any, onSettingsChange: any }) => {
+const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any }) => {
   const theme = useTheme();
 
   // Feature flags configuration
@@ -266,7 +266,7 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user: any, onSettingsChange
   };
 
   const handleReset = () => {
-    const defaultFlags = Object.keys(featureFlags).reduce((acc: any: any: any, key: any: any) => {
+    const defaultFlags = Object.keys(featureFlags).reduce((acc: any: any key: any: any: any: any) => {
       acc[key] = false;
       return acc;
     }, {});
@@ -293,11 +293,11 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user: any, onSettingsChange
 
   const restartRequired = getFeaturesRequiringRestart().length > 0;
 
-  return Boolean(Boolean((
-    <Box sx={{ p: 3 }}>
+  return Boolean((
+    <Box sx={{ display: "flex", p: 3 }}>
       {/* Header */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h5" sx={{ mb: 1, fontWeight: 600 }}>
+      <Box sx={{ display: "flex", mb: 4 }}>
+        <Typography variant="h5" sx={{ display: "flex", mb: 1, fontWeight: 600 }}>
           Feature Flags & Advanced Settings
         </Typography>
         <Typography variant="body1" color="text.secondary">
@@ -305,34 +305,33 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user: any, onSettingsChange
         </Typography>
         
         {/* Summary */}
-        <Box sx={{ mt: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
+        <Box sx={{ display: "flex", mt: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
           <Chip 
             icon={<Flag />} 
             label={`${getEnabledFeaturesCount()} features enabled`} 
-            color: any,
+            color
               icon={<Warning />} 
-              label: any,
+              label
           )}
         </Box>
       </Box>
 
       {/* Feature Categories */}
-      {Object.entries(featureCategories).map(([categoryKey: any: any, category]: any: any) => (
+      {Object.entries(featureCategories).map(([categoryKey: any category]: any: any: any: any) => (
         <Accordion key={categoryKey} defaultExpanded={categoryKey === 'advanced'}>
           <AccordionSummary expandIcon={<ExpandMore />}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
               {category.icon}
               <Typography variant="h6">{category.title}</Typography>
               <Chip 
-                size: any,
-                label={Object.keys(category.features).filter((key: any: any) => featureFlags[key]).length}
+                size="small"
+                label={Object.keys(category.features).filter((key: any: any: any: any) => featureFlags[key]).length}
                 color={category.color}
-                variant: any,
-              {Object.entries(category.features).map(([featureKey: any: any, feature]: any: any) => (
+                variant="body2"
                 <ListItem key={featureKey} divider>
                   <ListItemText
-                    primary: any,
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    primary
+                      <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Typography variant="subtitle1" fontWeight={600}>
                           {feature.name}
                         </Typography>
@@ -346,11 +345,11 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user: any, onSettingsChange
                         )}
                       </Box>
                     }
-                    secondary: any,
+                    secondary
                           {feature.description}
                         </Typography>
                         {feature.warning && featureFlags[featureKey] && (
-                          <Typography variant="caption" color="warning.main" sx={{ mt: 0.5, display: 'block' }}>
+                          <Typography variant="caption" color="warning.main" sx={{ display: "flex", mt: 0.5, display: 'block' }}>
                             ⚠️ {feature.warning}
                           </Typography>
                         )}
@@ -373,15 +372,15 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user: any, onSettingsChange
 
       {/* Restart Warning */}
       {restartRequired && (
-        <Alert severity="warning" sx={{ mt: 3 }}>
-          <Typography variant="subtitle2" sx={{ mb: 1 }}>
+        <Alert severity="warning" sx={{ display: "flex", mt: 3 }}>
+          <Typography variant="subtitle2" sx={{ display: "flex", mb: 1 }}>
             Application restart required
           </Typography>
           <Typography variant="body2">
             The following features require an application restart to take effect:
           </Typography>
-          <Box component="ul" sx={{ mt: 1, mb: 0 }}>
-            {getFeaturesRequiringRestart().map((featureName: any: any, index: any: any) => (
+          <Box component="ul" sx={{ display: "flex", mt: 1, mb: 0 }}>
+            {getFeaturesRequiringRestart().map((featureName: any index: any: any: any: any) => (
               <li key={index}>
                 <Typography variant="body2">{featureName}</Typography>
               </li>
@@ -392,6 +391,7 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user: any, onSettingsChange
 
       {/* Action Buttons */}
       <Box sx={{ 
+        display: "flex", 
         display: 'flex', 
         gap: 2, 
         justifyContent: 'flex-end',
@@ -400,14 +400,14 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user: any, onSettingsChange
         mt: 3
       }}>
         <Button
-          variant: any,
+          variant="body2"
           startIcon={<RestoreFromTrash />}
           onClick={handleReset}
         >
           Reset All
         </Button>
         <Button
-          variant: any,
+          variant="body2"
           startIcon={<Save />}
           onClick={handleSave}
           disabled={!isDirty}
@@ -437,7 +437,7 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user: any, onSettingsChange
         </Alert>
       </Snackbar>
     </Box>
-  )));
+  )))));
 };
 
 export default FeatureFlags;

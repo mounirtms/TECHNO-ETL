@@ -28,40 +28,40 @@ import { BaseGridProps, GridCard, ToolbarConfig } from '../../types/baseComponen
 // TypeScript interfaces
 const BaseGrid: React.FC<BaseGridProps> = ({
   // Data props
-  data: any,
-  columns: any,
-  loading: any,
-  error: any,
+  data,
+  columns,
+  loading,
+  error,
   // Grid configuration
-  gridName: any,
-  gridType: any,
-  height: any,
-  autoHeight: any,
+  gridName,
+  gridType,
+  height,
+  autoHeight,
   // Pagination
-  pagination: any,
-  pageSize: any,
+  pagination,
+  pageSize,
   pageSizeOptions = [10, 25, 50, 100],
   
   // Selection
-  checkboxSelection: any,
-  disableSelectionOnClick: any,
-  selectionModel: any,
+  checkboxSelection,
+  disableSelectionOnClick,
+  selectionModel,
   onSelectionModelChange,
   
   // Sorting and filtering
-  sortModel: any,
+  sortModel,
   onSortModelChange,
   filterModel = { items: [] },
   onFilterModelChange,
   
   // Toolbar configuration
-  showToolbar: any,
+  showToolbar,
   toolbarConfig = {},
-  customActions: any,
-  customLeftActions: any,
+  customActions,
+  customLeftActions,
   // Stats cards
-  showStatsCards: any,
-  gridCards: any,
+  showStatsCards,
+  gridCards,
   // Event handlers
   onRefresh,
   onAdd,
@@ -74,11 +74,11 @@ const BaseGrid: React.FC<BaseGridProps> = ({
   onCellClick,
   
   // Advanced features
-  enableVirtualization: any,
-  enableRealTimeUpdates: any,
-  updateInterval: any,
+  enableVirtualization,
+  enableRealTimeUpdates,
+  updateInterval,
   // Styling
-  density: any,
+  density,
   sx = {},
   
   // Accessibility
@@ -114,7 +114,7 @@ const BaseGrid: React.FC<BaseGridProps> = ({
   
   // Performance optimization - memoized columns
   const optimizedColumns = useMemo(() => {
-    return columns.map((column: any: any) => ({ ...column,
+    return columns.map((column: any) => ({ ...column,
       // Add default responsive behavior
       minWidth: column.minWidth || (isMobile ? 100 : 150),
       flex: column.flex || (isMobile && !column.width ? 1 : column.flex),
@@ -286,7 +286,8 @@ const BaseGrid: React.FC<BaseGridProps> = ({
     return (
       <Box sx={{ mb: 2 }}>
         <Box 
-          sx: any,
+          sx={{
+            display: 'grid',
             gridTemplateColumns: {
               xs: '1fr',
               sm: 'repeat(2, 1fr)',
@@ -295,7 +296,7 @@ const BaseGrid: React.FC<BaseGridProps> = ({
             gap: 2
           }}
         >
-          {gridCards.map((card: any: any, index: any: any) => {
+          {gridCards.map((card: any, index: number) => {
             // Create a safely typed version of the card
             const typedCard: any = { ...card,
               loading: loading,
@@ -372,8 +373,7 @@ const BaseGrid: React.FC<BaseGridProps> = ({
       {/* Main Grid */}
       <Paper 
         elevation={1}
-        sx: any,
-          width: '100%',
+        sx={{
           '& .MuiDataGrid-root': {
             border: 'none',
           },

@@ -52,7 +52,7 @@ class SettingsPersistenceManager {
             
             // Fallback to backup if primary fails
             if(!data) {
-                data: any,
+                data
             }
             
             if(data) {

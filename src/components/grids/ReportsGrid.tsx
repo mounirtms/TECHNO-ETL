@@ -120,14 +120,14 @@ const getChartIcon = (chartType) => {
   }
 };
 
-const ReportsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}> = ({ data, onDataChange, onBadgeUpdate  }) => {
+const ReportsGrid: React.FC<{data onDataChange onBadgeUpdate: any}> = ({ data, onDataChange, onBadgeUpdate  }) => {
   const { t } = useTranslation();
   const [reports, setReports] = useState(mockReports);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
 
   // Filter reports based on search query
-  const filteredReports = reports.filter((report: any: any) =>
+  const filteredReports = reports.filter((report: any: any: any: any) =>
     report.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     report.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
     report.type.toLowerCase().includes(searchQuery.toLowerCase())
@@ -135,7 +135,7 @@ const ReportsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}> 
 
   // Update badge count for ready reports
   useEffect(() => {
-    const readyReports = reports.filter((r: any: any) => r.status === 'ready').length;
+    const readyReports = reports.filter((r: any: any: any: any) => r.status === 'ready').length;
     onBadgeUpdate?.(readyReports);
   }, [reports, onBadgeUpdate]);
 
@@ -155,15 +155,15 @@ const ReportsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}> 
     console.log('Schedule report:', reportId);
   };
 
-  return Boolean(Boolean((
-    <Box sx={{ p: 3 }}>
+  return Boolean((
+    <Box sx={{ display: "flex", p: 3 }}>
       {/* Header */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ display: "flex", mb: 3 }}>
         <Typography variant="h5" component="h2">
           {t('Reports & Analytics')}
         </Typography>
         <Button
-          variant: any,
+          variant="body2"
           startIcon={<AddIcon />}
           onClick={handleCreateReport}
         >
@@ -177,21 +177,21 @@ const ReportsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}> 
         placeholder={t('Search reports...')}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        InputProps: any,
+        InputProps
         }}
-        sx={{ mb: 3 }}
+        sx={{ display: "flex", mb: 3 }}
       />
 
       {/* Reports Grid */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: 2 }}>
-        {filteredReports.map((report: any: any) => (
-          <Card key={report.id} sx={{ height: 'fit-content' }}>
+      <Box sx={{ display: "flex", display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: 2 }}>
+        {filteredReports.map((report: any: any: any: any) => (
+          <Card key={report.id} sx={{ display: "flex", height: 'fit-content' }}>
             <CardContent>
               <Stack spacing={2}>
                 {/* Report Header */}
                 <Stack direction="row" alignItems="center" justifyContent="space-between">
                   <Stack direction="row" alignItems="center" spacing={2}>
-                    <Avatar sx={{ bgcolor: 'primary.main' }}>
+                    <Avatar sx={{ display: "flex", bgcolor: 'primary.main' }}>
                       {getChartIcon(report.chartType)}
                     </Avatar>
                     <Box>
@@ -206,7 +206,7 @@ const ReportsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}> 
                   <Chip
                     label={report.status}
                     color={getStatusColor(report.status)}
-                    size: any,
+                    size="small"
                 {/* Category and Type */}
                 <Stack direction="row" spacing={1}>
                   <Chip label={report.category} variant="outlined" size="small" />
@@ -215,6 +215,7 @@ const ReportsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}> 
 
                 {/* Description */}
                 <Typography variant="body2" color="text.secondary" sx={{ 
+                  display: "flex", 
                   display: '-webkit-box',
                   WebkitLineClamp: 2,
                   WebkitBoxOrient: 'vertical',
@@ -262,10 +263,10 @@ const ReportsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}> 
                 </Stack>
 
                 {/* Actions */}
-                <Stack direction="row" spacing={1} sx={{ pt: 1 }}>
+                <Stack direction="row" spacing={1} sx={{ display: "flex", pt: 1 }}>
                   <Tooltip title={t('View Report')}>
                     <IconButton 
-                      size: any,
+                      size="small"
                       onClick={() => handleViewReport(report.id)}
                       disabled={report.status !== 'ready'}
                     >
@@ -274,7 +275,7 @@ const ReportsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}> 
                   </Tooltip>
                   <Tooltip title={t('Download Report')}>
                     <IconButton 
-                      size: any,
+                      size="small"
                       onClick={() => handleDownloadReport(report.id)}
                       disabled={report.status !== 'ready'}
                     >
@@ -290,8 +291,9 @@ const ReportsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}> 
 
                 {/* Progress indicator for generating reports */}
                 {report.status === 'generating' && (
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+                  <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
                     <Box sx={{ 
+                      display: "flex", 
                       width: 16, 
                       height: 16, 
                       border: '2px solid #f3f3f3',
@@ -316,8 +318,8 @@ const ReportsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}> 
 
       {/* Empty State */}
       {filteredReports.length ===0 && (
-        <Box sx={{ textAlign: 'center', py: 4 }}>
-          <ReportIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
+        <Box sx={{ display: "flex", textAlign: 'center', py: 4 }}>
+          <ReportIcon sx={{ display: "flex", fontSize: 64, color: 'text.secondary', mb: 2 }} />
           <Typography variant="h6" color="text.secondary">
             {searchQuery ? t('No reports found') : t('No reports yet')}
           </Typography>
@@ -327,7 +329,7 @@ const ReportsGrid: React.FC<{data: any, onDataChange: any, onBadgeUpdate: any}> 
         </Box>
       )}
     </Box>
-  )));
+  )))));
 };
 
 export default ReportsGrid;

@@ -194,19 +194,19 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
     const renderStepContent = () => {
         switch(activeStep) {
             case 0:
-                return(<Box sx={{ textAlign: 'center', py: 4 } as any}>
+                return(<Box sx={{ display: "flex", textAlign: 'center', py: 4 } as any}>
                         <input
-                            accept: any,
+                            accept
                             style={{ display: 'none' }}
-                            id: any,
+                            id
                             onChange={(e) => handleFileUpload}
                         />
                         <label htmlFor="catalog-upload">
                             <Button
-                                variant: any,
+                                variant="body2"
                                 startIcon={<UploadIcon />}
-                                size: any,
-                                sx={{ mb: 2 } as any}
+                                size="small"
+                                sx={{ display: "flex", mb: 2 } as any}
                             >
                                 Select Catalog CSV
                             </Button>
@@ -215,7 +215,7 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                             Upload the export_catalog_product.csv file (20MB) to process all products
                         </Typography>
                         {catalogFile && (
-                            <Alert severity="info" sx={{ mt: 2 } as any}>
+                            <Alert severity="info" sx={{ display: "flex", mt: 2 } as any}>
                                 Selected: {catalogFile.name} ({(catalogFile.size / 1024 / 1024).toFixed(2)} MB)
                             </Alert>
                         )}
@@ -224,12 +224,12 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
 
             case 1:
                 return (
-                    <Box sx={{ py: 2 } as any}>
-                        <Alert severity="info" sx={{ mb: 2 } as any}>
+                    <Box sx={{ display: "flex", py: 2 } as any}>
+                        <Alert severity="info" sx={{ display: "flex", mb: 2 } as any}>
                             Ready to process {catalogFile.name} and extract all products with proper default values
                         </Alert>
                         
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 } as any}>
+                        <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 2 } as any}>
                             This will:
                         </Typography>
                         <List dense>
@@ -248,9 +248,9 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                         </List>
                         
                         {processing && (
-                            <Box sx={{ mt: 2 } as any}>
+                            <Box sx={{ display: "flex", mt: 2 } as any}>
                                 <LinearProgress />
-                                <Typography variant="body2" sx={{ mt: 1 } as any}>
+                                <Typography variant="body2" sx={{ display: "flex", mt: 1 } as any}>
                                     Processing catalog... This may take a few moments for large files.
                                 </Typography>
                             </Box>
@@ -259,9 +259,9 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                 );
 
             case 2:
-                return importReport ? (<Box sx={{ py: 2 } as any}>
+                return importReport ? (<Box sx={{ display: "flex", py: 2 } as any}>
                         {/* Processing Summary */}
-                        <Card sx={{ mb: 2 } as any}>
+                        <Card sx={{ display: "flex", mb: 2 } as any}>
                             <CardContent>
                                 <Typography variant="h6" gutterBottom>
                                     Processing Summary
@@ -271,34 +271,34 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                                         <Chip 
                                             icon={<CheckIcon />} 
                                             label={`${importReport.summary.totalProducts} Total Products`} 
-                                            color: any,
+                                            color
                                     <Grid item xs={6}>
                                         <Chip 
                                             label={`${importReport.summary.simpleProducts} Simple`} 
-                                            variant: any,
+                                            variant="body2"
                                     <Grid item xs={6}>
                                         <Chip 
                                             label={`${importReport.summary.configurableProducts} Configurable`} 
-                                            variant: any,
+                                            variant="body2"
                                     <Grid item xs={6}>
                                         <Chip 
                                             label={`${importReport.validation.totalBrands} Brands`} 
-                                            variant: any,
+                                            variant="body2"
                         {/* Export Options */}
-                        <Card sx={{ mb: 2 } as any}>
+                        <Card sx={{ display: "flex", mb: 2 } as any}>
                             <CardContent>
                                 <Typography variant="h6" gutterBottom>
                                     Export Options
                                 </Typography>
                                 
-                                <Box sx={{ mb: 2 } as any}>
+                                <Box sx={{ display: "flex", mb: 2 } as any}>
                                     <Typography variant="subtitle2" gutterBottom>
                                         Product Types:
                                     </Typography>
                                     <FormControlLabel
-                                        control: any,
+                                        control
                                                 checked={selectedProductTypes.simple}
-                                                onChange: any,
+                                                onChange
                                                     simple: e.target.checked
                                                 }))}
                                             />
@@ -306,9 +306,9 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                                         label={`Simple Products (${importReport.summary.simpleProducts})`}
                                     />
                                     <FormControlLabel
-                                        control: any,
+                                        control
                                                 checked={selectedProductTypes.configurable}
-                                                onChange: any,
+                                                onChange
                                                     configurable: e.target.checked
                                                 }))}
                                             />
@@ -317,18 +317,18 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                                     />
                                 </Box>
 
-                                <Box sx={{ mb: 2 } as any}>
+                                <Box sx={{ display: "flex", mb: 2 } as any}>
                                     <FormControlLabel
-                                        control: any,
+                                        control
                                                 checked={createBatches}
                                                 onChange={(e) => setCreateBatches(e.target.checked)}
                                             />
                                         }
-                                        label: any,
+                                        label
                                         value={batchSize}
                                         onChange={(e) => setBatchSize(parseInt(e.target.value) || 100)}
-                                        size: any,
-                                        sx={{ width: 120 } as any}
+                                        size="small"
+                                        sx={{ display: "flex", width: 120 } as any}
                                         inputProps={{ min: 10, max: 500 }}
                                     />
                                 )}
@@ -342,9 +342,9 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                                     Import Recommendations
                                 </Typography>
                                 <List dense>
-                                    {importReport.recommendations.map((rec: any: any, index: any: any) => (
+                                    {importReport.recommendations.map((rec: any index: any: any: any: any) => (
                                         <ListItem key={index}>
-                                            <InfoIcon color="info" sx={{ mr: 1 } as any} />
+                                            <InfoIcon color="info" sx={{ display: "flex", mr: 1 } as any} />
                                             <ListItemText primary={rec} />
                                         </ListItem>
                                     ))}
@@ -356,8 +356,8 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
 
             case 3:
                 return (
-                    <Box sx={{ py: 2, textAlign: 'center' } as any}>
-                        <CheckIcon color="success" sx={{ fontSize: 64, mb: 2 } as any} />
+                    <Box sx={{ display: "flex", py: 2, textAlign: 'center' } as any}>
+                        <CheckIcon color="success" sx={{ display: "flex", fontSize: 64, mb: 2 } as any} />
                         <Typography variant="h6" gutterBottom>
                             CSV Files Generated Successfully!
                         </Typography>
@@ -379,8 +379,8 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
             </DialogTitle>
             
             <DialogContent>
-                <Stepper activeStep={activeStep} sx={{ mb: 3 } as any}>
-                    {steps.map((label: any: any) => (
+                <Stepper activeStep={activeStep} sx={{ display: "flex", mb: 3 } as any}>
+                    {steps.map((label: any: any: any: any) => (
                         <Step key={label}>
                             <StepLabel>{label}</StepLabel>
                         </Step>
@@ -398,7 +398,7 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                 {activeStep ===1 && (
                     <Button 
                         onClick={handleProcessCatalog} 
-                        variant: any,
+                        variant="body2"
                         disabled={!catalogFile || processing}
                         startIcon={processing ? null : <BatchIcon />}
                     >
@@ -409,7 +409,7 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                 {activeStep ===2 && importReport && (
                     <Button 
                         onClick={handleGenerateCSV} 
-                        variant: any,
+                        variant="body2"
                         startIcon={<DownloadIcon />}
                     >
                         Generate CSV Files

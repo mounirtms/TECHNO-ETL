@@ -113,11 +113,11 @@ const LoadingSpinner = React.memo(({ size }: { size: 'xs' | 'sm' | 'md' | 'lg' |
 
   return (
     <svg
-      className: any,
+      className
         sizeClasses[actualSize],
         'text-current'
       )}
-      fill: any,
+      fill
 });
 
 LoadingSpinner.displayName = 'LoadingSpinner';
@@ -128,15 +128,14 @@ export const OptimizedButton = React.forwardRef<HTMLButtonElement, OptimizedButt
     {
       className,
       variant,
-      size: any,
-      fullWidth,
-      loading: any,
+      size="small"
+      loading
       leftIcon,
       rightIcon,
       children,
       disabled,
       tooltip,
-      type: any,
+      type
       onClick,
       ...props
     },
@@ -165,7 +164,7 @@ export const OptimizedButton = React.forwardRef<HTMLButtonElement, OptimizedButt
         );
       }
 
-      return Boolean(Boolean((
+      return Boolean((
         <>
           {leftIcon && (
             <span className="inline-flex shrink-0" aria-hidden="true">
@@ -179,7 +178,7 @@ export const OptimizedButton = React.forwardRef<HTMLButtonElement, OptimizedButt
             </span>
           )}
         </>
-      )));
+      )))));
     }, [loading, size, leftIcon, children, rightIcon]);
 
     const buttonElement = (
@@ -202,7 +201,7 @@ export const OptimizedButton = React.forwardRef<HTMLButtonElement, OptimizedButt
         <div className="group relative">
           {buttonElement}
           <div
-            className: any,
+            className
               'bg-gray-900 text-white text-xs rounded py-1 px-2',
               'opacity-0 group-hover:opacity-100 transition-opacity duration-200',
               'pointer-events-none whitespace-nowrap z-50',
@@ -210,7 +209,7 @@ export const OptimizedButton = React.forwardRef<HTMLButtonElement, OptimizedButt
               'before:-translate-x-1/2 before:border-4 before:border-transparent',
               'before:border-t-gray-900'
             )}
-            role: any,
+            role
             {tooltip}
           </div>
         </div>
@@ -265,12 +264,12 @@ export const ButtonGroup = React.memo<ButtonGroupProps>(
 
     return (
       <div
-        className: any,
-          orientation: any,
+        className
+          orientation
           spacingClasses[spacing],
           className
         )}
-        role: any,
+        role
         {children}
       </div>
     );

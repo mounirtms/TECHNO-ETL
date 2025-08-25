@@ -124,11 +124,11 @@ const InventoryGrid = ({
   data,
   onDataChange,
   onBadgeUpdate,
-  initialFilter: any,
-  initialView: any,
-  initialSortBy: any,
-  showAlert: any,
-  highlightLowStock: any,
+  initialFilter
+  initialView
+  initialSortBy
+  showAlert
+  highlightLowStock
   dashboardParams = {}
 }) => {
   const { t } = useTranslation();
@@ -151,7 +151,7 @@ const InventoryGrid = ({
   }, [initialFilter, initialSortBy, highlightLowStock, dashboardParams]);
 
   // Filter inventory based on search query and filter
-  const filteredInventory = inventory.filter((item: any: any) => {
+  const filteredInventory = inventory.filter((item: any: any: any: any) => {
     const matchesSearch = item.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.warehouse.toLowerCase().includes(searchQuery.toLowerCase());
@@ -159,12 +159,12 @@ const InventoryGrid = ({
     let matchesFilter = true;
     if(filter === 'low-stock') {
       const status = getStockStatus(item.currentStock, item.minStock, item.reorderPoint);
-      matchesFilter: any,
+      matchesFilter
     } else if(filter === 'out-of-stock') {
-      matchesFilter: any,
+      matchesFilter
     } else if(filter === 'critical') {
       const status = getStockStatus(item.currentStock, item.minStock, item.reorderPoint);
-      matchesFilter: any,
+      matchesFilter
     }
 
     return matchesSearch && matchesFilter;
@@ -185,7 +185,7 @@ const InventoryGrid = ({
 
   // Update badge count for low stock items
   useEffect(() => {
-    const lowStockItems = inventory.filter((item: any: any) => {
+    const lowStockItems = inventory.filter((item: any: any: any: any) => {
       const status = getStockStatus(item.currentStock, item.minStock, item.reorderPoint);
       return status.status === 'critical' || status.status === 'low' || status.status === 'out_of_stock';
     }).length;
@@ -205,14 +205,14 @@ const InventoryGrid = ({
   };
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ display: "flex", p: 3 }}>
       {/* Header */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ display: "flex", mb: 3 }}>
         <Typography variant="h5" component="h2">
           {t('Inventory Management')}
         </Typography>
         <Button
-          variant: any,
+          variant="body2"
           startIcon={<AddIcon />}
           onClick={handleAddInventory}
         >
@@ -222,33 +222,33 @@ const InventoryGrid = ({
 
       {/* Dashboard Context Alert */}
       {highlightLowStock && (
-        <Alert severity="warning" sx={{ mb: 2 }}>
+        <Alert severity="warning" sx={{ display: "flex", mb: 2 }}>
           <Typography variant="body2">
             Dashboard alert: Showing items with low stock levels
             <Chip
-              label: any,
-              sx={{ ml: 1 }}
+              label
+              sx={{ display: "flex", ml: 1 }}
             />
           </Typography>
         </Alert>
       )}
 
       {/* Search and Filters */}
-      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ mb: 3 }}>
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ display: "flex", mb: 3 }}>
         <TextField
           placeholder={t('Search inventory...')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          InputProps: any,
+          InputProps
           }}
-          sx={{ flex: 1 }}
+          sx={{ display: "flex", flex: 1 }}
         />
 
-        <FormControl sx={{ minWidth: 140 }}>
+        <FormControl sx={{ display: "flex", minWidth: 140 }}>
           <InputLabel>Filter</InputLabel>
           <Select
             value={filter}
-            label: any,
+            label
             onChange={(e) => setFilter(e.target.value)}
           >
             <MenuItem value="all">All Items</MenuItem>
@@ -258,11 +258,11 @@ const InventoryGrid = ({
           </Select>
         </FormControl>
 
-        <FormControl sx={{ minWidth: 120 }}>
+        <FormControl sx={{ display: "flex", minWidth: 120 }}>
           <InputLabel>Sort By</InputLabel>
           <Select
             value={sortBy}
-            label: any,
+            label
             onChange={(e) => setSortBy(e.target.value)}
           >
             <MenuItem value="name">Name</MenuItem>
@@ -274,19 +274,19 @@ const InventoryGrid = ({
       </Stack>
 
       {/* Inventory Grid */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: 2 }}>
-        {filteredInventory.map((item: any: any) => {
+      <Box sx={{ display: "flex", display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: 2 }}>
+        {filteredInventory.map((item: any: any: any: any) => {
           const stockStatus = getStockStatus(item.currentStock, item.minStock, item.reorderPoint);
           const stockPercentage = (item.currentStock / item.maxStock) * 100;
 
           return (
-            <Card key={item.id} sx={{ height: 'fit-content' }}>
+            <Card key={item.id} sx={{ display: "flex", height: 'fit-content' }}>
               <CardContent>
                 <Stack spacing={2}>
                   {/* Item Header */}
                   <Stack direction="row" alignItems="center" justifyContent="space-between">
                     <Stack direction="row" alignItems="center" spacing={2}>
-                      <Avatar sx={{ bgcolor: 'primary.main' }}>
+                      <Avatar sx={{ display: "flex", bgcolor: 'primary.main' }}>
                         <WarehouseIcon />
                       </Avatar>
                       <Box>
@@ -303,7 +303,7 @@ const InventoryGrid = ({
                       <Chip
                         label={stockStatus.label}
                         color={stockStatus.color}
-                        size: any,
+                        size="small"
                   {/* Warehouse and Location */}
                   <Stack spacing={1}>
                     <Stack direction="row" justifyContent="space-between">
@@ -326,7 +326,7 @@ const InventoryGrid = ({
 
                   {/* Stock Level */}
                   <Box>
-                    <Stack direction="row" justifyContent="space-between" sx={{ mb: 1 }}>
+                    <Stack direction="row" justifyContent="space-between" sx={{ display: "flex", mb: 1 }}>
                       <Typography variant="body2" color="text.secondary">
                         {t('Current Stock')}
                       </Typography>
@@ -335,10 +335,10 @@ const InventoryGrid = ({
                       </Typography>
                     </Stack>
                     <LinearProgress
-                      variant: any,
+                      variant="body2"
                       value={Math.min(stockPercentage, 100)}
                       color={stockStatus.color}
-                      sx={{ height: 8, borderRadius: 4 }}
+                      sx={{ display: "flex", height: 8, borderRadius: 4 }}
                     />
                   </Box>
 
@@ -371,9 +371,9 @@ const InventoryGrid = ({
                   </Stack>
 
                   {/* Actions */}
-                  <Stack direction="row" spacing={1} sx={{ pt: 1 }}>
+                  <Stack direction="row" spacing={1} sx={{ display: "flex", pt: 1 }}>
                     <Button
-                      size: any,
+                      size="small"
                       onClick={() => handleRestock(item.id)}
                       disabled={item.currentStock >= item.maxStock}
                     >
@@ -394,8 +394,8 @@ const InventoryGrid = ({
 
       {/* Empty State */}
       {filteredInventory.length ===0 && (
-        <Box sx={{ textAlign: 'center', py: 4 }}>
-          <WarehouseIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
+        <Box sx={{ display: "flex", textAlign: 'center', py: 4 }}>
+          <WarehouseIcon sx={{ display: "flex", fontSize: 64, color: 'text.secondary', mb: 2 }} />
           <Typography variant="h6" color="text.secondary">
             {searchQuery ? t('No inventory items found') : t('No inventory items yet')}
           </Typography>

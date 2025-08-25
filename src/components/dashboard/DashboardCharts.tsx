@@ -18,10 +18,11 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'
 /**
  * Custom Tooltip Component for Charts
  */
-const CustomTooltip = ({ active, payload, label  }: { active: any, payload: any, label: any }) => {
+const CustomTooltip = ({ active, payload, label  }: { active payload label: any }) => {
     if(active && payload && payload.length) {
         return (
             <Box sx={{
+                display: "flex",
                 backgroundColor: 'background.paper',
                 border: '1px solid',
                 borderColor: 'divider',
@@ -29,14 +30,14 @@ const CustomTooltip = ({ active, payload, label  }: { active: any, payload: any,
                 p: 1,
                 boxShadow: 2
             }}>
-                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                <Typography variant="body2" sx={{ display: "flex", fontWeight: 600 }}>
                     {formatTooltipDate(label)}
                 </Typography>
-                {payload.map((entry: any: any, index: any: any) => (
+                {payload.map((entry: any index: any: any: any: any) => (
                     <Typography
                         key={index}
-                        variant: any,
-                        sx={{ color: entry.color }}
+                        variant="body2"
+                        sx={{ display: "flex", color: entry.color }}
                     >
                         {`${entry.name}: ${entry.value}`}
                     </Typography>
@@ -50,13 +51,14 @@ const CustomTooltip = ({ active, payload, label  }: { active: any, payload: any,
 /**
  * Orders Chart Component
  */
-const OrdersChart = ({ chartData, chartType, visibleCharts  }: { chartData: any, chartType: any, visibleCharts: any }) => {
+const OrdersChart = ({ chartData, chartType, visibleCharts  }: { chartData chartType visibleCharts: any }) => {
     const theme = useTheme();
 
     if (!visibleCharts.orders) return null;
 
     return (
         <Paper sx={{
+            display: "flex",
             p: 3,
             height: '420px',
             background: theme.palette.background.paper,
@@ -65,6 +67,7 @@ const OrdersChart = ({ chartData, chartType, visibleCharts  }: { chartData: any,
             borderLeft: `4px solid ${theme.palette.primary.main}`
         }}>
             <Typography variant="h6" sx={{
+                display: "flex",
                 fontWeight: 600,
                 mb: 2,
                 color: theme.palette.text.primary
@@ -77,7 +80,7 @@ const OrdersChart = ({ chartData, chartType, visibleCharts  }: { chartData: any,
                     <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
                         <XAxis
-                            dataKey: any,
+                            dataKey
                             stroke={theme.palette.text.secondary}
                             tickMargin={10}
                         />
@@ -85,7 +88,7 @@ const OrdersChart = ({ chartData, chartType, visibleCharts  }: { chartData: any,
                         <RechartsTooltip content={<CustomTooltip />} />
                         <Legend />
                         <Line
-                            type: any,
+                            type
                             stroke={theme.palette.primary.main}
                             strokeWidth={3}
                             dot={{ fill: theme.palette.primary.main, strokeWidth: 2, r: 4 }}
@@ -96,7 +99,7 @@ const OrdersChart = ({ chartData, chartType, visibleCharts  }: { chartData: any,
                     <BarChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
                         <XAxis
-                            dataKey: any,
+                            dataKey
                             stroke={theme.palette.text.secondary}
                             tickMargin={10}
                         />
@@ -104,7 +107,7 @@ const OrdersChart = ({ chartData, chartType, visibleCharts  }: { chartData: any,
                         <RechartsTooltip content={<CustomTooltip />} />
                         <Legend />
                         <Bar
-                            dataKey: any,
+                            dataKey
                             fill={theme.palette.primary.main}
                             radius={[4, 4, 0, 0]}
                             barSize={32}
@@ -119,13 +122,14 @@ const OrdersChart = ({ chartData, chartType, visibleCharts  }: { chartData: any,
 /**
  * Customers Chart Component
  */
-const CustomersChart = ({ customerData, visibleCharts  }: { customerData: any, visibleCharts: any }) => {
+const CustomersChart = ({ customerData, visibleCharts  }: { customerData visibleCharts: any }) => {
     const theme = useTheme();
 
     if (!visibleCharts.customers) return null;
 
     return (
         <Paper sx={{
+            display: "flex",
             p: 3,
             height: '420px',
             background: theme.palette.background.paper,
@@ -134,6 +138,7 @@ const CustomersChart = ({ customerData, visibleCharts  }: { customerData: any, v
             borderLeft: `4px solid ${theme.palette.success.main}`
         }}>
             <Typography variant="h6" sx={{
+                display: "flex",
                 fontWeight: 600,
                 mb: 2,
                 color: theme.palette.text.primary
@@ -145,7 +150,7 @@ const CustomersChart = ({ customerData, visibleCharts  }: { customerData: any, v
                 <LineChart data={customerData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
                     <XAxis
-                        dataKey: any,
+                        dataKey
                         stroke={theme.palette.text.secondary}
                         tickMargin={10}
                     />
@@ -153,7 +158,7 @@ const CustomersChart = ({ customerData, visibleCharts  }: { customerData: any, v
                     <RechartsTooltip content={<CustomTooltip />} />
                     <Legend />
                     <Line
-                        type: any,
+                        type
                         stroke={theme.palette.success.main}
                         strokeWidth={3}
                         dot={{ fill: theme.palette.success.main, strokeWidth: 2, r: 4 }}
@@ -168,12 +173,13 @@ const CustomersChart = ({ customerData, visibleCharts  }: { customerData: any, v
 /**
  * Products by Country Chart Component
  */
-const ProductsByCountryChart = ({ countryData, visibleCharts  }: { countryData: any, visibleCharts: any }) => {
+const ProductsByCountryChart = ({ countryData, visibleCharts  }: { countryData visibleCharts: any }) => {
     const theme = useTheme();
 
     if (!visibleCharts.products) return null;
 
     return(<Paper sx={{
+            display: "flex",
             p: 3,
             height: '420px',
             background: theme.palette.background.paper,
@@ -182,6 +188,7 @@ const ProductsByCountryChart = ({ countryData, visibleCharts  }: { countryData: 
             borderLeft: `4px solid ${theme.palette.info.main}`
         }}>
             <Typography variant="h6" sx={{
+                display: "flex",
                 fontWeight: 600,
                 mb: 2,
                 color: theme.palette.text.primary
@@ -192,22 +199,22 @@ const ProductsByCountryChart = ({ countryData, visibleCharts  }: { countryData: 
             <ResponsiveContainer width="100%" height="85%">
                 <BarChart
                     data={countryData}
-                    layout: any,
+                    layout
                     margin={{ left: 30 }}
                 >
                     <CartesianGrid
-                        strokeDasharray: any,
+                        strokeDasharray
                         stroke={theme.palette.divider}
                         horizontal={true}
                         vertical={false}
                     />
                     <XAxis
-                        type: any,
+                        type
                         stroke={theme.palette.text.secondary}
                         tickMargin={10}
                     />
                     <YAxis
-                        dataKey: any,
+                        dataKey
                         stroke={theme.palette.text.secondary}
                         width={100}
                         tickMargin={10}
@@ -218,12 +225,12 @@ const ProductsByCountryChart = ({ countryData, visibleCharts  }: { countryData: 
                     />
                     <Legend />
                     <Bar
-                        dataKey: any,
+                        dataKey
                         fill={theme.palette.info.main}
                         radius={[0, 4, 4, 0]}
                         barSize={24}
                     >
-                        {countryData.map((entry: any: any, index: any: any) => (
+                        {countryData.map((entry: any index: any: any: any: any) => (
                             <Cell
                                 key={`cell-${index}`}
                                 fill={COLORS[index % COLORS.length]}
@@ -244,11 +251,12 @@ const DashboardCharts = ({ chartData,
     countryData,
     chartType,
     visibleCharts
- }: { chartData: any, customerData: any, countryData: any, chartType: any, visibleCharts: any }) => {
+ }: { chartData customerData countryData chartType visibleCharts: any }) => {
     return (
         <>
             {/* Primary Charts */}
             <Box sx={{
+                display: "flex",
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
                 gap: 3,
@@ -267,6 +275,7 @@ const DashboardCharts = ({ chartData,
 
             {/* Secondary Charts */}
             <Box sx={{
+                display: "flex",
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
                 gap: 3,

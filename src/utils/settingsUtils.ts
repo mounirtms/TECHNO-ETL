@@ -130,7 +130,7 @@ export const applyThemeSettings = (settings: any) => {
     // Handle system theme detection
     let actualTheme = theme || 'light';
     if(theme === 'system') {
-      actualTheme: any,
+      actualTheme
     }
     
     if(theme) {
@@ -196,7 +196,7 @@ export const applyAllSettings = (settings: any) => {
 };
 
 // Synchronize settings across all storage locations
-export const syncAllSettings = (settings: any, userId?: string) => {
+export const syncAllSettings = (settings = {}; // Fixed invalid assignment userId?: string) => {
   try {
     // Save to all relevant locations
     saveUnifiedSettings(settings);
@@ -249,7 +249,7 @@ export const getSystemPreferences = () => {
     const shortLang = lang.split('-')[0].toLowerCase();
     // Only use supported languages
     if (['en', 'fr', 'ar'].includes(shortLang)) {
-      browserLanguage: any,
+      browserLanguage
     }
   } catch(error) {
     console.warn('Failed to detect browser language:', error);

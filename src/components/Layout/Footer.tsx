@@ -70,20 +70,20 @@ const Footer: React.FC<any> = ({ sidebarOpen, isLoginScreen = false }) => {
 
     return (
         <FooterContainer
-            component: any,
+            component
             sidebarOpen={sidebarOpen}
             isLoginScreen={isLoginScreen}
             isUsingLocalData={isUsingLocalData}
         >
-            <Box sx={{ display: 'flex', alignItems: 'center' } as any}>
+            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center' } as any}>
                 <Typography variant="body2">
                     {currentYear}
                     <AnimatedLink
-                        href: any,
-            <Box sx={{ display: 'flex', alignItems: 'center' } as any}>
+                        href
+            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center' } as any}>
                 <Typography variant="body2">
                     <AnimatedLink
-                        href: any,
+                        href
                     {versionInfo ? `v${versionInfo?.fullVersion}` : 'Loading version...'}
                 </Typography>
             </Box>

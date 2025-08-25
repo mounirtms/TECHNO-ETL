@@ -44,7 +44,7 @@ import {
 import { useUserSettings, useSystemPreferences } from '../../hooks/useUserSettings';
 import { languages } from '../../contexts/LanguageContext';
 
-const UserPreferencesPanel: React.FC<{open: any, onClose: any}> = ({ open, onClose  }) => {
+const UserPreferencesPanel: React.FC<{open onClose: any}> = ({ open, onClose  }) => {
   const theme = useTheme();
   const {
     currentUser,
@@ -128,18 +128,19 @@ const UserPreferencesPanel: React.FC<{open: any, onClose: any}> = ({ open, onClo
   return(<Dialog
       open={open}
       onClose={onClose}
-      maxWidth: any,
+      maxWidth
           maxHeight: '90vh'
         }
       }}
     >
       <DialogTitle sx={{ 
+        display: "flex", 
         display: 'flex', 
         alignItems: 'center', 
         justifyContent: 'space-between',
         borderBottom: `1px solid ${theme.palette.divider}`
       }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
           <Palette />
           User Preferences
         </Box>
@@ -148,9 +149,9 @@ const UserPreferencesPanel: React.FC<{open: any, onClose: any}> = ({ open, onClo
         </IconButton>
       </DialogTitle>
 
-      <DialogContent sx={{ p: 3 }}>
+      <DialogContent sx={{ display: "flex", p: 3 }}>
         {/* System Information */}
-        <Alert severity="info" sx={{ mb: 3 }}>
+        <Alert severity="info" sx={{ display: "flex", mb: 3 }}>
           <Typography variant="body2">
             {currentUser 
               ? 'Your preferences will be saved to your account and synced across devices.'
@@ -160,33 +161,33 @@ const UserPreferencesPanel: React.FC<{open: any, onClose: any}> = ({ open, onClo
         </Alert>
 
         {/* System Defaults Info */}
-        <Card sx={{ mb: 3, bgcolor: theme.palette.background.default }}>
+        <Card sx={{ display: "flex", mb: 3, bgcolor: theme.palette.background.default }}>
           <CardContent>
-            <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="h6" sx={{ display: "flex", mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
               <Computer />
               System Defaults
             </Typography>
             <Grid { ...{container: true}} spacing={2}>
               <Grid item xs={12} sm={6}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Typography variant="body2" color="text.secondary">
                     Theme:
                   </Typography>
                   <Chip 
                     label={systemTheme} 
-                    size: any,
+                    size="small"
                     icon={systemPrefersDark ? <Brightness4 /> : <Brightness7 />}
                   />
                 </Box>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Typography variant="body2" color="text.secondary">
                     Language:
                   </Typography>
                   <Chip 
                     label={languages[systemLanguage]?.name || 'English'} 
-                    size: any,
+                    size="small"
                     icon={<Language />}
                   />
                 </Box>
@@ -196,9 +197,9 @@ const UserPreferencesPanel: React.FC<{open: any, onClose: any}> = ({ open, onClo
         </Card>
 
         {/* Theme Settings */}
-        <Card sx={{ mb: 3 }}>
+        <Card sx={{ display: "flex", mb: 3 }}>
           <CardContent>
-            <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="h6" sx={{ display: "flex", mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
               <Palette />
               Appearance
             </Typography>
@@ -209,18 +210,18 @@ const UserPreferencesPanel: React.FC<{open: any, onClose: any}> = ({ open, onClo
                   <InputLabel>Theme</InputLabel>
                   <Select
                     value={mode}
-                    label: any,
+                    label
                     onChange={(e) => handleThemeChange(e.target.value)}
                   >
-                    {themeOptions.map((option: any: any) => (
+                    {themeOptions.map((option: any: any: any: any) => (
                       <MenuItem key={option.value} value={option.value}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                           {option.icon}
                           {option.label}
                           {option.value === 'system' && (
                             <Chip 
                               label={`(${systemTheme})`} 
-                              size: any,
+                              size="small"
                           )}
                         </Box>
                       </MenuItem>
@@ -234,12 +235,12 @@ const UserPreferencesPanel: React.FC<{open: any, onClose: any}> = ({ open, onClo
                   <InputLabel>Font Size</InputLabel>
                   <Select
                     value={fontSize}
-                    label: any,
+                    label
                     onChange={(e) => handleFontSizeChange(e.target.value)}
                   >
-                    {fontSizeOptions.map((option: any: any) => (
+                    {fontSizeOptions.map((option: any: any: any: any) => (
                       <MenuItem key={option.value} value={option.value}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                           <TextFields />
                           {option.label}
                         </Box>
@@ -253,9 +254,9 @@ const UserPreferencesPanel: React.FC<{open: any, onClose: any}> = ({ open, onClo
         </Card>
 
         {/* Language Settings */}
-        <Card sx={{ mb: 3 }}>
+        <Card sx={{ display: "flex", mb: 3 }}>
           <CardContent>
-            <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="h6" sx={{ display: "flex", mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
               <Language />
               Language & Region
             </Typography>
@@ -264,12 +265,12 @@ const UserPreferencesPanel: React.FC<{open: any, onClose: any}> = ({ open, onClo
               <InputLabel>Language</InputLabel>
               <Select
                 value={currentLanguage}
-                label: any,
+                label
                 onChange={(e) => handleLanguageChange(e.target.value)}
               >
-                {Object.entries(languages).map(([code: any: any, lang]: any: any) => (
+                {Object.entries(languages).map(([code: any lang]: any: any: any: any) => (
                   <MenuItem key={code} value={code}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
                       <Typography>{lang.name}</Typography>
                       {code ===systemLanguage && (
                         <Chip label="System" size="small" variant="outlined" />
@@ -283,27 +284,27 @@ const UserPreferencesPanel: React.FC<{open: any, onClose: any}> = ({ open, onClo
         </Card>
 
         {/* Current Settings Summary */}
-        <Card sx={{ bgcolor: theme.palette.action.hover }}>
+        <Card sx={{ display: "flex", bgcolor: theme.palette.action.hover }}>
           <CardContent>
-            <Typography variant="h6" sx={{ mb: 2 }}>
+            <Typography variant="h6" sx={{ display: "flex", mb: 2 }}>
               Current Settings
             </Typography>
             <Grid { ...{container: true}} spacing={2}>
               <Grid item xs={12} sm={4}>
                 <Typography variant="body2" color="text.secondary">Theme:</Typography>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                <Typography variant="body1" sx={{ display: "flex", fontWeight: 500 }}>
                   {mode} {mode === 'system' && `(${systemTheme})`}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={4}>
                 <Typography variant="body2" color="text.secondary">Language:</Typography>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                <Typography variant="body1" sx={{ display: "flex", fontWeight: 500 }}>
                   {languages[currentLanguage]?.name}
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={4}>
                 <Typography variant="body2" color="text.secondary">Font Size:</Typography>
-                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                <Typography variant="body1" sx={{ display: "flex", fontWeight: 500 }}>
                   {fontSize}
                 </Typography>
               </Grid>
@@ -312,13 +313,13 @@ const UserPreferencesPanel: React.FC<{open: any, onClose: any}> = ({ open, onClo
         </Card>
       </DialogContent>
 
-      <DialogActions sx={{ p: 3, borderTop: `1px solid ${theme.palette.divider}` }}>
-        <Stack direction="row" spacing={1} sx={{ width: '100%' }}>
+      <DialogActions sx={{ display: "flex", p: 3, borderTop: `1px solid ${theme.palette.divider}` }}>
+        <Stack direction="row" spacing={1} sx={{ display: "flex", width: '100%' }}>
           <Button
             startIcon={<RestoreFromTrash />}
             onClick={handleReset}
-            color: any,
-          <Box sx={{ flexGrow: 1 }} />
+            color
+          <Box sx={{ display: "flex", flexGrow: 1 }} />
           
           <Button onClick={onClose}>
             Cancel
@@ -326,7 +327,7 @@ const UserPreferencesPanel: React.FC<{open: any, onClose: any}> = ({ open, onClo
           
           {currentUser && (
             <Button
-              variant: any,
+              variant="body2"
               startIcon={<Save />}
               onClick={handleSave}
               disabled={saving || loading}

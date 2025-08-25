@@ -23,16 +23,23 @@ const OptimizedUserProfile = lazy(() => import('../components/Profile/OptimizedU
 const LicenseManagement = lazy(() => import('../components/License/LicenseManagement'));
 const LicenseStatus = lazy(() => import('../components/License/LicenseStatus'));
 
-const TabPanel = ({ children, value, index, ...other  }: { children: any, value: any, index: any, ...other: any }) => (
+interface TabPanelProps {
+  children: React.ReactNode;
+  value: number;
+  index: number;
+  [key: string]: any;
+}
+
+const TabPanel = ({ children, value, index, ...other }: TabPanelProps) => (
   <div
-    role: any,
+    role = {}; // Fixed invalid assignment
     hidden={value !== index}
     id={`settings-tabpanel-${index}`}
     aria-labelledby={`settings-tab-${index}`}
-    { ...other}
+    {...other}
   >
-    {value ===index && (
-      <Box sx={{ p: 3 }}>
+    {value === index && (
+      <Box sx={{ display: "flex", p: 3 }}>
         {children}
       </Box>
     )}
@@ -45,16 +52,17 @@ const SettingsPage = () => {
   const { currentLanguage, changeLanguage, languages } = useLanguage();
   const [activeTab, setActiveTab] = useState(0);
   
-  const handleTabChange = useCallback((event, newValue) => {
+  const handleTabChange = useCallback((event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
   }, []);
 
   const isAdmin = currentUser?.role === 'admin';
 
-  return(<Container maxWidth="xl" sx={{ py: 3 }}>
+  return Boolean((
+    <Container maxWidth="xl" sx={{ display: "flex", py: 3 }}>
       {/* Header */}
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-        <SettingsIcon sx={{ mr: 2, fontSize: 32, color: 'primary.main' }} />
+      <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', mb: 3 }}>
+        <SettingsIcon sx={{ display: "flex", mr: 2, fontSize: 32, color: 'primary.main' }} />
         <Box>
           <Typography variant="h4" component="h1" fontWeight={600}>
             System Settings
@@ -65,46 +73,46 @@ const SettingsPage = () => {
         </Box>
       </Box>
 
-      <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
+      <Paper sx={{ display: "flex", borderRadius: 2, overflow: 'hidden' }}>
         {/* Settings Tabs */}
         <Tabs
           value={activeTab}
-          onChange={(e) => handleTabChange}
-          variant: any,
+          onChange={handleTabChange}
+          variant="body2"
             borderColor: 'divider',
             bgcolor: 'background.paper'
           }}
         >
           <Tab
             icon={<PersonIcon />}
-            label: any,
-            sx={{ minHeight: 64 }}
+            label = {}; // Fixed invalid assignment
+            sx={{ display: "flex", minHeight: 64 }}
           />
           <Tab
             icon={<ThemeIcon />}
-            label: any,
-            sx={{ minHeight: 64 }}
+            label = {}; // Fixed invalid assignment
+            sx={{ display: "flex", minHeight: 64 }}
           />
           <Tab
             icon={<LanguageIcon />}
-            label: any,
-            sx={{ minHeight: 64 }}
+            label = {}; // Fixed invalid assignment
+            sx={{ display: "flex", minHeight: 64 }}
           />
           <Tab
             icon={<NotificationsIcon />}
-            label: any,
-            sx={{ minHeight: 64 }}
+            label = {}; // Fixed invalid assignment
+            sx={{ display: "flex", minHeight: 64 }}
           />
           <Tab
             icon={<SecurityIcon />}
-            label: any,
-            sx={{ minHeight: 64 }}
+            label = {}; // Fixed invalid assignment
+            sx={{ display: "flex", minHeight: 64 }}
           />
           {isAdmin && (
             <Tab
               icon={<AdminIcon />}
-              label: any,
-              sx={{ minHeight: 64 }}
+              label = {}; // Fixed invalid assignment
+              sx={{ display: "flex", minHeight: 64 }}
             />
           )}
         </Tabs>
@@ -120,21 +128,21 @@ const SettingsPage = () => {
 
         {/* Appearance Tab */}
         <TabPanel value={activeTab} index={1}>
-          <Grid { ...{container: true}} spacing={3}>
-            <Grid size={{ xs: 12, md: 6 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     Theme Settings
                   </Typography>
                   <FormControlLabel
-                    control: any,
+                    control = {}; // Fixed invalid assignment
                         checked={mode === 'dark'}
-                        onChange={(e) => toggleTheme}
+                        onChange={toggleTheme}
                       />
                     }
-                    label: any,
-                    sx={{ mb: 2 }}
+                    label = {}; // Fixed invalid assignment
+                    sx={{ display: "flex", mb: 2 }}
                   />
                   <Typography variant="body2" color="text.secondary">
                     Toggle between light and dark theme modes
@@ -142,20 +150,20 @@ const SettingsPage = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid item xs={12} md={6}>
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     Color Preset
                   </Typography>
-                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                    {['default', 'purple', 'green', 'orange', 'blue'].map((preset: any: any) => (
+                  <Box sx={{ display: "flex", display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    {(['default', 'purple', 'green', 'orange', 'blue'] as const).map((preset: any: any) => (
                       <Button
                         key={preset}
-                        variant={colorPreset ===preset ? 'contained' : 'outlined'}
-                        size: any,
+                        variant={colorPreset === preset ? 'contained' : 'outlined'}
+                        size="small"
                         onClick={() => setColorPreset(preset)}
-                        sx={{ textTransform: 'capitalize' }}
+                        sx={{ display: "flex", textTransform: 'capitalize' }}
                       >
                         {preset}
                       </Button>
@@ -169,21 +177,21 @@ const SettingsPage = () => {
 
         {/* Language Tab */}
         <TabPanel value={activeTab} index={2}>
-          <Grid { ...{container: true}} spacing={3}>
-            <Grid size={{ xs: 12, md: 8 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={8}>
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     Language Preferences
                   </Typography>
-                  <Box sx={{ display: 'grid', gap: 2, mt: 2 }}>
-                    {Object.entries(languages).map(([code: any: any, lang]: any: any) => (
+                  <Box sx={{ display: "flex", display: 'grid', gap: 2, mt: 2 }}>
+                    {Object.entries(languages || {}).map(([code: any = {}; // Fixed invalid assignment lang]: [string, any]: any: any) => (
                       <Button
                         key={code}
-                        variant={currentLanguage ===code ? 'contained' : 'outlined'}
+                        variant={currentLanguage === code ? 'contained' : 'outlined'}
                         onClick={() => changeLanguage(code)}
                         startIcon={<span>{lang.flag}</span>}
-                        sx={{ justifyContent: 'flex-start' }}
+                        sx={{ display: "flex", justifyContent: 'flex-start' }}
                       >
                         {lang.name} ({lang.nativeName})
                       </Button>
@@ -197,7 +205,7 @@ const SettingsPage = () => {
 
         {/* Notifications Tab */}
         <TabPanel value={activeTab} index={3}>
-          <Alert severity="info" sx={{ mb: 3 }}>
+          <Alert severity="info" sx={{ display: "flex", mb: 3 }}>
             Notification settings will be implemented in future updates
           </Alert>
           <Card>
@@ -207,18 +215,18 @@ const SettingsPage = () => {
               </Typography>
               <FormControlLabel
                 control={<Switch defaultChecked />}
-                label: any,
-                sx={{ display: 'block', mb: 1 }}
+                label = {}; // Fixed invalid assignment
+                sx={{ display: "flex", display: 'block', mb: 1 }}
               />
               <FormControlLabel
                 control={<Switch defaultChecked />}
-                label: any,
-                sx={{ display: 'block', mb: 1 }}
+                label = {}; // Fixed invalid assignment
+                sx={{ display: "flex", display: 'block', mb: 1 }}
               />
               <FormControlLabel
                 control={<Switch />}
-                label: any,
-                sx={{ display: 'block', mb: 1 }}
+                label = {}; // Fixed invalid assignment
+                sx={{ display: "flex", display: 'block', mb: 1 }}
               />
             </CardContent>
           </Card>
@@ -245,7 +253,7 @@ const SettingsPage = () => {
         )}
       </Paper>
     </Container>
-  );
+  )));
 };
 
 export default React.memo(SettingsPage);

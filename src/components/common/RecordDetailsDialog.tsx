@@ -13,7 +13,7 @@ const RecordDetailsDialog: React.FC<RecordDetailsDialogProps> = ({ open, onClose
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
             <DialogTitle>Record Details</DialogTitle>
             <DialogContent>
-                <Box sx={{ maxHeight: '70vh', overflow: 'auto' }}>
+                <Box sx={{ display: "flex", maxHeight: '70vh', overflow: 'auto' }}>
                     <Typography component="pre" variant="body2">{JSON.stringify(record, null, 2)}</Typography>
                 </Box>
             </DialogContent>

@@ -28,12 +28,12 @@ import GridErrorBoundary from './GridErrorBoundary';
  */
 const OptimizedGridLayout = memo(({
   children,
-  filterPanel: any,
-  statsCards: any,
-  gridName: any,
-  hasFilterPanel: any,
-  hasStatsCards: any,
-  loading: any,
+  filterPanel
+  statsCards
+  gridName
+  hasFilterPanel
+  hasStatsCards
+  loading
   sx = {},
   ...props
 }) => {
@@ -151,10 +151,10 @@ const OptimizedGridLayout = memo(({
 
   // Loading skeleton component
   const LoadingSkeleton = useMemo(() => (
-    <Box sx={{ p: 2, space: 'space-y-2' }}>
+    <Box sx={{ display: "flex", p: 2, space: 'space-y-2' }}>
       <Skeleton variant="rectangular" height={40} />
       <Skeleton variant="rectangular" height={200} />
-      <Box sx={{ display: 'flex', gap: 1 }}>
+      <Box sx={{ display: "flex", display: 'flex', gap: 1 }}>
         <Skeleton variant="rectangular" width="25%" height={30} />
         <Skeleton variant="rectangular" width="25%" height={30} />
         <Skeleton variant="rectangular" width="25%" height={30} />
@@ -163,7 +163,7 @@ const OptimizedGridLayout = memo(({
     </Box>
   ), []);
 
-  return Boolean(Boolean((
+  return Boolean((
     <GridErrorBoundary gridName={gridName}>
       <Box 
         ref={containerRef}
@@ -184,8 +184,7 @@ const OptimizedGridLayout = memo(({
           <Fade in={!!statsCards} timeout={300}>
             <Paper 
               elevation={0} 
-              sx: any,
-                p: layoutConfig.spacing
+              sx={{
               }}
             >
               {statsCards || <LoadingSkeleton />}
@@ -197,16 +196,16 @@ const OptimizedGridLayout = memo(({
         <Paper
           elevation={0}
           sx={gridContainerStyles}
-          role: any,
+          role
           aria-label={`${gridName} data grid`}
         >
           <Fade 
             in={!loading} 
             timeout={500}
-            style: any,
+            style
             }}
           >
-            <Box sx={{ height: '100%', width: '100%' }}>
+            <Box sx={{ display: "flex", height: '100%', width: '100%' }}>
               {children}
             </Box>
           </Fade>
@@ -215,8 +214,7 @@ const OptimizedGridLayout = memo(({
           {loading && (
             <Fade in={loading} timeout={200}>
               <Box
-                sx: any,
-                  top: 0,
+                sx={{
                   left: 0,
                   right: 0,
                   bottom: 0,
@@ -234,7 +232,7 @@ const OptimizedGridLayout = memo(({
         </Paper>
       </Box>
     </GridErrorBoundary>
-  )));
+  )))));
 });
 
 OptimizedGridLayout.displayName = 'OptimizedGridLayout';

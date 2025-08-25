@@ -323,7 +323,7 @@ class DashboardApiService {
     const stats = {
       size: this.cache.size,
       keys: Array.from(this.cache.keys()),
-      entries: Array.from(this.cache.entries()).map(([key: any: any, value]: any: any) => ({
+      entries: Array.from(this.cache.entries()).map(([key: any value]: any: any: any: any) => ({
         key,
         age: Date.now() - value.timestamp,
         size: JSON.stringify(value?.data).length

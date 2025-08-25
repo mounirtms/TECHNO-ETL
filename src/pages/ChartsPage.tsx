@@ -105,7 +105,7 @@ const ChartsPage = () => {
     loadData();
   }, []);
 
-  const TabPanel = ({ children, value, index  }: { children: any, value: any, index: any }) => (
+  const TabPanel = ({ children, value, index  }: { children value index: any }) => (
     <div hidden={value !== index} style={{ paddingTop: 16 }}>
       {value ===index && children}
     </div>
@@ -120,19 +120,19 @@ const ChartsPage = () => {
           <Grid size={{ xs: 12, md: 6 }}>
             <ProductStatsChart 
               data={data.productStats}
-              title: any,
+              title
           <Grid size={{ xs: 12, md: 6 }}>
             <BrandDistributionChart 
               data={data.brandDistribution}
-              title: any,
+              title
           <Grid size={{ xs: 12, md: 6 }}>
             <CategoryTreeChart 
               data={data.categoryDistribution}
-              title: any,
+              title
           <Grid size={{ xs: 12, md: 6 }}>
             <ProductAttributesChart 
               data={data.productAttributes}
-              title: any,
+              title
     },
     {
       label: 'Sales',
@@ -142,15 +142,15 @@ const ChartsPage = () => {
           <Grid size={{ xs: 12 }}>
             <SalesPerformanceChart 
               data={data.salesPerformance}
-              title: any,
+              title
           <Grid size={{ xs: 12, md: 6 }}>
             <SalesPerformanceChart 
               data={data.salesPerformance}
-              title: any,
+              title
           <Grid size={{ xs: 12, md: 6 }}>
             <ProductStatsChart 
               data={data.productStats}
-              title: any,
+              title
     },
     {
       label: 'Inventory',
@@ -160,15 +160,15 @@ const ChartsPage = () => {
           <Grid size={{ xs: 12 }}>
             <InventoryStatusChart 
               data={data.inventoryStatus}
-              title: any,
+              title
           <Grid size={{ xs: 12, md: 6 }}>
             <CategoryTreeChart 
               data={data.categoryDistribution}
-              title: any,
+              title
           <Grid size={{ xs: 12, md: 6 }}>
             <ProductAttributesChart 
               data={data.productAttributes}
-              title: any,
+              title
     },
     {
       label: 'Products',
@@ -178,19 +178,19 @@ const ChartsPage = () => {
           <Grid size={{ xs: 12, md: 4 }}>
             <ProductStatsChart 
               data={data.productStats}
-              title: any,
+              title
           <Grid size={{ xs: 12, md: 8 }}>
             <BrandDistributionChart 
               data={data.brandDistribution}
-              title: any,
+              title
           <Grid size={{ xs: 12, md: 6 }}>
             <ProductAttributesChart 
               data={data.productAttributes}
-              title: any,
+              title
           <Grid size={{ xs: 12, md: 6 }}>
             <CategoryTreeChart 
               data={data.categoryDistribution}
-              title: any,
+              title
     },
     {
       label: 'Categories',
@@ -200,36 +200,36 @@ const ChartsPage = () => {
           <Grid xs={12}>
             <CategoryTreeChart 
               data={data.categoryDistribution}
-              title: any,
+              title
           <Grid xs={12} md={6}>
             <InventoryStatusChart 
               data={data.inventoryStatus}
-              title: any,
+              title
           <Grid xs={12} md={6}>
             <BrandDistributionChart 
               data={data.brandDistribution}
-              title: any,
+              title
     }
   ];
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ display: "flex", p: 3 }}>
       {/* Dashboard Context Alert */}
       {isRevenueView() && (
         <Alert
-          severity: any,
+          severity
           icon={<TrendingUp />}
-          sx={{ mb: 3, borderRadius: 2 }}
+          sx={{ display: "flex", mb: 3, borderRadius: 2 }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="body2">
               Dashboard navigation: Viewing revenue analytics
             </Typography>
             <Chip
               label={`Period: ${getPeriod()}`}
-              color: any,
+              color
                 label={`View: ${getView()}`}
-                color: any,
+                color
             )}
           </Box>
         </Alert>
@@ -237,6 +237,7 @@ const ChartsPage = () => {
 
       {/* Header */}
       <Box sx={{
+        display: "flex",
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -253,10 +254,10 @@ const ChartsPage = () => {
         
         <Tooltip title="Refresh Data">
           <Fab
-            color: any,
+            color
             onClick={loadData}
             disabled={loading}
-            sx={{ boxShadow: 3 }}
+            sx={{ display: "flex", boxShadow: 3 }}
           >
             {loading ? <CircularProgress size={24} color="inherit" /> : <RefreshIcon />}
           </Fab>
@@ -264,13 +265,12 @@ const ChartsPage = () => {
       </Box>
 
       {/* Charts Content */}
-      <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
+      <Paper sx={{ display: "flex", borderRadius: 2, overflow: 'hidden' }}>
         {/* Tabs */}
         <Tabs
           value={activeTab}
           onChange={(e, newValue) => setActiveTab(newValue)}
-          variant: any,
-            borderColor: 'divider',
+          variant="body2"
             bgcolor: 'background.paper',
             '& .MuiTab-root': {
               minHeight: 64,
@@ -280,21 +280,22 @@ const ChartsPage = () => {
             }
           }}
         >
-          {chartTabs.map((tab: any: any, index: any: any) => (
+          {chartTabs.map((tab: any index: any: any: any: any) => (
             <Tab
               key={index}
               icon={tab.icon}
               label={tab.label}
-              iconPosition: any,
-              sx={{ gap: 1 }}
+              iconPosition
+              sx={{ display: "flex", gap: 1 }}
             />
           ))}
         </Tabs>
 
         {/* Tab Content */}
-        <Box sx={{ p: 3, minHeight: 600 }}>
+        <Box sx={{ display: "flex", p: 3, minHeight: 600 }}>
           {loading ? (
             <Box sx={{ 
+              display: "flex", 
               display: 'flex', 
               justifyContent: 'center', 
               alignItems: 'center', 
@@ -303,7 +304,7 @@ const ChartsPage = () => {
               <CircularProgress size={60} />
             </Box>
           ) : (
-            chartTabs.map((tab: any: any, index: any: any) => (
+            chartTabs.map((tab: any index: any: any: any: any) => (
               <TabPanel key={index} value={activeTab} index={index}>
                 <ComponentErrorBoundary componentName={`${tab.label} Charts`}>
                   {tab.content}
@@ -316,14 +317,14 @@ const ChartsPage = () => {
 
       {/* Footer Info */}
       <Alert 
-        severity: any,
+        severity
           borderRadius: 2,
           '& .MuiAlert-message': {
             width: '100%'
           }
         }}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="body2">
             📊 <strong>Analytics Dashboard:</strong> Real-time data visualization with interactive charts and comprehensive business insights.
           </Typography>
