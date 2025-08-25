@@ -39,7 +39,6 @@ const TabPanel: React.FC<any> = ({ sidebarOpen, isMobile = false, isTablet = fal
     const ActiveComponent = getActiveComponent();
 
     return(<Box sx={{
-            display: "flex",
             width: '100%',
             marginTop: `${HEADER_HEIGHT}px`,
             height: tabPanelHeight,
@@ -50,11 +49,10 @@ const TabPanel: React.FC<any> = ({ sidebarOpen, isMobile = false, isTablet = fal
 
 
             <Box sx={{
-                display: "flex",
                 borderBottom: 1,
                 borderColor: 'divider',
                 backgroundColor: theme.palette.background.paper
-            } as any}>
+            }}>
                 <Tabs
                     value={activeTab}
                     onChange={handleChange}
@@ -62,11 +60,10 @@ const TabPanel: React.FC<any> = ({ sidebarOpen, isMobile = false, isTablet = fal
                     scrollButtons={isMobile ? "auto" : "auto"}
                     allowScrollButtonsMobile
                     sx={{
-                            padding: isMobile ? '4px 6px' : '8px 12px' // Reduced padding
-                        }
+                        padding: isMobile ? '4px 6px' : '8px 12px'
                     }}
                 >
-                    {tabs.map((tab: any: any: any) => (
+                    {tabs.map((tab: any, index: number) => (
                         <Tab
                             key={tab.id}
                             label={isMobile ? tab.label.substring(0, 8) + (tab.label.length > 8 ? '...' : '') : tab.label}
@@ -76,15 +73,14 @@ const TabPanel: React.FC<any> = ({ sidebarOpen, isMobile = false, isTablet = fal
                 </Tabs>
             </Box>
             <Box sx={{
-                display: "flex",
                 flexGrow: 1,
                 overflow: 'auto',
                 p: {
-                    xs: 0.25, // Further reduced padding on mobile
+                    xs: 0.25,
                     sm: 0.5,
                     md: 1
                 },
-                height: `calc(${tabPanelHeight} - ${isMobile ? '40px' : '48px'})`, // Responsive tab header height
+                height: `calc(${tabPanelHeight} - ${isMobile ? '40px' : '48px'})`,
                 '& .MuiDataGrid-root': {
                     '& .MuiDataGrid-toolbarContainer': {
                         padding: isMobile ? '4px' : '8px',
@@ -101,12 +97,11 @@ const TabPanel: React.FC<any> = ({ sidebarOpen, isMobile = false, isTablet = fal
                 {ActiveComponent ? (
                     <Suspense fallback={
                         <Box sx={{
-                            display: "flex",
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
                             height: '200px'
-                        } as any}>
+                        }}>
                             <CircularProgress />
                         </Box>
                     }>

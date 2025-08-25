@@ -130,7 +130,7 @@ export const applyThemeSettings = (settings: any) => {
     // Handle system theme detection
     let actualTheme = theme || 'light';
     if(theme === 'system') {
-      actualTheme
+      actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
     
     if(theme) {
@@ -150,7 +150,7 @@ export const applyThemeSettings = (settings: any) => {
     }
     
     // Apply animation preferences
-    if(animations ===false) {
+    if(animations === false) {
       root.style.setProperty('--animation-duration', '0s');
     } else {
       root.style.removeProperty('--animation-duration');
@@ -196,7 +196,7 @@ export const applyAllSettings = (settings: any) => {
 };
 
 // Synchronize settings across all storage locations
-export const syncAllSettings = (settings = {}; // Fixed invalid assignment userId?: string) => {
+export const syncAllSettings = (settings: any = {}, userId?: string) => {
   try {
     // Save to all relevant locations
     saveUnifiedSettings(settings);
@@ -249,7 +249,7 @@ export const getSystemPreferences = () => {
     const shortLang = lang.split('-')[0].toLowerCase();
     // Only use supported languages
     if (['en', 'fr', 'ar'].includes(shortLang)) {
-      browserLanguage
+      browserLanguage = shortLang;
     }
   } catch(error) {
     console.warn('Failed to detect browser language:', error);

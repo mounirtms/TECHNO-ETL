@@ -148,7 +148,7 @@ const BugBountyDashboard = () => {
 
   // Memoized calculations for performance
   const totalRewards = useMemo(() => {
-    return bugs.reduce((total: number: any bug: Bug: any: any: any: any) => {
+    return bugs.reduce((total: number, bug: Bug) => {
       return total + (bug.reward?.final || bug.reward?.calculated || 0);
     }, 0);
   }, [bugs]);
@@ -263,7 +263,7 @@ const BugBountyDashboard = () => {
       </Box>
 
       <Grid container spacing={3} sx={{ display: "flex", mb: 4 }}>
-        {[1, 2, 3, 4].map((item: any: any: any: any) => (
+        {[1, 2, 3, 4].map((item: any, index: number) => (
           <Grid xs={12} sm={6} md={3} key={item}>
             <Card>
               <CardContent>
@@ -313,10 +313,10 @@ const BugBountyDashboard = () => {
     return <LoadingSkeleton />;
   }
 
-  return Boolean((
-    <Container maxWidth="lg" sx={{ display: "flex", mt: 4, mb: 4 }}>
+  return (
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       {/* Enhanced Header */}
-      <Box sx={{ display: "flex", mb: 4 }}>
+      <Box sx={{ mb: 4 }}>
         <Box
           sx={{
             alignItems: "flex-start",
@@ -341,13 +341,13 @@ const BugBountyDashboard = () => {
             </Typography>
           </Box>
 
-          <Box sx={{ display: "flex", display: "flex", gap: 1 }}>
+          <Box sx={{ display: "flex", gap: 1 }}>
             <Tooltip title="Refresh Data">
               <IconButton
                 onClick={handleRefresh}
                 disabled={refreshing}
-                color
-                  "@keyframes spin": {
+                color="primary"
+                disabled={refreshing}
                     "0%": { transform: "rotate(0deg)" },
                     "100%": { transform: "rotate(360deg)" },
                   },
@@ -369,7 +369,7 @@ const BugBountyDashboard = () => {
         </Box>
 
         <Alert
-          severity
+          severity="info"
             background: `linear-gradient(135deg, ${theme.palette.info.light}15, ${theme.palette.info.main}10)`,
             border: `1px solid ${theme.palette.info.main}30`,
           }}
@@ -381,7 +381,7 @@ const BugBountyDashboard = () => {
               information, and earn rewards based on severity and quality. All
               reports are reviewed by our team.
             </Typography>
-            <Typography variant="body2" component="div" sx={{ display: "flex", mt: 1 }}>
+            <Typography variant="body2" component="div" sx={{ mt: 1 }}>
               <strong>💰 Rewards range from $25 to $3,375</strong> based on
               category, severity, and quality!
             </Typography>
@@ -391,9 +391,9 @@ const BugBountyDashboard = () => {
         {/* Error Display */}
         {error && (
           <Alert
-            severity
+            severity="error"
             sx={{ display: "flex", mt: 2 }}
-            action
+            action={
                 <Button color="inherit" size="small" onClick={retry}>
                   Retry
                 </Button>
@@ -407,7 +407,7 @@ const BugBountyDashboard = () => {
       </Box>
 
       {/* Enhanced Stats Cards */}
-      <Grid container spacing={3} sx={{ display: "flex", mb: 4 }}>
+      <Grid container spacing={3} sx={{ mb: 4 }}>
         {[
           {
             title: "Total Bugs Reported",
@@ -437,7 +437,7 @@ const BugBountyDashboard = () => {
             color: theme.palette.info.main,
             gradient: `linear-gradient(135deg, ${theme.palette.info.main}, ${theme.palette.info.dark})`,
           },
-        ].map((stat: any index: any: any: any: any) => (
+        ].map((stat: any, index: number) => (
           <Grid xs={12} sm={6} md={3} key={stat.title}>
             <Zoom in={!loading} style={{ transitionDelay: `${index * 100}ms` }}>
               <Card
@@ -484,13 +484,13 @@ const BugBountyDashboard = () => {
                     <Box>
                       <Typography
                         variant="body2"
-                        sx={{ display: "flex", fontWeight: "bold", color: "white" }}
+                        sx={{ fontWeight: "bold", color: "white" }}
                       >
                         {stat.value}
                       </Typography>
                       <Typography
                         variant="body2"
-                        sx={{ display: "flex", color: "rgba(255,255,255,0.9)" }}
+                        sx={{ color: "rgba(255,255,255,0.9)" }}
                       >
                         {stat.title}
                       </Typography>

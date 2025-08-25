@@ -160,16 +160,17 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
       onClose();
     };
 
-    return (<Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    return (
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
         <DialogTitle>
-          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <AdminIcon color="primary" />
             <Typography variant="h6">Bug Review: {bug.title}</Typography>
           </Box>
         </DialogTitle>
         
         <DialogContent>
-          <Box sx={{ display: "flex", mb: 3 }}>
+          <Box sx={{ mb: 3 }}>
             <Typography variant="h6" gutterBottom>Bug Information</Typography>
             <Typography><strong>ID:</strong> {bug.id}</Typography>
             <Typography><strong>Category:</strong> 
@@ -202,7 +203,7 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
             </AccordionSummary>
             <AccordionDetails>
               <List>
-                {bug.stepsToReproduce.map((step: any index: any: any: any: any) => (
+                {bug.stepsToReproduce.map((step: any, index: number) => (
                   <ListItem key={index}>
                     <ListItemText
                       primary={`Step ${index + 1}`}
@@ -219,7 +220,7 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
               <Typography variant="h6">Expected vs Actual Behavior</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Box sx={{ display: "flex", display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
                 <Box>
                   <Typography variant="subtitle2" color="success.main">Expected:</Typography>
                   <Typography>{bug.expectedBehavior}</Typography>
@@ -244,10 +245,10 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
             </AccordionDetails>
           </Accordion>
 
-          <Box sx={{ display: "flex", mt: 3 }}>
+          <Box sx={{ mt: 3 }}>
             <Typography variant="h6" gutterBottom>Admin Review</Typography>
             
-            <FormControl fullWidth sx={{ display: "flex", mb: 2 }}>
+            <FormControl fullWidth sx={{ mb: 2 }}>
               <InputLabel>Status</InputLabel>
               <Select
                 value={newStatus}
@@ -263,7 +264,7 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
               </Select>
             </FormControl>
 
-            <Box sx={{ display: "flex", mb: 2 }}>
+            <Box sx={{ mb: 2 }}>
               <Typography component="legend">Quality Score</Typography>
               <Rating
                 value={qualityScore}
@@ -279,11 +280,13 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
               fullWidth
               multiline
               rows={3}
-              label
+              label="Admin Notes"
               value={adminNotes}
               onChange={(e) => setAdminNotes(e.target.value)}
-              placeholder
-            <Alert severity="info" sx={{ display: "flex", mt: 2 }}>
+              placeholder="Enter your notes here..."
+            />
+            
+            <Alert severity="info" sx={{ mt: 2 }}>
               <Typography variant="body2">
                 <strong>Calculated Reward:</strong> {formatCurrency(bug.reward?.calculated || 0)}
                 <br />
@@ -299,111 +302,128 @@ const BugBountyAdmin: React.FC<BugBountyAdminProps> = ({ open, onClose }) => {
           <Button onClick={onClose}>Cancel</Button>
           <Button
             onClick={handleSubmit}
-            variant="body2"
-  };
-
-  return(<>
-      <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
-        <DialogTitle>
-          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
-            <AdminIcon color="primary" />
-            <Typography variant="h6">Bug Bounty Admin Panel</Typography>
-          </Box>
-        </DialogTitle>
-
-        <DialogContent>
-          <Box sx={{ display: "flex", mb: 2 }}>
-            <FormControl sx={{ display: "flex", minWidth: 200 }}>
-              <InputLabel>Filter by Status</InputLabel>
-              <Select
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-              >
-                <MenuItem value="all">All Bugs</MenuItem>
-                <MenuItem value={BUG_STATUS.SUBMITTED}>Submitted</MenuItem>
-                <MenuItem value={BUG_STATUS.UNDER_REVIEW}>Under Review</MenuItem>
-                <MenuItem value={BUG_STATUS.CONFIRMED}>Confirmed</MenuItem>
-                <MenuItem value={BUG_STATUS.DUPLICATE}>Duplicate</MenuItem>
-                <MenuItem value={BUG_STATUS.INVALID}>Invalid</MenuItem>
-                <MenuItem value={BUG_STATUS.FIXED}>Fixed</MenuItem>
-                <MenuItem value={BUG_STATUS.REWARDED}>Rewarded</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Title</TableCell>
-                  <TableCell>Category</TableCell>
-                  <TableCell>Severity</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Tester</TableCell>
-                  <TableCell>Reward</TableCell>
-                  <TableCell>Submitted</TableCell>
-                  <TableCell>Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {bugs.map((bug: any: any: any: any) => (<TableRow key={bug.id}>
-                    <TableCell>
-                      <Typography variant="body2" noWrap>
-                        {bug.title}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        size="small"
-                        label={(BUG_CATEGORIES as Record<string, any>)[bug.category]?.name || bug.category}
-                        sx={{
-                          backgroundColor: (BUG_CATEGORIES as Record<string, any>)[bug.category]?.color,
-                          color: 'white'
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell>{bug.severity}</TableCell>
-                    <TableCell>
-                      <Chip
-                        size="small"
-                        label={bug.status.replace('_', ' ').toUpperCase()}
-                        color={getStatusColor(bug.status)}
-                      />
-                    </TableCell>
-                    <TableCell>{bug.tester.name}</TableCell>
-                    <TableCell>
-                      {formatCurrency(bug.reward?.final || bug.reward?.calculated || 0)}
-                    </TableCell>
-                    <TableCell>
-                      {new Date(bug.submittedAt).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        size="small"
-                        onClick={() => setSelectedBug(bug)}
-                      >
-                        Review
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={onClose}>Close</Button>
+            variant="contained"
+            disabled={loading}
+          >
+            {loading ? 'Processing...' : 'Update Bug'}
+          </Button>
         </DialogActions>
       </Dialog>
+    );
 
-      <BugDetailDialog
-        bug={selectedBug}
-        open={!!selectedBug}
-        onClose={() => setSelectedBug(null)}
-      />
-    </>
+  };
+
+  const AdminPanel = () => {
+    return (
+      <>
+        <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
+          <DialogTitle>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <AdminIcon color="primary" />
+              <Typography variant="h6">Bug Bounty Admin Panel</Typography>
+            </Box>
+          </DialogTitle>
+
+          <DialogContent>
+            <Box sx={{ mb: 2 }}>
+              <FormControl sx={{ minWidth: 200 }}>
+                <InputLabel>Filter by Status</InputLabel>
+                <Select
+                  value={filter}
+                  onChange={(e) => setFilter(e.target.value)}
+                >
+                  <MenuItem value="all">All Bugs</MenuItem>
+                  <MenuItem value={BUG_STATUS.SUBMITTED}>Submitted</MenuItem>
+                  <MenuItem value={BUG_STATUS.UNDER_REVIEW}>Under Review</MenuItem>
+                  <MenuItem value={BUG_STATUS.CONFIRMED}>Confirmed</MenuItem>
+                  <MenuItem value={BUG_STATUS.DUPLICATE}>Duplicate</MenuItem>
+                  <MenuItem value={BUG_STATUS.INVALID}>Invalid</MenuItem>
+                  <MenuItem value={BUG_STATUS.FIXED}>Fixed</MenuItem>
+                  <MenuItem value={BUG_STATUS.REWARDED}>Rewarded</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Title</TableCell>
+                    <TableCell>Category</TableCell>
+                    <TableCell>Severity</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Tester</TableCell>
+                    <TableCell>Reward</TableCell>
+                    <TableCell>Submitted</TableCell>
+                    <TableCell>Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {bugs.map((bug: any) => (
+                    <TableRow key={bug.id}>
+                      <TableCell>
+                        <Typography variant="body2" noWrap>
+                          {bug.title}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Chip
+                          size="small"
+                          label={(BUG_CATEGORIES as Record<string, any>)[bug.category]?.name || bug.category}
+                          sx={{
+                            backgroundColor: (BUG_CATEGORIES as Record<string, any>)[bug.category]?.color,
+                            color: 'white'
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>{bug.severity}</TableCell>
+                      <TableCell>
+                        <Chip
+                          size="small"
+                          label={bug.status.replace('_', ' ').toUpperCase()}
+                          color={getStatusColor(bug.status)}
+                        />
+                      </TableCell>
+                      <TableCell>{bug.tester.name}</TableCell>
+                      <TableCell>
+                        {formatCurrency(bug.reward?.final || bug.reward?.calculated || 0)}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(bug.submittedAt).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          size="small"
+                          onClick={() => setSelectedBug(bug)}
+                        >
+                          Review
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </DialogContent>
+
+          <DialogActions>
+            <Button onClick={onClose}>Close</Button>
+          </DialogActions>
+        </Dialog>
+
+        <BugDetailDialog
+          bug={selectedBug}
+          open={!!selectedBug}
+          onClose={() => setSelectedBug(null)}
+        />
+      </>
+    );
+  };
+
+  return (
+    <AdminPanel />
   );
+
 };
 
 export default BugBountyAdmin;
