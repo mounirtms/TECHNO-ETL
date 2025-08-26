@@ -49,6 +49,8 @@ export const useProfileController = () => {
         loading: settingsLoading, // Use loading from SettingsContext
         error,
         updateUserData,
-        saveUserData
+        saveUserData,
+        isDirty: settingsIsDirty, // Use isDirty from SettingsContext
+        lastSyncTime: settings?.lastSyncTime || localStorage.getItem('lastSettingsSync')
     };
 };

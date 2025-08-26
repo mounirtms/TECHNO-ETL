@@ -36,6 +36,12 @@ const TabPanel = ({ sidebarOpen, isMobile = false, isTablet = false }) => {
         openTab(newValue);
     };
 
+    // Safety check for activeTab validity
+    const validTabIds = tabs.map(tab => tab.id);
+    const safeActiveTab = validTabIds.includes(activeTab) ? activeTab : validTabIds[0] || 'Dashboard';
+    
+    console.log('TabPanel Debug:', { activeTab, safeActiveTab, validTabIds, tabs });
+
     const ActiveComponent = getActiveComponent();
 
     return (

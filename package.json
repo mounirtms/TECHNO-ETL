@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "vite --host 0.0.0.0 --port 80",
-    "server": "cd backend && npm run dev",
+    "server": "cd backend && npm start",
     "dev": "concurrently \"npm run start\" \"npm run server\"",
     "build": "npm run validate:env && vite build --mode production",
     "build:analyze": "npm run build && npx vite-bundle-analyzer dist",

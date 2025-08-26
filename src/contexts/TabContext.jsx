@@ -128,32 +128,78 @@ export const TabProvider = ({ children, sidebarOpen }) => {
     // Sync tab changes with URL
     useEffect(() => {
         const currentTabId = URL_TO_TAB_MAP[location.pathname];
-        if (currentTabId && currentTabId !== activeTab) {
-            // Skip navigation to prevent infinite loop
+        
+        // If we have a valid tab ID from URL
+        if (currentTabId) {
             const tabExists = tabs.some(tab => tab.id === currentTabId);
+            
+            // If tab doesn't exist, try to add it
             if (!tabExists) {
                 const newTab = MENU_ITEMS.find(item => item.id === currentTabId);
+                
                 if (newTab && COMPONENT_MAP[newTab.id]) {
-    // Ensure activeTab is always valid
-    useEffect(() => {
-        const validTabIds = tabs.map(tab => tab.id);
-        if (!validTabIds.includes(activeTab)) {
-            setActiveTab(validTabIds.includes('Dashboard') ? 'Dashboard' : validTabIds[0]);
-        }
-    }, [activeTab, tabs]);
-
                     setTabs(prevTabs => [
                         ...prevTabs,
                         {
-                            ...newTab,
+                            id: newTab.id,
+                            label: newTab.label,
+                            component: newTab.id,
                             closeable: newTab.id !== 'Dashboard'
                         }
                     ]);
+                } else {
+                    // Invalid tab, redirect to Dashboard
+                    console.warn(`Invalid tab: ${currentTabId}, redirecting to Dashboard`);
+                    navigate('/dashboard');
+                    return;
                 }
             }
-            setActiveTab(currentTabId);
+            
+            // Set active tab only if it's different
+            if (currentTabId !== activeTab) {
+                setActiveTab(currentTabId);
+            }
         }
-    }, [location.pathname, activeTab, tabs]);
+    }, [location.pathname, navigate]);
+
+    // Comprehensive tab validation
+    useEffect(() => {
+        const validTabIds = tabs.map(tab => tab.id);
+        
+        // If activeTab is invalid
+        if (!validTabIds.includes(activeTab)) {
+            console.warn(`Invalid activeTab: ${activeTab}, available tabs:`, validTabIds);
+            
+            // Try Dashboard first, then first available tab
+            const fallbackTab = validTabIds.includes('Dashboard') ? 'Dashboard' : validTabIds[0];
+            
+            if (fallbackTab) {
+                console.log(`Setting fallback tab: ${fallbackTab}`);
+                setActiveTab(fallbackTab);
+                
+                // Also navigate to the correct URL
+                const fallbackUrl = TAB_TO_URL_MAP[fallbackTab];
+                if (fallbackUrl && location.pathname !== fallbackUrl) {
+                    navigate(fallbackUrl);
+                }
+            }
+        }
+    }, [activeTab, tabs, navigate, location.pathname]);
+
+    // Tab validation for MUI Tabs component
+    useEffect(() => {
+        const validTabIds = tabs.map(tab => tab.id);
+        
+        // Extra safety: if we somehow have an invalid activeTab when rendering
+        if (activeTab && !validTabIds.includes(activeTab)) {
+            // Emergency fallback
+            const emergencyTab = 'Dashboard';
+            if (validTabIds.includes(emergencyTab)) {
+                console.error(`Emergency tab validation triggered, setting to: ${emergencyTab}`);
+                setActiveTab(emergencyTab);
+            }
+        }
+    }, [activeTab, tabs]);
 
     const openTab = (tabId, skipNavigation = false) => {
         const tabExists = tabs.some(tab => tab.id === tabId);

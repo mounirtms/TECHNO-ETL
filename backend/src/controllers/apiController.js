@@ -373,7 +373,7 @@ export async function proxyMagentoRequest(req, res) {
             isExternalService: true,
             responseTime,
             magentoEndpoint: errorEndpoint,
-            method: method || 'unknown'
+            method: req.method || 'unknown'
         });
 
         const logEndpoint = req.originalUrl?.replace('/api/magento', '').replace(/\/+/g, '/') || 'unknown';
@@ -385,7 +385,7 @@ export async function proxyMagentoRequest(req, res) {
             code: error.code,
             responseTime,
             endpoint: logEndpoint,
-            method,
+            method: req.method || 'unknown',
             correlationId: requestId
         });
 
@@ -394,7 +394,7 @@ export async function proxyMagentoRequest(req, res) {
             const behaviorEndpoint = req.originalUrl?.replace('/api/magento', '').replace(/\/+/g, '/') || 'unknown';
             usageAnalytics.trackUserBehavior(req.user.id, 'magento_api_error', {
                 endpoint: behaviorEndpoint,
-                method,
+                method: req.method || 'unknown',
                 error: error.message,
                 responseTime,
                 success: false,

@@ -20,6 +20,7 @@ import magentoRoutes from './src/routes/magentoRoutes.js';
 import healthRoutes from './src/routes/healthRoutes.js';
 import metricsRoutes from './src/routes/metricsRoutes.js';
 import votingRoutes from './src/routes/votingRoutes.js';
+import dashboardRoutes from './src/routes/dashboardRoutes.js';
 
 // Swagger imports
 import { specs, swaggerUi } from './swagger/simple-swagger.js';
@@ -199,6 +200,7 @@ app.use('/api/metrics', metricsRoutes);
 app.use('/api/voting', votingRoutes);
 app.use('/api/mdm', mdmRoutes);
 app.use('/api/magento', magentoRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Test sync route mounting
 app.get('/api/sync/test', (req, res) => {
