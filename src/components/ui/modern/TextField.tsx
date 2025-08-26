@@ -27,7 +27,6 @@ const textFieldVariants = cva(
       size: 'medium',
       error: false,
     },
-  }
 );
 
 // FormControl wrapper
@@ -39,8 +38,6 @@ interface FormControlProps {
   required?: boolean;
   fullWidth?: boolean;
   size?: 'small' | 'medium' | 'large';
-}
-
 export const FormControl: React.FC<FormControlProps> = ({
   children,
   className,
@@ -72,8 +69,6 @@ interface InputLabelProps extends React.LabelHTMLAttributes<HTMLLabelElement> {
   required?: boolean;
   error?: boolean;
   shrink?: boolean;
-}
-
 export const InputLabel: React.FC<InputLabelProps> = ({
   children,
   required
@@ -100,8 +95,6 @@ export const InputLabel: React.FC<InputLabelProps> = ({
 interface FormHelperTextProps extends React.HTMLAttributes<HTMLParagraphElement> {
   children: React.ReactNode;
   error?: boolean;
-}
-
 export const FormHelperText: React.FC<FormHelperTextProps> = ({
   children,
   error
@@ -136,8 +129,6 @@ interface TextFieldProps
     startAdornment?: React.ReactNode;
     endAdornment?: React.ReactNode;
   };
-}
-
 export const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
   ({
     className,
@@ -200,13 +191,11 @@ export const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
     );
 
     if(label || helperText) {
-      return Boolean((
-        <FormControl 
-          error={error} 
+      return (
+        <FormControl error={error} 
           fullWidth={fullWidth} 
           size={size}
-          required={required}
-        >
+          required={required}>
           {label && (
             <InputLabel required={required} error={error}>
               {label}
@@ -219,11 +208,8 @@ export const TextField = React.forwardRef<HTMLInputElement, TextFieldProps>(
             </FormHelperText>
           )}
         </FormControl>
-      )))));
-    }
-
+      );
     return field;
-  }
 );
 
 TextField.displayName = 'TextField';

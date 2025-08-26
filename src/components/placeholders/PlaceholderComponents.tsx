@@ -10,11 +10,11 @@ import {
 
 // Generic placeholder component
 const PlaceholderComponent = ({ title, description, icon: Icon, color = "primary"  }: { title description icon: Icon color = "primary": any }) => (
-    <Box p={3}>
+    <Box p={3}></
         <Card>
-            <CardContent>
+            <CardContent></
                 <Box display="flex" alignItems="center" gap={2} mb={2}>
-                    <Icon color={color} sx={{ display: "flex", fontSize: 40 }} />
+                    <Icon color={color} sx={{ display: "flex", fontSize: 40 }} /></
                     <Typography variant="h4" color={color}>
                         {title}
                     </Typography>
@@ -28,11 +28,11 @@ const PlaceholderComponent = ({ title, description, icon: Icon, color = "primary
                     {description}
                 </Typography>
                 
-                <Box mt={3}>
+                <Box mt={3}></
                     <Typography variant="h6" gutterBottom>
                         Coming Features:
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="outlined" color="text.secondary">
                         • Real-time data visualization
                         • Advanced filtering and search
                         • Export capabilities

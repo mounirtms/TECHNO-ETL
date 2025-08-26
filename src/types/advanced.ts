@@ -46,15 +46,11 @@ export interface ConstArray<T extends readonly unknown[]> {
   readonly items: T;
   readonly length: T['length'];
   get<K extends keyof T>(index: K): T[K];
-}
-
 // Advanced Component Props with Template Literals
 export interface BaseComponentProps {
   className?: string;
   'data-testid'?: string;
   id?: string;
-}
-
 // Utility Types for Component Variants
 export type VariantConfig<T extends Record<string, Record<string, string>>> = {
   [K in keyof T]: keyof T[K];
@@ -112,8 +108,6 @@ export interface FormField<T extends FormFieldType = FormFieldType> {
   placeholder?: string;
   validation?: (value: string) => string | null;
   options?: T extends 'select' | 'radio' ? Array<{ value: string; label: string }> : never;
-}
-
 // Grid Column Configuration with Advanced Types
 export interface GridColumn<T = any> {
   id: string;
@@ -130,8 +124,6 @@ export interface GridColumn<T = any> {
   renderCell?: (params: { value: T[keyof T]; row: T; field: keyof T }) => React.ReactNode;
   valueGetter?: (row: T) => unknown;
   valueFormatter?: (value: unknown) => string;
-}
-
 // Theme Configuration Types
 export interface ThemeConfig {
   readonly colors: {
@@ -152,8 +144,6 @@ export interface ThemeConfig {
     readonly fontFamily: string;
     readonly sizes: Record<ComponentSize, string>;
   };
-}
-
 // Component Variant System
 export interface ComponentVariants {
   variant?: {
@@ -175,8 +165,6 @@ export interface ComponentVariants {
     warning: string;
     error: string;
   };
-}
-
 // Performance Monitoring Types
 export interface PerformanceMetric {
   name: string;
@@ -184,16 +172,12 @@ export interface PerformanceMetric {
   unit: 'ms' | 'bytes' | 'count' | 'percentage';
   timestamp: Timestamp;
   category: 'render' | 'network' | 'memory' | 'interaction';
-}
-
 export interface ComponentPerformance {
   componentName: string;
   renderTime: number;
   rerenderCount: number;
   memoryUsage?: number;
   metrics: PerformanceMetric[];
-}
-
 // Data Table Types with Advanced Filtering
 export type FilterOperator = 'equals' | 'contains' | 'startsWith' | 'endsWith' | 'greaterThan' | 'lessThan' | 'between';
 
@@ -202,19 +186,13 @@ export interface FilterCondition<T = any> {
   operator: FilterOperator;
   value: unknown;
   caseSensitive?: boolean;
-}
-
 export interface SortCondition<T = any> {
   field: keyof T;
   direction: 'asc' | 'desc';
-}
-
 export interface PaginationState {
   page: number;
   pageSize: number;
   total: number;
-}
-
 export interface DataTableState<T = any> {
   data: T[];
   filteredData: T[];
@@ -223,8 +201,6 @@ export interface DataTableState<T = any> {
   pagination: PaginationState;
   loading: boolean;
   error: string | null;
-}
-
 // Utility type for exact object matching
 export type Exact<T, U> = T extends U ? (U extends T ? T : never) : never;
 
@@ -236,8 +212,6 @@ export type ComponentWithoutRef<T extends React.ElementType> = React.ComponentPr
 export interface PolymorphicProps<T extends React.ElementType = 'div'> {
   as?: T;
   children?: React.ReactNode;
-}
-
 export type PolymorphicComponent<T extends React.ElementType> = PolymorphicProps<T> & 
   Omit<React.ComponentPropsWithoutRef<T>, keyof PolymorphicProps>;
 
@@ -248,15 +222,11 @@ export interface UseAsyncReturn<T> {
   error: Error | null;
   execute: () => Promise<void>;
   reset: () => void;
-}
-
 export interface UseToggleReturn {
   value: boolean;
   toggle: () => void;
   setTrue: () => void;
   setFalse: () => void;
-}
-
 // Configuration objects with satisfies operator
 export const defaultTheme = {
   colors: {

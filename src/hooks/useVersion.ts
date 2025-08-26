@@ -20,8 +20,6 @@ export function useVersion() {
       fetch('/version.json')
         .then(res => res.json())
         .then(data => setVersion(data));
-    }
   }, []);
 
-  return version;
-}
+  return version;

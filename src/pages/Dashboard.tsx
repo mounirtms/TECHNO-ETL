@@ -181,7 +181,6 @@ const Dashboard = () => {
         animations: true,
         compactMode: false,
         showTooltips: true
-      }
     };
 
     return savedDashboardSettings ? { ...defaultSettings, ...savedDashboardSettings } : defaultSettings;
@@ -221,8 +220,6 @@ const Dashboard = () => {
             setEnhancedData(cachedData);
             setEnhancedLoading(false);
             return;
-        }
-
         // Optimized endpoints with shorter timeout
         const endpoints = [
             { path: '/products/stats', key: 'productStats', timeout: 10000 },
@@ -242,17 +239,15 @@ const Dashboard = () => {
                 unifiedMagentoService.get(endpoint.path),
                 new Promise((_, reject) => 
                     setTimeout(() => reject(new Error(`Timeout: ${endpoint.path} exceeded ${endpoint.timeout}ms`)), endpoint.timeout)
-                )
             ]);
         };
         
         // Execute all requests with individual timeouts
-        const responses = await Promise.allSettled(endpoints.map((endpoint: any: any: any: any) => 
+        const responses = await Promise.allSettled(endpoints.map((endpoint: any) => 
                 createTimeoutPromise(endpoint).catch(error => {
                     console.warn(`⚠️ Endpoint ${endpoint.path} failed:`, error.message);
                     return { data: null, error: error.message };
                 })
-            )
         );
         
         // Build data object with proper error handling
@@ -264,7 +259,6 @@ const Dashboard = () => {
             } else {
                 data[endpoint.key] = endpoint.key.includes('Distribution') || endpoint.key === 'productTypes' ? [] : null;
                 console.warn(`📊 Using fallback data for ${endpoint.key}`);
-            }
         });
         
         setEnhancedData(data);
@@ -273,10 +267,8 @@ const Dashboard = () => {
         if(unifiedMagentoService._setCachedResponse) {
             unifiedMagentoService._setCachedResponse(cacheKey, data);
             console.log('💾 Cached enhanced data for faster subsequent loads');
-        }
-        
         // Log successful loads
-        const successfulLoads = responses.filter((r: any: any: any: any) => r.status === 'fulfilled' && r.value?.data).length;
+        const successfulLoads = responses.filter((r: any) => r.status === 'fulfilled' && r.value?.data).length;
         console.log(`✅ Dashboard data loaded: ${successfulLoads}/${endpoints.length} endpoints successful`);
         
     } catch(error: any) {
@@ -299,10 +291,8 @@ const Dashboard = () => {
                 position: 'top-center',
                 autoClose: 4000
             });
-        }
     } finally {
         setEnhancedLoading(false);
-    }
 };
 
   // Load enhanced data on mount and refresh
@@ -329,7 +319,6 @@ const Dashboard = () => {
         position: 'top-center',
         autoClose: 3000
       });
-    }
   };
 
   const handleSyncStocks = async () => {
@@ -341,7 +330,6 @@ const Dashboard = () => {
         position: 'top-center',
         autoClose: 3000
       });
-    }
   };
 
   // Handle chart visibility toggle
@@ -371,7 +359,6 @@ const Dashboard = () => {
       console.error('Failed to save dashboard settings to unified settings:', error);
       // Fallback to local storage
       localStorage.setItem('dashboardSettings', JSON.stringify(newSettings));
-    }
   };
 
   const handleResetSettings = () => {
@@ -408,7 +395,6 @@ const Dashboard = () => {
         animations: true,
         compactMode: false,
         showTooltips: true
-      }
     };
     setDashboardSettings(defaultSettings);
 
@@ -419,8 +405,6 @@ const Dashboard = () => {
       localStorage.setItem('techno-etl-settings', JSON.stringify(currentUnifiedSettings));
     } catch(error: any) {
       console.error('Failed to reset dashboard settings in unified settings:', error);
-    }
-
     // Also remove old localStorage key for backward compatibility
     localStorage.removeItem('dashboardSettings');
   };
@@ -441,11 +425,8 @@ const Dashboard = () => {
           localStorage.setItem('techno-etl-settings', JSON.stringify(updatedUnifiedSettings));
           localStorage.removeItem('dashboardSettings'); // Clean up old storage
           console.log('Migrated dashboard settings to unified settings');
-        }
       } catch(error: any) {
         console.error('Error migrating dashboard settings:', error);
-      }
-    }
   }, []);
 
   // Handle price sync
@@ -460,11 +441,9 @@ const Dashboard = () => {
         setPriceSyncDialogOpen(true);
       } else {
         alert('No price data available for sync');
-      }
     } catch(error: any) {
       console.error('❌ Failed to fetch price data:', error);
       alert('Failed to fetch price data: ' + error.message);
-    }
   };
 
   // Handle settings menu
@@ -504,7 +483,6 @@ const Dashboard = () => {
         console.log('Unknown section:', section);
         // Try to open the section directly as a tab ID
         openTab(section);
-    }
   };
 
   // Handle actions
@@ -526,11 +504,10 @@ const Dashboard = () => {
         break;
       default:
         console.log('Action:', action);
-    }
   };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={AdapterDateFns}></
       <Box 
         sx={{
           bgcolor: 'background.default',
@@ -550,38 +527,34 @@ const Dashboard = () => {
             direction: isRTL ? 'rtl' : 'ltr',
             transition: 'all 0.3s ease'
           }}
-        >
+        ></
           <Box sx={{ 
-            display: "flex", 
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'center' 
           }}>
-            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}></
               <DashboardIcon sx={{ display: "flex", fontSize: 32, color: 'primary.main' }} />
               <Typography variant="h4" sx={{ display: "flex", fontWeight: 700, color: 'primary.main' }}>
                 {translate('navigation.dashboard') || 'Dashboard'}
               </Typography>
             </Box>
             
-            <Box sx={{ display: "flex", display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
               {/* Date Range Pickers */}
               <Box sx={{ 
-                display: "flex", 
                 display: 'flex', 
                 gap: 1, 
                 mr: isRTL ? 0 : 2,
                 ml: isRTL ? 2 : 0,
                 direction: isRTL ? 'rtl' : 'ltr'
-              }}>
-                <DatePicker
-                  label={translate('dashboard.startDate') || 'Start Date'}
+              }}></
+                <DatePicker label={translate('dashboard.startDate') || 'Start Date'}
                   value={startDate}
                   onChange={(e) => setStartDate}
                   slotProps={{ textField: { size: 'small', sx: { width: 140 } } }}
                 />
-                <DatePicker
-                  label={translate('dashboard.endDate') || 'End Date'}
+                <DatePicker label={translate('dashboard.endDate') || 'End Date'}
                   value={endDate}
                   onChange={(e) => setEndDate}
                   slotProps={{ textField: { size: 'small', sx: { width: 140 } } }}
@@ -592,7 +565,7 @@ const Dashboard = () => {
               <Tooltip title={translate('dashboard.syncPrices') || 'Sync Prices to Magento'}>
                 <span>
                   <Button
-                    variant="body2"
+                    variant="outlined"
                     onClick={handlePriceSync}
                     startIcon={<PriceIcon />}
                     sx={{
@@ -604,9 +577,9 @@ const Dashboard = () => {
                 </span>
               </Tooltip>
 
-              <Tooltip title={translate('dashboard.syncStocks') || 'Sync Stocks'}>
+              <Tooltip title={translate('dashboard.syncStocks') || 'Sync Stocks'}></
                 <Button
-                  variant="body2"
+                  variant="outlined"
                   onClick={handleSyncStocks}
                   startIcon={<StockIcon />}
                   sx={{
@@ -617,72 +590,61 @@ const Dashboard = () => {
               </Tooltip>
 
               {/* Action Buttons */}
-              <Tooltip title={translate('dashboard.viewAnalytics') || 'View Analytics'}>
-                <Fab
-                  size="small"
+              <Tooltip title={translate('dashboard.viewAnalytics') || 'View Analytics'}></
+                <Fab size="small"
                   onClick={() => openTab('Charts')}
                   sx={{
                   }}
                 >
-                  <AnalyticsIcon />
-                </Fab>
+                  <AnalyticsIcon /></AnalyticsIcon>
               </Tooltip>
 
               <Tooltip title={loading ? (translate('common.refreshing') || 'Refreshing...') : (translate('common.refresh') || 'Refresh Data')}>
                 <span>
-                  <Fab
-                    size="small"
+                  <Fab size="small"
                     onClick={handleRefresh}
                     disabled={loading}
                     sx={{
-                    }}
-                  >
+                    }}>
                     {loading ? <CircularProgress size={24} color="inherit" /> : <RefreshIcon />}
                   </Fab>
                 </span>
               </Tooltip>
 
-              <Tooltip title={translate('common.settings') || 'Settings'}>
-                <IconButton
-                  onClick={handleSettingsOpen}
+              <Tooltip title={translate('common.settings') || 'Settings'}></
+                <IconButton onClick={handleSettingsOpen}
                   sx={{
                     '&:hover': { boxShadow: 4 },
                     margin: isRTL ? '0 4px 0 0' : '0 0 0 4px'
-                  }}
-                >
-                  <SettingsIcon />
-                </IconButton>
+                  }}>
+                  <SettingsIcon /></SettingsIcon>
               </Tooltip>
             </Box>
           </Box>
         </Paper>
 
         {/* Settings Menu */}
-        <Menu
-          anchorEl={settingsAnchorEl}
+        <Menu anchorEl={settingsAnchorEl}
           open={Boolean(settingsAnchorEl)}
           onClose={handleSettingsClose}
           slotProps
                 borderRadius: 2,
                 boxShadow: muiTheme.shadows[8]
-              }
-            }
-          }}
-        >
+          }}></
           <MenuItem onClick={() => {
             setSettingsDialogOpen(true);
             handleSettingsClose();
           }}>
-            <ListItemIcon><SettingsIcon /></ListItemIcon>
+            <ListItemIcon><SettingsIcon /></SettingsIcon>
             <ListItemText>Dashboard Settings</ListItemText>
           </MenuItem>
           <MenuItem onClick={() => openTab('Charts')}>
-            <ListItemIcon><AnalyticsIcon /></ListItemIcon>
+            <ListItemIcon><AnalyticsIcon /></AnalyticsIcon>
             <ListItemText>Analytics Dashboard</ListItemText>
           </MenuItem>
-          <Divider />
+          <Divider /></
           <MenuItem onClick={handleRefresh}>
-            <ListItemIcon><RefreshIcon /></ListItemIcon>
+            <ListItemIcon><RefreshIcon /></RefreshIcon>
             <ListItemText>Refresh Data</ListItemText>
           </MenuItem>
         </Menu>
@@ -693,29 +655,26 @@ const Dashboard = () => {
         {/* Main Content */}
         {loading && (
           <Box sx={{ 
-            display: "flex", 
             display: 'flex', 
             justifyContent: 'center', 
             alignItems: 'center',
             height: '60vh'
-          }}>
-            <CircularProgress size={60} />
-          </Box>
+          }}></
+            <CircularProgress size={60} /></CircularProgress>
         )}
 
         {error && (
-          <Paper sx={{ display: "flex", p: 3, borderRadius: 3, bgcolor: 'error.light', color: 'error.contrastText' }}>
+          <Paper sx={{ display: "flex", p: 3, borderRadius: 3, bgcolor: 'error.light', color: 'error.contrastText' }}></
             <Typography variant="h6">Error loading dashboard data</Typography>
-            <Typography variant="body2">{error}</Typography>
+            <Typography variant="outlined">{error}</Typography>
           </Paper>
         )}
 
         {!loading && !error && (
           <>
             {/* Enhanced Stats Cards */}
-            <Box sx={{ display: "flex", mb: 4 }}>
-              <EnhancedStatsCards
-                stats={stats}
+            <Box sx={{ display: "flex", mb: 4 }}></
+              <EnhancedStatsCards stats={stats}
                 settings={dashboardSettings}
                 loading={loading}
                 onNavigate={handleNavigate}
@@ -727,10 +686,9 @@ const Dashboard = () => {
             </Box>
 
             {/* Professional Metric Cards */}
-            <Grid { ...{container: true}} spacing={3} sx={{ display: "flex", mb: 4 }}>
+            <Grid { ...{container: true}} spacing={3} sx={{ display: "flex", mb: 4 }}></
               <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-                <ProfessionalMetricCard
-                  title
+                <ProfessionalMetricCard title
                   value={stats?.totalRevenue || 0}
                   previousValue={stats?.previousRevenue || 0}
                   icon={AttachMoney}
@@ -740,9 +698,8 @@ const Dashboard = () => {
                   onClick={() => openTab('Orders')}
                 />
               </Grid>
-              <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-                <ProfessionalMetricCard
-                  title
+              <Grid size={{ xs: 12, md: 6, lg: 3 }}></
+                <ProfessionalMetricCard title
                   value={stats?.totalOrders || 0}
                   previousValue={stats?.previousOrders || 0}
                   icon={ShoppingCart}
@@ -752,9 +709,8 @@ const Dashboard = () => {
                   onClick={() => openTab('Orders')}
                 />
               </Grid>
-              <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-                <ProfessionalMetricCard
-                  title
+              <Grid size={{ xs: 12, md: 6, lg: 3 }}></
+                <ProfessionalMetricCard title
                   value={stats?.totalCustomers || 0}
                   previousValue={stats?.previousCustomers || 0}
                   icon={People}
@@ -764,9 +720,8 @@ const Dashboard = () => {
                   onClick={() => openTab('Customers')}
                 />
               </Grid>
-              <Grid size={{ xs: 12, md: 6, lg: 3 }}>
-                <ProfessionalMetricCard
-                  title
+              <Grid size={{ xs: 12, md: 6, lg: 3 }}></
+                <ProfessionalMetricCard title
                   value={stats?.totalProducts || 0}
                   previousValue={stats?.previousProducts || 0}
                   icon={Category}
@@ -779,11 +734,11 @@ const Dashboard = () => {
             </Grid>
 
             {/* Dashboard Test Summary (temporary for testing) */}
-            <DashboardTestSummary />
+            <DashboardTestSummary /></
 
             <Grid { ...{container: true}} spacing={3}>
               {/* Main Dashboard Overview */}
-              <Grid size={{ xs: 12, lg: 8 }}>
+              <Grid size={{ xs: 12, lg: 8 }}></
                 <DashboardOverview
                   stats={stats}
                   onNavigate={handleNavigate}
@@ -791,50 +746,46 @@ const Dashboard = () => {
 
                 {/* Charts Section */}
                 {dashboardSettings.charts.orders && (
-                  <Card sx={{ display: "flex", mt: 3, borderRadius: 3 }}>
+                  <Card sx={{ display: "flex", mt: 3, borderRadius: 3 }}></
                     <CardContent>
-                      <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}></
                         <Typography variant="h6" fontWeight={600}>
                           📈 Orders Overview
                         </Typography>
                         <IconButton onClick={() => toggleChartVisibility('orders')}>
-                          <ExpandLess />
-                        </IconButton>
+                          <ExpandLess /></ExpandLess>
                       </Box>
-                      <ResponsiveContainer width="100%" height={dashboardSettings.general.compactMode ? 250 : 300}>
+                      <ResponsiveContainer width="100%" height={dashboardSettings.general.compactMode ? 250 : 300}></
                         <LineChart data={chartData}>
-                          <CartesianGrid strokeDasharray="3 3" />
+                          <CartesianGrid strokeDasharray="3 3" /></
                           <XAxis dataKey="date" />
-                          <YAxis />
+                          <YAxis /></
                           <RechartsTooltip />
-                          <Legend />
-                          <Line type="monotone" dataKey="orders" stroke="#8884d8" strokeWidth={2} />
-                        </LineChart>
+                          <Legend /></
+                          <Line type="monotone" dataKey="orders" stroke="#8884d8" strokeWidth={2} /></Line>
                       </ResponsiveContainer>
                     </CardContent>
                   </Card>
                 )}
 
                 {dashboardSettings.charts.customers && (
-                  <Card sx={{ display: "flex", mt: 3, borderRadius: 3 }}>
+                  <Card sx={{ display: "flex", mt: 3, borderRadius: 3 }}></
                     <CardContent>
-                      <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}></
                         <Typography variant="h6" fontWeight={600}>
                           👥 Customer Growth
                         </Typography>
                         <IconButton onClick={() => toggleChartVisibility('customers')}>
-                          <ExpandLess />
-                        </IconButton>
+                          <ExpandLess /></ExpandLess>
                       </Box>
-                      <ResponsiveContainer width="100%" height={dashboardSettings.general.compactMode ? 250 : 300}>
+                      <ResponsiveContainer width="100%" height={dashboardSettings.general.compactMode ? 250 : 300}></
                         <BarChart data={customerData}>
-                          <CartesianGrid strokeDasharray="3 3" />
+                          <CartesianGrid strokeDasharray="3 3" /></
                           <XAxis dataKey="month" />
-                          <YAxis />
+                          <YAxis /></
                           <RechartsTooltip />
-                          <Legend />
-                          <Bar dataKey="customers" fill="#82ca9d" />
-                        </BarChart>
+                          <Legend /></
+                          <Bar dataKey="customers" fill="#82ca9d" /></Bar>
                       </ResponsiveContainer>
                     </CardContent>
                   </Card>
@@ -842,8 +793,8 @@ const Dashboard = () => {
               </Grid>
 
               {/* Dashboard Widgets Sidebar */}
-              <Grid size={{ xs: 12, lg: 4 }}>
-                <Box sx={{ display: "flex", display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <Grid size={{ xs: 12, lg: 4 }}></
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                   {/* Quick Actions */}
                   {dashboardSettings.widgets?.quickActions && (
                     <QuickActions onAction={handleAction} />
@@ -863,13 +814,12 @@ const Dashboard = () => {
             </Grid>
 
             {/* Enhanced Analytics Section */}
-            <Box sx={{ display: "flex", mt: 4 }}>
-              <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+            <Box sx={{ display: "flex", mt: 4 }}></
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                 <Typography variant="h5" fontWeight={600}>
                   🚀 Enhanced Analytics
                 </Typography>
-                <Button
-                  variant="body2"
+                <Button variant="outlined"
                   onClick={() => setSettingsDialogOpen(true)}
                   startIcon={<SettingsIcon />}
                 >
@@ -879,9 +829,8 @@ const Dashboard = () => {
 
               <Grid { ...{container: true}} spacing={3}>
                 {/* Professional Chart Widgets */}
-                <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-                  <ProfessionalChartWidget
-                    title
+                <Grid size={{ xs: 12, md: 6, lg: 4 }}></
+                  <ProfessionalChartWidget title
                     data={chartData}
                     chartType
                     loading={enhancedLoading}
@@ -891,9 +840,8 @@ const Dashboard = () => {
                   />
                 </Grid>
 
-                <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-                  <ProfessionalChartWidget
-                    title
+                <Grid size={{ xs: 12, md: 6, lg: 4 }}></
+                  <ProfessionalChartWidget title
                     data={customerData}
                     chartType
                     loading={enhancedLoading}
@@ -905,13 +853,11 @@ const Dashboard = () => {
 
                 {/* Performance Metrics Widget */}
                 {dashboardSettings.widgets?.performanceMetrics ? (
-                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-                    <PerformanceMetricsWidget />
-                  </Grid>
+                  <Grid size={{ xs: 12, md: 6, lg: 4 }}></
+                    <PerformanceMetricsWidget /></PerformanceMetricsWidget>
                 ) : (
-                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-                    <ProfessionalProgressWidget
-                      title
+                  <Grid size={{ xs: 12, md: 6, lg: 4 }}></
+                    <ProfessionalProgressWidget title
                       loading={enhancedLoading}
                       items
                         { label: 'Order Fulfillment', value: 85, color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
@@ -919,38 +865,32 @@ const Dashboard = () => {
                         { label: 'Inventory Accuracy', value: 78, color: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' },
                         { label: 'System Uptime', value: 99, color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }
                       ]}
-                    />
-                  </Grid>
+                    /></ProfessionalProgressWidget>
                 )}
 
                 {/* Product Statistics */}
                 {dashboardSettings.charts.productStats && (
-                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-                    <ProductStatsChart
-                      data={enhancedData.productStats}
+                  <Grid size={{ xs: 12, md: 6, lg: 4 }}></
+                    <ProductStatsChart data={enhancedData.productStats}
                       title
                       loading={enhancedLoading}
                       compact={dashboardSettings.general.compactMode}
-                    />
-                  </Grid>
+                    /></ProductStatsChart>
                 )}
 
                 {/* Brand Distribution */}
                 {dashboardSettings.charts.brandDistribution && (
-                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-                    <BrandDistributionChart
-                      data={enhancedData.brandDistribution}
+                  <Grid size={{ xs: 12, md: 6, lg: 4 }}></
+                    <BrandDistributionChart data={enhancedData.brandDistribution}
                       title
                       loading={enhancedLoading}
                       compact={dashboardSettings.general.compactMode}
-                    />
-                  </Grid>
+                    /></BrandDistributionChart>
                 )}
 
                 {/* System Status Widget */}
-                <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-                  <ProfessionalStatusWidget
-                    title
+                <Grid size={{ xs: 12, md: 6, lg: 4 }}></
+                  <ProfessionalStatusWidget title
                     loading={enhancedLoading}
                     items
                       { label: 'Database Connection', status: 'success', description: 'All systems operational', badge: 'Online' },
@@ -958,55 +898,46 @@ const Dashboard = () => {
                       { label: 'Cache System', status: 'warning', description: 'Memory usage: 78%', badge: 'Monitor' },
                       { label: 'Background Jobs', status: 'success', description: '12 jobs completed', badge: 'Active' }
                     ]}
-                  />
-                </Grid>
+                  /></ProfessionalStatusWidget>
 
                 {/* Product Attributes */}
                 {dashboardSettings.charts.productAttributes && (
-                  <Grid size={{ xs: 12, md: 6, lg: 4 }}>
-                    <ProductAttributesChart
-                      data={enhancedData.productAttributes}
+                  <Grid size={{ xs: 12, md: 6, lg: 4 }}></
+                    <ProductAttributesChart data={enhancedData.productAttributes}
                       title
                       loading={enhancedLoading}
                       compact={dashboardSettings.general.compactMode}
-                    />
-                  </Grid>
+                    /></ProductAttributesChart>
                 )}
 
                 {/* Category Tree */}
                 {dashboardSettings.charts.categoryTree && (
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    <CategoryTreeChart
-                      data={enhancedData.categoryDistribution}
+                  <Grid size={{ xs: 12, md: 6 }}></
+                    <CategoryTreeChart data={enhancedData.categoryDistribution}
                       title
                       loading={enhancedLoading}
                       compact={dashboardSettings.general.compactMode}
-                    />
-                  </Grid>
+                    /></CategoryTreeChart>
                 )}
 
                 {/* Sales Performance */}
                 {dashboardSettings.charts.salesPerformance && (
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    <SalesPerformanceChart
-                      data={enhancedData.salesPerformance}
+                  <Grid size={{ xs: 12, md: 6 }}></
+                    <SalesPerformanceChart data={enhancedData.salesPerformance}
                       title
                       loading={enhancedLoading}
                       compact={dashboardSettings.general.compactMode}
-                    />
-                  </Grid>
+                    /></SalesPerformanceChart>
                 )}
 
                 {/* Inventory Status */}
                 {dashboardSettings.charts.inventoryStatus && (
-                  <Grid size={{ xs: 12 }}>
-                    <InventoryStatusChart
-                      data={enhancedData.inventoryStatus}
+                  <Grid size={{ xs: 12 }}></
+                    <InventoryStatusChart data={enhancedData.inventoryStatus}
                       title
                       loading={enhancedLoading}
                       compact={dashboardSettings.general.compactMode}
-                    />
-                  </Grid>
+                    /></InventoryStatusChart>
                 )}
               </Grid>
             </Box>
@@ -1021,8 +952,8 @@ const Dashboard = () => {
           borderTop: 1,
           borderColor: 'divider',
           textAlign: 'center'
-        }}>
-          <Typography variant="body2" color="text.secondary">
+        }}></
+          <Typography variant="outlined" color="text.secondary">
             🚀 <strong>Techno-ETL Dashboard</strong> - Professional e-commerce management system
           </Typography>
           <Typography variant="caption" color="text.secondary" display="block" sx={{ display: "flex", mt: 0.5 }}>
@@ -1031,8 +962,7 @@ const Dashboard = () => {
         </Box>
 
         {/* Dashboard Settings Dialog */}
-        <DashboardSettings
-          open={settingsDialogOpen}
+        <DashboardSettings open={settingsDialogOpen}
           onClose={() => setSettingsDialogOpen(false)}
           settings={dashboardSettings}
           onSettingsChange={handleSettingsChange}
@@ -1040,8 +970,7 @@ const Dashboard = () => {
         />
 
         {/* Price Sync Dialog */}
-        <PriceSyncDialog
-          open={priceSyncDialogOpen}
+        <PriceSyncDialog open={priceSyncDialogOpen}
           onClose={() => setPriceSyncDialogOpen(false)}
           priceData={priceData}
         />

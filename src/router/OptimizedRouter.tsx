@@ -20,19 +20,16 @@ import { usePerformanceMonitor, optimizeMemory } from '../utils/performanceOptim
 
 // Loading component
 const LoadingFallback: React.FC<{ routeName?: string }> = React.memo(({ routeName = 'page' }) => (
-  <Box
-    sx={{
-      display: "flex",
+  <Box sx={{
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
       height: '100vh',
       gap: 2,
-    }}
-  >
+    }}></
     <CircularProgress size={40} />
-    <Typography variant="body2" color="text.secondary">
+    <Typography variant="outlined" color="text.secondary">
       Loading {routeName}...
     </Typography>
   </Box>
@@ -46,22 +43,14 @@ class RouteErrorBoundary extends React.Component<
   constructor(props: { children: React.ReactNode }) {
     super(props);
     this.state = { hasError: false };
-  }
-
   static getDerivedStateFromError(error: Error) {
     return { hasError: true, error };
-  }
-
   override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Route error:', error, errorInfo);
-  }
-
   override render() {
     if (this.state.hasError) {
       return (
-        <Box
-          sx={{
-            display: "flex",
+        <Box sx={{
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
@@ -69,32 +58,24 @@ class RouteErrorBoundary extends React.Component<
             height: '100vh',
             p: 3,
             textAlign: 'center',
-          }}
-        >
+          }}></
           <Alert severity="error" sx={{ display: "flex", maxWidth: 600 }}>
             <Typography variant="h6" gutterBottom>
               Something went wrong
             </Typography>
-            <Typography variant="body2">
+            <Typography variant="outlined">
               Please refresh the page or try again later.
             </Typography>
           </Alert>
         </Box>
       );
-    }
-
     return this.props.children;
-  }
-}
-
 // Route guard component
 interface RouteGuardProps {
   children: React.ReactNode;
   requireAuth?: boolean;
   requireRoles?: string[];
   redirectTo?: string;
-}
-
 const RouteGuard: React.FC<RouteGuardProps> = ({
   children,
   requireAuth,
@@ -114,8 +95,6 @@ const RouteGuard: React.FC<RouteGuardProps> = ({
       localStorage.setItem('intendedPath', intendedPath);
       navigate(redirectTo, { replace: true });
       return;
-    }
-
     if (requireRoles && requireRoles.length > 0 && currentUser) {
       // Fix: Use 'role' instead of 'roles' based on the User type definition
       const userRoles = currentUser.role ? [currentUser.role] : [];
@@ -124,18 +103,12 @@ const RouteGuard: React.FC<RouteGuardProps> = ({
       if (!hasRequiredRole) {
         navigate('/unauthorized', { replace: true });
         return;
-      }
-    }
   }, [currentUser, loading, requireAuth, requireRoles, navigate, location, redirectTo]);
 
   if (loading) {
     return <LoadingFallback routeName="Authentication" />;
-  }
-
   if (requireAuth && !currentUser) {
     return null; // Navigation will happen in useEffect
-  }
-
   return <>{children}</>;
 };
 
@@ -185,8 +158,6 @@ interface RouteDefinition {
   requireRoles?: string[];
   exact?: boolean;
   title: string;
-}
-
 const ROUTES: RouteDefinition[] = [
   // Public routes
   { path: '/login', component: Login, requireAuth: false, title: 'Login' },
@@ -213,8 +184,6 @@ const ROUTES: RouteDefinition[] = [
 // Add development routes
 if(GridTestPage && process.env.NODE_ENV === 'development') {
   ROUTES.push({ path: 'grid-test', component: GridTestPage, title: 'Grid Test' });
-}
-
 // Post-login redirect handler
 const PostLoginHandler: React.FC = () => {
   const { currentUser } = useAuth();
@@ -231,51 +200,43 @@ const PostLoginHandler: React.FC = () => {
     // Only redirect if we're on login page
     if(location.pathname === '/login') {
       navigate(intendedPath, { replace: true });
-    }
   }, [currentUser, navigate, location]);
 
   return null;
 };
 
 const ProtectedRoutes = () => (
-  <RouteGuard requireAuth={true}>
+  <RouteGuard requireAuth={true}></
     <Suspense fallback={<LoadingFallback routeName="Layout" />}>
-      <Layout>
+      <Layout></
         <Routes>
           {ROUTES.filter(route => route.requireAuth !== false).map((route) => {
             const RouteComponent = route.component;
             return (
-              <Route
-                key={route.path}
+              <Route key={route.path}
                 path={route.path}
                 element={
-                  <RouteGuard requireRoles={route.requireRoles}>
+                  <RouteGuard requireRoles={route.requireRoles}></
                     <Suspense fallback={<LoadingFallback routeName={route.title} />}>
-                      <RouteComponent />
-                    </Suspense>
+                      <RouteComponent /></RouteComponent>
                   </RouteGuard>
-                }
               />
             );
           })}
           
           {/* Special routes */}
-          <Route 
-            path="unauthorized" 
+          <Route path="unauthorized" 
             element={
-              <Alert severity="warning">
+              <Alert severity="warning"></
                 <Typography variant="h6">Access Denied</Typography>
                 <Typography>You do not have permission to access this page.</Typography>
               </Alert>
-            } 
           />
           <Route
             path="*"
             element={
               <Suspense fallback={<LoadingFallback routeName="Page" />}>
-                <NotFoundPage />
-              </Suspense>
-            }
+                <NotFoundPage /></NotFoundPage>
           />
         </Routes>
       </Layout>
@@ -293,13 +254,11 @@ const OptimizedRouter: React.FC = () => {
       if (route.path.includes('*')) {
         const basePath = route.path.replace('/*', '');
         return location.pathname.startsWith(basePath);
-      }
       return route.path ===location.pathname || (route.path === '/' && location.pathname === '/');
     });
 
     if(currentRoute) {
       document.title = `${currentRoute.title} | TECHNO-ETL`;
-    }
   }, [location]);
 
   // Memoized route elements for performance
@@ -308,16 +267,13 @@ const OptimizedRouter: React.FC = () => {
     ROUTES.filter((route: any) => route.requireAuth !== false).map((route: any) => {
       const RouteComponent = route.component;
       return (
-        <Route
-          key={route.path}
+        <Route key={route.path}
           path={route.path}
           element={
-            <RouteGuard requireRoles={route.requireRoles}>
+            <RouteGuard requireRoles={route.requireRoles}></
               <Suspense fallback={<LoadingFallback routeName={route.title} />}>
-                <RouteComponent />
-              </Suspense>
+                <RouteComponent /></RouteComponent>
             </RouteGuard>
-          }
         />
       );
     }), []);
@@ -331,23 +287,20 @@ const OptimizedRouter: React.FC = () => {
           path={route.path}
           element={
             <Suspense fallback={<LoadingFallback routeName={route.title} />}>
-              <RouteComponent />
-            </Suspense>
-          }
+              <RouteComponent /></RouteComponent>
         />
       );
     }), []);
   */
 
   return (
-    <RouteErrorBoundary>
+    <RouteErrorBoundary></
       <PostLoginHandler />
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={
           <Suspense fallback={<LoadingFallback routeName="Login" />}>
-            <Login />
-          </Suspense>
+            <Login /></Login>
         } />
         
         {/* Root redirect */}
@@ -355,47 +308,39 @@ const OptimizedRouter: React.FC = () => {
         
         {/* Protected routes wrapped in Layout */}
         <Route path="/" element={
-          <RouteGuard requireAuth={true}>
+          <RouteGuard requireAuth={true}></
             <Suspense fallback={<LoadingFallback routeName="Layout" />}>
-              <Layout />
-            </Suspense>
+              <Layout /></Layout>
           </RouteGuard>
         }>
           {/* Render protected routes directly */}
           {ROUTES.filter(route => route.requireAuth !== false).map((route) => {
             const RouteComponent = route.component;
             return (
-              <Route
-                key={route.path}
+              <Route key={route.path}
                 path={route.path}
                 element={
-                  <RouteGuard requireRoles={route.requireRoles}>
+                  <RouteGuard requireRoles={route.requireRoles}></
                     <Suspense fallback={<LoadingFallback routeName={route.title} />}>
-                      <RouteComponent />
-                    </Suspense>
+                      <RouteComponent /></RouteComponent>
                   </RouteGuard>
-                }
               />
             );
           })}
           
           {/* Special routes */}
-          <Route 
-            path="unauthorized" 
+          <Route path="unauthorized" 
             element={
-              <Alert severity="warning">
+              <Alert severity="warning"></
                 <Typography variant="h6">Access Denied</Typography>
                 <Typography>You do not have permission to access this page.</Typography>
               </Alert>
-            } 
           />
           <Route
             path="*"
             element={
               <Suspense fallback={<LoadingFallback routeName="Page" />}>
-                <NotFoundPage />
-              </Suspense>
-            }
+                <NotFoundPage /></NotFoundPage>
           />
         </Route>
 

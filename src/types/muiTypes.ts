@@ -24,8 +24,6 @@ export interface CardProps extends Omit<MuiCardProps, 'component'> {
   sx?: SxProps<Theme>;
   elevation?: number;
   children?: ReactNode;
-}
-
 /**
  * Extended Button component props that include proper MUI typing
  */
@@ -33,8 +31,6 @@ export interface ButtonProps extends MuiButtonProps {
   loading?: boolean;
   icon?: ElementType;
   iconPosition?: 'start' | 'end';
-}
-
 /**
  * Extended TextField component props that include proper MUI typing
  */
@@ -42,8 +38,6 @@ export interface TextFieldProps extends MuiTextFieldProps {
   helperText?: ReactNode;
   error?: boolean;
   errorMessage?: string;
-}
-
 /**
  * Extended Dialog/Modal props
  */
@@ -60,8 +54,6 @@ export interface DialogProps {
   sx?: SxProps<Theme>;
   disableBackdropClick?: boolean;
   disableEscapeKeyDown?: boolean;
-}
-
 /**
  * Common styling props for MUI components
  */
@@ -69,8 +61,6 @@ export interface MuiStylingProps {
   sx?: SxProps<Theme>;
   className?: string;
   style?: React.CSSProperties;
-}
-
 /**
  * Tab panel props
  */
@@ -79,8 +69,6 @@ export interface TabPanelProps {
   index: number;
   value: number;
   sx?: SxProps<Theme>;
-}
-
 /**
  * DataGrid related props
  */
@@ -103,5 +91,4 @@ export interface DataGridProps {
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (pageSize: number) => void;
   onSelectionModelChange?: (selection: any[]) => void;
-  sx?: SxProps<Theme>;
-}
+  sx?: SxProps<Theme>;

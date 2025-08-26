@@ -120,9 +120,6 @@ const resources = {
           sync: 'Sync Data',
           refresh: 'Refresh',
           settings: 'Settings'
-        }
-      }
-    }
   },
   fr: {
     translation: { ...frLocale,
@@ -181,9 +178,6 @@ const resources = {
           selectAll: 'Tout sélectionner',
           deselectAll: 'Tout désélectionner',
           selectedCount: '{{count}} sélectionné(s)'
-        }
-      }
-    }
   },
   ar: {
     translation: { ...arLocale,
@@ -242,10 +236,6 @@ const resources = {
           selectAll: 'تحديد الكل',
           deselectAll: 'إلغاء تحديد الكل',
           selectedCount: '{{count}} محدد'
-        }
-      }
-    }
-  }
 };
 
 // Language detection options
@@ -285,7 +275,6 @@ i18n
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json',
       addPath: '/locales/add/{{lng}}/{{ns}}'
-    }
   });
 
 // Helper functions

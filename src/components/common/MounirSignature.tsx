@@ -77,13 +77,12 @@ const MounirSignature = ({ type = 'signature', showText = true, showRole = true 
       src: '/src/assets/images/mounir-banner.svg',
       alt: 'Mounir Professional Banner with Code Elements',
       name: 'Mounir A.',
-    }
   };
 
   const currentSignature = signatureData[type] || signatureData.signature;
 
-  return Boolean((
-    <SignatureContainer theme={theme}>
+  return (
+    <SignatureContainer theme={theme}></
       <SignatureImage 
         src={currentSignature.src} 
         alt={currentSignature.alt}
@@ -101,7 +100,7 @@ const MounirSignature = ({ type = 'signature', showText = true, showRole = true 
         </RoleText>
       )}
     </SignatureContainer>
-  )))));
+  );
 };
 
 export default MounirSignature;

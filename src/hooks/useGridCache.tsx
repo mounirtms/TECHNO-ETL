@@ -7,8 +7,6 @@ import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 interface CacheMetadata {
   version?: number;
   [key: string]: any;
-}
-
 /**
  * Grid cache entry interface
  */
@@ -17,16 +15,12 @@ interface CacheEntry<T> {
   metadata: CacheMetadata;
   timestamp: number;
   version: number;
-}
-
 /**
  * Cache stats interface
  */
 interface CacheStats {
   size: number;
   memoryUsage: number;
-}
-
 /**
  * Grid cache hook result interface
  */
@@ -38,8 +32,6 @@ interface GridCacheResult<T> {
   clearCache: (specificKey?: CacheMetadata | null) => void;
   invalidateCache: (pattern?: string | null) => void;
   cacheStats: CacheStats;
-}
-
 /**
  * Advanced Grid Caching Hook with Enhanced Performance
  * Provides intelligent caching with memory management, cache invalidation, and compression
@@ -87,17 +79,11 @@ export const useGridCache = <T extends any>(gridName: string, enableCache: boole
         if(totalMemory + memoryUsage < MEMORY_THRESHOLD && keysToKeep.length < MAX_CACHE_SIZE) {
           keysToKeep.push(key);
           totalMemory += memoryUsage;
-        }
-      }
-    }
-    
     // Remove entries not in keysToKeep
     for (const key of cacheRef.current.keys()) {
       if (!keysToKeep.includes(key)) {
         cacheRef.current.delete(key);
         lastAccessRef.current.delete(key);
-      }
-    }
   }, [estimateMemoryUsage, CACHE_DURATION, MAX_CACHE_SIZE, MEMORY_THRESHOLD]);
 
   const setCacheData = useCallback((data: T, metadata: CacheMetadata = {}) => {
@@ -120,7 +106,6 @@ export const useGridCache = <T extends any>(gridName: string, enableCache: boole
     // Cleanup old cache entries
     if(cacheRef.current.size > MAX_CACHE_SIZE) {
       cleanupOldCache();
-    }
   }, [enableCache, gridName, cleanupOldCache, MAX_CACHE_SIZE]);
 
   const getCacheData = useCallback((metadata: CacheMetadata = {}): T | null => {
@@ -138,9 +123,6 @@ export const useGridCache = <T extends any>(gridName: string, enableCache: boole
         // Cache expired
         cacheRef.current.delete(cacheKey);
         lastAccessRef.current.delete(cacheKey);
-      }
-    }
-    
     return null;
   }, [enableCache, gridName, CACHE_DURATION]);
 
@@ -155,9 +137,6 @@ export const useGridCache = <T extends any>(gridName: string, enableCache: boole
         if (key.startsWith(gridName)) {
           cacheRef.current.delete(key);
           lastAccessRef.current.delete(key);
-        }
-      }
-    }
     setCacheDataState(null);
     setCacheMetadata({});
   }, [gridName]);
@@ -168,11 +147,8 @@ export const useGridCache = <T extends any>(gridName: string, enableCache: boole
         if (key.includes(pattern)) {
           cacheRef.current.delete(key);
           lastAccessRef.current.delete(key);
-        }
-      }
     } else {
       clearCache();
-    }
   }, [clearCache]);
 
   // Periodic cleanup
@@ -191,8 +167,7 @@ export const useGridCache = <T extends any>(gridName: string, enableCache: boole
     cacheStats: {
       size: cacheRef.current.size,
       memoryUsage: Array.from(cacheRef.current.values())
-        .reduce((total: any: any entry: any: any: any: any) => total + estimateMemoryUsage(entry.data), 0)
-    }
+        .reduce((total: any entry: any) => total + estimateMemoryUsage(entry.data), 0)
   };
 };
 

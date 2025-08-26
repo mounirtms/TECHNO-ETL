@@ -37,12 +37,9 @@ const initializeModulesInFirebase = async () => {
 
     if (!modulesSnapshot.exists()) {
       await set(modulesRef, modules);
-    }
-
     console.log('Modules initialized.')
   } catch (error) {
     console.error('Error initializing modules in Firebase:', error);
-  }
 };
 
 export default initializeModulesInFirebase;

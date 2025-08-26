@@ -71,7 +71,6 @@ export const saveUnifiedSettings = (settings: any) => {
   } catch(error: any) {
     console.error('Failed to save unified settings:', error);
     return false;
-  }
 };
 
 // Get user-specific settings
@@ -104,7 +103,6 @@ export const saveUserSettings = (userId: string, settings: any) => {
   } catch(error: any) {
     console.error('Failed to save user settings:', error);
     return false;
-  }
 };
 
 // Reset settings to defaults
@@ -116,7 +114,6 @@ export const resetToSystemDefaults = () => {
   } catch(error: any) {
     console.error('Failed to reset settings:', error);
     return getDefaultSettings();
-  }
 };
 
 // Apply theme settings immediately
@@ -132,37 +129,30 @@ export const applyThemeSettings = (settings: any) => {
     if(theme === 'system') {
       actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
-    
     if(theme) {
       root.setAttribute('data-theme', actualTheme);
     }
-    
     if(fontSize) {
       root.setAttribute('data-font-size', fontSize);
     }
-    
     if(density) {
       root.setAttribute('data-density', density);
     }
-    
     if(colorPreset) {
       root.setAttribute('data-color-preset', colorPreset);
     }
-    
     // Apply animation preferences
     if(animations === false) {
       root.style.setProperty('--animation-duration', '0s');
     } else {
       root.style.removeProperty('--animation-duration');
     }
-    
     // Apply high contrast
     if(highContrast) {
       root.classList.add('high-contrast');
     } else {
       root.classList.remove('high-contrast');
     }
-    
     // Dispatch theme change event
     window.dispatchEvent(new CustomEvent('themeChanged', {
       detail: { theme: actualTheme, fontSize, density, animations, highContrast, colorPreset }
@@ -180,12 +170,10 @@ export const applyAllSettings = (settings: any) => {
     if(settings.preferences) {
       applyThemeSettings(settings.preferences);
     }
-    
     // Apply language settings
     if(settings.preferences?.language) {
       applyLanguageSettings(settings.preferences.language);
     }
-    
     // Store complete settings
     saveUnifiedSettings(settings);
     
@@ -204,7 +192,6 @@ export const syncAllSettings = (settings: any = {}, userId?: string) => {
     if(userId) {
       saveUserSettings(userId, settings);
     }
-    
     // Apply settings immediately
     applyAllSettings(settings);
     
@@ -237,7 +224,6 @@ export const getMergedSettings = (userId?: string) => {
   } catch(error: any) {
     console.error('Failed to get merged settings:', error);
     return getDefaultSettings();
-  }
 };
 
 // Get system preferences
@@ -254,7 +240,6 @@ export const getSystemPreferences = () => {
   } catch(error) {
     console.warn('Failed to detect browser language:', error);
   }
-
   return {
     language: browserLanguage,
     prefersDarkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,

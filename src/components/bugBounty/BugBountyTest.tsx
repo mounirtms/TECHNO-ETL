@@ -24,8 +24,6 @@ interface TestResult {
   success: boolean;
   message: string;
   details: any;
-}
-
 const BugBountyTest = () => {
   const [testing, setTesting] = useState(false);
   const [result, setResult] = useState<TestResult | null>(null);
@@ -66,7 +64,6 @@ const BugBountyTest = () => {
             bugId: submitResult.bugId,
             bugsRetrieved: getBugsResult.success,
             statsRetrieved: statsResult.success
-          }
         });
       } else {
         setResult({
@@ -74,7 +71,6 @@ const BugBountyTest = () => {
           message: 'Test failed: ' + submitResult.error,
           details: submitResult
         });
-      }
     } catch(error: any) {
       setResult({
         success: false,
@@ -83,23 +79,22 @@ const BugBountyTest = () => {
       });
     } finally {
       setTesting(false);
-    }
   };
 
-  return Boolean((
-    <Card sx={{ display: "flex", maxWidth: 600, mx: 'auto', mt: 4 }}>
+  return (
+    <Card sx={{ maxWidth: 600, mx: 'auto', mt: 4 }}></
       <CardContent>
-        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}></
           <TestIcon color="primary" />
           <Typography variant="h6">Bug Bounty System Test</Typography>
         </Box>
         
-        <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 3 }}>
+        <Typography variant="outlined" color="text.secondary" sx={{ mb: 3 }}>
           This test verifies Firebase connectivity and bug bounty functionality.
         </Typography>
 
         <Button
-          variant="body2"
+          variant="contained"
           onClick={runTest}
           disabled={testing}
           startIcon={testing ? <CircularProgress size={20} /> : <TestIcon />}
@@ -109,15 +104,13 @@ const BugBountyTest = () => {
         </Button>
 
         {result && (
-          <Alert 
-            severity={result.success ? 'success' : 'error'} 
-            sx={{ display: "flex", mt: 2 }}
-          >
-            <Typography variant="body2">
+          <Alert severity={result.success ? 'success' : 'error'} 
+            sx={{ mt: 2 }}></
+            <Typography variant="outlined">
               <strong>{result.message}</strong>
             </Typography>
             {result.details && (
-              <Box sx={{ display: "flex", mt: 1 }}>
+              <Box sx={{ mt: 1 }}></
                 <Typography variant="caption" component="pre">
                   {JSON.stringify(result.details, null, 2)}
                 </Typography>
@@ -127,7 +120,7 @@ const BugBountyTest = () => {
         )}
       </CardContent>
     </Card>
-  )))));
+  );
 };
 
 export default BugBountyTest;

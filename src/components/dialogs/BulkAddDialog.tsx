@@ -29,9 +29,7 @@ const BulkAddDialog: React.FC<any> = ({ open, onClose, onUpload }) => {
             if(file.type !== 'text/csv') {
                 toast.error('Only .csv files are accepted.');
                 return;
-            }
             setFiles([file]);
-        }
     }, []);
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -48,7 +46,6 @@ const BulkAddDialog: React.FC<any> = ({ open, onClose, onUpload }) => {
             onClose();
         } else {
             toast.error('Please select a file to upload.');
-        }
     };
     
     const handleRemoveFile = () => {
@@ -56,11 +53,10 @@ const BulkAddDialog: React.FC<any> = ({ open, onClose, onUpload }) => {
     };
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth></
             <DialogTitle>Bulk Add Products from CSV</DialogTitle>
-            <DialogContent>
-                <Box
-                    { ...getRootProps()}
+            <DialogContent></
+                <Box { ...getRootProps()}
                     sx={{
                         border: `2px dashed ${isDragActive ? 'primary.main' : 'grey.500'}`,
                         borderRadius: 2,
@@ -69,35 +65,28 @@ const BulkAddDialog: React.FC<any> = ({ open, onClose, onUpload }) => {
                         cursor: 'pointer',
                         mt: 2,
                         backgroundColor: isDragActive ? 'action.hover' : 'transparent'
-                    }}
-                >
+                    }}>
                     <input { ...getInputProps()} />
-                    <CloudUploadIcon sx={{ display: "flex", fontSize: 48, color: 'grey.500' } as any} />
+                    <CloudUploadIcon sx={{ display: "flex", fontSize: 48, color: 'grey.500' } as any} /></
                     <Typography>
                         {isDragActive ? 'Drop the file here ...' : 'Drag \'n\' drop a CSV file here, or click to select a file'}
                     </Typography>
                 </Box>
                 {files.length > 0 && (
-                    <List>
-                        <ListItem
-                            secondaryAction
-                                <IconButton edge="end" aria-label="delete" onClick={handleRemoveFile}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            }
+                    <List></
+                        <ListItem secondaryAction
+                                <IconButton edge="end" aria-label="delete" onClick={handleRemoveFile}></
+                                    <DeleteIcon /></DeleteIcon>
                         >
-                            <ListItemIcon>
-                                <InsertDriveFileIcon />
-                            </ListItemIcon>
-                            <ListItemText
-                                primary={files[0].name}
+                            <ListItemIcon></
+                                <InsertDriveFileIcon /></InsertDriveFileIcon>
+                            <ListItemText primary={files[0].name}
                                 secondary={`${(files[0].size / 1024).toFixed(2)} KB`}
-                            />
-                        </ListItem>
+                            /></ListItemText>
                     </List>
                 )}
             </DialogContent>
-            <DialogActions>
+            <DialogActions></
                 <Button onClick={onClose}>Cancel</Button>
                 <Button onClick={handleUpload} variant="contained" disabled={files.length ===0}>
                     Upload

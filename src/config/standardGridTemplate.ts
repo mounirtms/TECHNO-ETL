@@ -75,7 +75,6 @@ export const getStandardToolbarTemplate = (gridType = 'default', customActions =
     dashboard: { ...baseConfig,
       showAdd: false,
       showSync: false
-    }
   };
   
   return { ...baseConfig,
@@ -122,9 +121,7 @@ export const getStandardColumnTemplates = () => {
             wordWrap: 'break-word',
             lineHeight: '1.2',
             padding: '4px 0'
-          }
         }, params.value);
-      }
     },
     
     // Status column
@@ -160,8 +157,6 @@ export const getStandardColumnTemplates = () => {
       valueFormatter: (params) => {
         if (!params.value) return '-';
         return new Date(params.value).toLocaleDateString();
-      }
-    }
   };
 };
 
@@ -171,24 +166,14 @@ export const validateGridProps = (props, gridName) => {
   
   if(!gridName) {
     errors.push('gridName is required');
-  }
-  
   if (!Array.isArray(props.columns)) {
     errors.push('columns must be an array');
-  }
-  
   if (!Array.isArray(props.data)) {
     errors.push('data must be an array');
-  }
-  
   if(typeof props.getRowId !== 'function') {
     errors.push('getRowId must be a function');
-  }
-  
   if(errors.length > 0) {
     console.error(`Grid ${gridName} validation errors:`, errors);
     return false;
-  }
-  
   return true;
 };

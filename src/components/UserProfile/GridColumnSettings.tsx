@@ -87,7 +87,6 @@ const GridColumnSettings: React.FC<any> = ({ user, onSettingsChange }) => {
         { field: 'paymentMethod', headerName: 'Payment', width: 120, visible: false, pinned: false },
         { field: 'shippingMethod', headerName: 'Shipping', width: 120, visible: false, pinned: false }
       ]
-    }
   };
 
   const [columnSettings, setColumnSettings] = useState({});
@@ -118,40 +117,34 @@ const GridColumnSettings: React.FC<any> = ({ user, onSettingsChange }) => {
         };
       });
       setColumnSettings(defaultSettings);
-    }
-
     if(savedFilterPresets) {
       setFilterPresets(JSON.parse(savedFilterPresets));
-    }
   }, [user]);
 
   const handleColumnVisibilityChange = (gridType, columnField, visible) => {
     setColumnSettings(prev => ({ ...prev,
       [gridType]: { ...prev[gridType],
-        columns: prev[gridType]?.columns?.map((col: any: any: any: any) => 
+        columns: prev[gridType]?.columns?.map((col: any) => 
           col.field = ==columnField ? { ...col, visible } : col
         ) || []
-      }
     }));
   };
 
   const handleColumnWidthChange = (gridType, columnField, width) => {
     setColumnSettings(prev => ({ ...prev,
       [gridType]: { ...prev[gridType],
-        columns: prev[gridType]?.columns?.map((col: any: any: any: any) => 
+        columns: prev[gridType]?.columns?.map((col: any) => 
           col.field = ==columnField ? { ...col, width } : col
         ) || []
-      }
     }));
   };
 
   const handleColumnPinChange = (gridType, columnField, pinned) => {
     setColumnSettings(prev => ({ ...prev,
       [gridType]: { ...prev[gridType],
-        columns: prev[gridType]?.columns?.map((col: any: any: any: any) => 
+        columns: prev[gridType]?.columns?.map((col: any) => 
           col.field = ==columnField ? { ...col, pinned } : col
         ) || []
-      }
     }));
   };
 
@@ -165,7 +158,6 @@ const GridColumnSettings: React.FC<any> = ({ user, onSettingsChange }) => {
     setColumnSettings(prev => ({ ...prev,
       [gridType]: { ...prev[gridType],
         columns
-      }
     }));
   };
 
@@ -173,7 +165,6 @@ const GridColumnSettings: React.FC<any> = ({ user, onSettingsChange }) => {
     setColumnSettings(prev => ({ ...prev,
       [gridType]: { ...prev[gridType],
         density
-      }
     }));
   };
 
@@ -184,13 +175,10 @@ const GridColumnSettings: React.FC<any> = ({ user, onSettingsChange }) => {
       
       if(onSettingsChange) {
         onSettingsChange({ columnSettings, filterPresets });
-      }
-      
       setShowSuccess(true);
     } catch(error: any) {
       console.error('Failed to save column settings:', error);
       setShowError(true);
-    }
   };
 
   const handleResetToDefaults = (gridType) => {
@@ -200,7 +188,6 @@ const GridColumnSettings: React.FC<any> = ({ user, onSettingsChange }) => {
         density: 'standard',
         grouping: false,
         autoHeight: false
-      }
     }));
   };
 
@@ -209,7 +196,7 @@ const GridColumnSettings: React.FC<any> = ({ user, onSettingsChange }) => {
 
   return(<Box sx={{ display: "flex", p: 3 } as any}>
       {/* Header */}
-      <Box sx={{ display: "flex", mb: 4 } as any}>
+      <Box sx={{ display: "flex", mb: 4 } as any}></
         <Typography variant="h5" sx={{ display: "flex", mb: 1, fontWeight: 600 } as any}>
           Grid Columns & Display Settings
         </Typography>
@@ -219,17 +206,16 @@ const GridColumnSettings: React.FC<any> = ({ user, onSettingsChange }) => {
       </Box>
 
       {/* Grid Type Selector */}
-      <Card sx={{ display: "flex", mb: 3 } as any}>
+      <Card sx={{ display: "flex", mb: 3 } as any}></
         <CardContent>
-          <FormControl fullWidth sx={{ display: "flex", mb: 2 } as any}>
+          <FormControl fullWidth sx={{ display: "flex", mb: 2 } as any}></
             <InputLabel>Select Grid Type</InputLabel>
-            <Select
-              value={selectedGridType}
+            <Select value={selectedGridType}
               onChange={(e) => setSelectedGridType(e.target.value)}
               label
-              {Object.entries(gridTypes).map(([key: any config]: any: any: any: any) => (
-                <MenuItem key={key} value={key}>
-                  <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
+              {Object.entries(gridTypes).map(([key, config]) => (
+                <MenuItem key={key} value={key}></
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}>
                     <GridView fontSize="small" />
                     {config.name}
                   </Box>
@@ -239,13 +225,12 @@ const GridColumnSettings: React.FC<any> = ({ user, onSettingsChange }) => {
           </FormControl>
 
           {/* Density Settings */}
-          <Box sx={{ display: "flex", mb: 3 } as any}>
+          <Box sx={{ display: "flex", mb: 3 } as any}></
             <Typography variant="subtitle2" sx={{ display: "flex", mb: 1, fontWeight: 600 } as any}>
               Grid Density
             </Typography>
-            <FormControl size="small" sx={{ display: "flex", minWidth: 150 } as any}>
-              <Select
-                value={currentDensity}
+            <FormControl size="small" sx={{ display: "flex", minWidth: 150 } as any}></
+              <Select value={currentDensity}
                 onChange={(e) => handleDensityChange(selectedGridType, e.target.value)}
               >
                 <MenuItem value="compact">Compact</MenuItem>
@@ -258,18 +243,16 @@ const GridColumnSettings: React.FC<any> = ({ user, onSettingsChange }) => {
       </Card>
 
       {/* Column Configuration */}
-      <Card>
-        <CardHeader
-          title
-            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
+      <Card></
+        <CardHeader title
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 } as any}></
               <ViewColumn />
               <Typography variant="h6">
                 {gridTypes[selectedGridType]?.name} Columns
               </Typography>
             </Box>
-          }
           action
-            <Box sx={{ display: "flex", display: 'flex', gap: 1 } as any}>
+            <Box sx={{ display: 'flex', gap: 1 } as any}></
               <Button
                 size="small"
                 startIcon={<RestoreFromTrash />}
@@ -285,37 +268,32 @@ const GridColumnSettings: React.FC<any> = ({ user, onSettingsChange }) => {
                 Reorder
               </Button>
             </Box>
-          }
         />
-        <CardContent>
+        <CardContent></
           <DragDropContext onDragEnd={(result) => handleColumnReorder(selectedGridType, result)}>
             <Droppable droppableId="columns">
               {(provided) => (
                 <List { ...provided.droppableProps} ref={provided.innerRef}>
-                  {currentColumns.map((column: any index: any: any: any: any) => (
+                  {currentColumns.map((column, index) => (
                     <Draggable key={column.field} draggableId={column.field} index={index}>
-                      {(provided, snapshot) => (<ListItem
-                          ref={provided.innerRef}
+                      {(provided, snapshot) => (<ListItem ref={provided.innerRef}
                           { ...provided.draggableProps}
                           sx={{
                             border: `1px solid ${theme.palette.divider}`,
                             borderRadius: 1,
                             mb: 1,
-                            backgroundColor: snapshot.isDragging 
-                              ? theme.palette.action.hover 
-                              : 'transparent'
-                          }}
-                        >
+                            backgroundColor: snapshot.isDragging ? theme.palette.action.hover : 'transparent',
+                            ...provided.draggableProps.style
+                          }}></
                           <Box { ...provided.dragHandleProps} sx={{ display: "flex", mr: 1 }}>
-                            <DragIndicator color="action" />
-                          </Box>
+                            <DragIndicator color="action" /></DragIndicator>
                           
                           <ListItemText
                             primary={column.headerName}
                             secondary={`Field: ${column.field}`}
-                          />
+                          /></
                           
-                          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2 } as any}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 } as any}>
                             {/* Width Control */}
                             <TextField
                               size="small"
@@ -328,7 +306,7 @@ const GridColumnSettings: React.FC<any> = ({ user, onSettingsChange }) => {
                             />
                             
                             {/* Pin Control */}
-                            <Tooltip title="Pin Column">
+                            <Tooltip title="Pin Column"></
                               <Checkbox
                                 checked={column.pinned}
                                 onChange
@@ -341,14 +319,12 @@ const GridColumnSettings: React.FC<any> = ({ user, onSettingsChange }) => {
                             </Tooltip>
                             
                             {/* Visibility Control */}
-                            <Tooltip title="Show/Hide Column">
-                              <IconButton
-                                onClick
+                            <Tooltip title="Show/Hide Column"></
+                              <IconButton onClick
                                   column.field, 
                                   !column.visible
                                 )}
-                                color={column.visible ? 'primary' : 'default'}
-                              >
+                                color={column.visible ? 'primary' : 'default'}>
                                 {column.visible ? <Visibility /> : <VisibilityOff />}
                               </IconButton>
                             </Tooltip>
@@ -367,16 +343,15 @@ const GridColumnSettings: React.FC<any> = ({ user, onSettingsChange }) => {
 
       {/* Action Buttons */}
       <Box sx={{ 
-        display: "flex", 
         display: 'flex', 
         gap: 2, 
         justifyContent: 'flex-end',
         pt: 3,
         borderTop: `1px solid ${theme.palette.divider}`,
         mt: 3
-      }}>
+      }}></
         <Button
-          variant="body2"
+          variant="outlined"
           startIcon={<Save />}
           onClick={handleSaveSettings}
         >
@@ -385,8 +360,7 @@ const GridColumnSettings: React.FC<any> = ({ user, onSettingsChange }) => {
       </Box>
 
       {/* Success/Error Notifications */}
-      <Snackbar
-        open={showSuccess}
+      <Snackbar open={showSuccess}
         autoHideDuration={3000}
         onClose={() => setShowSuccess(false)}
       >
@@ -395,8 +369,7 @@ const GridColumnSettings: React.FC<any> = ({ user, onSettingsChange }) => {
         </Alert>
       </Snackbar>
 
-      <Snackbar
-        open={showError}
+      <Snackbar open={showError}
         autoHideDuration={5000}
         onClose={() => setShowError(false)}
       >

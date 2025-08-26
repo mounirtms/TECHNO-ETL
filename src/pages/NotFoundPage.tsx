@@ -16,21 +16,19 @@ const NotFoundPage = () => {
   };
 
   return (
-    <Container maxWidth="md">
-      <Box
-        sx={{
+    <Container maxWidth="md"></
+      <Box sx={{
           alignItems: 'center',
           justifyContent: 'center',
           minHeight: '60vh',
           textAlign: 'center',
           gap: 3
-        }}
-      >
+        }}>
         <ErrorOutlineIcon 
           sx={{
             opacity: 0.6
           }} 
-        />
+        /></
         
         <Typography variant="h1" component="h1" sx={{ display: "flex", fontSize: '6rem', fontWeight: 'bold', color: 'text.secondary' }}>
           404
@@ -45,9 +43,9 @@ const NotFoundPage = () => {
           Please check the URL or navigate back to a safe location.
         </Typography>
         
-        <Box sx={{ display: "flex", display: 'flex', gap: 2, mt: 2 }}>
+        <Box sx={{ display: 'flex', gap: 2, mt: 2 }}></
           <Button
-            variant="body2"
+            variant="outlined"
             startIcon={<HomeIcon />}
             onClick={handleGoHome}
             size="small"

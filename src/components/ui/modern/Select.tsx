@@ -10,8 +10,6 @@ interface SelectContextType {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   disabled?: boolean;
-}
-
 const SelectContext = React.createContext<SelectContextType | null>(null);
 
 // Select Root
@@ -21,8 +19,6 @@ interface SelectProps {
   defaultValue?: string;
   disabled?: boolean;
   children: React.ReactNode;
-}
-
 export const Select: React.FC<SelectProps> = ({
   value,
   onValueChange,
@@ -40,7 +36,6 @@ export const Select: React.FC<SelectProps> = ({
       onValueChange?.(newValue);
     } else {
       setInternalValue(newValue);
-    }
     setOpen(false);
   };
 
@@ -77,15 +72,12 @@ const selectTriggerVariants = cva(
       variant: 'default',
       size: 'md',
     },
-  }
 );
 
 interface SelectTriggerProps 
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof selectTriggerVariants> {
   placeholder?: string;
-}
-
 export const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
   ({ className, variant, size, placeholder = 'Select...', ...props }, ref) => {
     const context = React.useContext(SelectContext);
@@ -93,7 +85,7 @@ export const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerPr
 
     const { value, open, onOpenChange, disabled } = context;
 
-    return Boolean((
+    return (
       <button
         ref={ref}
         type
@@ -111,8 +103,7 @@ export const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerPr
           )} 
         />
       </button>
-    )))));
-  }
+    );
 );
 
 SelectTrigger.displayName = 'SelectTrigger';
@@ -121,8 +112,6 @@ SelectTrigger.displayName = 'SelectTrigger';
 interface SelectContentProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   position?: 'item-aligned' | 'popper';
-}
-
 export const SelectContent: React.FC<SelectContentProps> = ({
   className,
   children,
@@ -139,13 +128,10 @@ export const SelectContent: React.FC<SelectContentProps> = ({
     const handleClickOutside = (event: MouseEvent) => {
       if (contentRef.current && !contentRef.current.contains(event.target as Node)) {
         onOpenChange(false);
-      }
     };
 
     if(open) {
       document.addEventListener('mousedown', handleClickOutside);
-    }
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -171,8 +157,6 @@ interface SelectItemProps extends React.HTMLAttributes<HTMLDivElement> {
   value: string;
   children: React.ReactNode;
   disabled?: boolean;
-}
-
 export const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
   ({ className, value, children, disabled = false, ...props }, ref) => {
     const context = React.useContext(SelectContext);
@@ -181,7 +165,7 @@ export const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
     const { value: selectedValue, onValueChange } = context;
     const isSelected = value ===selectedValue;
 
-    return Boolean((
+    return (
       <div
         ref={ref}
         className
@@ -197,8 +181,7 @@ export const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
         </span>
         {children}
       </div>
-    )))));
-  }
+    );
 );
 
 SelectItem.displayName = 'SelectItem';
@@ -206,8 +189,6 @@ SelectItem.displayName = 'SelectItem';
 // Select Value (for compatibility)
 interface SelectValueProps {
   placeholder?: string;
-}
-
 export const SelectValue: React.FC<SelectValueProps> = ({ placeholder }) => {
   const context = React.useContext(SelectContext);
   if (!context) throw new Error('SelectValue must be used within Select');

@@ -44,7 +44,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
  * ColumnCustomization - Advanced column management
  * Features: Show/hide, reorder, width adjustment, alignment, formatting
  */
-const ColumnCustomization: React.FC<{open onClose columns onColumnsChange columnSettings onColumnSettingsChange: any}> = ({ open, 
+const ColumnCustomization: React.FC<{open: boolean, onClose: () => void, columns: any[], onColumnsChange: (columns: any[]) => void, columnSettings: any, onColumnSettingsChange: (settings: any) => void}> = ({ open, 
   onClose, 
   columns, 
   onColumnsChange,
@@ -59,11 +59,10 @@ const ColumnCustomization: React.FC<{open onClose columns onColumnsChange column
   // ===== COLUMN OPERATIONS =====
   const handleColumnVisibilityToggle = useCallback((columnField) => {
     setLocalColumns(prev => 
-      prev.map((col: any: any: any: any) => 
+      prev.map((col: any) => 
         col.field = ==columnField 
           ? { ...col, hide: !col.hide }
           : col
-      )
     );
   }, []);
 
@@ -79,21 +78,19 @@ const ColumnCustomization: React.FC<{open onClose columns onColumnsChange column
 
   const handleColumnWidthChange = useCallback((columnField, width) => {
     setLocalColumns(prev =>
-      prev.map((col: any: any: any: any) =>
+      prev.map((col: any) =>
         col.field = ==columnField
           ? { ...col, width: width }
           : col
-      )
     );
   }, []);
 
   const handleColumnAlignmentChange = useCallback((columnField, align) => {
     setLocalColumns(prev =>
-      prev.map((col: any: any: any: any) =>
+      prev.map((col: any) =>
         col.field = ==columnField
           ? { ...col, align: align }
           : col
-      )
     );
   }, []);
 
@@ -101,7 +98,6 @@ const ColumnCustomization: React.FC<{open onClose columns onColumnsChange column
     setLocalSettings(prev => ({ ...prev,
       [columnField]: { ...prev[columnField],
         format: format
-      }
     }));
   }, []);
 
@@ -120,7 +116,7 @@ const ColumnCustomization: React.FC<{open onClose columns onColumnsChange column
 
   const handleReset = useCallback(() => {
     // Reset to default configuration
-    const defaultColumns = columns.map((col: any: any: any: any) => ({ ...col, hide: false }));
+    const defaultColumns = columns.map((col: any) => ({ ...col, hide: false }));
     setLocalColumns(defaultColumns);
     setLocalSettings({});
     
@@ -130,7 +126,7 @@ const ColumnCustomization: React.FC<{open onClose columns onColumnsChange column
 
   // ===== COMPUTED VALUES =====
   const visibleColumnsCount = useMemo(() => 
-    localColumns.filter((col: any: any: any: any) => !col.hide).length
+    localColumns.filter((col: any) => !col.hide).length
   , [localColumns]);
 
   const totalColumnsCount = localColumns.length;
@@ -138,27 +134,23 @@ const ColumnCustomization: React.FC<{open onClose columns onColumnsChange column
   // ===== RENDER COLUMN ITEM =====
   const renderColumnItem = (column, index) => (
     <Draggable key={column?.field} draggableId={column?.field} index={index}>
-      {(provided, snapshot) => (<ListItem
-          ref={provided.innerRef}
+      {(provided, snapshot) => (<ListItem ref={provided.innerRef}
           { ...provided.draggableProps}
           sx={{
             borderColor: 'primary.main',
             borderRadius: 1,
             mb: 0.5
-          }}
-        >
+          }}></
           <ListItemIcon { ...provided.dragHandleProps}>
-            <DragHandleIcon color="action" />
-          </ListItemIcon>
+            <DragHandleIcon color="action" /></DragHandleIcon>
           
-          <ListItemIcon>
-            <Checkbox
-              checked={!column.hide}
+          <ListItemIcon></
+            <Checkbox checked={!column.hide}
               onChange={(e) => () => handleColumnVisibilityToggle(column?.field)}
               color
             primary={column?.headerName || column?.field}
             secondary
-              <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}></
                 <Chip label={column?.field} size="small" variant="outlined" />
                 <Chip 
                   label={`Width: ${column?.width || 'Auto'}`} 
@@ -167,17 +159,14 @@ const ColumnCustomization: React.FC<{open onClose columns onColumnsChange column
                     size="small"
                 )}
               </Box>
-            }
           />
           
-          <ListItemSecondaryAction>
+          <ListItemSecondaryAction></
             <Tooltip title="Column Settings">
-              <IconButton
-                size="small"
+              <IconButton size="small"
                 onClick={() => setSelectedColumn(column)}
               >
-                <SettingsIcon />
-              </IconButton>
+                <SettingsIcon /></SettingsIcon>
             </Tooltip>
           </ListItemSecondaryAction>
         </ListItem>
@@ -191,38 +180,35 @@ const ColumnCustomization: React.FC<{open onClose columns onColumnsChange column
 
     const columnSetting = localSettings[selectedColumn?.field] || {};
 
-    return(<Paper sx={{ display: "flex", p: 2, mt: 2 }}>
+    return(<Paper sx={{ display: "flex", p: 2, mt: 2 }}></
         <Typography variant="h6" gutterBottom>
           Settings for: {selectedColumn?.headerName || selectedColumn?.field}
         </Typography>
         
-        <Box sx={{ display: "flex", display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {/* Width Setting */}
-          <Box>
-            <Typography variant="body2" gutterBottom>
+          <Box></
+            <Typography variant="outlined" gutterBottom>
               Column Width: {selectedColumn?.width || 150}px
             </Typography>
-            <Slider
-              value={selectedColumn?.width || 150}
+            <Slider value={selectedColumn?.width || 150}
               onChange={(e, value) => handleColumnWidthChange(selectedColumn?.field, value)}
               min={50}
               max={500}
               step={10}
               valueLabelDisplay
           {/* Alignment Setting */}
-          <Box>
-            <Typography variant="body2" gutterBottom>
+          <Box></
+            <Typography variant="outlined" gutterBottom>
               Text Alignment
             </Typography>
-            <Box sx={{ display: "flex", display: 'flex', gap: 1 }}>
-              {['left', 'center', 'right'].map((align: any: any: any: any) => (
-                <Button
-                  key={align}
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              {['left', 'center', 'right'].map((align: any) => (
+                <Button key={align}
                   variant={selectedColumn?.align ===align ? 'contained' : 'outlined'}
                   size="small"
                   onClick={() => handleColumnAlignmentChange(selectedColumn?.field, align)}
                   startIcon
-                  }
                 >
                   {align}
                 </Button>
@@ -231,10 +217,9 @@ const ColumnCustomization: React.FC<{open onClose columns onColumnsChange column
           </Box>
 
           {/* Format Setting */}
-          {selectedColumn?.type && (<FormControl fullWidth size="small">
+          {selectedColumn?.type && (<FormControl fullWidth size="small"></
               <InputLabel>Display Format</InputLabel>
-              <Select
-                value={columnSetting.format || 'default'}
+              <Select value={columnSetting.format || 'default'}
                 onChange={(e) => handleColumnFormatChange(selectedColumn?.field, e.target.value)}
                 label
                 )}
@@ -250,16 +235,14 @@ const ColumnCustomization: React.FC<{open onClose columns onColumnsChange column
           )}
 
           {/* Sortable Setting */}
-          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="body2">
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}></
+            <Typography variant="outlined">
               Allow Sorting
             </Typography>
-            <Switch
-              checked={selectedColumn?.sortable !== false}
+            <Switch checked={selectedColumn?.sortable !== false}
               onChange
                       ? { ...col, sortable: e.target.checked }
                       : col
-                  )
                 );
                 setSelectedColumn(prev => ({ ...prev, sortable: e.target.checked }));
               }}
@@ -267,24 +250,21 @@ const ColumnCustomization: React.FC<{open onClose columns onColumnsChange column
           </Box>
 
           {/* Filterable Setting */}
-          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Typography variant="body2">
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}></
+            <Typography variant="outlined">
               Allow Filtering
             </Typography>
-            <Switch
-              checked={selectedColumn?.filterable !== false}
+            <Switch checked={selectedColumn?.filterable !== false}
               onChange
                       ? { ...col, filterable: e.target.checked }
                       : col
-                  )
                 );
                 setSelectedColumn(prev => ({ ...prev, filterable: e.target.checked }));
               }}
             />
           </Box>
 
-          <Button
-            variant="body2"
+          <Button variant="outlined"
             onClick={() => setSelectedColumn(null)}
             fullWidth
           >
@@ -295,32 +275,30 @@ const ColumnCustomization: React.FC<{open onClose columns onColumnsChange column
     );
   };
 
-  return(<Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+  return(<Dialog open={open} onClose={onClose} maxWidth="md" fullWidth></
       <DialogTitle>
-        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
-            <ColumnIcon />
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}></
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <ColumnIcon /></
             <Typography variant="h6">
               Column Customization
             </Typography>
           </Box>
-          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}></
             <Chip
               label={`${visibleColumnsCount}/${totalColumnsCount} visible`}
               color
-        <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 2 }}>
+        <Typography variant="outlined" color="text.secondary" sx={{ display: "flex", mb: 2 }}>
           Drag to reorder columns, use checkboxes to show/hide, and click settings to customize individual columns.
         </Typography>
 
-        <DragDropContext onDragEnd={handleColumnReorder}>
+        <DragDropContext onDragEnd={handleColumnReorder}></
           <Droppable droppableId="columns">
             {(provided) => (
-              <List
-                { ...provided.droppableProps}
+              <List { ...provided.droppableProps}
                 ref={provided.innerRef}
-                sx={{ display: "flex", maxHeight: 400, overflow: 'auto' }}
-              >
-                {localColumns.map((column: any index: any: any: any: any) => renderColumnItem(column, index))}
+                sx={{ display: "flex", maxHeight: 400, overflow: 'auto' }}>
+                {localColumns.map((column: any index: any) => renderColumnItem(column, index))}
                 {provided.placeholder}
               </List>
             )}
@@ -330,7 +308,7 @@ const ColumnCustomization: React.FC<{open onClose columns onColumnsChange column
         {renderColumnSettings()}
       </DialogContent>
       
-      <DialogActions>
+      <DialogActions></
         <Button onClick={handleReset} startIcon={<RestoreIcon />}>
           Reset to Default
         </Button>

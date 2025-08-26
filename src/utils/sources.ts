@@ -148,7 +148,6 @@ const sourceMapping = [
         source: "Techno Ain Benian", 
         magentoSource: "TechnoStationeryAinBenian",
         succursale: 16
-    }
 ];
 
 export const getSourceInfo = (code: any) => {

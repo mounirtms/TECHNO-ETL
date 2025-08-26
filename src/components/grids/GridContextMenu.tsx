@@ -68,7 +68,6 @@ const GridContextMenu = ({
       actionConfig.onClick(contextMenu?.rowData, contextMenu?.rowId, selectedRows);
     } else if(onAction) {
       onAction(actionKey, contextMenu?.rowData, contextMenu?.rowId, selectedRows);
-    }
     onClose();
   }, [contextMenu, selectedRows, onAction, onClose]);
 
@@ -76,7 +75,6 @@ const GridContextMenu = ({
   const isActionEnabled = useCallback((actionConfig) => {
     if(typeof actionConfig.enabled === 'function') {
       return actionConfig.enabled(contextMenu?.rowData, contextMenu?.rowId, selectedRows);
-    }
     return actionConfig.enabled !== false;
   }, [contextMenu, selectedRows]);
 
@@ -90,25 +88,23 @@ const GridContextMenu = ({
   };
 
   const renderActionGroup = useCallback((actionKeys, showDivider = false) => {
-    const validActions = actionKeys.filter((key: any: any: any: any) => allActions[key]);
+    const validActions = actionKeys.filter((key: any) => allActions[key]);
     
     if (validActions.length ===0) return null;
 
     return (
       <React.Fragment key={actionKeys.join('-')}>
         {showDivider && <Divider />}
-        {validActions.map((actionKey: any: any: any: any) => {
+        {validActions.map((actionKey: any) => {
           const actionConfig = allActions[actionKey];
           const IconComponent = actionConfig.icon;
           const isEnabled = isActionEnabled(actionConfig);
           
           return (
-            <MenuItem
-              key={actionKey}
+            <MenuItem key={actionKey}
               onClick={() => handleActionClick(actionKey, actionConfig)}
               disabled={!isEnabled}
               sx={{
-                }
               }}
             >
               <ListItemIcon sx={{ 
@@ -117,16 +113,12 @@ const GridContextMenu = ({
                 minWidth: isRTL ? 'auto' : 36,
                 marginRight: isRTL ? 0 : 1,
                 marginLeft: isRTL ? 1 : 0
-              }}>
-                <IconComponent fontSize="small" />
-              </ListItemIcon>
-              <ListItemText 
-                primary={translate(actionKey, actionConfig.label)}
+              }}></
+                <IconComponent fontSize="small" /></IconComponent>
+              <ListItemText primary={translate(actionKey, actionConfig.label)}
                 sx={{
-                  }
                 }}
-              />
-            </MenuItem>
+              /></ListItemText>
           );
         })}
       </React.Fragment>
@@ -135,27 +127,23 @@ const GridContextMenu = ({
 
   if (!contextMenu) return null;
 
-  return Boolean((
-    <Menu
-      open={Boolean(contextMenu)}
+  return (
+    <Menu open={Boolean(contextMenu)}
       onClose={onClose}
       anchorReference
           ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
           : undefined
-      }
       transformOrigin
         horizontal: isRTL ? 'right' : 'left'
       }}
       PaperProps
           maxWidth: 250,
           direction: isRTL ? 'rtl' : 'ltr'
-        }
-      }}
-    >
+      }}>
       {/* Context Menu Header */}
       {contextMenu?.rowData && (
         <>
-          <MenuItem disabled sx={{ display: "flex", opacity: 1 }}>
+          <MenuItem disabled sx={{ display: "flex", opacity: 1 }}></
             <Typography variant="caption" color="textSecondary">
               {translate('rowActions', 'Row Actions')}
             </Typography>
@@ -184,14 +172,13 @@ const GridContextMenu = ({
         <>
           <Divider />
           {Object.entries(actions)
-            .filter(([key]: any: any: any: any) => !defaultActions[key])
-            .map(([actionKey: any actionConfig]: any: any: any: any) => {
-              const IconComponent = actionConfig.icon))));
+            .filter(([key]: any) => !defaultActions[key])
+            .map(([actionKey, actionConfig]: any) => {
+              const IconComponent = actionConfig.icon);
               const isEnabled = isActionEnabled(actionConfig);
               
               return (
-                <MenuItem
-                  key={actionKey}
+                <MenuItem key={actionKey}
                   onClick={() => handleActionClick(actionKey, actionConfig)}
                   disabled={!isEnabled}
                   sx={{
@@ -203,16 +190,12 @@ const GridContextMenu = ({
                     minWidth: isRTL ? 'auto' : 36,
                     marginRight: isRTL ? 0 : 1,
                     marginLeft: isRTL ? 1 : 0
-                  }}>
-                    <IconComponent fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText 
-                    primary={actionConfig.label}
+                  }}></
+                    <IconComponent fontSize="small" /></IconComponent>
+                  <ListItemText primary={actionConfig.label}
                     sx={{
-                      }
                     }}
-                  />
-                </MenuItem>
+                  /></ListItemText>
               );
             })}
         </>

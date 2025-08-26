@@ -91,7 +91,6 @@ const mockProducts = [
     image: null,
     description: 'Comfortable organic cotton t-shirt in various colors',
     sku: 'OCT-005'
-  }
 ];
 
 const getStatusColor = (status) => {
@@ -101,7 +100,6 @@ const getStatusColor = (status) => {
     case 'out_of_stock': return 'error';
     case 'discontinued': return 'default';
     default: return 'default';
-  }
 };
 
 const getStockStatus = (stock) => {
@@ -117,7 +115,7 @@ const ProductsGrid: React.FC<{data onDataChange onBadgeUpdate: any}> = ({ data, 
   const [loading, setLoading] = useState(false);
 
   // Filter products based on search query
-  const filteredProducts = products.filter((product: any: any: any: any) =>
+  const filteredProducts = products.filter((product: any) =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.sku.toLowerCase().includes(searchQuery.toLowerCase())
@@ -125,7 +123,7 @@ const ProductsGrid: React.FC<{data onDataChange onBadgeUpdate: any}> = ({ data, 
 
   // Update badge count for low stock products
   useEffect(() => {
-    const lowStockProducts = products.filter((p: any: any: any: any) => p.stock <= 10 && p.stock > 0).length;
+    const lowStockProducts = products.filter((p: any) => p.stock <= 10 && p.stock > 0).length;
     onBadgeUpdate?.(lowStockProducts);
   }, [products, onBadgeUpdate]);
 
@@ -152,24 +150,20 @@ const ProductsGrid: React.FC<{data onDataChange onBadgeUpdate: any}> = ({ data, 
 
     for(let i = 0; i < fullStars; i++) {
       stars.push(<StarIcon key={i} sx={{ display: "flex", fontSize: 16, color: 'gold' }} />);
-    }
-
     if(hasHalfStar) {
       stars.push(<StarIcon key="half" sx={{ display: "flex", fontSize: 16, color: 'gold', opacity: 0.5 }} />);
-    }
-
     return stars;
   };
 
   return (
     <Box sx={{ display: "flex", p: 3 }}>
       {/* Header */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ display: "flex", mb: 3 }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ display: "flex", mb: 3 }}></
         <Typography variant="h5" component="h2">
           {t('Product Catalog')}
         </Typography>
         <Button
-          variant="body2"
+          variant="outlined"
           startIcon={<AddIcon />}
           onClick={handleAddProduct}
         >
@@ -178,8 +172,7 @@ const ProductsGrid: React.FC<{data onDataChange onBadgeUpdate: any}> = ({ data, 
       </Stack>
 
       {/* Search */}
-      <TextField
-        fullWidth
+      <TextField fullWidth
         placeholder={t('Search products...')}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
@@ -190,16 +183,14 @@ const ProductsGrid: React.FC<{data onDataChange onBadgeUpdate: any}> = ({ data, 
 
       {/* Products Grid */}
       <Box sx={{ display: "flex", display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 2 }}>
-        {filteredProducts.map((product: any: any: any: any) => (
+        {filteredProducts.map((product: any) => (
           <Card key={product.id} sx={{ display: "flex", height: 'fit-content' }}>
             {/* Product Image */}
-            <CardMedia
-              sx={{
+            <CardMedia sx={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
-              }}
-            >
+              }}>
               {product.image ? (
                 <img src={product.image} alt={product.name} style={{ maxHeight: '100%', maxWidth: '100%' }} />
               ) : (
@@ -207,15 +198,15 @@ const ProductsGrid: React.FC<{data onDataChange onBadgeUpdate: any}> = ({ data, 
               )}
             </CardMedia>
 
-            <CardContent>
+            <CardContent></
               <Stack spacing={2}>
                 {/* Product Header */}
-                <Stack direction="row" alignItems="flex-start" justifyContent="space-between">
+                <Stack direction="row" alignItems="flex-start" justifyContent="space-between"></
                   <Box sx={{ display: "flex", flexGrow: 1 }}>
                     <Typography variant="h6" component="div" noWrap>
                       {product.name}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="outlined" color="text.secondary">
                       SKU: {product.sku}
                     </Typography>
                   </Box>
@@ -224,25 +215,25 @@ const ProductsGrid: React.FC<{data onDataChange onBadgeUpdate: any}> = ({ data, 
                     color={getStatusColor(product.status)}
                     size="small"
                 {/* Category */}
-                <Stack direction="row" alignItems="center" spacing={1}>
+                <Stack direction="row" alignItems="center" spacing={1}></
                   <CategoryIcon fontSize="small" color="action" />
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="outlined" color="text.secondary">
                     {product.category}
                   </Typography>
                 </Stack>
 
                 {/* Rating */}
-                <Stack direction="row" alignItems="center" spacing={1}>
-                  <Box sx={{ display: "flex", display: 'flex', alignItems: 'center' }}>
+                <Stack direction="row" alignItems="center" spacing={1}></
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     {renderStars(product.rating)}
                   </Box>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="outlined" color="text.secondary">
                     ({product.rating})
                   </Typography>
                 </Stack>
 
                 {/* Description */}
-                <Typography variant="body2" color="text.secondary" sx={{ 
+                <Typography variant="outlined" color="text.secondary" sx={{ 
                   display: "flex", 
                   display: '-webkit-box',
                   WebkitLineClamp: 2,
@@ -253,39 +244,34 @@ const ProductsGrid: React.FC<{data onDataChange onBadgeUpdate: any}> = ({ data, 
                 </Typography>
 
                 {/* Price and Stock */}
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack direction="row" justifyContent="space-between" alignItems="center"></
                   <Typography variant="h6" color="primary" fontWeight="bold">
                     {product.price}
                   </Typography>
-                  <Box sx={{ display: "flex", textAlign: 'right' }}>
+                  <Box sx={{ display: "flex", textAlign: 'right' }}></
                     <Typography variant="caption" color="text.secondary">
                       {t('Stock')}
                     </Typography>
-                    <Typography 
-                      variant="body2"
-                      color={product.stock ===0 ? 'error.main' : product.stock <= 10 ? 'warning.main' : 'success.main'}
-                    >
+                    <Typography variant="outlined"
+                      color={product.stock ===0 ? 'error.main' : product.stock <= 10 ? 'warning.main' : 'success.main'}>
                       {product.stock} {t('units')}
                     </Typography>
                   </Box>
                 </Stack>
 
                 {/* Actions */}
-                <Stack direction="row" spacing={1} sx={{ display: "flex", pt: 1 }}>
+                <Stack direction="row" spacing={1} sx={{ display: "flex", pt: 1 }}></
                   <Tooltip title={t('View Details')}>
                     <IconButton size="small" onClick={() => handleViewProduct(product.id)}>
-                      <ViewIcon />
-                    </IconButton>
+                      <ViewIcon /></ViewIcon>
                   </Tooltip>
-                  <Tooltip title={t('Edit Product')}>
+                  <Tooltip title={t('Edit Product')}></
                     <IconButton size="small" onClick={() => handleEditProduct(product.id)}>
-                      <EditIcon />
-                    </IconButton>
+                      <EditIcon /></EditIcon>
                   </Tooltip>
-                  <Tooltip title={t('Delete Product')}>
+                  <Tooltip title={t('Delete Product')}></
                     <IconButton size="small" onClick={() => handleDeleteProduct(product.id)}>
-                      <DeleteIcon />
-                    </IconButton>
+                      <DeleteIcon /></DeleteIcon>
                   </Tooltip>
                 </Stack>
               </Stack>
@@ -296,12 +282,12 @@ const ProductsGrid: React.FC<{data onDataChange onBadgeUpdate: any}> = ({ data, 
 
       {/* Empty State */}
       {filteredProducts.length ===0 && (
-        <Box sx={{ display: "flex", textAlign: 'center', py: 4 }}>
+        <Box sx={{ display: "flex", textAlign: 'center', py: 4 }}></
           <ProductIcon sx={{ display: "flex", fontSize: 64, color: 'text.secondary', mb: 2 }} />
           <Typography variant="h6" color="text.secondary">
             {searchQuery ? t('No products found') : t('No products yet')}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="outlined" color="text.secondary">
             {searchQuery ? t('Try adjusting your search') : t('Add your first product to get started')}
           </Typography>
         </Box>

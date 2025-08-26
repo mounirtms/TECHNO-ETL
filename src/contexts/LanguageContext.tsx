@@ -52,13 +52,11 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         console.log('🌐 Using preferences language:', settings.preferences.language);
         return settings.preferences.language;
       }
-
       // Also check top-level language for backward compatibility
       if(settings?.language && languages[settings.language]) {
         console.log('🌐 Using top-level language:', settings.language);
         return settings.language;
       }
-
       // Fallback to system preferences
       console.log('🌐 Getting system preferences...');
       const systemPrefs = getSystemPreferences();
@@ -71,7 +69,6 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     } catch(error: any) {
       console.error('Failed to get language settings:', error);
     }
-    
     // Final fallback to English
     console.log('🌐 Using fallback language: en');
     return 'en';
@@ -94,7 +91,6 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       console.warn('Invalid currentLangConfig:', currentLangConfig);
       return;
     }
-
     // Use requestAnimationFrame to ensure smooth transition
     requestAnimationFrame(() => {
       const isRTL = currentLangConfig.dir === 'rtl';
@@ -111,7 +107,6 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         document.body.classList.add('ltr');
         document.body.classList.remove('rtl');
       }
-      
       // Add/remove RTL class to root element
       const root = document.getElementById('root');
       if(root) {
@@ -123,13 +118,11 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           root.classList.remove('rtl-layout');
         }
       }
-
       // Add smooth transition class
       document.body.style.transition = 'all 0.3s ease-in-out';
       if(root) {
         root.style.transition = 'all 0.3s ease-in-out';
       }
-
       // Save to unified settings with proper structure
       saveUnifiedSettings({ 
         preferences: {
@@ -180,18 +173,16 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       console.warn('Invalid translation key:', key);
       return key || '';
     }
-
     if(!currentLangConfig || !currentLangConfig.locale) {
       console.warn('Translation attempted before language config loaded');
       return key;
     }
-
     const keys = key.split('.');
     let value = currentLangConfig.locale;
 
     for(const k of keys) {
       if(value && value[k]) {
-        value
+        value = value[k];
       } else {
         // Only log unique missing translations to prevent spam
         if (!translate._loggedMissing) translate._loggedMissing = new Set();
@@ -203,7 +194,6 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         return key;
       }
     }
-
     return value;
   }, [currentLangConfig, currentLanguage]);
 

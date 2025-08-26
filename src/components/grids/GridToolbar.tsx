@@ -130,22 +130,20 @@ const GridToolbar = ({
     return enableI18n ? t(`grid.toolbar.${key}`, fallback) : fallback;
   }, [enableI18n, t]);
 
-  return Boolean((
+  return (
     <Box sx={{ 
       display: "flex", 
       borderBottom: `1px solid ${theme.palette.divider}`,
       backgroundColor: theme.palette.background.paper
-    }}>
-      <Toolbar 
-        variant="body2"
+    }}></
+      <Toolbar variant="outlined"
           gap: 1,
           direction: isRTL ? 'rtl' : 'ltr'
-        }}
-      >
+        }}>
         {/* Section 1: Refresh */}
-        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {toolbarConfig.showRefresh && (
-            <Tooltip title={translate('refresh', 'Refresh Data')}>
+            <Tooltip title={translate('refresh', 'Refresh Data')}></
               <IconButton
                 onClick={onRefresh}
                 disabled={loading}
@@ -156,13 +154,13 @@ const GridToolbar = ({
         <Divider orientation="vertical" flexItem sx={{ display: "flex", mx: 1 }} />
 
         {/* Section 2: Action Buttons */}
-        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: spacing }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: spacing }}>
           {toolbarConfig.showAdd && (
-            <Tooltip title={translate('add', 'Add New')}>
+            <Tooltip title={translate('add', 'Add New')}></
               <Button
                 startIcon={<AddIcon />}
                 onClick={onAdd}
-                variant="body2"
+                variant="outlined"
                 size={buttonSize}
                 disabled={loading}
               >
@@ -177,7 +175,7 @@ const GridToolbar = ({
                 <Button
                   startIcon={<EditIcon />}
                   onClick={onEdit}
-                  variant="body2"
+                  variant="outlined"
                   size={buttonSize}
                   disabled={!hasSelection || loading}
                 >
@@ -188,11 +186,11 @@ const GridToolbar = ({
           )}
 
           {toolbarConfig.showDelete && (
-            <Tooltip title={translate('delete', 'Delete Selected')}>
+            <Tooltip title={translate('delete', 'Delete Selected')}></
               <Button
                 startIcon={<DeleteIcon />}
                 onClick={onDelete}
-                variant="body2"
+                variant="outlined"
                 size={buttonSize}
                 disabled={!hasSelection || loading}
               >
@@ -202,7 +200,7 @@ const GridToolbar = ({
           )}
 
           {toolbarConfig.showSync && (
-            <Tooltip title={translate('sync', 'Sync Data')}>
+            <Tooltip title={translate('sync', 'Sync Data')}></
               <IconButton
                 onClick={onSync}
                 disabled={loading}
@@ -210,22 +208,18 @@ const GridToolbar = ({
           )}
 
           {/* Custom Actions */}
-          {customActions.map((action: any index: any: any: any: any) => {
+          {customActions.map((action: any index: any) => {
             // Safely render icon - ensure it's a valid React element
             const renderIcon = () => {
-              if (!action?.icon) return null))));
+              if (!action?.icon) return null);
 
               // Handle Material-UI icon components (functions)
               if(typeof action?.icon === 'function') {
                 const IconComponent = action?.icon;
                 return <IconComponent />;
-              }
-
               // Handle React elements
               if (React.isValidElement(action?.icon)) {
                 return action?.icon;
-              }
-
               // Invalid icon type - return null to avoid prop type warning
               return null;
             };
@@ -233,14 +227,12 @@ const GridToolbar = ({
             return (
               <Tooltip key={index} title={action?.tooltip || action?.label}>
                 <span>
-                  <Button
-                    startIcon={renderIcon()}
+                  <Button startIcon={renderIcon()}
                     onClick={action?.onClick}
                     variant={action?.variant || 'outlined'}
                     color={action?.color || 'primary'}
                     size="small"
-                    disabled={action?.disabled || loading}
-                  >
+                    disabled={action?.disabled || loading}>
                     {action?.label}
                   </Button>
                 </span>
@@ -252,17 +244,16 @@ const GridToolbar = ({
         <Divider orientation="vertical" flexItem sx={{ display: "flex", mx: 1 }} />
 
         {/* Section 3: Search and Filters */}
-        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1, flex: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1 }}>
           {toolbarConfig.showSearch && (
-            <TextField
-              size="small"
+            <TextField size="small"
               placeholder={translate('search', 'Search...')}
               value={searchText}
               onChange={(e) => handleSearch(e.target.value)}
               sx={{ display: "flex", minWidth: 200, maxWidth: 300 }}
               InputProps
                 endAdornment: searchText && (
-                  <InputAdornment position="end">
+                  <InputAdornment position="end"></
                     <IconButton
                       size="small"
                       onClick={handleClearSearch}
@@ -272,21 +263,18 @@ const GridToolbar = ({
           )}
 
           {toolbarConfig.showFilters && (
-            <Tooltip title={translate('filters', 'Show Filters')}>
-              <IconButton
-                onClick={onFiltersToggle}
+            <Tooltip title={translate('filters', 'Show Filters')}></
+              <IconButton onClick={onFiltersToggle}
                 size="small"
-                color={filtersVisible ? 'primary' : 'default'}
-              >
-                <FilterIcon />
-              </IconButton>
+                color={filtersVisible ? 'primary' : 'default'}>
+                <FilterIcon /></FilterIcon>
             </Tooltip>
           )}
         </Box>
 
         {/* Section 4: Selection Info */}
         {toolbarConfig.showSelection && hasSelection && (
-          <Fade in={hasSelection}>
+          <Fade in={hasSelection}></
             <Chip
               label={translate('selectedCount', `${selectedCount} selected`).replace('{{count}}', selectedCount)}
               color
@@ -295,15 +283,14 @@ const GridToolbar = ({
         <Divider orientation="vertical" flexItem sx={{ display: "flex", mx: 1 }} />
 
         {/* Section 5: Settings and More */}
-        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {(toolbarConfig.showExport || toolbarConfig.showImport) && (
             <>
-              <Tooltip title={translate('export', 'Export Data')}>
-                <IconButton
-                  onClick={onExport}
+              <Tooltip title={translate('export', 'Export Data')}></
+                <IconButton onClick={onExport}
                   disabled={loading}
                   size="small"
-                <Tooltip title={translate('import', 'Import Data')}>
+                <Tooltip title={translate('import', 'Import Data')}></
                   <IconButton
                     onClick={onImport}
                     disabled={loading}
@@ -313,59 +300,48 @@ const GridToolbar = ({
           )}
 
           {toolbarConfig.showSettings && (
-            <Tooltip title={translate('settings', 'Grid Settings')}>
-              <IconButton
-                onClick={handleSettingsMenuOpen}
+            <Tooltip title={translate('settings', 'Grid Settings')}></
+              <IconButton onClick={handleSettingsMenuOpen}
                 size="small"
           )}
 
-          <Tooltip title="More options">
+          <Tooltip title="More options"></
             <IconButton
               onClick={handleMoreMenuOpen}
               size="small"
       {/* Settings Menu */}
-      <Menu
-        anchorEl={settingsMenuAnchor}
+      <Menu anchorEl={settingsMenuAnchor}
         open={Boolean(settingsMenuAnchor)}
         onClose={handleSettingsMenuClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: isRTL ? 'left' : 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: isRTL ? 'left' : 'right' }}
-      >
+        transformOrigin={{ vertical: 'top', horizontal: isRTL ? 'left' : 'right' }}></
         <MenuItem onClick={() => { onSettings?.('viewMode'); handleSettingsMenuClose(); }}>
-          <ListItemIcon><GridViewIcon /></ListItemIcon>
-          <ListItemText primary={translate('viewMode', 'View Mode')} />
-        </MenuItem>
+          <ListItemIcon><GridViewIcon /></GridViewIcon>
+          <ListItemText primary={translate('viewMode', 'View Mode')} /></ListItemText>
         <MenuItem onClick={() => { onSettings?.('columns'); handleSettingsMenuClose(); }}>
-          <ListItemIcon><ColumnsIcon /></ListItemIcon>
-          <ListItemText primary={translate('columns', 'Columns')} />
-        </MenuItem>
+          <ListItemIcon><ColumnsIcon /></ColumnsIcon>
+          <ListItemText primary={translate('columns', 'Columns')} /></ListItemText>
         <MenuItem onClick={() => { onSettings?.('density'); handleSettingsMenuClose(); }}>
-          <ListItemIcon><SettingsIcon /></ListItemIcon>
-          <ListItemText primary={translate('density', 'Density')} />
-        </MenuItem>
+          <ListItemIcon><SettingsIcon /></SettingsIcon>
+          <ListItemText primary={translate('density', 'Density')} /></ListItemText>
         <MenuItem onClick={() => { onSettings?.('reset'); handleSettingsMenuClose(); }}>
-          <ListItemIcon><ClearIcon /></ListItemIcon>
-          <ListItemText primary={translate('reset', 'Reset Layout')} />
-        </MenuItem>
+          <ListItemIcon><ClearIcon /></ClearIcon>
+          <ListItemText primary={translate('reset', 'Reset Layout')} /></ListItemText>
       </Menu>
 
       {/* More Menu */}
-      <Menu
-        anchorEl={moreMenuAnchor}
+      <Menu anchorEl={moreMenuAnchor}
         open={Boolean(moreMenuAnchor)}
         onClose={handleMoreMenuClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: isRTL ? 'left' : 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: isRTL ? 'left' : 'right' }}
-      >
+        transformOrigin={{ vertical: 'top', horizontal: isRTL ? 'left' : 'right' }}></
         <MenuItem onClick={() => { onRefresh?.(); handleMoreMenuClose(); }}>
-          <ListItemIcon><RefreshIcon /></ListItemIcon>
-          <ListItemText primary={translate('refresh', 'Refresh')} />
-        </MenuItem>
+          <ListItemIcon><RefreshIcon /></RefreshIcon>
+          <ListItemText primary={translate('refresh', 'Refresh')} /></ListItemText>
         {toolbarConfig.showExport && (
           <MenuItem onClick={() => { onExport?.(); handleMoreMenuClose(); }}>
-            <ListItemIcon><ExportIcon /></ListItemIcon>
-            <ListItemText primary={translate('export', 'Export')} />
-          </MenuItem>
+            <ListItemIcon><ExportIcon /></ExportIcon>
+            <ListItemText primary={translate('export', 'Export')} /></ListItemText>
         )}
       </Menu>
     </Box>

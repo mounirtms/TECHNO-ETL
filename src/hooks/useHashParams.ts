@@ -15,8 +15,6 @@ interface HashParamsResult {
   removeParam: (key: string) => void;
   encodeToHash: (params: Record<string, any>) => string;
   parseHashParams: (hash: string) => Record<string, any>;
-}
-
 /**
  * Custom hook to handle hash-based parameters
  * @returns {HashParamsResult} Hash parameters utilities
@@ -37,7 +35,6 @@ export const useHashParams = (): HashParamsResult => {
     } catch (error) {
       console.warn('Failed to parse hash parameters:', error);
       return {};
-    }
   }, []);
 
   // Encode parameters to hash
@@ -50,7 +47,6 @@ export const useHashParams = (): HashParamsResult => {
     } catch (error) {
       console.warn('Failed to encode hash parameters:', error);
       return '';
-    }
   }, []);
 
   // Update URL hash without navigation
@@ -74,7 +70,6 @@ export const useHashParams = (): HashParamsResult => {
       const parsedParams = parseHashParams(initialHash);
       console.log('Initial hash params:', initialHash, parsedParams); // Debug log
       setParams(parsedParams);
-    }
   }, [parseHashParams]);
 
   // Update parameters and URL
@@ -207,7 +202,6 @@ export const useGridParams = () => {
       return JSON.parse(selected);
     } catch {
       return [];
-    }
   };
 
   // Grid-specific setters

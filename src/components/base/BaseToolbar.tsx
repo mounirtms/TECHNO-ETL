@@ -159,7 +159,6 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
     if(event.key === 'Enter') {
       event.preventDefault();
       handleSearchSubmit();
-    }
   }, [handleSearchSubmit]);
 
   const handleClearSearch = useCallback(() => {
@@ -199,8 +198,6 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
         disabled: loading,
         priority: 1
       });
-    }
-
     if(toolbarConfig.showAdd) {
       actions.push({
         key: 'add',
@@ -210,8 +207,6 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
         disabled: loading,
         priority: 1
       });
-    }
-
     return actions;
   }, [toolbarConfig, onRefresh, onAdd, loading]);
 
@@ -227,8 +222,6 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
         disabled: loading || selectedCount !== 1,
         priority: 2
       });
-    }
-
     if(toolbarConfig.showDelete && hasSelection) {
       actions.push({
         key: 'delete',
@@ -239,8 +232,6 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
         priority: 2,
         color: 'error'
       });
-    }
-
     return actions;
   }, [toolbarConfig, hasSelection, selectedCount, onEdit, onDelete, loading, selectedRows]);
 
@@ -256,8 +247,6 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
         disabled: loading,
         priority: 3
       });
-    }
-
     if(toolbarConfig.showImport) {
       actions.push({
         key: 'import',
@@ -267,8 +256,6 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
         disabled: loading,
         priority: 3
       });
-    }
-
     return actions;
   }, [toolbarConfig, onExport, onImport, loading]);
 
@@ -277,30 +264,24 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
     const ButtonComponent = action.variant === 'text' ? Button : IconButton;
 
     return (
-      <TooltipWrapper
-        key={action.key}
+      <TooltipWrapper key={action.key}
         title={action.label}
-        disabled={action.disabled}
-      >
+        disabled={action.disabled}>
         <span>
           {action.variant === 'text' ? (
-            <Button
-              onClick={action.onClick}
+            <Button onClick={action.onClick}
               disabled={action.disabled}
               size={buttonSize}
               color={action.color || 'primary'}
-              variant={action.variant || 'text'}
-            >
+              variant={action.variant || 'text'}>
               {action.icon}
               {action.label}
             </Button>
           ) : (
-            <IconButton
-              onClick={action.onClick}
+            <IconButton onClick={action.onClick}
               disabled={action.disabled}
               size={buttonSize}
-              color={action.color || 'primary'}
-            >
+              color={action.color || 'primary'}>
               {action.icon}
             </IconButton>
           )}
@@ -315,14 +296,12 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
 
     return (
       <Box sx={{
-        display: "flex",
         display: 'flex',
         alignItems: 'center',
         minWidth: isMobile ? 150 : 250,
         maxWidth: isMobile ? 200 : 350
-      }}>
-        <TextField
-          size="small"
+      }}></
+        <TextField size="small"
           placeholder={searchPlaceholder}
           value={searchText}
           onChange={handleSearchChange}
@@ -331,13 +310,10 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
           slotProps={{
             input: {
               endAdornment: (
-                <InputAdornment position="end">
+                <InputAdornment position="end"></
                   <IconButton size="small" onClick={handleClearSearch}>
-                    <ClearIcon />
-                  </IconButton>
+                    <ClearIcon /></ClearIcon>
                 </InputAdornment>
-              )
-            }
           }}
         />
       </Box>
@@ -349,16 +325,12 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
     if (!toolbarConfig.showRealTime) return null;
 
     return (
-      <TooltipWrapper
-        title={realTimeEnabled ? 'Disable Real-time Updates' : 'Enable Real-time Updates'}
-      >
-        <ToggleButton
-          value="realtime"
+      <TooltipWrapper title={realTimeEnabled ? 'Disable Real-time Updates' : 'Enable Real-time Updates'}></
+        <ToggleButton value="realtime"
           selected={realTimeEnabled}
           onChange={handleRealTimeToggle}
           size={buttonSize}
-          color="primary"
-        >
+          color="primary">
           {realTimeEnabled ? <PauseIcon /> : <RealTimeIcon />}
         </ToggleButton>
       </TooltipWrapper>
@@ -370,15 +342,13 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
     if (!showPerformanceMetrics || !performanceMetrics) return null;
 
     return (
-      <TooltipWrapper title="Performance Metrics">
-        <Badge
-          badgeContent={performanceMetrics?.responseTime || 0}
-          color={performanceMetrics?.responseTime && performanceMetrics.responseTime > 1000 ? 'error' : 'success'}
+      <TooltipWrapper title="Performance Metrics"></
+        <Badge badgeContent={performanceMetrics?.responseTime || 0}
+          color={performanceMetrics?.responseTime && performanceMetrics.responseTime> 1000 ? 'error' : 'success'}
           max={9999}
         >
-          <IconButton size={buttonSize}>
-            <PerformanceIcon />
-          </IconButton>
+          <IconButton size={buttonSize}></
+            <PerformanceIcon /></PerformanceIcon>
         </Badge>
       </TooltipWrapper>
     );
@@ -389,9 +359,8 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
     if (!hasSelection) return null;
 
     return (
-      <Fade in={hasSelection}>
-        <Chip
-          label={`${selectedCount} selected`}
+      <Fade in={hasSelection}></
+        <Chip label={`${selectedCount} selected`}
           size="small"
           onDelete={hasSelection ? () => onSelectionModelChange?.([]) : undefined}
         />
@@ -411,23 +380,17 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
 
     return (
       <>
-        <TooltipWrapper title="More Options">
-          <IconButton
-            onClick={handleMoreMenuOpen}
-            size={buttonSize}
-          >
-            <MoreIcon />
-          </IconButton>
+        <TooltipWrapper title="More Options"></
+          <IconButton onClick={handleMoreMenuOpen}
+            size={buttonSize}>
+            <MoreIcon /></MoreIcon>
         </TooltipWrapper>
 
-        <Menu
-          anchorEl={moreMenuAnchor}
+        <Menu anchorEl={moreMenuAnchor}
           open={Boolean(moreMenuAnchor)}
-          onClose={handleMoreMenuClose}
-        >
+          onClose={handleMoreMenuClose}>
           {overflowActions.map((action: any, index: number) => (
-            <MenuItem
-              key={action.key}
+            <MenuItem key={action.key}
               onClick={() => {
                 action.onClick?.();
                 handleMoreMenuClose();
@@ -435,8 +398,7 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
               disabled={action.disabled}
             >
               <ListItemIcon>{action.icon}</ListItemIcon>
-              <ListItemText primary={action.label} />
-            </MenuItem>
+              <ListItemText primary={action.label} /></ListItemText>
           ))}
           
           {/* Render custom actions separately if they exist */}
@@ -454,7 +416,7 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
       borderBottom: `1px solid ${theme.palette.divider}`,
       backgroundColor: theme.palette.background.paper,
       ...sx
-    }}>
+    }}></
       <Toolbar
         variant="dense"
         sx={{
@@ -517,13 +479,10 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
 
           {/* Settings */}
           {toolbarConfig.showSettings && (
-            <TooltipWrapper title="Settings">
-              <IconButton
-                onClick={handleSettingsMenuOpen}
-                size={buttonSize}
-              >
-                <SettingsIcon />
-              </IconButton>
+            <TooltipWrapper title="Settings"></
+              <IconButton onClick={handleSettingsMenuOpen}
+                size={buttonSize}>
+                <SettingsIcon /></SettingsIcon>
             </TooltipWrapper>
           )}
 
@@ -533,10 +492,10 @@ const BaseToolbar: React.FC<BaseToolbarProps> = ({
       </Toolbar>
 
       {/* Collapsible Filters Section */}
-      <Collapse in={filtersVisible}>
+      <Collapse in={filtersVisible}></
         <Box sx={{ p: 2, borderTop: `1px solid ${theme.palette.divider}` }}>
           {/* Filter controls would go here */}
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="outlined" color="text.secondary">
             Advanced filters coming soon...
           </Typography>
         </Box>

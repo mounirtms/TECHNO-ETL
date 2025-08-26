@@ -7,8 +7,6 @@ import { X } from 'lucide-react';
 interface DialogContextType {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-}
-
 const DialogContext = React.createContext<DialogContextType | null>(null);
 
 // Dialog Root
@@ -17,8 +15,6 @@ interface DialogProps {
   onOpenChange?: (open: boolean) => void;
   defaultOpen?: boolean;
   children: React.ReactNode;
-}
-
 export const Dialog: React.FC<DialogProps> = ({
   open
   onOpenChange,
@@ -34,7 +30,6 @@ export const Dialog: React.FC<DialogProps> = ({
       onOpenChange?.(newOpen);
     } else {
       setInternalOpen(newOpen);
-    }
   };
 
   return (
@@ -62,7 +57,6 @@ const dialogVariants = cva(
     defaultVariants: {
       size: 'md',
     },
-  }
 );
 
 interface DialogContentProps
@@ -71,8 +65,6 @@ interface DialogContentProps
   children: React.ReactNode;
   showCloseButton?: boolean;
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | false;
-}
-
 export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
   ({ className, size, children, showCloseButton = true, maxWidth, ...props }, ref) => {
     const context = React.useContext(DialogContext);
@@ -84,14 +76,11 @@ export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps
       const handleEscape = (event: KeyboardEvent) => {
         if(event.key === 'Escape') {
           onOpenChange(false);
-        }
       };
 
       if(open) {
         document.addEventListener('keydown', handleEscape);
         document.body.style.overflow = 'hidden';
-      }
-
       return () => {
         document.removeEventListener('keydown', handleEscape);
         document.body.style.overflow = 'unset';
@@ -131,7 +120,6 @@ export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps
         </div>
       </>
     );
-  }
 );
 
 DialogContent.displayName = 'DialogContent';
@@ -139,8 +127,6 @@ DialogContent.displayName = 'DialogContent';
 // Dialog Header
 interface DialogHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
-}
-
 export const DialogHeader: React.FC<DialogHeaderProps> = ({
   className,
   children,
@@ -159,8 +145,6 @@ export const DialogHeader: React.FC<DialogHeaderProps> = ({
 // Dialog Title
 interface DialogTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   children: React.ReactNode;
-}
-
 export const DialogTitle: React.FC<DialogTitleProps> = ({
   className,
   children,
@@ -179,8 +163,6 @@ export const DialogTitle: React.FC<DialogTitleProps> = ({
 // Dialog Actions
 interface DialogActionsProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
-}
-
 export const DialogActions: React.FC<DialogActionsProps> = ({
   className,
   children,
@@ -200,8 +182,6 @@ export const DialogActions: React.FC<DialogActionsProps> = ({
 interface DialogTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   asChild?: boolean;
-}
-
 export const DialogTrigger: React.FC<DialogTriggerProps> = ({
   children,
   asChild
@@ -217,8 +197,6 @@ export const DialogTrigger: React.FC<DialogTriggerProps> = ({
       onClick: () => onOpenChange(true),
       ...children.props,
     });
-  }
-
   return (
     <button onClick={() => onOpenChange(true)} { ...props}>
       {children}

@@ -71,18 +71,17 @@ const COLORS = {
     success: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
     warning: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
     error: 'linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%)'
-  }
 };
 
 /**
  * Enhanced Metric Card with animations and trends
  */
-export const ProfessionalMetricCard: React.FC<{title value previousValue icon: Icon color: any loading: any subtitle trend onClick actions: any}> = ({ title,
+export const ProfessionalMetricCard: React.FC<{title: string, value: any, previousValue: any, icon: Icon, color: any, loading: any, subtitle: string, trend: any, onClick: any, actions: any}> = ({ title,
   value,
   previousValue,
   icon: Icon,
-  color
-  loading
+  color,
+  loading,
   subtitle,
   trend,
   onClick,
@@ -98,15 +97,14 @@ export const ProfessionalMetricCard: React.FC<{title value previousValue icon: I
   
   const isPositiveTrend = trendPercentage >= 0;
 
-  return Boolean((
+  return (
     <motion.div
       whileHover={{ y: -4, scale: 1.02 }}
       transition={{ duration: 0.2 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
-      <Card
-        sx={{
+      <Card sx={{
           color: 'white',
           cursor: onClick ? 'pointer' : 'default',
           position: 'relative',
@@ -122,27 +120,21 @@ export const ProfessionalMetricCard: React.FC<{title value previousValue icon: I
               ? 'rgba(255, 255, 255, 0.1)' 
               : 'transparent',
             transition: 'background 0.3s ease'
-          }
         }}
-        onClick={onClick}
-      >
+        onClick={onClick}></
         <CardContent sx={{ display: "flex", position: 'relative', zIndex: 1 }}>
-          <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-            <Avatar
-              sx={{
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}></
+            <Avatar sx={{
                 bgcolor: 'rgba(255, 255, 255, 0.2)',
                 color: 'white',
                 width: 48,
                 height: 48
-              }}
-            >
-              <Icon />
-            </Avatar>
+              }}>
+              <Icon /></Icon>
             
             {actions && (
-              <IconButton size="small" sx={{ display: "flex", color: 'white' }}>
-                <MoreVert />
-              </IconButton>
+              <IconButton size="small" sx={{ display: "flex", color: 'white' }}></
+                <MoreVert /></MoreVert>
             )}
           </Box>
 
@@ -159,19 +151,19 @@ export const ProfessionalMetricCard: React.FC<{title value previousValue icon: I
           )}
 
           {subtitle && (
-            <Typography variant="body2" sx={{ display: "flex", color: 'rgba(255, 255, 255, 0.8)', mb: 1 }}>
+            <Typography variant="outlined" sx={{ display: "flex", color: 'rgba(255, 255, 255, 0.8)', mb: 1 }}>
               {subtitle}
             </Typography>
           )}
 
           {trend && (
-            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               {isPositiveTrend ? (
                 <TrendingUp sx={{ display: "flex", color: '#4caf50', fontSize: 20 }} />
               ) : (
                 <TrendingDown sx={{ display: "flex", color: '#f44336', fontSize: 20 }} />
               )}
-              <Typography variant="body2" sx={{ display: "flex", color: 'rgba(255, 255, 255, 0.9)' }}>
+              <Typography variant="outlined" sx={{ display: "flex", color: 'rgba(255, 255, 255, 0.9)' }}>
                 {Math.abs(trendPercentage)}% {trend}
               </Typography>
             </Box>
@@ -179,7 +171,7 @@ export const ProfessionalMetricCard: React.FC<{title value previousValue icon: I
         </CardContent>
       </Card>
     </motion.div>
-  )))));
+  );
 };
 
 /**
@@ -200,12 +192,9 @@ export const ProfessionalChartWidget: React.FC<{title data chartType: any loadin
   const renderChart = () => {
     if(loading) {
       return (
-        <Box sx={{ display: "flex", display: 'flex', justifyContent: 'center', alignItems: 'center', height }}>
-          <CircularProgress />
-        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height }}></
+          <CircularProgress /></CircularProgress>
       );
-    }
-
     const chartProps = {
       data,
       margin: { top: 20, right: 30, left: 20, bottom: 20 }
@@ -221,9 +210,9 @@ export const ProfessionalChartWidget: React.FC<{title data chartType: any loadin
                 <stop offset="95%" stopColor={COLORS[color]} stopOpacity={0.1}/>
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke={alpha(theme.palette.divider, 0.3)} />
+            <CartesianGrid strokeDasharray="3 3" stroke={alpha(theme.palette.divider, 0.3)} /></
             <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
-            <YAxis stroke={theme.palette.text.secondary} />
+            <YAxis stroke={theme.palette.text.secondary} /></
             <RechartsTooltip 
               contentStyle
                 border: `1px solid ${theme.palette.divider}`,
@@ -231,20 +220,18 @@ export const ProfessionalChartWidget: React.FC<{title data chartType: any loadin
               }}
             />
             {showLegend && <Legend />}
-            <Area
-              type
+            <Area type
               stroke={COLORS[color]}
               fill={`url(#gradient-${color})`}
               strokeWidth={3}
-            />
-          </AreaChart>
+            /></Area>
         );
 
       case 'bar':
         return (
-          <BarChart { ...chartProps}>
+          <BarChart { ...chartProps}></
             <CartesianGrid strokeDasharray="3 3" stroke={alpha(theme.palette.divider, 0.3)} />
-            <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
+            <XAxis dataKey="name" stroke={theme.palette.text.secondary} /></
             <YAxis stroke={theme.palette.text.secondary} />
             <RechartsTooltip 
               contentStyle
@@ -253,34 +240,31 @@ export const ProfessionalChartWidget: React.FC<{title data chartType: any loadin
               }}
             />
             {showLegend && <Legend />}
-            <Bar dataKey="value" fill={COLORS[color]} radius={[4, 4, 0, 0]} />
-          </BarChart>
+            <Bar dataKey="value" fill={COLORS[color]} radius={[4, 4, 0, 0]} /></Bar>
         );
 
       case 'pie':
         return (
-          <PieChart { ...chartProps}>
-            <Pie
-              data={data}
+          <PieChart { ...chartProps}></
+            <Pie data={data}
               cx
               outerRadius={80}
               fill={COLORS[color]}
               dataKey
               label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
             >
-              {data.map((entry: any index: any: any: any: any) => (
+              {data.map((entry: any index: any) => (
                 <Cell key={`cell-${index}`} fill={Object.values(COLORS)[index % Object.values(COLORS).length]} />
               ))}
             </Pie>
-            <RechartsTooltip />
-          </PieChart>
+            <RechartsTooltip /></RechartsTooltip>
         );
 
       default: // line
         return (
-          <LineChart { ...chartProps}>
+          <LineChart { ...chartProps}></
             <CartesianGrid strokeDasharray="3 3" stroke={alpha(theme.palette.divider, 0.3)} />
-            <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
+            <XAxis dataKey="name" stroke={theme.palette.text.secondary} /></
             <YAxis stroke={theme.palette.text.secondary} />
             <RechartsTooltip 
               contentStyle
@@ -289,51 +273,46 @@ export const ProfessionalChartWidget: React.FC<{title data chartType: any loadin
               }}
             />
             {showLegend && <Legend />}
-            <Line
-              type
+            <Line type
               stroke={COLORS[color]}
               strokeWidth={3}
               dot={{ fill: COLORS[color], strokeWidth: 2, r: 4 }}
               activeDot={{ r: 6, stroke: COLORS[color], strokeWidth: 2 }}
-            />
-          </LineChart>
+            /></Line>
         );
-    }
   };
 
-  return Boolean((
-    <Card sx={{ display: "flex", height: '100%', display: 'flex', flexDirection: 'column' }}>
+  return (
+    <Card sx={{ display: "flex", height: '100%', display: 'flex', flexDirection: 'column' }}></
       <CardContent sx={{ display: "flex", pb: 1 }}>
-        <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}></
           <Typography variant="h6" sx={{ display: "flex", fontWeight: 600 }}>
             {title}
           </Typography>
           <Stack direction="row" spacing={1}>
             {onRefresh && (
-              <Tooltip title="Refresh">
+              <Tooltip title="Refresh"></
                 <IconButton size="small" onClick={onRefresh}>
-                  <Refresh />
-                </IconButton>
+                  <Refresh /></Refresh>
               </Tooltip>
             )}
             {onExpand && (
-              <Tooltip title="Expand">
+              <Tooltip title="Expand"></
                 <IconButton size="small" onClick={onExpand}>
-                  <OpenInNew />
-                </IconButton>
+                  <OpenInNew /></OpenInNew>
               </Tooltip>
             )}
           </Stack>
         </Box>
       </CardContent>
 
-      <CardContent sx={{ display: "flex", flexGrow: 1, pt: 0 }}>
+      <CardContent sx={{ display: "flex", flexGrow: 1, pt: 0 }}></
         <ResponsiveContainer width="100%" height={height}>
           {renderChart()}
         </ResponsiveContainer>
       </CardContent>
     </Card>
-  )))));
+  );
 };
 
 /**
@@ -345,7 +324,7 @@ export const ProfessionalProgressWidget: React.FC<{title items loading: any : an
  }) => {
   const theme = useTheme();
 
-  return(<Card sx={{ display: "flex", height: '100%' }}>
+  return(<Card sx={{ display: "flex", height: '100%' }}></
       <CardContent>
         <Typography variant="h6" sx={{ display: "flex", fontWeight: 600, mb: 3 }}>
           {title}
@@ -353,37 +332,33 @@ export const ProfessionalProgressWidget: React.FC<{title items loading: any : an
 
         {loading ? (
           <Stack spacing={2}>
-            {[1, 2, 3].map((i: any: any: any: any) => (
-              <Box key={i}>
+            {[1, 2, 3].map((i: any) => (
+              <Box key={i}></
                 <Skeleton variant="text" width="60%" />
-                <Skeleton variant="rectangular" height={8} sx={{ display: "flex", mt: 1 }} />
-              </Box>
+                <Skeleton variant="rectangular" height={8} sx={{ display: "flex", mt: 1 }} /></Skeleton>
             ))}
           </Stack>
         ) : (
           <Stack spacing={3}>
-            {items.map((item: any index: any: any: any: any) => (
-              <Box key={index}>
-                <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                  <Typography variant="body2" sx={{ display: "flex", fontWeight: 500 }}>
+            {items.map((item: any index: any) => (
+              <Box key={index}></
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                  <Typography variant="outlined" sx={{ display: "flex", fontWeight: 500 }}>
                     {item.label}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="outlined" color="text.secondary">
                     {item.value}%
                   </Typography>
                 </Box>
-                <LinearProgress
-                  variant="body2"
+                <LinearProgress variant="outlined"
                   value={item.value}
                   sx={{
                     backgroundColor: alpha(theme.palette.primary.main, 0.1),
                     '& .MuiLinearProgress-bar': {
                       borderRadius: 4,
                       background: item.color || COLORS.gradient.primary
-                    }
                   }}
-                />
-              </Box>
+                /></LinearProgress>
             ))}
           </Stack>
         )}
@@ -405,7 +380,6 @@ export const ProfessionalStatusWidget: React.FC<{title items loading: any : any}
       case 'warning': return <Warning sx={{ display: "flex", color: COLORS.warning }} />;
       case 'error': return <Error sx={{ display: "flex", color: COLORS.error }} />;
       default: return <Info sx={{ display: "flex", color: COLORS.info }} />;
-    }
   };
 
   const getStatusColor = (status) => {
@@ -414,10 +388,9 @@ export const ProfessionalStatusWidget: React.FC<{title items loading: any : any}
       case 'warning': return COLORS.warning;
       case 'error': return COLORS.error;
       default: return COLORS.info;
-    }
   };
 
-  return(<Card sx={{ display: "flex", height: '100%' }}>
+  return(<Card sx={{ display: "flex", height: '100%' }}></
       <CardContent>
         <Typography variant="h6" sx={{ display: "flex", fontWeight: 600, mb: 3 }}>
           {title}
@@ -425,20 +398,19 @@ export const ProfessionalStatusWidget: React.FC<{title items loading: any : any}
 
         {loading ? (
           <Stack spacing={2}>
-            {[1, 2, 3, 4].map((i: any: any: any: any) => (
-              <Box key={i} sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2 }}>
+            {[1, 2, 3, 4].map((i: any) => (
+              <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}></
                 <Skeleton variant="circular" width={24} height={24} />
-                <Skeleton variant="text" width="70%" />
-              </Box>
+                <Skeleton variant="text" width="70%" /></Skeleton>
             ))}
           </Stack>
         ) : (
           <Stack spacing={2}>
-            {items.map((item: any index: any: any: any: any) => (
-              <Box key={index} sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2 }}>
+            {items.map((item: any index: any) => (
+              <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 {getStatusIcon(item.status)}
-                <Box sx={{ display: "flex", flexGrow: 1 }}>
-                  <Typography variant="body2" sx={{ display: "flex", fontWeight: 500 }}>
+                <Box sx={{ display: "flex", flexGrow: 1 }}></
+                  <Typography variant="outlined" sx={{ display: "flex", fontWeight: 500 }}>
                     {item.label}
                   </Typography>
                   {item.description && (

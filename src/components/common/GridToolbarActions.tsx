@@ -43,15 +43,15 @@ const GridToolbarActions: React.FC<{config selectedCount hasSelection onAdd onEd
   canInfo,
   onInfo
  }) => {
-  return Boolean((
-    <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: spacing }}>
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: spacing }}>
       {/* Add Button */}
       {config.showAdd && (
-        <TooltipWrapper title={translate('add', 'Add New')} disabled={loading}>
+        <TooltipWrapper title={translate('add', 'Add New')} disabled={loading}></
           <Button
             startIcon={<AddIcon />}
             onClick={onAdd}
-            variant="body2"
+            variant="outlined"
             size={buttonSize}
             disabled={loading}
           >
@@ -62,11 +62,11 @@ const GridToolbarActions: React.FC<{config selectedCount hasSelection onAdd onEd
 
       {/* Edit Button */}
       {config.showEdit && (
-        <TooltipWrapper title={translate('edit', 'Edit Selected')} disabled={!hasSelection || loading}>
+        <TooltipWrapper title={translate('edit', 'Edit Selected')} disabled={!hasSelection || loading}></
           <Button
             startIcon={<EditIcon />}
             onClick={onEdit}
-            variant="body2"
+            variant="outlined"
             size={buttonSize}
             disabled={!hasSelection || loading}
           >
@@ -77,11 +77,11 @@ const GridToolbarActions: React.FC<{config selectedCount hasSelection onAdd onEd
 
       {/* Delete Button */}
       {config.showDelete && (
-        <TooltipWrapper title={translate('delete', 'Delete Selected')} disabled={!hasSelection || loading}>
+        <TooltipWrapper title={translate('delete', 'Delete Selected')} disabled={!hasSelection || loading}></
           <Button
             startIcon={<DeleteIcon />}
             onClick={onDelete}
-            variant="body2"
+            variant="outlined"
             size={buttonSize}
             disabled={!hasSelection || loading}
           >
@@ -92,11 +92,11 @@ const GridToolbarActions: React.FC<{config selectedCount hasSelection onAdd onEd
 
       {/* Sync Button */}
       {config.showSync && (
-        <TooltipWrapper title={translate('sync', 'Sync Data')} disabled={loading}>
+        <TooltipWrapper title={translate('sync', 'Sync Data')} disabled={loading}></
           <Button
             startIcon={<SyncIcon />}
             onClick={onSync}
-            variant="body2"
+            variant="outlined"
             size={buttonSize}
             disabled={loading}
           >
@@ -109,11 +109,11 @@ const GridToolbarActions: React.FC<{config selectedCount hasSelection onAdd onEd
 
       {/* Import Button */}
       {config.showImport && (
-        <TooltipWrapper title={translate('import', 'Import Data')} disabled={loading}>
+        <TooltipWrapper title={translate('import', 'Import Data')} disabled={loading}></
           <Button
             startIcon={<ImportIcon />}
             onClick={onImport}
-            variant="body2"
+            variant="outlined"
             size={buttonSize}
             disabled={loading}
           >
@@ -124,11 +124,11 @@ const GridToolbarActions: React.FC<{config selectedCount hasSelection onAdd onEd
 
       {/* Info Button */}
       {canInfo && (
-        <TooltipWrapper title={translate('info', 'Information')} disabled={loading}>
+        <TooltipWrapper title={translate('info', 'Information')} disabled={loading}></
           <Button
             startIcon={<InfoIcon />}
             onClick={onInfo}
-            variant="body2"
+            variant="outlined"
             size={buttonSize}
             disabled={loading}
           >
@@ -139,11 +139,11 @@ const GridToolbarActions: React.FC<{config selectedCount hasSelection onAdd onEd
 
       {/* Export Button */}
       {config.showExport && (
-        <TooltipWrapper title={translate('export', 'Export Data')} disabled={loading}>
+        <TooltipWrapper title={translate('export', 'Export Data')} disabled={loading}></
           <Button
             startIcon={<ExportIcon />}
             onClick={onExport}
-            variant="body2"
+            variant="outlined"
             size={buttonSize}
             disabled={loading}
           >
@@ -154,9 +154,9 @@ const GridToolbarActions: React.FC<{config selectedCount hasSelection onAdd onEd
 
       {/* Sync Stocks Button - Only for MDM grids */}
       {mdmStocks && typeof onSyncStocksHandler === 'function' && (
-        <TooltipWrapper title={translate('syncStocks', 'Mark changed stocks for sync')} disabled={loading}>
+        <TooltipWrapper title={translate('syncStocks', 'Mark changed stocks for sync')} disabled={loading}></
           <Button
-            variant="body2"
+            variant="outlined"
             size={buttonSize}
             onClick={onSyncStocksHandler}
             startIcon={<AutorenewIcon />}
@@ -169,9 +169,9 @@ const GridToolbarActions: React.FC<{config selectedCount hasSelection onAdd onEd
 
       {/* Sync All Handler - Only for MDM grids */}
       {mdmStocks && typeof onSyncAllHandler === 'function' && (
-        <TooltipWrapper title={translate('syncAll', 'Sync all data')} disabled={loading}>
+        <TooltipWrapper title={translate('syncAll', 'Sync all data')} disabled={loading}></
           <Button
-            variant="body2"
+            variant="outlined"
             size={buttonSize}
             onClick={onSyncAllHandler}
             startIcon={<SyncIcon />}
@@ -183,40 +183,32 @@ const GridToolbarActions: React.FC<{config selectedCount hasSelection onAdd onEd
       )}
 
       {/* Custom Actions */}
-      {customActions.map((action: any index: any: any: any: any) => {
+      {customActions.map((action, index) => {
         // Safely render icon - ensure it's a valid React element
         const renderIcon = () => {
-          if (!action?.icon) return null))));
+          if (!action?.icon) return null;
 
           // Handle Material-UI icon components (functions)
           if(typeof action?.icon === 'function') {
             const IconComponent = action?.icon;
             return <IconComponent />;
-          }
-
           // Handle React elements
           if (React.isValidElement(action?.icon)) {
             return action?.icon;
-          }
-
           // Invalid icon type - return null to avoid prop type warning
           return null;
         };
 
         return (
-          <TooltipWrapper 
-            key={index} 
+          <TooltipWrapper key={index} 
             title={action?.tooltip || action?.label}
-            disabled={action?.disabled || loading}
-          >
-            <Button
-              startIcon={renderIcon()}
+            disabled={action?.disabled || loading}></
+            <Button startIcon={renderIcon()}
               onClick={action?.onClick}
               variant={action?.variant || 'outlined'}
               color={action?.color || 'primary'}
               size={buttonSize}
-              disabled={action?.disabled || loading}
-            >
+              disabled={action?.disabled || loading}>
               {config.compact ? '' : action?.label}
             </Button>
           </TooltipWrapper>

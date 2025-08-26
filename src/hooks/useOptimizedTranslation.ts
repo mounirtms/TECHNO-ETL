@@ -15,14 +15,10 @@ export const useOptimizedTranslation = (enableI18n = true) => {
     // Return fallback immediately if i18n is disabled
     if(!enableI18n) {
       return fallback;
-    }
-
     // Check cache first
     const cacheKey = `${key}:${fallback}`;
     if (translationCache.current.has(cacheKey)) {
       return translationCache.current.get(cacheKey);
-    }
-
     try {
       const result = t(key, fallback);
       // Cache successful translations
@@ -33,9 +29,7 @@ export const useOptimizedTranslation = (enableI18n = true) => {
       if (!errorCache.current.has(key )) {
         console.warn(`Translation failed for key: ${key}`, error);
         errorCache.current.add(key );
-      }
       return fallback;
-    }
   }, [t, enableI18n]);
 
   // Clear cache when language changes (detected by t function change)

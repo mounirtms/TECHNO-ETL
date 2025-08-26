@@ -59,7 +59,6 @@ const SERVICE_CONFIG: ServiceConfigRegistry = {
     timeout: 5000,
     retries: 1,
     cacheTimeout: 30 * 1000, // 30 seconds
-  }
 };
 
 /**
@@ -75,8 +74,6 @@ class CircuitBreaker implements ICircuitBreaker {
     this.failureCount = 0;
     this.lastFailureTime = null;
     this.state = 'CLOSED'; // CLOSED, OPEN, HALF_OPEN
-  }
-
   async execute<T>(operation: () => Promise<T>): Promise<T> {
     if(this.state === 'OPEN') {
       if (Date.now() - (this.lastFailureTime || 0) > this.timeout) {
@@ -84,9 +81,6 @@ class CircuitBreaker implements ICircuitBreaker {
         console.log(`🔄 Circuit breaker ${this.name} transitioning to HALF_OPEN`);
       } else {
         throw new Error(`Circuit breaker ${this.name} is OPEN`);
-      }
-    }
-
     try {
       const result = await operation();
       this.onSuccess();
@@ -94,14 +88,9 @@ class CircuitBreaker implements ICircuitBreaker {
     } catch(error: any) {
       this.onFailure();
       throw error;
-    }
-  }
-
   onSuccess() {
     this.failureCount = 0;
     this.state = 'CLOSED';
-  }
-
   onFailure() {
     this.failureCount++;
     this.lastFailureTime = Date.now();
@@ -109,9 +98,6 @@ class CircuitBreaker implements ICircuitBreaker {
     if(this.failureCount >= this.threshold) {
       this.state = 'OPEN';
       console.warn(`🚨 Circuit breaker ${this.name} is now OPEN`);
-    }
-  }
-
   getState(): CircuitBreakerStatus {
     return {
       name: this.name,
@@ -119,9 +105,6 @@ class CircuitBreaker implements ICircuitBreaker {
       failureCount: this.failureCount,
       lastFailureTime: this.lastFailureTime
     };
-  }
-}
-
 /**
  * Advanced API Service Factory Class
  * Creates and manages API service instances with intelligent features
@@ -154,8 +137,6 @@ class ApiServiceFactory implements ApiServiceFactoryInterface {
     Object.keys(SERVICE_CONFIG).forEach((serviceType) => {
       this.circuitBreakers.set(serviceType, new CircuitBreaker(serviceType));
     });
-  }
-
   /**
    * Create or retrieve a service instance
    */
@@ -164,14 +145,10 @@ class ApiServiceFactory implements ApiServiceFactoryInterface {
     
     if (this.services.has(cacheKey)) {
       return this.services.get(cacheKey)!;
-    }
-
     const service = this.createService(serviceType, customConfig);
     this.services.set(cacheKey, service);
     
     return service;
-  }
-
   /**
    * Create a new service instance with advanced configuration
    */
@@ -184,8 +161,6 @@ class ApiServiceFactory implements ApiServiceFactoryInterface {
     if(serviceType === 'magento' && customConfig.directUrl && config.allowDirectUrl) {
       config.baseURL = customConfig.directUrl;
       console.log(`🔗 Using direct Magento URL: ${config.baseURL}`);
-    }
-
     // Create axios instance
     const axiosInstance = axios.create({
       baseURL: config.baseURL,
@@ -196,7 +171,6 @@ class ApiServiceFactory implements ApiServiceFactoryInterface {
         'X-Client': 'Techno-ETL-Frontend',
         'X-Version': '2.0.0',
         ...customConfig.headers
-      }
     }) as EnhancedAxiosInstance;
 
     // Add request interceptor
@@ -216,7 +190,6 @@ class ApiServiceFactory implements ApiServiceFactoryInterface {
             errors: 0,
             totalDuration: 0
           };
-        }
         this.globalMetrics.serviceMetrics[serviceType].requests++;
         
         console.log(`🚀 ${serviceType.toUpperCase()} Request [${enhancedConfig.metadata.requestId}]: ${enhancedConfig.method?.toUpperCase()} ${enhancedConfig.url}`);
@@ -225,7 +198,6 @@ class ApiServiceFactory implements ApiServiceFactoryInterface {
       (error) => {
         console.error(`❌ ${serviceType.toUpperCase()} Request Error:`, error);
         return Promise.reject(error);
-      }
     );
 
     // Add response interceptor with circuit breaker
@@ -258,8 +230,6 @@ class ApiServiceFactory implements ApiServiceFactoryInterface {
         this.globalMetrics.totalErrors++;
         if(this.globalMetrics.serviceMetrics[serviceType]) {
           this.globalMetrics.serviceMetrics[serviceType].errors++;
-        }
-        
         console.error(`❌ ${serviceType.toUpperCase()} Error [${requestId}]: ${enhancedError.message} (${duration}ms)`);
         
         // Add metadata to error
@@ -272,14 +242,12 @@ class ApiServiceFactory implements ApiServiceFactoryInterface {
         };
         
         return Promise.reject(enhancedError);
-      }
     );
 
     // Add circuit breaker wrapper
     const circuitBreaker = this.circuitBreakers.get(serviceType);
     if(!circuitBreaker) {
       throw new Error(`Circuit breaker for ${serviceType} not found`);
-    }
     const originalRequest = axiosInstance.request.bind(axiosInstance);
     
     axiosInstance.request = async <T = any, R = AxiosResponse<T>>(requestConfig: AxiosRequestConfig): Promise<R> => {
@@ -293,8 +261,6 @@ class ApiServiceFactory implements ApiServiceFactoryInterface {
     axiosInstance.clearCache = () => this.clearServiceCache(serviceType);
 
     return axiosInstance;
-  }
-
   /**
    * Get service health information
    */
@@ -319,8 +285,6 @@ class ApiServiceFactory implements ApiServiceFactoryInterface {
       healthy: circuitBreaker?.state === 'CLOSED' && errorRate < 10,
       timestamp: new Date().toISOString()
     };
-  }
-
   /**
    * Get comprehensive system metrics
    */
@@ -347,8 +311,6 @@ class ApiServiceFactory implements ApiServiceFactoryInterface {
       services,
       timestamp: new Date().toISOString()
     };
-  }
-
   /**
    * Determine if an error is retryable
    */
@@ -357,8 +319,6 @@ class ApiServiceFactory implements ApiServiceFactoryInterface {
     if (error.response?.status >= 500) return true; // Server errors
     if (error.response?.status ===429) return true; // Rate limiting
     return false;
-  }
-
   /**
    * Clear cache for a specific service
    */
@@ -367,21 +327,14 @@ class ApiServiceFactory implements ApiServiceFactoryInterface {
     for([key] of this.services) {
       if (key.startsWith(serviceType)) {
         keysToDelete.push(key);
-      }
-    }
-    
     keysToDelete.forEach((key) => this.services.delete(key));
     console.log(`🗑️ Cleared cache for ${serviceType} service`);
-  }
-
   /**
    * Clear all service caches
    */
   clearAllCaches(): void {
     this.services.clear();
     console.log('🗑️ All service caches cleared');
-  }
-
   /**
    * Reset all metrics
    */
@@ -401,32 +354,19 @@ class ApiServiceFactory implements ApiServiceFactoryInterface {
     });
     
     console.log('📊 All metrics and circuit breakers reset');
-  }
-
   /**
    * Convenience methods for specific services
    */
   getDashboardService(customConfig: Partial<ServiceConfig> = {}): EnhancedAxiosInstance {
     return this.getService('dashboard', customConfig);
-  }
-
   getMDMService(customConfig: Partial<ServiceConfig> = {}): EnhancedAxiosInstance {
     return this.getService('mdm', customConfig);
-  }
-
   getTaskService(customConfig: Partial<ServiceConfig> = {}): EnhancedAxiosInstance {
     return this.getService('task', customConfig);
-  }
-
   getMagentoService(customConfig: Partial<ServiceConfig> = {}): EnhancedAxiosInstance {
     return this.getService('magento', customConfig);
-  }
-
   getHealthService(customConfig: Partial<ServiceConfig> = {}): EnhancedAxiosInstance {
     return this.getService('health', customConfig);
-  }
-}
-
 // Create singleton instance
 const apiServiceFactory = new ApiServiceFactory();
 

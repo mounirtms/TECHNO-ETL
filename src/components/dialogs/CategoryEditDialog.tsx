@@ -76,8 +76,6 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
       if(category.id) {
         const breadcrumbData = categoryService.getCategoryBreadcrumb(category.id);
         setBreadcrumb(breadcrumbData);
-      }
-    }
   }, [category]);
   
   // Load parent categories for dropdown
@@ -86,7 +84,7 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
       try {
         // Get all categories except current one and its children
         const allCategories = categoryService.getAllCategories();
-        const filteredCategories = allCategories.filter((cat: any: any: any: any) => 
+        const filteredCategories = allCategories.filter((cat: any) => 
           cat.id !== formData.id && 
           // Don't include children of current category as potential parents
           !cat.path?.includes(`${formData.name} >`)
@@ -95,12 +93,10 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
         setParentCategories(filteredCategories);
       } catch(error: any) {
         console.error('Error loading parent categories:', error);
-      }
     };
     
     if(open) {
       loadParentCategories();
-    }
   }, [open, formData.id, formData.name]);
   
   const handleChange = (e) => {
@@ -118,8 +114,6 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
       if (!formData.name.trim()) {
         toast.error('Category name is required');
         return;
-      }
-      
       // In a real app, this would save to the backend
       // For now, we'll just simulate a save
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -132,20 +126,15 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
       toast.error('Failed to save category');
     } finally {
       setLoading(false);
-    }
   };
   
-  return Boolean((
-    <Dialog 
-      open={open} 
+  return (
+    <Dialog open={open} 
       onClose={onClose} 
       maxWidth
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
-        }
-      }}
-    >
+      }}></
       <DialogTitle sx={{ 
-        display: "flex", 
         display: 'flex', 
         alignItems: 'center', 
         gap: 1,
@@ -162,7 +151,7 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
         {/* Breadcrumb */}
         {breadcrumb.length > 0 && (
           <Box sx={{ display: "flex", mb: 2, display: 'flex', flexWrap: 'wrap', gap: 0.5, alignItems: 'center' } as any}>
-            {breadcrumb.map((item: any index: any: any: any: any) => (
+            {breadcrumb.map((item: any index: any) => (
               <React.Fragment key={item.id}>
                 {index > 0 && <ArrowRightIcon fontSize="small" color="action" />}
                 <Chip 
@@ -178,15 +167,14 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
         
         <Grid { ...{container: true}} spacing={2}>
           {/* Basic Information */}
-          <Grid item xs={12}>
+          <Grid item xs={12}></
             <Typography variant="subtitle1" fontWeight={600} gutterBottom>
               Basic Information
             </Typography>
           </Grid>
           
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
+          <Grid item xs={12} sm={6}></
+            <TextField fullWidth
               label
               value={formData.name}
               onChange={(e) => handleChange}
@@ -196,18 +184,17 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
             />
           </Grid>
           
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6}></
             <FormControl fullWidth>
               <InputLabel>Parent Category</InputLabel>
-              <Select
-                name
+              <Select name
                 value={formData.parent_id}
                 onChange={(e) => handleChange}
                 label
                 <MenuItem value={0}>
                   <em>Root Category</em>
                 </MenuItem>
-                {parentCategories.map((category: any: any: any: any) => (
+                {parentCategories.map((category: any) => (
                   <MenuItem key={category.id} value={category.id}>
                     {'  '.repeat(category.level)}{category.name}
                   </MenuItem>
@@ -216,9 +203,8 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
             </FormControl>
           </Grid>
           
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
+          <Grid item xs={12} sm={6}></
+            <TextField fullWidth
               label
               value={formData.position}
               onChange={(e) => handleChange}
@@ -226,23 +212,19 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
             />
           </Grid>
           
-          <Grid item xs={12} sm={6}>
-            <Box sx={{ display: "flex", display: 'flex', gap: 2 } as any}>
-              <FormControlLabel
-                control
+          <Grid item xs={12} sm={6}></
+            <Box sx={{ display: 'flex', gap: 2 } as any}>
+              <FormControlLabel control
                     checked={formData.is_active}
                     onChange={(e) => handleChange}
                     name
-                }
                 label
                     checked={formData.include_in_menu}
                     onChange={(e) => handleChange}
                     name
-                }
                 label
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
+          <Grid item xs={12}></
+            <TextField fullWidth
               label
               value={formData.description}
               onChange={(e) => handleChange}
@@ -252,25 +234,23 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
           </Grid>
           
           {/* SEO Information */}
-          <Grid item xs={12}>
+          <Grid item xs={12}></
             <Divider sx={{ display: "flex", my: 2 } as any} />
             <Typography variant="subtitle1" fontWeight={600} gutterBottom>
               SEO Information
             </Typography>
           </Grid>
           
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
+          <Grid item xs={12}></
+            <TextField fullWidth
               label
               value={formData.meta_title}
               onChange={(e) => handleChange}
             />
           </Grid>
           
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
+          <Grid item xs={12}></
+            <TextField fullWidth
               label
               value={formData.meta_keywords}
               onChange={(e) => handleChange}
@@ -279,9 +259,8 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
             />
           </Grid>
           
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
+          <Grid item xs={12}></
+            <TextField fullWidth
               label
               value={formData.meta_description}
               onChange={(e) => handleChange}
@@ -297,13 +276,13 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
         justifyContent: 'space-between',
         bgcolor: 'background.default',
         p: 2
-      } as any}>
+      } as any}></
         <Button 
           onClick={onClose}
           startIcon={<CancelIcon />}
           color
           onClick={handleSave}
-          variant="body2"
+          variant="outlined"
           startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
           disabled={loading || !formData.name.trim()}
         >
@@ -311,7 +290,7 @@ const CategoryEditDialog: React.FC<any> = ({ open, onClose, category, onSave }) 
         </Button>
       </DialogActions>
     </Dialog>
-  )))));
+  );
 };
 
 export default CategoryEditDialog;

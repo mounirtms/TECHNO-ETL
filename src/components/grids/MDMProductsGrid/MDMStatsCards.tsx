@@ -96,7 +96,6 @@ const MDMStatsCards = ({ stats  }: { stats: any }) => {
       icon: <AccountBalanceIcon/>,
       color: 'primary',
       description: 'Total inventory value'
-    }
   ].slice(0, 8), [stats]);
 
   return <StatsCards cards={statusCards} />;

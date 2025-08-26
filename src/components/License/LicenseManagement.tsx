@@ -79,12 +79,12 @@ const LicenseManagement = () => {
     const { currentUser } = useAuth();
     
     // Core state management
-    const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState<any[]>([]);
     const [licenses, setLicenses] = useState({});
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [error, setError] = useState(null);
-    const [selectedUser, setSelectedUser] = useState(null);
+    const [error, setError] = useState<string | null>(null);
+    const [selectedUser, setSelectedUser] = useState<any>(null);
     
     // UI state management
     const [searchTerm, setSearchTerm] = useState('');
@@ -123,13 +123,13 @@ const LicenseManagement = () => {
                 onValue(usersRef, async (usersSnapshot) => {
                     if (usersSnapshot.exists()) {
                         const usersData = usersSnapshot.val();
-                        const usersList = [];
+                        const usersList: any[] = [];
                         
                         // Get licenses data
                         const licensesSnapshot = await get(licensesRef);
                         const licensesData = licensesSnapshot.exists() ? licensesSnapshot.val() : {};
                         
-                        Object.entries(usersData).forEach(([userId, userData]) => {
+                        Object.entries(usersData).forEach(([userId, userData]: [string, any]) => {
                             const userLicense = licensesData[userId] || {};
                             usersList.push({
                                 uid: userId,
@@ -156,10 +156,8 @@ const LicenseManagement = () => {
                                 role: 'admin', // First user becomes admin
                                 createdAt: new Date().toISOString()
                             });
-                        }
-                    }
                     setLoading(false);
-                }, (error) => {
+                }, (error: any) => {
                     console.error('Error fetching users:', error);
                     setError('Failed to fetch users: ' + error.message);
                     setLoading(false);
@@ -168,13 +166,12 @@ const LicenseManagement = () => {
                 console.error('Error in fetchUsers:', error);
                 setError('Failed to initialize user management: ' + error.message);
                 setLoading(false);
-            }
         };
         
         fetchUsers();
     }, [currentUser]);
 
-    const handleLicenseChange = async (userId, permissions) => {
+    const handleLicenseChange = async (userId: string, permissions: any) => {
         try {
             setLoading(true);
             const currentLicense = await get_license_details(userId);
@@ -186,12 +183,11 @@ const LicenseManagement = () => {
         } catch(err: any) {
             setError('Failed to update license permissions');
             setLoading(false);
-        }
     };
 
-    const handleUserSelect = (event) => {
+    const handleUserSelect = (event: any) => {
         const userId = event.target.value;
-        const user = users.find(u => u?.uid ===userId);
+        const user = users.find(u => u?.uid === userId);
         setSelectedUser(user);
     };
 
@@ -200,54 +196,54 @@ const LicenseManagement = () => {
         
         const isLocalhost = window.location.hostname === 'localhost';
         
-        return(<Card sx={{ display: "flex", mt: 2 } as any}>
+        return(
+            <Card sx={{ mt: 2 }}></
                 <CardContent>
                     <Typography variant="h6" gutterBottom>
                         Menu Permissions for {selectedUser?.displayName || selectedUser?.email}
                     </Typography>
                     
-                    {MENU_TREE.map((category: any: any: any: any) => (
-                        <Accordion key={category.id} defaultExpanded>
+                    {MENU_TREE.map((category: any) => (<Accordion key={category.id} defaultExpanded></
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                                 <Box display="flex" alignItems="center" gap={1}>
                                     <category.icon />
                                     <Typography variant="subtitle1">
                                         {category.label}
                                     </Typography>
-                                    <Chip 
-                                        label={isLocalhost ? "Licensed" : "Check License"}
-                                        color={isLocalhost ? "success" : "warning"}
+                                    <Chip label={isLocalhost ? "Licensed" : "Check License"}
+                                        color={isLocalhost ? "success" , "warning"}
                                         size="small"
-                                <Grid { ...{container: true}} spacing={2}>
-                                    {category.children?.map((menuItem: any: any: any: any) => (<Grid item xs={12} md={6} key={menuItem.id}>
-                                            <Card variant="outlined" sx={{ display: "flex", p: 2 } as any}>
-                                                <Box display="flex" alignItems="center" justifyContent="space-between">
+                                    /></Chip>
+                            </AccordionSummary>
+                            <AccordionDetails></
+                                <Grid container spacing={2}>
+                                    {category.children?.map((menuItem: any) => (
+                                        <Grid item xs={12} md={6} key={menuItem.id}></
+                                            <Card variant="outlined" sx={{ p: 2 }}>
+                                                <Box display="flex" alignItems="center" justifyContent="space-between"></
                                                     <Box display="flex" alignItems="center" gap={1}>
                                                         <menuItem.icon fontSize="small" />
-                                                        <Typography variant="body2">
+                                                        <Typography variant="outlined">
                                                             {menuItem.label}
                                                         </Typography>
                                                     </Box>
-                                                    <Box display="flex" gap={1}>
+                                                    <Box display="flex" gap={1}></
                                                         <Tooltip title="Can Read">
-                                                            <Switch
-                                                                size="small"
+                                                            <Switch size="small"
                                                                 checked={isLocalhost || selectedUser?.canRead}
                                                                 onChange={(e) => handleLicenseChange(selectedUser?.uid, { canRead: e.target.checked })}
                                                                 disabled={isLocalhost}
                                                             />
                                                         </Tooltip>
-                                                        <Tooltip title="Can Edit">
-                                                            <Switch
-                                                                size="small"
+                                                        <Tooltip title="Can Edit"></
+                                                            <Switch size="small"
                                                                 checked={isLocalhost || selectedUser?.canEdit}
                                                                 onChange={(e) => handleLicenseChange(selectedUser?.uid, { canEdit: e.target.checked })}
                                                                 disabled={isLocalhost}
                                                             />
                                                         </Tooltip>
-                                                        <Tooltip title="Can Delete">
-                                                            <Switch
-                                                                size="small"
+                                                        <Tooltip title="Can Delete"></
+                                                            <Switch size="small"
                                                                 checked={isLocalhost || selectedUser?.canDelete}
                                                                 onChange={(e) => handleLicenseChange(selectedUser?.uid, { canDelete: e.target.checked })}
                                                                 disabled={isLocalhost}
@@ -269,46 +265,43 @@ const LicenseManagement = () => {
 
     if(loading) {
         return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
-                <CircularProgress />
-            </Box>
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}></
+                <CircularProgress /></CircularProgress>
         );
-    }
-
     return (
-        <Box p={3}>
+        <Box p={3}></
             <Typography variant="h4" gutterBottom>
                 License Management
             </Typography>
             
             {error && (
-                <Alert severity="error" sx={{ display: "flex", mb: 2 } as any}>
+                <Alert severity="error" sx={{ mb: 2 }}>
                     {error}
                 </Alert>
             )}
 
-            <Grid { ...{container: true}} spacing={3}>
+            <Grid container spacing={3}>
                 {/* Users Overview */}
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6}></
                     <Card>
-                        <CardContent>
+                        <CardContent></
                             <Typography variant="h6" gutterBottom>
                                 Users Overview
                             </Typography>
                             
-                            <FormControl fullWidth sx={{ display: "flex", mb: 2 } as any}>
+                            <FormControl fullWidth sx={{ mb: 2 }}></
                                 <InputLabel>Select User for Detailed View</InputLabel>
-                                <Select
-                                    value={selectedUser?.uid || ''}
-                                    onChange={(e) => handleUserSelect}
-                                    label
-                                        <MenuItem key={user?.uid} value={user?.uid}>
+                                <Select value={selectedUser?.uid || ''}
+                                    onChange={handleUserSelect}
+                                    label="Select User for Detailed View">
+                                    {users.map((user: any) => (
+                                        <MenuItem key={user?.uid} value={user?.uid}></
                                             <Box display="flex" alignItems="center" gap={2}>
-                                                <Avatar sx={{ display: "flex", width: 24, height: 24 } as any}>
+                                                <Avatar sx={{ width: 24, height: 24 }}>
                                                     {user?.role === 'admin' ? <AdminIcon /> : <PersonIcon />}
                                                 </Avatar>
-                                                <Box>
-                                                    <Typography variant="body2">
+                                                <Box></
+                                                    <Typography variant="outlined">
                                                         {user?.displayName || user?.email}
                                                     </Typography>
                                                     <Typography variant="caption" color="text.secondary">
@@ -321,9 +314,9 @@ const LicenseManagement = () => {
                                 </Select>
                             </FormControl>
 
-                            <TableContainer>
+                            <TableContainer></
                                 <Table size="small">
-                                    <TableHead>
+                                    <TableHead></
                                         <TableRow>
                                             <TableCell>User</TableCell>
                                             <TableCell>Role</TableCell>
@@ -332,15 +325,15 @@ const LicenseManagement = () => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {users.map((user: any: any: any: any) => (
-                                            <TableRow key={user?.uid}>
+                                        {users.map((user: any) => (
+                                            <TableRow key={user?.uid}></
                                                 <TableCell>
-                                                    <Box display="flex" alignItems="center" gap={1}>
-                                                        <Avatar sx={{ display: "flex", width: 24, height: 24 } as any}>
+                                                    <Box display="flex" alignItems="center" gap={1}></
+                                                        <Avatar sx={{ width: 24, height: 24 }}>
                                                             {user?.role === 'admin' ? <AdminIcon /> : <PersonIcon />}
                                                         </Avatar>
-                                                        <Box>
-                                                            <Typography variant="body2">
+                                                        <Box></
+                                                            <Typography variant="outlined">
                                                                 {user?.displayName || 'No Name'}
                                                             </Typography>
                                                             <Typography variant="caption" color="text.secondary">
@@ -349,19 +342,22 @@ const LicenseManagement = () => {
                                                         </Box>
                                                     </Box>
                                                 </TableCell>
-                                                <TableCell>
-                                                    <Chip 
-                                                        label={user?.role}
+                                                <TableCell></
+                                                    <Chip label={user?.role}
                                                         color={user?.role === 'admin' ? 'primary' : 'default'}
                                                         size="small"
+                                                    /></Chip>
+                                                <TableCell></
+                                                    <Chip 
                                                         icon={user?.isValid ? <CheckIcon /> : <CancelIcon />}
                                                         label={user?.isValid ? 'Active' : 'Inactive'}
                                                         color={user?.isValid ? 'success' : 'error'}
                                                         size="small"
-                                                        onClick={() => setSelectedUser(user)}
-                                                    >
-                                                        <ViewIcon />
-                                                    </IconButton>
+                                                    />
+                                                </TableCell>
+                                                <TableCell></
+                                                    <IconButton size="small" onClick={() => setSelectedUser(user)}>
+                                                        <ViewIcon /></ViewIcon>
                                                 </TableCell>
                                             </TableRow>
                                         ))}
@@ -373,22 +369,22 @@ const LicenseManagement = () => {
                 </Grid>
 
                 {/* Quick Permissions */}
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12} md={6}></
                     <Card>
-                        <CardContent>
+                        <CardContent></
                             <Typography variant="h6" gutterBottom>
                                 Quick Permissions
                             </Typography>
-                            {selectedUser ? (<Box>
-                                    <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 2 } as any}>
+                            {selectedUser ? (
+                                <Box></
+                                    <Typography variant="outlined" color="text.secondary" sx={{ mb: 2 }}>
                                         Managing permissions for {selectedUser?.displayName || selectedUser?.email}
                                     </Typography>
                                     
-                                    <Grid { ...{container: true}} spacing={2}>
+                                    <Grid container spacing={2}></
                                         <Grid item xs={4}>
-                                            <Box textAlign="center">
-                                                <Switch
-                                                    checked={selectedUser?.canRead}
+                                            <Box textAlign="center"></
+                                                <Switch checked={selectedUser?.canRead}
                                                     onChange={(e) => handleLicenseChange(selectedUser?.uid, { canRead: e.target.checked })}
                                                 />
                                                 <Typography variant="caption" display="block">
@@ -396,10 +392,9 @@ const LicenseManagement = () => {
                                                 </Typography>
                                             </Box>
                                         </Grid>
-                                        <Grid item xs={4}>
+                                        <Grid item xs={4}></
                                             <Box textAlign="center">
-                                                <Switch
-                                                    checked={selectedUser?.canEdit}
+                                                <Switch checked={selectedUser?.canEdit}
                                                     onChange={(e) => handleLicenseChange(selectedUser?.uid, { canEdit: e.target.checked })}
                                                 />
                                                 <Typography variant="caption" display="block">
@@ -407,10 +402,9 @@ const LicenseManagement = () => {
                                                 </Typography>
                                             </Box>
                                         </Grid>
-                                        <Grid item xs={4}>
+                                        <Grid item xs={4}></
                                             <Box textAlign="center">
-                                                <Switch
-                                                    checked={selectedUser?.canDelete}
+                                                <Switch checked={selectedUser?.canDelete}
                                                     onChange={(e) => handleLicenseChange(selectedUser?.uid, { canDelete: e.target.checked })}
                                                 />
                                                 <Typography variant="caption" display="block">
@@ -421,7 +415,7 @@ const LicenseManagement = () => {
                                     </Grid>
                                 </Box>
                             ) : (
-                                <Typography variant="body2" color="text.secondary">
+                                <Typography variant="outlined" color="text.secondary">
                                     Select a user to manage permissions
                                 </Typography>
                             )}
@@ -437,4 +431,3 @@ const LicenseManagement = () => {
 };
 
 export default LicenseManagement;
-

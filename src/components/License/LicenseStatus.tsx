@@ -36,8 +36,6 @@ const LicenseStatus = () => {
             setError('No user authenticated');
             setLoading(false);
             return;
-        }
-
         try {
             setLoading(true);
             setError(null);
@@ -54,7 +52,6 @@ const LicenseStatus = () => {
             console.error('Error checking license:', err);
         } finally {
             setLoading(false);
-        }
     };
 
     const activateTestLicense = async () => {
@@ -73,7 +70,6 @@ const LicenseStatus = () => {
             await checkCurrentLicense();
         } catch(err: any) {
             setError(err.message);
-        }
     };
 
     const deactivateLicense = async () => {
@@ -85,7 +81,6 @@ const LicenseStatus = () => {
             await checkCurrentLicense();
         } catch(err: any) {
             setError(err.message);
-        }
     };
 
     const setupAllTestLicenses = async () => {
@@ -96,7 +91,6 @@ const LicenseStatus = () => {
             await checkCurrentLicense();
         } catch(err: any) {
             setError(err.message);
-        }
     };
 
     useEffect(() => {
@@ -128,14 +122,11 @@ const LicenseStatus = () => {
 
     if(loading) {
         return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}>
-                <CircularProgress />
-            </Box>
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight={200}></
+                <CircularProgress /></CircularProgress>
         );
-    }
-
-    return Boolean((
-        <Box p={3}>
+    return (
+        <Box p={3}></
             <Typography variant="h4" gutterBottom>
                 License Status
             </Typography>
@@ -146,55 +137,53 @@ const LicenseStatus = () => {
                 </Alert>
             )}
 
-            <Grid { ...{container: true}} spacing={3}>
+            <Grid { ...{container: true}} spacing={3}></
                 <Grid item xs={12} md={8}>
-                    <Card>
+                    <Card></
                         <CardContent>
                             <Box display="flex" alignItems="center" gap={2} mb={2}>
                                 {getLicenseIcon()}
                                 <Typography variant="h6">
                                     License Status: 
-                                    <Chip 
-                                        label={getLicenseStatusText()} 
+                                    <Chip label={getLicenseStatusText()} 
                                         color={getLicenseStatusColor()}
                                         sx={{ display: "flex", ml: 1 } as any}
-                                    />
-                                </Typography>
+                                    /></Chip>
                             </Box>
 
                             {licenseDetails && (
                                 <>
-                                    <Divider sx={{ display: "flex", my: 2 } as any} />
+                                    <Divider sx={{ display: "flex", my: 2 } as any} /></
                                     <Typography variant="h6" gutterBottom>
                                         License Details
                                     </Typography>
-                                    <Grid { ...{container: true}} spacing={2}>
+                                    <Grid { ...{container: true}} spacing={2}></
                                         <Grid item xs={6}>
-                                            <Typography variant="body2" color="text.secondary">
+                                            <Typography variant="outlined" color="text.secondary">
                                                 License Type
                                             </Typography>
                                             <Typography variant="body1">
                                                 {licenseDetails?.licenseType || 'N/A'}
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={6}>
-                                            <Typography variant="body2" color="text.secondary">
+                                        <Grid item xs={6}></
+                                            <Typography variant="outlined" color="text.secondary">
                                                 Expiry Date
                                             </Typography>
                                             <Typography variant="body1">
                                                 {formatDate(licenseDetails?.expiryDate)}
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={6}>
-                                            <Typography variant="body2" color="text.secondary">
+                                        <Grid item xs={6}></
+                                            <Typography variant="outlined" color="text.secondary">
                                                 Created
                                             </Typography>
                                             <Typography variant="body1">
                                                 {formatDate(licenseDetails?.createdAt)}
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={6}>
-                                            <Typography variant="body2" color="text.secondary">
+                                        <Grid item xs={6}></
+                                            <Typography variant="outlined" color="text.secondary">
                                                 Last Updated
                                             </Typography>
                                             <Typography variant="body1">
@@ -205,11 +194,11 @@ const LicenseStatus = () => {
 
                                     {licenseDetails?.features && (
                                         <>
-                                            <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mt: 2, mb: 1 } as any}>
+                                            <Typography variant="outlined" color="text.secondary" sx={{ display: "flex", mt: 2, mb: 1 } as any}>
                                                 Available Features
                                             </Typography>
                                             <Box display="flex" gap={1} flexWrap="wrap">
-                                                {licenseDetails?.features.map((feature: any index: any: any: any: any) => (
+                                                {licenseDetails?.features.map((feature, index) => (
                                                     <Chip 
                                                         key={index} 
                                                         label={feature} 
@@ -224,46 +213,38 @@ const LicenseStatus = () => {
                     </Card>
                 </Grid>
 
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4}></
                     <Card>
-                        <CardContent>
+                        <CardContent></
                             <Typography variant="h6" gutterBottom>
                                 Test Actions
                             </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 2 } as any}>
+                            <Typography variant="outlined" color="text.secondary" sx={{ display: "flex", mb: 2 } as any}>
                                 Use these buttons to test license functionality
                             </Typography>
 
-                            <Box display="flex" flexDirection="column" gap={2}>
-                                <Button 
-                                    variant="body2"
+                            <Box display="flex" flexDirection="column" gap={2}></
+                                <Button variant="outlined"
                                     onClick={activateTestLicense}
-                                    disabled={loading}
-                                >
+                                    disabled={loading}>
                                     Activate Test License
                                 </Button>
 
-                                <Button 
-                                    variant="body2"
+                                <Button variant="outlined"
                                     onClick={deactivateLicense}
-                                    disabled={loading}
-                                >
+                                    disabled={loading}>
                                     Deactivate License
                                 </Button>
 
-                                <Button 
-                                    variant="body2"
+                                <Button variant="outlined"
                                     onClick={checkCurrentLicense}
-                                    disabled={loading}
-                                >
+                                    disabled={loading}>
                                     Refresh Status
                                 </Button>
 
-                                <Button 
-                                    variant="body2"
+                                <Button variant="outlined"
                                     onClick={setupAllTestLicenses}
-                                    disabled={loading}
-                                >
+                                    disabled={loading}>
                                     Setup All Test Licenses
                                 </Button>
                             </Box>
@@ -272,18 +253,18 @@ const LicenseStatus = () => {
                 </Grid>
             </Grid>
 
-            <Box mt={3}>
+            <Box mt={3}></
                 <Alert severity="info">
-                    <Typography variant="body2">
+                    <Typography variant="outlined">
                         <strong>Current User:</strong> {currentUser?.uid || 'Not authenticated'}
                     </Typography>
-                    <Typography variant="body2">
+                    <Typography variant="outlined">
                         <strong>User Type:</strong> {currentUser?.isMagentoUser ? 'Magento' : 'Firebase'}
                     </Typography>
                 </Alert>
             </Box>
         </Box>
-    )))));
+    );
 };
 
 export default LicenseStatus;

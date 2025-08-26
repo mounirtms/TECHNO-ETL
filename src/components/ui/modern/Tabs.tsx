@@ -7,8 +7,6 @@ interface TabsContextType {
   value: string;
   onValueChange: (value: string) => void;
   orientation?: 'horizontal' | 'vertical';
-}
-
 const TabsContext = React.createContext<TabsContextType | null>(null);
 
 // Tabs Root
@@ -18,8 +16,6 @@ interface TabsProps {
   defaultValue?: string;
   orientation?: 'horizontal' | 'vertical';
   children: React.ReactNode;
-}
-
 export const Tabs: React.FC<TabsProps> = ({
   value,
   onValueChange,
@@ -36,7 +32,6 @@ export const Tabs: React.FC<TabsProps> = ({
       onValueChange?.(newValue);
     } else {
       setInternalValue(newValue);
-    }
   };
 
   return (
@@ -70,15 +65,12 @@ const tabsListVariants = cva(
       variant: 'underline',
       orientation: 'horizontal',
     },
-  }
 );
 
 interface TabsListProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof tabsListVariants> {
   children: React.ReactNode;
-}
-
 export const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
   ({ className, variant, orientation: propOrientation, children, ...props }, ref) => {
     const context = React.useContext(TabsContext);
@@ -95,7 +87,6 @@ export const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
         {children}
       </div>
     );
-  }
 );
 
 TabsList.displayName = 'TabsList';
@@ -114,7 +105,6 @@ const tabsTriggerVariants = cva(
     defaultVariants: {
       variant: 'underline',
     },
-  }
 );
 
 interface TabsTriggerProps
@@ -123,8 +113,6 @@ interface TabsTriggerProps
   value: string;
   children: React.ReactNode;
   label?: string; // For compatibility with MUI
-}
-
 export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
   ({ className, variant, value, children, label, ...props }, ref) => {
     const context = React.useContext(TabsContext);
@@ -148,7 +136,6 @@ export const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>
         {children || label}
       </button>
     );
-  }
 );
 
 TabsTrigger.displayName = 'TabsTrigger';
@@ -157,8 +144,6 @@ TabsTrigger.displayName = 'TabsTrigger';
 interface TabsContentProps extends React.HTMLAttributes<HTMLDivElement> {
   value: string;
   children: React.ReactNode;
-}
-
 export const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
   ({ className, value, children, ...props }, ref) => {
     const context = React.useContext(TabsContext);
@@ -184,7 +169,6 @@ export const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
         {children}
       </div>
     );
-  }
 );
 
 TabsContent.displayName = 'TabsContent';

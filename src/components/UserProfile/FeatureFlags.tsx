@@ -86,8 +86,6 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
           description: 'Create and customize dashboard widgets',
           warning: 'Experimental feature',
           requiresRestart: true
-        }
-      }
     },
     realtime: {
       title: 'Real-time Features',
@@ -111,8 +109,6 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
           description: 'Multiple users can edit simultaneously',
           warning: 'Beta feature - may have conflicts',
           requiresRestart: true
-        }
-      }
     },
     integration: {
       title: 'API & Integration',
@@ -136,8 +132,6 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
           description: 'Build custom data connectors',
           warning: 'Advanced feature for developers',
           requiresRestart: true
-        }
-      }
     },
     developer: {
       title: 'Developer Tools',
@@ -167,8 +161,6 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
           description: 'Built-in API testing and debugging tools',
           warning: 'Developer feature',
           requiresRestart: false
-        }
-      }
     },
     experimental: {
       title: 'Experimental Features',
@@ -198,8 +190,6 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
           description: 'AI-powered predictive insights',
           warning: 'Experimental AI feature',
           requiresRestart: true
-        }
-      }
     },
     security: {
       title: 'Security & Compliance',
@@ -229,9 +219,6 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
           description: 'Generate compliance and regulatory reports',
           warning: 'Requires compliance configuration',
           requiresRestart: false
-        }
-      }
-    }
   };
 
   // Load feature flags on component mount
@@ -239,7 +226,6 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
     const savedFlags = localStorage.getItem(`featureFlags_${user?.id}`);
     if(savedFlags) {
       setFeatureFlags(JSON.parse(savedFlags));
-    }
   }, [user]);
 
   const handleFeatureToggle = (featureKey, enabled) => {
@@ -255,18 +241,15 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
       
       if(onSettingsChange) {
         onSettingsChange({ featureFlags });
-      }
-      
       setIsDirty(false);
       setShowSuccess(true);
     } catch(error: any) {
       console.error('Failed to save feature flags:', error);
       setShowError(true);
-    }
   };
 
   const handleReset = () => {
-    const defaultFlags = Object.keys(featureFlags).reduce((acc: any: any key: any: any: any: any) => {
+    const defaultFlags = Object.keys(featureFlags).reduce((acc: any key: any) => {
       acc[key] = false;
       return acc;
     }, {});
@@ -285,7 +268,6 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
       Object.entries(category.features).forEach(([featureKey, feature]) => {
         if(featureFlags[featureKey] && feature.requiresRestart) {
           restartFeatures.push(feature.name);
-        }
       });
     });
     return restartFeatures;
@@ -293,10 +275,10 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
 
   const restartRequired = getFeaturesRequiringRestart().length > 0;
 
-  return Boolean((
+  return (
     <Box sx={{ display: "flex", p: 3 }}>
       {/* Header */}
-      <Box sx={{ display: "flex", mb: 4 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", mb: 4 }}></
         <Typography variant="h5" sx={{ display: "flex", mb: 1, fontWeight: 600 }}>
           Feature Flags & Advanced Settings
         </Typography>
@@ -305,7 +287,7 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
         </Typography>
         
         {/* Summary */}
-        <Box sx={{ display: "flex", mt: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
+        <Box sx={{ display: "flex", mt: 2, display: 'flex', gap: 2, alignItems: 'center' }}></
           <Chip 
             icon={<Flag />} 
             label={`${getEnabledFeaturesCount()} features enabled`} 
@@ -317,21 +299,19 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
       </Box>
 
       {/* Feature Categories */}
-      {Object.entries(featureCategories).map(([categoryKey: any category]: any: any: any: any) => (
-        <Accordion key={categoryKey} defaultExpanded={categoryKey === 'advanced'}>
+      {Object.entries(featureCategories).map(([categoryKey, category]: any) => (
+        <Accordion key={categoryKey} defaultExpanded={categoryKey === 'advanced'}></
           <AccordionSummary expandIcon={<ExpandMore />}>
-            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               {category.icon}
               <Typography variant="h6">{category.title}</Typography>
-              <Chip 
-                size="small"
-                label={Object.keys(category.features).filter((key: any: any: any: any) => featureFlags[key]).length}
+              <Chip size="small"
+                label={Object.keys(category.features).filter((key: any) => featureFlags[key]).length}
                 color={category.color}
-                variant="body2"
-                <ListItem key={featureKey} divider>
-                  <ListItemText
-                    primary
-                      <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
+                variant="outlined"
+                <ListItem key={featureKey} divider></
+                  <ListItemText primary
+                      <Box sx={{ display: "flex", alignItems: 'center', gap: 1 }}></
                         <Typography variant="subtitle1" fontWeight={600}>
                           {feature.name}
                         </Typography>
@@ -339,26 +319,22 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
                           <Chip size="small" label="Restart" color="warning" variant="outlined" />
                         )}
                         {featureFlags[featureKey] && feature.warning && (
-                          <Tooltip title={feature.warning}>
-                            <Warning color="warning" fontSize="small" />
-                          </Tooltip>
+                          <Tooltip title={feature.warning}></
+                            <Warning color="warning" fontSize="small" /></Warning>
                         )}
                       </Box>
-                    }
                     secondary
                           {feature.description}
                         </Typography>
                         {feature.warning && featureFlags[featureKey] && (
-                          <Typography variant="caption" color="warning.main" sx={{ display: "flex", mt: 0.5, display: 'block' }}>
+                          <Typography variant="caption" color="warning.main" sx={{ display: 'block', mt: 0.5 }}>
                             ⚠️ {feature.warning}
                           </Typography>
                         )}
                       </Box>
-                    }
                   />
-                  <ListItemSecondaryAction>
-                    <Switch
-                      checked={featureFlags[featureKey]}
+                  <ListItemSecondaryAction></
+                    <Switch checked={featureFlags[featureKey]}
                       onChange={(e) => handleFeatureToggle(featureKey, e.target.checked)}
                       color={category.color}
                     />
@@ -372,17 +348,17 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
 
       {/* Restart Warning */}
       {restartRequired && (
-        <Alert severity="warning" sx={{ display: "flex", mt: 3 }}>
+        <Alert severity="warning" sx={{ display: "flex", mt: 3 }}></
           <Typography variant="subtitle2" sx={{ display: "flex", mb: 1 }}>
             Application restart required
           </Typography>
-          <Typography variant="body2">
+          <Typography variant="outlined">
             The following features require an application restart to take effect:
           </Typography>
           <Box component="ul" sx={{ display: "flex", mt: 1, mb: 0 }}>
-            {getFeaturesRequiringRestart().map((featureName: any index: any: any: any: any) => (
+            {getFeaturesRequiringRestart().map((featureName, index) => (
               <li key={index}>
-                <Typography variant="body2">{featureName}</Typography>
+                <Typography variant="outlined">{featureName}</Typography>
               </li>
             ))}
           </Box>
@@ -391,23 +367,22 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
 
       {/* Action Buttons */}
       <Box sx={{ 
-        display: "flex", 
         display: 'flex', 
         gap: 2, 
         justifyContent: 'flex-end',
         pt: 3,
         borderTop: `1px solid ${theme.palette.divider}`,
         mt: 3
-      }}>
+      }}></
         <Button
-          variant="body2"
+          variant="outlined"
           startIcon={<RestoreFromTrash />}
           onClick={handleReset}
         >
           Reset All
         </Button>
         <Button
-          variant="body2"
+          variant="outlined"
           startIcon={<Save />}
           onClick={handleSave}
           disabled={!isDirty}
@@ -417,8 +392,7 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
       </Box>
 
       {/* Success/Error Notifications */}
-      <Snackbar
-        open={showSuccess}
+      <Snackbar open={showSuccess}
         autoHideDuration={3000}
         onClose={() => setShowSuccess(false)}
       >
@@ -427,8 +401,7 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
         </Alert>
       </Snackbar>
 
-      <Snackbar
-        open={showError}
+      <Snackbar open={showError}
         autoHideDuration={5000}
         onClose={() => setShowError(false)}
       >
@@ -437,7 +410,7 @@ const FeatureFlags = ({ user, onSettingsChange  }: { user onSettingsChange: any 
         </Alert>
       </Snackbar>
     </Box>
-  )))));
+  );
 };
 
 export default FeatureFlags;

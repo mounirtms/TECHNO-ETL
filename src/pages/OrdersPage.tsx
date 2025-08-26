@@ -30,7 +30,7 @@ const OrdersPage = () => {
     setGridProps(newProps);
   }, [getStatus, getView, getSortBy, getPriority, isPendingOrdersView, params]);
 
-  return Boolean((
+  return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -45,8 +45,8 @@ const OrdersPage = () => {
             icon={<Warning />}
             sx={{ display: "flex", mb: 2, borderRadius: 2 }}
           >
-            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Typography variant="body2">
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}></
+              <Typography variant="outlined">
                 Showing pending orders that require immediate attention
               </Typography>
               {getPriority() ==='high' && (
@@ -60,12 +60,11 @@ const OrdersPage = () => {
         )}
 
         {/* Orders Grid */}
-        <Paper sx={{ display: "flex", borderRadius: 2, overflow: 'hidden' }}>
-          <OrdersGrid { ...gridProps} />
-        </Paper>
+        <Paper sx={{ display: "flex", borderRadius: 2, overflow: 'hidden' }}></
+          <OrdersGrid { ...gridProps} /></OrdersGrid>
       </Container>
     </motion.div>
-  )))));
+  );
 };
 
 export default OrdersPage;

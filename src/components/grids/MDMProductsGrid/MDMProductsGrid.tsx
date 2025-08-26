@@ -71,24 +71,22 @@ const MDMProductsGrid = () => {
 
   // ===== UTILITY FUNCTIONS (moved up to avoid initialization issues) =====
   const SyncProgressToast = useCallback(({ current, total }) => (
-    <Box sx={{ display: "flex", width: '100%', p: 1 }}>
+    <Box sx={{ display: "flex", width: '100%', p: 1 }}></
       <Typography variant="caption" sx={{ display: "flex", display: 'block', mb: 1 }}>
         {`Syncing ${current}/${total} items...`}
       </Typography>
-      <LinearProgress
-        variant="body2"
+      <LinearProgress variant="outlined"
         value={(current / total) * 100}
         sx={{ display: "flex", height: 8, borderRadius: 4 }}
-      />
-    </Box>
+      /></LinearProgress>
   ), []);
 
   const prepareSourceItemsPayload = useCallback((gridData, sourceMappings) => {
-    return Boolean(({
+    return ({
       sourceItems: gridData
-        .filter((item: any: any: any: any) => item?.Code_MDM && item?.QteStock !== null && item.Code_Source)
-        .map((item: any: any: any: any) => {
-          const sourceInfo = sourceMappings.find(s => s.code_source ===item.Code_Source)))));
+        .filter((item: any) => item?.Code_MDM && item?.QteStock !== null && item.Code_Source)
+        .map((item: any) => {
+          const sourceInfo = sourceMappings.find(s => s.code_source ===item.Code_Source);
           return {
             sku: item?.Code_MDM.toString(),
             source_code: sourceInfo?.magentoSource || '',
@@ -108,7 +106,6 @@ const MDMProductsGrid = () => {
       console.error('Batch sync error:', error);
       toast.error(`Sync failed: ${error.message}`);
       throw error;
-    }
   }, []);
 
   // ===== EVENT HANDLERS =====
@@ -116,11 +113,9 @@ const MDMProductsGrid = () => {
     if(!selectedBaseGridRows?.length) {
       toast.warning('Please select items to sync');
       return;
-    }
-
     try {
       setLoading(true);
-      const selectedData = data.filter((row: any: any: any: any) =>
+      const selectedData = data.filter((row: any) =>
         selectedBaseGridRows.includes(`${row?.Source}-${row?.Code_MDM}`)
       );
 
@@ -128,8 +123,6 @@ const MDMProductsGrid = () => {
       if(!payload.sourceItems.length) {
         toast.warning('No valid items to sync.');
         return;
-      }
-
       toast.info(<SyncProgressToast current={0} total={payload.sourceItems.length} />, {
         autoClose: true,
         closeOnClick: true,
@@ -142,13 +135,12 @@ const MDMProductsGrid = () => {
       toast.error('Failed to sync selected items.');
     } finally {
       setLoading(false);
-    }
   }, [selectedBaseGridRows, data, prepareSourceItemsPayload, processBatch, SyncProgressToast]);
 
   // ===== MEMOIZED VALUES =====
   const succursaleOptions = useMemo(() => {
-    const uniqueSuccursales = [...new Set(sourceMapping.map((s: any: any: any: any) => s.succursale))];
-    return uniqueSuccursales.map((succ: any: any: any: any) => ({
+    const uniqueSuccursales = [...new Set(sourceMapping.map((s: any) => s.succursale))];
+    return uniqueSuccursales.map((succ: any) => ({
       value: succ.toString(),
       label: `Branch ${succ}`
     }));
@@ -157,13 +149,13 @@ const MDMProductsGrid = () => {
   const sourceFilterOptions = useMemo(() => {
     const filteredSources = succursaleFilter === 'all'
       ? sourceMapping
-      : sourceMapping.filter((s: any: any: any: any) => s.succursale.toString() ===succursaleFilter);
+      : sourceMapping.filter((s: any) => s.succursale.toString() ===succursaleFilter);
 
     return [
       { value: 'all', label: 'All Sources' },
       ...filteredSources?.sort((a, b) =>
         a.code_source.toString().localeCompare(b.code_source.toString())
-      ).map((source: any: any: any: any) => ({
+      ).map((source: any) => ({
         value: source.code_source.toString(),
         label: source.source
       }))
@@ -244,8 +236,6 @@ const MDMProductsGrid = () => {
           }).format(params?.value);
         } catch(error: any) {
           return `${params?.value || 0} DZD`;
-        }
-      }
     },
     {
       field: 'QteReceptionner',
@@ -272,8 +262,6 @@ const MDMProductsGrid = () => {
           return new Date(params?.value).toLocaleDateString('fr-DZ');
         } catch(error: any) {
           return params?.value?.toString() || '';
-        }
-      }
     },
     {
       field: 'changed',
@@ -281,17 +269,14 @@ const MDMProductsGrid = () => {
       width: 100,
       type: 'boolean',
       renderCell: (params) => params?.value ? '✓' : ''
-    }
-  ].filter((col: any: any: any: any) => columnVisibility[col?.field] !== false), [columnVisibility]);
+  ].filter((col: any) => columnVisibility[col?.field] !== false), [columnVisibility]);
 
   // Add data validation to prevent grid crashes
   const validatedData = useMemo(() => {
     if (!Array.isArray(data)) {
       console.warn('MDMProductsGrid: data is not an array, using empty array');
       return [];
-    }
-
-    return data.map((item: any index: any: any: any: any) => {
+    return data.map((item: any index: any) => {
       // Ensure each item has required fields and valid data types
       return { ...item,
         Code_MDM: item?.Code_MDM || `unknown-${index}`,
@@ -333,7 +318,7 @@ const MDMProductsGrid = () => {
         succursale: succursaleFilter === 'all' ? '' : succursaleFilter || 16,
         sortField: sortParam,
         sortOrder,
-        ...filterModel.items.reduce((acc: any: any filter: any: any: any: any) => {
+        ...filterModel.items.reduce((acc: any filter: any) => {
           if (filter?.value) acc[filter?.field] = filter?.value;
           return acc;
         }, {}),
@@ -370,12 +355,12 @@ const MDMProductsGrid = () => {
 
       // Calculate statistics
       const total = totalCount;
-      const inStock = processedData.filter((item: any: any: any: any) => item?.QteStock > 0).length;
-      const outOfStock = processedData.filter((item: any: any: any: any) => item?.QteStock ===0).length;
-      const lowStock = processedData.filter((item: any: any: any: any) => item?.QteStock > 0 && item?.QteStock < 2).length;
-      const newChanges = processedData.filter((item: any: any: any: any) => item?.changed ===1).length;
-      const synced = processedData.filter((item: any: any: any: any) => item?.changed ===0).length;
-      const totalValue = processedData.reduce((acc: any curr: any: any: any: any) =>
+      const inStock = processedData.filter((item: any) => item?.QteStock > 0).length;
+      const outOfStock = processedData.filter((item: any) => item?.QteStock ===0).length;
+      const lowStock = processedData.filter((item: any) => item?.QteStock > 0 && item?.QteStock < 2).length;
+      const newChanges = processedData.filter((item: any) => item?.changed ===1).length;
+      const synced = processedData.filter((item: any) => item?.changed ===0).length;
+      const totalValue = processedData.reduce((acc: any curr: any) =>
         acc + ((curr?.Tarif || 0) * (curr?.QteStock || 0)), 0);
       const averagePrice = processedData.length > 0 ? totalValue / processedData.length : 0;
 
@@ -410,7 +395,6 @@ const MDMProductsGrid = () => {
       toast.error(`Failed to fetch inventory data: ${error.message}`);
     } finally {
       setLoading(false);
-    }
   }, [sourceFilter, succursaleFilter, showChangedOnly, searchValue]);
 
   // ===== SEARCH HANDLER =====
@@ -471,7 +455,6 @@ const MDMProductsGrid = () => {
     if(sourceFilter === 'all' || !sourceFilter) {
       toast.warning('Please select a specific source to sync all items.');
       return;
-    }
     try {
       setLoading(true);
       toast.info(<SyncProgressToast current={0} total={0} />, {
@@ -490,14 +473,12 @@ const MDMProductsGrid = () => {
       toast.error(`Failed to initiate sync for source ${sourceFilter}.`);
     } finally {
       setLoading(false);
-    }
   }, [sourceFilter, SyncProgressToast]);
 
   const onSyncStocksHandler = useCallback(async () => {
     if(sourceFilter === 'all' || !sourceFilter) {
       toast.warning('Please select a specific source to sync stocks.');
       return;
-    }
     try {
       setLoading(true);
       toast.info(`Marking changed stocks for source: ${sourceFilter}...`);
@@ -510,7 +491,6 @@ const MDMProductsGrid = () => {
       toast.error(`Failed to mark changed stocks for source ${sourceFilter}.`);
     } finally {
       setLoading(false);
-    }
   }, [sourceFilter]);
 
   // Use MDM-specific custom actions (these are unique to MDM and not standardized)
@@ -536,9 +516,8 @@ const MDMProductsGrid = () => {
 
   // ===== RENDER =====
   return(<>
-      <Box sx={{ display: "flex", flexShrink: 0, mb: 0.5 }}>
-        <MDMFilterPanel
-          succursaleOptions={succursaleOptions}
+      <Box sx={{ display: "flex", flexShrink: 0, mb: 0.5 }}></
+        <MDMFilterPanel succursaleOptions={succursaleOptions}
           succursaleFilter={succursaleFilter}
           onSuccursaleChange={setSuccursaleFilter}
           sourceFilterOptions={sourceFilterOptions}
@@ -548,13 +527,11 @@ const MDMProductsGrid = () => {
           onShowChangedOnlyChange={setShowChangedOnly}
           isExpanded={filterPanelExpanded}
           onToggleExpanded={setFilterPanelExpanded}
-        />
-      </Box>
+        /></MDMFilterPanel>
 
       {/* Main Grid Container with Standard Layout */}
 
-      <UnifiedGrid
-        { ...getStandardGridProps('mdm', {
+      <UnifiedGrid { ...getStandardGridProps('mdm', {
           gridName: "MDMProductsGrid",
           columns: columns,
           data: validatedData,

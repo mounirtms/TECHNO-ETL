@@ -77,7 +77,6 @@ const STATUS_CONFIG = {
     color: 'default',
     icon: Pause,
     label: 'On Hold'
-  }
 };
 
 /**
@@ -134,13 +133,12 @@ const VotingGrid: React.FC<{userId = 'current_user': any}> = ({ userId = 'curren
       ]);
       
       setFeatures(featuresData);
-      setUserVotes(new Set(votesData.map((vote: any: any: any: any) => vote.feature_id)));
+      setUserVotes(new Set(votesData.map((vote: any) => vote.feature_id);
     } catch(err: any) {
       setError(err.message);
       showSnackbar('Failed to load data', 'error');
     } finally {
       setLoading(false);
-    }
   }, [filters, userId]);
 
   /**
@@ -162,20 +160,16 @@ const VotingGrid: React.FC<{userId = 'current_user': any}> = ({ userId = 'curren
         await votingService.voteForFeature(featureId, userId);
         setUserVotes(prev => new Set([...prev, featureId]));
         showSnackbar('Vote added', 'success');
-      }
-      
       // Update vote count in features
-      setFeatures(prev => prev.map((feature: any: any: any: any) => {
+      setFeatures(prev => prev.map((feature: any) => {
         if(feature?.id ===featureId) {
           return { ...feature,
             vote_count: hasVoted ? feature?.vote_count - 1 : feature?.vote_count + 1
           };
-        }
         return feature;
       }));
     } catch(err: any) {
       showSnackbar('Failed to update vote', 'error');
-    }
   };
 
   /**
@@ -193,7 +187,6 @@ const VotingGrid: React.FC<{userId = 'current_user': any}> = ({ userId = 'curren
       showSnackbar('Feature created successfully', 'success');
     } catch(err: any) {
       showSnackbar('Failed to create feature', 'error');
-    }
   };
 
   /**
@@ -212,14 +205,10 @@ const VotingGrid: React.FC<{userId = 'current_user': any}> = ({ userId = 'curren
     // Apply filters
     if(filters?.status) {
       filtered
-    }
     if(filters?.category) {
       filtered
-    }
     if(filters?.priority) {
       filtered
-    }
-    
     // Apply sorting
     filtered.sort((a, b) => {
       let aVal = a[sortBy];
@@ -227,13 +216,10 @@ const VotingGrid: React.FC<{userId = 'current_user': any}> = ({ userId = 'curren
       
       if(sortBy === 'vote_count') {
         aVal
-      }
-      
       if(sortOrder === 'asc') {
         return aVal > bVal ? 1 : -1;
       } else {
         return aVal < bVal ? 1 : -1;
-      }
     });
     
     return filtered;
@@ -246,43 +232,39 @@ const VotingGrid: React.FC<{userId = 'current_user': any}> = ({ userId = 'curren
 
   if(loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight={400}>
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight={400}></
         <Typography>Loading features...</Typography>
       </Box>
     );
-  }
-
   if(error) {
     return (
       <Alert severity="error" sx={{ display: "flex", m: 2 }}>
         {error}
       </Alert>
     );
-  }
-
   return (
     <Box sx={{ display: "flex", p: 3 }}>
       {/* Header */}
-      <Paper sx={{ display: "flex", p: 3, mb: 3 }}>
+      <Paper sx={{ display: "flex", p: 3, mb: 3 }}></
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
         
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1}></
             <Button
-              variant="body2"
+              variant="outlined"
               startIcon={<FilterList />}
               onClick={() => setFilterDialogOpen(true)}
             >
               Filter
             </Button>
             <Button
-              variant="body2"
+              variant="outlined"
               startIcon={<Sort />}
               onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
             >
               Sort {sortOrder === 'asc' ? '↑' : '↓'}
             </Button>
             <Button
-              variant="body2"
+              variant="outlined"
               startIcon={<Add />}
               onClick={() => setCreateDialogOpen(true)}
             >
@@ -293,9 +275,9 @@ const VotingGrid: React.FC<{userId = 'current_user': any}> = ({ userId = 'curren
       </Paper>
 
       {/* Features Grid */}
-      <Grid { ...{container: true}} spacing={3}>
+      <Grid { ...{container: true}} spacing={3}></
         <AnimatePresence>
-          {sortedAndFilteredFeatures.map((feature: any: any: any: any) => {
+          {sortedAndFilteredFeatures.map((feature: any) => {
             const statusConfig = STATUS_CONFIG[feature?.status] || STATUS_CONFIG.proposed;
             const priorityConfig = PRIORITY_CONFIG[feature?.priority] || PRIORITY_CONFIG.medium;
             const hasVoted = userVotes.has(feature?.id);
@@ -309,19 +291,16 @@ const VotingGrid: React.FC<{userId = 'current_user': any}> = ({ userId = 'curren
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Card 
-                    sx={{
+                  <Card sx={{
                       flexDirection: 'column',
                       transition: 'transform 0.2s, box-shadow 0.2s',
                       '&:hover': {
                         transform: 'translateY(-4px)',
                         boxShadow: 4
-                      }
-                    }}
-                  >
+                    }}></
                     <CardContent sx={{ display: "flex", flexGrow: 1 }}>
                       {/* Header with status and priority */}
-                      <Stack direction="row" justifyContent="space-between" alignItems="flex-start" mb={2}>
+                      <Stack direction="row" justifyContent="space-between" alignItems="flex-start" mb={2}></
                         <Chip
                           icon={<StatusIcon />}
                           label={statusConfig.label}
@@ -334,10 +313,8 @@ const VotingGrid: React.FC<{userId = 'current_user': any}> = ({ userId = 'curren
                       <Typography variant="h6" gutterBottom>
                         {feature?.title}
                       </Typography>
-                      <Typography 
-                        variant="body2"
-                        sx={{ display: "flex", mb: 2, minHeight: 60 }}
-                      >
+                      <Typography variant="outlined"
+                        sx={{ display: "flex", mb: 2, minHeight: 60 }}>
                         {feature?.description}
                       </Typography>
 
@@ -346,26 +323,24 @@ const VotingGrid: React.FC<{userId = 'current_user': any}> = ({ userId = 'curren
                         label={feature?.category}
                         size="small"
                         sx={{ display: "flex", mb: 2 }}
-                      />
+                      /></
 
                       <Divider sx={{ display: "flex", my: 2 }} />
 
                       {/* Vote section */}
-                      <Stack direction="row" justifyContent="space-between" alignItems="center">
+                      <Stack direction="row" justifyContent="space-between" alignItems="center"></
                         <Stack direction="row" alignItems="center" spacing={1}>
-                          <Tooltip title={hasVoted ? 'Remove vote' : 'Vote for this feature'}>
-                            <IconButton
-                              onClick={() => handleVote(feature?.id)}
+                          <Tooltip title={hasVoted ? 'Remove vote' : 'Vote for this feature'}></
+                            <IconButton onClick={() => handleVote(feature?.id)}
                               color={hasVoted ? 'primary' : 'default'}
                               sx={{
-                                }
                               }}
                             >
                               {hasVoted ? <ThumbUp /> : <ThumbUpOutlined />}
                             </IconButton>
                           </Tooltip>
-                          <Badge badgeContent={feature?.vote_count || 0} color="primary">
-                            <Typography variant="body2" color="text.secondary">
+                          <Badge badgeContent={feature?.vote_count || 0} color="primary"></
+                            <Typography variant="outlined" color="text.secondary">
                               votes
                             </Typography>
                           </Badge>
@@ -386,15 +361,15 @@ const VotingGrid: React.FC<{userId = 'current_user': any}> = ({ userId = 'curren
 
       {/* Empty state */}
       {sortedAndFilteredFeatures.length ===0 && (
-        <Paper sx={{ display: "flex", p: 6, textAlign: 'center', mt: 3 }}>
+        <Paper sx={{ display: "flex", p: 6, textAlign: 'center', mt: 3 }}></
           <Typography variant="h6" color="text.secondary" gutterBottom>
             No features found
           </Typography>
-          <Typography variant="body2" color="text.secondary" mb={3}>
+          <Typography variant="outlined" color="text.secondary" mb={3}>
             Try adjusting your filters or be the first to suggest a new feature!
           </Typography>
           <Button
-            variant="body2"
+            variant="outlined"
             startIcon={<Add />}
             onClick={() => setCreateDialogOpen(true)}
           >
@@ -404,20 +379,17 @@ const VotingGrid: React.FC<{userId = 'current_user': any}> = ({ userId = 'curren
       )}
 
       {/* Create Feature Dialog */}
-      <Dialog 
-        open={createDialogOpen} 
+      <Dialog open={createDialogOpen} 
         onClose={() => setCreateDialogOpen(false)}
         maxWidth
-          <Stack spacing={3} sx={{ display: "flex", mt: 1 }}>
-            <TextField
-              label
+          <Stack spacing={3} sx={{ display: "flex", mt: 1 }}></
+            <TextField label
               value={newFeature?.title}
               onChange={(e) => setNewFeature(prev => ({ ...prev, title: e.target.value }))}
               fullWidth
               required
             />
-            <TextField
-              label
+            <TextField label
               value={newFeature?.description}
               onChange={(e) => setNewFeature(prev => ({ ...prev, description: e.target.value }))}
               multiline
@@ -425,58 +397,51 @@ const VotingGrid: React.FC<{userId = 'current_user': any}> = ({ userId = 'curren
               fullWidth
               required
             />
-            <FormControl fullWidth>
+            <FormControl fullWidth></
               <InputLabel>Category</InputLabel>
-              <Select
-                value={newFeature?.category}
+              <Select value={newFeature?.category}
                 onChange={(e) => setNewFeature(prev => ({ ...prev, category: e.target.value }))}
                 label
                 value={newFeature?.priority}
                 onChange={(e) => setNewFeature(prev => ({ ...prev, priority: e.target.value }))}
                 label
           <Button onClick={() => setCreateDialogOpen(false)}>Cancel</Button>
-          <Button 
-            onClick={handleCreateFeature}
-            variant="body2"
-            disabled={!newFeature?.title || !newFeature?.description}
-          >
+          <Button onClick={handleCreateFeature}
+            variant="outlined"
+            disabled={!newFeature?.title || !newFeature?.description}>
             Create Feature
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Filter Dialog */}
-      <Dialog 
-        open={filterDialogOpen} 
+      <Dialog open={filterDialogOpen} 
         onClose={() => setFilterDialogOpen(false)}
         maxWidth
-          <Stack spacing={3} sx={{ display: "flex", mt: 1 }}>
+          <Stack spacing={3} sx={{ display: "flex", mt: 1 }}></
             <FormControl fullWidth>
               <InputLabel>Status</InputLabel>
-              <Select
-                value={filters?.status}
+              <Select value={filters?.status}
                 onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
                 label
-                {Object.entries(STATUS_CONFIG).map(([key: any config]: any: any: any: any) => (
+                {Object.entries(STATUS_CONFIG).map(([key, config]: any) => (
                   <MenuItem key={key} value={key}>{config.label}</MenuItem>
                 ))}
               </Select>
             </FormControl>
-            <FormControl fullWidth>
+            <FormControl fullWidth></
               <InputLabel>Priority</InputLabel>
-              <Select
-                value={filters?.priority}
+              <Select value={filters?.priority}
                 onChange={(e) => setFilters(prev => ({ ...prev, priority: e.target.value }))}
                 label
-                {Object.entries(PRIORITY_CONFIG).map(([key: any config]: any: any: any: any) => (
+                {Object.entries(PRIORITY_CONFIG).map(([key, config]: any) => (
                   <MenuItem key={key} value={key}>{config.label}</MenuItem>
                 ))}
               </Select>
             </FormControl>
-            <FormControl fullWidth>
+            <FormControl fullWidth></
               <InputLabel>Sort By</InputLabel>
-              <Select
-                value={sortBy}
+              <Select value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
                 label
             setFilters({ status: '', category: '', priority: '' });
@@ -492,13 +457,11 @@ const VotingGrid: React.FC<{userId = 'current_user': any}> = ({ userId = 'curren
       </Dialog>
 
       {/* Snackbar */}
-      <Snackbar
-        open={snackbar.open}
+      <Snackbar open={snackbar.open}
         autoHideDuration={4000}
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
       >
-        <Alert 
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))} 
+        <Alert onClose={() => setSnackbar(prev => ({ ...prev, open: false }))} 
           severity={snackbar.severity}
         >
           {snackbar.message}

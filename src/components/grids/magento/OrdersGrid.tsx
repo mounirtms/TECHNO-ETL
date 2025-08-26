@@ -59,11 +59,11 @@ const OrdersGrid = () => {
 
       // Calculate stats
       const totalOrders = orders.length;
-      const pendingOrders = orders.filter((o: any: any: any: any) => o.status === 'pending').length;
-      const processingOrders = orders.filter((o: any: any: any: any) => o.status === 'processing').length;
-      const completedOrders = orders.filter((o: any: any: any: any) => o.status === 'complete').length;
-      const cancelledOrders = orders.filter((o: any: any: any: any) => o.status === 'canceled').length;
-      const totalRevenue = orders.reduce((sum: any o: any: any: any: any) => sum + (parseFloat(o.grand_total) || 0), 0);
+      const pendingOrders = orders.filter((o: any) => o.status === 'pending').length;
+      const processingOrders = orders.filter((o: any) => o.status === 'processing').length;
+      const completedOrders = orders.filter((o: any) => o.status === 'complete').length;
+      const cancelledOrders = orders.filter((o: any) => o.status === 'canceled').length;
+      const totalRevenue = orders.reduce((sum: any o: any) => sum + (parseFloat(o.grand_total) || 0), 0);
 
       setStats({
         totalOrders,
@@ -79,7 +79,6 @@ const OrdersGrid = () => {
       setData([]);
     } finally {
       setLoading(false);
-    }
   }, []);
 
   // ===== 3. EVENT HANDLERS =====
@@ -90,7 +89,6 @@ const OrdersGrid = () => {
       setViewDialogOpen(true);
     } else {
       toast.warning('Please select exactly one order to view');
-    }
   }, [data]);
 
   const handleEdit = useCallback((records) => {
@@ -100,25 +98,20 @@ const OrdersGrid = () => {
       setEditDialogOpen(true);
     } else {
       toast.warning('Please select exactly one order to edit');
-    }
   }, [data]);
 
   const handleCancel = useCallback(async (records) => {
     if(records.length ===0) {
       toast.warning('Please select orders to cancel');
       return;
-    }
-
     try {
       for (const orderId of records) {
         await magentoApi?.cancelOrder(orderId);
-      }
       toast.success(`Cancelled ${records.length} order(s) successfully`);
       fetchOrders();
     } catch(error: any) {
       console.error('Error cancelling orders:', error);
       toast.error('Failed to cancel orders');
-    }
   }, [fetchOrders]);
 
   const handleSync = useCallback(async () => {
@@ -129,7 +122,6 @@ const OrdersGrid = () => {
     } catch(error: any) {
       console.error('Error syncing orders:', error);
       toast.error('Failed to sync orders');
-    }
   }, [fetchOrders]);
 
   const handleFilterChange = useCallback((newFilter) => {
@@ -166,7 +158,6 @@ const OrdersGrid = () => {
         complete: 'success',
         canceled: 'error',
         closed: 'default'
-      }
     }),
     ColumnFactory.currency('grand_total', {
       headerName: 'Total',
@@ -209,7 +200,6 @@ const OrdersGrid = () => {
       icon: <SyncIcon />,
       color: 'secondary',
       variant: 'outlined'
-    }
   ];
 
   // ===== 6. CONTEXT MENU ACTIONS =====
@@ -221,7 +211,6 @@ const OrdersGrid = () => {
       onClick: (row) => {
         setSelectedOrder(row);
         setViewDialogOpen(true);
-      }
     },
     edit: {
       enabled: true,
@@ -230,7 +219,6 @@ const OrdersGrid = () => {
       onClick: (row) => {
         setSelectedOrder(row);
         setEditDialogOpen(true);
-      }
     },
     cancel: {
       enabled: true,
@@ -238,7 +226,6 @@ const OrdersGrid = () => {
       icon: 'cancel',
       onClick: (row) => handleCancel([row?.entity_id]),
       color: 'error'
-    }
   }), [handleCancel]);
 
   // ===== 7. STATS CARDS =====
@@ -278,7 +265,6 @@ const OrdersGrid = () => {
       value: `$${stats.totalRevenue.toFixed(2)}`,
       icon: <PaidIcon />,
       color: 'success'
-    }
   ];
 
   // ===== 8. FILTER OPTIONS =====
@@ -338,7 +324,6 @@ const OrdersGrid = () => {
         onError: (error) => {
           console.error('Orders Grid Error:', error);
           toast.error('Error loading orders');
-        }
       })}
     />
   );

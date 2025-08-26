@@ -14,9 +14,8 @@ const CegidToolbar = ({ onSearch, loading  }: { onSearch loading: any }) => {
         });
     };
 
-    return(<Box sx={{ display: "flex", p: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
-            <TextField
-                label
+    return(<Box sx={{ display: "flex", p: 2, display: 'flex', gap: 2, alignItems: 'center' }}></
+            <TextField label
                 value={reference}
                 onChange={(e) => setReference(e.target.value)}
                 placeholder
@@ -30,13 +29,11 @@ const CegidToolbar = ({ onSearch, loading  }: { onSearch loading: any }) => {
                     Search
                 </Button>
             </Tooltip>
-            <Tooltip title="Refresh">
-                <IconButton 
-                    onClick={() => handleSearch()} 
+            <Tooltip title="Refresh"></
+                <IconButton onClick={() => handleSearch()} 
                     disabled={loading}
                 >
-                    <RefreshIcon />
-                </IconButton>
+                    <RefreshIcon /></RefreshIcon>
             </Tooltip>
         </Box>
     );

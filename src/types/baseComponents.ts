@@ -16,15 +16,11 @@ export interface BaseComponentProps {
   style?: React.CSSProperties;
   sx?: SxProps<Theme>;
   'data-testid'?: string;
-}
-
 /**
  * Base MUI component props
  */
 export interface MuiComponentProps extends BaseComponentProps {
   sx?: SxProps<Theme>;
-}
-
 /**
  * BaseToolbar configuration
  */
@@ -43,8 +39,6 @@ export interface ToolbarConfig {
   collapseOnMobile?: boolean;
   priorityActions?: string[];
   [key: string]: any;
-}
-
 /**
  * Performance metrics for monitoring
  */
@@ -54,8 +48,6 @@ export interface PerformanceMetrics {
   dataSize?: number;
   queryTime?: number;
   [key: string]: any;
-}
-
 /**
  * Action button configuration
  */
@@ -68,8 +60,6 @@ export interface ActionButton {
   priority?: number;
   color?: 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
   variant?: 'text' | 'outlined' | 'contained';
-}
-
 /**
  * BaseToolbar props interface
  */
@@ -119,8 +109,6 @@ export interface BaseToolbarProps {
   // Advanced features
   showPerformanceMetrics?: boolean;
   performanceMetrics?: PerformanceMetrics;
-}
-
 /**
  * Interface for grid cards
  */
@@ -131,8 +119,6 @@ export interface GridCard {
   color?: string;
   loading?: boolean;
   [key: string]: any;
-}
-
 /**
  * BaseGrid props interface
  */
@@ -200,7 +186,7 @@ export interface BaseGridProps {
   ariaLabel?: string;
   
   // Error handling
-  onError?: (error context?: string) => void;
+  onError?: (error: Error, context?: string) => void;
   
   // Custom components
   NoRowsOverlay?: React.ComponentType<any>;
@@ -214,8 +200,6 @@ export interface BaseGridProps {
   isRowSelectable?: (params) => boolean;
   
   [key: string]: any;
-}
-
 /**
  * Common tooltip props
  */
@@ -227,8 +211,6 @@ export interface TooltipWrapperProps {
               'left' | 'right-end' | 'right-start' | 'right' | 'top-end' | 'top-start' | 'top';
   arrow?: boolean;
   [key: string]: any;
-}
-
 /**
  * BaseCard props interface
  */
@@ -249,5 +231,4 @@ export interface BaseCardProps {
   chart?: ReactNode;
   footer?: ReactNode;
   headerAction?: ReactNode;
-  [key: string]: any;
-}
+  [key: string]: any;

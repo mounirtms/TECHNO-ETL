@@ -17,8 +17,6 @@ interface ModernExampleProps {
   items?: Array<{ id: string; name: string; priority?: 'high' | 'medium' | 'low' }>;
   onAction?: (action: string, data?) => void;
   className?: string;
-}
-
 // Lazy loaded component
 const HeavyComponent = lazy(() => import('./HeavyComponent'));
 
@@ -43,7 +41,7 @@ export const ModernExample: React.FC<ModernExampleProps> = memo(({
   // Memoized filtered items
   const filteredItems = useMemo(() => {
     if (!deferredQuery) return items;
-    return items.filter((item: any: any: any: any) => 
+    return items.filter((item: any) => 
       item.name.toLowerCase().includes(deferredQuery.toLowerCase())
     );
   }, [items, deferredQuery]);
@@ -70,13 +68,12 @@ export const ModernExample: React.FC<ModernExampleProps> = memo(({
         'bg-warning-100 text-warning-800': priority === 'medium',
         'bg-success-100 text-success-800': priority === 'low',
         'bg-gray-100 text-gray-800': !priority
-      }
     )}>
       {priority || 'normal'}
     </span>
   );
 
-  return Boolean((
+  return (
     <div className={cn(
       "relative bg-card rounded-3xl shadow-soft border border-border overflow-hidden",
       className
@@ -121,14 +118,13 @@ export const ModernExample: React.FC<ModernExampleProps> = memo(({
       {/* Content */}
       <div className="p-6">
         <AnimatePresence mode="wait">
-          {filteredItems.length > 0 ? (
-            <motion.div
+          {filteredItems.length > 0 ? (<motion.div
               key
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className
-              {filteredItems.map((item: any index: any: any: any: any) => (
+              {filteredItems.map((item, any index: any) => (
                 <motion.div
                   key={item.id}
                   initial={{ opacity: 0, x: -20 }}
@@ -173,7 +169,6 @@ export const ModernExample: React.FC<ModernExampleProps> = memo(({
                 {deferredQuery 
                   ? `Try searching for something else`
                   : 'Add some items to get started'
-                }
               </p>
             </motion.div>
           )}
@@ -191,8 +186,7 @@ export const ModernExample: React.FC<ModernExampleProps> = memo(({
             </div>
           </div>
         }>
-          <HeavyComponent />
-        </Suspense>
+          <HeavyComponent /></HeavyComponent>
       </div>
 
       {/* Action buttons */}
@@ -221,7 +215,7 @@ export const ModernExample: React.FC<ModernExampleProps> = memo(({
         </div>
       </div>
     </div>
-  )))));
+  );
 });
 
 ModernExample.displayName = 'ModernExample';

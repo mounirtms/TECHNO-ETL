@@ -13,16 +13,10 @@ interface CegidItem {
   Stock: string[];
   Store: string[];
   Status: string[];
-}
-
 interface CegidInventory {
   Items: CegidItem[];
-}
-
 interface CegidResponse {
   Inventory: CegidInventory;
-}
-
 interface CegidProduct {
   itemCode: string;
   description: string;
@@ -30,16 +24,12 @@ interface CegidProduct {
   stock: string;
   store: string;
   status: string;
-}
-
 interface SoapResponse {
   response: {
     body: string;
     statusCode: number;
     headers: Record<string, string>;
   };
-}
-
 async function getProductsFromCegid(): Promise<CegidProduct[]> {
     const wsdl = await fetch('/assets/CegidApi/InventoryService.wsdl').then(res => res.text());
 
@@ -65,12 +55,10 @@ async function getProductsFromCegid(): Promise<CegidProduct[]> {
 
     if(statusCode !== 200) {
         throw new Error(`Cegid API error ${statusCode}: ${body}`);
-    }
-
     const parser = new xml2js.Parser();
     const parsedData = await parser.parseStringPromise(body) as CegidResponse;
 
-    const transformedMagentoData: CegidProduct[] = parsedData.Inventory.Items.map((item: any: any: any: any) => ({
+    const transformedMagentoData: CegidProduct[] = parsedData.Inventory.Items.map((item: any) => ({
         itemCode: item.ItemCode[0],
         description: item.Description[0],
         price: item.Price[0],
@@ -80,6 +68,4 @@ async function getProductsFromCegid(): Promise<CegidProduct[]> {
     }));
 
     return transformedMagentoData;
-}
-
 export { getProductsFromCegid, type CegidProduct };

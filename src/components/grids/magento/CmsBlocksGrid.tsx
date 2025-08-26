@@ -32,13 +32,10 @@ const CmsBlocksGrid = () => {
             width: 100,
             sortable: false,
             renderCell: (params) => (
-                <Tooltip title="Edit Content">
+                <Tooltip title="Edit Content"></
                     <IconButton size="small" onClick={() => handleEditClick(params.row)}>
-                        <EditIcon fontSize="small" />
-                    </IconButton>
+                        <EditIcon fontSize="small" /></EditIcon>
                 </Tooltip>
-            )
-        }
     ], []);
 
     const fetchBlocks = useCallback(async ({ page = 0, pageSize = 10 } = {}) => {
@@ -52,9 +49,7 @@ const CmsBlocksGrid = () => {
                                 field: 'is_active',
                                 value: '1',
                                 condition_type: 'eq'
-                            }
                         ]
-                    }
                 ],
                 pageSize,
                 currentPage: page + 1
@@ -67,7 +62,6 @@ const CmsBlocksGrid = () => {
             toast.error('Failed to fetch CMS blocks');
         } finally {
             setLoading(false);
-        }
     }, []);
 
     const handleEditClick = (block) => {
@@ -88,12 +82,10 @@ const CmsBlocksGrid = () => {
             toast.error('Failed to update block');
         } finally {
             setLoading(false);
-        }
     };
 
-    return(<Box sx={{ display: "flex", height: '100%' }}>
-            <UnifiedGrid
-                gridName
+    return(<Box sx={{ display: "flex", height: '100%' }}></
+            <UnifiedGrid gridName
                 columns={columns}
                 data={data}
                 loading={loading}
@@ -112,17 +104,15 @@ const CmsBlocksGrid = () => {
             />
             <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)} maxWidth="md" fullWidth>
                 <DialogTitle>Edit Block Content</DialogTitle>
-                <DialogContent>
+                <DialogContent></
                     <Typography variant="subtitle2" sx={{ display: "flex", mb: 1 }}>{editBlock.title}</Typography>
                     <ReactQuill theme="snow" value={editContent} onChange={(e) => setEditContent} style={{ minHeight: 200 }} />
                 </DialogContent>
-                <DialogActions>
+                <DialogActions></
                     <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>
                     <Button onClick={handleEditSave} variant="contained" disabled={loading}>Save</Button>
                 </DialogActions>
             </Dialog>
         </Box>
     );
-}
-
 export default CmsBlocksGrid;

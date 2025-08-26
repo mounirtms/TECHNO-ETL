@@ -19,16 +19,12 @@ export const formatCurrency = (amount, currency = DEFAULT_CURRENCY, locale = DEF
   // Handle null, undefined, or invalid amounts
   if(amount ===null || amount ===undefined || isNaN(amount)) {
     return `0.00 ${currency}`;
-  }
-
   // Convert to number if string
   const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
   
   // Handle invalid numbers
   if (isNaN(numericAmount)) {
     return `0.00 ${currency}`;
-  }
-
   // Default formatting options
   const defaultOptions = {
     style: 'decimal', // Use decimal instead of currency to avoid $ symbol
@@ -52,7 +48,6 @@ export const formatCurrency = (amount, currency = DEFAULT_CURRENCY, locale = DEF
       minimumFractionDigits: 2, 
       maximumFractionDigits: 2 
     })} ${currency}`;
-  }
 };
 
 /**
@@ -66,8 +61,6 @@ export const formatCurrencyCompact = (amount, currency = DEFAULT_CURRENCY) => {
   
   if (isNaN(numericAmount) || numericAmount ===null || numericAmount ===undefined) {
     return `0 ${currency}`;
-  }
-
   // Format large numbers with K, M, B suffixes
   if(numericAmount >= 1000000000) {
     return `${(numericAmount / 1000000000).toFixed(1)}B ${currency}`;
@@ -77,7 +70,6 @@ export const formatCurrencyCompact = (amount, currency = DEFAULT_CURRENCY) => {
     return `${(numericAmount / 1000).toFixed(1)}K ${currency}`;
   } else {
     return `${numericAmount.toFixed(2)} ${currency}`;
-  }
 };
 
 /**
@@ -91,8 +83,6 @@ export const formatPercentage = (value, decimals = 1) => {
   
   if (isNaN(numericValue) || numericValue ===null || numericValue ===undefined) {
     return '0.0%';
-  }
-
   return `${numericValue.toFixed(decimals)}%`;
 };
 
@@ -107,8 +97,6 @@ export const formatNumber = (value, decimals = 0) => {
   
   if (isNaN(numericValue) || numericValue ===null || numericValue ===undefined) {
     return '0';
-  }
-
   return numericValue.toLocaleString('en-US', {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals
@@ -123,8 +111,6 @@ export const formatNumber = (value, decimals = 0) => {
 export const parseCurrency = (currencyString) => {
   if(!currencyString || typeof currencyString !== 'string') {
     return 0;
-  }
-
   // Remove currency symbols and spaces, keep only numbers and decimal point
   const cleanString = currencyString.replace(/[^\d.-]/g, '');
   const parsed = parseFloat(cleanString);
@@ -153,7 +139,6 @@ export const CURRENCY_CONFIG = {
     name: 'Euro',
     locale: 'en-EU',
     decimals: 2
-  }
 };
 
 /**

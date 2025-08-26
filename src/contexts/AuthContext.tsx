@@ -282,7 +282,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             toast.error('No authentication token found');
             return false;
         }
-
         try {
             const response =   await magentoApi.get('/store/storeConfigs')
 
@@ -300,7 +299,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 toast?.warning('Connection issues. Using cached session.');
                 return true;
             }
-
             // Reset local data flag if token is valid
             setIsUsingLocalData(false);
             return true;
@@ -423,7 +421,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         initializeAuth();
 
         return () => {
-            mounted
+            mounted = false;
         };
     }, [adminToken]);
 

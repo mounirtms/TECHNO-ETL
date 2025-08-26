@@ -112,7 +112,6 @@ export const ROUTE_METADATA = {
     icon: 'Speed',
     requiresAuth: true,
     breadcrumb: 'Grid Test'
-  }
 };
 
 /**
@@ -175,7 +174,6 @@ export const NAVIGATION_ITEMS = [
         label: 'Categories',
         icon: 'Category',
         description: 'Manage product categories'
-      }
     ]
   },
   {
@@ -196,7 +194,6 @@ export const NAVIGATION_ITEMS = [
         label: 'Warehouses',
         icon: 'Warehouse',
         description: 'Manage warehouses'
-      }
     ]
   },
   {
@@ -217,7 +214,6 @@ export const NAVIGATION_ITEMS = [
         label: 'Completed Orders',
         icon: 'CheckCircle',
         description: 'Completed orders'
-      }
     ]
   },
   {
@@ -246,7 +242,6 @@ export const NAVIGATION_ITEMS = [
         label: 'Inventory Analytics',
         icon: 'BarChart',
         description: 'Inventory performance charts'
-      }
     ]
   },
   {
@@ -267,7 +262,6 @@ export const NAVIGATION_ITEMS = [
         label: 'Inventory Reports',
         icon: 'Inventory',
         description: 'Inventory reports'
-      }
     ]
   },
   {
@@ -304,9 +298,7 @@ export const NAVIGATION_ITEMS = [
         label: 'User Management',
         icon: 'People',
         description: 'Manage users and permissions'
-      }
     ]
-  }
 ];
 
 export default ROUTES;

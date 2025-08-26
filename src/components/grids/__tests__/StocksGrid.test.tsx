@@ -8,7 +8,6 @@ import { magentoApi } from '../../../services/magentoApi';
 jest.mock('../../../services/magentoApi', () => ({
     magentoApi: {
         getStocks: jest.fn()
-    }
 }));
 
 // Mock data
@@ -28,7 +27,6 @@ const mockStocks = [
             { type: 'website', code: 'east_store' }
         ],
         source_codes: []
-    }
 ];
 
 describe('StocksGrid Component', () => {

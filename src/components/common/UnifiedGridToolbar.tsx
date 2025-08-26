@@ -119,7 +119,6 @@ const UnifiedGridToolbar = ({
       return enableI18n ? (fallback || key) : (fallback || key);
     } catch(error: any) {
       return fallback || key;
-    }
   }, [enableI18n]);
 
   // Local state
@@ -153,7 +152,6 @@ const UnifiedGridToolbar = ({
     if(event.key === 'Enter') {
       event.preventDefault();
       onSearch?.(searchText);
-    }
   }, [onSearch, searchText]);
 
   const handleSearchSubmit = useCallback(() => {
@@ -186,14 +184,14 @@ const UnifiedGridToolbar = ({
   const buttonSize = toolbarConfig.compact ? 'small' : (toolbarConfig.size || 'medium');
   const spacing = toolbarConfig.compact ? 0.5 : 1;
 
-  return Boolean((
+  return (
     <Box sx={{ 
       display: "flex", 
       borderBottom: `1px solid ${theme.palette.divider}`,
       backgroundColor: theme.palette.background.paper
-    }}>
+    }}></
       <Toolbar
-        variant="body2"
+        variant="outlined"
           minHeight: toolbarConfig.compact ? 44 : 52, // More compact
           px: toolbarConfig.compact ? 1.5 : 2,
           py: toolbarConfig.compact ? 0.5 : 1,
@@ -212,13 +210,12 @@ const UnifiedGridToolbar = ({
             alignItems: 'stretch',
             gap: 0.5,
             minHeight: 'auto'
-          }
         }}
       >
         {/* Section 1: Refresh */}
-        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {toolbarConfig.showRefresh && (
-            <TooltipWrapper title={translate('refresh', 'Refresh Data')} disabled={loading}>
+            <TooltipWrapper title={translate('refresh', 'Refresh Data')} disabled={loading}></
               <IconButton
                 onClick={onRefresh}
                 disabled={loading}
@@ -231,8 +228,8 @@ const UnifiedGridToolbar = ({
         {/* Section 2a: Custom Left Actions */}
         {customLeftActions.length > 0 && (
           <>
-            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
-              {customLeftActions.map((action: any index: any: any: any: any) => (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              {customLeftActions.map((action, index) => (
                 <Box key={index}>
                   {action}
                 </Box>
@@ -264,15 +261,14 @@ const UnifiedGridToolbar = ({
           onSyncAllHandler={onSyncAllHandler}
           canInfo={canInfo}
           onInfo={onInfo}
-        />
+        /></
 
         <Divider orientation="vertical" flexItem sx={{ display: "flex", mx: 1 }} />
 
         {/* Section 3: Search */}
         {toolbarConfig.showSearch && (
-          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1, minWidth: 200, maxWidth: 350 }}>
-            <TextField
-              size="small"
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 200, maxWidth: 350 }}></
+            <TextField size="small"
               placeholder={translate('search', 'Search ')}
               value={searchText}
               onChange={(e) => handleSearchChange}
@@ -280,12 +276,10 @@ const UnifiedGridToolbar = ({
               sx={{ display: "flex", flex: 1 }}
               InputProps
                 endAdornment: searchText && (
-                  <InputAdornment position="end">
+                  <InputAdornment position="end"></
                     <IconButton size="small" onClick={handleClearSearch}>
-                      <ClearIcon />
-                    </IconButton>
+                      <ClearIcon /></ClearIcon>
                   </InputAdornment>
-                )
               }}
             />
           </Box>
@@ -313,20 +307,17 @@ const UnifiedGridToolbar = ({
         <Box sx={{ display: "flex", flexGrow: 1 }} />
 
         {/* Section 5: View Controls */}
-        {toolbarConfig.showViewToggle && showCardView && (<ToggleButtonGroup
-            value={viewMode}
+        {toolbarConfig.showViewToggle && showCardView && (<ToggleButtonGroup value={viewMode}
             exclusive
             onChange={(e) => onViewModeChange}
             size="small"
-            <TooltipWrapper title={translate('gridView', 'Grid View')} disabled={loading}>
+            <TooltipWrapper title={translate('gridView', 'Grid View')} disabled={loading}></
               <ToggleButton value="grid" disabled={loading}>
-                <GridViewIcon />
-              </ToggleButton>
+                <GridViewIcon /></GridViewIcon>
             </TooltipWrapper>
-            <TooltipWrapper title={translate('cardView', 'Card View')} disabled={loading}>
+            <TooltipWrapper title={translate('cardView', 'Card View')} disabled={loading}></
               <ToggleButton value="card" disabled={loading}>
-                <ViewListIcon />
-              </ToggleButton>
+                <ViewListIcon /></ViewListIcon>
             </TooltipWrapper>
           </ToggleButtonGroup>
         )}
@@ -340,33 +331,27 @@ const UnifiedGridToolbar = ({
 
         {/* Section 7: Filter Toggle */}
         {toolbarConfig.showFilters && (
-          <TooltipWrapper title={translate('toggleFilters', 'Toggle Filters')} disabled={loading}>
-            <IconButton
-              onClick={onFiltersToggle}
+          <TooltipWrapper title={translate('toggleFilters', 'Toggle Filters')} disabled={loading}></
+            <IconButton onClick={onFiltersToggle}
               color={filtersVisible ? 'primary' : 'default'}
               size="small"
-              disabled={loading}
-            >
-              <FilterIcon />
-            </IconButton>
+              disabled={loading}>
+              <FilterIcon /></FilterIcon>
           </TooltipWrapper>
         )}
 
         {/* Section 8: Settings */}
         {toolbarConfig.showSettings && (
-          <TooltipWrapper title={translate('settings', 'Settings')} disabled={loading}>
-            <IconButton
-              onClick={handleSettingsMenuOpen}
+          <TooltipWrapper title={translate('settings', 'Settings')} disabled={loading}></
+            <IconButton onClick={handleSettingsMenuOpen}
               size="small"
-              disabled={loading}
-            >
-              <SettingsIcon />
-            </IconButton>
+              disabled={loading}>
+              <SettingsIcon /></SettingsIcon>
           </TooltipWrapper>
         )}
 
         {/* Section 9: More Menu  
-        <Tooltip title={translate('more', 'More Options')}>
+        <Tooltip title={translate('more', 'More Options')}></
           <IconButton
             onClick={handleMoreMenuOpen}
             size="small"
@@ -389,28 +374,23 @@ const UnifiedGridToolbar = ({
       />
 
       {/* More Menu */}
-      <Menu
-        anchorEl={moreMenuAnchor}
+      <Menu anchorEl={moreMenuAnchor}
         open={Boolean(moreMenuAnchor)}
         onClose={handleMoreMenuClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: isRTL ? 'left' : 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: isRTL ? 'left' : 'right' }}
-      >
-        <MenuItem onClick={() => { onRefresh?.())))); handleMoreMenuClose(); }}>
-          <ListItemIcon><RefreshIcon /></ListItemIcon>
-          <ListItemText primary={translate('refresh', 'Refresh')} />
-        </MenuItem>
+        transformOrigin={{ vertical: 'top', horizontal: isRTL ? 'left' : 'right' }}></
+        <MenuItem onClick={() => { onRefresh?.(); handleMoreMenuClose(); }}>
+          <ListItemIcon><RefreshIcon /></RefreshIcon>
+          <ListItemText primary={translate('refresh', 'Refresh')} /></ListItemText>
         {toolbarConfig.showExport && (
           <MenuItem onClick={() => { onExport?.(); handleMoreMenuClose(); }}>
-            <ListItemIcon><ExportIcon /></ListItemIcon>
-            <ListItemText primary={translate('export', 'Export')} />
-          </MenuItem>
+            <ListItemIcon><ExportIcon /></ExportIcon>
+            <ListItemText primary={translate('export', 'Export')} /></ListItemText>
         )}
         {toolbarConfig.showImport && (
           <MenuItem onClick={() => { onImport?.(); handleMoreMenuClose(); }}>
-            <ListItemIcon><ImportIcon /></ListItemIcon>
-            <ListItemText primary={translate('import', 'Import')} />
-          </MenuItem>
+            <ListItemIcon><ImportIcon /></ImportIcon>
+            <ListItemText primary={translate('import', 'Import')} /></ListItemText>
         )}
       </Menu>
     </Box>

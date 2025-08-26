@@ -18,8 +18,6 @@ export const useOptimizedContext = (Context, selector) => {
   
   if(context ===undefined) {
     throw new Error('useOptimizedContext must be used within a Provider');
-  }
-  
   // Memoize selected values to prevent unnecessary re-renders
   const selected = useMemo(() => {
     return selector ? selector(context) : context;

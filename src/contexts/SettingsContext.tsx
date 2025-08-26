@@ -177,7 +177,6 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
                         initialSettings = {};
                     }
                 }
-
                 // Validate settings structure
                 const validatedSettings = mergeWithDefaults(initialSettings);
                 setSettings(validatedSettings);
@@ -190,7 +189,6 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
                         console.warn('Failed to apply language settings:', langError);
                     }
                 }
-
                 console.log('✅ Settings initialized successfully');
             } catch(error: any) {
                 console.error('❌ Critical error initializing settings:', error);
@@ -213,7 +211,6 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
             if(settings.language) {
                 applyLanguageSettings(settings.language);
             }
-
             // Notify other contexts about settings changes
             window.dispatchEvent(new CustomEvent('settingsChanged', {
                 detail: settings
@@ -232,7 +229,6 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
             } else {
                 saveUnifiedSettings(newSettings);
             }
-            
             // Save to unified localStorage system
             const unifiedSettings = {
                 preferences: {
@@ -269,7 +265,6 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
                     console.warn('⚠️ Firebase sync failed, settings saved locally:', firebaseError);
                 }
             }
-            
             return true;
         } catch(error: any) {
             console.error('❌ Failed to persist settings:', error);
@@ -296,12 +291,10 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
             } catch(remoteError: any) {
                 console.warn('Failed to load remote settings, using local:', remoteError);
             }
-
             // Fallback to local settings
             if(!userSettings) {
                 userSettings = getUserSettings(currentUser.uid);
             }
-
             // Merge with defaults to ensure all properties exist
             const mergedSettings = mergeWithDefaults(userSettings);
             setSettings(mergedSettings);
@@ -310,7 +303,6 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
             if(mergedSettings.language) {
                 applyLanguageSettings(mergedSettings.language);
             }
-
             // Notify other contexts about user settings
             window.dispatchEvent(new CustomEvent('userSettingsLoaded', {
                 detail: mergedSettings
@@ -427,8 +419,6 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
                     ...prevSettings,
                     ...updates
                 };
-            }
-
             // Save to unified storage - sync preferences to theme storage
             if(section === 'preferences' || newSettings.preferences) {
                 const unifiedThemeSettings = {
@@ -449,7 +439,6 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
                     console.error('Error syncing to unified theme storage:', error);
                 }
             }
-            
             setIsDirty(true);
             return newSettings;
         });
@@ -459,7 +448,6 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
         if(!isDirty && !forceSave) {
             return { success: true, message: 'No changes to save' };
         }
-
         setLoading(true);
         try {
             // Save locally first
@@ -469,11 +457,9 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
             } else {
                 localSaved = saveUnifiedSettings(settings);
             }
-
             if(!localSaved) {
                 throw new Error('Failed to save settings locally');
             }
-
             // Save remotely if user is authenticated
             if(currentUser) {
                 try {
@@ -490,7 +476,6 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
                     });
                 }
             }
-
             setIsDirty(false);
             toast.success('Settings saved successfully');
             return { success: true, message: 'Settings saved successfully' };

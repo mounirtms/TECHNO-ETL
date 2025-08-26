@@ -48,7 +48,6 @@ const UserProfile = () => {
                 setShowSaveIndicator(false);
             }, 2000);
             return () => clearTimeout(timer);
-        }
     }, [isDirty]);
 
     const handleTabChange = async (event, newValue) => {
@@ -58,8 +57,6 @@ const UserProfile = () => {
                 await saveUserData();
             } catch(error: any) {
                 console.error('Failed to save before tab switch:', error);
-            }
-        }
         setActiveTab(newValue);
     };
 
@@ -82,8 +79,6 @@ const UserProfile = () => {
                 Error loading profile: {error?.message}
             </Alert>
         );
-    }
-
     const renderActiveTab = () => {
         switch(activeTab) {
             case 2:
@@ -115,14 +110,12 @@ const UserProfile = () => {
                 );
             default:
                 return null;
-        }
     };
 
-    return(<Paper elevation={3} sx={{ display: "flex", maxWidth: 1200, margin: 'auto', mt: 2 } as any}>
-            <Tabs
-                value={activeTab}
+    return(<Paper elevation={3} sx={{ display: "flex", maxWidth: 1200, margin: 'auto', mt: 2 } as any}></
+            <Tabs value={activeTab}
                 onChange={(e) => handleTabChange}
-                variant="body2"
+                variant="outlined"
                 sx={{ display: "flex", borderBottom: 1, borderColor: 'divider' } as any}
             >
                 <Tab icon={<ApiIcon />} label="API Settings" value={0} />
@@ -137,10 +130,8 @@ const UserProfile = () => {
                 } as any}
             >
                 {mounted && (
-                    <Fade
-                        in={!loading && mounted}
-                        timeout={300}
-                    >
+                    <Fade in={!loading && mounted}
+                        timeout={300}></
                         <Box sx={{ display: "flex", height: '100%' } as any}>
                             {renderActiveTab()}
                         </Box>
@@ -149,22 +140,17 @@ const UserProfile = () => {
             </Box>
 
             {/* Loading backdrop */}
-            <Backdrop
-                sx={{
+            <Backdrop sx={{
                     position: 'absolute'
                 } as any}
-                open={loading}
-            >
-                <CircularProgress color="inherit" />
-            </Backdrop>
+                open={loading}></
+                <CircularProgress color="inherit" /></CircularProgress>
 
             {/* Save indicator */}
-            <Snackbar
-                open={showSaveIndicator}
+            <Snackbar open={showSaveIndicator}
                 autoHideDuration={2000}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                message={isDirty ? "Changes not saved" : "All changes saved"}
-            >
+                message={isDirty ? "Changes not saved" : "All changes saved"}></
                 <Alert 
                     icon={<SaveIcon />}
                     severity={isDirty ? "warning" : "success"}

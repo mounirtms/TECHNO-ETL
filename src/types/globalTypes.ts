@@ -14,15 +14,11 @@ export interface BaseComponentProps {
   children?: ReactNode;
   className?: string;
   style?: React.CSSProperties;
-}
-
 /**
  * Common MUI component props
  */
 export interface MuiComponentProps extends BaseComponentProps {
   sx?: SxProps<Theme>;
-}
-
 /**
  * API Response types
  */
@@ -33,15 +29,11 @@ export interface ApiResponse<T = any> {
   headers: Record<string, string>;
   config: any;
   request?: any;
-}
-
 export interface ApiError {
   message: string;
   code?: string;
   status?: number;
   data?: any;
-}
-
 /**
  * User related types
  */
@@ -54,8 +46,6 @@ export interface User {
   token?: string;
   createdAt?: string;
   lastLogin?: string;
-}
-
 export interface UserSettings {
   preferences: {
     language?: string;
@@ -70,8 +60,6 @@ export interface UserSettings {
   lastSync?: string;
   userId: string;
   email?: string | null;
-}
-
 /**
  * Common UI component props
  */
@@ -86,24 +74,18 @@ export interface CardProps extends MuiComponentProps {
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
   clickable?: boolean;
   onClick?: () => void;
-}
-
 /**
  * Common data types
  */
 export interface DataItem {
   id: string | number;
   [key: string]: any;
-}
-
 export interface PaginatedResponse<T> {
   items: T[];
   total: number;
   page: number;
   pageSize: number;
   totalPages: number;
-}
-
 /**
  * Grid related types
  */
@@ -118,16 +100,12 @@ export interface GridColumn {
   filterable?: boolean;
   editable?: boolean;
   [key: string]: any;
-}
-
 export interface GridSettings {
   columns: GridColumn[];
   pageSize: number;
   sortModel?: Array<{ field: string; sort: 'asc' | 'desc' }>;
   filterModel?: any;
   density?: 'compact' | 'standard' | 'comfortable';
-}
-
 /**
  * Service configuration
  */
@@ -138,8 +116,6 @@ export interface ServiceConfig {
   cacheTimeout?: number;
   allowDirectUrl?: boolean;
   [key: string]: any;
-}
-
 /**
  * Circuit breaker types
  */
@@ -148,8 +124,6 @@ export interface CircuitBreakerState {
   state: 'CLOSED' | 'OPEN' | 'HALF_OPEN';
   failureCount: number;
   lastFailureTime: number | null;
-}
-
 /**
  * Helper type utilities
  */

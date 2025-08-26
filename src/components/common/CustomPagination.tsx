@@ -13,8 +13,7 @@ const CustomPagination = ({ rowCount, totalCount, paginationModel, onPaginationM
     const validCount = (typeof count === 'number' && !isNaN(count) && count >= 0) ? count : 0;
 
     return (
-        <TablePagination
-            component
+        <TablePagination component
             count={validCount}
             page={paginationModel.page || 0}
             onPageChange={(event, newPage) => {
@@ -30,7 +29,6 @@ const CustomPagination = ({ rowCount, totalCount, paginationModel, onPaginationM
                 translate('grid.displayedRows') 
                     ? translate('grid.displayedRows').replace('{from}', from).replace('{to}', to).replace('{count}', count)
                     : `${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`
-            }
             sx={{
                 },
                 '& .MuiTablePagination-spacer': {
@@ -49,8 +47,6 @@ const CustomPagination = ({ rowCount, totalCount, paginationModel, onPaginationM
                     order: isRTL ? 4 : 5,
                     '& button': {
                         transform: isRTL ? 'scaleX(-1)' : 'none',
-                    }
-                }
             }}
         />
     );

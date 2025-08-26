@@ -13,8 +13,6 @@ interface UseGridActionsProps {
   data?: any[];
   gridName?: string;
   searchableFields?: string[];
-}
-
 /**
  * Enhanced Grid Actions Hook
  * Provides standardized action handlers for grid operations
@@ -40,7 +38,6 @@ export const useGridActions = ({
     } catch (error) {
       console.error('Error refreshing data:', error);
       toast.error('Failed to refresh data');
-    }
   }, [onRefresh]);
 
   // Add handler
@@ -50,7 +47,6 @@ export const useGridActions = ({
     } catch (error) {
       console.error('Error adding record:', error);
       toast.error('Failed to add record');
-    }
   }, [onAdd]);
 
   // Edit handler
@@ -58,14 +54,11 @@ export const useGridActions = ({
     if(selectedRows.length ===0) {
       toast.warning('Please select a record to edit');
       return;
-    }
-    
     try {
       await onEdit?.(selectedRows);
     } catch (error) {
       console.error('Error editing record:', error);
       toast.error('Failed to edit record');
-    }
   }, [onEdit, selectedRows]);
 
   // Delete handler
@@ -73,15 +66,12 @@ export const useGridActions = ({
     if(selectedRows.length ===0) {
       toast.warning('Please select records to delete');
       return;
-    }
-    
     try {
       await onDelete?.(selectedRows);
       toast.success(`Deleted ${selectedRows.length} record(s)`);
     } catch (error) {
       console.error('Error deleting records:', error);
       toast.error('Failed to delete records');
-    }
   }, [onDelete, selectedRows]);
 
   // Sync handler
@@ -92,7 +82,6 @@ export const useGridActions = ({
     } catch (error) {
       console.error('Error syncing data:', error);
       toast.error('Failed to sync data');
-    }
   }, [onSync]);
 
   // Export handler
@@ -107,7 +96,6 @@ export const useGridActions = ({
     } catch (error) {
       console.error('Error exporting data:', error);
       toast.error('Failed to export data');
-    }
   }, [onExport, selectedRows, data]);
 
   // Search handler
@@ -121,11 +109,9 @@ export const useGridActions = ({
         const fieldsText = searchableFields.join(', ');
         toast.info(`Searching in: ${fieldsText}`);
         console.log(`Search "${searchValue}" in fields:`, searchableFields);
-      }
     } catch (error) {
       console.error('Error searching data:', error);
       toast.error('Search failed');
-    }
   }, [onSearch, searchableFields]);
 
   return {

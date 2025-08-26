@@ -99,8 +99,6 @@ export const useGridState = (gridName, options = {}) => {
     // Clear existing timer
     if(persistenceTimerRef.current) {
       clearTimeout(persistenceTimerRef.current);
-    }
-
     // Debounce the save operation
     persistenceTimerRef.current = setTimeout(() => {
       try {
@@ -110,12 +108,9 @@ export const useGridState = (gridName, options = {}) => {
           localStorage.setItem(getStorageKey(key ), serializedValue);
           if(!lastPersistedStateRef.current) {
             lastPersistedStateRef.current = {};
-          }
           lastPersistedStateRef.current[key] = serializedValue;
-        }
       } catch(error) {
         console.warn(`Failed to save grid state for ${key}:`, error);
-      }
     }, 300); // 300ms debounce
   }, [enablePersistence, gridName, getStorageKey]);
 
@@ -127,7 +122,6 @@ export const useGridState = (gridName, options = {}) => {
     } catch (error) {
       console.warn(`Failed to load grid state for ${key}:`, error);
       return defaultValue;
-    }
   }, [enablePersistence, gridName, getStorageKey]);
 
   // Load initial state from storage
@@ -245,7 +239,6 @@ export const useGridState = (gridName, options = {}) => {
       Object.keys(defaultState).forEach((key) => {
         localStorage.removeItem(getStorageKey(key ));
       });
-    }
   }, [enablePersistence, gridName, getStorageKey]);
 
   const exportState = useCallback(() => {

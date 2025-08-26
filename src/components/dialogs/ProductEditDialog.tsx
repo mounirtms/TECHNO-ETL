@@ -116,14 +116,11 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
             break;
           case 'category_ids':
             if (Array.isArray(attr.value)) {
-              setSelectedCategories(attr.value.map((id: any: any: any: any) => id.toString()));
-            }
+              setSelectedCategories(attr.value.map((id) => id.toString()));
             break;
-        }
       });
       
       setAdditionalAttributes(prev => ({ ...prev, ...attrs }));
-    }
   }, [product]);
   
   // Load categories and brands
@@ -139,12 +136,10 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
         setBrands(brandsResponse?.items || []);
       } catch(error: any) {
         console.error('Error loading data:', error);
-      }
     };
     
     if(open) {
       loadData();
-    }
   }, [open]);
   
   const handleBasicChange = (e) => {
@@ -167,8 +162,6 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
       if (!formData.sku.trim() || !formData.name.trim()) {
         toast.error('SKU and Name are required');
         return;
-      }
-      
       // Prepare custom attributes array
       const customAttributes = [];
       
@@ -178,7 +171,6 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
             attribute_code: key,
             value: typeof value === 'boolean' ? (value ? '1' : '0') : value
           });
-        }
       });
       
       // Add category IDs
@@ -187,8 +179,6 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
           attribute_code: 'category_ids',
           value: selectedCategories
         });
-      }
-      
       // Prepare final product data
       const productData = { ...formData,
         custom_attributes: customAttributes
@@ -202,7 +192,6 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
       toast.error('Failed to save product');
     } finally {
       setLoading(false);
-    }
   };
   
   const TabPanel = ({ children, value, index  }: { children value index: any }) => (
@@ -212,17 +201,13 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
   );
   
   return (
-    <Dialog 
-      open={open} 
+    <Dialog open={open} 
       onClose={onClose} 
       maxWidth
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
           minHeight: '70vh'
-        }
-      }}
-    >
+      }}></
       <DialogTitle sx={{ 
-        display: "flex", 
         display: 'flex', 
         alignItems: 'center', 
         gap: 1,
@@ -233,9 +218,8 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
         {product?.sku ? `Edit Product: ${product.sku}` : 'Add New Product'}
       </DialogTitle>
       
-      <DialogContent dividers>
-        <Tabs
-          value={activeTab}
+      <DialogContent dividers></
+        <Tabs value={activeTab}
           onChange={(e, newValue) => setActiveTab(newValue)}
           sx={{ display: "flex", borderBottom: 1, borderColor: 'divider', mb: 2 } as any}
         >
@@ -247,11 +231,10 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
         </Tabs>
         
         {/* Basic Information Tab */}
-        <TabPanel value={activeTab} index={0}>
+        <TabPanel value={activeTab} index={0}></
           <Grid { ...{container: true}} spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
+            <Grid item xs={12} sm={6}></
+              <TextField fullWidth
                 label
                 value={formData.sku}
                 onChange={(e) => handleBasicChange}
@@ -260,18 +243,16 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
               />
             </Grid>
             
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
+            <Grid item xs={12} sm={6}></
+              <TextField fullWidth
                 label
                 value={additionalAttributes.techno_ref}
                 onChange={(e) => handleAttributeChange}
               />
             </Grid>
             
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
+            <Grid item xs={12}></
+              <TextField fullWidth
                 label
                 value={formData.name}
                 onChange={(e) => handleBasicChange}
@@ -281,9 +262,8 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
               />
             </Grid>
             
-            <Grid item xs={12} sm={4}>
-              <TextField
-                fullWidth
+            <Grid item xs={12} sm={4}></
+              <TextField fullWidth
                 label
                 value={formData.price}
                 onChange={(e) => handleBasicChange}
@@ -291,9 +271,8 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
               />
             </Grid>
             
-            <Grid item xs={12} sm={4}>
-              <TextField
-                fullWidth
+            <Grid item xs={12} sm={4}></
+              <TextField fullWidth
                 label
                 value={formData.weight}
                 onChange={(e) => handleBasicChange}
@@ -301,11 +280,10 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
               />
             </Grid>
             
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={4}></
               <FormControl fullWidth>
                 <InputLabel>Status</InputLabel>
-                <Select
-                  name
+                <Select name
                   value={formData.status}
                   onChange={(e) => handleBasicChange}
                   label
@@ -315,9 +293,8 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
               </FormControl>
             </Grid>
             
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
+            <Grid item xs={12}></
+              <TextField fullWidth
                 label
                 value={additionalAttributes.short_description}
                 onChange={(e) => handleAttributeChange}
@@ -326,9 +303,8 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
               />
             </Grid>
             
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
+            <Grid item xs={12}></
+              <TextField fullWidth
                 label
                 value={additionalAttributes.description}
                 onChange={(e) => handleAttributeChange}
@@ -340,62 +316,57 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
         </TabPanel>
         
         {/* Categories Tab */}
-        <TabPanel value={activeTab} index={1}>
+        <TabPanel value={activeTab} index={1}></
           <Alert severity="info" sx={{ display: "flex", mb: 2 } as any}>
             Select categories for this product. You can choose multiple categories.
           </Alert>
           
-          <Autocomplete
-            multiple
+          <Autocomplete multiple
             options={categories}
             getOptionLabel={(option) => option.label}
-            value={categories.filter((cat: any: any: any: any) => selectedCategories.includes(cat.id.toString()))}
+            value={categories.filter((cat: any) => selectedCategories.includes(cat.id.toString()}
             onChange={(e) => (event, newValue) => {
-              setSelectedCategories(newValue.map((cat: any: any: any: any) => cat.id.toString()));
+              setSelectedCategories(newValue.map((cat: any) => cat.id.toString();
             }}
             renderInput
                 { ...params}
                 label
             )}
             renderTags={(value, getTagProps) =>
-              value.map((option: any index: any: any: any: any) => (
+              value.map((option: any index: any) => (
                 <Chip
-                  variant="body2"
+                  variant="outlined"
                   label={option.name}
                   { ...getTagProps({ index })}
                   key={option.id}
                 />
               ))
-            }
           />
           
           {selectedCategories.length > 0 && (
-            <Box sx={{ display: "flex", mt: 2 } as any}>
+            <Box sx={{ display: "flex", mt: 2 } as any}></
               <Typography variant="subtitle2" gutterBottom>
                 Selected Categories ({selectedCategories.length}):
               </Typography>
-              <Box sx={{ display: "flex", display: 'flex', flexWrap: 'wrap', gap: 1 } as any}>
-                {selectedCategories.map((catId: any: any: any: any) => {
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 } as any}>
+                {selectedCategories.map((catId: any) => {
                   const category = categories.find(cat => cat.id.toString() ===catId);
                   return category ? (
-                    <Chip
-                      key={catId}
+                    <Chip key={catId}
                       label={category.name}
                       size="small"
                 })}
-              </Box>
-            </Box>
+              </Box></Chip>
           )}
         </TabPanel>
         
         {/* Attributes Tab */}
-        <TabPanel value={activeTab} index={2}>
+        <TabPanel value={activeTab} index={2}></
           <Grid { ...{container: true}} spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6}></
               <FormControl fullWidth>
                 <InputLabel>Brand</InputLabel>
-                <Select
-                  name
+                <Select name
                   value={additionalAttributes.mgs_brand}
                   onChange={(e) => handleAttributeChange}
                   label
@@ -407,9 +378,8 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
               </FormControl>
             </Grid>
             
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
+            <Grid item xs={12} sm={6}></
+              <TextField fullWidth
                 label
                 value={additionalAttributes.country_of_manufacture}
                 onChange={(e) => handleAttributeChange}
@@ -417,56 +387,48 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
               />
             </Grid>
             
-            <Grid item xs={12}>
+            <Grid item xs={12}></
               <Typography variant="subtitle1" gutterBottom>
                 Product Flags
               </Typography>
-              <Box sx={{ display: "flex", display: 'flex', gap: 2, flexWrap: 'wrap' } as any}>
-                <FormControlLabel
-                  control
+              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' } as any}></
+                <FormControlLabel control
                       checked={additionalAttributes.trending}
                       onChange={(e) => handleAttributeChange}
                       name
-                  }
                   label
                       checked={additionalAttributes.best_seller}
                       onChange={(e) => handleAttributeChange}
                       name
-                  }
                   label
                       checked={additionalAttributes.a_la_une}
                       onChange={(e) => handleAttributeChange}
                       name
-                  }
                   label
         {/* Images Tab */}
-        <TabPanel value={activeTab} index={3}>
+        <TabPanel value={activeTab} index={3}></
           <Alert severity="info" sx={{ display: "flex", mb: 2 } as any}>
             Upload and manage product images. The first image will be used as the main product image.
           </Alert>
 
-          <ProductMediaUpload
-            sku={formData.sku}
+          <ProductMediaUpload sku={formData.sku}
             existingImages={productImages}
             onImagesChange={setProductImages}
-          />
-        </TabPanel>
+          /></ProductMediaUpload>
 
         {/* SEO & Meta Tab */}
-        <TabPanel value={activeTab} index={4}>
+        <TabPanel value={activeTab} index={4}></
           <Grid { ...{container: true}} spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
+            <Grid item xs={12}></
+              <TextField fullWidth
                 label
                 value={additionalAttributes.meta_title}
                 onChange={(e) => handleAttributeChange}
               />
             </Grid>
             
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
+            <Grid item xs={12}></
+              <TextField fullWidth
                 label
                 value={additionalAttributes.meta_keywords}
                 onChange={(e) => handleAttributeChange}
@@ -476,9 +438,8 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
               />
             </Grid>
             
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
+            <Grid item xs={12}></
+              <TextField fullWidth
                 label
                 value={additionalAttributes.meta_description}
                 onChange={(e) => handleAttributeChange}
@@ -495,13 +456,13 @@ const ProductEditDialog: React.FC<any> = ({ open, onClose, product, onSave }) =>
         justifyContent: 'space-between',
         bgcolor: 'background.default',
         p: 2
-      } as any}>
+      } as any}></
         <Button 
           onClick={onClose}
           startIcon={<CancelIcon />}
           color
           onClick={handleSave}
-          variant="body2"
+          variant="outlined"
           startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
           disabled={loading || !formData.sku.trim() || !formData.name.trim()}
         >

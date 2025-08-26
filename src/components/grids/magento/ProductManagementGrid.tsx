@@ -154,13 +154,11 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
           break;
         default:
           break;
-      }
     } catch(error: any) {
       console.error(`Error refreshing ${type}:`, error);
       toast.error(`Failed to refresh ${type}`);
     } finally {
       setRefreshing(prev => ({ ...prev, [type]: false }));
-    }
   }, []);
   const [brands, setBrands] = useState([]);
   const [brandsLoading, setBrandsLoading] = useState(false);
@@ -181,7 +179,6 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
       label: 'Category Assignment',
       icon: <CategoryIcon />,
       component: 'categories'
-    }
   ];
 
   // ===== PRODUCT COLUMNS =====
@@ -190,19 +187,17 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
       headerName: 'ID', 
       width: 100,
       renderCell: (params) => (
-        <Typography variant="body2" fontFamily="monospace" color="primary">
+        <Typography variant="outlined" fontFamily="monospace" color="primary">
           {params.value}
         </Typography>
-      )
     }),
     ColumnFactory.text('sku', { 
       headerName: 'SKU', 
       width: 150,
       renderCell: (params) => (
-        <Typography variant="body2" fontWeight="medium">
+        <Typography variant="outlined" fontWeight="medium">
           {params.value}
         </Typography>
-      )
     }),
     ColumnFactory.text('name', { 
       headerName: 'Product Name', 
@@ -223,15 +218,13 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
           size="small"
           icon={<BrandIcon />}
         />
-      )
     },
     {
       field: 'status',
       headerName: 'Status',
       width: 100,
       renderCell: (params) => (
-        <Chip
-          label={params.value ===1 ? 'Active' : 'Inactive'}
+        <Chip label={params.value ===1 ? 'Active' : 'Inactive'}
           color={params.value ===1 ? 'success' : 'default'}
           size="small"
     },
@@ -240,8 +233,7 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
       headerName: 'Type',
       width: 120,
       renderCell: (params) => (
-        <Chip
-          label={params.value || 'Simple'}
+        <Chip label={params.value || 'Simple'}
           color
     },
     {
@@ -251,34 +243,26 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
       sortable: false,
       filterable: false,
       renderCell: (params) => (
-        <Box sx={{ display: "flex", display: 'flex', gap: 0.5 }}>
+        <Box sx={{ display: 'flex', gap: 0.5 }}></
           <TooltipWrapper title="View Details">
-            <IconButton
-              size="small"
+            <IconButton size="small"
               onClick={() => handleViewProduct(params.row)}
             >
-              <ViewIcon fontSize="small" />
-            </IconButton>
+              <ViewIcon fontSize="small" /></ViewIcon>
           </TooltipWrapper>
-          <TooltipWrapper title="Edit Product">
-            <IconButton
-              size="small"
+          <TooltipWrapper title="Edit Product"></
+            <IconButton size="small"
               onClick={() => handleEditProduct(params.row)}
             >
-              <EditIcon fontSize="small" />
-            </IconButton>
+              <EditIcon fontSize="small" /></EditIcon>
           </TooltipWrapper>
-          <TooltipWrapper title="Manage Categories">
-            <IconButton
-              size="small"
+          <TooltipWrapper title="Manage Categories"></
+            <IconButton size="small"
               onClick={() => handleManageCategories(params.row)}
             >
-              <AssignmentIcon fontSize="small" />
-            </IconButton>
+              <AssignmentIcon fontSize="small" /></AssignmentIcon>
           </TooltipWrapper>
         </Box>
-      )
-    }
   ], []);
 
   // ===== BRANDS FETCHING =====
@@ -300,7 +284,6 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
       toast.error('Failed to load brands');
     } finally {
       setBrandsLoading(false);
-    }
   }, []);
 
   // ===== DATA FETCHING =====
@@ -339,7 +322,6 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
                 brand: 'Unknown',
                 additional_attributes: []
               };
-            }
           })
         );
       } else {
@@ -354,11 +336,8 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
                 brand: 'Unknown',
                 additional_attributes: []
               };
-            }
           })
         );
-      }
-
       // Apply filters
       const filteredProducts = applyFilters(productsData);
       setProducts(filteredProducts);
@@ -369,42 +348,32 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
       toast.error('Failed to load products');
     } finally {
       setLoading(false);
-    }
   }, [selectedProducts, filters]);
 
   // ===== FILTERING LOGIC =====
   const applyFilters = useCallback((productsData) => {
-    return productsData.filter((product: any: any: any: any) => {
+    return productsData.filter((product: any) => {
       // Brand filter
       if(filters.brand && product.brand !== filters.brand) {
         return false;
-      }
-
       // Status filter
       if (filters.status !== '' && product.status.toString() !== filters.status) {
         return false;
-      }
-
       // Type filter
       if(filters.type && product.type_id !== filters.type) {
         return false;
-      }
-
       // Price range filter
       if (filters.priceRange.min && product.price < parseFloat(filters.priceRange.min)) {
         return false;
-      }
       if (filters.priceRange.max && product.price > parseFloat(filters.priceRange.max)) {
         return false;
-      }
-
       return true;
     });
   }, [filters]);
 
   // ===== STATISTICS UPDATE =====
   const updateStats = useCallback((productsData) => {
-    const newStats = productsData.reduce((acc: any product: any: any: any: any) => ({
+    const newStats = productsData.reduce((acc: any product: any) => ({
       total: acc.total + 1,
       active: acc.active + (product.status ===1 ? 1 : 0),
       inactive: acc.inactive + (product.status !== 1 ? 1 : 0),
@@ -451,7 +420,6 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
     setFilters(prev => ({ ...prev,
       priceRange: { ...prev.priceRange,
         [type]: value
-      }
     }));
   }, []);
 
@@ -486,7 +454,6 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
   useEffect(() => {
     if(brands.length > 0) { // Only fetch after brands are loaded
       fetchProducts();
-    }
   }, [filters, fetchProducts, brands.length]);
 
   // ===== RENDER TAB CONTENT =====
@@ -533,7 +500,6 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
                   value: stats.withCategories,
                   icon: CategoryIcon,
                   color: 'info'
-                }
               ],
               
               // Event handlers
@@ -553,7 +519,6 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
               onError: (error) => {
                 console.error('Product Management Grid Error:', error);
                 toast.error('Error in product management grid');
-              }
             })}
           />
         );
@@ -566,24 +531,23 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
 
       default:
         return null;
-    }
   };
 
-  return Boolean((
+  return (
     <Box sx={{ display: "flex", height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
-      <Paper sx={{ display: "flex", mb: 2, p: 2 }}>
+      <Paper sx={{ display: "flex", mb: 2, p: 2 }}></
         <Typography variant="h5" gutterBottom>
           Product Management System
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="outlined" color="text.secondary">
           Comprehensive product, attributes, and categories management like Magento backend
         </Typography>
         
         {/* Selected Products Info */}
         {selectedProducts.length > 0 && (
-          <Alert severity="info" sx={{ display: "flex", mt: 2 }}>
-            <Typography variant="body2">
+          <Alert severity="info" sx={{ display: "flex", mt: 2 }}></
+            <Typography variant="outlined">
               Working with {selectedProducts.length} selected products: {selectedProducts.join(', ')}
             </Typography>
           </Alert>
@@ -592,25 +556,25 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
 
       {/* Built-in Filters */}
       {currentTab ===0 && (
-        <Card sx={{ display: "flex", mb: 2 }}>
+        <Card sx={{ display: "flex", mb: 2 }}></
           <CardContent>
-            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-              <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
-                <FilterIcon color="primary" />
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}></
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <FilterIcon color="primary" /></
                 <Typography variant="h6">
                   Product Filters
                 </Typography>
               </Box>
-              <Box sx={{ display: "flex", display: 'flex', gap: 1 }}>
+              <Box sx={{ display: 'flex', gap: 1 }}></
                 <Button
-                  variant="body2"
+                  variant="outlined"
                   startIcon={<BrandIcon />}
                   onClick={handleOpenBrandManagement}
                 >
                   Manage Brands
                 </Button>
                 <Button
-                  variant="body2"
+                  variant="outlined"
                   startIcon={<ClearIcon />}
                   onClick={handleClearFilters}
                   disabled={!Object.values(filters).some(v => v !== '' && !(typeof v === 'object' && !v.min && !v.max))}
@@ -622,19 +586,18 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
 
             <Grid { ...{container: true}} spacing={2}>
               {/* Brand Filter */}
-              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}></
                 <FormControl fullWidth size="small">
                   <InputLabel>Brand</InputLabel>
-                  <Select
-                    value={filters.brand}
+                  <Select value={filters.brand}
                     onChange={(e) => handleFilterChange('brand', e.target.value)}
                     label
                     disabled={brandsLoading}
                   >
                     <MenuItem value="">All Brands</MenuItem>
-                    {brands.map((brand: any: any: any: any) => (
-                      <MenuItem key={brand.value} value={brand.label}>
-                        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
+                    {brands.map((brand: any) => (
+                      <MenuItem key={brand.value} value={brand.label}></
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <BrandIcon fontSize="small" />
                           {brand.label}
                         </Box>
@@ -645,61 +608,53 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
               </Grid>
 
               {/* Status Filter */}
-              <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+              <Grid size={{ xs: 12, sm: 6, md: 2 }}></
                 <FormControl fullWidth size="small">
                   <InputLabel>Status</InputLabel>
-                  <Select
-                    value={filters.status}
+                  <Select value={filters.status}
                     onChange={(e) => handleFilterChange('status', e.target.value)}
                     label
               {/* Type Filter */}
-              <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+              <Grid size={{ xs: 12, sm: 6, md: 2 }}></
                 <FormControl fullWidth size="small">
                   <InputLabel>Type</InputLabel>
-                  <Select
-                    value={filters.type}
+                  <Select value={filters.type}
                     onChange={(e) => handleFilterChange('type', e.target.value)}
                     label
               {/* Price Range */}
-              <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-                <TextField
-                  label
+              <Grid size={{ xs: 12, sm: 6, md: 2 }}></
+                <TextField label
                   value={filters.priceRange.min}
                   onChange={(e) => handlePriceRangeChange('min', e.target.value)}
                 />
               </Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-                <TextField
-                  label
+              <Grid size={{ xs: 12, sm: 6, md: 2 }}></
+                <TextField label
                   value={filters.priceRange.max}
                   onChange={(e) => handlePriceRangeChange('max', e.target.value)}
                 />
               </Grid>
 
               {/* Active Filters Display */}
-              <Grid size={12}>
-                <Box sx={{ display: "flex", display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
+              <Grid size={12}></
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
                   {filters.brand && (
-                    <Chip
-                      label={`Brand: ${filters.brand}`}
+                    <Chip label={`Brand: ${filters.brand}`}
                       onDelete={() => handleFilterChange('brand', '')}
                       color
                   )}
                   {filters.status !== '' && (
-                    <Chip
-                      label={`Status: ${filters.status === '1' ? 'Active' : 'Inactive'}`}
+                    <Chip label={`Status: ${filters.status === '1' ? 'Active' : 'Inactive'}`}
                       onDelete={() => handleFilterChange('status', '')}
                       color
                   )}
                   {filters.type && (
-                    <Chip
-                      label={`Type: ${filters.type}`}
+                    <Chip label={`Type: ${filters.type}`}
                       onDelete={() => handleFilterChange('type', '')}
                       color
                   )}
                   {(filters.priceRange.min || filters.priceRange.max) && (
-                    <Chip
-                      label={`Price: ${filters.priceRange.min || '0'} - ${filters.priceRange.max || '∞'}`}
+                    <Chip label={`Price: ${filters.priceRange.min || '0'} - ${filters.priceRange.max || '∞'}`}
                       onDelete={() => handlePriceRangeChange('min', '') || handlePriceRangeChange('max', '')}
                       color
                   )}
@@ -711,11 +666,10 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
       )}
 
       {/* Tabs */}
-      <Paper sx={{ display: "flex", mb: 2 }}>
-        <Tabs
-          value={currentTab}
+      <Paper sx={{ display: "flex", mb: 2 }}></
+        <Tabs value={currentTab}
           onChange={(e) => handleTabChange}
-          variant="body2"
+          variant="outlined"
               key={index}
               label={tab.label}
               icon={tab.icon}
@@ -730,182 +684,152 @@ const ProductManagementGrid: React.FC<{initialProductIds = []: any}> = ({ initia
       </Box>
 
       {/* Product Detail Dialog */}
-      <ProductDetailDialog
-        open={productDetailOpen}
+      <ProductDetailDialog open={productDetailOpen}
         onClose={() => setProductDetailOpen(false)}
         product={selectedProduct}
       />
 
       {/* Brand Management Dialog */}
-      <BrandManagementDialog
-        open={brandManagementOpen}
+      <BrandManagementDialog open={brandManagementOpen}
         onClose={() => setBrandManagementOpen(false)}
         onBrandsUpdated={handleBrandsUpdated}
       />
 
       {/* Floating Action Buttons */}
-      <Box sx={{ display: "flex", position: 'fixed', bottom: 24, right: 24, zIndex: 1000 }}>
+      <Box sx={{ display: "flex", position: 'fixed', bottom: 24, right: 24, zIndex: 1000 }}></
         <Stack spacing={2}>
           {/* Quick Actions FAB */}
-          <TooltipWrapper title="Quick Actions" placement="left">
-            <Fab
-              color
+          <TooltipWrapper title="Quick Actions" placement="left"></
+            <Fab color
               onClick={(e) => openFloatingWindow('quickActions', e)}
             >
-              <AddIcon />
-            </Fab>
+              <AddIcon /></AddIcon>
           </TooltipWrapper>
 
           {/* Bulk Operations FAB */}
-          <TooltipWrapper 
-            title
-            disabled={selectedProducts.length ===0}
-          >
-            <Fab
-              color
+          <TooltipWrapper title
+            disabled={selectedProducts.length ===0}></
+            <Fab color
               onClick={(e) => openFloatingWindow('bulkOperations', e)}
               disabled={selectedProducts.length ===0}
             >
-              <SettingsIcon />
-            </Fab>
+              <SettingsIcon /></SettingsIcon>
           </TooltipWrapper>
 
           {/* Data Management FAB */}
-          <TooltipWrapper title="Data Management" placement="left">
-            <Fab
-              color
+          <TooltipWrapper title="Data Management" placement="left"></
+            <Fab color
               onClick={(e) => openFloatingWindow('dataManagement', e)}
             >
-              <RefreshIcon />
-            </Fab>
+              <RefreshIcon /></RefreshIcon>
           </TooltipWrapper>
         </Stack>
       </Box>
 
       {/* Quick Actions Popover */}
-      <Popover
-        open={floatingWindows.quickActions.open}
+      <Popover open={floatingWindows.quickActions.open}
         anchorEl={floatingWindows.quickActions.anchorEl}
         onClose={() => closeFloatingWindow('quickActions')}
         anchorOrigin={{ vertical: 'center', horizontal: 'left' }}
         transformOrigin={{ vertical: 'center', horizontal: 'right' }}
       >
-        <Paper sx={{ display: "flex", p: 2, minWidth: 250 }}>
-          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+        <Paper sx={{ display: "flex", p: 2, minWidth: 250 }}></
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
             <Typography variant="h6">Quick Actions</Typography>
             <IconButton size="small" onClick={() => closeFloatingWindow('quickActions')}>
-              <CloseIcon />
-            </IconButton>
+              <CloseIcon /></CloseIcon>
           </Box>
-          <List dense>
-            <ListItem button onClick={() => { /* Add Product */ closeFloatingWindow('quickActions'))))); }}>
-              <ListItemIcon><AddIcon /></ListItemIcon>
-              <ListItemText primary="Add Product" />
-            </ListItem>
+          <List dense></
+            <ListItem button onClick={() => { /* Add Product */ closeFloatingWindow('quickActions'); }}>
+              <ListItemIcon><AddIcon /></AddIcon>
+              <ListItemText primary="Add Product" /></ListItemText>
             <ListItem button onClick={() => { /* Import CSV */ closeFloatingWindow('quickActions'); }}>
-              <ListItemIcon><UploadIcon /></ListItemIcon>
-              <ListItemText primary="Import CSV" />
-            </ListItem>
+              <ListItemIcon><UploadIcon /></UploadIcon>
+              <ListItemText primary="Import CSV" /></ListItemText>
             <ListItem button onClick={() => { /* Export Data */ closeFloatingWindow('quickActions'); }}>
-              <ListItemIcon><DownloadIcon /></ListItemIcon>
-              <ListItemText primary="Export Data" />
-            </ListItem>
+              <ListItemIcon><DownloadIcon /></DownloadIcon>
+              <ListItemText primary="Export Data" /></ListItemText>
             <ListItem button onClick={() => { /* Sync All */ closeFloatingWindow('quickActions'); }}>
-              <ListItemIcon><SyncIcon /></ListItemIcon>
-              <ListItemText primary="Sync All" />
-            </ListItem>
+              <ListItemIcon><SyncIcon /></SyncIcon>
+              <ListItemText primary="Sync All" /></ListItemText>
           </List>
         </Paper>
       </Popover>
 
       {/* Bulk Operations Popover */}
-      <Popover
-        open={floatingWindows.bulkOperations.open}
+      <Popover open={floatingWindows.bulkOperations.open}
         anchorEl={floatingWindows.bulkOperations.anchorEl}
         onClose={() => closeFloatingWindow('bulkOperations')}
         anchorOrigin={{ vertical: 'center', horizontal: 'left' }}
         transformOrigin={{ vertical: 'center', horizontal: 'right' }}
       >
-        <Paper sx={{ display: "flex", p: 2, minWidth: 250 }}>
-          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+        <Paper sx={{ display: "flex", p: 2, minWidth: 250 }}></
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
             <Typography variant="h6">Bulk Operations</Typography>
             <IconButton size="small" onClick={() => closeFloatingWindow('bulkOperations')}>
-              <CloseIcon />
-            </IconButton>
+              <CloseIcon /></CloseIcon>
           </Box>
           <Alert severity="info" sx={{ display: "flex", mb: 2 }}>
             {selectedProducts.length} products selected
           </Alert>
-          <List dense>
+          <List dense></
             <ListItem button onClick={() => { /* Bulk Activate */ closeFloatingWindow('bulkOperations'); }}>
-              <ListItemIcon><ActivateIcon color="success" /></ListItemIcon>
-              <ListItemText primary="Activate Selected" />
-            </ListItem>
+              <ListItemIcon><ActivateIcon color="success" /></ActivateIcon>
+              <ListItemText primary="Activate Selected" /></ListItemText>
             <ListItem button onClick={() => { /* Bulk Deactivate */ closeFloatingWindow('bulkOperations'); }}>
-              <ListItemIcon><DeactivateIcon color="error" /></ListItemIcon>
-              <ListItemText primary="Deactivate Selected" />
-            </ListItem>
+              <ListItemIcon><DeactivateIcon color="error" /></DeactivateIcon>
+              <ListItemText primary="Deactivate Selected" /></ListItemText>
             <ListItem button onClick={() => { /* Assign Categories */ closeFloatingWindow('bulkOperations'); }}>
-              <ListItemIcon><CategoryIcon /></ListItemIcon>
-              <ListItemText primary="Assign Categories" />
-            </ListItem>
+              <ListItemIcon><CategoryIcon /></CategoryIcon>
+              <ListItemText primary="Assign Categories" /></ListItemText>
             <ListItem button onClick={() => { /* Update Attributes */ closeFloatingWindow('bulkOperations'); }}>
-              <ListItemIcon><AttributeIcon /></ListItemIcon>
-              <ListItemText primary="Update Attributes" />
-            </ListItem>
+              <ListItemIcon><AttributeIcon /></AttributeIcon>
+              <ListItemText primary="Update Attributes" /></ListItemText>
           </List>
         </Paper>
       </Popover>
 
       {/* Data Management Popover */}
-      <Popover
-        open={floatingWindows.dataManagement.open}
+      <Popover open={floatingWindows.dataManagement.open}
         anchorEl={floatingWindows.dataManagement.anchorEl}
         onClose={() => closeFloatingWindow('dataManagement')}
         anchorOrigin={{ vertical: 'center', horizontal: 'left' }}
         transformOrigin={{ vertical: 'center', horizontal: 'right' }}
       >
-        <Paper sx={{ display: "flex", p: 2, minWidth: 280 }}>
-          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+        <Paper sx={{ display: "flex", p: 2, minWidth: 280 }}></
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
             <Typography variant="h6">Data Management</Typography>
             <IconButton size="small" onClick={() => closeFloatingWindow('dataManagement')}>
-              <CloseIcon />
-            </IconButton>
+              <CloseIcon /></CloseIcon>
           </Box>
-          <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 2 }}>
+          <Typography variant="outlined" color="text.secondary" sx={{ display: "flex", mb: 2 }}>
             Manually refresh data from Magento
           </Typography>
-          <List dense>
-            <ListItem
-              button
+          <List dense></
+            <ListItem button
               onClick={() => { handleManualRefresh('attributes'); closeFloatingWindow('dataManagement'); }}
               disabled={refreshing.attributes}
             >
               <ListItemIcon>
                 {refreshing.attributes ? <CircularProgress size={20} /> : <AttributeIcon />}
               </ListItemIcon>
-              <ListItemText primary="Refresh Attributes" />
-            </ListItem>
-            <ListItem
-              button
+              <ListItemText primary="Refresh Attributes" /></ListItemText>
+            <ListItem button
               onClick={() => { handleManualRefresh('categories'); closeFloatingWindow('dataManagement'); }}
               disabled={refreshing.categories}
             >
               <ListItemIcon>
                 {refreshing.categories ? <CircularProgress size={20} /> : <CategoryIcon />}
               </ListItemIcon>
-              <ListItemText primary="Refresh Categories" />
-            </ListItem>
-            <ListItem
-              button
+              <ListItemText primary="Refresh Categories" /></ListItemText>
+            <ListItem button
               onClick={() => { handleManualRefresh('brands'); closeFloatingWindow('dataManagement'); }}
               disabled={refreshing.brands}
             >
               <ListItemIcon>
                 {refreshing.brands ? <CircularProgress size={20} /> : <BrandIcon />}
               </ListItemIcon>
-              <ListItemText primary="Refresh Brands" />
-            </ListItem>
+              <ListItemText primary="Refresh Brands" /></ListItemText>
           </List>
         </Paper>
       </Popover>
@@ -918,63 +842,51 @@ const ProductDetailDialog: React.FC<{open onClose product: any}> = ({ open, onCl
   if (!product) return null;
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth></
       <DialogTitle>
         Product Details: {product.name}
       </DialogTitle>
-      <DialogContent>
+      <DialogContent></
         <Grid { ...{container: true}} spacing={2} sx={{ display: "flex", mt: 1 }}>
-          <Grid size={6}>
-            <TextField
-              label
+          <Grid size={6}></
+            <TextField label
               value={product.id}
               fullWidth
               disabled
-            />
-          </Grid>
-          <Grid size={6}>
-            <TextField
-              label
+            /></TextField>
+          <Grid size={6}></
+            <TextField label
               value={product.sku}
               fullWidth
               disabled
-            />
-          </Grid>
-          <Grid size={12}>
-            <TextField
-              label
+            /></TextField>
+          <Grid size={12}></
+            <TextField label
               value={product.name}
               fullWidth
               disabled
-            />
-          </Grid>
-          <Grid size={6}>
-            <TextField
-              label
+            /></TextField>
+          <Grid size={6}></
+            <TextField label
               value={product.price || 0}
               fullWidth
               disabled
-            />
-          </Grid>
-          <Grid size={6}>
-            <TextField
-              label
+            /></TextField>
+          <Grid size={6}></
+            <TextField label
               value={product.status ===1 ? 'Active' : 'Inactive'}
               fullWidth
               disabled
-            />
-          </Grid>
-          <Grid size={6}>
-            <TextField
-              label
+            /></TextField>
+          <Grid size={6}></
+            <TextField label
               value={product.type_id || 'simple'}
               fullWidth
               disabled
-            />
-          </Grid>
+            /></TextField>
         </Grid>
       </DialogContent>
-      <DialogActions>
+      <DialogActions></
         <Button onClick={onClose}>Close</Button>
         <Button variant="contained" onClick={onClose}>
           Edit Product

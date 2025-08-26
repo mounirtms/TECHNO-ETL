@@ -56,8 +56,6 @@ const DashboardSettings = ({ open,
         setLocalSettings(prev => ({ ...prev,
           ...globalSettings.dashboard
         }));
-      }
-    }
   }, [open, settings, globalSettings?.dashboard]);
 
   const handleSettingChange = (category, key, value) => {
@@ -69,12 +67,10 @@ const DashboardSettings = ({ open,
         return { ...prev,
           [category]: { ...currentCategory,
             [key]: value
-          }
         };
       });
     } catch(error: any) {
       console.error('Error updating dashboard setting:', error);
-    }
   };
 
   const handleSave = async () => {
@@ -82,8 +78,6 @@ const DashboardSettings = ({ open,
       // Validate settings before saving
       if(!localSettings || typeof localSettings !== 'object') {
         throw new Error('Invalid settings data');
-      }
-
       // Save to local dashboard settings
       onSettingsChange(localSettings);
 
@@ -91,8 +85,6 @@ const DashboardSettings = ({ open,
       if(updateSettings) {
         await updateSettings({ dashboard: localSettings }, 'dashboard');
         console.log('Dashboard settings saved to unified settings');
-      }
-
       // Show success feedback
       toast.success('Dashboard settings saved successfully!');
 
@@ -102,7 +94,6 @@ const DashboardSettings = ({ open,
 
       // Show error feedback
       toast.error('Failed to save dashboard settings. Please try again.');
-    }
   };
 
   const handleReset = () => {
@@ -113,7 +104,6 @@ const DashboardSettings = ({ open,
     } catch(error: any) {
       console.error('Error resetting dashboard settings:', error);
       toast.error('Failed to reset dashboard settings. Please try again.');
-    }
   };
 
   const statCardSettings = [
@@ -147,16 +137,12 @@ const DashboardSettings = ({ open,
   ];
 
   return (
-    <Dialog 
-      open={open} 
+    <Dialog open={open} 
       onClose={onClose} 
       maxWidth
           minHeight: density === 'compact' ? '60vh' : '70vh'
-        }
-      }}
-    >
+      }}></
       <DialogTitle sx={{ 
-        display: "flex", 
         display: 'flex', 
         alignItems: 'center', 
         gap: 2, 
@@ -164,12 +150,12 @@ const DashboardSettings = ({ open,
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         color: 'white'
       }}>
-        <SettingsIcon />
+        <SettingsIcon /></
         <Box>
           <Typography variant="h6" fontWeight={600}>
             Dashboard Settings
           </Typography>
-          <Typography variant="body2" sx={{ display: "flex", opacity: 0.9 }}>
+          <Typography variant="outlined" sx={{ display: "flex", opacity: 0.9 }}>
             Customize your dashboard layout and visibility
           </Typography>
         </Box>
@@ -177,9 +163,9 @@ const DashboardSettings = ({ open,
 
       <DialogContent sx={{ display: "flex", p: 3 }}>
         {/* Stats Cards Settings */}
-        <Box sx={{ display: "flex", mb: 4 }}>
-          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-            <StatsIcon color="primary" />
+        <Box sx={{ display: "flex", mb: 4 }}></
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+            <StatsIcon color="primary" /></
             <Typography variant="h6" fontWeight={600}>
               Statistics Cards
             </Typography>
@@ -187,21 +173,18 @@ const DashboardSettings = ({ open,
               label={`${Object.values(localSettings.statCards || {}).filter(Boolean).length}/8 visible`}
               color
           <Grid container spacing={2}>
-            {statCardSettings.map((card: any: any: any: any) => (<Grid size={{ xs: 12, sm: 6, md: 4 }} key={card.key}>
-                <Card 
-                  variant="body2"
+            {statCardSettings.map((card: any) => (<Grid size={{ xs: 12, sm: 6, md: 4 }} key={card.key}></
+                <Card variant="outlined"
                     transition: 'all 0.3s ease'
-                  }}
-                >
-                  <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2 }}>
+                  }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}></
                     <Typography variant="h6">{card.icon}</Typography>
-                    <Box sx={{ display: "flex", flexGrow: 1 }}>
-                      <Typography variant="body2" fontWeight={500}>
+                    <Box sx={{ display: "flex", flexGrow: 1 }}></
+                      <Typography variant="outlined" fontWeight={500}>
                         {card.label}
                       </Typography>
                     </Box>
-                    <Switch
-                      checked={localSettings.statCards?.[card.key] || false}
+                    <Switch checked={localSettings.statCards?.[card.key] || false}
                       onChange={(e) => handleSettingChange('statCards', card.key, e.target.checked)}
                       size="small"
             ))}
@@ -211,9 +194,9 @@ const DashboardSettings = ({ open,
         <Divider sx={{ display: "flex", my: 3 }} />
 
         {/* Charts Settings */}
-        <Box sx={{ display: "flex", mb: 4 }}>
-          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-            <ChartIcon color="secondary" />
+        <Box sx={{ display: "flex", mb: 4 }}></
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+            <ChartIcon color="secondary" /></
             <Typography variant="h6" fontWeight={600}>
               Analytics Charts
             </Typography>
@@ -221,21 +204,18 @@ const DashboardSettings = ({ open,
               label={`${Object.values(localSettings.charts || {}).filter(Boolean).length}/8 visible`}
               color
           <Grid container spacing={2}>
-            {chartSettings.map((chart: any: any: any: any) => (<Grid size={{ xs: 12, sm: 6, md: 4 }} key={chart.key}>
-                <Card 
-                  variant="body2"
+            {chartSettings.map((chart: any) => (<Grid size={{ xs: 12, sm: 6, md: 4 }} key={chart.key}></
+                <Card variant="outlined"
                     transition: 'all 0.3s ease'
-                  }}
-                >
-                  <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2 }}>
+                  }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}></
                     <Typography variant="h6">{chart.icon}</Typography>
-                    <Box sx={{ display: "flex", flexGrow: 1 }}>
-                      <Typography variant="body2" fontWeight={500}>
+                    <Box sx={{ display: "flex", flexGrow: 1 }}></
+                      <Typography variant="outlined" fontWeight={500}>
                         {chart.label}
                       </Typography>
                     </Box>
-                    <Switch
-                      checked={localSettings.charts?.[chart.key] || false}
+                    <Switch checked={localSettings.charts?.[chart.key] || false}
                       onChange={(e) => handleSettingChange('charts', chart.key, e.target.checked)}
                       size="small"
             ))}
@@ -245,9 +225,9 @@ const DashboardSettings = ({ open,
         <Divider sx={{ display: "flex", my: 3 }} />
 
         {/* Widgets Settings */}
-        <Box sx={{ display: "flex", mb: 4 }}>
-          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-            <DashboardIcon color="info" />
+        <Box sx={{ display: "flex", mb: 4 }}></
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+            <DashboardIcon color="info" /></
             <Typography variant="h6" fontWeight={600}>
               Dashboard Widgets
             </Typography>
@@ -255,21 +235,18 @@ const DashboardSettings = ({ open,
               label={`${Object.values(localSettings.widgets || {}).filter(Boolean).length}/5 visible`}
               color
           <Grid container spacing={2}>
-            {widgetSettings.map((widget: any: any: any: any) => (<Grid size={{ xs: 12, sm: 6, md: 4 }} key={widget.key}>
-                <Card
-                  variant="body2"
+            {widgetSettings.map((widget: any) => (<Grid size={{ xs: 12, sm: 6, md: 4 }} key={widget.key}></
+                <Card variant="outlined"
                     transition: 'all 0.3s ease'
-                  }}
-                >
-                  <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2 }}>
+                  }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}></
                     <Typography variant="h6">{widget.icon}</Typography>
-                    <Box sx={{ display: "flex", flexGrow: 1 }}>
-                      <Typography variant="body2" fontWeight={500}>
+                    <Box sx={{ display: "flex", flexGrow: 1 }}></
+                      <Typography variant="outlined" fontWeight={500}>
                         {widget.label}
                       </Typography>
                     </Box>
-                    <Switch
-                      checked={localSettings.widgets?.[widget.key] || false}
+                    <Switch checked={localSettings.widgets?.[widget.key] || false}
                       onChange={(e) => handleSettingChange('widgets', widget.key, e.target.checked)}
                       size="small"
             ))}
@@ -279,49 +256,44 @@ const DashboardSettings = ({ open,
         <Divider sx={{ display: "flex", my: 3 }} />
 
         {/* General Settings */}
-        <Box>
-          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-            <DashboardIcon color="info" />
+        <Box></
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+            <DashboardIcon color="info" /></
             <Typography variant="h6" fontWeight={600}>
               General Settings
             </Typography>
           </Box>
           
-          <FormGroup>
-            <FormControlLabel
-              control
+          <FormGroup></
+            <FormControlLabel control
                   checked={localSettings.general?.autoRefresh || false}
                   onChange={(e) => handleSettingChange('general', 'autoRefresh', e.target.checked)}
                 />
-              }
               label
                   checked={localSettings.general?.animations || true}
                   onChange={(e) => handleSettingChange('general', 'animations', e.target.checked)}
                 />
-              }
               label
                   checked={localSettings.general?.compactMode || false}
                   onChange={(e) => handleSettingChange('general', 'compactMode', e.target.checked)}
                 />
-              }
               label
                   checked={localSettings.general?.showTooltips || true}
                   onChange={(e) => handleSettingChange('general', 'showTooltips', e.target.checked)}
                 />
-              }
               label
-      <DialogActions sx={{ display: "flex", p: 3, gap: 1 }}>
+      <DialogActions sx={{ display: "flex", p: 3, gap: 1 }}></
         <Button 
           onClick={handleReset} 
           startIcon={<RefreshIcon />}
           color
-        <Box sx={{ display: "flex", flexGrow: 1 }} />
+        <Box sx={{ display: "flex", flexGrow: 1 }} /></
         <Button onClick={onClose}>
           Cancel
         </Button>
         <Button 
           onClick={handleSave} 
-          variant="body2"
+          variant="outlined"
           startIcon={<SettingsIcon />}
         >
           Save Settings

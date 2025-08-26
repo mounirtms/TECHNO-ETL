@@ -64,19 +64,17 @@ const ProductCategoriesGrid: React.FC<{productIds = []: any}> = ({ productIds = 
       headerName: 'Product ID', 
       width: 120,
       renderCell: (params) => (
-        <Typography variant="body2" fontFamily="monospace">
+        <Typography variant="outlined" fontFamily="monospace">
           {params.value}
         </Typography>
-      )
     }),
     ColumnFactory.text('sku', { 
       headerName: 'SKU', 
       width: 150,
       renderCell: (params) => (
-        <Typography variant="body2" fontWeight="medium">
+        <Typography variant="outlined" fontWeight="medium">
           {params.value}
         </Typography>
-      )
     }),
     ColumnFactory.text('name', { 
       headerName: 'Product Name', 
@@ -89,9 +87,9 @@ const ProductCategoriesGrid: React.FC<{productIds = []: any}> = ({ productIds = 
       renderCell: (params) => {
         const categories = params.value || [];
         return (
-          <Box sx={{ display: "flex", display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
             {categories.length > 0 ? (
-              categories.slice(0, 3).map((category: any index: any: any: any: any) => (
+              categories.slice(0, 3).map((category: any index: any) => (
                 <Chip
                   key={index}
                   label={category.name}
@@ -100,17 +98,15 @@ const ProductCategoriesGrid: React.FC<{productIds = []: any}> = ({ productIds = 
                 />
               ))
             ) : (
-              <Chip
-                label
+              <Chip label
             )}
-            {categories.length > 3 && (
+            {categories.length> 3 && (
               <Chip
                 label={`+${categories.length - 3} more`}
                 size="small"
             )}
           </Box>
         );
-      }
     },
     {
       field: 'actions',
@@ -119,12 +115,10 @@ const ProductCategoriesGrid: React.FC<{productIds = []: any}> = ({ productIds = 
       sortable: false,
       filterable: false,
       renderCell: (params) => (
-        <Tooltip title="Assign Categories">
-          <IconButton
-            size="small"
+        <Tooltip title="Assign Categories"></
+          <IconButton size="small"
             onClick={() => handleAssignCategories(params.row)}
             color
-    }
   ], []);
 
   // ===== DATA FETCHING =====
@@ -150,7 +144,6 @@ const ProductCategoriesGrid: React.FC<{productIds = []: any}> = ({ productIds = 
                 name: `Product ${id}`,
                 categories: []
               };
-            }
           })
         );
         setData(products);
@@ -171,20 +164,16 @@ const ProductCategoriesGrid: React.FC<{productIds = []: any}> = ({ productIds = 
               return { ...product,
                 categories: []
               };
-            }
           })
         );
         
         setData(productsWithCategories);
         updateStats(productsWithCategories);
-      }
-      
     } catch(error: any) {
       console.error('❌ Error fetching products:', error);
       toast.error('Failed to load products');
     } finally {
       setLoading(false);
-    }
   }, [productIds]);
 
   const fetchCategories = useCallback(async () => {
@@ -196,12 +185,11 @@ const ProductCategoriesGrid: React.FC<{productIds = []: any}> = ({ productIds = 
     } catch(error: any) {
       console.error('❌ Error fetching categories:', error);
       toast.error('Failed to load categories');
-    }
   }, []);
 
   // ===== STATISTICS UPDATE =====
   const updateStats = useCallback((products) => {
-    const newStats = products.reduce((acc: any product: any: any: any: any) => ({
+    const newStats = products.reduce((acc: any product: any) => ({
       total: acc.total + 1,
       assigned: acc.assigned + (product.categories?.length > 0 ? 1 : 0),
       unassigned: acc.unassigned + (product.categories?.length ===0 ? 1 : 0)
@@ -219,7 +207,7 @@ const ProductCategoriesGrid: React.FC<{productIds = []: any}> = ({ productIds = 
     setSelectedProduct(product);
     
     // Set currently assigned categories as selected
-    const currentCategoryIds = new Set(product.categories?.map((cat: any: any: any: any) => cat.id.toString()) || []
+    const currentCategoryIds = new Set(product.categories?.map((cat: any) => cat.id.toString()) || []
     );
     setSelectedCategories(currentCategoryIds);
     setAssignDialogOpen(true);
@@ -228,11 +216,10 @@ const ProductCategoriesGrid: React.FC<{productIds = []: any}> = ({ productIds = 
   const handleCategoryToggle = useCallback((categoryId) => {
     setSelectedCategories(prev => {
       const newSet = new Set(prev);
-      if (newSet.has(categoryId.toString())) {
+      if (newSet.has(categoryId.toString() {
         newSet.delete(categoryId.toString());
       } else {
         newSet.add(categoryId.toString());
-      }
       return newSet;
     });
   }, []);
@@ -241,7 +228,7 @@ const ProductCategoriesGrid: React.FC<{productIds = []: any}> = ({ productIds = 
     if (!selectedProduct) return;
     
     try {
-      const categoryIds = Array.from(selectedCategories).map((id: any: any: any: any) => parseInt(id));
+      const categoryIds = Array.from(selectedCategories).map((id: any) => parseInt(id));
       console.log('💾 Saving category assignment:', {
         productId: selectedProduct.id,
         categoryIds
@@ -257,7 +244,6 @@ const ProductCategoriesGrid: React.FC<{productIds = []: any}> = ({ productIds = 
     } catch(error: any) {
       console.error('❌ Error assigning categories:', error);
       toast.error('Failed to assign categories');
-    }
   }, [selectedProduct, selectedCategories, fetchProducts]);
 
   // ===== EFFECTS =====
@@ -308,7 +294,6 @@ const ProductCategoriesGrid: React.FC<{productIds = []: any}> = ({ productIds = 
               value: stats.unassigned,
               icon: CancelIcon,
               color: 'warning'
-            }
           ],
           
           // Event handlers
@@ -322,13 +307,11 @@ const ProductCategoriesGrid: React.FC<{productIds = []: any}> = ({ productIds = 
           onError: (error) => {
             console.error('Product Categories Grid Error:', error);
             toast.error('Error in product categories grid');
-          }
         })}
       />
 
       {/* Category Assignment Dialog */}
-      <CategoryAssignmentDialog
-        open={assignDialogOpen}
+      <CategoryAssignmentDialog open={assignDialogOpen}
         onClose={() => setAssignDialogOpen(false)}
         product={selectedProduct}
         categories={categories}
@@ -358,27 +341,23 @@ const CategoryAssignmentDialog: React.FC<{open onClose product categories select
         newSet.delete(categoryId);
       } else {
         newSet.add(categoryId);
-      }
       return newSet;
     });
   };
 
   const renderCategoryTree = (categoryList, level = 0) => {
-    return categoryList.map((category: any: any: any: any) => {
+    return categoryList.map((category: any) => {
       const hasChildren = category.children_data && category.children_data.length > 0;
       const isExpanded = expandedCategories.has(category.id);
 
-      return Boolean((
-        <React.Fragment key={category.id}>
-          <ListItem
-            sx={{
+      return (
+        <React.Fragment key={category.id}></
+          <ListItem sx={{
               '&:hover': { backgroundColor: 'action.hover' }
-            }}
-          >
+            }}>
             <ListItemIcon sx={{ display: "flex", minWidth: 32 }}>
               {hasChildren ? (
-                <IconButton
-                  size="small"
+                <IconButton size="small"
                   onClick={() => handleCategoryExpand(category.id)}
                 >
                   {isExpanded ? <ExpandLessIcon /> : <ChevronRightIcon />}
@@ -388,25 +367,20 @@ const CategoryAssignmentDialog: React.FC<{open onClose product categories select
               )}
             </ListItemIcon>
 
-            <FormControlLabel
-              control
+            <FormControlLabel control
                   checked={selectedCategories.has(category.id.toString())}
                   onChange={(e) => () => onCategoryToggle(category.id)}
                   size="small"
-              }
               label
-                <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}></
                   <CategoryIcon fontSize="small" color={level ===0 ? 'primary' : 'action'} />
-                  <Typography variant="body2" fontWeight={level ===0 ? 600 : 400}>
+                  <Typography variant="outlined" fontWeight={level ===0 ? 600 : 400}>
                     {category.name}
                   </Typography>
-                  <Chip
-                    label={`ID: ${category.id}`}
+                  <Chip label={`ID: ${category.id}`}
                     size="small"
                     sx={{ display: "flex", fontSize: '0.7rem', height: 20 }}
-                  />
-                </Box>
-              }
+                  /></Chip>
               sx={{ display: "flex", flexGrow: 1, ml: 0 }}
             />
           </ListItem>
@@ -417,24 +391,24 @@ const CategoryAssignmentDialog: React.FC<{open onClose product categories select
             </Collapse>
           )}
         </React.Fragment>
-      )))));
+      );
     });
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth></
       <DialogTitle>
         Assign Categories to: {product?.name}
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="outlined" color="text.secondary">
           SKU: {product?.sku} | ID: {product.id}
         </Typography>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent></
         <Box sx={{ display: "flex", mt: 1 }}>
           <Typography variant="h6" gutterBottom>
             Select Categories:
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 2 }}>
+          <Typography variant="outlined" color="text.secondary" sx={{ display: "flex", mb: 2 }}>
             Selected: {selectedCategories.size} categories
           </Typography>
           
@@ -445,20 +419,20 @@ const CategoryAssignmentDialog: React.FC<{open onClose product categories select
             border: '1px solid',
             borderColor: 'divider',
             borderRadius: 1
-          }}>
+          }}></
             <List dense>
               {renderCategoryTree(categories)}
             </List>
           </Box>
         </Box>
       </DialogContent>
-      <DialogActions>
+      <DialogActions></
         <Button onClick={onClose} startIcon={<CancelIcon />}>
           Cancel
         </Button>
         <Button 
           onClick={onSave} 
-          variant="body2"
+          variant="outlined"
           startIcon={<SaveIcon />}
         >
           Save Assignment

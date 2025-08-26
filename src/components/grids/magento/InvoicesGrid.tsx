@@ -56,7 +56,6 @@ const InvoicesGrid: React.FC<{orderId: any}> = ({ orderId  }) => {
                 paid: 'success',
                 pending: 'warning',
                 canceled: 'error'
-            }
         }),
         ColumnFactory.dateTime('created_at', {
             headerName: 'Invoice Date',
@@ -83,8 +82,6 @@ const InvoicesGrid: React.FC<{orderId: any}> = ({ orderId  }) => {
                         condition_type: 'eq'
                     }]
                 });
-            }
-
             if(filter?.state) {
                 searchCriteria.filterGroups.push({
                     filters: [{
@@ -93,8 +90,6 @@ const InvoicesGrid: React.FC<{orderId: any}> = ({ orderId  }) => {
                         condition_type: 'eq'
                     }]
                 });
-            }
-
             const response = await magentoApi.getInvoices(searchCriteria);
             // Handle {data: {items: []}} response structure
             const invoicesData = response?.data || response;
@@ -106,12 +101,11 @@ const InvoicesGrid: React.FC<{orderId: any}> = ({ orderId  }) => {
             throw error;
         } finally {
             setLoading(false);
-        }
     }, [orderId]);
 
     // Update invoice statistics
     const updateStats = useCallback((invoices) => {
-        const newStats = invoices.reduce((acc: any invoice: any: any: any: any) => ({
+        const newStats = invoices.reduce((acc: any invoice: any) => ({
             total: acc.total + 1,
             paid: acc.paid + (invoice.state === 'paid' ? 1 : 0),
             pending: acc.pending + (invoice.state === 'pending' ? 1 : 0)
@@ -158,7 +152,6 @@ const InvoicesGrid: React.FC<{orderId: any}> = ({ orderId  }) => {
                             value: stats.pending,
                             icon: PendingIcon,
                             color: 'warning'
-                        }
                     ],
 
                     // Configuration
@@ -168,8 +161,6 @@ const InvoicesGrid: React.FC<{orderId: any}> = ({ orderId  }) => {
                             onClick: (rowData) => {
                                 console.log('Viewing invoice:', rowData);
                                 toast.info(`Viewing invoice: ${rowData?.increment_id}`);
-                            }
-                        }
                     }),
 
                     // Event handlers
@@ -179,7 +170,7 @@ const InvoicesGrid: React.FC<{orderId: any}> = ({ orderId  }) => {
                     },
                     onExport: (selectedRows) => {
                         const exportData = selectedRows.length > 0
-                            ? data.filter((invoice: any: any: any: any) => selectedRows.includes(invoice?.increment_id))
+                            ? data.filter((invoice: any) => selectedRows.includes(invoice?.increment_id))
                             : data;
                         console.log('Exporting invoices:', exportData);
                         toast.success(`Exported ${exportData.length} invoices`);
@@ -195,7 +186,6 @@ const InvoicesGrid: React.FC<{orderId: any}> = ({ orderId  }) => {
                         refresh: {
                             enabled: true,
                             priority: 2
-                        }
                     },
 
                     // Filter configuration
@@ -212,7 +202,6 @@ const InvoicesGrid: React.FC<{orderId: any}> = ({ orderId  }) => {
                     onError: (error) => {
                         console.error('Invoices Grid Error:', error);
                         toast.error('Error loading invoices');
-                    }
                 })}
         />
     );

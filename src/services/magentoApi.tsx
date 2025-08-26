@@ -60,7 +60,6 @@ const mockData = {
       email: 'jane@example.com',
       phone: '(555) 987-6543',
       priority: 2
-    }
   ],
   stocks: [
     {
@@ -78,7 +77,6 @@ const mockData = {
         { type: 'website', code: 'east_store' }
       ],
       source_codes: ['warehouse1']
-    }
   ],
   sourceItems: [
     {
@@ -92,7 +90,6 @@ const mockData = {
       source_code: 'warehouse1',
       quantity: 50,
       status: 1
-    }
   ]
 };
 
@@ -102,7 +99,6 @@ const formatResponse = (response, mockDataKey) => {
       items: mockData[mockDataKey] || [],
       total_count: mockData[mockDataKey]?.length || 0
     };
-  }
   return response;
 };
 
@@ -118,8 +114,6 @@ class MagentoApi extends BaseApiService  {
     
     this.baseURL = API_URL;
     this.unifiedService = unifiedMagentoService;
-  }
-
   // Get product media gallery by SKU (uses backend proxy)
   async getProductMedia(sku: any) {
     try {
@@ -130,9 +124,6 @@ class MagentoApi extends BaseApiService  {
     } catch(error: any) {
       console.error('Failed to fetch product media:', error);
       throw error;
-    }
-  }
-
   // Create a new product
   async createProduct(productData: any) {
     try {
@@ -145,9 +136,6 @@ class MagentoApi extends BaseApiService  {
       console.error('Failed to create product:', error);
       toast.error(error.response?.data?.message || 'An error occurred while creating the product.');
       throw error;
-    }
-  }
-
   // Create multiple products in bulk
   async createProductsBulk(products: any) {
     const results = {
@@ -169,27 +157,17 @@ class MagentoApi extends BaseApiService  {
         const errorMessage = error.response?.data?.message || 'An unknown error occurred';
         results.errors.push({ product: productData, error: errorMessage });
         toast.update(toastId, { render: `Failed to create ${productData.sku}: ${errorMessage}`, type: 'error', isLoading: false, autoClose: 10000 });
-      }
-    }
-
     this.clearCache(); // Clear cache once all operations are complete
     return results;
-  }
-
   // Deprecated: getProductDetails (use local row data in grid instead)
 
   setBaseURL(newBaseURL: any) {
     if(!newBaseURL) {
       throw new Error('Base URL cannot be empty');
-    }
     this.baseURL = newBaseURL;
     // Note: unifiedMagentoService doesn't expose setBaseURL method
-  }
-
   getBaseURL() {
     return this.baseURL;
-  }
-
   // Override buildSearchCriteria to use BaseApiService parameter validation
   buildSearchCriteria(params = {}) {
     const searchCriteria = {
@@ -201,21 +179,13 @@ class MagentoApi extends BaseApiService  {
     
     // Use parent's parameter validation and flattening
     return this.validateAndFlattenParams({ searchCriteria, fieldName: params?.fieldName });
-  }
-
   // Use parent's cache methods with legacy compatibility
   getCacheKey(endpoint, params: any) {
     return super._getCacheKey('get', endpoint, params);
-  }
-
   getCachedData(key: any) {
     return super._getCachedResponse(key);
-  }
-
   setCachedData(key, data: any) {
     return super._setCachedResponse(key, data);
-  }
-
   // API Methods with error handling and caching - using unified service
   async get(endpoint, config: any = {}) {
     try { 
@@ -226,38 +196,25 @@ class MagentoApi extends BaseApiService  {
       if(this.shouldUseLocalData(endpoint)) {
         toast.warning('Using local data due to API error');
         return this.getLocalDataResponse(endpoint);
-      }
       throw error;
-    }
-  }
-
   async post(endpoint, data = {}, config: any = {}) {
     try {
       const response = await unifiedMagentoService.post(endpoint, data, config);
       return response;
     } catch(error: any) {
       throw error;
-    }
-  }
-
   async put(endpoint, data = {}, config: any = {}) {
     try {
       const response = await unifiedMagentoService.put(endpoint, data, config);
       return response;
     } catch(error: any) {
       throw error;
-    }
-  }
-
   async delete(endpoint, config: any = {}) {
     try {
       const response = await unifiedMagentoService.delete(endpoint, config);
       return response;
     } catch(error: any) {
       throw error;
-    }
-  }
-
   // Local data fallback helpers
   shouldUseLocalData(endpoint: any) {
     return endpoint.includes('products') || 
@@ -266,8 +223,6 @@ class MagentoApi extends BaseApiService  {
            endpoint.includes('invoices') ||
            endpoint.includes('categories') ||
            endpoint.includes('cms');
-  }
-
   getLocalDataResponse(endpoint: any) {
     let localData;
     if (endpoint.includes('products')) {
@@ -282,8 +237,6 @@ class MagentoApi extends BaseApiService  {
       localData
     } else if (endpoint.includes('cms')) {
       localData
-    }
-
     // Apply basic filtering if params are provided
     const items = Array.isArray(localData) ? localData : [];
     
@@ -292,10 +245,7 @@ class MagentoApi extends BaseApiService  {
         items: items,
         total_count: items?.length,
         search_criteria: {}
-      }
     };
-  }
-
   async getOrders(params: any = {}) {
     try {
       const cacheKey = this.getCacheKey('/orders', params);
@@ -304,8 +254,6 @@ class MagentoApi extends BaseApiService  {
       if(cachedData) {
         console.log('Using cached orders data');
         return cachedData;
-      }
-
       const searchCriteria = this.buildSearchCriteria({ ...params,
         sortOrders: params?.sortOrders || [
           { field: 'created_at', direction: 'DESC' }
@@ -322,7 +270,7 @@ class MagentoApi extends BaseApiService  {
 
       if(response?.data?.items) {
         const enrichedResponse = {
-          items: response?.data.items.map((order: any: any: any: any) => ({ ...order,
+          items: response?.data.items.map((order: any) => ({ ...order,
             id: order.entity_id || order.id,
             status: order.status || 'pending',
             customer_name: order.customer_firstname 
@@ -335,17 +283,12 @@ class MagentoApi extends BaseApiService  {
 
         this.setCachedData(cacheKey, enrichedResponse);
         return enrichedResponse;
-      }
-
       throw new Error('Failed to fetch orders');
     } catch(error: any) {
       console.error('Error fetching orders:', error);
       const localData = this.getLocalResponse('orders');
       console.log('Using local orders data:', localData);
       return localData;
-    }
-  }
-
   async getCustomers(params: any = {}) {
     try {
       const cacheKey = this.getCacheKey('/customers/search', params);
@@ -354,8 +297,6 @@ class MagentoApi extends BaseApiService  {
       if(cachedData) {
         console.log('Using cached customers data');
         return cachedData;
-      }
-
       const searchCriteria = this.buildSearchCriteria({ ...params,
         sortOrders: params?.sortOrders || [
           { field: 'created_at', direction: 'DESC' }
@@ -376,7 +317,7 @@ class MagentoApi extends BaseApiService  {
 
       if(response?.data?.items) {
         const enrichedResponse = {
-          items: response?.data.items.map((customer: any: any: any: any) => ({ ...customer,
+          items: response?.data.items.map((customer: any) => ({ ...customer,
             id: customer.id || customer.entity_id,
             name: customer.firstname 
               ? `${customer.firstname} ${customer.lastname}`.trim()
@@ -389,17 +330,12 @@ class MagentoApi extends BaseApiService  {
 
         this.setCachedData(cacheKey, enrichedResponse);
         return enrichedResponse;
-      }
-
       throw new Error('Failed to fetch customers');
     } catch(error: any) {
       console.error('Error fetching customers:', error);
       const localData = this.getLocalResponse('customers');
       console.log('Using local customers data:', localData);
       return localData;
-    }
-  }
-
   // ===== PRODUCT MEDIA OPERATIONS =====
   async uploadProductMedia(sku, entryData : any) {
     try {
@@ -415,9 +351,6 @@ class MagentoApi extends BaseApiService  {
     } catch(error: any) {
       console.error('❌ Media upload failed:', error);
       throw new Error(`Failed to upload media for ${sku}: ${error.message}`);
-    }
-  }
-
   async deleteProductMedia(sku, entryId: any) {
     try {
       console.log(`🗑️ Deleting media ${entryId} for product: ${sku}`);
@@ -430,9 +363,6 @@ class MagentoApi extends BaseApiService  {
     } catch(error: any) {
       console.error('❌ Failed to delete product media:', error);
       throw new Error(`Failed to delete media for ${sku}: ${error.message}`);
-    }
-  }
-
   async getProducts(params: any = {}) {
     try {
       const cacheKey = this.getCacheKey('/products', params);
@@ -440,8 +370,6 @@ class MagentoApi extends BaseApiService  {
       
       if(cachedData) {
         return cachedData;
-      }
-
       const searchCriteria = this.buildSearchCriteria({ ...params,
         sortOrders: params?.sortOrders || [
           { field: 'created_at', direction: 'DESC' }
@@ -460,7 +388,6 @@ class MagentoApi extends BaseApiService  {
           items: response?.data?.items || [],
           total_count: response?.data?.total_count || 0,
           search_criteria: response?.data?.search_criteria || {}
-        }
       };
 
       this.setCachedData(cacheKey, formattedResponse);
@@ -470,9 +397,6 @@ class MagentoApi extends BaseApiService  {
       // Use local data as fallback
       const localResponse = this.getLocalDataResponse('/products');
       return localResponse;
-    }
-  }
-
   async getOrderDetails(orderId: any) {
     try {
       return await this.get(`/orders/${orderId}`);
@@ -480,9 +404,6 @@ class MagentoApi extends BaseApiService  {
       console.error('Error fetching order details:', error);
       toast.warn('Using local data: Unable to fetch from API');
       return this.getLocalData('orders')?.find(order => order.id ===orderId);
-    }
-  }
-
   async getCustomerDetails(customerId: any) {
     try {
       return await this.get(`/customers/${customerId}`);
@@ -490,13 +411,8 @@ class MagentoApi extends BaseApiService  {
       console.error('Error fetching customer details:', error);
       toast.warn('Using local data: Unable to fetch from API');
       return this.getLocalData('customers')?.find(customer => customer.id ===customerId);
-    }
-  }
-
   async createCustomer(customerData: any) {
     return this.post('/customers', { customer: customerData });
-  }
-
   async getProduct(sku: any) {
     try {
       return await this.get(`/products/${sku}`);
@@ -504,9 +420,6 @@ class MagentoApi extends BaseApiService  {
       console.error('Error fetching product:', error);
       toast.warn('Using local data: Unable to fetch from API');
       return this.getLocalData('products')?.find(product => product.sku ===sku);
-    }
-  }
-
   // ===== PRODUCT ATTRIBUTES MANAGEMENT: any =====
 
   async getProductAttributes(params = {}) {
@@ -522,9 +435,6 @@ class MagentoApi extends BaseApiService  {
       console.error('Error fetching product attributes:', error);
       toast.warn('Using mock data: Unable to fetch attributes from API');
       return this.getMockProductAttributes();
-    }
-  }
-
   async getProductAttribute(attributeCode: any) {
     try {
       const response = await this.get(`/products/attributes/${attributeCode}`);
@@ -532,9 +442,6 @@ class MagentoApi extends BaseApiService  {
     } catch(error: any) {
       console.error('Error fetching product attribute:', error);
       return this.getMockProductAttribute(attributeCode);
-    }
-  }
-
   async updateProductAttribute(attributeCode, attributeData: any) {
     try {
       const response = await this.put(`/products/attributes/${attributeCode}`, attributeData);
@@ -544,9 +451,6 @@ class MagentoApi extends BaseApiService  {
       console.error('Error updating product attribute:', error);
       toast.error(`Failed to update attribute ${attributeCode}`);
       throw error;
-    }
-  }
-
   async createProductAttribute(attributeData: any) {
     try {
       const response = await this.post('/products/attributes', attributeData);
@@ -556,9 +460,6 @@ class MagentoApi extends BaseApiService  {
       console.error('Error creating product attribute:', error);
       toast.error('Failed to create attribute');
       throw error;
-    }
-  }
-
   // ===== PRODUCT CATEGORIES MANAGEMENT =====
 
   async getProductCategories(productId) {
@@ -568,9 +469,6 @@ class MagentoApi extends BaseApiService  {
     } catch(error: any) {
       console.error('Error fetching product categories:', error);
       return this.getMockProductCategories(productId);
-    }
-  }
-
   async assignProductToCategories(productId, categoryIds: any) {
     try {
       const response = await this.put(`/products/${productId}/categories`, {
@@ -582,9 +480,6 @@ class MagentoApi extends BaseApiService  {
       console.error('Error assigning product to categories:', error);
       toast.error('Failed to update product categories');
       throw error;
-    }
-  }
-
   // ===== PRODUCT ATTRIBUTE VALUES =====
 
   async getProductAttributeValues(productId, attributeCode : any) {
@@ -594,9 +489,6 @@ class MagentoApi extends BaseApiService  {
     } catch(error: any) {
       console.error('Error fetching product attribute values:', error);
       return this.getMockAttributeValue(productId, attributeCode);
-    }
-  }
-
   async updateProductAttributeValue(productId, attributeCode, value: any) {
     try {
       const response = await this.put(`/products/${productId}/attributes/${attributeCode}`, {
@@ -608,9 +500,6 @@ class MagentoApi extends BaseApiService  {
       console.error('Error updating product attribute value:', error);
       toast.error(`Failed to update ${attributeCode}`);
       throw error;
-    }
-  }
-
   async getCategories(params: any = {}) {
     try {
       const searchCriteria = this.buildSearchCriteria(params);
@@ -627,31 +516,24 @@ class MagentoApi extends BaseApiService  {
       // If the response has the expected structure, add IDs if missing
       if(formattedResponse && formattedResponse?.data) {
         formattedResponse.data = this.addCategoryIds(formattedResponse?.data);
-      }
-
       return formattedResponse;
     } catch(error: any) {
       console.error('Error fetching categories:', error);
       toast.warn('Using local data: Unable to fetch from API');
       return this.getLocalCategoriesResponse();
-    }
-  }
-
   // Helper method to add IDs to categories if missing
   addCategoryIds(categoryData, startId = 1 ) {
     let currentId = startId;
 
     const addIds = (categories) => {
       if(Array.isArray(categories)) {
-        return categories.map((category: any: any: any: any) => {
+        return categories.map((category: any) => {
           const categoryWithId = { ...category,
             id: category.id || currentId++
           };
 
           if(category.children_data && category.children_data?.length > 0) {
             categoryWithId.children_data = addIds(category.children_data);
-          }
-
           return categoryWithId;
         });
       } else if(categoryData && typeof categoryData === 'object') {
@@ -662,17 +544,11 @@ class MagentoApi extends BaseApiService  {
 
         if(categoryData.children_data && categoryData.children_data?.length > 0) {
           categoryWithId.children_data = addIds(categoryData.children_data);
-        }
-
         return categoryWithId;
-      }
-
       return categories;
     };
 
     return addIds(categoryData);
-  }
-
   // Get local categories with proper formatting
   getLocalCategoriesResponse() {
     try {
@@ -692,15 +568,10 @@ class MagentoApi extends BaseApiService  {
           },
           success: true
         };
-      }
-
       return localData;
     } catch(error: any) {
       console.error('Error formatting local categories:', error);
       return this.getMockCategoriesResponse();
-    }
-  }
-
   // Fallback mock categories
   getMockCategoriesResponse() {
     return {
@@ -715,18 +586,13 @@ class MagentoApi extends BaseApiService  {
               { id: 3, name: 'Clothing', level: 1, children_data: [] },
               { id: 4, name: 'Home & Garden', level: 1, children_data: [] }
             ]
-          }
         ],
         total_count: 1
       },
       success: true
     };
-  }
-
   async getCategory(categoryId: any) {
     return this.get(`/categories/${categoryId}`);
-  }
-
   async getStockItems(params: any = {}) {
     try {
       const searchCriteria = this.buildSearchCriteria(params);
@@ -736,37 +602,26 @@ class MagentoApi extends BaseApiService  {
 
       if(response?.data) {
         return response?.data;
-      }
-
       throw new Error('Failed to fetch stock items');
     } catch(error: any) {
       console.error('Error fetching stock items:', error);
       throw error;
-    }
-  }
-
   async updateStockItem(productSku, stockItem: any) {
     try {
       const response = await this.put(`/products/${productSku}/stockItems/${stockItem.item_id}`, {
         stockItem: { ...stockItem,
           qty: parseFloat(stockItem.qty),
           is_in_stock: stockItem.qty > 0
-        }
       });
 
       if(response?.data) {
         // Clear product cache to ensure fresh data
         this.cache.delete(this.getCacheKey('/products', {}));
         return response?.data;
-      }
-
       throw new Error('Failed to update stock item');
     } catch(error: any) {
       console.error('Error updating stock item:', error);
       throw error;
-    }
-  }
-
   async getCmsPages(params: any = {}) {
     try {
       const cacheKey = this.getCacheKey('/cmsPage/search', params);
@@ -774,8 +629,6 @@ class MagentoApi extends BaseApiService  {
       if(cachedData) {
         console.log('Using cached CMS pages data');
         return cachedData;
-      }
-
       // Build proper search criteria to fix "%fieldName" error
       const searchCriteria = params?.searchCriteria || {
         filterGroups: [],
@@ -793,12 +646,8 @@ class MagentoApi extends BaseApiService  {
               if (!filter.field || filter.field.includes('%') || filter.field.includes('fieldName')) {
                 console.warn('⚠️ Invalid field name detected:', filter.field);
                 filter.field = 'title'; // Default to title field
-              }
             });
-          }
         });
-      }
-
       console.log('🔍 Fetching CMS pages with criteria:', searchCriteria);
 
       // Add required fieldName parameter for Magento API
@@ -812,17 +661,12 @@ class MagentoApi extends BaseApiService  {
       if(response && response.items) {
         this.setCachedData(cacheKey, response);
         return response;
-      }
-
       throw new Error('No data returned from API');
     } catch(error: any) {
       console.error('❌ Failed to fetch CMS pages:', error);
       const localData = this.getLocalResponse('cmsPages');
       console.log('📦 Using local CMS pages data:', localData);
       return localData;
-    }
-  }
-
   async getCmsBlocks(params: any = {}) {
     try {
       const cacheKey = this.getCacheKey('/cmsBlock/search', params);
@@ -830,8 +674,6 @@ class MagentoApi extends BaseApiService  {
       if(cachedData) {
         console.log('Using cached CMS blocks data');
         return cachedData;
-      }
-
       // Build proper search criteria to fix "%fieldName" error
       const searchCriteria = params?.searchCriteria || {
         filterGroups: [],
@@ -849,12 +691,8 @@ class MagentoApi extends BaseApiService  {
               if (!filter.field || filter.field.includes('%') || filter.field.includes('fieldName')) {
                 console.warn('⚠️ Invalid field name detected:', filter.field);
                 filter.field = 'title'; // Default to title field
-              }
             });
-          }
         });
-      }
-
       console.log('🔍 Fetching CMS blocks with criteria:', searchCriteria);
 
       // Add required fieldName parameter for Magento API
@@ -877,29 +715,16 @@ class MagentoApi extends BaseApiService  {
       const localData = this.getLocalResponse('cmsBlocks');
       console.log('📦 Using local CMS blocks data:', localData);
       return localData;
-    }
-  }
-
   async getCmsPage(id: any) {
     return this.get(`/cmsPage/${id}`);
-  }
-
   async createCmsPage(data: any) {
     return this.post('/cmsPage', data);
-  }
-
   async updateCmsPage(id, data: any) {
     return this.put(`/cmsPage/${id}`, data);
-  }
-
   async deleteCmsPage(id: any) {
     return this.delete(`/cmsPage/${id}`);
-  }
-
   async shipOrder(orderId, items, notify: any = true ) {
     return this.post(`/order/${orderId}/ship`, { items, notify });
-  }
-
   async getInvoices(searchCriteria: any = {}) {
     try {
       const params = this.formatSearchCriteria(searchCriteria);
@@ -912,9 +737,6 @@ class MagentoApi extends BaseApiService  {
     } catch(error: any) {
       console.error('Error fetching invoices:', error);
       throw new Error('Failed to fetch invoices');
-    }
-  }
-
   /**
    * Format search criteria for Magento API
    * @param {Object} searchCriteria - The search criteria object
@@ -931,26 +753,16 @@ class MagentoApi extends BaseApiService  {
           formattedCriteria[`searchCriteria[filter_groups][${groupIndex}][filters][${filterIndex}][condition_type]`] = filter.condition_type;
         });
       });
-    }
-
     if(searchCriteria?.pageSize) {
       formattedCriteria['searchCriteria[pageSize]'] = searchCriteria?.pageSize;
-    }
-
     if(searchCriteria?.currentPage) {
       formattedCriteria['searchCriteria[currentPage]'] = searchCriteria?.currentPage;
-    }
-
     if(searchCriteria?.sortOrders) {
       searchCriteria?.sortOrders.forEach((sort, index) => {
         formattedCriteria[`searchCriteria[sortOrders][${index}][field]`] = sort.field;
         formattedCriteria[`searchCriteria[sortOrders][${index}][direction]`] = sort.direction;
       });
-    }
-
     return formattedCriteria;
-  }
-
   async getSources(params: any = {}) {
     try {
       const searchCriteria = this.buildSearchCriteria(params);
@@ -959,9 +771,6 @@ class MagentoApi extends BaseApiService  {
     } catch(error: any) {
       console.error('Error fetching sources:', error);
       return formatResponse(null, 'sources');
-    }
-  }
-
   async getStocks(params: any = {}) {
     try {
       const searchCriteria = this.buildSearchCriteria(params);
@@ -970,9 +779,6 @@ class MagentoApi extends BaseApiService  {
     } catch(error: any) {
       console.error('Error fetching stocks:', error);
       return formatResponse(null, 'stocks');
-    }
-  }
-
   async getSourceItems(params: any = {}) {
     try {
       const searchCriteria = this.buildSearchCriteria(params);
@@ -981,9 +787,6 @@ class MagentoApi extends BaseApiService  {
     } catch(error: any) {
       console.error('Error fetching source items:', error);
       return formatResponse(null, 'sourceItems');
-    }
-  }
-
   // Local data utilities
   getLocalData(type: any) {
     switch(type) {
@@ -1001,9 +804,6 @@ class MagentoApi extends BaseApiService  {
         return cmsPagesData; // Return local CMS pages data
       default:
         return null;
-    }
-  }
-
   getLocalResponse(type: any) {
     const items = this.getLocalData(type);
     return {
@@ -1011,8 +811,6 @@ class MagentoApi extends BaseApiService  {
       total_count: items?.length,
       search_criteria: {}
     };
-  }
-
   // ===== BRANDS MANAGEMENT =====
 
   async getBrands(useCache = true) {
@@ -1023,9 +821,6 @@ class MagentoApi extends BaseApiService  {
       if(cachedBrands) {
         console.log('📦 Using cached brands data');
         return cachedBrands;
-      }
-    }
-
     try {
       console.log('🔄 Fetching brands from additional_attributes...');
 
@@ -1045,9 +840,6 @@ class MagentoApi extends BaseApiService  {
       const mockBrands = this.getMockBrands();
       this.setCachedData(cacheKey, mockBrands);
       return mockBrands;
-    }
-  }
-
   async addBrand(brandData: any) {
     try {
       console.log('➕ Adding new brand:', brandData);
@@ -1057,7 +849,6 @@ class MagentoApi extends BaseApiService  {
           label: brandData.label,
           value: brandData.value || brandData.label.toLowerCase().replace(/\s+/g, '_'),
           sort_order: brandData.sort_order || 0
-        }
       });
 
       // Clear cache to force refresh
@@ -1069,9 +860,6 @@ class MagentoApi extends BaseApiService  {
       console.error('❌ Error adding brand:', error);
       toast.error('Failed to add brand');
       throw error;
-    }
-  }
-
   async updateBrand(brandId, brandData: any) {
     try {
       console.log('✏️ Updating brand:', brandId, brandData);
@@ -1089,9 +877,6 @@ class MagentoApi extends BaseApiService  {
       console.error('❌ Error updating brand:', error);
       toast.error('Failed to update brand');
       throw error;
-    }
-  }
-
   async deleteBrand(brandId: any) {
     try {
       console.log('🗑️ Deleting brand:', brandId);
@@ -1106,9 +891,6 @@ class MagentoApi extends BaseApiService  {
       console.error('❌ Error deleting brand:', error);
       toast.error('Failed to delete brand');
       throw error;
-    }
-  }
-
   // ===== ADDITIONAL ATTRIBUTES MANAGEMENT =====
 
   async getAdditionalAttributes(productId) {
@@ -1120,9 +902,6 @@ class MagentoApi extends BaseApiService  {
     } catch(error: any) {
       console.error('❌ Error fetching additional attributes:', error);
       return this.getMockAdditionalAttributes(productId);
-    }
-  }
-
   async updateAdditionalAttribute(productId, attributeCode, value: any) {
     try {
       console.log('✏️ Updating additional attribute:', { productId, attributeCode, value });
@@ -1137,9 +916,6 @@ class MagentoApi extends BaseApiService  {
       console.error('❌ Error updating additional attribute:', error);
       toast.error(`Failed to update ${attributeCode}`);
       throw error;
-    }
-  }
-
   // ===== MOCK DATA FOR PRODUCT ATTRIBUTES =====
 
   getMockProductAttributes() {
@@ -1214,17 +990,12 @@ class MagentoApi extends BaseApiService  {
             { value: '14', label: 'XL' },
             { value: '15', label: 'XXL' }
           ]
-        }
       ],
       total_count: 5
     };
-  }
-
   getMockProductAttribute(attributeCode: any) {
     const attributes = this.getMockProductAttributes().items;
     return attributes?.find(attr => attr.attribute_code ===attributeCode) || null;
-  }
-
   getMockProductCategories(productId: any) {
     return {
       categories: [
@@ -1233,8 +1004,6 @@ class MagentoApi extends BaseApiService  {
         { id: 5, name: 'Clothing', level: 1, path: '1/5' }
       ]
     };
-  }
-
   getMockAttributeValue(productId, attributeCode: any) {
     const mockValues = {
       name: `Product ${productId}`,
@@ -1248,8 +1017,6 @@ class MagentoApi extends BaseApiService  {
       attribute_code: attributeCode,
       value: mockValues[attributeCode] || `Value for ${attributeCode}`
     };
-  }
-
   // ===== MOCK DATA FOR BRANDS =====
 
   getMockBrands() {
@@ -1314,12 +1081,9 @@ class MagentoApi extends BaseApiService  {
           label: 'Jordan',
           sort_order: 10,
           is_default: false
-        }
       ],
       total_count: 10
     };
-  }
-
   getMockAdditionalAttributes(productId: any) {
     const brands = this.getMockBrands().items;
     const randomBrand = brands[Math.floor(Math.random() * brands?.length)];
@@ -1345,11 +1109,8 @@ class MagentoApi extends BaseApiService  {
           attribute_code: 'warranty',
           value: '1_year',
           label: '1 Year'
-        }
       ]
     };
-  }
-
   // Error handling
   handleApiError(error: any) {
     if(error.response) {
@@ -1367,37 +1128,25 @@ class MagentoApi extends BaseApiService  {
           break;
         default:
           toast.error(data.message || 'An unexpected error occurred');
-      }
     } else if(error.request) {
       toast.error('Network error - please check your connection');
-    }
-
     return Promise.reject(error);
-  }
-
   // Token management
   getToken() {
     return localStorage.getItem('adminToken');
-  }
-
   magentoServiceException(response: any) {
     let errorMessage = ' ';
     if (response.status)
       switch(response.status) {
         case 400:
           errorMessage
-      }
     console.log(errorMessage)
-  }
-
   formatResponse(response: any) {
     return {
       items: response?.items || [],
       total_count: response?.total_count || 0,
       search_criteria: response?.search_criteria || this.buildSearchCriteria()
     };
-  }
-
   async updateOrder(orderId, orderData: any) {
     try {
       const response = await this.put(`/orders/${orderId}`, { order: orderData });
@@ -1405,10 +1154,6 @@ class MagentoApi extends BaseApiService  {
     } catch(error: any) {
       console.error('Failed to update order:', error);
       throw error;
-    }
-  }
-}
-
 // Create a single instance
 const magentoApi = new MagentoApi();
 

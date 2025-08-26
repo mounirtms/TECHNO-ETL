@@ -26,7 +26,6 @@ export const initializeApp = (currentUser = null) => {
     console.error('❌ Error initializing application:', error);
     toast.error('Failed to initialize application settings');
     return null;
-  }
 };
 
 /**
@@ -43,7 +42,6 @@ export const onUserLogin = (user) => {
     console.error('❌ Error applying user settings:', error);
     toast.error('Failed to restore your settings');
     return null;
-  }
 };
 
 /**
@@ -59,7 +57,6 @@ export const onUserLogout = (userId) => {
   } catch(error: any) {
     console.error('❌ Error during logout cleanup:', error);
     return null;
-  }
 };
 
 /**
@@ -84,7 +81,6 @@ const setupSystemThemeWatcher = () => {
     return () => {
       mediaQuery.removeEventListener('change', handleSystemThemeChange);
     };
-  }
 };
 
 /**
@@ -99,8 +95,6 @@ export const logPerformanceMetrics = () => {
         loadComplete: navigation?.loadEventEnd - navigation?.loadEventStart,
         totalTime: navigation?.loadEventEnd - navigation?.fetchStart
       });
-    }
-  }
 };
 
 /**
@@ -115,8 +109,6 @@ export const handleSettingsError = (error, context = 'settings') => {
       description: `Settings error: ${error.message}`,
       fatal: false
     });
-  }
-  
   // Show user-friendly message
   toast.error(`Settings error: ${error.message || 'Unknown error occurred'}`);
 };

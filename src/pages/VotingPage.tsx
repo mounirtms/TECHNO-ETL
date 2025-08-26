@@ -42,8 +42,6 @@ function TabPanel({ children, value, index, ...other } : any) {
       )}
     </div>
   );
-}
-
 /**
  * TaskPage Component
  */
@@ -60,9 +58,8 @@ const TaskPage = () => {
  
 
       {/* Tabs */}
-      <Paper sx={{ display: "flex", mb: 3 }}>
-        <Tabs 
-          value={activeTab} 
+      <Paper sx={{ display: "flex", mb: 3 }}></
+        <Tabs value={activeTab} 
           onChange={(e) => handleTabChange}
           sx={{ display: "flex", borderBottom: 1, borderColor: 'divider' }}
         >
@@ -80,16 +77,14 @@ const TaskPage = () => {
       </Paper>
 
       {/* Tab Panels */}
-      <TabPanel value={activeTab} index={0}>
+      <TabPanel value={activeTab} index={0}></
         <ComponentErrorBoundary componentName="Professional Voting Grid">
-          <ProfessionalVotingGrid userId="current_user" />
-        </ComponentErrorBoundary>
+          <ProfessionalVotingGrid userId="current_user" /></ProfessionalVotingGrid>
       </TabPanel>
 
-      <TabPanel value={activeTab} index={1}>
+      <TabPanel value={activeTab} index={1}></
         <ComponentErrorBoundary componentName="Roadmap Grid">
-          <RoadmapGrid />
-        </ComponentErrorBoundary>
+          <RoadmapGrid /></RoadmapGrid>
       </TabPanel>
     </Container>
   );

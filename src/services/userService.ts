@@ -27,7 +27,6 @@ const defaultUserSettings = {
             username: '',
             password: '',
             database: ''
-        }
     },
     preferences: {
         // Appearance
@@ -72,7 +71,6 @@ const defaultUserSettings = {
         // Advanced
         developerMode: false,
         debugMode: false
-    }
 };
 
 // Consolidated saveUserSettings function to handle all user settings together
@@ -102,7 +100,6 @@ export const saveUserSettings = async (userId, settings) => {
             message: 'Failed to save user settings',
             error: error.message
         };
-    }
 };
 
 // Enhanced applyUserPreferences function with API service integration
@@ -120,9 +117,6 @@ export const applyUserPreferences = (data, contexts = {}) => {
       if(langConfig) {
         document.documentElement.setAttribute('lang', langConfig.code);
         document.documentElement.setAttribute('dir', langConfig.dir);
-      }
-    }
-
     // Apply theme settings
     if(prefs.theme && setTheme) {
       let themeToApply = prefs.theme;
@@ -130,45 +124,32 @@ export const applyUserPreferences = (data, contexts = {}) => {
       // Handle system theme preference
       if(prefs.theme === 'system') {
         themeToApply
-      }
-
       setTheme(themeToApply);
       localStorage.setItem('themeMode', themeToApply);
-    }
-
     // Apply font size settings
     if(prefs.fontSize && setFontSize) {
       setFontSize(prefs.fontSize);
       localStorage.setItem('fontSize', prefs.fontSize);
-    }
-
     // Apply accessibility settings
     if(prefs.highContrast) {
       document.documentElement.classList.add('high-contrast');
     } else {
       document.documentElement.classList.remove('high-contrast');
-    }
-
     if(prefs.largeText) {
       document.documentElement.classList.add('large-text');
     } else {
       document.documentElement.classList.remove('large-text');
-    }
-
     // Apply animation preferences
     if(!prefs.animations) {
       document.documentElement.classList.add('no-animations');
     } else {
       document.documentElement.classList.remove('no-animations');
-    }
-
     // Update API services with new settings
     updateApiServicesSettings(data.apiSettings);
 
     console.log('User preferences applied successfully:', prefs);
   } catch (error) {
     console.error('Error applying user preferences:', error);
-  }
 };
 
 // Helper function to update API services with new settings
@@ -180,7 +161,6 @@ const updateApiServicesSettings = (apiSettings) => {
     import('../services/unifiedMagentoService').then(({ default: unifiedMagentoService }) => {
       if(apiSettings.magento) {
         unifiedMagentoService.initializeMagento(apiSettings.magento);
-      }
     }).catch(error => {
       console.warn('Failed to update Magento service settings:', error);
     });
@@ -189,7 +169,6 @@ const updateApiServicesSettings = (apiSettings) => {
     console.log('API services updated with new settings');
   } catch (error) {
     console.error('Error updating API services:', error);
-  }
 };
 
 // Function to get user profile data from Firebase
@@ -220,10 +199,8 @@ export const getUserSettings = () => {
                 apiSettings: { ...defaultUserSettings.apiSettings, ...parsed.apiSettings },
                 preferences: { ...defaultUserSettings.preferences, ...parsed.preferences }
             };
-        }
     } catch (error) {
         console.error('Error parsing stored user settings:', error);
-    }
     return defaultUserSettings;
 };
 
@@ -236,7 +213,6 @@ export const saveSettingsLocally = (settings) => {
     } catch (error) {
         console.error('Error saving settings locally:', error);
         return false;
-    }
 };
 
 // Get default settings

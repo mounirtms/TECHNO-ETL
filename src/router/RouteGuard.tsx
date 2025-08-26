@@ -12,16 +12,14 @@ import { ROUTES, requiresAuth, getRouteMetadata } from '../config/routes';
  * Loading component for route transitions
  */
 const RouteLoading = ({ message = 'Loading...' }: { message?: string }) => (
-  <Box
-    sx={{
+  <Box sx={{
       alignItems: 'center',
       height: '100vh',
       flexDirection: 'column',
       gap: 2
-    }}
-  >
+    }}></
     <CircularProgress size={40} />
-    <Typography variant="body2" color="text.secondary">
+    <Typography variant="outlined" color="text.secondary">
       {message}
     </Typography>
   </Box>
@@ -50,15 +48,11 @@ export const RouteGuard: React.FC<any> = ({ children, requiredRole = null, fallb
         setIsAuthorized(true);
         setAuthLoading(false);
         return;
-      }
-      
       // Check if user is authenticated
       if(!currentUser) {
         setIsAuthorized(false);
         setAuthLoading(false);
         return;
-      }
-      
       // Check role-based access if required
       if(requiredRole) {
         const userRole = currentUser.role || 'user';
@@ -69,8 +63,6 @@ export const RouteGuard: React.FC<any> = ({ children, requiredRole = null, fallb
         setIsAuthorized(hasRequiredRole);
       } else {
         setIsAuthorized(true);
-      }
-      
       setAuthLoading(false);
     };
 
@@ -80,18 +72,12 @@ export const RouteGuard: React.FC<any> = ({ children, requiredRole = null, fallb
   // Show loading while checking authorization
   if(loading || authLoading) {
     return <RouteLoading message="Checking permissions..." />;
-  }
-
   // Redirect to login if not authenticated
   if (requiresAuth(location.pathname) && !currentUser) {
     return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
-  }
-
   // Redirect if not authorized for this route
   if(!isAuthorized && currentUser) {
     return <Navigate to={fallbackPath} replace />;
-  }
-
   return children;
 };
 
@@ -104,14 +90,10 @@ export const PublicRouteGuard: React.FC<any> = ({ children, redirectTo = ROUTES.
 
   if(loading) {
     return <RouteLoading message="Checking authentication..." />;
-  }
-
   // Redirect authenticated users away from public routes
   if(currentUser) {
     const intendedDestination = location.state?.from?.pathname || redirectTo;
     return <Navigate to={intendedDestination} replace />;
-  }
-
   return children;
 };
 
@@ -152,7 +134,6 @@ export const RouteMetadataProvider: React.FC<any> = ({ children }) => {
     const metaDescription = document.querySelector('meta[name="description"]');
     if(metaDescription) {
       metaDescription.setAttribute('content', metadata.description);
-    }
   }, [metadata]);
 
   return children;
@@ -171,11 +152,9 @@ export const RouteTransition: React.FC<any> = ({ children, transitionKey }) => {
   }, [transitionKey]);
 
   return (
-    <Box
-      sx={{
+    <Box sx={{
         minHeight: '100%'
-      }}
-    >
+      }}>
       {children}
     </Box>
   );
@@ -192,7 +171,6 @@ export const DeepLinkHandler = () => {
     if(currentUser) {
       // Store the current route for restoration after logout/login
       localStorage.setItem('lastVisitedRoute', location.pathname + location.search);
-    }
   }, [currentUser, location]);
 
   return null;
@@ -222,10 +200,7 @@ export const RouteAnalytics = () => {
       // Keep only last 100 visits
       if(visits.length > 100) {
         visits.splice(0, visits.length - 100);
-      }
-      
       localStorage.setItem('routeVisits', JSON.stringify(visits));
-    }
   }, [location, currentUser]);
 
   return null;

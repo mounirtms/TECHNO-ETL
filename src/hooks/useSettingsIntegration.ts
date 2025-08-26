@@ -33,35 +33,25 @@ export const useSettingsIntegration = () => {
       // Apply theme settings
       if(preferences.theme) {
         setThemeMode(preferences.theme);
-      }
       if(preferences.fontSize) {
         setFontSize(preferences.fontSize);
-      }
       if(preferences.colorPreset) {
         setColorPreset(preferences.colorPreset);
-      }
       if(preferences.density) {
         setDensity(preferences.density);
-      }
       if(preferences.animations !== undefined) {
         setAnimations(preferences.animations);
-      }
       if(preferences.highContrast !== undefined) {
         setHighContrast(preferences.highContrast);
-      }
-
       // Apply language settings
       if(preferences.language) {
         setLanguage(preferences.language);
-      }
-
       // Apply DOM theme settings
       applyThemeSettings(preferences);
 
       console.log('✅ Settings applied to all contexts:', preferences);
     } catch (error) {
       console.error('❌ Failed to apply settings to contexts:', error);
-    }
   }, [setThemeMode, setFontSize, setColorPreset, setDensity, setAnimations, setHighContrast, setLanguage]);
 
   // Load and apply user settings on login
@@ -78,8 +68,6 @@ export const useSettingsIntegration = () => {
       } catch (error) {
         console.error('Failed to load user settings:', error);
         toast.error('Failed to load user settings');
-      }
-    }
   }, [currentUser, applySettingsToContexts, updateSettingsContext]);
 
   // Save settings function
@@ -98,18 +86,13 @@ export const useSettingsIntegration = () => {
         // Save to Firebase through auth context if available
         if(currentUser && typeof currentUser?.saveUserSettings === 'function') {
           currentUser?.saveUserSettings(settings);
-        }
-        
         toast.success('Settings saved successfully');
         return true;
-      }
-      
       throw new Error('Failed to save settings');
     } catch (error) {
       console.error('Save settings error:', error);
       toast.error('Failed to save settings');
       return false;
-    }
   }, [currentUser, applySettingsToContexts, updateSettingsContext]);
 
   // Update specific preference
@@ -118,7 +101,6 @@ export const useSettingsIntegration = () => {
     const updatedSettings = { ...currentSettings,
       preferences: { ...currentSettings.preferences,
         [key]: value
-      }
     };
     
     return saveSettings(updatedSettings);
@@ -131,7 +113,6 @@ export const useSettingsIntegration = () => {
       applySettingsToContexts(settings);
     } catch (error) {
       console.error('Failed to initialize settings:', error);
-    }
   }, [currentUser, applySettingsToContexts]);
 
   return {
@@ -145,6 +126,5 @@ export const useSettingsIntegration = () => {
       applySettingsToContexts(defaultSettings);
       updateSettingsContext(defaultSettings);
       toast.success('Settings reset to defaults');
-    }
   };
 };

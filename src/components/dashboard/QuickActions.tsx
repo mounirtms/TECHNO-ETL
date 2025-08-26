@@ -65,7 +65,6 @@ const QuickActions = ({ onAction  }: { onAction: any }) => {
       icon: <AnalyticsIcon />,
       color: 'secondary',
       action: () => navigate('/charts')
-    }
   ];
 
   const quickLinks = [
@@ -96,7 +95,6 @@ const QuickActions = ({ onAction  }: { onAction: any }) => {
       icon: <CategoryIcon />,
       color: 'warning',
       route: '/categories'
-    }
   ];
 
   const recentActions = [
@@ -123,24 +121,22 @@ const QuickActions = ({ onAction  }: { onAction: any }) => {
       description: 'View detailed analytics',
       icon: <AssessmentIcon />,
       action: () => navigate('/charts')
-    }
   ];
 
   return (
     <Box>
       {/* Primary Actions */}
-      <Card sx={{ display: "flex", borderRadius: density === 'compact' ? 2 : 3, mb: density === 'compact' ? 2 : 3 }}>
+      <Card sx={{ display: "flex", borderRadius: density === 'compact' ? 2 : 3, mb: density === 'compact' ? 2 : 3 }}></
         <CardContent sx={{ display: "flex", p: density === 'compact' ? 2 : 3 }}>
           <Typography variant="h6" fontWeight={600} gutterBottom>
             Quick Actions
           </Typography>
           
           <Grid container spacing={2}>
-            {primaryActions.map((action: any index: any: any: any: any) => (
-              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
-                <Button
-                  fullWidth
-                  variant="body2"
+            {primaryActions.map((action, index) => (
+              <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}></
+                <Button fullWidth
+                  variant="outlined"
                   onClick={action.action}
                   sx={{
                     flexDirection: 'column',
@@ -157,19 +153,16 @@ const QuickActions = ({ onAction  }: { onAction: any }) => {
                       bgcolor: `${action.color}.light`
                     },
                     transition: animations ? 'all 0.3s ease' : 'none'
-                  }}
-                >
-                  <Avatar
-                    sx={{
+                  }}>
+                  <Avatar sx={{
                       bgcolor: `${action.color}.main`,
                       width: 32,
                       height: 32
-                    }}
-                  >
+                    }}>
                     {action.icon}
                   </Avatar>
-                  <Box sx={{ display: "flex", textAlign: 'center' }}>
-                    <Typography variant="body2" fontWeight={600}>
+                  <Box sx={{ display: "flex", textAlign: 'center' }}></
+                    <Typography variant="outlined" fontWeight={600}>
                       {action.title}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
@@ -184,42 +177,38 @@ const QuickActions = ({ onAction  }: { onAction: any }) => {
       </Card>
 
       {/* Quick Links */}
-      <Card sx={{ display: "flex", borderRadius: 3, mb: 3 }}>
+      <Card sx={{ display: "flex", borderRadius: 3, mb: 3 }}></
         <CardContent sx={{ display: "flex", p: 3 }}>
           <Typography variant="h6" fontWeight={600} gutterBottom>
             Quick Navigation
           </Typography>
           
           <Grid container spacing={2}>
-            {quickLinks.map((link: any index: any: any: any: any) => (
-              <Grid size={{ xs: 6, sm: 3 }} key={index}>
-                <Card
-                  sx={{
+            {quickLinks.map((link, index) => (
+              <Grid size={{ xs: 6, sm: 3 }} key={index}></
+                <Card sx={{
                     border: `1px solid ${theme.palette[link.color].light}30`,
                     '&:hover': {
                       transform: 'translateY(-2px)',
                       boxShadow: theme.shadows[4],
                       border: `1px solid ${theme.palette[link.color].main}50`
-                    }
                   }}
                   onClick={() => navigate(link.route)}
                 >
-                  <CardContent sx={{ display: "flex", textAlign: 'center', p: 2 }}>
-                    <Avatar
-                      sx={{
+                  <CardContent sx={{ display: "flex", textAlign: 'center', p: 2 }}></
+                    <Avatar sx={{
                         bgcolor: `${link.color}.main`,
                         width: 40,
                         height: 40,
                         mx: 'auto',
                         mb: 1
-                      }}
-                    >
+                      }}>
                       {link.icon}
                     </Avatar>
                     <Typography variant="h6" fontWeight={600} color={`${link.color}.main`}>
                       {link.count}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="outlined" color="text.secondary">
                       {link.title}
                     </Typography>
                   </CardContent>
@@ -231,18 +220,17 @@ const QuickActions = ({ onAction  }: { onAction: any }) => {
       </Card>
 
       {/* Recent Actions */}
-      <Card sx={{ display: "flex", borderRadius: 3 }}>
+      <Card sx={{ display: "flex", borderRadius: 3 }}></
         <CardContent sx={{ display: "flex", p: 3 }}>
           <Typography variant="h6" fontWeight={600} gutterBottom>
             More Actions
           </Typography>
           
-          <Box sx={{ display: "flex", display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {recentActions.map((action: any index: any: any: any: any) => (
-              <Box key={index}>
-                <Button
-                  fullWidth
-                  variant="body2"
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            {recentActions.map((action, index) => (
+              <Box key={index}></
+                <Button fullWidth
+                  variant="outlined"
                   onClick={action.action}
                   sx={{
                     p: 2,
@@ -253,21 +241,18 @@ const QuickActions = ({ onAction  }: { onAction: any }) => {
                       transform: 'translateX(4px)'
                     },
                     transition: 'all 0.3s ease'
-                  }}
-                >
-                  <Avatar
-                    sx={{
+                  }}>
+                  <Avatar sx={{
                       width: 36,
                       height: 36
-                    }}
-                  >
+                    }}>
                     {action.icon}
                   </Avatar>
-                  <Box sx={{ display: "flex", flexGrow: 1 }}>
+                  <Box sx={{ display: "flex", flexGrow: 1 }}></
                     <Typography variant="body1" fontWeight={500}>
                       {action.title}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="outlined" color="text.secondary">
                       {action.description}
                     </Typography>
                   </Box>

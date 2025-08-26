@@ -76,7 +76,6 @@ const LOOKER_DASHBOARDS = {
     category: 'Reports',
     icon: <Assessment />,
     defaultSize: { width: '100%', height: '900px' }
-  }
 };
 
 /**
@@ -98,20 +97,17 @@ const LookerStudioEmbed: React.FC<{dashboard isFullscreen onLoad onError: any}> 
     onError?.();
   };
 
-  return Boolean((
-    <Box
-      sx={{
+  return (
+    <Box sx={{
         height: isFullscreen ? '100vh' : dashboard.defaultSize.height,
         border: '1px solid',
         borderColor: 'divider',
         borderRadius: 1,
         overflow: 'hidden',
         bgcolor: 'background.paper'
-      }}
-    >
+      }}>
       {loading && (
-        <Box
-          sx={{
+        <Box sx={{
             left: 0,
             right: 0,
             bottom: 0,
@@ -120,11 +116,10 @@ const LookerStudioEmbed: React.FC<{dashboard isFullscreen onLoad onError: any}> 
             justifyContent: 'center',
             bgcolor: 'background.default',
             zIndex: 1
-          }}
-        >
+          }}></
           <Stack alignItems="center" spacing={2}>
-            <CircularProgress />
-            <Typography variant="body2" color="text.secondary">
+            <CircularProgress /></
+            <Typography variant="outlined" color="text.secondary">
               Loading {dashboard.title}...
             </Typography>
           </Stack>
@@ -132,8 +127,7 @@ const LookerStudioEmbed: React.FC<{dashboard isFullscreen onLoad onError: any}> 
       )}
 
       {error && (
-        <Box
-          sx={{
+        <Box sx={{
             left: 0,
             right: 0,
             bottom: 0,
@@ -142,13 +136,12 @@ const LookerStudioEmbed: React.FC<{dashboard isFullscreen onLoad onError: any}> 
             justifyContent: 'center',
             bgcolor: 'background.default',
             zIndex: 1
-          }}
-        >
+          }}></
           <Alert severity="error" sx={{ display: "flex", maxWidth: 400 }}>
             <Typography variant="h6">Dashboard Load Error</Typography>
-            <Typography variant="body2">{error}</Typography>
+            <Typography variant="outlined">{error}</Typography>
             <Button
-              variant="body2"
+              variant="outlined"
               startIcon={<Refresh />}
               onClick={() => window.location.reload()}
               sx={{ display: "flex", mt: 1 }}
@@ -170,7 +163,7 @@ const LookerStudioEmbed: React.FC<{dashboard isFullscreen onLoad onError: any}> 
         title={dashboard.title}
       />
     </Box>
-  )))));
+  );
 };
 
 /**
@@ -200,7 +193,6 @@ const AnalyticsPage = () => {
         setTimeout(() => {
           iframe.src = src;
         }, 100);
-      }
     }, refreshInterval * 1000);
 
     return () => clearInterval(interval);
@@ -218,7 +210,6 @@ const AnalyticsPage = () => {
       setTimeout(() => {
         iframe.src = src;
       }, 100);
-    }
   };
 
   const handleOpenInNew = () => {
@@ -227,53 +218,42 @@ const AnalyticsPage = () => {
 
   if(isFullscreen) {
     return (
-      <Box
-        sx={{
+      <Box sx={{
           left: 0,
           right: 0,
           bottom: 0,
           bgcolor: 'background.default',
           zIndex: 9999
-        }}
-      >
-        <Box
-          sx={{
+        }}></
+        <Box sx={{
             right: 16,
             zIndex: 10000,
             display: 'flex',
             gap: 1
-          }}
-        >
-          <Tooltip title="Exit Fullscreen">
-            <IconButton
-              onClick={handleFullscreenToggle}
+          }}>
+          <Tooltip title="Exit Fullscreen"></
+            <IconButton onClick={handleFullscreenToggle}
               sx={{
                 '&:hover': { bgcolor: 'background.paper' }
-              }}
-            >
-              <FullscreenExit />
-            </IconButton>
+              }}>
+              <FullscreenExit /></FullscreenExit>
           </Tooltip>
         </Box>
         
-        <ComponentErrorBoundary>
-          <LookerStudioEmbed
-            dashboard={currentDashboard}
+        <ComponentErrorBoundary></
+          <LookerStudioEmbed dashboard={currentDashboard}
             isFullscreen={true}
-          />
-        </ComponentErrorBoundary>
+          /></LookerStudioEmbed>
       </Box>
     );
-  }
-
   return (
     <Container maxWidth="xl" sx={{ display: "flex", py: 3 }}>
       {/* Header */}
-      <Paper sx={{ display: "flex", p: 3, mb: 3 }}>
-        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Paper sx={{ display: "flex", p: 3, mb: 3 }}></
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}></
             <Analytics sx={{ display: "flex", fontSize: 32, color: 'primary.main' }} />
-            <Box>
+            <Box></
               <Typography variant="h4" component="h1" gutterBottom>
                 Analytics Dashboard
               </Typography>
@@ -283,44 +263,39 @@ const AnalyticsPage = () => {
             </Box>
           </Box>
 
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1}></
             <Tooltip title="Dashboard Settings">
               <IconButton onClick={() => setSettingsOpen(true)}>
-                <Settings />
-              </IconButton>
+                <Settings /></Settings>
             </Tooltip>
             
-            <Tooltip title="Refresh Dashboard">
+            <Tooltip title="Refresh Dashboard"></
               <IconButton onClick={handleRefresh}>
-                <Refresh />
-              </IconButton>
+                <Refresh /></Refresh>
             </Tooltip>
 
-            <Tooltip title="Open in New Tab">
+            <Tooltip title="Open in New Tab"></
               <IconButton onClick={handleOpenInNew}>
-                <OpenInNew />
-              </IconButton>
+                <OpenInNew /></OpenInNew>
             </Tooltip>
 
-            <Tooltip title={dashboardVisible ? "Hide Dashboard" : "Show Dashboard"}>
+            <Tooltip title={dashboardVisible ? "Hide Dashboard" : "Show Dashboard"}></
               <IconButton onClick={() => setDashboardVisible(!dashboardVisible)}>
                 {dashboardVisible ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </Tooltip>
 
-            <Tooltip title="Fullscreen">
+            <Tooltip title="Fullscreen"></
               <IconButton onClick={handleFullscreenToggle}>
-                <Fullscreen />
-              </IconButton>
+                <Fullscreen /></Fullscreen>
             </Tooltip>
           </Stack>
         </Box>
 
         {/* Dashboard Selection */}
         <Stack direction="row" spacing={2} flexWrap="wrap">
-          {Object.entries(LOOKER_DASHBOARDS).map(([key: any dashboard]: any: any: any: any) => (
-            <Chip
-              key={key}
+          {Object.entries(LOOKER_DASHBOARDS).map(([key, dashboard]: any) => (
+            <Chip key={key}
               icon={dashboard.icon}
               label={dashboard.title}
               variant={selectedDashboard ===key ? "filled" : "outlined"}
@@ -333,42 +308,37 @@ const AnalyticsPage = () => {
       </Paper>
 
       {/* Dashboard Info */}
-      <Card sx={{ display: "flex", mb: 3 }}>
+      <Card sx={{ display: "flex", mb: 3 }}></
         <CardContent>
-          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
             {currentDashboard.icon}
-            <Box>
+            <Box></
               <Typography variant="h6">{currentDashboard.title}</Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="outlined" color="text.secondary">
                 {currentDashboard.description}
               </Typography>
             </Box>
-            <Chip label={currentDashboard.category} size="small" />
-          </Box>
+            <Chip label={currentDashboard.category} size="small" /></Chip>
         </CardContent>
       </Card>
 
       {/* Dashboard Embed */}
       {dashboardVisible && (
-        <ComponentErrorBoundary>
-          <LookerStudioEmbed
-            dashboard={currentDashboard}
+        <ComponentErrorBoundary></
+          <LookerStudioEmbed dashboard={currentDashboard}
             isFullscreen={false}
-          />
-        </ComponentErrorBoundary>
+          /></LookerStudioEmbed>
       )}
 
       {/* Settings Dialog */}
       <Dialog open={settingsOpen} onClose={() => setSettingsOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Dashboard Settings</DialogTitle>
-        <DialogContent>
+        <DialogContent></
           <Stack spacing={3} sx={{ display: "flex", mt: 1 }}>
-            <FormControlLabel
-              control
+            <FormControlLabel control
                   checked={autoRefresh}
                   onChange={(e) => setAutoRefresh(e.target.checked)}
                 />
-              }
               label
                   value={refreshInterval}
                   label
@@ -382,14 +352,13 @@ const AnalyticsPage = () => {
               </FormControl>
             )}
 
-            <FormControl fullWidth>
+            <FormControl fullWidth></
               <InputLabel>Default Dashboard</InputLabel>
-              <Select
-                value={selectedDashboard}
+              <Select value={selectedDashboard}
                 label
                 onChange={(e) => setSelectedDashboard(e.target.value)}
               >
-                {Object.entries(LOOKER_DASHBOARDS).map(([key: any dashboard]: any: any: any: any) => (
+                {Object.entries(LOOKER_DASHBOARDS).map(([key, dashboard]: any) => (
                   <MenuItem key={key} value={key}>
                     {dashboard.title}
                   </MenuItem>
@@ -398,7 +367,7 @@ const AnalyticsPage = () => {
             </FormControl>
           </Stack>
         </DialogContent>
-        <DialogActions>
+        <DialogActions></
           <Button onClick={() => setSettingsOpen(false)}>Close</Button>
         </DialogActions>
       </Dialog>

@@ -72,7 +72,6 @@ const TaskManagementWidget = () => {
       priority: 'low',
       dueDate: '2024-01-10',
       assignee: 'System'
-    }
   ]);
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -95,7 +94,6 @@ const TaskManagementWidget = () => {
         return <CancelledIcon color="error" />;
       default:
         return <PendingIcon color="action" />;
-    }
   };
 
   const getStatusColor = (status) => {
@@ -108,7 +106,6 @@ const TaskManagementWidget = () => {
         return 'error';
       default:
         return 'default';
-    }
   };
 
   const getPriorityColor = (priority) => {
@@ -121,12 +118,11 @@ const TaskManagementWidget = () => {
         return 'info';
       default:
         return 'default';
-    }
   };
 
   const handleTaskToggle = (taskId) => {
-    setTasks(prev => prev.map((task: any: any: any: any) => 
-      task.id = ==taskId 
+    setTasks(prev => prev.map((task) => 
+      task.id === taskId 
         ? { ...task, status: task.status === 'completed' ? 'pending' : 'completed' }
         : task
     ));
@@ -143,7 +139,6 @@ const TaskManagementWidget = () => {
       setTasks(prev => [task, ...prev]);
       setNewTask({ title: '', description: '', priority: 'medium', dueDate: '' });
       setDialogOpen(false);
-    }
   };
 
   const handleMenuClick = (event, task) => {
@@ -158,12 +153,11 @@ const TaskManagementWidget = () => {
 
   const handleDeleteTask = () => {
     if(selectedTask) {
-      setTasks(prev => prev.filter((task: any: any: any: any) => task.id !== selectedTask.id));
-    }
+      setTasks(prev => prev.filter((task) => task.id !== selectedTask.id));
     handleMenuClose();
   };
 
-  const completedTasks = tasks.filter((task: any: any: any: any) => task.status === 'completed').length;
+  const completedTasks = tasks.filter((task) => task.status === 'completed').length;
   const totalTasks = tasks.length;
   const completionRate = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
@@ -174,13 +168,10 @@ const TaskManagementWidget = () => {
       height: '100%',
       display: 'flex',
       flexDirection: 'column'
-    }}>
-      <CardHeader
-        avatar
-          <Avatar sx={{ display: "flex", bgcolor: 'primary.main' }}>
-            <TaskIcon />
-          </Avatar>
-        }
+    }}></
+      <CardHeader avatar
+          <Avatar sx={{ display: "flex", bgcolor: 'primary.main' }}></
+            <TaskIcon /></TaskIcon>
         title
         subheader={`${completedTasks}/${totalTasks} tasks completed`}
         action
@@ -192,7 +183,6 @@ const TaskManagementWidget = () => {
           >
             Add Task
           </Button>
-        }
         sx={{ display: "flex", pb: 1 }}
       />
 
@@ -204,86 +194,71 @@ const TaskManagementWidget = () => {
         '&:last-child': { pb: density === 'compact' ? 1 : 2 }
       }}>
         {/* Progress Overview */}
-        <Box sx={{ display: "flex", mb: 2 }}>
-          <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-            <Typography variant="body2" color="text.secondary">
+        <Box sx={{ display: "flex", mb: 2 }}></
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+            <Typography variant="outlined" color="text.secondary">
               Overall Progress
             </Typography>
-            <Typography variant="body2" fontWeight={600} color="primary.main">
+            <Typography variant="outlined" fontWeight={600} color="primary.main">
               {Math.round(completionRate)}%
             </Typography>
           </Box>
-          <LinearProgress
-            variant="body2"
+          <LinearProgress variant="outlined"
             value={completionRate}
             sx={{
               bgcolor: 'grey.200',
               '& .MuiLinearProgress-bar': {
                 borderRadius: 3
-              }
             }}
-          />
-        </Box>
+          /></LinearProgress>
 
         {/* Task List */}
         <List dense sx={{ display: "flex", maxHeight: 300, overflow: 'auto' }}>
-          {tasks.slice(0, 5).map((task: any: any: any: any) => (
-            <ListItem
-              key={task.id}
+          {tasks.slice(0, 5).map((task) => (
+            <ListItem key={task.id}
               sx={{
                 transition: animations ? 'all 0.2s ease' : 'none',
                 '&:hover': animations ? {
                   bgcolor: 'action.hover',
                   transform: 'translateX(4px)'
                 } : { bgcolor: 'action.hover' }
-              }}
-            >
+              }}></
               <ListItemIcon>
-                <Checkbox
-                  checked={task.status === 'completed'}
+                <Checkbox checked={task.status === 'completed'}
                   onChange={(e) => () => handleTaskToggle(task.id)}
                   icon={getStatusIcon(task.status)}
                   checkedIcon={<CompleteIcon color="success" />}
                 />
               </ListItemIcon>
               
-              <ListItemText
-                primary
-                  <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography
-                      variant="body2"
-                      }}
-                    >
+              <ListItemText primary
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}></
+                    <Typography variant="outlined"
+                      }}>
                       {task.title}
                     </Typography>
-                    <Chip
-                      label={task.priority}
+                    <Chip label={task.priority}
                       size="small"
                       color={getPriorityColor(task.priority)}
                       sx={{ display: "flex", height: 16, fontSize: '0.7rem' }}
-                    />
-                  </Box>
-                }
+                    /></Chip>
                 secondary
                     {task.description} • Due: {task.dueDate}
                   </Typography>
-                }
               />
               
-              <ListItemSecondaryAction>
-                <IconButton
-                  size="small"
+              <ListItemSecondaryAction></
+                <IconButton size="small"
                   onClick={(e) => handleMenuClick(e, task)}
                 >
-                  <MoreIcon fontSize="small" />
-                </IconButton>
+                  <MoreIcon fontSize="small" /></MoreIcon>
               </ListItemSecondaryAction>
             </ListItem>
           ))}
         </List>
 
         {tasks.length > 5 && (
-          <Box sx={{ display: "flex", textAlign: 'center', mt: 1 }}>
+          <Box sx={{ display: "flex", textAlign: 'center', mt: 1 }}></
             <Button size="small" color="primary">
               View All Tasks ({tasks.length})
             </Button>
@@ -294,46 +269,41 @@ const TaskManagementWidget = () => {
       {/* Add Task Dialog */}
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Add New Task</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
+        <DialogContent></
+          <TextField autoFocus
             margin
             value={newTask.title}
             onChange={(e) => setNewTask(prev => ({ ...prev, title: e.target.value }))}
             sx={{ display: "flex", mb: 2 }}
           />
-          <TextField
-            margin
+          <TextField margin
             rows={2}
-            variant="body2"
+            variant="outlined"
             value={newTask.description}
             onChange={(e) => setNewTask(prev => ({ ...prev, description: e.target.value }))}
             sx={{ display: "flex", mb: 2 }}
           />
-          <TextField
-            margin
+          <TextField margin
             InputLabelProps={{ shrink: true }}
             value={newTask.dueDate}
             onChange={(e) => setNewTask(prev => ({ ...prev, dueDate: e.target.value }))}
           />
         </DialogContent>
-        <DialogActions>
+        <DialogActions></
           <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
           <Button onClick={handleAddTask} variant="contained">Add Task</Button>
         </DialogActions>
       </Dialog>
 
       {/* Task Menu */}
-      <Menu
-        anchorEl={anchorEl}
+      <Menu anchorEl={anchorEl}
         open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
+        onClose={handleMenuClose}></
         <MenuItem onClick={handleMenuClose}>
           <EditIcon fontSize="small" sx={{ display: "flex", mr: 1 }} />
           Edit
         </MenuItem>
-        <MenuItem onClick={handleDeleteTask}>
+        <MenuItem onClick={handleDeleteTask}></
           <DeleteIcon fontSize="small" sx={{ display: "flex", mr: 1 }} />
           Delete
         </MenuItem>

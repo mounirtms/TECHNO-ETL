@@ -8,22 +8,16 @@
 declare global {
   interface Window {
     __VITE_ENV__?: Record<string, string>;
-  }
-}
-
 // Environment variable defaults
 const getEnvDefault = (key: string, fallback = '') => {
   if(typeof window !== 'undefined' && window?.__VITE_ENV__) {
     return window?.__VITE_ENV__[key] || fallback;
-  }
   try {
     // Use dynamic import.meta access for Vite environment variables
     if(import.meta && import.meta.env) {
       return import.meta.env[key] || fallback;
-    }
   } catch {
     // Fallback if import.meta is not available
-  }
   return fallback;
 };
 
@@ -109,7 +103,6 @@ export const UNIFIED_SETTINGS_SCHEMA = {
       maxConcurrentRequests: 10,
       enableCaching: true,
       cacheTimeout: 300000 // 5 minutes
-    }
   },
 
   // User preferences
@@ -223,7 +216,6 @@ export const UNIFIED_SETTINGS_SCHEMA = {
       enableDragDrop: true,
       saveLayout: true,
       defaultDateRange: '30d' // '7d', '30d', '90d', '1y'
-    }
   },
 
   // Application state
@@ -234,7 +226,6 @@ export const UNIFIED_SETTINGS_SCHEMA = {
     bookmarkedPages: [],
     customShortcuts: {},
     workspaceLayout: 'default'
-  }
 };
 
 /**
@@ -257,7 +248,6 @@ export const SETTINGS_VALIDATION = {
     cegid: {
       url: { type: 'url', required: false },
       timeout: { type: 'number', min: 1000, max: 120000 }
-    }
   },
   preferences: {
     language: { type: 'enum', values: ['en', 'fr', 'ar'] },
@@ -267,7 +257,6 @@ export const SETTINGS_VALIDATION = {
     defaultPageSize: { type: 'number', min: 5, max: 100 },
     refreshInterval: { type: 'number', min: 10, max: 3600 },
     sessionTimeout: { type: 'number', min: 5, max: 480 }
-  }
 };
 
 /**

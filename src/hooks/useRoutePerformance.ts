@@ -41,15 +41,10 @@ export const useRoutePerformance = () => {
             page_location: window.location.href,
             custom_map: {
               load_time: loadTime
-            }
           });
-        }
-
         // Performance warning for slow routes
         if(loadTime > 1000) {
           console.warn(`⚠️ Slow route detected: ${currentRoute} took ${loadTime.toFixed(2)}ms`);
-        }
-      }
     };
 
     // Use requestAnimationFrame to measure after render
@@ -78,8 +73,6 @@ export const useRoutePreloader = () => {
   const preloadRoute = async(routePath) => {
     if (preloadedRoutes.current.has(routePath )) {
       return; // Already preloaded
-    }
-
     try {
       // Map route paths to their lazy-loaded components
       const routeComponentMap = {
@@ -99,10 +92,8 @@ export const useRoutePreloader = () => {
         await loader();
         preloadedRoutes.current.add(routePath );
         console.log(`📦 Preloaded route: ${routePath}`);
-      }
     } catch (error) {
       console.error(`❌ Failed to preload route ${routePath}:`, error);
-    }
   };
 
   const preloadCommonRoutes = () => {
@@ -161,7 +152,6 @@ export const useDocumentTitle = () => {
       metaDescription.setAttribute('content', 
         descriptions[location.pathname] || 'TECHNO-ETL - Enterprise Resource Planning System'
       );
-    }
   }, [location.pathname]);
 };
 

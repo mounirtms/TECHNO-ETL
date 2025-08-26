@@ -10,20 +10,16 @@ class ProductService {
         this.batchSize = 10; // Process products in batches to avoid API limits
         this.retryAttempts = 3;
         this.retryDelay = 1000; // 1 second
-    }
-
     /**
      * Parse CSV content and extract product data
      * @param {string} csvContent - Raw CSV content
      * @returns {Array} Array of product objects
      */
     parseCsvContent(csvContent) {
-        const lines = csvContent.split('\n').filter((line: any: any: any: any) => line.trim());
+        const lines = csvContent.split('\n').filter((line: any) => line.trim());
         if(lines.length < 2) {
             throw new Error('CSV file must contain at least a header and one data row');
-        }
-
-        const headers = lines[0].split(',').map((h: any: any: any: any) => h.trim().replace(/"/g, ''));
+        const headers = lines[0].split(',').map((h: any) => h.trim().replace(/"/g, ''));
         const products = [];
 
         for(i = 1; i < lines.length; i++) {
@@ -37,12 +33,7 @@ class ProductService {
 
             if (product?.sku && product?.sku.trim() !== '') {
                 products.push(product);
-            }
-        }
-
         return products;
-    }
-
     /**
      * Parse a single CSV line handling quoted values and commas
      * @param {string} line - CSV line
@@ -62,19 +53,13 @@ class ProductService {
                     i++;
                 } else {
                     inQuotes
-                }
             } else if(char === ', ' && !inQuotes ) {
                 values.push(current.trim());
                 current
             } else {
                 current += char;
-            }
-        }
-        
         values.push(current.trim());
         return values;
-    }
-
     /**
      * Validate CSV data for Magento import
      * @param {Array} products - Array of product objects
@@ -94,7 +79,6 @@ class ProductService {
             requiredFields.forEach((field) => {
                 if (!product[field] || product[field].trim() ==='') {
                     errors.push(`Line ${lineNumber}: Missing required field '${field}'`);
-                }
             });
 
             // Check for duplicate SKUs
@@ -103,19 +87,13 @@ class ProductService {
                     errors.push(`Line ${lineNumber}: Duplicate SKU '${product?.sku}'`);
                 } else {
                     skuSet.add(product?.sku);
-                }
-            }
-
             // Validate product type
             const validTypes = ['simple', 'configurable', 'virtual', 'downloadable'];
             if (product.product_type && !validTypes.includes(product.product_type)) {
                 warnings.push(`Line ${lineNumber}: Unknown product type '${product.product_type}'`);
-            }
-
             // Validate configurable products have variations
             if(product.product_type === 'configurable' && !product.configurable_variations) {
                 warnings.push(`Line ${lineNumber}: Configurable product '${product?.sku}' has no variations defined`);
-            }
         });
 
         return {
@@ -123,11 +101,9 @@ class ProductService {
             errors,
             warnings,
             totalProducts: products.length,
-            configurableProducts: products.filter((p: any: any: any: any) => p.product_type === 'configurable').length,
-            simpleProducts: products.filter((p: any: any: any: any) => p.product_type === 'simple').length
+            configurableProducts: products.filter((p: any) => p.product_type === 'configurable').length,
+            simpleProducts: products.filter((p: any) => p.product_type === 'simple').length
         };
-    }
-
     /**
      * Transform CSV product to Magento API format
      * @param {Object} csvProduct - Product from CSV
@@ -152,19 +128,13 @@ class ProductService {
                 attribute_code: 'description',
                 value: csvProduct.description
             });
-        }
-
         // Add short description
         if(csvProduct.short_description) {
             product.custom_attributes.push({
                 attribute_code: 'short_description',
                 value: csvProduct.short_description
             });
-        }
-
         return product;
-    }
-
     /**
      * Get attribute set ID from code
      * @param {string} attributeSetCode - Attribute set code
@@ -181,8 +151,6 @@ class ProductService {
             'Top': 13
         };
         return mapping[attributeSetCode] || 4;
-    }
-
     /**
      * Get visibility ID from string
      * @param {string} visibility - Visibility string
@@ -196,8 +164,6 @@ class ProductService {
             'Catalog, Search': 4
         };
         return mapping[visibility] || 3; // Default to Search
-    }
-
     /**
      * Create a single product in Magento
      * @param {Object} productData - Product data in Magento format
@@ -214,9 +180,6 @@ class ProductService {
                 success: false, 
                 error: error.response?.data?.message || error.message 
             };
-        }
-    }
-
     /**
      * Process bulk products with progress tracking
      * @param {Array} products - Array of products to process
@@ -243,15 +206,12 @@ class ProductService {
                         sku: product?.sku,
                         error: result.error
                     });
-                }
             } catch(error: any) {
                 results.failed++;
                 results.errors.push({
                     sku: product?.sku,
                     error: error.message
                 });
-            }
-
             // Report progress
             if(onProgress) {
                 onProgress({
@@ -260,14 +220,7 @@ class ProductService {
                     successful: results.successful,
                     failed: results.failed
                 });
-            }
-
             // Small delay to avoid overwhelming the API
             await new Promise(resolve => setTimeout(resolve, 100));
-        }
-
         return results;
-    }
-}
-
 export default new ProductService();

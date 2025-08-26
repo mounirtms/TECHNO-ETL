@@ -39,7 +39,6 @@ const DEFAULT_SETTINGS = {
     sessionTimeout: 30,
     twoFactorEnabled: false,
     auditLogging: true
-  }
 };
 
 /**
@@ -64,10 +63,8 @@ export const getUnifiedSettings = () => {
     if(settings) {
       const parsedSettings = JSON.parse(settings);
       return { ...DEFAULT_SETTINGS, ...parsedSettings };
-    }
   } catch(error: any) {
     console.warn('Error parsing unified settings:', error);
-  }
   return { ...DEFAULT_SETTINGS };
 };
 
@@ -80,8 +77,6 @@ export const saveUnifiedSettings = (settings: any) => {
     if(!settings || typeof settings !== 'object') {
       console.warn('Invalid settings provided to saveUnifiedSettings');
       return false;
-    }
-
     const currentSettings = getUnifiedSettings();
     const updatedSettings = { ...currentSettings,
       ...settings,
@@ -92,8 +87,6 @@ export const saveUnifiedSettings = (settings: any) => {
     // Debounce localStorage writes to prevent excessive I/O
     if((saveUnifiedSettings as any)?._timeout) {
       clearTimeout((saveUnifiedSettings as any)?._timeout);
-    }
-
     (saveUnifiedSettings as any)._timeout = setTimeout(() => {
       try {
         localStorage.setItem(UNIFIED_SETTINGS_KEY, JSON.stringify(updatedSettings));
@@ -107,15 +100,12 @@ export const saveUnifiedSettings = (settings: any) => {
           console.log('✅ Settings saved after cleanup');
         } catch(retryError: any) {
           console.error('❌ Failed to save even after cleanup:', retryError);
-        }
-      }
     }, 100); // 100ms debounce
 
     return updatedSettings;
   } catch(error: any) {
     console.error('❌ Error saving unified settings:', error);
     return null;
-  }
 };
 
 /**
@@ -130,10 +120,8 @@ export const getUserSettings = (userId: string) => {
     if(settings) {
       const parsedSettings = JSON.parse(settings);
       return { ...DEFAULT_SETTINGS, ...parsedSettings };
-    }
   } catch(error: any) {
     console.warn('Error parsing user settings:', error);
-  }
   return { ...DEFAULT_SETTINGS };
 };
 
@@ -152,7 +140,6 @@ export const saveUserSettings = (userId: string, settings: any) => {
   } catch(error: any) {
     console.error('Error saving user settings:', error);
     return null;
-  }
 };
 
 /**
@@ -178,8 +165,6 @@ export const applyLanguageSettings = (language: string) => {
   } else {
     document.body.classList.add('ltr');
     document.body.classList.remove('rtl');
-  }
-  
   // Add/remove RTL class to root element
   const root = document.getElementById('root');
   if(root) {
@@ -189,8 +174,6 @@ export const applyLanguageSettings = (language: string) => {
     } else {
       root.classList.add('ltr-layout');
       root.classList.remove('rtl-layout');
-    }
-  }
 };
 
 /**
@@ -219,8 +202,6 @@ export const initializeSettingsSystem = (userId = null) => {
   
   if(needsMigration) {
     migrateLegacySettings(userId);
-  }
-  
   // Get current settings
   const settings = userId ? getUserSettings(userId) : getUnifiedSettings();
   
@@ -258,9 +239,6 @@ const migrateLegacySettings = (userId = null) => {
         Object.assign(legacyData, parsed);
       } catch(e: any) {
         console.warn('Failed to parse old unified settings');
-      }
-    }
-    
     // Old user settings
     const oldUserSettings = localStorage.getItem('userSettings');
     if(oldUserSettings) {
@@ -268,33 +246,24 @@ const migrateLegacySettings = (userId = null) => {
         const parsed = JSON.parse(oldUserSettings);
         if(parsed.preferences) {
           Object.assign(legacyData, parsed.preferences);
-        }
       } catch(e: any) {
         console.warn('Failed to parse old user settings');
-      }
-    }
-    
     // Save migrated settings
     if (Object.keys(legacyData).length > 0) {
       if(userId) {
         saveUserSettings(userId, legacyData);
       } else {
         saveUnifiedSettings(legacyData);
-      }
       console.log('✅ Legacy settings migrated:', legacyData);
-    }
-    
     // Clean up legacy keys
     LEGACY_KEYS.forEach((key) => {
       if (localStorage.getItem(key)) {
         localStorage.removeItem(key);
         console.log(`🗑️ Removed legacy key: ${key}`);
-      }
     });
     
   } catch(error: any) {
     console.error('❌ Error during migration:', error);
-  }
 };
 
 /**
@@ -318,7 +287,6 @@ export const resetToSystemDefaults = (userId = null) => {
     return saveUserSettings(userId, defaultSettings);
   } else {
     return saveUnifiedSettings(defaultSettings);
-  }
 };
 
 /**
@@ -360,28 +328,22 @@ export const importSettings = (file: File, userId: string | null = null) => {
         const result = e.target?.result as string;
         if(!result) {
           throw new Error('Failed to read file');
-        }
         const importData = JSON.parse(result);
         
         if(!importData.settings) {
           throw new Error('Invalid settings file format');
-        }
-        
         const mergedSettings = { ...DEFAULT_SETTINGS, ...importData.settings };
         
         if(userId) {
           saveUserSettings(userId, mergedSettings);
         } else {
           saveUnifiedSettings(mergedSettings);
-        }
-        
         // Apply language settings immediately
         applyLanguageSettings(mergedSettings?.language);
         
         resolve(mergedSettings);
       } catch(error: any) {
         reject(error);
-      }
     };
     
     reader.onerror = () => {
@@ -399,8 +361,6 @@ export const cleanupUserData = (userId: string) => {
   if(userId) {
     const userKey = `${USER_SETTINGS_PREFIX}${userId}`;
     localStorage.removeItem(userKey);
-  }
-  
   // Reset to system defaults for anonymous use
   const systemDefaults = resetToSystemDefaults();
   applyLanguageSettings(systemDefaults?.language);

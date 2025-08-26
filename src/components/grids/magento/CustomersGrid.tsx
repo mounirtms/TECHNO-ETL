@@ -56,9 +56,9 @@ const CustomersGrid = () => {
       
       // Calculate stats
       const totalCustomers = customers.length;
-      const activeCustomers = customers.filter((c: any: any: any: any) => c.is_active ===1).length;
+      const activeCustomers = customers.filter((c: any) => c.is_active ===1).length;
       const inactiveCustomers = totalCustomers - activeCustomers;
-      const totalOrders = customers.reduce((sum: any c: any: any: any: any) => sum + (c.orders_count || 0), 0);
+      const totalOrders = customers.reduce((sum: any c: any) => sum + (c.orders_count || 0), 0);
       
       setStats({
         totalCustomers,
@@ -72,7 +72,6 @@ const CustomersGrid = () => {
       setData([]);
     } finally {
       setLoading(false);
-    }
   }, []);
 
   // ===== 3. EVENT HANDLERS =====
@@ -83,7 +82,6 @@ const CustomersGrid = () => {
       setViewDialogOpen(true);
     } else {
       toast.warning('Please select exactly one customer to view');
-    }
   }, [data]);
 
   const handleEdit = useCallback((records) => {
@@ -93,25 +91,20 @@ const CustomersGrid = () => {
       setEditDialogOpen(true);
     } else {
       toast.warning('Please select exactly one customer to edit');
-    }
   }, [data]);
 
   const handleDelete = useCallback(async (records) => {
     if(records.length ===0) {
       toast.warning('Please select customers to delete');
       return;
-    }
-
     try {
       for (const customerId of records) {
         await magentoApi?.deleteCustomer(customerId);
-      }
       toast.success(`Deleted ${records.length} customer(s) successfully`);
       fetchCustomers();
     } catch(error: any) {
       console.error('Error deleting customers:', error);
       toast.error('Failed to delete customers');
-    }
   }, [fetchCustomers]);
 
   const handleSync = useCallback(async () => {
@@ -122,7 +115,6 @@ const CustomersGrid = () => {
     } catch(error: any) {
       console.error('Error syncing customers:', error);
       toast.error('Failed to sync customers');
-    }
   }, [fetchCustomers]);
 
   const handleFilterChange = useCallback((newFilter) => {
@@ -193,7 +185,6 @@ const CustomersGrid = () => {
       icon: <SyncIcon />,
       color: 'secondary',
       variant: 'outlined'
-    }
   ];
 
   // ===== 6. CONTEXT MENU ACTIONS =====
@@ -205,7 +196,6 @@ const CustomersGrid = () => {
       onClick: (row) => {
         setSelectedCustomer(row);
         setViewDialogOpen(true);
-      }
     },
     edit: {
       enabled: true,
@@ -214,7 +204,6 @@ const CustomersGrid = () => {
       onClick: (row) => {
         setSelectedCustomer(row);
         setEditDialogOpen(true);
-      }
     },
     delete: {
       enabled: true,
@@ -222,7 +211,6 @@ const CustomersGrid = () => {
       icon: 'delete',
       onClick: (row) => handleDelete([row?.id]),
       color: 'error'
-    }
   }), [handleDelete]);
 
   // ===== 7. STATS CARDS =====
@@ -250,7 +238,6 @@ const CustomersGrid = () => {
       value: stats.totalOrders,
       icon: <ShoppingCartIcon />,
       color: 'info'
-    }
   ];
 
   // ===== 8. FILTER OPTIONS =====
@@ -267,7 +254,7 @@ const CustomersGrid = () => {
 
   // ===== 10. RENDER =====
   return (
-    <Box sx={{ display: "flex", height: '100%', width: '100%' }}>
+    <Box sx={{ display: "flex", height: '100%', width: '100%' }}></
       <UnifiedGrid
         { ...getStandardGridProps('magentoCustomers', {
           gridName: "CustomersGrid",

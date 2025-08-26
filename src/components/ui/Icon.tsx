@@ -66,7 +66,6 @@ const iconVariants = cva(
       size: 'md',
       color: 'current',
     },
-  }
 );
 
 // Icon name mapping for better type safety
@@ -183,8 +182,6 @@ export interface IconProps extends VariantProps<typeof iconVariants> {
   strokeWidth?: number;
   /** Test ID for testing */
   'data-testid'?: string;
-}
-
 // Optimized Icon component with memoization
 export const Icon = React.memo<IconProps>(
   ({ 
@@ -203,8 +200,6 @@ export const Icon = React.memo<IconProps>(
     if(!IconComponent) {
       console.warn(`Icon "${name}" not found in iconMap`);
       return null;
-    }
-
     return (
       <IconComponent
         className
@@ -218,7 +213,6 @@ export const Icon = React.memo<IconProps>(
         { ...props}
       />
     );
-  }
 );
 
 Icon.displayName = 'Icon';
@@ -235,8 +229,6 @@ interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> 
   loading?: boolean;
   /** Tooltip text */
   tooltip?: string;
-}
-
 const iconButtonVariants = cva(
   [
     'inline-flex items-center justify-center',
@@ -278,7 +270,6 @@ const iconButtonVariants = cva(
       variant: 'ghost',
       size: 'md',
     },
-  }
 );
 
 export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
@@ -318,7 +309,6 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
         if(loading || disabled) {
           event.preventDefault();
           return;
-        }
         onClick?.(event);
       },
       [loading, disabled, onClick]
@@ -360,10 +350,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
           </div>
         </div>
       );
-    }
-
     return buttonElement;
-  }
 );
 
 IconButton.displayName = 'IconButton';
@@ -373,8 +360,6 @@ interface StatusIconProps {
   status: 'success' | 'warning' | 'error' | 'info' | 'loading';
   size?: ComponentSize;
   className?: string;
-}
-
 export const StatusIcon = React.memo<StatusIconProps>(({ status, size = 'md', className }) => {
   const statusConfig = {
     success: { name: 'check-circle' as const, color: 'success' as const },

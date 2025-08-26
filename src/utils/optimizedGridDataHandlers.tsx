@@ -15,25 +15,28 @@ const errorLogCache = new Set();
 /**
  * Generate cache key for data
  */
-const generateCacheKey = (data = {}; // Fixed invalid assignment options: any): string => {
+const generateCacheKey = (data: any, options: any): string => {
   try {
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
+
     return JSON.stringify({ data: Array.isArray(data) ? data.length : typeof data, options });
   } catch {
     return `${typeof data}-${Date.now()}`;
-  }
 };
 
 /**
  * Optimized data validator with caching
  */
-export const validateGridData = (data = {}; // Fixed invalid assignment options: any = {}): any => {
+export const validateGridData = (data: any, options: any = {}): any => {
   const cacheKey = generateCacheKey(data, options);
   
   // Return cached result if available
   if (validationCache.has(cacheKey)) {
     return validationCache.get(cacheKey);
-  }
-
   const {
     expectedType = 'array',
     allowEmpty = false,
@@ -45,12 +48,16 @@ export const validateGridData = (data = {}; // Fixed invalid assignment options:
   try {
     // Type validation
     if(expectedType === 'array' && !Array.isArray(data)) {
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
+
       const errorKey = `type-error-${typeof data}`;
       if (!errorLogCache.has(errorKey)) {
         console.warn('GridDataHandler: Expected array but got:', typeof data);
         errorLogCache.add(errorKey);
-      }
-      
       const result = {
         isValid: false,
         data: allowEmpty ? [] : fallbackValue,
@@ -60,10 +67,8 @@ export const validateGridData = (data = {}; // Fixed invalid assignment options:
       
       validationCache.set(cacheKey, result);
       return result;
-    }
-
     // Empty data validation
-    if(!allowEmpty && (!data || (Array.isArray(data) && data.length ===0))) {
+    if(!allowEmpty && (!data || (Array.isArray(data) && data.length ===0) {
       const result = {
         isValid: false,
         data: fallbackValue,
@@ -73,8 +78,6 @@ export const validateGridData = (data = {}; // Fixed invalid assignment options:
       
       validationCache.set(cacheKey, result);
       return result;
-    }
-
     // Field validation for arrays
     if(Array.isArray(data) && requiredFields.length > 0) {
       const missingFields: string[] = [];
@@ -83,18 +86,14 @@ export const validateGridData = (data = {}; // Fixed invalid assignment options:
       requiredFields.forEach((field: string) => {
         if (!(field in sampleItem)) {
           missingFields.push(field);
-        }
       });
 
       if(missingFields.length > 0) {
+
         const errorKey = `missing-fields-${missingFields.join(',')}`;
         if (!errorLogCache.has(errorKey)) {
           console.warn('GridDataHandler: Missing required fields:', missingFields);
           errorLogCache.add(errorKey);
-        }
-      }
-    }
-
     // Apply transformers
     let transformedData = data;
     if(Array.isArray(data) && Object.keys(transformers).length > 0) {
@@ -104,19 +103,22 @@ export const validateGridData = (data = {}; // Fixed invalid assignment options:
           if(field in transformed && typeof transformer === 'function') {
             try {
               transformed[field] = (transformer as any)(transformed[field]);
+  } catch (error) {
+    console.error(error);
+
+
+  } catch (error) {
+    console.error(error);
+
+
             } catch(error: any) {
               const errorKey = `transform-error-${field}`;
               if (!errorLogCache.has(errorKey)) {
                 console.warn(`Transform error for field ${field}:`, error);
                 errorLogCache.add(errorKey);
-              }
-            }
-          }
         });
         return transformed;
       });
-    }
-
     const result = {
       isValid: true,
       data: transformedData,
@@ -124,7 +126,6 @@ export const validateGridData = (data = {}; // Fixed invalid assignment options:
       metadata: {
         itemCount: Array.isArray(transformedData) ? transformedData.length : 1,
         hasTransformers: Object.keys(transformers).length > 0
-      }
     };
 
     // Cache successful validation
@@ -136,8 +137,6 @@ export const validateGridData = (data = {}; // Fixed invalid assignment options:
     if (!errorLogCache.has(errorKey)) {
       console.error('GridDataHandler: Validation error:', error);
       errorLogCache.add(errorKey);
-    }
-
     const result = {
       isValid: false,
       data: fallbackValue,
@@ -147,7 +146,6 @@ export const validateGridData = (data = {}; // Fixed invalid assignment options:
 
     validationCache.set(cacheKey, result);
     return result;
-  }
 };
 
 /**
@@ -172,23 +170,25 @@ export const fetchGridData = async (url: string, options: any = {}): Promise<any
       return cached.data;
     } else {
       dataCache.delete(cacheKey);
-    }
-  }
-
-  const fetchWithTimeout = async (fetchUrl: string, fetchOptions = {}; // Fixed invalid assignment timeoutMs: number): Promise<Response> => {
+  const fetchWithTimeout = async (fetchUrl: string, fetchOptions  timeoutMs: number): Promise<Response> => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
     try {
       const response = await fetch(fetchUrl, { ...fetchOptions,
         signal: controller.signal
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
+
       });
       clearTimeout(timeoutId);
       return response;
     } catch(error: any) {
       clearTimeout(timeoutId);
       throw error;
-    }
   };
 
   let lastError;
@@ -199,14 +199,19 @@ export const fetchGridData = async (url: string, options: any = {}): Promise<any
         headers: {
           'Content-Type': 'application/json',
           ...headers
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
+
         },
         body: body ? JSON.stringify(body) : null
       }, timeout);
 
       if(!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
 
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       const data = await response.json();
       
       // Cache successful response
@@ -220,17 +225,11 @@ export const fetchGridData = async (url: string, options: any = {}): Promise<any
     } catch(error: any) {
       lastError = error;
         await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
-      }
-    }
-  }
-
   // Log error only once per unique error
   const errorKey = `fetch-error-${url}-${lastError.message}`;
   if (!errorLogCache.has(errorKey)) {
     console.error(`GridDataHandler: Failed to fetch data from ${url}:`, lastError);
     errorLogCache.add(errorKey);
-  }
-
   throw lastError;
 };
 
@@ -244,8 +243,6 @@ export const gridDataHandlers = {
     
     if (validationCache.has(cacheKey)) {
       return validationCache.get(cacheKey);
-    }
-
     const result = validateGridData(data, {
       expectedType: 'array',
       allowEmpty: true,
@@ -254,7 +251,6 @@ export const gridDataHandlers = {
         QteStock: (value: any) => parseFloat(value) || 0,
         Tarif: (value: any) => parseFloat(value) || 0,
         Changed: (value: any) => Boolean(value)
-      }
     });
 
     validationCache.set(cacheKey, result);
@@ -267,8 +263,6 @@ export const gridDataHandlers = {
     
     if (validationCache.has(cacheKey)) {
       return validationCache.get(cacheKey);
-    }
-
     const result = validateGridData(data, {
       expectedType: 'array',
       allowEmpty: true,
@@ -277,7 +271,6 @@ export const gridDataHandlers = {
         price: (value: any) => parseFloat(value) || 0,
         status: (value: any) => parseInt(value) || 0,
         qty: (value: any) => parseInt(value) || 0
-      }
     });
 
     validationCache.set(cacheKey, result);
@@ -285,9 +278,8 @@ export const gridDataHandlers = {
   },
 
   // Generic handler for other data types
-  generic: (data options: any = {}) => {
+  generic: (data: any, options: any = {}) => {
     return validateGridData(data, options);
-  }
 };
 
 /**

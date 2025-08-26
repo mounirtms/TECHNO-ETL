@@ -13,24 +13,18 @@ export interface BaseComponentProps {
   sx?: SxProps<Theme>;
   children?: ReactNode;
   'data-testid'?: string;
-}
-
 // Layout component types
 export interface LayoutProps extends BaseComponentProps {
   sidebar?: ReactNode;
   header?: ReactNode;
   footer?: ReactNode;
   loading?: boolean;
-}
-
 export interface SidebarProps extends BaseComponentProps {
   collapsed?: boolean;
   onToggle?: () => void;
   items: SidebarItem[];
   activeItem?: string;
   onItemClick?: (item: SidebarItem) => void;
-}
-
 export interface SidebarItem {
   id: string;
   label: string;
@@ -40,8 +34,6 @@ export interface SidebarItem {
   badge?: string | number;
   disabled?: boolean;
   external?: boolean;
-}
-
 export interface HeaderProps extends BaseComponentProps {
   title?: string;
   subtitle?: string;
@@ -49,22 +41,16 @@ export interface HeaderProps extends BaseComponentProps {
   breadcrumbs?: BreadcrumbItem[];
   searchable?: boolean;
   onSearch?: (query: string) => void;
-}
-
 export interface BreadcrumbItem {
   label: string;
   path?: string;
   icon?: ReactNode;
-}
-
 // Dashboard component types
 export interface DashboardProps extends BaseComponentProps {
   layout?: 'default' | 'compact' | 'detailed';
   widgets?: DashboardWidget[];
   onWidgetToggle?: (widgetId: string, visible: boolean) => void;
   onLayoutChange?: (layout: 'default' | 'compact' | 'detailed') => void;
-}
-
 export interface DashboardWidget {
   id: string;
   title: string;
@@ -75,8 +61,6 @@ export interface DashboardWidget {
   visible: boolean;
   resizable?: boolean;
   draggable?: boolean;
-}
-
 export interface StatsCardProps extends BaseComponentProps {
   title: string;
   value: string | number;
@@ -86,8 +70,6 @@ export interface StatsCardProps extends BaseComponentProps {
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
   loading?: boolean;
   onClick?: () => void;
-}
-
 export interface ChartProps extends BaseComponentProps {
   data: any[];
   title?: string;
@@ -102,8 +84,6 @@ export interface ChartProps extends BaseComponentProps {
   showTooltip?: boolean;
   showGrid?: boolean;
   onDataPointClick?: (data) => void;
-}
-
 // Form component types
 export interface FormProps extends BaseComponentProps {
   onSubmit: (data) => void;
@@ -112,8 +92,6 @@ export interface FormProps extends BaseComponentProps {
   loading?: boolean;
   disabled?: boolean;
   layout?: 'vertical' | 'horizontal' | 'inline';
-}
-
 export interface FormFieldProps extends BaseComponentProps {
   name: string;
   label?: string;
@@ -127,8 +105,6 @@ export interface FormFieldProps extends BaseComponentProps {
   onChange?: (value) => void;
   onBlur?: () => void;
   onFocus?: () => void;
-}
-
 export interface SelectFieldProps extends FormFieldProps {
   options: SelectOption[];
   multiple?: boolean;
@@ -138,8 +114,6 @@ export interface SelectFieldProps extends FormFieldProps {
   loading?: boolean;
   onSearch?: (query: string) => void;
   onCreate?: (value: string) => void;
-}
-
 export interface SelectOption {
   value: any;
   label: string;
@@ -147,8 +121,6 @@ export interface SelectOption {
   group?: string;
   icon?: ReactNode;
   description?: string;
-}
-
 // Data grid component types
 export interface DataGridProps<T = any> extends BaseComponentProps {
   data: T[];
@@ -167,8 +139,6 @@ export interface DataGridProps<T = any> extends BaseComponentProps {
   onFilterChange?: (filters: Record<string, any>) => void;
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (pageSize: number) => void;
-}
-
 export interface GridColumn<T = any> {
   field: keyof T;
   header: string;
@@ -183,12 +153,10 @@ export interface GridColumn<T = any> {
   pinned?: 'left' | 'right';
   align?: 'left' | 'center' | 'right';
   type?: 'text' | 'number' | 'date' | 'boolean' | 'actions' | 'custom';
-  format?: (value, row: T) => ReactNode;
-  render?: (value row: T, index: number) => ReactNode;
-  cellProps?: (value row: T) => Record<string, any>;
+  format?: (value: any, row: T) => ReactNode;
+  render?: (value: any, row: T, index: number) => ReactNode;
+  cellProps?: (value: any, row: T) => Record<string, any>;
   headerProps?: Record<string, any>;
-}
-
 export interface PaginationConfig {
   enabled: boolean;
   page: number;
@@ -197,43 +165,31 @@ export interface PaginationConfig {
   total: number;
   showInfo?: boolean;
   showPageSizeSelector?: boolean;
-}
-
 export interface SortingConfig {
   enabled: boolean;
   field?: string;
   direction?: 'asc' | 'desc';
   multiple?: boolean;
-}
-
 export interface FilteringConfig {
   enabled: boolean;
   filters?: Record<string, any>;
   quickFilter?: string;
   operators?: FilterOperator[];
-}
-
 export interface FilterOperator {
   value: string;
   label: string;
   types: string[];
-}
-
 export interface SelectionConfig {
   enabled: boolean;
   multiple?: boolean;
   rowSelection?: boolean;
   cellSelection?: boolean;
   selectedRows?: any[];
-}
-
 export interface VirtualizationConfig {
   enabled: boolean;
   itemHeight?: number;
   overscan?: number;
   threshold?: number;
-}
-
 // Modal and dialog component types
 export interface ModalProps extends BaseComponentProps {
   open: boolean;
@@ -249,8 +205,6 @@ export interface ModalProps extends BaseComponentProps {
   actions?: ReactNode;
   loading?: boolean;
   error?: string;
-}
-
 export interface DialogProps extends ModalProps {
   type?: 'info' | 'success' | 'warning' | 'error' | 'confirm';
   message?: string;
@@ -258,8 +212,6 @@ export interface DialogProps extends ModalProps {
   cancelText?: string;
   onConfirm?: () => void;
   onCancel?: () => void;
-}
-
 // Navigation component types
 export interface TabsProps extends BaseComponentProps {
   value: string | number;
@@ -269,8 +221,6 @@ export interface TabsProps extends BaseComponentProps {
   orientation?: 'horizontal' | 'vertical';
   lazy?: boolean;
   keepAlive?: boolean;
-}
-
 export interface TabItem {
   value: string | number;
   label: string;
@@ -279,8 +229,6 @@ export interface TabItem {
   badge?: string | number;
   closable?: boolean;
   content?: ReactNode;
-}
-
 export interface MenuProps extends BaseComponentProps {
   items: MenuItem[];
   value?: string;
@@ -288,8 +236,6 @@ export interface MenuProps extends BaseComponentProps {
   variant?: 'horizontal' | 'vertical';
   trigger?: 'hover' | 'click';
   placement?: 'top' | 'bottom' | 'left' | 'right';
-}
-
 export interface MenuItem {
   key: string;
   label: string;
@@ -298,8 +244,6 @@ export interface MenuItem {
   divider?: boolean;
   children?: MenuItem[];
   onClick?: () => void;
-}
-
 // Notification component types
 export interface NotificationProps {
   id: string;
@@ -310,14 +254,10 @@ export interface NotificationProps {
   closable?: boolean;
   actions?: NotificationAction[];
   onClose?: () => void;
-}
-
 export interface NotificationAction {
   label: string;
   onClick: () => void;
   primary?: boolean;
-}
-
 // Loading component types
 export interface LoadingProps extends BaseComponentProps {
   size?: 'small' | 'medium' | 'large';
@@ -325,63 +265,45 @@ export interface LoadingProps extends BaseComponentProps {
   overlay?: boolean;
   text?: string;
   delay?: number;
-}
-
 export interface SkeletonProps extends BaseComponentProps {
   variant?: 'text' | 'rectangular' | 'circular';
   width?: number | string;
   height?: number | string;
   lines?: number;
   animation?: 'pulse' | 'wave' | false;
-}
-
 // Error boundary types
 export interface ErrorBoundaryProps extends BaseComponentProps {
   fallback?: ComponentType<ErrorFallbackProps>;
   onError?: (error: Error, errorInfo) => void;
   resetOnPropsChange?: boolean;
   resetKeys?: any[];
-}
-
 export interface ErrorFallbackProps {
   error: Error;
   resetError: () => void;
   hasError: boolean;
-}
-
 // Theme provider types
 export interface ThemeProviderProps extends BaseComponentProps {
   theme?: 'light' | 'dark' | 'system';
   primary?: string;
   secondary?: string;
   customTheme?: any;
-}
-
 // Context types
 export interface ContextProviderProps<T = any> extends BaseComponentProps {
   value: T;
   initialValue?: T;
   persist?: boolean;
   storageKey?: string;
-}
-
 // Higher-order component types
 export interface WithLoadingProps {
   loading: boolean;
   error?: string;
-}
-
 export interface WithAuthProps {
   user?;
   authenticated: boolean;
   loading: boolean;
-}
-
 export interface WithPermissionsProps {
   permissions: string[];
   hasPermission: (permission: string) => boolean;
-}
-
 // Event handler types
 export type EventHandler<T = any> = (event: T) => void;
 export type ChangeHandler<T = any> = (value: T) => void;

@@ -118,8 +118,7 @@ describe('BaseGrid Component', () => {
         const mockOnError = jest.fn();
 
         renderWithTheme(
-            <BaseGrid 
-                {...defaultProps} 
+            <BaseGrid {...defaultProps} 
                 onError={mockOnError}
                 data={() => { throw mockError; }}
             />

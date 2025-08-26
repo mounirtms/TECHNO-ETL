@@ -15,10 +15,13 @@ const componentCache = new Map();
  * @returns {Promise<React.Component>} - Loaded component
  */
 export const loadComponent = async (componentPath: string, componentName: string) => {
+
+
   // Return cached component if available
   if(componentCache.has(componentPath)) {
     return componentCache.get(componentPath);
-  }
+};
+};
 
   try {
     // Dynamically import the component
@@ -26,9 +29,15 @@ export const loadComponent = async (componentPath: string, componentName: string
     const Component = module.default || module[componentName];
     
     if(!Component) {
+  } catch (error) {
+    console.error(error);
+
+
+  } catch (error) {
+    console.error(error);
+
+
       throw new Error(`Component ${componentName} not found in ${componentPath}`);
-    }
-    
     // Cache the component
     componentCache.set(componentPath, Component);
     return Component;
@@ -42,21 +51,29 @@ export const loadComponent = async (componentPath: string, componentName: string
       </div>
     );
     return FallbackComponent;
-  }
 };
 
 /**
  * Preload critical components
  * @param {Array} components - Array of component descriptors
  */
-export const preloadComponents = async(components: Array<{path: string, name: string}>) => {
-  const promises = components.map(({ path: any name }: {path: string: any = {}; // Fixed invalid assignment name: string}: any: any: any: any) => loadComponent(path, name));
+export const preloadComponents = async (components: Array<{path: string, name: string}>) => {
+
+
+};
+};
+  const promises = components.map(({ path: any name }: {path: string, name: string}: any) => loadComponent(path, name));
   try {
     await Promise.all(promises);
     console.log('✅ Preloaded critical components');
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
+
   } catch(error: any) {
     console.warn('⚠️  Some components failed to preload:', error);
-  }
 };
 
 export default { loadComponent, preloadComponents };

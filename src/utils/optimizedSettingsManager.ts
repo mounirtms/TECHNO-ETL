@@ -109,19 +109,24 @@ class OptimizedSettingsManager {
   mergeWithDefaults(userSettings: Partial<AppSettings>): AppSettings {
     const systemPrefs = this.getSystemPreferences();
 
-    return { ...DEFAULT_SETTINGS,
+    return {
+      ...DEFAULT_SETTINGS,
       ...userSettings,
-      preferences: { ...DEFAULT_SETTINGS.preferences,
+      preferences: {
+        ...DEFAULT_SETTINGS.preferences,
         ...systemPrefs,
         ...userSettings.preferences,
       },
-      performance: { ...DEFAULT_SETTINGS.performance,
+      performance: {
+        ...DEFAULT_SETTINGS.performance,
         ...userSettings.performance,
       },
-      accessibility: { ...DEFAULT_SETTINGS.accessibility,
+      accessibility: {
+        ...DEFAULT_SETTINGS.accessibility,
         ...userSettings.accessibility,
       },
-      grid: { ...DEFAULT_SETTINGS.grid,
+      grid: {
+        ...DEFAULT_SETTINGS.grid,
         ...userSettings.grid,
       },
       lastModified: Date.now(),
@@ -184,7 +189,8 @@ class OptimizedSettingsManager {
 
     // Update cache immediately
     const currentSettings = this.getSettings(userId);
-    const updatedSettings = { ...currentSettings,
+    const updatedSettings = {
+      ...currentSettings,
       ...settings,
       lastModified: Date.now(),
     };
@@ -227,103 +233,6 @@ class OptimizedSettingsManager {
 
     this.debounceTimers.set(storageKey, timer);
     return true;
-  }
-
-  /**
-   * Update specific settings section
-   */
-  updateSettings(
-    updates: Partial<AppSettings>,
-    section?: keyof AppSettings,
-    userId?: string,
-    immediate = false
-  ): boolean {
-    const currentSettings = this.getSettings(userId);
-    let updatedSettings: Partial<AppSettings>;
-
-    if(section) {
-      updatedSettings = {
-        ...currentSettings,
-        [section]: {
-          ...(currentSettings[section] as any),
-          ...updates,
-        },
-      };
-    } else {
-      updatedSettings = {
-        ...currentSettings,
-        ...updates,
-      };
-    }
-
-    return this.saveSettings(updatedSettings, userId, immediate);
-  }
-
-  /**
-   * Reset settings to defaults
-   */
-  resetSettings(userId?: string): boolean {
-    const cacheKey = userId ? `settings-${userId}` : 'settings-anonymous';
-    const storageKey = userId 
-      ? `${STORAGE_KEYS.USER_SETTINGS}-${userId}` 
-      : STORAGE_KEYS.UNIFIED_SETTINGS;
-
-    try {
-      const defaultSettings = this.mergeWithDefaults({});
-      
-      // Update cache
-      this.cache.set(cacheKey, defaultSettings);
-      
-      // Clear storage
-      localStorage.removeItem(storageKey);
-      localStorage.removeItem(STORAGE_KEYS.THEME_SETTINGS);
-      
-      // Save defaults
-      localStorage.setItem(storageKey, JSON.stringify(defaultSettings));
-      localStorage.setItem(STORAGE_KEYS.THEME_SETTINGS, JSON.stringify(defaultSettings.preferences));
-      
-      toast.success('Settings reset to defaults');
-      return true;
-    } catch(error: any) {
-      console.error('Failed to reset settings:', error);
-      toast.error('Failed to reset settings');
-      return false;
-    }
-  }
-
-  /**
-   * Export settings
-   */
-  exportSettings(userId?: string): string {
-    const settings = this.getSettings(userId);
-    return JSON.stringify(settings, null, 2);
-  }
-
-  /**
-   * Import settings
-   */
-  importSettings(settingsJson: string, userId?: string): boolean {
-    try {
-      const importedSettings = JSON.parse(settingsJson);
-      const validatedSettings = this.mergeWithDefaults(importedSettings);
-      
-      this.saveSettings(validatedSettings, userId, true);
-      toast.success('Settings imported successfully');
-      return true;
-    } catch(error: any) {
-      console.error('Failed to import settings:', error);
-      toast.error('Invalid settings file');
-      return false;
-    }
-  }
-
-  /**
-   * Clear all caches
-   */
-  clearCache(): void {
-    this.cache.clear();
-    this.debounceTimers.forEach((timer) => clearTimeout(timer));
-    this.debounceTimers.clear();
   }
 
   /**
@@ -376,7 +285,4 @@ export const optimizedSettingsManager = new OptimizedSettingsManager();
 export const getSettings = (userId?: string) => optimizedSettingsManager.getSettings(userId);
 export const saveSettings = (settings: Partial<AppSettings>, userId?: string, immediate = false) => 
   optimizedSettingsManager.saveSettings(settings, userId, immediate);
-export const updateSettings = (updates: Partial<AppSettings>, section?: keyof AppSettings, userId?: string, immediate = false) => 
-  optimizedSettingsManager.updateSettings(updates, section, userId, immediate);
-export const resetSettings = (userId?: string) => optimizedSettingsManager.resetSettings(userId);
 export const applyThemeSettings = (preferences: UserPreferences) => optimizedSettingsManager.applyThemeSettings(preferences);

@@ -17,49 +17,35 @@ interface Feature {
   created_at: string;
   created_by: string;
   target_release?: string;
-}
-
 interface Vote {
   id: number;
   feature_id: number;
   user_id: string;
   created_at: string;
-}
-
 interface FeatureFilters {
   status?: string;
   category?: string;
   priority?: string;
   search?: string;
-}
-
 interface FeatureData {
   title: string;
   description: string;
   category: string;
   priority: string;
-}
-
 interface RoadmapData {
   planned: Feature[];
   in_progress: Feature[];
   completed: Feature[];
   rejected: Feature[];
-}
-
 interface ReleaseNote {
   id: number;
   version: string;
   release_date: string;
   notes: string;
   published: boolean;
-}
-
 interface AdditionalStatusData {
   target_release?: string;
   notes?: string;
-}
-
 /**
  * Service class for handling voting-related API calls
  */
@@ -78,9 +64,6 @@ class VotingService {
     } catch(error: any) {
       console.error('Error fetching features:', error);
       throw new Error('Failed to fetch features');
-    }
-  }
-
   /**
    * Create a new feature request
    * @param featureData - Feature data (title, description, category, etc.)
@@ -93,9 +76,6 @@ class VotingService {
     } catch(error: any) {
       console.error('Error creating feature:', error);
       throw new Error('Failed to create feature');
-    }
-  }
-
   /**
    * Vote for a feature
    * @param featureId - Feature ID
@@ -111,9 +91,6 @@ class VotingService {
     } catch(error: any) {
       console.error('Error voting for feature:', error);
       throw new Error('Failed to vote for feature');
-    }
-  }
-
   /**
    * Remove vote from a feature
    * @param featureId - Feature ID
@@ -129,9 +106,6 @@ class VotingService {
     } catch(error: any) {
       console.error('Error removing vote:', error);
       throw new Error('Failed to remove vote');
-    }
-  }
-
   /**
    * Get user's votes
    * @param userId - User ID
@@ -146,9 +120,6 @@ class VotingService {
     } catch(error: any) {
       console.error('Error fetching user votes:', error);
       throw new Error('Failed to fetch user votes');
-    }
-  }
-
   /**
    * Get roadmap data
    * @returns Roadmap data with features grouped by status
@@ -160,9 +131,6 @@ class VotingService {
     } catch(error: any) {
       console.error('Error fetching roadmap:', error);
       throw new Error('Failed to fetch roadmap');
-    }
-  }
-
   /**
    * Update feature status (admin only)
    * @param featureId - Feature ID
@@ -180,9 +148,6 @@ class VotingService {
     } catch(error: any) {
       console.error('Error updating feature status:', error);
       throw new Error('Failed to update feature status');
-    }
-  }
-
   /**
    * Get release notes
    * @param filters - Optional filters (published, version, etc.)
@@ -197,9 +162,5 @@ class VotingService {
     } catch(error: any) {
       console.error('Error fetching release notes:', error);
       throw new Error('Failed to fetch release notes');
-    }
-  }
-}
-
 // Export singleton instance
 export default new VotingService();

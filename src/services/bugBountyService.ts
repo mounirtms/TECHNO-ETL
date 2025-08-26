@@ -51,7 +51,6 @@ export const BUG_CATEGORIES = {
     multiplier: 0.8,
     color: '#9c27b0',
     priority: 5
-  }
 };
 
 // Bug Status Types
@@ -80,8 +79,6 @@ class BugBountyService {
     this.testersRef = ref(database, 'bugBounty/testers');
     this.rewardsRef = ref(database, 'bugBounty/rewards');
     this.statsRef = ref(database, 'bugBounty/stats');
-  }
-
   /**
    * Submit a new bug report
    */
@@ -143,9 +140,6 @@ class BugBountyService {
     } catch (error) {
       console.error('Error submitting bug:', error);
       return { success: false, error: error.message };
-    }
-  }
-
   /**
    * Calculate reward based on category and severity
    */
@@ -163,8 +157,6 @@ class BugBountyService {
     }[severity] || 1.0;
 
     return Math.round(baseReward * multiplier * severityMultiplier);
-  }
-
   /**
    * Get all bugs with filtering options
    */
@@ -173,21 +165,15 @@ class BugBountyService {
       const bugsSnapshot = await get(this.bugsRef);
       if (!bugsSnapshot.exists()) {
         return { success: true, bugs: [] };
-      }
-
       let bugs = Object.values(bugsSnapshot.val());
 
       // Apply filters
       if(filters?.category) {
         bugs
-      }
       if(filters?.status) {
         bugs
-      }
       if(filters?.testerId) {
         bugs
-      }
-
       // Sort by submission date (newest first)
       bugs.sort((a, b) => b.submittedAt - a.submittedAt);
 
@@ -195,9 +181,6 @@ class BugBountyService {
     } catch (error) {
       console.error('Error getting bugs:', error);
       return { success: false, error: error.message };
-    }
-  }
-
   /**
    * Update bug status and quality score
    */
@@ -208,8 +191,6 @@ class BugBountyService {
       
       if (!bugSnapshot.exists()) {
         return { success: false, error: 'Bug not found' };
-      }
-
       const bug = bugSnapshot.val();
       const updates = {
         status,
@@ -223,8 +204,6 @@ class BugBountyService {
         const qualityMultiplier = qualityData?.multiplier || 1.0;
         updates.qualityScore = qualityScore;
         updates['reward/final'] = Math.round(bug.reward.calculated * qualityMultiplier);
-      }
-
       await update(bugRef, updates);
 
       // Update tester stats
@@ -237,9 +216,6 @@ class BugBountyService {
     } catch (error) {
       console.error('Error updating bug status:', error);
       return { success: false, error: error.message };
-    }
-  }
-
   /**
    * Update tester statistics
    */
@@ -269,8 +245,6 @@ class BugBountyService {
         case BUG_STATUS.REWARDED:
           stats.totalRewarded++;
           break;
-      }
-
       // Calculate rank based on confirmed bugs
       if (stats.totalConfirmed >= 50) stats.rank = 'Platinum';
       else if (stats.totalConfirmed >= 20) stats.rank = 'Gold';
@@ -282,9 +256,6 @@ class BugBountyService {
     } catch (error) {
       console.error('Error updating tester stats:', error);
       return { success: false, error: error.message };
-    }
-  }
-
   /**
    * Update global statistics
    */
@@ -301,18 +272,14 @@ class BugBountyService {
       // Update totals
       if(action === 'submitted') {
         stats.totalBugs++;
-      }
-
       // Update by category
       if(!stats.byCategory[category]) {
         stats.byCategory[category] = 0;
-      }
       stats.byCategory[category]++;
 
       // Update by status
       if(!stats.byStatus[action]) {
         stats.byStatus[action] = 0;
-      }
       stats.byStatus[action]++;
 
       await set(this.statsRef, stats);
@@ -320,9 +287,6 @@ class BugBountyService {
     } catch (error) {
       console.error('Error updating global stats:', error);
       return { success: false, error: error.message };
-    }
-  }
-
   /**
    * Get leaderboard of top testers
    */
@@ -331,8 +295,6 @@ class BugBountyService {
       const testersSnapshot = await get(this.testersRef);
       if (!testersSnapshot.exists()) {
         return { success: true, leaderboard: [] };
-      }
-
       const testers = Object.values(testersSnapshot.val());
       
       // Sort by total confirmed bugs
@@ -345,9 +307,6 @@ class BugBountyService {
     } catch (error) {
       console.error('Error getting leaderboard:', error);
       return { success: false, error: error.message };
-    }
-  }
-
   /**
    * Get bug bounty statistics
    */
@@ -365,8 +324,4 @@ class BugBountyService {
     } catch (error) {
       console.error('Error getting stats:', error);
       return { success: false, error: error.message };
-    }
-  }
-}
-
 export default new BugBountyService();

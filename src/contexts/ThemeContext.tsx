@@ -319,21 +319,18 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     } else {
       root.classList.remove('dark');
     }
-
     // High contrast
     if(config.highContrast) {
       root.classList.add('high-contrast');
     } else {
       root.classList.remove('high-contrast');
     }
-    
     // Animations
     if(!config.animations) {
       root.classList.add('no-animations');
     } else {
       root.classList.remove('no-animations');
     }
-
     // RTL
     if(isRTL) {
       root.setAttribute('dir', 'rtl');

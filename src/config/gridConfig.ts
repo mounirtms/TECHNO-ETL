@@ -53,7 +53,6 @@ export const STANDARD_TOOLBAR_CONFIG = {
     excel: true,
     csv: true,
     json: true
-  }
 };
 
 // ===== PERFORMANCE CONFIG =====
@@ -96,7 +95,6 @@ export const STANDARD_CONTEXT_MENU_ACTIONS = {
     enabled: false,
     icon: 'delete',
     label: 'Delete'
-  }
 };
 
 // ===== BASE GRID CONFIG (Legacy compatibility) =====
@@ -166,7 +164,6 @@ export const GRID_TOOLBAR_CONFIGS = {
     showDelete: false,
     showSync: false,
     customActions: []
-  }
 };
 
 // ===== GRID-SPECIFIC CONFIGURATIONS =====
@@ -188,7 +185,6 @@ export const GRID_CONFIGS = {
     },
     contextMenuActions: { ...STANDARD_CONTEXT_MENU_ACTIONS,
       sync: { enabled: true, icon: 'sync', label: 'Sync to Magento' }
-    }
   },
 
   // Magento Products Grid
@@ -204,7 +200,6 @@ export const GRID_CONFIGS = {
     contextMenuActions: { ...STANDARD_CONTEXT_MENU_ACTIONS,
       edit: { enabled: true, icon: 'edit', label: 'Edit Product' },
       delete: { enabled: true, icon: 'delete', label: 'Delete Product' }
-    }
   },
 
   // Magento Orders Grid
@@ -215,7 +210,6 @@ export const GRID_CONFIGS = {
     },
     contextMenuActions: { ...STANDARD_CONTEXT_MENU_ACTIONS,
       edit: { enabled: true, icon: 'edit', label: 'Edit Order' }
-    }
   },
 
   // Magento Customers Grid
@@ -227,7 +221,6 @@ export const GRID_CONFIGS = {
     contextMenuActions: { ...STANDARD_CONTEXT_MENU_ACTIONS,
       edit: { enabled: true, icon: 'edit', label: 'Edit Customer' },
       delete: { enabled: true, icon: 'delete', label: 'Delete Customer' }
-    }
   },
 
   // CMS Pages/Blocks Grid
@@ -236,7 +229,6 @@ export const GRID_CONFIGS = {
     contextMenuActions: { ...STANDARD_CONTEXT_MENU_ACTIONS,
       edit: { enabled: true, icon: 'edit', label: 'Edit Page' },
       delete: { enabled: true, icon: 'delete', label: 'Delete Page' }
-    }
   },
 
   // Sources Grid
@@ -244,7 +236,6 @@ export const GRID_CONFIGS = {
     toolbar: GRID_TOOLBAR_CONFIGS.sources,
     features: { ...STANDARD_FEATURES,
       showStatsCards: true
-    }
   },
 
   // Cegid Grid
@@ -254,8 +245,6 @@ export const GRID_CONFIGS = {
       enableRTL: false,
       paginationMode: "client",
       defaultPageSize: 50
-    }
-  }
 };
 
 // ===== UTILITY FUNCTIONS =====
@@ -387,53 +376,34 @@ export const validateGridConfig = (gridType, config) => {
     errors.push('Grid type is required');
   } else if(!GRID_CONFIGS[gridType]) {
     warnings.push(`Unknown grid type: ${gridType}. Using default configuration.`);
-  }
-
   if(!config) {
     errors.push('Grid configuration is required');
     return { isValid: false, errors, warnings };
-  }
-
   // Features validation
   if(config.features) {
     if(typeof config.features.enableVirtualization !== 'undefined' && typeof config.features.enableVirtualization !== 'boolean') {
       errors.push('features.enableVirtualization must be a boolean');
-    }
     if(typeof config.features.enableCache !== 'undefined' && typeof config.features.enableCache !== 'boolean') {
       errors.push('features.enableCache must be a boolean');
-    }
-  }
-
   // Toolbar validation
   if(config.toolbar) {
     const requiredToolbarProps = ['showRefresh', 'showSearch', 'showSettings'];
     requiredToolbarProps.forEach((prop) => {
       if(typeof config.toolbar[prop] !== 'undefined' && typeof config.toolbar[prop] !== 'boolean') {
         errors.push(`toolbar.${prop} must be a boolean`);
-      }
     });
-  }
-
   // Performance validation
   if(config.performance) {
     if(config.performance.virtualizationThreshold && typeof config.performance.virtualizationThreshold !== 'number') {
       errors.push('performance.virtualizationThreshold must be a number');
-    }
     if(config.performance.cacheTimeout && typeof config.performance.cacheTimeout !== 'number') {
       errors.push('performance.cacheTimeout must be a number');
-    }
-  }
-
   // Pagination validation
   if(config.pagination) {
     if(config.pagination.defaultPageSize && typeof config.pagination.defaultPageSize !== 'number') {
       errors.push('pagination.defaultPageSize must be a number');
-    }
     if (config.pagination.pageSizeOptions && !Array.isArray(config.pagination.pageSizeOptions)) {
       errors.push('pagination.pageSizeOptions must be an array');
-    }
-  }
-
   return {
     isValid: errors.length ===0,
     errors,
@@ -451,25 +421,15 @@ export const validateGridProps = (props) => {
   // Required props
   if(!props.gridName) {
     errors.push('gridName is required');
-  }
-
   if (!props.columns || !Array.isArray(props.columns)) {
     errors.push('columns must be an array');
-  }
-
   if (!props.data || !Array.isArray(props.data)) {
     errors.push('data must be an array');
-  }
-
   // Performance warnings
   if(props.data && props.data.length > 1000 && !props.enableVirtualization) {
     warnings.push('Large dataset detected. Consider enabling virtualization for better performance.');
-  }
-
   if(props.columns && props.columns.length > 20) {
     warnings.push('Many columns detected. Consider using column grouping or hiding less important columns.');
-  }
-
   return {
     isValid: errors.length ===0,
     errors,
@@ -486,29 +446,17 @@ export const sanitizeGridConfig = (config) => {
   // Ensure required properties exist
   if(!sanitized.features) {
     sanitized.features = { ...STANDARD_FEATURES };
-  }
-
   if(!sanitized.toolbar) {
     sanitized.toolbar = { ...STANDARD_TOOLBAR_CONFIG };
-  }
-
   if(!sanitized.pagination) {
     sanitized.pagination = { ...STANDARD_PAGINATION_CONFIG };
-  }
-
   if(!sanitized.performance) {
     sanitized.performance = { ...PERFORMANCE_CONFIG };
-  }
-
   // Sanitize numeric values
   if(sanitized.pagination.defaultPageSize) {
     sanitized.pagination.defaultPageSize = Math.max(1, Math.min(1000, sanitized.pagination.defaultPageSize));
-  }
-
   if(sanitized.performance.virtualizationThreshold) {
     sanitized.performance.virtualizationThreshold = Math.max(100, sanitized.performance.virtualizationThreshold);
-  }
-
   return sanitized;
 };
 

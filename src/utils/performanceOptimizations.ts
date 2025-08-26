@@ -14,18 +14,14 @@ class SmartCache {
   private readonly defaultTTL = 5 * 60 * 1000; // 5 minutes
   private readonly maxSize = 100;
 
-  set(key: string, value ttl?: number): void {
+  set(key: string, value: any, ttl?: number): void {
     // Clear old timer if exists
     if (this.timers.has(key)) {
       clearTimeout(this.timers.get(key));
-    }
-
     // Implement LRU eviction if cache is full
     if (this.cache.size >= this.maxSize && !this.cache.has(key)) {
       const firstKey = this.cache.keys().next().value;
       this.delete(firstKey);
-    }
-
     // Set new value
     this.cache.set(key, {
       value,
@@ -39,8 +35,6 @@ class SmartCache {
     }, ttl || this.defaultTTL);
 
     this.timers.set(key, timer);
-  }
-
   get(key: string): any {
     const item = this.cache.get(key);
     if (!item) return null;
@@ -49,42 +43,28 @@ class SmartCache {
     if (Date.now() - item.timestamp > item.ttl) {
       this.delete(key);
       return null;
-    }
-
     // Move to end (LRU)
     this.cache.delete(key);
     this.cache.set(key, item);
 
     return item.value;
-  }
-
   delete(key: string): boolean {
     if (this.timers.has(key)) {
       clearTimeout(this.timers.get(key));
       this.timers.delete(key);
-    }
     return this.cache.delete(key);
-  }
-
   clear(): void {
     this.timers.forEach((timer) => clearTimeout(timer));
     this.timers.clear();
     this.cache.clear();
-  }
-
   size(): number {
     return this.cache.size;
-  }
-
   getStats() {
     return {
       size: this.cache.size,
       maxSize: this.maxSize,
       keys: Array.from(this.cache.keys())
     };
-  }
-}
-
 // Global cache instance
 export const globalCache = new SmartCache();
 
@@ -97,7 +77,6 @@ export const useDebounce = (callback: Function, delay: number) => {
   return useCallback((...args: any[]) => {
     if(debounceRef.current) {
       clearTimeout(debounceRef.current);
-    }
 
     debounceRef.current = setTimeout(() => {
       callback(...args);
@@ -115,7 +94,6 @@ export const useThrottle = (callback: Function, delay: number) => {
     if (Date.now() - lastRun.current >= delay) {
       callback(...args);
       lastRun.current = Date.now();
-    }
   }, [callback, delay]);
 };
 
@@ -133,7 +111,6 @@ export const useMemoizedAsync: any = <T>(
     
     if(cached) {
       return Promise.resolve(cached);
-    }
 
     return asyncFunction(...deps).then(result => {
       globalCache.set(key, result, 2 * 60 * 1000); // 2 minutes TTL
@@ -157,19 +134,18 @@ export const useLazyLoad = (callback: Function, options = { threshold: 0.1 }) =>
           setIsVisible(true);
           setHasLoaded(true);
           callback();
-        }
+
       },
       { threshold: options.threshold }
     );
 
     if(elementRef.current) {
       observer.observe(elementRef.current);
-    }
 
     return () => {
       if(elementRef.current) {
         observer.unobserve(elementRef.current);
-      }
+
     };
   }, [callback, hasLoaded, options.threshold]);
 
@@ -187,10 +163,11 @@ export const usePerformanceMonitor = (componentName: string) => {
     const renderTime = endTime - startTime.current;
     
     if(renderTime > 100) {
+
       console.warn(`🐌 Slow render detected in ${componentName}: ${renderTime.toFixed(2)}ms`);
     } else if(renderTime > 50) {
+
       console.log(`⚡ ${componentName} rendered in ${renderTime.toFixed(2)}ms`);
-    }
   });
 
   return startTime.current;
@@ -206,13 +183,11 @@ export const optimizeMemory = () => {
     console.log('📊 Cache stats before cleanup:', stats);
     globalCache.clear();
     console.log('🧹 Cache cleared due to memory optimization');
-  }
-
   // Run garbage collection if available
   if(window.gc && typeof window.gc === 'function') {
     window.gc();
     console.log('🗑️ Manual garbage collection triggered');
-  }
+
 };
 
 /**
@@ -227,10 +202,12 @@ export class BatchProcessor<T> {
 
   constructor(
     processor: (items: T[]) => Promise<void> | void,
-    batchSize
-    timeout
-  }
-
+    batchSize: number = 10,
+    timeout: number = 1000
+  ) {
+    this.processor = processor;
+    this.batchSize = batchSize;
+    this.timeout = timeout;
   add(item: T): void {
     this.batch.push(item);
 
@@ -240,32 +217,30 @@ export class BatchProcessor<T> {
       this.timer = setTimeout(() => {
         this.processBatch();
       }, this.timeout);
-    }
-  }
-
   private async processBatch(): Promise<void> {
     if(this.timer) {
       clearTimeout(this.timer);
       this.timer = undefined;
-    }
 
-    if (this.batch.length ===0) return;
+    if (this.batch.length === 0) return;
 
     const items = [...this.batch];
     this.batch = [];
 
     try {
       await this.processor(items);
-    } catch(error: any) {
-      console.error('❌ Batch processing error:', error);
-    }
-  }
+  } catch (error) {
+    console.error(error);
 
+    } catch (error) {
+      console.error('Batch processing error:', error);
   flush(): Promise<void> {
     return this.processBatch();
-  }
-}
-
+    console.error(error);
+    } catch(error: any) {
+      console.error('❌ Batch processing error:', error);
+  flush(): Promise<void> {
+    return this.processBatch();
 /**
  * Image optimization utilities
  */
@@ -289,7 +264,6 @@ export const optimizeImage = (
       if(!ctx) {
         reject(new Error('Canvas context not available'));
         return;
-      }
 
       const { width = img.width, height = img.height, quality = 0.8 } = options;
       canvas.width = width;
@@ -298,7 +272,7 @@ export const optimizeImage = (
       ctx.drawImage(img, 0, 0, width, height);
 
       const format = options.format === 'webp' ? 'image/webp' : 
-                    options.format = == "png" ? 'image/png' : 'image/jpeg';
+                    options.format === "png" ? 'image/png' : 'image/jpeg';
       
       const optimizedUrl = canvas.toDataURL(format, quality);
       resolve(optimizedUrl);
@@ -339,7 +313,6 @@ export const preloadResources = (resources: string[]): Promise<void[]> => {
         fetch(url)
           .then(() => resolve())
           .catch(reject);
-      }
     });
   };
 
@@ -364,11 +337,10 @@ export const analyzeBundleSize = () => {
       if((script as HTMLScriptElement)?.src) {
         // This is a rough estimation
         totalEstimated += 100; // Assume 100KB per script (very rough)
-      }
+
     });
     
     console.log(`📊 Estimated bundle size: ${totalEstimated}KB`);
-  }
 };
 
 export default {

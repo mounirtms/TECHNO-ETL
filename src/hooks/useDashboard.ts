@@ -45,7 +45,6 @@ export const useDashboard = (options = {}) => {
   const safeSetState = useCallback((setter, value) => {
     if(mountedRef.current) {
       setter(value );
-    }
   }, []);
 
   // Clear error for specific data type
@@ -77,7 +76,6 @@ export const useDashboard = (options = {}) => {
       setErrorState('stats', error.message);
     } finally {
       setLoadingState('stats', false);
-    }
   }, [setLoadingState, clearError, setErrorState, safeSetState]);
 
   // Fetch recent orders
@@ -93,7 +91,6 @@ export const useDashboard = (options = {}) => {
       setErrorState('orders', error.message);
     } finally {
       setLoadingState('orders', false);
-    }
   }, [setLoadingState, clearError, setErrorState, safeSetState]);
 
   // Fetch dashboard health
@@ -109,7 +106,6 @@ export const useDashboard = (options = {}) => {
       setErrorState('health', error.message);
     } finally {
       setLoadingState('health', false);
-    }
   }, [setLoadingState, clearError, setErrorState, safeSetState]);
 
   // Fetch all dashboard data
@@ -129,7 +125,6 @@ export const useDashboard = (options = {}) => {
       console.log(`✅ Dashboard data updated (${result.fetchTime}ms)`);
     } catch (error) {
       console.error('❌ Failed to fetch dashboard data:', error);
-    }
   }, [safeSetState]);
 
   // Trigger price synchronization
@@ -152,7 +147,6 @@ export const useDashboard = (options = {}) => {
       throw error;
     } finally {
       setLoadingState('sync', false);
-    }
   }, [setLoadingState, clearError, setErrorState, fetchStats]);
 
   // Trigger inventory synchronization
@@ -175,7 +169,6 @@ export const useDashboard = (options = {}) => {
       throw error;
     } finally {
       setLoadingState('sync', false);
-    }
   }, [setLoadingState, clearError, setErrorState, fetchStats]);
 
   // Manual refresh
@@ -194,9 +187,7 @@ export const useDashboard = (options = {}) => {
       return () => {
         if(refreshIntervalRef.current) {
           clearInterval(refreshIntervalRef.current);
-        }
       };
-    }
   }, [autoRefresh, refreshInterval, fetchAllData]);
 
   // Initial data load
@@ -204,8 +195,6 @@ export const useDashboard = (options = {}) => {
     if(preload) {
       // Preload data in background
       dashboardApi?.preloadDashboardData();
-    }
-    
     // Fetch initial data
     fetchAllData();
 
@@ -214,7 +203,6 @@ export const useDashboard = (options = {}) => {
       mountedRef.current = false;
       if(refreshIntervalRef.current) {
         clearInterval(refreshIntervalRef.current);
-      }
     };
   }, [fetchAllData, preload]);
 
@@ -272,7 +260,6 @@ export const useSync = () => {
       throw error;
     } finally {
       setLoading(false);
-    }
   }, []);
 
   const syncInventory = useCallback(async () => {
@@ -288,7 +275,6 @@ export const useSync = () => {
       throw error;
     } finally {
       setLoading(false);
-    }
   }, []);
 
   const getSyncStatus = useCallback(async () => {
@@ -297,7 +283,6 @@ export const useSync = () => {
     } catch (error) {
       setError(error.message);
       throw error;
-    }
   }, []);
 
   return {

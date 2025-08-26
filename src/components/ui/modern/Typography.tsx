@@ -45,7 +45,6 @@ const typographyVariants = cva(
       color: 'textPrimary',
       align: 'left',
     },
-  }
 );
 
 interface TypographyProps
@@ -55,8 +54,6 @@ interface TypographyProps
   children?: React.ReactNode;
   noWrap?: boolean;
   gutterBottom?: boolean;
-}
-
 /**
  * Modern Typography component - replacement for MUI Typography
  * Uses Tailwind CSS classes with variant-based styling
@@ -87,14 +84,12 @@ export const Typography = React.forwardRef<HTMLElement, TypographyProps>(
         case 'subtitle1':
         case 'subtitle2': return 'p';
         default: return 'p';
-      }
     };
 
     const Component = component || getDefaultComponent(variant || 'body1');
 
     return (
-      <Component
-        ref={ref}
+      <Component ref={ref}
         className
           typographyVariants({ variant, color, align }),
           {
@@ -103,12 +98,10 @@ export const Typography = React.forwardRef<HTMLElement, TypographyProps>(
           },
           className
         )}
-        { ...props}
-      >
+        { ...props}>
         {children}
       </Component>
     );
-  }
 );
 
 Typography.displayName = 'Typography';

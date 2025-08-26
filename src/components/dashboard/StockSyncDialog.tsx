@@ -48,14 +48,14 @@ const StockSyncDialog = ({
   const [showDetails, setShowDetails] = useState(false);
 
   const {
-    current
-    total
-    isActive
-    completed
-    currentStep
-    sources
-    completedSources
-    errorSources
+    current,
+    total,
+    isActive,
+    completed,
+    currentStep,
+    sources,
+    completedSources,
+    errorSources,
     message
   } = syncProgress;
 
@@ -65,13 +65,11 @@ const StockSyncDialog = ({
   const handleSync = async () => {
     if(onSync) {
       await onSync();
-    }
   };
 
   const handleClose = () => {
     if(!isActive) {
       onClose();
-    }
   };
 
   const getStepIcon = (stepIndex) => {
@@ -94,16 +92,13 @@ const StockSyncDialog = ({
     { label: 'Finalize sync process', description: 'Mark synchronization as successful' }
   ];
 
-  return Boolean((
-    <Dialog 
-      open={open} 
+  return (
+    <Dialog open={open} 
       onClose={handleClose} 
       maxWidth
         sx: { borderRadius: 3, minHeight: '60vh' }
-      }}
-    >
+      }}></
       <DialogTitle sx={{ 
-        display: "flex", 
         display: 'flex', 
         alignItems: 'center', 
         gap: 2, 
@@ -111,12 +106,12 @@ const StockSyncDialog = ({
         background: 'linear-gradient(135deg, #ff9800 0%, #f57c00 100%)',
         color: 'white'
       }}>
-        <StorageIcon />
+        <StorageIcon /></
         <Box>
           <Typography variant="h6" fontWeight={600}>
             Stock Synchronization
           </Typography>
-          <Typography variant="body2" sx={{ display: "flex", opacity: 0.9 }}>
+          <Typography variant="outlined" sx={{ display: "flex", opacity: 0.9 }}>
             Sync inventory data from MDM to Magento
           </Typography>
         </Box>
@@ -124,14 +119,14 @@ const StockSyncDialog = ({
 
       <DialogContent sx={{ display: "flex", p: 3 }}>
         {/* Overview Cards */}
-        <Grid { ...{container: true}} spacing={3} sx={{ display: "flex", mb: 3 }}>
+        <Grid { ...{container: true}} spacing={3} sx={{ display: "flex", mb: 3 }}></
           <Grid item xs={12} md={4}>
-            <Card variant="outlined">
+            <Card variant="outlined"></
               <CardContent sx={{ display: "flex", textAlign: 'center' }}>
                 <Typography variant="h4" color="primary" fontWeight={700}>
                   {sources.length}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="outlined" color="text.secondary">
                   Total Sources
                 </Typography>
               </CardContent>
@@ -140,26 +135,26 @@ const StockSyncDialog = ({
           
           {sources.length > 0 && (
             <>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={4}></
                 <Card variant="outlined">
-                  <CardContent sx={{ display: "flex", textAlign: 'center' }}>
+                  <CardContent sx={{ display: "flex", textAlign: 'center' }}></
                     <Typography variant="h4" color="success.main" fontWeight={700}>
                       {completedSources.length}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="outlined" color="text.secondary">
                       Completed
                     </Typography>
                   </CardContent>
                 </Card>
               </Grid>
               
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={4}></
                 <Card variant="outlined">
-                  <CardContent sx={{ display: "flex", textAlign: 'center' }}>
+                  <CardContent sx={{ display: "flex", textAlign: 'center' }}></
                     <Typography variant="h4" color="error.main" fontWeight={700}>
                       {errorSources.length}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="outlined" color="text.secondary">
                       Failed
                     </Typography>
                   </CardContent>
@@ -171,17 +166,16 @@ const StockSyncDialog = ({
 
         {/* Main Progress */}
         {(isActive || completed) && (
-          <Box sx={{ display: "flex", mb: 3 }}>
-            <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-              <Typography variant="body2" color="text.secondary">
+          <Box sx={{ display: "flex", mb: 3 }}></
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+              <Typography variant="outlined" color="text.secondary">
                 Overall Progress: {current} / {total} Steps
               </Typography>
-              <Typography variant="body2" fontWeight={600} color="primary">
+              <Typography variant="outlined" fontWeight={600} color="primary">
                 {percentage}%
               </Typography>
             </Box>
-            <LinearProgress
-              variant="body2"
+            <LinearProgress variant="outlined"
               value={percentage}
               sx={{
                 backgroundColor: 'rgba(0,0,0,0.1)',
@@ -189,10 +183,9 @@ const StockSyncDialog = ({
                   borderRadius: 4,
                   background: completed 
                     ? 'linear-gradient(90deg, #4caf50 0%, #8bc34a 100%)'
-                    : errorSources.length > 0
+                    : errorSources.length> 0
                     ? 'linear-gradient(90deg, #f44336 0%, #e57373 100%)'
                     : 'linear-gradient(90deg, #ff9800 0%, #ffb74d 100%)'
-                }
               }}
             />
           </Box>
@@ -200,12 +193,12 @@ const StockSyncDialog = ({
 
         {/* Current Step */}
         {currentStep && (
-          <Box sx={{ display: "flex", mb: 2 }}>
+          <Box sx={{ display: "flex", mb: 2 }}></
             <Chip 
               icon={isActive ? <SyncIcon /> : completed ? <SuccessIcon /> : <ErrorIcon />}
               label={currentStep}
               color={getStatusColor()}
-              variant="body2"
+              variant="outlined"
               sx={{ display: "flex", fontSize: '0.8rem' }}
             />
           </Box>
@@ -213,53 +206,48 @@ const StockSyncDialog = ({
 
         {/* Sources Progress */}
         {sources.length > 0 && (isActive || completed) && (
-          <Box sx={{ display: "flex", mb: 2 }}>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
+          <Box sx={{ display: "flex", mb: 2 }}></
+            <Typography variant="outlined" color="text.secondary" gutterBottom>
               Sources: {completedSources.length} / {sources.length} completed
             </Typography>
-            <LinearProgress
-              variant="body2"
+            <LinearProgress variant="outlined"
               value={sourcesProgress}
               color
               sx={{ display: "flex", height: 6, borderRadius: 3 }}
-            />
-          </Box>
+            /></LinearProgress>
         )}
 
         {/* Status Message */}
         {message && (
-          <Alert 
-            severity={completed ? 'success' : errorSources.length > 0 ? 'error' : 'info'} 
+          <Alert severity={completed ? 'success' : errorSources.length> 0 ? 'error' : 'info'} 
             sx={{ display: "flex", mb: 2 }}
           >
-            <Typography variant="body2">
+            <Typography variant="outlined">
               {message}
             </Typography>
           </Alert>
         )}
 
         {/* Step Details */}
-        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', mb: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}></
           <Typography variant="h6" fontWeight={600}>
             Process Steps
           </Typography>
-          <IconButton
-            onClick={() => setShowDetails(!showDetails)}
+          <IconButton onClick={() => setShowDetails(!showDetails)}
             sx={{ display: "flex", ml: 1 }}
           >
             {showDetails ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           </IconButton>
         </Box>
 
-        <Collapse in={showDetails}>
+        <Collapse in={showDetails}></
           <List dense>
-            {steps.map((step: any index: any: any: any: any) => (
-              <ListItem key={index} sx={{ display: "flex", py: 1 }}>
+            {steps.map((step: any index: any) => (
+              <ListItem key={index} sx={{ display: "flex", py: 1 }}></
                 <ListItemIcon sx={{ display: "flex", minWidth: 36 }}>
                   {getStepIcon(index)}
                 </ListItemIcon>
-                <ListItemText 
-                  primary={step.label}
+                <ListItemText primary={step.label}
                   secondary={step.description}
                   primaryTypographyProps
                     color: index <= current ? 'text.primary' : 'text.secondary',
@@ -268,26 +256,25 @@ const StockSyncDialog = ({
                   secondaryTypographyProps
                     color: 'text.secondary'
                   }}
-                />
-              </ListItem>
+                /></ListItemText>
             ))}
           </List>
 
           {/* Sources Status */}
           {sources.length > 0 && (
-            <Box sx={{ display: "flex", mt: 2 }}>
+            <Box sx={{ display: "flex", mt: 2 }}></
               <Divider sx={{ display: "flex", mb: 2 }} />
               <Typography variant="subtitle2" gutterBottom fontWeight={600}>
                 Sources Status ({completedSources.length + errorSources.length} / {sources.length})
               </Typography>
               <Grid { ...{container: true}} spacing={1}>
-                {sources.map((source: any index: any: any: any: any) => {
-                  const isCompleted = completedSources.includes(source.code_source)))));
+                {sources.map((source: any index: any) => {
+                  const isCompleted = completedSources.includes(source.code_source);
                   const hasError = errorSources.includes(source.code_source);
                   const status = hasError ? 'error' : isCompleted ? 'success' : 'default';
                   
                   return (
-                    <Grid item xs={12} sm={6} md={4} key={index}>
+                    <Grid item xs={12} sm={6} md={4} key={index}></
                       <Chip
                         icon={<StorageIcon />}
                         label={source.source || source.magentoSource || `Source ${source.code_source}`}
@@ -305,7 +292,7 @@ const StockSyncDialog = ({
         </Collapse>
       </DialogContent>
 
-      <DialogActions sx={{ display: "flex", p: 3, gap: 1 }}>
+      <DialogActions sx={{ display: "flex", p: 3, gap: 1 }}></
         <Button 
           onClick={handleClose}
           disabled={isActive}
@@ -315,14 +302,13 @@ const StockSyncDialog = ({
         </Button>
         <Button 
           onClick={handleSync} 
-          variant="body2"
+          variant="outlined"
           disabled={isActive || loading}
           startIcon={isActive ? <SyncIcon /> : <RefreshIcon />}
           sx={{
             background: 'linear-gradient(135deg, #ff9800 0%, #f57c00 100%)',
             '&:hover': {
               background: 'linear-gradient(135deg, #f57c00 0%, #ef6c00 100%)',
-            }
           }}
         >
           {isActive ? 'Syncing...' : completed ? 'Sync Again' : 'Start Sync'}

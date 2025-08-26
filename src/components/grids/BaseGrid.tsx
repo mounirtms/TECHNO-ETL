@@ -46,18 +46,18 @@ import { getStandardGridProps, getStandardToolbarConfig } from '../../config/sta
  */
 const BaseGrid = forwardRef(({
   // Core props
-  gridName
-  columns
-  data
-  loading
-  error
+  gridName,
+  columns,
+  data,
+  loading,
+  error,
   // Grid configuration
-  getRowId
-  checkboxSelection
-  disableRowSelectionOnClick
+  getRowId,
+  checkboxSelection,
+  disableRowSelectionOnClick,
   // Pagination
-  paginationMode
-  pageSize
+  paginationMode,
+  pageSize,
   pageSizeOptions = [10, 25, 50, 100],
   
   // Toolbar configuration
@@ -143,7 +143,7 @@ const BaseGrid = forwardRef(({
     // Always enforce min/max
     return Math.max(
       parseInt(minHeight.replace('px', '')),
-      Math.min(calculatedHeight, parseInt(maxHeight.replace(/calc\(100vh - (\d+)px\)/, '$1')))
+      Math.min(calculatedHeight, parseInt(maxHeight.replace(/calc\(100vh - (\d+)px\)/, '$1')
     );
   }, [height, minHeight, maxHeight, showStatsCards, otherProps?.filterPanelHeight]);
 
@@ -152,9 +152,7 @@ const BaseGrid = forwardRef(({
     if (!Array.isArray(data)) {
       console.warn(`${gridName}: Data is not an array, using empty array`);
       return [];
-    }
-    
-    return data.map((row: any index: any: any: any: any) => ({ ...row,
+    return data.map((row: any index: any) => ({ ...row,
       _gridIndex: index,
       _gridId: getRowId(row) || `row-${index}`
     }));
@@ -162,7 +160,7 @@ const BaseGrid = forwardRef(({
 
   // Memoized columns processing
   const processedColumns = useMemo(() => {
-    return columns.map((col: any: any: any: any) => ({ ...col,
+    return columns.map((col: any) => ({ ...col,
       headerName: translate(col.headerName) || col.headerName,
       sortable: col.sortable !== false,
       filterable: col.filterable !== false,
@@ -172,7 +170,7 @@ const BaseGrid = forwardRef(({
 
   // Enhanced columns with performance optimizations (from OptimizedDataGrid)
   const enhancedColumns = useMemo(() => {
-    return columns.map((column: any: any: any: any) => ({ ...column,
+    return columns.map((column: any) => ({ ...column,
       width: column.width || 150,
       sortable: column.sortable !== false,
       filterable: column.filterable !== false,
@@ -182,7 +180,6 @@ const BaseGrid = forwardRef(({
         } catch(error: any) {
           console.error(`Error rendering cell for column ${column.field}:`, error);
           return <span>Error</span>;
-        }
       } : undefined
     }));
   }, [columns]);
@@ -199,7 +196,6 @@ const BaseGrid = forwardRef(({
         operation: 'refresh',
         gridName
       });
-    }
   }, [onRefresh, executeWithErrorHandling, gridName]);
 
   const handleSelectionChange = useCallback((newSelection) => {
@@ -219,25 +215,18 @@ const BaseGrid = forwardRef(({
   // Error state
   if(error || gridError) {
     return (
-      <Alert 
-        severity
+      <Alert severity
           <button onClick={clearError}>
             Retry
           </button>
-        }
       >
         {error?.message || gridError?.message || 'An error occurred in the grid'}
       </Alert>
     );
-  }
-
-  return Boolean((
-    <ComponentErrorBoundary 
-      componentName={`${gridName}Grid`}
-      fallbackMessage={`Unable to load ${gridName.toLowerCase()} grid`}
-    >
-      <Box
-        ref={containerRef}
+  return (
+    <ComponentErrorBoundary componentName={`${gridName}Grid`}
+      fallbackMessage={`Unable to load ${gridName.toLowerCase()} grid`}></
+      <Box ref={containerRef}
         sx={{
           maxHeight: maxHeight,
           width: '100%',
@@ -245,8 +234,7 @@ const BaseGrid = forwardRef(({
           flexDirection: 'column',
           gap: 1,
           p: 1
-        }}
-      >
+        }}>
         {/* Stats Cards - Top Position */}
         {showStatsCards && statsPosition === 'top' && (
           <GridStatsCards 
@@ -268,26 +256,21 @@ const BaseGrid = forwardRef(({
         />
 
         {/* Main Grid Container */}
-        <Paper
-          elevation={1}
+        <Paper elevation={1}
           sx={{
             flexDirection: 'column',
             overflow: 'hidden',
             borderRadius: density === 'compact' ? 1 : 2
-          }}
-        >
+          }}>
           {loading && (
-            <Box sx={{ display: "flex", position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}>
-              <Skeleton variant="rectangular" height={4} />
-            </Box>
+            <Box sx={{ display: "flex", position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}></
+              <Skeleton variant="rectangular" height={4} /></Skeleton>
           )}
 
-          <GridErrorBoundary
-            gridName={gridName}
+          <GridErrorBoundary gridName={gridName}
             onError={handleError}
             fallbackComponent
-            }
-          >
+            }></
             <DataGrid
               ref={gridRef}
               rows={processedData}
@@ -334,7 +317,6 @@ const BaseGrid = forwardRef(({
                 '& .MuiDataGrid-columnHeaders': {
                   backgroundColor: theme.palette.background.paper,
                   borderBottom: `2px solid ${theme.palette.divider}`
-                }
               }}
               
               // Row ID
@@ -356,7 +338,7 @@ const BaseGrid = forwardRef(({
         )}
       </Box>
     </ComponentErrorBoundary>
-  )))));
+  );
 });
 
 BaseGrid.displayName = 'BaseGrid';

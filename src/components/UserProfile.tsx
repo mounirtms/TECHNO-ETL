@@ -17,51 +17,51 @@ const UserProfile = () => {
     toggleTheme();
   };
 
-  const handleLanguageChange = (langCode) => {
+  const handleLanguageChange = (langCode: string) => {
     setLanguage(langCode);
   };
 
   return (
-    <Paper elevation={3} sx={{ display: "flex", maxWidth: 1200, margin: 'auto', mt: 2, p: 3 } as any}>
-      <Typography variant="h5" gutterBottom sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
+    <Paper elevation={3} sx={{ maxWidth: 1200, margin: 'auto', mt: 2, p: 3 }}></
+      <Typography variant="h5" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <Person color="primary" />
         User Profile
       </Typography>
       
-      <Alert severity="info" sx={{ display: "flex", mb: 3 } as any}>
+      <Alert severity="info" sx={{ mb: 3 }}>
         Simplified user profile interface. Full functionality is being loaded.
       </Alert>
       
-      <Box sx={{ display: "flex", display: 'flex', flexDirection: 'column', gap: 3 } as any}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         {/* Quick Theme Toggle */}
-        <Box>
-          <Typography variant="h6" gutterBottom sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
+        <Box></
+          <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Settings color="primary" />
             Quick Settings
           </Typography>
-          <Box sx={{ display: "flex", display: 'flex', gap: 2, flexWrap: 'wrap' } as any}>
-            <Button
-              variant={mode === 'light' ? 'contained' : 'outlined'}
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}></
+            <Button variant={mode === 'light' ? 'contained' : 'outlined'}
               onClick={() => handleThemeToggle()}
               size="small"
-              {mode === 'light' ? 'Light Theme' : 'Dark Theme'}
+            >
+              {mode === 'light' ? 'Switch to Dark Theme' : 'Switch to Light Theme'}
             </Button>
           </Box>
         </Box>
 
         {/* Quick Language Selector */}
-        <Box>
-          <Typography variant="h6" gutterBottom sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
+        <Box></
+          <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Language color="primary" />
             Language
           </Typography>
-          <Box sx={{ display: "flex", display: 'flex', gap: 1, flexWrap: 'wrap' } as any}>
-            {Object.entries(languages).map(([code: any lang]: any: any: any: any) => (
-              <Button
-                key={code}
-                variant={currentLanguage ===code ? 'contained' : 'outlined'}
+          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+            {Object.entries(languages).map(([code, lang]: [string, any]) => (
+              <Button key={code}
+                variant={currentLanguage === code ? 'contained' : 'outlined'}
                 onClick={() => handleLanguageChange(code)}
                 size="small"
+              >
                 {lang.name}
               </Button>
             ))}
@@ -69,11 +69,11 @@ const UserProfile = () => {
         </Box>
 
         {/* Navigation Help */}
-        <Box>
+        <Box></
           <Typography variant="h6" gutterBottom>
             Available Features
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="outlined" color="text.secondary">
             • Access full settings via the main navigation menu<br/>
             • Theme and language changes are applied immediately<br/>
             • Profile information can be managed through the account settings<br/>

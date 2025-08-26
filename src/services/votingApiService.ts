@@ -25,7 +25,6 @@ class TaskApiService {
         const token = localStorage.getItem('authToken');
         if(token) {
           config.headers.Authorization = `Bearer ${token}`;
-        }
         return config;
       },
       (error) => Promise.reject(error)
@@ -36,10 +35,7 @@ class TaskApiService {
       (error) => {
         console.error('Voting API Error:', error);
         return Promise.reject(error);
-      }
     );
-  }
-
   /**
    * Get all voting features with pagination and filtering
    */
@@ -60,16 +56,12 @@ class TaskApiService {
       Object.keys(params).forEach((key) => {
         if(params[key] ===undefined || params[key] ===null) {
           delete params[key];
-        }
       });
 
       const response = await this.api.get('/features', { params });
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to fetch voting features');
-    }
-  }
-
   /**
    * Get feature by ID
    */
@@ -79,9 +71,6 @@ class TaskApiService {
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to fetch feature details');
-    }
-  }
-
   /**
    * Create new voting feature
    */
@@ -91,9 +80,6 @@ class TaskApiService {
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to create feature');
-    }
-  }
-
   /**
    * Update voting feature
    */
@@ -103,9 +89,6 @@ class TaskApiService {
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to update feature');
-    }
-  }
-
   /**
    * Vote for a feature
    */
@@ -122,9 +105,6 @@ class TaskApiService {
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to record vote');
-    }
-  }
-
   /**
    * Remove vote from feature
    */
@@ -133,14 +113,10 @@ class TaskApiService {
       const response = await this.api.delete(`/features/${featureId}/vote`, {
         data: {
           user_id: userInfo?.userId || 'anonymous'
-        }
       });
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to remove vote');
-    }
-  }
-
   /**
    * Get user votes
    */
@@ -149,15 +125,10 @@ class TaskApiService {
       const params = { user_id: userId };
       if(featureIds && featureIds?.length > 0) {
         params.feature_ids = featureIds?.join(',');
-      }
-
       const response = await this.api.get('/user-votes', { params });
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to fetch user votes');
-    }
-  }
-
   /**
    * Get voting categories
    */
@@ -167,9 +138,6 @@ class TaskApiService {
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to fetch categories');
-    }
-  }
-
   /**
    * Get voting statistics
    */
@@ -179,9 +147,6 @@ class TaskApiService {
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to fetch voting statistics');
-    }
-  }
-
   /**
    * Add comment to feature
    */
@@ -198,9 +163,6 @@ class TaskApiService {
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to add comment');
-    }
-  }
-
   /**
    * Get comments for feature
    */
@@ -210,9 +172,6 @@ class TaskApiService {
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to fetch comments');
-    }
-  }
-
   /**
    * Handle API errors consistently
    */
@@ -228,9 +187,6 @@ class TaskApiService {
     } else {
       // Something else happened
       return new Error(error.message || defaultMessage);
-    }
-  }
-
   /**
    * Get current user info from localStorage or context
    */
@@ -239,8 +195,6 @@ class TaskApiService {
       const userInfo = localStorage.getItem('userInfo');
       if(userInfo) {
         return JSON.parse(userInfo);
-      }
-      
       // Fallback to basic info
       return {
         userId: 'anonymous',
@@ -254,9 +208,6 @@ class TaskApiService {
         userName: 'Anonymous User',
         userEmail: null
       };
-    }
-  }
-
   /**
    * Batch operations for better performance
    */
@@ -270,9 +221,6 @@ class TaskApiService {
       return results;
     } catch (error) {
       throw this.handleError(error, 'Failed to process batch votes');
-    }
-  }
-
   /**
    * Search features with advanced filtering
    */
@@ -287,8 +235,4 @@ class TaskApiService {
       return await this.getFeatures(searchOptions);
     } catch (error) {
       throw this.handleError(error, 'Failed to search features');
-    }
-  }
-}
-
 export default new TaskApiService();

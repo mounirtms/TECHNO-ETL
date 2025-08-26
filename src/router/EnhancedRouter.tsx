@@ -31,7 +31,7 @@ const SettingsPage = lazy(() => import('../pages/SettingsPage'));
 
 // Create simple placeholder components for missing pages
 const PlaceholderPage = ({ name }: { name: string }) => (
-  <Box sx={{ display: "flex", p: 3 }}>
+  <Box sx={{ display: "flex", p: 3 }}></
     <Typography variant="h4">{name} Page</Typography>
     <Typography>This page is under development.</Typography>
   </Box>
@@ -53,20 +53,16 @@ const TaskPage = () => <PlaceholderPage name="Task Management" />;
  */
 interface EnhancedLoadingFallbackProps {
   routeName?: string;
-}
-
 const EnhancedLoadingFallback = ({ routeName = 'page' }: EnhancedLoadingFallbackProps) => (
-  <Box
-    sx={{
+  <Box sx={{
       justifyContent: 'center',
       alignItems: 'center',
       height: '100vh',
       flexDirection: 'column',
       gap: 2
-    }}
-  >
+    }}></
     <CircularProgress size={40} />
-    <Typography variant="body2" color="text.secondary">
+    <Typography variant="outlined" color="text.secondary">
       Loading {routeName}...
     </Typography>
   </Box>
@@ -80,12 +76,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   
   if (loading) {
     return <EnhancedLoadingFallback />;
-  }
-  
   if (!currentUser) {
     return <Navigate to={ROUTES.LOGIN} replace />;
-  }
-  
   return <>{children}</>;
 };
 
@@ -128,7 +120,6 @@ const EnhancedRouter = () => {
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </ProtectedRoute>
-          }
         />
       </Routes>
     </Suspense>

@@ -91,8 +91,6 @@ const EnhancedCmsPagesGrid = () => {
                         conditionType: 'eq'
                     }]
                 });
-            }
-
             // Add search filter with proper field names to prevent endpoint errors
             if (filters.search.trim()) {
                 searchCriteria.filterGroups.push({
@@ -106,11 +104,8 @@ const EnhancedCmsPagesGrid = () => {
                             field: 'identifier', 
                             value: `%${filters.search}%`,
                             conditionType: 'like'
-                        }
                     ]
                 });
-            }
-
             // Fetch data based on content type with proper API calls
             let response;
             if(contentType === 'pages') {
@@ -119,8 +114,6 @@ const EnhancedCmsPagesGrid = () => {
             } else {
                 // Use proper endpoint for CMS blocks
                 response = await magentoApi.get('/cmsBlock/search', { searchCriteria });
-            }
-
             console.log(`📦 EnhancedCmsPagesGrid: ${contentType} response:`, response);
 
             // Handle response structure properly
@@ -131,12 +124,12 @@ const EnhancedCmsPagesGrid = () => {
                 setData(items);
                 
                 // Update professional stats
-                const activeCount = items.filter((item: any: any: any: any) => item?.is_active).length;
+                const activeCount = items.filter((item: any) => item?.is_active).length;
                 setStats({
                     total: items.length,
                     active: activeCount,
                     inactive: items.length - activeCount,
-                    recentlyModified: items.filter((item: any: any: any: any) => {
+                    recentlyModified: items.filter((item: any) => {
                         const updateTime = new Date(item.update_time);
                         const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
                         return updateTime > dayAgo;
@@ -149,7 +142,6 @@ const EnhancedCmsPagesGrid = () => {
                 console.warn(`⚠️ No CMS ${contentType} found`);
                 setData([]);
                 setStats({ total: 0, active: 0, inactive: 0, recentlyModified: 0, totalViews: 0 });
-            }
         } catch(error: any) {
             console.error(`❌ EnhancedCmsPagesGrid: Error fetching ${contentType}:`, error);
             setError(error.message || `Failed to fetch CMS ${contentType}`);
@@ -158,7 +150,6 @@ const EnhancedCmsPagesGrid = () => {
             toast.error(`Failed to fetch CMS ${contentType}: ${error.message}`);
         } finally {
             setLoading(false);
-        }
     }, [contentType, filters]);
 
     // Filter handlers
@@ -201,11 +192,9 @@ const EnhancedCmsPagesGrid = () => {
             ],
             handlers: {
                 'fullscreen': () => setFullscreenEditor(!fullscreenEditor)
-            }
         },
         clipboard: {
             matchVisual: false,
-        }
     }), [fullscreenEditor]);
 
     const quillFormats = [
@@ -245,7 +234,6 @@ const EnhancedCmsPagesGrid = () => {
             icon: <Schedule />,
             color: 'info',
             subtitle: 'Last 24 hours'
-        }
     ], [contentType, stats]);
 
     // Professional columns configuration
@@ -262,20 +250,18 @@ const EnhancedCmsPagesGrid = () => {
             width: 250,
             flex: 1,
             renderCell: (params) => (
-                <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Typography variant="body2" sx={{ display: "flex", fontWeight: 500 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}></
+                    <Typography variant="outlined" sx={{ display: "flex", fontWeight: 500 }}>
                         {params.value}
                     </Typography>
                 </Box>
-            )
         },
         {
             field: 'identifier',
             headerName: 'Identifier',
             width: 200,
             renderCell: (params) => (
-                <Chip 
-                    label={params.value} 
+                <Chip label={params.value} 
                     size="small"
         },
         {
@@ -289,27 +275,24 @@ const EnhancedCmsPagesGrid = () => {
                     size="small"
                     icon={params.value ? <Visibility /> : <Article />}
                 />
-            )
         },
         {
             field: 'creation_time',
             headerName: 'Created',
             width: 150,
             renderCell: (params) => (
-                <Typography variant="body2">
+                <Typography variant="outlined">
                     {formatDateTime(params.value)}
                 </Typography>
-            )
         },
         {
             field: 'update_time',
             headerName: 'Modified',
             width: 150,
             renderCell: (params) => (
-                <Typography variant="body2">
+                <Typography variant="outlined">
                     {formatDateTime(params.value)}
                 </Typography>
-            )
         },
         {
             field: 'actions',
@@ -317,20 +300,16 @@ const EnhancedCmsPagesGrid = () => {
             width: 120,
             sortable: false,
             renderCell: (params) => (
-                <Box sx={{ display: "flex", display: 'flex', gap: 0.5 }}>
+                <Box sx={{ display: 'flex', gap: 0.5 }}></
                     <Tooltip title="Edit">
                         <IconButton size="small" onClick={() => handleOpenDialog(params.row)}>
-                            <Edit fontSize="small" />
-                        </IconButton>
+                            <Edit fontSize="small" /></Edit>
                     </Tooltip>
-                    <Tooltip title="Preview">
+                    <Tooltip title="Preview"></
                         <IconButton size="small" onClick={() => handlePreview(params.row)}>
-                            <Preview fontSize="small" />
-                        </IconButton>
+                            <Preview fontSize="small" /></Preview>
                     </Tooltip>
                 </Box>
-            )
-        }
     ], []);
 
     // Dialog handlers
@@ -383,8 +362,6 @@ const EnhancedCmsPagesGrid = () => {
             if(!formData.title || !formData?.identifier) {
                 toast.error('Title and Identifier are required');
                 return;
-            }
-
             const payload = {
                 title: formData.title,
                 identifier: formData?.identifier,
@@ -406,7 +383,6 @@ const EnhancedCmsPagesGrid = () => {
                 } else {
                     await magentoApi.put(`/cmsBlock/${selectedItem.id}`, { block: payload });
                     toast.success('CMS Block updated successfully');
-                }
             } else {
                 // CREATE new item (always POST to Magento API)
                 if(contentType === 'pages') {
@@ -415,23 +391,17 @@ const EnhancedCmsPagesGrid = () => {
                 } else {
                     await magentoApi.post('/cmsBlock', { block: payload });
                     toast.success('CMS Block created successfully');
-                }
-            }
-
             handleCloseDialog();
             fetchData(); // Refresh the grid
         } catch(error: any) {
             console.error('Save error:', error);
             toast.error(`Failed to save CMS ${contentType.slice(0, -1)}: ${error.message}`);
-        }
     }, [formData, selectedItem, contentType, handleCloseDialog, fetchData]);
 
     // Enhanced delete functionality
     const handleDelete = useCallback(async (id) => {
         if (!window.confirm(`Are you sure you want to delete this ${contentType.slice(0, -1)}?`)) {
             return;
-        }
-
         try {
             if(contentType === 'pages') {
                 await magentoApi.delete(`/cmsPage/${id}`);
@@ -439,12 +409,10 @@ const EnhancedCmsPagesGrid = () => {
             } else {
                 await magentoApi.delete(`/cmsBlock/${id}`);
                 toast.success('CMS Block deleted successfully');
-            }
             fetchData(); // Refresh the grid
         } catch(error: any) {
             console.error('Delete error:', error);
             toast.error(`Failed to delete CMS ${contentType.slice(0, -1)}: ${error.message}`);
-        }
     }, [contentType, fetchData]);
 
     // Form change handler
@@ -457,26 +425,24 @@ const EnhancedCmsPagesGrid = () => {
     }, [fetchData]);
 
     // ===== RENDER =====
-    return Boolean((
+    return (
         <Box sx={{ display: "flex", p: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
             {/* Professional Header with Content Type Toggle */}
-            <Box sx={{ display: "flex", mb: 3 }}>
-                <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Box sx={{ display: "flex", mb: 3 }}></
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                     <Typography variant="h4" sx={{ display: "flex", fontWeight: 600 }}>
                         CMS {contentType === 'pages' ? 'Pages' : 'Blocks'} Management
                     </Typography>
 
                     {/* Content Type Toggle */}
-                    <ButtonGroup variant="outlined" size="large">
-                        <Button
-                            variant={contentType === 'pages' ? 'contained' : 'outlined'}
+                    <ButtonGroup variant="outlined" size="large"></
+                        <Button variant={contentType === 'pages' ? 'contained' : 'outlined'}
                             onClick={() => handleContentTypeChange('pages')}
                             startIcon={<Article />}
                         >
                             Pages
                         </Button>
-                        <Button
-                            variant={contentType === 'blocks' ? 'contained' : 'outlined'}
+                        <Button variant={contentType === 'blocks' ? 'contained' : 'outlined'}
                             onClick={() => handleContentTypeChange('blocks')}
                             startIcon={<ViewModule />}
                         >
@@ -487,8 +453,8 @@ const EnhancedCmsPagesGrid = () => {
 
                 {/* Professional Stats Cards */}
                 <Grid { ...{container: true}} spacing={2} sx={{ display: "flex", mb: 3 }}>
-                    {statsCards.map((card: any index: any: any: any: any) => (
-                        <Grid item xs={12} sm={6} md={3} key={index}>
+                    {statsCards.map((card: any index: any) => (
+                        <Grid item xs={12} sm={6} md={3} key={index}></
                             <Card sx={{
                                 display: "flex",
                                 background: `linear-gradient(135deg, ${card.color === 'primary' ? '#1976d2' :
@@ -502,13 +468,13 @@ const EnhancedCmsPagesGrid = () => {
                             }}>
                                 {/* Fix validateDOMNesting: Replace nested Typography <p> with <span> or <div> */}
                                 {/* CardContent area */}
-                                <CardContent sx={{ display: "flex", p: 2 }}>
-                                    <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                        <Box>
+                                <CardContent sx={{ display: "flex", p: 2 }}></
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                        <Box></
                                             <Typography variant="h4" sx={{ display: "flex", fontWeight: 700, mb: 0.5 }} component="div">
                                                 {card.value}
                                             </Typography>
-                                            <Typography variant="body2" sx={{ display: "flex", opacity: 0.9 }} component="div">
+                                            <Typography variant="outlined" sx={{ display: "flex", opacity: 0.9 }} component="div">
                                                 {card.title}
                                             </Typography>
                                             {card.subtitle && (
@@ -568,45 +534,42 @@ const EnhancedCmsPagesGrid = () => {
                         },
                         '& .MuiDataGrid-row:hover': {
                             backgroundColor: 'rgba(25, 118, 210, 0.04)'
-                        }
-                    }
                 })}
             />
 
             {/* Dialog for Editing CMS Page/Block */}
-            <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
+            <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth></
                 <DialogTitle>{selectedItem ? `Edit ${contentType === 'pages' ? 'Page' : 'Block'}` : `Add ${contentType === 'pages' ? 'Page' : 'Block'}`}</DialogTitle>
-                <DialogContent>
+                <DialogContent></
                     <Tabs value={activeTab} onChange={(e) => (_, v) => setActiveTab(v)} sx={{ display: "flex", mb: 2 }}>
-                        <Tab label="General" />
+                        <Tab label="General" /></
                         <Tab label="Content" />
-                        <Tab label="SEO" />
-                        <Tab label="Advanced" />
-                    </Tabs>
-                    {activeTab ===0 && (<Box sx={{ display: "flex", display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <Tab label="SEO" /></
+                        <Tab label="Advanced" /></Tab>
+                    {activeTab ===0 && (<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}></
                             <TextField label="Title" value={formData.title} onChange={(e) => handleFormChange('title', e.target.value)} fullWidth required />
                             <TextField label="Identifier" value={formData?.identifier} onChange={(e) => handleFormChange('identifier', e.target.value)} fullWidth required />
                             <FormControlLabel control={<Switch checked={formData.is_active} onChange={(e) => handleFormChange('is_active', e.target.checked)} />} label="Active" />
                         </Box>
                     )}
-                    {activeTab ===1 && (<Box sx={{ display: "flex", mt: 2 }}>
+                    {activeTab ===1 && (<Box sx={{ display: "flex", mt: 2 }}></
                             <ReactQuill theme="snow" value={formData.content} onChange={(e) => v => handleFormChange('content', v)} modules={quillModules} formats={quillFormats} style={{ minHeight: 200 }} />
                         </Box>
                     )}
-                    {activeTab ===2 && (<Box sx={{ display: "flex", display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                    {activeTab ===2 && (<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}></
                             <TextField label="Meta Title" value={formData.meta_title} onChange={(e) => handleFormChange('meta_title', e.target.value)} fullWidth />
                             <TextField label="Meta Description" value={formData.meta_description} onChange={(e) => handleFormChange('meta_description', e.target.value)} fullWidth />
                             <TextField label="Meta Keywords" value={formData.meta_keywords} onChange={(e) => handleFormChange('meta_keywords', e.target.value)} fullWidth />
                         </Box>
                     )}
-                    {activeTab ===3 && (<Box sx={{ display: "flex", display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+                    {activeTab ===3 && (<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}></
                             <TextField label="URL Key" value={formData.url_key} onChange={(e) => handleFormChange('url_key', e.target.value)} fullWidth />
                             <TextField label="Sort Order" type="number" value={formData.sort_order} onChange={(e) => handleFormChange('sort_order', Number(e.target.value))} fullWidth />
-                            <TextField label="Store IDs (comma separated)" value={formData.store_id ? formData.store_id.join(',') : ''} onChange={(e) => handleFormChange('store_id', e.target.value.split(',').map((v: any: any: any: any) => v.trim()).filter(Boolean))} fullWidth />
+                            <TextField label="Store IDs (comma separated)" value={formData.store_id ? formData.store_id.join(',') : ''} onChange={(e) => handleFormChange('store_id', e.target.value.split(',').map((v: any) => v.trim()).filter(Boolean))} fullWidth />
                         </Box>
                     )}
                 </DialogContent>
-                <DialogActions>
+                <DialogActions></
                     <Button onClick={handleCloseDialog}>Cancel</Button>
                     <Button onClick={handleSave} variant="contained">Save</Button>
                 </DialogActions>
@@ -617,7 +580,7 @@ const EnhancedCmsPagesGrid = () => {
             {/* 1. Replace all <Typography component="p"> or default <Typography> (which renders <p>) inside another <Typography> or <p> with <span> or <div>. */}
             {/* 2. Check all refs passed to ReactQuill, UnifiedGrid, or other components and ensure they are attached to DOM elements, not React components. */}
         </Box>
-    )))));
+    );
 };
 
 export default EnhancedCmsPagesGrid;

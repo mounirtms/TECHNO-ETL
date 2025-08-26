@@ -153,15 +153,12 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
         setTotalCount(response.pagination.total);
       } else {
         throw new Error(response.message || 'Failed to load features');
-      }
-
     } catch(error: any) {
       console.error('Error loading features:', error);
       setError(error.message);
       showSnackbar('Failed to load voting features', 'error');
     } finally {
       setLoading(false);
-    }
   }, [paginationModel, sortModel, filterModel]);
 
   /**
@@ -172,10 +169,8 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
       const response = await votingApiService.getCategories();
       if(response.success) {
         setCategories(response.data);
-      }
     } catch(error: any) {
       console.error('Error loading categories:', error);
-    }
   }, []);
 
   /**
@@ -183,7 +178,7 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
    */
   const loadUserVotes = useCallback(async () => {
     try {
-      const featureIds = features.map((f: any: any: any: any) => f?.id);
+      const featureIds = features.map((f: any) => f?.id);
       if (featureIds.length ===0) return;
 
       const response = await votingApiService.getUserVotes(userId, featureIds);
@@ -193,10 +188,8 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
           votesMap[vote.feature_id] = vote.vote_type;
         });
         setUserVotes(votesMap);
-      }
     } catch(error: any) {
       console.error('Error loading user votes:', error);
-    }
   }, [features, userId]);
 
   /**
@@ -221,15 +214,12 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
         await votingApiService.voteForFeature(featureId, voteType, userInfo);
         setUserVotes(prev => ({ ...prev, [featureId]: voteType }));
         showSnackbar(`${voteType === 'upvote' ? 'Upvoted' : 'Downvoted'} successfully`, 'success');
-      }
-
       // Refresh the features to get updated vote counts
       await loadFeatures();
 
     } catch(error: any) {
       console.error('Error voting:', error);
       showSnackbar('Failed to record vote', 'error');
-    }
   };
 
   /**
@@ -260,7 +250,7 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
       flex: 2,
       minWidth: 250,
       renderCell: (params) => (
-        <Box sx={{ display: "flex", py: 1 }}>
+        <Box sx={{ display: "flex", py: 1 }}></
           <Typography variant="subtitle2" sx={{ display: "flex", fontWeight: 600, mb: 0.5 }}>
             {params.value}
           </Typography>
@@ -274,7 +264,6 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
             {params.row.description}
           </Typography>
         </Box>
-      )
     },
     {
       field: 'category_name',
@@ -293,7 +282,6 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
             }}
           />
         );
-      }
     },
     {
       field: 'priority',
@@ -308,7 +296,6 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
             fontWeight: 600
           }}
         />
-      )
     },
     {
       field: 'status',
@@ -323,7 +310,6 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
             fontWeight: 500
           }}
         />
-      )
     },
     {
       field: 'vote_count',
@@ -331,16 +317,11 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
       width: 80,
       align: 'center',
       renderCell: (params) => (
-        <Badge
-          badgeContent={params.value}
+        <Badge badgeContent={params.value}
           color
               fontWeight: 600
-            }
-          }}
-        >
-          <TrendingUp color="action" />
-        </Badge>
-      )
+          }}></
+          <TrendingUp color="action" /></TrendingUp>
     },
     {
       field: 'actions',
@@ -352,41 +333,33 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
         const userVote = userVotes[featureId];
         
         return (
-          <Stack direction="row" spacing={0.5}>
+          <Stack direction="row" spacing={0.5}></
             <Tooltip title="Upvote">
-              <IconButton
-                size="small"
+              <IconButton size="small"
                 onClick={() => handleVote(featureId, 'upvote')}
                 sx={{
                   backgroundColor: userVote === 'upvote' ? alpha(theme.palette.success.main, 0.1) : 'transparent'
                 }}
               >
-                <ThumbUp fontSize="small" />
-              </IconButton>
+                <ThumbUp fontSize="small" /></ThumbUp>
             </Tooltip>
-            <Tooltip title="Downvote">
-              <IconButton
-                size="small"
+            <Tooltip title="Downvote"></
+              <IconButton size="small"
                 onClick={() => handleVote(featureId, 'downvote')}
                 sx={{
                   backgroundColor: userVote === 'downvote' ? alpha(theme.palette.error.main, 0.1) : 'transparent'
                 }}
               >
-                <ThumbDown fontSize="small" />
-              </IconButton>
+                <ThumbDown fontSize="small" /></ThumbDown>
             </Tooltip>
-            <Tooltip title="Comments">
-              <IconButton
-                size="small"
+            <Tooltip title="Comments"></
+              <IconButton size="small"
                 onClick={() => setSelectedFeature(params.row)}
               >
-                <Comment fontSize="small" />
-              </IconButton>
+                <Comment fontSize="small" /></Comment>
             </Tooltip>
           </Stack>
         );
-      }
-    }
   ], [userVotes, theme, handleVote]);
 
   // Load data on component mount and when dependencies change
@@ -401,16 +374,14 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
   useEffect(() => {
     if(features.length > 0) {
       loadUserVotes();
-    }
   }, [loadUserVotes]);
 
   return(<Box sx={{ display: "flex", height: '100%', width: '100%' }}>
       {/* Header with filters and actions */}
-      <Paper sx={{ display: "flex", p: 2, mb: 2 }}>
+      <Paper sx={{ display: "flex", p: 2, mb: 2 }}></
         <Grid { ...{container: true}} spacing={2} alignItems="center">
-          <Grid item xs={12} md={3}>
-            <TextField
-              fullWidth
+          <Grid item xs={12} md={3}></
+            <TextField fullWidth
               size="small"
               value={filterModel.search}
               onChange={(e) => setFilterModel(prev => ({ ...prev, search: e.target.value }))}
@@ -419,58 +390,55 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
             />
           </Grid>
           
-          <Grid item xs={12} md={2}>
+          <Grid item xs={12} md={2}></
             <FormControl fullWidth size="small">
               <InputLabel>Category</InputLabel>
-              <Select
-                value={filterModel.category}
+              <Select value={filterModel.category}
                 label
                 onChange={(e) => setFilterModel(prev => ({ ...prev, category: e.target.value }))}
               >
                 <MenuItem value="">All Categories</MenuItem>
-                {categories.map((cat: any: any: any: any) => (
+                {categories.map((cat: any) => (
                   <MenuItem key={cat?.id} value={cat?.id}>{cat?.name}</MenuItem>
                 ))}
               </Select>
             </FormControl>
           </Grid>
 
-          <Grid item xs={12} md={2}>
+          <Grid item xs={12} md={2}></
             <FormControl fullWidth size="small">
               <InputLabel>Status</InputLabel>
-              <Select
-                value={filterModel.status}
+              <Select value={filterModel.status}
                 label
                 onChange={(e) => setFilterModel(prev => ({ ...prev, status: e.target.value }))}
               >
                 <MenuItem value="">All Statuses</MenuItem>
-                {Object.keys(STATUS_COLORS).map((status: any: any: any: any) => (
+                {Object.keys(STATUS_COLORS).map((status: any) => (
                   <MenuItem key={status} value={status}>{status}</MenuItem>
                 ))}
               </Select>
             </FormControl>
           </Grid>
 
-          <Grid item xs={12} md={2}>
+          <Grid item xs={12} md={2}></
             <FormControl fullWidth size="small">
               <InputLabel>Priority</InputLabel>
-              <Select
-                value={filterModel.priority}
+              <Select value={filterModel.priority}
                 label
                 onChange={(e) => setFilterModel(prev => ({ ...prev, priority: e.target.value }))}
               >
                 <MenuItem value="">All Priorities</MenuItem>
-                {Object.keys(PRIORITY_COLORS).map((priority: any: any: any: any) => (
+                {Object.keys(PRIORITY_COLORS).map((priority: any) => (
                   <MenuItem key={priority} value={priority}>{priority}</MenuItem>
                 ))}
               </Select>
             </FormControl>
           </Grid>
 
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12} md={3}></
             <Stack direction="row" spacing={1}>
               <Button
-                variant="body2"
+                variant="outlined"
                 startIcon={<Refresh />}
                 onClick={handleRefresh}
                 disabled={refreshing}
@@ -492,9 +460,8 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
       {loading && <LinearProgress sx={{ display: "flex", mb: 2 }} />}
 
       {/* Data Grid */}
-      <Paper sx={{ display: "flex", height: 600, width: '100%' }}>
-        <DataGrid
-          rows={features}
+      <Paper sx={{ display: "flex", height: 600, width: '100%' }}></
+        <DataGrid rows={features}
           columns={columns}
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
@@ -511,19 +478,16 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
             },
             '& .MuiDataGrid-row:hover': {
               backgroundColor: alpha(theme.palette.primary.main, 0.04),
-            }
           }}
         />
       </Paper>
 
       {/* Snackbar for notifications */}
-      <Snackbar
-        open={snackbar.open}
+      <Snackbar open={snackbar.open}
         autoHideDuration={4000}
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
       >
-        <Alert
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+        <Alert onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
           severity={snackbar.severity}
           sx={{ display: "flex", width: '100%' }}
         >
@@ -532,8 +496,7 @@ const ProfessionalVotingGrid: React.FC<{userId = 'anonymous': any}> = ({ userId 
       </Snackbar>
 
       {/* Grid Settings Dialog */}
-      <GridSettings
-        open={settingsDialogOpen}
+      <GridSettings open={settingsDialogOpen}
         onClose={() => setSettingsDialogOpen(false)}
         onSave={saveSettings}
         gridId

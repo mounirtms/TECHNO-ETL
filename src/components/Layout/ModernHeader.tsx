@@ -15,8 +15,6 @@ interface ModernHeaderProps {
   handleProfileMenuOpen?: () => void;
   handleProfileMenuClose?: () => void;
   anchorEl?: HTMLElement | null;
-}
-
 export const ModernHeader: React.FC<ModernHeaderProps> = ({
   isDrawerCollapsed,
   handleDrawerToggle,
@@ -37,12 +35,13 @@ export const ModernHeader: React.FC<ModernHeaderProps> = ({
     } catch(error: any) {
       console.error('Logout failed', error);
       // Optionally show an error notification
-    }
   };
 
   return (
     <header
-      className
+      className={cn(
+        'fixed top-0 left-0 z-40 h-16 transition-all duration-300 ease-in-out',
+        'bg-white/80 backdrop-blur-sm border-b border-gray-200',
         'dark:bg-gray-900/80 dark:border-gray-700',
         // Dynamic width and margin based on drawer state
         'sm:ml-16', // Base collapsed width
@@ -52,7 +51,8 @@ export const ModernHeader: React.FC<ModernHeaderProps> = ({
         // Mobile full width
         'w-full ml-0'
       )}
-      style
+      style={{
+        width: window.innerWidth >= 640 
           ? `calc(100% - ${isDrawerCollapsed ? COLLAPSED_WIDTH : DRAWER_WIDTH}px)`
           : '100%',
         marginLeft: window.innerWidth >= 640 
@@ -63,17 +63,19 @@ export const ModernHeader: React.FC<ModernHeaderProps> = ({
       <div className="flex items-center justify-between h-full px-4">
         {/* Left side - Menu toggle */}
         <div className="flex items-center gap-4">
-          <IconButton
-            size="small"
+          <IconButton size="small"
             onClick={handleDrawerToggle}
             aria-label={isDrawerCollapsed ? translate('common.expandMenu') : translate('common.collapseMenu')}
-            className
+            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+            {isRTL ? (
+              isDrawerCollapsed ? <ChevronLeft /> : <ChevronRight />
+            ) : (
+              isDrawerCollapsed ? <ChevronRight /> : <ChevronLeft />
             )}
           </IconButton>
 
           {/* App Title */}
-          <Typography 
-            variant="body2"
+          <Typography variant="h6" component="h1" className="font-semibold text-gray-800 dark:text-white">
             {translate('common.appTitle')}
           </Typography>
         </div>

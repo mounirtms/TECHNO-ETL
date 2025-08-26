@@ -44,22 +44,16 @@ interface LanguageContextProps {
   translate: (key: string) => string;
   currentLanguage: string;
   direction: 'ltr' | 'rtl';
-}
-
 // Interface for the Theme context
 interface CustomThemeProps {
   density: 'compact' | 'standard' | 'comfortable';
   mode: 'light' | 'dark';
-}
-
 // Custom action type definition
 interface CustomAction {
   label: string;
   icon?: ReactNode;
   onClick?: (selectedRows?: any[]) => void;
   disabled?: boolean;
-}
-
 // GridToolbar props interface
 interface GridToolbarProps {
   gridName?: string;
@@ -89,8 +83,6 @@ interface GridToolbarProps {
   onEdit?: (row?) => void;
   onDelete?: (rows?: any[]) => void;
   [key: string]: any;
-}
-
 const GridToolbar: React.FC<GridToolbarProps> = ({
   gridName,
   config = {},
@@ -166,13 +158,11 @@ const GridToolbar: React.FC<GridToolbarProps> = ({
   const handleEdit = useCallback(() => {
     if(selectedRows.length ===1) {
       onEdit?.(selectedRows[0]);
-    }
   }, [onEdit, selectedRows]);
 
   const handleDelete = useCallback(() => {
     if(selectedRows.length > 0) {
       onDelete?.(selectedRows);
-    }
   }, [onDelete, selectedRows]);
 
   const handleExport = useCallback(() => {
@@ -183,17 +173,13 @@ const GridToolbar: React.FC<GridToolbarProps> = ({
     onImport?.();
   }, [onImport]);
 
-  return Boolean((
-    <Box
-      sx={{
+  return (
+    <Box sx={{
         backgroundColor: 'background.paper'
-      }}
-    >
-      <Toolbar
-        variant={density === 'compact' ? 'dense' : 'regular'}
+      }}></
+      <Toolbar variant={density === 'compact' ? 'dense' : 'regular'}
         sx={{
-        }}
-      >
+        }}>
         {/* Title */}
         <Typography variant="h6" component="div" sx={{ display: "flex", flexGrow: 1 }}>
           {translate(finalConfig.title || '') || finalConfig.title || gridName}
@@ -208,8 +194,7 @@ const GridToolbar: React.FC<GridToolbarProps> = ({
 
         {/* Search */}
         {finalConfig.showSearch && (
-          <TextField
-            size="small"
+          <TextField size="small"
             placeholder={translate('common.search') || 'Search...'}
             value={searchValue}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearch(e.target.value)}
@@ -220,15 +205,13 @@ const GridToolbar: React.FC<GridToolbarProps> = ({
         )}
 
         {/* Primary Actions */}
-        <Box sx={{ display: "flex", display: 'flex', gap: 1 }}>
+        <Box sx={{ display: 'flex', gap: 1 }}>
           {/* Refresh */}
           {finalConfig.showRefresh && (
-            <Tooltip title={translate('common.refresh') || 'Refresh'}>
-              <IconButton
-                onClick={handleRefresh}
+            <Tooltip title={translate('common.refresh') || 'Refresh'}></
+              <IconButton onClick={handleRefresh}
                 disabled={loading}
-                size={density === 'compact' ? 'small' : 'medium'}
-              >
+                size={density === 'compact' ? 'small' : 'medium'}>
                 {loading ? (
                   <CircularProgress size={20} />
                 ) : (
@@ -240,21 +223,18 @@ const GridToolbar: React.FC<GridToolbarProps> = ({
 
           {/* Filter */}
           {finalConfig.showFilter && (
-            <Tooltip title={translate('common.filter') || 'Filter'}>
-              <IconButton
-                onClick={handleFilterOpen}
-                size={density === 'compact' ? 'small' : 'medium'}
-              >
-                <FilterIcon />
-              </IconButton>
+            <Tooltip title={translate('common.filter') || 'Filter'}></
+              <IconButton onClick={handleFilterOpen}
+                size={density === 'compact' ? 'small' : 'medium'}>
+                <FilterIcon /></FilterIcon>
             </Tooltip>
           )}
 
           {/* Add */}
           {finalConfig.showAdd && (
-            <Tooltip title={translate('common.add') || 'Add'}>
+            <Tooltip title={translate('common.add') || 'Add'}></
               <Button
-                variant="body2"
+                variant="outlined"
                 startIcon={<AddIcon />}
                 onClick={handleAdd}
                 size={density === 'compact' ? 'small' : 'medium'}
@@ -266,55 +246,44 @@ const GridToolbar: React.FC<GridToolbarProps> = ({
 
           {/* Edit */}
           {finalConfig.showEdit && (
-            <Tooltip title={translate('common.edit') || 'Edit'}>
-              <IconButton
-                onClick={handleEdit}
+            <Tooltip title={translate('common.edit') || 'Edit'}></
+              <IconButton onClick={handleEdit}
                 disabled={selectedRows.length !== 1}
-                size={density === 'compact' ? 'small' : 'medium'}
-              >
-                <EditIcon />
-              </IconButton>
+                size={density === 'compact' ? 'small' : 'medium'}>
+                <EditIcon /></EditIcon>
             </Tooltip>
           )}
 
           {/* Delete */}
           {finalConfig.showDelete && (
-            <Tooltip title={translate('common.delete') || 'Delete'}>
-              <IconButton
-                onClick={handleDelete}
+            <Tooltip title={translate('common.delete') || 'Delete'}></
+              <IconButton onClick={handleDelete}
                 disabled={selectedRows.length ===0}
                 color
-                size={density === 'compact' ? 'small' : 'medium'}
-              >
-                <Badge badgeContent={selectedRows.length} color="error">
-                  <DeleteIcon />
-                </Badge>
+                size={density === 'compact' ? 'small' : 'medium'}>
+                <Badge badgeContent={selectedRows.length} color="error"></
+                  <DeleteIcon /></DeleteIcon>
               </IconButton>
             </Tooltip>
           )}
         </Box>
 
         {/* Secondary Actions Menu */}
-        <Box>
+        <Box></
           <Tooltip title={translate('common.moreActions') || 'More Actions'}>
-            <IconButton
-              onClick={handleMenuOpen}
-              size={density === 'compact' ? 'small' : 'medium'}
-            >
-              <MoreIcon />
-            </IconButton>
+            <IconButton onClick={handleMenuOpen}
+              size={density === 'compact' ? 'small' : 'medium'}></
+              <MoreIcon /></MoreIcon>
           </Tooltip>
 
-          <Menu
-            anchorEl={anchorEl}
+          <Menu anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          >
+            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
             {/* Export */}
             {finalConfig.showExport && (
-              <MenuItem onClick={() => { handleExport())))); handleMenuClose(); }}>
+              <MenuItem onClick={() => { handleExport(); handleMenuClose(); }}>
                 <ExportIcon sx={{ display: "flex", mr: 1 }} />
                 {translate('common.export') || 'Export'}
               </MenuItem>
@@ -330,7 +299,7 @@ const GridToolbar: React.FC<GridToolbarProps> = ({
 
             {/* Columns */}
             {finalConfig.showColumns && (
-              <MenuItem onClick={handleMenuClose}>
+              <MenuItem onClick={handleMenuClose}></
                 <ColumnsIcon sx={{ display: "flex", mr: 1 }} />
                 {translate('common.columns') || 'Columns'}
               </MenuItem>
@@ -340,13 +309,11 @@ const GridToolbar: React.FC<GridToolbarProps> = ({
             {customActions.length > 0 && (
               <>
                 <Divider />
-                {customActions.map((action: any index: any: any: any: any) => (
-                  <MenuItem
-                    key={index}
+                {customActions.map((action: any index: any) => (
+                  <MenuItem key={index}
                     onClick
                     }}
-                    disabled={action.disabled}
-                  >
+                    disabled={action.disabled}>
                     {action.icon && <Box sx={{ display: "flex", mr: 1 }}>{action.icon}</Box>}
                     {action.label}
                   </MenuItem>
@@ -358,15 +325,13 @@ const GridToolbar: React.FC<GridToolbarProps> = ({
       </Toolbar>
 
       {/* Filter Menu */}
-      <Menu
-        anchorEl={filterAnchorEl}
+      <Menu anchorEl={filterAnchorEl}
         open={Boolean(filterAnchorEl)}
         onClose={handleFilterClose}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-      >
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}></
         <MenuItem onClick={handleFilterClose}>
-          <Typography variant="body2">
+          <Typography variant="outlined">
             {translate('common.filterOptions') || 'Filter options will be implemented here'}
           </Typography>
         </MenuItem>

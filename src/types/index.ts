@@ -52,16 +52,12 @@ export interface GridColumn {
   maxWidth?: number;
   align?: 'left' | 'center' | 'right';
   renderCell?: (value, row) => React.ReactNode;
-}
-
 export interface GridData {
   rows: any[];
   total: number;
   page: number;
   pageSize: number;
   loading?: boolean;
-}
-
 // Context types
 export interface ThemeContextType {
   mode: 'light' | 'dark' | 'system';
@@ -77,23 +73,17 @@ export interface ThemeContextType {
   setDensity: (density: 'compact' | 'standard' | 'comfortable') => void;
   setAnimations: (enabled: boolean) => void;
   setHighContrast: (enabled: boolean) => void;
-}
-
 export interface LanguageContextType {
   currentLanguage: string;
   languages: Record<string, Language>;
   translate: (key: string, variables?: Record<string, any>) => string;
   setLanguage: (language: string) => void;
   direction: 'ltr' | 'rtl';
-}
-
 export interface Language {
   name: string;
   code: string;
   flag?: string;
   direction: 'ltr' | 'rtl';
-}
-
 export interface AuthContextType {
   currentUser: TechnoUser | null;
   loading: boolean;
@@ -102,8 +92,6 @@ export interface AuthContextType {
   register: (userData: Partial<TechnoUser>) => Promise<TechnoApiResponse>;
   updateUser: (userData: Partial<TechnoUser>) => Promise<TechnoApiResponse>;
   refreshToken: () => Promise<void>;
-}
-
 export interface Product {
   id: string;
   sku: string;
@@ -116,13 +104,10 @@ export interface Product {
   status: 'active' | 'inactive' | 'discontinued';
   createdAt: Date;
   updatedAt: Date;
-}
-
 export interface DashboardStats {
   totalProducts: number;
   totalCategories: number;
   totalOrders: number;
   totalRevenue: number;
   syncStatus: 'online' | 'offline' | 'syncing' | 'error';
-  lastSync: Date;
-}
+  lastSync: Date;

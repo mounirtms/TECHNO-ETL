@@ -21,6 +21,4 @@ if(typeof window !== 'undefined' && window.React && !window.React.createContext)
     
     return context;
   };
-}
-
 export {};

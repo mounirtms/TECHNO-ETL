@@ -6,8 +6,6 @@ const config = {
                 login: '/integration/admin/token',
                 storeConfig: '/store/storeConfigs',
                 // Add other endpoints as needed
-            }
-        }
     },
     database: {
         sqlServer: {
@@ -23,9 +21,6 @@ const config = {
                 type: 'default',
                 options: {
                     trustedConnection: true
-                }
-            }
-        }
     },
     version: '1.0.0',
 };

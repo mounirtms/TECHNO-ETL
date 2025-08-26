@@ -56,7 +56,6 @@ const AddProductDialog: React.FC<any> = ({ open, onClose, onSave }) => {
                 {
                     attribute_code: 'description',
                     value: description
-                }
             ]
         };
 
@@ -65,42 +64,38 @@ const AddProductDialog: React.FC<any> = ({ open, onClose, onSave }) => {
         onClose();
     };
 
-    return(<Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    return(<Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth></
             <DialogTitle>Add New Product</DialogTitle>
-            <DialogContent>
+            <DialogContent></
                 <Grid { ...{container: true}} spacing={2} sx={{ display: "flex", mt: 1 } as any}>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            required
+                    <Grid item xs={12} sm={6}></
+                        <TextField required
                             fullWidth
                             label
                             value={productData.sku}
                             onChange={(e) => handleChange}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            required
+                    <Grid item xs={12} sm={6}></
+                        <TextField required
                             fullWidth
                             label
                             value={productData.name}
                             onChange={(e) => handleChange}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            required
+                    <Grid item xs={12} sm={6}></
+                        <TextField required
                             fullWidth
                             label
                             value={productData.price}
                             onChange={(e) => handleChange}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={6}></
                         <FormControl fullWidth required>
                             <InputLabel>Status</InputLabel>
-                            <Select
-                                name
+                            <Select name
                                 value={productData.status}
                                 onChange={(e) => handleChange}
                                 label
@@ -109,9 +104,8 @@ const AddProductDialog: React.FC<any> = ({ open, onClose, onSave }) => {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            fullWidth
+                    <Grid item xs={12}></
+                        <TextField fullWidth
                             label
                             rows={4}
                             value={productData.description}
@@ -120,7 +114,7 @@ const AddProductDialog: React.FC<any> = ({ open, onClose, onSave }) => {
                     </Grid>
                 </Grid>
             </DialogContent>
-            <DialogActions>
+            <DialogActions></
                 <Button onClick={onClose}>Cancel</Button>
                 <Button onClick={handleSave} variant="contained">Save</Button>
             </DialogActions>

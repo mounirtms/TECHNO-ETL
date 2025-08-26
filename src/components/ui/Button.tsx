@@ -26,7 +26,6 @@ const buttonVariants = cva(
       variant: "primary",
       size: "md",
     },
-  }
 );
 
 export interface ButtonProps
@@ -35,11 +34,9 @@ export interface ButtonProps
   loading?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
-}
-
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, loading, leftIcon, rightIcon, children, disabled, ...props }, ref) => {
-    return Boolean((
+    return (
       <button
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
@@ -59,8 +56,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           </div>
         )}
       </button>
-    )))));
-  }
+    );
 );
 
 Button.displayName = "Button";

@@ -63,8 +63,6 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
         if (!file.name.toLowerCase().endsWith('.csv')) {
             toast.error('Please select a CSV file');
             return;
-        }
-
         setCatalogFile(file);
         setActiveStep(1);
         toast.success(`Loaded catalog file: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
@@ -94,7 +92,6 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                 } catch(error: any) {
                     console.error('Processing error:', error);
                     toast.error(`Processing failed: ${error.message}`);
-                }
                 setProcessing(false);
             };
             
@@ -108,7 +105,6 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
         } catch(error: any) {
             toast.error(`Processing error: ${error.message}`);
             setProcessing(false);
-        }
     }, [catalogFile]);
 
     const handleGenerateCSV = useCallback(() => {
@@ -120,17 +116,11 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
             
             if(selectedProductTypes.simple) {
                 productsToExport.push(...processedData.simpleProducts);
-            }
-            
             if(selectedProductTypes.configurable) {
                 productsToExport.push(...processedData.configurableProducts);
-            }
-
             if(productsToExport.length ===0) {
                 toast.warning('Please select at least one product type to export');
                 return;
-            }
-
             if(createBatches) {
                 // Create batched CSV files
                 const batches = createBatchedCSVs(productsToExport, batchSize);
@@ -162,8 +152,6 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                 URL.revokeObjectURL(url);
                 
                 toast.success(`Generated CSV file with ${productsToExport.length} products`);
-            }
-
             setActiveStep(3);
             
             if(onProcessComplete) {
@@ -172,11 +160,8 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                     batches: createBatches ? Math.ceil(productsToExport.length / batchSize) : 1,
                     processedData
                 });
-            }
-            
         } catch(error: any) {
             toast.error(`CSV generation failed: ${error.message}`);
-        }
     }, [processedData, selectedProductTypes, createBatches, batchSize, onProcessComplete]);
 
     const handleClose = () => {
@@ -188,7 +173,6 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
             setImportReport(null);
             setProcessing(false);
             onClose();
-        }
     };
 
     const renderStepContent = () => {
@@ -203,7 +187,7 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                         />
                         <label htmlFor="catalog-upload">
                             <Button
-                                variant="body2"
+                                variant="outlined"
                                 startIcon={<UploadIcon />}
                                 size="small"
                                 sx={{ display: "flex", mb: 2 } as any}
@@ -211,7 +195,7 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                                 Select Catalog CSV
                             </Button>
                         </label>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="outlined" color="text.secondary">
                             Upload the export_catalog_product.csv file (20MB) to process all products
                         </Typography>
                         {catalogFile && (
@@ -224,33 +208,29 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
 
             case 1:
                 return (
-                    <Box sx={{ display: "flex", py: 2 } as any}>
+                    <Box sx={{ display: "flex", py: 2 } as any}></
                         <Alert severity="info" sx={{ display: "flex", mb: 2 } as any}>
                             Ready to process {catalogFile.name} and extract all products with proper default values
                         </Alert>
                         
-                        <Typography variant="body2" color="text.secondary" sx={{ display: "flex", mb: 2 } as any}>
+                        <Typography variant="outlined" color="text.secondary" sx={{ display: "flex", mb: 2 } as any}>
                             This will:
                         </Typography>
-                        <List dense>
+                        <List dense></
                             <ListItem>
-                                <ListItemText primary="• Parse all products from the catalog" />
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText primary="• Extract valid brands, dimensions, and categories" />
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText primary="• Apply proper default values for Magento import" />
-                            </ListItem>
-                            <ListItem>
-                                <ListItemText primary="• Validate and normalize all product data" />
-                            </ListItem>
+                                <ListItemText primary="• Parse all products from the catalog" /></ListItemText>
+                            <ListItem></
+                                <ListItemText primary="• Extract valid brands, dimensions, and categories" /></ListItemText>
+                            <ListItem></
+                                <ListItemText primary="• Apply proper default values for Magento import" /></ListItemText>
+                            <ListItem></
+                                <ListItemText primary="• Validate and normalize all product data" /></ListItemText>
                         </List>
                         
                         {processing && (
-                            <Box sx={{ display: "flex", mt: 2 } as any}>
+                            <Box sx={{ display: "flex", mt: 2 } as any}></
                                 <LinearProgress />
-                                <Typography variant="body2" sx={{ display: "flex", mt: 1 } as any}>
+                                <Typography variant="outlined" sx={{ display: "flex", mt: 1 } as any}>
                                     Processing catalog... This may take a few moments for large files.
                                 </Typography>
                             </Box>
@@ -272,18 +252,28 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                                             icon={<CheckIcon />} 
                                             label={`${importReport.summary.totalProducts} Total Products`} 
                                             color
+                                        />
+                                    </Grid>
                                     <Grid item xs={6}>
-                                        <Chip 
-                                            label={`${importReport.summary.simpleProducts} Simple`} 
-                                            variant="body2"
+                                        <Chip label={`${importReport.summary.simpleProducts} Simple`} 
+                                            variant="outlined"
+                                        />
+                                    </Grid>
                                     <Grid item xs={6}>
-                                        <Chip 
-                                            label={`${importReport.summary.configurableProducts} Configurable`} 
-                                            variant="body2"
+                                        <Chip label={`${importReport.summary.configurableProducts} Configurable`} 
+                                            variant="outlined"
+                                        />
+                                    </Grid>
                                     <Grid item xs={6}>
                                         <Chip 
                                             label={`${importReport.validation.totalBrands} Brands`} 
-                                            variant="body2"
+                                            variant="outlined"
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </CardContent>
+                        </Card>
+
                         {/* Export Options */}
                         <Card sx={{ display: "flex", mb: 2 } as any}>
                             <CardContent>
@@ -291,40 +281,43 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                                     Export Options
                                 </Typography>
                                 
-                                <Box sx={{ display: "flex", mb: 2 } as any}>
+                                <Box sx={{ display: "flex", mb: 2 } as any}></
                                     <Typography variant="subtitle2" gutterBottom>
                                         Product Types:
                                     </Typography>
                                     <FormControlLabel
                                         control
+                                            <Switch
                                                 checked={selectedProductTypes.simple}
-                                                onChange
+                                                onChange={(e) => setSelectedProductTypes({
+                                                    ...selectedProductTypes,
                                                     simple: e.target.checked
                                                 }))}
                                             />
-                                        }
                                         label={`Simple Products (${importReport.summary.simpleProducts})`}
                                     />
                                     <FormControlLabel
                                         control
+                                            <Switch
                                                 checked={selectedProductTypes.configurable}
-                                                onChange
+                                                onChange={(e) => setSelectedProductTypes({
+                                                    ...selectedProductTypes,
                                                     configurable: e.target.checked
                                                 }))}
                                             />
-                                        }
                                         label={`Configurable Products (${importReport.summary.configurableProducts})`}
                                     />
                                 </Box>
 
-                                <Box sx={{ display: "flex", mb: 2 } as any}>
-                                    <FormControlLabel
-                                        control
+                                <Box sx={{ display: "flex", mb: 2 } as any}></
+                                    <FormControlLabel control
+                                            <Switch
                                                 checked={createBatches}
                                                 onChange={(e) => setCreateBatches(e.target.checked)}
                                             />
-                                        }
-                                        label
+                                        label="Create Batches"
+                                    />
+                                    <TextField
                                         value={batchSize}
                                         onChange={(e) => setBatchSize(parseInt(e.target.value) || 100)}
                                         size="small"
@@ -342,11 +335,10 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                                     Import Recommendations
                                 </Typography>
                                 <List dense>
-                                    {importReport.recommendations.map((rec: any index: any: any: any: any) => (
+                                    {importReport.recommendations.map((rec: any index: any) => (
                                         <ListItem key={index}>
                                             <InfoIcon color="info" sx={{ display: "flex", mr: 1 } as any} />
-                                            <ListItemText primary={rec} />
-                                        </ListItem>
+                                            <ListItemText primary={rec} /></ListItemText>
                                     ))}
                                 </List>
                             </CardContent>
@@ -356,12 +348,12 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
 
             case 3:
                 return (
-                    <Box sx={{ display: "flex", py: 2, textAlign: 'center' } as any}>
+                    <Box sx={{ display: "flex", py: 2, textAlign: 'center' } as any}></
                         <CheckIcon color="success" sx={{ display: "flex", fontSize: 64, mb: 2 } as any} />
                         <Typography variant="h6" gutterBottom>
                             CSV Files Generated Successfully!
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="outlined" color="text.secondary">
                             Your import-ready CSV files have been downloaded. 
                             You can now import them into Magento using the admin panel or API.
                         </Typography>
@@ -370,18 +362,17 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
 
             default:
                 return null;
-        }
     };
 
-    return(<Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+    return(<Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth></
             <DialogTitle>
                 Catalog CSV Processor
             </DialogTitle>
             
-            <DialogContent>
+            <DialogContent></
                 <Stepper activeStep={activeStep} sx={{ display: "flex", mb: 3 } as any}>
-                    {steps.map((label: any: any: any: any) => (
-                        <Step key={label}>
+                    {steps.map((label: any) => (
+                        <Step key={label}></
                             <StepLabel>{label}</StepLabel>
                         </Step>
                     ))}
@@ -390,7 +381,7 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                 {renderStepContent()}
             </DialogContent>
             
-            <DialogActions>
+            <DialogActions></
                 <Button onClick={handleClose} disabled={processing}>
                     {activeStep ===3 ? 'Close' : 'Cancel'}
                 </Button>
@@ -398,7 +389,7 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                 {activeStep ===1 && (
                     <Button 
                         onClick={handleProcessCatalog} 
-                        variant="body2"
+                        variant="outlined"
                         disabled={!catalogFile || processing}
                         startIcon={processing ? null : <BatchIcon />}
                     >
@@ -409,7 +400,7 @@ const CatalogProcessorDialog: React.FC<any> = ({ open, onClose, onProcessComplet
                 {activeStep ===2 && importReport && (
                     <Button 
                         onClick={handleGenerateCSV} 
-                        variant="body2"
+                        variant="outlined"
                         startIcon={<DownloadIcon />}
                     >
                         Generate CSV Files

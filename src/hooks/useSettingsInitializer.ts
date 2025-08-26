@@ -37,7 +37,7 @@ export const useSettingsInitializer = (): SettingsInitializerResult => {
       if(authLoading || settingsLoading) {
         return; // Wait for auth and settings to load
       }
-
+      
       // Get merged settings from all sources
       const mergedSettings = getMergedSettings(currentUser?.uid);
       
@@ -60,7 +60,7 @@ export const useSettingsInitializer = (): SettingsInitializerResult => {
         console.log('Initializing settings for anonymous user');
         applyAllSettings(mergedSettings);
       }
-
+      
       setIsInitialized(true);
       console.log('Settings initialized successfully');
     } catch (err) {

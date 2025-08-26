@@ -11,7 +11,6 @@ const SettingsDialog: React.FC<{open onClose columns onSave gridName defaultColu
                 initialVisibility[col.field] = !col.hide;
             });
             setVisibleColumns(initialVisibility);
-        }
     }, [open, columns]);
 
     const handleToggle = (field) => {
@@ -19,7 +18,7 @@ const SettingsDialog: React.FC<{open onClose columns onSave gridName defaultColu
     };
 
     const handleSave = () => {
-        const updatedColumns = columns.map((col: any: any: any: any) => ({ ...col,
+        const updatedColumns = columns.map((col: any) => ({ ...col,
             hide: !visibleColumns[col.field]
         }));
         onSave(updatedColumns);
@@ -31,24 +30,23 @@ const SettingsDialog: React.FC<{open onClose columns onSave gridName defaultColu
         onClose();
     };
 
-    return(<Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
+    return(<Dialog open={open} onClose={onClose} fullWidth maxWidth="xs"></
             <DialogTitle>Column Settings</DialogTitle>
-            <DialogContent dividers>
+            <DialogContent dividers></
                 <List>
-                    {columns.map((col: any: any: any: any) => (
+                    {columns.map((col: any) => (
                         <ListItem key={col.field} dense button onClick={() => handleToggle(col.field)}>
                             <Checkbox
                                 edge
                                 checked={!!visibleColumns[col.field]}
                                 tabIndex={-1}
                                 disableRipple
-                            />
-                            <ListItemText primary={col.headerName || col.field} />
-                        </ListItem>
+                            /></
+                            <ListItemText primary={col.headerName || col.field} /></ListItemText>
                     ))}
                 </List>
             </DialogContent>
-            <DialogActions>
+            <DialogActions></
                 <Button onClick={handleReset} color="secondary">Reset</Button>
                 <Button onClick={onClose}>Cancel</Button>
                 <Button onClick={handleSave} variant="contained">Save</Button>

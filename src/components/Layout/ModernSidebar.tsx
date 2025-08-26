@@ -12,8 +12,6 @@ interface ModernSidebarProps {
   open: boolean;
   toggleDrawer: () => void;
   isRTL?: boolean;
-}
-
 const ModernSidebar: React.FC<ModernSidebarProps> = ({ 
   open, 
   toggleDrawer, 
@@ -32,14 +30,15 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({
       {/* Mobile overlay */}
       {open && (
         <div 
-          className
+          className="fixed inset-0 bg-black/30 z-40 lg:hidden"
           onClick={toggleDrawer}
         />
       )}
       
       {/* Sidebar */}
       <aside
-        className
+        className={cn(
+          'fixed top-0 h-full z-50 transition-all duration-300 ease-in-out',
           'bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl',
           'border-r border-gray-200 dark:border-gray-700',
           'shadow-lg',
@@ -53,8 +52,6 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({
           // RTL support
           isRTL ? 'right-0 border-r-0 border-l' : 'left-0'
         )}
-        style
-        }}
       >
         {/* Logo Container */}
         <div className={cn(
@@ -63,7 +60,9 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({
         )}>
           <img
             src={open ? logoTechno : technoIcon}
-            alt
+            alt={open ? 'Techno ETL Logo' : 'Techno ETL Icon'}
+            className={cn(
+              'transition-all duration-300 ease-in-out',
               open ? 'h-8 w-auto' : 'h-8 w-8',
               'object-contain'
             )}
@@ -86,17 +85,13 @@ const ModernSidebar: React.FC<ModernSidebarProps> = ({
         <style jsx>{`
           aside::-webkit-scrollbar {
             width: 4px;
-          }
           aside::-webkit-scrollbar-thumb {
             background-color: rgb(229, 231, 235);
             border-radius: 2px;
-          }
           .dark aside::-webkit-scrollbar-thumb {
             background-color: rgb(107, 114, 128);
-          }
           aside::-webkit-scrollbar-track {
             background: transparent;
-          }
         `}</style>
       </aside>
     </>

@@ -28,7 +28,7 @@ const CustomersPage = () => {
 
   const hasParams = Object.keys(params).length > 0;
 
-  return Boolean((
+  return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -43,13 +43,12 @@ const CustomersPage = () => {
             icon={<People />}
             sx={{ display: "flex", mb: 2, borderRadius: 2 }}
           >
-            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Typography variant="body2">
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}></
+              <Typography variant="outlined">
                 Dashboard navigation: Viewing customers
               </Typography>
               {getStatus() !== 'all' && (
-                <Chip
-                  label={`Status: ${getStatus()}`}
+                <Chip label={`Status: ${getStatus()}`}
                   color
               )}
               {getSortBy() !== 'name' && (
@@ -57,17 +56,15 @@ const CustomersPage = () => {
                   label={`Sorted by: ${getSortBy()}`}
                   color
               )}
-            </Box>
-          </Alert>
+            </Box></Chip>
         )}
 
         {/* Customers Grid */}
-        <Paper sx={{ display: "flex", borderRadius: 2, overflow: 'hidden' }}>
-          <CustomersGrid { ...gridProps} />
-        </Paper>
+        <Paper sx={{ display: "flex", borderRadius: 2, overflow: 'hidden' }}></
+          <CustomersGrid { ...gridProps} /></CustomersGrid>
       </Container>
     </motion.div>
-  )))));
+  );
 };
 
 export default CustomersPage;

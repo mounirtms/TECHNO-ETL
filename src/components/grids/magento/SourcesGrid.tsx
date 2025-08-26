@@ -33,7 +33,6 @@ const columns = [
             }}>
                 {params?.row.enabled ? 'Enabled' : 'Disabled'}
             </div>
-        )
     },
     {
         field: 'description',
@@ -94,7 +93,6 @@ const columns = [
         headerName: 'Priority',
         width: 100,
         type: 'number'
-    }
 ];
 
 const SourcesGrid: React.FC<{productId: any}> = ({ productId  }) => {
@@ -123,8 +121,6 @@ const SourcesGrid: React.FC<{productId: any}> = ({ productId  }) => {
                         condition_type: 'eq'
                     }]
                 });
-            }
-
             if(filters.enabled !== undefined) {
                 const isEnabled = filters.enabled === 'true' || filters.enabled ===true;
                 searchCriteria.filterGroups.push({
@@ -134,14 +130,10 @@ const SourcesGrid: React.FC<{productId: any}> = ({ productId  }) => {
                         condition_type: 'eq'
                     }]
                 });
-            }
-
             const response = await magentoApi.getSources(searchCriteria);
 
             if(!response) {
                 throw new Error('No response received from the server.');
-            }
-
             setData(response?.items ?? []);
             setTotalCount(response?.total_count ?? 0);
         } catch(error: any) {
@@ -150,7 +142,6 @@ const SourcesGrid: React.FC<{productId: any}> = ({ productId  }) => {
             toast.error('Error loading sources.'); // Show toast notification
         } finally {
             setLoading(false);
-        }
     }, [productId, filters]);
 
     const gridCards = [
@@ -161,14 +152,13 @@ const SourcesGrid: React.FC<{productId: any}> = ({ productId  }) => {
         },
         {
             title: 'Active Sources',
-            value: data?.filter((source: any: any: any: any) => source.enabled)?.length ?? 0,
+            value: data?.filter((source: any) => source.enabled)?.length ?? 0,
             color: 'success'
         },
         {
             title: 'Inactive Sources',
-            value: data?.filter((source: any: any: any: any) => !source.enabled)?.length ?? 0,
+            value: data?.filter((source: any) => !source.enabled)?.length ?? 0,
             color: 'error'
-        }
     ];
 
     return(<UnifiedGrid
@@ -187,7 +177,7 @@ const SourcesGrid: React.FC<{productId: any}> = ({ productId  }) => {
                 },
                 onExport: (selectedRows) => {
                     const exportData = selectedRows.length > 0
-                        ? data.filter((source: any: any: any: any) => selectedRows.includes(source.source_code))
+                        ? data.filter((source: any) => selectedRows.includes(source.source_code))
                         : data;
                     console.log('Exporting sources:', exportData);
                     toast.success(`Exported ${exportData.length} sources`);
@@ -201,8 +191,6 @@ const SourcesGrid: React.FC<{productId: any}> = ({ productId  }) => {
                         onClick: (rowData) => {
                             console.log('Viewing source:', rowData);
                             toast.info(`Viewing source: ${rowData.source_code}`);
-                        }
-                    }
                 }),
 
                 // Stats
@@ -220,7 +208,6 @@ const SourcesGrid: React.FC<{productId: any}> = ({ productId  }) => {
                 onError: (error) => {
                     console.error('Sources Grid Error:', error);
                     toast.error('Error loading sources');
-                }
             })}
         />
     );

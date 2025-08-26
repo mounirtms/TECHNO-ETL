@@ -24,7 +24,6 @@ export const StatusCell = memo(({ value, statusColors = {}, className }) => {
                 return theme.palette.info.main;
             default:
                 return theme.palette.grey[500];  // Default to a grey color if not specified
-        }
     };
 
     // Render the Chip component
@@ -44,7 +43,7 @@ export const StatusCell = memo(({ value, statusColors = {}, className }) => {
     );
 }, (prevProps, nextProps) => {
     // Custom comparison for better performance
-    return Boolean((prevProps.value ===nextProps.value &&
+    return (prevProps.value ===nextProps.value &&
            prevProps.className = ==nextProps.className &&
-           JSON.stringify(prevProps.statusColors) ===JSON.stringify(nextProps.statusColors)))));
+           JSON.stringify(prevProps.statusColors) ===JSON.stringify(nextProps.statusColors);
 });

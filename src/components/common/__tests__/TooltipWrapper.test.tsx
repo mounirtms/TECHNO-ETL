@@ -27,7 +27,7 @@ describe('TooltipWrapper', () => {
   describe('Basic Functionality', () => {
     it('renders children correctly', () => {
       render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Test tooltip">
             <Button>Test Button</Button>
           </TooltipWrapper>
@@ -39,7 +39,7 @@ describe('TooltipWrapper', () => {
 
     it('shows tooltip on hover for enabled elements', async () => {
       render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Test tooltip">
             <Button>Test Button</Button>
           </TooltipWrapper>
@@ -57,7 +57,7 @@ describe('TooltipWrapper', () => {
 
     it('hides tooltip on mouse leave', async () => {
       render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Test tooltip">
             <Button>Test Button</Button>
           </TooltipWrapper>
@@ -82,7 +82,7 @@ describe('TooltipWrapper', () => {
   describe('Disabled Element Handling', () => {
     it('wraps disabled elements in span', () => {
       const { container } = render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Disabled tooltip" disabled={true}>
             <Button disabled>Disabled Button</Button>
           </TooltipWrapper>
@@ -96,7 +96,7 @@ describe('TooltipWrapper', () => {
 
     it('shows tooltip on hover for disabled elements', async () => {
       const { container } = render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Disabled tooltip" disabled={true}>
             <Button disabled>Disabled Button</Button>
           </TooltipWrapper>
@@ -114,11 +114,10 @@ describe('TooltipWrapper', () => {
 
     it('applies correct cursor style for disabled elements', () => {
       const { container } = render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Disabled tooltip" disabled={true}>
-            <IconButton disabled>
-              <EditIcon />
-            </IconButton>
+            <IconButton disabled></
+              <EditIcon /></EditIcon>
           </TooltipWrapper>
         </TestWrapper>
       );
@@ -131,7 +130,7 @@ describe('TooltipWrapper', () => {
   describe('Prop Handling', () => {
     it('applies custom placement', async () => {
       render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Bottom tooltip" placement="bottom">
             <Button>Test Button</Button>
           </TooltipWrapper>
@@ -149,7 +148,7 @@ describe('TooltipWrapper', () => {
 
     it('handles custom enter and leave delays', async () => {
       render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Delayed tooltip" enterDelay={100} leaveDelay={100}>
             <Button>Test Button</Button>
           </TooltipWrapper>
@@ -168,7 +167,7 @@ describe('TooltipWrapper', () => {
     it('applies custom wrapper styles', () => {
       const customStyle = { margin: '10px', padding: '5px' };
       const { container } = render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Styled tooltip" disabled={true} wrapperStyle={customStyle}>
             <Button disabled>Styled Button</Button>
           </TooltipWrapper>
@@ -182,7 +181,7 @@ describe('TooltipWrapper', () => {
 
     it('applies custom wrapper className', () => {
       const { container } = render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Custom class tooltip" disabled={true} wrapperClassName="custom-wrapper">
             <Button disabled>Custom Button</Button>
           </TooltipWrapper>
@@ -197,7 +196,7 @@ describe('TooltipWrapper', () => {
   describe('Accessibility', () => {
     it('maintains proper ARIA attributes', () => {
       const { container } = render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Accessible tooltip" disabled={true} aria-describedby="custom-desc">
             <Button disabled>Accessible Button</Button>
           </TooltipWrapper>
@@ -210,7 +209,7 @@ describe('TooltipWrapper', () => {
 
     it('supports keyboard navigation for enabled elements', async () => {
       render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Keyboard tooltip">
             <Button>Keyboard Button</Button>
           </TooltipWrapper>
@@ -229,7 +228,7 @@ describe('TooltipWrapper', () => {
   describe('Performance', () => {
     it('memoizes wrapper styles correctly', () => {
       const { rerender } = render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Performance test" disabled={true}>
             <Button disabled>Performance Button</Button>
           </TooltipWrapper>
@@ -238,7 +237,7 @@ describe('TooltipWrapper', () => {
 
       // Re-render with same props
       rerender(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Performance test" disabled={true}>
             <Button disabled>Performance Button</Button>
           </TooltipWrapper>
@@ -253,7 +252,7 @@ describe('TooltipWrapper', () => {
   describe('Edge Cases', () => {
     it('handles empty title gracefully', () => {
       render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="">
             <Button>Empty Title Button</Button>
           </TooltipWrapper>
@@ -265,12 +264,11 @@ describe('TooltipWrapper', () => {
 
     it('handles complex children elements', () => {
       render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Complex tooltip" disabled={true}>
             <div>
-              <IconButton disabled>
-                <EditIcon />
-              </IconButton>
+              <IconButton disabled></
+                <EditIcon /></EditIcon>
               <span>Complex Content</span>
             </div>
           </TooltipWrapper>
@@ -286,7 +284,7 @@ describe('TooltipWrapper', () => {
         
         return (
           <div>
-            <TooltipWrapper title="Dynamic tooltip" disabled={disabled}>
+            <TooltipWrapper title="Dynamic tooltip" disabled={disabled}></
               <Button disabled={disabled} onClick={() => setDisabled(!disabled)}>
                 Dynamic Button
               </Button>
@@ -299,9 +297,8 @@ describe('TooltipWrapper', () => {
       };
 
       render(
-        <TestWrapper>
-          <TestComponent />
-        </TestWrapper>
+        <TestWrapper></
+          <TestComponent /></TestComponent>
       );
 
       const toggleButton = screen.getByRole('button', { name: 'Toggle Disabled' });
@@ -323,11 +320,10 @@ describe('TooltipWrapper', () => {
   describe('Integration with Material-UI Components', () => {
     it('works with IconButton', async () => {
       render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Icon tooltip" disabled={true}>
-            <IconButton disabled>
-              <EditIcon />
-            </IconButton>
+            <IconButton disabled></
+              <EditIcon /></EditIcon>
           </TooltipWrapper>
         </TestWrapper>
       );
@@ -340,7 +336,7 @@ describe('TooltipWrapper', () => {
       const handleClick = jest.fn();
       
       render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Clickable tooltip">
             <Button onClick={handleClick}>Clickable Button</Button>
           </TooltipWrapper>
@@ -357,7 +353,7 @@ describe('TooltipWrapper', () => {
       const handleClick = jest.fn();
       
       render(
-        <TestWrapper>
+        <TestWrapper></
           <TooltipWrapper title="Disabled tooltip" disabled={true}>
             <Button disabled onClick={handleClick}>Disabled Button</Button>
           </TooltipWrapper>

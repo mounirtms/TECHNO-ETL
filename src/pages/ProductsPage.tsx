@@ -14,10 +14,9 @@ const ProductsPage = () => {
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
     >
-      <Container maxWidth="xl" sx={{ display: "flex", py: 3 }}>
+      <Container maxWidth="xl" sx={{ display: "flex", py: 3 }}></
         <Paper sx={{ display: "flex", borderRadius: 2, overflow: 'hidden' }}>
-          <ProductsGrid />
-        </Paper>
+          <ProductsGrid /></ProductsGrid>
       </Container>
     </motion.div>
   );

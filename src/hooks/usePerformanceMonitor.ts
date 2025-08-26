@@ -23,8 +23,6 @@ interface PerformanceMonitorResult {
   renderCount: number;
   measureOperation: <T extends any[], R>(operationName: string, operation: OperationFunction<T, R>) => OperationFunction<T, R>;
   trackExpensiveCalculation: <T extends any[], R>(calculationName: string, calculation: CalculationFunction<T, R>, ...args: T) => R;
-}
-
 /**
  * Performance monitoring hook
  * @param componentName - Name of the component being monitored

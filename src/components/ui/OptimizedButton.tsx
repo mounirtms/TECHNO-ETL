@@ -78,7 +78,6 @@ const buttonVariants = cva(
       size: 'md',
       fullWidth: false,
     },
-  }
 );
 
 // Enhanced props interface using advanced TypeScript features
@@ -97,8 +96,6 @@ export interface OptimizedButtonProps
   'data-testid'?: string;
   /** Accessibility label */
   'aria-label'?: string;
-}
-
 // Loading spinner component with optimized animations
 const LoadingSpinner = React.memo(({ size }: { size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | null }) => {
   const sizeClasses = {
@@ -147,7 +144,6 @@ export const OptimizedButton = React.forwardRef<HTMLButtonElement, OptimizedButt
         if (loading || disabled) {
           event.preventDefault();
           return;
-        }
         onClick?.(event);
       },
       [loading, disabled, onClick]
@@ -162,9 +158,7 @@ export const OptimizedButton = React.forwardRef<HTMLButtonElement, OptimizedButt
             <span className="opacity-70">Loading...</span>
           </>
         );
-      }
-
-      return Boolean((
+      return (
         <>
           {leftIcon && (
             <span className="inline-flex shrink-0" aria-hidden="true">
@@ -178,7 +172,7 @@ export const OptimizedButton = React.forwardRef<HTMLButtonElement, OptimizedButt
             </span>
           )}
         </>
-      )))));
+      );
     }, [loading, size, leftIcon, children, rightIcon]);
 
     const buttonElement = (
@@ -214,10 +208,7 @@ export const OptimizedButton = React.forwardRef<HTMLButtonElement, OptimizedButt
           </div>
         </div>
       );
-    }
-
     return buttonElement;
-  }
 );
 
 OptimizedButton.displayName = 'OptimizedButton';
@@ -235,7 +226,6 @@ export function useButtonState(initialLoading = false) {
       await asyncFn();
     } finally {
       setLoading(false);
-    }
   }, []);
 
   return {
@@ -243,16 +233,12 @@ export function useButtonState(initialLoading = false) {
     setLoading,
     withLoading,
   } as const;
-}
-
 // Type-safe button group component
 interface ButtonGroupProps {
   children: React.ReactNode;
   orientation?: 'horizontal' | 'vertical';
   spacing?: 'none' | 'sm' | 'md' | 'lg';
   className?: string;
-}
-
 export const ButtonGroup = React.memo<ButtonGroupProps>(
   ({ children, orientation = 'horizontal', spacing = 'md', className }) => {
     const spacingClasses = {
@@ -273,7 +259,6 @@ export const ButtonGroup = React.memo<ButtonGroupProps>(
         {children}
       </div>
     );
-  }
 );
 
 ButtonGroup.displayName = 'ButtonGroup';

@@ -68,7 +68,6 @@ const mockCustomers = [
     orders: 3,
     totalSpent: '$567.00',
     avatar: null
-  }
 ];
 
 const CustomersGrid = ({
@@ -99,7 +98,7 @@ const CustomersGrid = ({
   }, [initialStatus, initialSortBy, dashboardParams]);
 
   // Filter customers based on search query and status
-  const filteredCustomers = customers.filter((customer: any: any: any: any) => {
+  const filteredCustomers = customers.filter((customer: any) => {
     const matchesSearch = customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       customer.email.toLowerCase().includes(searchQuery.toLowerCase());
 
@@ -119,12 +118,11 @@ const CustomersGrid = ({
                parseFloat(a.totalSpent.replace('$', '').replace(',', ''));
       default:
         return 0;
-    }
   });
 
   // Update badge count for active customers
   useEffect(() => {
-    const activeCustomers = customers.filter((c: any: any: any: any) => c.status === 'active').length;
+    const activeCustomers = customers.filter((c: any) => c.status === 'active').length;
     onBadgeUpdate?.(activeCustomers);
   }, [customers, onBadgeUpdate]);
 
@@ -140,15 +138,15 @@ const CustomersGrid = ({
     console.log('Delete customer:', customerId);
   };
 
-  return Boolean((
+  return (
     <Box sx={{ display: "flex", p: 3 }}>
       {/* Header */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ display: "flex", mb: 3 }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ display: "flex", mb: 3 }}></
         <Typography variant="h5" component="h2">
           {t('Customer Management')}
         </Typography>
         <Button
-          variant="body2"
+          variant="outlined"
           startIcon={<AddIcon />}
           onClick={handleAddCustomer}
         >
@@ -158,8 +156,8 @@ const CustomersGrid = ({
 
       {/* Dashboard Context Alert */}
       {Object.keys(dashboardParams).length > 0 && (
-        <Alert severity="info" sx={{ display: "flex", mb: 2 }}>
-          <Typography variant="body2">
+        <Alert severity="info" sx={{ display: "flex", mb: 2 }}></
+          <Typography variant="outlined">
             Dashboard navigation: Viewing customers
             {statusFilter !== 'all' && (
               <Chip
@@ -173,9 +171,8 @@ const CustomersGrid = ({
       )}
 
       {/* Search and Filters */}
-      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ display: "flex", mb: 3 }}>
-        <TextField
-          placeholder={t('Search customers...')}
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ display: "flex", mb: 3 }}></
+        <TextField placeholder={t('Search customers...')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           InputProps
@@ -183,10 +180,9 @@ const CustomersGrid = ({
           sx={{ display: "flex", flex: 1 }}
         />
 
-        <FormControl sx={{ display: "flex", minWidth: 120 }}>
+        <FormControl sx={{ display: "flex", minWidth: 120 }}></
           <InputLabel>Status</InputLabel>
-          <Select
-            value={statusFilter}
+          <Select value={statusFilter}
             label
             onChange={(e) => setStatusFilter(e.target.value)}
           >
@@ -196,10 +192,9 @@ const CustomersGrid = ({
           </Select>
         </FormControl>
 
-        <FormControl sx={{ display: "flex", minWidth: 120 }}>
+        <FormControl sx={{ display: "flex", minWidth: 120 }}></
           <InputLabel>Sort By</InputLabel>
-          <Select
-            value={sortBy}
+          <Select value={sortBy}
             label
             onChange={(e) => setSortBy(e.target.value)}
           >
@@ -213,74 +208,71 @@ const CustomersGrid = ({
 
       {/* Customers Grid */}
       <Box sx={{ display: "flex", display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: 2 }}>
-        {filteredCustomers.map((customer: any: any: any: any) => (
-          <Card key={customer.id} sx={{ display: "flex", height: 'fit-content' }}>
+        {filteredCustomers.map((customer: any) => (
+          <Card key={customer.id} sx={{ display: "flex", height: 'fit-content' }}></
             <CardContent>
               <Stack spacing={2}>
                 {/* Customer Header */}
-                <Stack direction="row" alignItems="center" spacing={2}>
+                <Stack direction="row" alignItems="center" spacing={2}></
                   <Avatar sx={{ display: "flex", bgcolor: 'primary.main' }}>
                     {customer.avatar || <PersonIcon />}
                   </Avatar>
-                  <Box sx={{ display: "flex", flexGrow: 1 }}>
+                  <Box sx={{ display: "flex", flexGrow: 1 }}></
                     <Typography variant="h6" component="div">
                       {customer.name}
                     </Typography>
-                    <Chip
-                      label={customer.status}
+                    <Chip label={customer.status}
                       color={customer.status === 'active' ? 'success' : 'default'}
                       size="small"
-                  <Stack direction="row" spacing={1}>
+                  <Stack direction="row" spacing={1}></
                     <Tooltip title={t('Edit')}>
                       <IconButton size="small" onClick={() => handleEditCustomer(customer.id)}>
-                        <EditIcon />
-                      </IconButton>
+                        <EditIcon /></EditIcon>
                     </Tooltip>
-                    <Tooltip title={t('Delete')}>
+                    <Tooltip title={t('Delete')}></
                       <IconButton size="small" onClick={() => handleDeleteCustomer(customer.id)}>
-                        <DeleteIcon />
-                      </IconButton>
+                        <DeleteIcon /></DeleteIcon>
                     </Tooltip>
                   </Stack>
                 </Stack>
 
                 {/* Customer Details */}
-                <Stack spacing={1}>
+                <Stack spacing={1}></
                   <Stack direction="row" alignItems="center" spacing={1}>
-                    <EmailIcon fontSize="small" color="action" />
-                    <Typography variant="body2" color="text.secondary">
+                    <EmailIcon fontSize="small" color="action" /></
+                    <Typography variant="outlined" color="text.secondary">
                       {customer.email}
                     </Typography>
                   </Stack>
-                  <Stack direction="row" alignItems="center" spacing={1}>
+                  <Stack direction="row" alignItems="center" spacing={1}></
                     <PhoneIcon fontSize="small" color="action" />
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="outlined" color="text.secondary">
                       {customer.phone}
                     </Typography>
                   </Stack>
-                  <Stack direction="row" alignItems="center" spacing={1}>
+                  <Stack direction="row" alignItems="center" spacing={1}></
                     <LocationIcon fontSize="small" color="action" />
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="outlined" color="text.secondary">
                       {customer.location}
                     </Typography>
                   </Stack>
                 </Stack>
 
                 {/* Customer Stats */}
-                <Stack direction="row" justifyContent="space-between" sx={{ display: "flex", pt: 1, borderTop: 1, borderColor: 'divider' }}>
+                <Stack direction="row" justifyContent="space-between" sx={{ display: "flex", pt: 1, borderTop: 1, borderColor: 'divider' }}></
                   <Box>
                     <Typography variant="caption" color="text.secondary">
                       {t('Orders')}
                     </Typography>
-                    <Typography variant="body2" fontWeight="bold">
+                    <Typography variant="outlined" fontWeight="bold">
                       {customer.orders}
                     </Typography>
                   </Box>
-                  <Box>
+                  <Box></
                     <Typography variant="caption" color="text.secondary">
                       {t('Total Spent')}
                     </Typography>
-                    <Typography variant="body2" fontWeight="bold">
+                    <Typography variant="outlined" fontWeight="bold">
                       {customer.totalSpent}
                     </Typography>
                   </Box>
@@ -293,18 +285,18 @@ const CustomersGrid = ({
 
       {/* Empty State */}
       {filteredCustomers.length ===0 && (
-        <Box sx={{ display: "flex", textAlign: 'center', py: 4 }}>
+        <Box sx={{ display: "flex", textAlign: 'center', py: 4 }}></
           <PersonIcon sx={{ display: "flex", fontSize: 64, color: 'text.secondary', mb: 2 }} />
           <Typography variant="h6" color="text.secondary">
             {searchQuery ? t('No customers found') : t('No customers yet')}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="outlined" color="text.secondary">
             {searchQuery ? t('Try adjusting your search') : t('Add your first customer to get started')}
           </Typography>
         </Box>
       )}
     </Box>
-  )))));
+  );
 };
 
 export default CustomersGrid;

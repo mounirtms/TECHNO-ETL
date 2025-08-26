@@ -89,11 +89,10 @@ const FloatingActionButtons = ({
       color: 'default',
       enabled: true,
       priority: 7
-    }
   };
 
   // Merge with custom actions, ensuring icons are provided
-  const allActions = Object.keys({ ...defaultActions, ...actions }).reduce((acc: any: any key: any: any: any: any) => {
+  const allActions = Object.keys({ ...defaultActions, ...actions }).reduce((acc: any key: any) => {
     const defaultAction = defaultActions[key] || {};
     const customAction = actions[key] || {};
 
@@ -117,7 +116,6 @@ const FloatingActionButtons = ({
   const isActionEnabled = useCallback((actionConfig) => {
     if(typeof actionConfig.enabled === 'function') {
       return actionConfig.enabled(selectedRows);
-    }
     return actionConfig.enabled !== false;
   }, [selectedRows]);
 
@@ -127,7 +125,6 @@ const FloatingActionButtons = ({
       actionConfig.onClick(selectedRows);
     } else if(onAction) {
       onAction(actionKey, selectedRows);
-    }
     setSpeedDialOpen(false);
   }, [selectedRows, onAction]);
 
@@ -169,12 +166,11 @@ const FloatingActionButtons = ({
           right: isRTL ? 'auto' : 16,
           left: isRTL ? 16 : 'auto'
         };
-    }
   }, [position, isRTL, theme.zIndex.speedDial]);
 
   // Filter and sort actions
   const enabledActions = Object.entries(allActions)
-    .filter(([, actionConfig]: any: any: any: any) => isActionEnabled(actionConfig))
+    .filter(([, actionConfig]: any) => isActionEnabled(actionConfig))
     .sort(([, a], [, b]) => (a.priority || 999) - (b.priority || 999));
 
   if (enabledActions.length ===0) return null;
@@ -194,7 +190,7 @@ const FloatingActionButtons = ({
           size: 'medium'
         }}
       >
-        {enabledActions.map(([actionKey: any actionConfig]: any: any: any: any) => {
+        {enabledActions.map(([actionKey, actionConfig]: any) => {
           const IconComponent = actionConfig.icon || MoreIcon;
           return (
             <SpeedDialAction
@@ -211,30 +207,23 @@ const FloatingActionButtons = ({
         })}
       </SpeedDial>
     );
-  }
-
   // Individual FABs variant
   return (
     <Box sx={getPositionStyles()}>
-      {enabledActions.map(([actionKey: any actionConfig]: any = {}; // Fixed invalid assignment index: any: any: any: any) => {
+      {enabledActions.map(([actionKey, actionConfig], index) => {
         const IconComponent = actionConfig.icon || MoreIcon;
         const bottomOffset = index * 64; // Stack vertically
         
         return (
-          <Zoom
-            key={actionKey}
+          <Zoom key={actionKey}
             in={true}
             timeout={200 + index * 100}
             style
               transitionDelay: `${index * 100}ms`
-            }}
-          >
-            <Tooltip
-              title={translate(actionKey, actionConfig.label)}
-              placement={isRTL ? 'right' : 'left'}
-            >
-              <Fab
-                color={actionConfig.color || 'primary'}
+            }}></
+            <Tooltip title={translate(actionKey, actionConfig.label)}
+              placement={isRTL ? 'right' : 'left'}>
+              <Fab color={actionConfig.color || 'primary'}
                 size={index ===0 ? 'medium' : 'small'}
                 onClick={() => handleActionClick(actionKey, actionConfig)}
                 sx={{
@@ -245,11 +234,9 @@ const FloatingActionButtons = ({
                   '&:hover': {
                     transform: 'scale(1.1)',
                     boxShadow: theme.shadows[8]
-                  }
                 }}
               >
-                <IconComponent />
-              </Fab>
+                <IconComponent /></IconComponent>
             </Tooltip>
           </Zoom>
         );

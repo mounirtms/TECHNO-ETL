@@ -108,7 +108,6 @@ const PersonalInfoTab = () => {
     const remoteSettings = userData?.personalInfo;
     if(remoteSettings) {
       setFormData(remoteSettings);
-    }
   }, [userData?.personalInfo]);
 
   const handleInputChange = (field, value) => {
@@ -130,16 +129,14 @@ const PersonalInfoTab = () => {
   };
 
   return (
-    <Paper elevation={0} sx={{ display: "flex", p: 2 } as any}>
+    <Paper elevation={0} sx={{ display: "flex", p: 2 } as any}></
       <Grid { ...{container: true}} spacing={2}>
         {/* Header with Avatar and Save Button */}
-        <Grid size={{ xs: 12 }}>
-          <Stack
-            direction
+        <Grid size={{ xs: 12 }}></
+          <Stack direction
             spacing={2}
-            sx={{ display: "flex", mb: 2 } as any}
-          >
-            <Stack direction="row" spacing={2} alignItems="center">
+            sx={{ display: "flex", mb: 2 } as any}>
+            <Stack direction="row" spacing={2} alignItems="center"></
               <Box position="relative">
                 {loading ? (
                   <Skeleton variant="circular" width={100} height={100} />
@@ -159,14 +156,14 @@ const PersonalInfoTab = () => {
                   <UploadButton
                     component
                   {translate('profile.personalInfo.title')}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
+                </Typography></
+                <Typography variant="outlined" color="textSecondary">
                   {currentUser?.email}
                 </Typography>
               </Stack>
             </Stack>
             <Button
-              variant="body2"
+              variant="outlined"
               onClick={handleSyncToFirebase}
               startIcon={<SyncIcon />}
               disabled={loading}
@@ -174,15 +171,13 @@ const PersonalInfoTab = () => {
               {translate('profile.syncToCloud')}
             </Button>
           </Stack>
-          <Divider sx={{ display: "flex", my: 2 } as any} />
-        </Grid>
+          <Divider sx={{ display: "flex", my: 2 } as any} /></Divider>
 
         {/* Form Fields */}
-        <Grid size={{ xs: 12 }}>
+        <Grid size={{ xs: 12 }}></
           <Grid { ...{container: true}} spacing={2}>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <StyledTextField
-                fullWidth
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}></
+              <StyledTextField fullWidth
                 size="small"
                 label={translate('profile.personalInfo.firstName')}
                 name
@@ -191,9 +186,8 @@ const PersonalInfoTab = () => {
                 disabled={loading}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <StyledTextField
-                fullWidth
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}></
+              <StyledTextField fullWidth
                 size="small"
                 label={translate('profile.personalInfo.lastName')}
                 name
@@ -202,9 +196,8 @@ const PersonalInfoTab = () => {
                 disabled={loading}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <StyledTextField
-                fullWidth
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}></
+              <StyledTextField fullWidth
                 size="small"
                 label={translate('profile.personalInfo.phone')}
                 name
@@ -213,9 +206,8 @@ const PersonalInfoTab = () => {
                 disabled={loading}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <StyledTextField
-                fullWidth
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}></
+              <StyledTextField fullWidth
                 size="small"
                 label={translate('profile.personalInfo.birthDate')}
                 name
@@ -225,9 +217,8 @@ const PersonalInfoTab = () => {
                 InputLabelProps={{ shrink: true }}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <StyledTextField
-                fullWidth
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}></
+              <StyledTextField fullWidth
                 size="small"
                 label={translate('profile.personalInfo.gender')}
                 name
@@ -240,9 +231,8 @@ const PersonalInfoTab = () => {
                 <option value="other">{translate('profile.personalInfo.other')}</option>
               </StyledTextField>
             </Grid>
-            <Grid size={{ xs: 12 }}>
-              <StyledTextField
-                fullWidth
+            <Grid size={{ xs: 12 }}></
+              <StyledTextField fullWidth
                 size="small"
                 label={translate('profile.personalInfo.address')}
                 name
@@ -251,9 +241,8 @@ const PersonalInfoTab = () => {
                 disabled={loading}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <StyledTextField
-                fullWidth
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}></
+              <StyledTextField fullWidth
                 size="small"
                 label={translate('profile.personalInfo.city')}
                 name
@@ -262,9 +251,8 @@ const PersonalInfoTab = () => {
                 disabled={loading}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <StyledTextField
-                fullWidth
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}></
+              <StyledTextField fullWidth
                 size="small"
                 label={translate('profile.personalInfo.country')}
                 name
@@ -273,9 +261,8 @@ const PersonalInfoTab = () => {
                 disabled={loading}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-              <StyledTextField
-                fullWidth
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}></
+              <StyledTextField fullWidth
                 size="small"
                 label={translate('profile.personalInfo.postalCode')}
                 name

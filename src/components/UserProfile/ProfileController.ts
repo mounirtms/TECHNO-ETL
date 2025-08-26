@@ -16,8 +16,6 @@ export const useProfileController = () => {
         if(!currentUser) {
             setError(null);
             return;
-        }
-
         // SettingsContext already handles Firebase sync, just clear any errors
         setError(null);
     }, [currentUser]);
@@ -28,8 +26,6 @@ export const useProfileController = () => {
         if(!currentUser) {
             toast.error('User not authenticated');
             return;
-        }
-
         // Use SettingsContext for updates - it handles everything
         updateSettings(updates, section);
     };
@@ -38,8 +34,6 @@ export const useProfileController = () => {
         if(!currentUser) {
             toast.error('User not authenticated');
             return;
-        }
-
         // Use SettingsContext save function
         return await saveSettings(forceSave);
     };

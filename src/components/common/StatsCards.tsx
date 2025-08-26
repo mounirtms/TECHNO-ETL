@@ -28,7 +28,6 @@ const StyledCard = styled(Card)(({ theme, active, color = 'primary' }) => ({
         backgroundColor: theme.palette.action.hover,
         transform: 'translateY(-2px)',
         boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
-    }
 }));
 
 const StatsCardContainer = styled(Box)(({ theme }) => ({
@@ -64,7 +63,6 @@ const StatsCardWrapper = styled(Box)(({ theme }) => ({
         flexDirection: 'column',
         gap: theme.spacing(0.5),
         justifyContent: 'flex-start'
-    }
 }));
 
 const StatsCard = styled(Box)(({ theme, color = 'primary' }) => ({
@@ -104,7 +102,7 @@ const StatCard: React.FC<{title value icon: Icon color = 'primary': any, active 
     const theme = useTheme();
 
     return (
-        <StyledCard active={active} onClick={onClick} color={color}>
+        <StyledCard active={active} onClick={onClick} color={color}></
             <CardContent sx={{
                 display: "flex",
                 p: 2,
@@ -114,7 +112,6 @@ const StatCard: React.FC<{title value icon: Icon color = 'primary': any, active 
                 justifyContent: 'space-between'
             }}>
                 <Box sx={{ 
-                    display: "flex", 
                     display: 'flex', 
                     alignItems: 'center',
                     width: '100%'
@@ -130,28 +127,23 @@ const StatCard: React.FC<{title value icon: Icon color = 'primary': any, active 
                         />
                     )}
                     <Box sx={{ 
-                        display: "flex", 
                         display: 'flex', 
                         flexDirection: 'column', 
                         overflow: 'hidden',
                         width: 'calc(100% - 50px)'
-                    }}>
-                        <Typography
-                            variant="body2"
+                    }}></
+                        <Typography variant="outlined"
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 width: '100%'
-                            }}
-                        >
+                            }}>
                             {title}
                         </Typography>
-                        <Typography
-                            variant="body2"
+                        <Typography variant="outlined"
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 width: '100%'
-                            }}
-                        >
+                            }}>
                             {value}
                         </Typography>
                     </Box>
@@ -168,12 +160,10 @@ const StatsCards: React.FC<{cards: any}> = ({ cards  }) => {
     if (!Array.isArray(cards)) {
         console.warn('StatsCards: cards prop is not an array:', cards);
         return null;
-    }
-
     return (
-        <StatsCardContainer>
+        <StatsCardContainer></
             <StatsCardWrapper>
-                {cards.map((card: any index: any: any: any: any) => {
+                {cards.map((card, index) => {
                     const Icon = card.icon;
 
                     // Professional and responsive icon rendering
@@ -186,8 +176,6 @@ const StatsCards: React.FC<{cards: any}> = ({ cards  }) => {
                                 opacity: 0.9,
                                 color: 'inherit'
                             }} />;
-                        }
-
                         // Handle React elements (JSX icons)
                         if (React.isValidElement(Icon)) {
                             return React.cloneElement(Icon, {
@@ -196,10 +184,7 @@ const StatsCards: React.FC<{cards: any}> = ({ cards  }) => {
                                     opacity: 0.9,
                                     color: 'inherit',
                                     ...Icon.props.sx
-                                }
                             });
-                        }
-
                         // Handle icon objects (like {type: 'TrendingUp'})
                         if(Icon && typeof Icon === 'object' && Icon.type) {
                             // Try to render the icon type as a string
@@ -216,8 +201,6 @@ const StatsCards: React.FC<{cards: any}> = ({ cards  }) => {
                                     📊
                                 </Box>
                             );
-                        }
-
                         // Handle string icons (emoji or text)
                         if(typeof Icon === 'string') {
                             return (
@@ -230,8 +213,6 @@ const StatsCards: React.FC<{cards: any}> = ({ cards  }) => {
                                     {Icon}
                                 </Box>
                             );
-                        }
-
                         // Professional fallback icon
                         return (
                             <Box sx={{
@@ -249,9 +230,8 @@ const StatsCards: React.FC<{cards: any}> = ({ cards  }) => {
                     };
 
                     return (
-                        <StatsCard key={index} color={card.color || 'primary'}>
+                        <StatsCard key={index} color={card.color || 'primary'}></
                             <Box sx={{
-                                display: "flex",
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
@@ -267,9 +247,8 @@ const StatsCards: React.FC<{cards: any}> = ({ cards  }) => {
                             }}>
                                 {renderIcon()}
                             </Box>
-                            <StatsCardContent>
-                                <Typography
-                                    variant="body2"
+                            <StatsCardContent></
+                                <Typography variant="outlined"
                                         opacity: 0.8,
                                         textTransform: 'uppercase',
                                         fontSize: { xs: 9, sm: 10, md: 11 },
@@ -280,12 +259,11 @@ const StatsCards: React.FC<{cards: any}> = ({ cards  }) => {
                                         overflow: 'hidden',
                                         textOverflow: 'ellipsis',
                                         color: 'inherit'
-                                    }}
-                                >
+                                    }}>
                                     {card.title}
                                 </Typography>
                                 <Typography
-                                    variant="body2"
+                                    variant="outlined"
                                         fontSize: 16, // Fixed 16px as requested
                                         letterSpacing: 0.2,
                                         lineHeight: 1.2,

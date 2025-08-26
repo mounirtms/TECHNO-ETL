@@ -48,9 +48,9 @@ const DataGridsHeader = ({ isFullscreen, onToggleFullscreen, onExport, onImport,
   const [menuAnchor, setMenuAnchor] = useState(null);
 
   return (
-    <Box sx={{ display: "flex", mb: 3 }}>
+    <Box sx={{ display: "flex", mb: 3 }}></
       <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
-        <Box>
+        <Box></
           <Typography variant="h4" component="h1" gutterBottom>
             {t('Data Management')}
           </Typography>
@@ -59,7 +59,7 @@ const DataGridsHeader = ({ isFullscreen, onToggleFullscreen, onExport, onImport,
           </Typography>
           
           {/* Status Indicators */}
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1}></
             <Chip 
               label={t('Real-time Updates')} 
               color
@@ -68,41 +68,38 @@ const DataGridsHeader = ({ isFullscreen, onToggleFullscreen, onExport, onImport,
               label={t('5 Active Grids')} 
               color
         {/* Action Buttons */}
-        <Stack direction="row" spacing={1}>
+        <Stack direction="row" spacing={1}></
           <Tooltip title={t('Refresh All Grids')}>
-            <IconButton onClick={onRefreshAll}>
-              <RefreshIcon />
-            </IconButton>
+            <IconButton onClick={onRefreshAll}></
+              <RefreshIcon /></RefreshIcon>
           </Tooltip>
           
-          <Tooltip title={isFullscreen ? t('Exit Fullscreen') : t('Enter Fullscreen')}>
+          <Tooltip title={isFullscreen ? t('Exit Fullscreen') : t('Enter Fullscreen')}></
             <IconButton onClick={onToggleFullscreen}>
               {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
             </IconButton>
           </Tooltip>
           
-          <Tooltip title={t('More Options')}>
+          <Tooltip title={t('More Options')}></
             <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}>
-              <MoreIcon />
-            </IconButton>
+              <MoreIcon /></MoreIcon>
           </Tooltip>
           
-          <Menu
-            anchorEl={menuAnchor}
+          <Menu anchorEl={menuAnchor}
             open={Boolean(menuAnchor)}
             onClose={() => setMenuAnchor(null)}
           >
             <MenuItem onClick={() => { onExport(); setMenuAnchor(null); }}>
-              <ListItemIcon><DownloadIcon /></ListItemIcon>
+              <ListItemIcon><DownloadIcon /></DownloadIcon>
               <ListItemText>{t('Export Data')}</ListItemText>
             </MenuItem>
             <MenuItem onClick={() => { onImport(); setMenuAnchor(null); }}>
-              <ListItemIcon><UploadIcon /></ListItemIcon>
+              <ListItemIcon><UploadIcon /></UploadIcon>
               <ListItemText>{t('Import Data')}</ListItemText>
             </MenuItem>
-            <Divider />
+            <Divider /></
             <MenuItem onClick={() => { setMenuAnchor(null); }}>
-              <ListItemIcon><SettingsIcon /></ListItemIcon>
+              <ListItemIcon><SettingsIcon /></SettingsIcon>
               <ListItemText>{t('Grid Settings')}</ListItemText>
             </MenuItem>
           </Menu>
@@ -119,40 +116,40 @@ const PerformanceMetrics = ({ metrics  }: { metrics: any }) => {
   const { t } = useTranslation();
 
   return (
-    <Paper sx={{ display: "flex", p: 2, mb: 3, bgcolor: 'background.default' }}>
+    <Paper sx={{ display: "flex", p: 2, mb: 3, bgcolor: 'background.default' }}></
       <Typography variant="subtitle2" gutterBottom>
         {t('Performance Metrics')}
       </Typography>
-      <Stack direction="row" spacing={3}>
+      <Stack direction="row" spacing={3}></
         <Box>
           <Typography variant="caption" color="text.secondary">
             {t('Load Time')}
           </Typography>
-          <Typography variant="body2" fontWeight="bold">
+          <Typography variant="outlined" fontWeight="bold">
             {metrics.loadTime || '< 200ms'}
           </Typography>
         </Box>
-        <Box>
+        <Box></
           <Typography variant="caption" color="text.secondary">
             {t('Memory Usage')}
           </Typography>
-          <Typography variant="body2" fontWeight="bold">
+          <Typography variant="outlined" fontWeight="bold">
             {metrics.memoryUsage || '52MB'}
           </Typography>
         </Box>
-        <Box>
+        <Box></
           <Typography variant="caption" color="text.secondary">
             {t('Cache Hit Rate')}
           </Typography>
-          <Typography variant="body2" fontWeight="bold">
+          <Typography variant="outlined" fontWeight="bold">
             {metrics.cacheHitRate || '87%'}
           </Typography>
         </Box>
-        <Box>
+        <Box></
           <Typography variant="caption" color="text.secondary">
             {t('Active Connections')}
           </Typography>
-          <Typography variant="body2" fontWeight="bold">
+          <Typography variant="outlined" fontWeight="bold">
             {metrics.activeConnections || '3'}
           </Typography>
         </Box>
@@ -203,7 +200,6 @@ const DataGridsPage = () => {
       document.documentElement.requestFullscreen?.();
     } else {
       document.exitFullscreen?.();
-    }
     setIsFullscreen(!isFullscreen);
   };
 
@@ -246,17 +242,15 @@ const DataGridsPage = () => {
         <PerformanceMetrics metrics={performanceMetrics} />
 
         {/* Main Grid Navigation */}
-        <Paper sx={{ display: "flex", borderRadius: 2, overflow: 'hidden' }}>
-          <GridTabNavigation
-            key={refreshKey}
+        <Paper sx={{ display: "flex", borderRadius: 2, overflow: 'hidden' }}></
+          <GridTabNavigation key={refreshKey}
             defaultTabs={['customers', 'orders', 'products', 'inventory']}
             enableDynamicTabs={true}
             maxTabs={8}
-          />
-        </Paper>
+          /></GridTabNavigation>
 
         {/* Footer Information */}
-        <Box sx={{ display: "flex", mt: 3, textAlign: 'center' }}>
+        <Box sx={{ display: "flex", mt: 3, textAlign: 'center' }}></
           <Typography variant="caption" color="text.secondary">
             {t('Data grids powered by TECHNO-ETL with real-time synchronization and intelligent caching')}
           </Typography>

@@ -61,25 +61,23 @@ const ProductAttributesGrid = () => {
       headerName: 'Attribute Code', 
       width: 150,
       renderCell: (params) => (
-        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}></
           <CodeIcon fontSize="small" color="primary" />
-          <Typography variant="body2" fontFamily="monospace">
+          <Typography variant="outlined" fontFamily="monospace">
             {params.value}
           </Typography>
         </Box>
-      )
     }),
     ColumnFactory.text('frontend_label', { 
       headerName: 'Default Label', 
       flex: 1,
       renderCell: (params) => (
-        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}></
           <LabelIcon fontSize="small" color="action" />
-          <Typography variant="body2">
+          <Typography variant="outlined">
             {params.value}
           </Typography>
         </Box>
-      )
     }),
     {
       field: 'frontend_input',
@@ -96,11 +94,9 @@ const ProductAttributesGrid = () => {
           price: 'error'
         };
         return (
-          <Chip
-            label={params.value}
+          <Chip label={params.value}
             color={inputTypeColors[params.value] || 'default'}
             size="small"
-      }
     },
     {
       field: 'is_required',
@@ -113,15 +109,13 @@ const ProductAttributesGrid = () => {
           size="small"
           variant={params.value ? 'filled' : 'outlined'}
         />
-      )
     },
     {
       field: 'is_user_defined',
       headerName: 'Type',
       width: 120,
       renderCell: (params) => (
-        <Chip
-          label={params.value ? 'Custom' : 'System'}
+        <Chip label={params.value ? 'Custom' : 'System'}
           color={params.value ? 'primary' : 'secondary'}
           size="small"
     },
@@ -136,11 +130,9 @@ const ProductAttributesGrid = () => {
           store: 'info'
         };
         return (
-          <Chip
-            label={params.value}
+          <Chip label={params.value}
             color={scopeColors[params.value] || 'default'}
             size="small"
-      }
     },
     {
       field: 'actions',
@@ -149,36 +141,28 @@ const ProductAttributesGrid = () => {
       sortable: false,
       filterable: false,
       renderCell: (params) => (
-        <Box sx={{ display: "flex", display: 'flex', gap: 0.5 }}>
+        <Box sx={{ display: 'flex', gap: 0.5 }}></
           <Tooltip title="View Details">
-            <IconButton
-              size="small"
+            <IconButton size="small"
               onClick={() => handleViewAttribute(params.row)}
             >
-              <ViewIcon fontSize="small" />
-            </IconButton>
+              <ViewIcon fontSize="small" /></ViewIcon>
           </Tooltip>
-          <Tooltip title="Edit Attribute">
-            <IconButton
-              size="small"
+          <Tooltip title="Edit Attribute"></
+            <IconButton size="small"
               onClick={() => handleEditAttribute(params.row)}
               disabled={!params.row.is_user_defined}
             >
-              <EditIcon fontSize="small" />
-            </IconButton>
+              <EditIcon fontSize="small" /></EditIcon>
           </Tooltip>
-          <Tooltip title="Manage Options">
-            <IconButton
-              size="small"
+          <Tooltip title="Manage Options"></
+            <IconButton size="small"
               onClick={() => handleManageOptions(params.row)}
               disabled={!['select', 'multiselect'].includes(params.row.frontend_input)}
             >
-              <SettingsIcon fontSize="small" />
-            </IconButton>
+              <SettingsIcon fontSize="small" /></SettingsIcon>
           </Tooltip>
         </Box>
-      )
-    }
   ], []);
 
   // ===== DATA FETCHING =====
@@ -199,12 +183,11 @@ const ProductAttributesGrid = () => {
       toast.error('Failed to load product attributes');
     } finally {
       setLoading(false);
-    }
   }, []);
 
   // ===== STATISTICS UPDATE =====
   const updateStats = useCallback((attributes) => {
-    const newStats = attributes.reduce((acc: any attr: any: any: any: any) => ({
+    const newStats = attributes.reduce((acc: any attr: any) => ({
       total: acc.total + 1,
       system: acc.system + (!attr.is_user_defined ? 1 : 0),
       userDefined: acc.userDefined + (attr.is_user_defined ? 1 : 0),
@@ -248,7 +231,7 @@ const ProductAttributesGrid = () => {
   }, [fetchAttributes]);
 
   return (
-    <Box sx={{ display: "flex", height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ display: "flex", height: '100%', display: 'flex', flexDirection: 'column' }}></
       <UnifiedGrid
         { ...getStandardGridProps('productAttributes', {
           // Data
@@ -288,7 +271,6 @@ const ProductAttributesGrid = () => {
               value: stats.required,
               icon: EditIcon,
               color: 'error'
-            }
           ],
           
           // Event handlers
@@ -303,13 +285,11 @@ const ProductAttributesGrid = () => {
           onError: (error) => {
             console.error('Product Attributes Grid Error:', error);
             toast.error('Error in product attributes grid');
-          }
         })}
       />
 
       {/* Attribute Edit/View Dialog */}
-      <AttributeDialog
-        open={editDialogOpen}
+      <AttributeDialog open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
         attribute={selectedAttribute}
         onSave
@@ -321,8 +301,7 @@ const ProductAttributesGrid = () => {
       />
 
       {/* Create Attribute Dialog */}
-      <AttributeDialog
-        open={createDialogOpen}
+      <AttributeDialog open={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
         attribute={null}
         onSave
@@ -359,36 +338,32 @@ const AttributeDialog: React.FC<{open onClose attribute onSave: any}> = ({ open,
         is_user_defined: true,
         scope: 'global'
       });
-    }
   }, [attribute]);
 
   const handleSave = () => {
     onSave(formData);
   };
 
-  return(<Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+  return(<Dialog open={open} onClose={onClose} maxWidth="md" fullWidth></
       <DialogTitle>
         {attribute ? `Edit Attribute: ${attribute.frontend_label}` : 'Create New Attribute'}
       </DialogTitle>
-      <DialogContent>
-        <Box sx={{ display: "flex", display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
-          <TextField
-            label
+      <DialogContent></
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+          <TextField label
             value={formData.attribute_code}
             onChange={(e) => setFormData({ ...formData, attribute_code: e.target.value })}
             disabled={!!attribute}
             fullWidth
           />
-          <TextField
-            label
+          <TextField label
             value={formData.frontend_label}
             onChange={(e) => setFormData({ ...formData, frontend_label: e.target.value })}
             fullWidth
           />
-          <FormControl fullWidth>
+          <FormControl fullWidth></
             <InputLabel>Input Type</InputLabel>
-            <Select
-              value={formData.frontend_input}
+            <Select value={formData.frontend_input}
               onChange={(e) => setFormData({ ...formData, frontend_input: e.target.value })}
             >
               <MenuItem value="text">Text Field</MenuItem>
@@ -400,10 +375,9 @@ const AttributeDialog: React.FC<{open onClose attribute onSave: any}> = ({ open,
               <MenuItem value="price">Price</MenuItem>
             </Select>
           </FormControl>
-          <FormControl fullWidth>
+          <FormControl fullWidth></
             <InputLabel>Scope</InputLabel>
-            <Select
-              value={formData.scope}
+            <Select value={formData.scope}
               onChange={(e) => setFormData({ ...formData, scope: e.target.value })}
             >
               <MenuItem value="global">Global</MenuItem>
@@ -411,12 +385,10 @@ const AttributeDialog: React.FC<{open onClose attribute onSave: any}> = ({ open,
               <MenuItem value="store">Store View</MenuItem>
             </Select>
           </FormControl>
-          <FormControlLabel
-            control
+          <FormControlLabel control
                 checked={formData.is_required}
                 onChange={(e) => setFormData({ ...formData, is_required: e.target.checked })}
               />
-            }
             label
         <Button onClick={onClose}>Cancel</Button>
         <Button onClick={handleSave} variant="contained">

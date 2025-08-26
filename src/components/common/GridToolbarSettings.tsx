@@ -55,30 +55,26 @@ const GridToolbarSettings = ({
   ];
 
   return (
-    <Menu
-      anchorEl={anchorEl}
+    <Menu anchorEl={anchorEl}
       open={open}
       onClose={onClose}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       PaperProps
         sx: { minWidth: 250, maxWidth: 350 }
-      }}
-    >
+      }}>
       {/* Density Settings */}
-      <MenuItem>
+      <MenuItem></
         <ListItemIcon>
-          <DensityIcon />
-        </ListItemIcon>
-        <Box sx={{ display: "flex", flex: 1 }}>
+          <DensityIcon /></DensityIcon>
+        <Box sx={{ display: "flex", flex: 1 }}></
           <Typography variant="subtitle2" gutterBottom>
             {translate('density', 'Row Density')}
           </Typography>
-          <FormControl size="small" fullWidth>
-            <Select
-              value={density}
+          <FormControl size="small" fullWidth></
+            <Select value={density}
               onChange={(e) => handleDensityChange(e.target.value)}
-              variant="body2"
+              variant="outlined"
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
                 </MenuItem>
@@ -91,30 +87,25 @@ const GridToolbarSettings = ({
       <Divider />
 
       {/* Column Visibility */}
-      <MenuItem>
+      <MenuItem></
         <ListItemIcon>
-          <ColumnsIcon />
-        </ListItemIcon>
-        <ListItemText primary={translate('columns', 'Columns')} />
-      </MenuItem>
+          <ColumnsIcon /></ColumnsIcon>
+        <ListItemText primary={translate('columns', 'Columns')} /></ListItemText>
 
       {/* Column Visibility Controls */}
       {Object.keys(columnVisibility).length > 0 && (
         <Box sx={{ display: "flex", maxHeight: 200, overflow: 'auto' }}>
-          {Object.entries(columnVisibility).map(([field: any visible]: any: any: any: any) => (<MenuItem key={field} dense>
-              <FormControlLabel
-                control
+          {Object.entries(columnVisibility).map(([field, visible]: any) => (<MenuItem key={field} dense></
+              <FormControlLabel control
                     checked={visible}
                     onChange
                         [field]: e.target.checked
                       });
                     }}
                     size="small"
-                }
                 label={field}
                 sx={{ display: "flex", flex: 1, ml: 0 }}
-              />
-            </MenuItem>
+              /></FormControlLabel>
           ))}
         </Box>
       )}
@@ -127,11 +118,9 @@ const GridToolbarSettings = ({
           onExport?.('excel');
           onClose();
         }}>
-          <ListItemIcon>
-            <ExcelIcon />
-          </ListItemIcon>
-          <ListItemText primary={translate('exportExcel', 'Export to Excel')} />
-        </MenuItem>
+          <ListItemIcon></
+            <ExcelIcon /></ExcelIcon>
+          <ListItemText primary={translate('exportExcel', 'Export to Excel')} /></ListItemText>
       )}
 
       {exportOptions.csv && (
@@ -139,11 +128,9 @@ const GridToolbarSettings = ({
           onExport?.('csv');
           onClose();
         }}>
-          <ListItemIcon>
-            <CsvIcon />
-          </ListItemIcon>
-          <ListItemText primary={translate('exportCsv', 'Export to CSV')} />
-        </MenuItem>
+          <ListItemIcon></
+            <CsvIcon /></CsvIcon>
+          <ListItemText primary={translate('exportCsv', 'Export to CSV')} /></ListItemText>
       )}
 
       {exportOptions.json && (
@@ -151,22 +138,18 @@ const GridToolbarSettings = ({
           onExport?.('json');
           onClose();
         }}>
-          <ListItemIcon>
-            <JsonIcon />
-          </ListItemIcon>
-          <ListItemText primary={translate('exportJson', 'Export to JSON')} />
-        </MenuItem>
+          <ListItemIcon></
+            <JsonIcon /></JsonIcon>
+          <ListItemText primary={translate('exportJson', 'Export to JSON')} /></ListItemText>
       )}
 
       {(exportOptions.excel || exportOptions.csv || exportOptions.json) && <Divider />}
 
       {/* Additional Settings */}
-      <MenuItem onClick={onClose}>
+      <MenuItem onClick={onClose}></
         <ListItemIcon>
-          <SettingsIcon />
-        </ListItemIcon>
-        <ListItemText primary={translate('moreSettings', 'More Settings')} />
-      </MenuItem>
+          <SettingsIcon /></SettingsIcon>
+        <ListItemText primary={translate('moreSettings', 'More Settings')} /></ListItemText>
 
       <Divider />
 
@@ -181,11 +164,9 @@ const GridToolbarSettings = ({
         onDensityChange?.('standard');
         onClose();
       }}>
-        <ListItemIcon>
-          <VisibilityIcon />
-        </ListItemIcon>
-        <ListItemText primary={translate('resetDefaults', 'Reset to Defaults')} />
-      </MenuItem>
+        <ListItemIcon></
+          <VisibilityIcon /></VisibilityIcon>
+        <ListItemText primary={translate('resetDefaults', 'Reset to Defaults')} /></ListItemText>
     </Menu>
   );
 };

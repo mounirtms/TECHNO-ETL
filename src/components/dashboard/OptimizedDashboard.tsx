@@ -135,7 +135,6 @@ const OptimizedDashboard = () => {
       console.error('Dashboard refresh error:', error);
     } finally {
       setLoading(false);
-    }
   }, [t]);
 
   // Load initial data
@@ -155,20 +154,18 @@ const OptimizedDashboard = () => {
   // Render loading state
   if(loading && !dashboardData) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh"></
         <CircularProgress />
         <Typography variant="body1" sx={{ display: "flex", ml: 2 }}>
           {t('dashboard.loading') || 'Loading dashboard...'}
         </Typography>
       </Box>
     );
-  }
-
-  return Boolean((
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+  return (
+    <LocalizationProvider dateAdapter={AdapterDateFns}></
       <Box sx={{ display: "flex", p: 3 }}>
         {/* Dashboard Header */}
-        <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}></
           <Box>
             <Typography variant="h4" component="h1" gutterBottom>
               {t('dashboard.title') || 'Dashboard'}
@@ -178,31 +175,25 @@ const OptimizedDashboard = () => {
             </Typography>
           </Box>
           
-          <Box sx={{ display: "flex", display: 'flex', gap: 1 }}>
-            <IconButton 
-              onClick={refreshData}
+          <Box sx={{ display: 'flex', gap: 1 }}></
+            <IconButton onClick={refreshData}
               color
-              disabled={loading}
-            >
-              <RefreshIcon />
-            </IconButton>
-            <IconButton color="primary">
-              <SettingsIcon />
-            </IconButton>
+              disabled={loading}>
+              <RefreshIcon /></RefreshIcon>
+            <IconButton color="primary"></
+              <SettingsIcon /></SettingsIcon>
           </Box>
         </Box>
 
         {/* Date Range Selector */}
-        <Paper sx={{ display: "flex", p: 2, mb: 3 }}>
-          <Box sx={{ display: "flex", display: 'flex', gap: 2, alignItems: 'center' }}>
-            <DatePicker
-              label={t('dashboard.startDate') || 'Start Date'}
+        <Paper sx={{ display: "flex", p: 2, mb: 3 }}></
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+            <DatePicker label={t('dashboard.startDate') || 'Start Date'}
               value={dateRange.start}
               onChange={(e) => (newValue) => setDateRange(prev => ({ ...prev, start: newValue }))}
               renderInput={(params) => <TextField { ...params} />}
             />
-            <DatePicker
-              label={t('dashboard.endDate') || 'End Date'}
+            <DatePicker label={t('dashboard.endDate') || 'End Date'}
               value={dateRange.end}
               onChange={(e) => (newValue) => setDateRange(prev => ({ ...prev, end: newValue }))}
               renderInput={(params) => <TextField { ...params} />}
@@ -239,7 +230,6 @@ const OptimizedDashboard = () => {
                 change: '-1.2%',
                 icon: <Category />,
                 color: 'warning'
-              }
             ]}
           />
         )}
@@ -249,9 +239,9 @@ const OptimizedDashboard = () => {
         {/* Charts Section */}
         <Grid { ...{container: true}} spacing={3}>
           {/* Sales Chart */}
-          <Grid size={12}>
+          <Grid size={12}></
             <Paper sx={{ display: "flex", p: 2 }}>
-              <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}></
                 <Typography variant="h6">
                   {t('dashboard.salesChart') || 'Sales Overview'}
                 </Typography>
@@ -262,26 +252,24 @@ const OptimizedDashboard = () => {
               
               <Collapse in={expandedSections.sales}>
                 {processedData.salesData && (
-                  <Box sx={{ display: "flex", height: 400 }}>
+                  <Box sx={{ display: "flex", height: 400 }}></
                     <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={processedData.salesData}>
+                      <LineChart data={processedData.salesData}></
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
+                        <XAxis dataKey="name" /></
                         <YAxis />
-                        <RechartsTooltip />
+                        <RechartsTooltip /></
                         <Legend />
                         <Line 
                           type
                           stroke={chartColors[0]} 
                           activeDot={{ r: 8 }} 
                           name={t('dashboard.revenue') || 'Revenue'}
-                        />
-                        <Line 
-                          type
+                        /></
+                        <Line type
                           stroke={chartColors[1]} 
                           name={t('dashboard.growth') || 'Growth %'}
-                        />
-                      </LineChart>
+                        /></Line>
                     </ResponsiveContainer>
                   </Box>
                 )}
@@ -290,9 +278,9 @@ const OptimizedDashboard = () => {
           </Grid>
 
           {/* Inventory and Customers */}
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}></
             <Paper sx={{ display: "flex", p: 2, height: '100%' }}>
-              <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}></
                 <Typography variant="h6">
                   {t('dashboard.inventory') || 'Inventory Status'}
                 </Typography>
@@ -303,25 +291,23 @@ const OptimizedDashboard = () => {
               
               <Collapse in={expandedSections.inventory}>
                 {processedData.inventoryData && (
-                  <Box sx={{ display: "flex", height: 300 }}>
+                  <Box sx={{ display: "flex", height: 300 }}></
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={processedData.inventoryData}>
+                      <BarChart data={processedData.inventoryData}></
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
+                        <XAxis dataKey="name" /></
                         <YAxis />
-                        <RechartsTooltip />
+                        <RechartsTooltip /></
                         <Legend />
                         <Bar 
                           dataKey
                           fill={chartColors[2]} 
                           name={t('dashboard.stock') || 'Stock'} 
-                        />
-                        <Bar 
-                          dataKey
+                        /></
+                        <Bar dataKey
                           fill={chartColors[3]} 
                           name={t('dashboard.price') || 'Price'} 
-                        />
-                      </BarChart>
+                        /></Bar>
                     </ResponsiveContainer>
                   </Box>
                 )}
@@ -329,9 +315,9 @@ const OptimizedDashboard = () => {
             </Paper>
           </Grid>
 
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}></
             <Paper sx={{ display: "flex", p: 2, height: '100%' }}>
-              <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}></
                 <Typography variant="h6">
                   {t('dashboard.customers') || 'Top Customers'}
                 </Typography>
@@ -342,24 +328,22 @@ const OptimizedDashboard = () => {
               
               <Collapse in={expandedSections.customers}>
                 {processedData?.customerData && (
-                  <Box sx={{ display: "flex", height: 300 }}>
+                  <Box sx={{ display: "flex", height: 300 }}></
                     <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={processedData.customerData}
+                      <PieChart></
+                        <Pie data={processedData.customerData}
                           cx
                           labelLine={false}
                           outerRadius={80}
                           fill
                           label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                         >
-                          {processedData.customerData.map((entry: any index: any: any: any: any) => (
+                          {processedData.customerData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={chartColors[index % chartColors.length]} />
                           ))}
                         </Pie>
                         <RechartsTooltip formatter={(value) => [`$${value.toFixed(2)}`, t('dashboard.value')]} />
-                        <Legend />
-                      </PieChart>
+                        <Legend /></Legend>
                     </ResponsiveContainer>
                   </Box>
                 )}
@@ -369,7 +353,7 @@ const OptimizedDashboard = () => {
         </Grid>
       </Box>
     </LocalizationProvider>
-  )))));
+  );
 };
 
 export default memo(OptimizedDashboard);

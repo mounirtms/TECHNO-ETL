@@ -140,7 +140,6 @@ export const useOptimizedComponentTheme = (componentName) => {
         
       default:
         return baseTheme;
-    }
   }, [theme, isRTL, componentName]);
 
   return componentTheme;

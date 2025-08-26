@@ -29,12 +29,10 @@ const TooltipWrapper = ({
   // If the element is disabled, wrap it in a span
   if(disabled) {
     return (
-      <Tooltip 
-        title={title} 
+      <Tooltip title={title} 
         placement={placement}
         arrow={arrow}
-        { ...tooltipProps}
-      >
+        { ...tooltipProps}>
         <span 
           style
             cursor: 'not-allowed'
@@ -44,16 +42,12 @@ const TooltipWrapper = ({
         </span>
       </Tooltip>
     );
-  }
-
   // If not disabled, use Tooltip normally
   return (
-    <Tooltip 
-      title={title} 
+    <Tooltip title={title} 
       placement={placement}
       arrow={arrow}
-      { ...tooltipProps}
-    >
+      { ...tooltipProps}>
       {childElement}
     </Tooltip>
   );

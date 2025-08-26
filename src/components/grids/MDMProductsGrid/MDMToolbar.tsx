@@ -73,7 +73,6 @@ const useMDMToolbarConfig: React.FC<{onRefresh onSync onSyncStocks onSyncAll onE
         label: 'Export to JSON',
         icon: ExportIcon,
         handler: () => onExport?.('json')
-      }
     },
 
     // Custom actions for MDM-specific operations
@@ -212,7 +211,6 @@ const useMDMContextMenuActions: React.FC<{onSync onView onEdit: any}> = ({ onSyn
         console.log('Exporting item:', rowData);
       },
       icon: 'download'
-    }
   }), [onSync, onView, onEdit]);
 };
 

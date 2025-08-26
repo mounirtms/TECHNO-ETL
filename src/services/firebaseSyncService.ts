@@ -13,8 +13,6 @@ import { USER_ROLES, MENU_CATEGORIES, DEFAULT_LICENSED_PROGRAMS } from '../confi
 class FirebaseSyncService {
     constructor() {
         this.database = database;
-    }
-
     /**
      * Initialize Firebase database with schema data
      */
@@ -36,9 +34,6 @@ class FirebaseSyncService {
         } catch (error) {
             console.error('Error initializing Firebase schema:', error);
             return false;
-        }
-    }
-
     /**
      * Initialize system settings
      */
@@ -64,9 +59,6 @@ class FirebaseSyncService {
             
             await set(systemRef, systemSettings);
             console.log('System settings initialized');
-        }
-    }
-
     /**
      * Initialize menu categories
      */
@@ -77,9 +69,6 @@ class FirebaseSyncService {
         if (!snapshot.exists()) {
             await set(categoriesRef, MENU_CATEGORIES);
             console.log('Menu categories initialized');
-        }
-    }
-
     /**
      * Initialize licensed programs
      */
@@ -90,9 +79,6 @@ class FirebaseSyncService {
         if (!snapshot.exists()) {
             await set(programsRef, DEFAULT_LICENSED_PROGRAMS);
             console.log('Licensed programs initialized');
-        }
-    }
-
     /**
      * Sync user data with Firebase on login
      */
@@ -123,7 +109,6 @@ class FirebaseSyncService {
                         features: ['bug_bounty', 'task_voting', 'core_dashboard'],
                         createdAt: new Date().toISOString(),
                         expiryDate: null // Free license never expires
-                    }
                 };
                 
                 await set(userRef, userData);
@@ -132,7 +117,6 @@ class FirebaseSyncService {
                 // Initialize Firebase schema if this is the first user
                 if(isFirstUser) {
                     await this.initializeSchema();
-                }
             } else {
                 // Update last login
                 const userData = snapshot.val();
@@ -140,15 +124,10 @@ class FirebaseSyncService {
                     lastLogin: new Date().toISOString()
                 });
                 console.log(`User ${user.email} login updated`);
-            }
-            
             return true;
         } catch (error) {
             console.error('Error syncing user on login:', error);
             return false;
-        }
-    }
-
     /**
      * Get user role and permissions
      */
@@ -161,15 +140,10 @@ class FirebaseSyncService {
             if (snapshot.exists()) {
                 const userData = snapshot.val();
                 return userData.role || USER_ROLES.USER;
-            }
-            
             return USER_ROLES.USER;
         } catch (error) {
             console.error('Error getting user role:', error);
             return USER_ROLES.USER;
-        }
-    }
-
     /**
      * Check if user has required role for menu access
      */
@@ -191,9 +165,6 @@ class FirebaseSyncService {
         } catch(error) {
             console.error('Error checking role permissions:', error);
             return false;
-        }
-    }
-
     /**
      * Push updated schema to Firebase
      */
@@ -214,8 +185,4 @@ class FirebaseSyncService {
         } catch (error) {
             console.error('Error pushing schema to Firebase:', error);
             return false;
-        }
-    }
-}
-
 export default new FirebaseSyncService();

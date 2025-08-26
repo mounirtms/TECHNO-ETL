@@ -123,7 +123,6 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
       toast.error(error.message);
     } finally {
       setLoading(false);
-    }
   }, []);
 
   // ===== IMAGE UPLOAD HANDLER =====
@@ -135,22 +134,19 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
       const validation = await calligraphMediaUploadService.validateImageFiles(acceptedFiles);
       
       if(validation.invalid.length > 0) {
-        const errorMessages = validation.invalid.map((v: any: any: any: any) => `${v.file.name}: ${v.error}`);
+        const errorMessages = validation.invalid.map((v) => `${v.file.name}: ${v.error}`);
         toast.error(`${validation.invalid.length} files rejected`);
         console.warn('Rejected files:', errorMessages);
       }
-      
       if(validation.valid.length > 0) {
-        const validFiles = validation.valid.map((v: any: any: any: any) => v.file);
+        const validFiles = validation.valid.map((v: any) => v.file);
         setImageFiles(prev => [...prev, ...validFiles]);
         setValidationResults(validation);
         toast.success(`${validation.valid.length} raw images added`);
-      }
     } catch(error: any) {
       toast.error(`Validation failed: ${error.message}`);
     } finally {
       setLoading(false);
-    }
   }, []);
 
   // ===== MATCHING HANDLER =====
@@ -158,8 +154,6 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
     if(!csvData || imageFiles.length ===0) {
       toast.error('Please upload both Calligraph CSV and raw images');
       return;
-    }
-
     setLoading(true);
     try {
       const results = calligraphMediaUploadService.matchImagesWithCalligraphCSV(csvData, imageFiles);
@@ -173,7 +167,6 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
       toast.error(`Matching failed: ${error.message}`);
     } finally {
       setLoading(false);
-    }
   }, [csvData, imageFiles]);
 
   // ===== UPLOAD HANDLER =====
@@ -181,8 +174,6 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
     if(!matchingResults || matchingResults.matches.length ===0) {
       toast.error('No matches to upload');
       return;
-    }
-
     setActiveStep(3);
     setUploadProgress({ current: 0, total: matchingResults.matches.length });
 
@@ -195,7 +186,6 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
           targetSize: settings.targetSize,
           batchSize: settings.batchSize,
           delayBetweenBatches: settings.delayBetweenBatches
-        }
       );
 
       setUploadResults(results);
@@ -204,17 +194,15 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
       const stats = calligraphMediaUploadService.generateProcessingStats(results);
       setProcessingStats(stats);
       
-      const successful = results.filter((r: any: any: any: any) => r.status === 'success').length;
-      const failed = results.filter((r: any: any: any: any) => r.status === 'error').length;
+      const successful = results.filter((r: any) => r.status === 'success').length;
+      const failed = results.filter((r: any) => r.status === 'error').length;
       
       toast.success(`Calligraph upload complete: ${successful} successful, ${failed} failed`);
       
       if(onComplete) {
         onComplete(results);
-      }
     } catch(error: any) {
       toast.error(`Upload failed: ${error.message}`);
-    }
   };
 
   // ===== UTILITY FUNCTIONS =====
@@ -232,14 +220,14 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
   };
 
   const removeImage = (index) => {
-    setImageFiles(prev => prev.filter((_, i: any: any: any: any) => i !== index));
+    setImageFiles(prev => prev.filter((_, i: any) => i !== index));
     setValidationResults(null);
   };
 
   const downloadResults = () => {
     if (!uploadResults) return;
     
-    const data = uploadResults.map((result: any: any: any: any) => ({
+    const data = uploadResults.map((result: any) => ({
       SKU: result.sku,
       REF: result.ref,
       OriginalFileName: result.file.name,
@@ -254,7 +242,7 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
     
     const csv = [
       Object.keys(data[0]).join(','),
-      ...data.map((row: any: any: any: any) => Object.values(row).join(','))
+      ...data.map((row: any) => Object.values(row).join(','))
     ].join('\n');
     
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -286,16 +274,13 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
     disabled: loading
   });
 
-  return Boolean((
-    <Dialog 
-      open={open} 
+  return (
+    <Dialog open={open} 
       onClose={onClose} 
       maxWidth
         sx: { minHeight: '80vh', maxHeight: '90vh' }
-      }}
-    >
+      }}></
       <DialogTitle sx={{ 
-        display: "flex", 
         display: 'flex', 
         alignItems: 'center', 
         gap: 1,
@@ -310,26 +295,24 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
             color: 'success.contrastText',
             ml: 1
           } as any} 
-        />
+        /></
         <Box sx={{ display: "flex", position: 'absolute', right: 16 } as any}>
-          <IconButton 
-            onClick={onClose} 
+          <IconButton onClick={onClose} 
             sx={{ display: "flex", color: 'inherit' } as any}
             size="small"
-      <DialogContent dividers sx={{ display: "flex", p: 0 } as any}>
+      <DialogContent dividers sx={{ display: "flex", p: 0 } as any}></
         <Stepper activeStep={activeStep} orientation="vertical" sx={{ display: "flex", p: 3 } as any}>
           {/* Step 1: Calligraph CSV Upload */}
-          <Step>
+          <Step></
             <StepLabel>
               <Typography variant="h6">Upload Calligraph CSV</Typography>
             </StepLabel>
-            <StepContent>
-              <Typography variant="body2" color="text.secondary" gutterBottom>
+            <StepContent></
+              <Typography variant="outlined" color="text.secondary" gutterBottom>
                 Upload the Calligraph CSV file with SKU, REF, and image name columns.
               </Typography>
               
-              <Paper
-                { ...csvDropzone.getRootProps()}
+              <Paper { ...csvDropzone.getRootProps()}
                 sx={{
                   borderColor: csvDropzone.isDragActive ? 'success.main' : 'grey.300',
                   bgcolor: csvDropzone.isDragActive ? 'success.light' : 'background.default',
@@ -337,24 +320,22 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                   textAlign: 'center',
                   mt: 2,
                   transition: 'all 0.2s ease'
-                } as any}
-              >
+                } as any}>
                 <input { ...csvDropzone.getInputProps()} />
-                <CSVIcon sx={{ display: "flex", fontSize: 64, color: 'success.main', mb: 2 } as any} />
+                <CSVIcon sx={{ display: "flex", fontSize: 64, color: 'success.main', mb: 2 } as any} /></
                 <Typography variant="h6" gutterBottom>
                   {csvDropzone.isDragActive
                     ? 'Drop Calligraph CSV here...'
                     : 'Drag & drop Calligraph CSV file here, or click to select'
-                  }
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="outlined" color="text.secondary">
                   Required columns: sku, ref, image name (optional: name)
                 </Typography>
               </Paper>
 
               {csvFile && csvData && (
-                <Alert severity="success" sx={{ display: "flex", mt: 2 } as any}>
-                  <Typography variant="body2">
+                <Alert severity="success" sx={{ display: "flex", mt: 2 } as any}></
+                  <Typography variant="outlined">
                     <strong>{csvFile.name}</strong> - {csvData.totalRows} products loaded
                   </Typography>
                   <Typography variant="caption" display="block">
@@ -369,17 +350,16 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
           </Step>
 
           {/* Step 2: Raw Image Upload */}
-          <Step>
+          <Step></
             <StepLabel>
               <Typography variant="h6">Upload Raw Images</Typography>
             </StepLabel>
-            <StepContent>
-              <Typography variant="body2" color="text.secondary" gutterBottom>
+            <StepContent></
+              <Typography variant="outlined" color="text.secondary" gutterBottom>
                 Upload raw product images with reference naming (e.g., 7203C_1.jpg, 7203C_2.jpg, 7203C.jpg).
               </Typography>
               
-              <Paper
-                { ...imageDropzone.getRootProps()}
+              <Paper { ...imageDropzone.getRootProps()}
                 sx={{
                   borderColor: imageDropzone.isDragActive ? 'primary.main' : 'grey.300',
                   bgcolor: imageDropzone.isDragActive ? 'primary.light' : 'background.default',
@@ -387,57 +367,53 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                   textAlign: 'center',
                   mt: 2,
                   transition: 'all 0.2s ease'
-                } as any}
-              >
+                } as any}>
                 <input { ...imageDropzone.getInputProps()} />
-                <ImageIcon sx={{ display: "flex", fontSize: 64, color: 'primary.main', mb: 2 } as any} />
+                <ImageIcon sx={{ display: "flex", fontSize: 64, color: 'primary.main', mb: 2 } as any} /></
                 <Typography variant="h6" gutterBottom>
                   {imageDropzone.isDragActive
                     ? 'Drop raw images here...'
                     : 'Drag & drop raw images here, or click to select multiple'
-                  }
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="outlined" color="text.secondary">
                   Supports: 7203C.jpg, 7203C_1.jpg, 7203C_2.jpg patterns | Max: 10MB per file
                 </Typography>
               </Paper>
 
               {imageFiles.length > 0 && (
-                <Box sx={{ display: "flex", mt: 3 } as any}>
-                  <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 } as any}>
+                <Box sx={{ display: "flex", mt: 3 } as any}></
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 } as any}>
                     <Typography variant="subtitle1">
                       Raw Images ({imageFiles.length})
                     </Typography>
                     {validationResults && (
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="outlined" color="text.secondary">
                         Total Size: {(validationResults?.totalSize / 1024 / 1024).toFixed(2)}MB
                       </Typography>
                     )}
                   </Box>
                   
-                  <Box sx={{ display: "flex", maxHeight: 200, overflow: 'auto', border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 1 } as any}>
+                  <Box sx={{ display: "flex", maxHeight: 200, overflow: 'auto', border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 1 } as any}></
                     <Grid { ...{container: true}} spacing={1}>
-                      {imageFiles.map((file: any index: any: any: any: any) => (
-                        <Grid item key={index}>
-                          <Chip
-                            label={file.name}
+                      {imageFiles.map((file: any index: any) => (
+                        <Grid item key={index}></
+                          <Chip label={file.name}
                             onDelete={() => removeImage(index)}
                             size="small"
                       ))}
                     </Grid>
                   </Box>
                   
-                  <Box sx={{ display: "flex", mt: 2, display: 'flex', gap: 2 } as any}>
+                  <Box sx={{ display: "flex", mt: 2, display: 'flex', gap: 2 } as any}></
                     <Button
-                      variant="body2"
+                      variant="outlined"
                       onClick={handleMatching}
                       disabled={!csvData || imageFiles.length ===0 || loading}
                       startIcon={loading ? <RefreshIcon className="spin" /> : <RefIcon />}
                       color
                       {loading ? 'Processing...' : 'Match with REF Column'}
                     </Button>
-                    <Button
-                      variant="body2"
+                    <Button variant="outlined"
                       onClick={() => setImageFiles([])}
                       disabled={imageFiles.length ===0}
                     >
@@ -450,18 +426,18 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
           </Step>
 
           {/* Step 3: Review REF Matching */}
-          <Step>
+          <Step></
             <StepLabel>
               <Typography variant="h6">Review REF Matching</Typography>
             </StepLabel>
             <StepContent>
               {matchingResults && (<Box>
                   {/* Enhanced Statistics Cards */}
-                  <Grid { ...{container: true}} spacing={2} sx={{ display: "flex", mb: 3 } as any}>
+                  <Grid { ...{container: true}} spacing={2} sx={{ display: "flex", mb: 3 } as any}></
                     <Grid item xs={6} sm={3}>
-                      <Card sx={{ display: "flex", textAlign: 'center', bgcolor: 'success.light' } as any}>
+                      <Card sx={{ display: "flex", textAlign: 'center', bgcolor: 'success.light' } as any}></
                         <CardContent sx={{ display: "flex", py: 2 } as any}>
-                          <SuccessIcon sx={{ display: "flex", fontSize: 32, color: 'success.main' } as any} />
+                          <SuccessIcon sx={{ display: "flex", fontSize: 32, color: 'success.main' } as any} /></
                           <Typography variant="h5" sx={{ display: "flex", fontWeight: 'bold' } as any}>
                             {matchingResults.stats.matched}
                           </Typography>
@@ -469,9 +445,9 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                         </CardContent>
                       </Card>
                     </Grid>
-                    <Grid item xs={6} sm={3}>
+                    <Grid item xs={6} sm={3}></
                       <Card sx={{ display: "flex", textAlign: 'center', bgcolor: 'info.light' } as any}>
-                        <CardContent sx={{ display: "flex", py: 2 } as any}>
+                        <CardContent sx={{ display: "flex", py: 2 } as any}></
                           <InfoIcon sx={{ display: "flex", fontSize: 32, color: 'info.main' } as any} />
                           <Typography variant="h5" sx={{ display: "flex", fontWeight: 'bold' } as any}>
                             {matchingResults.stats.uniqueProducts}
@@ -480,9 +456,9 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                         </CardContent>
                       </Card>
                     </Grid>
-                    <Grid item xs={6} sm={3}>
+                    <Grid item xs={6} sm={3}></
                       <Card sx={{ display: "flex", textAlign: 'center', bgcolor: 'warning.light' } as any}>
-                        <CardContent sx={{ display: "flex", py: 2 } as any}>
+                        <CardContent sx={{ display: "flex", py: 2 } as any}></
                           <WarningIcon sx={{ display: "flex", fontSize: 32, color: 'warning.main' } as any} />
                           <Typography variant="h5" sx={{ display: "flex", fontWeight: 'bold' } as any}>
                             {matchingResults.stats.multipleImagesProducts}
@@ -491,9 +467,9 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                         </CardContent>
                       </Card>
                     </Grid>
-                    <Grid item xs={6} sm={3}>
+                    <Grid item xs={6} sm={3}></
                       <Card sx={{ display: "flex", textAlign: 'center', bgcolor: 'secondary.light' } as any}>
-                        <CardContent sx={{ display: "flex", py: 2 } as any}>
+                        <CardContent sx={{ display: "flex", py: 2 } as any}></
                           <ProcessIcon sx={{ display: "flex", fontSize: 32, color: 'secondary.main' } as any} />
                           <Typography variant="h5" sx={{ display: "flex", fontWeight: 'bold' } as any}>
                             {matchingResults.stats.averageImagesPerProduct}
@@ -505,8 +481,8 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                   </Grid>
 
                   {/* Match Strategy Breakdown */}
-                  <Alert severity="info" sx={{ display: "flex", mb: 3 } as any}>
-                    <Typography variant="body2">
+                  <Alert severity="info" sx={{ display: "flex", mb: 3 } as any}></
+                    <Typography variant="outlined">
                       <strong>Match Strategies:</strong> REF Column: {matchingResults.stats.matchStrategies.ref}, 
                       Image Name: {matchingResults.stats.matchStrategies.imageName}, 
                       Fuzzy: {matchingResults.stats.matchStrategies.fuzzy}
@@ -514,23 +490,19 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                   </Alert>
 
                   {/* Tabs for detailed view */}
-                  <Paper sx={{ display: "flex", mb: 3 } as any}>
+                  <Paper sx={{ display: "flex", mb: 3 } as any}></
                     <Tabs value={activeTab} onChange={(e, v) => setActiveTab(v)}>
-                      <Tab 
-                        label
+                      <Tab label
                           <Badge badgeContent={matchingResults.matches.length} color="success">
                             REF Matches
                           </Badge>
-                        } 
                       />
                       <Tab label="Processing Settings" />
                       {matchingResults.stats.unmatchedCSV > 0 && (
-                        <Tab 
-                          label
+                        <Tab label
                             <Badge badgeContent={matchingResults.stats.unmatchedCSV} color="warning">
                               Unmatched
                             </Badge>
-                          } 
                         />
                       )}
                     </Tabs>
@@ -538,11 +510,11 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                     <Box sx={{ display: "flex", p: 2 } as any}>
                       {/* REF Matches Tab */}
                       {activeTab ===0 && (
-                        <Box sx={{ display: "flex", maxHeight: 300, overflow: 'auto' } as any}>
+                        <Box sx={{ display: "flex", maxHeight: 300, overflow: 'auto' } as any}></
                           <TableContainer>
-                            <Table size="small">
+                            <Table size="small"></
                               <TableHead>
-                                <TableRow>
+                                <TableRow></
                                   <TableCell>SKU</TableCell>
                                   <TableCell>REF</TableCell>
                                   <TableCell>Raw Image</TableCell>
@@ -552,22 +524,18 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {matchingResults.matches.slice(0, 50).map((match: any index: any: any: any: any) => (
-                                  <TableRow key={index}>
+                                {matchingResults.matches.slice(0, 50).map((match: any index: any) => (
+                                  <TableRow key={index}></
                                     <TableCell>{match.sku}</TableCell>
-                                    <TableCell>
-                                      <Chip 
-                                        label={match.ref} 
+                                    <TableCell></
+                                      <Chip label={match.ref} 
                                         size="small"
                                     <TableCell>{match.file.name}</TableCell>
                                     <TableCell>{match.finalImageName}</TableCell>
-                                    <TableCell>
-                                      <Chip 
-                                        label={match.matchStrategy} 
+                                    <TableCell></
+                                      <Chip label={match.matchStrategy} 
                                         size="small"
-                                        }
-                                      />
-                                    </TableCell>
+                                      /></Chip>
                                     <TableCell>{(match.file.size / 1024 / 1024).toFixed(2)}MB</TableCell>
                                   </TableRow>
                                 ))}
@@ -583,24 +551,21 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                       )}
 
                       {/* Processing Settings Tab */}
-                      {activeTab ===1 && (<Grid { ...{container: true}} spacing={3}>
+                      {activeTab ===1 && (<Grid { ...{container: true}} spacing={3}></
                           <Grid item xs={12} md={6}>
                             <Typography variant="subtitle1" gutterBottom>
                               Image Processing
                             </Typography>
-                            <FormControlLabel
-                              control
+                            <FormControlLabel control
                                   checked={settings.processImages}
                                   onChange={(e) => setSettings(prev => ({ ...prev, processImages: e.target.checked }))}
                                 />
-                              }
                               label
-                            {settings.processImages && (<Box sx={{ display: "flex", mt: 2 } as any}>
-                                <Typography variant="body2" gutterBottom>
+                            {settings.processImages && (<Box sx={{ display: "flex", mt: 2 } as any}></
+                                <Typography variant="outlined" gutterBottom>
                                   Target Size: {settings.targetSize}x{settings.targetSize}px
                                 </Typography>
-                                <Slider
-                                  value={settings.targetSize}
+                                <Slider value={settings.targetSize}
                                   onChange={(e, v) => setSettings(prev => ({ ...prev, targetSize: v }))}
                                   min={800}
                                   max={2000}
@@ -613,11 +578,10 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                                   ]}
                                 />
                                 
-                                <Typography variant="body2" gutterBottom sx={{ display: "flex", mt: 2 } as any}>
+                                <Typography variant="outlined" gutterBottom sx={{ display: "flex", mt: 2 } as any}>
                                   Quality: {settings.imageQuality}%
                                 </Typography>
-                                <Slider
-                                  value={settings.imageQuality}
+                                <Slider value={settings.imageQuality}
                                   onChange={(e, v) => setSettings(prev => ({ ...prev, imageQuality: v }))}
                                   min={60}
                                   max={100}
@@ -633,15 +597,14 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                             )}
                           </Grid>
                           
-                          <Grid item xs={12} md={6}>
+                          <Grid item xs={12} md={6}></
                             <Typography variant="subtitle1" gutterBottom>
                               Upload Settings
                             </Typography>
-                            <Typography variant="body2" gutterBottom>
+                            <Typography variant="outlined" gutterBottom>
                               Batch Size: {settings.batchSize} concurrent uploads
                             </Typography>
-                            <Slider
-                              value={settings.batchSize}
+                            <Slider value={settings.batchSize}
                               onChange={(e, v) => setSettings(prev => ({ ...prev, batchSize: v }))}
                               min={1}
                               max={10}
@@ -654,11 +617,10 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                               ]}
                             />
                             
-                            <Typography variant="body2" gutterBottom sx={{ display: "flex", mt: 2 } as any}>
+                            <Typography variant="outlined" gutterBottom sx={{ display: "flex", mt: 2 } as any}>
                               Delay: {settings.delayBetweenBatches}ms between batches
                             </Typography>
-                            <Slider
-                              value={settings.delayBetweenBatches}
+                            <Slider value={settings.delayBetweenBatches}
                               onChange={(e, v) => setSettings(prev => ({ ...prev, delayBetweenBatches: v }))}
                               min={500}
                               max={5000}
@@ -675,21 +637,18 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
 
                       {/* Unmatched Tab */}
                       {activeTab ===2 && matchingResults.unmatched.csvRows.length > 0 && (
-                        <Box sx={{ display: "flex", maxHeight: 300, overflow: 'auto' } as any}>
-                          <Typography variant="body2" color="text.secondary" gutterBottom>
+                        <Box sx={{ display: "flex", maxHeight: 300, overflow: 'auto' } as any}></
+                          <Typography variant="outlined" color="text.secondary" gutterBottom>
                             Products without matching images:
                           </Typography>
                           <List dense>
-                            {matchingResults.unmatched.csvRows.map((row: any index: any: any: any: any) => (
-                              <ListItem key={index}>
+                            {matchingResults.unmatched.csvRows.map((row: any index: any) => (
+                              <ListItem key={index}></
                                 <ListItemIcon>
-                                  <WarningIcon color="warning" />
-                                </ListItemIcon>
-                                <ListItemText
-                                  primary={`SKU: ${row.sku} - REF: ${row.ref}`}
+                                  <WarningIcon color="warning" /></WarningIcon>
+                                <ListItemText primary={`SKU: ${row.sku} - REF: ${row.ref}`}
                                   secondary={`Product: ${row.productName || 'No name'} | Expected: ${row.imageName || 'Not specified'}`}
-                                />
-                              </ListItem>
+                                /></ListItemText>
                             ))}
                           </List>
                         </Box>
@@ -698,7 +657,7 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                   </Paper>
 
                   <Button
-                    variant="body2"
+                    variant="outlined"
                     onClick={handleStartUpload}
                     disabled={matchingResults.matches.length ===0}
                     startIcon={<UploadIcon />}
@@ -711,29 +670,29 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
           </Step>
 
           {/* Step 4: Process & Upload */}
-          <Step>
+          <Step></
             <StepLabel>
               <Typography variant="h6">Process & Upload</Typography>
             </StepLabel>
             <StepContent>
               {uploadProgress && (
-                <Box sx={{ display: "flex", mb: 3 } as any}>
-                  <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', mb: 1 } as any}>
-                    <Typography variant="body2">
+                <Box sx={{ display: "flex", mb: 3 } as any}></
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 } as any}>
+                    <Typography variant="outlined">
                       Progress: {uploadProgress.current} of {uploadProgress.total}
                     </Typography>
-                    <Typography variant="body2">
+                    <Typography variant="outlined">
                       {((uploadProgress.current / uploadProgress.total) * 100).toFixed(1)}%
                     </Typography>
                   </Box>
                   <LinearProgress
-                    variant="body2"
+                    variant="outlined"
                     value={(uploadProgress.current / uploadProgress.total) * 100}
                     sx={{ display: "flex", mb: 2, height: 8, borderRadius: 4 } as any}
                   />
                   {uploadProgress.sku && (
-                    <Box>
-                      <Typography variant="body2" color="primary">
+                    <Box></
+                      <Typography variant="outlined" color="primary">
                         Current: SKU {uploadProgress.sku} - {uploadProgress.fileName}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
@@ -745,12 +704,12 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
               )}
 
               {uploadResults && processingStats && (
-                <Box>
+                <Box></
                   <Alert severity="success" sx={{ display: "flex", mb: 3 } as any}>
                     <Typography variant="body1" gutterBottom>
                       Calligraph upload completed successfully!
                     </Typography>
-                    <Typography variant="body2">
+                    <Typography variant="outlined">
                       {processingStats.successful} successful, {processingStats.failed} failed
                       {processingStats.compressionRatio > 0 && (
                         <> • {processingStats.compressionRatio}% size reduction</>
@@ -760,9 +719,9 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                   </Alert>
 
                   {/* Enhanced Results Summary */}
-                  <Grid { ...{container: true}} spacing={2} sx={{ display: "flex", mb: 3 } as any}>
+                  <Grid { ...{container: true}} spacing={2} sx={{ display: "flex", mb: 3 } as any}></
                     <Grid item xs={6} sm={3}>
-                      <Card sx={{ display: "flex", textAlign: 'center' } as any}>
+                      <Card sx={{ display: "flex", textAlign: 'center' } as any}></
                         <CardContent sx={{ display: "flex", py: 2 } as any}>
                           <Typography variant="h4" color="success.main">
                             {processingStats.successful}
@@ -771,9 +730,9 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                         </CardContent>
                       </Card>
                     </Grid>
-                    <Grid item xs={6} sm={3}>
+                    <Grid item xs={6} sm={3}></
                       <Card sx={{ display: "flex", textAlign: 'center' } as any}>
-                        <CardContent sx={{ display: "flex", py: 2 } as any}>
+                        <CardContent sx={{ display: "flex", py: 2 } as any}></
                           <Typography variant="h4" color="error.main">
                             {processingStats.failed}
                           </Typography>
@@ -781,9 +740,9 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                         </CardContent>
                       </Card>
                     </Grid>
-                    <Grid item xs={6} sm={3}>
+                    <Grid item xs={6} sm={3}></
                       <Card sx={{ display: "flex", textAlign: 'center' } as any}>
-                        <CardContent sx={{ display: "flex", py: 2 } as any}>
+                        <CardContent sx={{ display: "flex", py: 2 } as any}></
                           <Typography variant="h4" color="info.main">
                             {processingStats.uniqueProducts}
                           </Typography>
@@ -791,9 +750,9 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                         </CardContent>
                       </Card>
                     </Grid>
-                    <Grid item xs={6} sm={3}>
+                    <Grid item xs={6} sm={3}></
                       <Card sx={{ display: "flex", textAlign: 'center' } as any}>
-                        <CardContent sx={{ display: "flex", py: 2 } as any}>
+                        <CardContent sx={{ display: "flex", py: 2 } as any}></
                           <Typography variant="h4" color="primary.main">
                             {processingStats.averageImagesPerProduct}
                           </Typography>
@@ -803,9 +762,9 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                     </Grid>
                   </Grid>
 
-                  <Box sx={{ display: "flex", display: 'flex', gap: 2, mb: 2 } as any}>
+                  <Box sx={{ display: 'flex', gap: 2, mb: 2 } as any}></
                     <Button
-                      variant="body2"
+                      variant="outlined"
                       startIcon={<DownloadIcon />}
                       onClick={downloadResults}
                     >
@@ -814,15 +773,15 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                   </Box>
 
                   {/* Detailed Results */}
-                  <Accordion>
+                  <Accordion></
                     <AccordionSummary expandIcon={<ExpandIcon />}>
                       <Typography>View Detailed Results</Typography>
                     </AccordionSummary>
-                    <AccordionDetails>
+                    <AccordionDetails></
                       <Box sx={{ display: "flex", maxHeight: 400, overflow: 'auto' } as any}>
-                        <TableContainer>
+                        <TableContainer></
                           <Table size="small">
-                            <TableHead>
+                            <TableHead></
                               <TableRow>
                                 <TableCell>Status</TableCell>
                                 <TableCell>SKU</TableCell>
@@ -835,8 +794,8 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                               </TableRow>
                             </TableHead>
                             <TableBody>
-                              {uploadResults.map((result: any index: any: any: any: any) => (
-                                <TableRow key={index}>
+                              {uploadResults.map((result: any index: any) => (
+                                <TableRow key={index}></
                                   <TableCell>
                                     {result.status === 'success' ? (
                                       <SuccessIcon color="success" fontSize="small" />
@@ -845,26 +804,22 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
                                     )}
                                   </TableCell>
                                   <TableCell>{result.sku}</TableCell>
-                                  <TableCell>
-                                    <Chip 
-                                      label={result.ref} 
+                                  <TableCell></
+                                    <Chip label={result.ref} 
                                       size="small"
                                   <TableCell>{result.file.name}</TableCell>
                                   <TableCell>{result.processedFileName}</TableCell>
-                                  <TableCell>
-                                    <Chip 
-                                      label={result.matchStrategy} 
+                                  <TableCell></
+                                    <Chip label={result.matchStrategy} 
                                       size="small"
-                                      }
-                                    />
-                                  </TableCell>
+                                    /></Chip>
                                   <TableCell>
                                     {(result.originalSize / 1024 / 1024).toFixed(2)}MB
                                     {result.processedSize && result.processedSize !== result.originalSize && (
                                       <> → {(result.processedSize / 1024 / 1024).toFixed(2)}MB</>
                                     )}
                                   </TableCell>
-                                  <TableCell>
+                                  <TableCell></
                                     <Typography variant="caption">
                                       {result.result.message}
                                     </Typography>
@@ -884,7 +839,7 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
         </Stepper>
       </DialogContent>
 
-      <DialogActions sx={{ display: "flex", p: 2, bgcolor: 'background.paper' } as any}>
+      <DialogActions sx={{ display: "flex", p: 2, bgcolor: 'background.paper' } as any}></
         <Button onClick={onClose} disabled={loading}>
           {uploadResults ? 'Close' : 'Cancel'}
         </Button>
@@ -895,7 +850,7 @@ const CalligraphBulkUploadDialog: React.FC<any> = ({ open, onClose, onComplete }
         )}
       </DialogActions>
     </Dialog>
-  )))));
+  );
 };
 
 export default CalligraphBulkUploadDialog;

@@ -85,22 +85,17 @@ const DashboardStats = ({ stats, loading  }: { stats loading: any }) => {
             color: 'primary',
             gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             description: 'Operating locations'
-        }
     ];
 
     if(loading) {
-        return(<Box sx={{ display: "flex", mt: 3 }}>
-                <StatsCards 
-                    cards={statsCards.map((card: any: any: any: any) => ({ ...card, value: '...' }))} 
+        return(<Box sx={{ display: "flex", mt: 3 }}></
+                <StatsCards cards={statsCards.map((card: any) => ({ ...card, value: '...' }))} 
                 />
             </Box>
         );
-    }
-
     return (
-        <Box sx={{ display: "flex", mt: 3 }}>
-            <StatsCards cards={statsCards.slice(0, 8)} />
-        </Box>
+        <Box sx={{ display: "flex", mt: 3 }}></
+            <StatsCards cards={statsCards.slice(0, 8)} /></StatsCards>
     );
 };
 

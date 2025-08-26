@@ -20,8 +20,6 @@ interface Field {
   placeholder?: string;
   options?: { label: string; value: string | number }[];
   validate?: (value) => string | undefined;
-}
-
 /**
  * Custom tab interface
  */
@@ -36,8 +34,6 @@ interface CustomTab {
     setErrors: React.Dispatch<React.SetStateAction<Record<string, string | null>>>;
     activeTab: number;
   }) => ReactNode;
-}
-
 /**
  * UnifiedEditWindow Props
  */
@@ -62,8 +58,6 @@ interface UnifiedEditWindowProps {
   cancelButtonText?: string;
   showTabs?: boolean;
   children?: ReactNode;
-}
-
 /**
  * Unified Edit Window Component
  * Provides a flexible, reusable edit dialog that can be customized by child components
@@ -101,7 +95,6 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
       setErrors(prev => ({ ...prev,
         [fieldName]: null as unknown as string
       }));
-    }
   }, [errors]);
 
   // Validate form data
@@ -111,14 +104,10 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
     fields.forEach((field) => {
       if (field.required && (!formData[field.name] || formData[field.name].toString().trim() ==='')) {
         newErrors[field.name] = `${field.label} is required`;
-      }
-      
       if(field.validate && formData[field.name]) {
         const validationError = field.validate(formData[field.name]);
         if(validationError) {
           newErrors[field.name] = validationError;
-        }
-      }
     });
     
     setErrors(newErrors);
@@ -129,15 +118,12 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
   const handleSave = useCallback(async () => {
     if (!validateForm()) {
       return;
-    }
-    
     try {
       await onSave(formData);
       onClose();
     } catch(error: any) {
       console.error('Save failed:', error);
       // Handle save error - could set a general error state
-    }
   }, [formData, onSave, onClose, validateForm]);
 
   // Handle close
@@ -157,8 +143,7 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
       case 'text':
       case 'email':
       case 'url':
-        return(<TextField
-            key={field.name}
+        return(<TextField key={field.name}
             fullWidth
             label={field.label}
             type={field.type}
@@ -208,7 +193,7 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
             }}
           >
             <option value="">{field.placeholder || 'Select...'}</option>
-            {field.options?.map((option: any: any: any: any) => (
+            {field.options?.map((option: any) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -217,8 +202,7 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
         );
       
       default:
-        return(<TextField
-            key={field.name}
+        return(<TextField key={field.name}
             fullWidth
             label={field.label}
             value={value}
@@ -228,7 +212,6 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
             required={field.required}
             disabled={field.disabled}
             margin
-    }
   }, [formData, errors, handleFieldChange]);
 
   // Render content based on customization options
@@ -240,8 +223,6 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
         handleFieldChange,
         errors
       });
-    }
-    
     // If children are provided, render them
     if(children) {
       if (React.isValidElement(children)) {
@@ -252,53 +233,43 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
           errors,
           setErrors
         } as React.HTMLAttributes<HTMLElement>);
-      }
       return children;
-    }
-    
     // Default field rendering
     return (
-      <Box sx={{ display: "flex", display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
         {fields.map(renderField)}
       </Box>
     );
   };
 
-  return(<Dialog
-      open={open}
+  return(<Dialog open={open}
       onClose={handleClose}
       maxWidth={maxWidth}
       fullWidth={fullWidth}
       fullScreen={fullScreen}
       aria-labelledby="unified-edit-window-title"
       PaperProps
-        }
-      }}
-    >
-      <DialogTitle 
-        id
+      }}></
+      <DialogTitle id
           justifyContent: 'space-between', 
           alignItems: 'center',
           borderBottom: 1,
           borderColor: 'divider'
-        }}
-      >
+        }}>
         <Typography variant="h6">
           {title}
         </Typography>
-        <IconButton onClick={handleClose} size="small" aria-label="close">
-          <Close />
-        </IconButton>
+        <IconButton onClick={handleClose} size="small" aria-label="close"></
+          <Close /></Close>
       </DialogTitle>
 
       {/* Tabs if enabled */}
       {showTabs && customTabs && (
-        <Tabs 
-          value={activeTab} 
+        <Tabs value={activeTab} 
           onChange={(e) => (e: React.SyntheticEvent, newValue: number) => setActiveTab(newValue)}
           sx={{ display: "flex", borderBottom: 1, borderColor: 'divider' }}
         >
-          {customTabs.map((tab: any index: any: any: any: any) => (
+          {customTabs.map((tab, index) => (
             <Tab key={index} icon={tab.icon ? tab.icon as React.ReactElement : undefined} label={tab.label} />
           ))}
         </Tabs>
@@ -321,7 +292,7 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
         )}
       </DialogContent>
 
-      <DialogActions sx={{ display: "flex", p: 2, borderTop: 1, borderColor: 'divider' }}>
+      <DialogActions sx={{ display: "flex", p: 2, borderTop: 1, borderColor: 'divider' }}></
         <Button 
           onClick={handleClose} 
           startIcon={<Cancel />}
@@ -331,7 +302,7 @@ const UnifiedEditWindow: React.FC<UnifiedEditWindowProps> = ({
         </Button>
         <Button 
           onClick={handleSave} 
-          variant="body2"
+          variant="outlined"
           startIcon={<Save />}
           disabled={loading}
         >

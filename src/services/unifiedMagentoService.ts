@@ -30,51 +30,51 @@ class UnifiedMagentoService extends BaseApiService  {
     };
 
     this._initializeMagento();
-  }
-
   _initializeMagento() {
     this._loadMagentoSettings();
-  }
-
   _loadMagentoSettings() {
     try {
       const settings = this.state.settings?.magento;
       if (settings) this.initializeMagento(settings);
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
     } catch (error) {
       console.warn('Failed to load Magento settings:', error.message);
-    }
-  }
-
   // Public initialize method (alias for initializeMagento for compatibility)
   initialize(settings) {
     return this.initializeMagento(settings);
-  }
-
   initializeMagento(settings) {
     // Update parent settings
     try {
       if(this.updateSettings) {
+  } catch (error) {
+    console.error(error);
+
+
+  } catch (error) {
+    console.error(error);
         this.updateSettings({ magento: settings });
-      }
     } catch (error) {
       console.warn('Failed to update parent settings:', error.message);
-    }
-    
     this.magentoState.directEnabled = settings?.enableDirectConnection || false;
     
     if(this.magentoState?.directEnabled) {
       try {
         directMagentoClient.initialize(settings);
         console.log('✅ Direct Magento connection enabled');
+  } catch (error) {
+    console.error(error);
+
+
+  } catch (error) {
+    console.error(error);
       } catch (error) {
         console.error('❌ Direct Magento connection failed:', error.message);
         this.magentoState.directEnabled = false;
-      }
-    }
-    
     console.log(`🔌 Magento Mode: ${this.magentoState?.directEnabled ? 'Direct' : 'Proxy'}`);
-  }
-
   // Override main request method with intelligent routing
   async request(method, endpoint, data, config = {}) {
     const startTime = Date.now();
@@ -85,6 +85,12 @@ class UnifiedMagentoService extends BaseApiService  {
         // Try direct connection first if enabled
         if(this.magentoState?.directEnabled && directMagentoClient?.initialized) {
             try {
+  } catch (error) {
+    console.error(error);
+
+
+  } catch (error) {
+    console.error(error);
                 console.log(`🔗 Direct API call: ${method.toUpperCase()} ${endpoint}`);
                 response = await directMagentoClient[method.toLowerCase()](endpoint, data, config);
                 this.magentoState.directMetrics.success++;
@@ -95,12 +101,9 @@ class UnifiedMagentoService extends BaseApiService  {
                 this.magentoState.directMetrics.errors++;
                 
                 // Don't fallback to proxy for 404 errors (endpoint doesn't exist)
-                if(directError.response?.status ===404) {
+                if(directError.response?.status === 404) {
                     throw directError;
-                }
-            }
-        }
-        
+
         // Fallback to proxy connection
         console.log(`🔄 Proxy API call: ${method.toUpperCase()} ${endpoint}`);
         response
@@ -136,34 +139,33 @@ class UnifiedMagentoService extends BaseApiService  {
         // Don't show toast for 404 errors (expected for non-existent endpoints)
         if(error.response?.status !== 404) {
             this._handleError(error, method, endpoint);
-        }
-        
+
         throw error;
     } finally {
         const duration = Date.now() - startTime;
         this.state.metrics.avgResponseTime = (this.state.metrics.avgResponseTime + duration) / 2;
-    }
-}
-
   // Override HTTP methods to use parent's parameter validation
-  async get(endpoint, params = {}) {
+  async get(endpoint: string, params: any = {}) {
     return super.get(endpoint, params);
-  }
-
   // Enhanced metrics including Magento-specific data
   getMetrics() {
-    return { ...super.getMetrics(),
+    return { 
+      ...super.getMetrics(),
       magento: {
         directEnabled: this.magentoState?.directEnabled,
         directMetrics: this.magentoState.directMetrics,
         proxyMetrics: this.magentoState.proxyMetrics
-      }
     };
-  }
-
   async testConnection() {
     try {
+  } catch (error) {
+    console.error(error);
+
       const response = await this.get('/admin/token', { skipCache: true });
+      return { success: true, data: response };
+    } catch (error) {
+      console.error('Connection test failed:', error);
+      return { success: false, error };
       return {
         success: true,
         message: 'Connection successful',
@@ -177,10 +179,6 @@ class UnifiedMagentoService extends BaseApiService  {
         mode: this.state?.directEnabled ? 'Direct' : 'Proxy',
         error
       };
-    }
-  }
-}
-
 // Create singleton instance
 const unifiedMagentoService = new UnifiedMagentoService();
 export default unifiedMagentoService;

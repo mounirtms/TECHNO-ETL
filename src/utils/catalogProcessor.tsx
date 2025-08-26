@@ -6,12 +6,12 @@ import React from 'react';
 
 // Simple CSV parser for catalog processing
 const parseCSVContent = (csvContent) => {
-  const lines = csvContent.split('\n').filter((line: any: any: any: any) => line.trim());
+  const lines = csvContent.split('\n').filter((line: any) => line.trim());
   if(lines.length < 2) {
     throw new Error('CSV file must contain at least a header and one data row');
-  }
 
-  const headers = lines[0].split(',').map((h: any: any: any: any) => h.trim().replace(/"/g, ''));
+
+  const headers = lines[0].split(',').map((h: any) => h.trim().replace(/"/g, ''));
   const products = [];
 
   for(let i = 1; i < lines.length; i++) {
@@ -25,9 +25,6 @@ const parseCSVContent = (csvContent) => {
 
     if (product?.sku && product?.sku.trim() !== '') {
       products.push(product);
-    }
-  }
-
   return products;
 };
 
@@ -44,17 +41,15 @@ const parseCsvLine = (line) => {
       if(inQuotes && line[i + 1] ==='"') {
         current += '"';
         i++;
+
       } else {
         inQuotes
-      }
     } else if(char === ", " && !inQuotes) {
       values.push(current.trim());
       current
+
     } else {
       current += char;
-    }
-  }
-
   values.push(current.trim());
   return values;
 };
@@ -84,8 +79,8 @@ export const extractValidBrands = (catalogData) => {
       const brandMatch = product.additional_attributes.match(/mgs_brand=([^,]+)/);
       if(brandMatch) {
         brands.add(brandMatch[1]);
-      }
-    }
+
+
   });
   
   return Array.from(brands).sort();
@@ -102,8 +97,8 @@ export const extractValidDimensions = (catalogData) => {
       const dimensionMatch = product.additional_attributes.match(/dimension=([^,]+)/);
       if(dimensionMatch) {
         dimensions.add(dimensionMatch[1]);
-      }
-    }
+
+
   });
   
   return Array.from(dimensions).sort();
@@ -122,9 +117,9 @@ export const extractValidCategories = (catalogData) => {
       categoryPaths.forEach((path) => {
         if (path.trim()) {
           categories.add(path.trim());
-        }
+
+
       });
-    }
   });
   
   return Array.from(categories).sort();
@@ -140,35 +135,28 @@ export const normalizeProductData = (product, validBrands, validDimensions) => {
   Object.entries(DEFAULT_VALUES).forEach(([key, defaultValue]) => {
     if (!normalized[key] || normalized[key].trim() ==='') {
       normalized[key] = defaultValue;
-    }
   });
   
   // Ensure product_type is lowercase
   if(normalized.product_type) {
     normalized.product_type = normalized.product_type.toLowerCase();
-  }
-  
+
+
   // Ensure price is present and numeric
   if (!normalized.price || isNaN(parseFloat(normalized.price))) {
     normalized.price = '0';
   } else {
     normalized.price = parseFloat(normalized.price).toString();
-  }
-  
   // Ensure weight is numeric
   if (!normalized.weight || isNaN(parseFloat(normalized.weight))) {
     normalized.weight = '0';
   } else {
     normalized.weight = parseFloat(normalized.weight).toString();
-  }
-  
   // Ensure qty is numeric
   if (!normalized.qty || isNaN(parseInt(normalized.qty))) {
     normalized.qty = '0';
   } else {
     normalized.qty = parseInt(normalized.qty).toString();
-  }
-  
   // Fix additional_attributes
   if(normalized.additional_attributes) {
     let attributes = normalized.additional_attributes;
@@ -178,31 +166,37 @@ export const normalizeProductData = (product, validBrands, validDimensions) => {
     if (brandMatch && !validBrands.includes(brandMatch[1])) {
       // Replace with a valid brand or remove
       attributes = attributes.replace(/mgs_brand=[^,]+/, 'mgs_brand=TECHNO');
-    }
-    
+
+
     // Ensure dimension is present
     if (!attributes.includes('dimension=')) {
       attributes += ',dimension=Standard';
-    }
-    
     normalized.additional_attributes = attributes;
   } else {
     // Add default attributes if missing
     normalized.additional_attributes = 'mgs_brand=TECHNO,dimension=Standard';
-  }
-  
   return normalized;
 };
 
 /**
  * Process the full catalog and create import-ready CSV
  */
-export const processCatalogToImportCSV = async(catalogCsvContent) => {
+export const processCatalogToImportCSV = async (catalogCsvContent) => {
+
+
   try {
     console.log('🔄 Processing catalog CSV...');
     
     // Parse the catalog CSV
     const catalogData = parseCSVContent(catalogCsvContent);
+};
+  } catch (error) {
+    console.error(error);
+
+};
+  } catch (error) {
+    console.error(error);
+
     console.log(`📊 Parsed ${catalogData.length} products from catalog`);
     
     // Extract valid values from catalog
@@ -215,13 +209,13 @@ export const processCatalogToImportCSV = async(catalogCsvContent) => {
     console.log(`✅ Found ${validCategories.length} valid categories`);
     
     // Normalize all products
-    const normalizedProducts = catalogData.map((product: any: any: any: any) => 
+    const normalizedProducts = catalogData.map((product: any) => 
       normalizeProductData(product, validBrands, validDimensions)
     );
     
     // Separate by product type
-    const simpleProducts = normalizedProducts.filter((p: any: any: any: any) => p.product_type === 'simple');
-    const configurableProducts = normalizedProducts.filter((p: any: any: any: any) => p.product_type === 'configurable');
+    const simpleProducts = normalizedProducts.filter((p: any) => p.product_type === 'simple');
+    const configurableProducts = normalizedProducts.filter((p: any) => p.product_type === 'configurable');
     
     console.log(`📦 Simple products: ${simpleProducts.length}`);
     console.log(`⚙️ Configurable products: ${configurableProducts.length}`);
@@ -240,13 +234,11 @@ export const processCatalogToImportCSV = async(catalogCsvContent) => {
         brands: validBrands.length,
         dimensions: validDimensions.length,
         categories: validCategories.length
-      }
     };
     
   } catch(error: any) {
     console.error('❌ Error processing catalog:', error);
     throw error;
-  }
 };
 
 /**
@@ -255,24 +247,22 @@ export const processCatalogToImportCSV = async(catalogCsvContent) => {
 export const convertProductsToCSV = (products) => {
   if(!products || products.length ===0) {
     return '';
-  }
-  
+
+
   // Get headers from the first product
   const headers = Object.keys(products[0]);
   
   // Create CSV content
   const csvLines = [
     headers.join(','), // Header row
-    ...products.map((product: any: any: any: any) => 
-      headers.map((header: any: any: any: any) => {
+    ...products.map((product: any) => 
+      headers.map((header: any) => {
         const value = product[header] || '';
         // Escape commas and quotes in values
         if (value.toString().includes(',') || value.toString().includes('"')) {
           return `"${value.toString().replace(/"/g, '""')}"`;
-        }
         return value.toString();
       }).join(',')
-    )
   ];
   
   return csvLines.join('\n');
@@ -295,8 +285,6 @@ export const createBatchedCSVs = (products, batchSize = 100) => {
       productCount: batch.length,
       csvContent
     });
-  }
-  
   return batches;
 };
 

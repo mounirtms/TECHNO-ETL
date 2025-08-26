@@ -13,26 +13,18 @@ export interface SettingsService {
   import(data: string): Promise<void>;
   migrate(fromVersion: string, toVersion: string): Promise<void>;
   validate(settings): Promise<ValidationResult>;
-}
-
 export interface ValidationResult {
   valid: boolean;
   errors: ValidationError[];
   warnings: ValidationWarning[];
-}
-
 export interface ValidationError {
   field: string;
   message: string;
   code: string;
-}
-
 export interface ValidationWarning {
   field: string;
   message: string;
   code: string;
-}
-
 // API service types
 export interface ApiService {
   get<T = any>(url: string, params?: Record<string, any>): Promise<T>;
@@ -49,8 +41,6 @@ export interface ApiService {
   setRetryAttempts(attempts: number): void;
   addInterceptor(type: 'request' | 'response', interceptor): void;
   removeInterceptor(type: 'request' | 'response', id: string): void;
-}
-
 // Cache service types
 export interface CacheService {
   get<T = any>(key: string): Promise<T | null>;
@@ -64,8 +54,6 @@ export interface CacheService {
   size(): Promise<number>;
   keys(pattern?: string): Promise<string[]>;
   flush(): Promise<void>;
-}
-
 // Logger service types
 export interface LoggerService {
   debug(message: string, meta? ): void;
@@ -77,8 +65,6 @@ export interface LoggerService {
   addTransport(transport: LogTransport): void;
   removeTransport(name: string): void;
   createChild(context: string): LoggerService;
-}
-
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'fatal';
 
 export interface LogTransport {
@@ -87,8 +73,6 @@ export interface LogTransport {
   format?: (log: LogEntry) => string;
   destination: 'console' | 'file' | 'remote';
   options?: Record<string, any>;
-}
-
 export interface LogEntry {
   level: LogLevel;
   message: string;
@@ -96,8 +80,6 @@ export interface LogEntry {
   context?: string;
   meta?: any;
   error?: Error;
-}
-
 // Authentication service types
 export interface AuthService {
   login(credentials: LoginCredentials): Promise<AuthResult>;
@@ -116,15 +98,11 @@ export interface AuthService {
   getToken(): Promise<string | null>;
   setToken(token: string): Promise<void>;
   clearToken(): Promise<void>;
-}
-
 export interface LoginCredentials {
   email: string;
   password: string;
   rememberMe?: boolean;
   captcha?: string;
-}
-
 export interface RegisterData {
   email: string;
   password: string;
@@ -132,15 +110,11 @@ export interface RegisterData {
   lastName: string;
   acceptTerms: boolean;
   captcha?: string;
-}
-
 export interface AuthResult {
   user: User;
   token: string;
   refreshToken: string;
   expiresIn: number;
-}
-
 export interface User {
   id: string;
   email: string;
@@ -153,8 +127,6 @@ export interface User {
   lastLogin?: Date;
   createdAt: Date;
   updatedAt: Date;
-}
-
 // Notification service types
 export interface NotificationService {
   show(notification: Notification): string;
@@ -167,8 +139,6 @@ export interface NotificationService {
   loading(message: string, options?: NotificationOptions): string;
   subscribe(callback: (notification: Notification) => void): () => void;
   unsubscribe(callback: (notification: Notification) => void): void;
-}
-
 export interface Notification {
   id: string;
   type: 'success' | 'error' | 'warning' | 'info' | 'loading';
@@ -181,8 +151,6 @@ export interface Notification {
   sticky?: boolean;
   progress?: number;
   timestamp: Date;
-}
-
 export interface NotificationOptions {
   title?: string;
   duration?: number;
@@ -190,14 +158,10 @@ export interface NotificationOptions {
   actions?: NotificationAction[];
   position?: NotificationPosition;
   sticky?: boolean;
-}
-
 export interface NotificationAction {
   label: string;
   action: () => void;
   primary?: boolean;
-}
-
 export type NotificationPosition = 
   | 'top-left' 
   | 'top-center' 
@@ -217,8 +181,6 @@ export interface FileService {
   validateFile(file: File, rules: FileValidationRules): ValidationResult;
   compressImage(file: File, options?: ImageCompressionOptions): Promise<File>;
   convertFormat(file: File, format: string): Promise<File>;
-}
-
 export interface FileUploadResult {
   id: string;
   path: string;
@@ -227,8 +189,6 @@ export interface FileUploadResult {
   size: number;
   mimeType: string;
   checksum?: string;
-}
-
 export interface FileInfo {
   id: string;
   name: string;
@@ -239,8 +199,6 @@ export interface FileInfo {
   updatedAt: Date;
   isDirectory: boolean;
   children?: FileInfo[];
-}
-
 export interface FileValidationRules {
   maxSize?: number;
   allowedTypes?: string[];
@@ -249,15 +207,11 @@ export interface FileValidationRules {
   maxWidth?: number;
   minHeight?: number;
   maxHeight?: number;
-}
-
 export interface ImageCompressionOptions {
   quality?: number;
   maxWidth?: number;
   maxHeight?: number;
   format?: 'jpeg' | 'png' | 'webp';
-}
-
 // Search service types
 export interface SearchService<T = any> {
   search(query: string, options?: SearchOptions): Promise<SearchResult<T>>;
@@ -268,8 +222,6 @@ export interface SearchService<T = any> {
   clear(): Promise<void>;
   reindex(): Promise<void>;
   getStats(): Promise<SearchStats>;
-}
-
 export interface SearchOptions {
   fields?: string[];
   filters?: Record<string, any>;
@@ -277,18 +229,12 @@ export interface SearchOptions {
   pagination?: PaginationOptions;
   highlight?: boolean;
   facets?: string[];
-}
-
 export interface SortOption {
   field: string;
   direction: 'asc' | 'desc';
-}
-
 export interface PaginationOptions {
   page: number;
   pageSize: number;
-}
-
 export interface SearchResult<T> {
   hits: SearchHit<T>[];
   total: number;
@@ -298,28 +244,20 @@ export interface SearchResult<T> {
   facets?: Record<string, FacetResult[]>;
   suggestions?: string[];
   executionTime: number;
-}
-
 export interface SearchHit<T> {
   id: string;
   document: T;
   score: number;
   highlights?: Record<string, string[]>;
-}
-
 export interface FacetResult {
   value: string;
   count: number;
-}
-
 export interface SearchStats {
   totalDocuments: number;
   indexSize: number;
   lastIndexed: Date;
   searchesPerformed: number;
   averageSearchTime: number;
-}
-
 // Theme service types
 export interface ThemeService {
   getCurrentTheme(): Promise<ThemeConfig>;
@@ -332,8 +270,6 @@ export interface ThemeService {
   importTheme(data: string): Promise<string>;
   previewTheme(config: ThemeConfig): void;
   applyTheme(id: string): Promise<void>;
-}
-
 export interface ThemeConfig {
   id?: string;
   name: string;
@@ -350,8 +286,6 @@ export interface ThemeConfig {
   spacing: number;
   typography: TypographyConfig;
   components?: ComponentThemeConfig;
-}
-
 export interface TypographyConfig {
   fontFamily: string;
   fontSize: number;
@@ -365,23 +299,17 @@ export interface TypographyConfig {
     h5: TypographyVariant;
     h6: TypographyVariant;
   };
-}
-
 export interface TypographyVariant {
   fontSize: number;
   fontWeight: number;
   lineHeight: number;
   letterSpacing?: number;
-}
-
 export interface ComponentThemeConfig {
   button?: any;
   input?: any;
   card?: any;
   modal?: any;
   table?: any;
-}
-
 export interface ThemeInfo {
   id: string;
   name: string;
@@ -391,8 +319,6 @@ export interface ThemeInfo {
   version?: string;
   isDefault?: boolean;
   isCustom?: boolean;
-}
-
 // Analytics service types
 export interface AnalyticsService {
   track(event: AnalyticsEvent): Promise<void>;
@@ -408,8 +334,6 @@ export interface AnalyticsService {
   isEnabled(): boolean;
   enable(): void;
   disable(): void;
-}
-
 export interface AnalyticsEvent {
   name: string;
   properties?: Record<string, any>;
@@ -417,8 +341,6 @@ export interface AnalyticsEvent {
   sessionId?: string;
   timestamp?: Date;
   context?: AnalyticsContext;
-}
-
 export interface AnalyticsContext {
   page?: {
     url: string;
@@ -445,8 +367,6 @@ export interface AnalyticsContext {
     city?: string;
     timezone?: string;
   };
-}
-
 // Export service factory type
 export interface ServiceFactory {
   createApiService(config): ApiService;
@@ -458,8 +378,6 @@ export interface ServiceFactory {
   createSearchService(config): SearchService;
   createThemeService(config): ThemeService;
   createAnalyticsService(config): AnalyticsService;
-}
-
 // Service registry type
 export interface ServiceRegistry {
   register<T>(name: string, service: T): void;
@@ -468,8 +386,6 @@ export interface ServiceRegistry {
   has(name: string): boolean;
   list(): string[];
   clear(): void;
-}
-
 // Service configuration types
 export interface ServiceConfig {
   name: string;
@@ -477,8 +393,6 @@ export interface ServiceConfig {
   options: Record<string, any>;
   dependencies?: string[];
   priority?: number;
-}
-
 export interface ServiceManager {
   register(config: ServiceConfig, factory: () => any): void;
   unregister(name: string): void;
@@ -488,12 +402,9 @@ export interface ServiceManager {
   getService<T>(name: string): T | null;
   getStatus(name?: string): ServiceStatus | Record<string, ServiceStatus>;
   onStatusChange(callback: (name: string, status: ServiceStatus) => void): () => void;
-}
-
 export interface ServiceStatus {
   name: string;
   status: 'stopped' | 'starting' | 'running' | 'stopping' | 'error';
   error?: Error;
   startTime?: Date;
-  uptime?: number;
-}
+  uptime?: number;

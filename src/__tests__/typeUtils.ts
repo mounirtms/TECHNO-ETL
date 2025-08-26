@@ -1,70 +1,38 @@
-/**
- * TypeScript Type Assertion Test Utilities
- * 
- * This file contains utilities for writing type assertion tests that verify
- * TypeScript types are working correctly at compile-time.
- */
+import { isObject, isString, isNumber, isBoolean, isArray, isFunction } from '../utils/typeUtils';
 
-// Note: Using local type assertion functions instead of tsd module
+describe('Type Utility Functions', () => {
+  it('should correctly identify an object', () => {
+    expect(isObject({})).toBe(true);
+    expect(isObject([])).toBe(false);
+    expect(isObject(null)).toBe(false);
+    expect(isObject(undefined)).toBe(false);
+    expect(isObject('string')).toBe(false);
+  });
 
-/**
- * Type Assertion Functions
- * 
- * These functions don't actually run anything at runtime, they're just used
- * to make type assertions at compile-time.
- */
+  it('should correctly identify a string', () => {
+    expect(isString('hello')).toBe(true);
+    expect(isString(123)).toBe(false);
+  });
 
-/**
- * Assert that a value has a specific type (exact match)
- * @param value The value to check
- * @param _type Placeholder for the expected type (only used at compile-time)
- */
-export function assertType<T>(_actual: unknown, _expectedType: T) {
-  // This function does nothing at runtime
-  // It's only used for type checking during compilation
-}
+  it('should correctly identify a number', () => {
+    expect(isNumber(123)).toBe(true);
+    expect(isNumber('123')).toBe(false);
+  });
 
-/**
- * Assert that a value is assignable to a specific type
- * @param value The value to check
- * @param _type Placeholder for the expected type (only used at compile-time)
- */
-export function assertAssignable<T>(_value: unknown, _expectedType: T) {
-  // This function does nothing at runtime
-  // It's only used for type checking during compilation
-}
+  it('should correctly identify a boolean', () => {
+    expect(isBoolean(true)).toBe(true);
+    expect(isBoolean(false)).toBe(true);
+    expect(isBoolean(0)).toBe(false);
+  });
 
-/**
- * Assert that a value is not assignable to a specific type
- * @param value The value to check
- * @param _type Placeholder for the expected type (only used at compile-time)
- */
-export function assertNotAssignable<T>(_value: unknown, _expectedType: T) {
-  // This function does nothing at runtime
-  // It's only used for type checking during compilation
-}
+  it('should correctly identify an array', () => {
+    expect(isArray([])).toBe(true);
+    expect(isArray({})).toBe(false);
+  });
 
-/**
- * Verify that an error is thrown when a type is used incorrectly
- * This actually doesn't do anything at runtime, it's just a marker for a comment
- * that explains what type error should occur at compile-time.
- */
-export function expectError(_comment: string) {
-  // This function does nothing at runtime
-  // It's just a marker for documenting expected compile-time errors
-}
-
-/**
- * A type that represents any function
- */
-export type AnyFunction = (...args: any[]) => any;
-
-/**
- * Helper type to extract parameter types from a function type
- */
-export type Parameters<T extends AnyFunction> = T extends (...args: infer P) => any ? P : never;
-
-/**
- * Helper type to extract return type from a function type
- */
-export type ReturnType<T extends AnyFunction> = T extends (...args: any[]) => infer R ? R : never;
+  it('should correctly identify a function', () => {
+    expect(isFunction(() => {})).toBe(true);
+    expect(isFunction(function() {})).toBe(true);
+    expect(isFunction({})).toBe(false);
+  });
+});

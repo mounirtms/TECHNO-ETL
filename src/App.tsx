@@ -27,7 +27,6 @@ const OptimizedRouter = lazy(() => import('./router/OptimizedRouter'));
 const AppLoading = () => (
   <Box
     sx={{
-      display: "flex",
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',

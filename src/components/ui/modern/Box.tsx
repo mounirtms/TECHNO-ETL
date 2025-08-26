@@ -5,8 +5,6 @@ interface BoxProps extends React.HTMLAttributes<HTMLDivElement> {
   component?: keyof JSX.IntrinsicElements;
   sx?: Record<string, any>; // For compatibility during migration
   children?: React.ReactNode;
-}
-
 /**
  * Modern Box component - replacement for MUI Box
  * Uses Tailwind CSS classes for styling
@@ -51,7 +49,6 @@ export const Box = React.forwardRef<HTMLDivElement, BoxProps>(
         {children}
       </Component>
     );
-  }
 );
 
 Box.displayName = 'Box';

@@ -43,19 +43,13 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
         if(!categories) {
             console.log('⚠️ No categories provided');
             return result;
-        }
-
         if (!Array.isArray(categories)) {
             console.log('📦 Converting single category to array');
             categories
-        }
-
         categories.forEach((category, index) => {
             if(!category || !category?.id) {
                 console.log('⚠️ Skipping invalid category:', category);
                 return;
-            }
-
             // Create a unique path-based identifier
             const currentPath = parentPath ? `${parentPath}-${category?.id}` : `${category?.id}`;
             console.log(`🏷️ Processing category: ${category.name} (ID: ${category?.id}, Path: ${currentPath})`);
@@ -89,7 +83,6 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
                     result,
                     currentPath
                 );
-            }
         });
 
         console.log(`📊 Total processed categories at level ${level}:`, result.length);
@@ -107,7 +100,6 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
             } else {
                 console.log(`📂 Expanding category: ${id}`);
                 newSet.add(id);
-            }
             console.log('🗂️ Updated expanded rows:', Array.from(newSet));
             return newSet;
         });
@@ -117,7 +109,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
     useEffect(() => {
         if(allCategories.length > 0) {
             console.log('🔄 Updating visible categories based on expansion state');
-            const visibleCategories = allCategories?.filter((cat: any: any: any: any) => {
+            const visibleCategories = allCategories?.filter((cat: any) => {
                 // Root categories are always visible
                 if (cat?.level ===0) return true;
 
@@ -126,7 +118,6 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
             });
             console.log('👁️ Updated visible categories:', visibleCategories);
             setData(visibleCategories);
-        }
     }, [allCategories, expandedRows]);
 
     // Create tree column with expand/collapse functionality
@@ -142,7 +133,6 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
             const level = row?.level || 0;
 
             return(<Box sx={{
-                    display: "flex",
                     display: 'flex',
                     alignItems: 'center',
                     pl: level * 3, // Indent based on level
@@ -151,8 +141,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
                 }}>
                     {/* Expand/Collapse Button */}
                     {hasChildren ? (
-                        <Box
-                            component
+                        <Box component
                                 console.log(`🔄 Toggling expansion for category: ${row.name} (ID: ${row.originalId})`);
                                 handleRowExpand(row.originalId);
                             }}
@@ -166,13 +155,10 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
                                 '&:hover': {
                                     backgroundColor: 'action.hover',
                                     color: 'primary.main'
-                                }
-                            }}
-                        >
+                            }}>
                             {isExpanded ?
                                 <KeyboardArrowDownIcon fontSize="small" /> :
                                 <KeyboardArrowRightIcon fontSize="small" />
-                            }
                         </Box>
                     ) : (
                         <Box sx={{ display: "flex", width: 20, mr: 1 }} /> // Spacer for alignment
@@ -187,33 +173,28 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
                     />
 
                     {/* Category Name */}
-                    <Box
-                        component
+                    <Box component
                             color: level ===0 ? 'primary.main' : 'text.primary',
                             fontSize: level ===0 ? '0.95rem' : '0.875rem'
-                        }}
-                    >
+                        }}>
                         {params.value || `Category ${row.originalId}`}
                     </Box>
 
                     {/* Level indicator for debugging */}
                     {process.env.NODE_ENV === 'development' && (
-                        <Box
-                            component
+                        <Box component
                                 px: 0.5,
                                 py: 0.25,
                                 backgroundColor: 'action.hover',
                                 borderRadius: '4px',
                                 fontSize: '0.75rem',
                                 color: 'text.secondary'
-                            }}
-                        >
+                            }}>
                             L{level}
                         </Box>
                     )}
                 </Box>
             );
-        }
     });
 
     // Grid columns configuration using ColumnFactory
@@ -244,7 +225,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
         const mergedColumns = mergeColumns(visibleColumns, generatedColumns);
 
         // Ensure proper column configuration
-        return mergedColumns.map((col: any: any: any: any) => ({ ...col,
+        return mergedColumns.map((col: any) => ({ ...col,
             // Keep visible columns as is, hide generated ones
             hide: visibleColumns.some(vc => vc.field ===col.field) ? false : true
         }));
@@ -265,15 +246,11 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
             if(filter?.is_active !== undefined) {
                 const isActive = filter.is_active === 'true' || filter.is_active ===true;
                 visibleCategories
-            }
-
             // Apply search filter if provided
             if(filter?.search) {
                 visibleCategories
-            }
-
             // Format categories for grid display
-            const formattedCategories = visibleCategories.map((category: any: any: any: any) =>
+            const formattedCategories = visibleCategories.map((category: any) =>
                 categoryService.formatCategoryForGrid(category)
             );
 
@@ -293,12 +270,11 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
             throw error;
         } finally {
             setLoading(false);
-        }
     }, [productId, expandedRows]);
 
     // Update category statistics
     const updateStats = useCallback((categories) => {
-        const newStats = categories.reduce((acc: any category: any: any: any: any) => ({
+        const newStats = categories.reduce((acc: any category: any) => ({
             total: acc.total + 1,
             active: acc.active + (category.is_active ? 1 : 0),
             inactive: acc.inactive + (!category.is_active ? 1 : 0)
@@ -310,7 +286,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
         setStats(newStats);
     }, []);
 
-    return(<Box>
+    return(<Box></
             <UnifiedGrid
             gridName
             columns={visibleColumns}
@@ -343,7 +319,6 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
                     value: stats.inactive,
                     icon: VisibilityOffIcon,
                     color: 'error'
-                }
             ]}
             defaultPageSize={10}
             pageSizeOptions={[10, 25, 50, 100]}
@@ -366,14 +341,12 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
                         const category = categoryService.findCategoryById(rowData.id);
                         setSelectedCategory(category);
                         setEditDialogOpen(true);
-                    }
                 },
                 delete: {
                     enabled: (rowData) => rowData.level > 1, // Don't allow deleting root categories
                     onClick: (rowData) => {
                         console.log('Deleting category:', rowData);
                         toast.info(`Deleting category: ${rowData.name} (Not implemented yet)`);
-                    }
                 },
                 view: {
                     enabled: true,
@@ -382,8 +355,6 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
                         const category = categoryService.findCategoryById(rowData.id);
                         setSelectedCategory(category);
                         setEditDialogOpen(true);
-                    }
-                }
             }}
 
             // Floating actions (disabled by default)
@@ -398,7 +369,6 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
                 export: {
                     enabled: true,
                     priority: 3
-                }
             }}
 
             // Event handlers
@@ -438,8 +408,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
         />
 
         {/* Category Edit Dialog */}
-        <CategoryEditDialog
-            open={editDialogOpen}
+        <CategoryEditDialog open={editDialogOpen}
             onClose
             }}
             category={selectedCategory}
@@ -450,8 +419,7 @@ const CategoryGrid: React.FC<{productId: any}> = ({ productId  }) => {
                 setEditDialogOpen(false);
                 setSelectedCategory(null);
             }}
-        />
-        </Box>
+        /></CategoryEditDialog>
     );
 };
 

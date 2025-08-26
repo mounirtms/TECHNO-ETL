@@ -4,7 +4,6 @@ import {
     Container,
     Typography,
     Button,
-
     Alert,
     TextField,
     useTheme,
@@ -27,19 +26,14 @@ import technoIcon from '../assets/images/techno.png';
 const logoRotation = keyframes`
     0% {
         transform: rotate(0deg) scale(1);
-    }
     25% {
         transform: rotate(90deg) scale(1.1);
-    }
     50% {
         transform: rotate(180deg) scale(1);
-    }
     75% {
         transform: rotate(270deg) scale(1.1);
-    }
     100% {
         transform: rotate(360deg) scale(1);
-    }
 `;
 
 // Logo pulse animation
@@ -47,41 +41,32 @@ const logoPulse = keyframes`
     0% {
         opacity: 0.8;
         transform: scale(1);
-    }
     50% {
         opacity: 1;
         transform: scale(1.05);
-    }
     100% {
         opacity: 0.8;
         transform: scale(1);
-    }
 `;
 
 // Animated background keyframes
 const backgroundAnimation = keyframes`
     0% {
         background-position: 0% 50%;
-    }
     50% {
         background-position: 100% 50%;
-    }
     100% {
         background-position: 0% 50%;
-    }
 `;
 
 // Floating elements animation
 const floatAnimation = keyframes`
     0% {
         transform: translateY(0px);
-    }
     50% {
         transform: translateY(-15px);
-    }
     100% {
         transform: translateY(0px);
-    }
 `;
 
 // Styled components
@@ -139,7 +124,7 @@ const FloatingElement = styled(Box)(({ theme }) => ({
 
 const GoogleButton = styled(Button)(({ theme }) => ({
     padding: theme.spacing(1.5),
-    borderRadius: theme.shape.borderRadius * 2,
+    borderRadius: Number(theme.shape.borderRadius) * 2,
     textTransform: 'none',
     fontSize: '1rem',
     fontWeight: 500,
@@ -217,7 +202,7 @@ const LoginPage = () => {
     const { signInWithGoogle, signInWithMagento } = useAuth();
     const { translate } = useLanguage();
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -227,14 +212,11 @@ const LoginPage = () => {
         // Redirect to dashboard immediately in dev mode
         if(skipAuth) {
             navigate('/', { replace: true });
-        }
     }, [skipAuth, navigate]);
 
     // If in dev mode, don't render the login page
     if(skipAuth) {
         return null;
-    }
-
     const handleGoogleSignIn = async () => {
         try {
             setLoading(true);
@@ -245,10 +227,9 @@ const LoginPage = () => {
             setError(err.message);
         } finally {
             setLoading(false);
-        }
     };
 
-    const handleEmailPasswordSignIn = async(e) => {
+    const handleEmailPasswordSignIn = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             setLoading(true);
@@ -260,11 +241,17 @@ const LoginPage = () => {
             setError(err.message);
         } finally {
             setLoading(false);
-        }
     };
 
     // Create floating background elements
-    const [floatingElements, setFloatingElements] = useState([]);
+    const [floatingElements, setFloatingElements] = useState<Array<{
+        top: string;
+        left: string;
+        width: string;
+        height: string;
+        backgroundColor: string;
+        animationDelay: string;
+    }>>([]);
 
     useEffect(() => {
         const generateFloatingElements = () => {
@@ -278,92 +265,100 @@ const LoginPage = () => {
                     backgroundColor: theme.palette.primary.light,
                     animationDelay: `${Math.random() * 5}s`,
                 });
-            }
             setFloatingElements(elements);
         };
 
         generateFloatingElements();
     }, [theme]);
 
-    return Boolean((
-        <Box
-            sx={{
+    return (
+        <Box sx={{
                 minHeight: '100vh',
                 paddingBottom: `${FOOTER_HEIGHT}px`,
                 position: 'relative',
                 overflow: 'hidden',
-            }}
-        >
+            }}>
             {/* Animated Background */}
             <AnimatedBackground />
 
             {/* Floating Background Elements */}
-            {floatingElements.map((element: any index: any: any: any: any) => (
+            {floatingElements.map((element, index) => (
                 <FloatingElement
                     key={index}
                     sx={{
+                        top: element.top,
+                        left: element.left,
+                        width: element.width,
+                        height: element.height,
+                        backgroundColor: element.backgroundColor,
+                        animationDelay: element.animationDelay,
                     }}
                 />
             ))}
 
-            <LoginContainer maxWidth="sm">
+            <LoginContainer maxWidth="sm"></
                 <LoginCard>
-                    <Typography
-                        variant="body2"
+                    <Typography variant="h4"
+                        sx={{
                             background: `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
-                        }}
-                    >
+                            mb: 2,
+                        }}>
                         TechnoStationary
                     </Typography>
 
-                    <Typography
-                        variant="body2"
+                    <Typography variant="h6"
+                        sx={{ mb: 3 }}>
                         {translate('login.welcome')}
                     </Typography>
 
                     {error && (
-                        <Alert
-                            severity
-                            sx={{ display: "flex", width: '100%', mt: 2, mb: 2 }}
-                        >
+                        <Alert severity="error"
+                            sx={{ width: '100%', mt: 2, mb: 2 }}>
                             {error}
                         </Alert>
                     )}
 
-                    {/* Email/Password Login Form 
-                    <Box component="form" onSubmit={handleEmailPasswordSignIn} sx={{ display: "flex", mt: 2 }}>
-                        <TextField
-                            fullWidth
-                            label
+                    {/* Email/Password Login Form */}
+                    <Box component="form" onSubmit={handleEmailPasswordSignIn} sx={{ mt: 2 }}></
+                        <TextField fullWidth
+                            label={translate('login.email')}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            margin
+                            margin="normal"
+                            type="email"
+                        />
+                        <TextField fullWidth
+                            label={translate('login.password')}
+                            type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            margin
-                            sx={{ display: "flex", mt: 2, mb: 2 }}
-                            disabled={loading}
-                        >
-                            Sign In
+                            margin="normal"
+                        />
+                        <Button fullWidth
+                            variant="contained"
+                            type="submit"
+                            sx={{ mt: 2, mb: 2 }}
+                            disabled={loading}>
+                            {translate('login.signIn')}
                         </Button>
                     </Box>
 
-                    {/* Divider  
-                    <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', my: 2 }}>
-                        <Box sx={{ display: "flex", flexGrow: 1, height: '1px', backgroundColor: theme.palette.divider }} />
-                        <Typography variant="body2" sx={{ display: "flex", mx: 2, color: theme.palette.text.secondary }}>
+                    {/* Divider */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}></
+                        <Box sx={{ flexGrow: 1, height: '1px', backgroundColor: theme.palette.divider }} />
+                        <Typography variant="outlined" sx={{ mx: 2, color: theme.palette.text.secondary }}>
                             OR
                         </Typography>
-                        <Box sx={{ display: "flex", flexGrow: 1, height: '1px', backgroundColor: theme.palette.divider }} />
+                        <Box sx={{ flexGrow: 1, height: '1px', backgroundColor: theme.palette.divider }} />
                     </Box>
- */}
+
                     {/* Google Sign-In Button */}
-                    <Box sx={{ display: "flex", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}></
                         <GoogleButton
                             fullWidth
-                            variant="body2"
+                            variant="outlined"
                             startIcon={<GoogleIcon />}
                             onClick={handleGoogleSignIn}
                             disabled={loading}
@@ -371,31 +366,27 @@ const LoginPage = () => {
                             {translate('login.signInWithGoogle')}
                         </GoogleButton>
                     </Box>
-
-
                 </LoginCard>
             </LoginContainer>
 
             {/* Professional Loading Overlay with Rotating Logo */}
             {loading && (
-                <LoadingOverlay>
+                <LoadingOverlay></
                     <RotatingLogo>
                         <img src={technoIcon} alt="Techno Logo" />
                     </RotatingLogo>
                     <LoadingText variant="h6">
                         {translate('login.signingIn') || 'Signing you in...'}
                     </LoadingText>
-                    <LoadingDots>
+                    <LoadingDots></
                         <Box className="dot" />
-                        <Box className="dot" />
-                        <Box className="dot" />
-                    </LoadingDots>
+                        <Box className="dot" /></
+                        <Box className="dot" /></Box>
                 </LoadingOverlay>
             )}
 
-            <Footer isLoginScreen={true} />
-        </Box>
-    )))));
+            <Footer isLoginScreen={true} /></Footer>
+    );
 };
 
 export default LoginPage;

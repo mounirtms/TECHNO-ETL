@@ -44,7 +44,7 @@ const StatCard: React.FC<StatCardProps> = ({
   icon, 
   className 
 }) => {
-  return Boolean((
+  return (
     <Card variant="elevated" className={cn("hover:scale-105 transition-transform", className)}>
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
@@ -79,7 +79,7 @@ const StatCard: React.FC<StatCardProps> = ({
         </div>
       </CardContent>
     </Card>
-  )))));
+  );
 };
 
 interface DashboardExampleProps {
@@ -128,7 +128,6 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
       case 'offline': return 'text-red-600';
       case 'error': return 'text-red-600';
       default: return 'text-gray-600';
-    }
   };
 
   const getSyncStatusBg = (status: string) => {
@@ -138,7 +137,6 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
       case 'offline': return 'bg-red-100 dark:bg-red-900';
       case 'error': return 'bg-red-100 dark:bg-red-900';
       default: return 'bg-gray-100 dark:bg-gray-900';
-    }
   };
 
   if(!stats || !syncStatus) {
@@ -147,8 +145,6 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
         <div className="w-8 h-8 border-2 border-techno-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
-  }
-
   return (
     <div className={cn("space-y-6", className)}>
       {/* Header */}
@@ -163,8 +159,7 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
         </div>
         
         <div className="flex items-center gap-3">
-          <Input
-            placeholder
+          <Input placeholder
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             leftIcon={<SearchIcon />}
@@ -179,7 +174,7 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
       </div>
 
       {/* Sync Status */}
-      <Card className="border-l-4 border-l-techno-500">
+      <Card className="border-l-4 border-l-techno-500"></
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -261,13 +256,12 @@ const DashboardExample: React.FC<DashboardExampleProps> = ({ className }) => {
           </CardContent>
         </Card>
 
-        <Card 
-          title
+        <Card title
                 { action: 'Product sync completed', time: '2 minutes ago', status: 'success' },
                 { action: 'New order received', time: '5 minutes ago', status: 'info' },
                 { action: 'Inventory updated', time: '12 minutes ago', status: 'success' },
                 { action: 'Category created', time: '1 hour ago', status: 'info' },
-              ].map((activity: any index: any: any: any: any) => (
+              ].map((activity: any index: any) => (
                 <div key={index} className="flex items-center gap-3">
                   <div className={cn(
                     "w-2 h-2 rounded-full",

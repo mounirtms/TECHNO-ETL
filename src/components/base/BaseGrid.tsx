@@ -124,7 +124,7 @@ const BaseGrid: React.FC<BaseGridProps> = ({
       filterable: column.filterable !== false,
       // Optimize rendering for large datasets
       renderCell: column.renderCell || ((params) => (
-        <Typography variant="body2" noWrap>
+        <Typography variant="outlined" noWrap>
           {params.value}
         </Typography>
       ))
@@ -155,7 +155,6 @@ const BaseGrid: React.FC<BaseGridProps> = ({
       onSelectionModelChange?.(newSelection);
     } catch(error: any) {
       handleError(error, 'selection change');
-    }
   }, [onSelectionModelChange, handleError]);
 
   const handleSortChange = useCallback((newSortModel: GridSortModel) => {
@@ -164,7 +163,6 @@ const BaseGrid: React.FC<BaseGridProps> = ({
       onSortModelChange?.(newSortModel);
     } catch(error: any) {
       handleError(error, 'sort change');
-    }
   }, [onSortModelChange, handleError]);
 
   const handleFilterChange = useCallback((newFilterModel: GridFilterModel) => {
@@ -173,7 +171,6 @@ const BaseGrid: React.FC<BaseGridProps> = ({
       onFilterModelChange?.(newFilterModel);
     } catch(error: any) {
       handleError(error, 'filter change');
-    }
   }, [onFilterModelChange, handleError]);
 
   const handlePageSizeChange = useCallback((newPageSize: number) => {
@@ -181,7 +178,6 @@ const BaseGrid: React.FC<BaseGridProps> = ({
       setInternalPageSize(newPageSize);
     } catch(error: any) {
       handleError(error, 'page size change');
-    }
   }, [handleError]);
 
   // Responsive grid height
@@ -246,19 +242,18 @@ const BaseGrid: React.FC<BaseGridProps> = ({
       // Custom overlays
       components: {
         NoRowsOverlay: NoRowsOverlay || (() => (
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}></
             <Typography variant="body1" color="text.secondary">
               No data available
             </Typography>
           </Box>
         )),
         LoadingOverlay: LoadingOverlay || (() => (
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-            <Skeleton variant="rectangular" width="100%" height={200} />
-          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}></
+            <Skeleton variant="rectangular" width="100%" height={200} /></Skeleton>
         )),
         ErrorOverlay: ErrorOverlay || (() => (
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}></
             <Alert severity="error">
               An error occurred while loading data
             </Alert>
@@ -284,9 +279,8 @@ const BaseGrid: React.FC<BaseGridProps> = ({
     if (!showStatsCards || !gridCards.length) return null;
     
     return (
-      <Box sx={{ mb: 2 }}>
-        <Box 
-          sx={{
+      <Box sx={{ mb: 2 }}></
+        <Box sx={{
             display: 'grid',
             gridTemplateColumns: {
               xs: '1fr',
@@ -294,8 +288,7 @@ const BaseGrid: React.FC<BaseGridProps> = ({
               md: `repeat(${Math.min(gridCards.length, 4)}, 1fr)`
             },
             gap: 2
-          }}
-        >
+          }}>
           {gridCards.map((card: any, index: number) => {
             // Create a safely typed version of the card
             const typedCard: any = { ...card,
@@ -309,9 +302,6 @@ const BaseGrid: React.FC<BaseGridProps> = ({
               const validColors = ['primary', 'secondary', 'success', 'warning', 'error', 'info'];
               if (!validColors.includes(card.color)) {
                 delete typedCard.color;
-              }
-            }
-            
             return <BaseCard key={index} { ...typedCard} />;
           })}
         </Box>
@@ -323,8 +313,7 @@ const BaseGrid: React.FC<BaseGridProps> = ({
   const renderToolbar = () => {
     if (!showToolbar) return null;
     
-    return(<BaseToolbar
-        gridName={gridName}
+    return(<BaseToolbar gridName={gridName}
         gridType={gridType}
         config={toolbarConfig}
         customActions={customActions}
@@ -349,19 +338,17 @@ const BaseGrid: React.FC<BaseGridProps> = ({
   // Error boundary
   if(error) {
     return (
-      <Paper sx={{ p: 3, ...sx }}>
+      <Paper sx={{ p: 3, ...sx }}></
         <Alert severity="error" sx={{ mb: 2 }}>
           <Typography variant="h6" gutterBottom>
             Grid Error
           </Typography>
-          <Typography variant="body2">
+          <Typography variant="outlined">
             {error.message || 'An unexpected error occurred'}
           </Typography>
         </Alert>
       </Paper>
     );
-  }
-
   return (
     <Box sx={{ width: '100%', ...sx }}>
       {/* Stats Cards */}
@@ -395,10 +382,9 @@ const BaseGrid: React.FC<BaseGridProps> = ({
             '& .MuiDataGrid-cell': {
               fontSize: '0.875rem',
               padding: '8px 4px',
-            }
           })
         }}
-      >
+      ></
         <Fade in={!loading} timeout={300}>
           <div style={{ height: '100%', width: '100%' }}>
             <DataGrid

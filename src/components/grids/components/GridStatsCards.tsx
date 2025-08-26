@@ -40,8 +40,6 @@ const GridStatsCards: React.FC<{cards: any loading: any gridName: any variant = 
 
   if(!cards || cards.length ===0) {
     return null;
-  }
-
   const getCardColor = (color) => {
     const colors = {
       primary: theme.palette.primary.main,
@@ -67,27 +65,22 @@ const GridStatsCards: React.FC<{cards: any loading: any gridName: any variant = 
   const formatValue = (value) => {
     if(typeof value === 'number') {
       return value.toLocaleString();
-    }
     return value;
   };
 
   const cardHeight = density === 'compact' ? 80 : variant === 'detailed' ? 140 : 100;
 
-  return (
-    <Box
-      sx={{
+  return (<Box sx={{
         flexShrink: 0
       }}
-      { ...props}
-    >
+      { ...props}></
       <Grid { ...{container: true}} spacing={density === 'compact' ? 1 : 2}>
-        {cards.map((card: any index: any: any: any: any) => {
+        {cards.map((card, any index: any) => {
           const cardColor = getCardColor(card?.color);
           
-          return Boolean((
-            <Grid item xs={12} sm={6} md={3} key={index}>
-              <Card
-                sx={{
+          return (
+            <Grid item xs={12} sm={6} md={3} key={index}></
+              <Card sx={{
                   flexDirection: 'column',
                   position: 'relative',
                   overflow: 'hidden',
@@ -97,9 +90,7 @@ const GridStatsCards: React.FC<{cards: any loading: any gridName: any variant = 
                     boxShadow: theme.shadows[4],
                     transform: 'translateY(-2px)',
                     transition: 'all 0.2s ease-in-out'
-                  }
-                }}
-              >
+                }}>
                 {/* Color accent bar */}
                 <Box
                   sx={{
@@ -108,21 +99,18 @@ const GridStatsCards: React.FC<{cards: any loading: any gridName: any variant = 
                     height: 4,
                     backgroundColor: cardColor
                   }}
-                />
+                /></
 
-                <CardContent
-                  sx={{
+                <CardContent sx={{
                     flexDirection: 'column',
                     justifyContent: 'center',
                     p: density === 'compact' ? 1 : 2,
                     '&:last-child': {
                       pb: density === 'compact' ? 1 : 2
-                    }
-                  }}
-                >
+                  }}>
                   {loading ? (
                     <>
-                      <Skeleton variant="text" width="60%" height={20} />
+                      <Skeleton variant="text" width="60%" height={20} /></
                       <Skeleton variant="text" width="40%" height={32} />
                       {variant === 'detailed' && (
                         <Skeleton variant="text" width="80%" height={16} />
@@ -131,28 +119,22 @@ const GridStatsCards: React.FC<{cards: any loading: any gridName: any variant = 
                   ) : (
                     <>
                       {/* Header */}
-                      <Box
-                        sx={{
+                      <Box sx={{
                           justifyContent: 'space-between',
                           mb: variant === 'compact' ? 0.5 : 1
-                        }}
-                      >
-                        <Typography
-                          variant={density === 'compact' ? 'caption' : 'body2'}
+                        }}></
+                        <Typography variant={density === 'compact' ? 'caption' : 'body2'}
                           color
                             textTransform: 'uppercase',
                             letterSpacing: 0.5
-                          }}
-                        >
+                          }}>
                           {translate(card?.title) || card?.title}
                         </Typography>
                         
                         {card?.icon && (
-                          <Box
-                            sx={{
+                          <Box sx={{
                               alignItems: 'center'
-                            }}
-                          >
+                            }}>
                             {React.createElement(card?.icon, {
                               fontSize: density === 'compact' ? 'small' : 'medium'
                             })}
@@ -161,48 +143,38 @@ const GridStatsCards: React.FC<{cards: any loading: any gridName: any variant = 
                       </Box>
 
                       {/* Value */}
-                      <Typography
-                        variant={density === 'compact' ? 'h6' : 'h5'}
+                      <Typography variant={density === 'compact' ? 'h6' : 'h5'}
                         component
                           color: 'text.primary',
                           lineHeight: 1.2
-                        }}
-                      >
+                        }}>
                         {formatValue(card?.value)}
                       </Typography>
 
                       {/* Trend and Description */}
                       {(showTrends || variant === 'detailed') && (
-                        <Box
-                          sx={{
+                        <Box sx={{
                             justifyContent: 'space-between',
                             mt: 0.5
-                          }}
-                        >
+                          }}>
                           {card?.trend !== undefined && (
-                            <Box
-                              sx={{
+                            <Box sx={{
                                 color: getTrendColor(card?.trend)
-                              }}
-                            >
+                              }}>
                               {getTrendIcon(card?.trend)}
-                              <Typography
-                                variant="body2"
-                                sx={{ display: "flex", ml: 0.5 }}
-                              >
+                              <Typography variant="outlined"
+                                sx={{ display: "flex", ml: 0.5 }}>
                                 {Math.abs(card?.trend)}%
                               </Typography>
                             </Box>
                           )}
 
                           {card?.description && variant === 'detailed' && (
-                            <Typography
-                              variant="body2"
+                            <Typography variant="outlined"
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap'
-                              }}
-                            >
+                              }}>
                               {translate(card?.description) || card?.description}
                             </Typography>
                           )}
@@ -211,10 +183,8 @@ const GridStatsCards: React.FC<{cards: any loading: any gridName: any variant = 
 
                       {/* Additional info for detailed variant */}
                       {variant === 'detailed' && card?.additionalInfo && (
-                        <Typography
-                          variant="body2"
-                          sx={{ display: "flex", mt: 1 }}
-                        >
+                        <Typography variant="outlined"
+                          sx={{ display: "flex", mt: 1 }}>
                           {translate(card?.additionalInfo) || card?.additionalInfo}
                         </Typography>
                       )}
@@ -223,7 +193,7 @@ const GridStatsCards: React.FC<{cards: any loading: any gridName: any variant = 
                 </CardContent>
               </Card>
             </Grid>
-          )))));
+          );
         })}
       </Grid>
     </Box>

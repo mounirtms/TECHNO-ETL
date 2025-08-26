@@ -21,7 +21,6 @@ const inputVariants = cva(
       variant: "default",
       size: "md",
     },
-  }
 );
 
 export interface InputProps
@@ -33,8 +32,6 @@ export interface InputProps
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   containerClassName?: string;
-}
-
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ 
     className, 
@@ -53,7 +50,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const hasError = Boolean(error);
     const actualVariant = hasError ? 'error' : variant;
 
-    return Boolean((
+    return (
       <div className={cn("space-y-2", containerClassName)}>
         {label && (
           <label 
@@ -99,8 +96,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           </p>
         )}
       </div>
-    )))));
-  }
+    );
 );
 
 Input.displayName = "Input";

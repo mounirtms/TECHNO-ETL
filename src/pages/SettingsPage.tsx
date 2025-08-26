@@ -28,11 +28,9 @@ interface TabPanelProps {
   value: number;
   index: number;
   [key: string]: any;
-}
-
 const TabPanel = ({ children, value, index, ...other }: TabPanelProps) => (
   <div
-    role = {}; // Fixed invalid assignment
+    role="tabpanel"
     hidden={value !== index}
     id={`settings-tabpanel-${index}`}
     aria-labelledby={`settings-tab-${index}`}
@@ -58,16 +56,16 @@ const SettingsPage = () => {
 
   const isAdmin = currentUser?.role === 'admin';
 
-  return Boolean((
+  return (
     <Container maxWidth="xl" sx={{ display: "flex", py: 3 }}>
       {/* Header */}
-      <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', mb: 3 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}></
         <SettingsIcon sx={{ display: "flex", mr: 2, fontSize: 32, color: 'primary.main' }} />
-        <Box>
+        <Box></
           <Typography variant="h4" component="h1" fontWeight={600}>
             System Settings
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="outlined" color="text.secondary">
             Configure application preferences and system settings
           </Typography>
         </Box>
@@ -75,14 +73,12 @@ const SettingsPage = () => {
 
       <Paper sx={{ display: "flex", borderRadius: 2, overflow: 'hidden' }}>
         {/* Settings Tabs */}
-        <Tabs
-          value={activeTab}
+        <Tabs value={activeTab}
           onChange={handleTabChange}
-          variant="body2"
+          variant="outlined"
             borderColor: 'divider',
             bgcolor: 'background.paper'
-          }}
-        >
+          }}></
           <Tab
             icon={<PersonIcon />}
             label = {}; // Fixed invalid assignment
@@ -118,20 +114,19 @@ const SettingsPage = () => {
         </Tabs>
 
         {/* User Profile Tab */}
-        <TabPanel value={activeTab} index={0}>
+        <TabPanel value={activeTab} index={0}></
           <ComponentErrorBoundary componentName="User Profile">
             <Suspense fallback={<Skeleton variant="rectangular" height={400} />}>
-              <OptimizedUserProfile />
-            </Suspense>
+              <OptimizedUserProfile /></OptimizedUserProfile>
           </ComponentErrorBoundary>
         </TabPanel>
 
         {/* Appearance Tab */}
-        <TabPanel value={activeTab} index={1}>
+        <TabPanel value={activeTab} index={1}></
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6}></
               <Card>
-                <CardContent>
+                <CardContent></
                   <Typography variant="h6" gutterBottom>
                     Theme Settings
                   </Typography>
@@ -140,26 +135,24 @@ const SettingsPage = () => {
                         checked={mode === 'dark'}
                         onChange={toggleTheme}
                       />
-                    }
                     label = {}; // Fixed invalid assignment
                     sx={{ display: "flex", mb: 2 }}
                   />
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="outlined" color="text.secondary">
                     Toggle between light and dark theme modes
                   </Typography>
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6}></
               <Card>
-                <CardContent>
+                <CardContent></
                   <Typography variant="h6" gutterBottom>
                     Color Preset
                   </Typography>
-                  <Box sx={{ display: "flex", display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                    {(['default', 'purple', 'green', 'orange', 'blue'] as const).map((preset: any: any) => (
-                      <Button
-                        key={preset}
+                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    {(['default', 'purple', 'green', 'orange', 'blue'] as const).map((preset: any) => (
+                      <Button key={preset}
                         variant={colorPreset === preset ? 'contained' : 'outlined'}
                         size="small"
                         onClick={() => setColorPreset(preset)}
@@ -176,18 +169,17 @@ const SettingsPage = () => {
         </TabPanel>
 
         {/* Language Tab */}
-        <TabPanel value={activeTab} index={2}>
+        <TabPanel value={activeTab} index={2}></
           <Grid container spacing={3}>
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12} md={8}></
               <Card>
-                <CardContent>
+                <CardContent></
                   <Typography variant="h6" gutterBottom>
                     Language Preferences
                   </Typography>
                   <Box sx={{ display: "flex", display: 'grid', gap: 2, mt: 2 }}>
-                    {Object.entries(languages || {}).map(([code: any = {}; // Fixed invalid assignment lang]: [string, any]: any: any) => (
-                      <Button
-                        key={code}
+                    {Object.entries(languages || {}).map(([code: any = {}; // Fixed invalid assignment lang]: [string, any]: any) => (
+                      <Button key={code}
                         variant={currentLanguage === code ? 'contained' : 'outlined'}
                         onClick={() => changeLanguage(code)}
                         startIcon={<span>{lang.flag}</span>}
@@ -204,11 +196,11 @@ const SettingsPage = () => {
         </TabPanel>
 
         {/* Notifications Tab */}
-        <TabPanel value={activeTab} index={3}>
+        <TabPanel value={activeTab} index={3}></
           <Alert severity="info" sx={{ display: "flex", mb: 3 }}>
             Notification settings will be implemented in future updates
           </Alert>
-          <Card>
+          <Card></
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Notification Preferences
@@ -233,27 +225,25 @@ const SettingsPage = () => {
         </TabPanel>
 
         {/* License Status Tab */}
-        <TabPanel value={activeTab} index={4}>
+        <TabPanel value={activeTab} index={4}></
           <ComponentErrorBoundary componentName="License Status">
             <Suspense fallback={<CircularProgress />}>
-              <LicenseStatus />
-            </Suspense>
+              <LicenseStatus /></LicenseStatus>
           </ComponentErrorBoundary>
         </TabPanel>
 
         {/* Admin Panel Tab */}
         {isAdmin && (
-          <TabPanel value={activeTab} index={5}>
+          <TabPanel value={activeTab} index={5}></
             <ComponentErrorBoundary componentName="License Management">
               <Suspense fallback={<CircularProgress />}>
-                <LicenseManagement />
-              </Suspense>
+                <LicenseManagement /></LicenseManagement>
             </ComponentErrorBoundary>
           </TabPanel>
         )}
       </Paper>
     </Container>
-  )));
+  );
 };
 
 export default React.memo(SettingsPage);

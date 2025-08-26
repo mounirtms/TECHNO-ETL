@@ -93,12 +93,10 @@ const ChartsPage = () => {
         setData(chartData);
         unifiedMagentoService._setCachedResponse(cacheKey, chartData);
         console.log('Stored charts data to cache');
-      }
     } catch(error: any) {
       console.error('Error loading chart data:', error);
     } finally {
       setLoading(false);
-    }
   };
 
   useEffect(() => {
@@ -116,20 +114,17 @@ const ChartsPage = () => {
       label: 'Overview',
       icon: <AnalyticsIcon />,
       content: (
-        <Grid container spacing={3}>
+        <Grid container spacing={3}></
           <Grid size={{ xs: 12, md: 6 }}>
-            <ProductStatsChart 
-              data={data.productStats}
+            <ProductStatsChart data={data.productStats}
               title
-          <Grid size={{ xs: 12, md: 6 }}>
-            <BrandDistributionChart 
-              data={data.brandDistribution}
+          <Grid size={{ xs: 12, md: 6 }}></
+            <BrandDistributionChart data={data.brandDistribution}
               title
-          <Grid size={{ xs: 12, md: 6 }}>
-            <CategoryTreeChart 
-              data={data.categoryDistribution}
+          <Grid size={{ xs: 12, md: 6 }}></
+            <CategoryTreeChart data={data.categoryDistribution}
               title
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}></
             <ProductAttributesChart 
               data={data.productAttributes}
               title
@@ -138,16 +133,14 @@ const ChartsPage = () => {
       label: 'Sales',
       icon: <TrendingUp />,
       content: (
-        <Grid container spacing={3}>
+        <Grid container spacing={3}></
           <Grid size={{ xs: 12 }}>
-            <SalesPerformanceChart 
-              data={data.salesPerformance}
+            <SalesPerformanceChart data={data.salesPerformance}
               title
-          <Grid size={{ xs: 12, md: 6 }}>
-            <SalesPerformanceChart 
-              data={data.salesPerformance}
+          <Grid size={{ xs: 12, md: 6 }}></
+            <SalesPerformanceChart data={data.salesPerformance}
               title
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}></
             <ProductStatsChart 
               data={data.productStats}
               title
@@ -156,16 +149,14 @@ const ChartsPage = () => {
       label: 'Inventory',
       icon: <Inventory />,
       content: (
-        <Grid container spacing={3}>
+        <Grid container spacing={3}></
           <Grid size={{ xs: 12 }}>
-            <InventoryStatusChart 
-              data={data.inventoryStatus}
+            <InventoryStatusChart data={data.inventoryStatus}
               title
-          <Grid size={{ xs: 12, md: 6 }}>
-            <CategoryTreeChart 
-              data={data.categoryDistribution}
+          <Grid size={{ xs: 12, md: 6 }}></
+            <CategoryTreeChart data={data.categoryDistribution}
               title
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}></
             <ProductAttributesChart 
               data={data.productAttributes}
               title
@@ -174,20 +165,17 @@ const ChartsPage = () => {
       label: 'Products',
       icon: <ShoppingCart />,
       content: (
-        <Grid container spacing={3}>
+        <Grid container spacing={3}></
           <Grid size={{ xs: 12, md: 4 }}>
-            <ProductStatsChart 
-              data={data.productStats}
+            <ProductStatsChart data={data.productStats}
               title
-          <Grid size={{ xs: 12, md: 8 }}>
-            <BrandDistributionChart 
-              data={data.brandDistribution}
+          <Grid size={{ xs: 12, md: 8 }}></
+            <BrandDistributionChart data={data.brandDistribution}
               title
-          <Grid size={{ xs: 12, md: 6 }}>
-            <ProductAttributesChart 
-              data={data.productAttributes}
+          <Grid size={{ xs: 12, md: 6 }}></
+            <ProductAttributesChart data={data.productAttributes}
               title
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}></
             <CategoryTreeChart 
               data={data.categoryDistribution}
               title
@@ -196,20 +184,16 @@ const ChartsPage = () => {
       label: 'Categories',
       icon: <Category />,
       content: (
-        <Grid container spacing={3}>
+        <Grid container spacing={3}></
           <Grid xs={12}>
-            <CategoryTreeChart 
-              data={data.categoryDistribution}
+            <CategoryTreeChart data={data.categoryDistribution}
               title
-          <Grid xs={12} md={6}>
-            <InventoryStatusChart 
-              data={data.inventoryStatus}
+          <Grid xs={12} md={6}></
+            <InventoryStatusChart data={data.inventoryStatus}
               title
-          <Grid xs={12} md={6}>
-            <BrandDistributionChart 
-              data={data.brandDistribution}
+          <Grid xs={12} md={6}></
+            <BrandDistributionChart data={data.brandDistribution}
               title
-    }
   ];
 
   return (
@@ -221,28 +205,25 @@ const ChartsPage = () => {
           icon={<TrendingUp />}
           sx={{ display: "flex", mb: 3, borderRadius: 2 }}
         >
-          <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="body2">
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}></
+            <Typography variant="outlined">
               Dashboard navigation: Viewing revenue analytics
             </Typography>
-            <Chip
-              label={`Period: ${getPeriod()}`}
+            <Chip label={`Period: ${getPeriod()}`}
               color
                 label={`View: ${getView()}`}
                 color
             )}
-          </Box>
-        </Alert>
+          </Box></Chip>
       )}
 
       {/* Header */}
       <Box sx={{
-        display: "flex",
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         mb: 3
-      }}>
+      }}></
         <Box>
           <Typography variant="h4" fontWeight={600} gutterBottom>
             Analytics & Charts
@@ -252,13 +233,11 @@ const ChartsPage = () => {
           </Typography>
         </Box>
         
-        <Tooltip title="Refresh Data">
-          <Fab
-            color
+        <Tooltip title="Refresh Data"></
+          <Fab color
             onClick={loadData}
             disabled={loading}
-            sx={{ display: "flex", boxShadow: 3 }}
-          >
+            sx={{ display: "flex", boxShadow: 3 }}>
             {loading ? <CircularProgress size={24} color="inherit" /> : <RefreshIcon />}
           </Fab>
         </Tooltip>
@@ -267,20 +246,18 @@ const ChartsPage = () => {
       {/* Charts Content */}
       <Paper sx={{ display: "flex", borderRadius: 2, overflow: 'hidden' }}>
         {/* Tabs */}
-        <Tabs
-          value={activeTab}
+        <Tabs value={activeTab}
           onChange={(e, newValue) => setActiveTab(newValue)}
-          variant="body2"
+          variant="outlined"
             bgcolor: 'background.paper',
             '& .MuiTab-root': {
               minHeight: 64,
               textTransform: 'none',
               fontSize: '0.875rem',
               fontWeight: 500
-            }
           }}
         >
-          {chartTabs.map((tab: any index: any: any: any: any) => (
+          {chartTabs.map((tab: any index: any) => (
             <Tab
               key={index}
               icon={tab.icon}
@@ -295,17 +272,15 @@ const ChartsPage = () => {
         <Box sx={{ display: "flex", p: 3, minHeight: 600 }}>
           {loading ? (
             <Box sx={{ 
-              display: "flex", 
               display: 'flex', 
               justifyContent: 'center', 
               alignItems: 'center', 
               height: 400 
-            }}>
-              <CircularProgress size={60} />
-            </Box>
+            }}></
+              <CircularProgress size={60} /></CircularProgress>
           ) : (
-            chartTabs.map((tab: any index: any: any: any: any) => (
-              <TabPanel key={index} value={activeTab} index={index}>
+            chartTabs.map((tab: any index: any) => (
+              <TabPanel key={index} value={activeTab} index={index}></
                 <ComponentErrorBoundary componentName={`${tab.label} Charts`}>
                   {tab.content}
                 </ComponentErrorBoundary>
@@ -316,16 +291,13 @@ const ChartsPage = () => {
       </Paper>
 
       {/* Footer Info */}
-      <Alert 
-        severity
+      <Alert severity
           borderRadius: 2,
           '& .MuiAlert-message': {
             width: '100%'
-          }
-        }}
-      >
-        <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="body2">
+        }}></
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="outlined">
             📊 <strong>Analytics Dashboard:</strong> Real-time data visualization with interactive charts and comprehensive business insights.
           </Typography>
           <Typography variant="caption" color="text.secondary">

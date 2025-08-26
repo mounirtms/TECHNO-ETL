@@ -15,7 +15,6 @@ export const useGridPermissions = () => {
     const context = useContext(GridPermissionContext);
     if(!context) {
         throw new Error('useGridPermissions must be used within a GridPermissionProvider');
-    }
     return context;
 };
 
@@ -63,7 +62,6 @@ export const COMPONENT_PERMISSIONS = {
             canRead: true,
             canExport: true,
             level: PERMISSION_LEVELS.READ
-        }
     },
     'Charts': {
         requiredLicense: true,
@@ -73,7 +71,6 @@ export const COMPONENT_PERMISSIONS = {
             canRead: true,
             canExport: true,
             level: PERMISSION_LEVELS.READ
-        }
     },
     
     // MDM System
@@ -88,7 +85,6 @@ export const COMPONENT_PERMISSIONS = {
             canBulkEdit: true,
             maxRows: 100,
             level: PERMISSION_LEVELS.WRITE
-        }
     },
     'MDMStock': {
         requiredLicense: true,
@@ -99,7 +95,6 @@ export const COMPONENT_PERMISSIONS = {
             canEdit: true,
             canExport: true,
             level: PERMISSION_LEVELS.WRITE
-        }
     },
     'MDMSources': {
         requiredLicense: true,
@@ -113,7 +108,6 @@ export const COMPONENT_PERMISSIONS = {
             canImport: true,
             canManage: true,
             level: PERMISSION_LEVELS.DELETE
-        }
     },
     
     // Magento System
@@ -128,7 +122,6 @@ export const COMPONENT_PERMISSIONS = {
             canBulkEdit: true,
             maxRows: 50,
             level: PERMISSION_LEVELS.WRITE
-        }
     },
     'OrdersGrid': {
         requiredLicense: true,
@@ -139,7 +132,6 @@ export const COMPONENT_PERMISSIONS = {
             canExport: true,
             restrictedFields: ['payment_info', 'customer_notes'],
             level: PERMISSION_LEVELS.READ
-        }
     },
     'CustomersGrid': {
         requiredLicense: true,
@@ -151,7 +143,6 @@ export const COMPONENT_PERMISSIONS = {
             canExport: true,
             restrictedFields: ['password_hash', 'payment_methods'],
             level: PERMISSION_LEVELS.WRITE
-        }
     },
     'InvoicesGrid': {
         requiredLicense: true,
@@ -161,7 +152,6 @@ export const COMPONENT_PERMISSIONS = {
             canRead: true,
             canExport: true,
             level: PERMISSION_LEVELS.READ
-        }
     },
     
     // System Management
@@ -175,7 +165,6 @@ export const COMPONENT_PERMISSIONS = {
             canDelete: true,
             canManage: true,
             level: PERMISSION_LEVELS.SUPER_ADMIN
-        }
     },
     'LicenseStatus': {
         requiredLicense: false, // Always accessible to check license
@@ -184,8 +173,6 @@ export const COMPONENT_PERMISSIONS = {
             canView: true,
             canRead: true,
             level: PERMISSION_LEVELS.READ
-        }
-    }
 };
 
 /**
@@ -206,22 +193,17 @@ export const GridPermissionProvider: React.FC<{children: any}> = ({ children  })
         const cacheKey = `license_${currentUser.uid}_${componentId}`;
         if (permissionCache.has(cacheKey)) {
             return permissionCache.get(cacheKey);
-        }
-        
         try {
             // For development/localhost, always return true
             if(window.location.hostname === 'localhost' || import.meta.env.DEV) {
                 permissionCache.set(cacheKey, true);
                 return true;
-            }
-            
             const hasLicense = await check_license_status(currentUser.uid);
             permissionCache.set(cacheKey, hasLicense);
             return hasLicense;
         } catch(error: any) {
             console.error('License check failed:', error);
             return false;
-        }
     }, [currentUser, permissionCache]);
     
     /**
@@ -257,8 +239,6 @@ export const GridPermissionProvider: React.FC<{children: any}> = ({ children  })
         if(!componentConfig) {
             console.warn(`No permission configuration found for component: ${componentId}`);
             return { ...DEFAULT_GRID_PERMISSIONS, ...customPermissions };
-        }
-        
         // Base permissions from configuration
         let permissions = { ...DEFAULT_GRID_PERMISSIONS,
             ...componentConfig.basePermissions,
@@ -274,9 +254,6 @@ export const GridPermissionProvider: React.FC<{children: any}> = ({ children  })
                     level: PERMISSION_LEVELS.NONE,
                     licenseRequired: true
                 };
-            }
-        }
-        
         // Check role requirement
         const hasRolePermission = checkRolePermission(componentConfig.minimumRole);
         if(!hasRolePermission) {
@@ -286,8 +263,6 @@ export const GridPermissionProvider: React.FC<{children: any}> = ({ children  })
                 insufficientRole: true,
                 requiredRole: componentConfig.minimumRole
             };
-        }
-        
         // Apply user-specific license details
         try {
             const licenseDetails = await get_license_details(currentUser?.uid);
@@ -300,11 +275,8 @@ export const GridPermissionProvider: React.FC<{children: any}> = ({ children  })
                     licenseType: licenseDetails.licenseType,
                     licenseValid: licenseDetails.isValid
                 };
-            }
         } catch(error: any) {
             console.warn('Failed to get license details:', error);
-        }
-        
         return permissions;
     }, [currentUser, checkLicense, checkRolePermission]);
     
@@ -407,7 +379,7 @@ export const withPermissions = (WrappedComponent, componentId, requiredPermissio
         React.useEffect(() => {
             const checkPermissions = async () => {
                 try {
-                    const permissionPromises = requiredPermissions.map((permission: any: any: any: any) => 
+                    const permissionPromises = requiredPermissions.map((permission: any) => 
                         hasPermission(componentId, permission, props.customPermissions)
                     );
                     
@@ -420,7 +392,6 @@ export const withPermissions = (WrappedComponent, componentId, requiredPermissio
                     setAllowed(false);
                 } finally {
                     setLoading(false);
-                }
             };
             
             checkPermissions();
@@ -428,8 +399,6 @@ export const withPermissions = (WrappedComponent, componentId, requiredPermissio
         
         if(loading) {
             return <div>Checking permissions...</div>;
-        }
-        
         if(!allowed) {
             return (
                 <div style={{ 
@@ -445,8 +414,6 @@ export const withPermissions = (WrappedComponent, componentId, requiredPermissio
                     <p>Required permissions: {requiredPermissions.join(', ')}</p>
                 </div>
             );
-        }
-        
         return <WrappedComponent { ...props} ref={ref} componentId={componentId} />;
     });
 };

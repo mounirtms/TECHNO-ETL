@@ -36,7 +36,6 @@ export const DEFAULT_LICENSED_PROGRAMS = {
             canAssign: false,
             canReview: false,
             canDelete: false
-        }
     },
     TASK_VOTING: {
         id: 'task_voting',
@@ -52,7 +51,6 @@ export const DEFAULT_LICENSED_PROGRAMS = {
             canCreate: false,
             canModerate: false,
             canDelete: false
-        }
     },
     ANALYTICS_PREMIUM: {
         id: 'analytics_premium',
@@ -67,7 +65,6 @@ export const DEFAULT_LICENSED_PROGRAMS = {
             canExport: false,
             canShare: false,
             canManage: false
-        }
     },
     INVENTORY_ADVANCED: {
         id: 'inventory_advanced',
@@ -82,7 +79,6 @@ export const DEFAULT_LICENSED_PROGRAMS = {
             canEdit: false,
             canBulkEdit: false,
             canDelete: false
-        }
     },
     INTEGRATION_PREMIUM: {
         id: 'integration_premium',
@@ -97,8 +93,6 @@ export const DEFAULT_LICENSED_PROGRAMS = {
             canConfigure: false,
             canSync: false,
             canManage: false
-        }
-    }
 };
 
 // Default Menu Categories for Tree Structure
@@ -182,7 +176,6 @@ export const MENU_CATEGORIES = {
         order: 9,
         defaultExpanded: false,
         licensingRequired: false // Always accessible for admins
-    }
 };
 
 // Default License Types
@@ -214,7 +207,6 @@ export const LICENSE_TYPES = {
         features: Object.keys(DEFAULT_LICENSED_PROGRAMS),
         maxUsers: -1, // Unlimited
         supportLevel: 'dedicated'
-    }
 };
 
 // Permission Levels
@@ -237,24 +229,18 @@ export const initializeFirebaseDefaults = async () => {
         
         if (!categoriesSnapshot.exists()) {
             await set(categoriesRef, MENU_CATEGORIES);
-        }
-
         // Initialize licensed programs
         const programsRef = ref(database, 'system/licensedPrograms');
         const programsSnapshot = await get(programsRef);
         
         if (!programsSnapshot.exists()) {
             await set(programsRef, DEFAULT_LICENSED_PROGRAMS);
-        }
-
         // Initialize license types
         const licenseTypesRef = ref(database, 'system/licenseTypes');
         const licenseTypesSnapshot = await get(licenseTypesRef);
         
         if (!licenseTypesSnapshot.exists()) {
             await set(licenseTypesRef, LICENSE_TYPES);
-        }
-
         // Initialize system settings
         const systemSettingsRef = ref(database, 'system/settings');
         const systemSettingsSnapshot = await get(systemSettingsRef);
@@ -271,16 +257,12 @@ export const initializeFirebaseDefaults = async () => {
                     basic: 10,
                     professional: 50,
                     enterprise: -1
-                }
             });
-        }
-
         console.log('Firebase defaults initialized successfully');
         return true;
     } catch (error) {
         console.error('Error initializing Firebase defaults:', error);
         return false;
-    }
 };
 
 /**

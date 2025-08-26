@@ -68,7 +68,6 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
           currency: 'USD',
           status: 'pending',
           lastUpdated: new Date().toISOString()
-        }
       ];
 
       // Simulate API delay
@@ -82,7 +81,6 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
       throw error;
     } finally {
       setSyncLoading(false);
-    }
   }, []);
 
   /**
@@ -112,7 +110,6 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
           newStock: 48,
           status: 'synced',
           lastUpdated: new Date().toISOString()
-        }
       ];
 
       // Simulate API delay
@@ -134,7 +131,6 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
       throw error;
     } finally {
       setSyncLoading(false);
-    }
   }, [syncInventory]);
 
   /**
@@ -145,7 +141,6 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
       await fetchAllData();
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
-    }
   }, [fetchAllData]);
 
   /**
@@ -164,7 +159,6 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
       throw error;
     } finally {
       setSyncLoading(false);
-    }
   }, [syncPrices]);
 
   /**
@@ -173,7 +167,6 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
   useEffect(() => {
     if(refreshKey > 0) {
       fetchDashboardData();
-    }
   }, [startDate, endDate, refreshKey, fetchDashboardData]);
 
   return {

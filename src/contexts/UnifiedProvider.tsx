@@ -26,7 +26,6 @@ interface UnifiedProviderProps {
 const ContextLoading = memo(() => (
   <Box
     sx={{
-      display: "flex",
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',

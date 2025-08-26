@@ -9,20 +9,14 @@ declare module 'easy-soap-request' {
     xml: string;
     timeout?: number;
     proxy?: string;
-  }
-
   interface SoapResponse {
     response: {
       body: string;
       statusCode: number;
       headers: Record<string, string>;
     };
-  }
-
   function soapRequest(options: SoapRequestOptions): Promise<SoapResponse>;
-  export
-}
-
+  export = soapRequest;
 declare module 'xml2js' {
   export interface ParserOptions {
     async?: boolean;
@@ -39,11 +33,7 @@ declare module 'xml2js' {
     includeWhiteChars?: boolean;
     emptyTag?;
     explicitChildren?: boolean;
-  }
-
   export class Parser {
     constructor(options?: ParserOptions);
     parseString(str: string, callback?: (err: Error, result) => void): void;
-    parseStringPromise(str: string): Promise<any>;
-  }
-}
+    parseStringPromise(str: string): Promise<any>;

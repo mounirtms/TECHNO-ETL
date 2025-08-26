@@ -22,7 +22,6 @@ export const useGridColumns = ({ gridName, initialColumns }) => {
                 index: savedSettings[col.field]?.index
             })).sort((a, b) => (a.index ?? Infinity) - (b.index ?? Infinity));
             setColumns(updatedColumns);
-        }
     }, [gridName, initialColumns]);
 
     const handleSettingsSave = async (newSettings) => {
@@ -38,7 +37,6 @@ export const useGridColumns = ({ gridName, initialColumns }) => {
             setSettingsDialogOpen(false);
         } catch (error) {
             console.error('Error applying column settings:', error);
-        }
     };
 
     const finalColumns = useMemo(() => columns.filter((c) => !c.hide), [columns]);

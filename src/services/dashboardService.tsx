@@ -35,14 +35,10 @@ export function formatCurrency(value: any) {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   })} DZD`;
-}
-
 export function formatDate(date: any) {
   if (!date) return '';
   const d = typeof date === 'number' ? new Date(date): new Date(date);
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-}
-
 export function prepareCustomerChartData(customers, start, end: any) {
   const daily = {};
   customers.forEach((c) => {
@@ -51,16 +47,12 @@ export function prepareCustomerChartData(customers, start, end: any) {
     if (new Date(c.created_at) < start || new Date(c.created_at) > end) return;
     daily[date] = (daily[date] || 0) + 1;
   });
-  return Object.entries(daily).map(([date: any count]: any: any: any: any) => ({ date, count }));
-}
-
+  return Object.entries(daily).map(([date: any, count]: any) => ({ date, count }));
 export function formatChartDate(date: any) {
   // Accepts timestamp or yyyy-mm-dd
   if (!date) return '';
   if (typeof date === 'number') return format(new Date(date), 'MMM d');
   return format(parseISO(date), 'MMM d');
-}
-
 export function formatTooltipDate(date: any) {
   if (!date) return '';
 
@@ -68,27 +60,31 @@ export function formatTooltipDate(date: any) {
     // Handle timestamp numbers
     if(typeof date === 'number') {
       const dateObj = new Date(date);
-      if (isNaN(dateObj.getTime())) return '';
+      if (isNaN(dateObj.getTime() return '';
       return format(dateObj, 'MMM d, yyyy');
-    }
+  } catch (error) {
+    console.error(error);
+
+
+  } catch (error) {
+    console.error(error);
+
+
 
     // Handle string dates
     if(typeof date === 'string') {
       const dateObj = parseISO(date);
-      if (isNaN(dateObj.getTime())) return '';
+      if (isNaN(dateObj.getTime() return '';
       return format(dateObj, 'MMM d, yyyy');
-    }
+
 
     // Handle Date objects
     if(date instanceof Date) {
-      if (isNaN(date.getTime())) return '';
+      if (isNaN(date.getTime() return '';
       return format(date, 'MMM d, yyyy');
-    }
+
 
     return '';
   } catch(error: any) {
     console.warn('Invalid date format:', date, error);
-    return '';
-  }
-}
-     
+    return '';

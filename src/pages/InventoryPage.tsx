@@ -45,8 +45,8 @@ const InventoryPage = () => {
             icon={<Warning />}
             sx={{ display: "flex", mb: 2, borderRadius: 2 }}
           >
-            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Typography variant="body2">
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}></
+              <Typography variant="outlined">
                 Dashboard alert: Showing items with low stock levels that need immediate attention
               </Typography>
               <Chip
@@ -58,9 +58,8 @@ const InventoryPage = () => {
         )}
 
         {/* Inventory Grid */}
-        <Paper sx={{ display: "flex", borderRadius: 2, overflow: 'hidden' }}>
-          <InventoryGrid { ...gridProps} />
-        </Paper>
+        <Paper sx={{ display: "flex", borderRadius: 2, overflow: 'hidden' }}></
+          <InventoryGrid { ...gridProps} /></InventoryGrid>
       </Container>
     </motion.div>
   );

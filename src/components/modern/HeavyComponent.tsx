@@ -12,7 +12,6 @@ const HeavyComponent: React.FC = () => {
         value: Math.random() * 1000,
         label: `Heavy Item ${i}`
       });
-    }
     return data;
   }, []);
 
@@ -25,7 +24,7 @@ const HeavyComponent: React.FC = () => {
         Heavy Component ({heavyData.length} items)
       </h4>
       <div className="grid grid-cols-4 gap-2">
-        {heavyData.slice(0, 8).map((item: any: any: any: any) => (
+        {heavyData.slice(0, 8).map((item: any) => (
           <div
             key={item.id}
             className

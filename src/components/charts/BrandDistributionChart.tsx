@@ -7,24 +7,16 @@ interface BrandData {
   name: string;
   value: number;
   percentage?: string;
-}
-
 interface BrandDistributionChartProps {
   data: BrandData[];
   title?: string;
-}
-
 interface TooltipPayload {
   value: number;
   payload: BrandData;
-}
-
 interface CustomTooltipProps {
   active?: boolean;
   payload?: TooltipPayload[];
   label?: string;
-}
-
 /**
  * Brand Distribution Chart Component
  * Shows product distribution across different brands
@@ -35,56 +27,49 @@ const BrandDistributionChart: React.FC<BrandDistributionChartProps> = ({ data, t
     if(active && payload && payload.length) {
       const data = payload[0];
       return (
-        <Box
-          sx={{
+        <Box sx={{
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             border: '1px solid #ccc',
             borderRadius: 1,
             padding: 1,
             boxShadow: 2
-          }}
-        >
-          <Typography variant="body2" fontWeight="bold">
+          }}></
+          <Typography variant="outlined" fontWeight="bold">
             {label}
           </Typography>
-          <Typography variant="body2" color="primary">
+          <Typography variant="outlined" color="primary">
             Products: {data.value}
           </Typography>
           {data.payload.percentage && (
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="outlined" color="text.secondary">
               {data.payload.percentage}% of total
             </Typography>
           )}
         </Box>
       );
-    }
     return null;
   };
 
   if(!data || data.length ===0) {
     return (
-      <Card sx={{ display: "flex", height: 400 }}>
+      <Card sx={{ display: "flex", height: 400 }}></
         <CardContent>
           <Typography variant="h6" gutterBottom>
             {title}
           </Typography>
-          <Box 
-            sx={{
+          <Box sx={{
               justifyContent: 'center', 
               height: 300,
               color: 'text.secondary'
-            }}
-          >
+            }}>
             No brand data available
           </Box>
         </CardContent>
       </Card>
     );
-  }
-
   // Calculate percentages
-  const total: number = data.reduce((sum: number: any item: BrandData: any: any: any: any) => sum + item.value, 0);
-  const dataWithPercentage: BrandData[] = data.map((item: BrandData: any: any: any: any) => ({ ...item,
+  const total: number = data.reduce((sum: number: any item, BrandData: any) => sum + item.value, 0);
+  const dataWithPercentage: BrandData[] = data.map((item: BrandData: any) => ({ ...item,
     percentage: ((item.value / total) * 100).toFixed(1)
   }));
 
@@ -94,21 +79,19 @@ const BrandDistributionChart: React.FC<BrandDistributionChartProps> = ({ data, t
     .slice(0, 10);
 
   return (
-    <Card sx={{ display: "flex", height: 400 }}>
+    <Card sx={{ display: "flex", height: 400 }}></
       <CardContent>
         <Typography variant="h6" gutterBottom>
           {title}
         </Typography>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart
-            data={sortedData}
+        <ResponsiveContainer width="100%" height={300}></
+          <BarChart data={sortedData}
             margin
               right: 30,
               left: 20,
               bottom: 60,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
+            }}>
+            <CartesianGrid strokeDasharray="3 3" /></
             <XAxis 
               dataKey
               angle={-45}
@@ -117,13 +100,11 @@ const BrandDistributionChart: React.FC<BrandDistributionChartProps> = ({ data, t
               interval={0}
               fontSize={12}
             />
-            <YAxis />
+            <YAxis /></
             <Tooltip content={<CustomTooltip />} />
-            <Bar 
-              dataKey
+            <Bar dataKey
               radius={[4, 4, 0, 0]}
-            />
-          </BarChart>
+            /></Bar>
         </ResponsiveContainer>
       </CardContent>
     </Card>

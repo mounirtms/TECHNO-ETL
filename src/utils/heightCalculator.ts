@@ -64,7 +64,6 @@ export const createFlexibleHeightStyles = (options: any = {}): any => {
         borderTop: '1px solid rgba(224, 224, 224, 1)',
         pt: 1,
         backgroundColor: 'background.paper'
-      }
     })
   };
 };
@@ -117,8 +116,6 @@ export const calculateChartHeight = (options: any = {}): string => {
 
   if(isCollapsed) {
     return '0px';
-  }
-
   const baseHeight = calculateContentHeight({
     hasHeader: false,
     hasFooter: false,
@@ -159,7 +156,6 @@ export const calculateTabHeight = (tabType: string, options: any = {}): string =
       });
     default:
       return calculateContentHeight(options);
-  }
 };
 
 /**

@@ -50,7 +50,6 @@ const OptimizedGridLayout = memo(({
     const renderTime = performance.now() - renderStartTime.current;
     if(renderTime > 16) { // Flag renders taking longer than 1 frame (16ms)
       console.warn(`[${gridName}] Slow render detected: ${renderTime.toFixed(2)}ms`);
-    }
   });
 
   // Intersection observer for lazy loading optimization
@@ -63,7 +62,6 @@ const OptimizedGridLayout = memo(({
             entry.target.style.willChange = 'transform';
           } else {
             entry.target.style.willChange = 'auto';
-          }
         });
       },
       { threshold: 0.1 }
@@ -151,28 +149,25 @@ const OptimizedGridLayout = memo(({
 
   // Loading skeleton component
   const LoadingSkeleton = useMemo(() => (
-    <Box sx={{ display: "flex", p: 2, space: 'space-y-2' }}>
+    <Box sx={{ display: "flex", p: 2, space: 'space-y-2' }}></
       <Skeleton variant="rectangular" height={40} />
-      <Skeleton variant="rectangular" height={200} />
-      <Box sx={{ display: "flex", display: 'flex', gap: 1 }}>
+      <Skeleton variant="rectangular" height={200} /></
+      <Box sx={{ display: 'flex', gap: 1 }}>
+        <Skeleton variant="rectangular" width="25%" height={30} /></
         <Skeleton variant="rectangular" width="25%" height={30} />
-        <Skeleton variant="rectangular" width="25%" height={30} />
-        <Skeleton variant="rectangular" width="25%" height={30} />
-        <Skeleton variant="rectangular" width="25%" height={30} />
-      </Box>
+        <Skeleton variant="rectangular" width="25%" height={30} /></
+        <Skeleton variant="rectangular" width="25%" height={30} /></Skeleton>
     </Box>
   ), []);
 
-  return Boolean((
-    <GridErrorBoundary gridName={gridName}>
-      <Box 
-        ref={containerRef}
+  return (
+    <GridErrorBoundary gridName={gridName}></
+      <Box ref={containerRef}
         sx={containerStyles} 
-        { ...props}
-      >
+        { ...props}>
         {/* Filter Panel with fade transition */}
         {hasFilterPanel && (
-          <Fade in={!!filterPanel} timeout={300}>
+          <Fade in={!!filterPanel} timeout={300}></
             <Paper elevation={0} sx={panelStyles}>
               {filterPanel || <LoadingSkeleton />}
             </Paper>
@@ -181,30 +176,24 @@ const OptimizedGridLayout = memo(({
 
         {/* Stats Cards with fade transition */}
         {hasStatsCards && (
-          <Fade in={!!statsCards} timeout={300}>
-            <Paper 
-              elevation={0} 
+          <Fade in={!!statsCards} timeout={300}></
+            <Paper elevation={0} 
               sx={{
-              }}
-            >
+              }}>
               {statsCards || <LoadingSkeleton />}
             </Paper>
           </Fade>
         )}
 
         {/* Main Grid Container with optimized rendering */}
-        <Paper
-          elevation={0}
+        <Paper elevation={0}
           sx={gridContainerStyles}
           role
-          aria-label={`${gridName} data grid`}
-        >
-          <Fade 
-            in={!loading} 
+          aria-label={`${gridName} data grid`}></
+          <Fade in={!loading} 
             timeout={500}
             style
-            }}
-          >
+            }}>
             <Box sx={{ display: "flex", height: '100%', width: '100%' }}>
               {children}
             </Box>
@@ -212,9 +201,8 @@ const OptimizedGridLayout = memo(({
           
           {/* Loading overlay */}
           {loading && (
-            <Fade in={loading} timeout={200}>
-              <Box
-                sx={{
+            <Fade in={loading} timeout={200}></
+              <Box sx={{
                   left: 0,
                   right: 0,
                   bottom: 0,
@@ -223,8 +211,7 @@ const OptimizedGridLayout = memo(({
                   alignItems: 'center',
                   justifyContent: 'center',
                   zIndex: 1000
-                }}
-              >
+                }}>
                 {LoadingSkeleton}
               </Box>
             </Fade>
@@ -232,7 +219,7 @@ const OptimizedGridLayout = memo(({
         </Paper>
       </Box>
     </GridErrorBoundary>
-  )))));
+  );
 });
 
 OptimizedGridLayout.displayName = 'OptimizedGridLayout';

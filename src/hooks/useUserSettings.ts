@@ -225,7 +225,6 @@ export const useUserSettings = (): UserSettingsResult => {
           detail: { userSettings: { preferences: systemDefaults }, userId: currentUser.uid }
         }));
       }
-      
       toast.info('Settings reset to system defaults');
     } catch (error) {
       console.error('Error resetting to defaults:', error);

@@ -47,8 +47,6 @@ const compressImage = (file, maxWidth = 1920, maxHeight = 1920, quality = 0.8) =
         const ratio = Math.min(maxWidth / width, maxHeight / height);
         width *= ratio;
         height *= ratio;
-      }
-
       // Set canvas dimensions
       canvas.width = width;
       canvas.height = height;
@@ -91,8 +89,6 @@ export const uploadProductImage = async (sku, imageFile, imageData = {}) => {
       console.log(`🗜️ Compressing large image: ${imageFile.name} (${(imageFile.size / 1024 / 1024).toFixed(2)}MB)`);
       processedFile = await compressImage(imageFile, 1920, 1920, 0.8);
       console.log(`✅ Compressed to: ${(processedFile.size / 1024 / 1024).toFixed(2)}MB`);
-    }
-
     // Convert image file to base64
     const base64Content = await fileToBase64(processedFile);
 
@@ -130,7 +126,6 @@ export const uploadProductImage = async (sku, imageFile, imageData = {}) => {
       error: error.message,
       message: `Failed to upload image for ${sku}: ${error.message}`
     };
-  }
 };
 
 /**
@@ -149,8 +144,6 @@ export const uploadProductImages = async (sku, imageFiles, progressCallback) => 
         fileName: file.name,
         sku: sku
       });
-    }
-    
     const result = await uploadProductImage(sku, file, {
       position: i,
       label: file.name.replace(/\.[^/.]+$/, ""), // Remove extension
@@ -161,8 +154,6 @@ export const uploadProductImages = async (sku, imageFiles, progressCallback) => 
     
     // Small delay to prevent overwhelming the server
     await new Promise(resolve => setTimeout(resolve, 500));
-  }
-  
   return results;
 };
 
@@ -176,14 +167,12 @@ export const parseCSVFile = (file) => {
     reader.onload = (e) => {
       try {
         const csv = e.target.result;
-        const lines = csv?.split('\n').filter((line: any: any: any: any) => line.trim());
+        const lines = csv?.split('\n').filter((line: any) => line.trim());
         
         if(lines.length < 2) {
           reject(new Error('CSV file must have at least a header and one data row'));
           return;
-        }
-        
-        const headers = lines[0]?.split(',').map((h: any: any: any: any) => h.trim().toLowerCase());
+        const headers = lines[0]?.split(',').map((h: any) => h.trim().toLowerCase());
         const data = [];
         
         // Find required columns
@@ -193,16 +182,12 @@ export const parseCSVFile = (file) => {
         if(skuIndex ===-1) {
           reject(new Error('CSV must contain a SKU column'));
           return;
-        }
-        
         if(imageIndex ===-1) {
           reject(new Error('CSV must contain an image filename column'));
           return;
-        }
-        
         // Parse data rows
         for(let i = 1; i < lines.length; i++) {
-          const values = lines[i]?.split(',').map((v: any: any: any: any) => v.trim());
+          const values = lines[i]?.split(',').map((v: any) => v.trim());
           
           if (values.length >= Math.max(skuIndex, imageIndex) + 1) {
             const sku = values[skuIndex];
@@ -214,10 +199,6 @@ export const parseCSVFile = (file) => {
                 imageName: imageName,
                 row: i + 1
               });
-            }
-          }
-        }
-        
         resolve({
           headers,
           data,
@@ -226,7 +207,6 @@ export const parseCSVFile = (file) => {
         });
       } catch(error: any) {
         reject(new Error(`Error parsing CSV: ${error.message}`));
-      }
     };
     
     reader.onerror = () => reject(new Error('Error reading CSV file'));
@@ -282,7 +262,6 @@ export const matchImagesWithCSV = (csvData, imageFiles) => {
       imageFileMap.delete(normalizedImageName);
     } else {
       unmatched.csvRows.push(row);
-    }
   });
   
   // Remaining files are unmatched
@@ -299,7 +278,6 @@ export const matchImagesWithCSV = (csvData, imageFiles) => {
       matched: matches.length,
       unmatchedCSV: unmatched.csvRows.length,
       unmatchedImages: unmatched.imageFiles.length
-    }
   };
 };
 
@@ -320,8 +298,6 @@ export const bulkUploadImages = async (matches, progressCallback) => {
           fileName: match.file.name,
           status: 'uploading'
         });
-      }
-      
       const result = await uploadProductImage(match.sku, match.file, {
         label: match.imageName.replace(/\.[^/.]+$/, ""),
         types: ['image', 'small_image', 'thumbnail']
@@ -343,8 +319,6 @@ export const bulkUploadImages = async (matches, progressCallback) => {
           status: result.success ? 'success' : 'error',
           message: result.message
         });
-      }
-      
       // Delay between uploads to prevent server overload
       await new Promise(resolve => setTimeout(resolve, 1000));
       
@@ -358,9 +332,6 @@ export const bulkUploadImages = async (matches, progressCallback) => {
       });
       
       completed++;
-    }
-  }
-  
   return results;
 };
 
@@ -378,15 +349,11 @@ export const validateImageFile = (file) => {
       valid: false,
       error: `Invalid file type. Allowed types: ${allowedTypes.join(', ')}`
     };
-  }
-
   if(file.size > maxSize) {
     return {
       valid: false,
       error: `File size too large. Maximum size: ${maxSize / 1024 / 1024}MB (large images will be compressed automatically)`
     };
-  }
-
   return { valid: true };
 };
 

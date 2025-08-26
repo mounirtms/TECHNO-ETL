@@ -30,7 +30,6 @@ api.interceptors.request.use((config) => {
   (error) => {
     console.error('❌ API Request Error:', error);
     return Promise.reject(error);
-  }
 );
 
 // Advanced response interceptor with intelligent error handling
@@ -63,7 +62,6 @@ api.interceptors.response.use((response) => {
     };
     
     return Promise.reject(error);
-  }
 );
 
 /**
@@ -89,15 +87,11 @@ class DashboardApiService {
       magento: '/magento', // Proxied through backend
       health: '/health'
     };
-  }
-
   /**
    * Intelligent service routing based on endpoint type
    */
   getServiceRoute(serviceType: any) {
     return this.serviceRoutes[serviceType] || this.serviceRoutes.dashboard;
-  }
-
   /**
    * Advanced request wrapper with automatic routing and error handling
    */
@@ -114,6 +108,12 @@ class DashboardApiService {
         data: options?.data,
         params: options?.params,
         ...options
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
+
       });
       
       this.performanceMetrics.totalDuration += response?.metadata.duration;
@@ -121,9 +121,6 @@ class DashboardApiService {
     } catch(error: any) {
       this.performanceMetrics.errors++;
       throw error;
-    }
-  }
-
   /**
    * Ultra-advanced cached data retrieval with intelligent cache management
    */
@@ -134,28 +131,30 @@ class DashboardApiService {
       console.log(`📦 Cache hit: ${key}`);
       if (this.performanceMetrics) {
         this.performanceMetrics.cacheHits++;
-      }
-      return { data: cached.data, cached: true };
-    }
 
+
+      return { data: cached.data, cached: true };
     try {
       const data = await fetchFunction();
       this.cache.set(key, {
         data,
         timestamp: Date.now()
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
+
       });
       console.log(`🔄 Cache updated: ${key}`);
       return { ...data, cached: false };
     } catch(error: any) {
       // Return stale cache if available during errors
       if(cached) {
+
         console.warn(`⚠️ Using stale cache for ${key} due to error:`, error.message);
         return { cacheddata, cached: true, stale: true };
-      }
       throw error;
-    }
-  }
-
   /**
    * Get dashboard statistics with intelligent routing
    */
@@ -164,8 +163,6 @@ class DashboardApiService {
       const response = await this.makeRequest('task', '/stats');
       return response?.data;
     });
-  }
-
   /**
    * Get recent orders through optimized Magento proxy
    */
@@ -176,12 +173,9 @@ class DashboardApiService {
         params: {
           'searchCriteria[pageSize]': limit,
           'searchCriteria[currentPage]': page
-        }
       });
       return response?.data;
     }, 2 * 60 * 1000); // 2 minutes cache for orders
-  }
-
   /**
    * Get product statistics through Magento proxy
    */
@@ -190,12 +184,9 @@ class DashboardApiService {
       const response = await this.makeRequest('magento', '/products', {
         params: {
           'searchCriteria[pageSize]': 1
-        }
       });
       return response?.data;
     });
-  }
-
   /**
    * Get customer statistics through Magento proxy
    */
@@ -204,12 +195,9 @@ class DashboardApiService {
       const response = await this.makeRequest('magento', '/customers', {
         params: {
           'searchCriteria[pageSize]': 1
-        }
       });
       return response?.data;
     });
-  }
-
   /**
    * Trigger price synchronization through MDM service
    */
@@ -217,6 +205,12 @@ class DashboardApiService {
     try {
       const response = await this.makeRequest('mdm', '/sync-prices', {
         method: 'POST'
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
+
       });
       
       // Clear related cache
@@ -225,9 +219,6 @@ class DashboardApiService {
       return response?.data;
     } catch(error: any) {
       throw new Error(`Price sync failed: ${error.message}`);
-    }
-  }
-
   /**
    * Trigger inventory synchronization through MDM service
    */
@@ -235,6 +226,12 @@ class DashboardApiService {
     try {
       const response = await this.makeRequest('mdm', '/sync-stocks', {
         method: 'POST'
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
+
       });
       
       // Clear related cache
@@ -243,9 +240,6 @@ class DashboardApiService {
       return response?.data;
     } catch(error: any) {
       throw new Error(`Inventory sync failed: ${error.message}`);
-    }
-  }
-
   /**
    * Get sync status through MDM service
    */
@@ -254,8 +248,6 @@ class DashboardApiService {
       const response = await this.makeRequest('mdm', '/sources');
       return response?.data;
     }, 30 * 1000); // 30 seconds cache for sync status
-  }
-
   /**
    * Get comprehensive dashboard health
    */
@@ -266,6 +258,12 @@ class DashboardApiService {
       return { ...response?.data,
         performanceMetrics: this.getPerformanceMetrics(),
         timestamp: new Date().toISOString()
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
+
       };
     } catch(error: any) {
       return {
@@ -274,9 +272,6 @@ class DashboardApiService {
         performanceMetrics: this.getPerformanceMetrics(),
         timestamp: new Date().toISOString()
       };
-    }
-  }
-
   /**
    * Clear specific cache entries
    */
@@ -284,14 +279,12 @@ class DashboardApiService {
     if(keys.length ===0) {
       this.cache.clear();
       console.log('🗑️ All cache cleared');
+
     } else {
       keys.forEach((key) => {
         this.cache.delete(key);
         console.log(`🗑️ Cache cleared: ${key}`);
       });
-    }
-  }
-
   /**
    * Get performance metrics
    */
@@ -314,8 +307,6 @@ class DashboardApiService {
       cacheHitRate: Math.round(cacheHitRate * 100) / 100,
       cacheSize: this.cache.size
     };
-  }
-
   /**
    * Get cache statistics
    */
@@ -323,15 +314,13 @@ class DashboardApiService {
     const stats = {
       size: this.cache.size,
       keys: Array.from(this.cache.keys()),
-      entries: Array.from(this.cache.entries()).map(([key: any value]: any: any: any: any) => ({
+      entries: Array.from(this.cache.entries()).map(([key: any, value]: any) => ({
         key,
         age: Date.now() - value.timestamp,
         size: JSON.stringify(value?.data).length
       }))
     };
     return stats;
-  }
-
   /**
    * Ultra-advanced batch fetch with intelligent parallel processing
    */
@@ -347,6 +336,12 @@ class DashboardApiService {
       ]);
 
       const duration = Date.now() - startTime;
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
+
       console.log(`📊 Dashboard batch fetch completed in ${duration}ms`);
 
       return {
@@ -360,9 +355,6 @@ class DashboardApiService {
     } catch(error: any) {
       console.error('❌ Dashboard batch fetch failed:', error);
       throw error;
-    }
-  }
-
   /**
    * Intelligent preload with priority-based loading
    */
@@ -381,8 +373,6 @@ class DashboardApiService {
     }).catch((error) => {
       console.warn('⚠️ Dashboard preload had issues:', error);
     });
-  }
-
   /**
    * Reset performance metrics
    */
@@ -394,9 +384,6 @@ class DashboardApiService {
       cacheHits: 0
     };
     console.log('📊 Performance metrics reset');
-  }
-}
-
 // Create singleton instance
 const dashboardApi = new DashboardApiService();
 

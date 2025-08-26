@@ -97,7 +97,6 @@ export const STANDARD_TOOLBAR_CONFIGS = {
     mdmStocks: false,
     showSyncStocks: false,
     showSyncAll: false
-  }
 };
 
 /**
@@ -162,7 +161,6 @@ export const STANDARD_CUSTOM_ACTIONS = {
       tooltip: 'Synchronize all data',
       requiresSelection: false,
       mdmOnly: true
-    }
   ],
   
   magento: [
@@ -175,7 +173,6 @@ export const STANDARD_CUSTOM_ACTIONS = {
       tooltip: 'Sync selected items to Magento',
       requiresSelection: true,
       magentoOnly: true
-    }
   ],
   
   cegid: [],
@@ -231,7 +228,6 @@ export const STANDARD_FILTER_CONFIGS = {
     showBranchFilter: false,
     showChangedOnlyFilter: false,
     customFilters: []
-  }
 };
 
 /**
@@ -275,7 +271,6 @@ export const STANDARD_EXPORT_OPTIONS = {
     label: 'Export to PDF',
     format: 'pdf',
     icon: 'PictureAsPdfIcon'
-  }
 };
 
 /**
@@ -296,7 +291,6 @@ export const createToolbarConfig = (gridType, customConfig = {}) => {
     exportOptions: STANDARD_EXPORT_OPTIONS,
     handlers: { ...STANDARD_ACTION_HANDLERS,
       ...customConfig?.handlers
-    }
   };
 };
 

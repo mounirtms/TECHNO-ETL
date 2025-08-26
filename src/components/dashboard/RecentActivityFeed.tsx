@@ -101,7 +101,6 @@ const RecentActivityFeed = () => {
       status: 'info',
       icon: 'settings',
       priority: 'low'
-    }
   ]);
 
   const [filter, setFilter] = useState('all');
@@ -133,7 +132,6 @@ const RecentActivityFeed = () => {
         return <SuccessIcon { ...iconProps} />;
       default:
         return <ActivityIcon { ...iconProps} />;
-    }
   };
 
   const getStatusColor = (status) => {
@@ -148,7 +146,6 @@ const RecentActivityFeed = () => {
         return 'info';
       default:
         return 'default';
-    }
   };
 
   const getPriorityColor = (priority) => {
@@ -161,7 +158,6 @@ const RecentActivityFeed = () => {
         return 'success';
       default:
         return 'default';
-    }
   };
 
   const formatTimeAgo = (timestamp) => {
@@ -179,7 +175,7 @@ const RecentActivityFeed = () => {
 
   const filteredActivities = filter === 'all' 
     ? activities 
-    : activities.filter((activity: any: any: any: any) => activity.priority ===filter);
+    : activities.filter((activity) => activity.priority ===filter);
 
   const refreshActivities = () => {
     // Simulate new activity
@@ -196,34 +192,27 @@ const RecentActivityFeed = () => {
     setActivities(prev => [newActivity, ...prev.slice(0, 9)]);
   };
 
-  return(<ComponentErrorBoundary
-      componentName
+  return(<ComponentErrorBoundary componentName
       height: '100%',
       display: 'flex',
       flexDirection: 'column'
-    }}>
-      <CardHeader
-        avatar
-          <Badge badgeContent={activities.filter((a: any: any: any: any) => a.priority === 'high').length} color="error">
-            <Avatar sx={{ display: "flex", bgcolor: 'info.main' }}>
-              <ActivityIcon />
-            </Avatar>
+    }}></
+      <CardHeader avatar
+          <Badge badgeContent={activities.filter((a: any) => a.priority === 'high').length} color="error">
+            <Avatar sx={{ display: "flex", bgcolor: 'info.main' }}></
+              <ActivityIcon /></ActivityIcon>
           </Badge>
-        }
         title
         subheader={`${activities.length} recent events`}
         action
-          <Box sx={{ display: "flex", display: 'flex', gap: 1 }}>
+          <Box sx={{ display: 'flex', gap: 1 }}></
             <Tooltip title="Refresh">
-              <IconButton size="small" onClick={refreshActivities}>
-                <RefreshIcon fontSize="small" />
-              </IconButton>
+              <IconButton size="small" onClick={refreshActivities}></
+                <RefreshIcon fontSize="small" /></RefreshIcon>
             </Tooltip>
-            <IconButton size="small">
-              <MoreIcon fontSize="small" />
-            </IconButton>
+            <IconButton size="small"></
+              <MoreIcon fontSize="small" /></MoreIcon>
           </Box>
-        }
         sx={{ display: "flex", pb: 1 }}
       />
 
@@ -235,10 +224,9 @@ const RecentActivityFeed = () => {
         '&:last-child': { pb: density === 'compact' ? 1 : 2 }
       }}>
         {/* Filter Chips */}
-        <Box sx={{ display: "flex", display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
-          {['all', 'high', 'medium', 'low'].map((filterType: any: any: any: any) => (
-            <Chip
-              key={filterType}
+        <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+          {['all', 'high', 'medium', 'low'].map((filterType: any) => (
+            <Chip key={filterType}
               label={filterType === 'all' ? 'All' : `${filterType} priority`}
               size="small"
               variant={filter ===filterType ? 'filled' : 'outlined'}
@@ -253,32 +241,27 @@ const RecentActivityFeed = () => {
 
         {/* Activity List */}
         <List dense sx={{ display: "flex", maxHeight: 350, overflow: 'auto' }}>
-          {filteredActivities.slice(0, 8).map((activity: any index: any: any: any: any) => (
-            <React.Fragment key={activity.id}>
-              <ListItem
-                sx={{
+          {filteredActivities.slice(0, 8).map((activity: any index: any) => (
+            <React.Fragment key={activity.id}></
+              <ListItem sx={{
                   '&:hover': animations ? {
                     bgcolor: 'action.hover',
                     transform: 'translateX(4px)'
                   } : { bgcolor: 'action.hover' }
-                }}
-              >
-                <ListItemAvatar>
-                  <Avatar 
-                    sx={{
+                }}>
+                <ListItemAvatar></
+                  <Avatar sx={{
                       bgcolor: `${getStatusColor(activity.status)}.light`,
                       width: 32,
                       height: 32
-                    }}
-                  >
+                    }}>
                     {getActivityIcon(activity.icon, activity.status)}
                   </Avatar>
                 </ListItemAvatar>
                 
-                <ListItemText
-                  primary
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                      <Typography variant="body2" fontWeight={500} component="span">
+                <ListItemText primary
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}></
+                      <Typography variant="outlined" fontWeight={500} component="span">
                         {activity.title}
                       </Typography>
                       <Chip
@@ -288,7 +271,6 @@ const RecentActivityFeed = () => {
                         sx={{ display: "flex", height: 16, fontSize: '0.7rem' }}
                       />
                     </span>
-                  }
                   secondary
                         {activity.description}
                       </Typography>
@@ -297,7 +279,6 @@ const RecentActivityFeed = () => {
                         {formatTimeAgo(activity.timestamp)}
                       </Typography>
                     </span>
-                  }
                 />
               </ListItem>
               {index < filteredActivities.slice(0, 8).length - 1 && (
@@ -308,7 +289,7 @@ const RecentActivityFeed = () => {
         </List>
 
         {filteredActivities.length > 8 && (
-          <Box sx={{ display: "flex", textAlign: 'center', mt: 2 }}>
+          <Box sx={{ display: "flex", textAlign: 'center', mt: 2 }}></
             <Button size="small" color="primary">
               View All Activities ({filteredActivities.length})
             </Button>
@@ -316,8 +297,8 @@ const RecentActivityFeed = () => {
         )}
 
         {filteredActivities.length ===0 && (
-          <Box sx={{ display: "flex", textAlign: 'center', py: 4 }}>
-            <Typography variant="body2" color="text.secondary">
+          <Box sx={{ display: "flex", textAlign: 'center', py: 4 }}></
+            <Typography variant="outlined" color="text.secondary">
               No activities found for the selected filter
             </Typography>
           </Box>

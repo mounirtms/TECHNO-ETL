@@ -58,7 +58,7 @@ const StandardGridTemplate = () => {
       
       // Calculate stats
       const total = response.data?.length || 0;
-      const active = response.data?.filter((item: any: any: any: any) => item.status === 'active').length || 0;
+      const active = response.data?.filter((item: any) => item.status === 'active').length || 0;
       const inactive = total - active;
       
       setStats({ total, active, inactive });
@@ -68,7 +68,6 @@ const StandardGridTemplate = () => {
       setData([]);
     } finally {
       setLoading(false);
-    }
   }, []);
 
   // ===== 3. EVENT HANDLERS =====
@@ -83,15 +82,12 @@ const StandardGridTemplate = () => {
       setEditDialogOpen(true);
     } else {
       toast.warning('Please select exactly one record to edit');
-    }
   }, []);
 
   const handleDelete = useCallback(async (records) => {
     if(records.length ===0) {
       toast.warning('Please select records to delete');
       return;
-    }
-
     try {
       // Replace with actual delete API call
       await apiService.deleteRecords(records);
@@ -100,7 +96,6 @@ const StandardGridTemplate = () => {
     } catch(error: any) {
       console.error('Error deleting records:', error);
       toast.error('Failed to delete records');
-    }
   }, [fetchData]);
 
   const handleSync = useCallback(async () => {
@@ -112,7 +107,6 @@ const StandardGridTemplate = () => {
     } catch(error: any) {
       console.error('Error syncing data:', error);
       toast.error('Failed to sync data');
-    }
   }, [fetchData]);
 
   const handleFilterChange = useCallback((newFilter) => {
@@ -140,8 +134,7 @@ const StandardGridTemplate = () => {
       headerName: 'Status',
       width: 120,
       renderCell: (params) => (
-        <Chip
-          label={params.value}
+        <Chip label={params.value}
           color={params.value === 'active' ? 'success' : 'default'}
           size="small"
     },
@@ -151,7 +144,6 @@ const StandardGridTemplate = () => {
       width: 180,
       valueFormatter: (params) => 
         params.value ? new Date(params.value).toLocaleString() : 'N/A'
-    }
   ], []);
 
   // ===== 5. TOOLBAR CONFIGURATION =====
@@ -183,7 +175,6 @@ const StandardGridTemplate = () => {
       icon: <SyncIcon />,
       color: 'secondary',
       variant: 'outlined'
-    }
   ];
 
   // ===== 6. CONTEXT MENU ACTIONS =====
@@ -194,7 +185,6 @@ const StandardGridTemplate = () => {
       onClick: (row) => {
         setSelectedRecord(row);
         // Open details dialog
-      }
     },
     edit: {
       label: 'Edit',
@@ -202,14 +192,12 @@ const StandardGridTemplate = () => {
       onClick: (row) => {
         setSelectedRecord(row);
         setEditDialogOpen(true);
-      }
     },
     delete: {
       label: 'Delete',
       icon: <DeleteIcon />,
       onClick: (row) => handleDelete([row]),
       color: 'error'
-    }
   };
 
   // ===== 7. STATS CARDS =====
@@ -231,7 +219,6 @@ const StandardGridTemplate = () => {
       value: stats.inactive,
       icon: <DeleteIcon />,
       color: 'warning'
-    }
   ];
 
   // ===== 8. FILTER OPTIONS =====
@@ -247,7 +234,7 @@ const StandardGridTemplate = () => {
   }, [fetchData]);
 
   // ===== 10. RENDER =====
-  return(<Box sx={{ display: "flex", height: '100%', width: '100%' }}>
+  return(<Box sx={{ display: "flex", height: '100%', width: '100%' }}></
       <UnifiedGrid
         gridName
         columns={columns}

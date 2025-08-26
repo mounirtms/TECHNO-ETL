@@ -130,8 +130,6 @@ export interface UnifiedGridProps {
 
   // Other props
   [key: string]: any;
-}
-
 /**
  * UnifiedGrid - The ultimate grid component
  * Combines the best features from BaseGrid and EnhancedBaseGrid
@@ -149,50 +147,50 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
   // Core props
   gridName,
   columns: gridColumns = [],
-  data = {}; // Fixed invalid assignment
-  loading = {}; // Fixed invalid assignment
+  data = [],
+  loading = false,
   onRefresh,
-  getRowId = {}; // Fixed invalid assignment
+  getRowId = undefined,
   // Feature toggles
-  enableCache = {}; // Fixed invalid assignment
-  enableI18n = {}; // Fixed invalid assignment
-  enableRTL = {}; // Fixed invalid assignment
-  enableSelection = {}; // Fixed invalid assignment
-  enableSorting = {}; // Fixed invalid assignment
-  enableFiltering = {}; // Fixed invalid assignment
-  enableColumnReordering = {}; // Fixed invalid assignment
-  enableColumnResizing = {}; // Fixed invalid assignment
+  enableCache = true,
+  enableI18n = true,
+  enableRTL = false,
+  enableSelection = true,
+  enableSorting = true,
+  enableFiltering = true,
+  enableColumnReordering = true,
+  enableColumnResizing = true,
   // Performance options
-  virtualizationThreshold = {}; // Fixed invalid assignment
-  enableVirtualization = {}; // Fixed invalid assignment
-  rowBuffer = {}; // Fixed invalid assignment
-  columnBuffer = {}; // Fixed invalid assignment
-  rowThreshold = {}; // Fixed invalid assignment
-  columnThreshold = {}; // Fixed invalid assignment
+  virtualizationThreshold = 100,
+  enableVirtualization = true,
+  rowBuffer = 10,
+  columnBuffer = 10,
+  rowThreshold = 50,
+  columnThreshold = 50,
   // View options
-  showStatsCards = {}; // Fixed invalid assignment
-  showCardView = {}; // Fixed invalid assignment
-  defaultViewMode = {}; // Fixed invalid assignment
-  gridCards = {}; // Fixed invalid assignment
-  totalCount = {}; // Fixed invalid assignment
-  defaultPageSize = {}; // Fixed invalid assignment
-  paginationMode = {}; // Fixed invalid assignment
+  showStatsCards = false,
+  showCardView = false,
+  defaultViewMode = 'grid',
+  gridCards = [],
+  totalCount = 0,
+  defaultPageSize = 10,
+  paginationMode = 'client',
   onPaginationModelChange,
 
   // Toolbar configuration
   toolbarConfig = {},
-  customActions = {}; // Fixed invalid assignment
+  customActions = [],
   // Context menu configuration
   contextMenuActions = {},
 
   // Floating actions configuration
   floatingActions = {},
-  floatingPosition = {}; // Fixed invalid assignment
-  floatingVariant = {}; // Fixed invalid assignment
-  enableFloatingActions = {}; // Fixed invalid assignment
+  floatingPosition = 'bottom-right',
+  floatingVariant = 'extended',
+  enableFloatingActions = false,
   // Filter configuration
-  filterOptions = {}; // Fixed invalid assignment
-  currentFilter = {}; // Fixed invalid assignment
+  filterOptions = [],
+  currentFilter = '',
   onFilterChange,
   childFilterModel,
   searchableFields = ['sku', 'name', 'Code_MDM', 'reference'],
@@ -212,9 +210,9 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
   onRowDoubleClick,
 
   // Advanced props
-  preColumns = {}; // Fixed invalid assignment
-  endColumns = {}; // Fixed invalid assignment
-  initialVisibleColumns = {}; // Fixed invalid assignment
+  preColumns = [],
+  endColumns = [],
+  initialVisibleColumns = [],
   toolbarProps = {},
   sx = {},
 
@@ -231,7 +229,7 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
   onSyncAllHandler,
   canInfo,
   onInfo,
-  mdmStocks = {}; // Fixed invalid assignment
+  mdmStocks = false,
   ...props
 }, ref) => {
   // Optimized theme and translation hooks
@@ -244,7 +242,6 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
       return enableI18n ? (fallback || key) : (fallback || key);
     } catch(error: any) {
       return fallback || key;
-    }
   }, [enableI18n]);
 
   // Grid state management with safety checks
@@ -275,7 +272,6 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
       selectedRows: [],
       columnVisibility: {},
       density: 'standard'
-    }
   });
 
   // Safety checks for state variables
@@ -297,13 +293,9 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
     if (!Array.isArray(data)) {
       console.warn('UnifiedGrid: data prop is not an array, using empty array');
       return [];
-    }
-
     // For large datasets, enable virtualization automatically
     if (data.length > (virtualizationThreshold || 1000)) {
       console.info(`UnifiedGrid: Large dataset detected (${data.length} rows), virtualization enabled`);
-    }
-
     // Return data with performance metadata
     return data;
   }, [data, virtualizationThreshold]);
@@ -360,15 +352,11 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
     if (!Array.isArray(gridColumns)) {
       console.warn('UnifiedGrid: gridColumns is not an array, using empty array');
       return [];
-    }
-
     let columns = [...gridColumns];
 
     // Add row number column if needed
     if(toolbarConfig?.showRowNumbers) {
       columns = [rowNumberColumn, ...columns];
-    }
-
     // Add pre and end columns
     columns = [...(preColumns || []), ...columns, ...(endColumns || [])];
 
@@ -387,8 +375,6 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
     // Skip if already processing the same configuration
     if(processingRef.current || lastProcessedRef.current ===processingKey) {
       return;
-    }
-
     const processColumns = async () => {
       processingRef.current = true;
 
@@ -399,8 +385,6 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
         // Apply saved column settings (ASYNC - loads from localStorage/database)
         if(gridName && columns.length > 0) {
           columns = await applySavedColumnSettings(gridName, columns);
-        }
-
         // Enhance columns with translations and feature flags (SYNC)
         columns = enhanceColumns(columns, {
           enableI18n,
@@ -412,9 +396,7 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
         // CRITICAL: Always ensure columns is an array to prevent grid crashes
         if (!Array.isArray(columns)) {
           console.warn('UnifiedGrid: processColumns resulted in non-array, using base columns');
-          columns = {}; // Fixed invalid assignment
-        }
-
+          columns = [];
         // Step 3: Set final processed columns for grid rendering
         setProcessedColumns(columns);
         lastProcessedRef.current = processingKey;
@@ -432,7 +414,6 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
         lastProcessedRef.current = processingKey;
       } finally {
         processingRef.current = false;
-      }
     };
 
     // Only process if we have base columns
@@ -442,7 +423,6 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
       // Handle empty columns case
       setProcessedColumns([]);
       lastProcessedRef.current = processingKey;
-    }
   }, [baseColumns, gridName, enableI18n, enableSorting, enableFiltering, safeTranslate]);
 
   // Calculate responsive grid height with better handling
@@ -465,7 +445,6 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
         filter: filterModel,
         timestamp: Date.now()
       });
-    }
   }, [memoizedData, paginationModel, sortModel, filterModel, enableCache, setCacheData]);
 
   // Selection change handler
@@ -494,7 +473,6 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
   const handleViewModeChange = useCallback((_event, newMode: 'grid' | 'card') => {
     if(newMode !== null) {
       setViewMode(newMode);
-    }
   }, []);
 
   // Imperative handle for ref
@@ -520,11 +498,10 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
     return 'magento'; // Default to magento
   };
 
-  return Boolean((
+  return (
     <>
       {/* Unified Toolbar */}
-      <UnifiedGridToolbar
-        gridName={gridName}
+      <UnifiedGridToolbar gridName={gridName}
         gridType={getGridType(gridName)}
         config={toolbarConfig}
         customActions={customActions}
@@ -573,14 +550,12 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
 
       {/* Main Content Area */}
       {loading && (
-        <Box sx={{ display: "flex", position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}>
-          <Skeleton variant="rectangular" height={4} />
-        </Box>
+        <Box sx={{ display: "flex", position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}></
+          <Skeleton variant="rectangular" height={4} /></Skeleton>
       )}
 
-      <Fade in={!loading} timeout={300}>
-        <Box
-          sx={{
+      <Fade in={!loading} timeout={300}></
+        <Box sx={{
             minHeight: 0,
             maxHeight: responsiveGridHeight,
             height: responsiveGridHeight,
@@ -624,7 +599,6 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
                 // Call parent pagination handler if provided (for server-side pagination)
                 if(onPaginationModelChange) {
                   onPaginationModelChange(validModel);
-                }
               }, [onPaginationModelChange, defaultPageSize, setPaginationModel])}
               pageSizeOptions={[10, 25, 50, 100]}
               paginationMode={paginationMode || "client"}
@@ -684,15 +658,13 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
             p: 2,
             backgroundColor: 'background.paper'
           }}
-        >
-          <StatsCards cards={gridCards} />
-        </Box>
+        ></
+          <StatsCards cards={gridCards} /></StatsCards>
       )}
 
       {/* Context Menu */}
       {contextMenu && (
-        <GridContextMenu
-          contextMenu={contextMenu}
+        <GridContextMenu contextMenu={contextMenu}
           onClose={handleContextMenuClose}
           actions={contextMenuActions || {}}
           onAction={() => {}}
@@ -701,8 +673,7 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
 
       {/* Floating Action Buttons */}
       {enableFloatingActions && (
-        <FloatingActionButtons
-          actions={floatingActions || {}}
+        <FloatingActionButtons actions={floatingActions || {}}
           position={floatingPosition}
           variant={floatingVariant}
           onAction={() => {}}
@@ -710,8 +681,7 @@ const UnifiedGrid = forwardRef<any, UnifiedGridProps>(({
       )}
 
       {/* Record Details Dialog */}
-      <RecordDetailsDialog
-        open={detailsDialogOpen}
+      <RecordDetailsDialog open={detailsDialogOpen}
         onClose={() => setDetailsDialogOpen(false)}
         record={selectedRecord}
       />
@@ -730,23 +700,15 @@ const MemoizedUnifiedGrid = memo(UnifiedGrid, (prevProps, nextProps) => {
   for (const prop of criticalProps) {
     if(prevProps[prop] !== nextProps[prop]) {
       return false; // Props changed, re-render
-    }
-  }
-
   // Check if data array contents changed (shallow comparison)
   if (Array.isArray(prevProps?.data) && Array.isArray(nextProps?.data)) {
     if(prevProps?.data.length !== nextProps?.data.length) {
       return false;
-    }
     // For performance, only check first few items for changes
     const checkCount = Math.min(5, prevProps?.data.length);
     for(let i = 0; i < checkCount; i++) {
       if(prevProps?.data[i] !== nextProps?.data[i]) {
         return false;
-      }
-    }
-  }
-
   return true; // Props haven't changed significantly, skip re-render
 });
 

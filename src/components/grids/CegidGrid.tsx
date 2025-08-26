@@ -26,7 +26,6 @@ const CegidGrid = () => {
             toast.error('Failed to search products');
         } finally {
             setLoading(false);
-        }
     };
 
     const handleRefresh = () => {
@@ -55,7 +54,7 @@ const CegidGrid = () => {
                     },
                     onExport: (selectedRows) => {
                         const exportData = selectedRows.length > 0
-                            ? products.filter((product: any: any: any: any) => selectedRows.includes(product?.reference))
+                            ? products.filter((product: any) => selectedRows.includes(product?.reference))
                             : products;
                         console.log('Exporting Cegid products:', exportData);
                         toast.success(`Exported ${exportData.length} products`);
@@ -76,7 +75,6 @@ const CegidGrid = () => {
                                 label: 'Store',
                                 value: searchParams.store,
                                 onChange: (value) => setSearchParams(prev => ({ ...prev, store: value }))
-                            }
                         ],
                         onCustomSearch: handleSearch
                     }),
@@ -99,7 +97,6 @@ const CegidGrid = () => {
                         refresh: {
                             enabled: true,
                             priority: 2
-                        }
                     },
 
                     // Row configuration
@@ -109,7 +106,6 @@ const CegidGrid = () => {
                     onError: (error) => {
                         console.error('Grid Error:', error);
                         toast.error('Error loading grid data');
-                    }
                 })}
         />
     );

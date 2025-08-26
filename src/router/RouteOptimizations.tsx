@@ -41,7 +41,6 @@ export const useRoutePreloader = () => {
           import(componentPath).catch(err => 
             console.log('Route preload failed (non-critical):', route, err.message)
           );
-        }
       });
     }, 2000); // Preload after 2 seconds
 
@@ -94,36 +93,30 @@ export const OptimizedLoadingFallback: React.FC<{
 
   if(showTimeout) {
     return (
-      <Box
-        sx={{
+      <Box sx={{
           alignItems: 'center',
           height: '100vh',
           flexDirection: 'column',
           gap: 2
-        } as any}
-      >
+        } as any}></
         <Alert severity="warning">
           Loading is taking longer than expected...
         </Alert>
-        <CircularProgress size={40} />
-        <Typography variant="body2" color="text.secondary">
+        <CircularProgress size={40} /></
+        <Typography variant="outlined" color="text.secondary">
           Loading {routeName}...
         </Typography>
       </Box>
     );
-  }
-
   return (
-    <Box
-      sx={{
+    <Box sx={{
         alignItems: 'center',
         height: '100vh',
         flexDirection: 'column',
         gap: 2
-      } as any}
-    >
+      } as any}>
       {showProgress && <CircularProgress size={40} />}
-      <Typography variant="body2" color="text.secondary">
+      <Typography variant="outlined" color="text.secondary">
         Loading {routeName}...
       </Typography>
     </Box>
@@ -145,7 +138,6 @@ export const CachedRoute: React.FC<{
     const cached = globalCache.get(`route-${routeKey}`);
     if(cached) {
       setCachedContent(cached);
-    }
   }, [routeKey]);
 
   useEffect(() => {
@@ -153,7 +145,6 @@ export const CachedRoute: React.FC<{
     if(children && !cachedContent) {
       globalCache.set(`route-${routeKey}`, children, cacheTTL);
       setCachedContent(children);
-    }
   }, [children, routeKey, cacheTTL, cachedContent]);
 
   return <>{cachedContent || children}</>;
@@ -174,7 +165,6 @@ export const usePrefetch = () => {
         .catch(err => {
           console.log(`⚠️ Prefetch failed for ${routePath}:`, err.message);
         });
-    }
   }, []);
 
   const prefetchResources = useCallback((resources: string[]) => {
@@ -211,16 +201,13 @@ export const RouteTransition: React.FC<{
       }, duration);
 
       return () => clearTimeout(timer);
-    }
   }, [transitionKey, currentKey, duration]);
 
   return (
-    <Box
-      sx={{
+    <Box sx={{
         transition: `opacity ${duration}ms ease-in-out`,
         minHeight: '100vh'
-      }}
-    >
+      }}>
       {children}
     </Box>
   );
@@ -252,10 +239,7 @@ export const useRouteAnalytics = () => {
           page_path: location.pathname,
           custom_map: {
             load_time: duration
-          }
         });
-      }
-      
       // Store in cache for performance monitoring
       globalCache.set(`route-timing-${location.pathname}`, duration, 60000);
     };
@@ -275,8 +259,7 @@ export const createSplitComponent = (
   
   return React.forwardRef<any, any>((props, ref) => (
     <Suspense fallback={fallback || <OptimizedLoadingFallback />}>
-      <LazyComponent { ...props} ref={ref} />
-    </Suspense>
+      <LazyComponent { ...props} ref={ref} /></LazyComponent>
   ));
 };
 
@@ -308,10 +291,7 @@ export const useMemoryAwareRouting = () => {
       allKeys.forEach((key) => {
         if (typeof key === 'string' && key.startsWith('route-')) {
           globalCache.delete(key);
-        }
       });
-    }
-
     navigate(to, options);
   }, [navigate]);
 

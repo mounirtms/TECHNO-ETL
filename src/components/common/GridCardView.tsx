@@ -29,7 +29,6 @@ const StyledCard = styled(Card)(({ theme }) => ({
     '&:hover': {
         transform: 'translateY(-4px)',
         boxShadow: theme.shadows[4]
-    }
 }));
 
 const StyledCardMedia = styled(CardMedia)(({ theme }) => ({
@@ -53,10 +52,9 @@ const InfoRow = styled(Box)(({ theme }) => ({
     color: theme.palette.text.secondary,
     '& svg': {
         fontSize: '1rem'
-    }
 }));
 
-const GridCardView: React.FC<{data = []: any, type = 'product': any}> = ({ data = [], type = 'product'  }) => {
+const GridCardView: React.FC<{ data  = [], type  = 'product' }> = ({ data = [], type = 'product'  }) => {
     const getStatusColor = (status) => {
         switch (status?.toLowerCase()) {
             case 'enabled':
@@ -67,13 +65,12 @@ const GridCardView: React.FC<{data = []: any, type = 'product': any}> = ({ data 
                 return 'error';
             default:
                 return 'default';
-        }
     };
 
     const renderProductCard = (item) => (
-        <Grid item xs={12} sm={6} md={4} lg={3} key={item.id || item.sku}>
+        <Grid item xs={12} sm={6} md={4} lg={3} key={item.id || item.sku}></
             <StyledCard>
-                <Box sx={{ display: "flex", position: 'relative' }}>
+                <Box sx={{ display: "flex", position: 'relative' }}></
                     <StyledCardMedia
                         image={item.image || 'https://via.placeholder.com/300x400?text=No+Image'}
                         title={item.name}
@@ -85,7 +82,7 @@ const GridCardView: React.FC<{data = []: any, type = 'product': any}> = ({ data 
                             color={getStatusColor(item.status)}
                             size="small"
                     )}
-                </Box>
+                </Box></
                 <CardContent>
                     <Typography variant="h6" noWrap title={item.name}>
                         {item.name}
@@ -94,10 +91,10 @@ const GridCardView: React.FC<{data = []: any, type = 'product': any}> = ({ data 
                         SKU: {item.sku}
                     </Typography>
                     
-                    <Stack spacing={1}>
+                    <Stack spacing={1}></
                         <InfoRow>
-                            <LocalOfferIcon />
-                            <Typography variant="body2">
+                            <LocalOfferIcon /></
+                            <Typography variant="outlined">
                                 {item.price ? `$${parseFloat(item.price).toFixed(2)}` : 'N/A'}
                                 {item.special_price && (
                                     <Typography component="span" color="error.main" sx={{ display: "flex", ml: 1 }}>
@@ -106,15 +103,15 @@ const GridCardView: React.FC<{data = []: any, type = 'product': any}> = ({ data 
                                 )}
                             </Typography>
                         </InfoRow>
-                        <InfoRow>
+                        <InfoRow></
                             <InventoryIcon />
-                            <Typography variant="body2">
+                            <Typography variant="outlined">
                                 Stock: {item.qty || 0} {item.is_in_stock ? '(In Stock)' : '(Out of Stock)'}
                             </Typography>
                         </InfoRow>
-                        <InfoRow>
+                        <InfoRow></
                             <CalendarTodayIcon />
-                            <Typography variant="body2">
+                            <Typography variant="outlined">
                                 Added {item.created_at ? formatDistanceToNow(new Date(item.created_at), { addSuffix: true }) : 'Unknown'}
                             </Typography>
                         </InfoRow>
@@ -125,28 +122,27 @@ const GridCardView: React.FC<{data = []: any, type = 'product': any}> = ({ data 
     );
 
     const renderOrderCard = (item) => (
-        <Grid item xs={12} sm={6} md={4} lg={3} key={item.entity_id || item.increment_id}>
+        <Grid item xs={12} sm={6} md={4} lg={3} key={item.entity_id || item.increment_id}></
             <StyledCard>
-                <CardContent>
+                <CardContent></
                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                         <Typography variant="h6" noWrap>
                             Order #{item.increment_id}
                         </Typography>
-                        <Chip label={item.status} color={getStatusColor(item.status)} size="small" />
-                    </Stack>
+                        <Chip label={item.status} color={getStatusColor(item.status)} size="small" /></Chip>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                         {item.customer_firstname} {item.customer_lastname}
                     </Typography>
-                    <Stack spacing={1} mt={2}>
+                    <Stack spacing={1} mt={2}></
                         <InfoRow>
-                            <LocalOfferIcon />
-                            <Typography variant="body2">
+                            <LocalOfferIcon /></
+                            <Typography variant="outlined">
                                 {item.grand_total ? `$${parseFloat(item.grand_total).toFixed(2)}` : 'N/A'}
                             </Typography>
                         </InfoRow>
-                        <InfoRow>
+                        <InfoRow></
                             <CalendarTodayIcon />
-                            <Typography variant="body2">
+                            <Typography variant="outlined">
                                 Placed {item.created_at ? formatDistanceToNow(new Date(item.created_at), { addSuffix: true }) : 'Unknown'}
                             </Typography>
                         </InfoRow>
@@ -157,15 +153,14 @@ const GridCardView: React.FC<{data = []: any, type = 'product': any}> = ({ data 
     );
 
     const renderCustomerCard = (item) => (
-        <Grid item xs={12} sm={6} md={4} lg={3} key={item.id || item.email}>
+        <Grid item xs={12} sm={6} md={4} lg={3} key={item.id || item.email}></
             <StyledCard>
-                <CardContent>
+                <CardContent></
                     <Stack direction="row" justifyContent="space-between" alignItems="center">
                         <Typography variant="h6" noWrap>
                             {item.firstname} {item.lastname}
                         </Typography>
-                        <Chip label={item.is_active ? 'Active' : 'Inactive'} color={item.is_active ? 'success' : 'default'} size="small" />
-                    </Stack>
+                        <Chip label={item.is_active ? 'Active' : 'Inactive'} color={item.is_active ? 'success' : 'default'} size="small" /></Chip>
                     <Typography variant="subtitle2" color="text.secondary" gutterBottom noWrap>
                         {item.email}
                     </Typography>
@@ -175,9 +170,9 @@ const GridCardView: React.FC<{data = []: any, type = 'product': any}> = ({ data 
     );
 
     const renderGenericCard = (item, index) => (
-        <Grid item xs={12} sm={6} md={4} lg={3} key={item.id || index}>
+        <Grid item xs={12} sm={6} md={4} lg={3} key={item.id || index}></
             <StyledCard>
-                <CardContent>
+                <CardContent></
                     <Typography variant="h6">Item {item.id || index}</Typography>
                     <pre>{JSON.stringify(item, null, 2).substring(0, 200)}...</pre>
                 </CardContent>
@@ -186,9 +181,9 @@ const GridCardView: React.FC<{data = []: any, type = 'product': any}> = ({ data 
     );
 
     return (
-        <Box sx={{ display: "flex", p: 2 }}>
+        <Box sx={{ display: "flex", p: 2 }}></
                 <Grid { ...{container: true}} spacing={3}>
-                {data.map((item: any index: any: any: any: any) => {
+                {data.map((item, index) => {
                     switch(type) {
                         case 'ProductsGrid':
                             return renderProductCard(item);
@@ -198,7 +193,6 @@ const GridCardView: React.FC<{data = []: any, type = 'product': any}> = ({ data 
                             return renderCustomerCard(item);
                         default:
                             return renderGenericCard(item, index);
-                    }
                 })}
                 </Grid>
         </Box>

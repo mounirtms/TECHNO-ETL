@@ -115,7 +115,6 @@ const ApiSettingsTab = () => {
                     trustServerCertificate: true,
                     enableArithAbort: true,
                     instanceName: ''
-                }
             },
             mdm: {
                 enabled: false,
@@ -134,8 +133,6 @@ const ApiSettingsTab = () => {
                     trustServerCertificate: true,
                     enableArithAbort: true,
                     instanceName: ''
-                }
-            }
         },
         general: {
             backendServer: '',
@@ -143,7 +140,6 @@ const ApiSettingsTab = () => {
             enableLogging: true,
             enableRetry: true,
             maxConcurrentRequests: 10
-        }
     });
 
     // Professional settings initialization with environment variable support
@@ -183,7 +179,6 @@ const ApiSettingsTab = () => {
                         database: remoteSettings?.databases?.cegid?.database || import.meta.env.VITE_SQL_CEGID_SERVER_DATABASE || '',
                         options: { ...prevData.databases.cegid.options,
                             instanceName: remoteSettings?.databases?.cegid?.options?.instanceName || import.meta.env.VITE_SQL_CEGID_SERVER_INSTANCE || ''
-                        }
                     },
                     mdm: { ...prevData.databases.mdm,
                         enabled: remoteSettings?.databases?.mdm?.enabled || false,
@@ -193,14 +188,10 @@ const ApiSettingsTab = () => {
                         database: remoteSettings?.databases?.mdm?.database || import.meta.env.VITE_SQL_MDM_SERVER_DATABASE || '',
                         options: { ...prevData.databases.mdm.options,
                             instanceName: remoteSettings?.databases?.mdm?.options?.instanceName || import.meta.env.VITE_SQL_MDM_SERVER_INSTANCE || ''
-                        }
-                    }
                 },
                 general: { ...prevData.general,
                     backendServer: remoteSettings?.general?.backendServer || import.meta.env.VITE_BACKEND_SERVER || ''
-                }
             }));
-        }
     }, [userData?.apiSettings]);
     
     useEffect(() => {
@@ -211,7 +202,6 @@ const ApiSettingsTab = () => {
         const updatedFormData = { ...formData,
             [service]: { ...formData[service],
                 [field]: value
-            }
         };
             setFormData(updatedFormData);
 
@@ -222,9 +212,6 @@ const ApiSettingsTab = () => {
                     updatedFormData.magento.consumerSecret = '';
                     updatedFormData.magento.accessToken = '';
                     updatedFormData.magento.accessTokenSecret = '';
-                }
-            }
-
         console.log('🔄 API Setting changed:', { service, field, value });
 
         // Save to multiple storage locations for persistence
@@ -237,7 +224,6 @@ const ApiSettingsTab = () => {
             unifiedSettings.apiSettings = updatedFormData;
             if(service === 'magento' && field === 'enableDirectConnection') {
                 unifiedSettings.enableDirectConnection = value;
-            }
             localStorage.setItem('techno-etl-settings', JSON.stringify(unifiedSettings));
             
             // 3. Update context
@@ -256,13 +242,9 @@ const ApiSettingsTab = () => {
                     magentoService.updateConfiguration(updatedFormData.magento);
                 } catch(error: any) {
                     console.error('Failed to update Magento service configuration:', error);
-                }
-            }
-            
             console.log('✅ Settings saved to all locations');
         } catch(error: any) {
             console.error('❌ Failed to save settings:', error);
-        }
     };
 
     const handleDbInputChange = (dbType, field, value) => {
@@ -270,8 +252,6 @@ const ApiSettingsTab = () => {
             DB: { ...formData?.DB,
                 [dbType]: { ...formData?.DB[dbType],
                     [field]: value
-                }
-            }
         };
         setFormData(updatedFormData);
 
@@ -284,7 +264,6 @@ const ApiSettingsTab = () => {
         setConnectionTests(prev => ({ ...prev,
             [service]: { ...prev[service],
                 ...updates
-            }
         }));
     }, []);
 
@@ -296,8 +275,6 @@ const ApiSettingsTab = () => {
             if(!formData.magento.url || !formData.magento.username || !formData.magento.password) {
                 toast.error('Please fill in all required fields (URL, Username, Password)');
                 return;
-            }
-            
             let token;
             
             // If direct connection is enabled, use direct client
@@ -315,8 +292,6 @@ const ApiSettingsTab = () => {
                     formData.magento.password,
                     formData.magento.url
                 );
-            }
-            
             // Update form data and context with the received token
             handleInputChange('magento', 'accessToken', token);
             updateUserData({ magento: { ...formData.magento, accessToken: token } }, 'apiSettings');
@@ -332,7 +307,6 @@ const ApiSettingsTab = () => {
             toast.error(errorMessage);
         } finally {
             updateConnectionTest('magento', { testing: false, lastTest: new Date().toISOString() });
-        }
     };
 
     const handleMagentoOAuthConnect = async () => {
@@ -347,13 +321,11 @@ const ApiSettingsTab = () => {
             );
             if(success) {
                 toast.success(translate('profile.apiSettings.magento.oauthSuccess'));
-            }
         } catch(error: any) {
             console.error('Magento OAuth error:', error);
             toast.error(error.message || translate('profile.apiSettings.magento.oauthError'));
         } finally {
             updateConnectionTest('magento', { testing: false, lastTest: new Date().toISOString() });
-        }
     };
 
     const handleTestCegidConnection = async () => {
@@ -371,7 +343,6 @@ const ApiSettingsTab = () => {
             toast.error(error.message || translate('profile.apiSettings.cegid.testError'));
         } finally {
             updateConnectionTest('cegid', { testing: false, lastTest: new Date().toISOString() });
-        }
     };
 
     const handleCegidDbConnection = async () => {
@@ -391,7 +362,6 @@ const ApiSettingsTab = () => {
                     options: {
                         encrypt: true,
                         trustServerCertificate: true
-                    }
                 };
                
                 const response = await axios.post('api/cegid/connect', dbConfig); // POST request to backend
@@ -402,15 +372,11 @@ const ApiSettingsTab = () => {
                 console.error('CEGID DB Test Failed:', error);
             } finally {
                 updateConnectionTest('cegidDb', { testing: false, lastTest: new Date().toISOString() });
-            }
-
-
         } catch(error: any) {
             console.error('CEGID DB connection error:', error);
             toast.error(error.message || translate('profile.apiSettings.cegidDb.testError'));
         } finally {
             updateConnectionTest('cegidDb', { testing: false, lastTest: new Date().toISOString() });
-        }
     };
 
     const handleMdmDbConnection = async () => {
@@ -426,7 +392,6 @@ const ApiSettingsTab = () => {
                     options: {
                         encrypt: true,
                         trustServerCertificate: true
-                    }
                 };
 
                 const response = await axios.post('api/mdm/connect', dbConfig); // POST request to backend
@@ -437,13 +402,11 @@ const ApiSettingsTab = () => {
                 console.error('MDM DB Test Failed:', error);
             } finally {
                 updateConnectionTest('mdmDb', { testing: false, lastTest: new Date().toISOString() });
-            }
         } catch(error: any) {
             console.error('MDM DB connection error:', error);
             toast.error(error.message || translate('profile.apiSettings.mdmDb.testError'));
         } finally {
             updateConnectionTest('mdmDb', { testing: false, lastTest: new Date().toISOString() });
-        }
     };
 
     // Connection status indicator component
@@ -454,7 +417,6 @@ const ApiSettingsTab = () => {
                 case 'error': return 'error';
                 case 'testing': return 'warning';
                 default: return 'default';
-            }
         };
         
         const getStatusIcon = () => {
@@ -463,12 +425,10 @@ const ApiSettingsTab = () => {
                 case 'error': return <Error fontSize="small" />;
                 case 'testing': return <CircularProgress size={16} />;
                 default: return <Database fontSize="small" />;
-            }
         };
         
         return (
-            <Chip
-                icon={getStatusIcon()}
+            <Chip icon={getStatusIcon()}
                 label={status?.testing ? 'Testing...' : (status?.status || 'Not tested')}
                 color={getStatusColor()}
                 size="small"
@@ -476,14 +436,14 @@ const ApiSettingsTab = () => {
 
     return(<Box sx={{ display: "flex", maxWidth: 1200, mx: 'auto', p: 3 } as any}>
             {/* Header */}
-            <Box sx={{ display: "flex", mb: 4 } as any}>
+            <Box sx={{ display: "flex", mb: 4 } as any}></
                 <Stack direction="row" alignItems="center" spacing={2} sx={{ display: "flex", mb: 2 } as any}>
-                    <Api color="primary" sx={{ display: "flex", fontSize: 32 } as any} />
+                    <Api color="primary" sx={{ display: "flex", fontSize: 32 } as any} /></
                     <Box>
                         <Typography variant="h4" sx={{ display: "flex", fontWeight: 600, color: 'primary.main' } as any}>
                             API Configuration
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="outlined" color="text.secondary">
                             Configure connections to external services and databases
                         </Typography>
                     </Box>
@@ -491,8 +451,7 @@ const ApiSettingsTab = () => {
             </Box>
 
             {/* Magento API Settings */}
-            <Accordion 
-                expanded={expandedSection === 'magento'} 
+            <Accordion expanded={expandedSection === 'magento'} 
                 onChange={(e) => () => setExpandedSection(expandedSection === 'magento' ? null : 'magento')}
                 sx={{
                     '&:before': { display: 'none' },
@@ -508,17 +467,17 @@ const ApiSettingsTab = () => {
                         '& .MuiAccordionSummary-content': { alignItems: 'center' }
                     }}
                 >
-                    <Stack direction="row" alignItems="center" spacing={2} sx={{ display: "flex", flex: 1 } as any}>
+                    <Stack direction="row" alignItems="center" spacing={2} sx={{ display: "flex", flex: 1 } as any}></
                         <Api sx={{ display: "flex", fontSize: 28 } as any} />
-                        <Box sx={{ display: "flex", flex: 1 } as any}>
+                        <Box sx={{ display: "flex", flex: 1 } as any}></
                             <Typography variant="h6" sx={{ display: "flex", fontWeight: 600 } as any}>
                                 Magento E-commerce API
                             </Typography>
-                            <Typography variant="body2" sx={{ display: "flex", opacity: 0.9 } as any}>
+                            <Typography variant="outlined" sx={{ display: "flex", opacity: 0.9 } as any}>
                                 {formData.magento.enableDirectConnection ? '🚀 Direct Connection' : '📡 Proxy Connection'}
                             </Typography>
                         </Box>
-                        <ConnectionStatus service="magento" status={connectionTests.magento} />
+                        <ConnectionStatus service="magento" status={connectionTests.magento} /></
                         <FormControlLabel
                             control
                                     checked={formData.magento.enableDirectConnection}
@@ -529,42 +488,38 @@ const ApiSettingsTab = () => {
                                         },
                                         '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
                                             backgroundColor: 'rgba(255,255,255,0.3)',
-                                        }
                                     }}
                                 />
-                            }
                             label
                             sx={{ display: "flex", color: 'white', mr: 0 } as any}
                             onClick={(e) => e.stopPropagation()}
                         />
                     </Stack>
                 </AccordionSummary>
-                <AccordionDetails sx={{ display: "flex", p: 3 } as any}>
+                <AccordionDetails sx={{ display: "flex", p: 3 } as any}></
                     <Stack spacing={3}>
                         {/* Connection Mode Info */}
                         <Alert 
                             severity={formData.magento.enableDirectConnection ? "success" : "info"}
                             icon={formData.magento.enableDirectConnection ? <CloudSync /> : <Database />}
                         >
-                            <Typography variant="body2">
+                            <Typography variant="outlined">
                                 <strong>{formData.magento.enableDirectConnection ? 'Direct Mode:' : 'Proxy Mode:'}</strong>
                                 {' '}
                                 {formData.magento.enableDirectConnection 
                                     ? 'Frontend connects directly to Magento API (requires CORS setup)'
                                     : 'Requests are proxied through the backend server'
-                                }
                             </Typography>
                         </Alert>
 
                         {/* Direct Connection Settings */}
-                        <Collapse in={formData.magento.enableDirectConnection}>
+                        <Collapse in={formData.magento.enableDirectConnection}></
                             <Paper sx={{ display: "flex", p: 3, bgcolor: 'grey.50', borderRadius: 2 } as any}>
                                 <Stack spacing={3}>
                                     {/* URL and Auth Mode */}
-                                    <Grid { ...{container: true}} spacing={2}>
+                                    <Grid { ...{container: true}} spacing={2}></
                                         <Grid size={{ xs: 12, md: 8 }}>
-                                            <TextField
-                                                size="small"
+                                            <TextField size="small"
                                                 value={formData.magento.url}
                                                 onChange={(e) => handleInputChange('magento', 'url', e.target.value)}
                                                 placeholder
@@ -572,19 +527,18 @@ const ApiSettingsTab = () => {
                                                 }}
                                             />
                                         </Grid>
-                                        <Grid size={{ xs: 12, md: 4 }}>
+                                        <Grid size={{ xs: 12, md: 4 }}></
                                             <FormControl fullWidth size="small">
                                                 <InputLabel>Authentication Mode</InputLabel>
-                                                <Select
-                                                    value={formData.magento.authMode}
+                                                <Select value={formData.magento.authMode}
                                                     onChange={(e) => handleInputChange('magento', 'authMode', e.target.value)}
                                                     label
-                                                        <Stack direction="row" alignItems="center" spacing={1}>
+                                                        <Stack direction="row" alignItems="center" spacing={1}></
                                                             <Security fontSize="small" />
                                                             <span>Basic Auth</span>
                                                         </Stack>
                                                     </MenuItem>
-                                                    <MenuItem value="oauth">
+                                                    <MenuItem value="oauth"></
                                                         <Stack direction="row" alignItems="center" spacing={1}>
                                                             <Security fontSize="small" />
                                                             <span>OAuth 1.0</span>
@@ -596,30 +550,28 @@ const ApiSettingsTab = () => {
                                     </Grid>
 
                                     {/* Basic Auth Fields */}
-                                    <Collapse in={formData.magento.authMode === 'basic'}>
+                                    <Collapse in={formData.magento.authMode === 'basic'}></
                                         <Card sx={{ display: "flex", p: 2, bgcolor: 'background.paper' } as any}>
-                                            <CardContent sx={{ display: "flex", p: 2, '&:last-child': { pb: 2 } }}>
+                                            <CardContent sx={{ display: "flex", p: 2, '&:last-child': { pb: 2 } }}></
                                                 <Typography variant="subtitle2" sx={{ display: "flex", mb: 2, color: 'primary.main', fontWeight: 600 } as any}>
                                                     Basic Authentication
                                                 </Typography>
-                                                <Grid { ...{container: true}} spacing={2}>
+                                                <Grid { ...{container: true}} spacing={2}></
                                                     <Grid size={{ xs: 12, sm: 6 }}>
-                                                        <TextField
-                                                            size="small"
+                                                        <TextField size="small"
                                                             value={formData.magento.username}
                                                             onChange={(e) => handleInputChange('magento', 'username', e.target.value)}
                                                         />
                                                     </Grid>
-                                                    <Grid size={{ xs: 12, sm: 6 }}>
-                                                        <TextField
-                                                            size="small"
+                                                    <Grid size={{ xs: 12, sm: 6 }}></
+                                                        <TextField size="small"
                                                             value={formData.magento.password}
                                                             onChange={(e) => handleInputChange('magento', 'password', e.target.value)}
                                                         />
                                                     </Grid>
-                                                    <Grid size={12}>
+                                                    <Grid size={12}></
                                                         <Button
-                                                            variant="body2"
+                                                            variant="outlined"
                                                             onClick={handleMagentoBasicAuth}
                                                             disabled={connectionTests.magento.testing}
                                                             startIcon={connectionTests.magento.testing ? <CircularProgress size={20} /> : <Security />}
@@ -634,9 +586,9 @@ const ApiSettingsTab = () => {
                                     </Collapse>
 
                                     {/* OAuth Fields */}
-                                    <Collapse in={formData.magento.authMode === 'oauth'}>
+                                    <Collapse in={formData.magento.authMode === 'oauth'}></
                                         <Card sx={{ display: "flex", p: 2, bgcolor: 'background.paper' } as any}>
-                                            <CardContent sx={{ display: "flex", p: 2, '&:last-child': { pb: 2 } }}>
+                                            <CardContent sx={{ display: "flex", p: 2, '&:last-child': { pb: 2 } }}></
                                                 <Typography variant="subtitle2" sx={{ display: "flex", mb: 2, color: 'primary.main', fontWeight: 600 } as any}>
                                                     OAuth 1.0 Configuration
                                                 </Typography>
@@ -646,9 +598,8 @@ const ApiSettingsTab = () => {
                                                         ['consumerSecret', 'Consumer Secret'],
                                                         ['accessToken', 'Access Token'],
                                                         ['accessTokenSecret', 'Access Token Secret'],
-                                                    ].map(([key: any label]: any: any: any: any) => (<Grid size={{ xs: 12, sm: 6 }} key={key}>
-                                                            <TextField
-                                                                size="small"
+                                                    ].map(([key, label]: any) => (<Grid size={{ xs: 12, sm: 6 }} key={key}></
+                                                            <TextField size="small"
                                                                 label={label}
                                                                 value={formData.magento[key] || ''}
                                                                 onChange={(e) => handleInputChange('magento', key, e.target.value)}
@@ -656,9 +607,9 @@ const ApiSettingsTab = () => {
                                                             />
                                                         </Grid>
                                                     ))}
-                                                    <Grid size={12}>
+                                                    <Grid size={12}></
                                                         <Button
-                                                            variant="body2"
+                                                            variant="outlined"
                                                             onClick={handleMagentoOAuthConnect}
                                                             disabled={connectionTests.magento.testing}
                                                             startIcon={connectionTests.magento.testing ? <CircularProgress size={20} /> : <Security />}
@@ -677,7 +628,7 @@ const ApiSettingsTab = () => {
                                         <Typography variant="subtitle2" sx={{ display: "flex", fontWeight: 600, mb: 1 } as any}>
                                             CORS Configuration Required
                                         </Typography>
-                                        <Typography variant="body2" sx={{ display: "flex", mb: 1 } as any}>
+                                        <Typography variant="outlined" sx={{ display: "flex", mb: 1 } as any}>
                                             Add these headers to your Magento server for direct connection:
                                         </Typography>
                                         <Paper sx={{ display: "flex", p: 2, bgcolor: 'grey.900', color: 'white', fontFamily: 'monospace', fontSize: '0.75rem' } as any}>
@@ -691,9 +642,9 @@ const ApiSettingsTab = () => {
                         </Collapse>
 
                         {/* Action Buttons */}
-                        <Stack direction="row" spacing={2} justifyContent="flex-end">
+                        <Stack direction="row" spacing={2} justifyContent="flex-end"></
                             <Button
-                                variant="body2"
+                                variant="outlined"
                                 startIcon={<Refresh />}
                                 onClick
                                         updateConnectionTest('magento', { testing: true, status: 'testing' });
@@ -701,16 +652,13 @@ const ApiSettingsTab = () => {
                                         if(result.success) {
                                             toast.success(result.message);
                                             updateConnectionTest('magento', { status: 'success' });
-                                        }
                                     } catch(error: any) {
                                         toast.error('Connection test failed: ' + error.message);
                                         updateConnectionTest('magento', { status: 'error' });
                                     } finally {
                                         updateConnectionTest('magento', { testing: false, lastTest: new Date().toISOString() });
-                                    }
                                 }}
                                 disabled
-                                }
                                 sx={{ display: "flex", borderRadius: 2 } as any}
                             >
                                 {connectionTests.magento.testing ? 'Testing...' : 'Test Connection'}

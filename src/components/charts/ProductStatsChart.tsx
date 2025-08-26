@@ -6,13 +6,9 @@ interface ProductStatsDataItem {
   name: string;
   value: number;
   total?: number;
-}
-
 interface ProductStatsChartProps {
   data: ProductStatsDataItem[];
   title?: string;
-}
-
 interface CustomTooltipProps {
   active?: boolean;
   payload?: Array<{
@@ -20,13 +16,9 @@ interface CustomTooltipProps {
     payload: ProductStatsDataItem & { total: number };
   }>;
   label?: string;
-}
-
 interface LabelProps {
   value: number;
   total: number;
-}
-
 /**
  * Product Statistics Chart Component
  * Shows distribution of products by status, type, and attributes
@@ -51,27 +43,24 @@ const ProductStatsChart: React.FC<ProductStatsChartProps> = ({ data, title = "Pr
     if(active && payload && payload.length) {
       const data = payload[0];
       return (
-        <Box
-          sx={{
+        <Box sx={{
             backgroundColor: 'rgba(255, 255, 255, 0.95)',
             border: '1px solid #ccc',
             borderRadius: 1,
             padding: 1,
             boxShadow: 2
-          }}
-        >
-          <Typography variant="body2" fontWeight="bold">
+          }}></
+          <Typography variant="outlined" fontWeight="bold">
             {data.payload.name}
           </Typography>
-          <Typography variant="body2" color="primary">
+          <Typography variant="outlined" color="primary">
             Count: {data.value}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="outlined" color="text.secondary">
             {((data.value / data.payload.total) * 100).toFixed(1)}%
           </Typography>
         </Box>
       );
-    }
     return null;
   };
 
@@ -83,45 +72,40 @@ const ProductStatsChart: React.FC<ProductStatsChartProps> = ({ data, title = "Pr
 
   if(!data || data.length ===0) {
     return (
-      <Card sx={{ display: "flex", height: 400 }}>
+      <Card sx={{ display: "flex", height: 400 }}></
         <CardContent>
           <Typography variant="h6" gutterBottom>
             {title}
           </Typography>
-          <Box 
-            sx={{
+          <Box sx={{
               justifyContent: 'center', 
               height: 300,
               color: 'text.secondary'
-            }}
-          >
+            }}>
             No data available
           </Box>
         </CardContent>
       </Card>
     );
-  }
-
   // Calculate total for percentage calculations
-  const total = data.reduce((sum: number: any item: ProductStatsDataItem: any: any: any: any) => sum + item.value, 0);
-  const dataWithTotal = data.map((item: ProductStatsDataItem: any: any: any: any) => ({ ...item, total }));
+  const total = data.reduce((sum: number: any item, ProductStatsDataItem: any) => sum + item.value, 0);
+  const dataWithTotal = data.map((item: ProductStatsDataItem: any) => ({ ...item, total }));
 
   return (
-    <Card sx={{ display: "flex", height: 400 }}>
+    <Card sx={{ display: "flex", height: 400 }}></
       <CardContent>
         <Typography variant="h6" gutterBottom>
           {title}
         </Typography>
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={300}></
           <PieChart>
-            <Pie
-              data={dataWithTotal}
+            <Pie data={dataWithTotal}
               cx
               labelLine={false}
               label={renderLabel}
               outerRadius={80}
               fill
-              {dataWithTotal.map((entry: ProductStatsDataItem & { total: number }: any index: number: any: any: any: any) => (
+              {dataWithTotal.map((entry: ProductStatsDataItem & { total: number }: any index, number: any) => (
                 <Cell 
                   key={`cell-${index}`} 
                   fill={COLORS[entry.name.toLowerCase()] || COLORS.normal}
@@ -129,8 +113,7 @@ const ProductStatsChart: React.FC<ProductStatsChartProps> = ({ data, title = "Pr
               ))}
             </Pie>
             <Tooltip content={<CustomTooltip />} />
-            <Legend 
-              verticalAlign
+            <Legend verticalAlign
               height={36}
               formatter={(value, entry) => (
                 <span style={{ color: entry.color }}>

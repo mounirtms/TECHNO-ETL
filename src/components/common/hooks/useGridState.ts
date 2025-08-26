@@ -5,8 +5,6 @@ interface UseGridStateProps {
   onRefresh?: (params: { paginationModel: any; sortModel: any; filterModel: any}) => void;
   serverSide?: boolean;
   initialSelection?: any[];
-}
-
 /**
  * Custom hook to manage the state of the BaseGrid component.
  */
@@ -24,7 +22,6 @@ export const useGridState = ({ onRefresh, serverSide, initialSelection = [] }: U
     useEffect(() => {
         if(serverSide) {
             onRefresh?.({ paginationModel, sortModel, filterModel });
-        }
     }, [paginationModel, sortModel, filterModel, serverSide, onRefresh]);
 
     const handleSelectionChange = useCallback((newSelectionModel) => {

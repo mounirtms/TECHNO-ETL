@@ -18,46 +18,33 @@ class DashboardCache {
         this.cacheExpiry = new Map();
         this.maxCacheSize = 50;
         this.defaultTTL = 5 * 60 * 1000; // 5 minutes
-    }
-
     set(key, data, ttl = this.defaultTTL) {
         // Cleanup if cache is too large
         if(this.cache.size >= this.maxCacheSize) {
             this.cleanup();
-        }
+
 
         this.cache.set(key, data);
         this.cacheExpiry.set(key, Date.now() + ttl);
-    }
-
     get(key: any) {
         const expiry = this.cacheExpiry.get(key);
         if (!expiry || Date.now() > expiry) {
             this.cache.delete(key);
             this.cacheExpiry.delete(key);
             return null;
-        }
         return this.cache.get(key);
-    }
-
     has(key: any) {
         return this.get(key) !== null;
-    }
-
     clear() {
         this.cache.clear();
         this.cacheExpiry.clear();
-    }
-
     cleanup() {
         const now = Date.now();
         for(const [key, expiry] of this.cacheExpiry.entries()) {
             if(now > expiry) {
                 this.cache.delete(key);
                 this.cacheExpiry.delete(key);
-            }
-        }
-    }
+
 
     invalidatePattern(pattern) {
         const regex = new RegExp(pattern);
@@ -65,11 +52,6 @@ class DashboardCache {
             if(regex.test(key)) {
                 this.cache.delete(key);
                 this.cacheExpiry.delete(key);
-            }
-        }
-    }
-}
-
 // Global cache instance
 const dashboardCache = new DashboardCache();
 
@@ -95,10 +77,16 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
         if(!currentUser) {
             setLoading(false);
             return;
-        }
+
 
         try {
             // Listen to user preferences in real-time
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
+
             const userPrefsRef = ref(database, `users/${currentUser.uid}/preferences`);
             const unsubscribe = onValue(userPrefsRef, (snapshot) => {
                 const preferences = snapshot.val();
@@ -108,20 +96,22 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                     if(preferences.language) {
                         setLanguage(preferences.language);
                         localStorage.setItem('userLanguage', preferences.language);
-                    }
-                    
+
+
                     // Apply theme preference
                     if(preferences.theme) {
                         // Only set theme if function exists and is different
                         if(typeof themeCtx.setThemeMode === 'function') {
                             themeCtx.setThemeMode(preferences.theme);
+
                         } else if(typeof themeCtx?.setMode === 'function') {
                             themeCtx?.setMode(preferences.theme);
+
                         } else if(typeof themeCtx.toggleTheme === 'function') {
                             if (themeCtx.mode !== preferences.theme) themeCtx.toggleTheme();
-                        }
+
+
                         localStorage.setItem('theme', preferences.theme);
-                    }
                 } else {
                     // If no preferences found, use localStorage values or defaults
                     const localLang = localStorage.getItem('userLanguage') || 'en';
@@ -130,13 +120,14 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                     setLanguage(localLang);
                     if(typeof themeCtx.setThemeMode === 'function') {
                         themeCtx.setThemeMode(localTheme);
+
                     } else if(typeof themeCtx?.setMode === 'function') {
                         themeCtx?.setMode(localTheme);
+
                     } else if(typeof themeCtx.toggleTheme === 'function') {
                         if (themeCtx.mode !== localTheme) themeCtx.toggleTheme();
-                    }
-                }
-                
+
+
                 setLoading(false);
             }, (error) => {
                 console.error('Error loading preferences:', error);
@@ -150,11 +141,14 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                 setLanguage(localLang);
                 if(typeof themeCtx.setThemeMode === 'function') {
                     themeCtx.setThemeMode(localTheme);
+
                 } else if(typeof themeCtx?.setMode === 'function') {
                     themeCtx?.setMode(localTheme);
+
                 } else if(typeof themeCtx.toggleTheme === 'function') {
                     if (themeCtx.mode !== localTheme) themeCtx.toggleTheme();
-                }
+
+
             });
 
             return () => unsubscribe();
@@ -162,7 +156,6 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             console.error('Error in dashboard controller:', err);
             setError(err);
             setLoading(false);
-        }
     }, [currentUser, setLanguage, themeCtx]);
     
     // Enhanced fetch dashboard data with caching and optimization
@@ -182,8 +175,6 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             setProductTypeData(cachedData.productTypeData);
             setLoading(false);
             return cachedData;
-        }
-
         setLoading(true);
         setError(null);
         const ordersByTime = {};
@@ -200,6 +191,12 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                         field: 'created_at',
                         value: formattedStartDate,
                         conditionType: 'gteq'
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
+
                     }, {
                         field: 'created_at',
                         value: formattedEndDate,
@@ -252,8 +249,6 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                         key: `day-${timestamp}`
                     };
                     currentDate.setDate(currentDate.getDate() + 1);
-                }
-
                 // Process orders efficiently
                 orders.forEach((order) => {
                     const orderDate = new Date(order.created_at);
@@ -264,12 +259,12 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                             const orderTotal = parseFloat(order.grand_total || 0);
                             ordersByTime[timestamp].revenue += orderTotal;
                             totalRevenue += orderTotal;
-                        }
-                    }
+
+
                 });
 
                 return Object.entries(ordersByTime)
-                    .map(([timestamp: any data]: any: any: any: any) => ({
+                    .map(([timestamp: any, data]: any) => ({
                         date: parseInt(timestamp),
                         orders: data.count || 0,
                         revenue: data.revenue || 0,
@@ -282,12 +277,12 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
 
             // Optimized stats calculation
             const calculateStats = () => {
-                const newCustomers = customers.filter((c: any: any: any: any) => {
+                const newCustomers = customers.filter((c: any) => {
                     const createdAt = new Date(c.created_at);
                     return createdAt >= startDate && createdAt <= endDate;
                 }).length;
 
-                const totalValue = products.reduce((acc: any p: any: any: any: any) => {
+                const totalValue = products.reduce((acc: any, p: any) => {
                     const price = parseFloat(p.price || 0);
                     const qty = parseFloat(p.qty || 0);
                     return acc + (price * qty);
@@ -319,7 +314,6 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                                 qty: 0,
                                 revenue: 0
                             });
-                        }
                         const existing = productMap.get(sku);
                         existing.qty += parseFloat(item.qty_ordered || 0);
                         existing.revenue += parseFloat(item.price || 0) * parseFloat(item.qty_ordered || 0);
@@ -338,10 +332,11 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                         const countryAttr = product.custom_attributes.find(
                             attr
                         countryCount.set(country, (countryCount.get(country) || 0) + 1);
-                    }
+
+
                 });
                 return Array.from(countryCount.entries())
-                    .map(([country: any count]: any: any: any: any) => ({ country_of_manufacture: country, count }))
+                    .map(([country: any, count]: any) => ({ country_of_manufacture: country, count }))
                     .sort((a, b) => b.count - a.count)
                     .slice(0, 8); // Increased for better insights
             };
@@ -354,7 +349,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                     typeCount.set(type, (typeCount.get(type) || 0) + 1);
                 });
                 return Array.from(typeCount.entries())
-                    .map(([type: any count]: any: any: any: any) => ({
+                    .map(([type: any, count]: any) => ({
                         name: type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' '),
                         value: count,
                         percentage: products.length > 0 ? (count / products.length) * 100 : 0
@@ -406,7 +401,6 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             throw error;
         } finally {
             setLoading(false);
-        }
     }, [startDate, endDate, refreshKey]);
     
     // Enhanced progress tracking for stock sync
@@ -440,6 +434,12 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                 completedSources: [],
                 errorSources: [],
                 message: 'Starting comprehensive stock synchronization'
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
+
             });
             
             // Step 1: Mark stocks for sync (Local MDM level)
@@ -483,6 +483,12 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                 const source = sources[i];
                 try {
                     setSyncProgress(prev => ({ ...prev,
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
+
                         message: `Syncing source ${i + 1}/${sources.length}: ${source.magentoSource || source?.code_source}`
                     }));
                     
@@ -500,9 +506,6 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                     setSyncProgress(prev => ({ ...prev,
                         errorSources: [...errorSources]
                     }));
-                }
-            }
-            
             setSyncProgress(prev => ({ ...prev, 
                 current: 3,
                 completedSources: completedSources,
@@ -568,7 +571,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
                 completed: false,
                 currentStep: 'Sync failed',
                 message: `Sync failed: ${errorMessage}`,
-                errorSources: prev.sources.map((s: any: any: any: any) => s?.code_source)
+                errorSources: prev.sources.map((s: any) => s?.code_source)
             }));
             
             toast.error(`❌ Failed to sync stocks: ${errorMessage}`);
@@ -589,7 +592,6 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             }, 5000);
             
             throw error;
-        }
     };
 
     // Get Prices from MDM
@@ -602,12 +604,17 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
             toast.success('✅ Price sync operation completed successfully');
 
             return response.data;
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
+
         } catch(error: any) {
             console.error('❌ Price sync error:', error);
             const errorMessage = error.response?.data?.message || error.message || 'Unknown error';
             toast.error(`❌ Failed to sync prices: ${errorMessage}`);
             throw error;
-        }
     };
 
     useEffect(() => {

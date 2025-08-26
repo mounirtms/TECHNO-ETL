@@ -23,7 +23,6 @@ const cardVariants = cva(
       variant: "default",
       padding: "md",
     },
-  }
 );
 
 export interface CardProps
@@ -36,8 +35,6 @@ export interface CardProps
   contentClassName?: string;
   footerClassName?: string;
   footer?: React.ReactNode;
-}
-
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ 
     className, 
@@ -55,7 +52,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
   }, ref) => {
     const hasHeader = Boolean(title || subtitle || actions);
 
-    return Boolean((
+    return (
       <div
         className={cn(cardVariants({ variant, padding: hasHeader || footer ? "none" : padding, className }))}
         ref={ref}
@@ -104,8 +101,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
           </div>
         )}
       </div>
-    )))));
-  }
+    );
 );
 
 Card.displayName = "Card";

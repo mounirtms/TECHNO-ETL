@@ -25,7 +25,6 @@ const FilterContainer = styled(Box)(({ theme }) => ({
     flexDirection: 'column',
     alignItems: 'stretch',
     gap: theme.spacing(1)
-  }
 }));
 
 /**
@@ -35,7 +34,6 @@ const FilterFormControl = styled(FormControl)(({ theme }) => ({
   minWidth: 150,
   [theme.breakpoints.down('md')]: {
     minWidth: '100%'
-  }
 }));
 
 /**
@@ -66,16 +64,15 @@ const MDMFilters: React.FC<{sourceFilter onSourceChange succursaleFilter onSuccu
  }) => {
   return(<FilterContainer>
       {/* Source Filter */}
-      <FilterFormControl size="small" disabled={loading}>
+      <FilterFormControl size="small" disabled={loading}></
         <InputLabel id="source-filter-label">Source</InputLabel>
-        <Select
-          labelId
+        <Select labelId
           value={sourceFilter || 'all'}
           label
           onChange={(e) => onSourceChange?.(e.target?.value)}
         >
           <MenuItem value="all">All Sources</MenuItem>
-          {sources.map((source: any: any: any: any) => (
+          {sources.map((source: any) => (
             <MenuItem key={source?.value} value={source?.value}>
               {source?.label}
             </MenuItem>
@@ -84,16 +81,15 @@ const MDMFilters: React.FC<{sourceFilter onSourceChange succursaleFilter onSuccu
       </FilterFormControl>
 
       {/* Branch Filter */}
-      <FilterFormControl size="small" disabled={loading}>
+      <FilterFormControl size="small" disabled={loading}></
         <InputLabel id="branch-filter-label">Branch</InputLabel>
-        <Select
-          labelId
+        <Select labelId
           value={succursaleFilter || 'all'}
           label
           onChange={(e) => onSuccursaleChange?.(e.target?.value)}
         >
           <MenuItem value="all">All Branches</MenuItem>
-          {branches.map((branch: any: any: any: any) => (
+          {branches.map((branch: any) => (
             <MenuItem key={branch?.value} value={branch?.value}>
               {branch?.label}
             </MenuItem>
@@ -102,18 +98,15 @@ const MDMFilters: React.FC<{sourceFilter onSourceChange succursaleFilter onSuccu
       </FilterFormControl>
 
       {/* Show Changed Only Filter */}
-      <FormControlLabel
-        control
+      <FormControlLabel control
             checked={showChangedOnly}
             onChange={(e) => onShowChangedOnlyChange?.(e.target.checked)}
             disabled={loading}
             size="small"
-        }
         label
           '& .MuiFormControlLabel-label': {
             fontSize: '0.875rem',
             fontWeight: 500
-          }
         }}
       />
 

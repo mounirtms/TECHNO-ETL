@@ -41,8 +41,6 @@ export const categorizeError = (error) => {
   // Network errors
   if (message.includes('network') || message.includes('fetch') || !status) {
     return ERROR_TYPES.NETWORK;
-  }
-  
   // HTTP status code categorization
   switch(status) {
     case 400:
@@ -54,15 +52,14 @@ export const categorizeError = (error) => {
     case 404:
       return ERROR_TYPES.NOT_FOUND;
     case 500:
-    case 502:
-    case 503:
-    case 504:
+    case, 502:
+    case, 503:
+    case, 504:
       return ERROR_TYPES.SERVER;
     default:
       if (status >= 400 && status < 500) return ERROR_TYPES.CLIENT;
       if (status >= 500) return ERROR_TYPES.SERVER;
       return ERROR_TYPES.UNKNOWN;
-  }
 };
 
 /**
@@ -83,7 +80,6 @@ export const getErrorSeverity = (errorType: string, context: any = {}) => {
       return context.critical ? ERROR_SEVERITY.HIGH : ERROR_SEVERITY.MEDIUM;
     default:
       return ERROR_SEVERITY.MEDIUM;
-  }
 };
 
 /**
@@ -141,13 +137,11 @@ export const logError = (error, context: any = {}) => {
       break;
     default:
       console.log('📝 ERROR LOG:', logData);
-  }
-  
   // In production, send to error tracking service
   if(process.env.NODE_ENV === 'production') {
     // TODO: Send to error tracking service (Sentry, LogRocket, etc.)
-  }
-  
+
+
   return logData;
 };
 
@@ -179,8 +173,6 @@ export const handleError = (error, context: any = {}) => {
       break;
     default:
       toast(userMessage);
-  }
-  
   return {
     type: logData.type,
     severity: logData.severity,
@@ -193,7 +185,7 @@ export const handleError = (error, context: any = {}) => {
  * Create error handler for specific component
  */
 export const createErrorHandler = (componentName: string, defaultContext: any = {}) => {
-  return (error additionalContext: any = {}) => {
+  return (error: Error, additionalContext: any = {}) => {
     const context = {
       componentName,
       ...defaultContext,
@@ -210,10 +202,15 @@ export const createErrorHandler = (componentName: string, defaultContext: any = 
 export const withErrorHandling = async (asyncFn: () => Promise<any>, context: any = {}) => {
   try {
     return await asyncFn();
+  } catch (error) {
+    console.error(error);
+
+  } catch (error) {
+    console.error(error);
+
   } catch(error: any) {
     handleError(error, context);
     throw error; // Re-throw for component-level handling
-  }
 };
 
 /**
@@ -255,7 +252,6 @@ export const getFallbackData = (dataType: string) => {
       bugs: [],
       stats: { totalBugs: 0, totalRewards: 0 },
       leaderboard: []
-    }
   };
   
   return fallbacks[dataType] || null;

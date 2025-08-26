@@ -84,11 +84,8 @@ export const getProductStatsData = async () => {
         { name: 'Enabled', value: Math.round(enabled * ratio) },
         { name: 'Disabled', value: Math.round(disabled * ratio) }
       ];
-    }
   } catch (error) {
     console.warn('Using mock product stats data:', error.message);
-  }
-  
   return generateMockData().productStats;
 };
 
@@ -111,11 +108,8 @@ export const getProductTypesData = async () => {
         name: name.charAt(0).toUpperCase() + name.slice(1),
         value
       }));
-    }
   } catch (error) {
     console.warn('Using mock product types data:', error.message);
-  }
-  
   return generateMockData().productTypes;
 };
 
@@ -137,17 +131,13 @@ export const getBrandDistributionData = async () => {
         if (brandAttr?.value) {
           const brand = brandAttr.value;
           brands[brand] = (brands[brand] || 0) + 1;
-        }
       });
       
       return Object.entries(brands)
         .map(([name, value]) => ({ name, value }))
         .sort((a, b) => b.value - a.value);
-    }
   } catch (error) {
     console.warn('Using mock brand distribution data:', error.message);
-  }
-  
   return generateMockData().brandDistribution;
 };
 
@@ -170,7 +160,6 @@ export const getCategoryDistributionData = () => {
   } catch (error) {
     console.warn('Error getting category data:', error);
     return [];
-  }
 };
 
 /**
@@ -198,42 +187,28 @@ export const getProductAttributesData = async () => {
         const trending = customAttrs.find(attr => attr.attribute_code === 'trending');
         if(trending?.value === '1' || trending?.value ===true) {
           attributes['Trending']++;
-        }
-        
         const bestSeller = customAttrs.find(attr => attr.attribute_code === 'best_seller');
         if(bestSeller?.value === '1' || bestSeller?.value ===true) {
           attributes['Best Seller']++;
-        }
-        
         const alaune = customAttrs.find(attr => attr.attribute_code === 'a_la_une');
         if(alaune?.value === '1' || alaune?.value ===true) {
           attributes['À la Une']++;
-        }
-        
         // Check other attributes
         const description = customAttrs.find(attr => attr.attribute_code === 'description');
         if(description?.value) {
           attributes['Has Description']++;
-        }
-        
         if(product.weight && product.weight > 0) {
           attributes['Has Weight']++;
-        }
-        
         if(product.media_gallery_entries && product.media_gallery_entries.length > 0) {
           attributes['Has Images']++;
-        }
       });
       
       return Object.entries(attributes).map(([attribute, value]) => ({
         attribute,
         value
       }));
-    }
   } catch (error) {
     console.warn('Using mock attributes data:', error.message);
-  }
-  
   return generateMockData().productAttributes;
 };
 
@@ -248,7 +223,6 @@ export const getSalesPerformanceData = async () => {
   } catch (error) {
     console.warn('Using mock sales performance data:', error.message);
     return generateMockData().salesPerformance;
-  }
 };
 
 /**
@@ -274,13 +248,10 @@ export const getInventoryStatusData = async () => {
         outOfStock,
         totalValue: totalProducts * avgPrice
       });
-    }
-    
     return inventoryData;
   } catch (error) {
     console.warn('Using mock inventory data:', error.message);
     return generateMockData().inventoryStatus;
-  }
 };
 
 /**
@@ -318,7 +289,6 @@ export const getAllDashboardData = async () => {
   } catch (error) {
     console.error('Error loading dashboard data:', error);
     return generateMockData();
-  }
 };
 
 export default {

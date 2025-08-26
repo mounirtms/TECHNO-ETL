@@ -148,13 +148,11 @@ export const TabProvider = ({ children, sidebarOpen }: { children: ReactNode; si
                 path: '/dashboard'
             };
         }
-        
         const tabId = URL_TO_TAB_MAP[location.pathname];
         if (tabId) {
             const menuItem = MENU_ITEMS.find(item => item?.id === tabId);
             if (menuItem) return menuItem;
         }
-        
         // Fallback to Dashboard from MENU_ITEMS
         const dashboardItem = MENU_ITEMS.find(item => item?.id === 'Dashboard');
         if (dashboardItem) return dashboardItem;
@@ -211,7 +209,6 @@ export const TabProvider = ({ children, sidebarOpen }: { children: ReactNode; si
                     console.error(`No component found for tab: ${newTab.id}`);
                     return;
                 }
-
                 setTabs(prevTabs => [
                     ...prevTabs,
                     { ...newTab,
@@ -221,7 +218,6 @@ export const TabProvider = ({ children, sidebarOpen }: { children: ReactNode; si
                 ]);
             }
         }
-
         setActiveTab(tabId);
 
         // Navigate to corresponding URL if not skipping navigation
@@ -255,7 +251,6 @@ export const TabProvider = ({ children, sidebarOpen }: { children: ReactNode; si
                 </Box>
             );
         }
-
         const Component = COMPONENT_MAP[activeTabItem.id];
         
         if(!Component) {
@@ -266,7 +261,6 @@ export const TabProvider = ({ children, sidebarOpen }: { children: ReactNode; si
                 </Box>
             );
         }
-
         return Component;
     };
 

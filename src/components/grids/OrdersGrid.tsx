@@ -48,7 +48,6 @@ const getStatusColor = (status) => {
     case 'delivered': return 'success';
     case 'cancelled': return 'error';
     default: return 'default';
-  }
 };
 
 const OrdersGrid = ({
@@ -81,7 +80,7 @@ const OrdersGrid = ({
   }, [initialStatus, initialSortBy, dashboardParams]);
 
   // Filter orders based on search query and status
-  const filteredOrders = orders.filter((order: any: any: any: any) => {
+  const filteredOrders = orders.filter((order: any) => {
     const matchesSearch = order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.customerEmail.toLowerCase().includes(searchQuery.toLowerCase());
@@ -99,12 +98,11 @@ const OrdersGrid = ({
         return a.customerName.localeCompare(b.customerName);
       default:
         return 0;
-    }
   });
 
   // Update badge count for pending orders
   useEffect(() => {
-    const pendingOrders = orders.filter((o: any: any: any: any) => o.status === 'pending').length;
+    const pendingOrders = orders.filter((o: any) => o.status === 'pending').length;
     onBadgeUpdate?.(pendingOrders);
   }, [orders, onBadgeUpdate]);
 
@@ -120,15 +118,15 @@ const OrdersGrid = ({
     console.log('Edit order:', orderId);
   };
 
-  return Boolean((
+  return (
     <Box sx={{ display: "flex", p: 3 }}>
       {/* Header */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ display: "flex", mb: 3 }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ display: "flex", mb: 3 }}></
         <Typography variant="h5" component="h2">
           {t('Order Management')}
         </Typography>
         <Button
-          variant="body2"
+          variant="outlined"
           startIcon={<AddIcon />}
           onClick={handleAddOrder}
         >
@@ -138,8 +136,8 @@ const OrdersGrid = ({
 
       {/* Dashboard Context Alert */}
       {highlightPending && (
-        <Alert severity="info" sx={{ display: "flex", mb: 2 }}>
-          <Typography variant="body2">
+        <Alert severity="info" sx={{ display: "flex", mb: 2 }}></
+          <Typography variant="outlined">
             Dashboard navigation: Showing {statusFilter} orders
             {Object.keys(dashboardParams).length > 0 && (
               <Chip
@@ -153,9 +151,8 @@ const OrdersGrid = ({
       )}
 
       {/* Search and Filters */}
-      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ display: "flex", mb: 3 }}>
-        <TextField
-          placeholder={t('Search orders...')}
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ display: "flex", mb: 3 }}></
+        <TextField placeholder={t('Search orders...')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           InputProps
@@ -163,10 +160,9 @@ const OrdersGrid = ({
           sx={{ display: "flex", flex: 1 }}
         />
 
-        <FormControl sx={{ display: "flex", minWidth: 120 }}>
+        <FormControl sx={{ display: "flex", minWidth: 120 }}></
           <InputLabel>Status</InputLabel>
-          <Select
-            value={statusFilter}
+          <Select value={statusFilter}
             label
             onChange={(e) => setStatusFilter(e.target.value)}
           >
@@ -178,10 +174,9 @@ const OrdersGrid = ({
           </Select>
         </FormControl>
 
-        <FormControl sx={{ display: "flex", minWidth: 120 }}>
+        <FormControl sx={{ display: "flex", minWidth: 120 }}></
           <InputLabel>Sort By</InputLabel>
-          <Select
-            value={sortBy}
+          <Select value={sortBy}
             label
             onChange={(e) => setSortBy(e.target.value)}
           >
@@ -194,17 +189,16 @@ const OrdersGrid = ({
 
       {/* Orders Grid */}
       <Box sx={{ display: "flex", display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))', gap: 2 }}>
-        {filteredOrders.map((order: any: any: any: any) => (
-          <Card key={order.id} sx={{ display: "flex", height: 'fit-content' }}>
+        {filteredOrders.map((order: any) => (
+          <Card key={order.id} sx={{ display: "flex", height: 'fit-content' }}></
             <CardContent>
               <Stack spacing={2}>
                 {/* Order Header */}
-                <Stack direction="row" alignItems="center" justifyContent="space-between">
+                <Stack direction="row" alignItems="center" justifyContent="space-between"></
                   <Stack direction="row" alignItems="center" spacing={2}>
-                    <Avatar sx={{ display: "flex", bgcolor: 'primary.main' }}>
-                      <OrderIcon />
-                    </Avatar>
-                    <Box>
+                    <Avatar sx={{ display: "flex", bgcolor: 'primary.main' }}></
+                      <OrderIcon /></OrderIcon>
+                    <Box></
                       <Typography variant="h6" component="div">
                         {order.id}
                       </Typography>
@@ -218,10 +212,10 @@ const OrdersGrid = ({
                     color={getStatusColor(order.status)}
                     size="small"
                 {/* Customer Info */}
-                <Stack direction="row" alignItems="center" spacing={1}>
+                <Stack direction="row" alignItems="center" spacing={1}></
                   <PersonIcon fontSize="small" color="action" />
-                  <Box>
-                    <Typography variant="body2" fontWeight="medium">
+                  <Box></
+                    <Typography variant="outlined" fontWeight="medium">
                       {order.customerName}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
@@ -233,52 +227,50 @@ const OrdersGrid = ({
                 <Divider />
 
                 {/* Order Details */}
-                <Stack spacing={1}>
+                <Stack spacing={1}></
                   <Stack direction="row" justifyContent="space-between">
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="outlined" color="text.secondary">
                       {t('Total Amount')}
                     </Typography>
-                    <Typography variant="body2" fontWeight="bold">
+                    <Typography variant="outlined" fontWeight="bold">
                       {order.total}
                     </Typography>
                   </Stack>
-                  <Stack direction="row" justifyContent="space-between">
-                    <Typography variant="body2" color="text.secondary">
+                  <Stack direction="row" justifyContent="space-between"></
+                    <Typography variant="outlined" color="text.secondary">
                       {t('Items')}
                     </Typography>
-                    <Typography variant="body2">
+                    <Typography variant="outlined">
                       {order.items} {t('items')}
                     </Typography>
                   </Stack>
                 </Stack>
 
                 {/* Shipping Info */}
-                <Stack direction="row" alignItems="center" spacing={1}>
+                <Stack direction="row" alignItems="center" spacing={1}></
                   <ShippingIcon fontSize="small" color="action" />
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="outlined" color="text.secondary">
                     {order.shippingAddress}
                   </Typography>
                 </Stack>
 
                 {/* Payment Info */}
-                <Stack direction="row" alignItems="center" spacing={1}>
+                <Stack direction="row" alignItems="center" spacing={1}></
                   <PaymentIcon fontSize="small" color="action" />
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="outlined" color="text.secondary">
                     {order.paymentMethod}
                   </Typography>
                 </Stack>
 
                 {/* Actions */}
-                <Stack direction="row" spacing={1} sx={{ display: "flex", pt: 1 }}>
+                <Stack direction="row" spacing={1} sx={{ display: "flex", pt: 1 }}></
                   <Tooltip title={t('View Details')}>
                     <IconButton size="small" onClick={() => handleViewOrder(order.id)}>
-                      <ViewIcon />
-                    </IconButton>
+                      <ViewIcon /></ViewIcon>
                   </Tooltip>
-                  <Tooltip title={t('Edit Order')}>
+                  <Tooltip title={t('Edit Order')}></
                     <IconButton size="small" onClick={() => handleEditOrder(order.id)}>
-                      <EditIcon />
-                    </IconButton>
+                      <EditIcon /></EditIcon>
                   </Tooltip>
                 </Stack>
               </Stack>
@@ -289,18 +281,18 @@ const OrdersGrid = ({
 
       {/* Empty State */}
       {filteredOrders.length ===0 && (
-        <Box sx={{ display: "flex", textAlign: 'center', py: 4 }}>
+        <Box sx={{ display: "flex", textAlign: 'center', py: 4 }}></
           <OrderIcon sx={{ display: "flex", fontSize: 64, color: 'text.secondary', mb: 2 }} />
           <Typography variant="h6" color="text.secondary">
             {searchQuery ? t('No orders found') : t('No orders yet')}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="outlined" color="text.secondary">
             {searchQuery ? t('Try adjusting your search') : t('Orders will appear here once customers place them')}
           </Typography>
         </Box>
       )}
     </Box>
-  )))));
+  );
 };
 
 export default OrdersGrid;

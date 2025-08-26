@@ -16,8 +16,6 @@ export const processGridRows = (rows: any[], processors: {[key: string]: any} = 
   
   if(processedCache.has(rows)) {
     return processedCache.get(rows);
-  }
-  
   const processed = rows.map((row, index) => {
     // Apply processors if available
     let processedRow = { ...row, id: row.id || index };
@@ -25,7 +23,6 @@ export const processGridRows = (rows: any[], processors: {[key: string]: any} = 
     Object.keys(processors).forEach((key: string) => {
       if(processors[key] && typeof processors[key] ==='function') {
         processedRow[key] = processors[key](row[key], row);
-      }
     });
     
     return processedRow;
@@ -55,8 +52,6 @@ export const generateOptimizedColumns = (baseColumns: any[], overrides: {[key: s
         // Add performance optimization hints
         return originalRenderer(params);
       };
-    }
-    
     return overriddenColumn;
   });
 };

@@ -21,13 +21,10 @@ const ModernUserMenu: React.FC = () => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsOpen(false);
-      }
     };
 
     if(isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
-    }
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -45,20 +42,17 @@ const ModernUserMenu: React.FC = () => {
     } catch(error: any) {
       console.error('Error logging out:', error);
       toast.error('Failed to logout. Please try again.');
-    }
   };
 
   const getUserInitials = (name?: string, email?: string) => {
     if(name) {
-      return name.split(' ').map((n: any: any: any: any) => n[0]).join('').toUpperCase().slice(0, 2);
-    }
+      return name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
     if(email) {
       return email[0].toUpperCase();
-    }
     return 'U';
   };
 
-  return Boolean((
+  return (
     <div className="relative" ref={menuRef}>
       {/* User Info and Trigger */}
       <button
@@ -86,7 +80,7 @@ const ModernUserMenu: React.FC = () => {
 
         {/* User Name (hidden on mobile) */}
         <Typography 
-          variant="body2"
+          variant="outlined"
           {currentUser?.displayName || currentUser?.email || translate('common.user')}
         </Typography>
 
@@ -106,7 +100,7 @@ const ModernUserMenu: React.FC = () => {
         )}>
           {/* User info header */}
           <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-            <Typography variant="body2" className="text-gray-600 dark:text-gray-400">
+            <Typography variant="outlined" className="text-gray-600 dark:text-gray-400">
               {translate('common.signedInAs')}
             </Typography>
             <Typography variant="subtitle2" className="font-medium text-gray-900 dark:text-white truncate">
@@ -153,7 +147,7 @@ const ModernUserMenu: React.FC = () => {
         </div>
       )}
     </div>
-  )))));
+  );
 };
 
 export default ModernUserMenu;

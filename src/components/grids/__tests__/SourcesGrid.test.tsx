@@ -8,7 +8,6 @@ import { magentoApi } from '../../../services/magentoApi';
 jest.mock('../../../services/magentoApi', () => ({
     magentoApi: {
         getSources: jest.fn()
-    }
 }));
 
 // Mock data
@@ -30,7 +29,6 @@ const mockSources = [
         country_id: 'US',
         city: 'Los Angeles',
         postcode: '90001'
-    }
 ];
 
 describe('SourcesGrid Component', () => {

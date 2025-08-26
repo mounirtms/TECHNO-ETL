@@ -15,8 +15,6 @@ export interface ServiceConfig {
   allowDirectUrl?: boolean;
   headers?: Record<string, string>;
   [key: string]: any;
-}
-
 /**
  * Service type definitions
  */
@@ -27,8 +25,6 @@ export type ServiceType = 'dashboard' | 'mdm' | 'task' | 'magento' | 'health';
  */
 export interface ServiceConfigRegistry {
   [key: string]: ServiceConfig;
-}
-
 /**
  * Circuit breaker state enum
  */
@@ -48,8 +44,6 @@ export interface CircuitBreaker {
   onSuccess(): void;
   onFailure(): void;
   getState(): CircuitBreakerStatus;
-}
-
 /**
  * Circuit breaker status
  */
@@ -58,8 +52,6 @@ export interface CircuitBreakerStatus {
   state: CircuitBreakerState;
   failureCount: number;
   lastFailureTime: number | null;
-}
-
 /**
  * Service metrics
  */
@@ -69,8 +61,6 @@ export interface ServiceMetrics {
   totalDuration: number;
   errorRate?: number;
   avgDuration?: number;
-}
-
 /**
  * System metrics
  */
@@ -85,8 +75,6 @@ export interface SystemMetrics {
   };
   services: Record<string, ServiceHealth>;
   timestamp: string;
-}
-
 /**
  * Service health
  */
@@ -96,8 +84,6 @@ export interface ServiceHealth {
   metrics: ServiceMetrics;
   healthy: boolean;
   timestamp: string;
-}
-
 /**
  * Extended Axios Instance with service methods
  */
@@ -106,8 +92,6 @@ export interface EnhancedAxiosInstance extends AxiosInstance {
   config: ServiceConfig;
   getServiceHealth: () => ServiceHealth;
   clearCache: () => void;
-}
-
 /**
  * Request metadata
  */
@@ -115,8 +99,6 @@ export interface RequestMetadata {
   startTime: number;
   serviceType: ServiceType;
   requestId: string;
-}
-
 /**
  * Response metadata
  */
@@ -125,8 +107,6 @@ export interface ResponseMetadata {
   requestId: string;
   serviceType: ServiceType;
   timestamp: string;
-}
-
 /**
  * Error metadata
  */
@@ -136,31 +116,23 @@ export interface ErrorMetadata {
   serviceType: ServiceType;
   timestamp: string;
   retryable: boolean;
-}
-
 /**
  * Extended Axios request config
  */
 export interface EnhancedRequestConfig extends AxiosRequestConfig {
   metadata?: RequestMetadata;
-}
-
 /**
  * Extended Axios response
  */
 export interface EnhancedResponse<T = any> extends AxiosResponse<T> {
   metadata?: ResponseMetadata;
   config: EnhancedRequestConfig;
-}
-
 /**
  * Extended Axios error
  */
 export interface EnhancedError extends AxiosError {
   metadata?: ErrorMetadata;
   config?: EnhancedRequestConfig;
-}
-
 /**
  * API Factory interface
  */
@@ -177,5 +149,4 @@ export interface ApiServiceFactoryInterface {
   getMDMService(customConfig?: Partial<ServiceConfig>): EnhancedAxiosInstance;
   getTaskService(customConfig?: Partial<ServiceConfig>): EnhancedAxiosInstance;
   getMagentoService(customConfig?: Partial<ServiceConfig>): EnhancedAxiosInstance;
-  getHealthService(customConfig?: Partial<ServiceConfig>): EnhancedAxiosInstance;
-}
+  getHealthService(customConfig?: Partial<ServiceConfig>): EnhancedAxiosInstance;

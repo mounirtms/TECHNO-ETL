@@ -89,7 +89,6 @@ const ProductsGrid = () => {
         }}>
           {params?.value}
         </div>
-      )
     }),
 
     // Techno Reference (from custom_attributes)
@@ -104,8 +103,6 @@ const ProductsGrid = () => {
         } catch(error: any) {
           console.warn('Error getting techno_ref:', error);
           return '-';
-        }
-      }
     }),
 
     // Status with proper mapping
@@ -116,7 +113,6 @@ const ProductsGrid = () => {
       statusColors: {
         enabled: 'success',
         disabled: 'error'
-      }
     }),
 
     // Price
@@ -152,8 +148,6 @@ const ProductsGrid = () => {
         } catch(error: any) {
           console.warn('Error getting brand:', error);
           return '-';
-        }
-      }
     }),
 
     // Country of Manufacture
@@ -168,8 +162,6 @@ const ProductsGrid = () => {
         } catch(error: any) {
           console.warn('Error getting country:', error);
           return '-';
-        }
-      }
     }),
 
     // Categories (Multi-select display)
@@ -185,7 +177,6 @@ const ProductsGrid = () => {
         } catch(error: any) {
           console.warn('Error getting category IDs:', error);
           return [];
-        }
       },
       renderCell: (params) => {
         try {
@@ -193,21 +184,18 @@ const ProductsGrid = () => {
 
           if (!Array.isArray(categoryIds) || categoryIds.length ===0) {
             return <span style={{ color: '#999', fontSize: '0.75rem' }}>No categories</span>;
-          }
-
-          const categoryNames = categoryIds.slice(0, 2).map((id: any: any: any: any) => {
+          const categoryNames = categoryIds.slice(0, 2).map((id: any) => {
             try {
               const category = categories.find(cat => cat.id.toString() ===id.toString());
               return category ? category.name : `ID:${id}`;
             } catch(error: any) {
               console.warn('Error finding category:', error);
               return `ID:${id}`;
-            }
           });
 
           return (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2px' }}>
-              {categoryNames.map((name: any index: any: any: any: any) => (
+              {categoryNames.map((name: any index: any) => (
                 <span
                   key={index}
                   style
@@ -231,8 +219,6 @@ const ProductsGrid = () => {
         } catch(error: any) {
           console.warn('Error rendering categories:', error);
           return <span style={{ color: '#f44336', fontSize: '0.75rem' }}>Error</span>;
-        }
-      }
     }),
 
     // Boolean Attributes with standardized renderers
@@ -247,7 +233,6 @@ const ProductsGrid = () => {
         } catch(error) {
           console.warn('Error getting trending value:', error);
           return false;
-        }
       },
       renderCell: (params) => (
         <span style={{
@@ -257,7 +242,6 @@ const ProductsGrid = () => {
         }}>
           {params.value ? '✓' : '✗'}
         </span>
-      )
     }),
 
     ColumnFactory.boolean('best_seller', {
@@ -271,7 +255,6 @@ const ProductsGrid = () => {
         } catch(error) {
           console.warn('Error getting best_seller value:', error);
           return false;
-        }
       },
       renderCell: (params) => (
         <span style={{
@@ -281,7 +264,6 @@ const ProductsGrid = () => {
         }}>
           {params.value ? '⭐' : '✗'}
         </span>
-      )
     }),
 
     ColumnFactory.boolean('a_la_une', {
@@ -295,7 +277,6 @@ const ProductsGrid = () => {
         } catch(error) {
           console.warn('Error getting a_la_une value:', error);
           return false;
-        }
       },
       renderCell: (params) => (
         <span style={{
@@ -305,7 +286,6 @@ const ProductsGrid = () => {
         }}>
           {params.value ? '🔥' : '✗'}
         </span>
-      )
     }),
 
     // Created Date
@@ -319,7 +299,6 @@ const ProductsGrid = () => {
           month: '2-digit',
           year: 'numeric'
         });
-      }
     }),
 
     // Updated Date
@@ -333,7 +312,6 @@ const ProductsGrid = () => {
           month: '2-digit',
           year: 'numeric'
         });
-      }
     }),
 
     // Actions
@@ -356,7 +334,6 @@ const ProductsGrid = () => {
           icon: 'category',
           label: 'Categories',
           onClick: () => handleCategoryAssignment(params.row)
-        }
       ]
     })
   ], []);
@@ -379,10 +356,10 @@ const ProductsGrid = () => {
       setData(products);
       setStats({
         total: totalCount,
-        active: products.filter((p: any: any: any: any) => p.status ===1).length,
-        inactive: products.filter((p: any: any: any: any) => p.status ===2).length,
+        active: products.filter((p: any) => p.status ===1).length,
+        inactive: products.filter((p: any) => p.status ===2).length,
         localProducts: localProducts.length,
-        syncedProducts: products.filter((p: any: any: any: any) => !p.isLocal).length
+        syncedProducts: products.filter((p: any) => !p.isLocal).length
       });
     } catch(error: any) {
       console.error('Failed to fetch products:', error);
@@ -391,7 +368,6 @@ const ProductsGrid = () => {
       setStats({ total: 0, active: 0, inactive: 0, localProducts: 0, syncedProducts: 0 });
     } finally {
       setLoading(false);
-    }
   }, [localProducts.length, paginationModel]);
 
   // ===== PAGINATION HANDLER =====
@@ -426,10 +402,8 @@ const ProductsGrid = () => {
             { value: '1660', label: 'Maped' },
             { value: '1661', label: 'Bic' }
           ]);
-        }
       } catch(error: any) {
         console.error('❌ Error loading filter data:', error);
-      }
     };
 
     loadFiltersData();
@@ -444,7 +418,6 @@ const ProductsGrid = () => {
   useEffect(() => {
     if(paginationModel.page > 0 || paginationModel.pageSize !== 25) {
       fetchProducts();
-    }
   }, [paginationModel, fetchProducts]);
 
   // ===== EVENT HANDLERS =====
@@ -458,13 +431,11 @@ const ProductsGrid = () => {
       if(selectedIds.length !== 1) {
         toast.warning('Please select one product to edit');
         return;
-      }
       const product = data.find(p => p.sku ===selectedIds[0]);
       setSelectedProduct(product);
     } else {
       // Handle direct row click
       setSelectedProduct(selectedIds);
-    }
     setEditDialogOpen(true);
   }, [data]);
 
@@ -473,13 +444,11 @@ const ProductsGrid = () => {
       if(selectedIds.length !== 1) {
         toast.warning('Please select one product to view');
         return;
-      }
       const product = data.find(p => p.sku ===selectedIds[0]);
       setSelectedProduct(product);
     } else {
       // Handle direct row click
       setSelectedProduct(selectedIds);
-    }
     setInfoDialogOpen(true);
   }, [data]);
 
@@ -487,15 +456,12 @@ const ProductsGrid = () => {
     if(selectedIds.length ===0) {
       toast.warning('Please select products to delete');
       return;
-    }
-    
     try {
-      await Promise.all(selectedIds.map((sku: any: any: any: any) => ProductService.deleteProduct(sku)));
+      await Promise.all(selectedIds.map((sku: any) => ProductService.deleteProduct(sku);
       toast.success(`${selectedIds.length} product(s) deleted`);
       fetchProducts();
     } catch(error: any) {
       toast.error('Failed to delete products');
-    }
   }, [fetchProducts]);
 
   const handleSync = useCallback(async () => {
@@ -506,7 +472,6 @@ const ProductsGrid = () => {
     } catch(error: any) {
       console.error('Sync error:', error);
       toast.error('Sync failed');
-    }
   }, [fetchProducts]);
 
   const handleExport = useCallback(() => {
@@ -549,8 +514,6 @@ const ProductsGrid = () => {
       onClick: (row) => {
         console.log('Duplicate:', row);
         toast.info(`Duplicating product: ${row.name}`);
-      }
-    }
   }), [handleEdit, handleDelete]);
 
   // ===== STATS CARDS =====
@@ -584,7 +547,6 @@ const ProductsGrid = () => {
       label: 'Catalog Processor',
       icon: 'settings',
       onClick: () => setCatalogProcessorOpen(true)
-    }
   ], [handleSync, localProducts.length]);
 
   return (
@@ -622,7 +584,7 @@ const ProductsGrid = () => {
                 type: 'select',
                 options: [
                   { value: '', label: 'All Categories' },
-                  ...categories.map((cat: any: any: any: any) => ({
+                  ...categories.map((cat: any) => ({
                     value: cat.id.toString(),
                     label: cat.label
                   }))
@@ -631,7 +593,6 @@ const ProductsGrid = () => {
                 onChange: (value) => {
                   setCategoryFilter(value);
                   fetchProducts({ category_id: value, brand: brandFilter });
-                }
               },
               {
                 field: 'brand',
@@ -639,7 +600,7 @@ const ProductsGrid = () => {
                 type: 'select',
                 options: [
                   { value: '', label: 'All Brands' },
-                  ...brands.map((brand: any: any: any: any) => ({
+                  ...brands.map((brand: any) => ({
                     value: brand.value || brand.id,
                     label: brand.label || brand.name
                   }))
@@ -648,8 +609,6 @@ const ProductsGrid = () => {
                 onChange: (value) => {
                   setBrandFilter(value);
                   fetchProducts({ category_id: categoryFilter, brand: value });
-                }
-              }
             ]
           },
           customActions,
@@ -665,8 +624,7 @@ const ProductsGrid = () => {
       />
 
       {/* Dialogs */}
-      <ProductInfoDialog
-        open={infoDialogOpen}
+      <ProductInfoDialog open={infoDialogOpen}
         onClose={() => setInfoDialogOpen(false)}
         product={selectedProduct}
       />
@@ -683,26 +641,23 @@ const ProductsGrid = () => {
           setEditDialogOpen(false);
           setSelectedProduct(null);
         }}
-      />
+      /></
 
-      <CSVImportDialog
-        open={csvImportOpen}
+      <CSVImportDialog open={csvImportOpen}
         onClose={() => setCsvImportOpen(false)}
         onImportComplete={() => fetchProducts()}
       />
 
-      <CatalogProcessorDialog
-        open={catalogProcessorOpen}
+      <CatalogProcessorDialog open={catalogProcessorOpen}
         onClose={() => setCatalogProcessorOpen(false)}
         onProcessComplete={() => fetchProducts()}
       />
 
-      <BulkMediaUploadDialog
-        open={bulkMediaDialogOpen}
+      <BulkMediaUploadDialog open={bulkMediaDialogOpen}
         onClose={() => setBulkMediaDialogOpen(false)}
         onComplete
           console.log('Bulk media upload completed:', results);
-          toast.success(`Media upload completed: ${results.filter((r: any: any: any: any) => r.status === 'success').length} successful`);
+          toast.success(`Media upload completed: ${results.filter((r: any) => r.status === 'success').length} successful`);
           setBulkMediaDialogOpen(false);
         }}
       />

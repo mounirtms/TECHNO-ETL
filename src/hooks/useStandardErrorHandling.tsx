@@ -23,8 +23,6 @@ interface ErrorInfo {
   details?: any;
   timestamp?: number;
   [key: string]: any;
-}
-
 /**
  * Error handling options interface
  */
@@ -36,8 +34,6 @@ interface ErrorHandlingOptions {
   onError?: (errorInfo: ErrorInfo, originalError) => void;
   onRetry?: (retryCount: number) => void;
   initialData?: any;
-}
-
 /**
  * Standard error handling result interface
  */
@@ -62,8 +58,6 @@ interface ErrorHandlingResult {
   isError: boolean;
   hasRetried: boolean;
   maxRetriesReached: boolean;
-}
-
 /**
  * Data fetching result interface
  */
@@ -74,8 +68,6 @@ interface DataFetchingResult<T> extends ErrorHandlingResult {
   refresh: () => Promise<T | null>;
   initialized: boolean;
   isEmpty: boolean;
-}
-
 /**
  * Form error handling result interface
  */
@@ -85,8 +77,6 @@ interface FormErrorHandlingResult extends ErrorHandlingResult {
   clearFieldErrors: () => void;
   setFieldError: (field: string, message: string) => void;
   hasFieldErrors: boolean;
-}
-
 /**
  * Standard error handling hook for components
  * @param componentName - Name of the component using this hook
@@ -126,13 +116,9 @@ export const useStandardErrorHandling = (
     // Call custom error handler if provided
     if(onError) {
       onError(errorInfo, err);
-    }
-
     // Don't show toast if disabled or if it's a low severity error
     if(!showToast || errorInfo.severity === 'low') {
       return errorInfo;
-    }
-
     return errorInfo;
   }, [componentName, showToast, onError]);
 
@@ -150,26 +136,19 @@ export const useStandardErrorHandling = (
   const retry = useCallback(async () => {
     if(!lastOperation || retryCount >= maxRetries) {
       return;
-    }
-
     setRetryCount(prev => prev + 1);
     clearError();
 
     if(onRetry) {
       onRetry(retryCount + 1);
-    }
-
     // Add delay before retry
     if(retryDelay > 0) {
-      await new Promise(resolve => setTimeout(resolve, retryDelay * (retryCount + 1)));
-    }
-
+      await new Promise(resolve => setTimeout(resolve, retryDelay * (retryCount + 1);
     try {
       return await lastOperation();
     } catch(err: any) {
       handleComponentError(err, { isRetry: true, retryCount: retryCount + 1 });
       throw err;
-    }
   }, [lastOperation, retryCount, maxRetries, retryDelay, onRetry, clearError, handleComponentError]);
 
   /**
@@ -189,12 +168,9 @@ export const useStandardErrorHandling = (
       // Return fallback data if specified
       if(fallbackDataType) {
         return getFallbackData(fallbackDataType);
-      }
-      
       throw err;
     } finally {
       setLoading(false);
-    }
   }, [handleComponentError, clearError, fallbackDataType]);
 
   /**
@@ -273,9 +249,7 @@ export const useDataFetching = <T = any>(
         setData(fallback);
         setInitialized(true);
         return fallback;
-      }
       throw err;
-    }
   }, [errorHandling, options.fallbackDataType]);
 
   /**
@@ -284,18 +258,17 @@ export const useDataFetching = <T = any>(
   const refresh = useCallback(async (): Promise<T | null> => {
     if(errorHandling.lastOperation) {
       return await fetchData(errorHandling.lastOperation);
-    }
     return null;
   }, [fetchData, errorHandling.lastOperation]);
 
-  return Boolean(({ ...errorHandling,
+  return ({ ...errorHandling,
     data,
     setData,
     fetchData,
     refresh,
     initialized,
     isEmpty: initialized && (!data || (Array.isArray(data) && data.length ===0))
-  }))));
+  });
 };
 
 /**
@@ -326,9 +299,7 @@ export const useFormErrorHandling = (
       // Handle validation errors
       if(err.status ===400 && err.response?.data?.errors) {
         setFieldErrors(err.response.data.errors);
-      }
       throw err;
-    }
   }, [errorHandling]);
 
   /**

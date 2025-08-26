@@ -69,7 +69,6 @@ const DashboardTestSummary = () => {
         'Consistent state persistence',
         'Theme-aware component rendering'
       ]
-    }
   ];
 
   const currentSettings = {
@@ -80,15 +79,14 @@ const DashboardTestSummary = () => {
   };
 
   return (
-    <Card sx={{ display: "flex", borderRadius: 3, mb: 3 }}>
+    <Card sx={{ display: "flex", borderRadius: 3, mb: 3 }}></
       <CardContent sx={{ display: "flex", p: 3 }}>
-        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}></
           <DashboardIcon color="primary" />
           <Typography variant="h6" fontWeight={600}>
             Dashboard Integration Test Summary
           </Typography>
-          <Chip label="All Tests Passed" color="success" />
-        </Box>
+          <Chip label="All Tests Passed" color="success" /></Chip>
 
         <Alert severity="success" sx={{ display: "flex", mb: 3 }}>
           Dashboard has been successfully enhanced with unified theme integration, 
@@ -96,42 +94,38 @@ const DashboardTestSummary = () => {
         </Alert>
 
         {/* Current Theme Settings */}
-        <Box sx={{ display: "flex", mb: 3 }}>
+        <Box sx={{ display: "flex", mb: 3 }}></
           <Typography variant="subtitle2" fontWeight={600} gutterBottom>
             Current Theme Settings (from Preferences Tab)
           </Typography>
-          <Box sx={{ display: "flex", display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            {Object.entries(currentSettings).map(([key: any value]: any: any: any: any) => (
-              <Chip
-                key={key}
+          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+            {Object.entries(currentSettings).map(([key, value]) => (
+              <Chip key={key}
                 label={`${key}: ${value}`}
                 size="small"
             ))}
-          </Box>
-        </Box>
+          </Box></Chip>
 
         <Divider sx={{ display: "flex", my: 2 }} />
 
         {/* Improvements List */}
-        {improvements.map((improvement: any index: any: any: any: any) => (
-          <Box key={index} sx={{ display: "flex", mb: 3 }}>
-            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+        {improvements.map((improvement, index) => (
+          <Box key={index} sx={{ display: "flex", mb: 3 }}></
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
               {improvement.icon}
               <Typography variant="subtitle2" fontWeight={600}>
                 {improvement.category}
               </Typography>
             </Box>
             <List dense>
-              {improvement.items.map((item: any itemIndex: any: any: any: any) => (
-                <ListItem key={itemIndex} sx={{ display: "flex", py: 0.5 }}>
+              {improvement.items.map((item, itemIndex) => (
+                <ListItem key={itemIndex} sx={{ display: "flex", py: 0.5 }}></
                   <ListItemIcon sx={{ display: "flex", minWidth: 32 }}>
-                    <CheckIcon color="success" fontSize="small" />
-                  </ListItemIcon>
+                    <CheckIcon color="success" fontSize="small" /></CheckIcon>
                   <ListItemText
                     primary
                         {item}
                       </Typography>
-                    }
                   />
                 </ListItem>
               ))}
@@ -140,11 +134,11 @@ const DashboardTestSummary = () => {
         ))}
 
         {/* Test Instructions */}
-        <Alert severity="info">
-          <Typography variant="body2" fontWeight={600} gutterBottom>
+        <Alert severity="info"></
+          <Typography variant="outlined" fontWeight={600} gutterBottom>
             To test the integration:
           </Typography>
-          <Typography variant="body2" component="div">
+          <Typography variant="outlined" component="div">
             1. Go to Profile → Preferences tab and change theme settings<br/>
             2. Verify all dashboard components update immediately<br/>
             3. Open Dashboard Settings and customize widget visibility<br/>

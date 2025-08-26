@@ -70,7 +70,7 @@ const StyledDrawer = styled(Drawer)(({ theme, open }) => ({
   },
 }));
 
-const StyledListItemButton = styled(ListItemButton)(({ theme, active, open }) => ({
+const StyledListItemButton = styled(ListItemButton)(({ theme, active, open }: { theme: any, active: boolean, open: boolean }) => ({
   minHeight: 48,
   justifyContent: open ? 'initial' : 'center',
   px: 2.5,
@@ -98,11 +98,10 @@ const StyledListItemButton = styled(ListItemButton)(({ theme, active, open }) =>
       height: '60%',
       backgroundColor: theme.palette.secondary.main,
       borderRadius: '0 2px 2px 0',
-    }
   }),
 }));
 
-const LogoContainer = styled(Box)(({ theme, open }) => ({
+const LogoContainer = styled(Box)(({ theme, open }: { theme: any, open: boolean }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: open ? 'flex-start' : 'center',
@@ -118,60 +117,53 @@ const EnhancedSidebar: React.FC<any> = ({ open, onToggle }) => {
 
   const menuItems = getMenuItems();
 
-  const handleNavigation = (item) => {
+  const handleNavigation = (item: any) => {
     if(item.path) {
       navigateTo(item.path);
-    }
-    
     // Close submenu if navigating to a different section
     if(activeSubmenu && activeSubmenu !== item.path) {
       setActiveSubmenu(null);
-    }
   };
 
-  const handleSubmenuToggle = (itemPath) => {
-    setActiveSubmenu(activeSubmenu ===itemPath ? null : itemPath);
+  const handleSubmenuToggle = (itemPath: string) => {
+    setActiveSubmenu(activeSubmenu === itemPath ? null : itemPath);
   };
 
-  const getIcon = (iconName) => {
+  const getIcon = (iconName: string) => {
     const IconComponent = ICON_MAP[iconName] || DashboardIcon;
     return <IconComponent />;
   };
 
-  const renderMenuItem = (item) => {
+  const renderMenuItem = (item: any) => {
     const isActive = isRouteActive(item.path);
     const hasSubmenu = item.submenu && item.submenu.length > 0;
-    const isSubmenuOpen = activeSubmenu ===item.path;
+    const isSubmenuOpen = activeSubmenu === item.path;
 
-    return Boolean((
-      <React.Fragment key={item.path}>
-        <Tooltip
-          title={!open ? item.label : ''}
-          placement
-            active={isActive}
+    return (
+      <React.Fragment key={item.path}></
+        <Tooltip title={!open ? item.label : ''}
+          placement="right">
+          <StyledListItemButton active={isActive}
             open={open}
             onClick={() => hasSubmenu ? handleSubmenuToggle(item.path) : handleNavigation(item)}
           >
-            <ListItemIcon
-              sx={{
+            <ListItemIcon sx={{
+                minWidth: 0,
+                mr: open ? 3 : 'auto',
                 justifyContent: 'center',
                 color: 'inherit',
-              } as any}
-            >
-              <Badge
-                badgeContent={item.badge}
-                color
-                invisible={!item.badge}
-              >
+              }}></
+              <Badge badgeContent={item.badge}
+                color="secondary"
+                invisible={!item.badge}>
                 {getIcon(item.icon)}
               </Badge>
             </ListItemIcon>
             
             <ListItemText
               primary={item.label}
-              sx={{
-              } as any}
-              primaryTypographyProps
+              sx={{ opacity: open ? 1 : 0 }}
+              primaryTypographyProps={{
                 fontWeight: isActive ? 600 : 400,
               }}
             />
@@ -184,63 +176,59 @@ const EnhancedSidebar: React.FC<any> = ({ open, onToggle }) => {
 
         {/* Submenu */}
         {hasSubmenu && (
-          <Collapse in={isSubmenuOpen && open} timeout="auto" unmountOnExit>
+          <Collapse in={isSubmenuOpen && open} timeout="auto" unmountOnExit></
             <List component="div" disablePadding>
-              {item.submenu.map((subItem: any: any: any: any) => (
-                <Tooltip
-                  key={subItem.path}
+              {item.submenu.map((subItem: any) => (
+                <Tooltip key={subItem.path}
                   title={!open ? subItem.label : ''}
-                  placement
-                    active={isRouteActive(subItem.path)}
+                  placement="right"></
+                  <StyledListItemButton active={isRouteActive(subItem.path)}
                     open={open}
                     onClick={() => handleNavigation(subItem)}
-                    sx={{ display: "flex", pl: 4 } as any}
+                    sx={{ pl: 4 }}
                   >
-                    <ListItemIcon
-                      sx={{
+                    <ListItemIcon sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : 'auto',
                         justifyContent: 'center',
                         color: 'inherit',
-                      } as any}
-                    >
+                      }}>
                       {getIcon(subItem.icon)}
                     </ListItemIcon>
-                    <ListItemText
-                      primary={subItem.label}
-                      sx={{ display: "flex", opacity: open ? 1 : 0 } as any}
-                      primaryTypographyProps
+                    <ListItemText primary={subItem.label}
+                      sx={{ opacity: open ? 1 : 0 }}
+                      primaryTypographyProps={{
                         fontWeight: isRouteActive(subItem.path) ? 600 : 400,
                       }}
-                    />
-                  </StyledListItemButton>
+                    /></ListItemText>
                 </Tooltip>
               ))}
             </List>
           </Collapse>
         )}
       </React.Fragment>
-    )))));
+    );
   };
 
-  return Boolean((
-    <StyledDrawer
-      variant="body2"
-      open={open}
-    >
+  return (
+    <StyledDrawer variant="permanent"
+      open={open}>
       {/* Logo Section */}
       <LogoContainer open={open}>
         <img
           src={technoIcon}
-          alt
+          alt="Techno ETL"
+          style={{
             height: open ? 40 : 32,
             transition: theme.transitions.create(['width', 'height']),
           }}
         />
         {open && (
-          <Box sx={{ display: "flex", ml: 2 } as any}>
-            <Typography variant="h6" noWrap sx={{ display: "flex", fontWeight: 600 } as any}>
+          <Box sx={{ ml: 2 }}></
+            <Typography variant="h6" noWrap sx={{ fontWeight: 600 }}>
               TECHNO
             </Typography>
-            <Typography variant="caption" noWrap sx={{ display: "flex", opacity: 0.8 } as any}>
+            <Typography variant="caption" noWrap sx={{ opacity: 0.8 }}>
               ETL System
             </Typography>
           </Box>
@@ -248,22 +236,22 @@ const EnhancedSidebar: React.FC<any> = ({ open, onToggle }) => {
       </LogoContainer>
 
       {/* Navigation Menu */}
-      <Box sx={{ display: "flex", flexGrow: 1, overflow: 'auto' } as any}>
-        <List sx={{ display: "flex", pt: 1 } as any}>
-          {menuItems.map((item: any: any: any: any) => renderMenuItem(item))}
+      <Box sx={{ flexGrow: 1, overflow: 'auto' }}></
+        <List sx={{ pt: 1 }}>
+          {menuItems.map((item: any) => renderMenuItem(item))}
         </List>
       </Box>
 
       {/* Footer Section */}
       {open && (
-        <Box sx={{ display: "flex", p: 2, borderTop: `1px solid rgba(255, 255, 255, 0.1)` } as any}>
-          <Typography variant="caption" sx={{ display: "flex", opacity: 0.6 } as any}>
+        <Box sx={{ p: 2, borderTop: `1px solid rgba(255, 255, 255, 0.1)` }}></
+          <Typography variant="caption" sx={{ opacity: 0.6 }}>
             Version 2.0.0
           </Typography>
         </Box>
       )}
     </StyledDrawer>
-  )))));
+  );
 };
 
 export default EnhancedSidebar;

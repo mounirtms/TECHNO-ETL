@@ -44,7 +44,6 @@ export const useNavigation = () => {
           path: currentPath,
           timestamp: Date.now(),
           metadata: routeMetadata
-        }
       ]
     }));
   }, [location.pathname]);
@@ -57,7 +56,6 @@ export const useNavigation = () => {
       navigate(path, { replace: true, state });
     } else {
       navigate(path, { state });
-    }
   }, [navigate]);
 
   // Navigate back
@@ -134,8 +132,6 @@ function generateBreadcrumbs(path: string) {
       path: '/dashboard',
       isActive: false
     });
-  }
-  
   // Build breadcrumbs from path segments
   let currentPath = '';
   segments.forEach((segment, index) => {
@@ -156,12 +152,9 @@ function generateBreadcrumbs(path: string) {
         path: currentPath,
         isActive: isLast
       });
-    }
   });
   
   return breadcrumbs;
-}
-
 /**
  * Hook for menu state management
  */
@@ -210,7 +203,6 @@ export const useBreadcrumbs = () => {
   const navigateToBreadcrumb = useCallback((breadcrumb) => {
     if(breadcrumb.path && !breadcrumb.isActive) {
       navigateTo(breadcrumb.path);
-    }
   }, [navigateTo]);
 
   return {
@@ -254,7 +246,6 @@ export const useNavigationPerformance = () => {
 
       if(navigationTime > 1000) {
         console.warn(`🐌 Slow navigation detected: ${location.pathname} took ${navigationTime.toFixed(2)}ms`);
-      }
     };
 
     // Use requestAnimationFrame to measure after render

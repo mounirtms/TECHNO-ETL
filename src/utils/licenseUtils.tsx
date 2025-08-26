@@ -23,14 +23,10 @@ export const check_license_status = async(userId) => {
         if(!userId || typeof userId !== 'string') {
             console.warn('Invalid userId provided to check_license_status:', userId);
             return false;
-        }
-
         // For localhost development, always return true
         if(typeof window !== 'undefined' && window.location.hostname === 'localhost') {
             console.log('🔓 Development mode: License check bypassed for localhost');
             return true;
-        }
-
         const sanitizedUserId = sanitizeKey(userId);
         const licenseRef = ref(database, `licenses/${sanitizedUserId}`);
         const snapshot = await get(licenseRef);
@@ -59,11 +55,8 @@ export const check_license_status = async(userId) => {
                     hasRequiredFields,
                     expiryDate: expiryDate?.toISOString()
                 });
-            }
         } else {
             console.log('📄 No license found for user:', userId);
-        }
-        
         return false;
 
     } catch(error: any) {
@@ -72,9 +65,7 @@ export const check_license_status = async(userId) => {
         if(typeof window !== 'undefined' && window.location.hostname === 'localhost') {
             console.warn('🔧 Development mode: Allowing access despite license check error');
             return true;
-        }
         return false;
-    }
 };
 
 /**
@@ -99,7 +90,6 @@ export const set_license_status = async (userId: string, licenseData: any) => {
     } catch(error: any) {
         console.error('Error setting license status:', error);
         return false;
-    }
 };
 
 /**
@@ -115,10 +105,8 @@ export const get_license_details = async(userId: string) => {
         
         if (snapshot.exists()) {
             return snapshot.val();
-        }
         return null;
     } catch(error: any) {
         console.error('Error getting license details:', error);
         return null;
-    }
 };

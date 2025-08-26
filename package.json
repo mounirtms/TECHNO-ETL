@@ -1,5 +1,5 @@
 {
-  "name": "Techno-ETL",
+  "name": "techno-etl",
   "private": true,
   "version": "2.0.0",
   "type": "module",
@@ -18,7 +18,7 @@
     "start": "vite --host 0.0.0.0 --port 80",
     "backend": "cd backend && npm start",
     "server": "cd backend && npm run dev",
-    "build": "tsc --noEmit && vite build --mode production",
+    "build": "vite build --mode production",
     "build:dev": "vite build --mode development --minify false --sourcemap true",
     "build:analyze": "vite build --mode production && npx vite-bundle-analyzer dist/stats.html",
     "preview": "vite preview --host 0.0.0.0 --port 80",

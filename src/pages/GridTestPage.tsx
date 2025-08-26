@@ -80,7 +80,6 @@ const GridTestPage = () => {
         { field: 'grandTotal', headerName: 'Total', width: 120, type: 'number' },
         { field: 'items', headerName: 'Items', width: 80, type: 'number' }
       ]
-    }
   };
 
   // Test configuration state
@@ -142,7 +141,6 @@ const GridTestPage = () => {
     } catch(error: any) {
       console.error('Export failed:', error);
       setShowError(true);
-    }
   }, [selectedGridType, gridConfig]);
 
   // Import configuration
@@ -160,11 +158,9 @@ const GridTestPage = () => {
           setShowSuccess(true);
         } else {
           throw new Error('Invalid configuration format');
-        }
       } catch(error: any) {
         console.error('Import failed:', error);
         setShowError(true);
-      }
     };
     reader.readAsText(file);
   }, []);
@@ -221,7 +217,6 @@ const GridTestPage = () => {
       setShowError(true);
     } finally {
       setIsRunningTest(false);
-    }
   }, [selectedGridType, gridConfig, performanceMetrics.totalOperations]);
 
   // Get current grid data and columns
@@ -230,12 +225,11 @@ const GridTestPage = () => {
     features: gridConfig,
     pagination: {
       defaultPageSize: gridConfig.pageSize
-    }
   });
 
   return(<Box sx={{ display: "flex", p: 3, height: '100%', overflow: 'auto' }}>
       {/* Header */}
-      <Box sx={{ display: "flex", mb: 4 }}>
+      <Box sx={{ display: "flex", mb: 4 }}></
         <Typography variant="h4" sx={{ display: "flex", mb: 1, fontWeight: 600 }}>
           Grid Testing System
         </Typography>
@@ -246,23 +240,20 @@ const GridTestPage = () => {
 
       <Grid { ...{container: true}} spacing={3}>
         {/* Configuration Panel */}
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={4}></
           <Card>
-            <CardHeader
-              title
-                <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
+            <CardHeader title
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}></
                   <Settings />
                   <Typography variant="h6">Grid Configuration</Typography>
                 </Box>
-              }
               action
-                <Box sx={{ display: "flex", display: 'flex', gap: 1 }}>
+                <Box sx={{ display: 'flex', gap: 1 }}></
                   <Tooltip title="Export Config">
-                    <IconButton onClick={handleExportConfig} size="small">
-                      <Download />
-                    </IconButton>
+                    <IconButton onClick={handleExportConfig} size="small"></
+                      <Download /></Download>
                   </Tooltip>
-                  <Tooltip title="Import Config">
+                  <Tooltip title="Import Config"></
                     <IconButton component="label" size="small">
                       <Upload />
                       <input
@@ -271,25 +262,22 @@ const GridTestPage = () => {
                       />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title="Reset to Defaults">
+                  <Tooltip title="Reset to Defaults"></
                     <IconButton onClick={handleResetDefaults} size="small">
-                      <RestoreFromTrash />
-                    </IconButton>
+                      <RestoreFromTrash /></RestoreFromTrash>
                   </Tooltip>
                 </Box>
-              }
             />
             <CardContent>
               {/* Grid Type Selection */}
-              <FormControl fullWidth sx={{ display: "flex", mb: 3 }}>
+              <FormControl fullWidth sx={{ display: "flex", mb: 3 }}></
                 <InputLabel>Grid Type</InputLabel>
-                <Select
-                  value={selectedGridType}
+                <Select value={selectedGridType}
                   onChange={(e) => setSelectedGridType(e.target.value)}
                   label
-                  {Object.entries(gridTypes).map(([key: any config]: any: any: any: any) => (
-                    <MenuItem key={key} value={key}>
-                      <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
+                  {Object.entries(gridTypes).map(([key, config]: any) => (
+                    <MenuItem key={key} value={key}></
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <GridView fontSize="small" />
                         {config.name}
                       </Box>
@@ -299,57 +287,49 @@ const GridTestPage = () => {
               </FormControl>
 
               {/* Configuration Options */}
-              <Accordion defaultExpanded>
+              <Accordion defaultExpanded></
                 <AccordionSummary expandIcon={<ExpandMore />}>
                   <Typography variant="subtitle1" fontWeight={600}>
                     Grid Features
                   </Typography>
                 </AccordionSummary>
-                <AccordionDetails>
-                  <Box sx={{ display: "flex", display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <FormControlLabel
-                      control
+                <AccordionDetails></
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <FormControlLabel control
                           checked={gridConfig.showStatsCards}
                           onChange={(e) => handleConfigChange('showStatsCards', e.target.checked)}
                         />
-                      }
                       label
                           checked={gridConfig.enableVirtualization}
                           onChange={(e) => handleConfigChange('enableVirtualization', e.target.checked)}
                         />
-                      }
                       label
                           checked={gridConfig.enableSearch}
                           onChange={(e) => handleConfigChange('enableSearch', e.target.checked)}
                         />
-                      }
                       label
                           checked={gridConfig.enableToolbar}
                           onChange={(e) => handleConfigChange('enableToolbar', e.target.checked)}
                         />
-                      }
                       label
                           checked={gridConfig.enablePagination}
                           onChange={(e) => handleConfigChange('enablePagination', e.target.checked)}
                         />
-                      }
                       label
                           checked={gridConfig.enableSelection}
                           onChange={(e) => handleConfigChange('enableSelection', e.target.checked)}
                         />
-                      }
                       label
               {/* Performance Settings */}
-              <Accordion>
+              <Accordion></
                 <AccordionSummary expandIcon={<ExpandMore />}>
                   <Typography variant="subtitle1" fontWeight={600}>
                     Performance Settings
                   </Typography>
                 </AccordionSummary>
-                <AccordionDetails>
-                  <Box sx={{ display: "flex", display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <TextField
-                      label
+                <AccordionDetails></
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <TextField label
                       value={gridConfig.pageSize}
                       onChange={(e) => handleConfigChange('pageSize', parseInt(e.target.value) || 25)}
                       size="small"
@@ -357,9 +337,9 @@ const GridTestPage = () => {
                         onChange={(e) => handleConfigChange('density', e.target.value)}
                         label
               {/* Performance Testing */}
-              <Box sx={{ display: "flex", mt: 3, pt: 2, borderTop: `1px solid ${theme.palette.divider}` }}>
+              <Box sx={{ display: "flex", mt: 3, pt: 2, borderTop: `1px solid ${theme.palette.divider}` }}></
                 <Button
-                  variant="body2"
+                  variant="outlined"
                   startIcon={isRunningTest ? <Pause /> : <PlayArrow />}
                   onClick={handleRunPerformanceTest}
                   disabled={isRunningTest}
@@ -372,18 +352,16 @@ const GridTestPage = () => {
           </Card>
 
           {/* Performance Metrics */}
-          <Card sx={{ display: "flex", mt: 2 }}>
-            <CardHeader
-              title
-                <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Card sx={{ display: "flex", mt: 2 }}></
+            <CardHeader title
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}></
                   <Analytics />
                   <Typography variant="h6">Performance Metrics</Typography>
                 </Box>
-              }
             />
-            <CardContent>
+            <CardContent></
               <Grid { ...{container: true}} spacing={2}>
-                <Grid item xs={6}>
+                <Grid item xs={6}></
                   <Box sx={{ display: "flex", textAlign: 'center' }}>
                     <Typography variant="h4" color="primary">
                       {performanceMetrics.renderTime}
@@ -393,7 +371,7 @@ const GridTestPage = () => {
                     </Typography>
                   </Box>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={6}></
                   <Box sx={{ display: "flex", textAlign: 'center' }}>
                     <Typography variant="h4" color="secondary">
                       {performanceMetrics.memoryUsage}
@@ -403,7 +381,7 @@ const GridTestPage = () => {
                     </Typography>
                   </Box>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={6}></
                   <Box sx={{ display: "flex", textAlign: 'center' }}>
                     <Typography variant="h4" color="success.main">
                       {performanceMetrics.totalOperations}
@@ -413,7 +391,7 @@ const GridTestPage = () => {
                     </Typography>
                   </Box>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={6}></
                   <Box sx={{ display: "flex", textAlign: 'center' }}>
                     <Typography variant="h4" color="warning.main">
                       {performanceMetrics.dataLoadTime}
@@ -429,11 +407,10 @@ const GridTestPage = () => {
         </Grid>
 
         {/* Grid Preview */}
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={8}></
           <Card sx={{ display: "flex", height: 'calc(100vh - 200px)' }}>
-            <CardHeader
-              title
-                <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 }}>
+            <CardHeader title
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}></
                   <GridView />
                   <Typography variant="h6">
                     {currentGridData.name} Preview
@@ -441,8 +418,7 @@ const GridTestPage = () => {
                   <Chip 
                     label={selectedGridType.toUpperCase()} 
                     size="small"
-              }
-            />
+            /></
             <CardContent sx={{ display: "flex", height: 'calc(100% - 80px)', p: 1 }}>
               <UnifiedGrid
                 { ...getStandardGridProps(selectedGridType, {
@@ -469,7 +445,6 @@ const GridTestPage = () => {
                     },
                     theme: {
                       density: gridConfig.density
-                    }
                   },
 
                   // Event handlers for testing
@@ -486,8 +461,7 @@ const GridTestPage = () => {
       </Grid>
 
       {/* Success/Error Notifications */}
-      <Snackbar
-        open={showSuccess}
+      <Snackbar open={showSuccess}
         autoHideDuration={3000}
         onClose={() => setShowSuccess(false)}
       >
@@ -496,8 +470,7 @@ const GridTestPage = () => {
         </Alert>
       </Snackbar>
 
-      <Snackbar
-        open={showError}
+      <Snackbar open={showError}
         autoHideDuration={5000}
         onClose={() => setShowError(false)}
       >

@@ -30,10 +30,8 @@ const Breadcrumbs = () => {
   // Don't show breadcrumbs if there's only one item or none
   if(breadcrumbs.length <= 1) {
     return null;
-  }
-
   return (
-    <Box sx={{ display: "flex", mb: 2, px: 1 } as any}>
+    <Box sx={{ display: "flex", mb: 2, px: 1 } as any}></
       <MuiBreadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
         aria-label="breadcrumb"
@@ -41,10 +39,9 @@ const Breadcrumbs = () => {
           },
           '& .MuiBreadcrumbs-ol': {
             alignItems: 'center'
-          }
         }}
       >
-        {breadcrumbs.map((breadcrumb: any index: any: any: any: any) => {
+        {breadcrumbs.map((breadcrumb, index) => {
           const isLast = breadcrumb?.isActive;
           const isFirst = index ===0;
 
@@ -58,11 +55,8 @@ const Breadcrumbs = () => {
                 } as any}
               />
             );
-          }
-
           return (
-            <Link
-              key={breadcrumb?.path}
+            <Link key={breadcrumb?.path}
               component
               onClick={() => navigateToBreadcrumb(breadcrumb)}
               sx={{
@@ -78,7 +72,6 @@ const Breadcrumbs = () => {
                 '&:hover': {
                   color: 'primary.main',
                   backgroundColor: 'action.hover'
-                }
               }}
             >
               {isFirst && <HomeIcon sx={{ display: "flex", mr: 0.5, fontSize: 16 } as any} />}

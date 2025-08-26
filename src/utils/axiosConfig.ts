@@ -30,19 +30,14 @@ const createAxiosInstance = (baseURL) => {
                 config.headers['Origin'] = 'https://technostationery.com';
                 // Add any required Magento API authentication headers here
                 // config.headers['Authorization'] = `Bearer ${token}`;
-            }
-
             // Add production-specific headers
             if(import.meta.env.PROD) {
                 config.headers['X-Requested-With'] = 'XMLHttpRequest';
                 config.headers['X-App-Domain'] = import.meta.env.VITE_APP_DOMAIN || 'etl.techno-dz.com';
-            }
-
             return config;
         },
         (error) => {
             return Promise.reject(error);
-        }
     );
 
     // Response interceptor with specific handling for technostationery.com
@@ -52,11 +47,9 @@ const createAxiosInstance = (baseURL) => {
                 if(error.response.status ===403) {
                     console.error('Access Forbidden - Check Magento API permissions');
                     return Promise.reject(new Error('Access Forbidden - Check Magento API permissions'));
-                }
                 if(error.response.status ===401) {
                     console.error('Authentication Error - Invalid or expired token');
                     return Promise.reject(new Error('Authentication Error - Invalid or expired token'));
-                }
                 console.error('Response error:', error.response.data);
             } else if(error.code === 'ERR_NETWORK') {
                 console.error('Network Error: Unable to connect to technostationery.com. This might be due to CORS or network connectivity issues.');
@@ -66,9 +59,7 @@ const createAxiosInstance = (baseURL) => {
                     '2. Your authentication token is valid\n' +
                     '3. The API endpoint is correct';
                 return Promise.reject(new Error(errorMessage));
-            }
             return Promise.reject(error);
-        }
     );
 
     return instance;
@@ -90,11 +81,8 @@ export const initializeServices = (settings) => {
                 ? settings.magentoUrl.slice(0, -1) 
                 : settings.magentoUrl;
             magentoInstance
-        }
         if(settings.cegidUrl) {
             cegidInstance
-        }
-    }
 };
 
 // Utility functions for Magento service
@@ -108,12 +96,10 @@ export const magento = {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                }
             });
         } catch(error: any) {
             console.error(`Error accessing Magento API at ${url}:`, error.message);
             throw error;
-        }
     },
     post: async (url, data = {}) => {
         if (!magentoInstance) throw new Error('Magento service not initialized');
@@ -122,12 +108,10 @@ export const magento = {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                }
             });
         } catch(error: any) {
             console.error(`Error posting to Magento API at ${url}:`, error.message);
             throw error;
-        }
     },
     put: async (url, data = {}) => {
         if (!magentoInstance) throw new Error('Magento service not initialized');
@@ -136,12 +120,10 @@ export const magento = {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                }
             });
         } catch(error: any) {
             console.error(`Error putting to Magento API at ${url}:`, error.message);
             throw error;
-        }
     },
     delete: async(url) => {
         if (!magentoInstance) throw new Error('Magento service not initialized');
@@ -150,12 +132,10 @@ export const magento = {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                }
             });
         } catch(error: any) {
             console.error(`Error deleting from Magento API at ${url}:`, error.message);
             throw error;
-        }
     },
     patch: async (url, data = {}) => {
         if (!magentoInstance) throw new Error('Magento service not initialized');
@@ -164,12 +144,10 @@ export const magento = {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                }
             });
         } catch(error: any) {
             console.error(`Error patching to Magento API at ${url}:`, error.message);
             throw error;
-        }
     },
 };
 
@@ -183,9 +161,7 @@ export const cegid = {
             if (error.message.includes('CORS')) {
                 // Handle CORS specific error for Cegid
                 console.error('Cegid CORS Error:', error.message);
-            }
             throw error;
-        }
     },
     post: async (url, data = {}) => {
         if (!cegidInstance) throw new Error('Cegid service not initialized');
@@ -194,9 +170,7 @@ export const cegid = {
         } catch(error: any) {
             if (error.message.includes('CORS')) {
                 console.error('Cegid CORS Error:', error.message);
-            }
             throw error;
-        }
     },
     put: async (url, data = {}) => {
         if (!cegidInstance) throw new Error('Cegid service not initialized');
@@ -205,9 +179,7 @@ export const cegid = {
         } catch(error: any) {
             if (error.message.includes('CORS')) {
                 console.error('Cegid CORS Error:', error.message);
-            }
             throw error;
-        }
     },
     delete: async(url) => {
         if (!cegidInstance) throw new Error('Cegid service not initialized');
@@ -216,9 +188,7 @@ export const cegid = {
         } catch(error: any) {
             if (error.message.includes('CORS')) {
                 console.error('Cegid CORS Error:', error.message);
-            }
             throw error;
-        }
     },
     patch: async (url, data = {}) => {
         if (!cegidInstance) throw new Error('Cegid service not initialized');
@@ -227,8 +197,6 @@ export const cegid = {
         } catch(error: any) {
             if (error.message.includes('CORS')) {
                 console.error('Cegid CORS Error:', error.message);
-            }
             throw error;
-        }
     },
 };

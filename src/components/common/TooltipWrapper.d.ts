@@ -23,8 +23,6 @@ export interface TooltipWrapperProps extends Omit<TooltipProps, 'children'> {
   
   /** Ref to the wrapper element */
   ref?: RefObject<HTMLElement>;
-}
-
 declare const TooltipWrapper: React.ForwardRefExoticComponent<
   TooltipWrapperProps & React.RefAttributes<HTMLElement>
 >;

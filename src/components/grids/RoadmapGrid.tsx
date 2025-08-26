@@ -84,7 +84,6 @@ const STATUS_CONFIG = {
     icon: Pause,
     label: 'On Hold',
     description: 'Temporarily paused'
-  }
 };
 
 /**
@@ -145,7 +144,6 @@ const RoadmapGrid = () => {
             estimated_completion: '2024-Q3',
             progress: 25,
             tags: ['mobile', 'app', 'cross-platform']
-          }
         ],
         approved: [
           {
@@ -167,7 +165,6 @@ const RoadmapGrid = () => {
             estimated_completion: '2024-Q2',
             progress: 0,
             tags: ['api', 'performance', 'security']
-          }
         ],
         completed: [
           {
@@ -189,7 +186,6 @@ const RoadmapGrid = () => {
             estimated_completion: '2024-Q1',
             progress: 100,
             tags: ['ui', 'theme', 'accessibility']
-          }
         ],
         rejected: [
           {
@@ -201,7 +197,6 @@ const RoadmapGrid = () => {
             estimated_completion: null,
             progress: 0,
             tags: ['payments', 'crypto']
-          }
         ],
         on_hold: [
           {
@@ -213,7 +208,6 @@ const RoadmapGrid = () => {
             estimated_completion: '2025-Q1',
             progress: 10,
             tags: ['ai', 'ml', 'recommendations']
-          }
         ]
       };
 
@@ -222,10 +216,8 @@ const RoadmapGrid = () => {
       // Only show error if it's a critical failure
       if (err.message && !err.message.includes('404') && !err.message.includes('fetch')) {
         setError(`Unable to load live roadmap data. Showing cached version. (${err.message})`);
-      }
     } finally {
       setLoading(false);
-    }
   };
 
   /**
@@ -238,7 +230,6 @@ const RoadmapGrid = () => {
         newSet.delete(status);
       } else {
         newSet.add(status);
-      }
       return newSet;
     });
   };
@@ -271,24 +262,20 @@ const RoadmapGrid = () => {
 
   if(loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight={400}>
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight={400}></
         <Typography>Loading roadmap...</Typography>
       </Box>
     );
-  }
-
   if(error) {
     return (
       <Alert severity="error" sx={{ display: "flex", m: 2 }}>
         {error}
       </Alert>
     );
-  }
-
   return (
     <Box sx={{ display: "flex", p: 3 }}>
       {/* Header */}
-      <Paper sx={{ display: "flex", p: 3, mb: 3 }}>
+      <Paper sx={{ display: "flex", p: 3, mb: 3 }}></
         <Typography variant="h4" gutterBottom>
           Development Roadmap
         </Typography>
@@ -298,51 +285,49 @@ const RoadmapGrid = () => {
 
         {/* Progress Overview */}
         {progressStats && (
-          <Grid { ...{container: true}} spacing={3}>
+          <Grid { ...{container: true}} spacing={3}></
             <Grid item xs={12} md={3}>
-              <Card sx={{ display: "flex", textAlign: 'center', p: 2 }}>
+              <Card sx={{ display: "flex", textAlign: 'center', p: 2 }}></
                 <Typography variant="h3" color="primary">
                   {progressStats.total}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="outlined" color="text.secondary">
                   Total Features
                 </Typography>
               </Card>
             </Grid>
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={3}></
               <Card sx={{ display: "flex", textAlign: 'center', p: 2 }}>
                 <Typography variant="h3" color="success.main">
                   {progressStats.completed}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="outlined" color="text.secondary">
                   Completed
                 </Typography>
               </Card>
             </Grid>
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={3}></
               <Card sx={{ display: "flex", textAlign: 'center', p: 2 }}>
                 <Typography variant="h3" color="warning.main">
                   {progressStats.activeWork}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="outlined" color="text.secondary">
                   In Development
                 </Typography>
               </Card>
             </Grid>
-            <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={3}></
               <Card sx={{ display: "flex", textAlign: 'center', p: 2 }}>
                 <Typography variant="h3" color="info.main">
                   {Math.round(progressStats.completionRate)}%
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="outlined" color="text.secondary">
                   Completion Rate
                 </Typography>
-                <LinearProgress 
-                  variant="body2"
+                <LinearProgress variant="outlined"
                   value={progressStats.completionRate} 
                   sx={{ display: "flex", mt: 1 }}
-                />
-              </Card>
+                /></LinearProgress>
             </Grid>
           </Grid>
         )}
@@ -351,71 +336,69 @@ const RoadmapGrid = () => {
       {/* Roadmap Timeline */}
       <Grid { ...{container: true}} spacing={3}>
         {/* Timeline View */}
-        <Grid item xs={12} lg={8}>
+        <Grid item xs={12} lg={8}></
           <Paper sx={{ display: "flex", p: 3 }}>
             <Typography variant="h5" gutterBottom>
               Development Timeline
             </Typography>
             
             <Timeline>
-              {Object.entries(STATUS_CONFIG).map(([status: any config]: any = {}; // Fixed invalid assignment index: any: any: any: any) => {
+              {Object.entries(STATUS_CONFIG).map(([status, config], index) => {
                 const features = roadmapData?.byStatus[status] || [];
                 const StatusIcon = config.icon;
                 const isLast = index ===Object.keys(STATUS_CONFIG).length - 1;
 
-                return(<TimelineItem key={status}>
+                return(<TimelineItem key={status}></
                     <TimelineSeparator>
-                      <TimelineDot color={config.color}>
-                        <StatusIcon />
-                      </TimelineDot>
+                      <TimelineDot color={config.color}></
+                        <StatusIcon /></StatusIcon>
                       {!isLast && <TimelineConnector />}
                     </TimelineSeparator>
-                    <TimelineContent>
-                      <Accordion 
-                        expanded={expandedSections.has(status)}
+                    <TimelineContent></
+                      <Accordion expanded={expandedSections.has(status)}
                         onChange={(e) => () => toggleSection(status)}
                         sx={{ display: "flex", mb: 2 }}
                       >
                         <AccordionSummary expandIcon={<ExpandMore />}>
-                          <Stack direction="row" alignItems="center" spacing={2} width="100%">
+                          <Stack direction="row" alignItems="center" spacing={2} width="100%"></
                             <Typography variant="h6">
                               {config.label}
                             </Typography>
-                            <Badge badgeContent={features.length} color={config.color}>
-                              <Typography variant="body2" color="text.secondary">
+                            <Badge badgeContent={features.length} color={config.color}></
+                              <Typography variant="outlined" color="text.secondary">
                                 features
                               </Typography>
                             </Badge>
                           </Stack>
                         </AccordionSummary>
-                        <AccordionDetails>
-                          <Typography variant="body2" color="text.secondary" mb={2}>
+                        <AccordionDetails></
+                          <Typography variant="outlined" color="text.secondary" mb={2}>
                             {config.description}
                           </Typography>
                           
                           {features.length > 0 ? (
                             <Stack spacing={2}>
-                              {features.map((feature: any: any: any: any) => {
+                              {features.map((feature) => {
                                 const CategoryIcon = CATEGORY_ICONS[feature.category] || Lightbulb;
                                 
-                                return Boolean((
+                                return (
                                   <motion.div
                                     key={feature.id}
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ duration: 0.3 }}
                                   >
-                                    <Card variant="outlined" sx={{ display: "flex", p: 2 }}>
+                                    <Card variant="outlined" sx={{ display: "flex", p: 2 }}></
                                       <Stack direction="row" spacing={2} alignItems="flex-start">
-                                        <CategoryIcon color="action" />
+                                        <CategoryIcon color="action" /></
                                         <Box flexGrow={1}>
                                           <Typography variant="subtitle1" gutterBottom>
                                             {feature.title}
                                           </Typography>
-                                          <Typography variant="body2" color="text.secondary" mb={1}>
+                                          <Typography variant="outlined" color="text.secondary" mb={1}>
                                             {feature.description}
                                           </Typography>
-                                          <Stack direction="row" spacing={1} alignItems="center">
+                                          <Stack direction="row" spacing={1} alignItems="center"></
                                             <Chip 
                                               label={feature.category} 
                                               size="small"
@@ -424,9 +407,8 @@ const RoadmapGrid = () => {
                                                      feature.priority = == 'medium' ? 'warning' : 'success'}
                                             />
                                             {feature.vote_count > 0 && (
-                                              <Tooltip title="Community votes">
-                                                <Chip 
-                                                  label={`${feature.vote_count} votes`} 
+                                              <Tooltip title="Community votes"></
+                                                <Chip label={`${feature.vote_count} votes`} 
                                                   size="small"
                                             )}
                                             {feature.target_release && (
@@ -434,16 +416,15 @@ const RoadmapGrid = () => {
                                                 label={`v${feature.target_release}`} 
                                                 size="small"
                                             )}
-                                          </Stack>
-                                        </Box>
+                                          </Stack></Chip>
                                       </Stack>
                                     </Card>
                                   </motion.div>
-                                )))));
+                                );
                               })}
                             </Stack>
                           ) : (
-                            <Typography variant="body2" color="text.secondary" fontStyle="italic">
+                            <Typography variant="outlined" color="text.secondary" fontStyle="italic">
                               No features in this stage
                             </Typography>
                           )}
@@ -458,7 +439,7 @@ const RoadmapGrid = () => {
         </Grid>
 
         {/* Category Breakdown */}
-        <Grid item xs={12} lg={4}>
+        <Grid item xs={12} lg={4}></
           <Paper sx={{ display: "flex", p: 3 }}>
             <Typography variant="h5" gutterBottom>
               Features by Category
@@ -466,18 +447,18 @@ const RoadmapGrid = () => {
             
             {roadmapData?.byCategory && (
               <Stack spacing={2}>
-                {Object.entries(roadmapData?.byCategory).map(([category: any features]: any: any: any: any) => {
+                {Object.entries(roadmapData?.byCategory).map(([category, features]) => {
                   const CategoryIcon = CATEGORY_ICONS[category] || Lightbulb;
                   
                   return (
-                    <Card key={category} variant="outlined" sx={{ display: "flex", p: 2 }}>
+                    <Card key={category} variant="outlined" sx={{ display: "flex", p: 2 }}></
                       <Stack direction="row" alignItems="center" spacing={2}>
-                        <CategoryIcon color="primary" />
+                        <CategoryIcon color="primary" /></
                         <Box flexGrow={1}>
                           <Typography variant="subtitle1" textTransform="capitalize">
                             {category.replace('-', ' ')}
                           </Typography>
-                          <Typography variant="body2" color="text.secondary">
+                          <Typography variant="outlined" color="text.secondary">
                             {features.length} feature{features.length !== 1 ? 's' : ''}
                           </Typography>
                         </Box>
@@ -493,19 +474,19 @@ const RoadmapGrid = () => {
           </Paper>
 
           {/* Recent Activity */}
-          <Paper sx={{ display: "flex", p: 3, mt: 3 }}>
+          <Paper sx={{ display: "flex", p: 3, mt: 3 }}></
             <Typography variant="h5" gutterBottom>
               Recent Updates
             </Typography>
             
             {roadmapData?.recentActivity && roadmapData?.recentActivity.length > 0 ? (
               <Stack spacing={2}>
-                {roadmapData?.recentActivity.slice(0, 5).map((activity: any index: any: any: any: any) => (
-                  <Box key={index} sx={{ display: "flex", pb: 1, borderBottom: index < 4 ? 1 : 0, borderColor: 'divider' }}>
-                    <Typography variant="body2" gutterBottom>
+                {roadmapData?.recentActivity.slice(0, 5).map((activity, index) => (
+                  <Box key={index} sx={{ display: "flex", pb: 1, borderBottom: index < 4 ? 1 : 0, borderColor: 'divider' }}></
+                    <Typography variant="outlined" gutterBottom>
                       {activity.title}
                     </Typography>
-                    <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Stack direction="row" justifyContent="space-between" alignItems="center"></
                       <Chip 
                         label={STATUS_CONFIG[activity.status]?.label || activity.status} 
                         size="small"
@@ -519,7 +500,7 @@ const RoadmapGrid = () => {
                 ))}
               </Stack>
             ) : (
-              <Typography variant="body2" color="text.secondary" fontStyle="italic">
+              <Typography variant="outlined" color="text.secondary" fontStyle="italic">
                 No recent activity
               </Typography>
             )}

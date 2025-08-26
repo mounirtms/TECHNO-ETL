@@ -86,26 +86,18 @@ export const useIntelligentRouting = () => {
     const intendedRoute = location.state?.from?.pathname;
     if (intendedRoute && intendedRoute !== ROUTES.LOGIN && hasRouteAccess(intendedRoute, userRole)) {
       return intendedRoute;
-    }
-    
     // Priority 2: Last visited route from previous session
     const lastVisitedRoute = localStorage.getItem('lastVisitedRoute');
     if (lastVisitedRoute && hasRouteAccess(lastVisitedRoute, userRole)) {
       return lastVisitedRoute;
-    }
-    
     // Priority 3: User's preferred dashboard (from user preferences)
     const preferredRoute = currentUser?.preferences?.defaultRoute;
     if (preferredRoute && hasRouteAccess(preferredRoute, userRole)) {
       return preferredRoute;
-    }
-    
     // Priority 4: Role-based default route
     const roleDefaultRoute = ROLE_DEFAULT_ROUTES[userRole];
     if (roleDefaultRoute && hasRouteAccess(roleDefaultRoute, userRole)) {
       return roleDefaultRoute;
-    }
-    
     // Fallback: Dashboard
     return ROUTES.DASHBOARD;
   }, [currentUser, location.state, getUserRole, hasRouteAccess]);
@@ -124,7 +116,6 @@ export const useIntelligentRouting = () => {
       
       // Clear the stored route after successful navigation
       localStorage.removeItem('lastVisitedRoute');
-    }
   }, [currentUser, getPostLoginRoute, location.pathname, navigate]);
 
   /**
@@ -143,7 +134,6 @@ export const useIntelligentRouting = () => {
     if (!hasRouteAccess(currentPath, userRole)) {
       const fallbackRoute = ROLE_DEFAULT_ROUTES[userRole] || ROUTES.DASHBOARD;
       navigate(fallbackRoute, { replace: true });
-    }
   }, [currentUser, location.pathname, getUserRole, hasRouteAccess, navigate]);
 
   /**
@@ -152,7 +142,6 @@ export const useIntelligentRouting = () => {
   const storeCurrentRoute = useCallback(() => {
     if(currentUser && location.pathname !== ROUTES.LOGIN) {
       localStorage.setItem('lastVisitedRoute', location.pathname + location.search);
-    }
   }, [currentUser, location]);
 
   /**
@@ -214,8 +203,6 @@ export const useIntelligentRouting = () => {
         replace: true 
       });
       return false;
-    }
-    
     const userRole = getUserRole();
     
     if (!hasRouteAccess(targetPath, userRole)) {
@@ -223,8 +210,6 @@ export const useIntelligentRouting = () => {
       const fallbackRoute = ROLE_DEFAULT_ROUTES[userRole] || ROUTES.DASHBOARD;
       navigate(fallbackRoute, { replace: true });
       return false;
-    }
-    
     navigate(targetPath );
     return true;
   }, [currentUser, getUserRole, hasRouteAccess, navigate]);
@@ -311,12 +296,9 @@ export const useNavigationAnalytics = () => {
       // Keep only last 1000 entries
       if(analytics.length > 1000) {
         analytics.splice(0, analytics.length - 1000);
-      }
-
       localStorage.setItem('navigationAnalytics', JSON.stringify(analytics));
     } catch (error) {
       console.warn('Analytics tracking error:', error);
-    }
   }, [location, currentUser]);
 
   useEffect(() => {

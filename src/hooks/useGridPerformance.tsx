@@ -33,7 +33,6 @@ export const useGridPerformance = (options = {}) => {
       return JSON.stringify(dataSet ).length * 2; // Rough estimate in bytes
     } catch {
       return dataSet.length * 1000; // Fallback estimate
-    }
   }, []);
 
   // Virtualization calculations
@@ -45,8 +44,6 @@ export const useGridPerformance = (options = {}) => {
         containerHeight: data.length * getRowHeight(),
         visibleCount: data.length
       };
-    }
-
     const itemHeight = getRowHeight();
     const containerHeight = window.innerHeight - 200; // Account for headers/footers
     const visibleCount = Math.ceil(containerHeight / itemHeight) + 5; // Buffer
@@ -64,8 +61,6 @@ export const useGridPerformance = (options = {}) => {
   const loadPage = useCallback(async (pageIndex) => {
     if (!enableLazyLoading || loadingRef.current || loadedPages.has(pageIndex )) {
       return;
-    }
-
     loadingRef.current = true;
     setIsLoading(true);
 
@@ -76,15 +71,12 @@ export const useGridPerformance = (options = {}) => {
           pageSize,
           offset: pageIndex * pageSize
         });
-      }
-      
       setLoadedPages(prev => new Set([...prev, pageIndex]));
     } catch(error: any) {
       console.error('Failed to load page:', pageIndex, error);
     } finally {
       loadingRef.current = false;
       setIsLoading(false);
-    }
   }, [enableLazyLoading, loadedPages, onLoadMore, pageSize]);
 
   // Intersection observer for lazy loading
@@ -97,15 +89,12 @@ export const useGridPerformance = (options = {}) => {
             const pageIndex = parseInt(entry.target?.dataset.page, 10);
             if (!isNaN(pageIndex )) {
               loadPage(pageIndex );
-            }
-          }
         });
       },
       {
         root: scrollElementRef.current,
         rootMargin: '100px',
         threshold: 0.1
-      }
     );
 
     observerRef.current = observer;
@@ -120,8 +109,6 @@ export const useGridPerformance = (options = {}) => {
     if(!virtualConfig.shouldVirtualize) {
       setVirtualizedData(data);
       return;
-    }
-
     const { start, end } = visibleRange;
     const virtualizedSlice = data.slice(
       Math.max(0, start - virtualConfig.overscan),
@@ -147,16 +134,12 @@ export const useGridPerformance = (options = {}) => {
       // Trigger garbage collection hint
       if(window.gc) {
         window.gc();
-      }
-      
       // Reduce visible range if possible
       if(virtualConfig.shouldVirtualize) {
         setVisibleRange(prev => ({
           start: prev.start,
           end: Math.min(prev.end, prev.start + Math.floor(virtualConfig.visibleCount * 0.8))
         }));
-      }
-    }
   }, [virtualizedData, enableMemoryOptimization, estimateMemoryUsage, virtualConfig]);
 
   // Scroll handler for virtualization
@@ -178,8 +161,6 @@ export const useGridPerformance = (options = {}) => {
       
       if (!loadedPages.has(nextPage) && nextPage * pageSize < data.length + pageSize) {
         loadPage(nextPage);
-      }
-    }
   }, [virtualConfig, data.length, enableLazyLoading, pageSize, loadedPages, loadPage]);
 
   // Scroll to item
@@ -193,17 +174,15 @@ export const useGridPerformance = (options = {}) => {
   // Get visible items with positioning
   const getVisibleItems = useCallback(() => {
     if(!virtualConfig.shouldVirtualize) {
-      return virtualizedData.map((item: any index: any: any: any: any) => ({
+      return virtualizedData.map((item: any index: any) => ({
         item,
         index,
         style: {}
       }));
-    }
-
     const { start } = visibleRange;
     const { itemHeight } = virtualConfig;
 
-    return virtualizedData.map((item: any virtualIndex: any: any: any: any) => {
+    return virtualizedData.map((item: any virtualIndex: any) => {
       const actualIndex = start - virtualConfig.overscan + virtualIndex;
       return {
         item,
@@ -213,7 +192,6 @@ export const useGridPerformance = (options = {}) => {
           top: actualIndex * itemHeight,
           height: itemHeight,
           width: '100%'
-        }
       };
     });
   }, [virtualizedData, virtualConfig, visibleRange]);
@@ -237,7 +215,6 @@ export const useGridPerformance = (options = {}) => {
     return () => {
       if(observerRef.current) {
         observerRef.current?.disconnect();
-      }
     };
   }, []);
 
@@ -276,19 +253,15 @@ export const useGridPerformance = (options = {}) => {
  */
 export const useColumnOptimization = (columns = [], visibleColumns = {}) => {
   const optimizedColumns = useMemo(() => {
-    return columns.filter((col: any: any: any: any) => {
+    return columns.filter((col: any) => {
       // Hide columns that are explicitly hidden
       if(visibleColumns[col?.field] ===false) {
         return false;
-      }
-      
       // Always show pinned columns
       if(col?.pinned) {
         return true;
-      }
-      
       return true;
-    }).map((col: any: any: any: any) => ({ ...col,
+    }).map((col: any) => ({ ...col,
       // Optimize cell rendering for large datasets
       renderCell: col?.renderCell ? (params) => {
         // Memoize cell content
@@ -311,8 +284,6 @@ export const useDebounceFilter = (initialValue = '', delay = 300) => {
   useEffect(() => {
     if(timeoutRef.current) {
       clearTimeout(timeoutRef.current);
-    }
-
     timeoutRef.current = setTimeout(() => {
       setDebouncedValue(value);
     }, delay);
@@ -320,7 +291,6 @@ export const useDebounceFilter = (initialValue = '', delay = 300) => {
     return () => {
       if(timeoutRef.current) {
         clearTimeout(timeoutRef.current);
-      }
     };
   }, [value, delay]);
 

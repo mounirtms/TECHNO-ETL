@@ -17,15 +17,11 @@ interface CategoryData {
   product_count?: number;
   is_active: boolean;
   children_data?: CategoryData[];
-}
-
 interface FlatCategory extends CategoryData {
   level: number;
   path: string;
   hasChildren: boolean;
   parentPath: string;
-}
-
 interface ComboCategory {
   id: number;
   label: string;
@@ -35,22 +31,16 @@ interface ComboCategory {
   parent_id?: number;
   product_count?: number;
   is_active: boolean;
-}
-
 interface BreadcrumbItem {
   id: number;
   name: string;
   level: number;
-}
-
 interface CategoryStats {
   total: number;
   active: number;
   inactive: number;
   levels: number;
   totalProducts: number;
-}
-
 /**
  * Flatten category tree into a flat array with hierarchy information
  */
@@ -72,16 +62,14 @@ const flattenCategories = (categories: CategoryData | CategoryData[], level = 0,
     if(category.children_data && category.children_data.length > 0) {
       category.children_data.forEach((child) => {
         processCategory(child, currentLevel + 1, categoryPath);
+
       });
-    }
   };
   
   if (Array.isArray(categories)) {
     categories.forEach((category) => processCategory(category, level, parentPath));
   } else {
     processCategory(categories, level, parentPath);
-  }
-  
   return result;
 };
 
@@ -98,7 +86,7 @@ export const getAllCategories = () => {
 export const getCategoriesForCombo = () => {
   const flatCategories = getAllCategories();
   
-  return flatCategories.map((category: any: any: any: any) => ({
+  return flatCategories.map((category: any) => ({
     id: category.id,
     label: category.path,
     value: category.id,
@@ -130,7 +118,7 @@ export const findCategoryById = (id) => {
  */
 export const getCategoryChildren = (parentId) => {
   const flatCategories = getAllCategories();
-  return flatCategories.filter((cat: any: any: any: any) => cat.parent_id ===parseInt(parentId));
+  return flatCategories.filter((cat: any) => cat.parent_id ===parseInt(parentId));
 };
 
 /**
@@ -152,11 +140,9 @@ export const getCategoryBreadcrumb = (categoryId) => {
     
     if(current.parent_id) {
       current
+
     } else {
       break;
-    }
-  }
-  
   return breadcrumb;
 };
 
@@ -169,7 +155,7 @@ export const searchCategories = (searchTerm) => {
   const flatCategories = getAllCategories();
   const term = searchTerm.toLowerCase();
   
-  return flatCategories.filter((category: any: any: any: any) =>
+  return flatCategories.filter((category: any) =>
     category.name.toLowerCase().includes(term) ||
     category.path.toLowerCase().includes(term)
   );
@@ -180,7 +166,7 @@ export const searchCategories = (searchTerm) => {
  */
 export const getCategoriesByLevel = (level) => {
   const flatCategories = getAllCategories();
-  return flatCategories.filter((cat: any: any: any: any) => cat.level ===level);
+  return flatCategories.filter((cat: any) => cat.level ===level);
 };
 
 /**
@@ -198,10 +184,10 @@ export const getCategoryStats = () => {
   
   return {
     total: flatCategories.length,
-    active: flatCategories.filter((cat: any: any: any: any) => cat.is_active).length,
-    inactive: flatCategories.filter((cat: any: any: any: any) => !cat.is_active).length,
-    levels: Math.max(...flatCategories.map((cat: any: any: any: any) => cat.level)),
-    totalProducts: flatCategories.reduce((sum: any: any cat: any: any: any: any) => sum + (cat.product_count || 0), 0)
+    active: flatCategories.filter((cat: any) => cat.is_active).length,
+    inactive: flatCategories.filter((cat: any) => !cat.is_active).length,
+    levels: Math.max(...flatCategories.map((cat: any) => cat.level)),
+    totalProducts: flatCategories.reduce((sum: any, cat: any) => sum + (cat.product_count || 0), 0)
   };
 };
 
@@ -223,7 +209,7 @@ export const formatCategoryForGrid = (category) => {
 export const getVisibleCategories = (expandedIds = new Set()) => {
   const allCategories = getAllCategories();
   
-  return allCategories.filter((category: any: any: any: any) => {
+  return allCategories.filter((category: any) => {
     // Always show root level
     if (category.level <= 1) return true;
     

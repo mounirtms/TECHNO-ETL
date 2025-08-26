@@ -29,22 +29,19 @@ const CustomTooltip = ({ active, payload, label  }: { active payload label: any 
                 borderRadius: 1,
                 p: 1,
                 boxShadow: 2
-            }}>
-                <Typography variant="body2" sx={{ display: "flex", fontWeight: 600 }}>
+            }}></
+                <Typography variant="outlined" sx={{ display: "flex", fontWeight: 600 }}>
                     {formatTooltipDate(label)}
                 </Typography>
-                {payload.map((entry: any index: any: any: any: any) => (
-                    <Typography
-                        key={index}
-                        variant="body2"
-                        sx={{ display: "flex", color: entry.color }}
-                    >
+                {payload.map((entry, index) => (
+                    <Typography key={index}
+                        variant="outlined"
+                        sx={{ display: "flex", color: entry.color }}>
                         {`${entry.name}: ${entry.value}`}
                     </Typography>
                 ))}
             </Box>
         );
-    }
     return null;
 };
 
@@ -65,7 +62,7 @@ const OrdersChart = ({ chartData, chartType, visibleCharts  }: { chartData chart
             boxShadow: theme.shadows[1],
             borderRadius: 2,
             borderLeft: `4px solid ${theme.palette.primary.main}`
-        }}>
+        }}></
             <Typography variant="h6" sx={{
                 display: "flex",
                 fontWeight: 600,
@@ -77,42 +74,38 @@ const OrdersChart = ({ chartData, chartType, visibleCharts  }: { chartData chart
 
             <ResponsiveContainer width="100%" height="85%">
                 {chartType === 'line' ? (
-                    <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                    <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}></
                         <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
                         <XAxis
                             dataKey
                             stroke={theme.palette.text.secondary}
                             tickMargin={10}
-                        />
+                        /></
                         <YAxis stroke={theme.palette.text.secondary} tickMargin={10} />
                         <RechartsTooltip content={<CustomTooltip />} />
-                        <Legend />
-                        <Line
-                            type
+                        <Legend /></
+                        <Line type
                             stroke={theme.palette.primary.main}
                             strokeWidth={3}
                             dot={{ fill: theme.palette.primary.main, strokeWidth: 2, r: 4 }}
                             activeDot={{ r: 6, stroke: theme.palette.primary.main, strokeWidth: 2 }}
-                        />
-                    </LineChart>
+                        /></Line>
                 ) : (
-                    <BarChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                    <BarChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}></
                         <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
                         <XAxis
                             dataKey
                             stroke={theme.palette.text.secondary}
                             tickMargin={10}
-                        />
+                        /></
                         <YAxis stroke={theme.palette.text.secondary} tickMargin={10} />
                         <RechartsTooltip content={<CustomTooltip />} />
-                        <Legend />
-                        <Bar
-                            dataKey
+                        <Legend /></
+                        <Bar dataKey
                             fill={theme.palette.primary.main}
                             radius={[4, 4, 0, 0]}
                             barSize={32}
-                        />
-                    </BarChart>
+                        /></Bar>
                 )}
             </ResponsiveContainer>
         </Paper>
@@ -136,7 +129,7 @@ const CustomersChart = ({ customerData, visibleCharts  }: { customerData visible
             boxShadow: theme.shadows[1],
             borderRadius: 2,
             borderLeft: `4px solid ${theme.palette.success.main}`
-        }}>
+        }}></
             <Typography variant="h6" sx={{
                 display: "flex",
                 fontWeight: 600,
@@ -146,25 +139,23 @@ const CustomersChart = ({ customerData, visibleCharts  }: { customerData visible
                 Customer Registrations
             </Typography>
 
-            <ResponsiveContainer width="100%" height="85%">
+            <ResponsiveContainer width="100%" height="85%"></
                 <LineChart data={customerData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} />
+                    <CartesianGrid strokeDasharray="3 3" stroke={theme.palette.divider} /></
                     <XAxis
                         dataKey
                         stroke={theme.palette.text.secondary}
                         tickMargin={10}
                     />
-                    <YAxis stroke={theme.palette.text.secondary} tickMargin={10} />
+                    <YAxis stroke={theme.palette.text.secondary} tickMargin={10} /></
                     <RechartsTooltip content={<CustomTooltip />} />
-                    <Legend />
-                    <Line
-                        type
+                    <Legend /></
+                    <Line type
                         stroke={theme.palette.success.main}
                         strokeWidth={3}
                         dot={{ fill: theme.palette.success.main, strokeWidth: 2, r: 4 }}
                         activeDot={{ r: 6, stroke: theme.palette.success.main, strokeWidth: 2 }}
-                    />
-                </LineChart>
+                    /></Line>
             </ResponsiveContainer>
         </Paper>
     );
@@ -186,7 +177,7 @@ const ProductsByCountryChart = ({ countryData, visibleCharts  }: { countryData v
             boxShadow: theme.shadows[1],
             borderRadius: 2,
             borderLeft: `4px solid ${theme.palette.info.main}`
-        }}>
+        }}></
             <Typography variant="h6" sx={{
                 display: "flex",
                 fontWeight: 600,
@@ -196,18 +187,16 @@ const ProductsByCountryChart = ({ countryData, visibleCharts  }: { countryData v
                 Products by Country
             </Typography>
 
-            <ResponsiveContainer width="100%" height="85%">
-                <BarChart
-                    data={countryData}
+            <ResponsiveContainer width="100%" height="85%"></
+                <BarChart data={countryData}
                     layout
-                    margin={{ left: 30 }}
-                >
+                    margin={{ left: 30 }}>
                     <CartesianGrid
                         strokeDasharray
                         stroke={theme.palette.divider}
                         horizontal={true}
                         vertical={false}
-                    />
+                    /></
                     <XAxis
                         type
                         stroke={theme.palette.text.secondary}
@@ -218,19 +207,17 @@ const ProductsByCountryChart = ({ countryData, visibleCharts  }: { countryData v
                         stroke={theme.palette.text.secondary}
                         width={100}
                         tickMargin={10}
-                    />
+                    /></
                     <RechartsTooltip
                         content={<CustomTooltip />}
                         formatter={(value) => [value, 'Products']}
                     />
-                    <Legend />
-                    <Bar
-                        dataKey
+                    <Legend /></
+                    <Bar dataKey
                         fill={theme.palette.info.main}
                         radius={[0, 4, 4, 0]}
-                        barSize={24}
-                    >
-                        {countryData.map((entry: any index: any: any: any: any) => (
+                        barSize={24}>
+                        {countryData.map((entry, index) => (
                             <Cell
                                 key={`cell-${index}`}
                                 fill={COLORS[index % COLORS.length]}
@@ -261,17 +248,15 @@ const DashboardCharts = ({ chartData,
                 gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
                 gap: 3,
                 mt: 3
-            }}>
+            }}></
                 <OrdersChart
                     chartData={chartData}
                     chartType={chartType}
                     visibleCharts={visibleCharts}
                 />
-                <CustomersChart
-                    customerData={customerData}
+                <CustomersChart customerData={customerData}
                     visibleCharts={visibleCharts}
-                />
-            </Box>
+                /></CustomersChart>
 
             {/* Secondary Charts */}
             <Box sx={{
@@ -280,12 +265,10 @@ const DashboardCharts = ({ chartData,
                 gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
                 gap: 3,
                 mt: 3
-            }}>
-                <ProductsByCountryChart
-                    countryData={countryData}
+            }}></
+                <ProductsByCountryChart countryData={countryData}
                     visibleCharts={visibleCharts}
-                />
-            </Box>
+                /></ProductsByCountryChart>
         </>
     );
 };

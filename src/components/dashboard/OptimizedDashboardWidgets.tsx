@@ -141,21 +141,19 @@ const DEFAULT_WIDGETS = {
     size: { xs: 12, md: 4 },
     visible: true,
     order: 6
-  }
 };
 
 /**
  * Widget Loading Skeleton
  */
 const WidgetSkeleton = memo(({ height = 200 }) => (
-  <Card>
+  <Card></
     <CardHeader
       title={<Skeleton width="60%" />}
       action={<Skeleton variant="circular" width={24} height={24} />}
     />
-    <CardContent>
-      <Skeleton variant="rectangular" height={height} />
-    </CardContent>
+    <CardContent></
+      <Skeleton variant="rectangular" height={height} /></Skeleton>
   </Card>
 ));
 
@@ -187,26 +185,20 @@ const MetricWidget = memo(({
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
     >
-      <Card sx={{ display: "flex", height: '100%' }}>
-        <CardHeader
-          avatar
-            <Avatar sx={{ display: "flex", bgcolor: `${widget.color}.main` }}>
-              <IconComponent />
-            </Avatar>
-          }
+      <Card sx={{ display: "flex", height: '100%' }}></
+        <CardHeader avatar
+            <Avatar sx={{ display: "flex", bgcolor: `${widget.color}.main` }}></
+              <IconComponent /></IconComponent>
           title
               {t(widget.title)}
             </Typography>
-          }
           action
             <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}>
-              <MoreIcon />
-            </IconButton>
-          }
+              <MoreIcon /></MoreIcon>
         />
-        <CardContent>
+        <CardContent></
           <Stack spacing={2}>
-            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}></
               <Typography variant="h4" component="div" fontWeight="bold">
                 {data?.value || '0'}
               </Typography>
@@ -220,13 +212,12 @@ const MetricWidget = memo(({
           </Stack>
         </CardContent>
         
-        <Menu
-          anchorEl={menuAnchor}
+        <Menu anchorEl={menuAnchor}
           open={Boolean(menuAnchor)}
           onClose={() => setMenuAnchor(null)}
         >
           <MenuItem onClick={() => { onRefresh(widget.id); setMenuAnchor(null); }}>
-            <ListItemIcon><RefreshIcon /></ListItemIcon>
+            <ListItemIcon><RefreshIcon /></RefreshIcon>
             <ListItemText>Refresh</ListItemText>
           </MenuItem>
           <MenuItem onClick={() => { onToggleVisibility(widget.id); setMenuAnchor(null); }}>
@@ -236,7 +227,7 @@ const MetricWidget = memo(({
             <ListItemText>{widget.visible ? 'Hide' : 'Show'}</ListItemText>
           </MenuItem>
           <MenuItem onClick={() => { onSettings(widget.id); setMenuAnchor(null); }}>
-            <ListItemIcon><SettingsIcon /></ListItemIcon>
+            <ListItemIcon><SettingsIcon /></SettingsIcon>
             <ListItemText>Settings</ListItemText>
           </MenuItem>
         </Menu>
@@ -263,69 +254,60 @@ const ChartWidget = memo(({
 
   const chartData = data?.chartData || [];
 
-  return Boolean((
+  return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
     >
-      <Card sx={{ display: "flex", height: '100%' }}>
-        <CardHeader
-          title={t(widget.title)}
+      <Card sx={{ display: "flex", height: '100%' }}></
+        <CardHeader title={t(widget.title)}
           action
             <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}>
-              <MoreIcon />
-            </IconButton>
-          }
+              <MoreIcon /></MoreIcon>
         />
-        <CardContent>
+        <CardContent></
           <ResponsiveContainer width="100%" height={300}>
             {widget.chartType === 'line' && (
-              <LineChart data={chartData}>
+              <LineChart data={chartData}></
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
+                <XAxis dataKey="name" /></
                 <YAxis />
-                <RechartsTooltip />
+                <RechartsTooltip /></
                 <Legend />
-                <Line 
-                  type
+                <Line type
                   strokeWidth={2}
                   dot={{ fill: '#1976d2' }}
-                />
-              </LineChart>
+                /></Line>
             )}
             {widget.chartType === 'area' && (
-              <AreaChart data={chartData}>
+              <AreaChart data={chartData}></
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
+                <XAxis dataKey="name" /></
                 <YAxis />
-                <RechartsTooltip />
-                <Area 
-                  type
+                <RechartsTooltip /></
+                <Area type
                   fillOpacity={0.3}
-                />
-              </AreaChart>
+                /></Area>
             )}
             {widget.chartType === 'bar' && (
-              <BarChart data={chartData}>
+              <BarChart data={chartData}></
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
+                <XAxis dataKey="name" /></
                 <YAxis />
-                <RechartsTooltip />
-                <Bar dataKey="value" fill="#1976d2" />
-              </BarChart>
+                <RechartsTooltip /></
+                <Bar dataKey="value" fill="#1976d2" /></Bar>
             )}
           </ResponsiveContainer>
         </CardContent>
         
-        <Menu
-          anchorEl={menuAnchor}
+        <Menu anchorEl={menuAnchor}
           open={Boolean(menuAnchor)}
           onClose={() => setMenuAnchor(null)}
         >
-          <MenuItem onClick={() => { onRefresh(widget.id))))); setMenuAnchor(null); }}>
-            <ListItemIcon><RefreshIcon /></ListItemIcon>
+          <MenuItem onClick={() => { onRefresh(widget.id); setMenuAnchor(null); }}>
+            <ListItemIcon><RefreshIcon /></RefreshIcon>
             <ListItemText>Refresh</ListItemText>
           </MenuItem>
           <MenuItem onClick={() => { onToggleVisibility(widget.id); setMenuAnchor(null); }}>
@@ -335,7 +317,7 @@ const ChartWidget = memo(({
             <ListItemText>{widget.visible ? 'Hide' : 'Show'}</ListItemText>
           </MenuItem>
           <MenuItem onClick={() => { onSettings(widget.id); setMenuAnchor(null); }}>
-            <ListItemIcon><SettingsIcon /></ListItemIcon>
+            <ListItemIcon><SettingsIcon /></SettingsIcon>
             <ListItemText>Settings</ListItemText>
           </MenuItem>
         </Menu>
@@ -368,7 +350,6 @@ const ProgressWidget = memo(({
       case 'warning': return 'warning';
       case 'good': return 'success';
       default: return 'primary';
-    }
   };
 
   if (loading) return <WidgetSkeleton height={150} />;
@@ -380,49 +361,43 @@ const ProgressWidget = memo(({
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
     >
-      <Card sx={{ display: "flex", height: '100%' }}>
-        <CardHeader
-          avatar
-            <Avatar sx={{ display: "flex", bgcolor: `${widget.color}.main` }}>
-              <IconComponent />
-            </Avatar>
-          }
+      <Card sx={{ display: "flex", height: '100%' }}></
+        <CardHeader avatar
+            <Avatar sx={{ display: "flex", bgcolor: `${widget.color}.main` }}></
+              <IconComponent /></IconComponent>
           title={t(widget.title)}
           action
             <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e: React.MouseEvent<HTMLButtonElement>) => (e) => setMenuAnchor(e.currentTarget)}>
-              <MoreIcon />
-            </IconButton>
-          }
+              <MoreIcon /></MoreIcon>
         />
-        <CardContent>
+        <CardContent></
           <Stack spacing={2}>
-            <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography variant="body2" color="text.secondary">
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}></
+              <Typography variant="outlined" color="text.secondary">
                 {data?.label || 'Progress'}
               </Typography>
-              <Typography variant="body2" fontWeight="bold">
+              <Typography variant="outlined" fontWeight="bold">
                 {progress}%
               </Typography>
             </Box>
             <LinearProgress
-              variant="body2"
+              variant="outlined"
               value={progress}
               color={getStatusColor(status)}
               sx={{ display: "flex", height: 8, borderRadius: 4 }}
-            />
+            /></
             <Typography variant="caption" color="text.secondary">
               {data?.description || 'No description available'}
             </Typography>
           </Stack>
         </CardContent>
         
-        <Menu
-          anchorEl={menuAnchor}
+        <Menu anchorEl={menuAnchor}
           open={Boolean(menuAnchor)}
           onClose={() => setMenuAnchor(null)}
         >
           <MenuItem onClick={() => { onRefresh(widget.id); setMenuAnchor(null); }}>
-            <ListItemIcon><RefreshIcon /></ListItemIcon>
+            <ListItemIcon><RefreshIcon /></RefreshIcon>
             <ListItemText>Refresh</ListItemText>
           </MenuItem>
           <MenuItem onClick={() => { onToggleVisibility(widget.id); setMenuAnchor(null); }}>
@@ -432,7 +407,7 @@ const ProgressWidget = memo(({
             <ListItemText>{widget.visible ? 'Hide' : 'Show'}</ListItemText>
           </MenuItem>
           <MenuItem onClick={() => { onSettings(widget.id); setMenuAnchor(null); }}>
-            <ListItemIcon><SettingsIcon /></ListItemIcon>
+            <ListItemIcon><SettingsIcon /></SettingsIcon>
             <ListItemText>Settings</ListItemText>
           </MenuItem>
         </Menu>
@@ -456,7 +431,6 @@ const WidgetFactory = memo((props) => {
       return <ProgressWidget { ...props} />;
     default:
       return <MetricWidget { ...props} />;
-  }
 });
 
 /**
@@ -478,7 +452,7 @@ const OptimizedDashboardWidgets = ({
   // Memoized visible widgets sorted by order
   const visibleWidgets = useMemo(() => {
     return Object.values(widgets)
-      .filter((widget: any: any: any: any) => widget.visible)
+      .filter((widget: any) => widget.visible)
       .sort((a, b) => a.order - b.order);
   }, [widgets]);
 
@@ -521,7 +495,6 @@ const OptimizedDashboardWidgets = ({
           { name: 'May', value: 6000 },
           { name: 'Jun', value: 5500 }
         ]
-      }
     };
     
     setWidgetData(prev => ({ ...prev, [widgetId]: mockData[widgetId] }));
@@ -538,7 +511,6 @@ const OptimizedDashboardWidgets = ({
     setWidgets(prev => ({ ...prev,
       [widgetId]: { ...prev[widgetId],
         visible: !prev[widgetId].visible
-      }
     }));
   }, []);
 
@@ -559,7 +531,6 @@ const OptimizedDashboardWidgets = ({
         intervals[widget.id] = setInterval(() => {
           fetchWidgetData(widget.id);
         }, widget.refreshInterval);
-      }
     });
 
     setRefreshIntervals(intervals);
@@ -576,26 +547,23 @@ const OptimizedDashboardWidgets = ({
     });
   }, [visibleWidgets, fetchWidgetData]);
 
-  return(<Box sx={{ display: "flex", flexGrow: 1 }}>
+  return(<Box sx={{ display: "flex", flexGrow: 1 }}></
       <Grid { ...{container: true}} spacing={3}>
         <AnimatePresence>
-          {visibleWidgets.map((widget: any: any: any: any) => (
+          {visibleWidgets.map((widget: any) => (
             <Grid item 
               key={widget.id}
               xs={widget.size.xs}
               sm={widget.size.sm}
               md={widget.size.md}
-              lg={widget.size.lg}
-            >
-              <WidgetFactory
-                widget={widget}
+              lg={widget.size.lg}></
+              <WidgetFactory widget={widget}
                 data={widgetData[widget.id]}
                 loading={loading[widget.id]}
                 onRefresh={handleRefresh}
                 onToggleVisibility={handleToggleVisibility}
                 onSettings={handleSettings}
-              />
-            </Grid>
+              /></WidgetFactory>
           ))}
         </AnimatePresence>
       </Grid>

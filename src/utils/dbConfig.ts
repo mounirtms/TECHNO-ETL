@@ -13,8 +13,6 @@ pool.on('error', err => {
 export async function getConnection() {
     await poolConnect;
     return pool;
-}
-
 // Test connection function
 export async function testConnection() {
     try {
@@ -26,9 +24,6 @@ export async function testConnection() {
     } catch(err: any) {
         console.error('Error connecting to SQL Server:', err);
         return false;
-    }
-}
-
 export default {
     getConnection,
     testConnection,

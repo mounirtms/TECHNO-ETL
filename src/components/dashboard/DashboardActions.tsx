@@ -69,7 +69,6 @@ const DashboardActions: React.FC<{onRefresh getPrices syncAllStocks loading char
             toast.error('❌ Failed to sync prices: ' + (error.message || 'Unknown error'));
         } finally {
             setPriceLoading(false);
-        }
     };
 
     const handleSyncStocks = async () => {
@@ -82,45 +81,43 @@ const DashboardActions: React.FC<{onRefresh getPrices syncAllStocks loading char
             toast.error('❌ Failed to sync stocks: ' + (error.message || 'Unknown error'));
         } finally {
             setSyncLoading(false);
-        }
     };
 
-    return Boolean((
+    return (
         <Box sx={{
-            display: "flex",
             display: 'flex',
             alignItems: 'center',
             gap: 2,
             flexWrap: 'wrap'
         }}>
             {/* Refresh Button */}
-            <Tooltip title="Refresh Dashboard Data">
+            <Tooltip title="Refresh Dashboard Data"></
                 <Button
-                    variant="body2"
+                    variant="outlined"
                     startIcon={loading ? <CircularProgress size={16} /> : <Refresh />}
                     onClick={onRefresh}
                     disabled={loading}
                     size="small"
             {/* Sync Prices Button */}
-            <Tooltip title="Sync Prices from MDM Database">
+            <Tooltip title="Sync Prices from MDM Database"></
                 <Button
-                    variant="body2"
+                    variant="outlined"
                     startIcon={priceLoading ? <CircularProgress size={16} /> : <SyncAlt />}
                     onClick={handleSyncPrices}
                     disabled={loading || priceLoading}
                     size="small"
             {/* Sync Stocks Button */}
-            <Tooltip title="Sync Stock Levels from MDM Database">
+            <Tooltip title="Sync Stock Levels from MDM Database"></
                 <Button
-                    variant="body2"
+                    variant="outlined"
                     startIcon={syncLoading ? <CircularProgress size={16} /> : <SyncAlt />}
                     onClick={handleSyncStocks}
                     disabled={loading || syncLoading}
                     size="small"
             {/* Settings Menu */}
-            <Tooltip title="Dashboard Settings">
+            <Tooltip title="Dashboard Settings"></
                 <Button
-                    variant="body2"
+                    variant="outlined"
                     startIcon={<Settings />}
                     onClick={handleSettingsClick}
                     size="small"
@@ -132,64 +129,51 @@ const DashboardActions: React.FC<{onRefresh getPrices syncAllStocks loading char
                 }}
             >
                 {/* Chart Type Selection */}
-                <MenuItem disabled>
-                    <ListItemText primary="Chart Type" />
-                </MenuItem>
-                <MenuItem
-                    onClick={() => handleChartTypeChange('line')}
+                <MenuItem disabled></
+                    <ListItemText primary="Chart Type" /></ListItemText>
+                <MenuItem onClick={() => handleChartTypeChange('line')}
                     selected={chartType === 'line'}
                 >
-                    <ListItemIcon>
-                        <ShowChart />
-                    </ListItemIcon>
-                    <ListItemText primary="Line Chart" />
-                </MenuItem>
-                <MenuItem
-                    onClick={() => handleChartTypeChange('bar')}
+                    <ListItemIcon></
+                        <ShowChart /></ShowChart>
+                    <ListItemText primary="Line Chart" /></ListItemText>
+                <MenuItem onClick={() => handleChartTypeChange('bar')}
                     selected={chartType === 'bar'}
                 >
-                    <ListItemIcon>
-                        <BarChartIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Bar Chart" />
-                </MenuItem>
+                    <ListItemIcon></
+                        <BarChartIcon /></BarChartIcon>
+                    <ListItemText primary="Bar Chart" /></ListItemText>
 
                 <Divider />
 
                 {/* Visible Charts Toggle */}
-                <MenuItem disabled>
-                    <ListItemText primary="Visible Charts" />
-                </MenuItem>
+                <MenuItem disabled></
+                    <ListItemText primary="Visible Charts" /></ListItemText>
                 <MenuItem onClick={() => handleToggleChart('orders')}>
-                    <ListItemIcon>
-                        <TableChart />
-                    </ListItemIcon>
-                    <ListItemText primary="Orders Chart" />
-                    <Chip
-                        size="small"
+                    <ListItemIcon></
+                        <TableChart /></TableChart>
+                    <ListItemText primary="Orders Chart" /></
+                    <Chip size="small"
                         label={visibleCharts.orders ? 'ON' : 'OFF'}
                         color={visibleCharts.orders ? 'success' : 'default'}
-                        variant="body2"
+                        variant="outlined"
                 <MenuItem onClick={() => handleToggleChart('customers')}>
-                    <ListItemIcon>
-                        <ShowChart />
-                    </ListItemIcon>
-                    <ListItemText primary="Customers Chart" />
-                    <Chip
-                        size="small"
+                    <ListItemIcon></
+                        <ShowChart /></ShowChart>
+                    <ListItemText primary="Customers Chart" /></
+                    <Chip size="small"
                         label={visibleCharts.customers ? 'ON' : 'OFF'}
                         color={visibleCharts.customers ? 'success' : 'default'}
-                        variant="body2"
+                        variant="outlined"
                 <MenuItem onClick={() => handleToggleChart('products')}>
-                    <ListItemIcon>
-                        <PieChartIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Products Chart" />
+                    <ListItemIcon></
+                        <PieChartIcon /></PieChartIcon>
+                    <ListItemText primary="Products Chart" /></
                     <Chip
                         size="small"
                         label={visibleCharts.products ? 'ON' : 'OFF'}
                         color={visibleCharts.products ? 'success' : 'default'}
-                        variant="body2"
+                        variant="outlined"
             {/* Status Indicators */}
             {(syncLoading || priceLoading) && (
                 <Alert severity="info" sx={{ display: "flex", ml: 2 }}>
@@ -198,7 +182,7 @@ const DashboardActions: React.FC<{onRefresh getPrices syncAllStocks loading char
                 </Alert>
             )}
         </Box>
-    )))));
+    );
 };
 
 export default DashboardActions;

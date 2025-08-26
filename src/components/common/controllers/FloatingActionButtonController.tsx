@@ -6,8 +6,6 @@ interface FloatingActionButtonControllerProps {
     position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
     offset?: number;
     zIndex?: number;
-}
-
 const FloatingActionButtonController: React.FC<FloatingActionButtonControllerProps> = ({ 
     children,
     position
