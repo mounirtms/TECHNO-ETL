@@ -426,6 +426,18 @@ const MDMProductsGrid = () => {
     });
   }, [fetchProducts]);
 
+  // ===== INITIALIZATION =====
+  useEffect(() => {
+    // Initialize data loading on component mount
+    fetchProducts({});
+  }, [fetchProducts]);
+
+  // ===== FILTER EFFECTS =====
+  useEffect(() => {
+    // Reload data when filters change
+    fetchProducts({});
+  }, [sourceFilter, succursaleFilter, showChangedOnly, fetchProducts]);
+
   // ===== EVENT HANDLERS (moved up to avoid initialization issues) =====
   const handleManualRefresh = useCallback(() => {
     fetchProducts({});

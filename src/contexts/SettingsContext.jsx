@@ -19,6 +19,7 @@ import {
     applyLanguageSettings,
     getSystemPreferences
 } from '../utils/unifiedSettingsManager';
+import SettingsSyncService from '../services/SettingsSyncService';
 import { toast } from 'react-toastify';
 
 const SettingsContext = createContext();
@@ -127,58 +128,43 @@ export const SettingsProvider = ({ children }) => {
 
 
 
-    // Enhanced settings persistence with session management
+    // Enhanced settings persistence with new sync service
     const persistSettings = useCallback(async (newSettings) => {
         try {
-            // Always save locally first for immediate availability
-            if (currentUser) {
-                saveUserSettings(currentUser.uid, newSettings);
+            // Use the new SettingsSyncService for enhanced sync capabilities
+            const result = await SettingsSyncService.saveSettings(
+                currentUser?.uid,
+                newSettings,
+                { immediate: false }
+            );
+            
+            if (result.success) {
+                console.log('✅ Settings saved with sync service');
+                return true;
             } else {
-                saveUnifiedSettings(newSettings);
-            }
-            
-            // Save to unified localStorage system
-            const unifiedSettings = {
-                preferences: {
-                    language: newSettings.preferences?.language || 'en',
-                    theme: newSettings.preferences?.theme || 'system',
-                    fontSize: newSettings.preferences?.fontSize || 'medium',
-                    density: newSettings.preferences?.density || 'standard',
-                    animations: newSettings.preferences?.animations !== false,
-                    highContrast: newSettings.preferences?.highContrast === true,
-                    colorPreset: newSettings.preferences?.colorPreset || 'techno'
-                },
-                performance: newSettings.performance || {},
-                accessibility: newSettings.accessibility || {},
-                lastModified: Date.now(),
-                userId: currentUser?.uid || 'anonymous'
-            };
-            
-            localStorage.setItem('techno-etl-unified-settings', JSON.stringify(unifiedSettings));
-            
-            // If user is authenticated, also save to Firebase for cross-device sync
-            if (currentUser) {
-                try {
-                    const userSettingsRef = ref(database, `users/${currentUser.uid}/settings`);
-                    await set(userSettingsRef, {
-                        ...unifiedSettings,
-                        syncedAt: Date.now(),
-                        deviceInfo: {
-                            userAgent: navigator.userAgent,
-                            platform: navigator.platform,
-                            timestamp: Date.now()
-                        }
-                    });
-                    console.log('✅ Settings synced to Firebase');
-                } catch (firebaseError) {
-                    console.warn('⚠️ Firebase sync failed, settings saved locally:', firebaseError);
+                console.error('❌ Sync service failed:', result.error);
+                // Fallback to direct local save
+                if (currentUser) {
+                    saveUserSettings(currentUser.uid, newSettings);
+                } else {
+                    saveUnifiedSettings(newSettings);
                 }
+                return true;
             }
-            
-            return true;
         } catch (error) {
             console.error('❌ Failed to persist settings:', error);
-            return false;
+            // Fallback to direct local save
+            try {
+                if (currentUser) {
+                    saveUserSettings(currentUser.uid, newSettings);
+                } else {
+                    saveUnifiedSettings(newSettings);
+                }
+                return true;
+            } catch (fallbackError) {
+                console.error('❌ Fallback save also failed:', fallbackError);
+                return false;
+            }
         }
     }, [currentUser]);
 
@@ -236,40 +222,61 @@ export const SettingsProvider = ({ children }) => {
         }
     }, [currentUser]);
 
-    // Load settings when user logs in with enhanced session management
+    // Load settings when user logs in with enhanced sync service
     useEffect(() => {
+        let realtimeSyncUnsubscribe = null;
+        
         if (currentUser) {
-            loadRemoteSettings();
-            
-            // Set up real-time settings sync listener
-            const userSettingsRef = ref(database, `users/${currentUser.uid}/settings`);
-            const unsubscribeSettings = onValue(userSettingsRef, (snapshot) => {
-                if (snapshot.exists()) {
-                    const remoteSettings = snapshot.val();
-                    const localLastModified = localStorage.getItem('settingsLastModified');
-                    
-                    // Only apply if remote is newer than local
-                    if (!localLastModified || remoteSettings.lastModified > parseInt(localLastModified)) {
-                        console.log('🔄 Applying newer remote settings');
-                        const mergedSettings = mergeWithDefaults(remoteSettings);
+            // Load settings using sync service
+            const loadSettingsWithSync = async () => {
+                try {
+                    const result = await SettingsSyncService.loadFromCloud(currentUser.uid);
+                    if (result.success) {
+                        const mergedSettings = mergeWithDefaults(result.settings);
                         setSettings(mergedSettings);
-                        localStorage.setItem('settingsLastModified', remoteSettings.lastModified.toString());
                         
                         // Apply settings immediately
                         if (mergedSettings.language) {
                             applyLanguageSettings(mergedSettings.language);
                         }
+                        
+                        if (result.hadConflicts) {
+                            toast.info('Settings conflicts were resolved automatically');
+                        }
+                        
+                        console.log(`✅ Settings loaded from ${result.source}`);
                     }
-                }
-            }, (error) => {
-                console.warn('Settings sync listener error:', error);
-            });
-            
-            return () => {
-                if (unsubscribeSettings) {
-                    unsubscribeSettings();
+                } catch (error) {
+                    console.error('❌ Error loading settings with sync service:', error);
+                    // Fallback to original method
+                    loadRemoteSettings();
                 }
             };
+            
+            loadSettingsWithSync();
+            
+            // Set up real-time sync using the sync service
+            realtimeSyncUnsubscribe = SettingsSyncService.setupRealtimeSync(currentUser.uid);
+            
+            // Listen for remote updates
+            const handleRemoteUpdate = (event) => {
+                if (event.detail.userId === currentUser.uid) {
+                    const mergedSettings = mergeWithDefaults(event.detail.settings);
+                    setSettings(mergedSettings);
+                    
+                    // Apply settings immediately
+                    if (mergedSettings.language) {
+                        applyLanguageSettings(mergedSettings.language);
+                    }
+                }
+            };
+            
+            SettingsSyncService.addSyncListener((eventType, data) => {
+                if (eventType === 'remoteUpdate') {
+                    handleRemoteUpdate({ detail: data });
+                }
+            });
+            
         } else {
             // Reset to system defaults when user logs out but preserve anonymous settings
             const anonymousSettings = localStorage.getItem('techno-etl-unified-settings');
@@ -289,6 +296,12 @@ export const SettingsProvider = ({ children }) => {
             }
             setIsDirty(false);
         }
+        
+        return () => {
+            if (realtimeSyncUnsubscribe) {
+                realtimeSyncUnsubscribe();
+            }
+        };
     }, [currentUser, loadRemoteSettings]);
 
     // Auto-save to local storage when settings change
@@ -402,11 +415,11 @@ export const SettingsProvider = ({ children }) => {
     }, [settings, isDirty, currentUser]);
 
     const resetSettings = useCallback(() => {
-        const defaults = resetSettingsToDefaults();
+        const defaults = resetToSystemDefaults(currentUser?.uid);
         setSettings(defaults);
         setIsDirty(true);
         toast.info('Settings reset to defaults');
-    }, []);
+    }, [currentUser]);
 
     const exportSettings = useCallback(() => {
         try {

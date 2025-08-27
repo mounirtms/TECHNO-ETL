@@ -19,6 +19,10 @@ import { toast } from 'react-toastify';
 import UnifiedGrid from '../../common/UnifiedGrid';
 import { getStandardGridProps, getStandardToolbarConfig } from '../../../config/gridConfig';
 
+// Settings Context
+import { useSettings } from '../../../contexts/SettingsContext';
+import { useMagentoGridSettings } from '../../../hooks/useMagentoGridSettings';
+
 // Column System
 import { ColumnFactory } from '../../../utils/ColumnFactory.jsx';
 
@@ -41,8 +45,25 @@ import BulkMediaUploadDialog from '../../dialogs/BulkMediaUploadDialog';
  * - Optimized data fetching
  * - Improved performance with memoization
  * - Enhanced user feedback
+ * - Settings-aware configuration and API calls
  */
 const ProductsGrid = () => {
+  // ===== SETTINGS INTEGRATION =====
+  const { settings } = useSettings();
+  const {
+    paginationSettings,
+    getApiParams,
+    handleError,
+    savePreferences
+  } = useMagentoGridSettings('magentoProducts', {});
+  
+  // Apply user settings to API service
+  useEffect(() => {
+    import('../../../services/magentoApi').then(({ setMagentoApiSettings }) => {
+      setMagentoApiSettings(settings);
+    });
+  }, [settings]);
+  
   // ===== STATE =====
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -54,14 +75,16 @@ const ProductsGrid = () => {
     syncedProducts: 0
   });
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [selectedRows, setSelectedRows] = useState([]);
   const [infoDialogOpen, setInfoDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [bulkMediaDialogOpen, setBulkMediaDialogOpen] = useState(false);
   const [csvImportOpen, setCsvImportOpen] = useState(false);
   const [catalogProcessorOpen, setCatalogProcessorOpen] = useState(false);
-  const [localProducts, setLocalProducts] = useState([]);
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 25 });
+  const [localProducts] = useState([]);
+  const [paginationModel, setPaginationModel] = useState({ 
+    page: 0, 
+    pageSize: paginationSettings.defaultPageSize 
+  });
   const [categoryFilter, setCategoryFilter] = useState('');
   const [brandFilter, setBrandFilter] = useState('');
   const [categories, setCategories] = useState([]);
@@ -380,14 +403,15 @@ const ProductsGrid = () => {
   const fetchProducts = useCallback(async (params = {}) => {
     setLoading(true);
     try {
-      // Merge pagination parameters
-      const requestParams = {
+      // Get settings-aware API parameters
+      const baseParams = getApiParams({
         pageSize: paginationModel.pageSize,
         currentPage: paginationModel.page + 1, // MUI uses 0-based, Magento uses 1-based
         ...params
-      };
+      });
 
-      const response = await magentoApi.getProducts(requestParams);
+      // Use settings-aware API method
+      const response = await magentoApi.getProductsWithSettings('magentoProducts', baseParams);
       const products = response.data?.items || [];
       const totalCount = response.data?.total_count || products.length;
 
@@ -400,14 +424,14 @@ const ProductsGrid = () => {
         syncedProducts: products.filter(p => !p.isLocal).length
       });
     } catch (error) {
-      console.error('Failed to fetch products:', error);
-      toast.error('Failed to fetch products');
+      // Use settings-aware error handling
+      handleError(error, 'Load Products');
       setData([]);
       setStats({ total: 0, active: 0, inactive: 0, localProducts: 0, syncedProducts: 0 });
     } finally {
       setLoading(false);
     }
-  }, [localProducts.length, paginationModel]);
+  }, [localProducts.length, paginationModel, getApiParams, handleError]);
 
   // ===== PAGINATION HANDLER =====
   const handlePaginationChange = useCallback((newPaginationModel) => {
@@ -626,7 +650,6 @@ const ProductsGrid = () => {
           onDelete: handleDelete,
           onSync: handleSync,
           onExport: handleExport,
-          onSelectionChange: setSelectedRows,
 
           // Configuration
           toolbarConfig: {

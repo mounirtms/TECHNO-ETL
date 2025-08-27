@@ -1,6 +1,8 @@
 // OrdersGrid - Optimized Magento Orders Grid
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Box, Chip, Typography } from '@mui/material';
+import { useSettings } from '../../../contexts/SettingsContext';
+import { useMagentoGridSettings } from '../../../hooks/useMagentoGridSettings';
 import {
   ShoppingBag as ShoppingBagIcon,
   LocalShipping as LocalShippingIcon,
@@ -25,8 +27,25 @@ import { ColumnFactory } from '../../../utils/ColumnFactory.jsx';
 /**
  * OrdersGrid - Optimized Magento Orders Grid Component
  * Follows standardized structure for consistency across all grids
+ * Enhanced with settings-aware configuration and API calls
  */
 const OrdersGrid = () => {
+  // ===== SETTINGS INTEGRATION =====
+  const { settings } = useSettings();
+  const {
+    paginationSettings,
+    getApiParams,
+    handleError,
+    savePreferences
+  } = useMagentoGridSettings('magentoOrders', {});
+  
+  // Apply user settings to API service
+  useEffect(() => {
+    import('../../../services/magentoApi').then(({ setMagentoApiSettings }) => {
+      setMagentoApiSettings(settings);
+    });
+  }, [settings]);
+
   // ===== 1. STATE MANAGEMENT =====
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -45,13 +64,24 @@ const OrdersGrid = () => {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 25 });
+  const [paginationModel, setPaginationModel] = useState({ 
+    page: 0, 
+    pageSize: paginationSettings.defaultPageSize 
+  });
 
   // ===== 2. DATA FETCHING =====
   const fetchOrders = useCallback(async (filterParams = {}) => {
     setLoading(true);
     try {
-      const response = await magentoApi.getOrders(filterParams);
+      // Get settings-aware API parameters
+      const apiParams = getApiParams({
+        pageSize: paginationModel.pageSize,
+        currentPage: paginationModel.page + 1,
+        ...filterParams
+      });
+
+      // Use settings-aware API method
+      const response = await magentoApi.getOrdersWithSettings('magentoOrders', apiParams);
       // Handle {data: {items: []}} response structure
       const ordersData = response?.data || response;
       const orders = ordersData?.items || [];
@@ -74,13 +104,13 @@ const OrdersGrid = () => {
         totalRevenue
       });
     } catch (error) {
-      console.error('Error fetching orders:', error);
-      toast.error('Failed to fetch orders');
+      // Use settings-aware error handling
+      handleError(error, 'Load Orders');
       setData([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [paginationModel, getApiParams, handleError]);
 
   // ===== 3. EVENT HANDLERS =====
   const handleView = useCallback((records) => {

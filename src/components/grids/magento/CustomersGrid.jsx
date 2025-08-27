@@ -1,6 +1,8 @@
 // CustomersGrid - Optimized Magento Customers Grid
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Box, Chip, Typography } from '@mui/material';
+import { useSettings } from '../../../contexts/SettingsContext';
+import { useMagentoGridSettings } from '../../../hooks/useMagentoGridSettings';
 import {
   Person as PersonIcon,
   CheckCircle as ActiveIcon,
@@ -25,8 +27,25 @@ import { toast } from 'react-toastify';
 /**
  * CustomersGrid - Optimized Magento Customers Grid Component
  * Follows standardized structure for consistency across all grids
+ * Enhanced with settings-aware configuration and API calls
  */
 const CustomersGrid = () => {
+  // ===== SETTINGS INTEGRATION =====
+  const { settings } = useSettings();
+  const {
+    paginationSettings,
+    getApiParams,
+    handleError,
+    savePreferences
+  } = useMagentoGridSettings('magentoCustomers', {});
+  
+  // Apply user settings to API service
+  useEffect(() => {
+    import('../../../services/magentoApi').then(({ setMagentoApiSettings }) => {
+      setMagentoApiSettings(settings);
+    });
+  }, [settings]);
+
   // ===== 1. STATE MANAGEMENT =====
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -38,6 +57,10 @@ const CustomersGrid = () => {
     inactiveCustomers: 0,
     totalOrders: 0
   });
+  const [paginationModel, setPaginationModel] = useState({ 
+    page: 0, 
+    pageSize: paginationSettings.defaultPageSize 
+  });
 
   // Dialog states
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
@@ -48,7 +71,15 @@ const CustomersGrid = () => {
   const fetchCustomers = useCallback(async (filterParams = {}) => {
     setLoading(true);
     try {
-      const response = await magentoApi.getCustomers(filterParams);
+      // Get settings-aware API parameters
+      const apiParams = getApiParams({
+        pageSize: paginationModel.pageSize,
+        currentPage: paginationModel.page + 1,
+        ...filterParams
+      });
+
+      // Use settings-aware API method
+      const response = await magentoApi.getCustomersWithSettings('magentoCustomers', apiParams);
       // Handle {data: {items: []}} response structure
       const customersData = response?.data || response;
       const customers = customersData?.items || [];
@@ -67,13 +98,13 @@ const CustomersGrid = () => {
         totalOrders
       });
     } catch (error) {
-      console.error('Error fetching customers:', error);
-      toast.error('Failed to fetch customers');
+      // Use settings-aware error handling
+      handleError(error, 'Load Customers');
       setData([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [paginationModel, getApiParams, handleError]);
 
   // ===== 3. EVENT HANDLERS =====
   const handleView = useCallback((records) => {

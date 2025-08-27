@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Grid,
+  Grid2 as Grid,
   TextField,
   Button,
   Typography,
@@ -11,13 +11,12 @@ import {
   Paper,
   Stack,
   Divider,
+  MenuItem,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
-import SaveIcon from '@mui/icons-material/Save';
 import SyncIcon from '@mui/icons-material/Sync';
 import { useLanguage } from '../../../contexts/LanguageContext';
-import { useCustomTheme } from '../../../contexts/ThemeContext';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useProfileController } from '../ProfileController';
 
@@ -68,27 +67,10 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-const SaveButton = styled(Button)(({ theme }) => ({
-  borderRadius: 20,
-  padding: theme.spacing(0.8, 3),
-  boxShadow: theme.shadows[2],
-  transition: theme.transitions.create(['transform', 'box-shadow'], {
-    duration: theme.transitions.duration.shorter,
-  }),
-  '&:hover': {
-    transform: 'translateY(-1px)',
-    boxShadow: theme.shadows[4],
-  },
-  '&:active': {
-    transform: 'translateY(0)',
-    boxShadow: theme.shadows[2],
-  },
-}));
 
-const PersonalInfoTab = () => {
-  const { userData, updateUserData, loading } = useProfileController();
+
+const PersonalInfoTab = ({ userData, onUpdateUserData, loading, error }) => {
   const { translate } = useLanguage();
-  const { mode } = useCustomTheme();
   const { currentUser } = useAuth();
   const [formData, setFormData] = useState({
     firstName: '',
@@ -105,11 +87,13 @@ const PersonalInfoTab = () => {
 
   // Load data when userData changes
   useEffect(() => {
-    const remoteSettings = userData?.personalInfo;
-    if (remoteSettings) {
-      setFormData(remoteSettings);
+    if (userData) {
+      setFormData(prev => ({
+        ...prev,
+        ...userData
+      }));
     }
-  }, [userData?.personalInfo]);
+  }, [userData]);
 
   const handleInputChange = (field, value) => {
     const updatedFormData = {
@@ -118,23 +102,23 @@ const PersonalInfoTab = () => {
     };
     setFormData(updatedFormData);
     
-    // Only update local storage
-    localStorage.setItem('userPersonalInfo', JSON.stringify(updatedFormData));
+    // Update through parent component
+    if (onUpdateUserData) {
+      onUpdateUserData(updatedFormData);
+    }
   };
 
   const handleSyncToFirebase = () => {
-    updateUserData({
-      personalInfo: formData,
-      apiSettings: JSON.parse(localStorage.getItem('userApiSettings')),
-      preferences: JSON.parse(localStorage.getItem('userPreferences'))
-    });
+    if (onUpdateUserData) {
+      onUpdateUserData(formData);
+    }
   };
 
   return (
     <Paper elevation={0} sx={{ p: 2 }}>
       <Grid container spacing={2}>
         {/* Header with Avatar and Save Button */}
-        <Grid item xs={12}>
+        <Grid xs={12}>
           <Stack
             direction="row"
             alignItems="center"
@@ -252,9 +236,9 @@ const PersonalInfoTab = () => {
                 onChange={(e) => handleInputChange('gender', e.target.value)}
                 disabled={loading}
               >
-                <option value="male">{translate('profile.personalInfo.male')}</option>
-                <option value="female">{translate('profile.personalInfo.female')}</option>
-                <option value="other">{translate('profile.personalInfo.other')}</option>
+                <MenuItem value="male">{translate('profile.personalInfo.male')}</MenuItem>
+                <MenuItem value="female">{translate('profile.personalInfo.female')}</MenuItem>
+                <MenuItem value="other">{translate('profile.personalInfo.other')}</MenuItem>
               </StyledTextField>
             </Grid>
             <Grid item xs={12}>

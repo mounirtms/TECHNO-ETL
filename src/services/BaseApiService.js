@@ -6,6 +6,7 @@
  * @email mounir.ab@techno-dz.com
  */
 import { toast } from 'react-toastify';
+import { getUnifiedSettings, saveUnifiedSettings } from '../utils/unifiedSettingsManager';
 
 export class BaseApiService {
   constructor(config = {}) {
@@ -42,8 +43,9 @@ export class BaseApiService {
 
   _loadSettings() {
     try {
-      const stored = localStorage.getItem('userApiSettings');
-      return stored ? JSON.parse(stored) : {};
+      // Use unified settings manager
+      const settings = getUnifiedSettings();
+      return settings.apiSettings || {};
     } catch (error) {
       console.warn('Failed to load API settings:', error.message);
       return {};
@@ -59,7 +61,8 @@ export class BaseApiService {
   updateSettings(newSettings) {
     this.state.settings = { ...this.state.settings, ...newSettings };
     try {
-      localStorage.setItem('userApiSettings', JSON.stringify(this.state.settings));
+      // Use unified settings manager
+      saveUnifiedSettings({ apiSettings: this.state.settings });
     } catch (error) {
       console.warn('Failed to save API settings:', error.message);
     }

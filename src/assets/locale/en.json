@@ -280,7 +280,149 @@
     "errors": {
         "networkError": "Network Error",
         "serverError": "Server Error",
-        "notFound": "Page Not Found"
+        "notFound": "Page Not Found",
+        "unknown": "An unknown error occurred",
+        "network": {
+            "title": "Network Error",
+            "description": "Unable to connect to the server. Please check your internet connection and try again.",
+            "offline": "You appear to be offline. Please check your connection.",
+            "timeout": "Request timed out. Please try again.",
+            "serverError": "Server error occurred. Please try again later."
+        },
+        "chunk": {
+            "title": "Loading Error",
+            "description": "Failed to load application resources. This may be due to a recent update.",
+            "reload": "Please reload the page to get the latest version."
+        },
+        "boundary": {
+            "title": "Something went wrong",
+            "componentError": "Error in {component} component",
+            "genericError": "An unexpected error occurred",
+            "description": "We encountered an unexpected error. You can try refreshing the page or go back to the dashboard.",
+            "retry": "Try Again",
+            "reload": "Reload Page",
+            "goHome": "Go to Dashboard",
+            "reportBug": "Report Bug",
+            "technicalDetails": "Show Technical Details",
+            "errorDetails": "Error Details",
+            "copyDetails": "Copy Error Details",
+            "retryCount": "Retry attempt {count}"
+        },
+        "settings": {
+            "title": "Settings Error",
+            "unknown": "Unknown settings error",
+            "componentError": "Error in {component} settings",
+            "genericError": "Settings configuration error",
+            "corruption": {
+                "title": "Settings Corruption Detected",
+                "description": "Your settings appear to be corrupted or invalid. We can help you recover them."
+            },
+            "generic": {
+                "description": "An error occurred while loading or saving your settings."
+            },
+            "recovery": {
+                "title": "Recovery Options",
+                "retry": {
+                    "title": "Retry Loading",
+                    "description": "Attempt to reload your settings from storage"
+                },
+                "reset": {
+                    "title": "Reset to Defaults",
+                    "description": "Clear all settings and restore default values"
+                }
+            },
+            "reset": {
+                "dialog": {
+                    "title": "Reset All Settings",
+                    "warning": "Warning: This action cannot be undone",
+                    "description": "This will permanently delete all your custom settings and restore the application to its default state.",
+                    "consequences": "What will happen:",
+                    "benefits": {
+                        "stability": "Application will return to stable state",
+                        "defaults": "All settings will be restored to defaults"
+                    },
+                    "losses": {
+                        "customizations": "All your customizations will be lost"
+                    },
+                    "confirm": "Reset Settings"
+                }
+            },
+            "retryCount": "Retry attempt {count}/3",
+            "help": {
+                "description": "If problems persist, please contact support or report a bug."
+            },
+            "operations": {
+                "loading": "Loading settings...",
+                "saving": "Saving settings...",
+                "syncing": "Syncing settings...",
+                "refreshing": "Refreshing settings...",
+                "exporting": "Exporting settings...",
+                "importing": "Importing settings...",
+                "tabSwitch": "Failed to switch tabs"
+            }
+        },
+        "validation": {
+            "required": "This field is required",
+            "email": "Please enter a valid email address",
+            "minLength": "Must be at least {min} characters",
+            "maxLength": "Must be no more than {max} characters",
+            "pattern": "Invalid format",
+            "numeric": "Must be a number",
+            "url": "Please enter a valid URL",
+            "tabSwitch": "Please fix validation errors before switching tabs"
+        }
+    },
+    "feedback": {
+        "success": {
+            "default": "Operation completed successfully",
+            "saved": "Changes saved successfully",
+            "deleted": "Item deleted successfully",
+            "updated": "Item updated successfully",
+            "created": "Item created successfully"
+        },
+        "settings": {
+            "saved": "Settings saved successfully",
+            "synced": "Settings synchronized",
+            "reset": "Settings reset to defaults",
+            "imported": "Settings imported successfully",
+            "exported": "Settings exported successfully",
+            "autoSaveDetails": "Your changes have been automatically saved",
+            "saveDetails": "All settings have been saved to your profile"
+        },
+        "confirmation": {
+            "title": "Confirm Action",
+            "message": "Are you sure you want to proceed?"
+        },
+        "progress": {
+            "title": "Processing...",
+            "message": "Please wait while we process your request"
+        },
+        "multiStep": {
+            "title": "Multi-step Process",
+            "completed": "Completed",
+            "inProgress": "In Progress"
+        },
+        "bugBounty": {
+            "submitted": "Bug report submitted successfully",
+            "submitDetails": "Thank you for helping us improve the application"
+        }
+    },
+    "settings": {
+        "title": "User Settings",
+        "description": "Manage your personal information, API configurations, and appearance preferences",
+        "operations": {
+            "loading": "Loading settings...",
+            "saving": "Saving settings...",
+            "syncing": "Syncing settings..."
+        },
+        "status": {
+            "pending": "Changes pending...",
+            "saved": "All changes saved"
+        },
+        "lastSync": "Last synced"
+    },
+    "bugBounty": {
+        "loading": "Loading bug bounty dashboard..."
     },
     "grid": {
         "common": {

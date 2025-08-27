@@ -43,31 +43,19 @@ export const AuthProvider = ({ children }) => {
             const sanitizedUserId = user.uid.replace(/[.#$\[\]]/g, '_');
             const userSettingsKey = `userSettings_${sanitizedUserId}`;
             
-            // Always prioritize local cache
-            const localSettings = localStorage.getItem(userSettingsKey);
-            
-            if (localSettings) {
-                const parsedSettings = JSON.parse(localSettings);
-                const unifiedSettings = localStorage.getItem('techno-etl-settings');
-                const currentUnified = unifiedSettings ? JSON.parse(unifiedSettings) : {};
-                
-                // Merge user preferences with current unified settings
-                const mergedSettings = {
-                    ...currentUnified,
-                    ...parsedSettings.preferences,
-                    lastSync: parsedSettings.lastSync || new Date().toISOString()
-                };
-                
-                localStorage.setItem('techno-etl-settings', JSON.stringify(mergedSettings));
+            // Use unified settings manager
+            const { getUserSettings } = await import('../utils/unifiedSettingsManager');
+            const userSettings = getUserSettings(sanitizedUserId);
+            if (userSettings) {
                 console.log('User settings loaded from local cache');
                 
                 // Minimal sync to Firebase only if cache is old (> 24 hours)
-                const lastSync = new Date(parsedSettings.lastSync || 0);
+                const lastSync = new Date(userSettings.lastSync || 0);
                 const now = new Date();
                 const hoursSinceSync = (now - lastSync) / (1000 * 60 * 60);
                 
                 if (hoursSinceSync > 24) {
-                    syncSettingsToFirebase(user, mergedSettings);
+                    syncSettingsToFirebase(user, userSettings);
                 }
             } else {
                 // If no local cache, try to fetch from Firebase
@@ -93,9 +81,9 @@ export const AuthProvider = ({ children }) => {
             
             await set(settingsRef, settingsData);
             
-            // Update local cache with sync timestamp
-            const userSettingsKey = `userSettings_${sanitizedUserId}`;
-            localStorage.setItem(userSettingsKey, JSON.stringify(settingsData));
+            // Save through unified settings manager
+            const { saveUserSettings } = await import('../utils/unifiedSettingsManager');
+            saveUserSettings(sanitizedUserId, settingsData);
             
             console.log('Settings synced to Firebase');
         } catch (error) {
@@ -114,11 +102,9 @@ export const AuthProvider = ({ children }) => {
                 const firebaseSettings = snapshot.val();
                 const userSettingsKey = `userSettings_${sanitizedUserId}`;
                 
-                // Cache Firebase settings locally
-                localStorage.setItem(userSettingsKey, JSON.stringify(firebaseSettings));
-                
-                // Apply to unified storage
-                localStorage.setItem('techno-etl-settings', JSON.stringify(firebaseSettings.preferences));
+                // Save through unified settings manager
+                const { saveUserSettings } = await import('../utils/unifiedSettingsManager');
+                saveUserSettings(sanitizedUserId, firebaseSettings);
                 
                 console.log('Settings loaded from Firebase');
             }

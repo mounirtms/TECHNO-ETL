@@ -2,6 +2,7 @@
 import BaseApiService from './BaseApiService';
 import unifiedMagentoService from './unifiedMagentoService';
 import { toast } from 'react-toastify';
+import { getMagentoApiParams, handleMagentoGridError } from '../utils/magentoGridSettingsManager';
 
 // Import local data
 import customersData from '../assets/data/customers.json';
@@ -13,12 +14,28 @@ import cmsPagesData from '../assets/data/cmsPages.json';
 
 const API_URL = import.meta.env.VITE_MAGENTO_API_URL;
 
-const DEFAULT_PARAMS = {
-  pageSize: 10,
-  currentPage: 1,
-  sortOrders: [
-    { field: 'created_at', direction: 'DESC' }
-  ]
+// Global settings reference for API calls
+let globalUserSettings = null;
+
+// Function to set user settings for API calls
+export const setMagentoApiSettings = (userSettings) => {
+  globalUserSettings = userSettings;
+};
+
+// Enhanced default params that respect user settings
+const getDefaultParams = (gridType = 'magento', additionalParams = {}) => {
+  if (globalUserSettings) {
+    return getMagentoApiParams(gridType, globalUserSettings, additionalParams);
+  }
+  
+  return {
+    pageSize: 10,
+    currentPage: 1,
+    sortOrders: [
+      { field: 'created_at', direction: 'DESC' }
+    ],
+    ...additionalParams
+  };
 };
 
 // Mock data for development
@@ -1447,6 +1464,143 @@ class MagentoApi extends BaseApiService {
       return response.data;
     } catch (error) {
       console.error('Failed to update order:', error);
+      throw error;
+    }
+  }
+
+  // ===== SETTINGS-AWARE API METHODS =====
+  
+  /**
+   * Get products with user settings applied
+   * @param {string} gridType - Grid type for settings lookup
+   * @param {object} params - Additional parameters
+   * @returns {Promise} API response with user settings applied
+   */
+  async getProductsWithSettings(gridType = 'magentoProducts', params = {}) {
+    try {
+      const enhancedParams = getDefaultParams(gridType, params);
+      const response = await this.getProducts(enhancedParams);
+      return response;
+    } catch (error) {
+      if (globalUserSettings) {
+        handleMagentoGridError(error, 'Load Products', globalUserSettings);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Get orders with user settings applied
+   * @param {string} gridType - Grid type for settings lookup
+   * @param {object} params - Additional parameters
+   * @returns {Promise} API response with user settings applied
+   */
+  async getOrdersWithSettings(gridType = 'magentoOrders', params = {}) {
+    try {
+      const enhancedParams = getDefaultParams(gridType, params);
+      const response = await this.getOrders(enhancedParams);
+      return response;
+    } catch (error) {
+      if (globalUserSettings) {
+        handleMagentoGridError(error, 'Load Orders', globalUserSettings);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Get customers with user settings applied
+   * @param {string} gridType - Grid type for settings lookup
+   * @param {object} params - Additional parameters
+   * @returns {Promise} API response with user settings applied
+   */
+  async getCustomersWithSettings(gridType = 'magentoCustomers', params = {}) {
+    try {
+      const enhancedParams = getDefaultParams(gridType, params);
+      const response = await this.getCustomers(enhancedParams);
+      return response;
+    } catch (error) {
+      if (globalUserSettings) {
+        handleMagentoGridError(error, 'Load Customers', globalUserSettings);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Get invoices with user settings applied
+   * @param {string} gridType - Grid type for settings lookup
+   * @param {object} params - Additional parameters
+   * @returns {Promise} API response with user settings applied
+   */
+  async getInvoicesWithSettings(gridType = 'magentoInvoices', params = {}) {
+    try {
+      const enhancedParams = getDefaultParams(gridType, params);
+      const response = await this.getInvoices(enhancedParams);
+      return response;
+    } catch (error) {
+      if (globalUserSettings) {
+        handleMagentoGridError(error, 'Load Invoices', globalUserSettings);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Get CMS pages with user settings applied
+   * @param {string} gridType - Grid type for settings lookup
+   * @param {object} params - Additional parameters
+   * @returns {Promise} API response with user settings applied
+   */
+  async getCmsPagesWithSettings(gridType = 'magentoCmsPages', params = {}) {
+    try {
+      const enhancedParams = getDefaultParams(gridType, params);
+      const response = await this.getCmsPages(enhancedParams);
+      return response;
+    } catch (error) {
+      if (globalUserSettings) {
+        handleMagentoGridError(error, 'Load CMS Pages', globalUserSettings);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Generic settings-aware API call
+   * @param {string} method - HTTP method
+   * @param {string} endpoint - API endpoint
+   * @param {string} gridType - Grid type for settings lookup
+   * @param {object} params - Parameters
+   * @param {object} data - Request data
+   * @returns {Promise} API response with user settings applied
+   */
+  async callWithSettings(method, endpoint, gridType, params = {}, data = null) {
+    try {
+      const enhancedParams = getDefaultParams(gridType, params);
+      
+      let response;
+      switch (method.toLowerCase()) {
+        case 'get':
+          response = await this.get(endpoint, { params: enhancedParams });
+          break;
+        case 'post':
+          response = await this.post(endpoint, data, { params: enhancedParams });
+          break;
+        case 'put':
+          response = await this.put(endpoint, data, { params: enhancedParams });
+          break;
+        case 'delete':
+          response = await this.delete(endpoint, { params: enhancedParams });
+          break;
+        default:
+          throw new Error(`Unsupported HTTP method: ${method}`);
+      }
+      
+      return response;
+    } catch (error) {
+      if (globalUserSettings) {
+        handleMagentoGridError(error, `${method.toUpperCase()} ${endpoint}`, globalUserSettings);
+      }
       throw error;
     }
   }

@@ -1,6 +1,5 @@
 import { useAuth } from '../../contexts/AuthContext';
 import { useSettings } from '../../contexts/SettingsContext';
-import { getUserProfileData, saveUserSettings, getDefaultSettings } from '../../services/userService';
 import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
 

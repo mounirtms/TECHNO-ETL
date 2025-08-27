@@ -17,6 +17,9 @@ import 'react-toastify/dist/ReactToastify.css';
 // Lazy load the main router to avoid circular dependencies
 const EnhancedRouter = lazy(() => import('./router/EnhancedRouter'));
 
+// Import the settings conflict dialog
+import SettingsConflictDialog from './components/dialogs/SettingsConflictDialog';
+
 // Simple loading component
 const AppLoading = () => (
   <Box
@@ -51,6 +54,10 @@ const App = () => {
           <EnhancedRouter />
         </Suspense>
       </BrowserRouter>
+      
+      {/* Global Components */}
+      <SettingsConflictDialog />
+      
       <ToastContainer
         position="top-right"
         autoClose={5000}

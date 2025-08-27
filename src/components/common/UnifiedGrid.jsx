@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 // Removed unused toast import
 import { useOptimizedGridTheme } from '../../hooks/useOptimizedTheme';
+import { useSettings } from '../../contexts/SettingsContext';
 
 // Unified Grid Components
 import UnifiedGridToolbar from './UnifiedGridToolbar';
@@ -137,6 +138,20 @@ const UnifiedGrid = forwardRef(({
 }, ref) => {
   // Optimized theme and translation hooks
   const gridTheme = useOptimizedGridTheme();
+  
+  // Settings integration
+  const { settings } = useSettings();
+  const userPreferences = settings?.preferences || {};
+  const gridSettings = settings?.gridSettings || {};
+  
+  // Apply user density preference if not explicitly set
+  const effectiveDensity = density || userPreferences.density || 'standard';
+  
+  // Apply user page size preference if not explicitly set
+  const effectivePageSize = defaultPageSize || 
+                           gridSettings.defaultPageSize || 
+                           userPreferences.defaultPageSize || 
+                           25;
 
   // Stable translation function that doesn't change on every render
   const safeTranslate = useCallback((key, fallback = key) => {
@@ -148,7 +163,7 @@ const UnifiedGrid = forwardRef(({
     }
   }, [enableI18n]);
 
-  // Grid state management
+  // Grid state management with settings integration
   const {
     paginationModel,
     setPaginationModel,
@@ -172,10 +187,10 @@ const UnifiedGrid = forwardRef(({
   } = useGridState(gridName, {
     enablePersistence: true,
     initialState: {
-      paginationModel: { page: 0, pageSize: defaultPageSize },
+      paginationModel: { page: 0, pageSize: effectivePageSize },
       selectedRows: [],
       columnVisibility: {},
-      density: 'standard'
+      density: effectiveDensity
     }
   });
 

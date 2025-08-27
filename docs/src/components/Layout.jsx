@@ -37,6 +37,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import BuildIcon from '@mui/icons-material/Build';
+import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
+import SecurityIcon from '@mui/icons-material/Security';
 import SearchComponent from './SearchComponent';
 import GlobalSearchModal from './GlobalSearchModal';
 
@@ -81,6 +83,16 @@ const menuItems = [
       { text: 'Optimized Deployment', path: '/docs/optimized-deployment', icon: <RocketLaunchIcon /> },
       { text: 'Backend Production', path: '/docs/backend-production', icon: <BuildIcon /> },
       { text: 'Troubleshooting', path: '/docs/troubleshooting', icon: <BugReportIcon /> },
+    ]
+  },
+  {
+    text: 'Project Management',
+    icon: <SettingsIcon />,
+    children: [
+      { text: 'Complete Project Summary', path: '/docs/complete-project-summary', icon: <DescriptionIcon /> },
+      { text: 'Project Cleanup', path: '/docs/project-cleanup', icon: <CleaningServicesIcon /> },
+      { text: 'User Settings Guide', path: '/docs/user-settings-guide', icon: <SettingsIcon /> },
+      { text: 'License Information', path: '/docs/license', icon: <SecurityIcon /> },
     ]
   }
 ];

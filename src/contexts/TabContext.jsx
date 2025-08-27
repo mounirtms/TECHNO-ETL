@@ -13,7 +13,7 @@ const MDMProductsGrid = lazy(() => import('../components/grids/MDMProductsGrid/M
 const CustomersGrid = lazy(() => import('../components/grids/magento/CustomersGrid'));
 const OrdersGrid = lazy(() => import('../components/grids/magento/OrdersGrid'));
 const InvoicesGrid = lazy(() => import('../components/grids/magento/InvoicesGrid'));
-const UserProfile = lazy(() => import('../components/UserProfile'));
+const UserProfile = lazy(() => import('../components/UserProfile/index'));
 const CategoryTree = lazy(() => import('../components/grids/magento/CategoryGrid'));
 const StocksGrid = lazy(() => import('../components/grids/magento/StocksGrid'));
 const SourcesGrid = lazy(() => import('../components/grids/magento/SourcesGrid'));

@@ -6,6 +6,8 @@ import {
     CardContent, CardHeader, Divider, ButtonGroup, Menu, ListItemIcon, ListItemText,
     Accordion, AccordionSummary, AccordionDetails, Slider, Autocomplete
 } from '@mui/material';
+import { useSettings } from '../../../contexts/SettingsContext';
+import { useMagentoGridSettings } from '../../../hooks/useMagentoGridSettings';
 import {
     Visibility, Edit, Delete, Add, Publish, Save, Cancel, Preview,
     Schedule, Analytics, ContentCopy, Article, FilterList,
@@ -20,6 +22,21 @@ import magentoApi from '../../../services/magentoApi';
 import { formatDateTime } from '../../../utils/formatters';
 
 const EnhancedCmsPagesGrid = () => {
+    // ===== SETTINGS INTEGRATION =====
+    const { settings } = useSettings();
+    const {
+        paginationSettings,
+        getApiParams,
+        handleError
+    } = useMagentoGridSettings('magentoCmsPages', {});
+    
+    // Apply user settings to API service
+    useEffect(() => {
+        import('../../../services/magentoApi').then(({ setMagentoApiSettings }) => {
+            setMagentoApiSettings(settings);
+        });
+    }, [settings]);
+
     // Content type selection (Pages or Blocks)
     const [contentType, setContentType] = useState('pages'); // 'pages' or 'blocks'
     const [data, setData] = useState([]);
@@ -30,6 +47,10 @@ const EnhancedCmsPagesGrid = () => {
     const [activeTab, setActiveTab] = useState(0);
     const [previewMode, setPreviewMode] = useState(false);
     const [fullscreenEditor, setFullscreenEditor] = useState(false);
+    const [paginationModel, setPaginationModel] = useState({ 
+        page: 0, 
+        pageSize: paginationSettings.defaultPageSize 
+    });
     
     // Professional filtering system
     const [filters, setFilters] = useState({
@@ -71,14 +92,19 @@ const EnhancedCmsPagesGrid = () => {
         try {
             console.log(`🔍 EnhancedCmsPagesGrid: Fetching CMS ${contentType}...`);
             
-            // Build search criteria with proper field names to fix "%fieldName" error
-            const searchCriteria = {
-                pageSize: 50,
-                currentPage: 1,
+            // Get settings-aware API parameters
+            const baseParams = getApiParams({
+                pageSize: paginationModel.pageSize,
+                currentPage: paginationModel.page + 1,
                 sortOrders: [{ 
                     field: filters.sortBy, 
                     direction: filters.sortOrder.toUpperCase() 
-                }],
+                }]
+            });
+
+            // Build search criteria with proper field names to fix "%fieldName" error
+            const searchCriteria = {
+                ...baseParams,
                 filterGroups: []
             };
 
@@ -111,14 +137,14 @@ const EnhancedCmsPagesGrid = () => {
                 });
             }
 
-            // Fetch data based on content type with proper API calls
+            // Fetch data based on content type with settings-aware API calls
             let response;
             if (contentType === 'pages') {
-                // Use proper endpoint for CMS pages
-                response = await magentoApi.get('/cmsPage/search', { searchCriteria });
+                // Use settings-aware API method for CMS pages
+                response = await magentoApi.getCmsPagesWithSettings('magentoCmsPages', searchCriteria);
             } else {
-                // Use proper endpoint for CMS blocks
-                response = await magentoApi.get('/cmsBlock/search', { searchCriteria });
+                // Use settings-aware API method for CMS blocks
+                response = await magentoApi.callWithSettings('get', '/cmsBlock/search', 'magentoCmsPages', searchCriteria);
             }
 
             console.log(`📦 EnhancedCmsPagesGrid: ${contentType} response:`, response);
@@ -155,11 +181,12 @@ const EnhancedCmsPagesGrid = () => {
             setError(error.message || `Failed to fetch CMS ${contentType}`);
             setData([]);
             setStats({ total: 0, active: 0, inactive: 0, recentlyModified: 0, totalViews: 0 });
-            toast.error(`Failed to fetch CMS ${contentType}: ${error.message}`);
+            // Use settings-aware error handling
+            handleError(error, `Load CMS ${contentType}`);
         } finally {
             setLoading(false);
         }
-    }, [contentType, filters]);
+    }, [contentType, filters, paginationModel, getApiParams, handleError]);
 
     // Filter handlers
     const handleFilterChange = useCallback((key, value) => {

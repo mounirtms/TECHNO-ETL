@@ -257,6 +257,184 @@ body {
   }
 }
 
+/* Enhanced RTL Support for All Components */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiDrawer-paperAnchorLeft {
+  right: 0;
+  left: auto;
+}
+
+[dir="rtl"] .MuiDrawer-paperAnchorRight {
+  left: 0;
+  right: auto;
+}
+
+[dir="rtl"] .MuiTabs-root {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiTab-root {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiAccordion-root {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiAccordionSummary-expandIconWrapper {
+  transform: rotate(-90deg);
+}
+
+[dir="rtl"] .MuiAccordionSummary-expanded .MuiAccordionSummary-expandIconWrapper {
+  transform: rotate(0deg);
+}
+
+[dir="rtl"] .MuiFormControl-root {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiInputLabel-root {
+  right: 14px;
+  left: auto;
+  transform-origin: top right;
+}
+
+[dir="rtl"] .MuiOutlinedInput-input {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiSelect-select {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiMenuItem-root {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiDataGrid-root {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiDataGrid-columnHeaders {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiDataGrid-cell {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiDataGrid-columnHeaderTitle {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiButton-startIcon {
+  margin-left: 8px;
+  margin-right: -4px;
+}
+
+[dir="rtl"] .MuiButton-endIcon {
+  margin-right: 8px;
+  margin-left: -4px;
+}
+
+[dir="rtl"] .MuiChip-icon {
+  margin-left: 5px;
+  margin-right: -6px;
+}
+
+[dir="rtl"] .MuiChip-deleteIcon {
+  margin-right: 5px;
+  margin-left: -6px;
+}
+
+/* Professional RTL Layout Animations */
+[dir="rtl"] .layout-transition {
+  transition: margin 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              padding 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[dir="rtl"] .fade-in {
+  animation: fadeInRtl 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInRtl {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* RTL Grid and Card Layouts */
+[dir="rtl"] .MuiGrid-container {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiCard-root {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiCardContent-root {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiList-root {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiListItem-root {
+  text-align: right;
+}
+
+[dir="rtl"] .MuiListItemText-root {
+  text-align: right;
+}
+
+/* RTL Navigation and Menu */
+[dir="rtl"] .MuiMenu-paper {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiAppBar-root {
+  direction: rtl;
+}
+
+[dir="rtl"] .MuiToolbar-root {
+  direction: rtl;
+}
+
+/* RTL Form Elements */
+[dir="rtl"] .MuiFormControlLabel-root {
+  margin-left: 16px;
+  margin-right: -11px;
+}
+
+[dir="rtl"] .MuiFormControlLabel-labelPlacementStart {
+  flex-direction: row;
+}
+
+[dir="rtl"] .MuiCheckbox-root {
+  margin-left: 9px;
+  margin-right: -9px;
+}
+
+[dir="rtl"] .MuiRadio-root {
+  margin-left: 9px;
+  margin-right: -9px;
+}
+
+[dir="rtl"] .MuiSwitch-root {
+  margin-left: 8px;
+  margin-right: -8px;
+}
+
 /* ===== ACCESSIBILITY STYLES ===== */
 
 /* High Contrast Mode */

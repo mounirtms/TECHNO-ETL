@@ -21,21 +21,21 @@ import {
 // Lazy Load Components with optimized chunking
 const Layout = lazy(() => import('../components/Layout/Layout'));
 const Login = lazy(() => import('../pages/Login'));
-const Dashboard = lazy(() => import('../pages/Dashboard'));
-const ChartsPage = lazy(() => import('../pages/ChartsPage'));
-const ProductManagementPage = lazy(() => import('../pages/ProductManagementPage'));
-const TaskPage = lazy(() => import('../pages/VotingPage'));
-const InventoryPage = lazy(() => import('../pages/InventoryPage'));
-const OrdersPage = lazy(() => import('../pages/OrdersPage'));
-const CustomersPage = lazy(() => import('../pages/CustomersPage'));
-const SettingsPage = lazy(() => import('../pages/SettingsPage'));
-const ReportsPage = lazy(() => import('../pages/ReportsPage'));
-const AnalyticsPage = lazy(() => import('../pages/AnalyticsPage'));
-const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
+const Dashboard = lazy(() => import('../pages/Dashboard').catch(() => ({ default: () => <div>Dashboard loading error</div> })));
+const ChartsPage = lazy(() => import('../pages/ChartsPage').catch(() => ({ default: () => <div>Charts loading error</div> })));
+const ProductManagementPage = lazy(() => import('../pages/ProductManagementPage').catch(() => ({ default: () => <div>Products loading error</div> })));
+const TaskPage = lazy(() => import('../pages/VotingPage').catch(() => ({ default: () => <div>Tasks loading error</div> })));
+const InventoryPage = lazy(() => import('../pages/InventoryPage').catch(() => ({ default: () => <div>Inventory loading error</div> })));
+const OrdersPage = lazy(() => import('../pages/OrdersPage').catch(() => ({ default: () => <div>Orders loading error</div> })));
+const CustomersPage = lazy(() => import('../pages/CustomersPage').catch(() => ({ default: () => <div>Customers loading error</div> })));
+const SettingsPage = lazy(() => import('../pages/SettingsPage').catch(() => ({ default: () => <div>Settings loading error</div> })));
+const ReportsPage = lazy(() => import('../pages/ReportsPage').catch(() => ({ default: () => <div>Reports loading error</div> })));
+const AnalyticsPage = lazy(() => import('../pages/AnalyticsPage').catch(() => ({ default: () => <div>Analytics loading error</div> })));
+const NotFoundPage = lazy(() => import('../pages/NotFoundPage').catch(() => ({ default: () => <div>Page not found</div> })));
 
 // Grid Test Page for development
-const GridTestPage = lazy(() => import('../pages/GridTestPage'));
-const DataGridsPage = lazy(() => import('../pages/DataGridsPage'));
+const GridTestPage = lazy(() => import('../pages/GridTestPage').catch(() => ({ default: () => <div>Grid test loading error</div> })));
+const DataGridsPage = lazy(() => import('../pages/DataGridsPage').catch(() => ({ default: () => <div>Data grids loading error</div> })));
 
 /**
  * Enhanced Loading Fallback with route information

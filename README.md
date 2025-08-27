@@ -2,7 +2,7 @@
 
 ## 🚀 Overview
 
-TECHNO-ETL is a comprehensive data integration platform designed to streamline data extraction, transformation, and loading processes. This optimized version includes enhanced frontend performance and production-ready configurations.
+TECHNO-ETL is a comprehensive data integration platform designed to streamline data extraction, transformation, and loading processes. This production-ready system includes enhanced frontend performance, automated ETL processes, and comprehensive documentation.
 
 ## 👨‍💻 Author & Creator
 
@@ -223,16 +223,23 @@ TECHNO-ETL/
 ```
 TECHNO-ETL/
 ├── src/                 # Frontend source code
-│   ├── main.jsx         # Fixed React entry point
+│   ├── components/      # React components
+│   ├── contexts/        # React contexts
+│   ├── pages/           # Page components
+│   ├── services/        # API services
+│   ├── utils/           # Utility functions and settings classes
+│   ├── main.jsx         # React entry point
 │   └── App.jsx          # Main application
-├── backend/
+├── backend/             # Backend API
+│   ├── src/             # Backend source code
 │   ├── server.js        # API server
-│   ├── ecosystem.config.cjs  # Fixed PM2 config
 │   └── dist/            # Production build
-├── dist_new/            # Frontend build (fixed)
-├── package.json         # Simplified scripts
-├── deploy.bat           # Windows deployment
-├── deploy.sh            # Linux deployment
+├── docs/                # Documentation React app
+│   ├── src/             # Documentation source
+│   └── dist/            # Built documentation
+├── dist/                # Frontend build output
+├── package.json         # Main project configuration
+├── vite.config.js       # Build configuration
 └── README.md            # This file
 ```
 
@@ -357,10 +364,12 @@ Flexible theme capabilities:
 
 ## 📚 Documentation
 
-Additional documentation can be found in the [docs](./docs) directory:
-- [Deployment Guide](./DEPLOYMENT_GUIDE.md)
-- [Quick Deploy Instructions](./QUICK_DEPLOY.md)
-- [Backend Production Guide](./docs/BACKEND_PRODUCTION_GUIDE.md)
+Comprehensive documentation is available in the interactive React documentation app:
+- **Access Documentation:** Run `npm run docs:dev` or build with `npm run docs:build`
+- **Complete Project Summary:** All features, optimizations, and deployment guides
+- **User Settings Guide:** Enhanced settings system with global and page-specific configurations
+- **License Information:** Detailed licensing and legal information
+- **Project Cleanup:** Information about file organization and cleanup
 
 ## 👨‍💻 Author
 

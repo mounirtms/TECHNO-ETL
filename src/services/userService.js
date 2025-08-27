@@ -1,6 +1,13 @@
 import { ref, set, get, update, onValue } from 'firebase/database';
 import { database } from '../config/firebase';
 import { languages } from '../contexts/LanguageContext';
+import {
+    saveUserSettings as saveUserSettingsUnified,
+    saveUnifiedSettings,
+    getUserSettings as getUnifiedUserSettings,
+    getUnifiedSettings,
+    resetToSystemDefaults
+} from '../utils/unifiedSettingsManager';
 // Enhanced default user settings with comprehensive preferences
 const defaultUserSettings = {
     personalInfo: {
@@ -88,8 +95,8 @@ export const saveUserSettings = async (userId, settings) => {
             updatedAt: new Date().toISOString()
         });
 
-        // Save to local storage for offline mode
-        localStorage.setItem('userSettings', JSON.stringify(settings));
+        // Save through unified settings manager
+        saveUserSettingsUnified(userId, settings);
 
         return {
             success: true,
@@ -209,29 +216,20 @@ export const getUserProfileData = (userId, callback) => {
 };
 
 // Get user settings with fallback to defaults
-export const getUserSettings = () => {
-    try {
-        const stored = localStorage.getItem('userSettings');
-        if (stored) {
-            const parsed = JSON.parse(stored);
-            // Merge with defaults to ensure all properties exist
-            return {
-                personalInfo: { ...defaultUserSettings.personalInfo, ...parsed.personalInfo },
-                apiSettings: { ...defaultUserSettings.apiSettings, ...parsed.apiSettings },
-                preferences: { ...defaultUserSettings.preferences, ...parsed.preferences }
-            };
-        }
-    } catch (error) {
-        console.error('Error parsing stored user settings:', error);
-    }
-    return defaultUserSettings;
+// These functions are now handled by the unified settings manager
+// Keeping for backward compatibility but redirecting to unified system
+export const getUserSettings = (userId = null) => {
+    return userId ? getUnifiedUserSettings(userId) : getUnifiedSettings();
 };
 
 // Save settings to local storage
-export const saveSettingsLocally = (settings) => {
+export const saveSettingsLocally = (settings, userId = null) => {
     try {
-        localStorage.setItem('userSettings', JSON.stringify(settings));
-        localStorage.setItem('settingsLastModified', Date.now().toString());
+        if (userId) {
+            saveUserSettingsUnified(userId, settings);
+        } else {
+            saveUnifiedSettings(settings);
+        }
         return true;
     } catch (error) {
         console.error('Error saving settings locally:', error);
@@ -244,11 +242,9 @@ export const getDefaultSettings = () => {
     return JSON.parse(JSON.stringify(defaultUserSettings)); // Deep clone
 };
 
-// Reset settings to defaults
-export const resetSettingsToDefaults = () => {
-    const defaults = getDefaultSettings();
-    saveSettingsLocally(defaults);
-    return defaults;
+// Reset settings to defaults - now handled by unified settings manager
+export const resetSettingsToDefaults = (userId = null) => {
+    return resetToSystemDefaults(userId);
 };
 
 // Merge settings with defaults

@@ -1,6 +1,8 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Box } from '@mui/material';
 import { toast } from 'react-toastify';
+import { useSettings } from '../../../contexts/SettingsContext';
+import { useMagentoGridSettings } from '../../../hooks/useMagentoGridSettings';
 
 // Icons
 import ReceiptIcon from '@mui/icons-material/Receipt';
@@ -20,8 +22,24 @@ import { generateColumns } from '../../../utils/gridUtils';
 /**
  * InvoiceGrid Component
  * Displays invoice data in a grid format with status cards
+ * Enhanced with settings-aware configuration and API calls
  */
 const InvoicesGrid = ({ orderId }) => {
+    // ===== SETTINGS INTEGRATION =====
+    const { settings } = useSettings();
+    const {
+        paginationSettings,
+        getApiParams,
+        handleError
+    } = useMagentoGridSettings('magentoInvoices', {});
+    
+    // Apply user settings to API service
+    useEffect(() => {
+        import('../../../services/magentoApi').then(({ setMagentoApiSettings }) => {
+            setMagentoApiSettings(settings);
+        });
+    }, [settings]);
+
     // State management
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
@@ -30,6 +48,10 @@ const InvoicesGrid = ({ orderId }) => {
         total: 0,
         paid: 0,
         pending: 0
+    });
+    const [paginationModel, setPaginationModel] = useState({ 
+        page: 0, 
+        pageSize: paginationSettings.defaultPageSize 
     });
 
     // Grid columns configuration
@@ -63,15 +85,20 @@ const InvoicesGrid = ({ orderId }) => {
         })
     ], []);
 
-    // Data fetching handler
+    // Data fetching handler with settings integration
     const handleRefresh = useCallback(async ({ page, pageSize, filter }) => {
         try {
             setLoading(true);
             
+            // Get settings-aware API parameters
+            const baseParams = getApiParams({
+                pageSize: pageSize || paginationModel.pageSize,
+                currentPage: (page || paginationModel.page) + 1
+            });
+
             const searchCriteria = {
-                filterGroups: [],
-                pageSize,
-                currentPage: page + 1
+                ...baseParams,
+                filterGroups: []
             };
 
             if (orderId) {
@@ -94,19 +121,21 @@ const InvoicesGrid = ({ orderId }) => {
                 });
             }
 
-            const response = await magentoApi.getInvoices(searchCriteria);
+            // Use settings-aware API method
+            const response = await magentoApi.getInvoicesWithSettings('magentoInvoices', searchCriteria);
             // Handle {data: {items: []}} response structure
             const invoicesData = response?.data || response;
             const items = invoicesData?.items || [];
             setData(items);
             updateStats(items);
         } catch (error) {
-            toast.error(error.message || 'Failed to load invoices');
+            // Use settings-aware error handling
+            handleError(error, 'Load Invoices');
             throw error;
         } finally {
             setLoading(false);
         }
-    }, [orderId]);
+    }, [orderId, paginationModel, getApiParams, handleError]);
 
     // Update invoice statistics
     const updateStats = useCallback((invoices) => {

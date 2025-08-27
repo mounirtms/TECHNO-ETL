@@ -97,6 +97,12 @@ export default defineConfig(({ command, mode }) => {
 
     // Build configuration
     build: {
+        onwarn(warning, warn) {
+          // Suppress certain warnings
+          if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;
+          if (warning.code === 'SOURCEMAP_ERROR') return;
+          warn(warning);
+        },
       // Output directory
       outDir: 'dist',
       

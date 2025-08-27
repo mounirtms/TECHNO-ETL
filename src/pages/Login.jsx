@@ -343,7 +343,8 @@ const LoginPage = () => {
                         </Alert>
                     )}
 
-                    {/* Email/Password Login Form 
+                    {/* Email/Password Login Form */}
+                    {/* 
                     <Box component="form" onSubmit={handleEmailPasswordSignIn} sx={{ mt: 2 }}>
                         <TextField
                             fullWidth
@@ -373,8 +374,10 @@ const LoginPage = () => {
                             Sign In
                         </Button>
                     </Box>
+                    */}
 
-                    {/* Divider  
+                    {/* Divider */}
+                    {/* 
                     <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
                         <Box sx={{ flexGrow: 1, height: '1px', backgroundColor: theme.palette.divider }} />
                         <Typography variant="body2" sx={{ mx: 2, color: theme.palette.text.secondary }}>
@@ -382,7 +385,7 @@ const LoginPage = () => {
                         </Typography>
                         <Box sx={{ flexGrow: 1, height: '1px', backgroundColor: theme.palette.divider }} />
                     </Box>
- */}
+                    */}
                     {/* Google Sign-In Button */}
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <GoogleButton
