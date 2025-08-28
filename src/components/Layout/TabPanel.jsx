@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useMemo } from 'react';
 import {
     Box,
     Tabs,
@@ -13,7 +13,22 @@ import { useRoutePerformance, useDocumentTitle } from '../../hooks/useRoutePerfo
 
 const TabPanel = () => {
     const theme = useTheme();
-    const { tabs, activeTab, openTab, getActiveComponent } = useTab();
+    
+    // Safely use the tab context with error handling
+    let tabContext;
+    try {
+        tabContext = useTab();
+    } catch (error) {
+        // If useTab fails (outside of TabProvider), create a fallback context
+        tabContext = { 
+            tabs: [], 
+            activeTab: null, 
+            openTab: () => {}, 
+            getActiveComponent: () => null 
+        };
+    }
+    
+    const { tabs, activeTab, openTab, getActiveComponent } = tabContext;
     const [tabPanelHeight, setTabPanelHeight] = useState('100%');
 
     // Add route performance monitoring
@@ -50,7 +65,14 @@ const TabPanel = () => {
     const validTabIds = tabs?.map(tab => tab.id) || [];
     const safeActiveTab = validTabIds.includes(activeTab) ? activeTab : (validTabIds.length > 0 ? validTabIds[0] : 'Dashboard');
     
-    const ActiveComponent = getActiveComponent();
+    // Get the active component safely
+    const ActiveComponent = useMemo(() => {
+        try {
+            return getActiveComponent ? getActiveComponent() : null;
+        } catch (error) {
+            return null;
+        }
+    }, [activeTab, getActiveComponent]);
 
     return (
         <Box sx={{
@@ -61,75 +83,48 @@ const TabPanel = () => {
             flexDirection: 'column',
             overflow: 'hidden'
         }}>
-            {(!tabs || tabs.length === 0) ? (
+            {!activeTab ? (
                 <Box sx={{ 
                     display: 'flex', 
                     justifyContent: 'center', 
                     alignItems: 'center', 
-                    height: '100%',
-                    flexDirection: 'column'
+                    height: tabPanelHeight,
+                    width: '100%'
                 }}>
-                    <CircularProgress />
-                    <Typography sx={{ mt: 2 }}>Loading tabs...</Typography>
+                    <Typography>No active tab</Typography>
                 </Box>
             ) : (
-                <>
-                    <Box sx={{
-                        borderBottom: 1,
-                        borderColor: 'divider',
-                        backgroundColor: theme.palette.background.paper
-                    }}>
-                        <Tabs
-                            value={safeActiveTab}
-                            onChange={handleChange}
-                            variant="scrollable"
-                            scrollButtons="auto"
-                            allowScrollButtonsMobile
-                            sx={{
-                                '& .MuiTab-root': {
-                                    minWidth: { xs: 80, sm: 120 },
-                                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                                    padding: { xs: '4px 6px', sm: '8px 12px' }
-                                }
-                            }}
-                        >
-                            {tabs.map((tab) => (
-                                <Tab
-                                    key={tab.id}
-                                    label={tab.label}
-                                    value={tab.id}
-                                />
-                            ))}
-                        </Tabs>
-                    </Box>
-                    <Box sx={{
-                        flexGrow: 1,
-                        overflow: 'auto',
-                        p: {
-                            xs: 0.25,
-                            sm: 0.5,
-                            md: 1
-                        },
-                        height: `calc(${tabPanelHeight} - 48px)`,
-                    }}>
-                        <Suspense fallback={
+                <Box 
+                    sx={{ 
+                        height: tabPanelHeight,
+                        width: '100%',
+                        overflow: 'hidden'
+                    }}
+                >
+                    <Suspense fallback={
+                        <Box sx={{ 
+                            display: 'flex', 
+                            justifyContent: 'center', 
+                            alignItems: 'center', 
+                            height: '100%',
+                            width: '100%'
+                        }}>
+                            <CircularProgress />
+                        </Box>
+                    }>
+                        {ActiveComponent ? <ActiveComponent /> : (
                             <Box sx={{ 
                                 display: 'flex', 
                                 justifyContent: 'center', 
                                 alignItems: 'center', 
-                                height: '100%' 
+                                height: '100%',
+                                width: '100%'
                             }}>
-                                <CircularProgress />
+                                <Typography>Component not found</Typography>
                             </Box>
-                        }>
-                            {ActiveComponent ? <ActiveComponent /> : (
-                                <Box sx={{ p: 2, textAlign: 'center' }}>
-                                    <Typography color="error">Component not available</Typography>
-                                </Box>
-                            )}
-                        </Suspense>
-                    </Box>
-                </>
+                        )}
+                    </Suspense>
+                </Box>
             )}
         </Box>
     );

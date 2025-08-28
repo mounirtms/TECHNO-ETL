@@ -1,207 +1,123 @@
 /**
- * Category Service
- * Handles category data from local JSON file and provides tree utilities
- * 
- * @author Techno-ETL Team
- * @version 1.0.0
+ * @file categoryService.js
+ * @description Service for handling category data, including fetching, processing, and filtering.
  */
 
 import categoryData from '../assets/data/category.json';
 
+// --- Private Helper Functions ---
+
 /**
- * Flatten category tree into a flat array with hierarchy information
+ * Flattens the category tree into a flat array with hierarchy information.
+ * @param {Array} categories - The array of category objects to flatten.
+ * @param {number} [level=0] - The starting level for the hierarchy.
+ * @param {string|null} parentId - The ID of the parent category.
+ * @param {Array} [result=[]] - The accumulator for the flattened categories.
+ * @param {string} [parentPath=''] - The path of the parent category.
+ * @returns {Array} A flat array of category objects.
  */
-const flattenCategories = (categories, level = 0, parentPath = '') => {
-  const result = [];
-  
-  const processCategory = (category, currentLevel, path) => {
-    const categoryPath = path ? `${path} > ${category.name}` : category.name;
-    
-    // Add current category
-    result.push({
-      ...category,
-      level: currentLevel,
-      path: categoryPath,
-      hasChildren: category.children_data && category.children_data.length > 0,
-      parentPath: path
+const processCategories = (categories, level = 0, parentId = null, result = [], parentPath = '') => {
+    if (!categories) return result;
+    const categoryArray = Array.isArray(categories) ? categories : [categories];
+
+    categoryArray.forEach(category => {
+        if (!category || !category.id) return;
+
+        const currentPath = parentPath ? `${parentPath}-${category.id}` : `${category.id}`;
+        const processedCategory = {
+            ...category,
+            id: currentPath,
+            originalId: category.id,
+            level,
+            parentId,
+            has_children: category.children_data?.length > 0 || category.children?.length > 0,
+            name: category.name || `Category ${category.id}`,
+            position: category.position || 0,
+            is_active: category.is_active !== undefined ? category.is_active : true,
+            product_count: category.product_count || 0,
+        };
+        result.push(processedCategory);
+
+        const children = category.children_data || category.children || [];
+        if (children.length > 0) {
+            processCategories(children, level + 1, currentPath, result, currentPath);
+        }
     });
-    
-    // Process children recursively
-    if (category.children_data && category.children_data.length > 0) {
-      category.children_data.forEach(child => {
-        processCategory(child, currentLevel + 1, categoryPath);
-      });
-    }
-  };
-  
-  if (Array.isArray(categories)) {
-    categories.forEach(category => processCategory(category, level, parentPath));
-  } else {
-    processCategory(categories, level, parentPath);
-  }
-  
-  return result;
+
+    return result;
 };
 
-/**
- * Get all categories as flat array
- */
-export const getAllCategories = () => {
-  return flattenCategories(categoryData);
-};
+const allCategories = processCategories(categoryData.children_data || categoryData.children || []);
 
-/**
- * Get categories for combo/select components
- */
-export const getCategoriesForCombo = () => {
-  const flatCategories = getAllCategories();
-  
-  return flatCategories.map(category => ({
-    id: category.id,
-    label: category.path,
-    value: category.id,
-    level: category.level,
-    name: category.name,
-    parent_id: category.parent_id,
-    product_count: category.product_count,
-    is_active: category.is_active
-  }));
-};
+// --- Public API ---
 
-/**
- * Get category tree for tree display
- */
-export const getCategoryTree = () => {
-  return categoryData;
-};
+const getAllCategories = () => allCategories;
 
-/**
- * Find category by ID
- */
-export const findCategoryById = (id) => {
-  const flatCategories = getAllCategories();
-  return flatCategories.find(cat => cat.id === parseInt(id));
-};
+const getRootCategories = () => allCategories.filter(cat => cat.level === 0);
 
-/**
- * Get category children
- */
-export const getCategoryChildren = (parentId) => {
-  const flatCategories = getAllCategories();
-  return flatCategories.filter(cat => cat.parent_id === parseInt(parentId));
-};
+const findCategoryById = (id) => allCategories.find(cat => cat.id === id);
 
-/**
- * Get category path as breadcrumb
- */
-export const getCategoryBreadcrumb = (categoryId) => {
-  const category = findCategoryById(categoryId);
-  if (!category) return [];
-  
-  const breadcrumb = [];
-  let current = category;
-  
-  while (current) {
-    breadcrumb.unshift({
-      id: current.id,
-      name: current.name,
-      level: current.level
+const getVisibleCategories = (expandedRows = new Set()) => {
+    return allCategories.filter(cat => {
+        if (cat.level === 0) return true;
+        return expandedRows.has(cat.parentId);
     });
-    
-    if (current.parent_id) {
-      current = findCategoryById(current.parent_id);
-    } else {
-      break;
-    }
-  }
-  
-  return breadcrumb;
 };
 
-/**
- * Search categories by name
- */
-export const searchCategories = (searchTerm) => {
-  if (!searchTerm) return getAllCategories();
-  
-  const flatCategories = getAllCategories();
-  const term = searchTerm.toLowerCase();
-  
-  return flatCategories.filter(category =>
-    category.name.toLowerCase().includes(term) ||
-    category.path.toLowerCase().includes(term)
-  );
+const searchCategories = (searchTerm) => {
+    if (!searchTerm) return allCategories;
+    const lowercasedTerm = searchTerm.toLowerCase();
+    return allCategories.filter(category => 
+        category.name.toLowerCase().includes(lowercasedTerm)
+    );
 };
 
-/**
- * Get categories by level
- */
-export const getCategoriesByLevel = (level) => {
-  const flatCategories = getAllCategories();
-  return flatCategories.filter(cat => cat.level === level);
-};
+const getCategoryStats = () => ({
+    total: allCategories.length,
+    active: allCategories.filter(cat => cat.is_active).length,
+    inactive: allCategories.filter(cat => !cat.is_active).length,
+});
 
-/**
- * Get root categories
- */
-export const getRootCategories = () => {
-  return getCategoriesByLevel(1);
-};
-
-/**
- * Get category statistics
- */
-export const getCategoryStats = () => {
-  const flatCategories = getAllCategories();
-  
-  return {
-    total: flatCategories.length,
-    active: flatCategories.filter(cat => cat.is_active).length,
-    inactive: flatCategories.filter(cat => !cat.is_active).length,
-    levels: Math.max(...flatCategories.map(cat => cat.level)),
-    totalProducts: flatCategories.reduce((sum, cat) => sum + (cat.product_count || 0), 0)
-  };
-};
-
-/**
- * Format category for display in grids
- */
-export const formatCategoryForGrid = (category) => {
-  return {
+const formatCategoryForGrid = (category) => ({
     ...category,
-    displayName: `${'  '.repeat(category.level)}${category.name}`,
-    statusText: category.is_active ? 'Active' : 'Inactive',
-    levelText: `Level ${category.level}`,
-    productCountText: `${category.product_count || 0} products`
-  };
-};
+    // Additional formatting can be done here if needed
+});
 
 /**
- * Get visible categories for tree display (with expansion state)
+ * Asynchronously fetches and processes categories based on filters.
+ * @param {object} [filters={}] - The filtering criteria.
+ * @returns {Promise<{categories: Array, stats: object}>} A promise that resolves to the processed categories and stats.
  */
-export const getVisibleCategories = (expandedIds = new Set()) => {
-  const allCategories = getAllCategories();
-  
-  return allCategories.filter(category => {
-    // Always show root level
-    if (category.level <= 1) return true;
-    
-    // Show if parent is expanded
-    return expandedIds.has(category.parent_id);
-  });
+const fetchAndProcessCategories = async (filters = {}) => {
+    return new Promise(resolve => {
+        let categories = getAllCategories();
+
+        if (filters.search) {
+            categories = searchCategories(filters.search);
+        }
+
+        if (filters.is_active !== undefined) {
+            const isActive = filters.is_active === 'true' || filters.is_active === true;
+            categories = categories.filter(cat => cat.is_active === isActive);
+        }
+
+        const visibleCategories = getVisibleCategories(filters.expandedRows);
+        const finalCategories = categories.filter(cat => visibleCategories.includes(cat));
+
+        resolve({
+            categories: finalCategories.map(formatCategoryForGrid),
+            stats: getCategoryStats(),
+        });
+    });
 };
 
 export default {
-  getAllCategories,
-  getCategoriesForCombo,
-  getCategoryTree,
-  findCategoryById,
-  getCategoryChildren,
-  getCategoryBreadcrumb,
-  searchCategories,
-  getCategoriesByLevel,
-  getRootCategories,
-  getCategoryStats,
-  formatCategoryForGrid,
-  getVisibleCategories
+    getAllCategories,
+    getRootCategories,
+    findCategoryById,
+    getVisibleCategories,
+    searchCategories,
+    getCategoryStats,
+    formatCategoryForGrid,
+    fetchAndProcessCategories,
 };

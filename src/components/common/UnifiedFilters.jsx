@@ -63,22 +63,21 @@ export class BaseFilter {
   render(key, value, onChange) {
     if (!this.visible) return null;
 
+    // Extract key from common props to avoid spreading it to DOM elements
     const commonProps = {
-      key,
       disabled: !this.enabled,
-      size: this.size,
-      fullWidth: this.fullWidth
+      size: this.size
     };
 
     switch (this.type) {
       case 'select':
-        return this.renderSelect(value, onChange, commonProps);
+        return this.renderSelect(value, onChange, { ...commonProps, key });
       case 'switch':
-        return this.renderSwitch(value, onChange, commonProps);
+        return this.renderSwitch(value, onChange, { ...commonProps, key });
       case 'text':
-        return this.renderTextField(value, onChange, commonProps);
+        return this.renderTextField(value, onChange, { ...commonProps, key });
       default:
-        return this.renderSelect(value, onChange, commonProps);
+        return this.renderSelect(value, onChange, { ...commonProps, key });
     }
   }
 
@@ -86,10 +85,11 @@ export class BaseFilter {
    * Render select filter
    */
   renderSelect(value, onChange, props) {
+    const { key, ...restProps } = props; // Extract key to avoid passing it to DOM elements
     const IconComponent = this.getIconComponent();
     
     return (
-      <FormControl {...props} sx={{ minWidth: 150 }}>
+      <FormControl {...restProps} key={key} sx={{ minWidth: 150 }}>
         <InputLabel>
           {IconComponent && <IconComponent sx={{ mr: 1, fontSize: 16 }} />}
           {this.label}
@@ -99,8 +99,8 @@ export class BaseFilter {
           onChange={(e) => onChange(e.target.value)}
           label={this.label}
         >
-          {this.options.map((option, index) => (
-            <MenuItem key={index} value={option.value}>
+          {this.options.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
               {option.label}
             </MenuItem>
           ))}
@@ -113,15 +113,17 @@ export class BaseFilter {
    * Render switch filter
    */
   renderSwitch(value, onChange, props) {
+    const { key, ...restProps } = props; // Extract key to avoid passing it to DOM elements
     const IconComponent = this.getIconComponent();
     
     return (
       <FormControlLabel
+        key={key}
         control={
           <Switch
             checked={value !== undefined ? value : this.value}
             onChange={(e) => onChange(e.target.checked)}
-            {...props}
+            {...restProps}
           />
         }
         label={
@@ -138,11 +140,13 @@ export class BaseFilter {
    * Render text field filter
    */
   renderTextField(value, onChange, props) {
+    const { key, ...restProps } = props; // Extract key to avoid passing it to DOM elements
     const IconComponent = this.getIconComponent();
     
     return (
       <TextField
-        {...props}
+        {...restProps}
+        key={key}
         label={this.label}
         placeholder={this.placeholder}
         value={value || this.value}

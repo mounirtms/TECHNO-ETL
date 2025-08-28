@@ -45,7 +45,17 @@ const UserMenu = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const { currentUser, logout } = useAuth();
     const { translate } = useLanguage();
-    const { openTab } = useTab();
+    
+    // Safely use the tab context with error handling
+    let tabContext;
+    try {
+        tabContext = useTab();
+    } catch (error) {
+        // If useTab fails (outside of TabProvider), create a fallback context
+        tabContext = { openTab: () => {} };
+    }
+    
+    const { openTab } = tabContext;
     const navigate = useNavigate();
 
     const handleMenu = (event) => {
@@ -57,7 +67,12 @@ const UserMenu = () => {
     };
 
     const handleOpenProfile = () => {
-        navigate('/profile'); // Navigate directly to the profile route
+        try {
+            openTab('UserProfile');
+        } catch (error) {
+            // Fallback to direct navigation if tab context is not available
+            navigate('/profile');
+        }
         handleClose();
     };
 

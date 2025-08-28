@@ -135,6 +135,16 @@ export const MENU_TREE = [
                 category: 'products'
             },
             {
+                id: 'CategoryManagementGrid',
+                label: 'Category Management',
+                labelKey: 'navigation.categoryManagement',
+                icon: CategoryIcon,
+                path: '/category-management',
+                hidden: false,
+                licensed: true,
+                category: 'products'
+            },
+            {
                 id: 'StocksGrid',
                 label: 'Inventory & Stocks',
                 labelKey: 'navigation.stocks',
@@ -200,7 +210,7 @@ export const MENU_TREE = [
     // === CEGID SYSTEM ===
     {
         id: 'cegid',
-        label: 'Cegid',
+        label: 'CEGID',
         labelKey: 'navigation.cegid',
         icon: DataObjectIcon,
         licensed: true,
@@ -208,13 +218,23 @@ export const MENU_TREE = [
         children: [
             {
                 id: 'CegidProductsGrid',
-                label: 'Cegid Products',
+                label: 'Products',
                 labelKey: 'navigation.cegidProducts',
-                icon: StorefrontIcon,
+                icon: InventoryIcon,
                 path: '/cegid-products',
                 hidden: false,
                 licensed: true,
-                category: 'integration'
+                category: 'products'
+            },
+            {
+                id: 'MDMStockGrid',
+                label: 'MDM Stock',
+                labelKey: 'navigation.mdmStock',
+                icon: Inventory2Icon,
+                path: '/mdm-stock',
+                hidden: false,
+                licensed: true,
+                category: 'inventory'
             }
         ]
     },

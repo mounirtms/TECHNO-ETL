@@ -7,12 +7,13 @@ import {
 } from '@mui/material';
 
 import { DRAWER_WIDTH, COLLAPSED_WIDTH } from './Constants';
-import { useTab } from '../../contexts/TabContext';
+import { useTab, TAB_TO_URL_MAP } from '../../contexts/TabContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import technoIcon from '../../assets/images/techno.png';
 import logoTechno from '../../assets/images/logo_techno.png';
 import { useAuth } from '../../contexts/AuthContext';
 import TreeMenuNavigation from './TreeMenuNavigation';
+
 
 const StyledDrawer = styled(Drawer, {
     shouldForwardProp: (prop) => !['isRTL', 'open'].includes(prop),
@@ -72,12 +73,30 @@ const LogoContainer = styled(Box)(({ theme, open }) => ({
 
 const Sidebar = ({ open, isRTL = false }) => {
     const theme = useTheme();
-    const { activeTab, openTab } = useTab();
     const { translate } = useLanguage();
     const { currentUser } = useAuth();
+    
+    // Safely use the tab context with error handling
+    let tabContext;
+    try {
+        tabContext = useTab();
+    } catch (error) {
+        // If useTab fails (outside of TabProvider), create a fallback context
+        tabContext = { activeTab: null, openTab: () => {} };
+    }
+    
+    const { activeTab, openTab } = tabContext;
 
     const handleTabClick = (tabId) => {
-        openTab(tabId);
+        try {
+            openTab(tabId);
+        } catch (error) {
+            // Fallback navigation if tab context is not available
+            const tabUrl = TAB_TO_URL_MAP[tabId];
+            if (tabUrl) {
+                window.location.href = tabUrl;
+            }
+        }
     };
 
     return (

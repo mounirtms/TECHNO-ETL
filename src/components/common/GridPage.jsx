@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense, useMemo } from 'react';
 import {
   Box,
   Container,
@@ -15,31 +15,43 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { getRouteMetadata } from '../../config/routes';
 import { useTab } from '../../contexts/TabContext';
-import { Suspense } from 'react';
+import ErrorBoundary from './ErrorBoundary'; // Assuming ErrorBoundary is in the same folder
 
-const GridPage = ({ title, description, icon: Icon, tabId, showBreadcrumbs = true }) => {
+const pageChips = [
+  { key: 'realTime', label: 'Real-time Updates', color: 'success' },
+  { key: 'autoSave', label: 'Auto-save Enabled', color: 'info' },
+];
+
+const GridPage = ({ title, description, icon: Icon, showBreadcrumbs = true }) => {
   const { t } = useTranslation();
   const location = useLocation();
-  const { getActiveComponent } = useTab();
-  
-  const routeMetadata = getRouteMetadata(location.pathname);
 
-  const pageTitle = title || routeMetadata.title || 'Page';
-  const pageDescription = description || routeMetadata.description || '';
-  const PageIcon = Icon || (() => null);
+  const tabContext = useTab();
+  const { getActiveComponent } = tabContext || { getActiveComponent: () => null };
 
-  // Get the component for this tab
-  const ActiveComponent = getActiveComponent();
+  const routeMetadata = useMemo(() => getRouteMetadata(location.pathname), [location.pathname]);
+
+  const pageTitle = useMemo(() => title || routeMetadata.title || 'Page', [title, routeMetadata.title]);
+  const pageDescription = useMemo(() => description || routeMetadata.description || '', [description, routeMetadata.description]);
+  const PageIcon = useMemo(() => Icon || (() => null), [Icon]);
+
+  const ActiveComponent = useMemo(() => getActiveComponent(), [getActiveComponent]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
+    <Box
+      sx={{
+        opacity: 0,
+        transform: 'translateY(20px)',
+        animation: 'fadeInUp 0.5s forwards',
+        '@keyframes fadeInUp': {
+          'to': {
+            opacity: 1,
+            transform: 'translateY(0)',
+          },
+        },
+      }}
     >
       <Container maxWidth="xl" sx={{ py: 3 }}>
-        {/* Breadcrumbs */}
         {showBreadcrumbs && (
           <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
             <Link component={RouterLink} to="/dashboard" color="inherit">
@@ -49,7 +61,6 @@ const GridPage = ({ title, description, icon: Icon, tabId, showBreadcrumbs = tru
           </Breadcrumbs>
         )}
 
-        {/* Page Header */}
         <Box sx={{ mb: 3 }}>
           <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 1 }}>
             <PageIcon sx={{ fontSize: 40, color: 'primary.main' }} />
@@ -65,41 +76,37 @@ const GridPage = ({ title, description, icon: Icon, tabId, showBreadcrumbs = tru
           )}
           
           <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
-            <Chip 
-              label={t('Real-time Updates')} 
-              color="success" 
-              size="small" 
-              variant="outlined" 
-            />
-            <Chip 
-              label={t('Auto-save Enabled')} 
-              color="info" 
-              size="small" 
-              variant="outlined" 
-            />
+            {pageChips.map(chip => (
+              <Chip 
+                key={chip.key}
+                label={t(chip.label)} 
+                color={chip.color} 
+                size="small" 
+                variant="outlined" 
+              />
+            ))}
           </Stack>
         </Box>
 
-        {/* Page Content */}
         <Paper sx={{ p: 3, borderRadius: 2, minHeight: '60vh' }}>
-          {ActiveComponent ? (
+          <ErrorBoundary fallback={<Alert severity="error">{t('An error occurred while loading the grid.')}</Alert>}>
             <Suspense fallback={
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 200 }}>
-                <Typography>Loading grid...</Typography>
+                <Typography>{t('Loading grid...')}</Typography>
               </Box>
             }>
-              <ActiveComponent />
+              {ActiveComponent ? <ActiveComponent /> : (
+                <Alert severity="info">
+                  <Typography variant="body1">
+                    {t('This page is currently under development and will be available soon.')}
+                  </Typography>
+                </Alert>
+              )}
             </Suspense>
-          ) : (
-            <Alert severity="info">
-              <Typography variant="body1">
-                {t('This page is currently under development and will be available soon.')}
-              </Typography>
-            </Alert>
-          )}
+          </ErrorBoundary>
         </Paper>
       </Container>
-    </motion.div>
+    </Box>
   );
 };
 

@@ -255,32 +255,35 @@ const MDMProductsGrid = () => {
       </Box>
 
       {/* Main Grid */}
-      <UnifiedGrid
-        gridName="MDMProductsGrid"
-        columns={columns}
-        data={gridState.data}
-        loading={gridState.loading}
-        totalCount={gridState.stats?.total || 0}
-        paginationModel={gridState.paginationModel}
-        onPaginationModelChange={gridState.onPaginationModelChange}
-        sortModel={gridState.sortModel}
-        onSortModelChange={gridState.onSortModelChange}
-        filterModel={gridState.filterModel}
-        onFilterModelChange={gridState.onFilterModelChange}
-        onRowDoubleClick={(params) => {
-          console.log('Row double-clicked:', params.row);
-        }}
-        showStatsCards={true}
-        gridCards={<MDMStatsCards stats={gridState.stats} />}
-        defaultPageSize={25}
-        onSelectionChange={gridState.onSelectionChange}
-        onSearch={gridState.onSearch}
-        searchableFields={['Code_MDM', 'Code_JDE', 'TypeProd', 'Source']}
-        getRowId={(row) => `${row.Source}-${row.Code_MDM}`}
-        getRowClassName={getRowClassName}
-        onError={(error) => toast.error(error.message)}
-        enableVirtualization={gridState.data?.length > 100}
-      />
+      <Box sx={{ flex: 1, minHeight: 0, height: '100%' }}>
+        <UnifiedGrid
+          gridName="MDMProductsGrid"
+          columns={columns}
+          data={gridState.data}
+          loading={gridState.loading}
+          totalCount={gridState.stats?.total || 0}
+          paginationModel={gridState.paginationModel}
+          onPaginationModelChange={gridState.onPaginationModelChange}
+          sortModel={gridState.sortModel}
+          onSortModelChange={gridState.onSortModelChange}
+          filterModel={gridState.filterModel}
+          onFilterModelChange={gridState.onFilterModelChange}
+          onRowDoubleClick={(params) => {
+            console.log('Row double-clicked:', params.row);
+            // Handle row double-click
+          }}
+          getRowId={(row) => row?.sku}
+          getRowClassName={getRowClassName}
+          selectedRows={gridState.selectedRows}
+          onRowSelectionModelChange={gridState.onSelectionChange}
+          customActions={gridState.customActions}
+          viewMode={gridState.viewMode}
+          onViewModeChange={gridState.setViewMode}
+          showCardView={true}
+          onError={(error) => toast.error(error.message)}
+          enableVirtualization={gridState.data?.length > 100}
+        />
+      </Box>
     </GridErrorBoundary>
   );
 };

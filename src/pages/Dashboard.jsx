@@ -97,7 +97,17 @@ const Dashboard = () => {
   const muiTheme = useTheme(); // MUI theme for shadows and other MUI-specific properties
   const { mode, isDark, colorPreset, density, animations } = useCustomTheme();
   const { currentLanguage, translate, languages } = useLanguage();
-  const { openTab } = useTab();
+  
+  // Safely use the tab context with error handling
+  let tabContext;
+  try {
+    tabContext = useTab();
+  } catch (error) {
+    // If useTab fails (outside of TabProvider), create a fallback context
+    tabContext = { openTab: () => {} };
+  }
+  
+  const { openTab } = tabContext;
   
   // Check if current language is RTL
   const isRTL = useMemo(() => languages[currentLanguage]?.dir === 'rtl', [languages, currentLanguage]);
