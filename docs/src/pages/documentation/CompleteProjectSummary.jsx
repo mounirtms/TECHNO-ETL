@@ -28,7 +28,7 @@ import {
   Build as BuildIcon,
   Cloud as CloudIcon,
   Schedule as ScheduleIcon,
-  Monitoring as MonitoringIcon,
+  Monitor as MonitoringIcon,
   Description as DocsIcon,
   Security as SecurityIcon
 } from '@mui/icons-material';

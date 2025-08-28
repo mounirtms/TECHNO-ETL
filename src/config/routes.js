@@ -18,10 +18,44 @@ export const ROUTES = {
   REPORTS: '/reports',
   ANALYTICS: '/analytics',
   SETTINGS: '/settings',
+  DOCS: '/docs',
 
   // Enhanced Routes
   DATA_GRIDS: '/data-grids',
   GRID_TEST: '/grid-test',
+
+  // MDM Routes
+  MDM_PRODUCTS: '/mdmproducts',
+  MDM_STOCK: '/mdm-stock',
+  MDM_SOURCES: '/mdm-sources',
+
+  // Magento Routes
+  CATEGORIES: '/categories',
+  STOCKS: '/stocks',
+  SOURCES: '/sources',
+  INVOICES: '/invoices',
+  CMS_PAGES: '/cms-pages',
+  CEGID_PRODUCTS: '/cegid-products',
+
+  // Analytics Routes
+  SALES_ANALYTICS: '/analytics/sales',
+  INVENTORY_ANALYTICS: '/analytics/inventory',
+
+  // Security Routes
+  SECURE_VAULT: '/locker/vault',
+  ACCESS_CONTROL: '/locker/access',
+
+  // Development Routes
+  BUG_BOUNTY: '/bug-bounty',
+  VOTING: '/voting',
+  ROUTE_TEST: '/route-test',
+
+  // User Routes
+  USER_PROFILE: '/profile',
+
+  // License Routes
+  LICENSE_MANAGEMENT: '/license-management',
+  LICENSE_STATUS: '/license',
 
   // Nested Routes
   PRODUCT_DETAIL: '/products/:id',
@@ -99,6 +133,13 @@ export const ROUTE_METADATA = {
     requiresAuth: true,
     breadcrumb: 'Settings'
   },
+  [ROUTES.DOCS]: {
+    title: 'Documentation',
+    description: 'Interactive documentation and API guides',
+    icon: 'Book',
+    requiresAuth: false, // Public access to docs
+    breadcrumb: 'Documentation'
+  },
   [ROUTES.DATA_GRIDS]: {
     title: 'Data Management',
     description: 'Comprehensive data grid interface with tabbed navigation',
@@ -112,6 +153,146 @@ export const ROUTE_METADATA = {
     icon: 'Speed',
     requiresAuth: true,
     breadcrumb: 'Grid Test'
+  },
+  // MDM Routes
+  [ROUTES.MDM_PRODUCTS]: {
+    title: 'MDM Products',
+    description: 'Master Data Management for products',
+    icon: 'Inventory',
+    requiresAuth: true,
+    breadcrumb: 'MDM Products'
+  },
+  [ROUTES.MDM_STOCK]: {
+    title: 'MDM Stock',
+    description: 'Master Data Management for stock levels',
+    icon: 'Inventory2',
+    requiresAuth: true,
+    breadcrumb: 'MDM Stock'
+  },
+  [ROUTES.MDM_SOURCES]: {
+    title: 'MDM Sources',
+    description: 'Master Data Management for data sources',
+    icon: 'Warehouse',
+    requiresAuth: true,
+    breadcrumb: 'MDM Sources'
+  },
+  // Magento Routes
+  [ROUTES.CATEGORIES]: {
+    title: 'Categories',
+    description: 'Product category management',
+    icon: 'Category',
+    requiresAuth: true,
+    breadcrumb: 'Categories'
+  },
+  [ROUTES.STOCKS]: {
+    title: 'Stocks',
+    description: 'Inventory and stock management',
+    icon: 'Inventory2',
+    requiresAuth: true,
+    breadcrumb: 'Stocks'
+  },
+  [ROUTES.SOURCES]: {
+    title: 'Sources',
+    description: 'Warehouse and source management',
+    icon: 'Warehouse',
+    requiresAuth: true,
+    breadcrumb: 'Sources'
+  },
+  [ROUTES.INVOICES]: {
+    title: 'Invoices',
+    description: 'Invoice management',
+    icon: 'Receipt',
+    requiresAuth: true,
+    breadcrumb: 'Invoices'
+  },
+  [ROUTES.CMS_PAGES]: {
+    title: 'CMS Pages',
+    description: 'Content management system pages',
+    icon: 'Description',
+    requiresAuth: true,
+    breadcrumb: 'CMS Pages'
+  },
+  [ROUTES.CEGID_PRODUCTS]: {
+    title: 'Cegid Products',
+    description: 'Cegid product integration',
+    icon: 'Storefront',
+    requiresAuth: true,
+    breadcrumb: 'Cegid Products'
+  },
+  // Analytics Routes
+  [ROUTES.SALES_ANALYTICS]: {
+    title: 'Sales Analytics',
+    description: 'Sales performance analytics',
+    icon: 'Analytics',
+    requiresAuth: true,
+    breadcrumb: 'Sales Analytics'
+  },
+  [ROUTES.INVENTORY_ANALYTICS]: {
+    title: 'Inventory Analytics',
+    description: 'Inventory performance analytics',
+    icon: 'Inventory2',
+    requiresAuth: true,
+    breadcrumb: 'Inventory Analytics'
+  },
+  // Security Routes
+  [ROUTES.SECURE_VAULT]: {
+    title: 'Secure Vault',
+    description: 'Encrypted document storage',
+    icon: 'Security',
+    requiresAuth: true,
+    breadcrumb: 'Secure Vault'
+  },
+  [ROUTES.ACCESS_CONTROL]: {
+    title: 'Access Control',
+    description: 'User access management',
+    icon: 'AdminPanelSettings',
+    requiresAuth: true,
+    breadcrumb: 'Access Control'
+  },
+  // Development Routes
+  [ROUTES.BUG_BOUNTY]: {
+    title: 'Bug Bounty',
+    description: 'Bug reporting and tracking',
+    icon: 'BugReport',
+    requiresAuth: true,
+    breadcrumb: 'Bug Bounty'
+  },
+  [ROUTES.VOTING]: {
+    title: 'Feature Voting',
+    description: 'Feature request voting system',
+    icon: 'HowToVote',
+    requiresAuth: true,
+    breadcrumb: 'Feature Voting'
+  },
+  [ROUTES.ROUTE_TEST]: {
+    title: 'Route Test',
+    description: 'Test page for verifying routes',
+    icon: 'Route',
+    requiresAuth: true,
+    breadcrumb: 'Route Test'
+  },
+  // User Routes
+  [ROUTES.USER_PROFILE]: {
+    title: 'User Profile',
+    description: 'User profile and settings',
+    icon: 'AccountCircle',
+    requiresAuth: false, // Always accessible
+    breadcrumb: 'User Profile'
+  },
+  // License Routes
+  [ROUTES.LICENSE_MANAGEMENT]: {
+    title: 'License Management',
+    description: 'License configuration and management',
+    icon: 'VerifiedUser',
+    requiresAuth: true,
+    breadcrumb: 'License Management'
+  },
+  [ROUTES.LICENSE_STATUS]: {
+    title: 'License Status',
+    description: 'License status and information',
+    icon: 'VerifiedUser',
+    requiresAuth: false, // Always accessible
+    breadcrumb: 'License Status'
   }
 };
 

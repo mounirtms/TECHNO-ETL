@@ -2,6 +2,9 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { visualizer } from 'rollup-plugin-visualizer';
+import fs from 'fs-extra';
+import connect from 'connect';
+import serveStatic from 'serve-static';
 
 export default defineConfig(({ command, mode }) => {
   // Load environment variables based on mode
@@ -34,7 +37,15 @@ export default defineConfig(({ command, mode }) => {
         gzipSize: true,
         brotliSize: true,
         template: 'treemap'
-      })
+      }),
+      
+      // Middleware to serve docs
+      isDev && {
+        name: 'serve-docs',
+        configureServer(server) {
+          server.middlewares.use('/docs', serveStatic('docs/dist'));
+        }
+      }
     ].filter(Boolean),
 
     // Path resolution
@@ -48,6 +59,7 @@ export default defineConfig(({ command, mode }) => {
         '@utils': resolve(__dirname, 'src/utils'),
         '@assets': resolve(__dirname, 'src/assets'),
         '@hooks': resolve(__dirname, 'src/hooks'),
+        '@grids': resolve(__dirname, 'src/components/grids'),
         // Force React to be a singleton to prevent scheduler issues
         'react': resolve(__dirname, 'node_modules/react'),
         'react-dom': resolve(__dirname, 'node_modules/react-dom'),
@@ -63,33 +75,45 @@ export default defineConfig(({ command, mode }) => {
       mainFields: ['browser', 'module', 'main']
     },
 
-    // Development server configuration - Optimized for port 80
+    // Development server configuration - Optimized for performance
     server: {
       host: '0.0.0.0',
-      port: 80, // Standardized to port 80
-      strictPort: false,
-      cors: true,
+      port: parseInt(env.VITE_PORT) || 80, // Use environment variable or default to 80
+      strictPort: false, // Allow fallback ports
+      open: false, // Don't auto-open browser to avoid conflicts
+      cors: {
+        origin: ['http://localhost:80', 'http://127.0.0.1:80', 'http://localhost:3000'],
+        credentials: true
+      },
       hmr: {
-        overlay: true,
-        port: 24678 // Separate HMR port to avoid conflicts
+        overlay: isDev, // Only show overlay in development
+        port: 24678, // Separate HMR port to avoid conflicts
+        clientPort: 24678
+      },
+      // Optimized for faster development
+      fs: {
+        cachedChecks: false // Disable caching for faster file changes
+      },
+      warmup: {
+        clientFiles: ['./src/main.jsx', './src/App.jsx'] // Pre-warm critical files
       },
       proxy: {
-        // Optimized proxy configuration for all API calls
+        // Existing API proxy
         '/api': {
           target: 'http://localhost:5000',
           changeOrigin: true,
           secure: false,
-          timeout: 30000, // Increased timeout for better reliability
+          timeout: isDev ? 10000 : 30000, // Shorter timeout in dev
           configure: (proxy, _options) => {
             proxy.on('error', (err, _req, _res) => {
               console.log('🔴 Proxy Error:', err.message);
             });
-            proxy.on('proxyReq', (proxyReq, req, _res) => {
-              console.log('🚀 Proxying:', req.method, req.url, '→ Backend:5000');
-            });
-            proxy.on('proxyRes', (proxyRes, req, _res) => {
-              console.log('✅ Response:', proxyRes.statusCode, req.url, `(${Date.now()}ms)`);
-            });
+            if (isDev) { // Reduce logging in development for performance
+              proxy.on('proxyReq', (proxyReq, req, _res) => {
+                if (req.url.includes('/health')) return; // Skip health check logs
+                console.log('🚀 Proxying:', req.method, req.url);
+              });
+            }
           }
         }
       }
@@ -97,12 +121,13 @@ export default defineConfig(({ command, mode }) => {
 
     // Build configuration
     build: {
-        onwarn(warning, warn) {
-          // Suppress certain warnings
-          if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;
-          if (warning.code === 'SOURCEMAP_ERROR') return;
-          warn(warning);
-        },
+      onwarn(warning, warn) {
+        // Suppress certain warnings
+        if (warning.code === 'MODULE_LEVEL_DIRECTIVE') return;
+        if (warning.code === 'SOURCEMAP_ERROR') return;
+        if (warning.code === 'CIRCULAR_DEPENDENCY') return;
+        warn(warning);
+      },
       // Output directory
       outDir: 'dist',
       
@@ -226,7 +251,7 @@ export default defineConfig(({ command, mode }) => {
       write: true
     },
 
-    // Aggressive dependency optimization
+    // Aggressive dependency optimization for faster development
     optimizeDeps: {
       // Include ALL React-related dependencies to ensure proper bundling
       include: [
@@ -249,15 +274,18 @@ export default defineConfig(({ command, mode }) => {
         'firebase'
       ],
 
-      // Force optimization
-      force: true,
+      // Force optimization only when needed
+      force: false, // Changed from true to false for faster startup
 
-      // Enhanced ESBuild options
+      // Enhanced ESBuild options for faster processing
       esbuildOptions: {
         target: 'es2020',
         define: {
           global: 'globalThis'
-        }
+        },
+        // Faster builds in development
+        minify: !isDev,
+        sourcemap: isDev
       }
     },
 

@@ -30,7 +30,7 @@ import {
     Clear as ClearIcon
 } from '@mui/icons-material';
 
-import { MENU_TREE } from './MenuTree';
+import { MENU_TREE } from './MenuTree.js';
 import { check_license_status, get_license_details } from '../../utils/licenseUtils';
 import { USER_ROLES, ROLE_HIERARCHY, getRolePermissions } from '../../config/firebaseDefaults';
 

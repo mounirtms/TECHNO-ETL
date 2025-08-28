@@ -1,38 +1,38 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box } from '@mui/material'; // Add Box import for error rendering
-import { MENU_TREE, MENU_ITEMS } from '../components/Layout/MenuTree';
+import { Box } from '@mui/material';
+import { MENU_TREE, MENU_ITEMS } from '../components/Layout/MenuTree.js';
 
 // Import components lazily to avoid circular dependencies
 import { lazy } from 'react';
 
-const Dashboard = lazy(() => import('../pages/Dashboard'));
-const CmsPageGrid = lazy(() => import('../components/grids/magento/CmsPagesGrid'));
-const ProductsGrid = lazy(() => import('../components/grids/magento/ProductsGrid'));
-const MDMProductsGrid = lazy(() => import('../components/grids/MDMProductsGrid/MDMProductsGrid'));
-const CustomersGrid = lazy(() => import('../components/grids/magento/CustomersGrid'));
-const OrdersGrid = lazy(() => import('../components/grids/magento/OrdersGrid'));
-const InvoicesGrid = lazy(() => import('../components/grids/magento/InvoicesGrid'));
-const UserProfile = lazy(() => import('../components/UserProfile/index'));
-const CategoryTree = lazy(() => import('../components/grids/magento/CategoryGrid'));
-const StocksGrid = lazy(() => import('../components/grids/magento/StocksGrid'));
-const SourcesGrid = lazy(() => import('../components/grids/magento/SourcesGrid'));
-const CegidGrid = lazy(() => import('../components/grids/CegidGrid'));
-const GridTestPage = lazy(() => import('../pages/GridTestPage'));
-const ProductManagementPage = lazy(() => import('../pages/ProductManagementPage'));
-const VotingPage = lazy(() => import('../pages/VotingPage'));
-const ChartsPage = lazy(() => import('../pages/ChartsPage'));
-const BugBountyPage = lazy(() => import('../pages/BugBountyPage'));
-const LicenseManagement = lazy(() => import('../components/License/LicenseManagement'));
-const LicenseStatus = lazy(() => import('../components/License/LicenseStatus'));
+const Dashboard = lazy(() => import('../pages/Dashboard.jsx'));
+const CmsPageGrid = lazy(() => import('../components/grids/magento/CmsPagesGrid.jsx'));
+const ProductsGrid = lazy(() => import('../components/grids/magento/ProductsGrid.jsx'));
+const MDMProductsGrid = lazy(() => import('../components/grids/MDMProductsGrid/MDMProductsGrid.jsx'));
+const CustomersGrid = lazy(() => import('../components/grids/magento/CustomersGrid.jsx'));
+const OrdersGrid = lazy(() => import('../components/grids/magento/OrdersGrid.jsx'));
+const InvoicesGrid = lazy(() => import('../components/grids/magento/InvoicesGrid.jsx'));
+const UserProfile = lazy(() => import('../components/UserProfile/index.jsx'));
+const CategoryTree = lazy(() => import('../components/grids/magento/CategoryGrid.jsx'));
+const StocksGrid = lazy(() => import('../components/grids/magento/StocksGrid.jsx'));
+const SourcesGrid = lazy(() => import('../components/grids/magento/SourcesGrid.jsx'));
+const CegidGrid = lazy(() => import('../components/grids/CegidGrid.jsx'));
+const GridTestPage = lazy(() => import('../pages/GridTestPage.jsx'));
+const ProductManagementPage = lazy(() => import('../pages/ProductManagementPage.jsx'));
+const VotingPage = lazy(() => import('../pages/VotingPage.jsx'));
+const ChartsPage = lazy(() => import('../pages/ChartsPage.jsx'));
+const BugBountyPage = lazy(() => import('../pages/BugBountyPage.jsx'));
+const LicenseManagement = lazy(() => import('../components/License/LicenseManagement.jsx'));
+const LicenseStatus = lazy(() => import('../components/License/LicenseStatus.jsx'));
 
 // Lazy load placeholder components
-const SalesAnalytics = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.SalesAnalytics })));
-const InventoryAnalytics = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.InventoryAnalytics })));
-const SecureVault = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.SecureVault })));
-const AccessControl = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.AccessControl })));
-const MDMStock = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.MDMStock })));
-const MDMSources = lazy(() => import('../components/placeholders/PlaceholderComponents').then(module => ({ default: module.MDMSources })));
+const SalesAnalytics = lazy(() => import('../components/placeholders/PlaceholderComponents.jsx').then(module => ({ default: module.SalesAnalytics })));
+const InventoryAnalytics = lazy(() => import('../components/placeholders/PlaceholderComponents.jsx').then(module => ({ default: module.InventoryAnalytics })));
+const SecureVault = lazy(() => import('../components/placeholders/PlaceholderComponents.jsx').then(module => ({ default: module.SecureVault })));
+const AccessControl = lazy(() => import('../components/placeholders/PlaceholderComponents.jsx').then(module => ({ default: module.AccessControl })));
+const MDMStock = lazy(() => import('../components/placeholders/PlaceholderComponents.jsx').then(module => ({ default: module.MDMStock })));
+const MDMSources = lazy(() => import('../components/placeholders/PlaceholderComponents.jsx').then(module => ({ default: module.MDMSources })));
 
 // URL to Tab ID mapping
 const URL_TO_TAB_MAP = {
@@ -97,7 +97,17 @@ const COMPONENT_MAP = {
     UserProfile: UserProfile
 };
 
-const TabContext = createContext();
+// Safe context creation with error handling
+const TabContext = (() => {
+    try {
+        const context = createContext();
+        context.displayName = 'TabContext';
+        return context;
+    } catch (error) {
+        console.error('Failed to create TabContext:', error);
+        throw error;
+    }
+})();
 
 export const TabProvider = ({ children, sidebarOpen }) => {
     const location = useLocation();
@@ -105,12 +115,32 @@ export const TabProvider = ({ children, sidebarOpen }) => {
 
     // Get initial tab from current URL or default to Dashboard
     const getInitialTabFromURL = () => {
+        // Ensure MENU_ITEMS is available and not empty
+        if (!MENU_ITEMS || !Array.isArray(MENU_ITEMS) || MENU_ITEMS.length === 0) {
+            console.warn('MENU_ITEMS is empty or undefined, creating default dashboard item');
+            return {
+                id: 'Dashboard',
+                label: 'Dashboard',
+                path: '/dashboard'
+            };
+        }
+        
         const tabId = URL_TO_TAB_MAP[location.pathname];
         if (tabId) {
-            const menuItem = MENU_ITEMS.find(item => item.id === tabId);
+            const menuItem = MENU_ITEMS.find(item => item?.id === tabId);
             if (menuItem) return menuItem;
         }
-        return MENU_ITEMS.find(item => item.id === 'Dashboard') || MENU_ITEMS[0];
+        
+        // Fallback to Dashboard from MENU_ITEMS
+        const dashboardItem = MENU_ITEMS.find(item => item?.id === 'Dashboard');
+        if (dashboardItem) return dashboardItem;
+        
+        // Create a default dashboard item if none found
+        return {
+            id: 'Dashboard',
+            label: 'Dashboard',
+            path: '/dashboard'
+        };
     };
 
     const initialTab = getInitialTabFromURL();
@@ -147,10 +177,12 @@ export const TabProvider = ({ children, sidebarOpen }) => {
                             closeable: newTab.id !== 'Dashboard'
                         }
                     ]);
-                } else {
-                    // Invalid tab, redirect to Dashboard
+                } else if (!tabExists) {
+                    // Invalid tab, redirect to Dashboard only if no tabs exist
                     console.warn(`Invalid tab: ${currentTabId}, redirecting to Dashboard`);
-                    navigate('/dashboard');
+                    if (tabs.length === 0) {
+                        navigate('/dashboard');
+                    }
                     return;
                 }
             }
@@ -159,49 +191,24 @@ export const TabProvider = ({ children, sidebarOpen }) => {
             if (currentTabId !== activeTab) {
                 setActiveTab(currentTabId);
             }
-        }
-    }, [location.pathname, navigate]);
-
-    // Comprehensive tab validation
-    useEffect(() => {
-        const validTabIds = tabs.map(tab => tab.id);
-        
-        // If activeTab is invalid
-        if (!validTabIds.includes(activeTab)) {
-            console.warn(`Invalid activeTab: ${activeTab}, available tabs:`, validTabIds);
-            
-            // Try Dashboard first, then first available tab
-            const fallbackTab = validTabIds.includes('Dashboard') ? 'Dashboard' : validTabIds[0];
-            
-            if (fallbackTab) {
-                console.log(`Setting fallback tab: ${fallbackTab}`);
-                setActiveTab(fallbackTab);
-                
-                // Also navigate to the correct URL
-                const fallbackUrl = TAB_TO_URL_MAP[fallbackTab];
-                if (fallbackUrl && location.pathname !== fallbackUrl) {
-                    navigate(fallbackUrl);
-                }
+        } else if (tabs.length > 0 && !tabs.some(tab => tab.id === activeTab)) {
+            // Emergency fallback - if activeTab is invalid, switch to first available tab
+            const fallbackTab = tabs[0].id;
+            setActiveTab(fallbackTab);
+            const fallbackUrl = TAB_TO_URL_MAP[fallbackTab];
+            if (fallbackUrl) {
+                navigate(fallbackUrl);
             }
         }
-    }, [activeTab, tabs, navigate, location.pathname]);
-
-    // Tab validation for MUI Tabs component
-    useEffect(() => {
-        const validTabIds = tabs.map(tab => tab.id);
-        
-        // Extra safety: if we somehow have an invalid activeTab when rendering
-        if (activeTab && !validTabIds.includes(activeTab)) {
-            // Emergency fallback
-            const emergencyTab = 'Dashboard';
-            if (validTabIds.includes(emergencyTab)) {
-                console.error(`Emergency tab validation triggered, setting to: ${emergencyTab}`);
-                setActiveTab(emergencyTab);
-            }
-        }
-    }, [activeTab, tabs]);
+    }, [location.pathname, navigate, activeTab, tabs]);
 
     const openTab = (tabId, skipNavigation = false) => {
+        // Validate tabId
+        if (!tabId) {
+            console.error('Cannot open tab: tabId is undefined or null');
+            return;
+        }
+
         const tabExists = tabs.some(tab => tab.id === tabId);
 
         if (!tabExists) {
@@ -215,10 +222,15 @@ export const TabProvider = ({ children, sidebarOpen }) => {
                 setTabs(prevTabs => [
                     ...prevTabs,
                     {
-                        ...newTab,
+                        id: newTab.id,
+                        label: newTab.label,
+                        component: newTab.id,
                         closeable: newTab.id !== 'Dashboard' // Dashboard is never closeable
                     }
                 ]);
+            } else {
+                console.warn(`Tab ${tabId} not found in MENU_ITEMS`);
+                return;
             }
         }
 
@@ -245,12 +257,30 @@ export const TabProvider = ({ children, sidebarOpen }) => {
     };
 
     const getActiveComponent = () => {
+        // If no tabs, return a default component
+        if (tabs.length === 0) {
+            console.warn('No tabs available');
+            return () => (
+                <Box sx={{ p: 2, textAlign: 'center', color: 'error.main' }}>
+                    No tabs available.
+                </Box>
+            );
+        }
+
         const activeTabItem = tabs.find(tab => tab.id === activeTab);
         
-        console.log('Active Tab Item:', activeTabItem); // Debugging log
-
+        // If activeTabItem not found, try to find the first tab as fallback
         if (!activeTabItem) {
             console.warn(`No tab found for activeTab: ${activeTab}`);
+            const firstTab = tabs[0];
+            if (firstTab) {
+                // Try to set the first tab as active
+                setActiveTab(firstTab.id);
+                const Component = COMPONENT_MAP[firstTab.id];
+                if (Component) {
+                    return Component;
+                }
+            }
             return () => (
                 <Box sx={{ p: 2, textAlign: 'center', color: 'error.main' }}>
                     No component found for this tab.
@@ -260,8 +290,6 @@ export const TabProvider = ({ children, sidebarOpen }) => {
 
         const Component = COMPONENT_MAP[activeTabItem.id];
         
-        console.log('Component:', Component); // Debugging log
-
         if (!Component) {
             console.warn(`No component mapped for tab: ${activeTabItem.id}`);
             return () => (

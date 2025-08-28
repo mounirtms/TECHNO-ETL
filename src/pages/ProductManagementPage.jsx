@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import {
   Box,
   Typography,
@@ -36,8 +36,10 @@ import { toast } from 'react-toastify';
 
 // Components
 import ProductManagementGrid from '../components/grids/magento/ProductManagementGrid';
-import BulkMediaUploadDialog from '../components/dialogs/BulkMediaUploadDialog';
-import EnhancedBulkMediaUploadDialog from '../components/dialogs/EnhancedBulkMediaUploadDialog';
+
+// Lazy load dialog components to avoid circular dependencies
+const BulkMediaUploadDialog = React.lazy(() => import('../components/dialogs/BulkMediaUploadDialog'));
+const EnhancedBulkMediaUploadDialog = React.lazy(() => import('../components/dialogs/EnhancedBulkMediaUploadDialog'));
 
 /**
  * ProductManagementPage - Main page for comprehensive product management
@@ -254,7 +256,7 @@ const ProductManagementPage = () => {
       </Paper>
 
       {/* Tab Content */}
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1, height: '100%' }}>
         {/* Tab Panel Component */}
         {activeTab === 0 && (
           <Paper sx={{ p: 3, borderRadius: 3, height: '100%' }}>
@@ -585,28 +587,32 @@ const ProductManagementPage = () => {
       </Box>
 
       {/* Enhanced Professional Bulk Media Upload Dialog */}
-      <EnhancedBulkMediaUploadDialog
-        open={enhancedBulkMediaDialogOpen}
-        onClose={() => setEnhancedBulkMediaDialogOpen(false)}
-        onComplete={(results) => {
-          console.log('Enhanced bulk media upload completed:', results);
-          const successful = results.filter(r => r.status === 'success').length;
-          const failed = results.filter(r => r.status === 'error').length;
-          toast.success(`Professional upload completed: ${successful} successful, ${failed} failed`);
-          setEnhancedBulkMediaDialogOpen(false);
-        }}
-      />
+      <Suspense fallback={<CircularProgress />}>
+        <EnhancedBulkMediaUploadDialog
+          open={enhancedBulkMediaDialogOpen}
+          onClose={() => setEnhancedBulkMediaDialogOpen(false)}
+          onComplete={(results) => {
+            console.log('Enhanced bulk media upload completed:', results);
+            const successful = results.filter(r => r.status === 'success').length;
+            const failed = results.filter(r => r.status === 'error').length;
+            toast.success(`Professional upload completed: ${successful} successful, ${failed} failed`);
+            setEnhancedBulkMediaDialogOpen(false);
+          }}
+        />
+      </Suspense>
 
       {/* Basic Bulk Media Upload Dialog */}
-      <BulkMediaUploadDialog
-        open={bulkMediaDialogOpen}
-        onClose={() => setBulkMediaDialogOpen(false)}
-        onComplete={(results) => {
-          console.log('Basic bulk media upload completed:', results);
-          toast.success(`Media upload completed: ${results.filter(r => r.status === 'success').length} successful`);
-          setBulkMediaDialogOpen(false);
-        }}
-      />
+      <Suspense fallback={<CircularProgress />}>
+        <BulkMediaUploadDialog
+          open={bulkMediaDialogOpen}
+          onClose={() => setBulkMediaDialogOpen(false)}
+          onComplete={(results) => {
+            console.log('Basic bulk media upload completed:', results);
+            toast.success(`Media upload completed: ${results.filter(r => r.status === 'success').length} successful`);
+            setBulkMediaDialogOpen(false);
+          }}
+        />
+      </Suspense>
     </Box>
   );
 };

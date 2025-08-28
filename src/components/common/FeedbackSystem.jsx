@@ -3,7 +3,7 @@
  * Provides success messages, confirmations, and user feedback
  * Includes animations and accessibility features
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import {
   Snackbar,
   Alert,
@@ -54,9 +54,9 @@ export const SuccessMessage = ({
   const { animations } = useCustomTheme();
   const isRTL = languages[currentLanguage]?.dir === 'rtl';
 
-  const TransitionComponent = (props) => {
-    return <Slide {...props} direction={isRTL ? "left" : "right"} />;
-  };
+  const TransitionComponent = React.forwardRef((props, ref) => {
+    return <Slide ref={ref} {...props} direction={isRTL ? "left" : "right"} />;
+  });
 
   return (
     <Snackbar
@@ -207,9 +207,9 @@ export const ConfirmationDialog = ({
     }
   };
 
-  const TransitionComponent = (props) => {
-    return <Fade {...props} />;
-  };
+  const TransitionComponent = React.forwardRef((props, ref) => {
+    return <Fade ref={ref} {...props} />;
+  });
 
   return (
     <Dialog
@@ -284,6 +284,10 @@ export const ProgressFeedback = ({
   const { translate } = useLanguage();
   const { animations } = useCustomTheme();
 
+  const TransitionComponent = React.forwardRef((props, ref) => {
+    return <Fade ref={ref} {...props} />;
+  });
+
   return (
     <Dialog
       open={open}
@@ -296,6 +300,7 @@ export const ProgressFeedback = ({
           p: 1
         }
       }}
+      TransitionComponent={animations ? TransitionComponent : undefined}
     >
       <DialogContent sx={{ textAlign: 'center', py: 4 }}>
         <Box sx={{ mb: 3 }}>
@@ -365,6 +370,10 @@ export const MultiStepFeedback = ({
     }
   };
 
+  const TransitionComponent = React.forwardRef((props, ref) => {
+    return <Fade ref={ref} {...props} />;
+  });
+
   return (
     <Dialog
       open={open}
@@ -377,6 +386,7 @@ export const MultiStepFeedback = ({
           minHeight: 400
         }
       }}
+      TransitionComponent={animations ? TransitionComponent : undefined}
     >
       <DialogTitle sx={{ textAlign: 'center', pb: 1 }}>
         <Typography variant="h5" sx={{ fontWeight: 600 }}>

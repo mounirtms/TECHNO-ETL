@@ -5,7 +5,7 @@ import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/docs/', // Use relative paths
+  base: '/docs/', // Use relative paths for subdirectory deployment
   publicDir: 'assets', // Directory for public assets
   build: {
     outDir: 'dist', // Output directory for build files
@@ -41,7 +41,9 @@ export default defineConfig({
     }
   },
   server: {
-    port: 3000, // Development server port
-    open: true // Open the browser on server start
+    port: 2000, // Development server port
+    open: true, // Open the browser on server start
+    // Ensure the base path is correctly handled in development
+    base: '/docs/'
   }
 });

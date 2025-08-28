@@ -558,6 +558,15 @@ const ProductsGrid = () => {
     setInfoDialogOpen(true);
   }, []);
 
+  const handleCategoryAssignment = useCallback((product) => {
+    console.log('Category assignment for product:', product.sku);
+    // For now, just show a toast. Can be expanded to open a category dialog
+    toast.info(`Category assignment for ${product.name || product.sku}`);
+    // TODO: Implement category assignment dialog
+    // setCategoryDialogOpen(true);
+    // setSelectedProduct(product);
+  }, []);
+
 
 
   // ===== CONTEXT MENU =====

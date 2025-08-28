@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider, CssBaseline, AppBar, Toolbar, Box, Typography } from '@mui/material';
+import { ThemeProvider, CssBaseline, Box, Typography } from '@mui/material';
 import theme from './theme';
 import Layout from './components/Layout';
 import { SearchProvider } from './contexts/SearchContext';

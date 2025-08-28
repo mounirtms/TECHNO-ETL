@@ -1,20 +1,29 @@
 /**
- * Enhanced Error Boundary Component with RTL Support
- * Provides comprehensive error handling for React components
- * Includes user-friendly error messages and recovery options
+ * Modern Error Boundary Component
+ * 
+ * Enhanced error boundary with React 18 features
+ * Includes error recovery, logging, and user-friendly error displays
+ * 
+ * @author Techno-ETL Team
+ * @version 2.0.0
  */
-import React from 'react';
+
+import React, { 
+  Component, 
+  ErrorInfo, 
+  ReactNode, 
+  PropsWithChildren,
+  lazy,
+  Suspense
+} from 'react';
 import {
   Box,
+  Paper,
   Typography,
   Button,
   Alert,
-  AlertTitle,
-  Paper,
-  Stack,
-  Chip,
-  IconButton,
   Collapse,
+  IconButton,
   Divider,
   useTheme
 } from '@mui/material';
@@ -22,371 +31,434 @@ import {
   Error as ErrorIcon,
   Refresh as RefreshIcon,
   ExpandMore as ExpandMoreIcon,
-  ExpandLess as ExpandLessIcon,
   BugReport as BugReportIcon,
-  Home as HomeIcon,
-  ContentCopy as CopyIcon
+  Home as HomeIcon
 } from '@mui/icons-material';
-import { useLanguage } from '../../contexts/LanguageContext';
-import { useCustomTheme } from '../../contexts/ThemeContext';
-import { toast } from 'react-toastify';
 
-class ErrorBoundary extends React.Component {
+// ============================================================================
+// PROP TYPES AND JSDOC DOCUMENTATION
+// ============================================================================
+
+/**
+ * @typedef {Object} ErrorBoundaryState
+ * @property {boolean} hasError - Whether an error has occurred
+ * @property {Error|null} error - The error object
+ * @property {ErrorInfo|null} errorInfo - React error info
+ * @property {string} errorId - Unique error identifier
+ * @property {number} retryCount - Number of retry attempts
+ * @property {boolean} showDetails - Whether to show error details
+ */
+
+/**
+ * @typedef {Object} ErrorBoundaryProps
+ * @property {ReactNode} children - Child components
+ * @property {React.ComponentType} [fallback] - Custom error fallback component
+ * @property {function} [onError] - Error handler callback
+ * @property {function} [onReset] - Reset handler callback
+ * @property {Array<string|number>} [resetKeys] - Keys that trigger reset
+ * @property {boolean} [resetOnPropsChange] - Reset on prop changes
+ * @property {boolean} [isolate] - Isolate error boundary
+ * @property {number} [maxRetries] - Maximum retry attempts
+ */
+
+/**
+ * @typedef {Object} ErrorFallbackProps
+ * @property {Error} error - The error object
+ * @property {ErrorInfo|null} errorInfo - React error info
+ * @property {function} resetError - Function to reset error state
+ * @property {number} retryCount - Current retry count
+ * @property {number} maxRetries - Maximum retry attempts
+ * @property {string} errorId - Unique error identifier
+ */
+
+// ============================================================================
+// DEFAULT ERROR FALLBACK COMPONENT
+// ============================================================================
+
+const DefaultErrorFallback = ({
+  error,
+  errorInfo,
+  resetError,
+  retryCount,
+  maxRetries,
+  errorId
+}) => {
+  const theme = useTheme();
+  const [showDetails, setShowDetails] = React.useState(false);
+
+  const handleReportError = () => {
+    // Implement error reporting logic
+    console.log('Reporting error:', { error, errorInfo, errorId });
+    
+    // Could integrate with error reporting service
+    // e.g., Sentry, LogRocket, etc.
+  };
+
+  const handleRetry = () => {
+    if (retryCount < maxRetries) {
+      resetError();
+    }
+  };
+
+  const canRetry = retryCount < maxRetries;
+
+  return (
+    <Paper
+      elevation={3}
+      sx={{
+        p: 3,
+        m: 2,
+        textAlign: 'center',
+        border: `2px solid ${theme.palette.error.main}`,
+        borderRadius: 2
+      }}
+    >
+      <Box sx={{ mb: 2 }}>
+        <ErrorIcon 
+          sx={{ 
+            fontSize: 64, 
+            color: 'error.main',
+            mb: 2
+          }} 
+        />
+        
+        <Typography variant="h5" component="h2" gutterBottom color="error">
+          Oops! Something went wrong
+        </Typography>
+        
+        <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
+          {error.message || 'An unexpected error occurred'}
+        </Typography>
+
+        {retryCount > 0 && (
+          <Alert severity="warning" sx={{ mb: 2 }}>
+            Retry attempt {retryCount} of {maxRetries}
+          </Alert>
+        )}
+      </Box>
+
+      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', mb: 2 }}>
+        {canRetry && (
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<RefreshIcon />}
+            onClick={handleRetry}
+          >
+            Try Again
+          </Button>
+        )}
+        
+        <Button
+          variant="outlined"
+          startIcon={<HomeIcon />}
+          onClick={() => window.location.href = '/'}
+        >
+          Go Home
+        </Button>
+        
+        <Button
+          variant="outlined"
+          color="error"
+          startIcon={<BugReportIcon />}
+          onClick={handleReportError}
+        >
+          Report Issue
+        </Button>
+      </Box>
+
+      <Divider sx={{ my: 2 }} />
+
+      <Box>
+        <Button
+          variant="text"
+          endIcon={<ExpandMoreIcon sx={{ 
+            transform: showDetails ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.3s'
+          }} />}
+          onClick={() => setShowDetails(!showDetails)}
+        >
+          {showDetails ? 'Hide' : 'Show'} Error Details
+        </Button>
+
+        <Collapse in={showDetails}>
+          <Box sx={{ mt: 2, textAlign: 'left' }}>
+            <Typography variant="subtitle2" gutterBottom>
+              Error ID: {errorId}
+            </Typography>
+            
+            <Alert severity="error" sx={{ mb: 2 }}>
+              <Typography variant="body2" component="pre" sx={{ 
+                whiteSpace: 'pre-wrap',
+                fontFamily: 'monospace',
+                fontSize: '0.8rem'
+              }}>
+                {error.stack}
+              </Typography>
+            </Alert>
+
+            {errorInfo && (
+              <Alert severity="info">
+                <Typography variant="body2" component="pre" sx={{ 
+                  whiteSpace: 'pre-wrap',
+                  fontFamily: 'monospace',
+                  fontSize: '0.8rem'
+                }}>
+                  Component Stack:
+                  {errorInfo.componentStack}
+                </Typography>
+              </Alert>
+            )}
+          </Box>
+        </Collapse>
+      </Box>
+    </Paper>
+  );
+};
+
+// ============================================================================
+// ERROR BOUNDARY CLASS COMPONENT
+// ============================================================================
+
+class ErrorBoundary extends Component {
+  resetTimeoutId = null;
+
   constructor(props) {
     super(props);
+
     this.state = {
       hasError: false,
       error: null,
       errorInfo: null,
-      showDetails: false,
-      retryCount: 0
+      errorId: '',
+      retryCount: 0,
+      showDetails: false
     };
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true };
+    // Generate unique error ID
+    const errorId = `error_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    return {
+      hasError: true,
+      error,
+      errorId
+    };
   }
 
   componentDidCatch(error, errorInfo) {
+    console.error('ErrorBoundary caught an error:', error, errorInfo);
+
     this.setState({
-      error,
       errorInfo
     });
 
-    // Log error to console for development
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    // Call error handler if provided
+    this.props.onError?.(error, errorInfo);
 
-    // In production, you might want to log to an error reporting service
-    if (process.env.NODE_ENV === 'production') {
-      // Example: logErrorToService(error, errorInfo);
+    // Report error to monitoring service
+    this.reportError(error, errorInfo);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { resetKeys, resetOnPropsChange } = this.props;
+    const { hasError } = this.state;
+
+    if (hasError && !prevProps.hasError) {
+      // New error occurred
+      return;
+    }
+
+    if (hasError && resetOnPropsChange) {
+      // Reset on any prop change if specified
+      this.resetError();
+      return;
+    }
+
+    if (hasError && resetKeys) {
+      // Reset if any reset key changed
+      const hasResetKeyChanged = resetKeys.some(
+        (key, index) => key !== prevProps.resetKeys?.[index]
+      );
+
+      if (hasResetKeyChanged) {
+        this.resetError();
+      }
     }
   }
 
-  handleRetry = () => {
-    this.setState(prevState => ({
+  componentWillUnmount() {
+    if (this.resetTimeoutId) {
+      clearTimeout(this.resetTimeoutId);
+    }
+  }
+
+  reportError = (error, errorInfo) => {
+    // Implement error reporting logic
+    // This could send errors to Sentry, LogRocket, or custom service
+    
+    const errorReport = {
+      message: error.message,
+      stack: error.stack,
+      componentStack: errorInfo.componentStack,
+      errorId: this.state.errorId,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent,
+      url: window.location.href
+    };
+
+    // Example: Send to monitoring service
+    // monitoringService.captureException(error, errorReport);
+    
+    console.log('Error Report:', errorReport);
+  };
+
+  resetError = () => {
+    this.setState({
       hasError: false,
       error: null,
       errorInfo: null,
-      showDetails: false,
-      retryCount: prevState.retryCount + 1
-    }));
-  };
-
-  handleReload = () => {
-    window.location.reload();
-  };
-
-  handleGoHome = () => {
-    window.location.href = '/dashboard';
-  };
-
-  toggleDetails = () => {
-    this.setState(prevState => ({
-      showDetails: !prevState.showDetails
-    }));
-  };
-
-  copyErrorDetails = () => {
-    const errorDetails = `
-Error: ${this.state.error?.message || 'Unknown error'}
-Stack: ${this.state.error?.stack || 'No stack trace'}
-Component Stack: ${this.state.errorInfo?.componentStack || 'No component stack'}
-Retry Count: ${this.state.retryCount}
-Timestamp: ${new Date().toISOString()}
-User Agent: ${navigator.userAgent}
-URL: ${window.location.href}
-    `.trim();
-
-    navigator.clipboard.writeText(errorDetails).then(() => {
-      toast.success('Error details copied to clipboard');
-    }).catch(() => {
-      toast.error('Failed to copy error details');
+      errorId: '',
+      retryCount: this.state.retryCount + 1,
+      showDetails: false
     });
+
+    this.props.onReset?.();
+  };
+
+  autoRetry = () => {
+    const { maxRetries = 3 } = this.props;
+    const { retryCount } = this.state;
+
+    if (retryCount < maxRetries) {
+      this.resetTimeoutId = window.setTimeout(() => {
+        this.resetError();
+      }, 1000 * Math.pow(2, retryCount)); // Exponential backoff
+    }
   };
 
   render() {
-    if (this.state.hasError) {
-      return (
-        <ErrorBoundaryFallback
-          error={this.state.error}
-          errorInfo={this.state.errorInfo}
-          retryCount={this.state.retryCount}
-          showDetails={this.state.showDetails}
-          onRetry={this.handleRetry}
-          onReload={this.handleReload}
-          onGoHome={this.handleGoHome}
-          onToggleDetails={this.toggleDetails}
-          onCopyDetails={this.copyErrorDetails}
-          componentName={this.props.componentName}
-          fallbackComponent={this.props.fallbackComponent}
+    const { hasError, error, errorInfo, errorId, retryCount } = this.state;
+    const { children, fallback: FallbackComponent, maxRetries = 3, isolate } = this.props;
+
+    if (hasError && error) {
+      const ErrorFallback = FallbackComponent || DefaultErrorFallback;
+
+      const errorElement = (
+        <ErrorFallback
+          error={error}
+          errorInfo={errorInfo}
+          resetError={this.resetError}
+          retryCount={retryCount}
+          maxRetries={maxRetries}
+          errorId={errorId}
         />
       );
+
+      // If isolate is true, wrap in error boundary to prevent error propagation
+      if (isolate) {
+        return (
+          <Box sx={{ isolation: 'isolate' }}>
+            {errorElement}
+          </Box>
+        );
+      }
+
+      return errorElement;
     }
 
-    return this.props.children;
+    return children;
   }
 }
 
-// Functional component for the error fallback UI with RTL support
-const ErrorBoundaryFallback = ({
-  error,
-  errorInfo,
-  retryCount,
-  showDetails,
-  onRetry,
-  onReload,
-  onGoHome,
-  onToggleDetails,
-  onCopyDetails,
-  componentName,
-  fallbackComponent
+// ============================================================================
+// HIGHER-ORDER COMPONENT
+// ============================================================================
+
+/**
+ * HOC to wrap components with error boundary
+ * @param {React.ComponentType} Component - Component to wrap
+ * @param {Object} errorBoundaryProps - Error boundary props
+ * @returns {React.Component} Wrapped component
+ */
+export const withErrorBoundary = (
+  Component,
+  errorBoundaryProps
+) => {
+  const WrappedComponent = React.forwardRef((props, ref) => (
+    <ErrorBoundary {...errorBoundaryProps}>
+      <Component {...props} ref={ref} />
+    </ErrorBoundary>
+  ));
+
+  WrappedComponent.displayName = `withErrorBoundary(${Component.displayName || Component.name})`;
+
+  return WrappedComponent;
+};
+
+// ============================================================================
+// SUSPENSE + ERROR BOUNDARY WRAPPER
+// ============================================================================
+
+/**
+ * Combined Suspense and Error Boundary wrapper
+ * @param {Object} props - Component props
+ * @param {ReactNode} props.children - Child components
+ * @param {ReactNode} [props.suspenseFallback] - Suspense fallback
+ * @param {React.ComponentType} [props.errorFallback] - Error fallback component
+ * @param {function} [props.onError] - Error handler
+ * @returns {React.Component} Wrapped component
+ */
+export const SafeAsyncComponent = ({
+  children,
+  suspenseFallback = <div>Loading...</div>,
+  errorFallback,
+  onError
 }) => {
-  const theme = useTheme();
-  const { translate } = useLanguage();
-  const { animations } = useCustomTheme();
-
-  // If a custom fallback component is provided, render it
-  if (fallbackComponent) {
-    return React.createElement(fallbackComponent, {
-      error,
-      onRetry,
-      onReload,
-      onGoHome
-    });
-  }
-
-  const errorMessage = error?.message || translate('errors.unknown');
-  const isNetworkError = errorMessage.toLowerCase().includes('network') || 
-                        errorMessage.toLowerCase().includes('fetch');
-  const isChunkError = errorMessage.toLowerCase().includes('chunk') ||
-                      errorMessage.toLowerCase().includes('loading');
-
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '400px',
-        p: 3,
-        textAlign: 'center',
-        animation: animations ? 'fadeIn 0.3s ease-in-out' : 'none',
-        '@keyframes fadeIn': {
-          from: { opacity: 0, transform: 'translateY(20px)' },
-          to: { opacity: 1, transform: 'translateY(0)' }
-        }
-      }}
-    >
-      <Paper
-        elevation={3}
-        sx={{
-          p: 4,
-          maxWidth: 600,
-          width: '100%',
-          borderRadius: 3,
-          border: `2px solid ${theme.palette.error.light}`,
-          background: `linear-gradient(135deg, ${theme.palette.background.paper}, ${theme.palette.error.light}05)`
-        }}
-      >
-        <Stack spacing={3} alignItems="center">
-          {/* Error Icon */}
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: '50%',
-              backgroundColor: theme.palette.error.light + '20',
-              animation: animations ? 'pulse 2s infinite' : 'none',
-              '@keyframes pulse': {
-                '0%': { transform: 'scale(1)' },
-                '50%': { transform: 'scale(1.05)' },
-                '100%': { transform: 'scale(1)' }
-              }
-            }}
-          >
-            <ErrorIcon 
-              sx={{ 
-                fontSize: 48, 
-                color: theme.palette.error.main 
-              }} 
-            />
-          </Box>
-
-          {/* Error Title */}
-          <Typography 
-            variant="h5" 
-            color="error" 
-            sx={{ fontWeight: 600 }}
-          >
-            {translate('errors.boundary.title')}
-          </Typography>
-
-          {/* Error Description */}
-          <Alert 
-            severity="error" 
-            sx={{ 
-              width: '100%',
-              textAlign: 'left',
-              '& .MuiAlert-message': {
-                width: '100%'
-              }
-            }}
-          >
-            <AlertTitle>
-              {componentName ? 
-                translate('errors.boundary.componentError', { component: componentName }) :
-                translate('errors.boundary.genericError')
-              }
-            </AlertTitle>
-            
-            <Typography variant="body2" sx={{ mb: 1 }}>
-              {isNetworkError ? 
-                translate('errors.network.description') :
-                isChunkError ?
-                translate('errors.chunk.description') :
-                translate('errors.boundary.description')
-              }
-            </Typography>
-
-            {retryCount > 0 && (
-              <Chip
-                size="small"
-                label={translate('errors.boundary.retryCount', { count: retryCount })}
-                color="warning"
-                sx={{ mt: 1 }}
-              />
-            )}
-          </Alert>
-
-          {/* Action Buttons */}
-          <Stack 
-            direction={{ xs: 'column', sm: 'row' }} 
-            spacing={2} 
-            sx={{ width: '100%' }}
-          >
-            <Button
-              variant="contained"
-              startIcon={<RefreshIcon />}
-              onClick={onRetry}
-              color="primary"
-              size="large"
-              sx={{ 
-                flex: 1,
-                minHeight: 48,
-                borderRadius: 2
-              }}
-            >
-              {translate('errors.boundary.retry')}
-            </Button>
-
-            <Button
-              variant="outlined"
-              startIcon={<HomeIcon />}
-              onClick={onGoHome}
-              size="large"
-              sx={{ 
-                flex: 1,
-                minHeight: 48,
-                borderRadius: 2
-              }}
-            >
-              {translate('errors.boundary.goHome')}
-            </Button>
-          </Stack>
-
-          {/* Secondary Actions */}
-          <Stack 
-            direction={{ xs: 'column', sm: 'row' }} 
-            spacing={1} 
-            sx={{ width: '100%' }}
-          >
-            <Button
-              variant="text"
-              startIcon={<RefreshIcon />}
-              onClick={onReload}
-              size="small"
-              color="secondary"
-            >
-              {translate('errors.boundary.reload')}
-            </Button>
-
-            <Button
-              variant="text"
-              startIcon={<BugReportIcon />}
-              onClick={() => window.open('/bug-bounty', '_blank')}
-              size="small"
-              color="secondary"
-            >
-              {translate('errors.boundary.reportBug')}
-            </Button>
-          </Stack>
-
-          <Divider sx={{ width: '100%' }} />
-
-          {/* Error Details Toggle */}
-          <Box sx={{ width: '100%' }}>
-            <Button
-              variant="text"
-              onClick={onToggleDetails}
-              startIcon={showDetails ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-              size="small"
-              color="secondary"
-              sx={{ mb: 1 }}
-            >
-              {translate('errors.boundary.technicalDetails')}
-            </Button>
-
-            <Collapse in={showDetails}>
-              <Paper
-                variant="outlined"
-                sx={{
-                  p: 2,
-                  backgroundColor: theme.palette.grey[50],
-                  border: `1px solid ${theme.palette.divider}`,
-                  borderRadius: 2,
-                  maxHeight: 200,
-                  overflow: 'auto'
-                }}
-              >
-                <Stack spacing={1}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="caption" color="text.secondary">
-                      {translate('errors.boundary.errorDetails')}
-                    </Typography>
-                    <IconButton
-                      size="small"
-                      onClick={onCopyDetails}
-                      title={translate('errors.boundary.copyDetails')}
-                    >
-                      <CopyIcon fontSize="small" />
-                    </IconButton>
-                  </Box>
-                  
-                  <Typography
-                    variant="body2"
-                    component="pre"
-                    sx={{
-                      fontFamily: 'monospace',
-                      fontSize: '0.75rem',
-                      whiteSpace: 'pre-wrap',
-                      wordBreak: 'break-word',
-                      color: theme.palette.text.secondary,
-                      backgroundColor: theme.palette.background.paper,
-                      p: 1,
-                      borderRadius: 1,
-                      border: `1px solid ${theme.palette.divider}`
-                    }}
-                  >
-                    {error?.stack || errorMessage}
-                  </Typography>
-                </Stack>
-              </Paper>
-            </Collapse>
-          </Box>
-        </Stack>
-      </Paper>
-    </Box>
+    <ErrorBoundary fallback={errorFallback} onError={onError}>
+      <Suspense fallback={suspenseFallback}>
+        {children}
+      </Suspense>
+    </ErrorBoundary>
   );
 };
 
+// ============================================================================
+// REACT 18 ENHANCED ERROR BOUNDARY HOOK
+// ============================================================================
+
+/**
+ * Hook for programmatic error handling
+ * @returns {Object} Error handling functions
+ */
+export const useErrorBoundary = () => {
+  const [error, setError] = React.useState(null);
+
+  const resetError = React.useCallback(() => {
+    setError(null);
+  }, []);
+
+  const captureError = React.useCallback((error) => {
+    setError(error);
+  }, []);
+
+  React.useEffect(() => {
+    if (error) {
+      throw error;
+    }
+  }, [error]);
+
+  return {
+    captureError,
+    resetError
+  };
+};
+
+// ============================================================================
+// EXPORTS
+// ============================================================================
+
 export default ErrorBoundary;
+export { ErrorBoundary };

@@ -1,63 +1,45 @@
 import React from 'react';
 import {
-    AppBar,
     Toolbar,
     IconButton,
     Typography,
-    Avatar,
-    Menu,
-    MenuItem
+    useTheme
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
 import { StyledAppBar } from './styles';
-import { DRAWER_WIDTH, COLLAPSED_WIDTH } from './Constants';
+import { DRAWER_WIDTH, COLLAPSED_WIDTH, HEADER_HEIGHT } from './Constants';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { LanguageProvider, useLanguage } from '../../contexts/LanguageContext';
+import { useLanguage } from '../../contexts/LanguageContext';
+import UserMenu from './UserMenu';
 
-import { useAuth } from '../../contexts/AuthContext';
-import { useTab } from '../../contexts/TabContext';
-import UserMenu from './UserMenu'; 
-import AccountCircleIcon from '@mui/icons-material/AccountCircle'; // Import the AccountCircle icon
-
-export const Header = ({
-    isDrawerCollapsed,
-    handleDrawerToggle,
-    handleProfileMenuOpen,
-    handleProfileMenuClose,
-    anchorEl
-}) => {
-    const { currentUser } = useAuth();
-    const { openTab } = useTab();
-    const { currentLanguage, translate } = useLanguage();
-    const isRTL = currentLanguage === 'ar';
- 
-    const handleLogout = async () => {
-        try {
-            await logout();
-            handleProfileMenuClose();
-            // Optionally redirect to login page
-        } catch (error) {
-            console.error('Logout failed', error);
-            // Optionally show an error notification
-        }
-    };
+const Header = ({ sidebarOpen, handleDrawerToggle }) => {
+    const theme = useTheme();
+    const { translate } = useLanguage();
+    const isRTL = theme.direction === 'rtl';
 
     return (
         <StyledAppBar
             position="fixed"
-            open={!isDrawerCollapsed}
+            open={sidebarOpen}
+            isRTL={isRTL}
             sx={{
+                height: HEADER_HEIGHT,
                 width: {
                     xs: '100%',
-                    sm: `calc(100% - ${isDrawerCollapsed ? COLLAPSED_WIDTH : DRAWER_WIDTH}px)`
+                    sm: `calc(100% - ${sidebarOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH}px)`
                 },
-                marginLeft: {
-                    sm: isDrawerCollapsed ? `${COLLAPSED_WIDTH}px` : `${DRAWER_WIDTH}px`
-                },
-                transition: theme => theme.transitions.create(['width', 'margin'], {
+                ...(isRTL ? {
+                    marginRight: {
+                        sm: sidebarOpen ? `${DRAWER_WIDTH}px` : `${COLLAPSED_WIDTH}px`
+                    }
+                } : {
+                    marginLeft: {
+                        sm: sidebarOpen ? `${DRAWER_WIDTH}px` : `${COLLAPSED_WIDTH}px`
+                    }
+                }),
+                transition: theme.transitions.create(['width', 'margin'], {
                     easing: theme.transitions.easing.sharp,
-                    duration: theme.transitions.duration.enteringScreen,
+                    duration: sidebarOpen ? theme.transitions.duration.enteringScreen : theme.transitions.duration.leavingScreen,
                 }),
             }}
         >
@@ -66,24 +48,22 @@ export const Header = ({
                     size="large"
                     edge="start"
                     color="inherit"
-                    aria-label={isDrawerCollapsed ? translate('common.expandMenu') : translate('common.collapseMenu')}
+                    aria-label={sidebarOpen ? translate('common.collapseMenu') : translate('common.expandMenu')}
                     onClick={handleDrawerToggle}
                     sx={{ 
-                        mr: 2,
-                        
-                        display: 'flex' // Always show the toggle button
+                        marginRight: isRTL ? 0 : theme.spacing(2),
+                        marginLeft: isRTL ? theme.spacing(2) : 0,
+                        display: 'flex'
                     }}
                 >
-                    {isDrawerCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                    {sidebarOpen ? (isRTL ? <ChevronRightIcon /> : <ChevronLeftIcon />) : (isRTL ? <ChevronLeftIcon /> : <ChevronRightIcon />)}
                 </IconButton>
 
                 <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
                     {translate('common.appTitle')}
                 </Typography>
 
-      
-               
-                <UserMenu  />
+                <UserMenu />
             </Toolbar>
         </StyledAppBar>
     );

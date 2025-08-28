@@ -52,10 +52,12 @@
     "webpack-node-externals": "^3.0.0"
   },
   "scripts": {
-    "start": "node --no-warnings --expose-gc server.js",
-    "dev": "nodemon --inspect --expose-gc server.js",
+    "start": "cross-env NODE_ENV=development PORT=5000 node --no-warnings --expose-gc server.js",
+    "dev": "cross-env NODE_ENV=development PORT=5000 nodemon --inspect --expose-gc server.js",
+    "start:prod": "cross-env NODE_ENV=production PORT=5000 node --no-warnings --expose-gc server.js",
     "build": "node build-optimized.js",
-    
+    "start:prod": "cross-env NODE_ENV=production PORT=5000 HOST=0.0.0.0 node --no-warnings --expose-gc server.js",
+    "start:dev": "cross-env NODE_ENV=development PORT=5000 HOST=localhost nodemon --inspect --expose-gc server.js",
     "health": "curl http://localhost:5000/api/health",
     "clean": "rimraf dist dist_prod/backend node_modules/.cache"
   }

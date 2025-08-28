@@ -48,7 +48,7 @@ import {
 import { useAuth } from '../../contexts/AuthContext';
 import { database } from '../../config/firebase';
 import { ref, get, set, onValue, remove, update, child, push } from 'firebase/database';
-import { MENU_TREE } from '../Layout/MenuTree';
+import { MENU_TREE } from '../Layout/MenuTree.js';
 import { 
     USER_ROLES, 
     ROLE_HIERARCHY, 

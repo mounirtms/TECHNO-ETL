@@ -901,6 +901,7 @@ const BugBountyDashboard = () => {
         onClose={() => setAdminPanelOpen(false)}
       />
     </Container>
+  </ErrorBoundary>
   );
 };
 

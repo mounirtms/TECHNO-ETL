@@ -42,9 +42,9 @@ import { proxyMagentoRequest } from './src/controllers/apiController.js';
 //   errorTrackingMiddleware
 // } from './src/middleware/performanceMiddleware.js';
 
-// Use production config for port and host (moved up before usage)
-const PORT = productionConfig.server.port;
-const HOST = productionConfig.server.host;
+// Use environment variables with fallback to production config
+const PORT = process.env.PORT || productionConfig.server.port || 5000;
+const HOST = process.env.HOST || productionConfig.server.host || '0.0.0.0';
 
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
 dotenv.config({ path: `../${envFile}` });
@@ -56,15 +56,35 @@ let server;
 // Set a global request timeout to prevent requests from hanging  
 app.use(timeout('120s')); // Increased to 2 minutes for heavy operations
 
-// Rate limiting to protect against brute-force attacks and API abuse
-const apiLimiter = rateLimit({
-    ...productionConfig.rateLimit,
-    message: { error: productionConfig.rateLimit.message }
-});
-app.use('/api/', apiLimiter);
+// Optimized rate limiting based on environment
+const rateLimitConfig = process.env.NODE_ENV === 'production' 
+    ? productionConfig.rateLimit 
+    : { windowMs: 15 * 60 * 1000, max: 1000, message: 'Too many requests' }; // Much more lenient in dev
 
-// Use production CORS configuration
-app.use(cors(productionConfig.cors));
+const apiLimiter = rateLimit({
+    ...rateLimitConfig,
+    message: { error: rateLimitConfig.message }
+});
+
+// Only apply rate limiting in production or when specifically enabled
+if (process.env.NODE_ENV === 'production' || process.env.ENABLE_RATE_LIMIT === 'true') {
+    app.use('/api/', apiLimiter);
+}
+
+// Enhanced CORS configuration for frontend port 80
+const corsOptions = {
+    ...productionConfig.cors,
+    origin: [
+        'http://localhost:80',
+        'http://127.0.0.1:80',
+        'http://localhost:3000', // Fallback for development
+        'http://127.0.0.1:3000',
+        ...(process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [])
+    ],
+    credentials: true,
+    optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 
 // Add security headers
 app.use(helmet(productionConfig.security.helmet));
@@ -80,18 +100,22 @@ app.use(helmet(productionConfig.security.helmet));
 // app.use(warningMiddleware);
 // app.use(performanceMiddleware);
 
-// Log server startup
-console.log('TECHNO-ETL Backend Server starting', {
+// Log server startup with enhanced information
+console.log('🚀 TECHNO-ETL Backend Server starting', {
     port: PORT,
+    host: HOST,
     environment: process.env.NODE_ENV || 'development',
     nodeVersion: process.version,
-    pid: process.pid
+    pid: process.pid,
+    corsOrigins: corsOptions.origin,
+    timestamp: new Date().toISOString()
 });
 
-// Add compression with threshold
+// Enhanced compression with development optimization
+const compressionLevel = process.env.NODE_ENV === 'production' ? 6 : 1;
 app.use(compression({
-    threshold: 1024, // Only compress responses larger than 1KB
-    level: 9, // Maximum compression level
+    threshold: process.env.NODE_ENV === 'production' ? 1024 : 4096, // Larger threshold in dev
+    level: compressionLevel, // Lower compression in dev for speed
     filter: (req, res) => {
         if (req.headers['x-no-compression']) {
             return false;
@@ -252,18 +276,35 @@ app.use((err, req, res, next) => {
 // Main function to run the operations
 async function main() {
     try {
-        // Initialize database connections and tokens (temporarily disabled for debugging)
-        console.log('🔗 Initializing database connections...');
-        try {
-            await connectToDatabases();
-            logger.info('✅ Server initialized with database connections');
-        } catch (dbError) {
-            console.log('⚠️ Database connection failed, continuing in API-only mode:', dbError.message);
-            logger.warn('⚠️ Database connection failed, continuing in API-only mode');
+        // Start server immediately in development for faster startup
+        if (process.env.NODE_ENV === 'development') {
+            console.log('🚀 Development mode: Starting server immediately for faster startup');
+            startServer();
+            
+            // Initialize database connections asynchronously in background
+            console.log('🔗 Initializing database connections in background...');
+            try {
+                await connectToDatabases();
+                logger.info('✅ Server initialized with database connections');
+                console.log('✅ Database connections established');
+            } catch (dbError) {
+                console.log('⚠️ Database connection failed, continuing in API-only mode:', dbError.message);
+                logger.warn('⚠️ Database connection failed, continuing in API-only mode');
+            }
+        } else {
+            // Production mode: Initialize database connections first
+            console.log('🔗 Initializing database connections...');
+            try {
+                await connectToDatabases();
+                logger.info('✅ Server initialized with database connections');
+            } catch (dbError) {
+                console.log('⚠️ Database connection failed, continuing in API-only mode:', dbError.message);
+                logger.warn('⚠️ Database connection failed, continuing in API-only mode');
+            }
+            
+            // Start the server
+            startServer();
         }
-
-        // Start the server
-        startServer();
     } catch (err) {
         logger.error('Failed to initialize server', { error: err.message });
         console.error('Failed to initialize server:', err.message);

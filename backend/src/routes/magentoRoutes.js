@@ -383,6 +383,107 @@ router.get('/inventory/status', async (req, res) => {
     }
 });
 
+/**
+ * GET /api/magento/categories/distribution - Get category distribution stats
+ * Used by: Frontend dashboard for category analytics
+ */
+router.get('/categories/distribution', async (req, res) => {
+    try {
+        console.log('📊 Getting category distribution...');
+
+        // Simulate category distribution API
+        await new Promise(resolve => setTimeout(resolve, 250));
+
+        const mockCategoryDistribution = {
+            total_categories: 45,
+            distribution: [
+                { category: 'Electronics', count: 586, percentage: 23.0, parent: 'root' },
+                { category: 'Clothing', count: 412, percentage: 16.2, parent: 'root' },
+                { category: 'Home & Garden', count: 298, percentage: 11.7, parent: 'root' },
+                { category: 'Sports', count: 245, percentage: 9.6, parent: 'root' },
+                { category: 'Books', count: 189, percentage: 7.4, parent: 'root' }
+            ],
+            nested_categories: [
+                { category: 'Smartphones', count: 123, parent: 'Electronics' },
+                { category: 'Laptops', count: 89, parent: 'Electronics' },
+                { category: 'T-Shirts', count: 156, parent: 'Clothing' },
+                { category: 'Jeans', count: 78, parent: 'Clothing' }
+            ],
+            most_popular: 'Electronics',
+            fastest_growing: 'Home & Garden',
+            empty_categories: 3,
+            last_updated: new Date().toISOString()
+        };
+
+        res.json({
+            success: true,
+            message: 'Category distribution retrieved successfully',
+            data: mockCategoryDistribution
+        });
+
+    } catch (error) {
+        console.error('❌ Error getting category distribution:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to retrieve category distribution',
+            error: error.message
+        });
+    }
+});
+
+/**
+ * GET /api/magento/products/attributes - Get product attributes information
+ * Used by: Frontend dashboard for product attributes analytics
+ */
+router.get('/products/attributes', async (req, res) => {
+    try {
+        console.log('📊 Getting product attributes...');
+
+        // Simulate product attributes API
+        await new Promise(resolve => setTimeout(resolve, 180));
+
+        const mockAttributes = {
+            total_attributes: 127,
+            required_attributes: 15,
+            optional_attributes: 112,
+            attribute_sets: [
+                { set_name: 'Default', count: 1856, attributes: 32 },
+                { set_name: 'Electronics', count: 423, attributes: 45 },
+                { set_name: 'Clothing', count: 268, attributes: 28 }
+            ],
+            most_used_attributes: [
+                { code: 'name', usage: 100, type: 'text', required: true },
+                { code: 'price', usage: 100, type: 'price', required: true },
+                { code: 'description', usage: 98.5, type: 'textarea', required: false },
+                { code: 'brand', usage: 87.3, type: 'select', required: false },
+                { code: 'color', usage: 65.2, type: 'multiselect', required: false }
+            ],
+            custom_attributes: [
+                { code: 'techno_ref', usage: 45.8, type: 'text' },
+                { code: 'trending', usage: 23.4, type: 'boolean' },
+                { code: 'best_seller', usage: 18.7, type: 'boolean' },
+                { code: 'a_la_une', usage: 12.3, type: 'boolean' }
+            ],
+            unused_attributes: 8,
+            last_updated: new Date().toISOString()
+        };
+
+        res.json({
+            success: true,
+            message: 'Product attributes retrieved successfully',
+            data: mockAttributes
+        });
+
+    } catch (error) {
+        console.error('❌ Error getting product attributes:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to retrieve product attributes',
+            error: error.message
+        });
+    }
+});
+
 // ===== MAGENTO STATUS & VALIDATION =====
 
 /**

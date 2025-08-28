@@ -8,21 +8,18 @@
  */
 
 import React, { useEffect } from 'react';
-import BugBountyDashboard from '../components/bugBounty/BugBountyDashboard.jsx';
+import GridPage from '../components/common/GridPage';
+import { BugReport as BugReportIcon } from '@mui/icons-material';
 
 const BugBountyPage = () => {
-  // Set document title
-  useEffect(() => {
-    document.title = 'Bug Bounty Program - TECHNO-ETL';
-
-    // Set meta description
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Join our bug bounty program and help improve TECHNO-ETL while earning rewards for finding and reporting bugs.');
-    }
-  }, []);
-
-  return <BugBountyDashboard />;
+  return (
+    <GridPage
+      title="Bug Bounty"
+      description="Bug reporting and tracking"
+      icon={BugReportIcon}
+      tabId="BugBounty"
+    />
+  );
 };
 
 export default BugBountyPage;

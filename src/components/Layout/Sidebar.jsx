@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
     Drawer,
     Box,
@@ -14,9 +14,8 @@ import logoTechno from '../../assets/images/logo_techno.png';
 import { useAuth } from '../../contexts/AuthContext';
 import TreeMenuNavigation from './TreeMenuNavigation';
 
-
 const StyledDrawer = styled(Drawer, {
-    shouldForwardProp: (prop) => !['isRTL'].includes(prop),
+    shouldForwardProp: (prop) => !['isRTL', 'open'].includes(prop),
 })(({ theme, open, isRTL }) => ({
     width: open ? DRAWER_WIDTH : COLLAPSED_WIDTH,
     flexShrink: 0,
@@ -24,9 +23,9 @@ const StyledDrawer = styled(Drawer, {
     boxSizing: 'border-box',
     '& .MuiDrawer-paper': {
         width: open ? DRAWER_WIDTH : COLLAPSED_WIDTH,
-        transition: theme.transitions.create(['width', 'transform'], {
-            easing: theme.transitions.easing.easeInOut,
-            duration: theme.transitions.duration.standard,
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: open ? theme.transitions.duration.enteringScreen : theme.transitions.duration.leavingScreen,
         }),
         overflowX: 'hidden',
         background: theme.palette.mode === 'light'
@@ -36,17 +35,17 @@ const StyledDrawer = styled(Drawer, {
         borderRight: isRTL ? 'none' : `1px solid ${theme.palette.divider}`,
         borderLeft: isRTL ? `1px solid ${theme.palette.divider}` : 'none',
         boxShadow: theme.palette.mode === 'light'
-            ? '4px 0 20px rgba(0,0,0,0.08)'
-            : '4px 0 20px rgba(0,0,0,0.3)',
+            ? (isRTL ? '-4px 0 20px rgba(0,0,0,0.08)' : '4px 0 20px rgba(0,0,0,0.08)')
+            : (isRTL ? '-4px 0 20px rgba(0,0,0,0.3)' : '4px 0 20px rgba(0,0,0,0.3)'),
         [theme.breakpoints.up('sm')]: {
             position: 'fixed',
             height: '100%',
             ...(isRTL ? { right: 0 } : { left: 0 }),
         },
         [theme.breakpoints.down('sm')]: {
-            transform: open ? 'translateX(0)' : 'translateX(-100%)',
+            transform: open ? 'translateX(0)' : (isRTL ? `translateX(${DRAWER_WIDTH}px)` : `translateX(-${DRAWER_WIDTH}px)`),
             width: DRAWER_WIDTH,
-            zIndex: theme.zIndex.drawer + 1,
+            zIndex: theme.zIndex.drawer + 2,
         },
         '&::-webkit-scrollbar': {
             width: '4px',
@@ -58,17 +57,20 @@ const StyledDrawer = styled(Drawer, {
     },
 }));
 
-
-const LogoContainer = styled(Box)(({ theme }) => ({
+const LogoContainer = styled(Box)(({ theme, open }) => ({
     height: 64,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     padding: theme.spacing(2),
     borderBottom: `1px solid ${theme.palette.divider}`,
+    transition: theme.transitions.create('opacity', {
+        easing: theme.transitions.easing.sharp,
+        duration: open ? theme.transitions.duration.enteringScreen : theme.transitions.duration.leavingScreen,
+    }),
 }));
 
-const Sidebar = ({ open, toggleDrawer, isRTL = false }) => {
+const Sidebar = ({ open, isRTL = false }) => {
     const theme = useTheme();
     const { activeTab, openTab } = useTab();
     const { translate } = useLanguage();
@@ -84,7 +86,7 @@ const Sidebar = ({ open, toggleDrawer, isRTL = false }) => {
             open={open}
             isRTL={isRTL}
         >
-            <LogoContainer>
+            <LogoContainer open={open} sx={{ opacity: open ? 1 : 0 }}>
                 <Box
                     component="img"
                     src={open ? logoTechno : technoIcon}
@@ -92,7 +94,11 @@ const Sidebar = ({ open, toggleDrawer, isRTL = false }) => {
                     sx={{
                         height: 'auto',
                         width: '100%',
-                        transition: theme.transitions.create('all'),
+                        maxWidth: open ? '120px' : '32px',
+                        transition: theme.transitions.create('all', {
+                            easing: theme.transitions.easing.sharp,
+                            duration: open ? theme.transitions.duration.enteringScreen : theme.transitions.duration.leavingScreen,
+                        }),
                     }}
                 />
             </LogoContainer>

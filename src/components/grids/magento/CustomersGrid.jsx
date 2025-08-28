@@ -21,7 +21,7 @@ import { getStandardGridProps, getStandardToolbarConfig } from '../../../config/
 import { ColumnFactory } from '../../../utils/ColumnFactory.jsx';
 
 // Services
-import magentoApi from '../../../services/magentoApi';
+import magentoApi, { setMagentoApiSettings } from '../../../services/magentoApi';
 import { toast } from 'react-toastify';
 
 /**
@@ -41,9 +41,7 @@ const CustomersGrid = () => {
   
   // Apply user settings to API service
   useEffect(() => {
-    import('../../../services/magentoApi').then(({ setMagentoApiSettings }) => {
-      setMagentoApiSettings(settings);
-    });
+    setMagentoApiSettings(settings);
   }, [settings]);
 
   // ===== 1. STATE MANAGEMENT =====
@@ -213,7 +211,7 @@ const CustomersGrid = () => {
     {
       label: 'View Customer',
       onClick: () => handleView(selectedRows),
-      icon: <ViewIcon />,
+      icon: ViewIcon,
       color: 'primary',
       variant: 'outlined',
       disabled: selectedRows.length !== 1
@@ -221,7 +219,7 @@ const CustomersGrid = () => {
     {
       label: 'Sync Customers',
       onClick: handleSync,
-      icon: <SyncIcon />,
+      icon: SyncIcon,
       color: 'secondary',
       variant: 'outlined'
     }
@@ -261,25 +259,25 @@ const CustomersGrid = () => {
     {
       title: 'Total Customers',
       value: stats.totalCustomers,
-      icon: <PersonIcon />,
+      icon: PersonIcon,
       color: 'primary'
     },
     {
       title: 'Active',
       value: stats.activeCustomers,
-      icon: <ActiveIcon />,
+      icon: ActiveIcon,
       color: 'success'
     },
     {
       title: 'Inactive',
       value: stats.inactiveCustomers,
-      icon: <InactiveIcon />,
+      icon: InactiveIcon,
       color: 'warning'
     },
     {
       title: 'Total Orders',
       value: stats.totalOrders,
-      icon: <ShoppingCartIcon />,
+      icon: ShoppingCartIcon,
       color: 'info'
     }
   ];

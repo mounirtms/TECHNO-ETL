@@ -1,547 +1,536 @@
 /**
- * BaseCard - Advanced Card Component Foundation
- * Implements latest high-tech patterns for powerful card management
- * Features: Animated metrics, real-time updates, responsive design, accessibility
+ * BaseCard - Modern React 18 Base Card Component
+ * 
+ * Features:
+ * - Standardized stats and info card layouts
+ * - Multiple card variants (stats, info, action, metric)
+ * - Animation support with framer-motion
+ * - Responsive design
+ * - Accessibility compliant
+ * - Modern React patterns (memo, useCallback, useMemo)
+ * - TypeScript-ready interfaces
+ * 
+ * @author Techno-ETL Team
+ * @version 2.0.0
  */
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { 
+  memo, 
+  useMemo, 
+  useCallback,
+  useId
+} from 'react';
 import {
   Card,
   CardContent,
+  CardHeader,
+  CardActions,
   Typography,
   Box,
-  Skeleton,
   IconButton,
-  Fade,
-  Grow,
-  useTheme,
-  useMediaQuery,
+  Skeleton,
+  Chip,
   LinearProgress,
-  Chip
+  useTheme,
+  alpha
 } from '@mui/material';
 import {
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,
   TrendingFlat as TrendingFlatIcon,
-  MoreVert as MoreIcon,
-  Refresh as RefreshIcon
+  Info as InfoIcon,
+  Warning as WarningIcon,
+  Error as ErrorIcon,
+  CheckCircle as SuccessIcon
 } from '@mui/icons-material';
-import PropTypes from 'prop-types';
 
-// Components
-import TooltipWrapper from '../common/TooltipWrapper';
+// Animation support
+import { motion } from 'framer-motion';
 
 /**
- * Advanced BaseCard Component
- * 
- * Provides a comprehensive foundation for all card components with:
- * - Animated value transitions
- * - Trend indicators and analytics
- * - Real-time data updates
- * - Responsive design
- * - Accessibility compliance
- * - Performance optimization
+ * Card variants configuration
  */
-const BaseCard = ({
-  // Content props
-  title = '',
-  value = 0,
-  subtitle = '',
-  description = '',
+const CARD_VARIANTS = {
+  stats: {
+    elevation: 2,
+    sx: {
+      transition: 'all 0.3s ease',
+      '&:hover': {
+        elevation: 4,
+        transform: 'translateY(-2px)'
+      }
+    }
+  },
+  info: {
+    elevation: 1,
+    sx: {
+      borderLeft: '4px solid',
+      borderLeftColor: 'primary.main'
+    }
+  },
+  action: {
+    elevation: 3,
+    sx: {
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      '&:hover': {
+        elevation: 6,
+        transform: 'scale(1.02)'
+      }
+    }
+  },
+  metric: {
+    elevation: 1,
+    sx: {
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      color: 'white'
+    }
+  }
+};
+
+/**
+ * Color configuration for different types
+ */
+const COLOR_CONFIG = {
+  primary: {
+    main: '#1976d2',
+    light: '#42a5f5',
+    dark: '#1565c0'
+  },
+  success: {
+    main: '#2e7d32',
+    light: '#4caf50',
+    dark: '#1b5e20'
+  },
+  warning: {
+    main: '#ed6c02',
+    light: '#ff9800',
+    dark: '#e65100'
+  },
+  error: {
+    main: '#d32f2f',
+    light: '#f44336',
+    dark: '#c62828'
+  },
+  info: {
+    main: '#0288d1',
+    light: '#03a9f4',
+    dark: '#01579b'
+  }
+};
+
+/**
+ * Trend Icon Component
+ */
+const TrendIcon = memo(({ trend, size = 'small' }) => {
+  const icons = {
+    up: TrendingUpIcon,
+    down: TrendingDownIcon,
+    flat: TrendingFlatIcon
+  };
   
-  // Visual props
-  icon: IconComponent,
+  const colors = {
+    up: 'success.main',
+    down: 'error.main',
+    flat: 'text.secondary'
+  };
+  
+  const Icon = icons[trend] || TrendingFlatIcon;
+  
+  return (
+    <Icon 
+      fontSize={size} 
+      sx={{ color: colors[trend] || 'text.secondary' }}
+    />
+  );
+});
+
+TrendIcon.displayName = 'TrendIcon';
+
+/**
+ * Card Skeleton Component
+ */
+const CardSkeleton = memo(({ variant = 'stats' }) => (
+  <Card variant="outlined">
+    <CardContent>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+        <Skeleton variant="text" width="60%" height={24} />
+        <Skeleton variant="circular" width={24} height={24} />
+      </Box>
+      <Skeleton variant="text" width="40%" height={32} />
+      {variant === 'stats' && (
+        <Skeleton variant="text" width="30%" height={16} sx={{ mt: 1 }} />
+      )}
+    </CardContent>
+  </Card>
+));
+
+CardSkeleton.displayName = 'CardSkeleton';
+
+/**
+ * Single Stat Card Component
+ */
+const StatCard = memo(({
+  title,
+  value,
+  subtitle,
+  icon: Icon,
   color = 'primary',
-  variant = 'elevation',
-  elevation = 1,
-  
-  // State props
+  trend,
+  percentage,
   loading = false,
-  error = null,
-  
-  // Trend and analytics
-  previousValue,
-  showTrend = false,
-  trendPeriod = '24h',
-  
-  // Progress and goals
-  showProgress = false,
-  progressValue = 0,
-  progressMax = 100,
-  goalValue,
-  
-  // Interactive features
-  clickable = false,
   onClick,
-  onRefresh,
-  
-  // Styling
-  sx = {},
-  minHeight = 120,
-  
-  // Animation
-  animateValue = true,
-  animationDuration = 1000,
-  
-  // Advanced features
-  realTimeUpdate = false,
-  updateInterval = 30000,
-  
-  // Accessibility
-  ariaLabel,
-  
-  ...otherProps
+  sx = {}
 }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const cardId = useId();
   
-  // Local state
-  const [displayValue, setDisplayValue] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const colorConfig = COLOR_CONFIG[color] || COLOR_CONFIG.primary;
   
-  // Color configuration
-  const colorConfig = useMemo(() => {
-    const colors = {
-      primary: {
-        main: theme.palette.primary.main,
-        light: theme.palette.primary.light,
-        background: theme.palette.primary.main + '10'
-      },
-      secondary: {
-        main: theme.palette.secondary.main,
-        light: theme.palette.secondary.light,
-        background: theme.palette.secondary.main + '10'
-      },
-      success: {
-        main: theme.palette.success.main,
-        light: theme.palette.success.light,
-        background: theme.palette.success.main + '10'
-      },
-      warning: {
-        main: theme.palette.warning.main,
-        light: theme.palette.warning.light,
-        background: theme.palette.warning.main + '10'
-      },
-      error: {
-        main: theme.palette.error.main,
-        light: theme.palette.error.light,
-        background: theme.palette.error.main + '10'
-      },
-      info: {
-        main: theme.palette.info.main,
-        light: theme.palette.info.light,
-        background: theme.palette.info.main + '10'
-      }
-    };
-    
-    return colors[color] || colors.primary;
-  }, [color, theme]);
-
-  // Animate value changes
-  useEffect(() => {
-    if (!animateValue || loading) {
-      setDisplayValue(value);
-      return;
-    }
-
-    setIsAnimating(true);
-    const startValue = displayValue;
-    const endValue = value;
-    const startTime = Date.now();
-
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / animationDuration, 1);
+  const cardContent = (
+    <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+        <Typography variant="body2" color="text.secondary" component="div">
+          {title}
+        </Typography>
+        {Icon && (
+          <Box
+            sx={{
+              p: 1,
+              borderRadius: 1,
+              backgroundColor: alpha(colorConfig.main, 0.1),
+              color: colorConfig.main
+            }}
+          >
+            {React.isValidElement(Icon) ? Icon : <Icon fontSize="small" />}
+          </Box>
+        )}
+      </Box>
       
-      // Easing function (ease-out)
-      const easeOut = 1 - Math.pow(1 - progress, 3);
+      <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', color: colorConfig.main }}>
+        {loading ? <Skeleton width="60%" /> : value}
+      </Typography>
       
-      const currentValue = startValue + (endValue - startValue) * easeOut;
-      setDisplayValue(currentValue);
+      {(subtitle || trend || percentage !== undefined) && (
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
+          {trend && <TrendIcon trend={trend} />}
+          {percentage !== undefined && (
+            <Typography variant="caption" color="text.secondary">
+              {percentage > 0 ? '+' : ''}{percentage}%
+            </Typography>
+          )}
+          {subtitle && (
+            <Typography variant="caption" color="text.secondary">
+              {subtitle}
+            </Typography>
+          )}
+        </Box>
+      )}
+    </CardContent>
+  );
+  
+  return (
+    <Card
+      id={cardId}
+      onClick={onClick}
+      sx={{
+        ...CARD_VARIANTS.stats.sx,
+        cursor: onClick ? 'pointer' : 'default',
+        ...sx
+      }}
+      elevation={CARD_VARIANTS.stats.elevation}
+      component={motion.div}
+      whileHover={onClick ? { scale: 1.02 } : {}}
+      transition={{ duration: 0.2 }}
+    >
+      {cardContent}
+    </Card>
+  );
+});
 
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        setIsAnimating(false);
-      }
-    };
+StatCard.displayName = 'StatCard';
 
-    requestAnimationFrame(animate);
-  }, [value, animateValue, animationDuration, loading, displayValue]);
-
-  // Real-time updates
-  useEffect(() => {
-    if (!realTimeUpdate || !onRefresh) return;
-
-    const interval = setInterval(() => {
-      onRefresh();
-    }, updateInterval);
-
-    return () => clearInterval(interval);
-  }, [realTimeUpdate, onRefresh, updateInterval]);
-
-  // Calculate trend
-  const trendData = useMemo(() => {
-    if (!showTrend || previousValue === undefined) return null;
-
-    const change = value - previousValue;
-    const changePercent = previousValue !== 0 ? (change / previousValue) * 100 : 0;
-    
-    let trend = 'flat';
-    let trendIcon = <TrendingFlatIcon />;
-    let trendColor = 'text.secondary';
-    
-    if (change > 0) {
-      trend = 'up';
-      trendIcon = <TrendingUpIcon />;
-      trendColor = 'success.main';
-    } else if (change < 0) {
-      trend = 'down';
-      trendIcon = <TrendingDownIcon />;
-      trendColor = 'error.main';
-    }
-
-    return {
-      trend,
-      change,
-      changePercent,
-      icon: trendIcon,
-      color: trendColor
-    };
-  }, [showTrend, value, previousValue]);
-
-  // Format display value
-  const formatValue = useCallback((val) => {
-    if (typeof val === 'number') {
-      if (val >= 1000000) {
-        return `${(val / 1000000).toFixed(1)}M`;
-      } else if (val >= 1000) {
-        return `${(val / 1000).toFixed(1)}K`;
-      } else {
-        return Math.round(val).toLocaleString();
-      }
-    }
-    return val;
-  }, []);
-
-  // Render icon section
-  const renderIcon = () => {
-    if (!IconComponent) return null;
-
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: isMobile ? 40 : 48,
-          height: isMobile ? 40 : 48,
-          borderRadius: 2,
-          backgroundColor: colorConfig.background,
-          color: colorConfig.main,
-          mb: isMobile ? 1 : 0,
-          mr: isMobile ? 0 : 2
+/**
+ * Info Card Component
+ */
+const InfoCard = memo(({
+  title,
+  content,
+  type = 'info',
+  icon,
+  actions,
+  dismissible = false,
+  onDismiss,
+  sx = {}
+}) => {
+  const theme = useTheme();
+  const cardId = useId();
+  
+  const typeIcons = {
+    info: InfoIcon,
+    warning: WarningIcon,
+    error: ErrorIcon,
+    success: SuccessIcon
+  };
+  
+  const IconComponent = icon || typeIcons[type];
+  const colorConfig = COLOR_CONFIG[type] || COLOR_CONFIG.info;
+  
+  return (
+    <Card
+      id={cardId}
+      sx={{
+        ...CARD_VARIANTS.info.sx,
+        borderLeftColor: colorConfig.main,
+        ...sx
+      }}
+      elevation={CARD_VARIANTS.info.elevation}
+    >
+      <CardHeader
+        avatar={
+          IconComponent && (
+            React.isValidElement(IconComponent) ? 
+              React.cloneElement(IconComponent, { sx: { color: colorConfig.main } }) :
+              <IconComponent sx={{ color: colorConfig.main }} />
+          )
+        }
+        title={title}
+        action={
+          dismissible && (
+            <IconButton onClick={onDismiss} size="small">
+              <ErrorIcon />
+            </IconButton>
+          )
+        }
+        titleTypographyProps={{
+          variant: 'h6',
+          component: 'div'
         }}
-      >
-        <IconComponent fontSize={isMobile ? 'medium' : 'large'} />
-      </Box>
-    );
-  };
-
-  // Render trend indicator
-  const renderTrend = () => {
-    if (!trendData) return null;
-
-    return (
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}>
-        <Box sx={{ color: trendData.color, display: 'flex', alignItems: 'center' }}>
-          {trendData.icon}
-        </Box>
-        <Typography
-          variant="caption"
-          sx={{ color: trendData.color, fontWeight: 'medium' }}
-        >
-          {Math.abs(trendData.changePercent).toFixed(1)}%
-        </Typography>
-        <Typography variant="caption" color="text.secondary">
-          vs {trendPeriod}
-        </Typography>
-      </Box>
-    );
-  };
-
-  // Render progress bar
-  const renderProgress = () => {
-    if (!showProgress) return null;
-
-    const progressPercent = (progressValue / progressMax) * 100;
-    
-    return (
-      <Box sx={{ mt: 1 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-          <Typography variant="caption" color="text.secondary">
-            Progress
+        sx={{ pb: 1 }}
+      />
+      
+      <CardContent sx={{ pt: 0 }}>
+        {typeof content === 'string' ? (
+          <Typography variant="body2" color="text.secondary">
+            {content}
           </Typography>
-          <Typography variant="caption" color="text.secondary">
-            {progressPercent.toFixed(0)}%
+        ) : (
+          content
+        )}
+      </CardContent>
+      
+      {actions && (
+        <CardActions>
+          {actions}
+        </CardActions>
+      )}
+    </Card>
+  );
+});
+
+InfoCard.displayName = 'InfoCard';
+
+/**
+ * Progress Card Component
+ */
+const ProgressCard = memo(({
+  title,
+  value,
+  max = 100,
+  color = 'primary',
+  showPercentage = true,
+  sx = {}
+}) => {
+  const cardId = useId();
+  const percentage = Math.round((value / max) * 100);
+  
+  return (
+    <Card id={cardId} sx={sx} elevation={1}>
+      <CardContent>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+          <Typography variant="body2" color="text.secondary">
+            {title}
           </Typography>
+          {showPercentage && (
+            <Typography variant="body2" color="text.secondary">
+              {percentage}%
+            </Typography>
+          )}
         </Box>
+        
         <LinearProgress
           variant="determinate"
-          value={progressPercent}
+          value={percentage}
+          color={color}
           sx={{
-            height: 6,
-            borderRadius: 3,
-            backgroundColor: theme.palette.grey[200],
+            height: 8,
+            borderRadius: 4,
             '& .MuiLinearProgress-bar': {
-              backgroundColor: colorConfig.main,
-              borderRadius: 3
+              borderRadius: 4
             }
           }}
         />
-        {goalValue && (
-          <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-            Goal: {formatValue(goalValue)}
-          </Typography>
-        )}
-      </Box>
-    );
-  };
-
-  // Render actions
-  const renderActions = () => {
-    if (!onRefresh && !clickable) return null;
-
-    return (
-      <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
-        {onRefresh && (
-          <TooltipWrapper title="Refresh">
-            <IconButton
-              size="small"
-              onClick={(e) => {
-                e.stopPropagation();
-                onRefresh();
-              }}
-              sx={{ opacity: 0.7, '&:hover': { opacity: 1 } }}
-            >
-              <RefreshIcon fontSize="small" />
-            </IconButton>
-          </TooltipWrapper>
-        )}
-      </Box>
-    );
-  };
-
-  // Loading state
-  if (loading) {
-    return (
-      <Card
-        variant={variant}
-        elevation={elevation}
-        sx={{
-          minHeight,
-          position: 'relative',
-          ...sx
-        }}
-      >
-        <CardContent sx={{ p: isMobile ? 2 : 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-            <Skeleton variant="rectangular" width={48} height={48} sx={{ borderRadius: 2, mr: 2 }} />
-            <Box sx={{ flex: 1 }}>
-              <Skeleton variant="text" width="60%" height={24} />
-              <Skeleton variant="text" width="40%" height={32} sx={{ mt: 1 }} />
-              <Skeleton variant="text" width="80%" height={16} sx={{ mt: 1 }} />
-            </Box>
-          </Box>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  // Error state
-  if (error) {
-    return (
-      <Card
-        variant={variant}
-        elevation={elevation}
-        sx={{
-          minHeight,
-          position: 'relative',
-          borderLeft: `4px solid ${theme.palette.error.main}`,
-          ...sx
-        }}
-      >
-        <CardContent sx={{ p: isMobile ? 2 : 3 }}>
-          <Typography variant="h6" color="error" gutterBottom>
-            Error
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {error.message || 'Failed to load data'}
-          </Typography>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  return (
-    <Grow in timeout={300}>
-      <Card
-        variant={variant}
-        elevation={elevation}
-        sx={{
-          minHeight,
-          position: 'relative',
-          cursor: clickable ? 'pointer' : 'default',
-          transition: 'all 0.2s ease-in-out',
-          borderLeft: `4px solid ${colorConfig.main}`,
-          ...(clickable && {
-            '&:hover': {
-              elevation: elevation + 2,
-              transform: 'translateY(-2px)',
-              boxShadow: theme.shadows[elevation + 2]
-            }
-          }),
-          ...sx
-        }}
-        onClick={clickable ? onClick : undefined}
-        role={clickable ? 'button' : undefined}
-        tabIndex={clickable ? 0 : undefined}
-        aria-label={ariaLabel || `${title}: ${formatValue(displayValue)}`}
-        {...otherProps}
-      >
-        <CardContent sx={{ p: isMobile ? 2 : 3, pb: `${isMobile ? 2 : 3} !important` }}>
-          {/* Actions */}
-          {renderActions()}
-          
-          {/* Main content */}
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              alignItems: isMobile ? 'flex-start' : 'center',
-              flexDirection: isMobile ? 'column' : 'row'
-            }}
-          >
-            {/* Icon */}
-            {renderIcon()}
-            
-            {/* Content */}
-            <Box sx={{ flex: 1, minWidth: 0 }}>
-              {/* Title */}
-              <Typography
-                variant="subtitle2"
-                color="text.secondary"
-                sx={{ 
-                  fontWeight: 'medium',
-                  mb: 0.5,
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                {title}
-              </Typography>
-              
-              {/* Value */}
-              <Typography
-                variant={isMobile ? 'h5' : 'h4'}
-                sx={{
-                  fontWeight: 'bold',
-                  color: colorConfig.main,
-                  mb: 0.5,
-                  transition: 'all 0.3s ease',
-                  ...(isAnimating && {
-                    transform: 'scale(1.05)'
-                  })
-                }}
-              >
-                <Fade in timeout={300}>
-                  <span>{formatValue(displayValue)}</span>
-                </Fade>
-              </Typography>
-              
-              {/* Subtitle */}
-              {subtitle && (
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                  {subtitle}
-                </Typography>
-              )}
-              
-              {/* Description */}
-              {description && (
-                <Typography 
-                  variant="caption" 
-                  color="text.secondary"
-                  sx={{ 
-                    display: 'block',
-                    textOverflow: 'ellipsis',
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap'
-                  }}
-                >
-                  {description}
-                </Typography>
-              )}
-              
-              {/* Trend */}
-              {renderTrend()}
-              
-              {/* Progress */}
-              {renderProgress()}
-            </Box>
-          </Box>
-        </CardContent>
-      </Card>
-    </Grow>
+        
+        <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+          {value} of {max}
+        </Typography>
+      </CardContent>
+    </Card>
   );
-};
+});
 
-BaseCard.propTypes = {
-  // Content props
-  title: PropTypes.string,
-  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  subtitle: PropTypes.string,
-  description: PropTypes.string,
+ProgressCard.displayName = 'ProgressCard';
+
+/**
+ * BaseCard Component - Main export
+ */
+const BaseCard = memo(({
+  // Core props
+  variant = 'stats',
+  type = 'info',
   
-  // Visual props
-  icon: PropTypes.elementType,
-  color: PropTypes.oneOf(['primary', 'secondary', 'success', 'warning', 'error', 'info']),
-  variant: PropTypes.oneOf(['elevation', 'outlined']),
-  elevation: PropTypes.number,
+  // Content props
+  title,
+  value,
+  subtitle,
+  content,
+  icon,
+  
+  // Stats props
+  stats = {},
+  config = {},
   
   // State props
-  loading: PropTypes.bool,
-  error: PropTypes.object,
+  loading = false,
   
-  // Trend and analytics
-  previousValue: PropTypes.number,
-  showTrend: PropTypes.bool,
-  trendPeriod: PropTypes.string,
+  // Style props
+  color = 'primary',
+  sx = {},
   
-  // Progress and goals
-  showProgress: PropTypes.bool,
-  progressValue: PropTypes.number,
-  progressMax: PropTypes.number,
-  goalValue: PropTypes.number,
+  // Event props
+  onClick,
+  onDismiss,
   
-  // Interactive features
-  clickable: PropTypes.bool,
-  onClick: PropTypes.func,
-  onRefresh: PropTypes.func,
+  // Advanced props
+  trend,
+  percentage,
+  progress,
+  actions,
+  dismissible = false,
   
-  // Styling
-  sx: PropTypes.object,
-  minHeight: PropTypes.number,
+  ...props
+}) => {
+  // If stats object is provided, render multiple stat cards
+  const renderStatsCards = useCallback(() => {
+    if (!stats || Object.keys(stats).length === 0) return null;
+    
+    const defaultStatsConfig = [
+      { key: 'total', title: 'Total', color: 'primary' },
+      { key: 'active', title: 'Active', color: 'success' },
+      { key: 'inactive', title: 'Inactive', color: 'warning' },
+      { key: 'selected', title: 'Selected', color: 'info' }
+    ];
+    
+    const statsToRender = config.stats || defaultStatsConfig;
+    
+    return (
+      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 2 }}>
+        {statsToRender.map(statConfig => {
+          const statValue = stats[statConfig.key];
+          if (statValue === undefined) return null;
+          
+          return (
+            <StatCard
+              key={statConfig.key}
+              title={statConfig.title}
+              value={statValue}
+              color={statConfig.color}
+              icon={statConfig.icon}
+              loading={loading}
+              onClick={onClick}
+              trend={statConfig.trend}
+              percentage={statConfig.percentage}
+            />
+          );
+        })}
+      </Box>
+    );
+  }, [stats, config.stats, loading, onClick]);
   
-  // Animation
-  animateValue: PropTypes.bool,
-  animationDuration: PropTypes.number,
+  // Loading state
+  if (loading) {
+    return <CardSkeleton variant={variant} />;
+  }
   
-  // Advanced features
-  realTimeUpdate: PropTypes.bool,
-  updateInterval: PropTypes.number,
+  // Multiple stats cards
+  if (variant === 'stats' && stats && Object.keys(stats).length > 0) {
+    return renderStatsCards();
+  }
   
-  // Accessibility
-  ariaLabel: PropTypes.string
-};
+  // Single card variants
+  switch (variant) {
+    case 'stats':
+      return (
+        <StatCard
+          title={title}
+          value={value}
+          subtitle={subtitle}
+          icon={icon}
+          color={color}
+          trend={trend}
+          percentage={percentage}
+          loading={loading}
+          onClick={onClick}
+          sx={sx}
+          {...props}
+        />
+      );
+      
+    case 'info':
+      return (
+        <InfoCard
+          title={title}
+          content={content}
+          type={type}
+          icon={icon}
+          actions={actions}
+          dismissible={dismissible}
+          onDismiss={onDismiss}
+          sx={sx}
+          {...props}
+        />
+      );
+      
+    case 'progress':
+      return (
+        <ProgressCard
+          title={title}
+          value={progress?.value || value}
+          max={progress?.max || 100}
+          color={color}
+          showPercentage={progress?.showPercentage !== false}
+          sx={sx}
+          {...props}
+        />
+      );
+      
+    default:
+      return (
+        <StatCard
+          title={title}
+          value={value}
+          subtitle={subtitle}
+          icon={icon}
+          color={color}
+          loading={loading}
+          onClick={onClick}
+          sx={sx}
+          {...props}
+        />
+      );
+  }
+});
+
+BaseCard.displayName = 'BaseCard';
 
 export default BaseCard;

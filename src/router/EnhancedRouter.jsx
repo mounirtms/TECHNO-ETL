@@ -19,23 +19,59 @@ import {
 } from './RouteGuard';
 
 // Lazy Load Components with optimized chunking
-const Layout = lazy(() => import('../components/Layout/Layout'));
-const Login = lazy(() => import('../pages/Login'));
-const Dashboard = lazy(() => import('../pages/Dashboard').catch(() => ({ default: () => <div>Dashboard loading error</div> })));
-const ChartsPage = lazy(() => import('../pages/ChartsPage').catch(() => ({ default: () => <div>Charts loading error</div> })));
-const ProductManagementPage = lazy(() => import('../pages/ProductManagementPage').catch(() => ({ default: () => <div>Products loading error</div> })));
-const TaskPage = lazy(() => import('../pages/VotingPage').catch(() => ({ default: () => <div>Tasks loading error</div> })));
-const InventoryPage = lazy(() => import('../pages/InventoryPage').catch(() => ({ default: () => <div>Inventory loading error</div> })));
-const OrdersPage = lazy(() => import('../pages/OrdersPage').catch(() => ({ default: () => <div>Orders loading error</div> })));
-const CustomersPage = lazy(() => import('../pages/CustomersPage').catch(() => ({ default: () => <div>Customers loading error</div> })));
-const SettingsPage = lazy(() => import('../pages/SettingsPage').catch(() => ({ default: () => <div>Settings loading error</div> })));
-const ReportsPage = lazy(() => import('../pages/ReportsPage').catch(() => ({ default: () => <div>Reports loading error</div> })));
-const AnalyticsPage = lazy(() => import('../pages/AnalyticsPage').catch(() => ({ default: () => <div>Analytics loading error</div> })));
-const NotFoundPage = lazy(() => import('../pages/NotFoundPage').catch(() => ({ default: () => <div>Page not found</div> })));
+const Layout = lazy(() => import('../components/Layout/Layout.jsx'));
+const Login = lazy(() => import('../pages/Login.jsx'));
+const Dashboard = lazy(() => import('../pages/Dashboard.jsx').catch(() => ({ default: () => <div>Dashboard loading error</div> })));
+const ChartsPage = lazy(() => import('../pages/ChartsPage.jsx').catch(() => ({ default: () => <div>Charts loading error</div> })));
+const ProductManagementPage = lazy(() => import('../pages/ProductManagementPage.jsx').catch(() => ({ default: () => <div>Products loading error</div> })));
+const TaskPage = lazy(() => import('../pages/VotingPage.jsx').catch(() => ({ default: () => <div>Tasks loading error</div> })));
+const InventoryPage = lazy(() => import('../pages/InventoryPage.jsx').catch(() => ({ default: () => <div>Inventory loading error</div> })));
+const OrdersPage = lazy(() => import('../pages/OrdersPage.jsx').catch(() => ({ default: () => <div>Orders loading error</div> })));
+const CustomersPage = lazy(() => import('../pages/CustomersPage.jsx').catch(() => ({ default: () => <div>Customers loading error</div> })));
+const SettingsPage = lazy(() => import('../pages/SettingsPage.jsx').catch(() => ({ default: () => <div>Settings loading error</div> })));
+const ReportsPage = lazy(() => import('../pages/ReportsPage.jsx').catch(() => ({ default: () => <div>Reports loading error</div> })));
+const AnalyticsPage = lazy(() => import('../pages/AnalyticsPage.jsx').catch(() => ({ default: () => <div>Analytics loading error</div> })));
+const DocsPage = lazy(() => import('../pages/DocsPage.jsx').catch(() => ({ default: () => <div>Documentation loading error</div> })));
+const NotFoundPage = lazy(() => import('../pages/NotFoundPage.jsx').catch(() => ({ default: () => <div>Page not found</div> })));
 
 // Grid Test Page for development
-const GridTestPage = lazy(() => import('../pages/GridTestPage').catch(() => ({ default: () => <div>Grid test loading error</div> })));
-const DataGridsPage = lazy(() => import('../pages/DataGridsPage').catch(() => ({ default: () => <div>Data grids loading error</div> })));
+const GridTestPage = lazy(() => import('../pages/GridTestPage.jsx').catch(() => ({ default: () => <div>Grid test loading error</div> })));
+const DataGridsPage = lazy(() => import('../pages/DataGridsPage.jsx').catch(() => ({ default: () => <div>Data grids loading error</div> })));
+
+// Test Page for route verification
+const RouteTestPage = lazy(() => import('../pages/RouteTestPage.jsx').catch(() => ({ default: () => <div>Route test loading error</div> })));
+
+// MDM Pages
+const MDMProductsPage = lazy(() => import('../pages/MDMProductsPage.jsx').catch(() => ({ default: () => <div>MDM Products loading error</div> })));
+const MDMStockPage = lazy(() => import('../pages/MDMStockPage.jsx').catch(() => ({ default: () => <div>MDM Stock loading error</div> })));
+const MDMSourcesPage = lazy(() => import('../pages/MDMSourcesPage.jsx').catch(() => ({ default: () => <div>MDM Sources loading error</div> })));
+
+// Magento Pages
+const CategoriesPage = lazy(() => import('../pages/CategoriesPage.jsx').catch(() => ({ default: () => <div>Categories loading error</div> })));
+const StocksPage = lazy(() => import('../pages/StocksPage.jsx').catch(() => ({ default: () => <div>Stocks loading error</div> })));
+const SourcesPage = lazy(() => import('../pages/SourcesPage.jsx').catch(() => ({ default: () => <div>Sources loading error</div> })));
+const InvoicesPage = lazy(() => import('../pages/InvoicesPage.jsx').catch(() => ({ default: () => <div>Invoices loading error</div> })));
+const CmsPagesPage = lazy(() => import('../pages/CmsPagesPage.jsx').catch(() => ({ default: () => <div>CMS Pages loading error</div> })));
+const CegidProductsPage = lazy(() => import('../pages/CegidProductsPage.jsx').catch(() => ({ default: () => <div>Cegid Products loading error</div> })));
+
+// Analytics Pages
+const SalesAnalyticsPage = lazy(() => import('../pages/SalesAnalyticsPage.jsx').catch(() => ({ default: () => <div>Sales Analytics loading error</div> })));
+const InventoryAnalyticsPage = lazy(() => import('../pages/InventoryAnalyticsPage.jsx').catch(() => ({ default: () => <div>Inventory Analytics loading error</div> })));
+
+// Security Pages
+const SecureVaultPage = lazy(() => import('../pages/SecureVaultPage.jsx').catch(() => ({ default: () => <div>Secure Vault loading error</div> })));
+const AccessControlPage = lazy(() => import('../pages/AccessControlPage.jsx').catch(() => ({ default: () => <div>Access Control loading error</div> })));
+
+// Development Pages
+const BugBountyPage = lazy(() => import('../pages/BugBountyPage.jsx').catch(() => ({ default: () => <div>Bug Bounty loading error</div> })));
+const VotingPage = lazy(() => import('../pages/VotingPage.jsx').catch(() => ({ default: () => <div>Voting loading error</div> })));
+
+// User Pages
+const UserProfilePage = lazy(() => import('../pages/UserProfilePage.jsx').catch(() => ({ default: () => <div>User Profile loading error</div> })));
+
+// License Pages
+const LicenseManagementPage = lazy(() => import('../pages/LicenseManagementPage.jsx').catch(() => ({ default: () => <div>License Management loading error</div> })));
+const LicenseStatusPage = lazy(() => import('../pages/LicenseStatusPage.jsx').catch(() => ({ default: () => <div>License Status loading error</div> })));
 
 /**
  * Enhanced Loading Fallback with route information
@@ -225,6 +261,16 @@ const EnhancedRouter = () => {
                 } 
               />
 
+              {/* Documentation Route - Public Access */}
+              <Route 
+                path="docs" 
+                element={
+                  <Suspense fallback={<EnhancedLoadingFallback routeName="Documentation" />}>
+                    <DocsPage />
+                  </Suspense>
+                } 
+              />
+
               {/* Protected Routes */}
               <Route 
                 element={
@@ -342,16 +388,195 @@ const EnhancedRouter = () => {
                   } 
                 />
 
+                {/* MDM Routes */}
+                <Route 
+                  path="mdmproducts" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="MDM Products" />}>
+                      <MDMProductsPage />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="mdm-stock" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="MDM Stock" />}>
+                      <MDMStockPage />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="mdm-sources" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="MDM Sources" />}>
+                      <MDMSourcesPage />
+                    </Suspense>
+                  } 
+                />
+
+                {/* Magento Routes */}
+                <Route 
+                  path="categories" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Categories" />}>
+                      <CategoriesPage />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="stocks" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Stocks" />}>
+                      <StocksPage />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="sources" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Sources" />}>
+                      <SourcesPage />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="invoices" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Invoices" />}>
+                      <InvoicesPage />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="cms-pages" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="CMS Pages" />}>
+                      <CmsPagesPage />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="cegid-products" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Cegid Products" />}>
+                      <CegidProductsPage />
+                    </Suspense>
+                  } 
+                />
+
+                {/* Analytics Routes */}
+                <Route 
+                  path="analytics/sales" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Sales Analytics" />}>
+                      <SalesAnalyticsPage />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="analytics/inventory" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Inventory Analytics" />}>
+                      <InventoryAnalyticsPage />
+                    </Suspense>
+                  } 
+                />
+
+                {/* Security Routes */}
+                <Route 
+                  path="locker/vault" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Secure Vault" />}>
+                      <SecureVaultPage />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="locker/access" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Access Control" />}>
+                      <AccessControlPage />
+                    </Suspense>
+                  } 
+                />
+
+                {/* Development Routes */}
+                <Route 
+                  path="bug-bounty" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Bug Bounty" />}>
+                      <BugBountyPage />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="voting" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Feature Voting" />}>
+                      <VotingPage />
+                    </Suspense>
+                  } 
+                />
+
+                {/* User Routes */}
+                <Route 
+                  path="profile" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="User Profile" />}>
+                      <UserProfilePage />
+                    </Suspense>
+                  } 
+                />
+
+                {/* License Routes */}
+                <Route 
+                  path="license-management" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="License Management" />}>
+                      <LicenseManagementPage />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="license" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="License Status" />}>
+                      <LicenseStatusPage />
+                    </Suspense>
+                  } 
+                />
+
                 {/* Development Routes */}
                 {process.env.NODE_ENV === 'development' && (
-                  <Route 
-                    path="grid-test" 
-                    element={
-                      <Suspense fallback={<EnhancedLoadingFallback routeName="Grid Test" />}>
-                        <GridTestPage />
-                      </Suspense>
-                    } 
-                  />
+                  <>
+                    <Route 
+                      path="grid-test" 
+                      element={
+                        <Suspense fallback={<EnhancedLoadingFallback routeName="Grid Test" />}>
+                          <GridTestPage />
+                        </Suspense>
+                      } 
+                    />
+                    <Route 
+                      path="route-test" 
+                      element={
+                        <Suspense fallback={<EnhancedLoadingFallback routeName="Route Test" />}>
+                          <RouteTestPage />
+                        </Suspense>
+                      } 
+                    />
+                  </>
                 )}
 
                 {/* 404 for protected routes */}

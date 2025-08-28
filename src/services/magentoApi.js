@@ -208,10 +208,11 @@ class MagentoApi extends BaseApiService {
 
   // Override buildSearchCriteria to use BaseApiService parameter validation
   buildSearchCriteria(params = {}) {
+    const defaultParams = getDefaultParams();
     const searchCriteria = {
-      pageSize: params.pageSize || DEFAULT_PARAMS.pageSize,
-      currentPage: params.currentPage || DEFAULT_PARAMS.currentPage,
-      sortOrders: params.sortOrders || DEFAULT_PARAMS.sortOrders,
+      pageSize: params.pageSize || defaultParams.pageSize,
+      currentPage: params.currentPage || defaultParams.currentPage,
+      sortOrders: params.sortOrders || defaultParams.sortOrders,
       filterGroups: params.filterGroups || []
     };
     
@@ -1454,7 +1455,7 @@ class MagentoApi extends BaseApiService {
     return {
       items: response?.items || [],
       total_count: response?.total_count || 0,
-      search_criteria: response?.search_criteria || this.buildSearchCriteria()
+      search_criteria: response?.search_criteria || this.buildSearchCriteria({})
     };
   }
 
