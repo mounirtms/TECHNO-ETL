@@ -13,6 +13,8 @@ import { ref, set, get } from 'firebase/database';
 import magentoApi from '../services/magentoService';
 import { USER_ROLES, createDefaultUserLicense, initializeFirebaseDefaults } from '../config/firebaseDefaults';
 import firebaseSyncService from '../services/firebaseSyncService';
+import LicenseManager from '../services/LicenseManager';
+import PermissionService from '../services/PermissionService';
 const AuthContext = createContext();
 const MAGENTO_API_URL = import.meta.env.VITE_MAGENTO_API_URL;
 
@@ -153,22 +155,27 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    // Register user in database
+    // Register user in database and initialize license
     const registerUserInDatabase = async (user) => {
         try {
             const sanitizedUserId = user.uid.replace(/[.#$\[\]]/g, '_');
             const userRef = ref(database, `users/${sanitizedUserId}`);
+            const licenseRef = ref(database, `licenses/${sanitizedUserId}`);
             
-// Check if user already exists
-            const snapshot = await get(userRef);
-            if (!snapshot.exists()) {
+            // Check if user already exists
+            const [userSnapshot, licenseSnapshot] = await Promise.all([
+                get(userRef),
+                get(licenseRef)
+            ]);
+            
+            if (!userSnapshot.exists()) {
                 // Check if this is the first user (super_admin)
                 const usersRef = ref(database, 'users');
                 const usersSnapshot = await get(usersRef);
                 const isFirstUser = !usersSnapshot.exists() || Object.keys(usersSnapshot.val() || {}).length === 0;
                 const role = isFirstUser ? USER_ROLES.SUPER_ADMIN : USER_ROLES.USER;
-                const defaultLicense = createDefaultUserLicense(user.uid, 'FREE');
                 
+                // Create user record
                 await set(userRef, {
                     email: user.email,
                     displayName: user.displayName,
@@ -178,15 +185,26 @@ export const AuthProvider = ({ children }) => {
                     isMagentoUser: user.isMagentoUser || false
                 });
                 
-                console.log(`User ${user.email} registered in database with role: ${isFirstUser ? 'admin' : 'user'}`);
+                console.log(`User ${user.email} registered in database with role: ${isFirstUser ? 'super_admin' : 'user'}`);
             } else {
                 // Update last login
-                const userData = snapshot.val();
+                const userData = userSnapshot.val();
                 await set(userRef, {
                     ...userData,
                     lastLogin: new Date().toISOString()
                 });
             }
+
+            // Initialize license if it doesn't exist
+            if (!licenseSnapshot.exists()) {
+                const defaultLicense = createDefaultUserLicense(user.uid, 'FREE');
+                await set(licenseRef, defaultLicense);
+                console.log(`Default license created for user ${user.email}`);
+            }
+
+            // Initialize permission service for this user
+            await PermissionService.initialize(user);
+            
         } catch (error) {
             console.error('Error registering user in database:', error);
         }
@@ -358,6 +376,41 @@ export const AuthProvider = ({ children }) => {
         };
     }, [adminToken]);
 
+    // Get user permissions and license status
+    const getUserPermissions = useCallback(async () => {
+        if (!currentUser?.uid) return [];
+        try {
+            return await PermissionService.getPermissions();
+        } catch (error) {
+            console.error('Error getting user permissions:', error);
+            return [];
+        }
+    }, [currentUser?.uid]);
+
+    const getUserLicenseStatus = useCallback(async () => {
+        if (!currentUser?.uid) return null;
+        try {
+            return await LicenseManager.checkUserLicense(currentUser.uid);
+        } catch (error) {
+            console.error('Error getting user license status:', error);
+            return null;
+        }
+    }, [currentUser?.uid]);
+
+    const hasPermission = useCallback((action, resource = '*') => {
+        return PermissionService.hasPermission(action, resource);
+    }, []);
+
+    const checkFeatureAccess = useCallback(async (feature) => {
+        if (!currentUser?.uid) return false;
+        try {
+            return await LicenseManager.validateFeatureAccess(feature, currentUser.uid);
+        } catch (error) {
+            console.error('Error checking feature access:', error);
+            return false;
+        }
+    }, [currentUser?.uid]);
+
     const value = {
         currentUser,
         loading,
@@ -367,7 +420,12 @@ export const AuthProvider = ({ children }) => {
         adminToken,
         isUsingLocalData,
         validateMagentoToken,
-        saveUserSettings
+        saveUserSettings,
+        // Permission and license functions
+        getUserPermissions,
+        getUserLicenseStatus,
+        hasPermission,
+        checkFeatureAccess
     };
 
     return (

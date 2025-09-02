@@ -11,14 +11,12 @@
         "name": "Development & Testing",
         "defaultExpanded": true
       }
-      // ... other categories
     },
     "licensedPrograms": {
       "bug_bounty": {
         "id": "bug_bounty",
         "name": "Bug Bounty Program"
-      },
-      // ... other programs
+      }
     }
   },
   "users": {

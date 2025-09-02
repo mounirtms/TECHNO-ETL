@@ -39,7 +39,6 @@ import ProductManagementGrid from '../components/grids/magento/ProductManagement
 
 // Lazy load dialog components to avoid circular dependencies
 const BulkMediaUploadDialog = React.lazy(() => import('../components/dialogs/BulkMediaUploadDialog'));
-const EnhancedBulkMediaUploadDialog = React.lazy(() => import('../components/dialogs/EnhancedBulkMediaUploadDialog'));
 
 /**
  * ProductManagementPage - Main page for comprehensive product management
@@ -313,14 +312,7 @@ const ProductManagementPage = () => {
                 >
                   Clear All
                 </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => setEnhancedBulkMediaDialogOpen(true)}
-                  startIcon={<TransformIcon />}
-                  color="success"
-                >
-                  Professional Upload
-                </Button>
+                
                 <Button
                   variant="outlined"
                   onClick={() => setBulkMediaDialogOpen(true)}
@@ -586,20 +578,6 @@ const ProductManagementPage = () => {
         )}
       </Box>
 
-      {/* Enhanced Professional Bulk Media Upload Dialog */}
-      <Suspense fallback={<CircularProgress />}>
-        <EnhancedBulkMediaUploadDialog
-          open={enhancedBulkMediaDialogOpen}
-          onClose={() => setEnhancedBulkMediaDialogOpen(false)}
-          onComplete={(results) => {
-            console.log('Enhanced bulk media upload completed:', results);
-            const successful = results.filter(r => r.status === 'success').length;
-            const failed = results.filter(r => r.status === 'error').length;
-            toast.success(`Professional upload completed: ${successful} successful, ${failed} failed`);
-            setEnhancedBulkMediaDialogOpen(false);
-          }}
-        />
-      </Suspense>
 
       {/* Basic Bulk Media Upload Dialog */}
       <Suspense fallback={<CircularProgress />}>

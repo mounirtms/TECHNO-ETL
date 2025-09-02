@@ -670,9 +670,9 @@ const ProductsGrid = () => {
                 type: 'select',
                 options: [
                   { value: '', label: 'All Categories' },
-                  ...categories.map(cat => ({
-                    value: cat.id.toString(),
-                    label: cat.label
+                  ...categories.filter(cat => cat && (cat.id || cat.id === 0)).map(cat => ({
+                    value: cat.id?.toString() || '',
+                    label: cat.label || `Category ${cat.id}`
                   }))
                 ],
                 value: categoryFilter,

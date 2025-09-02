@@ -4,6 +4,9 @@ import React, { useState, useCallback } from 'react';
 interface CSVData {
   headers: string[];
   data: any[][];
+  skuColumn: string;
+  imageColumn: string;
+  refColumn?: string;
 }
 
 interface FileWithPreview extends File {
@@ -24,25 +27,38 @@ interface UploadStats {
   failed: number;
   skipped: number;
   total: number;
+  matched: number;
+  uniqueProducts: number;
+  multipleImagesProducts: number;
+  averageSimilarity: number;
+  matchStrategies: {
+    exact: number;
+    fuzzy: number;
+    ref: number;
+    product: number;
+  };
 }
 
 interface MatchResult {
   sku: string;
   fileName: string;
-  status: string;
-  stage: string;
+  file: File;
+  matchStrategy: string;
+  imageIndex: number;
+  totalImagesForSku: number;
+  isMainImage: boolean;
+  similarity: number;
 }
 
-interface ProcessingState {
-  name: string;
-  data: any[][];
-  skuColumn: number;
-  imageColumn: number;
-  refColumn?: number;
-  size: number;
-  stats: UploadStats;
+interface MatchingResults {
   matches: MatchResult[];
-  current: UploadProgress;
+  stats: UploadStats;
+}
+
+interface BulkMediaUploadDialogProps {
+  open: boolean;
+  onClose: () => void;
+  onComplete?: (results: any[]) => void;
 }
 import {
   Dialog,
@@ -115,18 +131,17 @@ import mediaUploadService, { DEFAULT_MATCHING_SETTINGS } from '../../services/me
  * Enhanced with advanced matching, configurable settings, and professional features
  * Automatically detects and handles both Basic and Professional modes
  */
-const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => {
-  const [activeStep, setActiveStep] = useState(0);
-  const [mode, setMode] = useState<string>('basic'); // Auto-detected based on CSV
+const BulkMediaUploadDialog: React.FC<BulkMediaUploadDialogProps> = ({ open, onClose, onComplete }) => {
+  const [activeStep, setActiveStep] = useState<number>(0);
   const [csvFile, setCsvFile] = useState<File | null>(null);
   const [csvData, setCsvData] = useState<CSVData | null>(null);
   const [imageFiles, setImageFiles] = useState<FileWithPreview[]>([]);
-  const [matchingResults, setMatchingResults] = useState<MatchResult[] | null>(null);
+  const [matchingResults, setMatchingResults] = useState<MatchingResults | null>(null);
   const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
   const [uploadResults, setUploadResults] = useState<any[] | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [settings, setSettings] = useState(DEFAULT_MATCHING_SETTINGS);
-  const [showSettings, setShowSettings] = useState(false);
+  const [showSettings, setShowSettings] = useState<boolean>(false);
 
   const steps = [
     'Upload CSV File',
@@ -135,44 +150,27 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
     'Upload Process'
   ];
 
-  // Auto-detect mode based on CSV columns
-  const detectMode = (csvData: CSVData) => {
-    if (csvData.headers && csvData.headers.includes('ref')) {
-      return 'professional';
-    }
-    return 'basic';
-  };
 
-  // CSV Upload with auto-mode detection
+
+  // CSV Upload with unified advanced parsing
   const onCSVDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (!file) return;
 
     setLoading(true);
     try {
-      console.log('🧪 OPTIMIZED: Parsing CSV with auto-detection...');
-
-      // Try professional mode first
-      let data;
-      let detectedMode = 'basic';
-
-      try {
-        data = await mediaUploadService.parseCSVFile(file, 'professional');
-        detectedMode
-      } catch (error: any) {
-        console.log('⚠️ Professional mode failed, trying basic mode...');
-        data = await mediaUploadService.parseCSVFile(file, 'basic');
-        detectedMode
-      }
-
-      setMode(detectedMode);
+      console.log('🧪 UNIFIED: Parsing CSV with advanced detection...');
+      
+      // Use unified advanced parsing (no mode switching)
+      const data = await mediaUploadService.parseCSVFile(file, 'auto');
+      
       setCsvFile(file);
       setCsvData(data);
-
-      toast.success(`CSV parsed successfully: ${data.data.length} products found (${detectedMode} mode auto-detected)`);
+      
+      toast.success(`CSV parsed successfully: ${data.data.length} products found with advanced matching`);
       setActiveStep(1);
     } catch (error: any) {
-      console.error('❌ OPTIMIZED: CSV parsing failed:', error);
+      console.error('❌ UNIFIED: CSV parsing failed:', error);
       toast.error(`CSV parsing failed: ${error.message}`);
     } finally {
       setLoading(false);
@@ -219,8 +217,8 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
       setActiveStep(2);
 
       const strategyInfo = Object.entries(results?.stats?.matchStrategies || {})
-        .filter(([_, count]: any: any: any: any) => count > 0)
-        .map(([strategy: any count]: any: any: any: any) => `${strategy}: ${count}`)
+        .filter(([_, count]) => count > 0)
+        .map(([strategy, count]) => `${strategy}: ${count}`)
         .join(', ');
 
       toast.success(`Advanced matching complete: ${results?.stats?.matched || 0} matches found for ${results?.stats?.uniqueProducts || 0} products`);
@@ -238,18 +236,19 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
 
   // Start upload process
   const handleStartUpload = async () => {
-    if (!matchingResults || (matchingResults) || matchingResults.matches.length === 0) {
+    if (!matchingResults || matchingResults.matches.length === 0) {
       toast.error('No matches to upload');
       return;
     }
 
     setActiveStep(3);
-    setUploadProgress({ current: 0, total: matchingResults?.matches.length });
+    setUploadProgress({ current: 0, total: matchingResults.matches.length });
 
     try {
       console.log('🚀 OPTIMIZED: Starting advanced bulk upload...');
-      const results = await mediaUploadService.bulkUploadImages(matchingResults?.matches,
-        (progress) => {
+      const results = await mediaUploadService.bulkUploadImages(
+        matchingResults.matches,
+        (progress: UploadProgress) => {
           setUploadProgress(progress);
         },
         settings
@@ -257,8 +256,8 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
 
       setUploadResults(results);
 
-      const successful = results.filter((r: any: any: any: any) => r.status === 'success').length;
-      const failed = results.filter((r: any: any: any: any) => r.status === 'error').length;
+      const successful = results.filter((r: any) => r.status === 'success').length;
+      const failed = results.filter((r: any) => r.status === 'error').length;
 
       toast.success(`Upload complete: ${successful} successful, ${failed} failed`);
 
@@ -281,18 +280,17 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
     setUploadProgress(null);
     setUploadResults(null);
     setSettings(DEFAULT_MATCHING_SETTINGS);
-    setMode('basic');
   };
 
   // Update settings
-  const updateSettings = (path, value) => {
+  const updateSettings = (path: string, value: any) => {
     setSettings(prev => {
       const newSettings = { ...prev };
       const keys = path.split('.');
-      let current = newSettings;
+      let current: any = newSettings;
 
       for (let i = 0; i < keys.length - 1; i++) {
-        current
+        current = current[keys[i]];
       }
 
       current[keys[keys.length - 1]] = value;
@@ -319,41 +317,38 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
     multiple: true
   });
 
-  const removeImage = (index) => {
-    setImageFiles(prev => prev.filter((_, i: any: any: any: any) => i !== index));
+  const removeImage = (index: number) => {
+    setImageFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  return Boolean((
+  return (
     <Dialog 
       open={open} 
       onClose={onClose} 
-      maxWidth
+      maxWidth="xl"
+      fullWidth
+      PaperProps={{
         sx: { minHeight: '85vh', maxHeight: '95vh' }
       }}
     >
       <DialogTitle sx={{ 
-        display: "flex", 
         display: 'flex', 
         alignItems: 'center', 
         gap: 1,
         bgcolor: 'primary.main',
         color: 'primary.contrastText',
         pr: 1
-      } as any}>
+      }}>
         <UploadIcon />
-        <Box sx={{ display: "flex", flexGrow: 1 } as any}>
+        <Box sx={{ flexGrow: 1 }}>
           <Typography variant="h6" component="span">
-            Optimized Bulk Media Upload
+            Advanced Bulk Media Upload
           </Typography>
-          <Box sx={{ display: "flex", display: 'flex', gap: 1, mt: 0.5 } as any}>
+          <Box sx={{ display: 'flex', gap: 1, mt: 0.5 }}>
             <Chip 
-              label={`${mode.charAt(0).toUpperCase() + mode.slice(1)} Mode`}
-              size="small"
-              } as any} 
-            />
-            <Chip 
-              label
-              sx={{ display: "flex", bgcolor: 'success.main', color: 'white' } as any} 
+              label="Unified Advanced Matching" 
+              size="small" 
+              sx={{ bgcolor: 'success.main', color: 'white' }} 
             />
           </Box>
         </Box>
@@ -361,7 +356,7 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
         <Tooltip title="Configure matching settings">
           <IconButton 
             onClick={() => setShowSettings(!showSettings)}
-            sx={{ display: "flex", color: 'inherit' } as any}
+            sx={{ color: 'inherit' }}
           >
             <Badge color="secondary" variant="dot" invisible={!showSettings}>
               <SettingsIcon />
@@ -371,24 +366,23 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
         
         <IconButton 
           onClick={onClose} 
-          sx={{ display: "flex", color: 'inherit' } as any}
+          sx={{ color: 'inherit' }}
         >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
 
-      <DialogContent dividers sx={{ display: "flex", p: 0, display: 'flex', height: '70vh' } as any}>
+      <DialogContent dividers sx={{ p: 0, display: 'flex', height: '70vh' }}>
         {/* Settings Panel */}
         {showSettings && (
-          <Paper sx={{ display: "flex", width: 320, p: 2, borderRight: 1, borderColor: 'divider', overflow: 'auto' } as any}>
-            <Typography variant="h6" gutterBottom sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 1 } as any}>
+          <Paper sx={{ width: 320, p: 2, borderRight: 1, borderColor: 'divider', overflow: 'auto' }}>
+            <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <TuneIcon color="primary" />
               Advanced Settings
             </Typography>
             
-            <Alert severity="info" sx={{ display: "flex", mb: 2, fontSize: '0.75rem' } as any}>
-              Mode auto-detected: <strong>{mode}</strong>
-              {mode === 'professional' && ' (REF column found)'}
+            <Alert severity="info" sx={{ mb: 2, fontSize: '0.75rem' }}>
+              <strong>Unified Advanced Matching:</strong> All strategies automatically enabled based on CSV structure
             </Alert>
 
             {/* Matching Strategies */}
@@ -396,15 +390,18 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle2">Matching Strategies</Typography>
               </AccordionSummary>
-              <AccordionDetails sx={{ display: "flex", pt: 0 } as any}>
+              <AccordionDetails sx={{ pt: 0 }}>
                 <FormControlLabel
-                  control
+                  control={
+                    <Switch
                       checked={settings.strategies.exact}
                       onChange={(e) => updateSettings('strategies.exact', e.target.checked)}
                       size="small"
+                    />
                   }
-                  label
-                      <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 0.5 } as any}>
+                  label={
+                    <Tooltip title="Exact filename matching - highest accuracy">
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                         <SearchIcon fontSize="small" />
                         <Typography variant="body2">Exact Match</Typography>
                       </Box>
@@ -413,13 +410,16 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
                 />
                 
                 <FormControlLabel
-                  control
+                  control={
+                    <Switch
                       checked={settings.strategies.fuzzy}
                       onChange={(e) => updateSettings('strategies.fuzzy', e.target.checked)}
                       size="small"
+                    />
                   }
-                  label
-                      <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 0.5 } as any}>
+                  label={
+                    <Tooltip title="AI-powered similarity matching for variations">
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                         <AIIcon fontSize="small" />
                         <Typography variant="body2">Fuzzy Match</Typography>
                       </Box>
@@ -427,21 +427,23 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
                   }
                 />
                 
-                {mode === 'professional' && (<FormControlLabel
-                    control
-                        checked={settings.strategies.ref}
-                        onChange={(e) => updateSettings('strategies.ref', e.target.checked)}
-                        size="small"
-                    }
-                    label
-                        <Box sx={{ display: "flex", display: 'flex', alignItems: 'center', gap: 0.5 } as any}>
-                          <CompareIcon fontSize="small" />
-                          <Typography variant="body2">REF Column</Typography>
-                        </Box>
-                      </Tooltip>
-                    }
-                  />
-                )}
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={settings.strategies.ref}
+                      onChange={(e) => updateSettings('strategies.ref', e.target.checked)}
+                      size="small"
+                    />
+                  }
+                  label={
+                    <Tooltip title="Match using REF column (auto-enabled when REF column detected)">
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                        <CompareIcon fontSize="small" />
+                        <Typography variant="body2">REF Column</Typography>
+                      </Box>
+                    </Tooltip>
+                  }
+                />
               </AccordionDetails>
             </Accordion>
 
@@ -450,8 +452,8 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle2">Thresholds</Typography>
               </AccordionSummary>
-              <AccordionDetails sx={{ display: "flex", pt: 0 } as any}>
-                <Box sx={{ display: "flex", mb: 2 } as any}>
+              <AccordionDetails sx={{ pt: 0 }}>
+                <Box sx={{ mb: 2 }}>
                   <Typography variant="body2" gutterBottom>
                     Fuzzy Similarity: {settings.thresholds.fuzzyThreshold}
                   </Typography>
@@ -461,25 +463,32 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
                     min={0.5}
                     max={1.0}
                     step={0.05}
-                    marks
+                    marks={[
                       { value: 0.5, label: 'Loose' },
                       { value: 0.7, label: 'Balanced' },
                       { value: 0.9, label: 'Strict' }
                     ]}
                     size="small"
+                  />
+                </Box>
+              </AccordionDetails>
+            </Accordion>
+
             {/* File Handling */}
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle2">File Options</Typography>
               </AccordionSummary>
-              <AccordionDetails sx={{ display: "flex", pt: 0 } as any}>
+              <AccordionDetails sx={{ pt: 0 }}>
                 <FormControlLabel
-                  control
+                  control={
+                    <Switch
                       checked={settings.fileHandling.multipleImages}
                       onChange={(e) => updateSettings('fileHandling.multipleImages', e.target.checked)}
                       size="small"
+                    />
                   }
-                  label
+                  label={
                     <Tooltip title="Support _1, _2, _3 numbering for multiple images per SKU">
                       <Typography variant="body2">Multiple Images</Typography>
                     </Tooltip>
@@ -487,12 +496,17 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
                 />
                 
                 <FormControlLabel
-                  control
-                      checked={settings.upload.processImages}
+                  control={
+                    <Switch
+                      checked={settings.upload?.processImages || false}
                       onChange={(e) => updateSettings('upload.processImages', e.target.checked)}
                       size="small"
+                    />
                   }
-                  label
+                  label={
+                    <Tooltip title="Resize and optimize images before upload">
+                      <Typography variant="body2">Process Images</Typography>
+                    </Tooltip>
                   }
                 />
               </AccordionDetails>
@@ -501,7 +515,7 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
         )}
 
         {/* Main Content */}
-        <Box sx={{ display: "flex", flexGrow: 1, p: 3, overflow: 'auto' } as any}>
+        <Box sx={{ flexGrow: 1, p: 3, overflow: 'auto' }}>
           <Stepper activeStep={activeStep} orientation="vertical">
             {/* Step 1: CSV Upload */}
             <Step>
@@ -509,25 +523,27 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
                 <Typography variant="h6">Upload CSV File</Typography>
               </StepLabel>
               <StepContent>
-                <Alert severity="info" sx={{ display: "flex", mb: 2 } as any}>
+                <Alert severity="info" sx={{ mb: 2 }}>
                   <Typography variant="body2">
-                    <strong>Auto-Detection:</strong> Upload your CSV and the system will automatically detect 
-                    whether to use Basic mode (SKU + Image Name) or Professional mode (REF column matching).
+                    <strong>Advanced Matching:</strong> Upload your CSV and the system will automatically use 
+                    all available matching strategies including exact, fuzzy, and REF column matching when available.
                   </Typography>
                 </Alert>
                 
                 <Paper
-                  { ...csvDropzone.getRootProps()}
+                  {...csvDropzone.getRootProps()}
                   sx={{
+                    p: 4,
+                    border: '2px dashed',
                     borderColor: csvDropzone.isDragActive ? 'primary.main' : 'grey.300',
                     bgcolor: csvDropzone.isDragActive ? 'primary.light' : 'background.default',
                     cursor: 'pointer',
                     textAlign: 'center',
                     transition: 'all 0.2s ease'
-                  } as any}
+                  }}
                 >
-                  <input { ...csvDropzone.getInputProps()} />
-                  <CSVIcon sx={{ display: "flex", fontSize: 64, color: 'primary.main', mb: 2 } as any} />
+                  <input {...csvDropzone.getInputProps()} />
+                  <CSVIcon sx={{ fontSize: 64, color: 'primary.main', mb: 2 }} />
                   <Typography variant="h6" gutterBottom>
                     {csvDropzone.isDragActive
                       ? 'Drop CSV file here...'
@@ -535,18 +551,17 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
                     }
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Auto-detects Basic or Professional mode based on CSV structure
+                    Automatically detects column structure and enables appropriate matching strategies
                   </Typography>
                 </Paper>
 
                 {csvFile && csvData && (
-                  <Alert severity="success" sx={{ display: "flex", mt: 2 } as any}>
+                  <Alert severity="success" sx={{ mt: 2 }}>
                     <Typography variant="body2">
                       <strong>{csvFile.name}</strong> - {csvData.data.length} products loaded
                     </Typography>
                     <Typography variant="caption" display="block">
-                      Mode: <strong>{mode}</strong> | 
-                      Columns: {csvData.skuColumn}, {csvData.imageColumn}
+                      Columns detected: {csvData.skuColumn}, {csvData.imageColumn}
                       {csvData.refColumn && `, ${csvData.refColumn}`}
                     </Typography>
                   </Alert>
@@ -561,17 +576,19 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
               </StepLabel>
               <StepContent>
                 <Paper
-                  { ...imageDropzone.getRootProps()}
+                  {...imageDropzone.getRootProps()}
                   sx={{
+                    p: 4,
+                    border: '2px dashed',
                     borderColor: imageDropzone.isDragActive ? 'success.main' : 'grey.300',
                     bgcolor: imageDropzone.isDragActive ? 'success.light' : 'background.default',
                     cursor: 'pointer',
                     textAlign: 'center',
                     transition: 'all 0.2s ease'
-                  } as any}
+                  }}
                 >
-                  <input { ...imageDropzone.getInputProps()} />
-                  <MultiImageIcon sx={{ display: "flex", fontSize: 64, color: 'success.main', mb: 2 } as any} />
+                  <input {...imageDropzone.getInputProps()} />
+                  <MultiImageIcon sx={{ fontSize: 64, color: 'success.main', mb: 2 }} />
                   <Typography variant="h6" gutterBottom>
                     {imageDropzone.isDragActive
                       ? 'Drop images here...'
@@ -584,41 +601,46 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
                 </Paper>
 
                 {imageFiles.length > 0 && (
-                  <Box sx={{ display: "flex", mt: 3 } as any}>
-                    <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 } as any}>
+                  <Box sx={{ mt: 3 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                       <Typography variant="subtitle1">
                         Selected Images ({imageFiles.length})
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Total Size: {(imageFiles.reduce((sum: any f: any: any: any: any) => sum + f.size, 0) / 1024 / 1024).toFixed(2)}MB
+                        Total Size: {(imageFiles.reduce((sum, f) => sum + f.size, 0) / 1024 / 1024).toFixed(2)}MB
                       </Typography>
                     </Box>
                     
-                    <Box sx={{ display: "flex", maxHeight: 200, overflow: 'auto', border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 1 } as any}>
-                      <Grid { ...{container: true}} spacing={1}>
-                        {imageFiles.map((file: any index: any: any: any: any) => (
+                    <Box sx={{ maxHeight: 200, overflow: 'auto', border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 1 }}>
+                      <Grid container spacing={1}>
+                        {imageFiles.map((file, index) => (
                           <Grid item key={index}>
                             <Chip
                               label={file.name}
                               onDelete={() => removeImage(index)}
                               size="small"
+                              color="primary"
+                              variant="outlined"
+                            />
+                          </Grid>
                         ))}
                       </Grid>
                     </Box>
                     
-                    <Box sx={{ display: "flex", mt: 2, display: 'flex', gap: 2 } as any}>
+                    <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
                       <Button
-                        variant="body2"
+                        variant="contained"
                         onClick={handleMatching}
-                        disabled={!csvData || imageFiles.length ===0 || loading}
+                        disabled={!csvData || imageFiles.length === 0 || loading}
                         startIcon={loading ? <SuccessIcon className="spin" /> : <SearchIcon />}
-                        color
+                        color="success"
+                      >
                         {loading ? 'Processing...' : 'Start Advanced Matching'}
                       </Button>
                       <Button
-                        variant="body2"
+                        variant="outlined"
                         onClick={() => setImageFiles([])}
-                        disabled={imageFiles.length ===0}
+                        disabled={imageFiles.length === 0}
                       >
                         Clear All Images
                       </Button>
@@ -637,46 +659,46 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
                 {matchingResults && (
                   <Box>
                     {/* Enhanced Statistics Cards */}
-                    <Grid { ...{container: true}} spacing={2} sx={{ display: "flex", mb: 3 } as any}>
+                    <Grid container spacing={2} sx={{ mb: 3 }}>
                       <Grid item xs={6} sm={3}>
-                        <Card sx={{ display: "flex", textAlign: 'center', bgcolor: 'success.light' } as any}>
-                          <CardContent sx={{ display: "flex", py: 2 } as any}>
-                            <SuccessIcon sx={{ display: "flex", fontSize: 32, color: 'success.main' } as any} />
-                            <Typography variant="h5" sx={{ display: "flex", fontWeight: 'bold' } as any}>
-                              {matchingResults?.stats.matched}
+                        <Card sx={{ textAlign: 'center', bgcolor: 'success.light' }}>
+                          <CardContent sx={{ py: 2 }}>
+                            <SuccessIcon sx={{ fontSize: 32, color: 'success.main' }} />
+                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                              {matchingResults.stats.matched}
                             </Typography>
                             <Typography variant="caption">Total Matches</Typography>
                           </CardContent>
                         </Card>
                       </Grid>
                       <Grid item xs={6} sm={3}>
-                        <Card sx={{ display: "flex", textAlign: 'center', bgcolor: 'info.light' } as any}>
-                          <CardContent sx={{ display: "flex", py: 2 } as any}>
-                            <MultiImageIcon sx={{ display: "flex", fontSize: 32, color: 'info.main' } as any} />
-                            <Typography variant="h5" sx={{ display: "flex", fontWeight: 'bold' } as any}>
-                              {matchingResults?.stats.uniqueProducts}
+                        <Card sx={{ textAlign: 'center', bgcolor: 'info.light' }}>
+                          <CardContent sx={{ py: 2 }}>
+                            <MultiImageIcon sx={{ fontSize: 32, color: 'info.main' }} />
+                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                              {matchingResults.stats.uniqueProducts}
                             </Typography>
                             <Typography variant="caption">Products</Typography>
                           </CardContent>
                         </Card>
                       </Grid>
                       <Grid item xs={6} sm={3}>
-                        <Card sx={{ display: "flex", textAlign: 'center', bgcolor: 'warning.light' } as any}>
-                          <CardContent sx={{ display: "flex", py: 2 } as any}>
-                            <WarningIcon sx={{ display: "flex", fontSize: 32, color: 'warning.main' } as any} />
-                            <Typography variant="h5" sx={{ display: "flex", fontWeight: 'bold' } as any}>
-                              {matchingResults?.stats?.multipleImagesProducts || 0}
+                        <Card sx={{ textAlign: 'center', bgcolor: 'warning.light' }}>
+                          <CardContent sx={{ py: 2 }}>
+                            <WarningIcon sx={{ fontSize: 32, color: 'warning.main' }} />
+                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                              {matchingResults.stats.multipleImagesProducts || 0}
                             </Typography>
                             <Typography variant="caption">Multi-Image</Typography>
                           </CardContent>
                         </Card>
                       </Grid>
                       <Grid item xs={6} sm={3}>
-                        <Card sx={{ display: "flex", textAlign: 'center', bgcolor: 'secondary.light' } as any}>
-                          <CardContent sx={{ display: "flex", py: 2 } as any}>
-                            <AIIcon sx={{ display: "flex", fontSize: 32, color: 'secondary.main' } as any} />
-                            <Typography variant="h5" sx={{ display: "flex", fontWeight: 'bold' } as any}>
-                              {matchingResults?.stats?.averageSimilarity || 0}
+                        <Card sx={{ textAlign: 'center', bgcolor: 'secondary.light' }}>
+                          <CardContent sx={{ py: 2 }}>
+                            <AIIcon sx={{ fontSize: 32, color: 'secondary.main' }} />
+                            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+                              {matchingResults.stats.averageSimilarity || 0}
                             </Typography>
                             <Typography variant="caption">Avg Similarity</Typography>
                           </CardContent>
@@ -685,34 +707,34 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
                     </Grid>
 
                     {/* Strategy Breakdown */}
-                    <Alert severity="success" sx={{ display: "flex", mb: 3 } as any}>
+                    <Alert severity="success" sx={{ mb: 3 }}>
                       <Typography variant="body2">
-                        <strong>Advanced Matching Complete:</strong> Found {matchingResults?.stats.matched} matches 
-                        using {Object.values(matchingResults?.stats.matchStrategies || {}).filter((v: any: any: any: any) => v > 0).length} strategies.
+                        <strong>Advanced Matching Complete:</strong> Found {matchingResults.stats.matched} matches 
+                        using {Object.values(matchingResults.stats.matchStrategies).filter(v => v > 0).length} strategies.
                       </Typography>
-                      <Box sx={{ display: "flex", mt: 1, display: 'flex', gap: 1, flexWrap: 'wrap' } as any}>
-                        {(matchingResults?.stats.matchStrategies.ref || 0) > 0 && (
-                          <Chip label={`REF: ${matchingResults?.stats.matchStrategies.ref}`} color="warning" size="small" />
+                      <Box sx={{ mt: 1, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                        {matchingResults.stats.matchStrategies.ref > 0 && (
+                          <Chip label={`REF: ${matchingResults.stats.matchStrategies.ref}`} color="warning" size="small" />
                         )}
-                        {(matchingResults?.stats.matchStrategies.exact || 0) > 0 && (
-                          <Chip label={`Exact: ${matchingResults?.stats.matchStrategies.exact}`} color="primary" size="small" />
+                        {matchingResults.stats.matchStrategies.exact > 0 && (
+                          <Chip label={`Exact: ${matchingResults.stats.matchStrategies.exact}`} color="primary" size="small" />
                         )}
-                        {matchingResults?.stats.matchStrategies.fuzzy > 0 && (
-                          <Chip label={`Fuzzy: ${matchingResults?.stats.matchStrategies.fuzzy}`} color="success" size="small" />
+                        {matchingResults.stats.matchStrategies.fuzzy > 0 && (
+                          <Chip label={`Fuzzy: ${matchingResults.stats.matchStrategies.fuzzy}`} color="success" size="small" />
                         )}
-                        {matchingResults?.stats.matchStrategies.product > 0 && (
-                          <Chip label={`Product: ${matchingResults?.stats.matchStrategies.product}`} color="info" size="small" />
+                        {matchingResults.stats.matchStrategies.product > 0 && (
+                          <Chip label={`Product: ${matchingResults.stats.matchStrategies.product}`} color="info" size="small" />
                         )}
                       </Box>
                     </Alert>
 
                     {/* Matches Table */}
-                    {matchingResults?.matches.length > 0 && (
-                      <Box sx={{ display: "flex", mb: 3 } as any}>
+                    {matchingResults.matches.length > 0 && (
+                      <Box sx={{ mb: 3 }}>
                         <Typography variant="subtitle1" gutterBottom>
-                          Matches to Upload ({matchingResults?.matches.length})
+                          Matches to Upload ({matchingResults.matches.length})
                         </Typography>
-                        <TableContainer component={Paper} sx={{ display: "flex", maxHeight: 300 } as any}>
+                        <TableContainer component={Paper} sx={{ maxHeight: 300 }}>
                           <Table size="small" stickyHeader>
                             <TableHead>
                               <TableRow>
@@ -724,21 +746,25 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
                               </TableRow>
                             </TableHead>
                             <TableBody>
-                              {matchingResults?.matches.slice(0, 15).map((match: any index: any: any: any: any) => (
+                              {matchingResults.matches.slice(0, 15).map((match, index) => (
                                 <TableRow key={index}>
                                   <TableCell>{match.sku}</TableCell>
                                   <TableCell>{match.file.name}</TableCell>
                                   <TableCell>
                                     <Chip 
                                       label={match.matchStrategy} 
-                                      size="small"
+                                      size="small" 
+                                      color={
+                                        match.matchStrategy === 'ref' ? 'warning' :
+                                        match.matchStrategy === 'exact' ? 'primary' :
+                                        match.matchStrategy === 'fuzzy' ? 'success' : 'info'
                                       }
                                     />
                                   </TableCell>
                                   <TableCell>
                                     {match.imageIndex + 1}/{match.totalImagesForSku}
                                     {match.isMainImage && (
-                                      <Chip label="Main" size="small" color="primary" sx={{ display: "flex", ml: 1 } as any} />
+                                      <Chip label="Main" size="small" color="primary" sx={{ ml: 1 }} />
                                     )}
                                   </TableCell>
                                   <TableCell>{(match.similarity * 100).toFixed(0)}%</TableCell>
@@ -747,21 +773,23 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
                             </TableBody>
                           </Table>
                         </TableContainer>
-                        {matchingResults?.matches.length > 15 && (
-                          <Typography variant="caption" sx={{ display: "flex", p: 2, display: 'block', textAlign: 'center' } as any}>
-                            ... and {matchingResults?.matches.length - 15} more matches
+                        {matchingResults.matches.length > 15 && (
+                          <Typography variant="caption" sx={{ p: 2, display: 'block', textAlign: 'center' }}>
+                            ... and {matchingResults.matches.length - 15} more matches
                           </Typography>
                         )}
                       </Box>
                     )}
 
                     <Button
-                      variant="body2"
+                      variant="contained"
+                      size="large"
                       onClick={handleStartUpload}
-                      disabled={matchingResults ? matchingResults.matches.length === 0 : true}
+                      disabled={matchingResults.matches.length === 0}
                       startIcon={<UploadIcon />}
-                      color
-                      Start Optimized Upload ({matchingResults?.matches.length} images)
+                      color="primary"
+                    >
+                      Start Optimized Upload ({matchingResults.matches.length} images)
                     </Button>
                   </Box>
                 )}
@@ -775,8 +803,8 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
               </StepLabel>
               <StepContent>
                 {uploadProgress && (
-                  <Box sx={{ display: "flex", mb: 3 } as any}>
-                    <Box sx={{ display: "flex", display: 'flex', justifyContent: 'space-between', mb: 1 } as any}>
+                  <Box sx={{ mb: 3 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                       <Typography variant="body2">
                         Progress: {uploadProgress.current} of {uploadProgress.total}
                       </Typography>
@@ -785,9 +813,9 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
                       </Typography>
                     </Box>
                     <LinearProgress
-                      variant="body2"
+                      variant="determinate"
                       value={(uploadProgress.current / uploadProgress.total) * 100}
-                      sx={{ display: "flex", mb: 2, height: 8, borderRadius: 4 } as any}
+                      sx={{ mb: 2, height: 8, borderRadius: 4 }}
                     />
                     {uploadProgress.sku && (
                       <Box>
@@ -804,16 +832,16 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
 
                 {uploadResults && (
                   <Box>
-                    <Alert severity="success" sx={{ display: "flex", mb: 3 } as any}>
+                    <Alert severity="success" sx={{ mb: 3 }}>
                       <Typography variant="body1" gutterBottom>
                         Optimized upload completed successfully!
                       </Typography>
                       <Typography variant="body2">
-                        {uploadResults.filter((r: any: any: any: any) => r.status === 'success').length} successful, {uploadResults.filter((r: any: any: any: any) => r.status === 'error').length} failed
+                        {uploadResults.filter((r: any) => r.status === 'success').length} successful, {uploadResults.filter((r: any) => r.status === 'error').length} failed
                       </Typography>
                     </Alert>
                     
-                    <Box sx={{ display: "flex", maxHeight: 400, overflow: 'auto' } as any}>
+                    <Box sx={{ maxHeight: 400, overflow: 'auto' }}>
                       <TableContainer component={Paper}>
                         <Table size="small">
                           <TableHead>
@@ -826,7 +854,7 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {uploadResults.map((result: any index: any: any: any: any) => (
+                            {uploadResults.map((result: any, index: number) => (
                               <TableRow key={index}>
                                 <TableCell>
                                   {result.status === 'success' ? (
@@ -841,6 +869,10 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
                                   <Chip 
                                     label={result.matchStrategy} 
                                     size="small"
+                                    color={
+                                      result.matchStrategy === 'ref' ? 'warning' :
+                                      result.matchStrategy === 'exact' ? 'primary' :
+                                      result.matchStrategy === 'fuzzy' ? 'success' : 'info'
                                     }
                                   />
                                 </TableCell>
@@ -863,7 +895,7 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
         </Box>
       </DialogContent>
 
-      <DialogActions sx={{ display: "flex", p: 2, bgcolor: 'background.paper' } as any}>
+      <DialogActions sx={{ p: 2, bgcolor: 'background.paper' }}>
         <Button onClick={onClose} disabled={loading}>
           {uploadResults ? 'Close' : 'Cancel'}
         </Button>
@@ -874,7 +906,7 @@ const BulkMediaUploadDialog: React.FC<any> = ({ open, onClose, onComplete }) => 
         )}
       </DialogActions>
     </Dialog>
-  )))));
+  );
 };
 
 export default BulkMediaUploadDialog;

@@ -71,14 +71,16 @@ if (process.env.NODE_ENV === 'production' || process.env.ENABLE_RATE_LIMIT === '
     app.use('/api/', apiLimiter);
 }
 
-// Enhanced CORS configuration for frontend port 80
+// Enhanced CORS configuration for frontend development
 const corsOptions = {
     ...productionConfig.cors,
     origin: [
-        'http://localhost:80',
-        'http://127.0.0.1:80',
-        'http://localhost:3000', // Fallback for development
+        'http://localhost:3000', // Primary development port
         'http://127.0.0.1:3000',
+        'http://localhost:80',    // Production/admin port
+        'http://127.0.0.1:80',
+        'http://localhost:5173',  // Vite default port
+        'http://127.0.0.1:5173',
         ...(process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [])
     ],
     credentials: true,

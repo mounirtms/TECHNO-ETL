@@ -15,7 +15,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // Lazy load the main router to avoid circular dependencies
-const EnhancedRouter = lazy(() => import('./router/EnhancedRouter'));
+const SimplifiedRouter = lazy(() => import('./router/SimplifiedRouter'));
 
 // Import the settings conflict dialog
 import SettingsConflictDialog from './components/dialogs/SettingsConflictDialog';
@@ -44,14 +44,9 @@ const App = () => {
   return (
     <>
       <CssBaseline />
-      <BrowserRouter
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true
-        }}
-      >
+      <BrowserRouter>
         <Suspense fallback={<AppLoading />}>
-          <EnhancedRouter />
+          <SimplifiedRouter />
         </Suspense>
       </BrowserRouter>
       

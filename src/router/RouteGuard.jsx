@@ -86,12 +86,20 @@ export const RouteGuard = ({ children, requiredRole = null, fallbackPath = ROUTE
 
   // Redirect to login if not authenticated
   if (requiresAuth(location.pathname) && !currentUser) {
-    return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
+    // Only redirect if we're not already on the login page
+    if (location.pathname !== ROUTES.LOGIN) {
+      return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
+    }
+    return children;
   }
 
   // Redirect if not authorized for this route
   if (!isAuthorized && currentUser) {
-    return <Navigate to={fallbackPath} replace />;
+    // Only redirect if we're not already on the fallback path
+    if (location.pathname !== fallbackPath) {
+      return <Navigate to={fallbackPath} replace />;
+    }
+    return children;
   }
 
   return children;
@@ -110,8 +118,12 @@ export const PublicRouteGuard = ({ children, redirectTo = ROUTES.DASHBOARD }) =>
 
   // Redirect authenticated users away from public routes
   if (currentUser) {
+    // Only redirect if we're not already on the redirect page
     const intendedDestination = location.state?.from?.pathname || redirectTo;
-    return <Navigate to={intendedDestination} replace />;
+    if (location.pathname !== intendedDestination) {
+      return <Navigate to={intendedDestination} replace />;
+    }
+    return children;
   }
 
   return children;

@@ -1,3 +1,5 @@
+// noinspection Annotator
+
 /**
  * Voting Service - Professional SQL-based voting system
  * Handles all voting operations with MDM database integration

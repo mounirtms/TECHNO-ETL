@@ -23,6 +23,7 @@
         "orders": "Orders",
         "invoices": "Invoices",
         "categories": "Categories",
+        "categoryManagement": "Category Management",
         "stocks": "Stocks",
         "sources": "Sources",
         "userProfile": "User Profile",

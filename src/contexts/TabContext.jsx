@@ -15,7 +15,9 @@ const OrdersGrid = lazy(() => import('../components/grids/magento/OrdersGrid.jsx
 const InvoicesGrid = lazy(() => import('../components/grids/magento/InvoicesGrid.jsx'));
 const UserProfile = lazy(() => import('../components/UserProfile/index.jsx'));
 const CategoryTree = lazy(() => import('../components/grids/magento/CategoryGrid.jsx'));
+const CategoryManagementGrid = lazy(() => import('../components/grids/magento/CategoryManagementGrid.jsx'));
 const StocksGrid = lazy(() => import('../components/grids/magento/StocksGrid.jsx'));
+const MDMStockGrid = lazy(() => import('../components/grids/MDMStockGrid.jsx'));
 const SourcesGrid = lazy(() => import('../components/grids/magento/SourcesGrid.jsx'));
 const CegidGrid = lazy(() => import('../components/grids/CegidGrid.jsx'));
 const GridTestPage = lazy(() => import('../pages/GridTestPage.jsx'));
@@ -31,7 +33,6 @@ const SalesAnalytics = lazy(() => import('../components/placeholders/Placeholder
 const InventoryAnalytics = lazy(() => import('../components/placeholders/PlaceholderComponents.jsx').then(module => ({ default: module.InventoryAnalytics })));
 const SecureVault = lazy(() => import('../components/placeholders/PlaceholderComponents.jsx').then(module => ({ default: module.SecureVault })));
 const AccessControl = lazy(() => import('../components/placeholders/PlaceholderComponents.jsx').then(module => ({ default: module.AccessControl })));
-const MDMStock = lazy(() => import('../components/placeholders/PlaceholderComponents.jsx').then(module => ({ default: module.MDMStock })));
 const MDMSources = lazy(() => import('../components/placeholders/PlaceholderComponents.jsx').then(module => ({ default: module.MDMSources })));
 
 // URL to Tab ID mapping
@@ -47,6 +48,7 @@ const URL_TO_TAB_MAP = {
     '/orders': 'OrdersGrid',
     '/invoices': 'InvoicesGrid',
     '/categories': 'CategoryTree',
+    '/category-management': 'CategoryManagementGrid',
     '/stocks': 'StocksGrid',
     '/sources': 'SourcesGrid',
     '/cms-pages': 'CmsPageGrid',
@@ -58,7 +60,7 @@ const URL_TO_TAB_MAP = {
     '/analytics/inventory': 'InventoryAnalytics',
     '/locker/vault': 'SecureVault',
     '/locker/access': 'AccessControl',
-    '/mdm-stock': 'MDMStock',
+    '/mdm-stock': 'MDMStockGrid',
     '/mdm-sources': 'MDMSources',
     '/profile': 'UserProfile'
 };
@@ -67,6 +69,8 @@ const URL_TO_TAB_MAP = {
 const TAB_TO_URL_MAP = Object.fromEntries(
     Object.entries(URL_TO_TAB_MAP).map(([url, tabId]) => [tabId, url])
 );
+
+export { TAB_TO_URL_MAP };
 
 // Component mapping
 const COMPONENT_MAP = {
@@ -80,6 +84,7 @@ const COMPONENT_MAP = {
     OrdersGrid: OrdersGrid,
     InvoicesGrid: InvoicesGrid,
     CategoryTree: CategoryTree,
+    CategoryManagementGrid: CategoryManagementGrid,
     StocksGrid: StocksGrid,
     SourcesGrid: SourcesGrid,
     CegidProductsGrid: CegidGrid,
@@ -92,7 +97,7 @@ const COMPONENT_MAP = {
     InventoryAnalytics: InventoryAnalytics,
     SecureVault: SecureVault,
     AccessControl: AccessControl,
-    MDMStock: MDMStock,
+    MDMStockGrid: MDMStockGrid,
     MDMSources: MDMSources,
     UserProfile: UserProfile
 };

@@ -23,7 +23,6 @@ import {
   Card,
   CardContent,
   IconButton,
-  Tooltip,
   Switch,
   FormControlLabel,
   Slider,
@@ -38,8 +37,7 @@ import {
   TableRow,
   Tabs,
   Tab,
-  Badge,
-  Divider
+  Badge
 } from '@mui/material';
 import {
   CloudUpload as UploadIcon,
@@ -49,12 +47,7 @@ import {
   Error as ErrorIcon,
   Warning as WarningIcon,
   Close as CloseIcon,
-  Visibility as PreviewIcon,
-  Settings as SettingsIcon,
   Transform as ProcessIcon,
-  PhotoSizeSelectActual as ResizeIcon,
-  Speed as OptimizeIcon,
-  ExpandMore as ExpandIcon,
   GetApp as DownloadIcon,
   Refresh as RefreshIcon,
   Info as InfoIcon
@@ -91,10 +84,7 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
     imageQuality: 90,
     targetSize: 1200,
     batchSize: 3,
-    delayBetweenBatches: 2000,
-    autoResize: true,
-    preserveAspectRatio: true,
-    backgroundColor: '#FFFFFF'
+    delayBetweenBatches: 2000
   });
   
   const fileInputRef = useRef(null);
