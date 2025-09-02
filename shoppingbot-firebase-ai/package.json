@@ -1,1 +1,14 @@
-{"name":"shoppingbot","version":"1.0.0","main":"src/bot/index.js"}
+{
+  "name": "shoppingbot-firebase-ai",
+  "version": "1.0.0",
+  "description": "AI-powered shopping bot with Firebase integration",
+  "main": "src/bot/index.js",
+  "private": true,
+  "scripts": {
+    "build": "echo 'ShoppingBot build placeholder'",
+    "dev": "echo 'ShoppingBot dev placeholder'"
+  },
+  "keywords": ["ai", "shopping", "bot", "firebase"],
+  "author": "Mounir Abderrahmani <mounir.ab@techno-dz.com>",
+  "license": "ISC"
+}

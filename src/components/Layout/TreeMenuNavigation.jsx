@@ -83,7 +83,9 @@ const StyledCategoryItem = styled(Box)(({ theme, isRTL, open, expanded }) => ({
     }),
 }));
 
-const StyledMenuItem = styled(ListItem)(({ theme, active, open }) => ({
+const StyledMenuItem = styled(ListItem, {
+    shouldForwardProp: (prop) => prop !== 'active' && prop !== 'open',
+})(({ theme, active, open }) => ({
     borderRadius: '8px',
     margin: theme.spacing(0.5, 1),
     padding: theme.spacing(1, 2),

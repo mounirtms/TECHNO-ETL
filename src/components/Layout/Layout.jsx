@@ -34,7 +34,7 @@ const Layout = () => {
             <Box sx={{ 
                 display: 'flex', 
                 flex: 1,
-                minHeight: `calc(100vh - ${HEADER_HEIGHT}px - ${FOOTER_HEIGHT}px)`
+                height: `calc(100vh - ${HEADER_HEIGHT}px - ${FOOTER_HEIGHT}px)`
             }}>
                 {/* Sidebar on the left (or right for RTL) */}
                 <Sidebar 
@@ -49,7 +49,7 @@ const Layout = () => {
                         flexGrow: 1,
                         display: 'flex',
                         flexDirection: 'column',
-                        minHeight: `calc(100vh - ${HEADER_HEIGHT}px - ${FOOTER_HEIGHT}px)`,
+                        height: `calc(100vh - ${HEADER_HEIGHT}px - ${FOOTER_HEIGHT}px)`,
                         transition: theme.transitions.create(['margin', 'width'], {
                             easing: theme.transitions.easing.sharp,
                             duration: theme.transitions.duration.leavingScreen,

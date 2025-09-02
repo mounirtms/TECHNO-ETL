@@ -44,12 +44,7 @@ const App = () => {
   return (
     <>
       <CssBaseline />
-      <BrowserRouter
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true
-        }}
-      >
+      <BrowserRouter>
         <Suspense fallback={<AppLoading />}>
           <SimplifiedRouter />
         </Suspense>

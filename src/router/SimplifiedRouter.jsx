@@ -61,7 +61,160 @@ const SimplifiedRouter = () => {
           />
 
           <Route 
-            path="/*" 
+            path="/dashboard" 
+            element={
+              <RouteGuard>
+                <Layout />
+              </RouteGuard>
+            }
+          />
+
+          <Route 
+            path="/charts" 
+            element={
+              <RouteGuard>
+                <Layout />
+              </RouteGuard>
+            }
+          />
+
+          <Route 
+            path="/products" 
+            element={
+              <RouteGuard>
+                <Layout />
+              </RouteGuard>
+            }
+          />
+
+          <Route 
+            path="/orders" 
+            element={
+              <RouteGuard>
+                <Layout />
+              </RouteGuard>
+            }
+          />
+
+          <Route 
+            path="/customers" 
+            element={
+              <RouteGuard>
+                <Layout />
+              </RouteGuard>
+            }
+          />
+
+          <Route 
+            path="/inventory" 
+            element={
+              <RouteGuard>
+                <Layout />
+              </RouteGuard>
+            }
+          />
+
+          <Route 
+            path="/mdmproducts" 
+            element={
+              <RouteGuard>
+                <Layout />
+              </RouteGuard>
+            }
+          />
+
+          <Route 
+            path="/categories" 
+            element={
+              <RouteGuard>
+                <Layout />
+              </RouteGuard>
+            }
+          />
+
+          <Route 
+            path="/stocks" 
+            element={
+              <RouteGuard>
+                <Layout />
+              </RouteGuard>
+            }
+          />
+
+          <Route 
+            path="/sources" 
+            element={
+              <RouteGuard>
+                <Layout />
+              </RouteGuard>
+            }
+          />
+
+          <Route 
+            path="/invoices" 
+            element={
+              <RouteGuard>
+                <Layout />
+              </RouteGuard>
+            }
+          />
+
+          <Route 
+            path="/cms-pages" 
+            element={
+              <RouteGuard>
+                <Layout />
+              </RouteGuard>
+            }
+          />
+
+          <Route 
+            path="/cegid-products" 
+            element={
+              <RouteGuard>
+                <Layout />
+              </RouteGuard>
+            }
+          />
+
+          <Route 
+            path="/mdm-stock" 
+            element={
+              <RouteGuard>
+                <Layout />
+              </RouteGuard>
+            }
+          />
+
+          <Route 
+            path="/grid-test" 
+            element={
+              <RouteGuard>
+                <Layout />
+              </RouteGuard>
+            }
+          />
+
+          <Route 
+            path="/bug-bounty" 
+            element={
+              <RouteGuard>
+                <Layout />
+              </RouteGuard>
+            }
+          />
+
+          <Route 
+            path="/license-management" 
+            element={
+              <RouteGuard>
+                <Layout />
+              </RouteGuard>
+            }
+          />
+
+          <Route 
+            path="/profile" 
             element={
               <RouteGuard>
                 <Layout />
@@ -75,10 +228,6 @@ const SimplifiedRouter = () => {
               element={<Navigate to="/dashboard" replace />} 
           />
 
-          <Route 
-            path="*" 
-            element={<NotFoundPage />} 
-          />
         </Routes>
       </TabProvider>
     </Suspense>

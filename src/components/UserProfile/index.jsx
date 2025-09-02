@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
     Paper,
     Tabs,
@@ -289,41 +289,37 @@ const UserProfile = () => {
             error: tabErrors[activeTab]
         };
 
-        // Correct tab order: Personal Info (0), API Settings (1), Appearance & Preferences (2)
-        switch(activeTab) {
-            case 0:
-                return (
-                    <PersonalInfoTab 
-                        userData={userData?.personalInfo} 
-                        onUpdateUserData={handleUpdatePersonalInfo}
-                        {...commonProps}
-                    />
-                );
-            case 1:
-                return (
-                    <ApiSettingsTab 
-                        userData={userData?.apiSettings}
-                        onUpdateUserData={handleUpdateApiSettings}
-                        {...commonProps}
-                    />
-                );
-            case 2:
-                return (
-                    <AppearancePreferencesTab 
-                        userData={settings?.preferences || userData?.preferences}
-                        onUpdateUserData={handleUpdatePreferences}
-                        {...commonProps}
-                    />
-                );
-            default:
-                return (
-                    <Box sx={{ p: 3, textAlign: 'center' }}>
-                        <Typography variant="h6" color="text.secondary">
-                            Tab not found
-                        </Typography>
-                    </Box>
-                );
-        }
+        const tabComponents = {
+            0: (
+                <PersonalInfoTab 
+                    userData={userData?.personalInfo} 
+                    onUpdateUserData={handleUpdatePersonalInfo}
+                    {...commonProps}
+                />
+            ),
+            1: (
+                <ApiSettingsTab 
+                    userData={userData?.apiSettings}
+                    onUpdateUserData={handleUpdateApiSettings}
+                    {...commonProps}
+                />
+            ),
+            2: (
+                <AppearancePreferencesTab 
+                    userData={settings?.preferences || userData?.preferences}
+                    onUpdateUserData={handleUpdatePreferences}
+                    {...commonProps}
+                />
+            )
+        };
+
+        return tabComponents[activeTab] || (
+            <Box sx={{ p: 3, textAlign: 'center' }}>
+                <Typography variant="h6" color="text.secondary">
+                    Tab not found
+                </Typography>
+            </Box>
+        );
     };
 
     return (
@@ -370,7 +366,11 @@ const UserProfile = () => {
                     action={
                         retryCount > 0 && (
                             <Tooltip title={`Retry attempt ${retryCount}/3`}>
-                                <IconButton size="small" onClick={performAutoSave}>
+                                <IconButton 
+                                    size="small" 
+                                    onClick={performAutoSave}
+                                    key={`retry-icon-${retryCount}`}
+                                >
                                     <RefreshIcon />
                                 </IconButton>
                             </Tooltip>
@@ -434,12 +434,14 @@ const UserProfile = () => {
                             size="small" 
                             variant="outlined" 
                             color="default"
+                            key={`sync-chip-${Date.now()}`}
                         />
                     }>
                         <SyncStatusIndicator 
                             variant="chip" 
                             showDetails={!isMobile}
                             allowManualSync={true}
+                            key={`sync-indicator-${Date.now()}`}
                         />
                     </React.Suspense>
                 </Box>
@@ -468,6 +470,7 @@ const UserProfile = () => {
                         }
                     }
                 }}
+                key={`tabs-${activeTab}`}
             >
                 {/* Correct tab order: Personal Info (0), API Settings (1), Appearance & Preferences (2) */}
                 <Tab 
@@ -475,18 +478,21 @@ const UserProfile = () => {
                     label={isMobile ? "Personal" : "Personal Info"}
                     value={0}
                     disabled={loading || tabLoading}
+                    key={`tab-personal-${activeTab}`}
                 />
                 <Tab 
                     icon={<ApiIcon sx={{ fontSize: { xs: 20, sm: 24 } }} />} 
                     label={isMobile ? "API" : "API Settings"}
                     value={1}
                     disabled={loading || tabLoading}
+                    key={`tab-api-${activeTab}`}
                 />
                 <Tab 
                     icon={<LanguageIcon sx={{ fontSize: { xs: 20, sm: 24 } }} />} 
                     label={isMobile ? "Appearance" : "Appearance & Preferences"}
                     value={2}
                     disabled={loading || tabLoading}
+                    key={`tab-appearance-${activeTab}`}
                 />
             </Tabs>
             <Box
@@ -502,13 +508,15 @@ const UserProfile = () => {
                     overflowY: 'auto',
                     overflowX: 'hidden'
                 }}
+                key={`tab-content-${activeTab}`}
             >
                 {mounted && (
                     <Fade
                         in={!loading && mounted}
                         timeout={300}
+                        key={`fade-content-${activeTab}`}
                     >
-                        <Box>
+                        <Box key={`box-content-${activeTab}`}>
                             {renderActiveTab()}
                         </Box>
                     </Fade>
@@ -534,6 +542,7 @@ const UserProfile = () => {
                 details={feedback.success.details}
                 onClose={hideSuccess}
                 showDetails={true}
+                key={`success-feedback-${feedback.success.open ? 1 : 0}`}
             />
 
             {/* Save indicator with RTL support */}
@@ -545,6 +554,7 @@ const UserProfile = () => {
                     horizontal: isRTL ? 'left' : 'right' 
                 }}
                 onClose={() => setShowSaveIndicator(false)}
+                key={`snackbar-${showSaveIndicator ? 1 : 0}`}
             >
                 <Alert 
                     icon={
