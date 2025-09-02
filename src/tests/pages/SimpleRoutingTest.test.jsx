@@ -47,3 +47,4 @@ describe('Categories Page Component', () => {
     }).not.toThrow();
   });
 });
+

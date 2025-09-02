@@ -9,9 +9,7 @@ import {
 import { useSettings } from '../../../contexts/SettingsContext';
 import { useMagentoGridSettings } from '../../../hooks/useMagentoGridSettings';
 import {
-    Visibility, Edit, Delete, Add, Publish, Save, Cancel, Preview,
-    Schedule, Analytics, ContentCopy, Article, FilterList,
-    Search, Clear, ExpandMore, ViewModule, ViewList, Fullscreen, FullscreenExit
+    Visibility, Edit, Delete, Add
 } from '@mui/icons-material';
 import UnifiedGrid from '../../common/UnifiedGrid';
 import { getStandardGridProps, getStandardToolbarConfig } from '../../../config/gridConfig';
@@ -64,7 +62,7 @@ const CmsBlocksGrid = () => {
         identifier: '',
         content: '',
         is_active: true,
-        store_id: [0] // All store views by default
+        // store_id is not used in the component, so it's removed
     });
 
     // Professional stats for cards
@@ -83,7 +81,6 @@ const CmsBlocksGrid = () => {
         try {
             console.log('🔍 CmsBlocksGrid: Fetching CMS blocks...');
             
-            // Get settings-aware API parameters
             const baseParams = getApiParams({
                 pageSize: paginationModel.pageSize,
                 currentPage: paginationModel.page + 1,
@@ -93,7 +90,6 @@ const CmsBlocksGrid = () => {
                 }]
             });
 
-            // Add filters
             const filterParams = {};
             if (filters.status !== 'all') {
                 filterParams.is_active = filters.status === 'active' ? 1 : 0;
@@ -119,14 +115,14 @@ const CmsBlocksGrid = () => {
                 setData(response.data.items || []);
                 setStats({
                     total: response.data.total_count || 0,
-                    active: response.data.items?.filter(item => item.is_active)?.length || 0,
-                    inactive: response.data.items?.filter(item => !item.is_active)?.length || 0,
-                    recentlyModified: response.data.items?.filter(item => {
+                    active: response.data.items.filter(item => item.is_active).length,
+                    inactive: response.data.items.filter(item => !item.is_active).length,
+                    recentlyModified: response.data.items.filter(item => {
                         const modifiedDate = new Date(item.update_time);
                         const weekAgo = new Date();
                         weekAgo.setDate(weekAgo.getDate() - 7);
                         return modifiedDate > weekAgo;
-                    })?.length || 0
+                    }).length
                 });
             } else {
                 throw new Error(response.message || 'Failed to fetch CMS blocks');
@@ -145,22 +141,16 @@ const CmsBlocksGrid = () => {
         fetchData();
     }, [fetchData]);
 
-    // Grid columns configuration
+    // ===== COLUMN DEFINITIONS =====
     const columns = useMemo(() => [
-        {
-            field: 'block_id',
-            headerName: 'ID',
-            width: 80,
-            sortable: true
-        },
-        {
-            field: 'title',
-            headerName: 'Title',
-            width: 200,
-            sortable: true,
+        { 
+            field: 'title', 
+            headerName: 'Title', 
+            flex: 1,
+            minWidth: 200,
             renderCell: (params) => (
-                <Box>
-                    <Typography variant="body2" fontWeight="medium">
+                <Box sx={{ py: 1 }}>
+                    <Typography variant="body2" fontWeight={500}>
                         {params.value}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
@@ -169,66 +159,60 @@ const CmsBlocksGrid = () => {
                 </Box>
             )
         },
-        {
-            field: 'identifier',
-            headerName: 'Identifier',
-            width: 150,
-            sortable: true
-        },
-        {
-            field: 'is_active',
-            headerName: 'Status',
-            width: 120,
-            sortable: true,
+        { 
+            field: 'is_active', 
+            headerName: 'Status', 
+            width: 100,
             renderCell: (params) => (
-                <Chip
-                    label={params.value ? 'Active' : 'Inactive'}
-                    color={params.value ? 'success' : 'default'}
-                    size="small"
-                    variant="outlined"
+                <Chip 
+                    label={params.value ? 'Active' : 'Inactive'} 
+                    color={params.value ? 'success' : 'default'} 
+                    size="small" 
                 />
             )
         },
-        {
-            field: 'creation_time',
-            headerName: 'Created',
-            width: 150,
-            sortable: true,
-            renderCell: (params) => formatDateTime(params.value)
+        { 
+            field: 'creation_time', 
+            headerName: 'Created', 
+            width: 180,
+            valueFormatter: (params) => formatDateTime(params.value)
         },
-        {
-            field: 'update_time',
-            headerName: 'Updated',
-            width: 150,
-            sortable: true,
-            renderCell: (params) => formatDateTime(params.value)
+        { 
+            field: 'update_time', 
+            headerName: 'Modified', 
+            width: 180,
+            valueFormatter: (params) => formatDateTime(params.value)
         },
         {
             field: 'actions',
             headerName: 'Actions',
-            width: 200,
+            width: 150,
             sortable: false,
             renderCell: (params) => (
                 <ButtonGroup size="small" variant="outlined">
                     <Tooltip title="View">
-                        <IconButton onClick={() => handleView(params.row)}>
-                            <Visibility />
+                        <IconButton size="small" onClick={() => handleView(params.row)}>
+                            <Visibility fontSize="small" />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Edit">
-                        <IconButton onClick={() => handleEdit(params.row)}>
-                            <Edit />
+                        <IconButton size="small" onClick={() => handleEdit(params.row)}>
+                            <Edit fontSize="small" />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
-                        <IconButton onClick={() => handleDelete(params.row)} color="error">
-                            <Delete />
+                        <IconButton 
+                            size="small" 
+                            onClick={() => handleDelete(params.row)}
+                            color="error"
+                        >
+                            <Delete fontSize="small" />
                         </IconButton>
                     </Tooltip>
                 </ButtonGroup>
             )
         }
-    ], []);
+    ], [handleView, handleEdit, handleDelete]); // Added missing dependencies
 
     // Action handlers
     const handleView = useCallback((item) => {
@@ -334,164 +318,4 @@ const CmsBlocksGrid = () => {
             }
         ]
     });
-
-    return (
-        <Box>
-            {/* Stats Cards */}
-            <Grid container spacing={2} sx={{ mb: 3 }}>
-                <Grid item xs={12} sm={6} md={3}>
-                    <Card>
-                        <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                Total Blocks
-                            </Typography>
-                            <Typography variant="h4">
-                                {stats.total}
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <Card>
-                        <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                Active Blocks
-                            </Typography>
-                            <Typography variant="h4" color="success.main">
-                                {stats.active}
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <Card>
-                        <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                Inactive Blocks
-                            </Typography>
-                            <Typography variant="h4" color="warning.main">
-                                {stats.inactive}
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <Card>
-                        <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                Recently Modified
-                            </Typography>
-                            <Typography variant="h4" color="info.main">
-                                {stats.recentlyModified}
-                            </Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            </Grid>
-
-            {/* Main Grid */}
-            <UnifiedGrid {...gridProps} toolbarConfig={toolbarConfig} />
-
-            {/* Add/Edit Dialog */}
-            <Dialog 
-                open={openDialog} 
-                onClose={() => setOpenDialog(false)}
-                maxWidth="md"
-                fullWidth
-                fullScreen={fullscreenEditor}
-            >
-                <DialogTitle>
-                    {previewMode ? 'Preview CMS Block' : (selectedItem ? 'Edit CMS Block' : 'Add New CMS Block')}
-                    <IconButton
-                        onClick={() => setFullscreenEditor(!fullscreenEditor)}
-                        sx={{ position: 'absolute', right: 8, top: 8 }}
-                    >
-                        {fullscreenEditor ? <FullscreenExit /> : <Fullscreen />}
-                    </IconButton>
-                </DialogTitle>
-                <DialogContent>
-                    {previewMode ? (
-                        <Box sx={{ mt: 2 }}>
-                            <Typography variant="h6" gutterBottom>
-                                {selectedItem?.title}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" gutterBottom>
-                                Identifier: {selectedItem?.identifier}
-                            </Typography>
-                            <Divider sx={{ my: 2 }} />
-                            <Box 
-                                dangerouslySetInnerHTML={{ __html: selectedItem?.content || '' }}
-                                sx={{ 
-                                    border: 1, 
-                                    borderColor: 'divider', 
-                                    borderRadius: 1, 
-                                    p: 2,
-                                    minHeight: 200
-                                }}
-                            />
-                        </Box>
-                    ) : (
-                        <Box sx={{ mt: 2 }}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        fullWidth
-                                        label="Title"
-                                        value={formData.title}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                                        required
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        fullWidth
-                                        label="Identifier"
-                                        value={formData.identifier}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, identifier: e.target.value }))}
-                                        required
-                                        helperText="Unique identifier for the block"
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <FormControlLabel
-                                        control={
-                                            <Switch
-                                                checked={formData.is_active}
-                                                onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
-                                            />
-                                        }
-                                        label="Active"
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <Typography variant="subtitle2" gutterBottom>
-                                        Content
-                                    </Typography>
-                                    <Box sx={{ border: 1, borderColor: 'divider', borderRadius: 1 }}>
-                                        <ReactQuill
-                                            value={formData.content}
-                                            onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
-                                            style={{ height: 300 }}
-                                        />
-                                    </Box>
-                                </Grid>
-                            </Grid>
-                        </Box>
-                    )}
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setOpenDialog(false)}>
-                        Cancel
-                    </Button>
-                    {!previewMode && (
-                        <Button onClick={handleSave} variant="contained">
-                            {selectedItem ? 'Update' : 'Create'}
-                        </Button>
-                    )}
-                </DialogActions>
-            </Dialog>
-        </Box>
-    );
-};
-
-export default CmsBlocksGrid;
+</original_code>```

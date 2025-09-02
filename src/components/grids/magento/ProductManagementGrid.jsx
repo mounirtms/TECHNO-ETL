@@ -51,7 +51,7 @@ import { toast } from 'react-toastify';
 // Modern Base Components
 import BaseGrid from '../../base/BaseGrid';
 import BaseDialog from '../../base/BaseDialog';
-import { ErrorBoundary } from '../../common/ErrorBoundary';
+import ErrorBoundary from '../../common/ErrorBoundary';
 import { SuspenseWrapper } from '../../common/SuspenseWrapper';
 
 // Other Components

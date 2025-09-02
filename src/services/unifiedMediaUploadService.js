@@ -1,6 +1,6 @@
 /**
  * Optimized Media Upload Service
- * Unified service for both Basic and Professional upload modes
+ * Unified service with advanced matching capabilities
  * Advanced matching with configurable settings and conditions
  * 
  * @author Techno-ETL Team
@@ -20,7 +20,7 @@ export const DEFAULT_MATCHING_SETTINGS = {
     normalized: true,      // Remove dashes, spaces, special chars
     partial: true,         // Match first N characters
     fuzzy: true,          // Similarity-based matching
-    ref: true             // REF column matching (Professional mode)
+    ref: true             // REF column matching (auto-enabled when REF column detected)
   },
   
   // Matching thresholds
@@ -93,7 +93,8 @@ export const parseCSVFile = (file, mode = 'basic') => {
           return result;
         };
         
-        const lines = csv.split(/?
+        const lines = csv.split(/
+?
 /).filter(line => line.trim());
         
         if (lines.length < 2) {
@@ -107,16 +108,14 @@ export const parseCSVFile = (file, mode = 'basic') => {
         // Column detection based on mode
         const skuIndex = headers.findIndex(h => h === 'sku');
         const imageNameIndex = headers.findIndex(h => h === 'image name');
-        const refIndex = mode === 'professional' ? headers.findIndex(h => h === 'ref') : -1;
-        const nameIndex = mode === 'professional' ? headers.findIndex(h => h === 'name') : -1;
+        const refIndex = headers.findIndex(h => h === 'ref');
+        const nameIndex = headers.findIndex(h => h === 'name');
         
-        console.log(`🔍 OPTIMIZED (${mode.toUpperCase()}) Column Mapping:`);
+        console.log('🔍 UNIFIED Advanced Column Mapping:');
         console.log(`   SKU: ${skuIndex >= 0 ? `Column ${skuIndex}` : 'NOT FOUND'}`);
         console.log(`   Image Name: ${imageNameIndex >= 0 ? `Column ${imageNameIndex}` : 'NOT FOUND'}`);
-        if (mode === 'professional') {
-          console.log(`   REF: ${refIndex >= 0 ? `Column ${refIndex}` : 'NOT FOUND'}`);
-          console.log(`   Product Name: ${nameIndex >= 0 ? `Column ${nameIndex}` : 'NOT FOUND'}`);
-        }
+        console.log(`   REF: ${refIndex >= 0 ? `Column ${refIndex}` : 'NOT FOUND'}`);
+        console.log(`   Product Name: ${nameIndex >= 0 ? `Column ${nameIndex}` : 'NOT FOUND'}`);
         
         // Validation
         if (skuIndex === -1) {
@@ -129,10 +128,7 @@ export const parseCSVFile = (file, mode = 'basic') => {
           return;
         }
         
-        if (mode === 'professional' && refIndex === -1) {
-          reject(new Error('Professional mode requires a "ref" column'));
-          return;
-        }
+
         
         const data = [];
         let processedRows = 0;
@@ -143,16 +139,14 @@ export const parseCSVFile = (file, mode = 'basic') => {
           try {
             const values = parseCSVLine(lines[i]);
             
-            const requiredColumns = mode === 'professional' 
-              ? Math.max(skuIndex + 1, imageNameIndex + 1, refIndex + 1)
-              : Math.max(skuIndex + 1, imageNameIndex + 1);
+            const requiredColumns = Math.max(skuIndex + 1, imageNameIndex + 1, refIndex !== -1 ? refIndex + 1 : 0);
             
             if (values.length >= requiredColumns) {
               const sku = values[skuIndex] ? values[skuIndex].replace(/"/g, '"').trim() : '';
               const imageName = values[imageNameIndex] ? values[imageNameIndex].replace(/"/g, '"').trim() : '';
-              const ref = mode === 'professional' && refIndex >= 0 && values[refIndex] ? 
+              const ref = refIndex >= 0 && values[refIndex] ? 
                 values[refIndex].replace(/"/g, '"').trim() : '';
-              const productName = mode === 'professional' && nameIndex >= 0 && values[nameIndex] ? 
+              const productName = nameIndex >= 0 && values[nameIndex] ? 
                 values[nameIndex].replace(/"/g, '"').trim() : '';
               
               if (sku && imageName) {
@@ -163,18 +157,14 @@ export const parseCSVFile = (file, mode = 'basic') => {
                   originalData: values
                 };
                 
-                if (mode === 'professional') {
-                  rowData.ref = ref;
-                  rowData.productName = productName;
-                }
+                rowData.ref = ref;
+                rowData.productName = productName;
                 
                 data.push(rowData);
                 processedRows++;
                 
                 if (processedRows <= 5) {
-                  const logData = mode === 'professional' 
-                    ? `SKU=\"${sku}\", REF=\"${ref}\", ImageName=\"${imageName}\"`
-                    : `SKU=\"${sku}\", ImageName=\"${imageName}\"`;
+                  const logData = `SKU=\"${sku}\", REF=\"${ref}\", ImageName=\"${imageName}\"`;
                   console.log(`📝 OPTIMIZED Row ${i + 1}: ${logData}`);
                 }
               } else {
@@ -211,10 +201,8 @@ export const parseCSVFile = (file, mode = 'basic') => {
           mode
         };
         
-        if (mode === 'professional') {
-          result.refColumn = refIndex >= 0 ? headers[refIndex] : null;
-          result.productNameColumn = nameIndex >= 0 ? headers[nameIndex] : null;
-        }
+        result.refColumn = refIndex >= 0 ? headers[refIndex] : null;
+        result.productNameColumn = nameIndex >= 0 ? headers[nameIndex] : null;
         
         resolve(result);
       } catch (error) {
@@ -436,8 +424,8 @@ export const matchImagesWithCSV = (csvData, imageFiles) => {
   };
 };"${sku}\"`);
     
-    // Strategy 1: REF-based matching (Professional mode)
-    if (csvData.mode === 'professional' && settings.strategies.ref && ref) {
+    // Strategy 1: REF-based matching (auto-enabled when REF column detected)
+    if (settings.strategies.ref && ref) {
       const refKeys = generateSearchKeys(ref, settings);
       refKeys.forEach(refKey => {
         const refMatches = imageFileMap.get(refKey) || [];
@@ -483,8 +471,8 @@ export const matchImagesWithCSV = (csvData, imageFiles) => {
       }
     }
     
-    // Strategy 3: Product name matching (Professional mode fallback)
-    if (matchedImages.length === 0 && csvData.mode === 'professional' && productName) {
+    // Strategy 3: Product name matching (fallback when available)
+    if (matchedImages.length === 0 && productName) {
       const productKeys = generateSearchKeys(productName, settings);
       productKeys.forEach(productKey => {
         const productMatches = imageFileMap.get(productKey) || [];

@@ -11,11 +11,10 @@ import {
   Alert
 } from '@mui/material';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { getRouteMetadata } from '../../config/routes';
 import { useTab } from '../../contexts/TabContext';
-import ErrorBoundary from './ErrorBoundary'; // Assuming ErrorBoundary is in the same folder
+import ErrorBoundary from './ErrorBoundary';
 
 const pageChips = [
   { key: 'realTime', label: 'Real-time Updates', color: 'success' },
@@ -23,7 +22,7 @@ const pageChips = [
 ];
 
 const GridPage = ({ title, description, icon: Icon, showBreadcrumbs = true }) => {
-  const { t } = useTranslation();
+  const { translate: t } = useLanguage();
   const location = useLocation();
 
   const tabContext = useTab();

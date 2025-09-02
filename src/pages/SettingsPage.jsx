@@ -8,15 +8,21 @@ import {
   Fade,
   Breadcrumbs as MuiBreadcrumbs,
   Link,
-  Chip
+  Chip,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
 } from '@mui/material';
 import { 
   Settings as SettingsIcon,
   Home as HomeIcon,
-  NavigateNext as NavigateNextIcon
+  NavigateNext as NavigateNextIcon,
+  ExpandMore as ExpandMoreIcon,
+  Security as SecurityIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import UserProfile from '../components/UserProfile/index';
+import PermissionTest from '../components/test/PermissionTest';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCustomTheme } from '../contexts/ThemeContext';
 import ErrorBoundary from '../components/common/ErrorBoundary';
@@ -202,6 +208,29 @@ const SettingsPage = () => {
           >
             <UserProfile />
           </Box>
+
+          {/* Development Permission Test - Only in development mode */}
+          {process.env.NODE_ENV === 'development' && (
+            <Box sx={{ mt: 3 }}>
+              <Accordion>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="permission-test-content"
+                  id="permission-test-header"
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <SecurityIcon color="primary" />
+                    <Typography variant="h6">
+                      Permission System Test (Development)
+                    </Typography>
+                  </Box>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <PermissionTest />
+                </AccordionDetails>
+              </Accordion>
+            </Box>
+          )}
 
           {/* Mobile-specific spacing */}
           {isMobile && (

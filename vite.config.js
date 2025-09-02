@@ -78,11 +78,11 @@ export default defineConfig(({ command, mode }) => {
     // Development server configuration - Optimized for performance
     server: {
       host: '0.0.0.0',
-      port: parseInt(env.VITE_PORT) || 80, // Use environment variable or default to 80
+      port: parseInt(env.VITE_PORT) || 3000, // Use environment variable or default to 3000
       strictPort: false, // Allow fallback ports
-      open: false, // Don't auto-open browser to avoid conflicts
+      open: true, // Auto-open browser
       cors: {
-        origin: ['http://localhost:80', 'http://127.0.0.1:80', 'http://localhost:3000'],
+        origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:80', 'http://127.0.0.1:80'],
         credentials: true
       },
       hmr: {
@@ -90,9 +90,9 @@ export default defineConfig(({ command, mode }) => {
         port: 24678, // Separate HMR port to avoid conflicts
         clientPort: 24678
       },
-      // Optimized for faster development
+      // Optimized for faster development with caching
       fs: {
-        cachedChecks: false // Disable caching for faster file changes
+        cachedChecks: true // Enable caching for faster file changes
       },
       warmup: {
         clientFiles: ['./src/main.jsx', './src/App.jsx'] // Pre-warm critical files
@@ -213,24 +213,24 @@ export default defineConfig(({ command, mode }) => {
             }
           },
           
-          // File naming patterns
+          // File naming patterns with better organization
           chunkFileNames: (chunkInfo) => {
             const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop().replace('.jsx', '').replace('.js', '') : 'chunk';
-            return `js/[name]-[hash].js`;
+            return `js/[name]-[hash:8].js`; // Shorter hash for better caching
           },
           entryFileNames: 'js/[name]-[hash].js',
           assetFileNames: (assetInfo) => {
             const extType = assetInfo.name.split('.').pop();
             if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
-              return `images/[name]-[hash].[ext]`;
+              return `images/[name]-[hash:8].[ext]`; // Shorter hash for better caching
             }
             if (/woff2?|eot|ttf|otf/i.test(extType)) {
-              return `fonts/[name]-[hash].[ext]`;
+              return `fonts/[name]-[hash:8].[ext]`; // Shorter hash for better caching
             }
             if (/css/i.test(extType)) {
-              return `css/[name]-[hash].[ext]`;
+              return `css/[name]-[hash:8].[ext]`; // Shorter hash for better caching
             }
-            return `assets/[name]-[hash].[ext]`;
+            return `assets/[name]-[hash:8].[ext]`; // Shorter hash for better caching
           }
         },
         
@@ -368,7 +368,7 @@ export default defineConfig(({ command, mode }) => {
       strictPort: false,
       cors: true,
       headers: {
-        'Cache-Control': 'public, max-age=31536000'
+        'Cache-Control': 'public, max-age=31536000, immutable' // Add immutable directive for better caching
       }
     }
   };

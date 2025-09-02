@@ -10,6 +10,7 @@ import { AuthProvider } from './contexts/AuthContext.jsx';
 import { LanguageProvider } from './contexts/LanguageContext.jsx';
 import { ThemeProvider } from './contexts/ThemeContext.jsx';
 import { SettingsProvider } from './contexts/SettingsContext.jsx';
+import { PermissionProvider } from './contexts/PermissionContext.jsx';
 import App from './App.jsx';
 import './index.css';
 
@@ -80,20 +81,20 @@ function initApp() {
     return;
   }
 
-
-
   try {
     const root = createRoot(container);
     
-    // Proper provider nesting without TabProvider in main (it's in Layout)
+    // Proper provider nesting with PermissionProvider after AuthProvider
     root.render(
       React.createElement(React.StrictMode, null,
         React.createElement(ErrorBoundary, null,
           React.createElement(AuthProvider, null,
-            React.createElement(LanguageProvider, null,
-              React.createElement(ThemeProvider, null,
-                React.createElement(SettingsProvider, null,
-                  React.createElement(App)
+            React.createElement(PermissionProvider, null,
+              React.createElement(LanguageProvider, null,
+                React.createElement(ThemeProvider, null,
+                  React.createElement(SettingsProvider, null,
+                    React.createElement(App)
+                  )
                 )
               )
             )
@@ -103,6 +104,20 @@ function initApp() {
     );
     
     console.log('✅ TECHNO-ETL initialized successfully');
+    
+    // Remove loading screen
+    setTimeout(() => {
+      const loadingScreen = document.getElementById('loading-screen');
+      if (loadingScreen) {
+        loadingScreen.style.opacity = '0';
+        loadingScreen.style.visibility = 'hidden';
+        setTimeout(() => {
+          if (loadingScreen.parentNode) {
+            loadingScreen.parentNode.removeChild(loadingScreen);
+          }
+        }, 500);
+      }
+    }, 100);
   } catch (error) {
     console.error('Failed to initialize app:', error);
     container.innerHTML = `
@@ -123,7 +138,8 @@ function initApp() {
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initApp);
 } else {
-  initApp();
+  // Add a small delay to ensure DOM is fully ready
+  setTimeout(initApp, 0);
 }
 
 // Global error handlers

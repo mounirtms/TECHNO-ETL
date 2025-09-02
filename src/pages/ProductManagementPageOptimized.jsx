@@ -33,7 +33,7 @@ import {
   CloudUpload as UploadIcon,
   Transform as TransformIcon,
   AutoFixHigh as OptimizedIcon,
-  Speed as BasicIcon,
+
   Psychology as ProfessionalIcon
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
@@ -52,7 +52,7 @@ const ProductManagementPageOptimized = () => {
   const [inputValue, setInputValue] = useState('');
   const [showAllProducts, setShowAllProducts] = useState(false);
   const [optimizedUploadDialogOpen, setOptimizedUploadDialogOpen] = useState(false);
-  const [uploadMode, setUploadMode] = useState('basic'); // 'basic' or 'professional'
+
 
   // Tab management
   const [activeTab, setActiveTab] = useState(0);
@@ -118,11 +118,10 @@ const ProductManagementPageOptimized = () => {
     }
   };
 
-  // Open upload dialog with specific mode
-  const handleOpenUpload = (mode) => {
-    setUploadMode(mode);
+  // Open advanced upload dialog
+  const handleOpenUpload = () => {
     setOptimizedUploadDialogOpen(true);
-    toast.info(`Opening ${mode} upload mode`);
+    toast.info('Opening advanced bulk upload');
   };
 
   // ===== CACHING FUNCTIONS =====
@@ -344,63 +343,32 @@ const ProductManagementPageOptimized = () => {
                   
                   <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
                   
-                  {/* Optimized Upload Buttons */}
-                  <Tooltip title="Basic mode: Simple SKU to image name matching with fuzzy algorithms">
+                  {/* Advanced Upload Button */}
+                  <Tooltip title="Advanced matching: Automatically uses all available strategies based on CSV structure">
                     <Button
                       variant="contained"
-                      onClick={() => handleOpenUpload('basic')}
-                      startIcon={<BasicIcon />}
-                      color="info"
-                      sx={{ minWidth: 140 }}
-                    >
-                      Basic Upload
-                    </Button>
-                  </Tooltip>
-                  
-                  <Tooltip title="Professional mode: Advanced REF column matching with multiple strategies">
-                    <Button
-                      variant="contained"
-                      onClick={() => handleOpenUpload('professional')}
+                      onClick={() => handleOpenUpload()}
                       startIcon={<ProfessionalIcon />}
                       color="success"
-                      sx={{ minWidth: 160 }}
+                      sx={{ minWidth: 180 }}
                     >
-                      Professional Upload
+                      Advanced Bulk Upload
                     </Button>
                   </Tooltip>
                 </Box>
 
-                {/* Upload Mode Comparison */}
-                <Alert severity="info" sx={{ mb: 2 }}>
+                {/* Advanced Upload Features */}
+                <Alert severity="success" sx={{ mb: 2 }}>
                   <Typography variant="body2" gutterBottom>
-                    <strong>Upload Mode Comparison:</strong>
+                    <strong>Advanced Bulk Upload Features:</strong>
                   </Typography>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                        <BasicIcon color="info" fontSize="small" />
-                        <Typography variant="body2"><strong>Basic Mode:</strong></Typography>
-                      </Box>
-                      <Typography variant="caption" display="block">
-                        • SKU + Image Name matching<br/>
-                        • Multiple images per SKU (_1, _2, _3)<br/>
-                        • Fuzzy matching for variations<br/>
-                        • Fast processing
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                        <ProfessionalIcon color="success" fontSize="small" />
-                        <Typography variant="body2"><strong>Professional Mode:</strong></Typography>
-                      </Box>
-                      <Typography variant="caption" display="block">
-                        • REF column matching (primary)<br/>
-                        • Product name fallback matching<br/>
-                        • Advanced AI similarity algorithms<br/>
-                        • Multiple matching strategies
-                      </Typography>
-                    </Grid>
-                  </Grid>
+                  <Typography variant="caption" display="block">
+                    • Automatic CSV structure detection<br/>
+                    • Multiple matching strategies (Exact, Fuzzy, REF column)<br/>
+                    • Multiple images per SKU (_1, _2, _3)<br/>
+                    • Advanced AI similarity algorithms<br/>
+                    • Configurable matching thresholds
+                  </Typography>
                 </Alert>
 
                 {/* Current Product IDs */}
@@ -662,7 +630,6 @@ const ProductManagementPageOptimized = () => {
       <OptimizedBulkUploadDialog
         open={optimizedUploadDialogOpen}
         onClose={() => setOptimizedUploadDialogOpen(false)}
-        initialMode={uploadMode}
         onComplete={(results) => {
           console.log('Optimized bulk upload completed:', results);
           const successful = results.filter(r => r.status === 'success').length;

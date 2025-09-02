@@ -84,6 +84,17 @@ const formatCategoryForGrid = (category) => ({
 });
 
 /**
+ * Format categories for combo box options
+ * @returns {Array} Array of category options for combo boxes
+ */
+const getCategoriesForCombo = () => {
+    return allCategories.map(category => ({
+        value: category.id,
+        label: `${'  '.repeat(category.level)}${category.name}`
+    }));
+};
+
+/**
  * Asynchronously fetches and processes categories based on filters.
  * @param {object} [filters={}] - The filtering criteria.
  * @returns {Promise<{categories: Array, stats: object}>} A promise that resolves to the processed categories and stats.
@@ -119,5 +130,6 @@ export default {
     searchCategories,
     getCategoryStats,
     formatCategoryForGrid,
+    getCategoriesForCombo,
     fetchAndProcessCategories,
 };

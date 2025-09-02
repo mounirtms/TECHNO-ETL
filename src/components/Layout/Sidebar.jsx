@@ -2,6 +2,7 @@ import React from 'react';
 import {
     Drawer,
     Box,
+    Typography,
     useTheme,
     styled
 } from '@mui/material';
@@ -9,15 +10,14 @@ import {
 import { DRAWER_WIDTH, COLLAPSED_WIDTH } from './Constants';
 import { useTab, TAB_TO_URL_MAP } from '../../contexts/TabContext';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { usePermissions } from '../../contexts/PermissionContext';
 import technoIcon from '../../assets/images/techno.png';
 import logoTechno from '../../assets/images/logo_techno.png';
 import { useAuth } from '../../contexts/AuthContext';
 import TreeMenuNavigation from './TreeMenuNavigation';
 
 
-const StyledDrawer = styled(Drawer, {
-    shouldForwardProp: (prop) => !['isRTL', 'open'].includes(prop),
-})(({ theme, open, isRTL }) => ({
+const StyledDrawer = styled(Drawer)(({ theme, open, isRTL }) => ({
     width: open ? DRAWER_WIDTH : COLLAPSED_WIDTH,
     flexShrink: 0,
     whiteSpace: 'nowrap',
@@ -26,7 +26,7 @@ const StyledDrawer = styled(Drawer, {
         width: open ? DRAWER_WIDTH : COLLAPSED_WIDTH,
         transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
-            duration: open ? theme.transitions.duration.enteringScreen : theme.transitions.duration.leavingScreen,
+            duration: theme.transitions.duration.enteringScreen,
         }),
         overflowX: 'hidden',
         background: theme.palette.mode === 'light'
@@ -67,7 +67,7 @@ const LogoContainer = styled(Box)(({ theme, open }) => ({
     borderBottom: `1px solid ${theme.palette.divider}`,
     transition: theme.transitions.create('opacity', {
         easing: theme.transitions.easing.sharp,
-        duration: open ? theme.transitions.duration.enteringScreen : theme.transitions.duration.leavingScreen,
+        duration: theme.transitions.duration.enteringScreen,
     }),
 }));
 
@@ -75,6 +75,7 @@ const Sidebar = ({ open, isRTL = false }) => {
     const theme = useTheme();
     const { translate } = useLanguage();
     const { currentUser } = useAuth();
+    const { initialized: permissionsInitialized, loading: permissionsLoading } = usePermissions();
     
     // Safely use the tab context with error handling
     let tabContext;
@@ -87,9 +88,9 @@ const Sidebar = ({ open, isRTL = false }) => {
     
     const { activeTab, openTab } = tabContext;
 
-    const handleTabClick = (tabId) => {
+    const handleTabClick = (tabId, tabTitle) => {
         try {
-            openTab(tabId);
+            openTab(tabId, tabTitle);
         } catch (error) {
             // Fallback navigation if tab context is not available
             const tabUrl = TAB_TO_URL_MAP[tabId];
@@ -103,7 +104,16 @@ const Sidebar = ({ open, isRTL = false }) => {
         <StyledDrawer
             variant="permanent"
             open={open}
-            isRTL={isRTL}
+            sx={{
+                ...(isRTL && {
+                    '& .MuiDrawer-paper': {
+                        right: 0,
+                        borderRight: 'none',
+                        borderLeft: `1px solid ${theme.palette.divider}`,
+                        boxShadow: '-4px 0 20px rgba(0,0,0,0.08)',
+                    }
+                })
+            }}
         >
             <LogoContainer open={open} sx={{ opacity: open ? 1 : 0 }}>
                 <Box
@@ -116,20 +126,34 @@ const Sidebar = ({ open, isRTL = false }) => {
                         maxWidth: open ? '120px' : '32px',
                         transition: theme.transitions.create('all', {
                             easing: theme.transitions.easing.sharp,
-                            duration: open ? theme.transitions.duration.enteringScreen : theme.transitions.duration.leavingScreen,
+                            duration: theme.transitions.duration.enteringScreen,
                         }),
                     }}
                 />
             </LogoContainer>
             {/* Tree Menu Navigation */}
-            <TreeMenuNavigation
-                open={open}
-                isRTL={isRTL}
-                activeTab={activeTab}
-                onTabClick={handleTabClick}
-                currentUser={currentUser}
-                translate={translate}
-            />
+            {permissionsInitialized && !permissionsLoading ? (
+                <TreeMenuNavigation
+                    open={open}
+                    isRTL={isRTL}
+                    activeTab={activeTab}
+                    onTabClick={handleTabClick}
+                    currentUser={currentUser}
+                    translate={translate}
+                />
+            ) : (
+                <Box 
+                    sx={{ 
+                        display: 'flex', 
+                        justifyContent: 'center', 
+                        alignItems: 'center', 
+                        height: '200px',
+                        color: 'text.secondary'
+                    }}
+                >
+                    <Typography variant="body2">Loading menu...</Typography>
+                </Box>
+            )}
         </StyledDrawer>
     );
 };

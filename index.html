@@ -106,7 +106,7 @@
       .app-loaded #loading-screen {
         opacity: 0;
         visibility: hidden;
-        transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
       }
       
       /* Base styles */
@@ -176,15 +176,34 @@
     <!-- Remove loading screen when app loads -->
     <script>
       window.addEventListener('load', function() {
+        // Faster removal of loading screen
         setTimeout(function() {
-          document.body.classList.add('app-loaded');
-        }, 1000);
+          const loadingScreen = document.getElementById('loading-screen');
+          if (loadingScreen) {
+            loadingScreen.style.opacity = '0';
+            loadingScreen.style.visibility = 'hidden';
+            setTimeout(() => {
+              if (loadingScreen.parentNode) {
+                loadingScreen.parentNode.removeChild(loadingScreen);
+              }
+            }, 300);
+          }
+        }, 300);
       });
       
-      // Fallback: Remove loading screen after 5 seconds
+      // Fallback: Remove loading screen after 3 seconds
       setTimeout(function() {
-        document.body.classList.add('app-loaded');
-      }, 5000);
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen) {
+          loadingScreen.style.opacity = '0';
+          loadingScreen.style.visibility = 'hidden';
+          setTimeout(() => {
+            if (loadingScreen.parentNode) {
+              loadingScreen.parentNode.removeChild(loadingScreen);
+            }
+          }, 300);
+        }
+      }, 3000);
     </script>
     
     <!-- Service Worker Registration -->
