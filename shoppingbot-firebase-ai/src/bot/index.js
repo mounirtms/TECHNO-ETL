@@ -157,26 +157,28 @@ bot.onText(/\/admin\s+(\w+)/, async (msg, match) => {
   const command = match[1].toLowerCase();
   
   try {
-    switch (command) {
-console.log(`Admin ${msg.from.id} accessed admin commands.`);
-        
-      case 'stats':
-        const stats = await getUserStats();
-        bot.sendMessage(msg.chat.id, `📊 **Bot Statistics**\n\n` +
-          `👥 Total Users: ${stats.totalUsers}\n` +
-          `💬 Total Interactions: ${stats.totalInteractions}\n` +
-          `📅 Today's Users: ${stats.todayUsers}`, 
-          { parse_mode: 'Markdown' }
-        );
-        break;
-      
-      case 'broadcast':
-        bot.sendMessage(msg.chat.id, 'Use /broadcast <message> to send to all users.');
-        break;
-        
-      default:
-        bot.sendMessage(msg.chat.id, 'Available admin commands: stats, broadcast');
-    }
+      if (command=='') {
+          log(`Admin ${msg.from.id} accessed admin commands.`);
+          const stats = await getUserStats();
+          bot.sendMessage(msg.chat.id, `📊 **Bot Statistics**\n\n` +
+              `👥 Total Users: ${stats.totalUsers}\n` +
+              `💬 Total Interactions: ${stats.totalInteractions}\n` +
+              `📅 Today's Users: ${stats.todayUsers}`,
+              {parse_mode: 'Markdown'}
+          );
+      } else if (command === 'stats') {
+          const stats = await getUserStats();
+          bot.sendMessage(msg.chat.id, `📊 **Bot Statistics**\n\n` +
+              `👥 Total Users: ${stats.totalUsers}\n` +
+              `💬 Total Interactions: ${stats.totalInteractions}\n` +
+              `📅 Today's Users: ${stats.todayUsers}`,
+              {parse_mode: 'Markdown'}
+          );
+      } else if (command === 'broadcast') {
+          bot.sendMessage(msg.chat.id, 'Use /broadcast <message> to send to all users.');
+      } else {
+          bot.sendMessage(msg.chat.id, 'Available admin commands: stats, broadcast');
+      }
   } catch (error) {
     console.error('Admin command error:', error);
     bot.sendMessage(msg.chat.id, 'Admin command failed.');

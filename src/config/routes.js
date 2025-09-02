@@ -297,36 +297,6 @@ export const ROUTE_METADATA = {
 };
 
 /**
- * Get route metadata by path
- */
-export const getRouteMetadata = (path) => {
-  return ROUTE_METADATA[path] || {
-    title: 'Unknown Page',
-    description: '',
-    icon: 'Help',
-    requiresAuth: true,
-    breadcrumb: 'Unknown'
-  };
-};
-
-/**
- * Check if route requires authentication
- */
-export const requiresAuth = (path) => {
-  const metadata = getRouteMetadata(path);
-  return metadata.requiresAuth !== false;
-};
-
-/**
- * Get all protected routes
- */
-export const getProtectedRoutes = () => {
-  return Object.keys(ROUTE_METADATA).filter(route => 
-    ROUTE_METADATA[route].requiresAuth !== false
-  );
-};
-
-/**
  * Navigation menu items configuration with enhanced structure
  */
 export const NAVIGATION_ITEMS = [
@@ -489,5 +459,35 @@ export const NAVIGATION_ITEMS = [
     ]
   }
 ];
+
+/**
+ * Get route metadata by path
+ */
+export const getRouteMetadata = (path) => {
+  return ROUTE_METADATA[path] || {
+    title: 'Unknown Page',
+    description: '',
+    icon: 'Help',
+    requiresAuth: true,
+    breadcrumb: 'Unknown'
+  };
+};
+
+/**
+ * Check if route requires authentication
+ */
+export const requiresAuth = (path) => {
+  const metadata = getRouteMetadata(path);
+  return metadata.requiresAuth !== false;
+};
+
+/**
+ * Get all protected routes
+ */
+export const getProtectedRoutes = () => {
+  return Object.keys(ROUTE_METADATA).filter(route => 
+    ROUTE_METADATA[route].requiresAuth !== false
+  );
+};
 
 export default ROUTES;

@@ -78,39 +78,37 @@ export default defineConfig(({ command, mode }) => {
     // Development server configuration - Optimized for performance
     server: {
       host: '0.0.0.0',
-      port: parseInt(env.VITE_PORT) || 80, // Use environment variable or default to 80
-      strictPort: false, // Allow fallback ports
-      open: false, // Don't auto-open browser to avoid conflicts
+      port: parseInt(env.VITE_PORT) || 80,
+      strictPort: false,
+      open: true,
       cors: {
-        origin: ['http://localhost:80', 'http://127.0.0.1:80', 'http://localhost:3000'],
+        origin: ['http://localhost:80', 'http://127.0.0.1:80', 'http://localhost:3000', 'http://127.0.0.1:3000'],
         credentials: true
       },
       hmr: {
-        overlay: isDev, // Only show overlay in development
-        port: 24678, // Separate HMR port to avoid conflicts
+        overlay: isDev,
+        port: 24678,
         clientPort: 24678
       },
-      // Optimized for faster development
       fs: {
-        cachedChecks: false // Disable caching for faster file changes
+        cachedChecks: true
       },
       warmup: {
-        clientFiles: ['./src/main.jsx', './src/App.jsx'] // Pre-warm critical files
+        clientFiles: ['./src/main.jsx', './src/App.jsx']
       },
       proxy: {
-        // Existing API proxy
         '/api': {
           target: 'http://localhost:5000',
           changeOrigin: true,
           secure: false,
-          timeout: isDev ? 10000 : 30000, // Shorter timeout in dev
+          timeout: isDev ? 10000 : 30000,
           configure: (proxy, _options) => {
             proxy.on('error', (err, _req, _res) => {
               console.log('🔴 Proxy Error:', err.message);
             });
-            if (isDev) { // Reduce logging in development for performance
+            if (isDev && !process.env.VITE_QUIET) {
               proxy.on('proxyReq', (proxyReq, req, _res) => {
-                if (req.url.includes('/health')) return; // Skip health check logs
+                if (req.url.includes('/health')) return;
                 console.log('🚀 Proxying:', req.method, req.url);
               });
             }
@@ -213,24 +211,24 @@ export default defineConfig(({ command, mode }) => {
             }
           },
           
-          // File naming patterns
+          // File naming patterns with better organization
           chunkFileNames: (chunkInfo) => {
             const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop().replace('.jsx', '').replace('.js', '') : 'chunk';
-            return `js/[name]-[hash].js`;
+            return `js/[name]-[hash:8].js`; // Shorter hash for better caching
           },
           entryFileNames: 'js/[name]-[hash].js',
           assetFileNames: (assetInfo) => {
             const extType = assetInfo.name.split('.').pop();
             if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
-              return `images/[name]-[hash].[ext]`;
+              return `images/[name]-[hash:8].[ext]`; // Shorter hash for better caching
             }
             if (/woff2?|eot|ttf|otf/i.test(extType)) {
-              return `fonts/[name]-[hash].[ext]`;
+              return `fonts/[name]-[hash:8].[ext]`; // Shorter hash for better caching
             }
             if (/css/i.test(extType)) {
-              return `css/[name]-[hash].[ext]`;
+              return `css/[name]-[hash:8].[ext]`; // Shorter hash for better caching
             }
-            return `assets/[name]-[hash].[ext]`;
+            return `assets/[name]-[hash:8].[ext]`; // Shorter hash for better caching
           }
         },
         
@@ -275,7 +273,7 @@ export default defineConfig(({ command, mode }) => {
       ],
 
       // Force optimization only when needed
-      force: false, // Changed from true to false for faster startup
+      force: false,
 
       // Enhanced ESBuild options for faster processing
       esbuildOptions: {
@@ -364,11 +362,11 @@ export default defineConfig(({ command, mode }) => {
     // Preview configuration for production builds
     preview: {
       host: '0.0.0.0',
-      port: 3000,
+      port: 80,
       strictPort: false,
       cors: true,
       headers: {
-        'Cache-Control': 'public, max-age=31536000'
+        'Cache-Control': 'public, max-age=31536000, immutable'
       }
     }
   };
