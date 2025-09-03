@@ -6,7 +6,7 @@ import EnhancedCmsPagesGrid from './EnhancedCmsPagesGrid';
  * Uses the enhanced CMS Pages Grid for full functionality
  */
 const CmsPage = () => {
-    return <EnhancedCmsPagesGrid />;
+  return <EnhancedCmsPagesGrid />;
 };
 
 export default CmsPage;

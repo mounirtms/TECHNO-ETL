@@ -16,7 +16,7 @@ import {
   ListItemIcon,
   ListItemText,
   Fade,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import {
   Refresh as RefreshIcon,
@@ -33,7 +33,7 @@ import {
   ViewColumn as ColumnsIcon,
   Sync as SyncIcon,
   ViewList as GridViewIcon,
-  ViewModule as CardViewIcon
+  ViewModule as CardViewIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
@@ -65,7 +65,7 @@ const GridToolbar = ({
   onFiltersToggle,
   filtersVisible = false,
   customActions = [],
-  loading = false
+  loading = false,
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -88,7 +88,7 @@ const GridToolbar = ({
     showSelection: true,
     compact: false,
     size: 'medium',
-    ...config
+    ...config,
   };
 
   // Determine button size and spacing based on compact mode
@@ -131,17 +131,17 @@ const GridToolbar = ({
   }, [enableI18n, t]);
 
   return (
-    <Box sx={{ 
+    <Box sx={{
       borderBottom: `1px solid ${theme.palette.divider}`,
-      backgroundColor: theme.palette.background.paper
+      backgroundColor: theme.palette.background.paper,
     }}>
-      <Toolbar 
-        variant="dense" 
-        sx={{ 
+      <Toolbar
+        variant="dense"
+        sx={{
           minHeight: 56,
           px: 2,
           gap: 1,
-          direction: isRTL ? 'rtl' : 'ltr'
+          direction: isRTL ? 'rtl' : 'ltr',
         }}
       >
         {/* Section 1: Refresh */}
@@ -231,6 +231,7 @@ const GridToolbar = ({
               // Handle Material-UI icon components (functions)
               if (typeof action.icon === 'function') {
                 const IconComponent = action.icon;
+
                 return <IconComponent />;
               }
 
@@ -289,7 +290,7 @@ const GridToolbar = ({
                       <ClearIcon fontSize="small" />
                     </IconButton>
                   </InputAdornment>
-                )
+                ),
               }}
             />
           )}

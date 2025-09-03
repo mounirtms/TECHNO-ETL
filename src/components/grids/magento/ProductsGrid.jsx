@@ -24,7 +24,7 @@ import { useSettings } from '../../../contexts/SettingsContext';
 import { useMagentoGridSettings } from '../../../hooks/useMagentoGridSettings';
 
 // Column System
-import { ColumnFactory } from '../../../utils/ColumnFactory.jsx';
+import { ColumnFactory } from '../../../utils/ColumnFactory';
 
 // Services
 import magentoApi from '../../../services/magentoApi';
@@ -54,16 +54,16 @@ const ProductsGrid = () => {
     paginationSettings,
     getApiParams,
     handleError,
-    savePreferences
+    savePreferences,
   } = useMagentoGridSettings('magentoProducts', {});
-  
+
   // Apply user settings to API service
   useEffect(() => {
     import('../../../services/magentoApi').then(({ setMagentoApiSettings }) => {
       setMagentoApiSettings(settings);
     });
   }, [settings]);
-  
+
   // ===== STATE =====
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -72,7 +72,7 @@ const ProductsGrid = () => {
     active: 0,
     inactive: 0,
     localProducts: 0,
-    syncedProducts: 0
+    syncedProducts: 0,
   });
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [infoDialogOpen, setInfoDialogOpen] = useState(false);
@@ -81,9 +81,9 @@ const ProductsGrid = () => {
   const [csvImportOpen, setCsvImportOpen] = useState(false);
   const [catalogProcessorOpen, setCatalogProcessorOpen] = useState(false);
   const [localProducts] = useState([]);
-  const [paginationModel, setPaginationModel] = useState({ 
-    page: 0, 
-    pageSize: paginationSettings.defaultPageSize 
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: paginationSettings.defaultPageSize,
   });
   const [categoryFilter, setCategoryFilter] = useState('');
   const [brandFilter, setBrandFilter] = useState('');
@@ -96,22 +96,12 @@ const ProductsGrid = () => {
     ColumnFactory.text('sku', {
       headerName: 'SKU',
       width: 140,
-      pinned: 'left'
+      pinned: 'left',
     }),
     ColumnFactory.text('name', {
       headerName: 'Product Name',
+      width: 250,
       flex: 1,
-      minWidth: 300,
-      renderCell: (params) => (
-        <div style={{
-          whiteSpace: 'normal',
-          wordWrap: 'break-word',
-          lineHeight: '1.2',
-          padding: '4px 0'
-        }}>
-          {params.value}
-        </div>
-      )
     }),
 
     // Techno Reference (from custom_attributes)
@@ -122,14 +112,16 @@ const ProductsGrid = () => {
         try {
           if (!params?.row?.custom_attributes) return '-';
           const technoRef = params.row.custom_attributes.find(
-            attr => attr.attribute_code === 'techno_ref'
+            attr => attr.attribute_code === 'techno_ref',
           );
+
           return technoRef?.value || '-';
         } catch (error) {
           console.warn('Error getting techno_ref:', error);
+
           return '-';
         }
-      }
+      },
     }),
 
     // Status with proper mapping
@@ -139,29 +131,17 @@ const ProductsGrid = () => {
       valueGetter: (params) => params.row.status === 1 ? 'enabled' : 'disabled',
       statusColors: {
         enabled: 'success',
-        disabled: 'error'
-      }
+        disabled: 'error',
+      },
     }),
 
-    // Price
-    ColumnFactory.currency('price', {
-      headerName: 'Price',
-      width: 100,
-      valueFormatter: (params) => `${params.value || 0} DA`
-    }),
 
-    // Weight
-    ColumnFactory.number('weight', {
-      headerName: 'Weight (g)',
-      width: 110,
-      valueFormatter: (params) => params.value ? `${params.value}g` : '-'
-    }),
 
     // Product Type
     ColumnFactory.text('type_id', {
       headerName: 'Type',
       width: 100,
-      valueFormatter: (params) => params.value?.toUpperCase() || 'SIMPLE'
+      valueFormatter: (params) => params.value?.toUpperCase() || 'SIMPLE',
     }),
 
     // Brand (from custom_attributes)
@@ -172,33 +152,18 @@ const ProductsGrid = () => {
         try {
           if (!params?.row?.custom_attributes) return '-';
           const brand = params.row.custom_attributes.find(
-            attr => attr.attribute_code === 'mgs_brand'
+            attr => attr.attribute_code === 'mgs_brand',
           );
+
           return brand?.value || '-';
         } catch (error) {
           console.warn('Error getting brand:', error);
+
           return '-';
         }
-      }
+      },
     }),
 
-    // Country of Manufacture
-    ColumnFactory.text('country', {
-      headerName: 'Country',
-      width: 80,
-      valueGetter: (params) => {
-        try {
-          if (!params?.row?.custom_attributes) return '-';
-          const country = params.row.custom_attributes.find(
-            attr => attr.attribute_code === 'country_of_manufacture'
-          );
-          return country?.value || '-';
-        } catch (error) {
-          console.warn('Error getting country:', error);
-          return '-';
-        }
-      }
-    }),
 
     // Categories (Multi-select display)
     ColumnFactory.text('categories', {
@@ -209,12 +174,13 @@ const ProductsGrid = () => {
           if (!params?.row?.custom_attributes) return [];
 
           const categoryIds = params.row.custom_attributes.find(
-            attr => attr.attribute_code === 'category_ids'
+            attr => attr.attribute_code === 'category_ids',
           )?.value || [];
 
           return Array.isArray(categoryIds) ? categoryIds : [];
         } catch (error) {
           console.warn('Error getting category IDs:', error);
+
           return [];
         }
       },
@@ -229,9 +195,11 @@ const ProductsGrid = () => {
           const categoryNames = categoryIds.slice(0, 2).map(id => {
             try {
               const category = categories.find(cat => cat.id.toString() === id.toString());
+
               return category ? category.name : `ID:${id}`;
             } catch (error) {
               console.warn('Error finding category:', error);
+
               return `ID:${id}`;
             }
           });
@@ -247,7 +215,7 @@ const ProductsGrid = () => {
                     color: '#1976d2',
                     padding: '2px 6px',
                     borderRadius: '4px',
-                    whiteSpace: 'nowrap'
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   {name}
@@ -262,9 +230,10 @@ const ProductsGrid = () => {
           );
         } catch (error) {
           console.warn('Error rendering categories:', error);
+
           return <span style={{ color: '#f44336', fontSize: '0.75rem' }}>Error</span>;
         }
-      }
+      },
     }),
 
     // Boolean Attributes with standardized renderers
@@ -275,11 +244,13 @@ const ProductsGrid = () => {
         try {
           if (!params?.row?.custom_attributes) return false;
           const trending = params.row.custom_attributes.find(
-            attr => attr.attribute_code === 'trending'
+            attr => attr.attribute_code === 'trending',
           );
+
           return trending?.value === '1' || trending?.value === true;
         } catch (error) {
           console.warn('Error getting trending value:', error);
+
           return false;
         }
       },
@@ -287,11 +258,11 @@ const ProductsGrid = () => {
         <span style={{
           color: params.value ? '#4caf50' : '#999',
           fontWeight: params.value ? 'bold' : 'normal',
-          fontSize: '0.875rem'
+          fontSize: '0.875rem',
         }}>
           {params.value ? '✓' : '✗'}
         </span>
-      )
+      ),
     }),
 
     ColumnFactory.boolean('best_seller', {
@@ -301,11 +272,13 @@ const ProductsGrid = () => {
         try {
           if (!params?.row?.custom_attributes) return false;
           const bestSeller = params.row.custom_attributes.find(
-            attr => attr.attribute_code === 'best_seller'
+            attr => attr.attribute_code === 'best_seller',
           );
+
           return bestSeller?.value === '1' || bestSeller?.value === true;
         } catch (error) {
           console.warn('Error getting best_seller value:', error);
+
           return false;
         }
       },
@@ -313,11 +286,11 @@ const ProductsGrid = () => {
         <span style={{
           color: params.value ? '#ff9800' : '#999',
           fontWeight: params.value ? 'bold' : 'normal',
-          fontSize: '0.875rem'
+          fontSize: '0.875rem',
         }}>
           {params.value ? '⭐' : '✗'}
         </span>
-      )
+      ),
     }),
 
     ColumnFactory.boolean('a_la_une', {
@@ -327,11 +300,13 @@ const ProductsGrid = () => {
         try {
           if (!params?.row?.custom_attributes) return false;
           const alaune = params.row.custom_attributes.find(
-            attr => attr.attribute_code === 'a_la_une'
+            attr => attr.attribute_code === 'a_la_une',
           );
+
           return alaune?.value === '1' || alaune?.value === true;
         } catch (error) {
           console.warn('Error getting a_la_une value:', error);
+
           return false;
         }
       },
@@ -339,40 +314,13 @@ const ProductsGrid = () => {
         <span style={{
           color: params.value ? '#e91e63' : '#999',
           fontWeight: params.value ? 'bold' : 'normal',
-          fontSize: '0.875rem'
+          fontSize: '0.875rem',
         }}>
           {params.value ? '🔥' : '✗'}
         </span>
-      )
+      ),
     }),
 
-    // Created Date
-    ColumnFactory.dateTime('created_at', {
-      headerName: 'Created',
-      width: 140,
-      valueFormatter: (params) => {
-        if (!params.value) return '-';
-        return new Date(params.value).toLocaleDateString('fr-FR', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        });
-      }
-    }),
-
-    // Updated Date
-    ColumnFactory.dateTime('updated_at', {
-      headerName: 'Updated',
-      width: 140,
-      valueFormatter: (params) => {
-        if (!params.value) return '-';
-        return new Date(params.value).toLocaleDateString('fr-FR', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        });
-      }
-    }),
 
     // Actions
     ColumnFactory.actions('actions', {
@@ -383,20 +331,20 @@ const ProductsGrid = () => {
         {
           icon: 'edit',
           label: 'Edit Product',
-          onClick: () => handleEdit(params.row)
+          onClick: () => handleEdit(params.row),
         },
         {
           icon: 'visibility',
           label: 'View Details',
-          onClick: () => handleViewDetails(params.row)
+          onClick: () => handleViewDetails(params.row),
         },
         {
           icon: 'category',
           label: 'Categories',
-          onClick: () => handleCategoryAssignment(params.row)
-        }
-      ]
-    })
+          onClick: () => handleCategoryAssignment(params.row),
+        },
+      ],
+    }),
   ], []);
 
   // ===== DATA FETCHING =====
@@ -407,7 +355,7 @@ const ProductsGrid = () => {
       const baseParams = getApiParams({
         pageSize: paginationModel.pageSize,
         currentPage: paginationModel.page + 1, // MUI uses 0-based, Magento uses 1-based
-        ...params
+        ...params,
       });
 
       // Use settings-aware API method
@@ -421,7 +369,7 @@ const ProductsGrid = () => {
         active: products.filter(p => p.status === 1).length,
         inactive: products.filter(p => p.status === 2).length,
         localProducts: localProducts.length,
-        syncedProducts: products.filter(p => !p.isLocal).length
+        syncedProducts: products.filter(p => !p.isLocal).length,
       });
     } catch (error) {
       // Use settings-aware error handling
@@ -448,6 +396,7 @@ const ProductsGrid = () => {
       try {
         // Load categories
         const categoryOptions = categoryService.getCategoriesForCombo();
+
         setCategories(categoryOptions);
         console.log('📂 Categories loaded for filtering:', categoryOptions.length);
 
@@ -455,6 +404,7 @@ const ProductsGrid = () => {
         try {
           const brandsResponse = await magentoApi.getBrands();
           const brandsData = brandsResponse?.items || [];
+
           setBrands(brandsData);
           console.log('🏷️ Brands loaded for filtering:', brandsData.length);
         } catch (brandError) {
@@ -463,7 +413,7 @@ const ProductsGrid = () => {
           setBrands([
             { value: '1659', label: 'Calligraphe' },
             { value: '1660', label: 'Maped' },
-            { value: '1661', label: 'Bic' }
+            { value: '1661', label: 'Bic' },
           ]);
         }
       } catch (error) {
@@ -477,86 +427,58 @@ const ProductsGrid = () => {
   // Initial data fetch
   useEffect(() => {
     fetchProducts();
-  }, []); // Only run on mount
-
-  // Fetch data when pagination changes
-  useEffect(() => {
-    if (paginationModel.page > 0 || paginationModel.pageSize !== 25) {
-      fetchProducts();
-    }
-  }, [paginationModel, fetchProducts]);
+  }, [fetchProducts]); // Only run when fetchProducts changes
 
   // ===== EVENT HANDLERS =====
   const handleAdd = useCallback(() => {
-    console.log('Add product');
-    // Implement add logic
+    setSelectedProduct(null);
+    setEditDialogOpen(true);
   }, []);
 
-  const handleEdit = useCallback((selectedIds) => {
-    if (Array.isArray(selectedIds)) {
-      if (selectedIds.length !== 1) {
-        toast.warning('Please select one product to edit');
-        return;
-      }
-      const product = data.find(p => p.sku === selectedIds[0]);
-      setSelectedProduct(product);
-    } else {
-      // Handle direct row click
-      setSelectedProduct(selectedIds);
-    }
+  const handleEdit = useCallback((product) => {
+    setSelectedProduct(product);
     setEditDialogOpen(true);
-  }, [data]);
+  }, []);
 
-  const handleViewDetails = useCallback((selectedIds) => {
-    if (Array.isArray(selectedIds)) {
-      if (selectedIds.length !== 1) {
-        toast.warning('Please select one product to view');
-        return;
-      }
-      const product = data.find(p => p.sku === selectedIds[0]);
-      setSelectedProduct(product);
-    } else {
-      // Handle direct row click
-      setSelectedProduct(selectedIds);
-    }
+  const handleViewDetails = useCallback((product) => {
+    setSelectedProduct(product);
     setInfoDialogOpen(true);
-  }, [data]);
+  }, []);
 
-  const handleDelete = useCallback(async (selectedIds) => {
-    if (selectedIds.length === 0) {
-      toast.warning('Please select products to delete');
-      return;
-    }
-    
+  const handleDelete = useCallback(async (skus) => {
+    if (!skus || skus.length === 0) return;
+
     try {
-      await Promise.all(selectedIds.map(sku => ProductService.deleteProduct(sku)));
-      toast.success(`${selectedIds.length} product(s) deleted`);
-      fetchProducts();
+      await ProductService.deleteProducts(skus);
+      toast.success(`Successfully deleted ${skus.length} product(s)`);
+      fetchProducts(); // Refresh the grid
     } catch (error) {
-      toast.error('Failed to delete products');
+      handleError(error, 'Delete Products');
     }
-  }, [fetchProducts]);
+  }, [fetchProducts, handleError]);
 
   const handleSync = useCallback(async () => {
     try {
-      await magentoApi.syncProducts();
-      toast.success('Products synchronized');
-      fetchProducts();
+      await ProductService.syncProducts();
+      toast.success('Products synced successfully');
+      fetchProducts(); // Refresh the grid
     } catch (error) {
-      console.error('Sync error:', error);
-      toast.error('Sync failed');
+      handleError(error, 'Sync Products');
     }
-  }, [fetchProducts]);
+  }, [fetchProducts, handleError]);
 
-  const handleExport = useCallback(() => {
-    console.log('Export products');
-    // Implement export logic
-  }, []);
+  const handleExport = useCallback(async () => {
+    try {
+      await ProductService.exportProducts();
+      toast.success('Products exported successfully');
+    } catch (error) {
+      handleError(error, 'Export Products');
+    }
+  }, [handleError]);
 
   const handleRowDoubleClick = useCallback((params) => {
-    setSelectedProduct(params.row);
-    setInfoDialogOpen(true);
-  }, []);
+    handleEdit(params.row);
+  }, [handleEdit]);
 
   const handleCategoryAssignment = useCallback((product) => {
     console.log('Category assignment for product:', product.sku);
@@ -569,26 +491,26 @@ const ProductsGrid = () => {
 
 
 
-  // ===== CONTEXT MENU =====
+  // ===== CONTEXT MENU ACTIONS =====
   const contextMenuActions = useMemo(() => ({
     edit: {
       enabled: true,
       label: 'Edit Product',
       icon: 'edit',
-      onClick: (row) => handleEdit(row)
+      onClick: (row) => handleEdit(row),
     },
     view: {
       enabled: true,
       label: 'View Details',
       icon: 'visibility',
-      onClick: (row) => handleViewDetails(row)
+      onClick: (row) => handleViewDetails(row),
     },
     delete: {
       enabled: true,
       label: 'Delete Product',
       icon: 'delete',
       onClick: (row) => handleDelete([row.sku]),
-      color: 'error'
+      color: 'error',
     },
     duplicate: {
       enabled: true,
@@ -597,8 +519,8 @@ const ProductsGrid = () => {
       onClick: (row) => {
         console.log('Duplicate:', row);
         toast.info(`Duplicating product: ${row.name}`);
-      }
-    }
+      },
+    },
   }), [handleEdit, handleDelete]);
 
   // ===== STATS CARDS =====
@@ -606,7 +528,7 @@ const ProductsGrid = () => {
     { title: 'Total Products', value: stats.total, color: 'primary' },
     { title: 'Active', value: stats.active, color: 'success' },
     { title: 'Inactive', value: stats.inactive, color: 'warning' },
-    { title: 'Local Products', value: stats.localProducts, color: 'info' }
+    { title: 'Local Products', value: stats.localProducts, color: 'info' },
   ], [stats]);
 
   // ===== COMPACT CUSTOM ACTIONS =====
@@ -615,38 +537,38 @@ const ProductsGrid = () => {
       label: 'Sync',
       icon: 'sync',
       onClick: handleSync,
-      disabled: localProducts.length === 0
+      disabled: localProducts.length === 0,
     },
     {
       label: 'Import CSV',
       icon: 'upload',
-      onClick: () => setCsvImportOpen(true)
+      onClick: () => setCsvImportOpen(true),
     },
     {
       label: 'Bulk Media Upload',
       icon: 'image',
       onClick: () => setBulkMediaDialogOpen(true),
-      color: 'info'
+      color: 'info',
     },
     {
       label: 'Catalog Processor',
       icon: 'settings',
-      onClick: () => setCatalogProcessorOpen(true)
-    }
+      onClick: () => setCatalogProcessorOpen(true),
+    },
   ], [handleSync, localProducts.length]);
 
   return (
     <>
       <UnifiedGrid
         {...getStandardGridProps('magentoProducts', {
-          gridName: "MagentoProductsGrid",
+          gridName: 'MagentoProductsGrid',
           columns,
           data,
           loading,
           totalCount: stats.total,
 
           // Pagination configuration
-          paginationMode: "server",
+          paginationMode: 'server',
           paginationModel,
           onPaginationModelChange: handlePaginationChange,
           defaultPageSize: 25,
@@ -672,14 +594,14 @@ const ProductsGrid = () => {
                   { value: '', label: 'All Categories' },
                   ...categories.filter(cat => cat && (cat.id || cat.id === 0)).map(cat => ({
                     value: cat.id?.toString() || '',
-                    label: cat.label || `Category ${cat.id}`
-                  }))
+                    label: cat.label || `Category ${cat.id}`,
+                  })),
                 ],
                 value: categoryFilter,
                 onChange: (value) => {
                   setCategoryFilter(value);
                   fetchProducts({ category_id: value, brand: brandFilter });
-                }
+                },
               },
               {
                 field: 'brand',
@@ -689,16 +611,16 @@ const ProductsGrid = () => {
                   { value: '', label: 'All Brands' },
                   ...brands.map(brand => ({
                     value: brand.value || brand.id,
-                    label: brand.label || brand.name
-                  }))
+                    label: brand.label || brand.name,
+                  })),
                 ],
                 value: brandFilter,
                 onChange: (value) => {
                   setBrandFilter(value);
                   fetchProducts({ category_id: categoryFilter, brand: value });
-                }
-              }
-            ]
+                },
+              },
+            ],
           },
           customActions,
           contextMenuActions,
@@ -708,7 +630,7 @@ const ProductsGrid = () => {
           gridCards,
 
           // Grid props
-          getRowId: (row) => row.sku
+          getRowId: (row) => row.sku ? row.sku.toString() : `row-${row.id || Math.random()}`,
         })}
       />
 

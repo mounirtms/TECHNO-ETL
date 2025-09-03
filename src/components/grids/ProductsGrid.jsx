@@ -16,7 +16,7 @@ import {
   Button,
   TextField,
   InputAdornment,
-  Avatar
+  Avatar,
 } from '@mui/material';
 import {
   Inventory as ProductIcon,
@@ -26,7 +26,7 @@ import {
   Delete as DeleteIcon,
   Visibility as ViewIcon,
   Star as StarIcon,
-  Category as CategoryIcon
+  Category as CategoryIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
@@ -42,7 +42,7 @@ const mockProducts = [
     rating: 4.5,
     image: null,
     description: 'High-quality wireless headphones with noise cancellation',
-    sku: 'WBH-001'
+    sku: 'WBH-001',
   },
   {
     id: 'PROD-002',
@@ -54,7 +54,7 @@ const mockProducts = [
     rating: 4.8,
     image: null,
     description: 'Comfortable ergonomic chair for office use',
-    sku: 'EOC-002'
+    sku: 'EOC-002',
   },
   {
     id: 'PROD-003',
@@ -66,7 +66,7 @@ const mockProducts = [
     rating: 4.2,
     image: null,
     description: 'Insulated water bottle keeps drinks cold for 24 hours',
-    sku: 'SSWB-003'
+    sku: 'SSWB-003',
   },
   {
     id: 'PROD-004',
@@ -78,7 +78,7 @@ const mockProducts = [
     rating: 4.6,
     image: null,
     description: 'Adjustable aluminum laptop stand for better ergonomics',
-    sku: 'LSA-004'
+    sku: 'LSA-004',
   },
   {
     id: 'PROD-005',
@@ -90,23 +90,24 @@ const mockProducts = [
     rating: 4.3,
     image: null,
     description: 'Comfortable organic cotton t-shirt in various colors',
-    sku: 'OCT-005'
-  }
+    sku: 'OCT-005',
+  },
 ];
 
 const getStatusColor = (status) => {
   switch (status) {
-    case 'active': return 'success';
-    case 'low_stock': return 'warning';
-    case 'out_of_stock': return 'error';
-    case 'discontinued': return 'default';
-    default: return 'default';
+  case 'active': return 'success';
+  case 'low_stock': return 'warning';
+  case 'out_of_stock': return 'error';
+  case 'discontinued': return 'default';
+  default: return 'default';
   }
 };
 
 const getStockStatus = (stock) => {
   if (stock === 0) return 'out_of_stock';
   if (stock <= 10) return 'low_stock';
+
   return 'active';
 };
 
@@ -120,12 +121,13 @@ const ProductsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.sku.toLowerCase().includes(searchQuery.toLowerCase())
+    product.sku.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   // Update badge count for low stock products
   useEffect(() => {
     const lowStockProducts = products.filter(p => p.stock <= 10 && p.stock > 0).length;
+
     onBadgeUpdate?.(lowStockProducts);
   }, [products, onBadgeUpdate]);
 
@@ -188,7 +190,7 @@ const ProductsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
             <InputAdornment position="start">
               <SearchIcon />
             </InputAdornment>
-          )
+          ),
         }}
         sx={{ mb: 3 }}
       />
@@ -204,7 +206,7 @@ const ProductsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
                 bgcolor: 'grey.100',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
               }}
             >
               {product.image ? (
@@ -252,11 +254,11 @@ const ProductsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
                 </Stack>
 
                 {/* Description */}
-                <Typography variant="body2" color="text.secondary" sx={{ 
+                <Typography variant="body2" color="text.secondary" sx={{
                   display: '-webkit-box',
                   WebkitLineClamp: 2,
                   WebkitBoxOrient: 'vertical',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
                 }}>
                   {product.description}
                 </Typography>
@@ -270,8 +272,8 @@ const ProductsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
                     <Typography variant="caption" color="text.secondary">
                       {t('Stock')}
                     </Typography>
-                    <Typography 
-                      variant="body2" 
+                    <Typography
+                      variant="body2"
                       fontWeight="bold"
                       color={product.stock === 0 ? 'error.main' : product.stock <= 10 ? 'warning.main' : 'success.main'}
                     >

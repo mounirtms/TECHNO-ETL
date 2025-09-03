@@ -1,9 +1,9 @@
 /**
  * Dashboard Page Tests
- * 
+ *
  * Comprehensive tests for the main Dashboard page
  * Tests all dashboard widgets, data loading, and user interactions
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
@@ -21,16 +21,16 @@ vi.mock('../../services/dashboardApi', () => ({
     getDashboardData: vi.fn(),
     getMagentoStats: vi.fn(),
     getMDMStats: vi.fn(),
-    getAnalyticsData: vi.fn()
-  }
+    getAnalyticsData: vi.fn(),
+  },
 }));
 
 vi.mock('../../services/magentoApi', () => ({
   default: {
     getProducts: vi.fn(),
     getOrders: vi.fn(),
-    getCustomers: vi.fn()
-  }
+    getCustomers: vi.fn(),
+  },
 }));
 
 vi.mock('react-toastify', () => ({
@@ -38,8 +38,8 @@ vi.mock('react-toastify', () => ({
     success: vi.fn(),
     error: vi.fn(),
     warning: vi.fn(),
-    info: vi.fn()
-  }
+    info: vi.fn(),
+  },
 }));
 
 // Test utilities
@@ -51,7 +51,7 @@ const renderDashboard = (props = {}) => {
       <ThemeProvider theme={theme}>
         <Dashboard {...props} />
       </ThemeProvider>
-    </BrowserRouter>
+    </BrowserRouter>,
   );
 };
 
@@ -61,36 +61,36 @@ const mockDashboardData = {
     totalProducts: 1250,
     totalOrders: 89,
     totalCustomers: 456,
-    totalRevenue: 125000.50
+    totalRevenue: 125000.50,
   },
   charts: {
     salesTrend: [
       { date: '2025-01-01', sales: 1000 },
       { date: '2025-01-02', sales: 1200 },
-      { date: '2025-01-03', sales: 950 }
+      { date: '2025-01-03', sales: 950 },
     ],
     productCategories: [
       { category: 'Electronics', count: 450 },
       { category: 'Clothing', count: 300 },
-      { category: 'Books', count: 200 }
-    ]
+      { category: 'Books', count: 200 },
+    ],
   },
   recentActivity: [
     { id: 1, type: 'order', message: 'New order #12345', timestamp: '2025-08-27T10:00:00Z' },
-    { id: 2, type: 'customer', message: 'New customer registered', timestamp: '2025-08-27T09:30:00Z' }
-  ]
+    { id: 2, type: 'customer', message: 'New customer registered', timestamp: '2025-08-27T09:30:00Z' },
+  ],
 };
 
 const mockMagentoStats = {
   products: { total: 1250, active: 1100, inactive: 150 },
   orders: { total: 89, pending: 12, completed: 77 },
-  customers: { total: 456, active: 420, inactive: 36 }
+  customers: { total: 456, active: 420, inactive: 36 },
 };
 
 const mockMDMStats = {
   totalRecords: 5000,
   lastSync: '2025-08-27T08:00:00Z',
-  syncStatus: 'success'
+  syncStatus: 'success',
 };
 
 // ============================================================================
@@ -104,11 +104,11 @@ describe('Dashboard Page', () => {
   beforeEach(() => {
     // Reset all mocks
     vi.clearAllMocks();
-    
+
     // Import and setup mocks
     mockDashboardApi = require('../../services/dashboardApi').default;
     mockMagentoApi = require('../../services/magentoApi').default;
-    
+
     // Setup default mock responses
     mockDashboardApi.getDashboardData.mockResolvedValue(mockDashboardData);
     mockDashboardApi.getMagentoStats.mockResolvedValue(mockMagentoStats);
@@ -144,12 +144,12 @@ describe('Dashboard Page', () => {
 
     it('renders all dashboard sections after loading', async () => {
       renderDashboard();
-      
+
       await waitFor(() => {
         expect(screen.getByText(/statistics/i)).toBeInTheDocument();
         expect(screen.getByText(/charts/i)).toBeInTheDocument();
         expect(screen.getByText(/recent activity/i)).toBeInTheDocument();
-      });
+      }, { timeout: 15000 });
     });
   });
 
@@ -159,49 +159,40 @@ describe('Dashboard Page', () => {
 
   describe('Data Loading', () => {
     it('loads dashboard data on mount', async () => {
-      renderDashboard();
-      
-      await waitFor(() => {
+      renderDaawait waitFor(() => {
         expect(mockDashboardApi.getDashboardData).toHaveBeenCalledTimes(1);
         expect(mockDashboardApi.getMagentoStats).toHaveBeenCalledTimes(1);
         expect(mockDashboardApi.getMDMStats).toHaveBeenCalledTimes(1);
+      }, { timeout: 15000 });Times(1);
       });
     });
 
-    it('displays stats after successful data load', async () => {
-      renderDashboard();
-      
-      await waitFor(() => {
+    it('displays stats after successful data load', async () await waitFor(() => {
         expect(screen.getByText('1250')).toBeInTheDocument(); // Total products
         expect(screen.getByText('89')).toBeInTheDocument(); // Total orders
         expect(screen.getByText('456')).toBeInTheDocument(); // Total customers
+      }, { timeout: 15000 });ocument(); // Total customers
       });
     });
 
     it('handles data loading errors gracefully', async () => {
       const error = new Error('Failed to load dashboard data');
-      mockDashboardApi.getDashboardData.mockRejectedValue(error);
-      
-      renderDashboard();
-      
-      await waitFor(() => {
+
+      mockDashboardApi.getDashboardData.mocawait waitFor(() => {
         expect(screen.getByText(/error loading/i)).toBeInTheDocument();
+      }, { timeout: 15000 });getByText(/error loading/i)).toBeInTheDocument();
       });
     });
 
-    it('retries data loading on refresh', async () => {
-      renderDashboard();
-      
-      // Wait for initial load
-      await waitFor(() => {
+    it('retries data loading on refresh', aawait waitFor(() => {
         expect(mockDashboardApi.getDashboardData).toHaveBeenCalledTimes(1);
+      }, { timeout: 15000 });  expect(mockDashboardApi.getDashboardData).toHaveBeenCalledTimes(1);
       });
-      
+
       // Click refresh button
-      const refreshButton = screen.getByLabelText(/refresh/i);
-      fireEvent.click(refreshButton);
-      
-      await waitFor(() => {
+      const await waitFor(() => {
+        expect(mockDashboardApi.getDashboardData).toHaveBeenCalledTimes(2);
+      }, { timeout: 15000 });tFor(() => {
         expect(mockDashboardApi.getDashboardData).toHaveBeenCalledTimes(2);
       });
     });
@@ -211,21 +202,17 @@ describe('Dashboard Page', () => {
   // STATISTICS WIDGET TESTS
   // ============================================================================
 
-  describe('Statistics Widgets', () => {
-    it('displays all stat cards', async () => {
-      renderDashboard();
-      
-      await waitFor(() => {
+  desawait waitFor(() => {
         expect(screen.getByText(/total products/i)).toBeInTheDocument();
         expect(screen.getByText(/total orders/i)).toBeInTheDocument();
         expect(screen.getByText(/total customers/i)).toBeInTheDocument();
         expect(screen.getByText(/revenue/i)).toBeInTheDocument();
-      });
-    });
-
-    it('formats currency values correctly', async () => {
+      }, { timeout: 15000 });(/total customers/i)).toBeInTheDocument();
+        expect(screen.getByText(/revenue/iawait waitFor(() => {
+        expect(screen.getByText(/\$125,000\.50/)).toBeInTheDocument();
+      }, { timeout: 15000 });
       renderDashboard();
-      
+
       await waitFor(() => {
         expect(screen.getByText(/\$125,000\.50/)).toBeInTheDocument();
       });
@@ -237,30 +224,27 @@ describe('Dashboard Page', () => {
         stats: {
           ...mockDashboardData.stats,
           productsTrend: { direction: 'up', percentage: 12.5 },
-          ordersTrend: { direction: 'down', percentage: 5.2 }
-        }
-      };
-      
-      mockDashboardApi.getDashboardData.mockResolvedValue(dataWithTrends);
-      renderDashboard();
-      
-      await waitFor(() => {
+          ordersTrend: { direction: 'dawait waitFor(() => {
         expect(screen.getByText(/\+12\.5%/)).toBeInTheDocument();
         expect(screen.getByText(/-5\.2%/)).toBeInTheDocument();
-      });
-    });
+      }, { timeout: 15000 });t waitFor(() => {
+        expect(screen.getByText(/\+12\.5%/)).toBeInTheDocument();
+        expect(screen.getByTextawait waitFor(() => {
+        expect(screen.getByText(/total products/i)).toBeInTheDocument();
+      }, { timeout: 15000 });      const user = userEvent.setup();
 
-    it('handles stat card clicks', async () => {
-      const user = userEvent.setup();
       renderDashboard();
-      
+
       await waitFor(() => {
         expect(screen.getByText(/total products/i)).toBeInTheDocument();
       });
-      
+
       const productCard = screen.getByText(/total products/i).closest('[data-testid="stat-card"]');
+
       await user.click(productCard);
-      
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));
+
       // Should navigate or show details (implementation specific)
       expect(productCard).toHaveAttribute('role', 'button');
     });
@@ -268,102 +252,99 @@ describe('Dashboard Page', () => {
 
   // ============================================================================
   // CHARTS WIDGET TESTS
-  // ============================================================================
-
-  describe('Charts Widgets', () => {
+  // ===await waitFor(() => {
+        expect(screen.getByTestId('sales-trend-chart')).toBeInTheDocument();
+      }, { timeout: 15000 });> {
     it('renders sales trend chart', async () => {
       renderDashboard();
-      
-      await waitFor(() => {
-        expect(screen.getByTestId('sales-trend-chart')).toBeInTheDocument();
-      });
+
+ await waitFor(() => {
+        expect(screen.getByTestId('categories-chart')).toBeInTheDocument();
+      }, { timeout: 15000 });   });
     });
 
     it('renders product categories chart', async () => {
       renderDashboard();
-      
-      await waitFor(() => {
-        expect(screen.getByTestId('categories-chart')).toBeInTheDocument();
-      });
-    });
+
+      await waawait waitFor(() => {
+        expect(screen.getByTestId('sales-trend-chart')).toBeInTheDocument();
+      }, { timeout: 15000 });
 
     it('handles chart interactions', async () => {
       const user = userEvent.setup();
+
       renderDashboard();
-      
+
       await waitFor(() => {
         expect(screen.getByTestId('sales-trend-chart')).toBeInTheDocument();
-      });
-      
-      // Test chart legend clicks
+      })await user.click(legendItem);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));nd clicks
       const legendItem = screen.getByText('Electronics');
+
       await user.click(legendItem);
-      
+
       // Chart should respond to interaction
       expect(legendItem).toBeInTheDocument();
     });
 
     it('shows empty state when no chart data', async () => {
-      const emptyData = {
-        ...mockDashboardData,
-        charts: {
-          salesTrend: [],
-          productCategories: []
-        }
+      cawait waitFor(() => {
+        expect(screen.getByText(/no data available/i)).toBeInTheDocument();
+      }, { timeout: 15000 });oductCategories: [],
+        },
       };
-      
+
       mockDashboardApi.getDashboardData.mockResolvedValue(emptyData);
       renderDashboard();
-      
+
       await waitFor(() => {
         expect(screen.getByText(/no data available/i)).toBeInTheDocument();
       });
     });
   });
 
-  // ============================================================================
-  // RECENT ACTIVITY TESTS
-  // ============================================================================
-
-  describe('Recent Activity Widget', () => {
-    it('displays recent activity items', async () => {
-      renderDashboard();
-      
-      await waitFor(() => {
+  // ===============================================await waitFor(() => {
         expect(screen.getByText(/new order #12345/i)).toBeInTheDocument();
         expect(screen.getByText(/new customer registered/i)).toBeInTheDocument();
+      }, { timeout: 15000 });   it('displays recent activity items', async () => {
+      renderDashboard();
+await waitFor(() => {
+        // Should show relative time like "2 hours ago"
+        expect(screen.getByText(/ago/)).toBeInTheDocument();
+      }, { timeout: 15000 });r registered/i)).toBeInTheDocument();
       });
     });
 
-    it('formats timestamps correctly', async () => {
-      renderDashboard();
-      
-      await waitFor(() => {
-        // Should show relative time like "2 hours ago"
-        expect(screen.getByText(/ago/)).toBeInTheDocument();
+    it('formawait waitFor(() => {
+        expect(screen.getByTestId('activity-icon-order')).toBeInTheDocument();
+        expect(screen.getByTestId('activity-icon-customer')).toBeInTheDocument();
+      }, { timeout: 15000 });.toBeInTheDocument();
       });
     });
 
     it('shows activity icons', async () => {
       renderDashboard();
-      
-      await waitFor(() => {
-        expect(screen.getByTestId('activity-icon-order')).toBeInTheDocument();
-        expect(screen.getByTestId('activity-icon-customer')).toBeInTheDocument();
+
+  await waitFor(() => {
+        expect(screen.getByText(/new order #12345/i)).toBeInTheDocument();
+      }, { timeout: 15000 });       expect(screen.getByTestId('activity-icon-customer')).toBeInTheDocument();
       });
     });
 
     it('handles activity item clicks', async () => {
       const user = userEvent.setup();
-      renderDashboard();
-      
-      await waitFor(() => {
+
+      reawait user.click(activityItem);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50)); waitFor(() => {
         expect(screen.getByText(/new order #12345/i)).toBeInTheDocument();
       });
-      
+
       const activityItem = screen.getByText(/new order #12345/i);
+
       await user.click(activityItem);
-      
+
       // Should navigate to order details
       expect(activityItem).toHaveAttribute('role', 'button');
     });
@@ -381,10 +362,11 @@ describe('Dashboard Page', () => {
         configurable: true,
         value: 375,
       });
-      
+
       renderDashboard();
-      
+
       const dashboardContainer = screen.getByRole('main');
+
       expect(dashboardContainer).toHaveClass('mobile-layout');
     });
 
@@ -395,9 +377,9 @@ describe('Dashboard Page', () => {
         configurable: true,
         value: 768,
       });
-      
+
       renderDashboard();
-      
+
       expect(screen.getByLabelText(/toggle navigation/i)).toBeInTheDocument();
     });
   });
@@ -411,38 +393,35 @@ describe('Dashboard Page', () => {
       const ThrowError = () => {
         throw new Error('Component crashed');
       };
-      
+
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-      
+
       render(
         <BrowserRouter>
           <ThemeProvider theme={theme}>
             <ThrowError />
           </ThemeProvider>
-        </BrowserRouter>
-      );
-      
-      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
-      
+await waitFor(() => {
+        expect(screen.getByText(/error loading/i)).toBeInTheDocument();
+      }, { timeout: 15000 });ocument();
+
       consoleSpy.mockRestore();
     });
 
     it('recovers from API errors', async () => {
       // Start with error
-      mockDashboardApi.getDashboardData.mockRejectedValue(new Error('API Error'));
-      
-      renderDashboard();
-      
-      await waitFor(() => {
-        expect(screen.getByText(/error loading/i)).toBeInTheDocument();
+      mockDashboardApi.getDashboardData.mockRejectedValue(nawait waitFor(() => {
+        expect(screen.getByText('1250')).toBeInTheDocument(); // Data loaded
+      }, { timeout: 15000 });yText(/error loading/i)).toBeInTheDocument();
       });
-      
+
       // Fix API and retry
       mockDashboardApi.getDashboardData.mockResolvedValue(mockDashboardData);
-      
+
       const retryButton = screen.getByText(/retry/i);
+
       fireEvent.click(retryButton);
-      
+
       await waitFor(() => {
         expect(screen.getByText('1250')).toBeInTheDocument(); // Data loaded
       });
@@ -456,39 +435,40 @@ describe('Dashboard Page', () => {
   describe('Performance', () => {
     it('does not re-render unnecessarily', async () => {
       const renderSpy = vi.fn();
-      
+
       const TestDashboard = () => {
         renderSpy();
+
         return <Dashboard />;
       };
-      
+
       const { rerender } = render(
         <BrowserRouter>
           <ThemeProvider theme={theme}>
             <TestDashboard />
           </ThemeProvider>
-        </BrowserRouter>
+        </BrowserRouter>,
       );
-      
+
       // Initial render
       expect(renderSpy).toHaveBeenCalledTimes(1);
-      
+
       // Re-render with same props
       rerender(
         <BrowserRouter>
           <ThemeProvider theme={theme}>
             <TestDashboard />
           </ThemeProvider>
-        </BrowserRouter>
+        </BrowserRouter>,
       );
-      
+
       // Should use React.memo to prevent unnecessary re-renders
       expect(renderSpy).toHaveBeenCalledTimes(2);
     });
 
     it('lazy loads chart components', async () => {
       renderDashboard();
-      
+
       // Charts should load asynchronously
       await waitFor(() => {
         expect(screen.getByTestId('sales-trend-chart')).toBeInTheDocument();

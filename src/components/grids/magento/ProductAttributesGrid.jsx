@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { 
-  Box, 
-  Chip, 
-  IconButton, 
-  Tooltip, 
+import {
+  Box,
+  Chip,
+  IconButton,
+  Tooltip,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -17,7 +17,7 @@ import {
   FormControlLabel,
   Switch,
   Typography,
-  Divider
+  Divider,
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -25,7 +25,7 @@ import {
   Visibility as ViewIcon,
   Settings as SettingsIcon,
   Code as CodeIcon,
-  Label as LabelIcon
+  Label as LabelIcon,
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
@@ -52,13 +52,13 @@ const ProductAttributesGrid = () => {
     total: 0,
     system: 0,
     userDefined: 0,
-    required: 0
+    required: 0,
   });
 
   // ===== COLUMN DEFINITIONS =====
   const columns = useMemo(() => [
-    ColumnFactory.text('attribute_code', { 
-      headerName: 'Attribute Code', 
+    ColumnFactory.text('attribute_code', {
+      headerName: 'Attribute Code',
       width: 150,
       renderCell: (params) => (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -67,10 +67,10 @@ const ProductAttributesGrid = () => {
             {params.value}
           </Typography>
         </Box>
-      )
+      ),
     }),
-    ColumnFactory.text('frontend_label', { 
-      headerName: 'Default Label', 
+    ColumnFactory.text('frontend_label', {
+      headerName: 'Default Label',
       flex: 1,
       renderCell: (params) => (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -79,7 +79,7 @@ const ProductAttributesGrid = () => {
             {params.value}
           </Typography>
         </Box>
-      )
+      ),
     }),
     {
       field: 'frontend_input',
@@ -93,8 +93,9 @@ const ProductAttributesGrid = () => {
           multiselect: 'secondary',
           boolean: 'success',
           date: 'warning',
-          price: 'error'
+          price: 'error',
         };
+
         return (
           <Chip
             label={params.value}
@@ -103,7 +104,7 @@ const ProductAttributesGrid = () => {
             variant="outlined"
           />
         );
-      }
+      },
     },
     {
       field: 'is_required',
@@ -116,7 +117,7 @@ const ProductAttributesGrid = () => {
           size="small"
           variant={params.value ? 'filled' : 'outlined'}
         />
-      )
+      ),
     },
     {
       field: 'is_user_defined',
@@ -129,7 +130,7 @@ const ProductAttributesGrid = () => {
           size="small"
           variant="outlined"
         />
-      )
+      ),
     },
     {
       field: 'scope',
@@ -139,8 +140,9 @@ const ProductAttributesGrid = () => {
         const scopeColors = {
           global: 'success',
           website: 'warning',
-          store: 'info'
+          store: 'info',
         };
+
         return (
           <Chip
             label={params.value}
@@ -148,7 +150,7 @@ const ProductAttributesGrid = () => {
             size="small"
           />
         );
-      }
+      },
     },
     {
       field: 'actions',
@@ -185,8 +187,8 @@ const ProductAttributesGrid = () => {
             </IconButton>
           </Tooltip>
         </Box>
-      )
-    }
+      ),
+    },
   ], []);
 
   // ===== DATA FETCHING =====
@@ -194,14 +196,16 @@ const ProductAttributesGrid = () => {
     try {
       setLoading(true);
       console.log('🔄 Fetching product attributes...', params);
-      
+
       const response = await magentoApi.getProductAttributes(params);
+
       console.log('📦 Product attributes response:', response);
-      
+
       const attributes = response?.items || [];
+
       setData(attributes);
       updateStats(attributes);
-      
+
     } catch (error) {
       console.error('❌ Error fetching product attributes:', error);
       toast.error('Failed to load product attributes');
@@ -216,13 +220,14 @@ const ProductAttributesGrid = () => {
       total: acc.total + 1,
       system: acc.system + (!attr.is_user_defined ? 1 : 0),
       userDefined: acc.userDefined + (attr.is_user_defined ? 1 : 0),
-      required: acc.required + (attr.is_required ? 1 : 0)
+      required: acc.required + (attr.is_required ? 1 : 0),
     }), {
       total: 0,
       system: 0,
       userDefined: 0,
-      required: 0
+      required: 0,
     });
+
     setStats(newStats);
   }, []);
 
@@ -263,13 +268,13 @@ const ProductAttributesGrid = () => {
           data,
           columns,
           loading,
-          
+
           // Grid identification
           gridName: 'ProductAttributesGrid',
-          
+
           // Configuration
           toolbarConfig: getStandardToolbarConfig('productAttributes'),
-          
+
           // Stats cards
           showStatsCards: true,
           gridCards: [
@@ -277,41 +282,41 @@ const ProductAttributesGrid = () => {
               title: 'Total Attributes',
               value: stats.total,
               icon: LabelIcon,
-              color: 'primary'
+              color: 'primary',
             },
             {
               title: 'System Attributes',
               value: stats.system,
               icon: SettingsIcon,
-              color: 'secondary'
+              color: 'secondary',
             },
             {
               title: 'Custom Attributes',
               value: stats.userDefined,
               icon: CodeIcon,
-              color: 'info'
+              color: 'info',
             },
             {
               title: 'Required',
               value: stats.required,
               icon: EditIcon,
-              color: 'error'
-            }
+              color: 'error',
+            },
           ],
-          
+
           // Event handlers
           onRefresh: fetchAttributes,
           onAdd: handleCreateAttribute,
           onRowDoubleClick: (params) => handleViewAttribute(params.row),
-          
+
           // Row configuration
           getRowId: (row) => row.attribute_id,
-          
+
           // Error handling
           onError: (error) => {
             console.error('Product Attributes Grid Error:', error);
             toast.error('Error in product attributes grid');
-          }
+          },
         })}
       />
 
@@ -352,7 +357,7 @@ const AttributeDialog = ({ open, onClose, attribute, onSave }) => {
     frontend_input: 'text',
     is_required: false,
     is_user_defined: true,
-    scope: 'global'
+    scope: 'global',
   });
 
   useEffect(() => {
@@ -365,7 +370,7 @@ const AttributeDialog = ({ open, onClose, attribute, onSave }) => {
         frontend_input: 'text',
         is_required: false,
         is_user_defined: true,
-        scope: 'global'
+        scope: 'global',
       });
     }
   }, [attribute]);

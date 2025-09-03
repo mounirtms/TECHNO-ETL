@@ -1,7 +1,7 @@
 /**
  * MDM Filters Component
  * Professional filtering interface for MDM Products Grid
- * 
+ *
  * @author Techno-ETL Team
  * @version 1.0.0
  */
@@ -23,8 +23,8 @@ const FilterContainer = styled(Box)(({ theme }) => ({
   [theme.breakpoints.down('md')]: {
     flexDirection: 'column',
     alignItems: 'stretch',
-    gap: theme.spacing(1)
-  }
+    gap: theme.spacing(1),
+  },
 }));
 
 /**
@@ -33,14 +33,14 @@ const FilterContainer = styled(Box)(({ theme }) => ({
 const FilterFormControl = styled(FormControl)(({ theme }) => ({
   minWidth: 150,
   [theme.breakpoints.down('md')]: {
-    minWidth: '100%'
-  }
+    minWidth: '100%',
+  },
 }));
 
 /**
  * MDM Filters Component
  * Provides filtering interface for MDM inventory data
- * 
+ *
  * @param {Object} props - Component props
  * @param {string} props.sourceFilter - Current source filter value
  * @param {Function} props.onSourceChange - Source filter change handler
@@ -62,7 +62,7 @@ const MDMFilters = ({
   onShowChangedOnlyChange,
   sources = [],
   branches = [],
-  loading = false
+  loading = false,
 }) => {
   return (
     <FilterContainer>
@@ -113,22 +113,22 @@ const MDMFilters = ({
           />
         }
         label="Show Recent Changes Only"
-        sx={{ 
+        sx={{
           ml: 1,
           '& .MuiFormControlLabel-label': {
             fontSize: '0.875rem',
-            fontWeight: 500
-          }
+            fontWeight: 500,
+          },
         }}
       />
 
       {/* Filter Summary */}
-      <Box sx={{ 
-        ml: 'auto', 
-        display: 'flex', 
+      <Box sx={{
+        ml: 'auto',
+        display: 'flex',
         alignItems: 'center',
         color: 'text.secondary',
-        fontSize: '0.875rem'
+        fontSize: '0.875rem',
       }}>
         {sourceFilter && sourceFilter !== 'all' && (
           <Box component="span" sx={{ mr: 1 }}>
@@ -157,7 +157,7 @@ export const defaultSources = [
   { value: '7', label: 'Source 7' },
   { value: '16', label: 'Source 16' },
   { value: '20', label: 'Source 20' },
-  { value: '25', label: 'Source 25' }
+  { value: '25', label: 'Source 25' },
 ];
 
 /**
@@ -167,7 +167,7 @@ export const defaultBranches = [
   { value: '16', label: 'Branch 16' },
   { value: '20', label: 'Branch 20' },
   { value: '25', label: 'Branch 25' },
-  { value: '30', label: 'Branch 30' }
+  { value: '30', label: 'Branch 30' },
 ];
 
 export default MDMFilters;

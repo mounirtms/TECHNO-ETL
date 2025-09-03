@@ -1,7 +1,7 @@
 /**
  * GridStatsCards - Professional Stats Cards Component
  * Displays statistics cards for grids with proper positioning
- * 
+ *
  * @author Mounir Abderrahmani
  * @email mounir.ab@techno-dz.com
  */
@@ -15,12 +15,12 @@ import {
   Grid,
   Skeleton,
   useTheme,
-  alpha
+  alpha,
 } from '@mui/material';
 import {
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,
-  Remove as RemoveIcon
+  Remove as RemoveIcon,
 } from '@mui/icons-material';
 
 import { useCustomTheme } from '../../../contexts/ThemeContext';
@@ -49,18 +49,21 @@ const GridStatsCards = ({
       success: theme.palette.success.main,
       warning: theme.palette.warning.main,
       error: theme.palette.error.main,
-      info: theme.palette.info.main
+      info: theme.palette.info.main,
     };
+
     return colors[color] || theme.palette.primary.main;
   };
 
   const getTrendIcon = (trend) => {
     if (!trend || trend === 0) return <RemoveIcon />;
+
     return trend > 0 ? <TrendingUpIcon /> : <TrendingDownIcon />;
   };
 
   const getTrendColor = (trend) => {
     if (!trend || trend === 0) return 'text.secondary';
+
     return trend > 0 ? 'success.main' : 'error.main';
   };
 
@@ -68,6 +71,7 @@ const GridStatsCards = ({
     if (typeof value === 'number') {
       return value.toLocaleString();
     }
+
     return value;
   };
 
@@ -78,14 +82,14 @@ const GridStatsCards = ({
       sx={{
         width: '100%',
         mb: 1,
-        flexShrink: 0
+        flexShrink: 0,
       }}
       {...props}
     >
       <Grid container spacing={density === 'compact' ? 1 : 2}>
         {cards.map((card, index) => {
           const cardColor = getCardColor(card.color);
-          
+
           return (
             <Grid item xs={12} sm={6} md={3} key={index}>
               <Card
@@ -100,8 +104,8 @@ const GridStatsCards = ({
                   '&:hover': {
                     boxShadow: theme.shadows[4],
                     transform: 'translateY(-2px)',
-                    transition: 'all 0.2s ease-in-out'
-                  }
+                    transition: 'all 0.2s ease-in-out',
+                  },
                 }}
               >
                 {/* Color accent bar */}
@@ -112,7 +116,7 @@ const GridStatsCards = ({
                     left: 0,
                     right: 0,
                     height: 4,
-                    backgroundColor: cardColor
+                    backgroundColor: cardColor,
                   }}
                 />
 
@@ -124,8 +128,8 @@ const GridStatsCards = ({
                     justifyContent: 'center',
                     p: density === 'compact' ? 1 : 2,
                     '&:last-child': {
-                      pb: density === 'compact' ? 1 : 2
-                    }
+                      pb: density === 'compact' ? 1 : 2,
+                    },
                   }}
                 >
                   {loading ? (
@@ -144,7 +148,7 @@ const GridStatsCards = ({
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'space-between',
-                          mb: variant === 'compact' ? 0.5 : 1
+                          mb: variant === 'compact' ? 0.5 : 1,
                         }}
                       >
                         <Typography
@@ -153,22 +157,22 @@ const GridStatsCards = ({
                           sx={{
                             fontWeight: 500,
                             textTransform: 'uppercase',
-                            letterSpacing: 0.5
+                            letterSpacing: 0.5,
                           }}
                         >
                           {translate(card.title) || card.title}
                         </Typography>
-                        
+
                         {card.icon && (
                           <Box
                             sx={{
                               color: cardColor,
                               display: 'flex',
-                              alignItems: 'center'
+                              alignItems: 'center',
                             }}
                           >
                             {React.createElement(card.icon, {
-                              fontSize: density === 'compact' ? 'small' : 'medium'
+                              fontSize: density === 'compact' ? 'small' : 'medium',
                             })}
                           </Box>
                         )}
@@ -181,7 +185,7 @@ const GridStatsCards = ({
                         sx={{
                           fontWeight: 'bold',
                           color: 'text.primary',
-                          lineHeight: 1.2
+                          lineHeight: 1.2,
                         }}
                       >
                         {formatValue(card.value)}
@@ -194,7 +198,7 @@ const GridStatsCards = ({
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'space-between',
-                            mt: 0.5
+                            mt: 0.5,
                           }}
                         >
                           {card.trend !== undefined && (
@@ -202,7 +206,7 @@ const GridStatsCards = ({
                               sx={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                color: getTrendColor(card.trend)
+                                color: getTrendColor(card.trend),
                               }}
                             >
                               {getTrendIcon(card.trend)}
@@ -224,7 +228,7 @@ const GridStatsCards = ({
                                 maxWidth: '60%',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap'
+                                whiteSpace: 'nowrap',
                               }}
                             >
                               {translate(card.description) || card.description}

@@ -8,14 +8,14 @@ import {
   Delete as DeleteIcon,
   Visibility as ViewIcon,
   GetApp as ExportIcon,
-  Sync as SyncIcon
+  Sync as SyncIcon,
 } from '@mui/icons-material';
 import UnifiedGrid from '../../common/UnifiedGrid';
 import { toast } from 'react-toastify';
 
 /**
  * StandardGridTemplate - Template for consistent grid structure
- * 
+ *
  * STRUCTURE:
  * 1. Imports (React, MUI, Icons, Services, Utils)
  * 2. Component Definition with JSDoc
@@ -40,7 +40,7 @@ const StandardGridTemplate = () => {
   const [stats, setStats] = useState({
     total: 0,
     active: 0,
-    inactive: 0
+    inactive: 0,
   });
 
   // Dialog states
@@ -54,13 +54,14 @@ const StandardGridTemplate = () => {
     try {
       // Replace with actual API call
       const response = await apiService.getData();
+
       setData(response.data || []);
-      
+
       // Calculate stats
       const total = response.data?.length || 0;
       const active = response.data?.filter(item => item.status === 'active').length || 0;
       const inactive = total - active;
-      
+
       setStats({ total, active, inactive });
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -89,6 +90,7 @@ const StandardGridTemplate = () => {
   const handleDelete = useCallback(async (records) => {
     if (records.length === 0) {
       toast.warning('Please select records to delete');
+
       return;
     }
 
@@ -126,14 +128,14 @@ const StandardGridTemplate = () => {
       field: 'id',
       headerName: 'ID',
       width: 100,
-      sortable: true
+      sortable: true,
     },
     {
       field: 'name',
       headerName: 'Name',
       width: 200,
       sortable: true,
-      filterable: true
+      filterable: true,
     },
     {
       field: 'status',
@@ -145,15 +147,15 @@ const StandardGridTemplate = () => {
           color={params.value === 'active' ? 'success' : 'default'}
           size="small"
         />
-      )
+      ),
     },
     {
       field: 'created_at',
       headerName: 'Created',
       width: 180,
-      valueFormatter: (params) => 
-        params.value ? new Date(params.value).toLocaleString() : 'N/A'
-    }
+      valueFormatter: (params) =>
+        params.value ? new Date(params.value).toLocaleString() : 'N/A',
+    },
   ], []);
 
   // ===== 5. TOOLBAR CONFIGURATION =====
@@ -168,7 +170,7 @@ const StandardGridTemplate = () => {
     showSettings: true,
     showViewToggle: true,
     compact: false,
-    size: 'medium'
+    size: 'medium',
   };
 
   const customActions = [
@@ -177,15 +179,15 @@ const StandardGridTemplate = () => {
       onClick: handleAdd,
       icon: <AddIcon />,
       color: 'primary',
-      variant: 'contained'
+      variant: 'contained',
     },
     {
       label: 'Sync Data',
       onClick: handleSync,
       icon: <SyncIcon />,
       color: 'secondary',
-      variant: 'outlined'
-    }
+      variant: 'outlined',
+    },
   ];
 
   // ===== 6. CONTEXT MENU ACTIONS =====
@@ -196,7 +198,7 @@ const StandardGridTemplate = () => {
       onClick: (row) => {
         setSelectedRecord(row);
         // Open details dialog
-      }
+      },
     },
     edit: {
       label: 'Edit',
@@ -204,14 +206,14 @@ const StandardGridTemplate = () => {
       onClick: (row) => {
         setSelectedRecord(row);
         setEditDialogOpen(true);
-      }
+      },
     },
     delete: {
       label: 'Delete',
       icon: <DeleteIcon />,
       onClick: (row) => handleDelete([row]),
-      color: 'error'
-    }
+      color: 'error',
+    },
   };
 
   // ===== 7. STATS CARDS =====
@@ -220,27 +222,27 @@ const StandardGridTemplate = () => {
       title: 'Total Records',
       value: stats.total,
       icon: <ViewIcon />,
-      color: 'primary'
+      color: 'primary',
     },
     {
       title: 'Active',
       value: stats.active,
       icon: <AddIcon />,
-      color: 'success'
+      color: 'success',
     },
     {
       title: 'Inactive',
       value: stats.inactive,
       icon: <DeleteIcon />,
-      color: 'warning'
-    }
+      color: 'warning',
+    },
   ];
 
   // ===== 8. FILTER OPTIONS =====
   const filterOptions = [
     { key: 'all', label: 'All Records', value: 'all' },
     { key: 'active', label: 'Active Only', value: 'active' },
-    { key: 'inactive', label: 'Inactive Only', value: 'inactive' }
+    { key: 'inactive', label: 'Inactive Only', value: 'inactive' },
   ];
 
   // ===== 9. EFFECTS =====
@@ -256,7 +258,7 @@ const StandardGridTemplate = () => {
         columns={columns}
         data={data}
         loading={loading}
-        
+
         // Feature toggles
         enableCache={true}
         enableI18n={true}
@@ -266,7 +268,7 @@ const StandardGridTemplate = () => {
         enableFiltering={true}
         enableColumnReordering={true}
         enableColumnResizing={true}
-        
+
         // View options
         showStatsCards={true}
         showCardView={true}
@@ -274,19 +276,19 @@ const StandardGridTemplate = () => {
         gridCards={statusCards}
         totalCount={stats.total}
         defaultPageSize={25}
-        
+
         // Toolbar configuration
         toolbarConfig={toolbarConfig}
         customActions={customActions}
-        
+
         // Context menu
         contextMenuActions={contextMenuActions}
-        
+
         // Filter configuration
         filterOptions={filterOptions}
         currentFilter={currentFilter}
         onFilterChange={handleFilterChange}
-        
+
         // Event handlers
         onRefresh={fetchData}
         onAdd={handleAdd}
@@ -298,10 +300,10 @@ const StandardGridTemplate = () => {
           console.log('Exporting data:', exportData);
           toast.success(`Exported ${exportData.length} records`);
         }}
-        
+
         // Row configuration
         getRowId={(row) => row.id}
-        
+
         // Error handling
         onError={(error) => toast.error(error.message)}
       />

@@ -24,7 +24,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import {
   Inventory as ProductIcon,
@@ -44,9 +44,12 @@ import {
   Sync as SyncIcon,
   Close as CloseIcon,
   CheckCircle as ActivateIcon,
-  Cancel as DeactivateIcon
+  Cancel as DeactivateIcon,
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
+
+// Hooks
+import { useStandardErrorHandling } from '../../../hooks/useStandardErrorHandling';
 
 // Modern Base Components
 import BaseGrid from '../../base/BaseGrid';
@@ -66,14 +69,14 @@ import magentoApi from '../../../services/magentoApi';
 
 /**
  * ProductManagementGrid - Modern React 18 Product Management
- * 
+ *
  * Features:
  * - BaseGrid integration with React 18 patterns
  * - Enhanced state management with useTransition
  * - Comprehensive product, attributes, and categories management
  * - Modern error boundaries and suspense handling
  * - Optimized performance with memoization
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
@@ -92,44 +95,46 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
     total: 0,
     active: 0,
     inactive: 0,
-    withCategories: 0
+    withCategories: 0,
   });
 
   // ===== FILTER STATE =====
   const [filters, setFilters] = useState({
     brand: '',
-    status: '',
-    type: '',
-    priceRange: { min: '', max: '' }
+    status: 'all',
+    category: '',
+    search: '',
   });
+  
+  const { handleError } = useStandardErrorHandling();
 
   // ===== FLOATING WINDOWS STATE =====
   const [floatingWindows, setFloatingWindows] = useState({
     quickActions: { open: false, anchorEl: null },
     bulkOperations: { open: false, anchorEl: null },
     dataManagement: { open: false, anchorEl: null },
-    settings: { open: false, anchorEl: null }
+    settings: { open: false, anchorEl: null },
   });
 
   // ===== MANUAL REFRESH STATE =====
   const [refreshing, setRefreshing] = useState({
     attributes: false,
     categories: false,
-    brands: false
+    brands: false,
   });
 
   // ===== FLOATING WINDOW HANDLERS =====
   const openFloatingWindow = useCallback((windowType, event) => {
     setFloatingWindows(prev => ({
       ...prev,
-      [windowType]: { open: true, anchorEl: event.currentTarget }
+      [windowType]: { open: true, anchorEl: event.currentTarget },
     }));
   }, []);
 
   const closeFloatingWindow = useCallback((windowType) => {
     setFloatingWindows(prev => ({
       ...prev,
-      [windowType]: { open: false, anchorEl: null }
+      [windowType]: { open: false, anchorEl: null },
     }));
   }, []);
 
@@ -138,7 +143,7 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
       quickActions: { open: false, anchorEl: null },
       bulkOperations: { open: false, anchorEl: null },
       dataManagement: { open: false, anchorEl: null },
-      settings: { open: false, anchorEl: null }
+      settings: { open: false, anchorEl: null },
     });
   }, []);
 
@@ -148,20 +153,20 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
 
     try {
       switch (type) {
-        case 'attributes':
-          await magentoApi.getProductAttributes();
-          toast.success('Attributes refreshed successfully');
-          break;
-        case 'categories':
-          await magentoApi.getCategories();
-          toast.success('Categories refreshed successfully');
-          break;
-        case 'brands':
-          await magentoApi.getBrands();
-          toast.success('Brands refreshed successfully');
-          break;
-        default:
-          break;
+      case 'attributes':
+        await magentoApi.getProductAttributes();
+        toast.success('Attributes refreshed successfully');
+        break;
+      case 'categories':
+        await magentoApi.getCategories();
+        toast.success('Categories refreshed successfully');
+        break;
+      case 'brands':
+        await magentoApi.getBrands();
+        toast.success('Brands refreshed successfully');
+        break;
+      default:
+        break;
       }
     } catch (error) {
       console.error(`Error refreshing ${type}:`, error);
@@ -178,47 +183,47 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
     {
       label: 'Products Overview',
       icon: <ProductIcon />,
-      component: 'products'
+      component: 'products',
     },
     {
       label: 'Product Attributes',
       icon: <AttributeIcon />,
-      component: 'attributes'
+      component: 'attributes',
     },
     {
       label: 'Category Assignment',
       icon: <CategoryIcon />,
-      component: 'categories'
-    }
+      component: 'categories',
+    },
   ];
 
   // ===== PRODUCT COLUMNS =====
   const productColumns = useMemo(() => [
-    ColumnFactory.text('id', { 
-      headerName: 'ID', 
+    ColumnFactory.text('id', {
+      headerName: 'ID',
       width: 100,
       renderCell: (params) => (
         <Typography variant="body2" fontFamily="monospace" color="primary">
           {params.value}
         </Typography>
-      )
+      ),
     }),
-    ColumnFactory.text('sku', { 
-      headerName: 'SKU', 
+    ColumnFactory.text('sku', {
+      headerName: 'SKU',
       width: 150,
       renderCell: (params) => (
         <Typography variant="body2" fontWeight="medium">
           {params.value}
         </Typography>
-      )
+      ),
     }),
-    ColumnFactory.text('name', { 
-      headerName: 'Product Name', 
-      flex: 1
+    ColumnFactory.text('name', {
+      headerName: 'Product Name',
+      flex: 1,
     }),
     ColumnFactory.currency('price', {
       headerName: 'Price',
-      width: 120
+      width: 120,
     }),
     {
       field: 'brand',
@@ -232,7 +237,7 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
           variant="outlined"
           icon={<BrandIcon />}
         />
-      )
+      ),
     },
     {
       field: 'status',
@@ -244,7 +249,7 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
           color={params.value === 1 ? 'success' : 'default'}
           size="small"
         />
-      )
+      ),
     },
     {
       field: 'type_id',
@@ -257,7 +262,7 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
           size="small"
           variant="outlined"
         />
-      )
+      ),
     },
     {
       field: 'actions',
@@ -292,8 +297,8 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
             </IconButton>
           </TooltipWrapper>
         </Box>
-      )
-    }
+      ),
+    },
   ], []);
 
   // ===== BRANDS FETCHING =====
@@ -307,6 +312,7 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
 
       // Sort brands alphabetically
       const sortedBrands = brandsData.sort((a, b) => a.label.localeCompare(b.label));
+
       setBrands(sortedBrands);
 
       console.log('✅ Brands loaded for filters:', sortedBrands.length);
@@ -318,91 +324,69 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
     }
   }, []);
 
-  // ===== DATA FETCHING =====
-  const fetchProducts = useCallback(async (params = {}) => {
+  // Load products with error handling
+  const loadProducts = useCallback(async () => {
     try {
       setLoading(true);
-      console.log('🔄 Fetching products...', params, 'Filters:', filters);
-
-      let productsData = [];
-
-      if (selectedProducts.length > 0) {
-        // Fetch specific products
-        console.log('📦 Fetching specific products:', selectedProducts);
-        productsData = await Promise.all(
-          selectedProducts.map(async (id) => {
-            try {
-              const product = await magentoApi.getProduct(id);
-              // Get additional attributes including brand
-              const additionalAttrs = await magentoApi.getAdditionalAttributes(id);
-
-              return {
-                ...product,
-                additional_attributes: additionalAttrs?.additional_attributes || [],
-                brand: additionalAttrs?.additional_attributes?.find(attr => attr.attribute_code === 'mgs_brand')?.label || 'Unknown'
-              } || {
-                id,
-                sku: `PRODUCT-${id}`,
-                name: `Product ${id}`,
-                price: 0,
-                status: 1,
-                type_id: 'simple',
-                brand: 'Unknown',
-                additional_attributes: []
-              };
-            } catch (error) {
-              console.warn(`Failed to fetch product ${id}:`, error);
-              return {
-                id,
-                sku: `PRODUCT-${id}`,
-                name: `Product ${id}`,
-                price: 0,
-                status: 1,
-                type_id: 'simple',
-                brand: 'Unknown',
-                additional_attributes: []
-              };
-            }
-          })
-        );
-      } else {
-        // Fetch all products
-        const response = await magentoApi.getProducts(params);
-        productsData = response?.items || [];
-
-        // Enhance with additional attributes
-        productsData = await Promise.all(
-          productsData.map(async (product) => {
-            try {
-              const additionalAttrs = await magentoApi.getAdditionalAttributes(product.id);
-              return {
-                ...product,
-                additional_attributes: additionalAttrs?.additional_attributes || [],
-                brand: additionalAttrs?.additional_attributes?.find(attr => attr.attribute_code === 'mgs_brand')?.label || 'Unknown'
-              };
-            } catch (error) {
-              return {
-                ...product,
-                brand: 'Unknown',
-                additional_attributes: []
-              };
-            }
-          })
-        );
-      }
-
-      // Apply filters
-      const filteredProducts = applyFilters(productsData);
-      setProducts(filteredProducts);
-      updateStats(filteredProducts);
-
+      const response = await magentoApi.getProducts();
+      
+      startTransition(() => {
+        setProducts(response.items || []);
+        
+        // Calculate stats
+        const activeProducts = response.items.filter(p => p.status === 1).length;
+        const withCategories = response.items.filter(p => 
+          p.extension_attributes && 
+          p.extension_attributes.category_links && 
+          p.extension_attributes.category_links.length > 0
+        ).length;
+        
+        setStats({
+          total: response.items.length,
+          active: activeProducts,
+          inactive: response.items.length - activeProducts,
+          withCategories,
+        });
+      });
     } catch (error) {
-      console.error('❌ Error fetching products:', error);
-      toast.error('Failed to load products');
+      handleError(error, 'Failed to load products');
     } finally {
       setLoading(false);
     }
-  }, [selectedProducts, filters]);
+  }, [handleError]);
+
+  // Update product attributes
+  const updateProductAttribute = useCallback(async (productId, attributeCode, value) => {
+    try {
+      setLoading(true);
+      await magentoApi.updateProductAttribute(productId, attributeCode, value);
+      toast.success(`Product attribute ${attributeCode} updated successfully`);
+      await loadProducts(); // Refresh data
+    } catch (error) {
+      handleError(error, `Failed to update ${attributeCode}`);
+    } finally {
+      setLoading(false);
+    }
+  }, [loadProducts, handleError]);
+
+  // Update product categories
+  const updateProductCategories = useCallback(async (productId, categoryIds) => {
+    try {
+      setLoading(true);
+      await magentoApi.assignProductToCategories(productId, categoryIds);
+      toast.success('Product categories updated successfully');
+      await loadProducts(); // Refresh data
+    } catch (error) {
+      handleError(error, 'Failed to update product categories');
+    } finally {
+      setLoading(false);
+    }
+  }, [loadProducts, handleError]);
+
+  // Initial load
+  useEffect(() => {
+    loadProducts();
+  }, [loadProducts]);
 
   // ===== FILTERING LOGIC =====
   const applyFilters = useCallback((productsData) => {
@@ -440,13 +424,14 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
       total: acc.total + 1,
       active: acc.active + (product.status === 1 ? 1 : 0),
       inactive: acc.inactive + (product.status !== 1 ? 1 : 0),
-      withCategories: acc.withCategories + (product.categories?.length > 0 ? 1 : 0)
+      withCategories: acc.withCategories + (product.categories?.length > 0 ? 1 : 0),
     }), {
       total: 0,
       active: 0,
       inactive: 0,
-      withCategories: 0
+      withCategories: 0,
     });
+
     setStats(newStats);
   }, []);
 
@@ -455,8 +440,10 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
     try {
       console.log('🆕 Adding new product:', data);
       const newProduct = await magentoApi.createProduct(data);
+
       toast.success('Product created successfully');
       fetchProducts(); // Refresh the grid
+
       return newProduct;
     } catch (error) {
       console.error('❌ Error creating product:', error);
@@ -469,8 +456,10 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
     try {
       console.log('✏️ Editing product:', data);
       const updatedProduct = await magentoApi.updateProduct(data.id, data);
+
       toast.success('Product updated successfully');
       fetchProducts(); // Refresh the grid
+
       return updatedProduct;
     } catch (error) {
       console.error('❌ Error updating product:', error);
@@ -483,7 +472,7 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
     try {
       console.log('🗑️ Deleting products:', productIds);
       await Promise.all(
-        productIds.map(id => magentoApi.deleteProduct(id))
+        productIds.map(id => magentoApi.deleteProduct(id)),
       );
       toast.success(`${productIds.length} product(s) deleted successfully`);
       fetchProducts(); // Refresh the grid
@@ -526,6 +515,7 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
   const handleManageCategories = useCallback(() => {
     if (selectedProducts.length === 0) {
       toast.warning('Please select products first');
+
       return;
     }
     console.log('📂 Managing categories for products:', selectedProducts);
@@ -536,7 +526,7 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
   const handleFilterChange = useCallback((filterType, value) => {
     setFilters(prev => ({
       ...prev,
-      [filterType]: value
+      [filterType]: value,
     }));
   }, []);
 
@@ -545,8 +535,8 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
       ...prev,
       priceRange: {
         ...prev.priceRange,
-        [type]: value
-      }
+        [type]: value,
+      },
     }));
   }, []);
 
@@ -555,7 +545,7 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
       brand: '',
       status: '',
       type: '',
-      priceRange: { min: '', max: '' }
+      priceRange: { min: '', max: '' },
     });
   }, []);
 
@@ -587,153 +577,154 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
   // ===== RENDER TAB CONTENT =====
   const renderTabContent = useCallback(() => {
     switch (currentTab) {
-      case 0: // Products Overview
-        return (
-          <ErrorBoundary>
-            <Suspense fallback={<Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}><CircularProgress /></Box>}>
-              <BaseGrid
-                gridName="ProductManagementGrid"
-                columns={productColumns}
-                data={products}
-                loading={loading}
-                
-                // API Configuration
-                apiService={magentoApi}
-                apiEndpoint="products"
-                apiParams={{}}
-                
-                // Feature Configuration
-                enableSuspense={true}
-                enableErrorBoundary={true}
-                enableVirtualization={true}
-                enableSelection={true}
-                enableSorting={true}
-                enableFiltering={true}
-                enableSearch={true}
-                enableStats={true}
-                enableActions={true}
-                
-                // Toolbar Configuration
-                toolbarConfig={{
-                  showRefresh: true,
-                  showAdd: true,
-                  showEdit: true,
-                  showDelete: true,
-                  showExport: true,
-                  showImport: true,
-                  showSearch: true,
-                  showFilters: true,
-                  compact: false
-                }}
-                
-                // Stats Configuration
-                statsConfig={{
-                  stats: [
-                    {
-                      key: 'total',
-                      title: 'Total Products',
-                      color: 'primary',
-                      icon: ProductIcon
-                    },
-                    {
-                      key: 'active',
-                      title: 'Active',
-                      color: 'success',
-                      icon: SettingsIcon
-                    },
-                    {
-                      key: 'inactive',
-                      title: 'Inactive',
-                      color: 'warning',
-                      icon: SettingsIcon
-                    },
-                    {
-                      key: 'withCategories',
-                      title: 'With Categories',
-                      color: 'info',
-                      icon: CategoryIcon
-                    }
-                  ]
-                }}
-                
-                // Dialog Configuration
-                dialogConfig={{
-                  add: {
-                    title: 'Add New Product',
-                    fields: [
-                      { key: 'sku', label: 'SKU', required: true },
-                      { key: 'name', label: 'Product Name', required: true },
-                      { key: 'price', label: 'Price', type: 'number' },
-                      { key: 'status', label: 'Status', type: 'select' }
-                    ]
-                  },
-                  edit: {
-                    title: 'Edit Product',
-                    fields: [
-                      { key: 'sku', label: 'SKU', disabled: true },
-                      { key: 'name', label: 'Product Name', required: true },
-                      { key: 'price', label: 'Price', type: 'number' },
-                      { key: 'status', label: 'Status', type: 'select' }
-                    ]
-                  },
-                  delete: {
-                    title: 'Delete Products',
-                    confirmMessage: 'Are you sure you want to delete the selected products?'
-                  }
-                }}
-                
-                // Event Handlers
-                onRefresh={fetchProducts}
-                onAdd={handleAddProduct}
-                onEdit={handleEditProduct}
-                onDelete={handleDeleteProducts}
-                onSearch={handleSearchProducts}
-                onSelectionChange={handleSelectionChange}
-                onError={handleGridError}
-                
-                // Data Configuration
-                searchFields={['name', 'sku', 'brand']}
-                getRowId={(row) => row.id}
-                
-                // Custom Actions
-                customActions={[
+    case 0: // Products Overview
+      return (
+        <ErrorBoundary>
+          <Suspense fallback={<Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}><CircularProgress /></Box>}>
+            <BaseGrid
+              gridName="ProductManagementGrid"
+              columns={productColumns}
+              data={products}
+              loading={loading}
+
+              // API Configuration
+              apiService={magentoApi}
+              apiEndpoint="products"
+              apiParams={{}}
+
+              // Feature Configuration
+              enableSuspense={true}
+              enableErrorBoundary={true}
+              enableVirtualization={true}
+              enableSelection={true}
+              enableSorting={true}
+              enableFiltering={true}
+              enableSearch={true}
+              enableStats={true}
+              enableActions={true}
+
+              // Toolbar Configuration
+              toolbarConfig={{
+                showRefresh: true,
+                showAdd: true,
+                showEdit: true,
+                showDelete: true,
+                showExport: true,
+                showImport: true,
+                showSearch: true,
+                showFilters: true,
+                compact: false,
+              }}
+
+              // Stats Configuration
+              statsConfig={{
+                stats: [
                   {
-                    key: 'manage-categories',
-                    label: 'Manage Categories',
-                    icon: CategoryIcon,
+                    key: 'total',
+                    title: 'Total Products',
                     color: 'primary',
-                    requiresSelection: true,
-                    onClick: handleManageCategories
+                    icon: ProductIcon,
                   },
                   {
-                    key: 'manage-brands',
-                    label: 'Manage Brands',
-                    icon: BrandIcon,
-                    color: 'secondary',
-                    onClick: handleOpenBrandManagement
-                  }
-                ]}
-                
-                // Style
-                sx={{ height: '100%' }}
-              />
-            </Suspense>
-          </ErrorBoundary>
-        );
+                    key: 'active',
+                    title: 'Active',
+                    color: 'success',
+                    icon: SettingsIcon,
+                  },
+                  {
+                    key: 'inactive',
+                    title: 'Inactive',
+                    color: 'warning',
+                    icon: SettingsIcon,
+                  },
+                  {
+                    key: 'withCategories',
+                    title: 'With Categories',
+                    color: 'info',
+                    icon: CategoryIcon,
+                  },
+                ],
+              }}
 
-      case 1: // Product Attributes
-        return <ProductAttributesGrid />;
+              // Dialog Configuration
+              dialogConfig={{
+                add: {
+                  title: 'Add New Product',
+                  fields: [
+                    { key: 'sku', label: 'SKU', required: true },
+                    { key: 'name', label: 'Product Name', required: true },
+                    { key: 'price', label: 'Price', type: 'number' },
+                    { key: 'status', label: 'Status', type: 'select' },
+                  ],
+                },
+                edit: {
+                  title: 'Edit Product',
+                  fields: [
+                    { key: 'sku', label: 'SKU', disabled: true },
+                    { key: 'name', label: 'Product Name', required: true },
+                    { key: 'price', label: 'Price', type: 'number' },
+                    { key: 'status', label: 'Status', type: 'select' },
+                  ],
+                },
+                delete: {
+                  title: 'Delete Products',
+                  confirmMessage: 'Are you sure you want to delete the selected products?',
+                },
+              }}
 
-      case 2: // Category Assignment
-        return <ProductCategoriesGrid productIds={selectedProducts} />;
+              // Event Handlers
+              onRefresh={fetchProducts}
+              onAdd={handleAddProduct}
+              onEdit={handleEditProduct}
+              onDelete={handleDeleteProducts}
+              onSearch={handleSearchProducts}
+              onSelectionChange={handleSelectionChange}
+              onError={handleGridError}
 
-      default:
-        return null;
+              // Data Configuration
+              searchFields={['name', 'sku', 'brand']}
+              getRowId={(row) => row.id}
+
+              // Custom Actions
+              customActions={[
+                {
+                  key: 'manage-categories',
+                  label: 'Manage Categories',
+                  icon: CategoryIcon,
+                  color: 'primary',
+                  requiresSelection: true,
+                  onClick: handleManageCategories,
+                },
+                {
+                  key: 'manage-brands',
+                  label: 'Manage Brands',
+                  icon: BrandIcon,
+                  color: 'secondary',
+                  onClick: handleOpenBrandManagement,
+                },
+              ]}
+
+              // Style
+              sx={{ height: '100%' }}
+            />
+          </Suspense>
+        </ErrorBoundary>
+      );
+
+    case 1: // Product Attributes
+      return <ProductAttributesGrid />;
+
+    case 2: // Category Assignment
+      return <ProductCategoriesGrid productIds={selectedProducts} />;
+
+    default:
+      return null;
     }
   }, [currentTab, productColumns, products, loading, fetchProducts, handleAddProduct, handleEditProduct, handleDeleteProducts, handleSearchProducts, handleSelectionChange, handleGridError, selectedProducts, handleManageCategories, handleOpenBrandManagement]);
 
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <ErrorBoundary>
+      <Box sx={{ width: '100%' }}>
       {/* Header */}
       <Paper sx={{ mb: 2, p: 2 }}>
         <Typography variant="h5" gutterBottom>
@@ -742,7 +733,7 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
         <Typography variant="body2" color="text.secondary">
           Comprehensive product, attributes, and categories management like Magento backend
         </Typography>
-        
+
         {/* Selected Products Info */}
         {selectedProducts.length > 0 && (
           <Alert severity="info" sx={{ mt: 2 }}>
@@ -947,13 +938,13 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
           { key: 'price', label: 'Price', type: 'number', disabled: true },
           { key: 'status', label: 'Status', disabled: true },
           { key: 'type_id', label: 'Type', disabled: true },
-          { key: 'brand', label: 'Brand', disabled: true }
+          { key: 'brand', label: 'Brand', disabled: true },
         ]}
         data={selectedProduct || {}}
         config={{
           title: `Product Details: ${selectedProduct?.name || ''}`,
           submitLabel: 'Edit Product',
-          submitColor: 'primary'
+          submitColor: 'primary',
         }}
         onSubmit={async (data) => {
           // Handle edit action
@@ -984,8 +975,8 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
           </TooltipWrapper>
 
           {/* Bulk Operations FAB */}
-          <TooltipWrapper 
-            title="Bulk Operations" 
+          <TooltipWrapper
+            title="Bulk Operations"
             placement="left"
             disabled={selectedProducts.length === 0}
           >
@@ -1140,6 +1131,7 @@ const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
         </Paper>
       </Popover>
     </Box>
+    </ErrorBoundary>
   );
 });
 

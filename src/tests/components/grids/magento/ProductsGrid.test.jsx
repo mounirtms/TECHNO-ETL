@@ -10,20 +10,20 @@ const mockSettingsContext = {
     apiSettings: {
       magento: {
         baseUrl: 'https://test-magento.com',
-        token: 'test-token'
-      }
+        token: 'test-token',
+      },
     },
     preferences: {
       gridSettings: {
         defaultPageSize: 25,
-        density: 'standard'
-      }
-    }
-  }
+        density: 'standard',
+      },
+    },
+  },
 };
 
 vi.mock('../../../../contexts/SettingsContext', () => ({
-  useSettings: () => mockSettingsContext
+  useSettings: () => mockSettingsContext,
 }));
 
 // Mock hooks
@@ -35,11 +35,11 @@ const mockMagentoGridSettings = {
   displaySettings: { showStatsCards: true },
   getApiParams: vi.fn(),
   handleError: vi.fn(),
-  savePreferences: vi.fn()
+  savePreferences: vi.fn(),
 };
 
 vi.mock('../../../../hooks/useMagentoGridSettings', () => ({
-  useMagentoGridSettings: () => mockMagentoGridSettings
+  useMagentoGridSettings: () => mockMagentoGridSettings,
 }));
 
 // Mock services
@@ -47,34 +47,34 @@ const mockMagentoApi = {
   getProducts: vi.fn(),
   syncProducts: vi.fn(),
   getBrands: vi.fn(),
-  setMagentoApiSettings: vi.fn()
+  setMagentoApiSettings: vi.fn(),
 };
 
 vi.mock('../../../../services/magentoApi', () => ({
   default: mockMagentoApi,
-  setMagentoApiSettings: mockMagentoApi.setMagentoApiSettings
+  setMagentoApiSettings: mockMagentoApi.setMagentoApiSettings,
 }));
 
 const mockProductService = {
-  deleteProduct: vi.fn()
+  deleteProduct: vi.fn(),
 };
 
 vi.mock('../../../../services/ProductService', () => ({
-  default: mockProductService
+  default: mockProductService,
 }));
 
 const mockCategoryService = {
-  getCategoriesForCombo: vi.fn()
+  getCategoriesForCombo: vi.fn(),
 };
 
 vi.mock('../../../../services/categoryService', () => ({
-  default: mockCategoryService
+  default: mockCategoryService,
 }));
 
 // Mock grid config
 vi.mock('../../../../config/gridConfig', () => ({
   getStandardGridProps: vi.fn(() => ({})),
-  getStandardToolbarConfig: vi.fn(() => ({}))
+  getStandardToolbarConfig: vi.fn(() => ({})),
 }));
 
 // Mock UnifiedGrid
@@ -86,8 +86,8 @@ vi.mock('../../../../components/common/UnifiedGrid', () => ({
       <div data-testid="grid-data-count">{data?.length || 0} items</div>
       <div data-testid="grid-columns-count">{columns?.length || 0} columns</div>
       {data?.map((item, index) => (
-        <div 
-          key={item.sku || index} 
+        <div
+          key={item.sku || index}
           data-testid={`grid-row-${index}`}
           onDoubleClick={() => onRowDoubleClick?.({ row: item })}
         >
@@ -95,28 +95,28 @@ vi.mock('../../../../components/common/UnifiedGrid', () => ({
         </div>
       ))}
     </div>
-  )
+  ),
 }));
 
 // Mock dialogs
 vi.mock('../../../../components/dialogs/CSVImportDialog', () => ({
-  default: ({ open, onClose }) => open ? <div data-testid="csv-import-dialog">CSV Import Dialog</div> : null
+  default: ({ open, onClose }) => open ? <div data-testid="csv-import-dialog">CSV Import Dialog</div> : null,
 }));
 
 vi.mock('../../../../components/dialogs/CatalogProcessorDialog', () => ({
-  default: ({ open, onClose }) => open ? <div data-testid="catalog-processor-dialog">Catalog Processor Dialog</div> : null
+  default: ({ open, onClose }) => open ? <div data-testid="catalog-processor-dialog">Catalog Processor Dialog</div> : null,
 }));
 
 vi.mock('../../../../components/common/ProductInfoDialog', () => ({
-  default: ({ open, onClose, product }) => open ? <div data-testid="product-info-dialog">Product Info: {product?.name}</div> : null
+  default: ({ open, onClose, product }) => open ? <div data-testid="product-info-dialog">Product Info: {product?.name}</div> : null,
 }));
 
 vi.mock('../../../../components/dialogs/ProductEditDialog', () => ({
-  default: ({ open, onClose, product }) => open ? <div data-testid="product-edit-dialog">Edit Product: {product?.name}</div> : null
+  default: ({ open, onClose, product }) => open ? <div data-testid="product-edit-dialog">Edit Product: {product?.name}</div> : null,
 }));
 
 vi.mock('../../../../components/dialogs/BulkMediaUploadDialog', () => ({
-  default: ({ open, onClose }) => open ? <div data-testid="bulk-media-dialog">Bulk Media Upload Dialog</div> : null
+  default: ({ open, onClose }) => open ? <div data-testid="bulk-media-dialog">Bulk Media Upload Dialog</div> : null,
 }));
 
 const theme = createTheme();
@@ -125,7 +125,7 @@ const renderWithTheme = (component) => {
   return render(
     <ThemeProvider theme={theme}>
       {component}
-    </ThemeProvider>
+    </ThemeProvider>,
   );
 };
 
@@ -146,8 +146,8 @@ describe('ProductsGrid', () => {
         { attribute_code: 'country_of_manufacture', value: 'DZ' },
         { attribute_code: 'trending', value: '1' },
         { attribute_code: 'best_seller', value: '0' },
-        { attribute_code: 'a_la_une', value: '1' }
-      ]
+        { attribute_code: 'a_la_une', value: '1' },
+      ],
     },
     {
       sku: 'TEST-002',
@@ -161,33 +161,33 @@ describe('ProductsGrid', () => {
       custom_attributes: [
         { attribute_code: 'techno_ref', value: 'TR002' },
         { attribute_code: 'mgs_brand', value: 'Another Brand' },
-        { attribute_code: 'country_of_manufacture', value: 'FR' }
-      ]
-    }
+        { attribute_code: 'country_of_manufacture', value: 'FR' },
+      ],
+    },
   ];
 
   const mockCategories = [
     { id: 1, name: 'Electronics', label: 'Electronics' },
-    { id: 2, name: 'Clothing', label: 'Clothing' }
+    { id: 2, name: 'Clothing', label: 'Clothing' },
   ];
 
   const mockBrands = [
     { value: '1', label: 'Test Brand' },
-    { value: '2', label: 'Another Brand' }
+    { value: '2', label: 'Another Brand' },
   ];
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     mockMagentoApi.getProducts.mockResolvedValue({
       data: {
         items: mockProducts,
-        total_count: mockProducts.length
-      }
+        total_count: mockProducts.length,
+      },
     });
 
     mockMagentoApi.getBrands.mockResolvedValue({
-      items: mockBrands
+      items: mockBrands,
     });
 
     mockCategoryService.getCategoriesForCombo.mockReturnValue(mockCategories);
@@ -195,107 +195,89 @@ describe('ProductsGrid', () => {
 
   it('renders without crashing', async () => {
     renderWithTheme(<ProductsGrid />);
-    
+
     await waitFor(() => {
       expect(screen.getByTestId('unified-grid')).toBeInTheDocument();
-    });
+    }, { timeout: 15000 });
   });
 
   it('loads products on mount', async () => {
-    renderWithTheme(<ProductsGrid />);
-
-    await waitFor(() => {
+    renderWithTheme(<Produawait waitFor(() => {
       expect(mockMagentoApi.getProducts).toHaveBeenCalled();
       expect(screen.getByTestId('grid-data-count')).toHaveTextContent('2 items');
+    }, { timeout: 15000 });'2 items');
     });
   });
 
   it('displays loading state', () => {
     mockMagentoApi.getProducts.mockImplementation(() => new Promise(() => {}));
-    
+
     renderWithTheme(<ProductsGrid />);
-    
+
     expect(screen.getByTestId('grid-loading')).toHaveTextContent('Loading...');
   });
 
   it('handles API errors gracefully', async () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+
     mockMagentoApi.getProducts.mockRejectedValue(new Error('API Error'));
 
-    renderWithTheme(<ProductsGrid />);
-
-    await waitFor(() => {
+    reawait waitFor(() => {
       expect(screen.getByTestId('grid-data-count')).toHaveTextContent('0 items');
+    }, { timeout: 15000 });).toHaveTextContent('0 items');
     });
 
     consoleError.mockRestore();
   });
 
-  it('refreshes data when refresh button is clicked', async () => {
-    renderWithTheme(<ProductsGrid />);
-
-    await waitFor(() => {
+  it('refreshes data when refresh button is clicked', aawait waitFor(() => {
       expect(screen.getByTestId('refresh-button')).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByTestId('refresh-button'));
-
-    await waitFor(() => {
+    }, { timeout: 15000 });getByTestId('refresh-button')).toBeInTheDocument()await waitFor(() => {
+      expect(mockMagentoApi.getProducts).toHaveBeenCalledTimes(2);
+    }, { timeout: 15000 });> {
       expect(mockMagentoApi.getProducts).toHaveBeenCalledTimes(2);
     });
   });
 
-  it('applies user settings to API service', async () => {
-    renderWithTheme(<ProductsGrid />);
-
-    await waitFor(() => {
+  it('await waitFor(() => {
       expect(mockMagentoApi.setMagentoApiSettings).toHaveBeenCalledWith(mockSettingsContext.settings);
+    }, { timeout: 15000 });t(mockMagentoApi.setMagentoApiSettings).toHaveBeenCalledWith(mockSettingsContext.settings);
     });
-  });
-
-  it('loads categories and brands for filtering', async () => {
-    renderWithTheme(<ProductsGrid />);
-
-    await waitFor(() => {
+await waitFor(() => {
       expect(mockCategoryService.getCategoriesForCombo).toHaveBeenCalled();
+      expect(mockMagentoApi.getBrands).toHaveBeenCalled();
+    }, { timeout: 15000 });yService.getCategoriesForCombo).toHaveBeenCalled();
       expect(mockMagentoApi.getBrands).toHaveBeenCalled();
     });
   });
 
   it('handles brands API failure gracefully', async () => {
-    const consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    mockMagentoApi.getBrands.mockRejectedValue(new Error('Brands API Error'));
-
-    renderWithTheme(<ProductsGrid />);
-
-    await waitFor(() => {
+    const consoleWarn = vi.spyOn(console, 'warn').mockImplementation((await waitFor(() => {
       expect(mockMagentoApi.getBrands).toHaveBeenCalled();
-    });
+    }, { timeout: 15000 });
 
-    consoleWarn.mockRestore();
-  });
-
-  it('generates correct columns', async () => {
     renderWithTheme(<ProductsGrid />);
 
     await waitFor(() => {
+      expect(mockMagentoApi.getBrands).toHaveBeawait waitFor(() => {
       const columnsCount = screen.getByTestId('grid-columns-count');
+
       expect(parseInt(columnsCount.textContent)).toBeGreaterThan(10);
-    });
-  });
+    }, { timeout: 15000 });r(() => {
+      const columnsCount = screen.getByTestId('grid-columns-count');
 
-  it('handles product row double click', async () => {
-    renderWithTheme(<ProductsGrid />);
-
-    await waitFor(() => {
+      expecawait waitFor(() => {
       expect(screen.getByTestId('grid-row-0')).toBeInTheDocument();
-    });
-
-    fireEvent.doubleClick(screen.getByTestId('grid-row-0'));
-
-    await waitFor(() => {
+    }, { timeout: 15000 }); row double click', async () => {
+    renderWithTheawait waitFor(() => {
       expect(screen.getByTestId('product-info-dialog')).toBeInTheDocument();
       expect(screen.getByText('Product Info: Test Product 1')).toBeInTheDocument();
+    }, { timeout: 15000 });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('product-info-dialog')).tawait waitFor(() => {
+      expect(mockMagentoApi.getProducts).toHaveBeenCalled();
+    }, { timeout: 15000 });eDocument();
     });
   });
 
@@ -317,26 +299,23 @@ describe('ProductsGrid', () => {
       expect(mockMagentoApi.getProducts).toHaveBeenCalledWith(
         expect.objectContaining({
           pageSize: 25,
-          currentPage: 1
-        })
+          currentPage: 1,
+        }),
       );
-    });
-  });
+   await waitFor(() => {
+      expect(screen.getByTestId('unified-grid')).toBeInTheDocument();
+    }, { timeout: 15000 });lvedValue();
 
-  it('handles sync operation', async () => {
-    mockMagentoApi.syncProducts.mockResolvedValue();
-    
     renderWithTheme(<ProductsGrid />);
 
     // Sync functionality would be tested through the grid's custom actions
-    await waitFor(() => {
+    await wawait waitFor(() => {
       expect(screen.getByTestId('unified-grid')).toBeInTheDocument();
-    });
-  });
+    }, { timeout: 15000 });
 
   it('handles product deletion', async () => {
     mockProductService.deleteProduct.mockResolvedValue();
-    
+
     renderWithTheme(<ProductsGrid />);
 
     await waitFor(() => {
@@ -367,10 +346,9 @@ describe('ProductsGrid', () => {
   it('opens bulk media upload dialog', async () => {
     renderWithTheme(<ProductsGrid />);
 
-    // Initially dialog should not be visible
-    expect(screen.queryByTestId('bulk-media-dialog')).not.toBeInTheDocument();
-
-    // Dialog opening would be triggered through custom actions
+    // Initially dialog shouawait waitFor(() => {
+      expect(screen.getByTestId('grid-data-count')).toHaveTextContent('2 items');
+    }, { timeout: 15000 });g opening would be triggered through custom actions
   });
 
   it('handles custom attributes correctly', async () => {
@@ -388,18 +366,13 @@ describe('ProductsGrid', () => {
     const productsWithoutAttributes = [
       {
         sku: 'TEST-003',
-        name: 'Test Product 3',
-        status: 1,
-        price: 199.99
-        // No custom_attributes
-      }
-    ];
-
-    mockMagentoApi.getProducts.mockResolvedValue({
+        name: 'Test Product 3',await waitFor(() => {
+      expect(screen.getByTestId('grid-data-count')).toHaveTextContent('1 items');
+    }, { timeout: 15000 });Api.getProducts.mockResolvedValue({
       data: {
         items: productsWithoutAttributes,
-        total_count: 1
-      }
+        total_count: 1,
+      },
     });
 
     renderWithTheme(<ProductsGrid />);

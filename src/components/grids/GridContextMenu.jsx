@@ -6,7 +6,7 @@ import {
   ListItemText,
   Divider,
   Typography,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -19,7 +19,7 @@ import {
   ContentCut as CutIcon,
   Info as InfoIcon,
   Share as ShareIcon,
-  Print as PrintIcon
+  Print as PrintIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
@@ -34,7 +34,7 @@ const GridContextMenu = ({
   enableI18n = true,
   isRTL = false,
   selectedRows = [],
-  onAction
+  onAction,
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -51,7 +51,7 @@ const GridContextMenu = ({
     cut: { icon: CutIcon, label: 'Cut', enabled: true },
     info: { icon: InfoIcon, label: 'Information', enabled: true },
     share: { icon: ShareIcon, label: 'Share', enabled: true },
-    print: { icon: PrintIcon, label: 'Print', enabled: true }
+    print: { icon: PrintIcon, label: 'Print', enabled: true },
   };
 
   // Merge with custom actions
@@ -77,6 +77,7 @@ const GridContextMenu = ({
     if (typeof actionConfig.enabled === 'function') {
       return actionConfig.enabled(contextMenu?.rowData, contextMenu?.rowId, selectedRows);
     }
+
     return actionConfig.enabled !== false;
   }, [contextMenu, selectedRows]);
 
@@ -86,12 +87,12 @@ const GridContextMenu = ({
     clipboard: ['copy', 'cut', 'paste'],
     export: ['export', 'share', 'print'],
     info: ['info'],
-    danger: ['delete']
+    danger: ['delete'],
   };
 
   const renderActionGroup = useCallback((actionKeys, showDivider = false) => {
     const validActions = actionKeys.filter(key => allActions[key]);
-    
+
     if (validActions.length === 0) return null;
 
     return (
@@ -101,7 +102,7 @@ const GridContextMenu = ({
           const actionConfig = allActions[actionKey];
           const IconComponent = actionConfig.icon;
           const isEnabled = isActionEnabled(actionConfig);
-          
+
           return (
             <MenuItem
               key={actionKey}
@@ -110,27 +111,27 @@ const GridContextMenu = ({
               sx={{
                 color: actionConfig.color === 'error' ? theme.palette.error.main : 'inherit',
                 '&:hover': {
-                  backgroundColor: actionConfig.color === 'error' 
-                    ? theme.palette.error.light + '20' 
-                    : theme.palette.action.hover
-                }
+                  backgroundColor: actionConfig.color === 'error'
+                    ? theme.palette.error.light + '20'
+                    : theme.palette.action.hover,
+                },
               }}
             >
-              <ListItemIcon sx={{ 
+              <ListItemIcon sx={{
                 color: 'inherit',
                 minWidth: isRTL ? 'auto' : 36,
                 marginRight: isRTL ? 0 : 1,
-                marginLeft: isRTL ? 1 : 0
+                marginLeft: isRTL ? 1 : 0,
               }}>
                 <IconComponent fontSize="small" />
               </ListItemIcon>
-              <ListItemText 
+              <ListItemText
                 primary={translate(actionKey, actionConfig.label)}
-                sx={{ 
+                sx={{
                   textAlign: isRTL ? 'right' : 'left',
                   '& .MuiListItemText-primary': {
-                    fontSize: '0.875rem'
-                  }
+                    fontSize: '0.875rem',
+                  },
                 }}
               />
             </MenuItem>
@@ -154,14 +155,14 @@ const GridContextMenu = ({
       }
       transformOrigin={{
         vertical: 'top',
-        horizontal: isRTL ? 'right' : 'left'
+        horizontal: isRTL ? 'right' : 'left',
       }}
       PaperProps={{
         sx: {
           minWidth: 180,
           maxWidth: 250,
-          direction: isRTL ? 'rtl' : 'ltr'
-        }
+          direction: isRTL ? 'rtl' : 'ltr',
+        },
       }}
     >
       {/* Context Menu Header */}
@@ -200,31 +201,31 @@ const GridContextMenu = ({
             .map(([actionKey, actionConfig]) => {
               const IconComponent = actionConfig.icon;
               const isEnabled = isActionEnabled(actionConfig);
-              
+
               return (
                 <MenuItem
                   key={actionKey}
                   onClick={() => handleActionClick(actionKey, actionConfig)}
                   disabled={!isEnabled}
                   sx={{
-                    color: actionConfig.color === 'error' ? theme.palette.error.main : 'inherit'
+                    color: actionConfig.color === 'error' ? theme.palette.error.main : 'inherit',
                   }}
                 >
-                  <ListItemIcon sx={{ 
+                  <ListItemIcon sx={{
                     color: 'inherit',
                     minWidth: isRTL ? 'auto' : 36,
                     marginRight: isRTL ? 0 : 1,
-                    marginLeft: isRTL ? 1 : 0
+                    marginLeft: isRTL ? 1 : 0,
                   }}>
                     <IconComponent fontSize="small" />
                   </ListItemIcon>
-                  <ListItemText 
+                  <ListItemText
                     primary={actionConfig.label}
-                    sx={{ 
+                    sx={{
                       textAlign: isRTL ? 'right' : 'left',
                       '& .MuiListItemText-primary': {
-                        fontSize: '0.875rem'
-                      }
+                        fontSize: '0.875rem',
+                      },
                     }}
                   />
                 </MenuItem>

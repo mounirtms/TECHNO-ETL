@@ -15,7 +15,7 @@ import {
   Collapse,
   Chip,
   Tooltip,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import {
   FilterList as FilterIcon,
@@ -24,7 +24,7 @@ import {
   Clear as ClearIcon,
   Business as BranchIcon,
   Source as SourceIcon,
-  ChangeCircle as ChangedIcon
+  ChangeCircle as ChangedIcon,
 } from '@mui/icons-material';
 
 /**
@@ -45,13 +45,14 @@ const MDMFilterPanel = ({
   showChangedOnly,
   onShowChangedOnlyChange,
   isExpanded = false,
-  onToggleExpanded
+  onToggleExpanded,
 }) => {
   const theme = useTheme();
   const [localExpanded, setLocalExpanded] = useState(isExpanded);
 
   const handleToggle = () => {
     const newExpanded = !localExpanded;
+
     setLocalExpanded(newExpanded);
     if (onToggleExpanded) {
       onToggleExpanded(newExpanded);
@@ -68,11 +69,11 @@ const MDMFilterPanel = ({
   const filterCount = [
     succursaleFilter !== '16',
     sourceFilter !== 'all',
-    showChangedOnly
+    showChangedOnly,
   ].filter(Boolean).length;
 
   return (
-    <Paper 
+    <Paper
       elevation={0}
       sx={{
         mb: 1, // Less margin for compactness
@@ -97,9 +98,9 @@ const MDMFilterPanel = ({
           cursor: 'pointer',
           minHeight: 36, // More compact
           '&:hover': {
-            backgroundColor: theme.palette.action.hover
+            backgroundColor: theme.palette.action.hover,
           },
-          transition: 'background-color 0.2s ease'
+          transition: 'background-color 0.2s ease',
         }}
         onClick={handleToggle}
       >
@@ -109,20 +110,20 @@ const MDMFilterPanel = ({
             Filters
           </Typography>
           {filterCount > 0 && (
-            <Chip 
-              label={filterCount} 
-              size="small" 
-              color="primary" 
+            <Chip
+              label={filterCount}
+              size="small"
+              color="primary"
               sx={{ minWidth: 24, height: 20 }}
             />
           )}
         </Box>
-        
+
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {hasActiveFilters && (
             <Tooltip title="Clear all filters">
-              <IconButton 
-                size="small" 
+              <IconButton
+                size="small"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleClearFilters();
@@ -147,8 +148,8 @@ const MDMFilterPanel = ({
             alignItems: 'center',
             '@media (max-width: 768px)': {
               flexDirection: 'column',
-              alignItems: 'stretch'
-            }
+              alignItems: 'stretch',
+            },
           }}>
 
             {/* Branch Filter - Enhanced Combobox */}
@@ -156,7 +157,7 @@ const MDMFilterPanel = ({
               size="small"
               sx={{
                 minWidth: 180,
-                '@media (max-width: 768px)': { minWidth: '100%' }
+                '@media (max-width: 768px)': { minWidth: '100%' },
               }}
             >
               <InputLabel
@@ -165,7 +166,7 @@ const MDMFilterPanel = ({
                   display: 'flex',
                   alignItems: 'center',
                   fontSize: '0.875rem',
-                  fontWeight: 500
+                  fontWeight: 500,
                 }}
               >
                 <BranchIcon fontSize="small" sx={{ mr: 0.5 }} />
@@ -180,8 +181,8 @@ const MDMFilterPanel = ({
                   '& .MuiSelect-select': {
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 1
-                  }
+                    gap: 1,
+                  },
                 }}
               >
                 {succursaleOptions.map((option) => (
@@ -192,7 +193,7 @@ const MDMFilterPanel = ({
                       display: 'flex',
                       alignItems: 'center',
                       gap: 1,
-                      py: 1
+                      py: 1,
                     }}
                   >
                     <BranchIcon fontSize="small" color="primary" />
@@ -207,7 +208,7 @@ const MDMFilterPanel = ({
               size="small"
               sx={{
                 minWidth: 180,
-                '@media (max-width: 768px)': { minWidth: '100%' }
+                '@media (max-width: 768px)': { minWidth: '100%' },
               }}
             >
               <InputLabel
@@ -216,7 +217,7 @@ const MDMFilterPanel = ({
                   display: 'flex',
                   alignItems: 'center',
                   fontSize: '0.875rem',
-                  fontWeight: 500
+                  fontWeight: 500,
                 }}
               >
                 <SourceIcon fontSize="small" sx={{ mr: 0.5 }} />
@@ -231,8 +232,8 @@ const MDMFilterPanel = ({
                   '& .MuiSelect-select': {
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 1
-                  }
+                    gap: 1,
+                  },
                 }}
               >
                 {sourceFilterOptions.map((option) => (
@@ -243,7 +244,7 @@ const MDMFilterPanel = ({
                       display: 'flex',
                       alignItems: 'center',
                       gap: 1,
-                      py: 1
+                      py: 1,
                     }}
                   >
                     <SourceIcon fontSize="small" color="secondary" />
@@ -275,8 +276,8 @@ const MDMFilterPanel = ({
                 ml: 1,
                 '@media (max-width: 768px)': {
                   ml: 0,
-                  justifyContent: 'center'
-                }
+                  justifyContent: 'center',
+                },
               }}
             />
           </Box>

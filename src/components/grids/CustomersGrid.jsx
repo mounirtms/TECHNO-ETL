@@ -20,7 +20,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Alert
+  Alert,
 } from '@mui/material';
 import {
   Person as PersonIcon,
@@ -30,7 +30,7 @@ import {
   Search as SearchIcon,
   Add as AddIcon,
   Edit as EditIcon,
-  Delete as DeleteIcon
+  Delete as DeleteIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
@@ -45,7 +45,7 @@ const mockCustomers = [
     status: 'active',
     orders: 15,
     totalSpent: '$2,450.00',
-    avatar: null
+    avatar: null,
   },
   {
     id: 2,
@@ -56,7 +56,7 @@ const mockCustomers = [
     status: 'active',
     orders: 8,
     totalSpent: '$1,230.00',
-    avatar: null
+    avatar: null,
   },
   {
     id: 3,
@@ -67,8 +67,8 @@ const mockCustomers = [
     status: 'inactive',
     orders: 3,
     totalSpent: '$567.00',
-    avatar: null
-  }
+    avatar: null,
+  },
 ];
 
 const CustomersGrid = ({
@@ -78,7 +78,7 @@ const CustomersGrid = ({
   initialStatus = 'all',
   initialView = 'grid',
   initialSortBy = 'name',
-  dashboardParams = {}
+  dashboardParams = {},
 }) => {
   const { t } = useTranslation();
   const [customers, setCustomers] = useState(mockCustomers);
@@ -92,7 +92,7 @@ const CustomersGrid = ({
     console.log('CustomersGrid: Setting initial state from props:', {
       initialStatus,
       initialSortBy,
-      dashboardParams
+      dashboardParams,
     });
     setStatusFilter(initialStatus);
     setSortBy(initialSortBy);
@@ -108,23 +108,24 @@ const CustomersGrid = ({
     return matchesSearch && matchesStatus;
   }).sort((a, b) => {
     switch (sortBy) {
-      case 'name':
-        return a.name.localeCompare(b.name);
-      case 'email':
-        return a.email.localeCompare(b.email);
-      case 'orders':
-        return b.orders - a.orders;
-      case 'spent':
-        return parseFloat(b.totalSpent.replace('$', '').replace(',', '')) -
+    case 'name':
+      return a.name.localeCompare(b.name);
+    case 'email':
+      return a.email.localeCompare(b.email);
+    case 'orders':
+      return b.orders - a.orders;
+    case 'spent':
+      return parseFloat(b.totalSpent.replace('$', '').replace(',', '')) -
                parseFloat(a.totalSpent.replace('$', '').replace(',', ''));
-      default:
-        return 0;
+    default:
+      return 0;
     }
   });
 
   // Update badge count for active customers
   useEffect(() => {
     const activeCustomers = customers.filter(c => c.status === 'active').length;
+
     onBadgeUpdate?.(activeCustomers);
   }, [customers, onBadgeUpdate]);
 
@@ -183,7 +184,7 @@ const CustomersGrid = ({
               <InputAdornment position="start">
                 <SearchIcon />
               </InputAdornment>
-            )
+            ),
           }}
           sx={{ flex: 1 }}
         />

@@ -17,7 +17,7 @@ class MagentoGridErrorBoundary extends React.Component {
       hasError: false,
       error: null,
       errorInfo: null,
-      showDetails: false
+      showDetails: false,
     };
   }
 
@@ -28,7 +28,7 @@ class MagentoGridErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     this.setState({
       error,
-      errorInfo
+      errorInfo,
     });
 
     // Use settings-aware error handling
@@ -46,7 +46,7 @@ class MagentoGridErrorBoundary extends React.Component {
         gridType: this.props.gridType,
         error: error.message,
         stack: error.stack,
-        componentStack: errorInfo.componentStack
+        componentStack: errorInfo.componentStack,
       });
     }
   }
@@ -56,7 +56,7 @@ class MagentoGridErrorBoundary extends React.Component {
       hasError: false,
       error: null,
       errorInfo: null,
-      showDetails: false
+      showDetails: false,
     });
 
     // Call retry callback if provided
@@ -67,7 +67,7 @@ class MagentoGridErrorBoundary extends React.Component {
 
   toggleDetails = () => {
     this.setState(prevState => ({
-      showDetails: !prevState.showDetails
+      showDetails: !prevState.showDetails,
     }));
   };
 
@@ -84,7 +84,7 @@ class MagentoGridErrorBoundary extends React.Component {
             flexDirection: 'column',
             alignItems: 'center',
             minHeight: 400,
-            justifyContent: 'center'
+            justifyContent: 'center',
           }}
         >
           <Alert
@@ -118,7 +118,7 @@ class MagentoGridErrorBoundary extends React.Component {
               {gridType} Grid Error
             </Typography>
             <Typography variant="body2">
-              Something went wrong while loading the {gridType.toLowerCase()} grid. 
+              Something went wrong while loading the {gridType.toLowerCase()} grid.
               Please try refreshing or contact support if the problem persists.
             </Typography>
           </Alert>
@@ -129,13 +129,13 @@ class MagentoGridErrorBoundary extends React.Component {
                 <Typography variant="subtitle2" gutterBottom>
                   Error Details:
                 </Typography>
-                <Typography variant="body2" component="pre" sx={{ 
+                <Typography variant="body2" component="pre" sx={{
                   fontSize: '0.75rem',
                   overflow: 'auto',
                   maxHeight: 200,
                   backgroundColor: 'rgba(0,0,0,0.05)',
                   p: 1,
-                  borderRadius: 1
+                  borderRadius: 1,
                 }}>
                   {this.state.error?.message || 'Unknown error'}
                   {this.state.error?.stack && (
@@ -177,7 +177,7 @@ export const useMagentoGridErrorHandler = (gridType, userSettings) => {
 export const withMagentoGridErrorBoundary = (WrappedComponent, gridType) => {
   const EnhancedComponent = (props) => {
     return (
-      <MagentoGridErrorBoundary 
+      <MagentoGridErrorBoundary
         gridType={gridType}
         userSettings={props.userSettings}
         onRetry={props.onRetry}
@@ -188,7 +188,7 @@ export const withMagentoGridErrorBoundary = (WrappedComponent, gridType) => {
   };
 
   EnhancedComponent.displayName = `withMagentoGridErrorBoundary(${WrappedComponent.displayName || WrappedComponent.name})`;
-  
+
   return EnhancedComponent;
 };
 

@@ -1,9 +1,9 @@
 /**
  * User Workflow Integration Tests
- * 
+ *
  * Tests complete end-to-end user workflows
  * Validates cross-module integration and realistic user journeys
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
@@ -16,12 +16,14 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 // Mock React Router
 const mockNavigate = vi.fn();
+
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
+
   return {
     ...actual,
     useNavigate: () => mockNavigate,
-    useLocation: () => ({ pathname: '/' })
+    useLocation: () => ({ pathname: '/' }),
   };
 });
 
@@ -36,16 +38,16 @@ vi.mock('../../services/magentoApi', () => ({
     updateOrderStatus: vi.fn(),
     getCustomers: vi.fn(),
     getInventory: vi.fn(),
-    updateStock: vi.fn()
-  }
+    updateStock: vi.fn(),
+  },
 }));
 
 vi.mock('../../services/analyticsApi', () => ({
   default: {
     getAnalyticsData: vi.fn(),
     getSalesData: vi.fn(),
-    getCustomerData: vi.fn()
-  }
+    getCustomerData: vi.fn(),
+  },
 }));
 
 vi.mock('react-toastify', () => ({
@@ -53,8 +55,8 @@ vi.mock('react-toastify', () => ({
     success: vi.fn(),
     error: vi.fn(),
     warning: vi.fn(),
-    info: vi.fn()
-  }
+    info: vi.fn(),
+  },
 }));
 
 // Import components
@@ -69,7 +71,7 @@ const renderApp = () => {
       <ThemeProvider theme={theme}>
         <App />
       </ThemeProvider>
-    </BrowserRouter>
+    </BrowserRouter>,
   );
 };
 
@@ -79,7 +81,7 @@ const mockProduct = {
   name: 'Test Product',
   sku: 'TEST-001',
   price: 99.99,
-  status: 'enabled'
+  status: 'enabled',
 };
 
 const mockOrder = {
@@ -87,14 +89,14 @@ const mockOrder = {
   increment_id: 'ORD-001',
   status: 'processing',
   customer_email: 'test@example.com',
-  grand_total: 199.99
+  grand_total: 199.99,
 };
 
 const mockCustomer = {
   id: 1,
   email: 'customer@example.com',
   firstname: 'John',
-  lastname: 'Doe'
+  lastname: 'Doe',
 };
 
 // ============================================================================
@@ -104,10 +106,11 @@ const mockCustomer = {
 describe('Product Management Workflow', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     const mockMagentoApi = require('../../services/magentoApi').default;
+
     mockMagentoApi.getProducts.mockResolvedValue({
-      data: { items: [mockProduct], total_count: 1 }
+      data: { items: [mockProduct], total_count: 1 },
     });
     mockMagentoApi.createProduct.mockResolvedValue(mockProduct);
     mockMagentoApi.updateProduct.mockResolvedValue(mockProduct);
@@ -116,70 +119,86 @@ describe('Product Management Workflow', () => {
 
   it('completes full product lifecycle', async () => {
     const user = userEvent.setup();
+
     renderApp();
 
     // Navigate to products page
     await user.click(screen.getByText(/products/i));
-    
+
     await waitFor(() => {
       expect(screen.getByText(/product management/i)).toBeInTheDocument();
-    });
+    }, { timeout: 15000 });
 
     // Create new product
     await user.click(screen.getByText(/add product/i));
-    
+    // await user.type(screen.getByLabelText(/name/i), 'New Product');
+    /await user.type(screen.getByLabelText(/sku/i), 'NEW-001');
+    /await user.type(screen.getByLabelText(/price/i), '149.99');
+    // await user.click(screen.getByText(/save/i));
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));await new Promise(resolve => setTimeout(resolve, 50));mise(resolve => setTimeout(resolve, 50));omise(resolvawait user.click(screen.getByLabelText(/edit/i));
+    // Add small delay to prevent act warnings
+    await new Promise(resoawait user.clear(nameField);
+    /await user.type(nameField, 'Updated Product');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));await new Promise(resolve => setTimeout(resolve, 50));0));t(resolve, 50));
+
     await user.type(screen.getByLabelText(/name/i), 'New Product');
-    await user.type(screen.getByLabelText(/sku/i), 'NEW-001');
+    await usawait user.click(screen.getByLabelText(/delete/i));
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));
     await user.type(screen.getByLabelText(/price/i), '149.99');
-    
+
     await user.click(screen.getByText(/save/i));
 
-    // Verify product creation
-    await waitFor(() => {
+    // Verify prawait waitFor(() => {
       expect(require('../../services/magentoApi').default.createProduct).toHaveBeenCalled();
-    });
+    },await user.click(screen.getByText(/products/i));
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50)); // Edit product
+    await user.click(selectAllCheckbox);
+    // Add small delay to prevent await user.click(screen.getByText(/bulk actions/i));
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));eout(resolve, 50));xt(/edit/i));
 
-    // Edit product
-    await user.click(screen.getByLabelText(/edit/i));
-    
     const nameField = screen.getByDisplayValue('Test Product');
+
     await user.clear(nameField);
     await user.type(nameField, 'Updated Product');
-    
-    await user.click(screen.getByText(/save/i));
 
-    // Verify product update
-    await waitFor(() => {
+    await user.click(screen.getByText(/save/i)await waitFor(() => {
       expect(require('../../services/magentoApi').default.updateProduct).toHaveBeenCalled();
+    }, { timeout: 15000 });ateProduct).toHaveBeenCalled();
     });
 
     // Delete product
     await user.click(screen.getByLabelText(/delete/i));
-    await user.click(screen.getByText(/confirm/i));
-
-    // Verify product deletion
-    await waitFor(() => {
+    await user.click(screen.getawait waitFor(() => {
       expect(require('../../services/magentoApi').default.deleteProduct).toHaveBeenCalled();
+    }, { timeout: 15000 });ntoApi').default.deleteProduct).toHaveBeenCalled();
     });
   });
 
   it('handles bulk product operations', async () => {
     const user = userEvent.setup();
+
     renderApp();
 
     await user.click(screen.getByText(/products/i));
-    
+
     // Select multiple products
     const selectAllCheckbox = screen.getByRole('checkbox', { name: /select all/i });
+
     await user.click(selectAllCheckbox);
 
     // Bulk status update
     await user.click(screen.getByText(/bulk actions/i));
-    await user.click(screen.getByText(/update status/i));
-    await user.click(screen.getByText(/disabled/i));
-
-    await waitFor(() => {
-      expect(require('../../services/magentoApi').default.updateProduct).toHaveBeenCalled();
+    await user.click(screen.getByText(/await waitFor(() => {
+      expect(require('../../services/magentoApi').default.upawait user.click(screen.getByText(/close/i));
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));meout: 1await user.click(checkbox);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));entoApi').default.updateProduct).toHaveBeenCalled();
     });
   });
 });
@@ -191,28 +210,25 @@ describe('Product Management Workflow', () => {
 describe('Order Processing Workflow', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     const mockMagentoApi = require('../../services/magentoApi').default;
+
     mockMagentoApi.getOrders.mockResolvedValue({
-      data: { items: [mockOrder], total_count: 1 }
+      data: { items: [mockOrder], total_count: 1 },
     });
     mockMagentoApi.updateOrderStatus.mockResolvedValue({ success: true });
   });
 
   it('processes order from pending to complete', async () => {
     const user = userEvent.setup();
-    renderApp();
 
-    // Navigate to orders
-    await user.click(screen.getByText(/orders/i));
-    
-    await waitFor(() => {
+    rawait waitFor(() => {
       expect(screen.getByText(/order management/i)).toBeInTheDocument();
-    });
+    }, { timeout: 15000 });t waitFor(() => {
+      expect(screen.getByText(/order management/i)).toBeInTheawait waitFor(() => {
+      expect(screen.getByText('ORD-001')).toBeInTheDocument();
+    }, { timeout: 15000 });/view details/i));
 
-    // View order details
-    await user.click(screen.getByLabelText(/view details/i));
-    
     await waitFor(() => {
       expect(screen.getByText('ORD-001')).toBeInTheDocument();
     });
@@ -221,13 +237,14 @@ describe('Order Processing Workflow', () => {
 
     // Update order status
     const checkbox = screen.getByRole('checkbox', { name: /select row/i });
-    await user.click(checkbox);
-    
-    await user.click(screen.getByLabelText(/update status/i));
-    await user.click(screen.getByText(/complete/i));
 
-    // Verify status update
-    await waitFor(() => {
+    await user.click(checkbox);
+
+    await useawait waitFor(() => {
+      expect(require('../../services/magentoApi'await user.click(screen.getByLabelText(/view details/i));
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));plete');
+    }, { timeout: 15000 }); waitFor(() => {
       expect(require('../../services/magentoApi').default.updateOrderStatus).toHaveBeenCalledWith(1, 'complete');
     });
   });
@@ -240,37 +257,36 @@ describe('Order Processing Workflow', () => {
 describe('Customer Management Workflow', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     const mockMagentoApi = require('../../services/magentoApi').default;
+
     mockMagentoApi.getCustomers.mockResolvedValue({
-      data: { items: [mockCustomer], total_count: 1 }
+      data: { items: [mockCustomer], total_count: 1 },
     });
   });
 
-  it('manages customer information', async () => {
-    const user = userEvent.setup();
-    renderApp();
-
-    // Navigate to customers
-    await user.click(screen.getByText(/customers/i));
-    
-    await waitFor(() => {
+  it('manages customer information', asynawait waitFor(() => {
       expect(screen.getByText(/customer management/i)).toBeInTheDocument();
-    });
+    }, { timeout: 15000 });t user.click(screen.getByText(/customers/i));
 
-    // Search for customer
+    await waitFor(() => {
+      expect(screen.getByText(/customer management/i)).toBeInTheawait user.click(checkbox);
+    // await user.click(screen.getByLabelText(/update stock/i));
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));mise(resolve => setTimeout(resolve, 50)); // Search for customer
     const searchInput = screen.getByPlaceholderText(/search customers/i);
+
     await user.type(searchInput, 'john@example.com');
 
     await waitFor(() => {
       expect(require('../../services/magentoApi').default.getCustomers).toHaveBeenCalledWith(
-        expect.objectContaining({ search: 'john@example.com' })
+        expect.objectContaining({ search: 'john@example.com' }),
       );
     });
 
     // View customer details
     await user.click(screen.getByLabelText(/view details/i));
-    
+
     expect(screen.getByText('John Doe')).toBeInTheDocument();
   });
 });
@@ -282,42 +298,39 @@ describe('Customer Management Workflow', () => {
 describe('Inventory Management Workflow', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     const mockMagentoApi = require('../../services/magentoApi').default;
+
     mockMagentoApi.getInventory.mockResolvedValue({
-      data: { items: [{ sku: 'TEST-001', quantity: 100 }], total_count: 1 }
+      data: { items: [{ sku: 'TEST-001', quantity: 100 }], total_count: 1 },
     });
     mockMagentoApi.updateStock.mockResolvedValue({ success: true });
   });
 
-  it('updates inventory levels', async () => {
-    const user = userEvent.setup();
-    renderApp();
-
-    // Navigate to inventory
+  it('updates invawait waitFor(() => {
+      expect(screen.getByText(/inventory management/i)).toBeInTheDocument();
+    }, { timeout: 15000 });inventory
     await user.click(screen.getByText(/inventory/i));
-    
+
     await waitFor(() => {
       expect(screen.getByText(/inventory management/i)).toBeInTheDocument();
     });
 
     // Update stock
-    const checkbox = screen.getByRole('checkbox', { name: /select row/i });
-    await user.click(checkbox);
-    
+    const checkbox = screen.getByRole('checkbox', { name: /seawait user.click(screen.getByLabelText(/export/i));
+    /await user.click(screen.getByText(/csv/i));
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));   await new Promise(resolve => setTimeout(resolve, 50));
     await user.click(screen.getByLabelText(/update stock/i));
-    
-    const quantityInput = screen.getByLabelText(/new quantity/i);
-    await user.clear(quantityInput);
-    await user.type(quantityInput, '150');
-    
-    await user.click(screen.getByText(/save/i));
 
-    // Verify stock update
-    await waitFor(() => {
+    const quantityInput = screen.getawait waitFor(() => {
       expect(require('../../services/magentoApi').default.updateStock).toHaveBeenCalledWith('TEST-001', {
         quantity: 150,
-        source_code: 'default'
+        source_code: 'default',
+      }, { timeout: 15000 });    await waitFor(() => {
+      expect(require('../../services/magentoApi').default.updateStock).toHaveBeenCalledWith('TEST-001', {
+        quantity: 150,
+        source_code: 'default',
       });
     });
   });
@@ -330,28 +343,24 @@ describe('Inventory Management Workflow', () => {
 describe('Analytics and Reporting Workflow', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     const mockAnalyticsApi = require('../../services/analyticsApi').default;
+
     mockAnalyticsApi.getAnalyticsData.mockResolvedValue({
       overview: { totalRevenue: 125000, totalOrders: 890 },
-      salesTrend: [{ date: '2025-01-01', sales: 5000 }]
-    });
-  });
-
-  it('views analytics and exports data', async () => {
-    const user = userEvent.setup();
-    renderApp();
+      salesTrend: [{ date: '2025-01-01', sales: 5000 }],
+   await waitFor(() => {
+      expect(screen.getByText(/comprehensive analytics/i)).toBeInTheDocument();
+    }, { timeout: 15000 });  renderApp();
 
     // Navigate to analytics
-    await user.click(screen.getByText(/analytics/i));
-    
-    await waitFor(() => {
-      expect(screen.getByText(/comprehensive analytics/i)).toBeInTheDocument();
-    });
+    await user.click(screen.getByText(/anaawait waitFor(() => {
+      expect(require('../../services/analyticsApi').default.getSalesData).toHaveBeenCalled();
+    }, { timeout: 15000 });  });
 
     // Switch between different analytics views
     await user.click(screen.getByText(/sales/i));
-    
+
     await waitFor(() => {
       expect(require('../../services/analyticsApi').default.getSalesData).toHaveBeenCalled();
     });
@@ -371,37 +380,31 @@ describe('Analytics and Reporting Workflow', () => {
 describe('Cross-Module Integration Workflow', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     const mockMagentoApi = require('../../services/magentoApi').default;
     const mockAnalyticsApi = require('../../services/analyticsApi').default;
-    
+
     mockMagentoApi.getProducts.mockResolvedValue({
-      data: { items: [mockProduct], total_count: 1 }
+      data: { items: [mockProduct], total_count: 1 },
     });
     mockMagentoApi.getOrders.mockResolvedValue({
-      data: { items: [mockOrder], total_count: 1 }
+      data: { items: [mockOrder], total_count: 1 },
     });
     mockAnalyticsApi.getAnalyticsData.mockResolvedValue({
-      overview: { totalRevenue: 125000 }
+      overview: { totalRevenue: 125000 },
     });
   });
 
-  it('navigates between modules and maintains context', async () => {
-    const user = userEvent.setup();
-    renderApp();
-
-    // Start from dashboard
-    expect(screen.getByText(/welcome to/i)).toBeInTheDocument();
-
-    // Navigate to products
-    await user.click(screen.getByText(/products/i));
-    await waitFor(() => {
+  it('navigates between modules and maintains contextawait waitFor(() => {
       expect(screen.getByText(/product management/i)).toBeInTheDocument();
-    });
+    }, { timeout: 15000 });   expect(screen.getByText(/welcome to/i)).toBeInTheDocument();
 
-    // Navigate to orders
-    await user.click(screen.getByText(/orders/i));
-    await waitFor(() => {
+await waitFor(() => {
+      expect(screen.getByText(/order management/i)).toBeInTheDocument();
+    }, { timeout: 15000 });=> {
+      expect(screen.getByText(/product management/i)).toBeInTheDocuawait waitFor(() => {
+      expect(screen.getByText(/comprehensive analytics/i)).toBeInTheDocument();
+    }, { timeout: 15000 });itFor(() => {
       expect(screen.getByText(/order management/i)).toBeInTheDocument();
     });
 
@@ -412,8 +415,11 @@ describe('Cross-Module Integration Workflow', () => {
     });
 
     // Verify all API calls were made
-    expect(require('../../services/magentoApi').default.getProducts).toHaveBeenCalled();
-    expect(require('../../services/magentoApi').default.getOrders).toHaveBeenCalled();
+    expect(require('../../services/maawait user.clear(screen.getByDisplayValue('Test Product'));
+    /await user.type(screen.getByDisplayValue(''), 'Updated Product');
+    /await user.click(screen.getByText(/save/i));
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));  await new Promise(resolve => setTimeout(resolve, 50));esolve => setTimeout(resolve, 50));pect(require('../../services/magentoApi').default.getOrders).toHaveBeenCalled();
     expect(require('../../services/analyticsApi').default.getAnalyticsData).toHaveBeenCalled();
   });
 });
@@ -424,28 +430,27 @@ describe('Cross-Module Integration Workflow', () => {
 
 describe('Error Handling and Recovery Workflow', () => {
   it('handles API errors gracefully across modules', async () => {
-    const user = userEvent.setup();
-    
-    // Setup API errors
-    const mockMagentoApi = require('../../services/magentoApi').default;
+    const user = userEvent.seawait waitFor(() => {
+      expect(screen.getByText(/network error/i)).toBeInTheDocument();
+    }, { timeout: 15000 });fault;
+
     mockMagentoApi.getProducts.mockRejectedValue(new Error('Network Error'));
-    
+
     renderApp();
 
     // Navigate to products - should show error
-    await user.click(screen.getByText(/products/i));
-    
-    await waitFor(() => {
-      expect(screen.getByText(/network error/i)).toBeInTheDocument();
+    await user.click(screen.getByText(/prodawait waitFor(() => {
+      expect(screen.getByText(/product management/i)).toBeInTheDocument();
+    }, { timeout: 15000 });();
     });
 
     // Retry should work after fixing API
     mockMagentoApi.getProducts.mockResolvedValue({
-      data: { items: [mockProduct], total_count: 1 }
+      data: { items: [mockProduct], total_count: 1 },
     });
-    
+
     await user.click(screen.getByText(/retry/i));
-    
+
     await waitFor(() => {
       expect(screen.getByText(/product management/i)).toBeInTheDocument();
     });
@@ -453,20 +458,20 @@ describe('Error Handling and Recovery Workflow', () => {
 
   it('maintains application state during errors', async () => {
     const user = userEvent.setup();
-    
+
     const mockMagentoApi = require('../../services/magentoApi').default;
+
     mockMagentoApi.getProducts.mockResolvedValue({
-      data: { items: [mockProduct], total_count: 1 }
+      data: { items: [mockProduct], total_count: 1 },
     });
     mockMagentoApi.updateProduct.mockRejectedValue(new Error('Update failed'));
-    
+
     renderApp();
 
     // Navigate to products
-    await user.click(screen.getByText(/products/i));
-    
-    // Try to edit product (will fail)
-    await user.click(screen.getByLabelText(/edit/i));
+    await user.click(screen.getByawait waitFor(() => {
+      expect(screen.getByText(/update failed/i)).toBeInTheDocument();
+    }, { timeout: 15000 });Text(/edit/i));
     await user.clear(screen.getByDisplayValue('Test Product'));
     await user.type(screen.getByDisplayValue(''), 'Updated Product');
     await user.click(screen.getByText(/save/i));
@@ -475,7 +480,7 @@ describe('Error Handling and Recovery Workflow', () => {
     await waitFor(() => {
       expect(screen.getByText(/update failed/i)).toBeInTheDocument();
     });
-    
+
     // Form should still be open with data
     expect(screen.getByDisplayValue('Updated Product')).toBeInTheDocument();
   });

@@ -12,15 +12,15 @@ jest.mock('../components/Layout/MenuTree.js', () => ({
       id: 'Dashboard',
       label: 'Dashboard',
       path: '/dashboard',
-      permissions: []
+      permissions: [],
     },
     {
       id: 'ProductsGrid',
       label: 'Products',
       path: '/products',
-      permissions: ['products:view']
-    }
-  ]
+      permissions: ['products:view'],
+    },
+  ],
 }));
 
 // Mock components
@@ -39,19 +39,19 @@ jest.mock('../components/grids/magento/ProductsGrid.jsx', () => {
 // Test component that uses TabContext
 function TestComponent() {
   const { tabs, activeTab, openTab, closeTab, canOpenTab } = useTab();
-  
+
   return (
     <div>
       <div data-testid="active-tab">{activeTab}</div>
       <div data-testid="tab-count">{tabs.length}</div>
-      <button 
-        data-testid="open-products" 
+      <button
+        data-testid="open-products"
         onClick={() => openTab('ProductsGrid')}
       >
         Open Products
       </button>
-      <button 
-        data-testid="close-products" 
+      <button
+        data-testid="close-products"
         onClick={() => closeTab('ProductsGrid')}
       >
         Close Products
@@ -88,7 +88,7 @@ describe('TabContext', () => {
     render(
       <TestWrapper>
         <TestComponent />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     await waitFor(() => {
@@ -101,7 +101,7 @@ describe('TabContext', () => {
     render(
       <TestWrapper>
         <TestComponent />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     await waitFor(() => {
@@ -120,7 +120,7 @@ describe('TabContext', () => {
     render(
       <TestWrapper>
         <TestComponent />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // First open products tab
@@ -143,7 +143,7 @@ describe('TabContext', () => {
     render(
       <TestWrapper>
         <TestComponent />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     await waitFor(() => {
@@ -154,7 +154,7 @@ describe('TabContext', () => {
     // Try to close Dashboard - should not work
     const { closeTab } = useTab();
     const result = closeTab('Dashboard');
-    
+
     expect(result).toBe(false);
     expect(screen.getByTestId('tab-count')).toHaveTextContent('1');
   });
@@ -163,7 +163,7 @@ describe('TabContext', () => {
     render(
       <TestWrapper>
         <TestComponent />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     fireEvent.click(screen.getByTestId('open-products'));
@@ -174,9 +174,11 @@ describe('TabContext', () => {
 
     // Check if state was persisted
     const savedState = localStorage.getItem('techno-etl-tab-state');
+
     expect(savedState).toBeTruthy();
-    
+
     const parsedState = JSON.parse(savedState);
+
     expect(parsedState.tabs).toHaveLength(2);
     expect(parsedState.activeTab).toBe('ProductsGrid');
   });

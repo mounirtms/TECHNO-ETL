@@ -13,7 +13,7 @@ import {
   Visibility as ViewIcon,
   Delete as DeleteIcon,
   GetApp as ExportIcon,
-  Sync as SyncIcon
+  Sync as SyncIcon,
 } from '@mui/icons-material';
 // Unified Grid System
 import UnifiedGrid from '../../common/UnifiedGrid';
@@ -36,9 +36,9 @@ const CustomersGrid = () => {
     paginationSettings,
     getApiParams,
     handleError,
-    savePreferences
+    savePreferences,
   } = useMagentoGridSettings('magentoCustomers', {});
-  
+
   // Apply user settings to API service
   useEffect(() => {
     setMagentoApiSettings(settings);
@@ -53,11 +53,11 @@ const CustomersGrid = () => {
     totalCustomers: 0,
     activeCustomers: 0,
     inactiveCustomers: 0,
-    totalOrders: 0
+    totalOrders: 0,
   });
-  const [paginationModel, setPaginationModel] = useState({ 
-    page: 0, 
-    pageSize: paginationSettings.defaultPageSize 
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: paginationSettings.defaultPageSize,
   });
 
   // Dialog states
@@ -73,7 +73,7 @@ const CustomersGrid = () => {
       const apiParams = getApiParams({
         pageSize: paginationModel.pageSize,
         currentPage: paginationModel.page + 1,
-        ...filterParams
+        ...filterParams,
       });
 
       // Use settings-aware API method
@@ -81,19 +81,20 @@ const CustomersGrid = () => {
       // Handle {data: {items: []}} response structure
       const customersData = response?.data || response;
       const customers = customersData?.items || [];
+
       setData(customers);
-      
+
       // Calculate stats
       const totalCustomers = customers.length;
       const activeCustomers = customers.filter(c => c.is_active === 1).length;
       const inactiveCustomers = totalCustomers - activeCustomers;
       const totalOrders = customers.reduce((sum, c) => sum + (c.orders_count || 0), 0);
-      
+
       setStats({
         totalCustomers,
         activeCustomers,
         inactiveCustomers,
-        totalOrders
+        totalOrders,
       });
     } catch (error) {
       // Use settings-aware error handling
@@ -108,6 +109,7 @@ const CustomersGrid = () => {
   const handleView = useCallback((records) => {
     if (records.length === 1) {
       const customer = data.find(c => c.id === records[0]);
+
       setSelectedCustomer(customer);
       setViewDialogOpen(true);
     } else {
@@ -118,6 +120,7 @@ const CustomersGrid = () => {
   const handleEdit = useCallback((records) => {
     if (records.length === 1) {
       const customer = data.find(c => c.id === records[0]);
+
       setSelectedCustomer(customer);
       setEditDialogOpen(true);
     } else {
@@ -128,6 +131,7 @@ const CustomersGrid = () => {
   const handleDelete = useCallback(async (records) => {
     if (records.length === 0) {
       toast.warning('Please select customers to delete');
+
       return;
     }
 
@@ -157,6 +161,7 @@ const CustomersGrid = () => {
   const handleFilterChange = useCallback((newFilter) => {
     setCurrentFilter(newFilter);
     const filterParams = newFilter === 'all' ? {} : { is_active: newFilter === 'active' ? 1 : 0 };
+
     fetchCustomers(filterParams);
   }, [fetchCustomers]);
 
@@ -164,32 +169,32 @@ const CustomersGrid = () => {
   const columns = useMemo(() => [
     ColumnFactory.number('id', {
       headerName: 'ID',
-      width: 80
+      width: 80,
     }),
     ColumnFactory.text('firstname', {
       headerName: 'First Name',
-      width: 150
+      width: 150,
     }),
     ColumnFactory.text('lastname', {
       headerName: 'Last Name',
-      width: 150
+      width: 150,
     }),
     ColumnFactory.text('email', {
       headerName: 'Email',
-      width: 250
+      width: 250,
     }),
     ColumnFactory.boolean('is_active', {
       headerName: 'Status',
-      width: 120
+      width: 120,
     }),
     ColumnFactory.number('orders_count', {
       headerName: 'Orders',
-      width: 100
+      width: 100,
     }),
     ColumnFactory.dateTime('created_at', {
       headerName: 'Registered',
-      width: 180
-    })
+      width: 180,
+    }),
   ], []);
 
   // ===== 5. TOOLBAR CONFIGURATION =====
@@ -204,7 +209,7 @@ const CustomersGrid = () => {
     showSettings: true,
     showViewToggle: true,
     compact: false,
-    size: 'medium'
+    size: 'medium',
   };
 
   const customActions = [
@@ -214,15 +219,15 @@ const CustomersGrid = () => {
       icon: ViewIcon,
       color: 'primary',
       variant: 'outlined',
-      disabled: selectedRows.length !== 1
+      disabled: selectedRows.length !== 1,
     },
     {
       label: 'Sync Customers',
       onClick: handleSync,
       icon: SyncIcon,
       color: 'secondary',
-      variant: 'outlined'
-    }
+      variant: 'outlined',
+    },
   ];
 
   // ===== 6. CONTEXT MENU ACTIONS =====
@@ -234,7 +239,7 @@ const CustomersGrid = () => {
       onClick: (row) => {
         setSelectedCustomer(row);
         setViewDialogOpen(true);
-      }
+      },
     },
     edit: {
       enabled: true,
@@ -243,15 +248,15 @@ const CustomersGrid = () => {
       onClick: (row) => {
         setSelectedCustomer(row);
         setEditDialogOpen(true);
-      }
+      },
     },
     delete: {
       enabled: true,
       label: 'Delete Customer',
       icon: 'delete',
       onClick: (row) => handleDelete([row.id]),
-      color: 'error'
-    }
+      color: 'error',
+    },
   }), [handleDelete]);
 
   // ===== 7. STATS CARDS =====
@@ -260,33 +265,33 @@ const CustomersGrid = () => {
       title: 'Total Customers',
       value: stats.totalCustomers,
       icon: PersonIcon,
-      color: 'primary'
+      color: 'primary',
     },
     {
       title: 'Active',
       value: stats.activeCustomers,
       icon: ActiveIcon,
-      color: 'success'
+      color: 'success',
     },
     {
       title: 'Inactive',
       value: stats.inactiveCustomers,
       icon: InactiveIcon,
-      color: 'warning'
+      color: 'warning',
     },
     {
       title: 'Total Orders',
       value: stats.totalOrders,
       icon: ShoppingCartIcon,
-      color: 'info'
-    }
+      color: 'info',
+    },
   ];
 
   // ===== 8. FILTER OPTIONS =====
   const filterOptions = [
     { key: 'all', label: 'All Customers', value: 'all' },
     { key: 'active', label: 'Active Only', value: 'active' },
-    { key: 'inactive', label: 'Inactive Only', value: 'inactive' }
+    { key: 'inactive', label: 'Inactive Only', value: 'inactive' },
   ];
 
   // ===== 9. EFFECTS =====
@@ -299,7 +304,7 @@ const CustomersGrid = () => {
     <Box sx={{ height: '100%', width: '100%' }}>
       <UnifiedGrid
         {...getStandardGridProps('magentoCustomers', {
-          gridName: "CustomersGrid",
+          gridName: 'CustomersGrid',
           columns,
           data,
           loading,
@@ -333,7 +338,7 @@ const CustomersGrid = () => {
           getRowId: (row) => row.id,
 
           // Error handling
-          onError: (error) => toast.error(error.message)
+          onError: (error) => toast.error(error.message),
         })}
       />
 

@@ -21,7 +21,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Alert
+  Alert,
 } from '@mui/material';
 import {
   Warehouse as WarehouseIcon,
@@ -31,7 +31,7 @@ import {
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,
   Warning as WarningIcon,
-  CheckCircle as CheckCircleIcon
+  CheckCircle as CheckCircleIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
@@ -48,7 +48,7 @@ const mockInventory = [
     reorderPoint: 25,
     lastRestocked: '2024-01-10',
     trend: 'stable',
-    location: 'A-1-15'
+    location: 'A-1-15',
   },
   {
     id: 'INV-002',
@@ -61,7 +61,7 @@ const mockInventory = [
     reorderPoint: 20,
     lastRestocked: '2024-01-08',
     trend: 'decreasing',
-    location: 'B-2-08'
+    location: 'B-2-08',
   },
   {
     id: 'INV-003',
@@ -74,7 +74,7 @@ const mockInventory = [
     reorderPoint: 15,
     lastRestocked: '2023-12-20',
     trend: 'critical',
-    location: 'C-1-22'
+    location: 'C-1-22',
   },
   {
     id: 'INV-004',
@@ -87,7 +87,7 @@ const mockInventory = [
     reorderPoint: 15,
     lastRestocked: '2024-01-12',
     trend: 'increasing',
-    location: 'A-3-05'
+    location: 'A-3-05',
   },
   {
     id: 'INV-005',
@@ -100,23 +100,24 @@ const mockInventory = [
     reorderPoint: 30,
     lastRestocked: '2024-01-05',
     trend: 'critical',
-    location: 'D-1-10'
-  }
+    location: 'D-1-10',
+  },
 ];
 
 const getStockStatus = (currentStock, minStock, reorderPoint) => {
   if (currentStock === 0) return { status: 'out_of_stock', color: 'error', label: 'Out of Stock' };
   if (currentStock <= minStock) return { status: 'critical', color: 'error', label: 'Critical' };
   if (currentStock <= reorderPoint) return { status: 'low', color: 'warning', label: 'Low Stock' };
+
   return { status: 'good', color: 'success', label: 'Good' };
 };
 
 const getTrendIcon = (trend) => {
   switch (trend) {
-    case 'increasing': return <TrendingUpIcon fontSize="small" color="success" />;
-    case 'decreasing': return <TrendingDownIcon fontSize="small" color="warning" />;
-    case 'critical': return <WarningIcon fontSize="small" color="error" />;
-    default: return <CheckCircleIcon fontSize="small" color="action" />;
+  case 'increasing': return <TrendingUpIcon fontSize="small" color="success" />;
+  case 'decreasing': return <TrendingDownIcon fontSize="small" color="warning" />;
+  case 'critical': return <WarningIcon fontSize="small" color="error" />;
+  default: return <CheckCircleIcon fontSize="small" color="action" />;
   }
 };
 
@@ -129,7 +130,7 @@ const InventoryGrid = ({
   initialSortBy = 'name',
   showAlert = false,
   highlightLowStock = false,
-  dashboardParams = {}
+  dashboardParams = {},
 }) => {
   const { t } = useTranslation();
   const [inventory, setInventory] = useState(mockInventory);
@@ -144,7 +145,7 @@ const InventoryGrid = ({
       initialFilter,
       initialSortBy,
       highlightLowStock,
-      dashboardParams
+      dashboardParams,
     });
     setFilter(initialFilter);
     setSortBy(initialSortBy);
@@ -157,29 +158,32 @@ const InventoryGrid = ({
       item.warehouse.toLowerCase().includes(searchQuery.toLowerCase());
 
     let matchesFilter = true;
+
     if (filter === 'low-stock') {
       const status = getStockStatus(item.currentStock, item.minStock, item.reorderPoint);
+
       matchesFilter = status.status === 'critical' || status.status === 'low' || status.status === 'out_of_stock';
     } else if (filter === 'out-of-stock') {
       matchesFilter = item.currentStock === 0;
     } else if (filter === 'critical') {
       const status = getStockStatus(item.currentStock, item.minStock, item.reorderPoint);
+
       matchesFilter = status.status === 'critical';
     }
 
     return matchesSearch && matchesFilter;
   }).sort((a, b) => {
     switch (sortBy) {
-      case 'name':
-        return a.productName.localeCompare(b.productName);
-      case 'stock-level':
-        return a.currentStock - b.currentStock;
-      case 'warehouse':
-        return a.warehouse.localeCompare(b.warehouse);
-      case 'sku':
-        return a.sku.localeCompare(b.sku);
-      default:
-        return 0;
+    case 'name':
+      return a.productName.localeCompare(b.productName);
+    case 'stock-level':
+      return a.currentStock - b.currentStock;
+    case 'warehouse':
+      return a.warehouse.localeCompare(b.warehouse);
+    case 'sku':
+      return a.sku.localeCompare(b.sku);
+    default:
+      return 0;
     }
   });
 
@@ -187,8 +191,10 @@ const InventoryGrid = ({
   useEffect(() => {
     const lowStockItems = inventory.filter(item => {
       const status = getStockStatus(item.currentStock, item.minStock, item.reorderPoint);
+
       return status.status === 'critical' || status.status === 'low' || status.status === 'out_of_stock';
     }).length;
+
     onBadgeUpdate?.(lowStockItems);
   }, [inventory, onBadgeUpdate]);
 
@@ -246,7 +252,7 @@ const InventoryGrid = ({
               <InputAdornment position="start">
                 <SearchIcon />
               </InputAdornment>
-            )
+            ),
           }}
           sx={{ flex: 1 }}
         />

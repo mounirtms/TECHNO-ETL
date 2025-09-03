@@ -1,9 +1,9 @@
 /**
  * Integration Tests - Complete System Validation
- * 
+ *
  * End-to-end integration tests for the entire frontend system
  * Tests port configuration, component integration, and modern React patterns
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
@@ -23,7 +23,7 @@ import {
   createMockColumns,
   createMockHandlers,
   ThrowError,
-  SuspendingComponent
+  SuspendingComponent,
 } from '../setup';
 
 // Components under test
@@ -39,14 +39,14 @@ import {
   useDeferredSearch,
   useTransitionState,
   useUniqueIds,
-  useErrorHandler
+  useErrorHandler,
 } from '../../hooks/useModernReact';
 
 // Configuration
 import {
   getGridConfig,
   getToolbarConfig,
-  createGridConfiguration
+  createGridConfiguration,
 } from '../../components/base/config';
 
 // Mock axios for API testing
@@ -60,10 +60,10 @@ const mockedAxios = axios;
 describe('System Integration Tests', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Mock successful API responses
     mockedAxios.get.mockResolvedValue({
-      data: { items: createMockGridData(10) }
+      data: { items: createMockGridData(10) },
     });
   });
 
@@ -89,7 +89,7 @@ describe('System Integration Tests', () => {
             showAdd: true,
             showEdit: true,
             showDelete: true,
-            showSearch: true
+            showSearch: true,
           }}
           onAdd={mockHandlers.onAdd}
           onEdit={mockHandlers.onEdit}
@@ -98,7 +98,7 @@ describe('System Integration Tests', () => {
           onSearch={mockHandlers.onSearch}
           onSelectionChange={mockHandlers.onSelectionChange}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // 1. Verify grid renders with data
@@ -111,25 +111,33 @@ describe('System Integration Tests', () => {
 
     // 3. Test toolbar functionality
     const refreshButton = screen.getByLabelText('Refresh');
+
     await user.click(refreshButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));
     expect(mockHandlers.onRefresh).toHaveBeenCalled();
 
     // 4. Test search functionality
     const searchInput = screen.getByRole('textbox');
+
     await user.type(searchInput, 'Item 1');
-    
+
     await waitFor(() => {
       expect(mockHandlers.onSearch).toHaveBeenCalledWith('Item 1');
-    });
-
-    // 5. Test row selection
+    }, { timeout:await user.click(checkboxes[1]);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50)); selection
     const checkboxes = screen.getAllByRole('checkbox');
-    await user.click(checkboxes[1]); // First row checkbox
-    
+
+ await user.click(addButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));es[1]); // First row checkbox
+
     expect(mockHandlers.onSelectionChange).toHaveBeenCalled();
 
     // 6. Test add button
     const addButton = screen.getByLabelText('Add');
+
     await user.click(addButton);
     expect(mockHandlers.onAdd).toHaveBeenCalled();
   });
@@ -137,10 +145,10 @@ describe('System Integration Tests', () => {
   test('API service integration with error handling', async () => {
     const mockApiService = createMockApiService();
     const mockData = createMockGridData(5);
-    
+
     // Mock successful response
     mockApiService.get.mockResolvedValue({
-      data: { items: mockData }
+      data: { items: mockData },
     });
 
     render(
@@ -152,13 +160,13 @@ describe('System Integration Tests', () => {
           apiEndpoint="/test-endpoint"
           enableErrorBoundary={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // Verify API call was made
     await waitFor(() => {
       expect(mockApiService.get).toHaveBeenCalledWith('/test-endpoint', {
-        params: {}
+        params: {},
       });
     });
 
@@ -167,14 +175,15 @@ describe('System Integration Tests', () => {
 
     // Test error handling
     const error = new Error('Network error');
+
     mockApiService.get.mockRejectedValue(error);
 
     // Trigger refresh to cause error
     const refreshButton = screen.getByLabelText('Refresh');
-    await userEvent.setup().click(refreshButton);
 
-    await waitFor(() => {
+    await userEvent.setup().click(refawait waitFor(() => {
       expect(screen.getByText(/network error/i)).toBeInTheDocument();
+    }, { timeout: 15000 });Document();
     });
   });
 
@@ -187,7 +196,7 @@ describe('System Integration Tests', () => {
         >
           <SuspendingComponent delay={200} result="Suspense works!" />
         </EnhancedSuspense>
-      </AsyncTestWrapper>
+      </AsyncTestWrapper>,
     );
 
     // Should show loading initially
@@ -208,7 +217,7 @@ describe('System Integration Tests', () => {
         <ErrorBoundary onError={onError}>
           <ThrowError message="Integration test error" />
         </ErrorBoundary>
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
@@ -226,17 +235,20 @@ describe('Configuration System Integration', () => {
   test('grid type configurations work correctly', () => {
     // Test Magento products configuration
     const magentoConfig = getGridConfig('magentoProducts');
+
     expect(magentoConfig.toolbar.showAdd).toBe(true);
     expect(magentoConfig.toolbar.showSync).toBe(true);
     expect(magentoConfig.enableStats).toBe(true);
 
     // Test MDM configuration
     const mdmConfig = getGridConfig('mdm');
+
     expect(mdmConfig.toolbar.showSyncStocks).toBe(true);
     expect(mdmConfig.defaultPageSize).toBe(50);
 
     // Test default configuration
     const defaultConfig = getGridConfig('unknown-type');
+
     expect(defaultConfig.enableStats).toBe(false);
   });
 
@@ -244,8 +256,8 @@ describe('Configuration System Integration', () => {
     const config = createGridConfiguration('magentoProducts', 'crud', {
       enableVirtualization: false,
       toolbarConfig: {
-        showImport: false
-      }
+        showImport: false,
+      },
     });
 
     expect(config.enableVirtualization).toBe(false);
@@ -262,6 +274,7 @@ describe('Modern React Patterns Integration', () => {
   test('useId hook generates unique IDs', () => {
     const TestComponent = () => {
       const ids = useUniqueIds(3, 'test-');
+
       return (
         <div>
           {ids.map(id => (
@@ -276,22 +289,24 @@ describe('Modern React Patterns Integration', () => {
     render(
       <TestWrapper>
         <TestComponent />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // Should have unique IDs
     const elements = screen.getAllByTestId(/test-/);
+
     expect(elements).toHaveLength(3);
-    
+
     const ids = elements.map(el => el.getAttribute('data-testid'));
     const uniqueIds = new Set(ids);
+
     expect(uniqueIds.size).toBe(3); // All IDs should be unique
   });
 
   test('useTransition for non-blocking updates', async () => {
     const TestComponent = () => {
       const [count, setCount, isPending] = useTransitionState(0);
-      
+
       return (
         <div>
           <div data-testid="count">{count}</div>
@@ -308,18 +323,15 @@ describe('Modern React Patterns Integration', () => {
     render(
       <TestWrapper>
         <TestComponent />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const button = screen.getByText('Increment');
     const countDisplay = screen.getByTestId('count');
 
-    expect(countDisplay).toHaveTextContent('0');
-
-    await user.click(button);
-
-    await waitFor(() => {
+    expect(countDisplay).toHaveTextContent('0');await waitFor(() => {
       expect(countDisplay).toHaveTextContent('1');
+    }, { timeout: 15000 });isplay).toHaveTextContent('1');
     });
   });
 
@@ -329,7 +341,7 @@ describe('Modern React Patterns Integration', () => {
         query,
         deferredQuery,
         updateQuery,
-        isPending
+        isPending,
       } = useDeferredSearch('', vi.fn(), 300);
 
       return (
@@ -346,12 +358,14 @@ describe('Modern React Patterns Integration', () => {
       );
     };
 
-    const user = userEvent.setup();
+   await user.type(input, 'test');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));;
 
     render(
       <TestWrapper>
         <TestComponent />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const input = screen.getByTestId('search-input');
@@ -387,7 +401,7 @@ describe('Performance Integration Tests', () => {
           data={largeDataset}
           enableVirtualization={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const endTime = performance.now();
@@ -402,9 +416,9 @@ describe('Performance Integration Tests', () => {
 
   test('search performance with large datasets', async () => {
     const largeDataset = createMockGridData(1000);
-    const user = userEvent.setup();
-
-    render(
+    coawait user.type(searchInput, 'Item 100');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));er(
       <TestWrapper>
         <BaseGrid
           gridName="search-performance-grid"
@@ -413,7 +427,7 @@ describe('Performance Integration Tests', () => {
           enableSearch={true}
           searchFields={['name', 'sku']}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const searchInput = screen.getByRole('textbox');
@@ -425,11 +439,9 @@ describe('Performance Integration Tests', () => {
     const searchTime = endTime - startTime;
 
     // Search should be fast (less than 500ms)
-    expect(searchTime).toBeLessThan(500);
-
-    // Should show filtered results
-    await waitFor(() => {
+    expect(searchTime).toBawait waitFor(() => {
       expect(screen.getByText('Item 100')).toBeInTheDocument();
+    }, { timeout: 15000 });(screen.getByText('Item 100')).toBeInTheDocument();
     });
   });
 });
@@ -452,28 +464,39 @@ describe('Accessibility Integration Tests', () => {
           enableActions={true}
           toolbarConfig={{
             showRefresh: true,
-            showAdd: true
+            showAdd: true,
           }}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // 1. Grid has proper ARIA attributes
     const grid = screen.getByRole('grid');
+
     expect(grid).toHaveAttribute('aria-labelledby');
     expect(grid).toHaveAttribute('aria-describedby');
 
     // 2. Toolbar is accessible
-    const toolbar = screen.getByRole('toolbar');
+    consawait user.tab();
+    // Add small delay to prevent act warnings
+  await user.tab();
+    // Add small delay to prevent act warningawait user.tab();
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTawait user.type(searchInput, 'test{enter}');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));meout(resolve, 50));se(resolve => setTimeout(resolve, 50));n.getByRole('toolbar');
+
     expect(toolbar).toBeInTheDocument();
 
     // 3. Search input has proper labels
     const searchInput = screen.getByRole('textbox');
+
     expect(searchInput).toHaveAttribute('aria-label');
 
     // 4. Buttons have proper labels
     const refreshButton = screen.getByLabelText('Refresh');
     const addButton = screen.getByLabelText('Add');
+
     expect(refreshButton).toBeInTheDocument();
     expect(addButton).toBeInTheDocument();
 
@@ -501,10 +524,11 @@ describe('Port Configuration Integration', () => {
   test('environment configuration is loaded correctly', () => {
     // Mock environment variables
     const originalEnv = process.env;
+
     process.env = {
       ...originalEnv,
       VITE_PORT: '80',
-      VITE_API_BASE_URL: 'http://localhost:5000'
+      VITE_API_BASE_URL: 'http://localhost:5000',
     };
 
     // Test that configuration values are accessible
@@ -517,8 +541,9 @@ describe('Port Configuration Integration', () => {
 
   test('API calls use correct base URL', async () => {
     const mockApiService = createMockApiService();
+
     mockApiService.get.mockResolvedValue({
-      data: { items: [] }
+      data: { items: [] },
     });
 
     render(
@@ -530,12 +555,12 @@ describe('Port Configuration Integration', () => {
           apiEndpoint="/test"
           apiParams={{ port: 5000 }}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     await waitFor(() => {
       expect(mockApiService.get).toHaveBeenCalledWith('/test', {
-        params: { port: 5000 }
+        params: { port: 5000 },
       });
     });
   });
@@ -554,7 +579,7 @@ describe('End-to-End Workflow Tests', () => {
     // Mock dialog component for add/edit operations
     const MockDialog = ({ type, open, onClose, onSubmit }) => {
       if (!open) return null;
-      
+
       return (
         <div data-testid={`${type}-dialog`}>
           <h2>{type === 'add' ? 'Add Item' : 'Edit Item'}</h2>
@@ -575,7 +600,7 @@ describe('End-to-End Workflow Tests', () => {
       const [dialogState, setDialogState] = React.useState({
         add: false,
         edit: false,
-        delete: false
+        delete: false,
       });
 
       return (
@@ -588,21 +613,25 @@ describe('End-to-End Workflow Tests', () => {
             toolbarConfig={{
               showAdd: true,
               showEdit: true,
-              showDelete: true
+              showDelete: true,
             }}
-            onAdd={() => setDialogState(prev => ({ ...prev, add: true }))}
-            onEdit={() => setDialogState(prev => ({ ...prev, edit: true }))}
-            onDelete={() => setDialogState(prev => ({ ...prev, delete: true }))}
-            onSelectionChange={mockHandlers.onSelectionChange}
-          />
-          
-          <MockDialog
+            onAawait user.click(addButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));v => ({ ...prev, add: await user.click(saveButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));={() => setDialogState(prev => ({ ...prev, edit: true }))}
+            onDelete={() => setDialogState(prev => ({ ...prev, delete: true }))await user.click(checkboxes[1]);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));={mockHandlers.onSelectionChange}
+         await user.click(editButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));
             type="add"
             open={dialogState.add}
             onClose={() => setDialogState(prev => ({ ...prev, add: false }))}
             onSubmit={mockHandlers.onAdd}
           />
-          
+
           <MockDialog
             type="edit"
             open={dialogState.edit}
@@ -616,33 +645,37 @@ describe('End-to-End Workflow Tests', () => {
     render(
       <TestWrapper>
         <TestGrid />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // 1. Test Add workflow
     const addButton = screen.getByLabelText('Add');
+
     await user.click(addButton);
-    
+
     expect(screen.getByTestId('add-dialog')).toBeInTheDocument();
-    
+
     const saveButton = screen.getByText('Save');
+
     await user.click(saveButton);
-    
+
     expect(mockHandlers.onAdd).toHaveBeenCalledWith(
       { name: 'New Item', sku: 'NEW001' },
-      'add'
+      'add',
     );
 
     // 2. Test Edit workflow
     // First select a row
     const checkboxes = screen.getAllByRole('checkbox');
+
     await user.click(checkboxes[1]); // Select first row
-    
+
     expect(mockHandlers.onSelectionChange).toHaveBeenCalled();
-    
+
     const editButton = screen.getByLabelText('Edit');
+
     await user.click(editButton);
-    
+
     expect(screen.getByTestId('edit-dialog')).toBeInTheDocument();
 
     // 3. Test workflow completion

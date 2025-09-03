@@ -1,9 +1,9 @@
 /**
  * BaseCard Component Tests
- * 
+ *
  * Comprehensive test suite for the BaseCard component
  * Tests different card variants, animations, and accessibility
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
@@ -20,11 +20,11 @@ import BaseCard from '../../components/base/BaseCard';
 // Mock dependencies
 vi.mock('framer-motion', () => ({
   motion: {
-    div: React.forwardRef(({ children, ...props }, ref) => 
-      <div ref={ref} {...props}>{children}</div>
-    )
+    div: React.forwardRef(({ children, ...props }, ref) =>
+      <div ref={ref} {...props}>{children}</div>,
+    ),
   },
-  AnimatePresence: ({ children }) => children
+  AnimatePresence: ({ children }) => children,
 }));
 
 vi.mock('@mui/icons-material', () => ({
@@ -34,7 +34,7 @@ vi.mock('@mui/icons-material', () => ({
   Info: () => <div data-testid="info-icon">ℹ</div>,
   Warning: () => <div data-testid="warning-icon">⚠</div>,
   Error: () => <div data-testid="error-icon">❌</div>,
-  CheckCircle: () => <div data-testid="check-icon">✓</div>
+  CheckCircle: () => <div data-testid="check-icon">✓</div>,
 }));
 
 // Test utilities
@@ -50,13 +50,13 @@ const mockStats = {
   total: 1250,
   active: 1100,
   inactive: 150,
-  selected: 0
+  selected: 0,
 };
 
 const mockProgressConfig = {
   value: 75,
   max: 100,
-  showPercentage: true
+  showPercentage: true,
 };
 
 // ============================================================================
@@ -72,7 +72,7 @@ describe('BaseCard - Basic Functionality', () => {
     render(
       <TestWrapper>
         <BaseCard title="Test Card" />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Test Card')).toBeInTheDocument();
@@ -81,11 +81,11 @@ describe('BaseCard - Basic Functionality', () => {
   test('displays title and value', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Revenue"
           value="$125,000"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Revenue')).toBeInTheDocument();
@@ -95,12 +95,12 @@ describe('BaseCard - Basic Functionality', () => {
   test('displays subtitle when provided', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Orders"
           value="1,234"
           subtitle="Last 30 days"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Orders')).toBeInTheDocument();
@@ -111,11 +111,11 @@ describe('BaseCard - Basic Functionality', () => {
   test('displays custom content', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Custom Card"
           content={<div>Custom content here</div>}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Custom Card')).toBeInTheDocument();
@@ -128,15 +128,18 @@ describe('BaseCard - Basic Functionality', () => {
 
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Clickable Card"
           onClick={onClick}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const card = screen.getByRole('button');
+
     await user.click(card);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));
 
     expect(onClick).toHaveBeenCalledTimes(1);
   });
@@ -150,13 +153,13 @@ describe('BaseCard - Variants', () => {
   test('renders stats variant correctly', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           variant="stats"
           title="Total Products"
           value="1,250"
           stats={mockStats}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Total Products')).toBeInTheDocument();
@@ -168,13 +171,13 @@ describe('BaseCard - Variants', () => {
   test('renders info variant with appropriate styling', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           variant="info"
           type="info"
           title="Information"
           value="Important notice"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Information')).toBeInTheDocument();
@@ -187,15 +190,16 @@ describe('BaseCard - Variants', () => {
 
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           variant="action"
           title="Add New Item"
           onClick={onClick}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const card = screen.getByRole('button');
+
     expect(card).toBeInTheDocument();
     expect(screen.getByText('Add New Item')).toBeInTheDocument();
   });
@@ -203,13 +207,13 @@ describe('BaseCard - Variants', () => {
   test('renders metric variant with value emphasis', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           variant="metric"
           title="Conversion Rate"
           value="3.4%"
           color="success"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Conversion Rate')).toBeInTheDocument();
@@ -220,12 +224,12 @@ describe('BaseCard - Variants', () => {
   test('renders progress variant with progress bar', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           variant="progress"
           title="Upload Progress"
           progress={mockProgressConfig}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Upload Progress')).toBeInTheDocument();
@@ -242,12 +246,12 @@ describe('BaseCard - Information Types', () => {
   test('renders info type with info icon', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           type="info"
           title="Information"
           value="This is an info message"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByTestId('info-icon')).toBeInTheDocument();
@@ -257,12 +261,12 @@ describe('BaseCard - Information Types', () => {
   test('renders warning type with warning icon', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           type="warning"
           title="Warning"
           value="This is a warning message"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByTestId('warning-icon')).toBeInTheDocument();
@@ -272,12 +276,12 @@ describe('BaseCard - Information Types', () => {
   test('renders error type with error icon', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           type="error"
           title="Error"
           value="This is an error message"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByTestId('error-icon')).toBeInTheDocument();
@@ -287,12 +291,12 @@ describe('BaseCard - Information Types', () => {
   test('renders success type with success icon', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           type="success"
           title="Success"
           value="This is a success message"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByTestId('check-icon')).toBeInTheDocument();
@@ -308,13 +312,13 @@ describe('BaseCard - Trend Indicators', () => {
   test('displays upward trend correctly', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Sales"
           value="$50,000"
           trend="up"
           percentage={15.5}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByTestId('trending-up-icon')).toBeInTheDocument();
@@ -325,13 +329,13 @@ describe('BaseCard - Trend Indicators', () => {
   test('displays downward trend correctly', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Orders"
           value="234"
           trend="down"
           percentage={8.2}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByTestId('trending-down-icon')).toBeInTheDocument();
@@ -342,13 +346,13 @@ describe('BaseCard - Trend Indicators', () => {
   test('displays flat trend correctly', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Customers"
           value="1,456"
           trend="flat"
           percentage={0}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByTestId('trending-flat-icon')).toBeInTheDocument();
@@ -359,12 +363,12 @@ describe('BaseCard - Trend Indicators', () => {
   test('handles trend without percentage', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Revenue"
           value="$75,000"
           trend="up"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByTestId('trending-up-icon')).toBeInTheDocument();
@@ -380,15 +384,16 @@ describe('BaseCard - Progress Functionality', () => {
   test('displays progress bar with correct value', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           variant="progress"
           title="Task Completion"
           progress={mockProgressConfig}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const progressBar = screen.getByRole('progressbar');
+
     expect(progressBar).toHaveAttribute('aria-valuenow', '75');
     expect(progressBar).toHaveAttribute('aria-valuemax', '100');
     expect(screen.getByText('75%')).toBeInTheDocument();
@@ -398,20 +403,21 @@ describe('BaseCard - Progress Functionality', () => {
     const progressConfig = {
       value: 60,
       max: 100,
-      showPercentage: false
+      showPercentage: false,
     };
 
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           variant="progress"
           title="Upload"
           progress={progressConfig}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const progressBar = screen.getByRole('progressbar');
+
     expect(progressBar).toHaveAttribute('aria-valuenow', '60');
     expect(screen.queryByText('60%')).not.toBeInTheDocument();
   });
@@ -420,20 +426,21 @@ describe('BaseCard - Progress Functionality', () => {
     const progressConfig = {
       value: 75,
       max: 200,
-      showPercentage: true
+      showPercentage: true,
     };
 
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           variant="progress"
           title="Custom Scale"
           progress={progressConfig}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const progressBar = screen.getByRole('progressbar');
+
     expect(progressBar).toHaveAttribute('aria-valuenow', '75');
     expect(progressBar).toHaveAttribute('aria-valuemax', '200');
     expect(screen.getByText('37.5%')).toBeInTheDocument(); // 75/200 * 100
@@ -448,11 +455,11 @@ describe('BaseCard - Loading State', () => {
   test('shows loading skeleton when loading', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Loading Card"
           loading={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByTestId('card-skeleton')).toBeInTheDocument();
@@ -462,12 +469,12 @@ describe('BaseCard - Loading State', () => {
   test('shows content when not loading', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Loaded Card"
           value="Data here"
           loading={false}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.queryByTestId('card-skeleton')).not.toBeInTheDocument();
@@ -478,14 +485,15 @@ describe('BaseCard - Loading State', () => {
   test('loading skeleton has proper accessibility', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Loading Card"
           loading={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const skeleton = screen.getByTestId('card-skeleton');
+
     expect(skeleton).toHaveAttribute('aria-busy', 'true');
     expect(skeleton).toHaveAttribute('aria-label', 'Loading content');
   });
@@ -499,11 +507,11 @@ describe('BaseCard - Accessibility', () => {
   test('has proper role when clickable', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Clickable Card"
           onClick={vi.fn()}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByRole('button')).toBeInTheDocument();
@@ -512,10 +520,10 @@ describe('BaseCard - Accessibility', () => {
   test('has proper role when not clickable', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Static Card"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
@@ -525,15 +533,16 @@ describe('BaseCard - Accessibility', () => {
   test('has proper ARIA labels for progress', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           variant="progress"
           title="File Upload"
           progress={mockProgressConfig}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const progressBar = screen.getByRole('progressbar');
+
     expect(progressBar).toHaveAttribute('aria-label', 'File Upload progress');
     expect(progressBar).toHaveAttribute('aria-describedby');
   });
@@ -544,19 +553,21 @@ describe('BaseCard - Accessibility', () => {
 
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Keyboard Card"
           onClick={onClick}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
-    const card = screen.getByRole('button');
-    
-    // Focus and press Enter
+    const card = screen.getByRawait user.keyboard('{Enter}');
+    // Add small delay to prevent act warnings
+    await new Promise(resolawait user.keyboard(' ');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50)); 50));and press Enter
     card.focus();
     expect(card).toHaveFocus();
-    
+
     await user.keyboard('{Enter}');
     expect(onClick).toHaveBeenCalledTimes(1);
 
@@ -568,15 +579,16 @@ describe('BaseCard - Accessibility', () => {
   test('has proper color contrast indicators', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           type="error"
           title="Error Card"
           color="error"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const card = screen.getByRole('article');
+
     expect(card).toHaveClass('MuiCard-colorError');
     expect(card).toHaveAttribute('data-contrast-level', 'high');
   });
@@ -590,32 +602,34 @@ describe('BaseCard - Dismiss Functionality', () => {
   test('shows dismiss button when dismissible', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Dismissible Card"
           dismissible={true}
           onDismiss={vi.fn()}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByLabelText(/dismiss/i)).toBeInTheDocument();
   });
 
   test('calls onDismiss when dismiss button is clicked', async () => {
-    const onDismiss = vi.fn();
-    const user = userEvent.setup();
+    const onDismiawait user.click(dismissButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));userEvent.setup();
 
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Dismissible Card"
           dismissible={true}
           onDismiss={onDismiss}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const dismissButton = screen.getByLabelText(/dismiss/i);
+
     await user.click(dismissButton);
 
     expect(onDismiss).toHaveBeenCalledTimes(1);
@@ -624,11 +638,11 @@ describe('BaseCard - Dismiss Functionality', () => {
   test('hides dismiss button when not dismissible', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Non-dismissible Card"
           dismissible={false}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.queryByLabelText(/dismiss/i)).not.toBeInTheDocument();
@@ -650,11 +664,11 @@ describe('BaseCard - Custom Actions', () => {
 
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Card with Actions"
           actions={actions}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Edit')).toBeInTheDocument();
@@ -666,14 +680,15 @@ describe('BaseCard - Custom Actions', () => {
 
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Card with Actions"
           actions={actions}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const actionsContainer = screen.getByText('Action').closest('.card-actions');
+
     expect(actionsContainer).toBeInTheDocument();
     expect(actionsContainer).toHaveClass('actions-top-right');
   });
@@ -687,12 +702,12 @@ describe('BaseCard - Stats Card Specific', () => {
   test('displays stats data correctly', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           variant="stats"
           title="Product Statistics"
           stats={mockStats}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Total: 1250')).toBeInTheDocument();
@@ -705,12 +720,12 @@ describe('BaseCard - Stats Card Specific', () => {
 
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           variant="stats"
           title="Product Statistics"
           stats={statsWithSelection}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Selected: 5')).toBeInTheDocument();
@@ -721,18 +736,18 @@ describe('BaseCard - Stats Card Specific', () => {
     const statsConfig = {
       stats: [
         { key: 'total', title: 'Total Items', color: 'primary' },
-        { key: 'active', title: 'Active Items', color: 'success' }
-      ]
+        { key: 'active', title: 'Active Items', color: 'success' },
+      ],
     };
 
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           variant="stats"
           config={statsConfig}
           stats={mockStats}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Total Items: 1250')).toBeInTheDocument();
@@ -755,16 +770,17 @@ describe('BaseCard - Responsive Design', () => {
 
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Responsive Card"
           value="$1,000"
           trend="up"
           percentage={5}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const card = screen.getByRole('article');
+
     expect(card).toHaveClass('mobile-layout');
   });
 
@@ -777,16 +793,17 @@ describe('BaseCard - Responsive Design', () => {
 
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Stacked Card"
           value="Data"
           subtitle="Subtitle"
           trend="up"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const card = screen.getByRole('article');
+
     expect(card).toHaveClass('vertical-layout');
   });
 });
@@ -799,6 +816,7 @@ describe('BaseCard - Performance', () => {
   test('uses React.memo for optimization', () => {
     const TestComponent = () => {
       const [count, setCount] = React.useState(0);
+
       return (
         <div>
           <button onClick={() => setCount(c => c + 1)}>Count: {count}</button>
@@ -810,7 +828,7 @@ describe('BaseCard - Performance', () => {
     const { rerender } = render(
       <TestWrapper>
         <TestComponent />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const card = screen.getByRole('article');
@@ -819,7 +837,7 @@ describe('BaseCard - Performance', () => {
     rerender(
       <TestWrapper>
         <TestComponent />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // Card should be memoized and not re-render unnecessarily
@@ -829,17 +847,17 @@ describe('BaseCard - Performance', () => {
   test('handles frequent progress updates efficiently', () => {
     const TestComponent = () => {
       const [progress, setProgress] = React.useState(0);
-      
+
       React.useEffect(() => {
         const interval = setInterval(() => {
           setProgress(p => (p + 1) % 101);
         }, 10);
-        
+
         return () => clearInterval(interval);
       }, []);
 
       return (
-        <BaseCard 
+        <BaseCard
           variant="progress"
           title="Progress Test"
           progress={{ value: progress, max: 100, showPercentage: true }}
@@ -852,7 +870,7 @@ describe('BaseCard - Performance', () => {
     render(
       <TestWrapper>
         <TestComponent />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const endTime = performance.now();
@@ -872,7 +890,7 @@ describe('BaseCard - Error Handling', () => {
     render(
       <TestWrapper>
         <BaseCard />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // Should render without crashing
@@ -882,33 +900,34 @@ describe('BaseCard - Error Handling', () => {
   test('handles invalid progress values gracefully', () => {
     const invalidProgress = {
       value: 'invalid',
-      max: 100
+      max: 100,
     };
 
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           variant="progress"
           title="Invalid Progress"
           progress={invalidProgress}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // Should render without crashing and show 0 progress
     const progressBar = screen.getByRole('progressbar');
+
     expect(progressBar).toHaveAttribute('aria-valuenow', '0');
   });
 
   test('handles null stats gracefully', () => {
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           variant="stats"
           title="Null Stats"
           stats={null}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // Should render without crashing
@@ -916,26 +935,28 @@ describe('BaseCard - Error Handling', () => {
   });
 
   test('handles click errors gracefully', async () => {
-    const errorOnClick = vi.fn().mockImplementation(() => {
+    cawait user.click(card);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));fn().mockImplementation(() => {
       throw new Error('Click error');
     });
-    
+
     const user = userEvent.setup();
 
     render(
       <TestWrapper>
-        <BaseCard 
+        <BaseCard
           title="Error Card"
           onClick={errorOnClick}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const card = screen.getByRole('button');
-    
+
     // Should not crash the component when click handler throws
     await user.click(card);
-    
+
     expect(errorOnClick).toHaveBeenCalled();
     expect(screen.getByText('Error Card')).toBeInTheDocument();
   });

@@ -1,7 +1,7 @@
 /**
  * GridToolbar - Professional Grid Toolbar Component
  * Unified toolbar system for all grids
- * 
+ *
  * @author Mounir Abderrahmani
  * @email mounir.ab@techno-dz.com
  */
@@ -21,7 +21,7 @@ import {
   Divider,
   Tooltip,
   Badge,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -33,7 +33,7 @@ import {
   Add as AddIcon,
   Delete as DeleteIcon,
   Edit as EditIcon,
-  MoreVert as MoreIcon
+  MoreVert as MoreIcon,
 } from '@mui/icons-material';
 
 import { useLanguage } from '../../../contexts/LanguageContext';
@@ -58,7 +58,7 @@ const GridToolbar = ({
 }) => {
   const { translate } = useLanguage();
   const { density } = useCustomTheme();
-  
+
   // State
   const [searchValue, setSearchValue] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);
@@ -75,7 +75,7 @@ const GridToolbar = ({
     showAdd: true,
     showEdit: true,
     showDelete: true,
-    title: gridName
+    title: gridName,
   };
 
   const finalConfig = { ...defaultConfig, ...config };
@@ -136,14 +136,14 @@ const GridToolbar = ({
       sx={{
         borderBottom: 1,
         borderColor: 'divider',
-        backgroundColor: 'background.paper'
+        backgroundColor: 'background.paper',
       }}
     >
       <Toolbar
         variant={density === 'compact' ? 'dense' : 'regular'}
         sx={{
           gap: 1,
-          minHeight: density === 'compact' ? 48 : 64
+          minHeight: density === 'compact' ? 48 : 64,
         }}
       >
         {/* Title */}
@@ -171,7 +171,7 @@ const GridToolbar = ({
                 <InputAdornment position="start">
                   <SearchIcon />
                 </InputAdornment>
-              )
+              ),
             }}
             sx={{ minWidth: 200 }}
           />

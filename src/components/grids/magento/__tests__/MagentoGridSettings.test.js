@@ -5,11 +5,11 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { 
+import {
   getMagentoGridConfig,
   getMagentoApiParams,
   applySettingsToGridProps,
-  handleMagentoGridError
+  handleMagentoGridError,
 } from '../../../../utils/magentoGridSettingsManager';
 import { useMagentoGridSettings } from '../../../../hooks/useMagentoGridSettings';
 
@@ -18,28 +18,28 @@ const mockUserSettings = {
   preferences: {
     density: 'compact',
     theme: 'dark',
-    language: 'en'
+    language: 'en',
   },
   performance: {
     defaultPageSize: 50,
     enableVirtualization: true,
-    cacheEnabled: true
+    cacheEnabled: true,
   },
   gridSettings: {
     showStatsCards: true,
     autoRefresh: false,
-    persistFilters: true
+    persistFilters: true,
   },
   notifications: {
-    showErrors: true
-  }
+    showErrors: true,
+  },
 };
 
 describe('Magento Grid Settings Manager', () => {
   describe('getMagentoGridConfig', () => {
     it('should return default config when no user settings provided', () => {
       const config = getMagentoGridConfig('magentoProducts');
-      
+
       expect(config).toBeDefined();
       expect(config.pagination.defaultPageSize).toBe(50); // magentoProducts default
       expect(config.density).toBe('standard');
@@ -47,7 +47,7 @@ describe('Magento Grid Settings Manager', () => {
 
     it('should apply user settings to grid configuration', () => {
       const config = getMagentoGridConfig('magentoProducts', mockUserSettings);
-      
+
       expect(config.density).toBe('compact');
       expect(config.pagination.defaultPageSize).toBe(50);
       expect(config.display.enableVirtualization).toBe(true);
@@ -57,7 +57,7 @@ describe('Magento Grid Settings Manager', () => {
     it('should handle different grid types correctly', () => {
       const productsConfig = getMagentoGridConfig('magentoProducts', mockUserSettings);
       const ordersConfig = getMagentoGridConfig('magentoOrders', mockUserSettings);
-      
+
       expect(productsConfig.sorting.defaultSort.field).toBe('sku');
       expect(ordersConfig.sorting.defaultSort.field).toBe('created_at');
     });
@@ -66,9 +66,9 @@ describe('Magento Grid Settings Manager', () => {
   describe('getMagentoApiParams', () => {
     it('should return enhanced API parameters with user settings', () => {
       const params = getMagentoApiParams('magentoProducts', mockUserSettings, {
-        currentPage: 2
+        currentPage: 2,
       });
-      
+
       expect(params.pageSize).toBe(50);
       expect(params.currentPage).toBe(2);
       expect(params.sortOrders).toBeDefined();
@@ -77,9 +77,9 @@ describe('Magento Grid Settings Manager', () => {
 
     it('should handle missing user settings gracefully', () => {
       const params = getMagentoApiParams('magentoProducts', {}, {
-        currentPage: 1
+        currentPage: 1,
       });
-      
+
       expect(params.pageSize).toBe(50); // Default for magentoProducts
       expect(params.currentPage).toBe(1);
     });
@@ -89,16 +89,16 @@ describe('Magento Grid Settings Manager', () => {
     const baseProps = {
       gridName: 'TestGrid',
       columns: [],
-      data: []
+      data: [],
     };
 
     it('should enhance grid props with user settings', () => {
       const enhancedProps = applySettingsToGridProps(
-        baseProps, 
-        'magentoProducts', 
-        mockUserSettings
+        baseProps,
+        'magentoProducts',
+        mockUserSettings,
       );
-      
+
       expect(enhancedProps.defaultPageSize).toBe(50);
       expect(enhancedProps.density).toBe('compact');
       expect(enhancedProps.enableVirtualization).toBe(true);
@@ -107,11 +107,11 @@ describe('Magento Grid Settings Manager', () => {
 
     it('should preserve original props', () => {
       const enhancedProps = applySettingsToGridProps(
-        baseProps, 
-        'magentoProducts', 
-        mockUserSettings
+        baseProps,
+        'magentoProducts',
+        mockUserSettings,
       );
-      
+
       expect(enhancedProps.gridName).toBe('TestGrid');
       expect(enhancedProps.columns).toEqual([]);
       expect(enhancedProps.data).toEqual([]);
@@ -120,7 +120,7 @@ describe('Magento Grid Settings Manager', () => {
 
   describe('handleMagentoGridError', () => {
     const mockError = new Error('Test API Error');
-    
+
     beforeEach(() => {
       vi.clearAllMocks();
       // Mock console.error to avoid noise in tests
@@ -147,7 +147,7 @@ describe('useMagentoGridSettings Hook', () => {
   // Mock the SettingsContext
   const mockSettingsContext = {
     settings: mockUserSettings,
-    updateSettings: vi.fn()
+    updateSettings: vi.fn(),
   };
 
   beforeEach(() => {
@@ -158,7 +158,7 @@ describe('useMagentoGridSettings Hook', () => {
     // Note: This test would need proper React context mocking
     // For now, we'll test the utility functions directly
     const config = getMagentoGridConfig('magentoProducts', mockUserSettings);
-    
+
     expect(config).toBeDefined();
     expect(config.pagination).toBeDefined();
     expect(config.density).toBe('compact');
@@ -168,9 +168,10 @@ describe('useMagentoGridSettings Hook', () => {
 describe('Error Handling Integration', () => {
   it('should provide consistent error handling across grid types', () => {
     const gridTypes = ['magentoProducts', 'magentoOrders', 'magentoCustomers'];
-    
+
     gridTypes.forEach(gridType => {
       const config = getMagentoGridConfig(gridType, mockUserSettings);
+
       expect(config).toBeDefined();
       expect(config.performance).toBeDefined();
       expect(config.display).toBeDefined();
@@ -181,10 +182,10 @@ describe('Error Handling Integration', () => {
 describe('API Settings Propagation', () => {
   it('should generate consistent API parameters for different grid types', () => {
     const gridTypes = ['magentoProducts', 'magentoOrders', 'magentoCustomers'];
-    
+
     gridTypes.forEach(gridType => {
       const params = getMagentoApiParams(gridType, mockUserSettings);
-      
+
       expect(params.pageSize).toBeDefined();
       expect(params.currentPage).toBeDefined();
       expect(params.sortOrders).toBeDefined();
@@ -195,11 +196,11 @@ describe('API Settings Propagation', () => {
   it('should handle additional parameters correctly', () => {
     const additionalParams = {
       filterGroups: [{ filters: [{ field: 'status', value: 'active' }] }],
-      customParam: 'test'
+      customParam: 'test',
     };
 
     const params = getMagentoApiParams('magentoProducts', mockUserSettings, additionalParams);
-    
+
     expect(params.filterGroups).toEqual(additionalParams.filterGroups);
     expect(params.customParam).toBe('test');
   });
@@ -208,7 +209,7 @@ describe('API Settings Propagation', () => {
 describe('Settings Persistence', () => {
   it('should handle grid preference saving', () => {
     const mockUpdateSettings = vi.fn();
-    
+
     // This would be tested with proper component integration
     expect(mockUpdateSettings).toBeDefined();
   });

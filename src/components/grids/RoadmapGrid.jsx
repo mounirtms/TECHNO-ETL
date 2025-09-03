@@ -17,7 +17,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Badge,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 import {
   Timeline,
@@ -25,7 +25,7 @@ import {
   TimelineSeparator,
   TimelineConnector,
   TimelineContent,
-  TimelineDot
+  TimelineDot,
 } from '@mui/lab';
 import {
   ExpandMore,
@@ -39,7 +39,7 @@ import {
   BugReport,
   Security,
   Speed,
-  Palette
+  Palette,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
@@ -53,38 +53,38 @@ const STATUS_CONFIG = {
     color: 'grey',
     icon: Lightbulb,
     label: 'Proposed',
-    description: 'Ideas and suggestions from the community'
+    description: 'Ideas and suggestions from the community',
   },
   approved: {
     color: 'info',
     icon: TrendingUp,
     label: 'Approved',
-    description: 'Features approved for development'
+    description: 'Features approved for development',
   },
   in_progress: {
     color: 'warning',
     icon: Code,
     label: 'In Progress',
-    description: 'Currently being developed'
+    description: 'Currently being developed',
   },
   completed: {
     color: 'success',
     icon: CheckCircle,
     label: 'Completed',
-    description: 'Released and available'
+    description: 'Released and available',
   },
   rejected: {
     color: 'error',
     icon: Cancel,
     label: 'Rejected',
-    description: 'Not planned for development'
+    description: 'Not planned for development',
   },
   on_hold: {
     color: 'default',
     icon: Pause,
     label: 'On Hold',
-    description: 'Temporarily paused'
-  }
+    description: 'Temporarily paused',
+  },
 };
 
 /**
@@ -96,7 +96,7 @@ const CATEGORY_ICONS = {
   'security': Security,
   'features': Code,
   'integration': TrendingUp,
-  'general': Lightbulb
+  'general': Lightbulb,
 };
 
 /**
@@ -119,6 +119,7 @@ const RoadmapGrid = () => {
 
       // Try to load from service
       const data = await votingService.getRoadmap();
+
       setRoadmapData(data);
     } catch (err) {
       console.warn('Roadmap service unavailable, using fallback data:', err);
@@ -134,7 +135,7 @@ const RoadmapGrid = () => {
             vote_count: 45,
             estimated_completion: '2024-Q2',
             progress: 75,
-            tags: ['analytics', 'dashboard', 'ui']
+            tags: ['analytics', 'dashboard', 'ui'],
           },
           {
             id: 'feature-2',
@@ -144,8 +145,8 @@ const RoadmapGrid = () => {
             vote_count: 32,
             estimated_completion: '2024-Q3',
             progress: 25,
-            tags: ['mobile', 'app', 'cross-platform']
-          }
+            tags: ['mobile', 'app', 'cross-platform'],
+          },
         ],
         approved: [
           {
@@ -156,7 +157,7 @@ const RoadmapGrid = () => {
             vote_count: 28,
             estimated_completion: '2024-Q4',
             progress: 0,
-            tags: ['search', 'filters', 'ux']
+            tags: ['search', 'filters', 'ux'],
           },
           {
             id: 'feature-4',
@@ -166,8 +167,8 @@ const RoadmapGrid = () => {
             vote_count: 22,
             estimated_completion: '2024-Q2',
             progress: 0,
-            tags: ['api', 'performance', 'security']
-          }
+            tags: ['api', 'performance', 'security'],
+          },
         ],
         completed: [
           {
@@ -178,7 +179,7 @@ const RoadmapGrid = () => {
             vote_count: 67,
             estimated_completion: '2024-Q1',
             progress: 100,
-            tags: ['quality', 'community', 'testing']
+            tags: ['quality', 'community', 'testing'],
           },
           {
             id: 'feature-6',
@@ -188,8 +189,8 @@ const RoadmapGrid = () => {
             vote_count: 89,
             estimated_completion: '2024-Q1',
             progress: 100,
-            tags: ['ui', 'theme', 'accessibility']
-          }
+            tags: ['ui', 'theme', 'accessibility'],
+          },
         ],
         rejected: [
           {
@@ -200,8 +201,8 @@ const RoadmapGrid = () => {
             vote_count: 12,
             estimated_completion: null,
             progress: 0,
-            tags: ['payments', 'crypto']
-          }
+            tags: ['payments', 'crypto'],
+          },
         ],
         on_hold: [
           {
@@ -212,9 +213,9 @@ const RoadmapGrid = () => {
             vote_count: 34,
             estimated_completion: '2025-Q1',
             progress: 10,
-            tags: ['ai', 'ml', 'recommendations']
-          }
-        ]
+            tags: ['ai', 'ml', 'recommendations'],
+          },
+        ],
       };
 
       setRoadmapData(fallbackData);
@@ -234,11 +235,13 @@ const RoadmapGrid = () => {
   const toggleSection = (status) => {
     setExpandedSections(prev => {
       const newSet = new Set(prev);
+
       if (newSet.has(status)) {
         newSet.delete(status);
       } else {
         newSet.add(status);
       }
+
       return newSet;
     });
   };
@@ -260,7 +263,7 @@ const RoadmapGrid = () => {
       inProgress,
       approved,
       completionRate: total > 0 ? (completed / total) * 100 : 0,
-      activeWork: inProgress + approved
+      activeWork: inProgress + approved,
     };
   }, [roadmapData]);
 
@@ -337,9 +340,9 @@ const RoadmapGrid = () => {
                 <Typography variant="body2" color="text.secondary">
                   Completion Rate
                 </Typography>
-                <LinearProgress 
-                  variant="determinate" 
-                  value={progressStats.completionRate} 
+                <LinearProgress
+                  variant="determinate"
+                  value={progressStats.completionRate}
                   sx={{ mt: 1 }}
                 />
               </Card>
@@ -356,7 +359,7 @@ const RoadmapGrid = () => {
             <Typography variant="h5" gutterBottom>
               Development Timeline
             </Typography>
-            
+
             <Timeline>
               {Object.entries(STATUS_CONFIG).map(([status, config], index) => {
                 const features = roadmapData?.byStatus[status] || [];
@@ -372,7 +375,7 @@ const RoadmapGrid = () => {
                       {!isLast && <TimelineConnector />}
                     </TimelineSeparator>
                     <TimelineContent>
-                      <Accordion 
+                      <Accordion
                         expanded={expandedSections.has(status)}
                         onChange={() => toggleSection(status)}
                         sx={{ mb: 2 }}
@@ -393,12 +396,12 @@ const RoadmapGrid = () => {
                           <Typography variant="body2" color="text.secondary" mb={2}>
                             {config.description}
                           </Typography>
-                          
+
                           {features.length > 0 ? (
                             <Stack spacing={2}>
                               {features.map((feature) => {
                                 const CategoryIcon = CATEGORY_ICONS[feature.category] || Lightbulb;
-                                
+
                                 return (
                                   <motion.div
                                     key={feature.id}
@@ -417,31 +420,31 @@ const RoadmapGrid = () => {
                                             {feature.description}
                                           </Typography>
                                           <Stack direction="row" spacing={1} alignItems="center">
-                                            <Chip 
-                                              label={feature.category} 
-                                              size="small" 
+                                            <Chip
+                                              label={feature.category}
+                                              size="small"
                                               variant="outlined"
                                             />
-                                            <Chip 
-                                              label={feature.priority} 
-                                              size="small" 
-                                              color={feature.priority === 'high' ? 'error' : 
-                                                     feature.priority === 'medium' ? 'warning' : 'success'}
+                                            <Chip
+                                              label={feature.priority}
+                                              size="small"
+                                              color={feature.priority === 'high' ? 'error' :
+                                                feature.priority === 'medium' ? 'warning' : 'success'}
                                             />
                                             {feature.vote_count > 0 && (
                                               <Tooltip title="Community votes">
-                                                <Chip 
-                                                  label={`${feature.vote_count} votes`} 
-                                                  size="small" 
+                                                <Chip
+                                                  label={`${feature.vote_count} votes`}
+                                                  size="small"
                                                   color="primary"
                                                   variant="outlined"
                                                 />
                                               </Tooltip>
                                             )}
                                             {feature.target_release && (
-                                              <Chip 
-                                                label={`v${feature.target_release}`} 
-                                                size="small" 
+                                              <Chip
+                                                label={`v${feature.target_release}`}
+                                                size="small"
                                                 color="info"
                                                 variant="outlined"
                                               />
@@ -475,12 +478,12 @@ const RoadmapGrid = () => {
             <Typography variant="h5" gutterBottom>
               Features by Category
             </Typography>
-            
+
             {roadmapData?.byCategory && (
               <Stack spacing={2}>
                 {Object.entries(roadmapData.byCategory).map(([category, features]) => {
                   const CategoryIcon = CATEGORY_ICONS[category] || Lightbulb;
-                  
+
                   return (
                     <Card key={category} variant="outlined" sx={{ p: 2 }}>
                       <Stack direction="row" alignItems="center" spacing={2}>
@@ -509,7 +512,7 @@ const RoadmapGrid = () => {
             <Typography variant="h5" gutterBottom>
               Recent Updates
             </Typography>
-            
+
             {roadmapData?.recentActivity && roadmapData.recentActivity.length > 0 ? (
               <Stack spacing={2}>
                 {roadmapData.recentActivity.slice(0, 5).map((activity, index) => (
@@ -518,9 +521,9 @@ const RoadmapGrid = () => {
                       {activity.title}
                     </Typography>
                     <Stack direction="row" justifyContent="space-between" alignItems="center">
-                      <Chip 
-                        label={STATUS_CONFIG[activity.status]?.label || activity.status} 
-                        size="small" 
+                      <Chip
+                        label={STATUS_CONFIG[activity.status]?.label || activity.status}
+                        size="small"
                         color={STATUS_CONFIG[activity.status]?.color || 'default'}
                       />
                       <Typography variant="caption" color="text.secondary">

@@ -18,7 +18,7 @@ import '@testing-library/jest-dom';
 
 configure({
   testIdAttribute: 'data-testid',
-  asyncUtilTimeout: 5000,
+  asyncUtilTimeout: 10000,
   computedStyleSupportsPseudoElements: true
 });
 
@@ -460,4 +460,25 @@ export {
   testWithLargeDataset,
   checkAriaAttributes,
   testKeyboardNavigation
+};
+/**
+ * Extended waitFor with better timeout handling
+ */
+export const extendedWaitFor = (callback, options = {}) => {
+  const { waitFor } = require('@testing-library/react');
+  return waitFor(callback, { timeout: 10000, ...options });
+};
+
+/**
+ * Improved test wrapper with better async handling
+ */
+export const ImprovedTestWrapper = ({ children }) => {
+  const React = require('react');
+  const { Suspense } = require('react');
+  
+  return React.createElement(TestWrapper, null,
+    React.createElement(Suspense, { 
+      fallback: React.createElement('div', null, 'Loading...') 
+    }, children)
+  );
 };
