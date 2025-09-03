@@ -3,12 +3,12 @@ import {
   Box, Paper, Typography, Switch, FormControlLabel, Select, MenuItem,
   FormControl, InputLabel, Divider, Button, Alert, Snackbar,
   Grid, Card, CardContent, CardHeader, Slider, TextField,
-  Accordion, AccordionSummary, AccordionDetails, Chip, Tabs, Tab
+  Accordion, AccordionSummary, AccordionDetails, Chip, Tabs, Tab,
 } from '@mui/material';
 import {
   Settings, Palette, Language, Notifications, Security,
   Dashboard, GridView, Speed, Accessibility, ExpandMore,
-  Save, RestoreFromTrash, Brightness4, Brightness7, ViewColumn, FilterList
+  Save, RestoreFromTrash, Brightness4, Brightness7, ViewColumn, FilterList,
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import GridColumnSettings from './GridColumnSettings';
@@ -23,36 +23,36 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
     language: 'en',
     density: 'standard',
     animations: true,
-    
+
     // Grid preferences
     defaultPageSize: 25,
     enableVirtualization: true,
     showStatsCards: false,
     autoRefresh: false,
     refreshInterval: 30,
-    
+
     // Performance
     cacheEnabled: true,
     lazyLoading: true,
     compressionEnabled: true,
-    
+
     // Notifications
     emailNotifications: true,
     pushNotifications: false,
     soundEnabled: true,
-    
+
     // Security
     sessionTimeout: 30,
     twoFactorEnabled: false,
     auditLogging: true,
-    
+
     // Accessibility
     highContrast: false,
     largeText: false,
     keyboardNavigation: true,
-    screenReader: false
+    screenReader: false,
   });
-  
+
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
@@ -61,6 +61,7 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
   useEffect(() => {
     // Load user settings from localStorage or API
     const savedSettings = localStorage.getItem(`userSettings_${user?.id}`);
+
     if (savedSettings) {
       setSettings(JSON.parse(savedSettings));
     }
@@ -69,7 +70,7 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
   const handleSettingChange = (key, value) => {
     setSettings(prev => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
     setIsDirty(true);
   };
@@ -78,12 +79,12 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
     try {
       // Save to localStorage
       localStorage.setItem(`userSettings_${user?.id}`, JSON.stringify(settings));
-      
+
       // Call parent callback
       if (onSettingsChange) {
         onSettingsChange(settings);
       }
-      
+
       setIsDirty(false);
       setShowSuccess(true);
     } catch (error) {
@@ -115,9 +116,9 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
       highContrast: false,
       largeText: false,
       keyboardNavigation: true,
-      screenReader: false
+      screenReader: false,
     };
-    
+
     setSettings(defaultSettings);
     setIsDirty(true);
   };
@@ -215,11 +216,11 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
       {/* Tab Panels */}
       <TabPanel value={activeTab} index={0}>
         {/* General Settings */}
-        
+
         {/* Appearance Settings */}
         <SettingsSection title="Appearance" icon={<Palette />}>
-          <SettingItem 
-            label="Theme" 
+          <SettingItem
+            label="Theme"
             description="Choose your preferred color scheme"
           >
             <FormControl fullWidth size="small">
@@ -244,8 +245,8 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
             </FormControl>
           </SettingItem>
 
-          <SettingItem 
-            label="Language" 
+          <SettingItem
+            label="Language"
             description="Select your preferred language"
           >
             <FormControl fullWidth size="small">
@@ -260,8 +261,8 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
             </FormControl>
           </SettingItem>
 
-          <SettingItem 
-            label="Interface Density" 
+          <SettingItem
+            label="Interface Density"
             description="Adjust spacing and component sizes"
           >
             <FormControl fullWidth size="small">
@@ -276,8 +277,8 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
             </FormControl>
           </SettingItem>
 
-          <SettingItem 
-            label="Animations" 
+          <SettingItem
+            label="Animations"
             description="Enable smooth transitions and animations"
           >
             <FormControlLabel
@@ -294,8 +295,8 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
 
         {/* Grid Preferences */}
         <SettingsSection title="Grid Preferences" icon={<GridView />}>
-          <SettingItem 
-            label="Default Page Size" 
+          <SettingItem
+            label="Default Page Size"
             description="Number of rows to display per page"
           >
             <FormControl fullWidth size="small">
@@ -311,8 +312,8 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
             </FormControl>
           </SettingItem>
 
-          <SettingItem 
-            label="Virtualization" 
+          <SettingItem
+            label="Virtualization"
             description="Improve performance for large datasets"
           >
             <FormControlLabel
@@ -326,8 +327,8 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
             />
           </SettingItem>
 
-          <SettingItem 
-            label="Stats Cards" 
+          <SettingItem
+            label="Stats Cards"
             description="Show statistics cards by default"
           >
             <FormControlLabel
@@ -341,8 +342,8 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
             />
           </SettingItem>
 
-          <SettingItem 
-            label="Auto Refresh" 
+          <SettingItem
+            label="Auto Refresh"
             description="Automatically refresh data"
           >
             <FormControlLabel
@@ -357,8 +358,8 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
           </SettingItem>
 
           {settings.autoRefresh && (
-            <SettingItem 
-              label="Refresh Interval" 
+            <SettingItem
+              label="Refresh Interval"
               description="How often to refresh data (seconds)"
               fullWidth
             >
@@ -373,7 +374,7 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
                     { value: 10, label: '10s' },
                     { value: 60, label: '1m' },
                     { value: 180, label: '3m' },
-                    { value: 300, label: '5m' }
+                    { value: 300, label: '5m' },
                   ]}
                   valueLabelDisplay="auto"
                   valueLabelFormat={(value) => `${value}s`}
@@ -599,7 +600,7 @@ const UserProfileSettings = ({ user, onSettingsChange }) => {
           gap: 2,
           justifyContent: 'flex-end',
           pt: 3,
-          borderTop: `1px solid ${theme.palette.divider}`
+          borderTop: `1px solid ${theme.palette.divider}`,
         }}>
           <Button
             variant="outlined"

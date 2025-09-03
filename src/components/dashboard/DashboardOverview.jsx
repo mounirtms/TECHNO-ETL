@@ -9,7 +9,7 @@ import {
   LinearProgress,
   Chip,
   IconButton,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 import {
   TrendingUp,
@@ -19,7 +19,7 @@ import {
   Inventory,
   AttachMoney,
   MoreVert as MoreIcon,
-  Launch as LaunchIcon
+  Launch as LaunchIcon,
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { useCustomTheme } from '../../contexts/ThemeContext';
@@ -41,7 +41,7 @@ const DashboardOverview = ({ stats, onNavigate }) => {
       icon: <AttachMoney />,
       color: 'success',
       progress: 75,
-      subtitle: 'This month'
+      subtitle: 'This month',
     },
     {
       title: 'Total Orders',
@@ -51,7 +51,7 @@ const DashboardOverview = ({ stats, onNavigate }) => {
       icon: <ShoppingCart />,
       color: 'primary',
       progress: 68,
-      subtitle: 'This month'
+      subtitle: 'This month',
     },
     {
       title: 'Active Products',
@@ -61,7 +61,7 @@ const DashboardOverview = ({ stats, onNavigate }) => {
       icon: <Inventory />,
       color: 'info',
       progress: 85,
-      subtitle: 'In catalog'
+      subtitle: 'In catalog',
     },
     {
       title: 'Customers',
@@ -71,15 +71,15 @@ const DashboardOverview = ({ stats, onNavigate }) => {
       icon: <People />,
       color: 'warning',
       progress: 45,
-      subtitle: 'Active users'
-    }
+      subtitle: 'Active users',
+    },
   ];
 
   const quickStats = [
     { label: 'Pending Orders', value: '23', color: 'warning' },
     { label: 'Low Stock Items', value: '12', color: 'error' },
     { label: 'New Customers', value: '45', color: 'success' },
-    { label: 'Returns', value: '8', color: 'info' }
+    { label: 'Returns', value: '8', color: 'info' },
   ];
 
   return (
@@ -98,8 +98,8 @@ const DashboardOverview = ({ stats, onNavigate }) => {
                 '&:hover': animations ? {
                   transform: 'translateY(-4px)',
                   boxShadow: theme.shadows[8],
-                  border: `1px solid ${theme.palette[metric.color].main}50`
-                } : {}
+                  border: `1px solid ${theme.palette[metric.color].main}50`,
+                } : {},
               }}
             >
               <CardContent sx={{ p: density === 'compact' ? 2 : 3 }}>
@@ -109,7 +109,7 @@ const DashboardOverview = ({ stats, onNavigate }) => {
                       bgcolor: `${metric.color}.main`,
                       width: 48,
                       height: 48,
-                      boxShadow: theme.shadows[3]
+                      boxShadow: theme.shadows[3],
                     }}
                   >
                     {metric.icon}
@@ -129,15 +129,15 @@ const DashboardOverview = ({ stats, onNavigate }) => {
                     </Tooltip>
                   </Box>
                 </Box>
-                
+
                 <Typography variant="h4" fontWeight={700} color="text.primary" gutterBottom>
                   {metric.value}
                 </Typography>
-                
+
                 <Typography variant="body2" color="text.secondary" gutterBottom>
                   {metric.title}
                 </Typography>
-                
+
                 <Box sx={{ mt: 2 }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                     <Typography variant="caption" color="text.secondary">
@@ -156,8 +156,8 @@ const DashboardOverview = ({ stats, onNavigate }) => {
                       borderRadius: 3,
                       bgcolor: `${metric.color}.light`,
                       '& .MuiLinearProgress-bar': {
-                        borderRadius: 3
-                      }
+                        borderRadius: 3,
+                      },
                     }}
                   />
                 </Box>
@@ -178,7 +178,7 @@ const DashboardOverview = ({ stats, onNavigate }) => {
               <MoreIcon />
             </IconButton>
           </Box>
-          
+
           <Grid container spacing={3}>
             {quickStats.map((stat, index) => (
               <Grid item xs={6} sm={3} key={index}>
@@ -207,7 +207,7 @@ const DashboardOverview = ({ stats, onNavigate }) => {
           <Typography variant="h6" fontWeight={600} gutterBottom>
             Today's Highlights
           </Typography>
-          
+
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="body2" color="text.secondary">
@@ -215,21 +215,21 @@ const DashboardOverview = ({ stats, onNavigate }) => {
               </Typography>
               <Chip label="Good" color="success" size="small" />
             </Box>
-            
+
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="body2" color="text.secondary">
                 🛒 23 new orders received in the last 24 hours
               </Typography>
               <Chip label="Active" color="primary" size="small" />
             </Box>
-            
+
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="body2" color="text.secondary">
                 ⚠️ 12 products are running low on stock
               </Typography>
               <Chip label="Attention" color="warning" size="small" />
             </Box>
-            
+
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Typography variant="body2" color="text.secondary">
                 👥 45 new customer registrations this week

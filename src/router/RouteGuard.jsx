@@ -19,7 +19,7 @@ const RouteLoading = ({ message = 'Loading...' }) => (
       alignItems: 'center',
       height: '100vh',
       flexDirection: 'column',
-      gap: 2
+      gap: 2,
     }}
   >
     <CircularProgress size={40} />
@@ -41,38 +41,40 @@ export const RouteGuard = ({ children, requiredRole = null, fallbackPath = ROUTE
   useEffect(() => {
     const checkAuthorization = async () => {
       setAuthLoading(true);
-      
+
       // Wait for auth to complete
       if (loading) return;
-      
+
       // Check if route requires authentication
       const routeRequiresAuth = requiresAuth(location.pathname);
-      
+
       if (!routeRequiresAuth) {
         setIsAuthorized(true);
         setAuthLoading(false);
+
         return;
       }
-      
+
       // Check if user is authenticated
       if (!currentUser) {
         setIsAuthorized(false);
         setAuthLoading(false);
+
         return;
       }
-      
+
       // Check role-based access if required
       if (requiredRole) {
         const userRole = currentUser.role || 'user';
-        const hasRequiredRole = Array.isArray(requiredRole) 
+        const hasRequiredRole = Array.isArray(requiredRole)
           ? requiredRole.includes(userRole)
           : userRole === requiredRole;
-        
+
         setIsAuthorized(hasRequiredRole);
       } else {
         setIsAuthorized(true);
       }
-      
+
       setAuthLoading(false);
     };
 
@@ -90,6 +92,7 @@ export const RouteGuard = ({ children, requiredRole = null, fallbackPath = ROUTE
     if (location.pathname !== ROUTES.LOGIN) {
       return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
     }
+
     return children;
   }
 
@@ -99,6 +102,7 @@ export const RouteGuard = ({ children, requiredRole = null, fallbackPath = ROUTE
     if (location.pathname !== fallbackPath) {
       return <Navigate to={fallbackPath} replace />;
     }
+
     return children;
   }
 
@@ -120,9 +124,11 @@ export const PublicRouteGuard = ({ children, redirectTo = ROUTES.DASHBOARD }) =>
   if (currentUser) {
     // Only redirect if we're not already on the redirect page
     const intendedDestination = location.state?.from?.pathname || redirectTo;
+
     if (location.pathname !== intendedDestination) {
       return <Navigate to={intendedDestination} replace />;
     }
+
     return children;
   }
 
@@ -161,9 +167,10 @@ export const RouteMetadataProvider = ({ children }) => {
   // Add route metadata to document
   useEffect(() => {
     document.title = `${metadata.title} - TECHNO-ETL`;
-    
+
     // Update meta description
     const metaDescription = document.querySelector('meta[name="description"]');
+
     if (metaDescription) {
       metaDescription.setAttribute('content', metadata.description);
     }
@@ -181,6 +188,7 @@ export const RouteTransition = ({ children, transitionKey }) => {
   useEffect(() => {
     setIsTransitioning(true);
     const timer = setTimeout(() => setIsTransitioning(false), 150);
+
     return () => clearTimeout(timer);
   }, [transitionKey]);
 
@@ -189,7 +197,7 @@ export const RouteTransition = ({ children, transitionKey }) => {
       sx={{
         opacity: isTransitioning ? 0.7 : 1,
         transition: 'opacity 0.15s ease-in-out',
-        minHeight: '100%'
+        minHeight: '100%',
       }}
     >
       {children}
@@ -228,18 +236,19 @@ export const RouteAnalytics = () => {
         path: location.pathname,
         timestamp: new Date().toISOString(),
         userId: currentUser.uid,
-        userAgent: navigator.userAgent
+        userAgent: navigator.userAgent,
       };
 
       // Store in localStorage for now (can be sent to analytics service)
       const visits = JSON.parse(localStorage.getItem('routeVisits') || '[]');
+
       visits.push(routeData);
-      
+
       // Keep only last 100 visits
       if (visits.length > 100) {
         visits.splice(0, visits.length - 100);
       }
-      
+
       localStorage.setItem('routeVisits', JSON.stringify(visits));
     }
   }, [location, currentUser]);

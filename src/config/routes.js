@@ -6,7 +6,7 @@
 export const ROUTES = {
   // Public Routes
   LOGIN: '/login',
-  
+
   // Protected Routes
   DASHBOARD: '/dashboard',
   CHARTS: '/charts',
@@ -59,7 +59,7 @@ export const ROUTES = {
 
   // Nested Routes
   PRODUCT_DETAIL: '/products/:id',
-  PRODUCT_CATEGORY: '/products/category/:categoryId'
+  PRODUCT_CATEGORY: '/products/category/:categoryId',
 };
 
 export const ROUTE_METADATA = {
@@ -68,91 +68,91 @@ export const ROUTE_METADATA = {
     description: 'Main dashboard with overview and statistics',
     icon: 'Dashboard',
     requiresAuth: true,
-    breadcrumb: 'Dashboard'
+    breadcrumb: 'Dashboard',
   },
   [ROUTES.CHARTS]: {
     title: 'Charts & Analytics',
     description: 'Data visualization and analytics',
     icon: 'BarChart',
     requiresAuth: true,
-    breadcrumb: 'Charts'
+    breadcrumb: 'Charts',
   },
   [ROUTES.PRODUCTS]: {
     title: 'Product Management',
     description: 'Manage products, categories, and inventory',
     icon: 'Inventory',
     requiresAuth: true,
-    breadcrumb: 'Products'
+    breadcrumb: 'Products',
   },
   [ROUTES.TASKS]: {
     title: 'Task Management',
     description: 'Task management and project tracking system',
     icon: 'Task',
     requiresAuth: true,
-    breadcrumb: 'Tasks'
+    breadcrumb: 'Tasks',
   },
   [ROUTES.INVENTORY]: {
     title: 'Inventory Management',
     description: 'Stock levels and warehouse management',
     icon: 'Inventory',
     requiresAuth: true,
-    breadcrumb: 'Inventory'
+    breadcrumb: 'Inventory',
   },
   [ROUTES.ORDERS]: {
     title: 'Order Management',
     description: 'Process and track customer orders',
     icon: 'ShoppingCart',
     requiresAuth: true,
-    breadcrumb: 'Orders'
+    breadcrumb: 'Orders',
   },
   [ROUTES.CUSTOMERS]: {
     title: 'Customer Management',
     description: 'Customer profiles and relationship management',
     icon: 'People',
     requiresAuth: true,
-    breadcrumb: 'Customers'
+    breadcrumb: 'Customers',
   },
   [ROUTES.REPORTS]: {
     title: 'Reports & Analytics',
     description: 'Business intelligence and reporting',
     icon: 'Assessment',
     requiresAuth: true,
-    breadcrumb: 'Reports'
+    breadcrumb: 'Reports',
   },
   [ROUTES.ANALYTICS]: {
     title: 'Looker Studio Analytics',
     description: 'Interactive business intelligence dashboards',
     icon: 'Analytics',
     requiresAuth: true,
-    breadcrumb: 'Analytics'
+    breadcrumb: 'Analytics',
   },
   [ROUTES.SETTINGS]: {
     title: 'System Settings',
     description: 'Application configuration and preferences',
     icon: 'Settings',
     requiresAuth: true,
-    breadcrumb: 'Settings'
+    breadcrumb: 'Settings',
   },
   [ROUTES.DOCS]: {
     title: 'Documentation',
     description: 'Interactive documentation and API guides',
     icon: 'Book',
     requiresAuth: false, // Public access to docs
-    breadcrumb: 'Documentation'
+    breadcrumb: 'Documentation',
   },
   [ROUTES.DATA_GRIDS]: {
     title: 'Data Management',
     description: 'Comprehensive data grid interface with tabbed navigation',
     icon: 'GridView',
     requiresAuth: true,
-    breadcrumb: 'Data Grids'
+    breadcrumb: 'Data Grids',
   },
   [ROUTES.GRID_TEST]: {
     title: 'Grid Testing',
     description: 'Performance testing and validation for grid components',
     icon: 'Speed',
     requiresAuth: true,
-    breadcrumb: 'Grid Test'
+    breadcrumb: 'Grid Test',
   },
   // MDM Routes
   [ROUTES.MDM_PRODUCTS]: {
@@ -160,21 +160,21 @@ export const ROUTE_METADATA = {
     description: 'Master Data Management for products',
     icon: 'Inventory',
     requiresAuth: true,
-    breadcrumb: 'MDM Products'
+    breadcrumb: 'MDM Products',
   },
   [ROUTES.MDM_STOCK]: {
     title: 'MDM Stock',
     description: 'Master Data Management for stock levels',
     icon: 'Inventory2',
     requiresAuth: true,
-    breadcrumb: 'MDM Stock'
+    breadcrumb: 'MDM Stock',
   },
   [ROUTES.MDM_SOURCES]: {
     title: 'MDM Sources',
     description: 'Master Data Management for data sources',
     icon: 'Warehouse',
     requiresAuth: true,
-    breadcrumb: 'MDM Sources'
+    breadcrumb: 'MDM Sources',
   },
   // Magento Routes
   [ROUTES.CATEGORIES]: {
@@ -182,42 +182,42 @@ export const ROUTE_METADATA = {
     description: 'Product category management',
     icon: 'Category',
     requiresAuth: true,
-    breadcrumb: 'Categories'
+    breadcrumb: 'Categories',
   },
   [ROUTES.STOCKS]: {
     title: 'Stocks',
     description: 'Inventory and stock management',
     icon: 'Inventory2',
     requiresAuth: true,
-    breadcrumb: 'Stocks'
+    breadcrumb: 'Stocks',
   },
   [ROUTES.SOURCES]: {
     title: 'Sources',
     description: 'Warehouse and source management',
     icon: 'Warehouse',
     requiresAuth: true,
-    breadcrumb: 'Sources'
+    breadcrumb: 'Sources',
   },
   [ROUTES.INVOICES]: {
     title: 'Invoices',
     description: 'Invoice management',
     icon: 'Receipt',
     requiresAuth: true,
-    breadcrumb: 'Invoices'
+    breadcrumb: 'Invoices',
   },
   [ROUTES.CMS_PAGES]: {
     title: 'CMS Pages',
     description: 'Content management system pages',
     icon: 'Description',
     requiresAuth: true,
-    breadcrumb: 'CMS Pages'
+    breadcrumb: 'CMS Pages',
   },
   [ROUTES.CEGID_PRODUCTS]: {
     title: 'Cegid Products',
     description: 'Cegid product integration',
     icon: 'Storefront',
     requiresAuth: true,
-    breadcrumb: 'Cegid Products'
+    breadcrumb: 'Cegid Products',
   },
   // Analytics Routes
   [ROUTES.SALES_ANALYTICS]: {
@@ -225,14 +225,14 @@ export const ROUTE_METADATA = {
     description: 'Sales performance analytics',
     icon: 'Analytics',
     requiresAuth: true,
-    breadcrumb: 'Sales Analytics'
+    breadcrumb: 'Sales Analytics',
   },
   [ROUTES.INVENTORY_ANALYTICS]: {
     title: 'Inventory Analytics',
     description: 'Inventory performance analytics',
     icon: 'Inventory2',
     requiresAuth: true,
-    breadcrumb: 'Inventory Analytics'
+    breadcrumb: 'Inventory Analytics',
   },
   // Security Routes
   [ROUTES.SECURE_VAULT]: {
@@ -240,14 +240,14 @@ export const ROUTE_METADATA = {
     description: 'Encrypted document storage',
     icon: 'Security',
     requiresAuth: true,
-    breadcrumb: 'Secure Vault'
+    breadcrumb: 'Secure Vault',
   },
   [ROUTES.ACCESS_CONTROL]: {
     title: 'Access Control',
     description: 'User access management',
     icon: 'AdminPanelSettings',
     requiresAuth: true,
-    breadcrumb: 'Access Control'
+    breadcrumb: 'Access Control',
   },
   // Development Routes
   [ROUTES.BUG_BOUNTY]: {
@@ -255,21 +255,21 @@ export const ROUTE_METADATA = {
     description: 'Bug reporting and tracking',
     icon: 'BugReport',
     requiresAuth: true,
-    breadcrumb: 'Bug Bounty'
+    breadcrumb: 'Bug Bounty',
   },
   [ROUTES.VOTING]: {
     title: 'Feature Voting',
     description: 'Feature request voting system',
     icon: 'HowToVote',
     requiresAuth: true,
-    breadcrumb: 'Feature Voting'
+    breadcrumb: 'Feature Voting',
   },
   [ROUTES.ROUTE_TEST]: {
     title: 'Route Test',
     description: 'Test page for verifying routes',
     icon: 'Route',
     requiresAuth: true,
-    breadcrumb: 'Route Test'
+    breadcrumb: 'Route Test',
   },
   // User Routes
   [ROUTES.USER_PROFILE]: {
@@ -277,7 +277,7 @@ export const ROUTE_METADATA = {
     description: 'User profile and settings',
     icon: 'AccountCircle',
     requiresAuth: false, // Always accessible
-    breadcrumb: 'User Profile'
+    breadcrumb: 'User Profile',
   },
   // License Routes
   [ROUTES.LICENSE_MANAGEMENT]: {
@@ -285,15 +285,15 @@ export const ROUTE_METADATA = {
     description: 'License configuration and management',
     icon: 'VerifiedUser',
     requiresAuth: true,
-    breadcrumb: 'License Management'
+    breadcrumb: 'License Management',
   },
   [ROUTES.LICENSE_STATUS]: {
     title: 'License Status',
     description: 'License status and information',
     icon: 'VerifiedUser',
     requiresAuth: false, // Always accessible
-    breadcrumb: 'License Status'
-  }
+    breadcrumb: 'License Status',
+  },
 };
 
 /**
@@ -306,7 +306,7 @@ export const NAVIGATION_ITEMS = [
     icon: 'Dashboard',
     order: 1,
     badge: null,
-    submenu: []
+    submenu: [],
   },
   {
     path: ROUTES.PRODUCTS,
@@ -319,15 +319,15 @@ export const NAVIGATION_ITEMS = [
         path: '/products/catalog',
         label: 'Product Catalog',
         icon: 'Inventory',
-        description: 'Manage product catalog'
+        description: 'Manage product catalog',
       },
       {
         path: '/products/categories',
         label: 'Categories',
         icon: 'Category',
-        description: 'Manage product categories'
-      }
-    ]
+        description: 'Manage product categories',
+      },
+    ],
   },
   {
     path: ROUTES.INVENTORY,
@@ -340,15 +340,15 @@ export const NAVIGATION_ITEMS = [
         path: '/inventory/stock',
         label: 'Stock Levels',
         icon: 'Inventory',
-        description: 'Monitor stock levels'
+        description: 'Monitor stock levels',
       },
       {
         path: '/inventory/warehouses',
         label: 'Warehouses',
         icon: 'Warehouse',
-        description: 'Manage warehouses'
-      }
-    ]
+        description: 'Manage warehouses',
+      },
+    ],
   },
   {
     path: ROUTES.ORDERS,
@@ -361,15 +361,15 @@ export const NAVIGATION_ITEMS = [
         path: '/orders/pending',
         label: 'Pending Orders',
         icon: 'Pending',
-        description: 'Orders awaiting processing'
+        description: 'Orders awaiting processing',
       },
       {
         path: '/orders/completed',
         label: 'Completed Orders',
         icon: 'CheckCircle',
-        description: 'Completed orders'
-      }
-    ]
+        description: 'Completed orders',
+      },
+    ],
   },
   {
     path: ROUTES.CUSTOMERS,
@@ -377,7 +377,7 @@ export const NAVIGATION_ITEMS = [
     icon: 'People',
     order: 5,
     badge: null,
-    submenu: []
+    submenu: [],
   },
   {
     path: ROUTES.CHARTS,
@@ -390,15 +390,15 @@ export const NAVIGATION_ITEMS = [
         path: '/charts/sales',
         label: 'Sales Analytics',
         icon: 'TrendingUp',
-        description: 'Sales performance charts'
+        description: 'Sales performance charts',
       },
       {
         path: '/charts/inventory',
         label: 'Inventory Analytics',
         icon: 'BarChart',
-        description: 'Inventory performance charts'
-      }
-    ]
+        description: 'Inventory performance charts',
+      },
+    ],
   },
   {
     path: ROUTES.REPORTS,
@@ -411,15 +411,15 @@ export const NAVIGATION_ITEMS = [
         path: '/reports/sales',
         label: 'Sales Reports',
         icon: 'Assessment',
-        description: 'Sales performance reports'
+        description: 'Sales performance reports',
       },
       {
         path: '/reports/inventory',
         label: 'Inventory Reports',
         icon: 'Inventory',
-        description: 'Inventory reports'
-      }
-    ]
+        description: 'Inventory reports',
+      },
+    ],
   },
   {
     path: ROUTES.ANALYTICS,
@@ -427,7 +427,7 @@ export const NAVIGATION_ITEMS = [
     icon: 'Analytics',
     order: 8,
     badge: null,
-    submenu: []
+    submenu: [],
   },
   {
     path: ROUTES.TASKS,
@@ -435,7 +435,7 @@ export const NAVIGATION_ITEMS = [
     icon: 'Task',
     order: 9,
     badge: null,
-    submenu: []
+    submenu: [],
   },
   {
     path: ROUTES.SETTINGS,
@@ -448,16 +448,16 @@ export const NAVIGATION_ITEMS = [
         path: '/settings/system',
         label: 'System Settings',
         icon: 'Settings',
-        description: 'System configuration'
+        description: 'System configuration',
       },
       {
         path: '/settings/users',
         label: 'User Management',
         icon: 'People',
-        description: 'Manage users and permissions'
-      }
-    ]
-  }
+        description: 'Manage users and permissions',
+      },
+    ],
+  },
 ];
 
 /**
@@ -469,7 +469,7 @@ export const getRouteMetadata = (path) => {
     description: '',
     icon: 'Help',
     requiresAuth: true,
-    breadcrumb: 'Unknown'
+    breadcrumb: 'Unknown',
   };
 };
 
@@ -478,6 +478,7 @@ export const getRouteMetadata = (path) => {
  */
 export const requiresAuth = (path) => {
   const metadata = getRouteMetadata(path);
+
   return metadata.requiresAuth !== false;
 };
 
@@ -485,8 +486,8 @@ export const requiresAuth = (path) => {
  * Get all protected routes
  */
 export const getProtectedRoutes = () => {
-  return Object.keys(ROUTE_METADATA).filter(route => 
-    ROUTE_METADATA[route].requiresAuth !== false
+  return Object.keys(ROUTE_METADATA).filter(route =>
+    ROUTE_METADATA[route].requiresAuth !== false,
   );
 };
 

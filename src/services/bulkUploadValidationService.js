@@ -26,7 +26,7 @@ class BulkUploadValidationService {
       errors: [],
       warnings: [],
       suggestions: [],
-      metadata: {}
+      metadata: {},
     };
 
     try {
@@ -36,8 +36,9 @@ class BulkUploadValidationService {
         result.errors.push({
           type: 'FILE_MISSING',
           message: 'No CSV file provided',
-          suggestion: 'Please select a CSV file to upload'
+          suggestion: 'Please select a CSV file to upload',
         });
+
         return result;
       }
 
@@ -47,7 +48,7 @@ class BulkUploadValidationService {
         result.errors.push({
           type: 'INVALID_FILE_TYPE',
           message: `Invalid file type: ${file.type}`,
-          suggestion: 'Please upload a CSV file (.csv extension)'
+          suggestion: 'Please upload a CSV file (.csv extension)',
         });
       }
 
@@ -57,7 +58,7 @@ class BulkUploadValidationService {
         result.errors.push({
           type: 'FILE_TOO_LARGE',
           message: `CSV file too large: ${(file.size / 1024 / 1024).toFixed(2)}MB`,
-          suggestion: `Maximum CSV file size is ${(this.maxCSVSize / 1024 / 1024).toFixed(0)}MB`
+          suggestion: `Maximum CSV file size is ${(this.maxCSVSize / 1024 / 1024).toFixed(0)}MB`,
         });
       }
 
@@ -67,8 +68,9 @@ class BulkUploadValidationService {
         result.errors.push({
           type: 'EMPTY_FILE',
           message: 'CSV file is empty',
-          suggestion: 'Please upload a CSV file with product data'
+          suggestion: 'Please upload a CSV file with product data',
         });
+
         return result;
       }
 
@@ -79,6 +81,7 @@ class BulkUploadValidationService {
 
       // Content validation
       const contentValidation = this.validateCSVContent(content);
+
       result.errors.push(...contentValidation.errors);
       result.warnings.push(...contentValidation.warnings);
       result.suggestions.push(...contentValidation.suggestions);
@@ -93,7 +96,7 @@ class BulkUploadValidationService {
       result.errors.push({
         type: 'VALIDATION_ERROR',
         message: `CSV validation failed: ${error.message}`,
-        suggestion: 'Check that the file is a valid CSV and not corrupted'
+        suggestion: 'Check that the file is a valid CSV and not corrupted',
       });
     }
 
@@ -110,23 +113,25 @@ class BulkUploadValidationService {
       errors: [],
       warnings: [],
       suggestions: [],
-      metadata: {}
+      metadata: {},
     };
 
     try {
       const lines = content.split('\n').filter(line => line.trim());
-      
+
       if (lines.length === 0) {
         result.errors.push({
           type: 'EMPTY_CONTENT',
           message: 'CSV file contains no data',
-          suggestion: 'Ensure the CSV file has headers and data rows'
+          suggestion: 'Ensure the CSV file has headers and data rows',
         });
+
         return result;
       }
 
       // Header validation
       const headers = lines[0].split(',').map(h => h.trim().replace(/['"]/g, ''));
+
       result.metadata.headers = headers;
       result.metadata.totalLines = lines.length;
       result.metadata.dataRows = lines.length - 1;
@@ -135,18 +140,20 @@ class BulkUploadValidationService {
         result.errors.push({
           type: 'NO_HEADERS',
           message: 'CSV file has no headers',
-          suggestion: 'First row should contain column headers (SKU, Image, Name, etc.)'
+          suggestion: 'First row should contain column headers (SKU, Image, Name, etc.)',
         });
+
         return result;
       }
 
       // Check for required columns
       const skuColumn = this.findColumn(headers, ['sku', 'reference', 'ref', 'product_id', 'id']);
+
       if (!skuColumn) {
         result.errors.push({
           type: 'MISSING_SKU_COLUMN',
           message: 'No SKU/Reference column found',
-          suggestion: 'CSV must have a column named: SKU, Reference, REF, Product_ID, or ID'
+          suggestion: 'CSV must have a column named: SKU, Reference, REF, Product_ID, or ID',
         });
       } else {
         result.metadata.skuColumn = skuColumn;
@@ -166,12 +173,13 @@ class BulkUploadValidationService {
         result.warnings.push({
           type: 'TOO_MANY_ROWS',
           message: `CSV has ${lines.length - 1} rows, maximum recommended is ${this.maxCSVRows}`,
-          suggestion: 'Consider splitting large CSV files for better performance'
+          suggestion: 'Consider splitting large CSV files for better performance',
         });
       }
 
       // Validate data rows
       const dataValidation = this.validateCSVDataRows(lines.slice(1), headers, skuColumn);
+
       result.errors.push(...dataValidation.errors);
       result.warnings.push(...dataValidation.warnings);
       result.suggestions.push(...dataValidation.suggestions);
@@ -181,7 +189,7 @@ class BulkUploadValidationService {
       result.errors.push({
         type: 'CONTENT_PARSE_ERROR',
         message: `Failed to parse CSV content: ${error.message}`,
-        suggestion: 'Check that the CSV uses proper comma separation and encoding'
+        suggestion: 'Check that the CSV uses proper comma separation and encoding',
       });
     }
 
@@ -200,7 +208,7 @@ class BulkUploadValidationService {
       errors: [],
       warnings: [],
       suggestions: [],
-      metadata: {}
+      metadata: {},
     };
 
     const skuColumnIndex = headers.indexOf(skuColumn);
@@ -219,13 +227,15 @@ class BulkUploadValidationService {
           row: rowNumber,
           expected: headers.length,
           actual: values.length,
-          line: line.substring(0, 100) + (line.length > 100 ? '...' : '')
+          line: line.substring(0, 100) + (line.length > 100 ? '...' : ''),
         });
+
         return;
       }
 
       // Check SKU
       const sku = values[skuColumnIndex];
+
       if (!sku || sku.trim() === '') {
         emptySKUs.push(rowNumber);
       } else {
@@ -242,7 +252,7 @@ class BulkUploadValidationService {
         type: 'INVALID_ROW_FORMAT',
         message: `${invalidRows.length} rows have incorrect number of columns`,
         suggestion: 'Check that all rows have the same number of comma-separated values as headers',
-        details: invalidRows.slice(0, 5) // Show first 5 invalid rows
+        details: invalidRows.slice(0, 5), // Show first 5 invalid rows
       });
     }
 
@@ -251,7 +261,7 @@ class BulkUploadValidationService {
         type: 'EMPTY_SKUS',
         message: `${emptySKUs.length} rows have empty SKU values`,
         suggestion: 'Rows with empty SKUs will be skipped during processing',
-        details: emptySKUs.slice(0, 10) // Show first 10 row numbers
+        details: emptySKUs.slice(0, 10), // Show first 10 row numbers
       });
     }
 
@@ -260,7 +270,7 @@ class BulkUploadValidationService {
         type: 'DUPLICATE_SKUS',
         message: `${duplicateSKUs.size} SKUs appear multiple times`,
         suggestion: 'Duplicate SKUs may cause unexpected matching behavior',
-        details: Array.from(duplicateSKUs).slice(0, 10) // Show first 10 duplicates
+        details: Array.from(duplicateSKUs).slice(0, 10), // Show first 10 duplicates
       });
     }
 
@@ -283,15 +293,16 @@ class BulkUploadValidationService {
       invalid: [],
       warnings: [],
       suggestions: [],
-      metadata: {}
+      metadata: {},
     };
 
     if (!files || files.length === 0) {
       result.suggestions.push({
         type: 'NO_FILES',
         message: 'No image files provided',
-        suggestion: 'Please select image files to upload'
+        suggestion: 'Please select image files to upload',
       });
+
       return result;
     }
 
@@ -299,7 +310,7 @@ class BulkUploadValidationService {
       result.warnings.push({
         type: 'TOO_MANY_FILES',
         message: `${files.length} files selected, maximum recommended is ${this.maxTotalImages}`,
-        suggestion: 'Consider processing images in smaller batches for better performance'
+        suggestion: 'Consider processing images in smaller batches for better performance',
       });
     }
 
@@ -309,7 +320,7 @@ class BulkUploadValidationService {
 
     files.forEach((file, index) => {
       const validation = this.validateSingleImageFile(file, index);
-      
+
       if (validation.valid) {
         result.valid.push(validation);
       } else {
@@ -331,17 +342,18 @@ class BulkUploadValidationService {
         type: 'DUPLICATE_FILENAMES',
         message: `${duplicateNames.length} files have duplicate names`,
         suggestion: 'Rename files to have unique names to avoid conflicts',
-        details: duplicateNames.slice(0, 10)
+        details: duplicateNames.slice(0, 10),
       });
     }
 
     // Check total size
     const totalSizeGB = totalSize / (1024 * 1024 * 1024);
+
     if (totalSizeGB > 1) {
       result.warnings.push({
         type: 'LARGE_TOTAL_SIZE',
         message: `Total size: ${totalSizeGB.toFixed(2)}GB`,
-        suggestion: 'Large uploads may take significant time and bandwidth'
+        suggestion: 'Large uploads may take significant time and bandwidth',
       });
     }
 
@@ -351,7 +363,7 @@ class BulkUploadValidationService {
       invalidFiles: result.invalid.length,
       totalSize: totalSize,
       averageSize: files.length > 0 ? totalSize / files.length : 0,
-      duplicateNames: duplicateNames.length
+      duplicateNames: duplicateNames.length,
     };
 
     return result;
@@ -369,7 +381,7 @@ class BulkUploadValidationService {
       index,
       valid: true,
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     // File existence check
@@ -377,8 +389,9 @@ class BulkUploadValidationService {
       result.valid = false;
       result.errors.push({
         type: 'FILE_MISSING',
-        message: 'File is missing or corrupted'
+        message: 'File is missing or corrupted',
       });
+
       return result;
     }
 
@@ -388,7 +401,7 @@ class BulkUploadValidationService {
       result.errors.push({
         type: 'INVALID_FILE_TYPE',
         message: `Invalid file type: ${file.type}`,
-        suggestion: 'Supported formats: JPG, PNG, GIF, WebP'
+        suggestion: 'Supported formats: JPG, PNG, GIF, WebP',
       });
     }
 
@@ -398,7 +411,7 @@ class BulkUploadValidationService {
       result.errors.push({
         type: 'FILE_TOO_LARGE',
         message: `File too large: ${(file.size / 1024 / 1024).toFixed(2)}MB`,
-        suggestion: `Maximum file size is ${(this.maxFileSize / 1024 / 1024).toFixed(0)}MB`
+        suggestion: `Maximum file size is ${(this.maxFileSize / 1024 / 1024).toFixed(0)}MB`,
       });
     }
 
@@ -407,12 +420,13 @@ class BulkUploadValidationService {
       result.valid = false;
       result.errors.push({
         type: 'EMPTY_FILE',
-        message: 'File is empty or corrupted'
+        message: 'File is empty or corrupted',
       });
     }
 
     // Filename validation
     const filenameValidation = this.validateFilename(file.name);
+
     if (!filenameValidation.valid) {
       result.warnings.push(...filenameValidation.warnings);
     }
@@ -422,7 +436,7 @@ class BulkUploadValidationService {
       result.warnings.push({
         type: 'VERY_SMALL_FILE',
         message: `File is very small: ${(file.size / 1024).toFixed(1)}KB`,
-        suggestion: 'Verify this is a valid image file'
+        suggestion: 'Verify this is a valid image file',
       });
     }
 
@@ -430,7 +444,7 @@ class BulkUploadValidationService {
       result.warnings.push({
         type: 'LARGE_FILE',
         message: `Large file: ${(file.size / 1024 / 1024).toFixed(2)}MB`,
-        suggestion: 'Consider compressing large images for faster upload'
+        suggestion: 'Consider compressing large images for faster upload',
       });
     }
 
@@ -445,16 +459,17 @@ class BulkUploadValidationService {
   validateFilename(filename) {
     const result = {
       valid: true,
-      warnings: []
+      warnings: [],
     };
 
     // Check for special characters that might cause issues
     const problematicChars = /[<>:"/\\|?*\x00-\x1f]/;
+
     if (problematicChars.test(filename)) {
       result.warnings.push({
         type: 'PROBLEMATIC_CHARACTERS',
         message: 'Filename contains special characters that may cause issues',
-        suggestion: 'Consider renaming files to use only letters, numbers, hyphens, and underscores'
+        suggestion: 'Consider renaming files to use only letters, numbers, hyphens, and underscores',
       });
     }
 
@@ -463,7 +478,7 @@ class BulkUploadValidationService {
       result.warnings.push({
         type: 'FILENAME_TOO_LONG',
         message: 'Filename is very long',
-        suggestion: 'Consider shortening the filename'
+        suggestion: 'Consider shortening the filename',
       });
     }
 
@@ -472,7 +487,7 @@ class BulkUploadValidationService {
       result.warnings.push({
         type: 'SPACES_IN_FILENAME',
         message: 'Filename contains spaces',
-        suggestion: 'Consider using underscores or hyphens instead of spaces'
+        suggestion: 'Consider using underscores or hyphens instead of spaces',
       });
     }
 
@@ -492,7 +507,7 @@ class BulkUploadValidationService {
       errors: [],
       warnings: [],
       suggestions: [],
-      metadata: {}
+      metadata: {},
     };
 
     if (!matchingResults) {
@@ -500,8 +515,9 @@ class BulkUploadValidationService {
       result.errors.push({
         type: 'NO_MATCHING_RESULTS',
         message: 'No matching results provided',
-        suggestion: 'Run the matching process before validation'
+        suggestion: 'Run the matching process before validation',
       });
+
       return result;
     }
 
@@ -513,38 +529,41 @@ class BulkUploadValidationService {
       result.errors.push({
         type: 'NO_MATCHES_FOUND',
         message: 'No matches found between CSV and images',
-        suggestion: 'Check that SKU values match image filenames, or adjust matching settings'
+        suggestion: 'Check that SKU values match image filenames, or adjust matching settings',
       });
     }
 
     // Low match rate warning
     const matchRate = csvData.data.length > 0 ? (stats.uniqueProducts / csvData.data.length) : 0;
+
     if (matchRate < 0.5 && matches.length > 0) {
       result.warnings.push({
         type: 'LOW_MATCH_RATE',
         message: `Low match rate: ${(matchRate * 100).toFixed(1)}% of products matched`,
-        suggestion: 'Review SKU naming conventions or adjust fuzzy matching threshold'
+        suggestion: 'Review SKU naming conventions or adjust fuzzy matching threshold',
       });
     }
 
     // High unmatched images warning
     const unmatchedImageRate = imageFiles.length > 0 ? (stats.unmatchedImages / imageFiles.length) : 0;
+
     if (unmatchedImageRate > 0.3 && imageFiles.length > 0) {
       result.warnings.push({
         type: 'HIGH_UNMATCHED_IMAGES',
         message: `${(unmatchedImageRate * 100).toFixed(1)}% of images unmatched`,
-        suggestion: 'Check image naming conventions or add missing products to CSV'
+        suggestion: 'Check image naming conventions or add missing products to CSV',
       });
     }
 
     // Confidence analysis
     if (matches.length > 0) {
       const lowConfidenceMatches = matches.filter(m => m.confidence < 0.7).length;
+
       if (lowConfidenceMatches > matches.length * 0.2) {
         result.warnings.push({
           type: 'LOW_CONFIDENCE_MATCHES',
           message: `${lowConfidenceMatches} matches have low confidence`,
-          suggestion: 'Review low-confidence matches manually before uploading'
+          suggestion: 'Review low-confidence matches manually before uploading',
         });
       }
     }
@@ -554,7 +573,7 @@ class BulkUploadValidationService {
       unmatchedImageRate: unmatchedImageRate,
       averageConfidence: stats.averageSimilarity || 0,
       totalMatches: matches.length,
-      uniqueProducts: stats.uniqueProducts
+      uniqueProducts: stats.uniqueProducts,
     };
 
     return result;
@@ -576,6 +595,7 @@ class BulkUploadValidationService {
 
     csvData.data.forEach(row => {
       const sku = row[csvData.skuColumn];
+
       if (!sku) return;
 
       const normalizedSku = sku.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -597,7 +617,7 @@ class BulkUploadValidationService {
             isMainImage: true,
             matchStrategy: 'fallback-exact',
             similarity: 1.0,
-            confidence: 0.8 // Lower confidence for fallback
+            confidence: 0.8, // Lower confidence for fallback
           });
           processedImages.add(file.name);
         }
@@ -618,15 +638,15 @@ class BulkUploadValidationService {
           exact: 0,
           normalized: 0,
           fuzzy: 0,
-          ref: 0
-        }
+          ref: 0,
+        },
       },
       unmatched: {
         csvRows: csvData.data.filter(row => !matches.some(m => m.sku === row[csvData.skuColumn])),
-        imageFiles: imageFiles.filter(file => !processedImages.has(file.name))
+        imageFiles: imageFiles.filter(file => !processedImages.has(file.name)),
       },
       fallbackUsed: true,
-      originalError: originalError.message
+      originalError: originalError.message,
     };
   }
 
@@ -638,14 +658,15 @@ class BulkUploadValidationService {
    */
   findColumn(headers, possibleNames) {
     const lowerHeaders = headers.map(h => h.toLowerCase());
-    
+
     for (const name of possibleNames) {
       const found = lowerHeaders.find(h => h.includes(name.toLowerCase()));
+
       if (found) {
         return headers[lowerHeaders.indexOf(found)];
       }
     }
-    
+
     return null;
   }
 
@@ -657,6 +678,7 @@ class BulkUploadValidationService {
   readFileContent(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
+
       reader.onload = (e) => resolve(e.target.result);
       reader.onerror = () => reject(new Error('Failed to read file'));
       reader.readAsText(file);
@@ -666,4 +688,5 @@ class BulkUploadValidationService {
 
 // Export singleton instance
 const bulkUploadValidationService = new BulkUploadValidationService();
+
 export default bulkUploadValidationService;

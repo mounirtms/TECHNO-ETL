@@ -19,7 +19,7 @@ import {
   Chip,
   Collapse,
   IconButton,
-  Divider
+  Divider,
 } from '@mui/material';
 import {
   Sync as SyncIcon,
@@ -31,19 +31,19 @@ import {
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
   Refresh as RefreshIcon,
-  Cancel as CancelIcon
+  Cancel as CancelIcon,
 } from '@mui/icons-material';
 
 /**
  * Stock Sync Dialog Component
  * Displays stock synchronization operations with real-time progress and results
  */
-const StockSyncDialog = ({ 
-  open, 
-  onClose, 
-  onSync, 
-  syncProgress = {}, 
-  loading = false 
+const StockSyncDialog = ({
+  open,
+  onClose,
+  onSync,
+  syncProgress = {},
+  loading = false,
 }) => {
   const [showDetails, setShowDetails] = useState(false);
 
@@ -56,7 +56,7 @@ const StockSyncDialog = ({
     sources = [],
     completedSources = [],
     errorSources = [],
-    message = ''
+    message = '',
   } = syncProgress;
 
   const percentage = total > 0 ? Math.round((current / total) * 100) : 0;
@@ -77,6 +77,7 @@ const StockSyncDialog = ({
   const getStepIcon = (stepIndex) => {
     if (stepIndex < current) return <SuccessIcon color="success" fontSize="small" />;
     if (stepIndex === current && isActive) return <SyncIcon color="primary" fontSize="small" />;
+
     return <PendingIcon color="disabled" fontSize="small" />;
   };
 
@@ -84,6 +85,7 @@ const StockSyncDialog = ({
     if (completed) return 'success';
     if (errorSources.length > 0) return 'error';
     if (isActive) return 'info';
+
     return 'default';
   };
 
@@ -91,26 +93,26 @@ const StockSyncDialog = ({
     { label: 'Mark stocks for sync', description: 'Prepare stock data from MDM database' },
     { label: 'Fetch source configurations', description: 'Load all available source configurations' },
     { label: 'Sync sources to Magento', description: 'Transfer inventory data to Magento' },
-    { label: 'Finalize sync process', description: 'Mark synchronization as successful' }
+    { label: 'Finalize sync process', description: 'Mark synchronization as successful' },
   ];
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={handleClose} 
-      maxWidth="md" 
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="md"
       fullWidth
       PaperProps={{
-        sx: { borderRadius: 3, minHeight: '60vh' }
+        sx: { borderRadius: 3, minHeight: '60vh' },
       }}
     >
-      <DialogTitle sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: 2, 
+      <DialogTitle sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2,
         pb: 1,
         background: 'linear-gradient(135deg, #ff9800 0%, #f57c00 100%)',
-        color: 'white'
+        color: 'white',
       }}>
         <StorageIcon />
         <Box>
@@ -138,7 +140,7 @@ const StockSyncDialog = ({
               </CardContent>
             </Card>
           </Grid>
-          
+
           {sources.length > 0 && (
             <>
               <Grid item xs={12} md={4}>
@@ -153,7 +155,7 @@ const StockSyncDialog = ({
                   </CardContent>
                 </Card>
               </Grid>
-              
+
               <Grid item xs={12} md={4}>
                 <Card variant="outlined">
                   <CardContent sx={{ textAlign: 'center' }}>
@@ -184,18 +186,18 @@ const StockSyncDialog = ({
             <LinearProgress
               variant="determinate"
               value={percentage}
-              sx={{ 
-                height: 8, 
+              sx={{
+                height: 8,
                 borderRadius: 4,
                 backgroundColor: 'rgba(0,0,0,0.1)',
                 '& .MuiLinearProgress-bar': {
                   borderRadius: 4,
-                  background: completed 
+                  background: completed
                     ? 'linear-gradient(90deg, #4caf50 0%, #8bc34a 100%)'
                     : errorSources.length > 0
-                    ? 'linear-gradient(90deg, #f44336 0%, #e57373 100%)'
-                    : 'linear-gradient(90deg, #ff9800 0%, #ffb74d 100%)'
-                }
+                      ? 'linear-gradient(90deg, #f44336 0%, #e57373 100%)'
+                      : 'linear-gradient(90deg, #ff9800 0%, #ffb74d 100%)',
+                },
               }}
             />
           </Box>
@@ -204,7 +206,7 @@ const StockSyncDialog = ({
         {/* Current Step */}
         {currentStep && (
           <Box sx={{ mb: 2 }}>
-            <Chip 
+            <Chip
               icon={isActive ? <SyncIcon /> : completed ? <SuccessIcon /> : <ErrorIcon />}
               label={currentStep}
               color={getStatusColor()}
@@ -231,8 +233,8 @@ const StockSyncDialog = ({
 
         {/* Status Message */}
         {message && (
-          <Alert 
-            severity={completed ? 'success' : errorSources.length > 0 ? 'error' : 'info'} 
+          <Alert
+            severity={completed ? 'success' : errorSources.length > 0 ? 'error' : 'info'}
             sx={{ mb: 2 }}
           >
             <Typography variant="body2">
@@ -261,17 +263,17 @@ const StockSyncDialog = ({
                 <ListItemIcon sx={{ minWidth: 36 }}>
                   {getStepIcon(index)}
                 </ListItemIcon>
-                <ListItemText 
+                <ListItemText
                   primary={step.label}
                   secondary={step.description}
                   primaryTypographyProps={{
                     variant: 'body2',
                     color: index <= current ? 'text.primary' : 'text.secondary',
-                    fontWeight: index === current && isActive ? 600 : 400
+                    fontWeight: index === current && isActive ? 600 : 400,
                   }}
                   secondaryTypographyProps={{
                     variant: 'caption',
-                    color: 'text.secondary'
+                    color: 'text.secondary',
                   }}
                 />
               </ListItem>
@@ -290,7 +292,7 @@ const StockSyncDialog = ({
                   const isCompleted = completedSources.includes(source.code_source);
                   const hasError = errorSources.includes(source.code_source);
                   const status = hasError ? 'error' : isCompleted ? 'success' : 'default';
-                  
+
                   return (
                     <Grid item xs={12} sm={6} md={4} key={index}>
                       <Chip
@@ -311,15 +313,15 @@ const StockSyncDialog = ({
       </DialogContent>
 
       <DialogActions sx={{ p: 3, gap: 1 }}>
-        <Button 
+        <Button
           onClick={handleClose}
           disabled={isActive}
           startIcon={<CancelIcon />}
         >
           {isActive ? 'Syncing...' : 'Close'}
         </Button>
-        <Button 
-          onClick={handleSync} 
+        <Button
+          onClick={handleSync}
           variant="contained"
           disabled={isActive || loading}
           startIcon={isActive ? <SyncIcon /> : <RefreshIcon />}
@@ -327,7 +329,7 @@ const StockSyncDialog = ({
             background: 'linear-gradient(135deg, #ff9800 0%, #f57c00 100%)',
             '&:hover': {
               background: 'linear-gradient(135deg, #f57c00 0%, #ef6c00 100%)',
-            }
+            },
           }}
         >
           {isActive ? 'Syncing...' : completed ? 'Sync Again' : 'Start Sync'}

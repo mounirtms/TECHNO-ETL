@@ -5,7 +5,7 @@ import {
   Typography,
   Box,
   Chip,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import HomeIcon from '@mui/icons-material/Home';
@@ -20,7 +20,7 @@ const routeLabels = {
   orders: 'Orders',
   customers: 'Customers',
   reports: 'Reports',
-  settings: 'Settings'
+  settings: 'Settings',
 };
 
 const Breadcrumbs = () => {
@@ -40,11 +40,11 @@ const Breadcrumbs = () => {
         sx={{
           '& .MuiBreadcrumbs-separator': {
             color: 'text.secondary',
-            mx: 1
+            mx: 1,
           },
           '& .MuiBreadcrumbs-ol': {
-            alignItems: 'center'
-          }
+            alignItems: 'center',
+          },
         }}
       >
         {breadcrumbs.map((breadcrumb, index) => {
@@ -62,7 +62,7 @@ const Breadcrumbs = () => {
                 sx={{
                   fontWeight: 600,
                   fontSize: '0.75rem',
-                  height: 24
+                  height: 24,
                 }}
               />
             );
@@ -88,8 +88,8 @@ const Breadcrumbs = () => {
                 transition: theme.transitions.create(['color', 'background-color']),
                 '&:hover': {
                   color: 'primary.main',
-                  backgroundColor: 'action.hover'
-                }
+                  backgroundColor: 'action.hover',
+                },
               }}
             >
               {isFirst && <HomeIcon sx={{ mr: 0.5, fontSize: 16 }} />}

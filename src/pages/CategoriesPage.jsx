@@ -1,11 +1,11 @@
 import React, { useState, useCallback, Suspense } from 'react';
-import { 
+import {
   Category as CategoryIcon,
   AccountTree,
   ViewList,
   Settings as SettingsIcon,
   Add as AddIcon,
-  FilterList as FilterIcon
+  FilterList as FilterIcon,
 } from '@mui/icons-material';
 import EnhancedGridPage from '../components/common/EnhancedGridPage';
 import { toast } from 'react-toastify';
@@ -22,7 +22,7 @@ const CategoriesPage = () => {
     { label: 'Total Categories', value: '0', color: 'primary' },
     { label: 'Active Categories', value: '0', color: 'success' },
     { label: 'Root Categories', value: '0', color: 'info' },
-    { label: 'Sub Categories', value: '0', color: 'warning' }
+    { label: 'Sub Categories', value: '0', color: 'warning' },
   ]);
 
   const handleTabChange = useCallback((newTab) => {
@@ -33,7 +33,7 @@ const CategoriesPage = () => {
   const handleRefresh = useCallback(async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       // Simulate refresh - in real implementation, this would refetch data
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -71,7 +71,7 @@ const CategoriesPage = () => {
         <Suspense fallback={<div>Loading Category Tree...</div>}>
           <CategoryTree />
         </Suspense>
-      )
+      ),
     },
     {
       id: 'management',
@@ -81,8 +81,8 @@ const CategoriesPage = () => {
         <Suspense fallback={<div>Loading Category Management...</div>}>
           <CategoryManagementGrid />
         </Suspense>
-      )
-    }
+      ),
+    },
   ];
 
   const actions = [
@@ -90,14 +90,14 @@ const CategoriesPage = () => {
       label: 'Export Categories',
       variant: 'outlined',
       onClick: () => toast.info('Export categories functionality coming soon'),
-      color: 'secondary'
+      color: 'secondary',
     },
     {
       label: 'Import Categories',
       variant: 'outlined',
       onClick: () => toast.info('Import categories functionality coming soon'),
-      color: 'secondary'
-    }
+      color: 'secondary',
+    },
   ];
 
   return (

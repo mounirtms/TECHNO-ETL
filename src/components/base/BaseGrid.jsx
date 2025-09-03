@@ -1,6 +1,6 @@
 /**
  * BaseGrid - Modern React 18 Base Grid Component
- * 
+ *
  * Features:
  * - React 18 Suspense integration
  * - Error Boundaries for robust error handling
@@ -10,32 +10,32 @@
  * - Modern state management patterns
  * - Built-in CRUD operations
  * - Comprehensive memoization
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
 
-import React, { 
-  useState, 
-  useCallback, 
-  useMemo, 
-  useEffect, 
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
   useId,
   useDeferredValue,
   useTransition,
   Suspense,
   memo,
   forwardRef,
-  useImperativeHandle
+  useImperativeHandle,
 } from 'react';
-import { 
-  Box, 
-  Paper, 
-  Skeleton, 
+import {
+  Box,
+  Paper,
+  Skeleton,
   Alert,
   Fade,
   CircularProgress,
-  Typography
+  Typography,
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { toast } from 'react-toastify';
@@ -62,8 +62,8 @@ import { enhanceColumns, applySavedColumnSettings } from '../../utils/gridUtils'
  * Error Fallback Component for Error Boundary
  */
 const GridErrorFallback = memo(({ error, resetErrorBoundary }) => (
-  <Alert 
-    severity="error" 
+  <Alert
+    severity="error"
     sx={{ m: 2 }}
     action={
       <Box sx={{ display: 'flex', gap: 1 }}>
@@ -100,12 +100,12 @@ const BaseGrid = memo(forwardRef(({
   data = [],
   loading = false,
   error = null,
-  
+
   // API props
   apiService,
   apiEndpoint,
   apiParams = {},
-  
+
   // Feature toggles
   enableSuspense = true,
   enableErrorBoundary = true,
@@ -116,17 +116,17 @@ const BaseGrid = memo(forwardRef(({
   enableSearch = true,
   enableStats = true,
   enableActions = true,
-  
+
   // Toolbar configuration
   toolbarConfig = {},
   customActions = [],
-  
+
   // Dialog configuration
   dialogConfig = {},
-  
+
   // Stats configuration
   statsConfig = {},
-  
+
   // Event handlers
   onRefresh,
   onAdd,
@@ -135,25 +135,25 @@ const BaseGrid = memo(forwardRef(({
   onSearch,
   onSelectionChange,
   onError,
-  
+
   // Advanced props
   searchFields = ['name', 'sku', 'code'],
   getRowId = (row) => row.id || row.entity_id,
   sx = {},
-  
+
   // Children for custom content
   children,
-  
+
   ...props
 }, ref) => {
   // Generate unique IDs for accessibility
   const gridId = useId();
   const searchId = useId();
   const toolbarId = useId();
-  
+
   // React 18 transitions for non-blocking updates
   const [isPending, startTransition] = useTransition();
-  
+
   // Local state with modern patterns
   const [localData, setLocalData] = useState(data);
   const [localLoading, setLocalLoading] = useState(loading);
@@ -164,22 +164,22 @@ const BaseGrid = memo(forwardRef(({
     add: false,
     edit: false,
     delete: false,
-    selectedRecord: null
+    selectedRecord: null,
   });
   const [stats, setStats] = useState({
     total: 0,
     active: 0,
     inactive: 0,
-    selected: 0
+    selected: 0,
   });
-  
+
   // Deferred value for search optimization
   const deferredSearchQuery = useDeferredValue(searchQuery);
-  
+
   // Optimized theme and settings
   const gridTheme = useOptimizedGridTheme();
   const { settings } = useSettings();
-  
+
   // Grid state management
   const {
     paginationModel,
@@ -191,80 +191,83 @@ const BaseGrid = memo(forwardRef(({
     columnVisibility,
     setColumnVisibility,
     density,
-    setDensity
+    setDensity,
   } = useGridState(gridName);
-  
+
   // Cache management
   const {
     getCacheData,
     setCacheData,
-    clearCache
+    clearCache,
   } = useGridCache(gridName);
-  
+
   // Grid actions
   const {
     handleBulkAction,
     handleExport,
-    handleImport
+    handleImport,
   } = useGridActions(gridName);
-  
+
   // Enhanced columns with memoization
   const enhancedColumns = useMemo(() => {
     return enhanceColumns(columns, {
       enableSorting,
       enableFiltering,
       gridTheme,
-      settings
+      settings,
     });
   }, [columns, enableSorting, enableFiltering, gridTheme, settings]);
-  
+
   // Filtered data with deferred search
   const filteredData = useMemo(() => {
     if (!deferredSearchQuery) return localData;
-    
+
     const query = deferredSearchQuery.toLowerCase();
-    return localData.filter(row => 
-      searchFields.some(field => 
-        String(row[field] || '').toLowerCase().includes(query)
-      )
+
+    return localData.filter(row =>
+      searchFields.some(field =>
+        String(row[field] || '').toLowerCase().includes(query),
+      ),
     );
   }, [localData, deferredSearchQuery, searchFields]);
-  
+
   // Stats calculation
   const calculatedStats = useMemo(() => {
     const total = filteredData.length;
     const active = filteredData.filter(row => row.status === 'active' || row.is_active).length;
     const inactive = total - active;
     const selected = selectedRows.length;
-    
+
     return { total, active, inactive, selected };
   }, [filteredData, selectedRows]);
-  
+
   // Data fetching with error handling
   const fetchData = useCallback(async () => {
     if (!apiService || !apiEndpoint) return;
-    
+
     setLocalLoading(true);
     setLocalError(null);
-    
+
     try {
       // Check cache first
       const cachedData = getCacheData();
+
       if (cachedData && !onRefresh) {
         setLocalData(cachedData);
         setLocalLoading(false);
+
         return;
       }
-      
+
       const response = await apiService.get(apiEndpoint, { params: apiParams });
       const responseData = response.data?.items || response.data || response;
-      
+
       startTransition(() => {
         setLocalData(responseData);
         setCacheData(responseData);
         setStats(calculatedStats);
       });
-      
+
     } catch (error) {
       console.error(`Error fetching ${gridName} data:`, error);
       setLocalError(error);
@@ -274,7 +277,7 @@ const BaseGrid = memo(forwardRef(({
       setLocalLoading(false);
     }
   }, [apiService, apiEndpoint, apiParams, gridName, getCacheData, setCacheData, onError, onRefresh, calculatedStats]);
-  
+
   // Modern event handlers with transitions
   const handleRefresh = useCallback(() => {
     startTransition(() => {
@@ -283,75 +286,75 @@ const BaseGrid = memo(forwardRef(({
     });
     onRefresh?.();
   }, [clearCache, fetchData, onRefresh]);
-  
+
   const handleSearchChange = useCallback((query) => {
     startTransition(() => {
       setSearchQuery(query);
     });
     onSearch?.(query);
   }, [onSearch]);
-  
+
   const handleSelectionChange = useCallback((newSelection) => {
     startTransition(() => {
       setSelectedRows(newSelection);
     });
     onSelectionChange?.(newSelection);
   }, [onSelectionChange]);
-  
+
   const handleAdd = useCallback(() => {
     setDialogState(prev => ({ ...prev, add: true, selectedRecord: null }));
     onAdd?.();
   }, [onAdd]);
-  
+
   const handleEdit = useCallback((record) => {
     setDialogState(prev => ({ ...prev, edit: true, selectedRecord: record }));
     onEdit?.(record);
   }, [onEdit]);
-  
+
   const handleDelete = useCallback((records) => {
     setDialogState(prev => ({ ...prev, delete: true, selectedRecord: records }));
     onDelete?.(records);
   }, [onDelete]);
-  
+
   const handleDialogClose = useCallback((dialogType) => {
     setDialogState(prev => ({ ...prev, [dialogType]: false, selectedRecord: null }));
   }, []);
-  
+
   // Imperative API for ref
   useImperativeHandle(ref, () => ({
     refresh: handleRefresh,
     clearCache,
     exportData: () => handleExport(filteredData),
     getSelectedRows: () => selectedRows,
-    getStats: () => calculatedStats
+    getStats: () => calculatedStats,
   }), [handleRefresh, clearCache, handleExport, filteredData, selectedRows, calculatedStats]);
-  
+
   // Effects
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-  
+
   useEffect(() => {
     setStats(calculatedStats);
   }, [calculatedStats]);
-  
+
   // Error boundary error handler
   const handleError = useCallback((error, errorInfo) => {
     console.error('BaseGrid Error:', error, errorInfo);
     onError?.(error);
   }, [onError]);
-  
+
   // Main grid content
   const GridContent = memo(() => (
-    <Box 
-      sx={{ 
-        height: '100%', 
-        width: '100%', 
-        display: 'flex', 
+    <Box
+      sx={{
+        height: '100%',
+        width: '100%',
+        display: 'flex',
         flexDirection: 'column',
         opacity: isPending ? 0.7 : 1,
         transition: 'opacity 0.2s ease',
-        ...sx 
+        ...sx,
       }}
       id={gridId}
       role="grid"
@@ -367,7 +370,7 @@ const BaseGrid = memo(forwardRef(({
           />
         </Box>
       )}
-      
+
       {/* Toolbar */}
       {enableActions && (
         <Box sx={{ mb: 1 }}>
@@ -388,23 +391,23 @@ const BaseGrid = memo(forwardRef(({
           />
         </Box>
       )}
-      
+
       {/* Error Display */}
       {localError && (
         <Alert severity="error" sx={{ mb: 2 }}>
           {localError.message || 'An error occurred while loading data'}
         </Alert>
       )}
-      
+
       {/* Data Grid */}
-      <Paper 
-        elevation={1} 
-        sx={{ 
-          flexGrow: 1, 
+      <Paper
+        elevation={1}
+        sx={{
+          flexGrow: 1,
           height: 'auto',
           '& .MuiDataGrid-root': {
-            border: 'none'
-          }
+            border: 'none',
+          },
         }}
       >
         <DataGrid
@@ -413,48 +416,48 @@ const BaseGrid = memo(forwardRef(({
           columns={enhancedColumns}
           loading={localLoading}
           getRowId={getRowId}
-          
+
           // Selection
           checkboxSelection={enableSelection}
           rowSelectionModel={selectedRows}
           onRowSelectionModelChange={handleSelectionChange}
-          
+
           // Pagination
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
           pageSizeOptions={[10, 25, 50, 100]}
-          
+
           // Sorting and filtering
           sortModel={sortModel}
           onSortModelChange={setSortModel}
           filterModel={filterModel}
           onFilterModelChange={setFilterModel}
-          
+
           // Column management
           columnVisibilityModel={columnVisibility}
           onColumnVisibilityModelChange={setColumnVisibility}
           density={density}
-          
+
           // Performance
           virtualization={enableVirtualization}
           disableRowSelectionOnClick={!enableSelection}
-          
+
           // Accessibility
           aria-labelledby={toolbarId}
           aria-describedby={searchId}
-          
+
           // Styling
           sx={{
             '& .MuiDataGrid-cell:focus': {
-              outline: 'solid #2196f3 1px'
+              outline: 'solid #2196f3 1px',
             },
             '& .MuiDataGrid-row:hover': {
-              backgroundColor: gridTheme.palette.action.hover
-            }
+              backgroundColor: gridTheme.palette.action.hover,
+            },
           }}
         />
       </Paper>
-      
+
       {/* Dialogs */}
       <BaseDialog
         type="add"
@@ -463,7 +466,7 @@ const BaseGrid = memo(forwardRef(({
         config={dialogConfig}
         data={dialogState.selectedRecord}
       />
-      
+
       <BaseDialog
         type="edit"
         open={dialogState.edit}
@@ -471,7 +474,7 @@ const BaseGrid = memo(forwardRef(({
         config={dialogConfig}
         data={dialogState.selectedRecord}
       />
-      
+
       <BaseDialog
         type="delete"
         open={dialogState.delete}
@@ -479,12 +482,12 @@ const BaseGrid = memo(forwardRef(({
         config={dialogConfig}
         data={dialogState.selectedRecord}
       />
-      
+
       {/* Custom content */}
       {children}
     </Box>
   ));
-  
+
   // Render with optional Suspense and Error Boundary
   const content = enableSuspense ? (
     <Suspense fallback={<GridLoadingSkeleton />}>
@@ -493,7 +496,7 @@ const BaseGrid = memo(forwardRef(({
   ) : (
     <GridContent />
   );
-  
+
   return enableErrorBoundary ? (
     <ErrorBoundary
       FallbackComponent={GridErrorFallback}

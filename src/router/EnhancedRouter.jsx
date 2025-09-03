@@ -15,7 +15,7 @@ import {
   RouteMetadataProvider,
   RouteTransition,
   DeepLinkHandler,
-  RouteAnalytics
+  RouteAnalytics,
 } from './RouteGuard';
 
 // Lazy Load Components with optimized chunking
@@ -84,7 +84,7 @@ const EnhancedLoadingFallback = ({ routeName = 'page' }) => (
       alignItems: 'center',
       height: '100vh',
       flexDirection: 'column',
-      gap: 2
+      gap: 2,
     }}
   >
     <CircularProgress size={40} />
@@ -106,7 +106,7 @@ const PostLoginRouter = () => {
   useEffect(() => {
     if (currentUser) {
       // Get intended destination from various sources
-      const intendedRoute = 
+      const intendedRoute =
         location.state?.from?.pathname || // From login redirect
         localStorage.getItem('lastVisitedRoute') || // From previous session
         getDefaultRouteForUser(currentUser) || // Based on user role
@@ -138,10 +138,11 @@ const getDefaultRouteForUser = (user) => {
     sales: ROUTES.ORDERS,
     inventory: ROUTES.INVENTORY,
     analyst: ROUTES.CHARTS,
-    user: ROUTES.DASHBOARD
+    user: ROUTES.DASHBOARD,
   };
 
   const userRole = user.role || 'user';
+
   return roleDefaults[userRole] || ROUTES.DASHBOARD;
 };
 
@@ -166,7 +167,7 @@ class EnhancedRouteErrorBoundary extends React.Component {
     if (window.gtag) {
       window.gtag('event', 'exception', {
         description: error.toString(),
-        fatal: false
+        fatal: false,
       });
     }
   }
@@ -183,7 +184,7 @@ class EnhancedRouteErrorBoundary extends React.Component {
             flexDirection: 'column',
             gap: 2,
             p: 3,
-            textAlign: 'center'
+            textAlign: 'center',
           }}
         >
           <Typography variant="h5" color="error" gutterBottom>
@@ -201,7 +202,7 @@ class EnhancedRouteErrorBoundary extends React.Component {
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
             >
               Refresh Page
@@ -214,7 +215,7 @@ class EnhancedRouteErrorBoundary extends React.Component {
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
             >
               Go to Dashboard
@@ -246,33 +247,33 @@ const EnhancedRouter = () => {
       <DeepLinkHandler />
       <RouteAnalytics />
       <PostLoginRouter />
-      
+
       <EnhancedRouteErrorBoundary>
         <Suspense fallback={<EnhancedLoadingFallback />}>
           <RouteTransition transitionKey={location.pathname}>
             <Routes>
               {/* Public Routes */}
-              <Route 
-                path={ROUTES.LOGIN} 
+              <Route
+                path={ROUTES.LOGIN}
                 element={
                   <PublicRouteGuard>
                     <Login />
                   </PublicRouteGuard>
-                } 
+                }
               />
 
               {/* Documentation Route - Public Access */}
-              <Route 
-                path="docs" 
+              <Route
+                path="docs"
                 element={
                   <Suspense fallback={<EnhancedLoadingFallback routeName="Documentation" />}>
                     <DocsPage />
                   </Suspense>
-                } 
+                }
               />
 
               {/* Protected Routes */}
-              <Route 
+              <Route
                 element={
                   <RouteGuard>
                     <Layout />
@@ -283,33 +284,33 @@ const EnhancedRouter = () => {
                 <Route index element={<Navigate to={ROUTES.DASHBOARD} replace />} />
 
                 {/* Core Application Routes */}
-                <Route 
-                  path="dashboard" 
+                <Route
+                  path="dashboard"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Dashboard" />}>
                       <Dashboard />
                     </Suspense>
-                  } 
+                  }
                 />
-                
-                <Route 
-                  path="charts" 
+
+                <Route
+                  path="charts"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Analytics" />}>
                       <ChartsPage />
                     </Suspense>
-                  } 
+                  }
                 />
-                
-                <Route 
-                  path="products/*" 
+
+                <Route
+                  path="products/*"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Product Management" />}>
                       <ProductManagementPage />
                     </Suspense>
-                  } 
+                  }
                 />
-                
+
                 <Route
                   path="tasks"
                   element={
@@ -336,257 +337,257 @@ const EnhancedRouter = () => {
                     </Suspense>
                   }
                 />
-                
-                <Route 
-                  path="inventory" 
+
+                <Route
+                  path="inventory"
                   element={
                     <ManagerRouteGuard>
                       <Suspense fallback={<EnhancedLoadingFallback routeName="Inventory" />}>
                         <InventoryPage />
                       </Suspense>
                     </ManagerRouteGuard>
-                  } 
+                  }
                 />
-                
-                <Route 
-                  path="orders" 
+
+                <Route
+                  path="orders"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Orders" />}>
                       <OrdersPage />
                     </Suspense>
-                  } 
+                  }
                 />
-                
-                <Route 
-                  path="customers" 
+
+                <Route
+                  path="customers"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Customers" />}>
                       <CustomersPage />
                     </Suspense>
-                  } 
+                  }
                 />
-                
-                <Route 
-                  path="reports" 
+
+                <Route
+                  path="reports"
                   element={
                     <ManagerRouteGuard>
                       <Suspense fallback={<EnhancedLoadingFallback routeName="Reports" />}>
                         <ReportsPage />
                       </Suspense>
                     </ManagerRouteGuard>
-                  } 
+                  }
                 />
-                
-                <Route 
-                  path="settings" 
+
+                <Route
+                  path="settings"
                   element={
                     <AdminRouteGuard>
                       <Suspense fallback={<EnhancedLoadingFallback routeName="Settings" />}>
                         <SettingsPage />
                       </Suspense>
                     </AdminRouteGuard>
-                  } 
+                  }
                 />
 
                 {/* MDM Routes */}
-                <Route 
-                  path="mdmproducts" 
+                <Route
+                  path="mdmproducts"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="MDM Products" />}>
                       <MDMProductsPage />
                     </Suspense>
-                  } 
+                  }
                 />
-                
-                <Route 
-                  path="mdm-stock" 
+
+                <Route
+                  path="mdm-stock"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="MDM Stock" />}>
                       <MDMStockPage />
                     </Suspense>
-                  } 
+                  }
                 />
-                
-                <Route 
-                  path="mdm-sources" 
+
+                <Route
+                  path="mdm-sources"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="MDM Sources" />}>
                       <MDMSourcesPage />
                     </Suspense>
-                  } 
+                  }
                 />
 
                 {/* Magento Routes */}
-                <Route 
-                  path="categories" 
+                <Route
+                  path="categories"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Categories" />}>
                       <CategoriesPage />
                     </Suspense>
-                  } 
+                  }
                 />
-                
-                <Route 
-                  path="stocks" 
+
+                <Route
+                  path="stocks"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Stocks" />}>
                       <StocksPage />
                     </Suspense>
-                  } 
+                  }
                 />
-                
-                <Route 
-                  path="sources" 
+
+                <Route
+                  path="sources"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Sources" />}>
                       <SourcesPage />
                     </Suspense>
-                  } 
+                  }
                 />
-                
-                <Route 
-                  path="invoices" 
+
+                <Route
+                  path="invoices"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Invoices" />}>
                       <InvoicesPage />
                     </Suspense>
-                  } 
+                  }
                 />
-                
-                <Route 
-                  path="cms-pages" 
+
+                <Route
+                  path="cms-pages"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="CMS Pages" />}>
                       <CmsPagesPage />
                     </Suspense>
-                  } 
+                  }
                 />
-                
-                <Route 
-                  path="cegid-products" 
+
+                <Route
+                  path="cegid-products"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Cegid Products" />}>
                       <CegidProductsPage />
                     </Suspense>
-                  } 
+                  }
                 />
 
                 {/* Analytics Routes */}
-                <Route 
-                  path="analytics/sales" 
+                <Route
+                  path="analytics/sales"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Sales Analytics" />}>
                       <SalesAnalyticsPage />
                     </Suspense>
-                  } 
+                  }
                 />
-                
-                <Route 
-                  path="analytics/inventory" 
+
+                <Route
+                  path="analytics/inventory"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Inventory Analytics" />}>
                       <InventoryAnalyticsPage />
                     </Suspense>
-                  } 
+                  }
                 />
 
                 {/* Security Routes */}
-                <Route 
-                  path="locker/vault" 
+                <Route
+                  path="locker/vault"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Secure Vault" />}>
                       <SecureVaultPage />
                     </Suspense>
-                  } 
+                  }
                 />
-                
-                <Route 
-                  path="locker/access" 
+
+                <Route
+                  path="locker/access"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Access Control" />}>
                       <AccessControlPage />
                     </Suspense>
-                  } 
+                  }
                 />
 
                 {/* Development Routes */}
-                <Route 
-                  path="bug-bounty" 
+                <Route
+                  path="bug-bounty"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Bug Bounty" />}>
                       <BugBountyPage />
                     </Suspense>
-                  } 
+                  }
                 />
-                
-                <Route 
-                  path="voting" 
+
+                <Route
+                  path="voting"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Feature Voting" />}>
                       <VotingPage />
                     </Suspense>
-                  } 
+                  }
                 />
 
                 {/* User Routes */}
-                <Route 
-                  path="profile" 
+                <Route
+                  path="profile"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="User Profile" />}>
                       <UserProfilePage />
                     </Suspense>
-                  } 
+                  }
                 />
 
                 {/* License Routes */}
-                <Route 
-                  path="license-management" 
+                <Route
+                  path="license-management"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="License Management" />}>
                       <LicenseManagementPage />
                     </Suspense>
-                  } 
+                  }
                 />
-                
-                <Route 
-                  path="license" 
+
+                <Route
+                  path="license"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="License Status" />}>
                       <LicenseStatusPage />
                     </Suspense>
-                  } 
+                  }
                 />
 
                 {/* Development Routes */}
                 {process.env.NODE_ENV === 'development' && (
                   <>
-                    <Route 
-                      path="grid-test" 
+                    <Route
+                      path="grid-test"
                       element={
                         <Suspense fallback={<EnhancedLoadingFallback routeName="Grid Test" />}>
                           <GridTestPage />
                         </Suspense>
-                      } 
+                      }
                     />
-                    <Route 
-                      path="route-test" 
+                    <Route
+                      path="route-test"
                       element={
                         <Suspense fallback={<EnhancedLoadingFallback routeName="Route Test" />}>
                           <RouteTestPage />
                         </Suspense>
-                      } 
+                      }
                     />
                   </>
                 )}
 
                 {/* 404 for protected routes */}
-                <Route 
-                  path="*" 
+                <Route
+                  path="*"
                   element={
                     <Suspense fallback={<EnhancedLoadingFallback routeName="Page" />}>
                       <NotFoundPage />
                     </Suspense>
-                  } 
+                  }
                 />
               </Route>
 

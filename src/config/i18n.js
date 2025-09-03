@@ -52,7 +52,7 @@ const resources = {
           pin: 'Pin',
           hide: 'Hide',
           show: 'Show',
-          reset: 'Reset'
+          reset: 'Reset',
         },
         toolbar: {
           refresh: 'Refresh Data',
@@ -67,7 +67,7 @@ const resources = {
           clearFilters: 'Clear All Filters',
           selectAll: 'Select All',
           deselectAll: 'Deselect All',
-          selectedCount: '{{count}} selected'
+          selectedCount: '{{count}} selected',
         },
         contextMenu: {
           edit: 'Edit Row',
@@ -77,7 +77,7 @@ const resources = {
           export: 'Export Row',
           copy: 'Copy',
           paste: 'Paste',
-          cut: 'Cut'
+          cut: 'Cut',
         },
         settings: {
           title: 'Grid Settings',
@@ -92,7 +92,7 @@ const resources = {
           autoSize: 'Auto Size Columns',
           resetLayout: 'Reset Layout',
           saveLayout: 'Save Layout',
-          loadLayout: 'Load Layout'
+          loadLayout: 'Load Layout',
         },
         filters: {
           title: 'Filters',
@@ -111,7 +111,7 @@ const resources = {
           lessThan: 'Less than',
           between: 'Between',
           and: 'And',
-          or: 'Or'
+          or: 'Or',
         },
         floating: {
           add: 'Add New Item',
@@ -120,10 +120,10 @@ const resources = {
           export: 'Export Selection',
           sync: 'Sync Data',
           refresh: 'Refresh',
-          settings: 'Settings'
-        }
-      }
-    }
+          settings: 'Settings',
+        },
+      },
+    },
   },
   fr: {
     translation: {
@@ -167,7 +167,7 @@ const resources = {
           pin: 'Épingler',
           hide: 'Masquer',
           show: 'Afficher',
-          reset: 'Réinitialiser'
+          reset: 'Réinitialiser',
         },
         toolbar: {
           refresh: 'Actualiser les données',
@@ -182,10 +182,10 @@ const resources = {
           clearFilters: 'Effacer tous les filtres',
           selectAll: 'Tout sélectionner',
           deselectAll: 'Tout désélectionner',
-          selectedCount: '{{count}} sélectionné(s)'
-        }
-      }
-    }
+          selectedCount: '{{count}} sélectionné(s)',
+        },
+      },
+    },
   },
   ar: {
     translation: {
@@ -229,7 +229,7 @@ const resources = {
           pin: 'تثبيت',
           hide: 'إخفاء',
           show: 'إظهار',
-          reset: 'إعادة تعيين'
+          reset: 'إعادة تعيين',
         },
         toolbar: {
           refresh: 'تحديث البيانات',
@@ -244,11 +244,11 @@ const resources = {
           clearFilters: 'مسح جميع المرشحات',
           selectAll: 'تحديد الكل',
           deselectAll: 'إلغاء تحديد الكل',
-          selectedCount: '{{count}} محدد'
-        }
-      }
-    }
-  }
+          selectedCount: '{{count}} محدد',
+        },
+      },
+    },
+  },
 };
 
 // Language detection options
@@ -257,7 +257,7 @@ const detectionOptions = {
   lookupLocalStorage: 'i18nextLng',
   caches: ['localStorage'],
   excludeCacheFor: ['cimode'],
-  checkWhitelist: true
+  checkWhitelist: true,
 };
 
 // Initialize i18next
@@ -269,26 +269,26 @@ i18n
     resources,
     fallbackLng: 'en',
     debug: process.env.NODE_ENV === 'development',
-    
+
     detection: detectionOptions,
-    
+
     interpolation: {
-      escapeValue: false // React already does escaping
+      escapeValue: false, // React already does escaping
     },
-    
+
     react: {
       useSuspense: false,
       bindI18n: 'languageChanged',
       bindI18nStore: '',
       transEmptyNodeValue: '',
       transSupportBasicHtmlNodes: true,
-      transKeepBasicHtmlNodesFor: ['br', 'strong', 'i']
+      transKeepBasicHtmlNodesFor: ['br', 'strong', 'i'],
     },
-    
+
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json',
-      addPath: '/locales/add/{{lng}}/{{ns}}'
-    }
+      addPath: '/locales/add/{{lng}}/{{ns}}',
+    },
   });
 
 // Helper functions
@@ -301,7 +301,7 @@ export const changeLanguage = (lng) => i18n.changeLanguage(lng);
 export const supportedLanguages = {
   en: { name: 'English', nativeName: 'English', dir: 'ltr' },
   fr: { name: 'French', nativeName: 'Français', dir: 'ltr' },
-  ar: { name: 'Arabic', nativeName: 'العربية', dir: 'rtl' }
+  ar: { name: 'Arabic', nativeName: 'العربية', dir: 'rtl' },
 };
 
 export default i18n;

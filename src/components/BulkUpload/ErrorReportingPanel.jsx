@@ -21,7 +21,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Badge
+  Badge,
 } from '@mui/material';
 import {
   Error as ErrorIcon,
@@ -33,19 +33,19 @@ import {
   BugReport as BugIcon,
   Lightbulb as SuggestionIcon,
   Download as DownloadIcon,
-  Refresh as RefreshIcon
+  Refresh as RefreshIcon,
 } from '@mui/icons-material';
 
 /**
  * Comprehensive error reporting panel for bulk upload operations
  * Displays validation results, errors, warnings, and actionable suggestions
  */
-const ErrorReportingPanel = ({ 
-  validationResults, 
-  onRetry, 
-  onDownloadReport, 
+const ErrorReportingPanel = ({
+  validationResults,
+  onRetry,
+  onDownloadReport,
   showSuggestions = true,
-  compact = false 
+  compact = false,
 }) => {
   const [activeTab, setActiveTab] = useState(0);
   const [expandedSections, setExpandedSections] = useState({});
@@ -55,12 +55,12 @@ const ErrorReportingPanel = ({
   }
 
   const { csvValidation, imageValidation, matchingValidation } = validationResults;
-  
+
   // Count total issues
   const totalErrors = [csvValidation, imageValidation, matchingValidation]
     .filter(Boolean)
     .reduce((sum, validation) => sum + (validation.errors?.length || 0), 0);
-    
+
   const totalWarnings = [csvValidation, imageValidation, matchingValidation]
     .filter(Boolean)
     .reduce((sum, validation) => sum + (validation.warnings?.length || 0), 0);
@@ -70,7 +70,7 @@ const ErrorReportingPanel = ({
   const toggleSection = (section) => {
     setExpandedSections(prev => ({
       ...prev,
-      [section]: !prev[section]
+      [section]: !prev[section],
     }));
   };
 
@@ -91,17 +91,17 @@ const ErrorReportingPanel = ({
             {hasIssues && (
               <Box sx={{ display: 'flex', gap: 1 }}>
                 {errors.length > 0 && (
-                  <Chip 
-                    label={`${errors.length} Error${errors.length !== 1 ? 's' : ''}`} 
-                    color="error" 
-                    size="small" 
+                  <Chip
+                    label={`${errors.length} Error${errors.length !== 1 ? 's' : ''}`}
+                    color="error"
+                    size="small"
                   />
                 )}
                 {warnings.length > 0 && (
-                  <Chip 
-                    label={`${warnings.length} Warning${warnings.length !== 1 ? 's' : ''}`} 
-                    color="warning" 
-                    size="small" 
+                  <Chip
+                    label={`${warnings.length} Warning${warnings.length !== 1 ? 's' : ''}`}
+                    color="warning"
+                    size="small"
                   />
                 )}
               </Box>
@@ -137,13 +137,13 @@ const ErrorReportingPanel = ({
                         <Typography variant="caption">View Details</Typography>
                       </AccordionSummary>
                       <AccordionDetails>
-                        <Typography variant="body2" component="pre" sx={{ 
-                          fontFamily: 'monospace', 
+                        <Typography variant="body2" component="pre" sx={{
+                          fontFamily: 'monospace',
                           fontSize: '0.75rem',
-                          whiteSpace: 'pre-wrap'
+                          whiteSpace: 'pre-wrap',
                         }}>
-                          {typeof error.details === 'string' 
-                            ? error.details 
+                          {typeof error.details === 'string'
+                            ? error.details
                             : JSON.stringify(error.details, null, 2)
                           }
                         </Typography>
@@ -174,7 +174,7 @@ const ErrorReportingPanel = ({
                   {warning.details && (
                     <Box sx={{ mt: 1 }}>
                       <Typography variant="caption" color="text.secondary">
-                        Details: {Array.isArray(warning.details) 
+                        Details: {Array.isArray(warning.details)
                           ? warning.details.slice(0, 3).join(', ') + (warning.details.length > 3 ? '...' : '')
                           : warning.details
                         }
@@ -242,15 +242,15 @@ const ErrorReportingPanel = ({
           <BugIcon color={totalErrors > 0 ? 'error' : totalWarnings > 0 ? 'warning' : 'success'} />
           Validation Summary
         </Typography>
-        
+
         <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-          <Chip 
+          <Chip
             icon={<ErrorIcon />}
             label={`${totalErrors} Error${totalErrors !== 1 ? 's' : ''}`}
             color={totalErrors > 0 ? 'error' : 'default'}
             variant={totalErrors > 0 ? 'filled' : 'outlined'}
           />
-          <Chip 
+          <Chip
             icon={<WarningIcon />}
             label={`${totalWarnings} Warning${totalWarnings !== 1 ? 's' : ''}`}
             color={totalWarnings > 0 ? 'warning' : 'default'}
@@ -290,47 +290,47 @@ const ErrorReportingPanel = ({
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 0:
-        return (
-          <Box>
-            {renderSummary()}
-            {renderValidationSection(
-              'CSV File Validation', 
-              csvValidation, 
-              <InfoIcon color="primary" />
-            )}
-            {renderValidationSection(
-              'Image Files Validation', 
-              imageValidation, 
-              <InfoIcon color="secondary" />
-            )}
-            {renderValidationSection(
-              'Matching Results Validation', 
-              matchingValidation, 
-              <InfoIcon color="success" />
-            )}
-          </Box>
-        );
-      case 1:
-        return renderValidationSection(
-          'CSV File Issues', 
-          csvValidation, 
-          <InfoIcon color="primary" />
-        );
-      case 2:
-        return renderValidationSection(
-          'Image File Issues', 
-          imageValidation, 
-          <InfoIcon color="secondary" />
-        );
-      case 3:
-        return renderValidationSection(
-          'Matching Issues', 
-          matchingValidation, 
-          <InfoIcon color="success" />
-        );
-      default:
-        return null;
+    case 0:
+      return (
+        <Box>
+          {renderSummary()}
+          {renderValidationSection(
+            'CSV File Validation',
+            csvValidation,
+            <InfoIcon color="primary" />,
+          )}
+          {renderValidationSection(
+            'Image Files Validation',
+            imageValidation,
+            <InfoIcon color="secondary" />,
+          )}
+          {renderValidationSection(
+            'Matching Results Validation',
+            matchingValidation,
+            <InfoIcon color="success" />,
+          )}
+        </Box>
+      );
+    case 1:
+      return renderValidationSection(
+        'CSV File Issues',
+        csvValidation,
+        <InfoIcon color="primary" />,
+      );
+    case 2:
+      return renderValidationSection(
+        'Image File Issues',
+        imageValidation,
+        <InfoIcon color="secondary" />,
+      );
+    case 3:
+      return renderValidationSection(
+        'Matching Issues',
+        matchingValidation,
+        <InfoIcon color="success" />,
+      );
+    default:
+      return null;
     }
   };
 
@@ -355,42 +355,42 @@ const ErrorReportingPanel = ({
     <Box>
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
         <Tabs value={activeTab} onChange={(e, newValue) => setActiveTab(newValue)}>
-          <Tab 
+          <Tab
             label={
               <Badge badgeContent={totalErrors + totalWarnings} color="error">
                 Overview
               </Badge>
-            } 
+            }
           />
-          <Tab 
+          <Tab
             label={
-              <Badge 
-                badgeContent={csvValidation?.errors?.length + csvValidation?.warnings?.length || 0} 
+              <Badge
+                badgeContent={csvValidation?.errors?.length + csvValidation?.warnings?.length || 0}
                 color="error"
               >
                 CSV Issues
               </Badge>
-            } 
+            }
           />
-          <Tab 
+          <Tab
             label={
-              <Badge 
-                badgeContent={imageValidation?.errors?.length + imageValidation?.warnings?.length || 0} 
+              <Badge
+                badgeContent={imageValidation?.errors?.length + imageValidation?.warnings?.length || 0}
                 color="error"
               >
                 Image Issues
               </Badge>
-            } 
+            }
           />
-          <Tab 
+          <Tab
             label={
-              <Badge 
-                badgeContent={matchingValidation?.errors?.length + matchingValidation?.warnings?.length || 0} 
+              <Badge
+                badgeContent={matchingValidation?.errors?.length + matchingValidation?.warnings?.length || 0}
                 color="error"
               >
                 Matching Issues
               </Badge>
-            } 
+            }
           />
         </Tabs>
       </Box>
@@ -408,7 +408,7 @@ const ErrorReportingPanel = ({
             Retry Validation
           </Button>
         )}
-        
+
         {onDownloadReport && hasIssues && (
           <Button
             variant="outlined"

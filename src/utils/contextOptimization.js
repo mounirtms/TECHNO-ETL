@@ -15,16 +15,16 @@ import React, { useMemo, useCallback } from 'react';
  */
 export const useOptimizedContext = (Context, selector) => {
   const context = React.useContext(Context);
-  
+
   if (context === undefined) {
     throw new Error('useOptimizedContext must be used within a Provider');
   }
-  
+
   // Memoize selected values to prevent unnecessary re-renders
   const selected = useMemo(() => {
     return selector ? selector(context) : context;
   }, [context, selector]);
-  
+
   return selected;
 };
 
@@ -39,13 +39,15 @@ export const useBatchContextUpdate = (setContext) => {
     setContext(prev => {
       // Apply all updates at once
       const next = { ...prev };
+
       Object.keys(updates).forEach(key => {
         next[key] = updates[key];
       });
+
       return next;
     });
   }, [setContext]);
-  
+
   return batchUpdate;
 };
 
@@ -57,11 +59,12 @@ export const useBatchContextUpdate = (setContext) => {
  */
 export const useMemoizedContextValue = (value) => {
   const memoizedValue = useMemo(() => value, Object.values(value));
+
   return memoizedValue;
 };
 
 export default {
   useOptimizedContext,
   useBatchContextUpdate,
-  useMemoizedContextValue
+  useMemoizedContextValue,
 };

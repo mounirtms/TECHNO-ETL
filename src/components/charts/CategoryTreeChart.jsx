@@ -6,11 +6,12 @@ import { Treemap, ResponsiveContainer, Tooltip } from 'recharts';
  * Category Tree Chart Component
  * Shows category hierarchy and product distribution using treemap
  */
-const CategoryTreeChart = ({ data, title = "Category Distribution" }) => {
+const CategoryTreeChart = ({ data, title = 'Category Distribution' }) => {
   // Custom tooltip for treemap
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
+
       return (
         <Box
           sx={{
@@ -18,7 +19,7 @@ const CategoryTreeChart = ({ data, title = "Category Distribution" }) => {
             border: '1px solid #ccc',
             borderRadius: 1,
             padding: 1,
-            boxShadow: 2
+            boxShadow: 2,
           }}
         >
           <Typography variant="body2" fontWeight="bold">
@@ -38,6 +39,7 @@ const CategoryTreeChart = ({ data, title = "Category Distribution" }) => {
         </Box>
       );
     }
+
     return null;
   };
 
@@ -86,6 +88,7 @@ const CategoryTreeChart = ({ data, title = "Category Distribution" }) => {
         </g>
       );
     }
+
     return null;
   };
 
@@ -96,13 +99,13 @@ const CategoryTreeChart = ({ data, title = "Category Distribution" }) => {
           <Typography variant="h6" gutterBottom>
             {title}
           </Typography>
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               height: 300,
-              color: 'text.secondary'
+              color: 'text.secondary',
             }}
           >
             No category data available

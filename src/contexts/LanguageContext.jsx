@@ -5,7 +5,7 @@ import arLocale from '../assets/locale/ar.json';
 import {
   getUnifiedSettings,
   saveUnifiedSettings,
-  getSystemPreferences
+  getSystemPreferences,
 } from '../utils/unifiedSettingsManager';
 
 const LanguageContext = createContext();
@@ -15,39 +15,43 @@ export const languages = {
     name: 'English',
     locale: enLocale,
     dir: 'ltr',
-    code: 'en-US'
+    code: 'en-US',
   },
   fr: {
     name: 'Français',
     locale: frLocale,
     dir: 'ltr',
-    code: 'fr-FR'
+    code: 'fr-FR',
   },
   ar: {
     name: 'العربية',
     locale: arLocale,
     dir: 'rtl',
-    code: 'ar-SA'
-  }
+    code: 'ar-SA',
+  },
 };
 
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
+
   if (!context) {
     throw new Error('useLanguage must be used within a LanguageProvider');
   }
+
   return context;
 };
 
 export const LanguageProvider = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState(() => {
     const settings = getUnifiedSettings();
+
     if (settings?.language && languages[settings.language]) {
       return settings.language;
     }
 
     // Fallback to system preferences
     const systemPrefs = getSystemPreferences();
+
     return systemPrefs.language;
   });
 
@@ -59,11 +63,11 @@ export const LanguageProvider = ({ children }) => {
     // Use requestAnimationFrame to ensure smooth transition
     requestAnimationFrame(() => {
       const isRTL = currentLangConfig.dir === 'rtl';
-      
+
       // Set document attributes
       document.documentElement.setAttribute('dir', currentLangConfig.dir);
       document.documentElement.setAttribute('lang', currentLangConfig.code);
-      
+
       // Add RTL class to body for additional styling
       if (isRTL) {
         document.body.classList.add('rtl');
@@ -72,9 +76,10 @@ export const LanguageProvider = ({ children }) => {
         document.body.classList.add('ltr');
         document.body.classList.remove('rtl');
       }
-      
+
       // Add/remove RTL class to root element
       const root = document.getElementById('root');
+
       if (root) {
         if (isRTL) {
           root.classList.add('rtl-layout');
@@ -101,7 +106,7 @@ export const LanguageProvider = ({ children }) => {
           root.style.transition = '';
         }
       }, 300);
-      
+
       console.log(`Language changed to ${currentLanguage} (${currentLangConfig.dir})`);
     });
   }, [currentLanguage, currentLangConfig]);
@@ -118,6 +123,7 @@ export const LanguageProvider = ({ children }) => {
   const applyUserLanguageSettings = useCallback((userSettings) => {
     if (userSettings?.preferences?.language) {
       const userLanguage = userSettings.preferences.language;
+
       if (languages[userLanguage]) {
         setLanguage(userLanguage);
       }
@@ -136,10 +142,12 @@ export const LanguageProvider = ({ children }) => {
         // Only log unique missing translations to prevent spam
         if (!translate._loggedMissing) translate._loggedMissing = new Set();
         const logKey = `${key}:${currentLanguage}`;
+
         if (!translate._loggedMissing.has(logKey)) {
           console.warn(`Translation missing for key: ${key} in language: ${currentLanguage}`);
           translate._loggedMissing.add(logKey);
         }
+
         return key;
       }
     }
@@ -153,7 +161,7 @@ export const LanguageProvider = ({ children }) => {
     setLanguage,
     applyUserLanguageSettings,
     translate,
-    languages
+    languages,
   }), [currentLanguage, setLanguage, applyUserLanguageSettings, translate]);
 
   return (

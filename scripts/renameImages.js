@@ -21,7 +21,7 @@ fs.createReadStream(csvFile)
   .on('data', (row) => {
     const ref = row.ref;
     const imageName = row['image name'];
-    
+
     if (ref && imageName) {
       refToImageNameMap.set(ref, imageName);
     }
@@ -39,6 +39,7 @@ function renameImages() {
   fs.readdir(sourceImagesFolder, (err, files) => {
     if (err) {
       console.error('Error reading source folder:', err);
+
       return;
     }
 
@@ -48,18 +49,18 @@ function renameImages() {
     files.forEach(file => {
       // Extract ref from filename (assuming format: ref_string.extension)
       const refMatch = file.match(/^([^_]+)_/);
-      
+
       if (refMatch) {
         const ref = refMatch[1];
         const extension = path.extname(file);
-        
+
         if (refToImageNameMap.has(ref)) {
           const newImageName = refToImageNameMap.get(ref);
           const newFileName = `${newImageName}${extension}`;
-          
+
           const sourcePath = path.join(sourceImagesFolder, file);
           const destPath = path.join(destinationFolder, newFileName);
-          
+
           // Copy file with new name
           fs.copyFile(sourcePath, destPath, (err) => {
             if (err) {
@@ -79,7 +80,7 @@ function renameImages() {
     });
 
     setTimeout(() => {
-      console.log(`\nRenaming complete!`);
+      console.log('\nRenaming complete!');
       console.log(`Files renamed: ${renamedCount}`);
       console.log(`Files not found in CSV: ${notFoundCount}`);
     }, 1000);

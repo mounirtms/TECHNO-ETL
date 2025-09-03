@@ -6,19 +6,19 @@ import {
   Accordion, AccordionSummary, AccordionDetails, Chip, List,
   ListItem, ListItemText, ListItemSecondaryAction, IconButton,
   Dialog, DialogTitle, DialogContent, DialogActions, Checkbox,
-  FormGroup, Tooltip, Autocomplete
+  FormGroup, Tooltip, Autocomplete,
 } from '@mui/material';
 import {
   Settings, GridView, Visibility, VisibilityOff, DragIndicator,
   Add, Delete, Edit, Save, RestoreFromTrash, ExpandMore,
-  FilterList, Search, ViewColumn, Reorder
+  FilterList, Search, ViewColumn, Reorder,
 } from '@mui/icons-material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useTheme } from '@mui/material/styles';
 
 const GridColumnSettings = ({ user, onSettingsChange }) => {
   const theme = useTheme();
-  
+
   // Grid types and their default columns
   const gridTypes = {
     mdm: {
@@ -31,8 +31,8 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
         { field: 'category', headerName: 'Category', width: 150, visible: true, pinned: false },
         { field: 'status', headerName: 'Status', width: 100, visible: true, pinned: false },
         { field: 'source', headerName: 'Source', width: 120, visible: true, pinned: false },
-        { field: 'lastUpdated', headerName: 'Last Updated', width: 150, visible: true, pinned: false }
-      ]
+        { field: 'lastUpdated', headerName: 'Last Updated', width: 150, visible: true, pinned: false },
+      ],
     },
     magentoProducts: {
       name: 'Magento Products',
@@ -45,8 +45,8 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
         { field: 'type', headerName: 'Type', width: 120, visible: true, pinned: false },
         { field: 'visibility', headerName: 'Visibility', width: 120, visible: false, pinned: false },
         { field: 'weight', headerName: 'Weight', width: 100, visible: false, pinned: false },
-        { field: 'createdAt', headerName: 'Created', width: 150, visible: true, pinned: false }
-      ]
+        { field: 'createdAt', headerName: 'Created', width: 150, visible: true, pinned: false },
+      ],
     },
     customers: {
       name: 'Customers',
@@ -59,8 +59,8 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
         { field: 'group', headerName: 'Group', width: 120, visible: true, pinned: false },
         { field: 'orders', headerName: 'Orders', width: 100, visible: true, pinned: false },
         { field: 'totalSpent', headerName: 'Total Spent', width: 120, visible: true, pinned: false },
-        { field: 'lastLogin', headerName: 'Last Login', width: 150, visible: false, pinned: false }
-      ]
+        { field: 'lastLogin', headerName: 'Last Login', width: 150, visible: false, pinned: false },
+      ],
     },
     sources: {
       name: 'Sources',
@@ -72,8 +72,8 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
         { field: 'country', headerName: 'Country', width: 120, visible: true, pinned: false },
         { field: 'region', headerName: 'Region', width: 120, visible: true, pinned: false },
         { field: 'postcode', headerName: 'Postcode', width: 100, visible: false, pinned: false },
-        { field: 'contactInfo', headerName: 'Contact', width: 150, visible: false, pinned: false }
-      ]
+        { field: 'contactInfo', headerName: 'Contact', width: 150, visible: false, pinned: false },
+      ],
     },
     orders: {
       name: 'Orders',
@@ -85,9 +85,9 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
         { field: 'createdAt', headerName: 'Date', width: 150, visible: true, pinned: false },
         { field: 'items', headerName: 'Items', width: 80, visible: true, pinned: false },
         { field: 'paymentMethod', headerName: 'Payment', width: 120, visible: false, pinned: false },
-        { field: 'shippingMethod', headerName: 'Shipping', width: 120, visible: false, pinned: false }
-      ]
-    }
+        { field: 'shippingMethod', headerName: 'Shipping', width: 120, visible: false, pinned: false },
+      ],
+    },
   };
 
   const [columnSettings, setColumnSettings] = useState({});
@@ -103,18 +103,19 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
   useEffect(() => {
     const savedColumnSettings = localStorage.getItem(`columnSettings_${user?.id}`);
     const savedFilterPresets = localStorage.getItem(`filterPresets_${user?.id}`);
-    
+
     if (savedColumnSettings) {
       setColumnSettings(JSON.parse(savedColumnSettings));
     } else {
       // Initialize with default settings
       const defaultSettings = {};
+
       Object.keys(gridTypes).forEach(gridType => {
         defaultSettings[gridType] = {
           columns: gridTypes[gridType].defaultColumns,
           density: 'standard',
           grouping: false,
-          autoHeight: false
+          autoHeight: false,
         };
       });
       setColumnSettings(defaultSettings);
@@ -130,10 +131,10 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
       ...prev,
       [gridType]: {
         ...prev[gridType],
-        columns: prev[gridType]?.columns?.map(col => 
-          col.field === columnField ? { ...col, visible } : col
-        ) || []
-      }
+        columns: prev[gridType]?.columns?.map(col =>
+          col.field === columnField ? { ...col, visible } : col,
+        ) || [],
+      },
     }));
   };
 
@@ -142,10 +143,10 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
       ...prev,
       [gridType]: {
         ...prev[gridType],
-        columns: prev[gridType]?.columns?.map(col => 
-          col.field === columnField ? { ...col, width } : col
-        ) || []
-      }
+        columns: prev[gridType]?.columns?.map(col =>
+          col.field === columnField ? { ...col, width } : col,
+        ) || [],
+      },
     }));
   };
 
@@ -154,10 +155,10 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
       ...prev,
       [gridType]: {
         ...prev[gridType],
-        columns: prev[gridType]?.columns?.map(col => 
-          col.field === columnField ? { ...col, pinned } : col
-        ) || []
-      }
+        columns: prev[gridType]?.columns?.map(col =>
+          col.field === columnField ? { ...col, pinned } : col,
+        ) || [],
+      },
     }));
   };
 
@@ -166,14 +167,15 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
 
     const columns = Array.from(columnSettings[gridType]?.columns || []);
     const [reorderedColumn] = columns.splice(result.source.index, 1);
+
     columns.splice(result.destination.index, 0, reorderedColumn);
 
     setColumnSettings(prev => ({
       ...prev,
       [gridType]: {
         ...prev[gridType],
-        columns
-      }
+        columns,
+      },
     }));
   };
 
@@ -182,8 +184,8 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
       ...prev,
       [gridType]: {
         ...prev[gridType],
-        density
-      }
+        density,
+      },
     }));
   };
 
@@ -191,11 +193,11 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
     try {
       localStorage.setItem(`columnSettings_${user?.id}`, JSON.stringify(columnSettings));
       localStorage.setItem(`filterPresets_${user?.id}`, JSON.stringify(filterPresets));
-      
+
       if (onSettingsChange) {
         onSettingsChange({ columnSettings, filterPresets });
       }
-      
+
       setShowSuccess(true);
     } catch (error) {
       console.error('Failed to save column settings:', error);
@@ -210,8 +212,8 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
         columns: gridTypes[gridType].defaultColumns,
         density: 'standard',
         grouping: false,
-        autoHeight: false
-      }
+        autoHeight: false,
+      },
     }));
   };
 
@@ -315,20 +317,20 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
                             border: `1px solid ${theme.palette.divider}`,
                             borderRadius: 1,
                             mb: 1,
-                            backgroundColor: snapshot.isDragging 
-                              ? theme.palette.action.hover 
-                              : 'transparent'
+                            backgroundColor: snapshot.isDragging
+                              ? theme.palette.action.hover
+                              : 'transparent',
                           }}
                         >
                           <Box {...provided.dragHandleProps} sx={{ mr: 1 }}>
                             <DragIndicator color="action" />
                           </Box>
-                          
+
                           <ListItemText
                             primary={column.headerName}
                             secondary={`Field: ${column.field}`}
                           />
-                          
+
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                             {/* Width Control */}
                             <TextField
@@ -337,34 +339,34 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
                               label="Width"
                               value={column.width}
                               onChange={(e) => handleColumnWidthChange(
-                                selectedGridType, 
-                                column.field, 
-                                parseInt(e.target.value) || 100
+                                selectedGridType,
+                                column.field,
+                                parseInt(e.target.value) || 100,
                               )}
                               sx={{ width: 80 }}
                             />
-                            
+
                             {/* Pin Control */}
                             <Tooltip title="Pin Column">
                               <Checkbox
                                 checked={column.pinned}
                                 onChange={(e) => handleColumnPinChange(
-                                  selectedGridType, 
-                                  column.field, 
-                                  e.target.checked
+                                  selectedGridType,
+                                  column.field,
+                                  e.target.checked,
                                 )}
                                 icon={<ViewColumn />}
                                 checkedIcon={<ViewColumn color="primary" />}
                               />
                             </Tooltip>
-                            
+
                             {/* Visibility Control */}
                             <Tooltip title="Show/Hide Column">
                               <IconButton
                                 onClick={() => handleColumnVisibilityChange(
-                                  selectedGridType, 
-                                  column.field, 
-                                  !column.visible
+                                  selectedGridType,
+                                  column.field,
+                                  !column.visible,
                                 )}
                                 color={column.visible ? 'primary' : 'default'}
                               >
@@ -385,13 +387,13 @@ const GridColumnSettings = ({ user, onSettingsChange }) => {
       </Card>
 
       {/* Action Buttons */}
-      <Box sx={{ 
-        display: 'flex', 
-        gap: 2, 
+      <Box sx={{
+        display: 'flex',
+        gap: 2,
         justifyContent: 'flex-end',
         pt: 3,
         borderTop: `1px solid ${theme.palette.divider}`,
-        mt: 3
+        mt: 3,
       }}>
         <Button
           variant="contained"

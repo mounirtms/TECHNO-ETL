@@ -47,7 +47,7 @@ const CustomGridToolbar = ({
   setShowChangedOnly,
   onSyncStocksHandler, // New handler for Sync Stocks
   canInfo,
-  onInfo
+  onInfo,
 }) => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -109,7 +109,7 @@ const CustomGridToolbar = ({
           </Button>
         </TooltipWrapper>
 
-      
+
 
 
         {/* Succursale Filter */}
@@ -125,7 +125,7 @@ const CustomGridToolbar = ({
             </Select>
           </FormControl>
         )}
-          {/* Source Filter */}
+        {/* Source Filter */}
         {sourceOptions?.length > 0 && (
           <FormControl variant="outlined" size="small" sx={{ minWidth: 120 }}>
             <InputLabel>Source</InputLabel>

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { MENU_TREE, MENU_ITEMS } from '../components/Layout/MenuTree.js';
@@ -37,293 +37,187 @@ const MDMSources = lazy(() => import('../components/placeholders/PlaceholderComp
 
 // URL to Tab ID mapping
 const URL_TO_TAB_MAP = {
-    '/dashboard': 'Dashboard',
-    '/charts': 'Charts',
-    '/voting': 'Voting',
-    '/products': 'ProductsGrid',
-    '/productsManagement': 'ProductCatalog',
-    '/mdmproducts': 'MDMProductsGrid',
-    '/cegid-products': 'CegidProductsGrid',
-    '/customers': 'CustomersGrid',
-    '/orders': 'OrdersGrid',
-    '/invoices': 'InvoicesGrid',
-    '/categories': 'CategoryTree',
-    '/category-management': 'CategoryManagementGrid',
-    '/stocks': 'StocksGrid',
-    '/sources': 'SourcesGrid',
-    '/cms-pages': 'CmsPageGrid',
-    '/grid-test': 'GridTestPage',
-    '/bug-bounty': 'BugBounty',
-    '/license-management': 'LicenseManagement',
-    '/license': 'LicenseStatus',
-    '/analytics/sales': 'SalesAnalytics',
-    '/analytics/inventory': 'InventoryAnalytics',
-    '/locker/vault': 'SecureVault',
-    '/locker/access': 'AccessControl',
-    '/mdm-stock': 'MDMStockGrid',
-    '/mdm-sources': 'MDMSources',
-    '/profile': 'UserProfile'
+  '/dashboard': 'Dashboard',
+  '/charts': 'Charts',
+  '/voting': 'Voting',
+  '/products': 'ProductsGrid',
+  '/productsManagement': 'ProductCatalog',
+  '/mdmproducts': 'MDMProductsGrid',
+  '/cegid-products': 'CegidProductsGrid',
+  '/customers': 'CustomersGrid',
+  '/orders': 'OrdersGrid',
+  '/invoices': 'InvoicesGrid',
+  '/categories': 'CategoryTree',
+  '/category-management': 'CategoryManagementGrid',
+  '/stocks': 'StocksGrid',
+  '/mdm-stock': 'MDMStockGrid',
+  '/sources': 'SourcesGrid',
+  '/cms-pages': 'CmsPageGrid',
+  '/grid-test': 'GridTestPage',
+  '/bug-bounty': 'BugBountyPage',
+  '/license-management': 'LicenseManagement',
+  '/license': 'LicenseStatus',
+  '/analytics/sales': 'SalesAnalytics',
+  '/analytics/inventory': 'InventoryAnalytics',
+  '/locker/vault': 'SecureVault',
+  '/locker/access': 'AccessControl',
+  '/mdm-sources': 'MDMSources',
+  '/profile': 'UserProfile',
 };
 
 // Tab ID to URL mapping
-const TAB_TO_URL_MAP = Object.fromEntries(
-    Object.entries(URL_TO_TAB_MAP).map(([url, tabId]) => [tabId, url])
-);
-
-export { TAB_TO_URL_MAP };
+const TAB_TO_URL_MAP = Object.keys(URL_TO_TAB_MAP).reduce((acc, url) => {
+  acc[URL_TO_TAB_MAP[url]] = url;
+  return acc;
+}, {});
 
 // Component mapping
 const COMPONENT_MAP = {
-    Dashboard: Dashboard,
-    Charts: ChartsPage,
-    Voting: VotingPage,
-    ProductsGrid: ProductsGrid,
-    ProductCatalog: ProductManagementPage,
-    MDMProductsGrid: MDMProductsGrid,
-    CustomersGrid: CustomersGrid,
-    OrdersGrid: OrdersGrid,
-    InvoicesGrid: InvoicesGrid,
-    CategoryTree: CategoryTree,
-    CategoryManagementGrid: CategoryManagementGrid,
-    StocksGrid: StocksGrid,
-    SourcesGrid: SourcesGrid,
-    CegidProductsGrid: CegidGrid,
-    CmsPageGrid: CmsPageGrid,
-    GridTestPage: GridTestPage,
-    BugBounty: BugBountyPage,
-    LicenseManagement: LicenseManagement,
-    LicenseStatus: LicenseStatus,
-    SalesAnalytics: SalesAnalytics,
-    InventoryAnalytics: InventoryAnalytics,
-    SecureVault: SecureVault,
-    AccessControl: AccessControl,
-    MDMStockGrid: MDMStockGrid,
-    MDMSources: MDMSources,
-    UserProfile: UserProfile
+  Dashboard,
+  Charts: ChartsPage,
+  Voting: VotingPage,
+  ProductsGrid,
+  ProductCatalog: ProductManagementPage,
+  MDMProductsGrid,
+  CegidProductsGrid: CegidGrid,
+  CustomersGrid,
+  OrdersGrid,
+  InvoicesGrid,
+  CategoryTree,
+  CategoryManagementGrid,
+  StocksGrid,
+  MDMStockGrid,
+  SourcesGrid,
+  CmsPageGrid,
+  GridTestPage,
+  BugBountyPage,
+  LicenseManagement,
+  LicenseStatus,
+  SalesAnalytics,
+  InventoryAnalytics,
+  SecureVault,
+  AccessControl,
+  MDMSources,
+  UserProfile,
 };
 
-// Safe context creation with error handling
-const TabContext = (() => {
-    try {
-        const context = createContext();
-        context.displayName = 'TabContext';
-        return context;
-    } catch (error) {
-        console.error('Failed to create TabContext:', error);
-        throw error;
+const TabContext = createContext();
+
+export const TabProvider = ({ children }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [tabs, setTabs] = useState([
+    { id: 'Dashboard', label: 'Dashboard' }
+  ]);
+  const [activeTab, setActiveTab] = useState('Dashboard');
+
+  // Get component for active tab
+  const getActiveComponent = useCallback(() => {
+    const component = COMPONENT_MAP[activeTab];
+    return component || Dashboard;
+  }, [activeTab]);
+
+  // Open a new tab
+  const openTab = useCallback((tabId) => {
+    // Validate tabId
+    if (!tabId || typeof tabId !== 'string') {
+      console.warn('Invalid tabId provided to openTab:', tabId);
+      return;
     }
-})();
 
-export const TabProvider = ({ children, sidebarOpen }) => {
-    const location = useLocation();
-    const navigate = useNavigate();
+    // Get URL for tab
+    const url = TAB_TO_URL_MAP[tabId];
+    if (!url) {
+      console.warn('No URL mapping found for tabId:', tabId);
+      return;
+    }
 
-    // Get initial tab from current URL or default to Dashboard
-    const getInitialTabFromURL = () => {
-        // Ensure MENU_ITEMS is available and not empty
-        if (!MENU_ITEMS || !Array.isArray(MENU_ITEMS) || MENU_ITEMS.length === 0) {
-            console.warn('MENU_ITEMS is empty or undefined, creating default dashboard item');
-            return {
-                id: 'Dashboard',
-                label: 'Dashboard',
-                path: '/dashboard'
-            };
-        }
-        
-        const tabId = URL_TO_TAB_MAP[location.pathname];
-        if (tabId) {
-            const menuItem = MENU_ITEMS.find(item => item?.id === tabId);
-            if (menuItem) return menuItem;
-        }
-        
-        // Fallback to Dashboard from MENU_ITEMS
-        const dashboardItem = MENU_ITEMS.find(item => item?.id === 'Dashboard');
-        if (dashboardItem) return dashboardItem;
-        
-        // Create a default dashboard item if none found
-        return {
-            id: 'Dashboard',
-            label: 'Dashboard',
-            path: '/dashboard'
-        };
-    };
+    // Check if tab already exists
+    const tabExists = tabs.some(tab => tab.id === tabId);
+    
+    if (!tabExists) {
+      // Get label for tab
+      const menuItem = MENU_ITEMS.find(item => item.id === tabId);
+      const label = menuItem ? menuItem.label : tabId;
+      
+      // Add new tab
+      setTabs(prevTabs => [
+        ...prevTabs,
+        { id: tabId, label }
+      ]);
+    }
 
-    const initialTab = getInitialTabFromURL();
+    // Set as active tab
+    setActiveTab(tabId);
+    
+    // Navigate to URL only if it's different from current
+    if (location.pathname !== url) {
+      navigate(url, { replace: true });
+    }
+  }, [tabs, location.pathname, navigate]);
 
-    const [tabs, setTabs] = useState([
-        {
-            id: initialTab.id,
-            label: initialTab.label,
-            component: initialTab.id,
-            closeable: false
-        }
-    ]);
-    const [activeTab, setActiveTab] = useState(initialTab.id);
+  // Close a tab
+  const closeTab = useCallback((tabId) => {
+    // Prevent closing Dashboard tab
+    if (tabId === 'Dashboard') return;
 
-    // Sync tab changes with URL
-    useEffect(() => {
-        const currentTabId = URL_TO_TAB_MAP[location.pathname];
-        
-        // If we have a valid tab ID from URL
-        if (currentTabId) {
-            const tabExists = tabs.some(tab => tab.id === currentTabId);
-            
-            // If tab doesn't exist, try to add it
-            if (!tabExists) {
-                const newTab = MENU_ITEMS.find(item => item.id === currentTabId);
-                
-                if (newTab && COMPONENT_MAP[newTab.id]) {
-                    setTabs(prevTabs => [
-                        ...prevTabs,
-                        {
-                            id: newTab.id,
-                            label: newTab.label,
-                            component: newTab.id,
-                            closeable: newTab.id !== 'Dashboard'
-                        }
-                    ]);
-                } else if (!tabExists) {
-                    // Invalid tab, redirect to Dashboard only if no tabs exist
-                    console.warn(`Invalid tab: ${currentTabId}, redirecting to Dashboard`);
-                    if (tabs.length === 0) {
-                        navigate('/dashboard');
-                    }
-                    return;
-                }
-            }
-            
-            // Set active tab only if it's different
-            if (currentTabId !== activeTab) {
-                setActiveTab(currentTabId);
-            }
-        } else if (tabs.length > 0 && !tabs.some(tab => tab.id === activeTab)) {
-            // Emergency fallback - if activeTab is invalid, switch to first available tab
-            const fallbackTab = tabs[0].id;
-            setActiveTab(fallbackTab);
-            const fallbackUrl = TAB_TO_URL_MAP[fallbackTab];
-            if (fallbackUrl) {
-                navigate(fallbackUrl);
-            }
-        }
-    }, [location.pathname, navigate, activeTab, tabs]);
+    setTabs(prevTabs => {
+      const newTabs = prevTabs.filter(tab => tab.id !== tabId);
+      
+      // If we're closing the active tab, switch to Dashboard
+      if (activeTab === tabId) {
+        setActiveTab('Dashboard');
+        const dashboardUrl = TAB_TO_URL_MAP['Dashboard'] || '/dashboard';
+        navigate(dashboardUrl);
+      }
+      
+      return newTabs;
+    });
+  }, [activeTab, navigate]);
 
-    const openTab = (tabId, skipNavigation = false) => {
-        // Validate tabId
-        if (!tabId) {
-            console.error('Cannot open tab: tabId is undefined or null');
-            return;
-        }
 
-        const tabExists = tabs.some(tab => tab.id === tabId);
+  // Handle route changes
+  useEffect(() => {
+    // Find matching tab for current URL
+    const matchingTabId = URL_TO_TAB_MAP[location.pathname];
+    
+    if (matchingTabId) {
+      // Open the matching tab
+      openTab(matchingTabId);
+    } else if (location.pathname === '/') {
+      // Special case for root path - redirect to dashboard
+      openTab('Dashboard');
+    }
+  }, [location.pathname, openTab]);
 
-        if (!tabExists) {
-            const newTab = MENU_ITEMS.find(item => item.id === tabId);
-            if (newTab) {
-                if (!COMPONENT_MAP[newTab.id]) {
-                    console.error(`No component found for tab: ${newTab.id}`);
-                    return;
-                }
+// Provide value to context
+  const value = {
+    tabs,
+    activeTab,
+    openTab,
+    closeTab,
+    getActiveComponent,
+  };
 
-                setTabs(prevTabs => [
-                    ...prevTabs,
-                    {
-                        id: newTab.id,
-                        label: newTab.label,
-                        component: newTab.id,
-                        closeable: newTab.id !== 'Dashboard' // Dashboard is never closeable
-                    }
-                ]);
-            } else {
-                console.warn(`Tab ${tabId} not found in MENU_ITEMS`);
-                return;
-            }
-        }
-
-        setActiveTab(tabId);
-
-        // Navigate to corresponding URL if not skipping navigation
-        if (!skipNavigation) {
-            const url = TAB_TO_URL_MAP[tabId];
-            if (url && location.pathname !== url) {
-                navigate(url);
-            }
-        }
-    };
-
-    const closeTab = (tabId) => {
-        if (tabId === 'Dashboard') return;
-
-        setTabs(prevTabs => prevTabs.filter(tab => tab.id !== tabId));
-
-        if (activeTab === tabId) {
-            setActiveTab('Dashboard');
-            navigate('/dashboard');
-        }
-    };
-
-    const getActiveComponent = () => {
-        // If no tabs, return a default component
-        if (tabs.length === 0) {
-            console.warn('No tabs available');
-            return () => (
-                <Box sx={{ p: 2, textAlign: 'center', color: 'error.main' }}>
-                    No tabs available.
-                </Box>
-            );
-        }
-
-        const activeTabItem = tabs.find(tab => tab.id === activeTab);
-        
-        // If activeTabItem not found, try to find the first tab as fallback
-        if (!activeTabItem) {
-            console.warn(`No tab found for activeTab: ${activeTab}`);
-            const firstTab = tabs[0];
-            if (firstTab) {
-                // Try to set the first tab as active
-                setActiveTab(firstTab.id);
-                const Component = COMPONENT_MAP[firstTab.id];
-                if (Component) {
-                    return Component;
-                }
-            }
-            return () => (
-                <Box sx={{ p: 2, textAlign: 'center', color: 'error.main' }}>
-                    No component found for this tab.
-                </Box>
-            );
-        }
-
-        const Component = COMPONENT_MAP[activeTabItem.id];
-        
-        if (!Component) {
-            console.warn(`No component mapped for tab: ${activeTabItem.id}`);
-            return () => (
-                <Box sx={{ p: 2, textAlign: 'center', color: 'error.main' }}>
-                    Component not found for {activeTabItem.label}
-                </Box>
-            );
-        }
-
-        return Component;
-    };
-
-    return (
-        <TabContext.Provider value={{ 
-            tabs, 
-            activeTab, 
-            openTab, 
-            closeTab, 
-            getActiveComponent 
-        }}>
-            {children}
-        </TabContext.Provider>
-    );
+  return (
+    <TabContext.Provider value={value}>
+      {children}
+    </TabContext.Provider>
+  );
 };
 
 export const useTab = () => {
-    const context = useContext(TabContext);
-    if (!context) {
-        throw new Error('useTab must be used within a TabProvider');
-    }
-    return context;
+  const context = useContext(TabContext);
+  if (!context) {
+    // Return default values if context is not available
+    return {
+      tabs: [{ id: 'Dashboard', label: 'Dashboard' }],
+      activeTab: 'Dashboard',
+      openTab: () => {},
+      closeTab: () => {},
+      getActiveComponent: () => Dashboard,
+    };
+  }
+  return context;
 };

@@ -2,14 +2,14 @@
 
 /**
  * TECHNO-ETL Cleanup and Optimization Script
- * 
+ *
  * This script performs comprehensive cleanup and optimization of the project:
  * 1. Removes build artifacts and temporary files
  * 2. Fixes common configuration issues
  * 3. Optimizes package dependencies
  * 4. Ensures proper environment setup
  * 5. Validates project structure
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
@@ -32,21 +32,23 @@ const log = {
   info: (message) => console.log(`\x1b[36mℹ\x1b[0m ${message}`),
   success: (message) => console.log(`\x1b[32m✓\x1b[0m ${message}`),
   warn: (message) => console.log(`\x1b[33m⚠\x1b[0m ${message}`),
-  error: (message) => console.log(`\x1b[31m✗\x1b[0m ${message}`)
+  error: (message) => console.log(`\x1b[31m✗\x1b[0m ${message}`),
 };
 
 const runCommand = (command, cwd = PROJECT_ROOT) => {
   try {
     log.info(`Running: ${command}`);
-    const result = execSync(command, { 
-      cwd, 
+    const result = execSync(command, {
+      cwd,
       stdio: 'inherit',
-      env: { ...process.env, NODE_ENV: 'development' }
+      env: { ...process.env, NODE_ENV: 'development' },
     });
+
     return result;
   } catch (error) {
     log.error(`Command failed: ${command}`);
     log.error(error.message);
+
     return null;
   }
 };
@@ -54,6 +56,7 @@ const runCommand = (command, cwd = PROJECT_ROOT) => {
 const fileExists = (filePath) => {
   try {
     fs.accessSync(filePath, fs.constants.F_OK);
+
     return true;
   } catch {
     return false;
@@ -69,38 +72,38 @@ const ensureDirectory = (dirPath) => {
 
 const fixPackageJson = () => {
   log.info('Fixing package.json...');
-  
+
   const packagePath = path.join(PROJECT_ROOT, 'package.json');
   const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
-  
+
   // Ensure proper resolutions for React
   packageJson.resolutions = {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-is": "^18.3.1",
-    "scheduler": "^0.23.0"
+    'react': '^18.3.1',
+    'react-dom': '^18.3.1',
+    'react-is': '^18.3.1',
+    'scheduler': '^0.23.0',
   };
-  
+
   // Fix scripts that might have issues
   packageJson.scripts = {
     ...packageJson.scripts,
-    "clean": "rimraf dist backend/dist",
-    "postinstall": "node cleanup-and-optimize.js --postinstall",
-    "dev": "concurrently \"npm run start\" \"npm run server\"",
-    "start": "vite --host 0.0.0.0 --port 80",
-    "server": "cd backend && npm start",
-    "test": "vitest --run",
-    "test:watch": "vitest",
-    "build": "npm run validate:env && vite build --mode production"
+    'clean': 'rimraf dist backend/dist',
+    'postinstall': 'node cleanup-and-optimize.js --postinstall',
+    'dev': 'concurrently "npm run start" "npm run server"',
+    'start': 'vite --host 0.0.0.0 --port 80',
+    'server': 'cd backend && npm start',
+    'test': 'vitest --run',
+    'test:watch': 'vitest',
+    'build': 'npm run validate:env && vite build --mode production',
   };
-  
+
   fs.writeFileSync(packagePath, JSON.stringify(packageJson, null, 2));
   log.success('Fixed package.json');
 };
 
 const fixEnvironmentFiles = () => {
   log.info('Fixing environment files...');
-  
+
   // Ensure .env files exist with proper configuration
   const envDevContent = `# Development Environment Configuration
 NODE_ENV=development
@@ -137,7 +140,7 @@ VITE_DEBUG_MODE=false`;
 
   fs.writeFileSync(path.join(PROJECT_ROOT, '.env.development'), envDevContent);
   fs.writeFileSync(path.join(PROJECT_ROOT, '.env.production'), envProdContent);
-  
+
   // Backend .env
   const backendEnvContent = `# Backend Environment Configuration
 NODE_ENV=development
@@ -163,22 +166,23 @@ COMPRESSION_THRESHOLD=1024`;
 
   ensureDirectory(BACKEND_DIR);
   fs.writeFileSync(path.join(BACKEND_DIR, '.env'), backendEnvContent);
-  
+
   log.success('Fixed environment files');
 };
 
 const fixViteConfig = () => {
   log.info('Checking Vite configuration...');
-  
+
   const viteConfigPath = path.join(PROJECT_ROOT, 'vite.config.js');
+
   if (fileExists(viteConfigPath)) {
-    let configContent = fs.readFileSync(viteConfigPath, 'utf8');
-    
+    const configContent = fs.readFileSync(viteConfigPath, 'utf8');
+
     // Ensure proper server configuration
     if (!configContent.includes('port: parseInt(env.VITE_PORT) || 80')) {
       log.warn('Vite config may need port configuration update');
     }
-    
+
     log.success('Vite configuration checked');
   } else {
     log.error('vite.config.js not found');
@@ -187,79 +191,82 @@ const fixViteConfig = () => {
 
 const fixTestSetup = () => {
   log.info('Fixing test setup...');
-  
+
   const setupPath = path.join(PROJECT_ROOT, 'src', 'tests', 'setup.js');
+
   if (fileExists(setupPath)) {
-    let setupContent = fs.readFileSync(setupPath, 'utf8');
-    
+    const setupContent = fs.readFileSync(setupPath, 'utf8');
+
     // Fix any JSX issues in setup file
     if (setupContent.includes('<div') && setupPath.endsWith('.js')) {
       log.warn('Found JSX in .js file, this may cause issues');
     }
-    
+
     log.success('Test setup checked');
   }
 };
 
 const optimizeDependencies = () => {
   log.info('Optimizing dependencies...');
-  
+
   // Run npm audit fix
   runCommand('npm audit fix --force');
-  
+
   // Clean install if needed
   // log.info('Reinstalling dependencies...');
   // runCommand('npm ci');
-  
+
   log.success('Dependencies optimized');
 };
 
 const validateStructure = () => {
   log.info('Validating project structure...');
-  
+
   const requiredDirs = [
     'src',
     'src/components',
     'src/pages',
     'src/services',
     'src/tests',
-    'backend'
+    'backend',
   ];
-  
+
   const requiredFiles = [
     'package.json',
     'vite.config.js',
     '.env.development',
-    '.env.production'
+    '.env.production',
   ];
-  
+
   // Check directories
   requiredDirs.forEach(dir => {
     const dirPath = path.join(PROJECT_ROOT, dir);
+
     if (!fileExists(dirPath)) {
       log.warn(`Missing directory: ${dir}`);
     }
   });
-  
+
   // Check files
   requiredFiles.forEach(file => {
     const filePath = path.join(PROJECT_ROOT, file);
+
     if (!fileExists(filePath)) {
       log.error(`Missing file: ${file}`);
     }
   });
-  
+
   log.success('Project structure validated');
 };
 
 const runPostInstallTasks = () => {
   log.info('Running post-install tasks...');
-  
+
   // Ensure proper permissions
   if (process.platform !== 'win32') {
     runCommand('chmod +x cleanup-and-optimize.js');
   }
-  
+
   log.success('Post-install tasks completed');
 };
 
@@ -268,16 +275,17 @@ const main = () => {
   try {
     log.info('TECHNO-ETL Cleanup and Optimization Script');
     log.info('========================================');
-    
+
     // Parse arguments
     const args = process.argv.slice(2);
     const isPostInstall = args.includes('--postinstall');
-    
+
     if (isPostInstall) {
       runPostInstallTasks();
+
       return;
     }
-    
+
     // Perform cleanup and optimization
     fixPackageJson();
     fixEnvironmentFiles();
@@ -285,13 +293,13 @@ const main = () => {
     fixTestSetup();
     // optimizeDependencies(); // Commented out to avoid long wait times
     validateStructure();
-    
+
     log.success('TECHNO-ETL Cleanup and Optimization completed successfully!');
     log.info('You can now run:');
     log.info('  npm run dev     - Start development server');
     log.info('  npm run build   - Build for production');
     log.info('  npm test        - Run tests');
-    
+
   } catch (error) {
     log.error('Cleanup and optimization failed:');
     log.error(error.message);
@@ -304,11 +312,11 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { 
-  fixPackageJson, 
-  fixEnvironmentFiles, 
-  fixViteConfig, 
-  fixTestSetup, 
-  optimizeDependencies, 
-  validateStructure 
+module.exports = {
+  fixPackageJson,
+  fixEnvironmentFiles,
+  fixViteConfig,
+  fixTestSetup,
+  optimizeDependencies,
+  validateStructure,
 };

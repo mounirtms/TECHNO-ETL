@@ -37,6 +37,7 @@ export const useSettingsManager = (pageId = null) => {
     if (pageId && userSettings) {
       try {
         const pageSettingsInstance = settingsManager.setCurrentPage(pageId);
+
         setPageSettings(pageSettingsInstance);
         setError(null);
       } catch (err) {
@@ -82,6 +83,7 @@ export const useSettingsManager = (pageId = null) => {
       return settingsManager.get(key, pageId) ?? defaultValue;
     } catch (err) {
       console.error(`Failed to get setting ${key}:`, err);
+
       return defaultValue;
     }
   }, [pageId]);
@@ -90,10 +92,12 @@ export const useSettingsManager = (pageId = null) => {
   const setSetting = useCallback((key, value, options = {}) => {
     try {
       settingsManager.set(key, value, { ...options, pageId });
+
       return true;
     } catch (err) {
       console.error(`Failed to set setting ${key}:`, err);
       setError(err.message);
+
       return false;
     }
   }, [pageId]);
@@ -102,10 +106,12 @@ export const useSettingsManager = (pageId = null) => {
   const updateSettings = useCallback((updates, options = {}) => {
     try {
       settingsManager.update(updates, { ...options, pageId });
+
       return true;
     } catch (err) {
       console.error('Failed to update settings:', err);
       setError(err.message);
+
       return false;
     }
   }, [pageId]);
@@ -114,10 +120,12 @@ export const useSettingsManager = (pageId = null) => {
   const resetSettings = useCallback((scope = 'page') => {
     try {
       settingsManager.reset(scope, pageId);
+
       return true;
     } catch (err) {
       console.error(`Failed to reset ${scope} settings:`, err);
       setError(err.message);
+
       return false;
     }
   }, [pageId]);
@@ -128,6 +136,7 @@ export const useSettingsManager = (pageId = null) => {
       return settingsManager.hasPermission(key, permission);
     } catch (err) {
       console.error(`Failed to check permission for ${key}:`, err);
+
       return false;
     }
   }, []);
@@ -139,6 +148,7 @@ export const useSettingsManager = (pageId = null) => {
     } catch (err) {
       console.error('Failed to export settings:', err);
       setError(err.message);
+
       return null;
     }
   }, []);
@@ -147,10 +157,12 @@ export const useSettingsManager = (pageId = null) => {
   const importSettings = useCallback((data, options = {}) => {
     try {
       settingsManager.import(data, options);
+
       return true;
     } catch (err) {
       console.error('Failed to import settings:', err);
       setError(err.message);
+
       return false;
     }
   }, []);
@@ -158,7 +170,7 @@ export const useSettingsManager = (pageId = null) => {
   // Get grid settings for current page
   const getGridSettings = useCallback(() => {
     if (!pageSettings) return null;
-    
+
     return {
       pageSize: getSetting('grid.pageSize', 25),
       density: getSetting('grid.density', 'standard'),
@@ -166,14 +178,14 @@ export const useSettingsManager = (pageId = null) => {
       filters: getSetting('grid.filters', {}),
       sorting: getSetting('grid.sorting', []),
       showStats: getSetting('display.showStats', true),
-      showToolbar: getSetting('display.showToolbar', true)
+      showToolbar: getSetting('display.showToolbar', true),
     };
   }, [pageSettings, getSetting]);
 
   // Update grid settings
   const updateGridSettings = useCallback((gridUpdates) => {
     const updates = {};
-    
+
     Object.entries(gridUpdates).forEach(([key, value]) => {
       if (key === 'showStats' || key === 'showToolbar') {
         updates[`display.${key}`] = value;
@@ -181,7 +193,7 @@ export const useSettingsManager = (pageId = null) => {
         updates[`grid.${key}`] = value;
       }
     });
-    
+
     return updateSettings(updates);
   }, [updateSettings]);
 
@@ -193,7 +205,7 @@ export const useSettingsManager = (pageId = null) => {
       fontSize: getSetting('preferences.fontSize', 'medium'),
       density: getSetting('preferences.density', 'standard'),
       animations: getSetting('preferences.animations', true),
-      highContrast: getSetting('preferences.highContrast', false)
+      highContrast: getSetting('preferences.highContrast', false),
     };
   }, [getSetting]);
 
@@ -209,7 +221,7 @@ export const useSettingsManager = (pageId = null) => {
     pageSettings,
     loading,
     error,
-    
+
     // Core functions
     getSetting,
     setSetting,
@@ -218,20 +230,20 @@ export const useSettingsManager = (pageId = null) => {
     hasPermission,
     exportSettings,
     importSettings,
-    
+
     // Specialized functions
     getGridSettings,
     updateGridSettings,
     getThemeSettings,
     getApiSettings,
-    
+
     // Utilities
     isInitialized: !!userSettings,
     hasPageSettings: !!pageSettings,
     currentPageId: pageId,
-    
+
     // Direct access to settings instances (for advanced usage)
-    settingsManager
+    settingsManager,
   }), [
     userSettings,
     pageSettings,
@@ -248,7 +260,7 @@ export const useSettingsManager = (pageId = null) => {
     updateGridSettings,
     getThemeSettings,
     getApiSettings,
-    pageId
+    pageId,
   ]);
 
   return returnValue;
@@ -257,25 +269,25 @@ export const useSettingsManager = (pageId = null) => {
 // Hook for grid-specific settings
 export const useGridSettings = (pageId) => {
   const settings = useSettingsManager(pageId);
-  
+
   return useMemo(() => ({
     ...settings.getGridSettings(),
     updateSettings: settings.updateGridSettings,
     resetToDefaults: () => settings.resetSettings('page'),
-    hasPermission: settings.hasPermission
+    hasPermission: settings.hasPermission,
   }), [settings]);
 };
 
 // Hook for theme settings
 export const useThemeSettings = () => {
   const settings = useSettingsManager();
-  
+
   return useMemo(() => ({
     ...settings.getThemeSettings(),
     updateTheme: (themeUpdates) => settings.updateSettings(
       Object.fromEntries(
-        Object.entries(themeUpdates).map(([key, value]) => [`preferences.${key}`, value])
-      )
+        Object.entries(themeUpdates).map(([key, value]) => [`preferences.${key}`, value]),
+      ),
     ),
     applyTheme: () => {
       if (settings.userSettings) {
@@ -286,23 +298,23 @@ export const useThemeSettings = () => {
       if (settings.userSettings) {
         settings.userSettings.applyLanguage();
       }
-    }
+    },
   }), [settings]);
 };
 
 // Hook for API settings
 export const useApiSettings = (service) => {
   const settings = useSettingsManager();
-  
+
   return useMemo(() => ({
     config: settings.getApiSettings(service),
     updateConfig: (configUpdates) => settings.updateSettings({
       [`apiSettings.${service}`]: {
         ...settings.getApiSettings(service),
-        ...configUpdates
-      }
+        ...configUpdates,
+      },
     }),
-    hasPermission: (permission = 'write') => settings.hasPermission(`apiSettings.${service}`, permission)
+    hasPermission: (permission = 'write') => settings.hasPermission(`apiSettings.${service}`, permission),
   }), [settings, service]);
 };
 

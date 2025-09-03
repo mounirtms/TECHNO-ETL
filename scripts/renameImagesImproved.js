@@ -28,17 +28,20 @@ async function renameImagesImproved(forceUpdate = false) {
 
   // Read all files in source folder first
   let sourceFiles;
+
   try {
     sourceFiles = fs.readdirSync(sourceImagesFolder);
     console.log(`📁 Found ${sourceFiles.length} files in source folder`);
   } catch (error) {
     console.error('❌ Error reading source folder:', error.message);
+
     return;
   }
 
   // Filter for image files only
   const imageFiles = sourceFiles.filter(file => {
     const ext = path.extname(file).toLowerCase();
+
     return ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'].includes(ext);
   });
 
@@ -47,7 +50,7 @@ async function renameImagesImproved(forceUpdate = false) {
 
   // Map to store CSV data
   const csvData = [];
-  
+
   return new Promise((resolve, reject) => {
     // Read CSV file
     fs.createReadStream(csvFile)
@@ -57,7 +60,7 @@ async function renameImagesImproved(forceUpdate = false) {
           csvData.push({
             ref: row.ref.trim(),
             imageName: row['image name'].trim(),
-            productName: row.name || 'Unknown Product'
+            productName: row.name || 'Unknown Product',
           });
         }
       })
@@ -78,7 +81,7 @@ async function renameImagesImproved(forceUpdate = false) {
 
           // Find matching source files and sort them for deterministic order
           const matchingFiles = findMatchingFiles(imageFiles, ref, imageName).sort();
-          
+
           if (matchingFiles.length === 0) {
             console.log(`❌ No match found for ref: ${ref} (${productName})`);
             notFoundCount++;
@@ -123,7 +126,7 @@ async function renameImagesImproved(forceUpdate = false) {
         console.log(`💥 Errors encountered: ${errorCount}`);
         console.log(`📁 Total CSV entries processed: ${csvData.length}`);
         console.log('');
-        
+
         if (renamedCount > 0) {
           console.log('🎉 Renaming completed successfully!');
           console.log(`📂 Check the ${destinationFolder} folder for renamed images.`);
@@ -134,7 +137,7 @@ async function renameImagesImproved(forceUpdate = false) {
           skipped: skippedCount,
           notFound: notFoundCount,
           errors: errorCount,
-          total: csvData.length
+          total: csvData.length,
         });
       })
       .on('error', (error) => {
@@ -153,35 +156,44 @@ async function renameImagesImproved(forceUpdate = false) {
  */
 function findMatchingFiles(imageFiles, ref, imageName) {
   const matches = new Set();
-  
+
   // Strategy 1: Exact match with imageName
   const exactMatch = imageFiles.find(file => {
     const nameWithoutExt = path.parse(file).name.toLowerCase();
+
     return nameWithoutExt === imageName.toLowerCase();
   });
+
   if (exactMatch) matches.add(exactMatch);
 
   // Strategy 2: Files that start with the ref code
   const refMatches = imageFiles.filter(file => {
     const nameWithoutExt = path.parse(file).name;
+
     return nameWithoutExt.toLowerCase().startsWith(ref.toLowerCase());
   });
+
   refMatches.forEach(match => matches.add(match));
 
   // Strategy 3: Files that contain the ref code
   const containsRefMatches = imageFiles.filter(file => {
     const nameWithoutExt = path.parse(file).name.toLowerCase();
+
     return nameWithoutExt.includes(ref.toLowerCase());
   });
+
   containsRefMatches.forEach(match => matches.add(match));
 
   // Strategy 4: Fuzzy matching - files that contain parts of the imageName
   const imageNameParts = imageName.toLowerCase().split('-').filter(part => part.length > 2);
+
   if (imageNameParts.length > 0) {
     const fuzzyMatches = imageFiles.filter(file => {
       const nameWithoutExt = path.parse(file).name.toLowerCase();
+
       return imageNameParts.some(part => nameWithoutExt.includes(part));
     });
+
     fuzzyMatches.forEach(match => matches.add(match));
   }
 
@@ -194,7 +206,7 @@ module.exports = { renameImagesImproved };
 // If run directly, execute with default parameters
 if (require.main === module) {
   const forceUpdate = process.argv.includes('--force') || process.argv.includes('-f');
-  
+
   console.log('Starting improved image renaming...');
   if (forceUpdate) {
     console.log('⚠️  Force update mode enabled - will overwrite existing files');

@@ -14,27 +14,27 @@ import {
   Tab,
   Button,
   IconButton,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { 
-  Refresh, 
-  Settings, 
-  Fullscreen, 
+import {
+  Refresh,
+  Settings,
+  Fullscreen,
   FullscreenExit,
   Add,
-  FilterList
+  FilterList,
 } from '@mui/icons-material';
 import { getRouteMetadata } from '../../config/routes';
 import ErrorBoundary from './ErrorBoundary';
 
 // Enhanced Grid Page Component with DRY principles
-const EnhancedGridPage = ({ 
-  title, 
-  description, 
-  icon: Icon, 
+const EnhancedGridPage = ({
+  title,
+  description,
+  icon: Icon,
   showBreadcrumbs = true,
   tabs = [],
   defaultTab = 0,
@@ -52,7 +52,7 @@ const EnhancedGridPage = ({
   loading = false,
   error = null,
   stats = [],
-  actions = []
+  actions = [],
 }) => {
   const { t } = useTranslation();
   const location = useLocation();
@@ -105,15 +105,15 @@ const EnhancedGridPage = ({
     if (tabs.length > 0) {
       return (
         <Box>
-          <Tabs 
-            value={activeTab} 
+          <Tabs
+            value={activeTab}
             onChange={handleTabChange}
             variant="scrollable"
             scrollButtons="auto"
             sx={{ mb: 3, borderBottom: 1, borderColor: 'divider' }}
           >
             {tabs.map((tab, index) => (
-              <Tab 
+              <Tab
                 key={tab.id || index}
                 label={tab.label}
                 icon={tab.icon}
@@ -160,7 +160,7 @@ const EnhancedGridPage = ({
           <IconButton onClick={handleRefresh} size="small">
             <Refresh />
           </IconButton>
-        </Tooltip>
+        </Tooltip>,
       );
     }
 
@@ -170,17 +170,17 @@ const EnhancedGridPage = ({
           <IconButton onClick={onSettings} size="small">
             <Settings />
           </IconButton>
-        </Tooltip>
+        </Tooltip>,
       );
     }
 
     if (showFullscreenButton) {
       actionButtons.push(
-        <Tooltip key="fullscreen" title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}>
+        <Tooltip key="fullscreen" title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}>
           <IconButton onClick={handleFullscreen} size="small">
             {isFullscreen ? <FullscreenExit /> : <Fullscreen />}
           </IconButton>
-        </Tooltip>
+        </Tooltip>,
       );
     }
 
@@ -194,7 +194,7 @@ const EnhancedGridPage = ({
           size="small"
         >
           Add
-        </Button>
+        </Button>,
       );
     }
 
@@ -204,7 +204,7 @@ const EnhancedGridPage = ({
           <IconButton onClick={onFilter} size="small">
             <FilterList />
           </IconButton>
-        </Tooltip>
+        </Tooltip>,
       );
     }
 
@@ -213,14 +213,14 @@ const EnhancedGridPage = ({
       actionButtons.push(
         <Button
           key={`custom-${index}`}
-          variant={action.variant || "outlined"}
+          variant={action.variant || 'outlined'}
           startIcon={action.icon}
           onClick={action.onClick}
           size="small"
           color={action.color}
         >
           {action.label}
-        </Button>
+        </Button>,
       );
     });
 
@@ -239,7 +239,7 @@ const EnhancedGridPage = ({
       transition={{ duration: 0.3 }}
       sx={{
         height: isFullscreen ? '100vh' : 'auto',
-        overflow: isFullscreen ? 'auto' : 'visible'
+        overflow: isFullscreen ? 'auto' : 'visible',
       }}
     >
       <Container maxWidth="xl" sx={{ py: 3 }}>
@@ -259,25 +259,25 @@ const EnhancedGridPage = ({
               {t(pageTitle)}
             </Typography>
           </Stack>
-          
+
           {pageDescription && (
             <Typography variant="h6" color="text.secondary">
               {t(pageDescription)}
             </Typography>
           )}
-          
+
           <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
-            <Chip 
-              label="Real-time Updates" 
-              color="success" 
-              size="small" 
-              variant="outlined" 
+            <Chip
+              label="Real-time Updates"
+              color="success"
+              size="small"
+              variant="outlined"
             />
-            <Chip 
-              label="Auto-save Enabled" 
-              color="info" 
-              size="small" 
-              variant="outlined" 
+            <Chip
+              label="Auto-save Enabled"
+              color="info"
+              size="small"
+              variant="outlined"
             />
           </Stack>
         </Box>
@@ -285,22 +285,22 @@ const EnhancedGridPage = ({
         {renderStats()}
         {renderActions()}
 
-        <Paper 
-          sx={{ 
-            p: 3, 
-            borderRadius: 2, 
+        <Paper
+          sx={{
+            p: 3,
+            borderRadius: 2,
             minHeight: isFullscreen ? 'calc(100vh - 200px)' : '60vh',
-            position: 'relative'
+            position: 'relative',
           }}
         >
-          <ErrorBoundary 
+          <ErrorBoundary
             fallback={
               <Alert severity="error">
                 {t('An error occurred while loading the content.')}
               </Alert>
             }
           >
-            <Suspense 
+            <Suspense
               fallback={
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 200 }}>
                   <CircularProgress />

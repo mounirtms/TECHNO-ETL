@@ -62,16 +62,16 @@ const App = () => {
               <Route path="/docs/getting-started" element={<GettingStarted />} />
               <Route path="/docs/features-showcase" element={<FeaturesShowcase />} />
               <Route path="/docs/product-management" element={<ProductManagement />} />
-              
+
               {/* Deployment Documentation */}
               <Route path="/docs/deployment-guide" element={<DeploymentGuide />} />
               <Route path="/docs/optimized-deployment" element={<OptimizedDeploymentGuide />} />
               <Route path="/docs/backend-production" element={<BackendProductionGuide />} />
-              
+
               <Route path="/docs/troubleshooting" element={<Troubleshooting />} />
               <Route path="/docs/configuration-setup" element={<ConfigurationSetup />} />
               <Route path="/docs/search-help" element={<SearchHelp />} />
-              
+
               {/* Project Management Documentation */}
               <Route path="/docs/project-cleanup" element={<ProjectCleanup />} />
               <Route path="/docs/user-settings-guide" element={<UserSettingsGuide />} />

@@ -19,14 +19,17 @@ export const useOptimizedTranslation = (enableI18n = true) => {
 
     // Check cache first
     const cacheKey = `${key}:${fallback}`;
+
     if (translationCache.current.has(cacheKey)) {
       return translationCache.current.get(cacheKey);
     }
 
     try {
       const result = t(key, fallback);
+
       // Cache successful translations
       translationCache.current.set(cacheKey, result);
+
       return result;
     } catch (error) {
       // Only log unique errors to prevent spam
@@ -34,6 +37,7 @@ export const useOptimizedTranslation = (enableI18n = true) => {
         console.warn(`Translation failed for key: ${key}`, error);
         errorCache.current.add(key);
       }
+
       return fallback;
     }
   }, [t, enableI18n]);
@@ -48,7 +52,7 @@ export const useOptimizedTranslation = (enableI18n = true) => {
   return useMemo(() => ({
     translate,
     clearCache,
-    t // Original t function for direct use
+    t, // Original t function for direct use
   }), [translate, clearCache, t]);
 };
 
@@ -58,7 +62,7 @@ export const useOptimizedTranslation = (enableI18n = true) => {
  */
 export const useSafeTranslate = (enableI18n = true) => {
   const { translate } = useOptimizedTranslation(enableI18n);
-  
+
   // Return memoized translate function
   return useMemo(() => translate, [translate]);
 };

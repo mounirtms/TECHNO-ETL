@@ -20,6 +20,7 @@ export const cacheMiddleware = (duration) => {
 
     if (cachedResponse) {
       logger.debug('Cache hit', { key, component: 'CacheMiddleware' });
+
       return res.status(200).json(cachedResponse);
     }
 
@@ -31,6 +32,7 @@ export const cacheMiddleware = (duration) => {
       if (res.statusCode >= 200 && res.statusCode < 300) {
         setInCache(key, body, duration);
       }
+
       return originalJson.call(res, body);
     };
 
@@ -68,7 +70,7 @@ export const invalidateCache = (...prefixesToClear) => {
 
 /**
  * Finds and deletes keys in Redis based on a list of prefixes.
- * 
+ *
  * ⚠️ WARNING: This function uses `SCAN` which is safer than `KEYS` but can still
  * impact performance on very large Redis instances. Use with caution in production.
  * For high-performance needs, a strategy using Redis sets to track related keys is recommended.
@@ -77,8 +79,10 @@ export const invalidateCache = (...prefixesToClear) => {
  */
 async function clearKeysByPrefix(prefixes) {
   const redis = getRedisClient();
+
   if (!redis) {
     logger.warn('[Cache Invalidation] Skipping Redis key clearing because client is not available.');
+
     return;
   }
 
@@ -92,6 +96,7 @@ async function clearKeysByPrefix(prefixes) {
       if (keys.length) {
         // `keys` is an array of strings, we need to remove the namespace for keyv
         const keysWithoutNamespace = keys.map(k => k.replace(/^techno-etl:/, ''));
+
         logger.info('[Cache Invalidation] Deleting keys', { keys: keysWithoutNamespace });
         // Use deleteFromCache which uses keyv's delete method
         keysWithoutNamespace.forEach(key => deleteFromCache(key));

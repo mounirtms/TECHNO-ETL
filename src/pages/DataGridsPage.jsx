@@ -18,7 +18,7 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
-  Divider
+  Divider,
 } from '@mui/material';
 import {
   Home as HomeIcon,
@@ -29,7 +29,7 @@ import {
   Download as DownloadIcon,
   Upload as UploadIcon,
   Refresh as RefreshIcon,
-  MoreVert as MoreIcon
+  MoreVert as MoreIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
@@ -57,26 +57,26 @@ const DataGridsHeader = ({ isFullscreen, onToggleFullscreen, onExport, onImport,
           <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
             {t('Comprehensive data grid interface with advanced features')}
           </Typography>
-          
+
           {/* Status Indicators */}
           <Stack direction="row" spacing={1}>
-            <Chip 
-              label={t('Real-time Updates')} 
-              color="success" 
-              size="small" 
-              variant="outlined" 
+            <Chip
+              label={t('Real-time Updates')}
+              color="success"
+              size="small"
+              variant="outlined"
             />
-            <Chip 
-              label={t('Auto-save Enabled')} 
-              color="info" 
-              size="small" 
-              variant="outlined" 
+            <Chip
+              label={t('Auto-save Enabled')}
+              color="info"
+              size="small"
+              variant="outlined"
             />
-            <Chip 
-              label={t('5 Active Grids')} 
-              color="primary" 
-              size="small" 
-              variant="outlined" 
+            <Chip
+              label={t('5 Active Grids')}
+              color="primary"
+              size="small"
+              variant="outlined"
             />
           </Stack>
         </Box>
@@ -88,19 +88,19 @@ const DataGridsHeader = ({ isFullscreen, onToggleFullscreen, onExport, onImport,
               <RefreshIcon />
             </IconButton>
           </Tooltip>
-          
+
           <Tooltip title={isFullscreen ? t('Exit Fullscreen') : t('Enter Fullscreen')}>
             <IconButton onClick={onToggleFullscreen}>
               {isFullscreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
             </IconButton>
           </Tooltip>
-          
+
           <Tooltip title={t('More Options')}>
             <IconButton onClick={(e) => setMenuAnchor(e.currentTarget)}>
               <MoreIcon />
             </IconButton>
           </Tooltip>
-          
+
           <Menu
             anchorEl={menuAnchor}
             open={Boolean(menuAnchor)}
@@ -182,7 +182,7 @@ const DataGridsPage = () => {
   const { t } = useTranslation();
   const location = useLocation();
   // const { trackPageView } = useIntelligentRouting();
-  
+
   // State management
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [performanceMetrics, setPerformanceMetrics] = useState({});
@@ -201,7 +201,7 @@ const DataGridsPage = () => {
         loadTime: `${Math.floor(Math.random() * 100 + 150)}ms`,
         memoryUsage: `${Math.floor(Math.random() * 20 + 45)}MB`,
         cacheHitRate: `${Math.floor(Math.random() * 15 + 80)}%`,
-        activeConnections: Math.floor(Math.random() * 5 + 1).toString()
+        activeConnections: Math.floor(Math.random() * 5 + 1).toString(),
       });
     };
 

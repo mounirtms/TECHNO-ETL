@@ -16,7 +16,7 @@ import {
   Divider,
   Accordion,
   AccordionSummary,
-  AccordionDetails
+  AccordionDetails,
 } from '@mui/material';
 import {
   Settings as SettingsIcon,
@@ -27,7 +27,7 @@ import {
   Security as SecurityIcon,
   Language as LanguageIcon,
   Grid3x3 as GridIcon,
-  Sync as SyncIcon
+  Sync as SyncIcon,
 } from '@mui/icons-material';
 
 const UserSettingsGuide = () => {
@@ -42,8 +42,8 @@ const UserSettingsGuide = () => {
         'Phone Number',
         'Address Information',
         'Profile Picture Upload',
-        'Account Preferences'
-      ]
+        'Account Preferences',
+      ],
     },
     {
       title: 'API Settings',
@@ -55,8 +55,8 @@ const UserSettingsGuide = () => {
         'Database Connections',
         'Authentication Tokens',
         'API Rate Limiting',
-        'Connection Testing'
-      ]
+        'Connection Testing',
+      ],
     },
     {
       title: 'Appearance & Preferences',
@@ -68,9 +68,9 @@ const UserSettingsGuide = () => {
         'Font Size and Density',
         'Animation Preferences',
         'Grid Display Options',
-        'Accessibility Settings'
-      ]
-    }
+        'Accessibility Settings',
+      ],
+    },
   ];
 
   const globalSettings = [
@@ -81,8 +81,8 @@ const UserSettingsGuide = () => {
         'Immediate theme switching without page reload',
         'RTL layout support for Arabic and other RTL languages',
         'Professional layout animations',
-        'Consistent styling patterns'
-      ]
+        'Consistent styling patterns',
+      ],
     },
     {
       category: 'Grid Preferences',
@@ -91,8 +91,8 @@ const UserSettingsGuide = () => {
         'Grid density (compact/standard/comfortable)',
         'Column visibility preferences',
         'Sorting and filtering defaults',
-        'Export format preferences'
-      ]
+        'Export format preferences',
+      ],
     },
     {
       category: 'Performance Settings',
@@ -101,9 +101,9 @@ const UserSettingsGuide = () => {
         'Auto-refresh intervals',
         'Caching preferences',
         'Background sync settings',
-        'Memory optimization options'
-      ]
-    }
+        'Memory optimization options',
+      ],
+    },
   ];
 
   const pageSpecificSettings = [
@@ -114,8 +114,8 @@ const UserSettingsGuide = () => {
         'Data refresh intervals',
         'Chart and graph preferences',
         'Notification settings',
-        'Quick action shortcuts'
-      ]
+        'Quick action shortcuts',
+      ],
     },
     {
       page: 'Product Grids',
@@ -124,8 +124,8 @@ const UserSettingsGuide = () => {
         'Filter presets and saved searches',
         'Bulk operation preferences',
         'Export templates',
-        'View mode defaults'
-      ]
+        'View mode defaults',
+      ],
     },
     {
       page: 'Reports',
@@ -134,9 +134,9 @@ const UserSettingsGuide = () => {
         'Scheduling preferences',
         'Email notification settings',
         'Data visualization options',
-        'Archive and retention settings'
-      ]
-    }
+        'Archive and retention settings',
+      ],
+    },
   ];
 
   return (
@@ -156,8 +156,8 @@ const UserSettingsGuide = () => {
           🎯 Enhanced Settings Architecture
         </Typography>
         <Typography>
-          The user settings system now supports both global settings that apply across the entire application 
-          and page-specific settings that customize individual page experiences. All settings are persistent 
+          The user settings system now supports both global settings that apply across the entire application
+          and page-specific settings that customize individual page experiences. All settings are persistent
           and synchronized across sessions.
         </Typography>
       </Alert>
@@ -184,7 +184,7 @@ const UserSettingsGuide = () => {
                   <List dense>
                     {category.features.map((feature, featureIndex) => (
                       <ListItem key={featureIndex} sx={{ px: 0 }}>
-                        <ListItemText 
+                        <ListItemText
                           primary={feature}
                           primaryTypographyProps={{ variant: 'body2' }}
                         />
@@ -250,7 +250,7 @@ const UserSettingsGuide = () => {
                   <List dense>
                     {page.settings.map((setting, settingIndex) => (
                       <ListItem key={settingIndex} sx={{ px: 0 }}>
-                        <ListItemText 
+                        <ListItemText
                           primary={setting}
                           primaryTypographyProps={{ variant: 'body2' }}
                         />
@@ -270,7 +270,7 @@ const UserSettingsGuide = () => {
           <SyncIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
           Settings Architecture & Inheritance
         </Typography>
-        
+
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <Typography variant="h6" gutterBottom>
@@ -281,7 +281,7 @@ const UserSettingsGuide = () => {
                 <ListItemIcon>
                   <Chip size="small" label="1" color="primary" />
                 </ListItemIcon>
-                <ListItemText 
+                <ListItemText
                   primary="Base Settings Class"
                   secondary="Core settings functionality and validation"
                 />
@@ -290,7 +290,7 @@ const UserSettingsGuide = () => {
                 <ListItemIcon>
                   <Chip size="small" label="2" color="primary" />
                 </ListItemIcon>
-                <ListItemText 
+                <ListItemText
                   primary="User Settings Inheritance"
                   secondary="Extends base with user-specific preferences"
                 />
@@ -299,7 +299,7 @@ const UserSettingsGuide = () => {
                 <ListItemIcon>
                   <Chip size="small" label="3" color="primary" />
                 </ListItemIcon>
-                <ListItemText 
+                <ListItemText
                   primary="Page Settings Override"
                   secondary="Page-specific settings override global defaults"
                 />
@@ -308,7 +308,7 @@ const UserSettingsGuide = () => {
                 <ListItemIcon>
                   <Chip size="small" label="4" color="primary" />
                 </ListItemIcon>
-                <ListItemText 
+                <ListItemText
                   primary="Permission-Based Access"
                   secondary="Settings visibility based on user permissions"
                 />
@@ -325,7 +325,7 @@ const UserSettingsGuide = () => {
                 <ListItemIcon>
                   <LanguageIcon color="primary" />
                 </ListItemIcon>
-                <ListItemText 
+                <ListItemText
                   primary="Shared Components"
                   secondary="Reusable settings components across pages"
                 />
@@ -334,7 +334,7 @@ const UserSettingsGuide = () => {
                 <ListItemIcon>
                   <GridIcon color="primary" />
                 </ListItemIcon>
-                <ListItemText 
+                <ListItemText
                   primary="Common Grid Logic"
                   secondary="Unified grid settings applied consistently"
                 />
@@ -343,7 +343,7 @@ const UserSettingsGuide = () => {
                 <ListItemIcon>
                   <PaletteIcon color="primary" />
                 </ListItemIcon>
-                <ListItemText 
+                <ListItemText
                   primary="Theme Inheritance"
                   secondary="Cascading theme settings from global to local"
                 />
@@ -352,7 +352,7 @@ const UserSettingsGuide = () => {
                 <ListItemIcon>
                   <SecurityIcon color="primary" />
                 </ListItemIcon>
-                <ListItemText 
+                <ListItemText
                   primary="Permission Mixins"
                   secondary="Reusable permission checking logic"
                 />

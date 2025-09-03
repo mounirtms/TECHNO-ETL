@@ -2,8 +2,6 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { visualizer } from 'rollup-plugin-visualizer';
-import fs from 'fs-extra';
-import connect from 'connect';
 import serveStatic from 'serve-static';
 
 export default defineConfig(({ command, mode }) => {
@@ -24,10 +22,10 @@ export default defineConfig(({ command, mode }) => {
         // Babel options
         babel: {
           presets: [
-            ['@babel/preset-react', { runtime: 'automatic' }]
-          ]
+            ['@babel/preset-react', { runtime: 'automatic' }],
+          ],
           // Note: Console removal handled by terser in build.terserOptions
-        }
+        },
       }),
 
       // Bundle analyzer for production builds
@@ -36,16 +34,16 @@ export default defineConfig(({ command, mode }) => {
         open: false,
         gzipSize: true,
         brotliSize: true,
-        template: 'treemap'
+        template: 'treemap',
       }),
-      
+
       // Middleware to serve docs
       isDev && {
         name: 'serve-docs',
         configureServer(server) {
           server.middlewares.use('/docs', serveStatic('docs/dist'));
-        }
-      }
+        },
+      },
     ].filter(Boolean),
 
     // Path resolution
@@ -67,12 +65,12 @@ export default defineConfig(({ command, mode }) => {
         'react-dom/client': resolve(__dirname, 'node_modules/react-dom/client'),
         'react-is': resolve(__dirname, 'node_modules/react-is'),
         'prop-types': resolve(__dirname, 'node_modules/prop-types'),
-        'scheduler': resolve(__dirname, 'node_modules/scheduler')
+        'scheduler': resolve(__dirname, 'node_modules/scheduler'),
       },
       // Handle Firebase v9 modular imports
       conditions: ['import', 'module', 'browser', 'default'],
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
-      mainFields: ['browser', 'module', 'main']
+      mainFields: ['browser', 'module', 'main'],
     },
 
     // Development server configuration - Optimized for performance
@@ -83,18 +81,18 @@ export default defineConfig(({ command, mode }) => {
       open: true,
       cors: {
         origin: ['http://localhost:80', 'http://127.0.0.1:80', 'http://localhost:3000', 'http://127.0.0.1:3000'],
-        credentials: true
+        credentials: true,
       },
       hmr: {
         overlay: isDev,
         port: 24678,
-        clientPort: 24678
+        clientPort: 24678,
       },
       fs: {
-        cachedChecks: true
+        cachedChecks: true,
       },
       warmup: {
-        clientFiles: ['./src/main.jsx', './src/App.jsx']
+        clientFiles: ['./src/main.jsx', './src/App.jsx'],
       },
       proxy: {
         '/api': {
@@ -102,19 +100,19 @@ export default defineConfig(({ command, mode }) => {
           changeOrigin: true,
           secure: false,
           timeout: isDev ? 10000 : 30000,
-          configure: (proxy, _options) => {
-            proxy.on('error', (err, _req, _res) => {
+          configure: (proxy) => {
+            proxy.on('error', (err) => {
               console.log('🔴 Proxy Error:', err.message);
             });
             if (isDev && !process.env.VITE_QUIET) {
-              proxy.on('proxyReq', (proxyReq, req, _res) => {
+              proxy.on('proxyReq', (_, req) => {
                 if (req.url.includes('/health')) return;
                 console.log('🚀 Proxying:', req.method, req.url);
               });
             }
-          }
-        }
-      }
+          },
+        },
+      },
     },
 
     // Build configuration
@@ -128,25 +126,36 @@ export default defineConfig(({ command, mode }) => {
       },
       // Output directory
       outDir: 'dist',
-      
+
       // Generate source maps for debugging in production
       sourcemap: isProd ? 'hidden' : true,
-      
+
       // Minification
       minify: isProd ? 'terser' : false,
-      
+
       // Target modern browsers
-      target: ['es2020', 'chrome80', 'firefox78', 'safari14', 'edge88'],
-      
-      // CSS code splitting
+      target: ['es2020', 'edge88', 'chrome80', 'firefox78', 'safari14'],
+
+      // Enable CSS code splitting for better caching
       cssCodeSplit: true,
-      
+
+      // Aggressive code splitting for better caching
+      modulePreload: {
+        polyfill: true,
+        resolveDependencies: (filename, deps) => {
+          if (filename.includes('vendor')) {
+            return deps.filter(dep => dep.includes('vendor'));
+          }
+          return deps;
+        },
+      },
+
       // Enable asset inlining for small files
       assetsInlineLimit: 4096,
-      
+
       // Chunk size warning limit - optimized for production
       chunkSizeWarningLimit: 1000,
-      
+
       // Terser options for production minification
       terserOptions: isProd ? {
         compress: {
@@ -157,31 +166,31 @@ export default defineConfig(({ command, mode }) => {
           // Remove unused code
           dead_code: true,
           // Optimize boolean expressions
-          booleans_as_integers: false
+          booleans_as_integers: false,
         },
         mangle: {
           // Preserve class names for debugging
           keep_classnames: false,
           // Preserve function names for debugging
-          keep_fnames: false
+          keep_fnames: false,
         },
         format: {
           // Remove comments
-          comments: false
-        }
+          comments: false,
+        },
       } : {},
 
       // Rollup options for advanced optimization
       rollupOptions: {
         input: resolve(__dirname, 'index.html'),
-        
+
         output: {
-          // FIXED: Simplified chunk strategy to prevent React splitting
+          // Optimized chunk strategy to prevent React splitting and improve caching
           manualChunks: (id) => {
             if (id.includes('node_modules')) {
-              // CRITICAL: Keep ALL React ecosystem in ONE chunk
-              if (id.includes('react') || 
-                  id.includes('scheduler') || 
+              // CRITICAL: Keep ALL React ecosystem in ONE chunk for better performance
+              if (id.includes('react') ||
+                  id.includes('scheduler') ||
                   id.includes('react-is') ||
                   id.includes('prop-types') ||
                   id.includes('@emotion') ||
@@ -189,64 +198,61 @@ export default defineConfig(({ command, mode }) => {
                   id.includes('@mui')) {
                 return 'vendor-react'; // Single React chunk
               }
-  
-              // Firebase separate
+
+              // Firebase separate for better caching
               if (id.includes('firebase')) {
                 return 'vendor-firebase';
               }
-  
-              // Everything else
+
+              // Large libraries in separate chunks
+              if (id.includes('recharts') || id.includes('lodash')) {
+                return 'vendor-charts';
+              }
+
+              // Other vendor libraries
               return 'vendor-libs';
             }
-  
+
             // App code chunks
             if (id.includes('/contexts/')) {
               return 'app-contexts'; // Keep contexts together
             }
-            if (id.includes('/components/')) {
+            if (id.includes('/components/') && !id.includes('/components/grids')) {
               return 'app-components';
+            }
+            if (id.includes('/components/grids')) {
+              return 'app-grids';
             }
             if (id.includes('/services/')) {
               return 'app-services';
             }
+            if (id.includes('/pages/')) {
+              return 'app-pages';
+            }
+            if (id.includes('/hooks/')) {
+              return 'app-hooks';
+            }
           },
-          
+
           // File naming patterns with better organization
-          chunkFileNames: (chunkInfo) => {
-            const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop().replace('.jsx', '').replace('.js', '') : 'chunk';
-            return `js/[name]-[hash:8].js`; // Shorter hash for better caching
+          chunkFileNames: () => {
+            return 'js/[name]-[hash:8].js'; // Shorter hash for better caching
           },
           entryFileNames: 'js/[name]-[hash].js',
           assetFileNames: (assetInfo) => {
             const extType = assetInfo.name.split('.').pop();
+
             if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
-              return `images/[name]-[hash:8].[ext]`; // Shorter hash for better caching
+              return 'images/[name]-[hash:8].[ext]'; // Shorter hash for better caching
             }
             if (/woff2?|eot|ttf|otf/i.test(extType)) {
-              return `fonts/[name]-[hash:8].[ext]`; // Shorter hash for better caching
+              return 'fonts/[name]-[hash:8].[ext]';
             }
-            if (/css/i.test(extType)) {
-              return `css/[name]-[hash:8].[ext]`; // Shorter hash for better caching
-            }
-            return `assets/[name]-[hash:8].[ext]`; // Shorter hash for better caching
-          }
+
+            return 'assets/[name]-[hash:8].[ext]';
+          },
         },
-        
-        // External dependencies - prevent React bundling conflicts
-        // CRITICAL: Ensure React is never externalized
-        external: () => false,
-        
-
-
-        // Preserve module structure for tree shaking
-        preserveEntrySignatures: 'allow-extension'
       },
-
-      // Report compressed file sizes
-      reportCompressedSize: isProd,
-      
-      // Write bundle to disk during serve for debugging
-      write: true
     },
 
     // Aggressive dependency optimization for faster development
@@ -264,12 +270,12 @@ export default defineConfig(({ command, mode }) => {
         '@mui/material',
         '@mui/icons-material',
         '@emotion/react',
-        '@emotion/styled'
+        '@emotion/styled',
       ],
 
       // Exclude problematic dependencies
       exclude: [
-        'firebase'
+        'firebase',
       ],
 
       // Force optimization only when needed
@@ -279,12 +285,12 @@ export default defineConfig(({ command, mode }) => {
       esbuildOptions: {
         target: 'es2020',
         define: {
-          global: 'globalThis'
+          global: 'globalThis',
         },
         // Faster builds in development
         minify: !isDev,
-        sourcemap: isDev
-      }
+        sourcemap: isDev,
+      },
     },
 
     // CSS configuration
@@ -292,26 +298,26 @@ export default defineConfig(({ command, mode }) => {
       // CSS modules configuration
       modules: {
         localsConvention: 'camelCase',
-        generateScopedName: isProd 
+        generateScopedName: isProd
           ? '[hash:base64:5]'
-          : '[name]__[local]__[hash:base64:5]'
+          : '[name]__[local]__[hash:base64:5]',
       },
-      
+
       // PostCSS configuration
       postcss: {
-        plugins: []
+        plugins: [],
       },
-      
+
       // Sass/SCSS configuration
       preprocessorOptions: {
         scss: {
           additionalData: '@import "@/styles/variables.scss";',
-          charset: false
-        }
+          charset: false,
+        },
       },
-      
+
       // CSS dev source maps
-      devSourcemap: isDev
+      devSourcemap: isDev,
     },
 
     // Environment variables
@@ -319,40 +325,40 @@ export default defineConfig(({ command, mode }) => {
       __APP_VERSION__: JSON.stringify(process.env.npm_package_version || '1.0.0'),
       __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
       __DEV__: isDev,
-      __PROD__: isProd
+      __PROD__: isProd,
     },
 
     // ESBuild configuration
     esbuild: {
       // Keep names for debugging
       keepNames: !isProd,
-      
+
       // Drop specific items in production
       drop: isProd ? ['console', 'debugger'] : [],
-      
+
       // Target
       target: 'es2020',
-      
+
       // JSX configuration
       jsx: 'automatic',
-      jsxDev: isDev
+      jsxDev: isDev,
     },
 
     // Worker configuration
     worker: {
       format: 'es',
-      plugins: []
+      plugins: [],
     },
 
     // JSON configuration
     json: {
       namedExports: true,
-      stringify: false
+      stringify: false,
     },
 
     // Logging configuration
     logLevel: isDev ? 'info' : 'warn',
-    
+
     // Clear screen
     clearScreen: true,
 
@@ -366,8 +372,8 @@ export default defineConfig(({ command, mode }) => {
       strictPort: false,
       cors: true,
       headers: {
-        'Cache-Control': 'public, max-age=31536000, immutable'
-      }
-    }
+        'Cache-Control': 'public, max-age=31536000, immutable',
+      },
+    },
   };
 });

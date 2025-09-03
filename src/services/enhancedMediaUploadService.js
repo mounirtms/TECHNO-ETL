@@ -2,7 +2,7 @@
  * Enhanced Media Upload Service
  * Professional image processing with SKU matching, renaming, and resizing
  * Advanced features for professional bulk media upload operations
- * 
+ *
  * @author Techno-ETL Team
  * @version 3.0.0
  */
@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 const createEnhancedMediaUploadService = () => {
   // Use a local variable to hold the base service
   let BaseService;
-  
+
   try {
     // Use require to avoid hoisting issues
     BaseService = require('./mediaUploadService').default;
@@ -30,14 +30,14 @@ const createEnhancedMediaUploadService = () => {
             normalized: true,
             partial: true,
             fuzzy: true,
-            ref: true
+            ref: true,
           },
           strategyWeights: {
             exact: 1.0,
             normalized: 0.95,
             partial: 0.85,
             fuzzy: 0.8,
-            ref: 0.9
+            ref: 0.9,
           },
           thresholds: {
             partialLength: 30,
@@ -51,13 +51,13 @@ const createEnhancedMediaUploadService = () => {
             unicodeNormalizationBonus: 0.05,
             lengthDifferenceThreshold: 0.3,
             commonPrefixBonus: 0.1,
-            commonSuffixBonus: 0.05
+            commonSuffixBonus: 0.05,
           },
           fileHandling: {
             multipleImages: true,
             caseSensitive: false,
-            removeNumbers: false
-          }
+            removeNumbers: false,
+          },
         };
       }
     };
@@ -77,7 +77,7 @@ const createEnhancedMediaUploadService = () => {
         preserveAspectRatio: true,
         backgroundColor: '#FFFFFF',
         autoResize: true,
-        generateThumbnails: true
+        generateThumbnails: true,
       };
     }
 
@@ -88,13 +88,13 @@ const createEnhancedMediaUploadService = () => {
      */
     async parseCSVFile(file) {
       const result = await super.parseCSVFile(file, 'auto');
-      
+
       // Additional validation for enhanced features
       result.validation = this.validateCSVStructure(result);
       result.suggestions = this.generateCSVSuggestions(result);
-      
+
       return result;
-  }
+    }
 
     /**
      * Validate CSV structure for enhanced processing
@@ -106,7 +106,7 @@ const createEnhancedMediaUploadService = () => {
         isValid: true,
         warnings: [],
         errors: [],
-        score: 100
+        score: 100,
       };
 
       // Check for required columns
@@ -117,8 +117,8 @@ const createEnhancedMediaUploadService = () => {
       }
 
       // Check data quality
-      const emptyRows = csvData.data.filter(row => 
-        !row[csvData.skuColumn] || row[csvData.skuColumn].trim() === ''
+      const emptyRows = csvData.data.filter(row =>
+        !row[csvData.skuColumn] || row[csvData.skuColumn].trim() === '',
       ).length;
 
       if (emptyRows > 0) {
@@ -137,7 +137,7 @@ const createEnhancedMediaUploadService = () => {
       }
 
       return validation;
-  }
+    }
 
     /**
      * Generate suggestions for CSV improvement
@@ -151,7 +151,7 @@ const createEnhancedMediaUploadService = () => {
         suggestions.push({
           type: 'missing_column',
           message: 'Consider adding a product name column for better matching',
-          importance: 'medium'
+          importance: 'medium',
         });
       }
 
@@ -159,7 +159,7 @@ const createEnhancedMediaUploadService = () => {
         suggestions.push({
           type: 'missing_column',
           message: 'Consider adding an image filename column for exact matching',
-          importance: 'high'
+          importance: 'high',
         });
       }
 
@@ -171,7 +171,7 @@ const createEnhancedMediaUploadService = () => {
         suggestions.push({
           type: 'data_quality',
           message: 'SKUs are quite short, this may affect matching accuracy',
-          importance: 'medium'
+          importance: 'medium',
         });
       }
 
@@ -196,84 +196,86 @@ const createEnhancedMediaUploadService = () => {
             small: 0,    // < 1MB
             medium: 0,   // 1-5MB
             large: 0,    // 5-10MB
-            xlarge: 0    // > 10MB
-          }
+            xlarge: 0,    // > 10MB
+          },
+        },
+      };
+
+      for (const file of files) {
+        const validation = this.validateImageFile(file);
+        const analysis = await this.analyzeImage(file);
+
+        if (validation.valid) {
+          result.valid.push({
+            file,
+            analysis,
+            estimated_processing_time: this.estimateProcessingTime(file),
+          });
+          result.totalSize += file.size;
+        } else {
+          result.invalid.push({ file, error: validation.error });
         }
-    };
 
-    for (const file of files) {
-      const validation = this.validateImageFile(file);
-      const analysis = await this.analyzeImage(file);
+        // Update format statistics
+        const format = file.type.split('/')[1] || 'unknown';
 
-      if (validation.valid) {
-        result.valid.push({ 
-          file, 
-          analysis,
-          estimated_processing_time: this.estimateProcessingTime(file)
-        });
-        result.totalSize += file.size;
-      } else {
-        result.invalid.push({ file, error: validation.error });
+        result.analysis.formats[format] = (result.analysis.formats[format] || 0) + 1;
+
+        // Update size distribution
+        const sizeMB = file.size / 1024 / 1024;
+
+        if (sizeMB < 1) result.analysis.sizeDistribution.small++;
+        else if (sizeMB < 5) result.analysis.sizeDistribution.medium++;
+        else if (sizeMB < 10) result.analysis.sizeDistribution.large++;
+        else result.analysis.sizeDistribution.xlarge++;
       }
 
-      // Update format statistics
-      const format = file.type.split('/')[1] || 'unknown';
-      result.analysis.formats[format] = (result.analysis.formats[format] || 0) + 1;
+      result.analysis.averageSize = result.valid.length > 0
+        ? result.totalSize / result.valid.length
+        : 0;
 
-      // Update size distribution
-      const sizeMB = file.size / 1024 / 1024;
-      if (sizeMB < 1) result.analysis.sizeDistribution.small++;
-      else if (sizeMB < 5) result.analysis.sizeDistribution.medium++;
-      else if (sizeMB < 10) result.analysis.sizeDistribution.large++;
-      else result.analysis.sizeDistribution.xlarge++;
+      return result;
     }
 
-    result.analysis.averageSize = result.valid.length > 0 
-      ? result.totalSize / result.valid.length 
-      : 0;
-
-    return result;
-  }
-
-  /**
+    /**
    * Analyze individual image properties
    * @param {File} file - Image file to analyze
    * @returns {Promise<Object>} Image analysis
    */
-  async analyzeImage(file) {
-    return new Promise((resolve) => {
-      const img = new Image();
-      const canvas = document.createElement('canvas');
+    async analyzeImage(file) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        const canvas = document.createElement('canvas');
 
-      img.onload = () => {
-        const analysis = {
-          width: img.width,
-          height: img.height,
-          aspectRatio: img.width / img.height,
-          megapixels: (img.width * img.height) / 1000000,
-          needsResize: img.width > 2000 || img.height > 2000,
-          isSquare: Math.abs(img.width - img.height) < 50,
-          quality_estimate: this.estimateImageQuality(file.size, img.width, img.height)
+        img.onload = () => {
+          const analysis = {
+            width: img.width,
+            height: img.height,
+            aspectRatio: img.width / img.height,
+            megapixels: (img.width * img.height) / 1000000,
+            needsResize: img.width > 2000 || img.height > 2000,
+            isSquare: Math.abs(img.width - img.height) < 50,
+            quality_estimate: this.estimateImageQuality(file.size, img.width, img.height),
+          };
+
+          resolve(analysis);
         };
 
-        resolve(analysis);
-      };
+        img.onerror = () => {
+          resolve({
+            width: 0,
+            height: 0,
+            aspectRatio: 1,
+            megapixels: 0,
+            needsResize: false,
+            isSquare: false,
+            quality_estimate: 'unknown',
+          });
+        };
 
-      img.onerror = () => {
-        resolve({
-          width: 0,
-          height: 0,
-          aspectRatio: 1,
-          megapixels: 0,
-          needsResize: false,
-          isSquare: false,
-          quality_estimate: 'unknown'
-        });
-      };
-
-      img.src = URL.createObjectURL(file);
-    });
-  }
+        img.src = URL.createObjectURL(file);
+      });
+    }
 
     /**
      * Estimate image quality based on file size and dimensions
@@ -289,6 +291,7 @@ const createEnhancedMediaUploadService = () => {
       if (bytesPerPixel > 3) return 'high';
       if (bytesPerPixel > 1.5) return 'medium';
       if (bytesPerPixel > 0.5) return 'low';
+
       return 'very_low';
     }
 
@@ -300,6 +303,7 @@ const createEnhancedMediaUploadService = () => {
     estimateProcessingTime(file) {
       const basetime = 500; // Base processing time
       const sizeFactor = (file.size / 1024 / 1024) * 200; // 200ms per MB
+
       return Math.min(basetime + sizeFactor, 5000); // Max 5 seconds
     }
 
@@ -311,11 +315,11 @@ const createEnhancedMediaUploadService = () => {
      */
     matchImagesWithCSV(csvData, imageFiles) {
       const result = super.matchImagesWithCSV(csvData, imageFiles, this.defaultSettings);
-      
+
       // Enhance with confidence analysis
       result.confidenceAnalysis = this.analyzeMatchingConfidence(result.matches);
       result.recommendations = this.generateMatchingRecommendations(result);
-      
+
       return result;
     }
 
@@ -329,13 +333,14 @@ const createEnhancedMediaUploadService = () => {
         high: 0,      // confidence >= 0.9
         medium: 0,    // confidence >= 0.7
         low: 0,       // confidence < 0.7
-        average: 0
+        average: 0,
       };
 
       let totalConfidence = 0;
 
       matches.forEach(match => {
         const confidence = match.confidence || 1.0;
+
         totalConfidence += confidence;
 
         if (confidence >= 0.9) analysis.high++;
@@ -360,7 +365,7 @@ const createEnhancedMediaUploadService = () => {
         recommendations.push({
           type: 'low_match_rate',
           message: 'Consider reviewing image naming conventions',
-          action: 'Rename images to match SKU patterns'
+          action: 'Rename images to match SKU patterns',
         });
       }
 
@@ -368,7 +373,7 @@ const createEnhancedMediaUploadService = () => {
         recommendations.push({
           type: 'low_confidence',
           message: 'Many matches have low confidence',
-          action: 'Review and manually verify questionable matches'
+          action: 'Review and manually verify questionable matches',
         });
       }
 
@@ -376,7 +381,7 @@ const createEnhancedMediaUploadService = () => {
         recommendations.push({
           type: 'unmatched_images',
           message: `${matchResults.stats.unmatchedImages} images couldn't be matched`,
-          action: 'Check if these images belong to products not in CSV'
+          action: 'Check if these images belong to products not in CSV',
         });
       }
 
@@ -401,7 +406,7 @@ const createEnhancedMediaUploadService = () => {
         const batch = matches.slice(i, i + batchSize);
         const batchPromises = batch.map(async (match, batchIndex) => {
           const globalIndex = i + batchIndex;
-          
+
           try {
             // Update progress
             if (onProgress) {
@@ -413,17 +418,18 @@ const createEnhancedMediaUploadService = () => {
                 stage: 'Processing',
                 status: 'processing',
                 batch: Math.floor(i / batchSize) + 1,
-                totalBatches: Math.ceil(matches.length / batchSize)
+                totalBatches: Math.ceil(matches.length / batchSize),
               });
             }
 
             // Process image if required
             let processedFile = match.file;
-            let originalSize = match.file.size;
+            const originalSize = match.file.size;
             let processedSize = originalSize;
 
             if (processingSettings.processImages) {
               const processed = await this.processImage(match.file, processingSettings);
+
               processedFile = processed.file;
               processedSize = processed.size;
             }
@@ -436,32 +442,34 @@ const createEnhancedMediaUploadService = () => {
               file: match.file,
               processedFileName: `${match.sku}_${match.imageIndex + 1}.jpg`,
               status: 'success',
-              result: { 
+              result: {
                 message: 'Upload successful',
                 processing_applied: processingSettings.processImages,
                 original_size: originalSize,
-                final_size: processedSize
+                final_size: processedSize,
               },
               originalSize,
               processedSize,
-              compressionRatio: originalSize > 0 ? ((originalSize - processedSize) / originalSize * 100).toFixed(2) : 0
+              compressionRatio: originalSize > 0 ? ((originalSize - processedSize) / originalSize * 100).toFixed(2) : 0,
             };
 
           } catch (error) {
             console.error(`Upload failed for ${match.sku}:`, error);
+
             return {
               sku: match.sku,
               file: match.file,
               status: 'error',
               result: { message: error.message },
               originalSize: match.file.size,
-              processedSize: 0
+              processedSize: 0,
             };
           }
         });
 
         // Wait for batch completion
         const batchResults = await Promise.all(batchPromises);
+
         results.push(...batchResults);
 
         // Add delay between batches (except for last batch)
@@ -482,13 +490,14 @@ const createEnhancedMediaUploadService = () => {
     async processImage(file, settings) {
       // Simulate image processing
       const originalSize = file.size;
-      
+
       // Calculate compression based on quality setting
       const compressionFactor = 1 - (settings.imageQuality || 0.9);
       const processedSize = Math.floor(originalSize * (1 - compressionFactor * 0.5));
 
       // Simulate processing time
       const processingTime = this.estimateProcessingTime(file);
+
       await new Promise(resolve => setTimeout(resolve, Math.min(processingTime, 2000)));
 
       return {
@@ -496,7 +505,7 @@ const createEnhancedMediaUploadService = () => {
         size: processedSize,
         compressionApplied: compressionFactor > 0,
         resizeApplied: settings.autoResize,
-        qualityApplied: settings.imageQuality
+        qualityApplied: settings.imageQuality,
       };
     }
 
@@ -510,7 +519,7 @@ const createEnhancedMediaUploadService = () => {
      */
     async simulateEnhancedUpload(match, file, onProgress, index) {
       const stages = ['Preparing', 'Uploading', 'Processing', 'Finalizing'];
-      
+
       for (let stage = 0; stage < stages.length; stage++) {
         if (onProgress) {
           onProgress({
@@ -520,10 +529,10 @@ const createEnhancedMediaUploadService = () => {
             fileName: file.name,
             stage: stages[stage],
             status: 'processing',
-            stageProgress: ((stage + 1) / stages.length * 100).toFixed(0)
+            stageProgress: ((stage + 1) / stages.length * 100).toFixed(0),
           });
         }
-        
+
         // Simulate stage duration
         await new Promise(resolve => setTimeout(resolve, 250 + Math.random() * 500));
       }
@@ -536,14 +545,14 @@ const createEnhancedMediaUploadService = () => {
      */
     generateProcessingStats(results) {
       const stats = super.generateProcessingStats ? super.generateProcessingStats(results) : {};
-      
+
       // Enhanced statistics
       const successful = results.filter(r => r.status === 'success');
       const failed = results.filter(r => r.status === 'error');
-      
+
       const totalOriginalSize = results.reduce((sum, r) => sum + (r.originalSize || 0), 0);
       const totalProcessedSize = successful.reduce((sum, r) => sum + (r.processedSize || 0), 0);
-      
+
       const averageCompressionRatio = successful.length > 0
         ? successful.reduce((sum, r) => sum + parseFloat(r.compressionRatio || 0), 0) / successful.length
         : 0;
@@ -559,7 +568,7 @@ const createEnhancedMediaUploadService = () => {
         totalProcessedSize: this.formatFileSize(totalProcessedSize),
         spaceSaved: this.formatFileSize(totalOriginalSize - totalProcessedSize),
         averageFileSize: this.formatFileSize(totalOriginalSize / results.length),
-        processingEfficiency: successful.length > 0 ? (successful.length / results.length * 100).toFixed(1) : 0
+        processingEfficiency: successful.length > 0 ? (successful.length / results.length * 100).toFixed(1) : 0,
       };
     }
 
@@ -573,12 +582,14 @@ const createEnhancedMediaUploadService = () => {
       const k = 1024;
       const sizes = ['Bytes', 'KB', 'MB', 'GB'];
       const i = Math.floor(Math.log(bytes) / Math.log(k));
+
       return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
   }
 
   // Create and return the enhanced service instance
   const enhancedMediaUploadService = new EnhancedMediaUploadService();
+
   return enhancedMediaUploadService;
 };
 

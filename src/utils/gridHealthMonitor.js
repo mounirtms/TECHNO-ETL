@@ -1,7 +1,7 @@
 /**
  * Grid Health Check System
  * Monitors grid components for potential issues and provides automatic recovery
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
@@ -15,7 +15,7 @@ class GridHealthMonitor {
     this.issues = new Map();
     this.autoFixAttempts = new Map();
     this.maxAutoFixAttempts = 3;
-    
+
     console.log('🏥 Grid Health Monitor initialized');
   }
 
@@ -23,6 +23,7 @@ class GridHealthMonitor {
   registerGrid(gridName, gridRef, config = {}) {
     if (!gridName || !gridRef) {
       console.warn('GridHealthMonitor: Invalid grid registration');
+
       return;
     }
 
@@ -32,15 +33,15 @@ class GridHealthMonitor {
         checkInterval: 5000, // 5 seconds
         maxErrors: 5,
         autoFix: true,
-        ...config
+        ...config,
       },
       status: 'healthy',
       lastCheck: Date.now(),
       errorCount: 0,
       performance: {
         renderTime: 0,
-        lastRenderTime: Date.now()
-      }
+        lastRenderTime: Date.now(),
+      },
     });
 
     console.log(`✅ Grid '${gridName}' registered for health monitoring`);
@@ -50,6 +51,7 @@ class GridHealthMonitor {
   // Start monitoring a specific grid
   startMonitoring(gridName) {
     const gridInfo = this.checks.get(gridName);
+
     if (!gridInfo) return;
 
     const interval = setInterval(() => {
@@ -62,6 +64,7 @@ class GridHealthMonitor {
   // Perform comprehensive health check
   performHealthCheck(gridName) {
     const gridInfo = this.checks.get(gridName);
+
     if (!gridInfo || !gridInfo.ref.current) return;
 
     const checks = [
@@ -69,15 +72,15 @@ class GridHealthMonitor {
       this.checkColumnsIntegrity(gridName),
       this.checkStateConsistency(gridName),
       this.checkPerformance(gridName),
-      this.checkMemoryUsage(gridName)
+      this.checkMemoryUsage(gridName),
     ];
 
     const results = checks.map(check => check());
     const healthyChecks = results.filter(result => result.status === 'healthy').length;
     const totalChecks = results.length;
-    
+
     const healthPercentage = (healthyChecks / totalChecks) * 100;
-    
+
     if (healthPercentage < 80) {
       this.handleUnhealthyGrid(gridName, results);
     } else {
@@ -94,13 +97,14 @@ class GridHealthMonitor {
       try {
         const gridInfo = this.checks.get(gridName);
         const gridElement = gridInfo.ref.current;
-        
+
         if (!gridElement) {
           return { status: 'error', message: 'Grid element not found' };
         }
 
         // Check if data prop exists and is valid
         const dataElements = gridElement.querySelectorAll('[role="row"]');
+
         if (dataElements.length === 0) {
           return { status: 'warning', message: 'No data rows found' };
         }
@@ -118,20 +122,21 @@ class GridHealthMonitor {
       try {
         const gridInfo = this.checks.get(gridName);
         const gridElement = gridInfo.ref.current;
-        
+
         if (!gridElement) {
           return { status: 'error', message: 'Grid element not found' };
         }
 
         // Check for column headers
         const headerElements = gridElement.querySelectorAll('[role="columnheader"]');
+
         if (headerElements.length === 0) {
           return { status: 'error', message: 'No column headers found' };
         }
 
         // Check for visible columns
-        const visibleColumns = Array.from(headerElements).filter(header => 
-          header.style.display !== 'none' && !header.hidden
+        const visibleColumns = Array.from(headerElements).filter(header =>
+          header.style.display !== 'none' && !header.hidden,
         );
 
         if (visibleColumns.length === 0) {
@@ -151,10 +156,11 @@ class GridHealthMonitor {
       try {
         // Check for common state issues
         const issues = [];
-        
+
         // Check localStorage corruption
         try {
           const stored = localStorage.getItem(`grid_${gridName}_settings`);
+
           if (stored) {
             JSON.parse(stored); // This will throw if corrupted
           }
@@ -205,7 +211,7 @@ class GridHealthMonitor {
         if (performance.memory) {
           const memUsage = performance.memory;
           const usagePercent = (memUsage.usedJSHeapSize / memUsage.totalJSHeapSize) * 100;
-          
+
           if (usagePercent > 90) {
             return { status: 'error', message: 'High memory usage detected' };
           } else if (usagePercent > 75) {
@@ -223,6 +229,7 @@ class GridHealthMonitor {
   // Handle unhealthy grid
   handleUnhealthyGrid(gridName, results) {
     const gridInfo = this.checks.get(gridName);
+
     gridInfo.errorCount++;
     gridInfo.status = 'unhealthy';
 
@@ -244,6 +251,7 @@ class GridHealthMonitor {
 
     if (currentAttempts >= this.maxAutoFixAttempts) {
       console.warn(`Max auto-fix attempts reached for grid '${gridName}'`);
+
       return;
     }
 
@@ -253,7 +261,7 @@ class GridHealthMonitor {
 
     // Common auto-fix strategies
     const errorResults = results.filter(r => r.status === 'error');
-    
+
     for (const error of errorResults) {
       if (error.message.includes('LocalStorage corruption')) {
         this.fixLocalStorageCorruption(gridName);
@@ -288,9 +296,10 @@ class GridHealthMonitor {
     try {
       const gridInfo = this.checks.get(gridName);
       const gridElement = gridInfo.ref.current;
-      
+
       // Try to find and trigger refresh button
       const refreshButton = gridElement.querySelector('[aria-label="Refresh"]');
+
       if (refreshButton) {
         refreshButton.click();
         console.log(`🔧 Triggered data refresh for grid '${gridName}'`);
@@ -314,6 +323,7 @@ class GridHealthMonitor {
   // Get health report for a grid
   getHealthReport(gridName) {
     const gridInfo = this.checks.get(gridName);
+
     if (!gridInfo) return null;
 
     return {
@@ -322,30 +332,33 @@ class GridHealthMonitor {
       lastCheck: new Date(gridInfo.lastCheck).toISOString(),
       errorCount: gridInfo.errorCount,
       performance: gridInfo.performance,
-      issues: this.issues.get(gridName) || []
+      issues: this.issues.get(gridName) || [],
     };
   }
 
   // Get health report for all grids
   getAllHealthReports() {
     const reports = {};
+
     for (const gridName of this.checks.keys()) {
       reports[gridName] = this.getHealthReport(gridName);
     }
+
     return reports;
   }
 
   // Unregister a grid from monitoring
   unregisterGrid(gridName) {
     const gridInfo = this.checks.get(gridName);
+
     if (gridInfo && gridInfo.monitoringInterval) {
       clearInterval(gridInfo.monitoringInterval);
     }
-    
+
     this.checks.delete(gridName);
     this.issues.delete(gridName);
     this.autoFixAttempts.delete(gridName);
-    
+
     console.log(`❌ Grid '${gridName}' unregistered from health monitoring`);
   }
 
@@ -369,10 +382,11 @@ export const useGridHealth = (gridName, gridRef, config = {}) => {
   useEffect(() => {
     if (gridName && gridRef) {
       gridHealthMonitor.registerGrid(gridName, gridRef, config);
-      
+
       // Update health status periodically
       const statusInterval = setInterval(() => {
         const report = gridHealthMonitor.getHealthReport(gridName);
+
         if (report) {
           setHealthStatus(report.status);
           setLastCheck(report.lastCheck);
@@ -400,7 +414,7 @@ export const useGridHealth = (gridName, gridRef, config = {}) => {
     healthStatus,
     lastCheck,
     triggerHealthCheck,
-    getDetailedReport
+    getDetailedReport,
   };
 };
 

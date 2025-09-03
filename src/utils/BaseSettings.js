@@ -31,7 +31,7 @@ class BaseSettings {
   get(key, defaultValue = null) {
     const keys = key.split('.');
     let value = this.settings;
-    
+
     for (const k of keys) {
       if (value && typeof value === 'object' && k in value) {
         value = value[k];
@@ -39,7 +39,7 @@ class BaseSettings {
         return defaultValue;
       }
     }
-    
+
     return value;
   }
 
@@ -62,17 +62,19 @@ class BaseSettings {
     // Set the value using dot notation
     const keys = key.split('.');
     let target = this.settings;
-    
+
     for (let i = 0; i < keys.length - 1; i++) {
       const k = keys[i];
+
       if (!(k in target) || typeof target[k] !== 'object') {
         target[k] = {};
       }
       target = target[k];
     }
-    
+
     const lastKey = keys[keys.length - 1];
     const oldValue = target[lastKey];
+
     target[lastKey] = value;
 
     // Notify listeners
@@ -95,11 +97,11 @@ class BaseSettings {
       if (checkPermissions && !this.hasPermission(key, 'write')) {
         throw new Error(`No permission to modify setting: ${key}`);
       }
-      
+
       if (validate && !this.validateSetting(key, value)) {
         throw new Error(`Invalid value for setting: ${key}`);
       }
-      
+
       changes.push({ key, value, oldValue: this.get(key) });
     }
 
@@ -123,12 +125,14 @@ class BaseSettings {
    */
   reset(keys = null) {
     const defaults = this.getDefaults();
-    
+
     if (keys) {
       // Reset specific keys
       const keysArray = Array.isArray(keys) ? keys : [keys];
+
       for (const key of keysArray) {
         const defaultValue = this.getNestedValue(defaults, key);
+
         if (defaultValue !== undefined) {
           this.set(key, defaultValue);
         }
@@ -147,6 +151,7 @@ class BaseSettings {
    */
   addValidationRule(key, validator) {
     this.validationRules.set(key, validator);
+
     return this;
   }
 
@@ -155,9 +160,11 @@ class BaseSettings {
    */
   validateSetting(key, value) {
     const validator = this.validationRules.get(key);
+
     if (validator) {
       return validator(value, this.settings);
     }
+
     return true; // No validator means valid
   }
 
@@ -169,6 +176,7 @@ class BaseSettings {
       this.permissions.set(key, {});
     }
     this.permissions.get(key)[permission] = allowed;
+
     return this;
   }
 
@@ -177,9 +185,11 @@ class BaseSettings {
    */
   hasPermission(key, permission) {
     const keyPermissions = this.permissions.get(key);
+
     if (!keyPermissions) {
       return true; // No restrictions means allowed
     }
+
     return keyPermissions[permission] !== false;
   }
 
@@ -191,6 +201,7 @@ class BaseSettings {
       this.listeners.set(key, new Set());
     }
     this.listeners.get(key).add(callback);
+
     return this;
   }
 
@@ -199,9 +210,11 @@ class BaseSettings {
    */
   removeListener(key, callback) {
     const keyListeners = this.listeners.get(key);
+
     if (keyListeners) {
       keyListeners.delete(callback);
     }
+
     return this;
   }
 
@@ -211,6 +224,7 @@ class BaseSettings {
   notifyChange(key, newValue, oldValue) {
     // Notify specific key listeners
     const keyListeners = this.listeners.get(key);
+
     if (keyListeners) {
       keyListeners.forEach(callback => {
         try {
@@ -223,12 +237,13 @@ class BaseSettings {
 
     // Notify wildcard listeners
     const wildcardListeners = this.listeners.get('*');
+
     if (wildcardListeners) {
       wildcardListeners.forEach(callback => {
         try {
           callback(this.settings, { [key]: oldValue }, key);
         } catch (error) {
-          console.error(`Error in wildcard settings listener:`, error);
+          console.error('Error in wildcard settings listener:', error);
         }
       });
     }
@@ -240,7 +255,7 @@ class BaseSettings {
   getNestedValue(obj, key) {
     const keys = key.split('.');
     let value = obj;
-    
+
     for (const k of keys) {
       if (value && typeof value === 'object' && k in value) {
         value = value[k];
@@ -248,7 +263,7 @@ class BaseSettings {
         return undefined;
       }
     }
-    
+
     return value;
   }
 
@@ -265,8 +280,10 @@ class BaseSettings {
   fromJSON(json) {
     try {
       const parsed = typeof json === 'string' ? JSON.parse(json) : json;
+
       this.settings = { ...this.getDefaults(), ...parsed };
       this.notifyChange('*', this.settings, {});
+
       return this;
     } catch (error) {
       throw new Error(`Invalid JSON settings: ${error.message}`);
@@ -278,19 +295,19 @@ class BaseSettings {
    */
   clone() {
     const cloned = new this.constructor(this.settings);
-    
+
     // Copy validation rules
     for (const [key, validator] of this.validationRules) {
       cloned.addValidationRule(key, validator);
     }
-    
+
     // Copy permissions
     for (const [key, permissions] of this.permissions) {
       for (const [permission, allowed] of Object.entries(permissions)) {
         cloned.setPermission(key, permission, allowed);
       }
     }
-    
+
     return cloned;
   }
 
@@ -300,13 +317,13 @@ class BaseSettings {
   merge(otherSettings, options = {}) {
     const { overwrite = true, validate = true } = options;
     const other = otherSettings instanceof BaseSettings ? otherSettings.getSettings() : otherSettings;
-    
+
     for (const [key, value] of Object.entries(other)) {
       if (overwrite || this.get(key) === undefined) {
         this.set(key, value, { validate });
       }
     }
-    
+
     return this;
   }
 
@@ -316,11 +333,11 @@ class BaseSettings {
   diff(otherSettings) {
     const other = otherSettings instanceof BaseSettings ? otherSettings.getSettings() : otherSettings;
     const differences = {};
-    
+
     const checkDiff = (obj1, obj2, path = '') => {
       for (const key in obj1) {
         const currentPath = path ? `${path}.${key}` : key;
-        
+
         if (!(key in obj2)) {
           differences[currentPath] = { current: obj1[key], other: undefined };
         } else if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
@@ -329,16 +346,18 @@ class BaseSettings {
           differences[currentPath] = { current: obj1[key], other: obj2[key] };
         }
       }
-      
+
       for (const key in obj2) {
         const currentPath = path ? `${path}.${key}` : key;
+
         if (!(key in obj1)) {
           differences[currentPath] = { current: undefined, other: obj2[key] };
         }
       }
     };
-    
+
     checkDiff(this.settings, other);
+
     return differences;
   }
 }

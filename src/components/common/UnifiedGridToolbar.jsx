@@ -1,6 +1,7 @@
 // UnifiedGridToolbar - Optimized Toolbar System
 // Combines the best features from CustomGridToolbar and GridToolbar
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useDebounce } from '../../hooks/useDebounce';
 import {
   Box,
   Toolbar,
@@ -21,7 +22,7 @@ import {
   Select,
   FormControlLabel,
   Switch,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import {
   Refresh as RefreshIcon,
@@ -38,7 +39,7 @@ import {
   GridView as GridViewIcon,
   ViewList as ViewListIcon,
   Clear as ClearIcon,
-  Info as InfoIcon
+  Info as InfoIcon,
 } from '@mui/icons-material';
 
 // Import TooltipWrapper for proper disabled button handling
@@ -110,7 +111,7 @@ const UnifiedGridToolbar = ({
   onSyncAllHandler,
   canInfo,
   mdmStocks,
-  onInfo
+  onInfo,
 }) => {
   const theme = useTheme();
   // Stable translation function that doesn't change on every render
@@ -127,40 +128,33 @@ const UnifiedGridToolbar = ({
   const [searchText, setSearchText] = useState(searchValue);
   const [moreMenuAnchor, setMoreMenuAnchor] = useState(null);
   const [settingsMenuAnchor, setSettingsMenuAnchor] = useState(null);
+  
+  // Debounce the search text to prevent excessive API calls
+  const debouncedSearchText = useDebounce(searchText, 300);
 
   // Configuration with standard defaults based on grid type
   const standardConfig = getStandardToolbarConfig(gridType, config);
   const toolbarConfig = {
     ...standardConfig,
     // Ensure mdmStocks is properly set
-    mdmStocks: mdmStocks || standardConfig.mdmStocks || false
+    mdmStocks: mdmStocks || standardConfig.mdmStocks || false,
   };
+
+  // Effect to handle debounced search
+  useEffect(() => {
+    if (debouncedSearchText !== searchValue) {
+      onSearch?.(debouncedSearchText);
+    }
+  }, [debouncedSearchText, onSearch, searchValue]);
 
   const selectedCount = selectedRows.length;
   const hasSelection = selectedCount > 0;
 
-  // Event handlers
-  const handleSearch = useCallback((value) => {
-    setSearchText(value);
-    onSearch?.(value);
-  }, [onSearch]);
-
+  // Event handler for search input changes
   const handleSearchChange = useCallback((event) => {
     const value = event.target.value;
     setSearchText(value);
-    // Don't trigger search on every keystroke, only on Enter or when cleared
   }, []);
-
-  const handleSearchKeyPress = useCallback((event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      onSearch?.(searchText);
-    }
-  }, [onSearch, searchText]);
-
-  const handleSearchSubmit = useCallback(() => {
-    onSearch?.(searchText);
-  }, [onSearch, searchText]);
 
   const handleClearSearch = useCallback(() => {
     setSearchText('');
@@ -189,9 +183,9 @@ const UnifiedGridToolbar = ({
   const spacing = toolbarConfig.compact ? 0.5 : 1;
 
   return (
-    <Box sx={{ 
+    <Box sx={{
       borderBottom: `1px solid ${theme.palette.divider}`,
-      backgroundColor: theme.palette.background.paper
+      backgroundColor: theme.palette.background.paper,
     }}>
       <Toolbar
         variant="dense"
@@ -207,14 +201,14 @@ const UnifiedGridToolbar = ({
             minHeight: 40,
             px: 1,
             py: 0.5,
-            gap: 0.5
+            gap: 0.5,
           },
           '@media (max-width: 480px)': {
             flexDirection: 'column',
             alignItems: 'stretch',
             gap: 0.5,
-            minHeight: 'auto'
-          }
+            minHeight: 'auto',
+          },
         }}
       >
         {/* Section 1: Refresh */}
@@ -283,7 +277,7 @@ const UnifiedGridToolbar = ({
               placeholder={translate('search', 'Search ')}
               value={searchText}
               onChange={handleSearchChange}
-       
+
               sx={{ flex: 1 }}
               InputProps={{
                 startAdornment: (
@@ -297,7 +291,7 @@ const UnifiedGridToolbar = ({
                       <ClearIcon />
                     </IconButton>
                   </InputAdornment>
-                )
+                ),
               }}
             />
           </Box>
@@ -382,7 +376,7 @@ const UnifiedGridToolbar = ({
           </TooltipWrapper>
         )}
 
-        {/* Section 9: More Menu  
+        {/* Section 9: More Menu
         <Tooltip title={translate('more', 'More Options')}>
           <IconButton
             onClick={handleMoreMenuOpen}

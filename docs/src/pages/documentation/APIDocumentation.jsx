@@ -19,7 +19,7 @@ import {
   TableRow,
   Accordion,
   AccordionSummary,
-  AccordionDetails
+  AccordionDetails,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import {
@@ -29,7 +29,7 @@ import {
   Speed as SpeedIcon,
   Storage as StorageIcon,
   Sync as SyncIcon,
-  ShoppingCart as MagentoIcon
+  ShoppingCart as MagentoIcon,
 } from '@mui/icons-material';
 
 const APIDocumentation = () => {
@@ -41,12 +41,12 @@ const APIDocumentation = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const apiEndpoints = {
@@ -54,7 +54,7 @@ const APIDocumentation = () => {
       { method: 'POST', path: '/auth/login', description: 'User authentication' },
       { method: 'POST', path: '/auth/logout', description: 'User logout' },
       { method: 'POST', path: '/auth/refresh', description: 'Token refresh' },
-      { method: 'GET', path: '/auth/profile', description: 'User profile' }
+      { method: 'GET', path: '/auth/profile', description: 'User profile' },
     ],
     mdm: [
       { method: 'GET', path: '/mdm/products', description: 'Get products with pagination and filters' },
@@ -62,20 +62,20 @@ const APIDocumentation = () => {
       { method: 'PUT', path: '/mdm/products/:id', description: 'Update product' },
       { method: 'DELETE', path: '/mdm/products/:id', description: 'Delete product' },
       { method: 'GET', path: '/mdm/inventory', description: 'Get inventory data' },
-      { method: 'PUT', path: '/mdm/inventory/:sku/:sourceCode', description: 'Update inventory' }
+      { method: 'PUT', path: '/mdm/inventory/:sku/:sourceCode', description: 'Update inventory' },
     ],
     magento: [
       { method: 'GET', path: '/magento/products', description: 'Get Magento products' },
       { method: 'POST', path: '/magento/sync', description: 'Sync to Magento' },
       { method: 'GET', path: '/magento/orders', description: 'Get orders' },
-      { method: 'GET', path: '/magento/customers', description: 'Get customers' }
+      { method: 'GET', path: '/magento/customers', description: 'Get customers' },
     ],
     sync: [
       { method: 'POST', path: '/sync/inventory', description: 'Full inventory sync' },
       { method: 'POST', path: '/sync/prices', description: 'Price synchronization' },
       { method: 'GET', path: '/sync/status/:syncId', description: 'Sync status' },
-      { method: 'POST', path: '/sync/source/:code', description: 'Source-specific sync' }
-    ]
+      { method: 'POST', path: '/sync/source/:code', description: 'Source-specific sync' },
+    ],
   };
 
   const errorCodes = [
@@ -84,14 +84,14 @@ const APIDocumentation = () => {
     { code: '403', type: 'FORBIDDEN', description: 'Insufficient permissions' },
     { code: '404', type: 'NOT_FOUND', description: 'Resource not found' },
     { code: '429', type: 'TOO_MANY_REQUESTS', description: 'Rate limit exceeded' },
-    { code: '500', type: 'INTERNAL_SERVER_ERROR', description: 'Server error' }
+    { code: '500', type: 'INTERNAL_SERVER_ERROR', description: 'Server error' },
   ];
 
   const rateLimits = [
     { endpoint: 'Standard Endpoints', limit: '1000 requests/hour' },
     { endpoint: 'Sync Endpoints', limit: '100 requests/hour' },
     { endpoint: 'Authentication', limit: '50 requests/hour' },
-    { endpoint: 'Bulk Operations', limit: '20 requests/hour' }
+    { endpoint: 'Bulk Operations', limit: '20 requests/hour' },
   ];
 
   const codeExamples = {
@@ -110,7 +110,7 @@ const response = await fetch('/api/v1/auth/login', {
 const data = await response.json();
 // Store token for future requests
 localStorage.setItem('token', data.data.token);`,
-    
+
     products: `// Get Products with Filters
 const response = await fetch('/api/v1/mdm/products?' + new URLSearchParams({
   page: 1,
@@ -143,7 +143,7 @@ const response = await fetch('/api/v1/sync/inventory', {
 });
 
 const syncResult = await response.json();
-console.log('Sync ID:', syncResult.data.syncId);`
+console.log('Sync ID:', syncResult.data.syncId);`,
   };
 
   const TabPanel = ({ children, value, index, ...other }) => (
@@ -182,8 +182,8 @@ console.log('Sync ID:', syncResult.data.syncId);`
         <motion.div variants={itemVariants}>
           <Alert severity="info" sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>🎯 API Overview</Typography>
-            The TECHNO-ETL API provides comprehensive endpoints for managing data synchronization between MDM systems 
-            and Magento platforms. Built with RESTful principles, it offers robust authentication, comprehensive error 
+            The TECHNO-ETL API provides comprehensive endpoints for managing data synchronization between MDM systems
+            and Magento platforms. Built with RESTful principles, it offers robust authentication, comprehensive error
             handling, and high-performance data operations with 1000+ requests/hour rate limiting.
           </Alert>
         </motion.div>
@@ -207,7 +207,7 @@ console.log('Sync ID:', syncResult.data.syncId);`
                   <Typography variant="h6" gutterBottom color="secondary.main">Response Format</Typography>
                   <Paper sx={{ p: 2, backgroundColor: '#f5f5f5' }}>
                     <pre style={{ fontSize: '0.75rem', margin: 0 }}>
-{`{
+                      {`{
   "success": true,
   "data": { ... },
   "pagination": { ... },
@@ -231,8 +231,8 @@ console.log('Sync ID:', syncResult.data.syncId);`
             📋 API Endpoints
           </Typography>
           <Paper sx={{ mb: 6 }}>
-            <Tabs 
-              value={tabValue} 
+            <Tabs
+              value={tabValue}
               onChange={handleTabChange}
               variant="scrollable"
               scrollButtons="auto"
@@ -259,10 +259,10 @@ console.log('Sync ID:', syncResult.data.syncId);`
                     {apiEndpoints.auth.map((endpoint, index) => (
                       <TableRow key={index}>
                         <TableCell>
-                          <Chip 
-                            label={endpoint.method} 
-                            color={endpoint.method === 'GET' ? 'info' : 'primary'} 
-                            size="small" 
+                          <Chip
+                            label={endpoint.method}
+                            color={endpoint.method === 'GET' ? 'info' : 'primary'}
+                            size="small"
                           />
                         </TableCell>
                         <TableCell>
@@ -276,7 +276,7 @@ console.log('Sync ID:', syncResult.data.syncId);`
                   </TableBody>
                 </Table>
               </TableContainer>
-              
+
               <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>Code Example</Typography>
               <Paper sx={{ p: 2, backgroundColor: '#f5f5f5', overflow: 'auto' }}>
                 <pre style={{ fontSize: '0.875rem', margin: 0, whiteSpace: 'pre-wrap' }}>
@@ -300,14 +300,14 @@ console.log('Sync ID:', syncResult.data.syncId);`
                     {apiEndpoints.mdm.map((endpoint, index) => (
                       <TableRow key={index}>
                         <TableCell>
-                          <Chip 
-                            label={endpoint.method} 
+                          <Chip
+                            label={endpoint.method}
                             color={
-                              endpoint.method === 'GET' ? 'info' : 
-                              endpoint.method === 'POST' ? 'success' :
-                              endpoint.method === 'PUT' ? 'warning' : 'error'
-                            } 
-                            size="small" 
+                              endpoint.method === 'GET' ? 'info' :
+                                endpoint.method === 'POST' ? 'success' :
+                                  endpoint.method === 'PUT' ? 'warning' : 'error'
+                            }
+                            size="small"
                           />
                         </TableCell>
                         <TableCell>
@@ -345,10 +345,10 @@ console.log('Sync ID:', syncResult.data.syncId);`
                     {apiEndpoints.magento.map((endpoint, index) => (
                       <TableRow key={index}>
                         <TableCell>
-                          <Chip 
-                            label={endpoint.method} 
-                            color={endpoint.method === 'GET' ? 'info' : 'primary'} 
-                            size="small" 
+                          <Chip
+                            label={endpoint.method}
+                            color={endpoint.method === 'GET' ? 'info' : 'primary'}
+                            size="small"
                           />
                         </TableCell>
                         <TableCell>
@@ -379,10 +379,10 @@ console.log('Sync ID:', syncResult.data.syncId);`
                     {apiEndpoints.sync.map((endpoint, index) => (
                       <TableRow key={index}>
                         <TableCell>
-                          <Chip 
-                            label={endpoint.method} 
-                            color={endpoint.method === 'GET' ? 'info' : 'primary'} 
-                            size="small" 
+                          <Chip
+                            label={endpoint.method}
+                            color={endpoint.method === 'GET' ? 'info' : 'primary'}
+                            size="small"
                           />
                         </TableCell>
                         <TableCell>
@@ -427,13 +427,13 @@ console.log('Sync ID:', syncResult.data.syncId);`
                     {errorCodes.map((error, index) => (
                       <TableRow key={index}>
                         <TableCell>
-                          <Chip 
-                            label={error.code} 
+                          <Chip
+                            label={error.code}
                             color={
                               error.code.startsWith('2') ? 'success' :
-                              error.code.startsWith('4') ? 'warning' : 'error'
-                            } 
-                            size="small" 
+                                error.code.startsWith('4') ? 'warning' : 'error'
+                            }
+                            size="small"
                           />
                         </TableCell>
                         <TableCell>

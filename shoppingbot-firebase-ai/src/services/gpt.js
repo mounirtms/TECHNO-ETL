@@ -22,6 +22,7 @@ async function getAIReply(userMessage, context = '') {
     return res.data.choices[0].message.content.trim();
   } catch (err) {
     console.error('GPT API error:', err.message);
+
     return 'Sorry, I had trouble understanding. Try rephrasing!';
   }
 }

@@ -15,9 +15,9 @@ const initializeModulesInFirebase = async () => {
           canRead: true,
           canSubmit: true,
           canReview: false,
-          canApprove: false
+          canApprove: false,
         },
-        licensedUsers: {}
+        licensedUsers: {},
       },
       'task_voting': {
         name: 'Task Voting',
@@ -26,9 +26,9 @@ const initializeModulesInFirebase = async () => {
           canRead: true,
           canVote: true,
           canCreate: false,
-          canModerate: false
+          canModerate: false,
         },
-        licensedUsers: {}
+        licensedUsers: {},
       },
     };
 
@@ -39,7 +39,7 @@ const initializeModulesInFirebase = async () => {
       await set(modulesRef, modules);
     }
 
-    console.log('Modules initialized.')
+    console.log('Modules initialized.');
   } catch (error) {
     console.error('Error initializing modules in Firebase:', error);
   }

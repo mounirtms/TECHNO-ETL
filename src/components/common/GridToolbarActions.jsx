@@ -2,7 +2,7 @@
 import React from 'react';
 import {
   Box,
-  Button
+  Button,
 } from '@mui/material';
 import TooltipWrapper from './TooltipWrapper';
 import {
@@ -13,7 +13,7 @@ import {
   FileUpload as ImportIcon,
   Sync as SyncIcon,
   Autorenew as AutorenewIcon,
-  Info as InfoIcon
+  Info as InfoIcon,
 } from '@mui/icons-material';
 
 /**
@@ -36,12 +36,12 @@ const GridToolbarActions = ({
   spacing = 1,
   translate,
   mdmStocks,
-  
+
   // Custom action handlers from CustomGridToolbar
   onSyncStocksHandler,
   onSyncAllHandler,
   canInfo,
-  onInfo
+  onInfo,
 }) => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: spacing }}>
@@ -107,7 +107,7 @@ const GridToolbarActions = ({
         </TooltipWrapper>
       )}
 
-       
+
 
       {/* Import Button */}
       {config.showImport && (
@@ -195,6 +195,7 @@ const GridToolbarActions = ({
           // Handle Material-UI icon components (functions)
           if (typeof action.icon === 'function') {
             const IconComponent = action.icon;
+
             return <IconComponent />;
           }
 
@@ -208,8 +209,8 @@ const GridToolbarActions = ({
         };
 
         return (
-          <TooltipWrapper 
-            key={index} 
+          <TooltipWrapper
+            key={index}
             title={action.tooltip || action.label}
             disabled={action.disabled || loading}
           >

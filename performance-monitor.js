@@ -14,7 +14,7 @@ class PerformanceMonitor {
       memory: [],
       requests: 0
     };
-    
+
     console.log('🚀 TECHNO-ETL Performance Monitor Started');
     this.startMonitoring();
   }
@@ -58,13 +58,15 @@ class PerformanceMonitor {
   showSummary() {
     console.log('\n📊 PERFORMANCE SUMMARY');
     console.log('========================');
-    
+
     const uptime = Math.round((performance.now() - this.startTime) / 1000);
+
     console.log(`⏱️  Uptime: ${uptime}s`);
     console.log(`📡 Requests: ${this.metrics.requests}`);
 
     if (this.metrics.memory.length > 0) {
       const latestMemory = this.metrics.memory[this.metrics.memory.length - 1];
+
       console.log(`💾 Memory: ${latestMemory.heapUsed}MB heap, ${latestMemory.rss}MB RSS`);
     }
 

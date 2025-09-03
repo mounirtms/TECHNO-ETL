@@ -82,7 +82,7 @@ const PersonalInfoTab = ({ userData, onUpdateUserData, loading, error }) => {
     country: '',
     postalCode: '',
     birthDate: '',
-    gender: ''
+    gender: '',
   });
 
   // Load data when userData changes
@@ -90,7 +90,7 @@ const PersonalInfoTab = ({ userData, onUpdateUserData, loading, error }) => {
     if (userData) {
       setFormData(prev => ({
         ...prev,
-        ...userData
+        ...userData,
       }));
     }
   }, [userData]);
@@ -98,10 +98,11 @@ const PersonalInfoTab = ({ userData, onUpdateUserData, loading, error }) => {
   const handleInputChange = (field, value) => {
     const updatedFormData = {
       ...formData,
-      [field]: value
+      [field]: value,
     };
+
     setFormData(updatedFormData);
-    
+
     // Update through parent component
     if (onUpdateUserData) {
       onUpdateUserData(updatedFormData);

@@ -1,6 +1,6 @@
 /**
  * BaseToolbar - Modern React 18 Base Toolbar Component
- * 
+ *
  * Features:
  * - Standardized action buttons with smart state management
  * - Advanced search with debouncing and deferred values
@@ -8,19 +8,19 @@
  * - Accessibility compliant
  * - Modern React patterns (memo, useCallback, useMemo)
  * - TypeScript-ready prop interfaces
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
 
-import React, { 
-  useState, 
-  useCallback, 
-  useMemo, 
+import React, {
+  useState,
+  useCallback,
+  useMemo,
   useId,
   useDeferredValue,
   useTransition,
-  memo
+  memo,
 } from 'react';
 import {
   Box,
@@ -41,7 +41,7 @@ import {
   useTheme,
   useMediaQuery,
   Tooltip,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import {
   Refresh as RefreshIcon,
@@ -58,7 +58,7 @@ import {
   GridView as GridViewIcon,
   ViewList as ViewListIcon,
   Clear as ClearIcon,
-  Info as InfoIcon
+  Info as InfoIcon,
 } from '@mui/icons-material';
 
 // Import TooltipWrapper for proper disabled button handling
@@ -72,64 +72,64 @@ const STANDARD_ACTIONS = {
     icon: RefreshIcon,
     label: 'Refresh',
     color: 'primary',
-    variant: 'outlined'
+    variant: 'outlined',
   },
   add: {
     icon: AddIcon,
     label: 'Add',
     color: 'primary',
-    variant: 'contained'
+    variant: 'contained',
   },
   edit: {
     icon: EditIcon,
     label: 'Edit',
     color: 'secondary',
     variant: 'outlined',
-    requiresSelection: true
+    requiresSelection: true,
   },
   delete: {
     icon: DeleteIcon,
     label: 'Delete',
     color: 'error',
     variant: 'outlined',
-    requiresSelection: true
+    requiresSelection: true,
   },
   sync: {
     icon: SyncIcon,
     label: 'Sync',
     color: 'info',
-    variant: 'outlined'
+    variant: 'outlined',
   },
   export: {
     icon: ExportIcon,
     label: 'Export',
     color: 'success',
-    variant: 'outlined'
+    variant: 'outlined',
   },
   import: {
     icon: ImportIcon,
     label: 'Import',
     color: 'warning',
-    variant: 'outlined'
-  }
+    variant: 'outlined',
+  },
 };
 
 /**
  * Action Button Component with modern patterns
  */
-const ActionButton = memo(({ 
-  action, 
-  config, 
-  onClick, 
-  disabled, 
+const ActionButton = memo(({
+  action,
+  config,
+  onClick,
+  disabled,
   loading,
   size = 'medium',
   showLabel = true,
-  ...props 
+  ...props
 }) => {
   const Icon = config.icon;
   const isDisabled = disabled || loading;
-  
+
   const button = (
     <Button
       startIcon={loading ? <CircularProgress size={16} /> : <Icon />}
@@ -143,7 +143,7 @@ const ActionButton = memo(({
       {showLabel && config.label}
     </Button>
   );
-  
+
   // Wrap disabled buttons with TooltipWrapper for proper event handling
   return isDisabled ? (
     <TooltipWrapper title={`${config.label} ${disabled ? '(Selection Required)' : '(Loading...)'}`}>
@@ -161,28 +161,29 @@ ActionButton.displayName = 'ActionButton';
 /**
  * Search Component with deferred value optimization
  */
-const SearchInput = memo(({ 
+const SearchInput = memo(({
   searchId,
-  value, 
-  onChange, 
-  onClear, 
-  placeholder = "Search...",
+  value,
+  onChange,
+  onClear,
+  placeholder = 'Search...',
   disabled = false,
-  size = 'small'
+  size = 'small',
 }) => {
   const [localValue, setLocalValue] = useState(value);
   const [isPending, startTransition] = useTransition();
   const deferredValue = useDeferredValue(localValue);
-  
+
   const handleChange = useCallback((event) => {
     const newValue = event.target.value;
+
     setLocalValue(newValue);
-    
+
     startTransition(() => {
       onChange?.(newValue);
     });
   }, [onChange]);
-  
+
   const handleClear = useCallback(() => {
     setLocalValue('');
     startTransition(() => {
@@ -190,14 +191,14 @@ const SearchInput = memo(({
       onClear?.();
     });
   }, [onChange, onClear]);
-  
+
   const handleKeyPress = useCallback((event) => {
     if (event.key === 'Enter') {
       event.preventDefault();
       onChange?.(localValue);
     }
   }, [onChange, localValue]);
-  
+
   return (
     <TextField
       id={searchId}
@@ -225,7 +226,7 @@ const SearchInput = memo(({
               <ClearIcon />
             </IconButton>
           </InputAdornment>
-        )
+        ),
       }}
       aria-label="Search grid data"
     />
@@ -243,17 +244,17 @@ const BaseToolbar = memo(({
   searchId,
   config = {},
   customActions = [],
-  
+
   // State props
   selectedCount = 0,
   searchQuery = '',
   loading = false,
-  
+
   // Feature toggles
   enableSearch = true,
   enableActions = true,
   enableResponsive = true,
-  
+
   // Event handlers
   onSearchChange,
   onRefresh,
@@ -264,21 +265,21 @@ const BaseToolbar = memo(({
   onExport,
   onImport,
   onCustomAction,
-  
+
   // Style props
   size = 'medium',
   variant = 'standard',
   spacing = 1,
-  sx = {}
+  sx = {},
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const toolbarId = useId();
-  
+
   // Local state
   const [moreMenuAnchor, setMoreMenuAnchor] = useState(null);
   const [isPending, startTransition] = useTransition();
-  
+
   // Merge configuration with defaults
   const toolbarConfig = useMemo(() => ({
     showRefresh: true,
@@ -289,122 +290,122 @@ const BaseToolbar = memo(({
     showExport: false,
     showImport: false,
     compact: isMobile,
-    ...config
+    ...config,
   }), [config, isMobile]);
-  
+
   // Calculate which actions should be shown
   const availableActions = useMemo(() => {
     const actions = [];
-    
+
     if (toolbarConfig.showRefresh) {
       actions.push({
         key: 'refresh',
         ...STANDARD_ACTIONS.refresh,
         onClick: onRefresh,
-        disabled: loading
+        disabled: loading,
       });
     }
-    
+
     if (toolbarConfig.showAdd) {
       actions.push({
         key: 'add',
         ...STANDARD_ACTIONS.add,
         onClick: onAdd,
-        disabled: loading
+        disabled: loading,
       });
     }
-    
+
     if (toolbarConfig.showEdit) {
       actions.push({
         key: 'edit',
         ...STANDARD_ACTIONS.edit,
         onClick: onEdit,
-        disabled: loading || selectedCount !== 1
+        disabled: loading || selectedCount !== 1,
       });
     }
-    
+
     if (toolbarConfig.showDelete) {
       actions.push({
         key: 'delete',
         ...STANDARD_ACTIONS.delete,
         onClick: onDelete,
-        disabled: loading || selectedCount === 0
+        disabled: loading || selectedCount === 0,
       });
     }
-    
+
     if (toolbarConfig.showSync) {
       actions.push({
         key: 'sync',
         ...STANDARD_ACTIONS.sync,
         onClick: onSync,
-        disabled: loading
+        disabled: loading,
       });
     }
-    
+
     if (toolbarConfig.showExport) {
       actions.push({
         key: 'export',
         ...STANDARD_ACTIONS.export,
         onClick: onExport,
-        disabled: loading
+        disabled: loading,
       });
     }
-    
+
     if (toolbarConfig.showImport) {
       actions.push({
         key: 'import',
         ...STANDARD_ACTIONS.import,
         onClick: onImport,
-        disabled: loading
+        disabled: loading,
       });
     }
-    
+
     // Add custom actions
     customActions.forEach(action => {
       actions.push({
         ...action,
-        disabled: action.disabled || loading
+        disabled: action.disabled || loading,
       });
     });
-    
+
     return actions;
   }, [
-    toolbarConfig, 
-    onRefresh, 
-    onAdd, 
-    onEdit, 
-    onDelete, 
-    onSync, 
-    onExport, 
+    toolbarConfig,
+    onRefresh,
+    onAdd,
+    onEdit,
+    onDelete,
+    onSync,
+    onExport,
     onImport,
     customActions,
-    loading, 
-    selectedCount
+    loading,
+    selectedCount,
   ]);
-  
+
   // Determine primary and overflow actions based on screen size
   const { primaryActions, overflowActions } = useMemo(() => {
     if (!enableResponsive || !isMobile) {
       return { primaryActions: availableActions, overflowActions: [] };
     }
-    
+
     // On mobile, show only essential actions
     const essential = ['refresh', 'add'];
     const primary = availableActions.filter(action => essential.includes(action.key));
     const overflow = availableActions.filter(action => !essential.includes(action.key));
-    
+
     return { primaryActions: primary, overflowActions: overflow };
   }, [availableActions, enableResponsive, isMobile]);
-  
+
   // Event handlers
   const handleMoreMenuOpen = useCallback((event) => {
     setMoreMenuAnchor(event.currentTarget);
   }, []);
-  
+
   const handleMoreMenuClose = useCallback(() => {
     setMoreMenuAnchor(null);
   }, []);
-  
+
   const handleActionClick = useCallback((action) => {
     startTransition(() => {
       if (action.onClick) {
@@ -415,22 +416,22 @@ const BaseToolbar = memo(({
     });
     handleMoreMenuClose();
   }, [onCustomAction, handleMoreMenuClose]);
-  
+
   return (
-    <Box sx={{ 
+    <Box sx={{
       borderBottom: `1px solid ${theme.palette.divider}`,
       backgroundColor: theme.palette.background.paper,
-      ...sx 
+      ...sx,
     }}>
       <Toolbar
         id={id || toolbarId}
-        variant={toolbarConfig.compact ? "dense" : "regular"}
+        variant={toolbarConfig.compact ? 'dense' : 'regular'}
         sx={{
           minHeight: toolbarConfig.compact ? 48 : 64,
           px: spacing,
           gap: spacing,
           opacity: isPending ? 0.7 : 1,
-          transition: 'opacity 0.2s ease'
+          transition: 'opacity 0.2s ease',
         }}
       >
         {/* Left Section - Primary Actions */}
@@ -447,7 +448,7 @@ const BaseToolbar = memo(({
               showLabel={!toolbarConfig.compact}
             />
           ))}
-          
+
           {/* Selection indicator */}
           {selectedCount > 0 && (
             <Chip
@@ -458,10 +459,10 @@ const BaseToolbar = memo(({
             />
           )}
         </Box>
-        
+
         {/* Spacer */}
         <Box sx={{ flexGrow: 1 }} />
-        
+
         {/* Right Section - Search and Settings */}
         <Box sx={{ display: 'flex', gap: spacing, alignItems: 'center' }}>
           {/* Search */}
@@ -474,7 +475,7 @@ const BaseToolbar = memo(({
               size={size}
             />
           )}
-          
+
           {/* Overflow Menu */}
           {overflowActions.length > 0 && (
             <>
@@ -489,7 +490,7 @@ const BaseToolbar = memo(({
                   <MoreIcon />
                 </Badge>
               </IconButton>
-              
+
               <Menu
                 id="toolbar-more-menu"
                 anchorEl={moreMenuAnchor}

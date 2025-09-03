@@ -1,6 +1,6 @@
 /**
  * BaseCard - Modern React 18 Base Card Component
- * 
+ *
  * Features:
  * - Standardized stats and info card layouts
  * - Multiple card variants (stats, info, action, metric)
@@ -9,16 +9,16 @@
  * - Accessibility compliant
  * - Modern React patterns (memo, useCallback, useMemo)
  * - TypeScript-ready interfaces
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
 
-import React, { 
-  memo, 
-  useMemo, 
+import React, {
+  memo,
+  useMemo,
   useCallback,
-  useId
+  useId,
 } from 'react';
 import {
   Card,
@@ -32,7 +32,7 @@ import {
   Chip,
   LinearProgress,
   useTheme,
-  alpha
+  alpha,
 } from '@mui/material';
 import {
   TrendingUp as TrendingUpIcon,
@@ -41,7 +41,7 @@ import {
   Info as InfoIcon,
   Warning as WarningIcon,
   Error as ErrorIcon,
-  CheckCircle as SuccessIcon
+  CheckCircle as SuccessIcon,
 } from '@mui/icons-material';
 
 // Animation support
@@ -57,16 +57,16 @@ const CARD_VARIANTS = {
       transition: 'all 0.3s ease',
       '&:hover': {
         elevation: 4,
-        transform: 'translateY(-2px)'
-      }
-    }
+        transform: 'translateY(-2px)',
+      },
+    },
   },
   info: {
     elevation: 1,
     sx: {
       borderLeft: '4px solid',
-      borderLeftColor: 'primary.main'
-    }
+      borderLeftColor: 'primary.main',
+    },
   },
   action: {
     elevation: 3,
@@ -75,17 +75,17 @@ const CARD_VARIANTS = {
       transition: 'all 0.3s ease',
       '&:hover': {
         elevation: 6,
-        transform: 'scale(1.02)'
-      }
-    }
+        transform: 'scale(1.02)',
+      },
+    },
   },
   metric: {
     elevation: 1,
     sx: {
       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      color: 'white'
-    }
-  }
+      color: 'white',
+    },
+  },
 };
 
 /**
@@ -95,28 +95,28 @@ const COLOR_CONFIG = {
   primary: {
     main: '#1976d2',
     light: '#42a5f5',
-    dark: '#1565c0'
+    dark: '#1565c0',
   },
   success: {
     main: '#2e7d32',
     light: '#4caf50',
-    dark: '#1b5e20'
+    dark: '#1b5e20',
   },
   warning: {
     main: '#ed6c02',
     light: '#ff9800',
-    dark: '#e65100'
+    dark: '#e65100',
   },
   error: {
     main: '#d32f2f',
     light: '#f44336',
-    dark: '#c62828'
+    dark: '#c62828',
   },
   info: {
     main: '#0288d1',
     light: '#03a9f4',
-    dark: '#01579b'
-  }
+    dark: '#01579b',
+  },
 };
 
 /**
@@ -126,20 +126,20 @@ const TrendIcon = memo(({ trend, size = 'small' }) => {
   const icons = {
     up: TrendingUpIcon,
     down: TrendingDownIcon,
-    flat: TrendingFlatIcon
+    flat: TrendingFlatIcon,
   };
-  
+
   const colors = {
     up: 'success.main',
     down: 'error.main',
-    flat: 'text.secondary'
+    flat: 'text.secondary',
   };
-  
+
   const Icon = icons[trend] || TrendingFlatIcon;
-  
+
   return (
-    <Icon 
-      fontSize={size} 
+    <Icon
+      fontSize={size}
       sx={{ color: colors[trend] || 'text.secondary' }}
     />
   );
@@ -180,13 +180,13 @@ const StatCard = memo(({
   percentage,
   loading = false,
   onClick,
-  sx = {}
+  sx = {},
 }) => {
   const theme = useTheme();
   const cardId = useId();
-  
+
   const colorConfig = COLOR_CONFIG[color] || COLOR_CONFIG.primary;
-  
+
   const cardContent = (
     <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
@@ -199,18 +199,18 @@ const StatCard = memo(({
               p: 1,
               borderRadius: 1,
               backgroundColor: alpha(colorConfig.main, 0.1),
-              color: colorConfig.main
+              color: colorConfig.main,
             }}
           >
             {React.isValidElement(Icon) ? Icon : <Icon fontSize="small" />}
           </Box>
         )}
       </Box>
-      
+
       <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', color: colorConfig.main }}>
         {loading ? <Skeleton width="60%" /> : value}
       </Typography>
-      
+
       {(subtitle || trend || percentage !== undefined) && (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
           {trend && <TrendIcon trend={trend} />}
@@ -228,7 +228,7 @@ const StatCard = memo(({
       )}
     </CardContent>
   );
-  
+
   return (
     <Card
       id={cardId}
@@ -236,7 +236,7 @@ const StatCard = memo(({
       sx={{
         ...CARD_VARIANTS.stats.sx,
         cursor: onClick ? 'pointer' : 'default',
-        ...sx
+        ...sx,
       }}
       elevation={CARD_VARIANTS.stats.elevation}
       component={motion.div}
@@ -261,35 +261,35 @@ const InfoCard = memo(({
   actions,
   dismissible = false,
   onDismiss,
-  sx = {}
+  sx = {},
 }) => {
   const theme = useTheme();
   const cardId = useId();
-  
+
   const typeIcons = {
     info: InfoIcon,
     warning: WarningIcon,
     error: ErrorIcon,
-    success: SuccessIcon
+    success: SuccessIcon,
   };
-  
+
   const IconComponent = icon || typeIcons[type];
   const colorConfig = COLOR_CONFIG[type] || COLOR_CONFIG.info;
-  
+
   return (
     <Card
       id={cardId}
       sx={{
         ...CARD_VARIANTS.info.sx,
         borderLeftColor: colorConfig.main,
-        ...sx
+        ...sx,
       }}
       elevation={CARD_VARIANTS.info.elevation}
     >
       <CardHeader
         avatar={
           IconComponent && (
-            React.isValidElement(IconComponent) ? 
+            React.isValidElement(IconComponent) ?
               React.cloneElement(IconComponent, { sx: { color: colorConfig.main } }) :
               <IconComponent sx={{ color: colorConfig.main }} />
           )
@@ -304,11 +304,11 @@ const InfoCard = memo(({
         }
         titleTypographyProps={{
           variant: 'h6',
-          component: 'div'
+          component: 'div',
         }}
         sx={{ pb: 1 }}
       />
-      
+
       <CardContent sx={{ pt: 0 }}>
         {typeof content === 'string' ? (
           <Typography variant="body2" color="text.secondary">
@@ -318,7 +318,7 @@ const InfoCard = memo(({
           content
         )}
       </CardContent>
-      
+
       {actions && (
         <CardActions>
           {actions}
@@ -339,11 +339,11 @@ const ProgressCard = memo(({
   max = 100,
   color = 'primary',
   showPercentage = true,
-  sx = {}
+  sx = {},
 }) => {
   const cardId = useId();
   const percentage = Math.round((value / max) * 100);
-  
+
   return (
     <Card id={cardId} sx={sx} elevation={1}>
       <CardContent>
@@ -357,7 +357,7 @@ const ProgressCard = memo(({
             </Typography>
           )}
         </Box>
-        
+
         <LinearProgress
           variant="determinate"
           value={percentage}
@@ -366,11 +366,11 @@ const ProgressCard = memo(({
             height: 8,
             borderRadius: 4,
             '& .MuiLinearProgress-bar': {
-              borderRadius: 4
-            }
+              borderRadius: 4,
+            },
           }}
         />
-        
+
         <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
           {value} of {max}
         </Typography>
@@ -388,57 +388,58 @@ const BaseCard = memo(({
   // Core props
   variant = 'stats',
   type = 'info',
-  
+
   // Content props
   title,
   value,
   subtitle,
   content,
   icon,
-  
+
   // Stats props
   stats = {},
   config = {},
-  
+
   // State props
   loading = false,
-  
+
   // Style props
   color = 'primary',
   sx = {},
-  
+
   // Event props
   onClick,
   onDismiss,
-  
+
   // Advanced props
   trend,
   percentage,
   progress,
   actions,
   dismissible = false,
-  
+
   ...props
 }) => {
   // If stats object is provided, render multiple stat cards
   const renderStatsCards = useCallback(() => {
     if (!stats || Object.keys(stats).length === 0) return null;
-    
+
     const defaultStatsConfig = [
       { key: 'total', title: 'Total', color: 'primary' },
       { key: 'active', title: 'Active', color: 'success' },
       { key: 'inactive', title: 'Inactive', color: 'warning' },
-      { key: 'selected', title: 'Selected', color: 'info' }
+      { key: 'selected', title: 'Selected', color: 'info' },
     ];
-    
+
     const statsToRender = config.stats || defaultStatsConfig;
-    
+
     return (
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 2 }}>
         {statsToRender.map(statConfig => {
           const statValue = stats[statConfig.key];
+
           if (statValue === undefined) return null;
-          
+
           return (
             <StatCard
               key={statConfig.key}
@@ -456,78 +457,78 @@ const BaseCard = memo(({
       </Box>
     );
   }, [stats, config.stats, loading, onClick]);
-  
+
   // Loading state
   if (loading) {
     return <CardSkeleton variant={variant} />;
   }
-  
+
   // Multiple stats cards
   if (variant === 'stats' && stats && Object.keys(stats).length > 0) {
     return renderStatsCards();
   }
-  
+
   // Single card variants
   switch (variant) {
-    case 'stats':
-      return (
-        <StatCard
-          title={title}
-          value={value}
-          subtitle={subtitle}
-          icon={icon}
-          color={color}
-          trend={trend}
-          percentage={percentage}
-          loading={loading}
-          onClick={onClick}
-          sx={sx}
-          {...props}
-        />
-      );
-      
-    case 'info':
-      return (
-        <InfoCard
-          title={title}
-          content={content}
-          type={type}
-          icon={icon}
-          actions={actions}
-          dismissible={dismissible}
-          onDismiss={onDismiss}
-          sx={sx}
-          {...props}
-        />
-      );
-      
-    case 'progress':
-      return (
-        <ProgressCard
-          title={title}
-          value={progress?.value || value}
-          max={progress?.max || 100}
-          color={color}
-          showPercentage={progress?.showPercentage !== false}
-          sx={sx}
-          {...props}
-        />
-      );
-      
-    default:
-      return (
-        <StatCard
-          title={title}
-          value={value}
-          subtitle={subtitle}
-          icon={icon}
-          color={color}
-          loading={loading}
-          onClick={onClick}
-          sx={sx}
-          {...props}
-        />
-      );
+  case 'stats':
+    return (
+      <StatCard
+        title={title}
+        value={value}
+        subtitle={subtitle}
+        icon={icon}
+        color={color}
+        trend={trend}
+        percentage={percentage}
+        loading={loading}
+        onClick={onClick}
+        sx={sx}
+        {...props}
+      />
+    );
+
+  case 'info':
+    return (
+      <InfoCard
+        title={title}
+        content={content}
+        type={type}
+        icon={icon}
+        actions={actions}
+        dismissible={dismissible}
+        onDismiss={onDismiss}
+        sx={sx}
+        {...props}
+      />
+    );
+
+  case 'progress':
+    return (
+      <ProgressCard
+        title={title}
+        value={progress?.value || value}
+        max={progress?.max || 100}
+        color={color}
+        showPercentage={progress?.showPercentage !== false}
+        sx={sx}
+        {...props}
+      />
+    );
+
+  default:
+    return (
+      <StatCard
+        title={title}
+        value={value}
+        subtitle={subtitle}
+        icon={icon}
+        color={color}
+        loading={loading}
+        onClick={onClick}
+        sx={sx}
+        {...props}
+      />
+    );
   }
 });
 

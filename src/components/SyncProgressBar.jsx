@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Box, 
-  LinearProgress, 
-  Typography, 
-  Card, 
+import PropTypes from 'prop-types';
+import {
+  Box,
+  LinearProgress,
+  Typography,
+  Card,
   CardContent,
   Grid,
   Chip,
@@ -14,7 +15,7 @@ import {
   Collapse,
   IconButton,
   Fade,
-  Slide
+  Slide,
 } from '@mui/material';
 import {
   CheckCircle as CheckIcon,
@@ -22,22 +23,23 @@ import {
   Sync as SyncIcon,
   Storage as SourceIcon,
   ExpandMore as ExpandMoreIcon,
-  ExpandLess as ExpandLessIcon
+  ExpandLess as ExpandLessIcon,
 } from '@mui/icons-material';
 
 const SyncProgressBar = ({ progressData }) => {
   const [animationProgress, setAnimationProgress] = useState(0);
   const [showDetails, setShowDetails] = useState(false);
-  
+
   useEffect(() => {
     if (progressData?.current !== undefined) {
       const timer = setTimeout(() => {
         setAnimationProgress(progressData.current);
       }, 100);
+
       return () => clearTimeout(timer);
     }
   }, [progressData?.current]);
-  
+
   if (!progressData?.isActive && !progressData?.completed) return null;
 
   const {
@@ -49,23 +51,24 @@ const SyncProgressBar = ({ progressData }) => {
     sources = [],
     completedSources = [],
     errorSources = [],
-    message = ''
+    message = '',
   } = progressData;
 
-  const percentage = total > 0 ? Math.round((current / total) * 100) : 0;
+  const percentage = total > 0 ? Math.max(0, Math.round((current / total) * 100)) : 0;
   const sourcesProgress = sources.length > 0 ? Math.round((completedSources.length / sources.length) * 100) : 0;
 
   const getStepIcon = (stepIndex) => {
     if (stepIndex < current) return <CheckIcon color="success" />;
     if (stepIndex === current) return <SyncIcon color="primary" />;
+
     return <PendingIcon color="disabled" />;
   };
 
   const steps = [
     'Marking stocks for sync',
-    'Fetching source configurations', 
+    'Fetching source configurations',
     'Syncing sources to Magento',
-    'Finalizing sync process'
+    'Finalizing sync process',
   ];
 
   return (
@@ -75,9 +78,11 @@ const SyncProgressBar = ({ progressData }) => {
           <Typography variant="h6" color="primary" fontWeight={600}>
             📦 Stock Synchronization Progress
           </Typography>
-          <IconButton 
-            size="small" 
+          <IconButton
+            size="small"
             onClick={() => setShowDetails(!showDetails)}
+            aria-expanded={showDetails}
+            aria-label="Toggle details"
             sx={{ transform: showDetails ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }}
           >
             <ExpandMoreIcon />
@@ -97,16 +102,16 @@ const SyncProgressBar = ({ progressData }) => {
           <LinearProgress
             variant="determinate"
             value={percentage}
-            sx={{ 
-              height: 8, 
+            sx={{
+              height: 8,
               borderRadius: 4,
               backgroundColor: 'rgba(0,0,0,0.1)',
               '& .MuiLinearProgress-bar': {
                 borderRadius: 4,
-                background: completed 
+                background: completed
                   ? 'linear-gradient(90deg, #4caf50 0%, #8bc34a 100%)'
-                  : 'linear-gradient(90deg, #2196f3 0%, #21cbf3 100%)'
-              }
+                  : 'linear-gradient(90deg, #2196f3 0%, #21cbf3 100%)',
+              },
             }}
           />
         </Box>
@@ -114,7 +119,7 @@ const SyncProgressBar = ({ progressData }) => {
         {/* Current Step */}
         {currentStep && (
           <Box sx={{ mb: 2 }}>
-            <Chip 
+            <Chip
               icon={isActive ? <SyncIcon /> : <CheckIcon />}
               label={currentStep}
               color={isActive ? 'primary' : 'success'}
@@ -158,12 +163,12 @@ const SyncProgressBar = ({ progressData }) => {
                   <ListItemIcon sx={{ minWidth: 36 }}>
                     {getStepIcon(index)}
                   </ListItemIcon>
-                  <ListItemText 
+                  <ListItemText
                     primary={step}
                     primaryTypographyProps={{
                       variant: 'body2',
                       color: index <= current ? 'text.primary' : 'text.secondary',
-                      fontWeight: index === current ? 600 : 400
+                      fontWeight: index === current ? 600 : 400,
                     }}
                   />
                 </ListItem>
@@ -181,7 +186,7 @@ const SyncProgressBar = ({ progressData }) => {
                     const isCompleted = completedSources.includes(source.code || source.code_source);
                     const hasError = errorSources.includes(source.code || source.code_source);
                     const status = hasError ? 'error' : isCompleted ? 'success' : 'default';
-                    
+
                     return (
                       <Grid item xs={12} sm={6} md={4} key={index}>
                         <Chip
@@ -203,6 +208,19 @@ const SyncProgressBar = ({ progressData }) => {
       </CardContent>
     </Card>
   );
+};
+
+SyncProgressBar.propTypes = {
+  progressData: PropTypes.shape({
+    current: PropTypes.number,
+    total: PropTypes.number,
+    isActive: PropTypes.bool,
+    completed: PropTypes.bool,
+    currentStep: PropTypes.string,
+    sources: PropTypes.array,
+    completedSources: PropTypes.array,
+    errorSources: PropTypes.array,
+  }),
 };
 
 export default SyncProgressBar;

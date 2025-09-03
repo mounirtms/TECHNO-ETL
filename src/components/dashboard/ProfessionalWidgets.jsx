@@ -20,7 +20,7 @@ import {
   Button,
   useTheme,
   alpha,
-  Skeleton
+  Skeleton,
 } from '@mui/material';
 import {
   TrendingUp,
@@ -37,7 +37,7 @@ import {
   CheckCircle,
   Warning,
   Error,
-  Info
+  Info,
 } from '@mui/icons-material';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -55,7 +55,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip as RechartsTooltip,
-  Legend
+  Legend,
 } from 'recharts';
 
 // Professional color palette
@@ -70,8 +70,8 @@ const COLORS = {
     primary: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     success: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
     warning: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-    error: 'linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%)'
-  }
+    error: 'linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%)',
+  },
 };
 
 /**
@@ -87,16 +87,16 @@ export const ProfessionalMetricCard = ({
   subtitle,
   trend,
   onClick,
-  actions
+  actions,
 }) => {
   const theme = useTheme();
   const [isHovered, setIsHovered] = useState(false);
 
   // Calculate trend percentage
-  const trendPercentage = previousValue 
+  const trendPercentage = previousValue
     ? ((value - previousValue) / previousValue * 100).toFixed(1)
     : 0;
-  
+
   const isPositiveTrend = trendPercentage >= 0;
 
   return (
@@ -121,11 +121,11 @@ export const ProfessionalMetricCard = ({
             left: 0,
             right: 0,
             bottom: 0,
-            background: isHovered 
-              ? 'rgba(255, 255, 255, 0.1)' 
+            background: isHovered
+              ? 'rgba(255, 255, 255, 0.1)'
               : 'transparent',
-            transition: 'background 0.3s ease'
-          }
+            transition: 'background 0.3s ease',
+          },
         }}
         onClick={onClick}
       >
@@ -136,12 +136,12 @@ export const ProfessionalMetricCard = ({
                 bgcolor: 'rgba(255, 255, 255, 0.2)',
                 color: 'white',
                 width: 48,
-                height: 48
+                height: 48,
               }}
             >
               <Icon />
             </Avatar>
-            
+
             {actions && (
               <IconButton size="small" sx={{ color: 'white' }}>
                 <MoreVert />
@@ -197,7 +197,7 @@ export const ProfessionalChartWidget = ({
   showLegend = true,
   color = 'primary',
   onRefresh,
-  onExpand
+  onExpand,
 }) => {
   const theme = useTheme();
 
@@ -212,102 +212,102 @@ export const ProfessionalChartWidget = ({
 
     const chartProps = {
       data,
-      margin: { top: 20, right: 30, left: 20, bottom: 20 }
+      margin: { top: 20, right: 30, left: 20, bottom: 20 },
     };
 
     switch (chartType) {
-      case 'area':
-        return (
-          <AreaChart {...chartProps}>
-            <defs>
-              <linearGradient id={`gradient-${color}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={COLORS[color]} stopOpacity={0.8}/>
-                <stop offset="95%" stopColor={COLORS[color]} stopOpacity={0.1}/>
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke={alpha(theme.palette.divider, 0.3)} />
-            <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
-            <YAxis stroke={theme.palette.text.secondary} />
-            <RechartsTooltip 
-              contentStyle={{
-                backgroundColor: theme.palette.background.paper,
-                border: `1px solid ${theme.palette.divider}`,
-                borderRadius: theme.shape.borderRadius
-              }}
-            />
-            {showLegend && <Legend />}
-            <Area
-              type="monotone"
-              dataKey="value"
-              stroke={COLORS[color]}
-              fill={`url(#gradient-${color})`}
-              strokeWidth={3}
-            />
-          </AreaChart>
-        );
+    case 'area':
+      return (
+        <AreaChart {...chartProps}>
+          <defs>
+            <linearGradient id={`gradient-${color}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor={COLORS[color]} stopOpacity={0.8}/>
+              <stop offset="95%" stopColor={COLORS[color]} stopOpacity={0.1}/>
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke={alpha(theme.palette.divider, 0.3)} />
+          <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
+          <YAxis stroke={theme.palette.text.secondary} />
+          <RechartsTooltip
+            contentStyle={{
+              backgroundColor: theme.palette.background.paper,
+              border: `1px solid ${theme.palette.divider}`,
+              borderRadius: theme.shape.borderRadius,
+            }}
+          />
+          {showLegend && <Legend />}
+          <Area
+            type="monotone"
+            dataKey="value"
+            stroke={COLORS[color]}
+            fill={`url(#gradient-${color})`}
+            strokeWidth={3}
+          />
+        </AreaChart>
+      );
 
-      case 'bar':
-        return (
-          <BarChart {...chartProps}>
-            <CartesianGrid strokeDasharray="3 3" stroke={alpha(theme.palette.divider, 0.3)} />
-            <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
-            <YAxis stroke={theme.palette.text.secondary} />
-            <RechartsTooltip 
-              contentStyle={{
-                backgroundColor: theme.palette.background.paper,
-                border: `1px solid ${theme.palette.divider}`,
-                borderRadius: theme.shape.borderRadius
-              }}
-            />
-            {showLegend && <Legend />}
-            <Bar dataKey="value" fill={COLORS[color]} radius={[4, 4, 0, 0]} />
-          </BarChart>
-        );
+    case 'bar':
+      return (
+        <BarChart {...chartProps}>
+          <CartesianGrid strokeDasharray="3 3" stroke={alpha(theme.palette.divider, 0.3)} />
+          <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
+          <YAxis stroke={theme.palette.text.secondary} />
+          <RechartsTooltip
+            contentStyle={{
+              backgroundColor: theme.palette.background.paper,
+              border: `1px solid ${theme.palette.divider}`,
+              borderRadius: theme.shape.borderRadius,
+            }}
+          />
+          {showLegend && <Legend />}
+          <Bar dataKey="value" fill={COLORS[color]} radius={[4, 4, 0, 0]} />
+        </BarChart>
+      );
 
-      case 'pie':
-        return (
-          <PieChart {...chartProps}>
-            <Pie
-              data={data}
-              cx="50%"
-              cy="50%"
-              outerRadius={80}
-              fill={COLORS[color]}
-              dataKey="value"
-              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-            >
-              {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={Object.values(COLORS)[index % Object.values(COLORS).length]} />
-              ))}
-            </Pie>
-            <RechartsTooltip />
-          </PieChart>
-        );
+    case 'pie':
+      return (
+        <PieChart {...chartProps}>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            outerRadius={80}
+            fill={COLORS[color]}
+            dataKey="value"
+            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+          >
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={Object.values(COLORS)[index % Object.values(COLORS).length]} />
+            ))}
+          </Pie>
+          <RechartsTooltip />
+        </PieChart>
+      );
 
-      default: // line
-        return (
-          <LineChart {...chartProps}>
-            <CartesianGrid strokeDasharray="3 3" stroke={alpha(theme.palette.divider, 0.3)} />
-            <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
-            <YAxis stroke={theme.palette.text.secondary} />
-            <RechartsTooltip 
-              contentStyle={{
-                backgroundColor: theme.palette.background.paper,
-                border: `1px solid ${theme.palette.divider}`,
-                borderRadius: theme.shape.borderRadius
-              }}
-            />
-            {showLegend && <Legend />}
-            <Line
-              type="monotone"
-              dataKey="value"
-              stroke={COLORS[color]}
-              strokeWidth={3}
-              dot={{ fill: COLORS[color], strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, stroke: COLORS[color], strokeWidth: 2 }}
-            />
-          </LineChart>
-        );
+    default: // line
+      return (
+        <LineChart {...chartProps}>
+          <CartesianGrid strokeDasharray="3 3" stroke={alpha(theme.palette.divider, 0.3)} />
+          <XAxis dataKey="name" stroke={theme.palette.text.secondary} />
+          <YAxis stroke={theme.palette.text.secondary} />
+          <RechartsTooltip
+            contentStyle={{
+              backgroundColor: theme.palette.background.paper,
+              border: `1px solid ${theme.palette.divider}`,
+              borderRadius: theme.shape.borderRadius,
+            }}
+          />
+          {showLegend && <Legend />}
+          <Line
+            type="monotone"
+            dataKey="value"
+            stroke={COLORS[color]}
+            strokeWidth={3}
+            dot={{ fill: COLORS[color], strokeWidth: 2, r: 4 }}
+            activeDot={{ r: 6, stroke: COLORS[color], strokeWidth: 2 }}
+          />
+        </LineChart>
+      );
     }
   };
 
@@ -352,7 +352,7 @@ export const ProfessionalChartWidget = ({
 export const ProfessionalProgressWidget = ({
   title,
   items,
-  loading = false
+  loading = false,
 }) => {
   const theme = useTheme();
 
@@ -393,8 +393,8 @@ export const ProfessionalProgressWidget = ({
                     backgroundColor: alpha(theme.palette.primary.main, 0.1),
                     '& .MuiLinearProgress-bar': {
                       borderRadius: 4,
-                      background: item.color || COLORS.gradient.primary
-                    }
+                      background: item.color || COLORS.gradient.primary,
+                    },
                   }}
                 />
               </Box>
@@ -412,23 +412,23 @@ export const ProfessionalProgressWidget = ({
 export const ProfessionalStatusWidget = ({
   title,
   items,
-  loading = false
+  loading = false,
 }) => {
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'success': return <CheckCircle sx={{ color: COLORS.success }} />;
-      case 'warning': return <Warning sx={{ color: COLORS.warning }} />;
-      case 'error': return <Error sx={{ color: COLORS.error }} />;
-      default: return <Info sx={{ color: COLORS.info }} />;
+    case 'success': return <CheckCircle sx={{ color: COLORS.success }} />;
+    case 'warning': return <Warning sx={{ color: COLORS.warning }} />;
+    case 'error': return <Error sx={{ color: COLORS.error }} />;
+    default: return <Info sx={{ color: COLORS.info }} />;
     }
   };
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'success': return COLORS.success;
-      case 'warning': return COLORS.warning;
-      case 'error': return COLORS.error;
-      default: return COLORS.info;
+    case 'success': return COLORS.success;
+    case 'warning': return COLORS.warning;
+    case 'error': return COLORS.error;
+    default: return COLORS.info;
     }
   };
 
@@ -470,7 +470,7 @@ export const ProfessionalStatusWidget = ({
                     sx={{
                       backgroundColor: alpha(getStatusColor(item.status), 0.1),
                       color: getStatusColor(item.status),
-                      fontWeight: 600
+                      fontWeight: 600,
                     }}
                   />
                 )}

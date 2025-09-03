@@ -4,7 +4,7 @@ import { alpha } from '@mui/material/styles';
 import {
   getUnifiedSettings,
   saveUnifiedSettings,
-  getSystemPreferences
+  getSystemPreferences,
 } from '../utils/unifiedSettingsManager';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
@@ -17,34 +17,34 @@ const ThemeContext = createContext();
 const themePresets = {
   techno: {
     primary: { main: '#ff5501', light: '#ff7733', dark: '#cc4400' },
-    secondary: { main: '#26A69A', light: '#51b7ae', dark: '#1a746b' }
+    secondary: { main: '#26A69A', light: '#51b7ae', dark: '#1a746b' },
   },
   blue: {
     primary: { main: '#1976d2', light: '#42a5f5', dark: '#1565c0' },
-    secondary: { main: '#dc004e', light: '#ff5983', dark: '#9a0036' }
+    secondary: { main: '#dc004e', light: '#ff5983', dark: '#9a0036' },
   },
   green: {
     primary: { main: '#388e3c', light: '#66bb6a', dark: '#2e7d32' },
-    secondary: { main: '#f57c00', light: '#ffb74d', dark: '#ef6c00' }
+    secondary: { main: '#f57c00', light: '#ffb74d', dark: '#ef6c00' },
   },
   purple: {
     primary: { main: '#7b1fa2', light: '#ba68c8', dark: '#6a1b9a' },
-    secondary: { main: '#00acc1', light: '#4dd0e1', dark: '#00838f' }
-  }
+    secondary: { main: '#00acc1', light: '#4dd0e1', dark: '#00838f' },
+  },
 };
 
 // Density configurations
 const densityConfigs = {
   compact: { spacing: 6, borderRadius: 6, typography: { body1: { fontSize: '0.8rem' } } },
   standard: { spacing: 8, borderRadius: 8, typography: { body1: { fontSize: '0.875rem' } } },
-  comfortable: { spacing: 12, borderRadius: 12, typography: { body1: { fontSize: '1rem' } } }
+  comfortable: { spacing: 12, borderRadius: 12, typography: { body1: { fontSize: '1rem' } } },
 };
 
 // Font size configurations
 const fontSizeConfigs = {
   small: { fontSize: 12, htmlFontSize: 14 },
   medium: { fontSize: 14, htmlFontSize: 16 },
-  large: { fontSize: 16, htmlFontSize: 18 }
+  large: { fontSize: 16, htmlFontSize: 18 },
 };
 
 const lightPalette = {
@@ -52,24 +52,24 @@ const lightPalette = {
     main: '#ff5501',
     light: '#ff7733',
     dark: '#cc4400',
-    contrastText: '#ffffff'
+    contrastText: '#ffffff',
   },
   secondary: {
     main: '#26A69A',
     light: '#51b7ae',
     dark: '#1a746b',
-    contrastText: '#ffffff'
+    contrastText: '#ffffff',
   },
   background: {
     default: '#f5f5f5',
     paper: '#ffffff',
     sidebar: '#ffffff',
-    header: '#ffffff'
+    header: '#ffffff',
   },
   text: {
     primary: '#2b2b2b',
     secondary: '#666666',
-    disabled: '#9e9e9e'
+    disabled: '#9e9e9e',
   },
   divider: 'rgba(0, 0, 0, 0.12)',
   action: {
@@ -77,8 +77,8 @@ const lightPalette = {
     hover: 'rgba(0, 0, 0, 0.04)',
     selected: 'rgba(255, 85, 1, 0.08)',
     disabled: 'rgba(0, 0, 0, 0.26)',
-    disabledBackground: 'rgba(0, 0, 0, 0.12)'
-  }
+    disabledBackground: 'rgba(0, 0, 0, 0.12)',
+  },
 };
 
 const darkPalette = {
@@ -86,24 +86,24 @@ const darkPalette = {
     main: '#ff6b22',
     light: '#ff8c55',
     dark: '#cc4400',
-    contrastText: '#ffffff'
+    contrastText: '#ffffff',
   },
   secondary: {
     main: '#4DB6AC',
     light: '#71c5bc',
     dark: '#357f78',
-    contrastText: '#ffffff'
+    contrastText: '#ffffff',
   },
   background: {
     default: '#121212',
     paper: '#1e1e1e',
     sidebar: '#1a1a1a',
-    header: '#1a1a1a'
+    header: '#1a1a1a',
   },
   text: {
     primary: '#ffffff',
     secondary: '#b3b3b3',
-    disabled: '#666666'
+    disabled: '#666666',
   },
   divider: 'rgba(255, 255, 255, 0.12)',
   action: {
@@ -111,13 +111,13 @@ const darkPalette = {
     hover: 'rgba(255, 255, 255, 0.08)',
     selected: 'rgba(255, 107, 34, 0.16)',
     disabled: 'rgba(255, 255, 255, 0.3)',
-    disabledBackground: 'rgba(255, 255, 255, 0.12)'
-  }
+    disabledBackground: 'rgba(255, 255, 255, 0.12)',
+  },
 };
 
 const createCustomTheme = (mode, colorPreset = 'techno', density = 'standard', fontSize = 'medium', customizations = {}, direction = 'ltr') => {
   let palette = mode === 'dark' ? darkPalette : lightPalette;
-  
+
   // Apply color preset if different from default
   if (colorPreset !== 'techno' && themePresets[colorPreset]) {
     palette = {
@@ -126,7 +126,7 @@ const createCustomTheme = (mode, colorPreset = 'techno', density = 'standard', f
       secondary: themePresets[colorPreset].secondary,
     };
   }
-  
+
   // Apply custom color overrides
   if (customizations.colors) {
     palette = {
@@ -134,10 +134,10 @@ const createCustomTheme = (mode, colorPreset = 'techno', density = 'standard', f
       ...customizations.colors,
     };
   }
-  
+
   const densityConfig = densityConfigs[density];
   const fontConfig = fontSizeConfigs[fontSize];
-  
+
   return createTheme({
     direction,
     palette: {
@@ -177,7 +177,7 @@ const createCustomTheme = (mode, colorPreset = 'techno', density = 'standard', f
             margin: '4px 8px',
             transition: theme.transitions.create(
               ['background-color', 'color', 'padding-left', 'border-radius'],
-              { duration: 200 }
+              { duration: 200 },
             ),
             '&:hover': {
               backgroundColor: alpha(theme.palette.primary.main, 0.08),
@@ -227,7 +227,7 @@ const createCustomTheme = (mode, colorPreset = 'techno', density = 'standard', f
             color: theme.palette.text.primary,
             transition: theme.transitions.create(
               ['background-color', 'box-shadow', 'color'],
-              { duration: theme.transitions.duration.standard }
+              { duration: theme.transitions.duration.standard },
             ),
           }),
         },
@@ -275,6 +275,7 @@ export const ThemeProvider = ({ children }) => {
   // Initialize theme states from unified settings
   const initializeFromSettings = () => {
     const settings = getUnifiedSettings();
+
     return {
       mode: settings.theme === 'system' ?
         (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') :
@@ -284,7 +285,7 @@ export const ThemeProvider = ({ children }) => {
       density: settings.density || 'standard',
       animations: settings.animations !== false,
       highContrast: settings.highContrast === true,
-      customizations: settings.customizations || {}
+      customizations: settings.customizations || {},
     };
   };
 
@@ -314,6 +315,7 @@ export const ThemeProvider = ({ children }) => {
     };
 
     mediaQuery.addEventListener('change', handleSystemThemeChange);
+
     return () => mediaQuery.removeEventListener('change', handleSystemThemeChange);
   }, []);
 
@@ -326,7 +328,7 @@ export const ThemeProvider = ({ children }) => {
       density,
       animations,
       highContrast,
-      customizations
+      customizations,
     };
 
     console.log('🎨 ThemeContext: Saving unified settings:', currentSettings);
@@ -336,13 +338,13 @@ export const ThemeProvider = ({ children }) => {
   // Apply accessibility settings to document
   useEffect(() => {
     const root = document.documentElement;
-    
+
     if (highContrast) {
       root.classList.add('high-contrast');
     } else {
       root.classList.remove('high-contrast');
     }
-    
+
     if (!animations) {
       root.classList.add('no-animations');
     } else {
@@ -364,6 +366,7 @@ export const ThemeProvider = ({ children }) => {
       if (newMode === 'system') {
         // Apply system preference
         const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
         setMode(systemPrefersDark ? 'dark' : 'light');
       } else {
         setMode(newMode);
@@ -374,6 +377,7 @@ export const ThemeProvider = ({ children }) => {
   // Initialize theme from unified settings
   const initializeTheme = useCallback(() => {
     const settings = getUnifiedSettings();
+
     if (settings) {
       console.log('Initializing theme from unified settings:', settings);
 
@@ -381,6 +385,7 @@ export const ThemeProvider = ({ children }) => {
       if (settings.theme && settings.theme !== mode) {
         if (settings.theme === 'system') {
           const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
           setMode(systemPrefersDark ? 'dark' : 'light');
         } else {
           setMode(settings.theme);
@@ -421,19 +426,19 @@ export const ThemeProvider = ({ children }) => {
       if (userFontSize) {
         setFontSize(userFontSize);
       }
-      
+
       if (userColorPreset) {
         setColorPreset(userColorPreset);
       }
-      
+
       if (userDensity) {
         setDensity(userDensity);
       }
-      
+
       if (userAnimations !== undefined) {
         setAnimations(userAnimations);
       }
-      
+
       if (userHighContrast !== undefined) {
         setHighContrast(userHighContrast);
       }
@@ -473,7 +478,9 @@ export const ThemeProvider = ({ children }) => {
   // Emotion Cache for RTL/LTR
   const cache = useMemo(() => {
     const options = { key: isRTL ? 'mui-rtl' : 'mui' };
+
     if (isRTL) options.stylisPlugins = [rtlPlugin];
+
     return createCache(options);
   }, [isRTL]);
 
@@ -485,31 +492,31 @@ export const ThemeProvider = ({ children }) => {
     setThemeMode,
     applyUserThemeSettings,
     isDark: mode === 'dark',
-    
+
     // Font size
     fontSize,
     setFontSize: memoizedSetFontSize,
-    
+
     // Color presets
     colorPreset,
     setColorPreset: memoizedSetColorPreset,
     themePresets,
-    
+
     // Density
     density,
     setDensity: memoizedSetDensity,
-    
+
     // Animations
     animations,
     setAnimations: memoizedSetAnimations,
-    
+
     // High contrast
     highContrast,
     setHighContrast: memoizedSetHighContrast,
-    
+
     // Customizations
     customizations,
-    setCustomizations: memoizedSetCustomizations
+    setCustomizations: memoizedSetCustomizations,
   }), [
     mode, toggleTheme, setThemeMode, applyUserThemeSettings,
     fontSize, memoizedSetFontSize,
@@ -517,7 +524,7 @@ export const ThemeProvider = ({ children }) => {
     density, memoizedSetDensity,
     animations, memoizedSetAnimations,
     highContrast, memoizedSetHighContrast,
-    customizations, memoizedSetCustomizations
+    customizations, memoizedSetCustomizations,
   ]);
 
   return (
@@ -533,9 +540,11 @@ export const ThemeProvider = ({ children }) => {
 
 export const useCustomTheme = () => {
   const context = useContext(ThemeContext);
+
   if (!context) {
     throw new Error('useCustomTheme must be used within a ThemeProvider');
   }
+
   return context;
 };
 

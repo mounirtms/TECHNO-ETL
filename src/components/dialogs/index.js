@@ -1,9 +1,9 @@
 /**
  * Dialog Components Barrel Export
- * 
+ *
  * Centralized export for all dialog components
  * Optimized for lazy loading and tree shaking
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
@@ -40,23 +40,23 @@ export const PreferencesDialog = React.lazy(() => import('./PreferencesDialog'))
 export const DIALOG_CATEGORIES = {
   import: {
     csv: CSVImportDialog,
-    catalog: CatalogProcessorDialog
+    catalog: CatalogProcessorDialog,
   },
-  
+
   management: {
     product: ProductInfoDialog,
-    brand: BrandManagementDialog
+    brand: BrandManagementDialog,
   },
-  
+
   media: {
     upload: MediaUploadDialog,
-    bulk: BulkMediaDialog
+    bulk: BulkMediaDialog,
   },
-  
+
   settings: {
     general: SettingsDialog,
-    preferences: PreferencesDialog
-  }
+    preferences: PreferencesDialog,
+  },
 };
 
 /**
@@ -70,7 +70,7 @@ export const ALL_DIALOGS = {
   'media-upload': MediaUploadDialog,
   'bulk-media': BulkMediaDialog,
   'settings': SettingsDialog,
-  'preferences': PreferencesDialog
+  'preferences': PreferencesDialog,
 };
 
 // ============================================================================
@@ -84,9 +84,11 @@ export const ALL_DIALOGS = {
  */
 export const getDialog = (name) => {
   const dialog = ALL_DIALOGS[name];
+
   if (!dialog) {
     throw new Error(`Dialog "${name}" not found`);
   }
+
   return dialog;
 };
 
@@ -97,9 +99,11 @@ export const getDialog = (name) => {
  */
 export const getDialogsByCategory = (category) => {
   const dialogs = DIALOG_CATEGORIES[category];
+
   if (!dialogs) {
     throw new Error(`Dialog category "${category}" not found`);
   }
+
   return dialogs;
 };
 
@@ -111,7 +115,7 @@ export const getDialogsByCategory = (category) => {
  */
 export const withSuspense = (
   DialogComponent,
-  fallback = <div>Loading dialog...</div>
+  fallback = <div>Loading dialog...</div>,
 ) => {
   return React.memo((props) => (
     <React.Suspense fallback={fallback}>
@@ -146,19 +150,19 @@ export default {
   BulkMediaDialog,
   SettingsDialog,
   PreferencesDialog,
-  
+
   // Safe components
   SafeCSVImportDialog,
   SafeCatalogProcessorDialog,
   SafeProductInfoDialog,
   SafeBrandManagementDialog,
-  
+
   // Utilities
   getDialog,
   getDialogsByCategory,
   withSuspense,
-  
+
   // Maps
   ALL_DIALOGS,
-  DIALOG_CATEGORIES
+  DIALOG_CATEGORIES,
 };

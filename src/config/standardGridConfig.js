@@ -17,14 +17,14 @@ import {
   getStandardGridProps as _getStandardGridProps,
   getStandardToolbarConfig as _getStandardToolbarConfig,
   getGridConfig as _getGridConfig,
-  STANDARD_CONTEXT_MENU_ACTIONS as _STANDARD_CONTEXT_MENU_ACTIONS
+  STANDARD_CONTEXT_MENU_ACTIONS as _STANDARD_CONTEXT_MENU_ACTIONS,
 } from './gridConfig.js';
 
 // Re-export for backward compatibility
 export const STANDARD_PAGINATION_CONFIG = {
   ..._STANDARD_PAGINATION_CONFIG,
-  paginationMode: "server", // Override default for backward compatibility
-  rowCount: 0 // Default to 0, will be overridden by individual grids
+  paginationMode: 'server', // Override default for backward compatibility
+  rowCount: 0, // Default to 0, will be overridden by individual grids
 };
 
 export const STANDARD_TOOLBAR_CONFIG = _STANDARD_TOOLBAR_CONFIG;
@@ -36,14 +36,14 @@ export const STANDARD_CONTEXT_MENU_ACTIONS = _STANDARD_CONTEXT_MENU_ACTIONS;
 export const STANDARD_VIEW_OPTIONS = {
   showStatsCards: false,
   showCardView: true,
-  defaultViewMode: "grid"
+  defaultViewMode: 'grid',
 };
 
 export const STANDARD_GRID_CONTAINER_STYLES = {
   flex: 1,
   display: 'flex',
   flexDirection: 'column',
-  overflow: 'hidden'
+  overflow: 'hidden',
 };
 
 export const STANDARD_GRID_AREA_STYLES = {
@@ -52,27 +52,27 @@ export const STANDARD_GRID_AREA_STYLES = {
   display: 'flex',
   flexDirection: 'column',
   overflow: 'hidden',
-  mb: 1
+  mb: 1,
 };
 
 export const STANDARD_STATS_CONTAINER_STYLES = {
   flexShrink: 0,
   borderTop: '1px solid rgba(224, 224, 224, 1)',
   pt: 1,
-  backgroundColor: 'background.paper'
+  backgroundColor: 'background.paper',
 };
 
 export const STANDARD_ERROR_CONFIG = {
   showErrorBoundary: true,
   errorFallback: 'Failed to load data',
   retryEnabled: true,
-  maxRetries: 3
+  maxRetries: 3,
 };
 
 export const STANDARD_LOADING_CONFIG = {
   showLoadingOverlay: true,
   loadingMessage: 'Loading data...',
-  skeletonRows: 10
+  skeletonRows: 10,
 };
 
 /**
@@ -93,14 +93,14 @@ export const getStandardGridConfig = (overrides = {}) => {
     // Toolbar
     toolbarConfig: {
       ...STANDARD_TOOLBAR_CONFIG,
-      ...overrides.toolbarConfig
+      ...overrides.toolbarConfig,
     },
 
     // View options
     ...STANDARD_VIEW_OPTIONS,
 
     // Custom overrides
-    ...overrides
+    ...overrides,
   };
 };
 
@@ -125,7 +125,7 @@ export const getStandardGridProps = (gridType, customConfig = {}) => {
   const gridTypeMapping = {
     'magento': 'magentoProducts',
     'customers': 'magentoCustomers',
-    'orders': 'magentoOrders'
+    'orders': 'magentoOrders',
   };
 
   const mappedGridType = gridTypeMapping[gridType] || gridType;
@@ -136,8 +136,8 @@ export const getStandardGridProps = (gridType, customConfig = {}) => {
   // Override pagination mode for backward compatibility
   return {
     ...props,
-    paginationMode: "server",
-    totalCount: customConfig.totalCount || 0
+    paginationMode: 'server',
+    totalCount: customConfig.totalCount || 0,
   };
 };
 
@@ -156,5 +156,5 @@ export default {
   getStandardToolbarConfig,
   STANDARD_CONTEXT_MENU_ACTIONS,
   STANDARD_ERROR_CONFIG,
-  STANDARD_LOADING_CONFIG
+  STANDARD_LOADING_CONFIG,
 };

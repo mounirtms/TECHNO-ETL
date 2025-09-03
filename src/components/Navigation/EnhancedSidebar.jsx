@@ -18,7 +18,7 @@ import {
   Collapse,
   Badge,
   useTheme,
-  styled
+  styled,
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon,
@@ -31,7 +31,7 @@ import {
   Settings as SettingsIcon,
   ExpandLess,
   ExpandMore,
-  Warehouse as WarehouseIcon
+  Warehouse as WarehouseIcon,
 } from '@mui/icons-material';
 
 import { useNavigation, useMenuState } from '../../hooks/useNavigation';
@@ -48,7 +48,7 @@ const ICON_MAP = {
   Assessment: AssessmentIcon,
   HowToVote: HowToVoteIcon,
   Settings: SettingsIcon,
-  Warehouse: WarehouseIcon
+  Warehouse: WarehouseIcon,
 };
 
 // Styled components
@@ -98,7 +98,7 @@ const StyledListItemButton = styled(ListItemButton)(({ theme, active, open }) =>
       height: '60%',
       backgroundColor: theme.palette.secondary.main,
       borderRadius: '0 2px 2px 0',
-    }
+    },
   }),
 }));
 
@@ -108,7 +108,7 @@ const LogoContainer = styled(Box)(({ theme, open }) => ({
   justifyContent: open ? 'flex-start' : 'center',
   padding: theme.spacing(2),
   minHeight: 64,
-  borderBottom: `1px solid rgba(255, 255, 255, 0.1)`,
+  borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
 }));
 
 const EnhancedSidebar = ({ open, onToggle }) => {
@@ -122,7 +122,7 @@ const EnhancedSidebar = ({ open, onToggle }) => {
     if (item.path) {
       navigateTo(item.path);
     }
-    
+
     // Close submenu if navigating to a different section
     if (activeSubmenu && activeSubmenu !== item.path) {
       setActiveSubmenu(null);
@@ -135,6 +135,7 @@ const EnhancedSidebar = ({ open, onToggle }) => {
 
   const getIcon = (iconName) => {
     const IconComponent = ICON_MAP[iconName] || DashboardIcon;
+
     return <IconComponent />;
   };
 
@@ -172,7 +173,7 @@ const EnhancedSidebar = ({ open, onToggle }) => {
                 {getIcon(item.icon)}
               </Badge>
             </ListItemIcon>
-            
+
             <ListItemText
               primary={item.label}
               sx={{
@@ -184,7 +185,7 @@ const EnhancedSidebar = ({ open, onToggle }) => {
                 fontWeight: isActive ? 600 : 400,
               }}
             />
-            
+
             {hasSubmenu && open && (
               isSubmenuOpen ? <ExpandLess /> : <ExpandMore />
             )}
@@ -273,7 +274,7 @@ const EnhancedSidebar = ({ open, onToggle }) => {
 
       {/* Footer Section */}
       {open && (
-        <Box sx={{ p: 2, borderTop: `1px solid rgba(255, 255, 255, 0.1)` }}>
+        <Box sx={{ p: 2, borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
           <Typography variant="caption" sx={{ opacity: 0.6 }}>
             Version 2.0.0
           </Typography>

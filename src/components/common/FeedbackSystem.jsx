@@ -22,7 +22,7 @@ import {
   Chip,
   Stack,
   LinearProgress,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import {
   CheckCircle as SuccessIcon,
@@ -33,21 +33,21 @@ import {
   Save as SaveIcon,
   CloudDone as SyncIcon,
   Refresh as RefreshIcon,
-  Settings as SettingsIcon
+  Settings as SettingsIcon,
 } from '@mui/icons-material';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useCustomTheme } from '../../contexts/ThemeContext';
 
 // Enhanced Success Message Component
-export const SuccessMessage = ({ 
-  open, 
-  message, 
-  onClose, 
+export const SuccessMessage = ({
+  open,
+  message,
+  onClose,
   autoHideDuration = 4000,
   action,
   showIcon = true,
   variant = 'filled',
-  anchorOrigin = { vertical: 'bottom', horizontal: 'right' }
+  anchorOrigin = { vertical: 'bottom', horizontal: 'right' },
 }) => {
   const theme = useTheme();
   const { translate, currentLanguage, languages } = useLanguage();
@@ -55,7 +55,7 @@ export const SuccessMessage = ({
   const isRTL = languages[currentLanguage]?.dir === 'rtl';
 
   const TransitionComponent = React.forwardRef((props, ref) => {
-    return <Slide ref={ref} {...props} direction={isRTL ? "left" : "right"} />;
+    return <Slide ref={ref} {...props} direction={isRTL ? 'left' : 'right'} />;
   });
 
   return (
@@ -77,8 +77,8 @@ export const SuccessMessage = ({
           '& .MuiAlert-message': {
             display: 'flex',
             alignItems: 'center',
-            gap: 1
-          }
+            gap: 1,
+          },
         }}
       >
         <Typography variant="body2">
@@ -90,12 +90,12 @@ export const SuccessMessage = ({
 };
 
 // Settings-specific Success Feedback
-export const SettingsSuccessFeedback = ({ 
-  open, 
+export const SettingsSuccessFeedback = ({
+  open,
   operation = 'save',
   details,
   onClose,
-  showDetails = false
+  showDetails = false,
 }) => {
   const theme = useTheme();
   const { translate, currentLanguage, languages } = useLanguage();
@@ -104,31 +104,31 @@ export const SettingsSuccessFeedback = ({
 
   const getOperationIcon = () => {
     switch (operation) {
-      case 'save':
-        return <SaveIcon sx={{ color: theme.palette.success.main }} />;
-      case 'sync':
-        return <SyncIcon sx={{ color: theme.palette.info.main }} />;
-      case 'reset':
-        return <RefreshIcon sx={{ color: theme.palette.warning.main }} />;
-      case 'import':
-        return <SettingsIcon sx={{ color: theme.palette.primary.main }} />;
-      default:
-        return <SuccessIcon sx={{ color: theme.palette.success.main }} />;
+    case 'save':
+      return <SaveIcon sx={{ color: theme.palette.success.main }} />;
+    case 'sync':
+      return <SyncIcon sx={{ color: theme.palette.info.main }} />;
+    case 'reset':
+      return <RefreshIcon sx={{ color: theme.palette.warning.main }} />;
+    case 'import':
+      return <SettingsIcon sx={{ color: theme.palette.primary.main }} />;
+    default:
+      return <SuccessIcon sx={{ color: theme.palette.success.main }} />;
     }
   };
 
   const getOperationMessage = () => {
     switch (operation) {
-      case 'save':
-        return translate('feedback.settings.saved');
-      case 'sync':
-        return translate('feedback.settings.synced');
-      case 'reset':
-        return translate('feedback.settings.reset');
-      case 'import':
-        return translate('feedback.settings.imported');
-      default:
-        return translate('feedback.success.default');
+    case 'save':
+      return translate('feedback.settings.saved');
+    case 'sync':
+      return translate('feedback.settings.synced');
+    case 'reset':
+      return translate('feedback.settings.reset');
+    case 'import':
+      return translate('feedback.settings.imported');
+    default:
+      return translate('feedback.success.default');
     }
   };
 
@@ -152,8 +152,8 @@ export const SettingsSuccessFeedback = ({
           minWidth: 350,
           borderRadius: 2,
           '& .MuiAlert-message': {
-            width: '100%'
-          }
+            width: '100%',
+          },
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: showDetails ? 1 : 0 }}>
@@ -162,7 +162,7 @@ export const SettingsSuccessFeedback = ({
             {getOperationMessage()}
           </Typography>
         </Box>
-        
+
         {showDetails && details && (
           <Typography variant="caption" sx={{ opacity: 0.9, display: 'block' }}>
             {details}
@@ -186,7 +186,7 @@ export const ConfirmationDialog = ({
   showIcon = true,
   maxWidth = 'sm',
   confirmColor = 'primary',
-  additionalInfo
+  additionalInfo,
 }) => {
   const theme = useTheme();
   const { translate } = useLanguage();
@@ -194,16 +194,16 @@ export const ConfirmationDialog = ({
 
   const getSeverityIcon = () => {
     switch (severity) {
-      case 'error':
-        return <ErrorIcon color="error" />;
-      case 'warning':
-        return <WarningIcon color="warning" />;
-      case 'info':
-        return <InfoIcon color="info" />;
-      case 'success':
-        return <SuccessIcon color="success" />;
-      default:
-        return <WarningIcon color="warning" />;
+    case 'error':
+      return <ErrorIcon color="error" />;
+    case 'warning':
+      return <WarningIcon color="warning" />;
+    case 'info':
+      return <InfoIcon color="info" />;
+    case 'success':
+      return <SuccessIcon color="success" />;
+    default:
+      return <WarningIcon color="warning" />;
     }
   };
 
@@ -222,8 +222,8 @@ export const ConfirmationDialog = ({
         sx: {
           borderRadius: 3,
           border: `2px solid ${theme.palette[severity].main}`,
-          overflow: 'visible'
-        }
+          overflow: 'visible',
+        },
       }}
     >
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1, pb: 1 }}>
@@ -232,12 +232,12 @@ export const ConfirmationDialog = ({
           {title || translate('feedback.confirmation.title')}
         </Typography>
       </DialogTitle>
-      
+
       <DialogContent>
         <Typography variant="body1" sx={{ mb: additionalInfo ? 2 : 0 }}>
           {message || translate('feedback.confirmation.message')}
         </Typography>
-        
+
         {additionalInfo && (
           <Alert severity={severity} sx={{ mt: 2 }}>
             <Typography variant="body2">
@@ -278,7 +278,7 @@ export const ProgressFeedback = ({
   progress,
   onCancel,
   showCancel = false,
-  indeterminate = false
+  indeterminate = false,
 }) => {
   const theme = useTheme();
   const { translate } = useLanguage();
@@ -297,8 +297,8 @@ export const ProgressFeedback = ({
       PaperProps={{
         sx: {
           borderRadius: 3,
-          p: 1
-        }
+          p: 1,
+        },
       }}
       TransitionComponent={animations ? TransitionComponent : undefined}
     >
@@ -314,7 +314,7 @@ export const ProgressFeedback = ({
 
         <Box sx={{ width: '100%', mb: 2 }}>
           <LinearProgress
-            variant={indeterminate ? "indeterminate" : "determinate"}
+            variant={indeterminate ? 'indeterminate' : 'determinate'}
             value={progress}
             sx={{
               height: 8,
@@ -322,8 +322,8 @@ export const ProgressFeedback = ({
               backgroundColor: theme.palette.grey[200],
               '& .MuiLinearProgress-bar': {
                 borderRadius: 4,
-                transition: animations ? 'transform 0.4s ease-in-out' : 'none'
-              }
+                transition: animations ? 'transform 0.4s ease-in-out' : 'none',
+              },
             }}
           />
           {!indeterminate && (
@@ -354,7 +354,7 @@ export const MultiStepFeedback = ({
   currentStep,
   onClose,
   onCancel,
-  title
+  title,
 }) => {
   const theme = useTheme();
   const { translate } = useLanguage();
@@ -383,8 +383,8 @@ export const MultiStepFeedback = ({
       PaperProps={{
         sx: {
           borderRadius: 3,
-          minHeight: 400
-        }
+          minHeight: 400,
+        },
       }}
       TransitionComponent={animations ? TransitionComponent : undefined}
     >
@@ -405,31 +405,31 @@ export const MultiStepFeedback = ({
                 gap: 2,
                 p: 2,
                 borderRadius: 2,
-                backgroundColor: index === currentStep ? 
-                  theme.palette.primary.light + '20' : 
+                backgroundColor: index === currentStep ?
+                  theme.palette.primary.light + '20' :
                   'transparent',
-                border: index === currentStep ? 
-                  `2px solid ${theme.palette.primary.light}` : 
+                border: index === currentStep ?
+                  `2px solid ${theme.palette.primary.light}` :
                   '2px solid transparent',
                 transition: 'all 0.3s ease-in-out',
-                opacity: index > currentStep ? 0.6 : 1
+                opacity: index > currentStep ? 0.6 : 1,
               }}
             >
               {getStepIcon(step, index)}
-              
+
               <Box sx={{ flex: 1 }}>
-                <Typography 
-                  variant="subtitle1" 
-                  sx={{ 
+                <Typography
+                  variant="subtitle1"
+                  sx={{
                     fontWeight: index <= currentStep ? 600 : 400,
-                    color: index <= currentStep ? 'text.primary' : 'text.secondary'
+                    color: index <= currentStep ? 'text.primary' : 'text.secondary',
                   }}
                 >
                   {step.title}
                 </Typography>
                 {step.description && (
-                  <Typography 
-                    variant="body2" 
+                  <Typography
+                    variant="body2"
                     color="text.secondary"
                     sx={{ mt: 0.5 }}
                   >
@@ -446,7 +446,7 @@ export const MultiStepFeedback = ({
                   variant="outlined"
                 />
               )}
-              
+
               {index === currentStep && (
                 <Chip
                   label={translate('feedback.multiStep.inProgress')}
@@ -480,82 +480,82 @@ export const useFeedback = () => {
     success: { open: false, message: '', operation: 'save' },
     confirmation: { open: false, title: '', message: '', onConfirm: null },
     progress: { open: false, title: '', message: '', progress: 0 },
-    multiStep: { open: false, steps: [], currentStep: 0 }
+    multiStep: { open: false, steps: [], currentStep: 0 },
   });
 
   const showSuccess = (message, operation = 'save', details = null) => {
     setFeedback(prev => ({
       ...prev,
-      success: { open: true, message, operation, details }
+      success: { open: true, message, operation, details },
     }));
   };
 
   const hideSuccess = () => {
     setFeedback(prev => ({
       ...prev,
-      success: { ...prev.success, open: false }
+      success: { ...prev.success, open: false },
     }));
   };
 
   const showConfirmation = (title, message, onConfirm, options = {}) => {
     setFeedback(prev => ({
       ...prev,
-      confirmation: { 
-        open: true, 
-        title, 
-        message, 
+      confirmation: {
+        open: true,
+        title,
+        message,
         onConfirm,
-        ...options
-      }
+        ...options,
+      },
     }));
   };
 
   const hideConfirmation = () => {
     setFeedback(prev => ({
       ...prev,
-      confirmation: { ...prev.confirmation, open: false, onConfirm: null }
+      confirmation: { ...prev.confirmation, open: false, onConfirm: null },
     }));
   };
 
   const showProgress = (title, message, progress = 0) => {
     setFeedback(prev => ({
       ...prev,
-      progress: { open: true, title, message, progress }
+      progress: { open: true, title, message, progress },
     }));
   };
 
   const updateProgress = (progress) => {
     setFeedback(prev => ({
       ...prev,
-      progress: { ...prev.progress, progress }
+      progress: { ...prev.progress, progress },
     }));
   };
 
   const hideProgress = () => {
     setFeedback(prev => ({
       ...prev,
-      progress: { ...prev.progress, open: false }
+      progress: { ...prev.progress, open: false },
     }));
   };
 
   const showMultiStep = (steps, title) => {
     setFeedback(prev => ({
       ...prev,
-      multiStep: { open: true, steps, currentStep: 0, title }
+      multiStep: { open: true, steps, currentStep: 0, title },
     }));
   };
 
   const updateMultiStep = (currentStep) => {
     setFeedback(prev => ({
       ...prev,
-      multiStep: { ...prev.multiStep, currentStep }
+      multiStep: { ...prev.multiStep, currentStep },
     }));
   };
 
   const hideMultiStep = () => {
     setFeedback(prev => ({
       ...prev,
-      multiStep: { ...prev.multiStep, open: false }
+      multiStep: { ...prev.multiStep, open: false },
     }));
   };
 
@@ -570,7 +570,7 @@ export const useFeedback = () => {
     hideProgress,
     showMultiStep,
     updateMultiStep,
-    hideMultiStep
+    hideMultiStep,
   };
 };
 
@@ -580,5 +580,5 @@ export default {
   ConfirmationDialog,
   ProgressFeedback,
   MultiStepFeedback,
-  useFeedback
+  useFeedback,
 };

@@ -16,7 +16,7 @@ export const useGridActions = ({
   selectedRows = [],
   data = [],
   gridName,
-  searchableFields = ['sku', 'name', 'Code_MDM', 'reference']
+  searchableFields = ['sku', 'name', 'Code_MDM', 'reference'],
 }) => {
   // Refresh handler with error handling
   const handleRefresh = useCallback(async () => {
@@ -43,9 +43,10 @@ export const useGridActions = ({
   const handleEdit = useCallback(async () => {
     if (selectedRows.length === 0) {
       toast.warning('Please select a record to edit');
+
       return;
     }
-    
+
     try {
       await onEdit?.(selectedRows);
     } catch (error) {
@@ -58,9 +59,10 @@ export const useGridActions = ({
   const handleDelete = useCallback(async () => {
     if (selectedRows.length === 0) {
       toast.warning('Please select records to delete');
+
       return;
     }
-    
+
     try {
       await onDelete?.(selectedRows);
       toast.success(`Deleted ${selectedRows.length} record(s)`);
@@ -105,6 +107,7 @@ export const useGridActions = ({
       } else if (searchValue.trim()) {
         // Default search behavior - show info about what would be searched
         const fieldsText = searchableFields.join(', ');
+
         toast.info(`Searching in: ${fieldsText}`);
         console.log(`Search "${searchValue}" in fields:`, searchableFields);
       }
@@ -121,6 +124,6 @@ export const useGridActions = ({
     handleDelete,
     handleSync,
     handleExport,
-    handleSearch
+    handleSearch,
   };
 };

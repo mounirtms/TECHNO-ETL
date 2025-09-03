@@ -9,7 +9,7 @@ export const useGridState = (gridName, options = {}) => {
     enablePersistence = true,
     serverSide = false,
     onStateChange,
-    initialState = {}
+    initialState = {},
   } = options;
 
   // Performance optimization: memoize options to prevent unnecessary re-renders
@@ -17,7 +17,7 @@ export const useGridState = (gridName, options = {}) => {
     enablePersistence,
     serverSide,
     onStateChange,
-    initialState
+    initialState,
   }), [enablePersistence, serverSide, onStateChange, initialState]);
 
   // Debounce timer for state persistence
@@ -26,39 +26,39 @@ export const useGridState = (gridName, options = {}) => {
 
   // Enhanced state management with better defaults
   const [paginationModel, setPaginationModelState] = useState(
-    initialState.paginationModel || { page: 0, pageSize: 25 }
+    initialState.paginationModel || { page: 0, pageSize: 25 },
   );
   const [sortModel, setSortModelState] = useState(
-    initialState.sortModel || []
+    initialState.sortModel || [],
   );
   const [filterModel, setFilterModelState] = useState(
-    initialState.filterModel || { items: [] }
+    initialState.filterModel || { items: [] },
   );
   const [selectedRows, setSelectedRowsState] = useState(
-    initialState.selectedRows || []
+    initialState.selectedRows || [],
   );
   const [columnVisibility, setColumnVisibilityState] = useState(
-    initialState.columnVisibility || {}
+    initialState.columnVisibility || {},
   );
   const [density, setDensityState] = useState(
-    initialState.density || 'standard'
+    initialState.density || 'standard',
   );
   const [columnOrder, setColumnOrderState] = useState(
-    initialState.columnOrder || []
+    initialState.columnOrder || [],
   );
   const [pinnedColumns, setPinnedColumnsState] = useState(
-    initialState.pinnedColumns || { left: [], right: [] }
+    initialState.pinnedColumns || { left: [], right: [] },
   );
 
   // Additional state for enhanced functionality
   const [viewMode, setViewModeState] = useState(
-    initialState.viewMode || 'grid'
+    initialState.viewMode || 'grid',
   );
   const [searchValue, setSearchValueState] = useState(
-    initialState.searchValue || ''
+    initialState.searchValue || '',
   );
   const [filtersVisible, setFiltersVisibleState] = useState(
-    initialState.filtersVisible || false
+    initialState.filtersVisible || false,
   );
 
   const stateRef = useRef({
@@ -72,7 +72,7 @@ export const useGridState = (gridName, options = {}) => {
     pinnedColumns,
     viewMode,
     searchValue,
-    filtersVisible
+    filtersVisible,
   });
 
   // Update ref when state changes
@@ -85,7 +85,7 @@ export const useGridState = (gridName, options = {}) => {
       columnVisibility,
       density,
       columnOrder,
-      pinnedColumns
+      pinnedColumns,
     };
   }, [paginationModel, sortModel, filterModel, selectedRows, columnVisibility, density, columnOrder, pinnedColumns]);
 
@@ -105,6 +105,7 @@ export const useGridState = (gridName, options = {}) => {
     persistenceTimerRef.current = setTimeout(() => {
       try {
         const serializedValue = JSON.stringify(value);
+
         // Only save if value actually changed
         if (lastPersistedStateRef.current?.[key] !== serializedValue) {
           localStorage.setItem(getStorageKey(key), serializedValue);
@@ -123,9 +124,11 @@ export const useGridState = (gridName, options = {}) => {
     if (!enablePersistence || !gridName) return defaultValue;
     try {
       const stored = localStorage.getItem(getStorageKey(key));
+
       return stored ? JSON.parse(stored) : defaultValue;
     } catch (error) {
       console.warn(`Failed to load grid state for ${key}:`, error);
+
       return defaultValue;
     }
   }, [enablePersistence, gridName, getStorageKey]);
@@ -228,7 +231,7 @@ export const useGridState = (gridName, options = {}) => {
       columnVisibility: {},
       density: 'standard',
       columnOrder: [],
-      pinnedColumns: { left: [], right: [] }
+      pinnedColumns: { left: [], right: [] },
     };
 
     setPaginationModelState(defaultState.paginationModel);
@@ -257,7 +260,7 @@ export const useGridState = (gridName, options = {}) => {
       columnVisibility,
       density,
       columnOrder,
-      pinnedColumns
+      pinnedColumns,
     };
   }, [paginationModel, sortModel, filterModel, selectedRows, columnVisibility, density, columnOrder, pinnedColumns]);
 
@@ -305,7 +308,7 @@ export const useGridState = (gridName, options = {}) => {
     importState,
 
     // State reference for callbacks
-    stateRef
+    stateRef,
   };
 };
 

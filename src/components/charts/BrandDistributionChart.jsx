@@ -6,11 +6,12 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
  * Brand Distribution Chart Component
  * Shows product distribution across different brands
  */
-const BrandDistributionChart = ({ data, title = "Brand Distribution" }) => {
+const BrandDistributionChart = ({ data, title = 'Brand Distribution' }) => {
   // Custom tooltip for better data display
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       const data = payload[0];
+
       return (
         <Box
           sx={{
@@ -18,7 +19,7 @@ const BrandDistributionChart = ({ data, title = "Brand Distribution" }) => {
             border: '1px solid #ccc',
             borderRadius: 1,
             padding: 1,
-            boxShadow: 2
+            boxShadow: 2,
           }}
         >
           <Typography variant="body2" fontWeight="bold">
@@ -35,6 +36,7 @@ const BrandDistributionChart = ({ data, title = "Brand Distribution" }) => {
         </Box>
       );
     }
+
     return null;
   };
 
@@ -45,13 +47,13 @@ const BrandDistributionChart = ({ data, title = "Brand Distribution" }) => {
           <Typography variant="h6" gutterBottom>
             {title}
           </Typography>
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               height: 300,
-              color: 'text.secondary'
+              color: 'text.secondary',
             }}
           >
             No brand data available
@@ -65,7 +67,7 @@ const BrandDistributionChart = ({ data, title = "Brand Distribution" }) => {
   const total = data.reduce((sum, item) => sum + item.value, 0);
   const dataWithPercentage = data.map(item => ({
     ...item,
-    percentage: ((item.value / total) * 100).toFixed(1)
+    percentage: ((item.value / total) * 100).toFixed(1),
   }));
 
   // Sort by value descending and take top 10
@@ -90,8 +92,8 @@ const BrandDistributionChart = ({ data, title = "Brand Distribution" }) => {
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis 
-              dataKey="name" 
+            <XAxis
+              dataKey="name"
               angle={-45}
               textAnchor="end"
               height={80}
@@ -100,8 +102,8 @@ const BrandDistributionChart = ({ data, title = "Brand Distribution" }) => {
             />
             <YAxis />
             <Tooltip content={<CustomTooltip />} />
-            <Bar 
-              dataKey="value" 
+            <Bar
+              dataKey="value"
               fill="#2196f3"
               radius={[4, 4, 0, 0]}
             />

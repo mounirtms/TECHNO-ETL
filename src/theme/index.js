@@ -146,6 +146,7 @@ const getTheme = (mode = 'light', direction = 'ltr') => createTheme({
 
 export const useAppTheme = () => {
   const { currentLanguage } = useLanguage();
+
   return getTheme('light', currentLanguage === 'ar' ? 'rtl' : 'ltr');
 };
 

@@ -28,21 +28,21 @@ const RouteTestPage = () => {
       <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 3 }}>
         Test all routes to verify they're working correctly
       </Typography>
-      
+
       <Box sx={{ bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1 }}>
         <List>
           {testRoutes.map((route, index) => (
-            <ListItem 
-              key={index} 
+            <ListItem
+              key={index}
               divider={index < testRoutes.length - 1}
               sx={{ '&:hover': { bgcolor: 'action.hover' } }}
             >
-              <ListItemText 
-                primary={route.name} 
+              <ListItemText
+                primary={route.name}
                 secondary={route.path}
               />
-              <Link 
-                component={RouterLink} 
+              <Link
+                component={RouterLink}
                 to={route.path}
                 sx={{ ml: 2 }}
               >

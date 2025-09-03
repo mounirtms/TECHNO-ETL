@@ -10,31 +10,31 @@ import PropTypes from 'prop-types';
 
 /**
  * TooltipWrapper Component
- * 
+ *
  * Wraps disabled interactive elements in a span to ensure Tooltip works properly.
  * This is required because disabled elements don't trigger mouse events.
  */
-const TooltipWrapper = ({ 
-  children, 
-  disabled = false, 
-  title, 
+const TooltipWrapper = ({
+  children,
+  disabled = false,
+  title,
   placement = 'top',
   arrow = true,
-  ...tooltipProps 
+  ...tooltipProps
 }) => {
   // If the element is disabled, wrap it in a span
   if (disabled) {
     return (
-      <Tooltip 
-        title={title} 
+      <Tooltip
+        title={title}
         placement={placement}
         arrow={arrow}
         {...tooltipProps}
       >
-        <span 
-          style={{ 
+        <span
+          style={{
             display: 'inline-block',
-            cursor: 'not-allowed'
+            cursor: 'not-allowed',
           }}
         >
           {children}
@@ -45,8 +45,8 @@ const TooltipWrapper = ({
 
   // If not disabled, use Tooltip normally
   return (
-    <Tooltip 
-      title={title} 
+    <Tooltip
+      title={title}
       placement={placement}
       arrow={arrow}
       {...tooltipProps}
@@ -72,9 +72,9 @@ TooltipWrapper.propTypes = {
     'right',
     'top-end',
     'top-start',
-    'top'
+    'top',
   ]),
-  arrow: PropTypes.bool
+  arrow: PropTypes.bool,
 };
 
 export default TooltipWrapper;

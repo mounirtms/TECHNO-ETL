@@ -1,7 +1,7 @@
 /**
  * Bug Bounty Test Component
  * Quick test to verify Firebase connectivity and bug submission
- * 
+ *
  * @author Mounir Abderrahmani
  * @email mounir.ab@techno-dz.com
  * @contact mounir.webdev.tms@gmail.com
@@ -15,7 +15,7 @@ import {
   Typography,
   Alert,
   Box,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import { TestTube as TestIcon } from '@mui/icons-material';
 import bugBountyService from '../../services/bugBountyService.js';
@@ -40,18 +40,18 @@ const BugBountyTest = () => {
         actualBehavior: 'Test is running',
         testerName: 'Test User',
         testerEmail: 'test@example.com',
-        testerExperience: 'beginner'
+        testerExperience: 'beginner',
       };
 
       const submitResult = await bugBountyService.submitBug(testBug);
-      
+
       if (submitResult.success) {
         // Test getting bugs
         const getBugsResult = await bugBountyService.getBugs();
-        
+
         // Test getting stats
         const statsResult = await bugBountyService.getStats();
-        
+
         setResult({
           success: true,
           message: 'All tests passed! Firebase connectivity verified.',
@@ -59,21 +59,21 @@ const BugBountyTest = () => {
             bugSubmitted: submitResult.success,
             bugId: submitResult.bugId,
             bugsRetrieved: getBugsResult.success,
-            statsRetrieved: statsResult.success
-          }
+            statsRetrieved: statsResult.success,
+          },
         });
       } else {
         setResult({
           success: false,
           message: 'Test failed: ' + submitResult.error,
-          details: submitResult
+          details: submitResult,
         });
       }
     } catch (error) {
       setResult({
         success: false,
         message: 'Test error: ' + error.message,
-        details: error
+        details: error,
       });
     } finally {
       setTesting(false);
@@ -87,7 +87,7 @@ const BugBountyTest = () => {
           <TestIcon color="primary" />
           <Typography variant="h6">Bug Bounty System Test</Typography>
         </Box>
-        
+
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
           This test verifies Firebase connectivity and bug bounty functionality.
         </Typography>
@@ -103,8 +103,8 @@ const BugBountyTest = () => {
         </Button>
 
         {result && (
-          <Alert 
-            severity={result.success ? 'success' : 'error'} 
+          <Alert
+            severity={result.success ? 'success' : 'error'}
             sx={{ mt: 2 }}
           >
             <Typography variant="body2">

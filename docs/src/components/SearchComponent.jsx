@@ -17,7 +17,7 @@ import {
   Divider,
   CircularProgress,
   Badge,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -25,7 +25,7 @@ import {
   Description as DocumentIcon,
   TrendingUp as TrendingIcon,
   History as HistoryIcon,
-  FilterList as FilterIcon
+  FilterList as FilterIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -43,6 +43,7 @@ const SearchComponent = ({ variant = 'outlined', size = 'medium', fullWidth = fa
   // Load recent searches from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('techno-etl-recent-searches');
+
     if (saved) {
       setRecentSearches(JSON.parse(saved));
     }
@@ -51,14 +52,16 @@ const SearchComponent = ({ variant = 'outlined', size = 'medium', fullWidth = fa
   // Save recent searches to localStorage
   const saveRecentSearch = (query) => {
     if (!query.trim()) return;
-    
+
     const updated = [query, ...recentSearches.filter(s => s !== query)].slice(0, 5);
+
     setRecentSearches(updated);
     localStorage.setItem('techno-etl-recent-searches', JSON.stringify(updated));
   };
 
   const handleSearchChange = (event) => {
     const query = event.target.value;
+
     performSearch(query);
     setIsOpen(query.length > 0);
   };
@@ -93,8 +96,8 @@ const SearchComponent = ({ variant = 'outlined', size = 'medium', fullWidth = fa
     setIsOpen(false);
   };
 
-  const filteredResults = selectedCategory === 'all' 
-    ? searchResults 
+  const filteredResults = selectedCategory === 'all'
+    ? searchResults
     : searchResults.filter(result => result.item.category.toLowerCase() === selectedCategory);
 
   const categories = ['all', 'overview', 'setup', 'features', 'architecture', 'api', 'integration', 'devops', 'support'];
@@ -108,8 +111,9 @@ const SearchComponent = ({ variant = 'outlined', size = 'medium', fullWidth = fa
       api: 'secondary',
       integration: 'error',
       devops: 'primary',
-      support: 'warning'
+      support: 'warning',
     };
+
     return colors[category.toLowerCase()] || 'default';
   };
 
@@ -122,8 +126,9 @@ const SearchComponent = ({ variant = 'outlined', size = 'medium', fullWidth = fa
       api: <DocumentIcon />,
       integration: <TrendingIcon />,
       devops: <DocumentIcon />,
-      support: <DocumentIcon />
+      support: <DocumentIcon />,
     };
+
     return icons[category.toLowerCase()] || <DocumentIcon />;
   };
 
@@ -163,18 +168,18 @@ const SearchComponent = ({ variant = 'outlined', size = 'medium', fullWidth = fa
                     </Tooltip>
                   )}
                 </InputAdornment>
-              )
+              ),
             }}
             sx={{
               '& .MuiOutlinedInput-root': {
                 transition: 'all 0.2s ease-in-out',
                 '&:hover': {
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                 },
                 '&.Mui-focused': {
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-                }
-              }
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                },
+              },
             }}
           />
         </form>
@@ -195,7 +200,7 @@ const SearchComponent = ({ variant = 'outlined', size = 'medium', fullWidth = fa
                   maxHeight: 500,
                   overflow: 'hidden',
                   border: '1px solid',
-                  borderColor: 'divider'
+                  borderColor: 'divider',
                 }}
               >
                 {/* Category Filters */}
@@ -254,8 +259,8 @@ const SearchComponent = ({ variant = 'outlined', size = 'medium', fullWidth = fa
                                 onClick={() => handleResultClick(result)}
                                 sx={{
                                   '&:hover': {
-                                    backgroundColor: 'action.hover'
-                                  }
+                                    backgroundColor: 'action.hover',
+                                  },
                                 }}
                               >
                                 <ListItemIcon>
@@ -269,8 +274,8 @@ const SearchComponent = ({ variant = 'outlined', size = 'medium', fullWidth = fa
                                         dangerouslySetInnerHTML={{
                                           __html: getHighlightedText(
                                             result.item.title,
-                                            result.matches?.find(m => m.key === 'title')?.indices
-                                          )
+                                            result.matches?.find(m => m.key === 'title')?.indices,
+                                          ),
                                         }}
                                       />
                                       <Chip
@@ -288,8 +293,8 @@ const SearchComponent = ({ variant = 'outlined', size = 'medium', fullWidth = fa
                                       dangerouslySetInnerHTML={{
                                         __html: getHighlightedText(
                                           result.item.description,
-                                          result.matches?.find(m => m.key === 'description')?.indices
-                                        )
+                                          result.matches?.find(m => m.key === 'description')?.indices,
+                                        ),
                                       }}
                                     />
                                   }
@@ -349,8 +354,8 @@ const SearchComponent = ({ variant = 'outlined', size = 'medium', fullWidth = fa
                           sx={{
                             pl: 4,
                             '&:hover': {
-                              backgroundColor: 'action.hover'
-                            }
+                              backgroundColor: 'action.hover',
+                            },
                           }}
                         >
                           <ListItemText

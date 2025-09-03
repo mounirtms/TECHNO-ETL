@@ -10,7 +10,7 @@ const API_BASE_URL = '/api';
 class TaskApiService {
   constructor() {
     this.baseURL = `${API_BASE_URL}/task`;
-    
+
     // Create axios instance with default config
     this.api = axios.create({
       baseURL: this.baseURL,
@@ -24,12 +24,14 @@ class TaskApiService {
     this.api.interceptors.request.use(
       (config) => {
         const token = localStorage.getItem('authToken');
+
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
+
         return config;
       },
-      (error) => Promise.reject(error)
+      (error) => Promise.reject(error),
     );
 
     // Add response interceptor for error handling
@@ -37,8 +39,9 @@ class TaskApiService {
       (response) => response,
       (error) => {
         console.error('Voting API Error:', error);
+
         return Promise.reject(error);
-      }
+      },
     );
   }
 
@@ -55,7 +58,7 @@ class TaskApiService {
         priority: options.priority,
         sortBy: options.sortBy || 'vote_count',
         sortOrder: options.sortOrder || 'DESC',
-        search: options.search
+        search: options.search,
       };
 
       // Remove undefined values
@@ -66,6 +69,7 @@ class TaskApiService {
       });
 
       const response = await this.api.get('/features', { params });
+
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to fetch voting features');
@@ -78,6 +82,7 @@ class TaskApiService {
   async getFeatureById(id) {
     try {
       const response = await this.api.get(`/features/${id}`);
+
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to fetch feature details');
@@ -90,6 +95,7 @@ class TaskApiService {
   async createFeature(featureData) {
     try {
       const response = await this.api.post('/features', featureData);
+
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to create feature');
@@ -102,6 +108,7 @@ class TaskApiService {
   async updateFeature(id, featureData) {
     try {
       const response = await this.api.put(`/features/${id}`, featureData);
+
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to update feature');
@@ -117,10 +124,11 @@ class TaskApiService {
         vote_type: voteType,
         user_id: userInfo.userId || 'anonymous',
         user_email: userInfo.userEmail,
-        user_name: userInfo.userName || 'Anonymous User'
+        user_name: userInfo.userName || 'Anonymous User',
       };
 
       const response = await this.api.post(`/features/${featureId}/vote`, voteData);
+
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to record vote');
@@ -134,9 +142,10 @@ class TaskApiService {
     try {
       const response = await this.api.delete(`/features/${featureId}/vote`, {
         data: {
-          user_id: userInfo.userId || 'anonymous'
-        }
+          user_id: userInfo.userId || 'anonymous',
+        },
       });
+
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to remove vote');
@@ -149,11 +158,13 @@ class TaskApiService {
   async getUserVotes(userId, featureIds = null) {
     try {
       const params = { user_id: userId };
+
       if (featureIds && featureIds.length > 0) {
         params.feature_ids = featureIds.join(',');
       }
 
       const response = await this.api.get('/user-votes', { params });
+
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to fetch user votes');
@@ -166,6 +177,7 @@ class TaskApiService {
   async getCategories() {
     try {
       const response = await this.api.get('/categories');
+
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to fetch categories');
@@ -178,6 +190,7 @@ class TaskApiService {
   async getVotingStats() {
     try {
       const response = await this.api.get('/stats');
+
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to fetch voting statistics');
@@ -193,10 +206,11 @@ class TaskApiService {
         comment,
         user_id: userInfo.userId || 'anonymous',
         user_email: userInfo.userEmail,
-        user_name: userInfo.userName || 'Anonymous User'
+        user_name: userInfo.userName || 'Anonymous User',
       };
 
       const response = await this.api.post(`/features/${featureId}/comments`, commentData);
+
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to add comment');
@@ -209,6 +223,7 @@ class TaskApiService {
   async getFeatureComments(featureId) {
     try {
       const response = await this.api.get(`/features/${featureId}/comments`);
+
       return response.data;
     } catch (error) {
       throw this.handleError(error, 'Failed to fetch comments');
@@ -223,6 +238,7 @@ class TaskApiService {
       // Server responded with error status
       const message = error.response.data?.message || defaultMessage;
       const status = error.response.status;
+
       return new Error(`${message} (Status: ${status})`);
     } else if (error.request) {
       // Request was made but no response received
@@ -239,22 +255,24 @@ class TaskApiService {
   getCurrentUserInfo() {
     try {
       const userInfo = localStorage.getItem('userInfo');
+
       if (userInfo) {
         return JSON.parse(userInfo);
       }
-      
+
       // Fallback to basic info
       return {
         userId: 'anonymous',
         userName: 'Anonymous User',
-        userEmail: null
+        userEmail: null,
       };
     } catch (error) {
       console.warn('Failed to get user info:', error);
+
       return {
         userId: 'anonymous',
         userName: 'Anonymous User',
-        userEmail: null
+        userEmail: null,
       };
     }
   }
@@ -264,11 +282,12 @@ class TaskApiService {
    */
   async batchVote(votes) {
     try {
-      const promises = votes.map(vote => 
-        this.voteForFeature(vote.featureId, vote.voteType, vote.userInfo)
+      const promises = votes.map(vote =>
+        this.voteForFeature(vote.featureId, vote.voteType, vote.userInfo),
       );
-      
+
       const results = await Promise.allSettled(promises);
+
       return results;
     } catch (error) {
       throw this.handleError(error, 'Failed to process batch votes');
@@ -283,7 +302,7 @@ class TaskApiService {
       const searchOptions = {
         search: searchTerm,
         ...filters,
-        pageSize: 50 // Larger page size for search results
+        pageSize: 50, // Larger page size for search results
       };
 
       return await this.getFeatures(searchOptions);

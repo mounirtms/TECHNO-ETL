@@ -17,7 +17,7 @@ import {
   AccordionDetails,
   CircularProgress,
   InputLabel,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import {
   Save,
@@ -31,7 +31,7 @@ import {
   Speed,
   Notifications,
   Warning,
-  ViewComfy
+  ViewComfy,
 } from '@mui/icons-material';
 import { useCustomTheme } from '../../../contexts/ThemeContext';
 import { useLanguage } from '../../../contexts/LanguageContext';
@@ -54,7 +54,7 @@ const AppearancePreferencesTab = ({ userData, onUpdateUserData, loading, error }
     setDensity,
     setAnimations,
     setHighContrast,
-    animations
+    animations,
   } = useCustomTheme();
   const { setLanguage, translate, languages, currentLanguage } = useLanguage();
   const { settings, updateSettings, saveSettings, resetSettings, exportSettings, importSettings, isDirty } = useSettings();
@@ -67,7 +67,7 @@ const AppearancePreferencesTab = ({ userData, onUpdateUserData, loading, error }
     showSuccess,
     hideSuccess,
     showConfirmation,
-    hideConfirmation
+    hideConfirmation,
   } = useFeedback();
 
   const [expanded, setExpanded] = useState({
@@ -76,13 +76,13 @@ const AppearancePreferencesTab = ({ userData, onUpdateUserData, loading, error }
     notifications: false,
     security: false,
     accessibility: false,
-    advanced: false
+    advanced: false,
   });
 
   const handleAccordionChange = (panel) => (event, isExpanded) => {
     setExpanded(prev => ({
       ...prev,
-      [panel]: isExpanded
+      [panel]: isExpanded,
     }));
   };
 
@@ -126,11 +126,12 @@ const AppearancePreferencesTab = ({ userData, onUpdateUserData, loading, error }
   const handleSave = async () => {
     try {
       const result = await saveSettings(true);
+
       if (result.success) {
         showSuccess(
           translate('feedback.settings.saved'),
           'save',
-          translate('feedback.settings.saveDetails')
+          translate('feedback.settings.saveDetails'),
         );
       }
     } catch (error) {
@@ -147,7 +148,7 @@ const AppearancePreferencesTab = ({ userData, onUpdateUserData, loading, error }
         resetSettings();
         showSuccess(
           translate('feedback.settings.reset'),
-          'reset'
+          'reset',
         );
         hideConfirmation();
       },
@@ -155,8 +156,8 @@ const AppearancePreferencesTab = ({ userData, onUpdateUserData, loading, error }
         severity: 'warning',
         confirmText: translate('errors.settings.reset.dialog.confirm'),
         confirmColor: 'warning',
-        additionalInfo: translate('errors.settings.reset.dialog.warning')
-      }
+        additionalInfo: translate('errors.settings.reset.dialog.warning'),
+      },
     );
   };
 
@@ -165,7 +166,7 @@ const AppearancePreferencesTab = ({ userData, onUpdateUserData, loading, error }
       exportSettings();
       showSuccess(
         translate('feedback.settings.exported'),
-        'export'
+        'export',
       );
     } catch (error) {
       console.error('Export failed:', error);
@@ -179,12 +180,13 @@ const AppearancePreferencesTab = ({ userData, onUpdateUserData, loading, error }
 
   const handleFileImport = async (event) => {
     const file = event.target.files[0];
+
     if (file) {
       try {
         await importSettings(file);
         showSuccess(
           translate('feedback.settings.imported'),
-          'import'
+          'import',
         );
       } catch (error) {
         console.error('Import failed:', error);
@@ -214,8 +216,8 @@ const AppearancePreferencesTab = ({ userData, onUpdateUserData, loading, error }
           direction: isRTL ? 'rtl' : 'ltr',
           ...getDirectionalAnimation('slideAndFade', 'right', isRTL, {
             duration: animations ? '0.4s' : '0s',
-            easing: 'ease-out'
-          })
+            easing: 'ease-out',
+          }),
         }}
       >
         {/* Header with Actions */}
@@ -228,8 +230,8 @@ const AppearancePreferencesTab = ({ userData, onUpdateUserData, loading, error }
           gap: 2,
           ...getDirectionalAnimation('fadeIn', 'up', isRTL, {
             duration: animations ? '0.3s' : '0s',
-            delay: '0.1s'
-          })
+            delay: '0.1s',
+          }),
         }}>
           <Box>
             <Typography variant="h5" gutterBottom>
@@ -324,8 +326,8 @@ const AppearancePreferencesTab = ({ userData, onUpdateUserData, loading, error }
           sx={{
             ...getDirectionalAnimation('slideAndFade', 'up', isRTL, {
               duration: animations ? '0.3s' : '0s',
-              delay: '0.2s'
-            })
+              delay: '0.2s',
+            }),
           }}
         >
           <AccordionSummary expandIcon={<ExpandMore />}>
@@ -480,7 +482,7 @@ const AppearancePreferencesTab = ({ userData, onUpdateUserData, loading, error }
                     { value: 10, label: '10' },
                     { value: 25, label: '25' },
                     { value: 50, label: '50' },
-                    { value: 100, label: '100' }
+                    { value: 100, label: '100' },
                   ]}
                   valueLabelDisplay="auto"
                 />
@@ -500,7 +502,7 @@ const AppearancePreferencesTab = ({ userData, onUpdateUserData, loading, error }
                     { value: 10, label: '10s' },
                     { value: 30, label: '30s' },
                     { value: 60, label: '1m' },
-                    { value: 300, label: '5m' }
+                    { value: 300, label: '5m' },
                   ]}
                   valueLabelDisplay="auto"
                   disabled={!prefs.autoRefresh}
@@ -750,7 +752,7 @@ const AppearancePreferencesTab = ({ userData, onUpdateUserData, loading, error }
                     { value: 5, label: '5m' },
                     { value: 30, label: '30m' },
                     { value: 60, label: '1h' },
-                    { value: 120, label: '2h' }
+                    { value: 120, label: '2h' },
                   ]}
                   valueLabelDisplay="auto"
                 />

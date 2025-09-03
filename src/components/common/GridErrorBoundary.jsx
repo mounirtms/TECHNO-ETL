@@ -5,11 +5,11 @@ import { ErrorOutline, Refresh } from '@mui/icons-material';
 class GridErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
-      hasError: false, 
-      error: null, 
+    this.state = {
+      hasError: false,
+      error: null,
       errorInfo: null,
-      retryCount: 0
+      retryCount: 0,
     };
   }
 
@@ -20,12 +20,12 @@ class GridErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     this.setState({
       error,
-      errorInfo
+      errorInfo,
     });
-    
+
     // Log error for debugging
     console.error(`Grid Error in ${this.props.gridName}:`, error, errorInfo);
-    
+
     // Call parent error handler if provided
     if (this.props.onError) {
       this.props.onError(error, errorInfo);
@@ -37,9 +37,9 @@ class GridErrorBoundary extends React.Component {
       hasError: false,
       error: null,
       errorInfo: null,
-      retryCount: this.state.retryCount + 1
+      retryCount: this.state.retryCount + 1,
     });
-    
+
     // Call retry handler if provided
     if (this.props.onRetry) {
       this.props.onRetry();
@@ -49,29 +49,29 @@ class GridErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <Paper 
-          elevation={2} 
-          sx={{ 
-            p: 3, 
-            m: 2, 
+        <Paper
+          elevation={2}
+          sx={{
+            p: 3,
+            m: 2,
             textAlign: 'center',
             minHeight: '200px',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
           }}
         >
           <ErrorOutline sx={{ fontSize: 48, color: 'error.main', mb: 2 }} />
-          
+
           <Typography variant="h6" gutterBottom>
             Grid Error Occurred
           </Typography>
-          
+
           <Typography variant="body2" color="text.secondary" paragraph>
             {this.props.gridName && `Grid: ${this.props.gridName}`}
           </Typography>
-          
+
           {process.env.NODE_ENV === 'development' && (
             <Box sx={{ mt: 2, mb: 2, textAlign: 'left', width: '100%' }}>
               <Alert severity="error" sx={{ textAlign: 'left' }}>
@@ -86,27 +86,27 @@ class GridErrorBoundary extends React.Component {
               </Alert>
             </Box>
           )}
-          
+
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button 
-              variant="contained" 
+            <Button
+              variant="contained"
               startIcon={<Refresh />}
               onClick={this.handleRetry}
               disabled={this.state.retryCount >= 3}
             >
               {this.state.retryCount >= 3 ? 'Max Retries Reached' : 'Retry'}
             </Button>
-            
+
             {this.props.fallbackComponent && (
-              <Button 
-                variant="outlined" 
+              <Button
+                variant="outlined"
                 onClick={() => this.setState({ hasError: false })}
               >
                 Use Fallback
               </Button>
             )}
           </Box>
-          
+
           {this.state.retryCount > 0 && (
             <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
               Retry attempts: {this.state.retryCount}/3

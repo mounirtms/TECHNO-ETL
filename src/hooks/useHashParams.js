@@ -16,14 +16,16 @@ export const useHashParams = () => {
   // Parse hash parameters from URL
   const parseHashParams = useCallback((hash) => {
     if (!hash || hash === '#') return {};
-    
+
     try {
       // Remove the # symbol and decode
       const encodedParams = hash.substring(1);
       const decodedParams = atob(encodedParams);
+
       return JSON.parse(decodedParams);
     } catch (error) {
       console.warn('Failed to parse hash parameters:', error);
+
       return {};
     }
   }, []);
@@ -31,12 +33,14 @@ export const useHashParams = () => {
   // Encode parameters to hash
   const encodeToHash = useCallback((params) => {
     if (!params || Object.keys(params).length === 0) return '';
-    
+
     try {
       const encodedParams = btoa(JSON.stringify(params));
+
       return '#' + encodedParams;
     } catch (error) {
       console.warn('Failed to encode hash parameters:', error);
+
       return '';
     }
   }, []);
@@ -45,12 +49,14 @@ export const useHashParams = () => {
   const updateUrlHash = useCallback((newParams) => {
     const hash = encodeToHash(newParams);
     const newUrl = window.location.pathname + window.location.search + hash;
+
     window.history.replaceState(null, '', newUrl);
   }, [encodeToHash]);
 
   // Parse parameters on location change and initial load
   useEffect(() => {
     const parsedParams = parseHashParams(location.hash);
+
     console.log('Hash params parsed:', location.hash, parsedParams); // Debug log
     setParams(parsedParams);
   }, [location.hash, parseHashParams]);
@@ -58,8 +64,10 @@ export const useHashParams = () => {
   // Initial load - parse hash immediately
   useEffect(() => {
     const initialHash = window.location.hash;
+
     if (initialHash) {
       const parsedParams = parseHashParams(initialHash);
+
       console.log('Initial hash params:', initialHash, parsedParams); // Debug log
       setParams(parsedParams);
     }
@@ -68,6 +76,7 @@ export const useHashParams = () => {
   // Update parameters and URL
   const updateParams = useCallback((newParams, replace = false) => {
     const updatedParams = replace ? newParams : { ...params, ...newParams };
+
     setParams(updatedParams);
     updateUrlHash(updatedParams);
   }, [params, updateUrlHash]);
@@ -91,6 +100,7 @@ export const useHashParams = () => {
   // Remove specific parameter
   const removeParam = useCallback((key) => {
     const newParams = { ...params };
+
     delete newParams[key];
     setParams(newParams);
     updateUrlHash(newParams);
@@ -105,7 +115,7 @@ export const useHashParams = () => {
     hasParam,
     removeParam,
     encodeToHash,
-    parseHashParams
+    parseHashParams,
   };
 };
 
@@ -148,7 +158,7 @@ export const useDashboardParams = () => {
     params,
     updateParams,
     hasParam,
-    
+
     // Getters
     getView,
     getFilter,
@@ -158,7 +168,7 @@ export const useDashboardParams = () => {
     getCategory,
     getPriority,
     isAlert,
-    
+
     // Setters
     setView,
     setFilter,
@@ -168,13 +178,13 @@ export const useDashboardParams = () => {
     setCategory,
     setPriority,
     setAlert,
-    
+
     // State checkers
     isLowStockView,
     isPendingOrdersView,
     isCategoriesView,
     isBrandsView,
-    isRevenueView
+    isRevenueView,
   };
 };
 
@@ -191,6 +201,7 @@ export const useGridParams = () => {
   const getSearchQuery = () => getParam('search', '');
   const getSelectedIds = () => {
     const selected = getParam('selected', '[]');
+
     try {
       return JSON.parse(selected);
     } catch {
@@ -207,18 +218,18 @@ export const useGridParams = () => {
   return {
     params,
     updateParams,
-    
+
     // Grid getters
     getPage,
     getPageSize,
     getSearchQuery,
     getSelectedIds,
-    
+
     // Grid setters
     setPage,
     setPageSize,
     setSearchQuery,
-    setSelectedIds
+    setSelectedIds,
   };
 };
 

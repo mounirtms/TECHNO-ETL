@@ -23,7 +23,7 @@ import {
   LinearProgress,
   Tooltip,
   Menu,
-  MenuItem
+  MenuItem,
 } from '@mui/material';
 import {
   Assignment as TaskIcon,
@@ -35,7 +35,7 @@ import {
   Cancel as CancelledIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
-  Flag as PriorityIcon
+  Flag as PriorityIcon,
 } from '@mui/icons-material';
 import { useCustomTheme } from '../../contexts/ThemeContext';
 
@@ -53,7 +53,7 @@ const TaskManagementWidget = () => {
       status: 'in-progress',
       priority: 'high',
       dueDate: '2024-01-15',
-      assignee: 'System'
+      assignee: 'System',
     },
     {
       id: 2,
@@ -62,7 +62,7 @@ const TaskManagementWidget = () => {
       status: 'pending',
       priority: 'medium',
       dueDate: '2024-01-16',
-      assignee: 'Admin'
+      assignee: 'Admin',
     },
     {
       id: 3,
@@ -71,8 +71,8 @@ const TaskManagementWidget = () => {
       status: 'completed',
       priority: 'low',
       dueDate: '2024-01-10',
-      assignee: 'System'
-    }
+      assignee: 'System',
+    },
   ]);
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -80,55 +80,55 @@ const TaskManagementWidget = () => {
     title: '',
     description: '',
     priority: 'medium',
-    dueDate: ''
+    dueDate: '',
   });
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'completed':
-        return <CompleteIcon color="success" />;
-      case 'in-progress':
-        return <InProgressIcon color="primary" />;
-      case 'cancelled':
-        return <CancelledIcon color="error" />;
-      default:
-        return <PendingIcon color="action" />;
+    case 'completed':
+      return <CompleteIcon color="success" />;
+    case 'in-progress':
+      return <InProgressIcon color="primary" />;
+    case 'cancelled':
+      return <CancelledIcon color="error" />;
+    default:
+      return <PendingIcon color="action" />;
     }
   };
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'completed':
-        return 'success';
-      case 'in-progress':
-        return 'primary';
-      case 'cancelled':
-        return 'error';
-      default:
-        return 'default';
+    case 'completed':
+      return 'success';
+    case 'in-progress':
+      return 'primary';
+    case 'cancelled':
+      return 'error';
+    default:
+      return 'default';
     }
   };
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case 'high':
-        return 'error';
-      case 'medium':
-        return 'warning';
-      case 'low':
-        return 'info';
-      default:
-        return 'default';
+    case 'high':
+      return 'error';
+    case 'medium':
+      return 'warning';
+    case 'low':
+      return 'info';
+    default:
+      return 'default';
     }
   };
 
   const handleTaskToggle = (taskId) => {
-    setTasks(prev => prev.map(task => 
-      task.id === taskId 
+    setTasks(prev => prev.map(task =>
+      task.id === taskId
         ? { ...task, status: task.status === 'completed' ? 'pending' : 'completed' }
-        : task
+        : task,
     ));
   };
 
@@ -138,8 +138,9 @@ const TaskManagementWidget = () => {
         id: Date.now(),
         ...newTask,
         status: 'pending',
-        assignee: 'User'
+        assignee: 'User',
       };
+
       setTasks(prev => [task, ...prev]);
       setNewTask({ title: '', description: '', priority: 'medium', dueDate: '' });
       setDialogOpen(false);
@@ -168,11 +169,11 @@ const TaskManagementWidget = () => {
   const completionRate = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
   return (
-    <Card sx={{ 
+    <Card sx={{
       borderRadius: density === 'compact' ? 2 : 3,
       height: '100%',
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
     }}>
       <CardHeader
         avatar={
@@ -187,9 +188,9 @@ const TaskManagementWidget = () => {
             size="small"
             startIcon={<AddIcon />}
             onClick={() => setDialogOpen(true)}
-            sx={{ 
+            sx={{
               transition: animations ? 'all 0.3s ease' : 'none',
-              '&:hover': animations ? { transform: 'scale(1.05)' } : {}
+              '&:hover': animations ? { transform: 'scale(1.05)' } : {},
             }}
           >
             Add Task
@@ -198,11 +199,11 @@ const TaskManagementWidget = () => {
         sx={{ pb: 1 }}
       />
 
-      <CardContent sx={{ 
-        flexGrow: 1, 
-        pt: 0, 
+      <CardContent sx={{
+        flexGrow: 1,
+        pt: 0,
         p: density === 'compact' ? 1 : 2,
-        '&:last-child': { pb: density === 'compact' ? 1 : 2 }
+        '&:last-child': { pb: density === 'compact' ? 1 : 2 },
       }}>
         {/* Progress Overview */}
         <Box sx={{ mb: 2 }}>
@@ -222,8 +223,8 @@ const TaskManagementWidget = () => {
               borderRadius: 3,
               bgcolor: 'grey.200',
               '& .MuiLinearProgress-bar': {
-                borderRadius: 3
-              }
+                borderRadius: 3,
+              },
             }}
           />
         </Box>
@@ -239,8 +240,8 @@ const TaskManagementWidget = () => {
                 transition: animations ? 'all 0.2s ease' : 'none',
                 '&:hover': animations ? {
                   bgcolor: 'action.hover',
-                  transform: 'translateX(4px)'
-                } : { bgcolor: 'action.hover' }
+                  transform: 'translateX(4px)',
+                } : { bgcolor: 'action.hover' },
               }}
             >
               <ListItemIcon>
@@ -251,7 +252,7 @@ const TaskManagementWidget = () => {
                   checkedIcon={<CompleteIcon color="success" />}
                 />
               </ListItemIcon>
-              
+
               <ListItemText
                 primary={
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -259,7 +260,7 @@ const TaskManagementWidget = () => {
                       variant="body2"
                       sx={{
                         textDecoration: task.status === 'completed' ? 'line-through' : 'none',
-                        opacity: task.status === 'completed' ? 0.7 : 1
+                        opacity: task.status === 'completed' ? 0.7 : 1,
                       }}
                     >
                       {task.title}
@@ -278,7 +279,7 @@ const TaskManagementWidget = () => {
                   </Typography>
                 }
               />
-              
+
               <ListItemSecondaryAction>
                 <IconButton
                   size="small"

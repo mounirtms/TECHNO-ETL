@@ -1,9 +1,9 @@
 /**
  * Base Components Barrel Export
- * 
+ *
  * Centralized export point for all base components
  * Enables clean imports and better tree shaking
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
@@ -19,7 +19,7 @@ export {
   BaseGrid as Grid,
   BaseToolbar as Toolbar,
   BaseDialog as Dialog,
-  BaseCard as Card
+  BaseCard as Card,
 } from './index';
 
 /**
@@ -42,12 +42,12 @@ export const createDataGrid = (config = {}) => {
     enableSelection: true,
     enableSearch: true,
     enableStats: true,
-    enableActions: true
+    enableActions: true,
   };
-  
+
   return {
     ...defaultConfig,
-    ...config
+    ...config,
   };
 };
 
@@ -60,13 +60,13 @@ export const createToolbar = (actions = [], config = {}) => {
     enableActions: true,
     enableResponsive: true,
     size: 'medium',
-    spacing: 1
+    spacing: 1,
   };
-  
+
   return {
     ...defaultConfig,
     customActions: actions,
-    ...config
+    ...config,
   };
 };
 
@@ -77,13 +77,13 @@ export const createFormDialog = (fields = [], config = {}) => {
   const defaultConfig = {
     type: 'form',
     maxWidth: 'sm',
-    fullWidth: true
+    fullWidth: true,
   };
-  
+
   return {
     ...defaultConfig,
     fields,
-    ...config
+    ...config,
   };
 };
 
@@ -93,14 +93,14 @@ export const createFormDialog = (fields = [], config = {}) => {
 export const createStatsCards = (stats = {}, config = {}) => {
   const defaultConfig = {
     variant: 'stats',
-    loading: false
+    loading: false,
   };
-  
+
   return {
     ...defaultConfig,
     stats,
     config,
-    ...config
+    ...config,
   };
 };
 
@@ -117,7 +117,7 @@ export const createGridPage = (options = {}) => {
     fields = [],
     ...rest
   } = options;
-  
+
   return function GridPageComponent(props) {
     return (
       <BaseGrid
@@ -148,10 +148,10 @@ export const GRID_PRESETS = {
       showAdd: true,
       showEdit: true,
       showDelete: true,
-      showExport: true
-    }
+      showExport: true,
+    },
   },
-  
+
   // Read-only grid
   readonly: {
     enableSelection: false,
@@ -162,10 +162,10 @@ export const GRID_PRESETS = {
       showAdd: false,
       showEdit: false,
       showDelete: false,
-      showExport: true
-    }
+      showExport: true,
+    },
   },
-  
+
   // Simple list grid
   simple: {
     enableSelection: false,
@@ -176,10 +176,10 @@ export const GRID_PRESETS = {
       showAdd: false,
       showEdit: false,
       showDelete: false,
-      showExport: false
-    }
+      showExport: false,
+    },
   },
-  
+
   // Management grid with advanced features
   management: {
     enableSelection: true,
@@ -193,9 +193,9 @@ export const GRID_PRESETS = {
       showDelete: true,
       showSync: true,
       showExport: true,
-      showImport: true
-    }
-  }
+      showImport: true,
+    },
+  },
 };
 
 /**
@@ -203,14 +203,14 @@ export const GRID_PRESETS = {
  */
 export const applyGridPreset = (preset, overrides = {}) => {
   const presetConfig = GRID_PRESETS[preset] || GRID_PRESETS.crud;
-  
+
   return {
     ...presetConfig,
     ...overrides,
     toolbarConfig: {
       ...presetConfig.toolbarConfig,
-      ...overrides.toolbarConfig
-    }
+      ...overrides.toolbarConfig,
+    },
   };
 };
 
@@ -228,5 +228,5 @@ export default {
   createStatsCards,
   createGridPage,
   applyGridPreset,
-  GRID_PRESETS
+  GRID_PRESETS,
 };

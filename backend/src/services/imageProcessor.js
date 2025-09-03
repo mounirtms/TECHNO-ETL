@@ -23,7 +23,7 @@ export async function resizeImage(imageBuffer, options = {}) {
   logger.info(`Worker ${workerId}: Starting image resize`, {
     targetSize: `${width}x${height}`,
     quality,
-    inputSize: imageBuffer.length
+    inputSize: imageBuffer.length,
   });
 
   try {
@@ -36,14 +36,14 @@ export async function resizeImage(imageBuffer, options = {}) {
 
     logger.info(`Worker ${workerId}: Image resize completed`, {
       outputSize: resizedBuffer.length,
-      compressionRatio: (resizedBuffer.length / imageBuffer.length).toFixed(2)
+      compressionRatio: (resizedBuffer.length / imageBuffer.length).toFixed(2),
     });
 
     return resizedBuffer;
   } catch (error) {
     logger.error(`Worker ${workerId}: Image resize failed`, {
       error: error.message,
-      inputSize: imageBuffer.length
+      inputSize: imageBuffer.length,
     });
     throw error;
   }
@@ -59,7 +59,7 @@ export async function batchResizeImages(imageBuffers, options = {}) {
   const workerId = process.env.JEST_WORKER_ID || 'unknown';
 
   logger.info(`Worker ${workerId}: Starting batch image processing`, {
-    batchSize: imageBuffers.length
+    batchSize: imageBuffers.length,
   });
 
   const results = [];
@@ -67,10 +67,11 @@ export async function batchResizeImages(imageBuffers, options = {}) {
   for (let i = 0; i < imageBuffers.length; i++) {
     try {
       const resized = await resizeImage(imageBuffers[i], options);
+
       results.push(resized);
     } catch (error) {
       logger.error(`Worker ${workerId}: Failed to process image ${i}`, {
-        error: error.message
+        error: error.message,
       });
       // Continue processing other images
       results.push(null);
@@ -78,10 +79,11 @@ export async function batchResizeImages(imageBuffers, options = {}) {
   }
 
   const successCount = results.filter(r => r !== null).length;
+
   logger.info(`Worker ${workerId}: Batch processing completed`, {
     total: imageBuffers.length,
     successful: successCount,
-    failed: imageBuffers.length - successCount
+    failed: imageBuffers.length - successCount,
   });
 
   return results;
@@ -99,7 +101,7 @@ export async function optimizeForWeb(imageBuffer, options = {}) {
 
   logger.info(`Worker ${workerId}: Optimizing image for web`, {
     maxWidth,
-    quality
+    quality,
   });
 
   // Simulate web optimization
@@ -110,7 +112,7 @@ export async function optimizeForWeb(imageBuffer, options = {}) {
   logger.info(`Worker ${workerId}: Web optimization completed`, {
     originalSize: imageBuffer.length,
     optimizedSize: optimizedBuffer.length,
-    savings: `${(((imageBuffer.length - optimizedBuffer.length) / imageBuffer.length) * 100).toFixed(1)}%`
+    savings: `${(((imageBuffer.length - optimizedBuffer.length) / imageBuffer.length) * 100).toFixed(1)}%`,
   });
 
   return optimizedBuffer;

@@ -27,7 +27,7 @@ import {
   IconButton,
   Tooltip,
   Stack,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import {
   Close,
@@ -39,7 +39,7 @@ import {
   Save,
   RestoreFromTrash,
   Palette,
-  Computer
+  Computer,
 } from '@mui/icons-material';
 import { useUserSettings, useSystemPreferences } from '../../hooks/useUserSettings';
 import { languages } from '../../contexts/LanguageContext';
@@ -58,7 +58,7 @@ const UserPreferencesPanel = ({ open, onClose }) => {
     setFontSize,
     saveCurrentPreferences,
     resetToSystemDefaults,
-    applySystemDefaults
+    applySystemDefaults,
   } = useUserSettings();
 
   const { systemTheme, systemLanguage, systemPrefersDark } = useSystemPreferences();
@@ -92,6 +92,7 @@ const UserPreferencesPanel = ({ open, onClose }) => {
     setSaving(true);
     try {
       const result = await saveCurrentPreferences();
+
       if (result.success) {
         onClose();
       }
@@ -116,13 +117,13 @@ const UserPreferencesPanel = ({ open, onClose }) => {
   const themeOptions = [
     { value: 'light', label: 'Light', icon: <Brightness7 /> },
     { value: 'dark', label: 'Dark', icon: <Brightness4 /> },
-    { value: 'system', label: 'System', icon: <Computer /> }
+    { value: 'system', label: 'System', icon: <Computer /> },
   ];
 
   const fontSizeOptions = [
     { value: 'small', label: 'Small' },
     { value: 'medium', label: 'Medium' },
-    { value: 'large', label: 'Large' }
+    { value: 'large', label: 'Large' },
   ];
 
   return (
@@ -134,15 +135,15 @@ const UserPreferencesPanel = ({ open, onClose }) => {
       PaperProps={{
         sx: {
           borderRadius: 2,
-          maxHeight: '90vh'
-        }
+          maxHeight: '90vh',
+        },
       }}
     >
-      <DialogTitle sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
+      <DialogTitle sx={{
+        display: 'flex',
+        alignItems: 'center',
         justifyContent: 'space-between',
-        borderBottom: `1px solid ${theme.palette.divider}`
+        borderBottom: `1px solid ${theme.palette.divider}`,
       }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Palette />
@@ -157,7 +158,7 @@ const UserPreferencesPanel = ({ open, onClose }) => {
         {/* System Information */}
         <Alert severity="info" sx={{ mb: 3 }}>
           <Typography variant="body2">
-            {currentUser 
+            {currentUser
               ? 'Your preferences will be saved to your account and synced across devices.'
               : 'Sign in to save your preferences across devices. Current settings will be saved locally.'
             }
@@ -177,9 +178,9 @@ const UserPreferencesPanel = ({ open, onClose }) => {
                   <Typography variant="body2" color="text.secondary">
                     Theme:
                   </Typography>
-                  <Chip 
-                    label={systemTheme} 
-                    size="small" 
+                  <Chip
+                    label={systemTheme}
+                    size="small"
                     icon={systemPrefersDark ? <Brightness4 /> : <Brightness7 />}
                   />
                 </Box>
@@ -189,9 +190,9 @@ const UserPreferencesPanel = ({ open, onClose }) => {
                   <Typography variant="body2" color="text.secondary">
                     Language:
                   </Typography>
-                  <Chip 
-                    label={languages[systemLanguage]?.name || 'English'} 
-                    size="small" 
+                  <Chip
+                    label={languages[systemLanguage]?.name || 'English'}
+                    size="small"
                     icon={<Language />}
                   />
                 </Box>
@@ -207,7 +208,7 @@ const UserPreferencesPanel = ({ open, onClose }) => {
               <Palette />
               Appearance
             </Typography>
-            
+
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
@@ -223,10 +224,10 @@ const UserPreferencesPanel = ({ open, onClose }) => {
                           {option.icon}
                           {option.label}
                           {option.value === 'system' && (
-                            <Chip 
-                              label={`(${systemTheme})`} 
-                              size="small" 
-                              variant="outlined" 
+                            <Chip
+                              label={`(${systemTheme})`}
+                              size="small"
+                              variant="outlined"
                             />
                           )}
                         </Box>
@@ -266,7 +267,7 @@ const UserPreferencesPanel = ({ open, onClose }) => {
               <Language />
               Language & Region
             </Typography>
-            
+
             <FormControl fullWidth>
               <InputLabel>Language</InputLabel>
               <Select
@@ -328,13 +329,13 @@ const UserPreferencesPanel = ({ open, onClose }) => {
           >
             Reset to Defaults
           </Button>
-          
+
           <Box sx={{ flexGrow: 1 }} />
-          
+
           <Button onClick={onClose}>
             Cancel
           </Button>
-          
+
           {currentUser && (
             <Button
               variant="contained"

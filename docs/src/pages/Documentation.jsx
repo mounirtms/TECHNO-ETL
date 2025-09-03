@@ -20,7 +20,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Alert,
-  Divider
+  Divider,
 } from '@mui/material';
 import {
   ExpandMore as ExpandMoreIcon,
@@ -35,7 +35,7 @@ import {
   Build as ToolsIcon,
   Description as DocsIcon,
   Rocket as DeployIcon,
-  BugReport as TroubleshootIcon
+  BugReport as TroubleshootIcon,
 } from '@mui/icons-material';
 
 const Documentation = () => {
@@ -51,57 +51,57 @@ const Documentation = () => {
       title: 'Project Overview',
       icon: <DocsIcon />,
       description: 'Complete overview of the Techno-ETL system',
-      content: 'overview'
+      content: 'overview',
     },
     {
       id: 'dashboard',
       title: 'Dashboard System',
       icon: <DashboardIcon />,
       description: 'Enhanced dashboard with 8 professional stat cards',
-      content: 'dashboard'
+      content: 'dashboard',
     },
     {
       id: 'product-management',
       title: 'Product Management',
       icon: <ToolsIcon />,
       description: 'Comprehensive product catalog management tools',
-      content: 'product-management'
+      content: 'product-management',
     },
     {
       id: 'grids',
       title: 'Grid System',
       icon: <GridIcon />,
       description: 'Advanced data grids with Magento integration',
-      content: 'grids'
+      content: 'grids',
     },
     {
       id: 'api',
       title: 'API Reference',
       icon: <ApiIcon />,
       description: 'Backend API endpoints and integration',
-      content: 'api'
+      content: 'api',
     },
     {
       id: 'database',
       title: 'Database & MDM',
       icon: <DatabaseIcon />,
       description: 'MDM integration and data correlation',
-      content: 'database'
+      content: 'database',
     },
     {
       id: 'deployment',
       title: 'Deployment Guide',
       icon: <DeployIcon />,
       description: 'Production deployment and configuration',
-      content: 'deployment'
+      content: 'deployment',
     },
     {
       id: 'troubleshooting',
       title: 'Troubleshooting',
       icon: <TroubleshootIcon />,
       description: 'Common issues and solutions',
-      content: 'troubleshooting'
-    }
+      content: 'troubleshooting',
+    },
   ];
 
   const TabPanel = ({ children, value, index, ...other }) => (
@@ -131,7 +131,7 @@ const Documentation = () => {
 
       <Alert severity="info" sx={{ mb: 3 }}>
         <Typography variant="body2">
-          <strong>Latest Release:</strong> Enhanced dashboard with 8 professional stat cards, 
+          <strong>Latest Release:</strong> Enhanced dashboard with 8 professional stat cards,
           advanced product management tools, and comprehensive image processing capabilities.
         </Typography>
       </Alert>
@@ -139,14 +139,14 @@ const Documentation = () => {
       <Grid container spacing={3}>
         {documentationSections.map((section) => (
           <Grid item xs={12} md={6} lg={4} key={section.id}>
-            <Card 
-              sx={{ 
+            <Card
+              sx={{
                 height: '100%',
                 transition: 'all 0.3s ease',
                 '&:hover': {
                   transform: 'translateY(-4px)',
-                  boxShadow: 4
-                }
+                  boxShadow: 4,
+                },
               }}
             >
               <CardContent>
@@ -161,8 +161,8 @@ const Documentation = () => {
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button 
-                  size="small" 
+                <Button
+                  size="small"
                   onClick={() => setActiveTab(documentationSections.findIndex(s => s.id === section.id) + 1)}
                 >
                   View Documentation
@@ -182,29 +182,29 @@ const Documentation = () => {
             <List>
               <ListItem>
                 <ListItemIcon><DashboardIcon color="primary" /></ListItemIcon>
-                <ListItemText 
-                  primary="Enhanced Dashboard" 
+                <ListItemText
+                  primary="Enhanced Dashboard"
                   secondary="8 professional stat cards with advanced analytics"
                 />
               </ListItem>
               <ListItem>
                 <ListItemIcon><ToolsIcon color="primary" /></ListItemIcon>
-                <ListItemText 
-                  primary="Product Management" 
+                <ListItemText
+                  primary="Product Management"
                   secondary="Comprehensive catalog tools with image processing"
                 />
               </ListItem>
               <ListItem>
                 <ListItemIcon><GridIcon color="primary" /></ListItemIcon>
-                <ListItemText 
-                  primary="Advanced Grids" 
+                <ListItemText
+                  primary="Advanced Grids"
                   secondary="Professional data grids with Magento integration"
                 />
               </ListItem>
               <ListItem>
                 <ListItemIcon><DatabaseIcon color="primary" /></ListItemIcon>
-                <ListItemText 
-                  primary="MDM Integration" 
+                <ListItemText
+                  primary="MDM Integration"
                   secondary="Seamless correlation with master data management"
                 />
               </ListItem>
@@ -214,29 +214,29 @@ const Documentation = () => {
             <List>
               <ListItem>
                 <ListItemIcon><ApiIcon color="secondary" /></ListItemIcon>
-                <ListItemText 
-                  primary="RESTful API" 
+                <ListItemText
+                  primary="RESTful API"
                   secondary="Comprehensive backend with caching and optimization"
                 />
               </ListItem>
               <ListItem>
                 <ListItemIcon><SecurityIcon color="secondary" /></ListItemIcon>
-                <ListItemText 
-                  primary="Security" 
+                <ListItemText
+                  primary="Security"
                   secondary="Authentication, authorization, and data protection"
                 />
               </ListItem>
               <ListItem>
                 <ListItemIcon><PerformanceIcon color="secondary" /></ListItemIcon>
-                <ListItemText 
-                  primary="Performance" 
+                <ListItemText
+                  primary="Performance"
                   secondary="Optimized for large datasets and real-time updates"
                 />
               </ListItem>
               <ListItem>
                 <ListItemIcon><I18nIcon color="secondary" /></ListItemIcon>
-                <ListItemText 
-                  primary="Internationalization" 
+                <ListItemText
+                  primary="Internationalization"
                   secondary="Multi-language support with RTL compatibility"
                 />
               </ListItem>
@@ -256,26 +256,26 @@ const Documentation = () => {
           <AccordionDetails>
             <List>
               <ListItem>
-                <ListItemText 
-                  primary="Enhanced Dashboard" 
+                <ListItemText
+                  primary="Enhanced Dashboard"
                   secondary="8 professional stat cards with real-time metrics, progress indicators, and interactive hover effects"
                 />
               </ListItem>
               <ListItem>
-                <ListItemText 
-                  primary="Advanced Settings System" 
+                <ListItemText
+                  primary="Advanced Settings System"
                   secondary="Comprehensive dashboard customization with visibility toggles and persistent preferences"
                 />
               </ListItem>
               <ListItem>
-                <ListItemText 
-                  primary="Product Management Tools" 
+                <ListItemText
+                  primary="Product Management Tools"
                   secondary="Professional tabbed interface with image processing, renaming, and resizing capabilities"
                 />
               </ListItem>
               <ListItem>
-                <ListItemText 
-                  primary="Smart Caching" 
+                <ListItemText
+                  primary="Smart Caching"
                   secondary="Intelligent caching system for attributes, brands, and categories with 1-hour expiry"
                 />
               </ListItem>
@@ -290,26 +290,26 @@ const Documentation = () => {
           <AccordionDetails>
             <List>
               <ListItem>
-                <ListItemText 
-                  primary="React Router v7 Compatibility" 
+                <ListItemText
+                  primary="React Router v7 Compatibility"
                   secondary="Future-proof configuration with v7 transition flags"
                 />
               </ListItem>
               <ListItem>
-                <ListItemText 
-                  primary="MUI Component Optimization" 
+                <ListItemText
+                  primary="MUI Component Optimization"
                   secondary="Fixed tooltip warnings and improved component interactions"
                 />
               </ListItem>
               <ListItem>
-                <ListItemText 
-                  primary="Backend Server Fixes" 
+                <ListItemText
+                  primary="Backend Server Fixes"
                   secondary="Resolved module loading issues and improved ES module compatibility"
                 />
               </ListItem>
               <ListItem>
-                <ListItemText 
-                  primary="Performance Enhancements" 
+                <ListItemText
+                  primary="Performance Enhancements"
                   secondary="React.memo optimization, virtualization, and smart state management"
                 />
               </ListItem>
@@ -324,9 +324,9 @@ const Documentation = () => {
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Paper elevation={0} sx={{ borderRadius: 3 }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs 
-            value={activeTab} 
-            onChange={handleTabChange} 
+          <Tabs
+            value={activeTab}
+            onChange={handleTabChange}
             variant="scrollable"
             scrollButtons="auto"
             sx={{ px: 2 }}

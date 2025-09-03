@@ -8,13 +8,13 @@ import {
   Tabs,
   Tab,
   Paper,
-  Typography
+  Typography,
 } from '@mui/material';
 import {
-  Task
+  Task,
 } from '@mui/icons-material';
 import {
-  Timeline
+  Timeline,
 } from '@mui/lab';
 import { useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -58,12 +58,12 @@ const TaskPage = () => {
 
   return (
     <Container maxWidth="xl" sx={{ py: 3 }}>
- 
+
 
       {/* Tabs */}
       <Paper sx={{ mb: 3 }}>
-        <Tabs 
-          value={activeTab} 
+        <Tabs
+          value={activeTab}
           onChange={handleTabChange}
           sx={{ borderBottom: 1, borderColor: 'divider' }}
         >

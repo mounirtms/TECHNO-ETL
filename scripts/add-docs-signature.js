@@ -20,18 +20,18 @@ const signature = `
 // Function to add signature to HTML files
 function addSignatureToHtmlFiles(dir) {
   const files = fs.readdirSync(dir);
-  
+
   files.forEach(file => {
     const filePath = path.join(dir, file);
     const stat = fs.statSync(filePath);
-    
+
     if (stat.isDirectory()) {
       // Recursively process subdirectories
       addSignatureToHtmlFiles(filePath);
     } else if (file.endsWith('.html')) {
       // Add signature to HTML files
       let content = fs.readFileSync(filePath, 'utf8');
-      
+
       // Check if signature already exists
       if (!content.includes('TECHNO-ETL Documentation')) {
         // Add signature at the beginning of the file

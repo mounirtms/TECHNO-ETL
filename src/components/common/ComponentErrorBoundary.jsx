@@ -10,22 +10,22 @@ import {
   Alert,
   AlertTitle,
   Paper,
-  Stack
+  Stack,
 } from '@mui/material';
 import {
   ErrorOutline,
   Refresh,
-  Home
+  Home,
 } from '@mui/icons-material';
 
 class ComponentErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
-      hasError: false, 
-      error: null, 
+    this.state = {
+      hasError: false,
+      error: null,
       errorInfo: null,
-      retryCount: 0
+      retryCount: 0,
     };
   }
 
@@ -44,8 +44,8 @@ class ComponentErrorBoundary extends React.Component {
         fatal: false,
         custom_map: {
           component: this.props.componentName || 'Unknown',
-          retry_count: this.state.retryCount
-        }
+          retry_count: this.state.retryCount,
+        },
       });
     }
   }
@@ -55,7 +55,7 @@ class ComponentErrorBoundary extends React.Component {
       hasError: false,
       error: null,
       errorInfo: null,
-      retryCount: prevState.retryCount + 1
+      retryCount: prevState.retryCount + 1,
     }));
   };
 
@@ -66,22 +66,22 @@ class ComponentErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       const { componentName = 'Component', fallbackMessage, showRetry = true } = this.props;
-      
+
       return (
-        <Paper 
-          elevation={1} 
-          sx={{ 
-            p: 3, 
-            m: 2, 
+        <Paper
+          elevation={1}
+          sx={{
+            p: 3,
+            m: 2,
             textAlign: 'center',
             borderRadius: 2,
             border: '1px solid',
-            borderColor: 'error.light'
+            borderColor: 'error.light',
           }}
         >
           <Stack spacing={2} alignItems="center">
             <ErrorOutline color="error" sx={{ fontSize: 48 }} />
-            
+
             <Alert severity="error" sx={{ width: '100%' }}>
               <AlertTitle>Error in {componentName}</AlertTitle>
               {fallbackMessage || `There was an error loading the ${componentName.toLowerCase()}.`}
@@ -102,7 +102,7 @@ class ComponentErrorBoundary extends React.Component {
                   {this.state.retryCount >= 3 ? 'Max Retries' : 'Try Again'}
                 </Button>
               )}
-              
+
               <Button
                 variant="outlined"
                 startIcon={<Home />}
@@ -114,20 +114,20 @@ class ComponentErrorBoundary extends React.Component {
 
             {/* Development error details */}
             {process.env.NODE_ENV === 'development' && this.state.error && (
-              <Box 
-                sx={{ 
-                  mt: 2, 
-                  p: 2, 
-                  bgcolor: 'grey.100', 
-                  borderRadius: 1, 
+              <Box
+                sx={{
+                  mt: 2,
+                  p: 2,
+                  bgcolor: 'grey.100',
+                  borderRadius: 1,
                   maxWidth: '100%',
-                  overflow: 'auto'
+                  overflow: 'auto',
                 }}
               >
-                <Typography variant="caption" component="pre" sx={{ 
+                <Typography variant="caption" component="pre" sx={{
                   whiteSpace: 'pre-wrap',
                   fontSize: '0.75rem',
-                  fontFamily: 'monospace'
+                  fontFamily: 'monospace',
                 }}>
                   <strong>Error:</strong> {this.state.error.toString()}
                   {this.state.errorInfo && (
@@ -160,7 +160,7 @@ export const withErrorBoundary = (WrappedComponent, componentName) => {
   );
 
   WithErrorBoundaryComponent.displayName = `withErrorBoundary(${componentName || WrappedComponent.displayName || WrappedComponent.name})`;
-  
+
   return WithErrorBoundaryComponent;
 };
 
@@ -185,7 +185,7 @@ export const useErrorHandler = () => {
       if (window.gtag) {
         window.gtag('event', 'exception', {
           description: error.toString(),
-          fatal: false
+          fatal: false,
         });
       }
     }

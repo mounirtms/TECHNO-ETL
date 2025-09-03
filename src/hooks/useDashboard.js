@@ -14,28 +14,28 @@ export const useDashboard = (options = {}) => {
   const {
     autoRefresh = true,
     refreshInterval = 5 * 60 * 1000, // 5 minutes
-    preload = true
+    preload = true,
   } = options;
 
   // State management
   const [data, setData] = useState({
     stats: null,
     orders: null,
-    health: null
+    health: null,
   });
 
   const [loading, setLoading] = useState({
     stats: false,
     orders: false,
     health: false,
-    sync: false
+    sync: false,
   });
 
   const [errors, setErrors] = useState({
     stats: null,
     orders: null,
     health: null,
-    sync: null
+    sync: null,
   });
 
   const [lastUpdated, setLastUpdated] = useState(null);
@@ -71,6 +71,7 @@ export const useDashboard = (options = {}) => {
 
     try {
       const result = await dashboardApiService.getDashboardStats();
+
       safeSetState(setData, prev => ({ ...prev, stats: result }));
       setLastUpdated(new Date());
     } catch (error) {
@@ -89,6 +90,7 @@ export const useDashboard = (options = {}) => {
     try {
       // Use MDM data for now, can be replaced with actual orders endpoint
       const result = await getMdmData();
+
       safeSetState(setData, prev => ({ ...prev, orders: result }));
     } catch (error) {
       console.error('Failed to fetch orders:', error);
@@ -106,9 +108,10 @@ export const useDashboard = (options = {}) => {
     try {
       // Use inventory status as health indicator
       const result = await dashboardApiService.getInventoryStatus();
-      safeSetState(setData, prev => ({ ...prev, health: { 
-        status: result.success ? 'healthy' : 'degraded', 
-        ...result 
+
+      safeSetState(setData, prev => ({ ...prev, health: {
+        status: result.success ? 'healthy' : 'degraded',
+        ...result,
       } }));
     } catch (error) {
       console.error('Failed to fetch health:', error);
@@ -122,18 +125,19 @@ export const useDashboard = (options = {}) => {
   const fetchAllData = useCallback(async () => {
     console.log('🔄 Fetching all dashboard data...');
     const startTime = Date.now();
-    
+
     try {
       const result = await dashboardApiService.getAllDashboardMetrics();
-      
+
       safeSetState(setData, {
         stats: result.data,
         orders: { message: 'Orders data available via MDM' },
-        health: { status: result.success ? 'healthy' : 'degraded', ...result }
+        health: { status: result.success ? 'healthy' : 'degraded', ...result },
       });
-      
+
       setLastUpdated(new Date());
       const fetchTime = Date.now() - startTime;
+
       console.log(`✅ Dashboard data updated (${fetchTime}ms)`);
     } catch (error) {
       console.error('❌ Failed to fetch dashboard data:', error);
@@ -149,7 +153,7 @@ export const useDashboard = (options = {}) => {
     try {
       // Use MDM data sync as fallback
       const result = await getMdmData();
-      
+
       // Refresh stats after sync
       setTimeout(() => {
         fetchStats();
@@ -173,7 +177,7 @@ export const useDashboard = (options = {}) => {
     try {
       // Use inventory status as sync indicator
       const result = await dashboardApiService.getInventoryStatus();
-      
+
       // Refresh stats after sync
       setTimeout(() => {
         fetchStats();
@@ -216,7 +220,7 @@ export const useDashboard = (options = {}) => {
       // Preload data in background by calling our service
       dashboardApiService.getAllDashboardMetrics().catch(console.error);
     }
-    
+
     // Fetch initial data
     fetchAllData();
 
@@ -240,12 +244,12 @@ export const useDashboard = (options = {}) => {
     loading,
     errors,
     lastUpdated,
-    
+
     // Computed states
     isLoading,
     hasErrors,
     isHealthy,
-    
+
     // Actions
     fetchStats,
     fetchOrders,
@@ -255,10 +259,10 @@ export const useDashboard = (options = {}) => {
     syncPrices,
     syncInventory,
     clearError,
-    
+
     // Cache management
     clearCache: dashboardApiService.clearCache.bind(dashboardApiService),
-    getCacheStats: dashboardApiService.getCacheStats.bind(dashboardApiService)
+    getCacheStats: dashboardApiService.getCacheStats.bind(dashboardApiService),
   };
 };
 
@@ -277,7 +281,9 @@ export const useSync = () => {
     try {
       // Use MDM data as sync fallback
       const result = await getMdmData();
+
       setLastSync({ type: 'prices', success: true, data: result, timestamp: new Date().toISOString() });
+
       return { success: true, message: 'Prices sync completed', data: result };
     } catch (error) {
       setError(error.message);
@@ -293,7 +299,9 @@ export const useSync = () => {
 
     try {
       const result = await dashboardApiService.getInventoryStatus();
+
       setLastSync({ type: 'inventory', success: true, data: result.data, timestamp: new Date().toISOString() });
+
       return { success: true, message: 'Inventory sync completed', data: result };
     } catch (error) {
       setError(error.message);
@@ -307,10 +315,11 @@ export const useSync = () => {
     try {
       // Return dashboard health as sync status
       const result = await dashboardApiService.getInventoryStatus();
+
       return {
         status: result.success ? 'healthy' : 'degraded',
         lastSync: lastSync?.timestamp || null,
-        message: 'Sync status retrieved from dashboard'
+        message: 'Sync status retrieved from dashboard',
       };
     } catch (error) {
       setError(error.message);
@@ -325,7 +334,7 @@ export const useSync = () => {
     syncPrices,
     syncInventory,
     getSyncStatus,
-    clearError: () => setError(null)
+    clearError: () => setError(null),
   };
 };
 

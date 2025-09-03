@@ -17,7 +17,7 @@ import {
   Divider,
   LinearProgress,
   CircularProgress,
-  Badge
+  Badge,
 } from '@mui/material';
 import {
   Inventory as ProductIcon,
@@ -34,7 +34,7 @@ import {
   Transform as TransformIcon,
   AutoFixHigh as OptimizedIcon,
 
-  Psychology as ProfessionalIcon
+  Psychology as ProfessionalIcon,
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
@@ -61,7 +61,7 @@ const ProductManagementPageOptimized = () => {
   const [imageProcessing, setImageProcessing] = useState({
     renaming: false,
     resizing: false,
-    uploading: false
+    uploading: false,
   });
 
   // Cached data for performance
@@ -69,7 +69,7 @@ const ProductManagementPageOptimized = () => {
     attributes: null,
     brands: null,
     categories: null,
-    lastUpdated: null
+    lastUpdated: null,
   });
 
   // Processing results
@@ -77,7 +77,7 @@ const ProductManagementPageOptimized = () => {
     renamed: 0,
     resized: 0,
     uploaded: 0,
-    errors: []
+    errors: [],
   });
 
   // ===== EVENT HANDLERS =====
@@ -133,6 +133,7 @@ const ProductManagementPageOptimized = () => {
 
       if (cacheAge < cacheExpiry && cachedData.attributes) {
         console.log('Using cached data');
+
         return cachedData;
       }
 
@@ -143,10 +144,11 @@ const ProductManagementPageOptimized = () => {
         attributes: [], // Load from API
         brands: [], // Load from API
         categories: [], // Load from API
-        lastUpdated: Date.now()
+        lastUpdated: Date.now(),
       };
 
       setCachedData(freshData);
+
       return freshData;
     } catch (error) {
       console.error('Error loading cached data:', error);
@@ -167,7 +169,7 @@ const ProductManagementPageOptimized = () => {
       const results = {
         renamed: 45,
         skipped: 12,
-        errors: 3
+        errors: 3,
       };
 
       setProcessingResults(prev => ({ ...prev, renamed: results.renamed }));
@@ -193,7 +195,7 @@ const ProductManagementPageOptimized = () => {
       const results = {
         resized: 38,
         skipped: 7,
-        errors: 2
+        errors: 2,
       };
 
       setProcessingResults(prev => ({ ...prev, resized: results.resized }));
@@ -227,13 +229,13 @@ const ProductManagementPageOptimized = () => {
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', gap: 1 }}>
-            <Chip 
-              label="Optimized" 
-              sx={{ bgcolor: 'success.main', color: 'white' }} 
+            <Chip
+              label="Optimized"
+              sx={{ bgcolor: 'success.main', color: 'white' }}
             />
-            <Chip 
-              label="AI Matching" 
-              sx={{ bgcolor: 'secondary.main', color: 'white' }} 
+            <Chip
+              label="AI Matching"
+              sx={{ bgcolor: 'secondary.main', color: 'white' }}
             />
           </Box>
         </Box>
@@ -251,8 +253,8 @@ const ProductManagementPageOptimized = () => {
               minHeight: 72,
               textTransform: 'none',
               fontSize: '1rem',
-              fontWeight: 500
-            }
+              fontWeight: 500,
+            },
           }}
         >
           <Tab
@@ -290,7 +292,7 @@ const ProductManagementPageOptimized = () => {
             <Typography variant="h6" gutterBottom>
               Product Selection & Optimized Upload
             </Typography>
-          
+
             {/* Mode Toggle */}
             <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
               <Button
@@ -340,9 +342,9 @@ const ProductManagementPageOptimized = () => {
                   >
                     Clear All
                   </Button>
-                  
+
                   <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
-                  
+
                   {/* Advanced Upload Button */}
                   <Tooltip title="Advanced matching: Automatically uses all available strategies based on CSV structure">
                     <Button
@@ -418,7 +420,7 @@ const ProductManagementPageOptimized = () => {
             {/* Footer Info */}
             <Alert severity="success" sx={{ mt: 2 }}>
               <Typography variant="body2">
-                🚀 <strong>Optimized Features:</strong> Advanced matching algorithms, configurable settings, 
+                🚀 <strong>Optimized Features:</strong> Advanced matching algorithms, configurable settings,
                 real-time statistics, and unified upload experience for both basic and professional workflows.
               </Typography>
             </Alert>
@@ -635,23 +637,23 @@ const ProductManagementPageOptimized = () => {
           const successful = results.filter(r => r.status === 'success').length;
           const failed = results.filter(r => r.status === 'error').length;
           const stats = results.length > 0 ? results[0].stats || {} : {};
-          
+
           toast.success(
-            `${uploadMode.charAt(0).toUpperCase() + uploadMode.slice(1)} upload completed: ${successful} successful, ${failed} failed`
+            `${uploadMode.charAt(0).toUpperCase() + uploadMode.slice(1)} upload completed: ${successful} successful, ${failed} failed`,
           );
-          
+
           // Show additional stats if available
           if (stats.matchStrategies) {
             const strategies = Object.entries(stats.matchStrategies)
               .filter(([_, count]) => count > 0)
               .map(([strategy, count]) => `${strategy}: ${count}`)
               .join(', ');
-            
+
             if (strategies) {
               toast.info(`Match strategies used: ${strategies}`);
             }
           }
-          
+
           setOptimizedUploadDialogOpen(false);
         }}
       />

@@ -36,7 +36,26 @@
     "no-debugger": "warn",
     "no-useless-escape": "off",
     "no-prototype-builtins": "warn",
-    "react-refresh/only-export-components": "warn"
+    "react-refresh/only-export-components": "warn",
+    "indent": ["warn", 2],
+    "quotes": ["warn", "single"],
+    "semi": ["warn", "always"],
+    "comma-dangle": ["warn", "always-multiline"],
+    "object-curly-spacing": ["warn", "always"],
+    "array-bracket-spacing": ["warn", "never"],
+    "prefer-const": "warn",
+    "no-var": "warn",
+    "prefer-arrow-callback": "warn",
+    "arrow-spacing": "warn",
+    "no-trailing-spaces": "warn",
+    "eol-last": ["warn", "always"],
+    "lines-between-class-members": ["warn", "always", { "exceptAfterSingleLine": true }],
+    "padding-line-between-statements": [
+      "warn",
+      { "blankLine": "always", "prev": "*", "next": "return" },
+      { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*" },
+      { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"] }
+    ]
   },
   "settings": {
     "react": {

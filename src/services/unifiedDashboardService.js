@@ -6,16 +6,16 @@ class DashboardApiService {
       requests: 0,
       errors: 0,
       totalDuration: 0,
-      cacheHits: 0
+      cacheHits: 0,
     };
-    
+
     // Service routing configuration
     this.serviceRoutes = {
       dashboard: '/dashboard',
       mdm: '/mdm',
       task: '/task',
       magento: '/magento', // Proxied through backend
-      health: '/health'
+      health: '/health',
     };
   }
 
@@ -32,19 +32,20 @@ class DashboardApiService {
   async makeRequest(serviceType, endpoint, options = {}) {
     const route = this.getServiceRoute(serviceType);
     const fullUrl = `${route}${endpoint}`;
-    
+
     this.performanceMetrics.requests++;
-    
+
     try {
       const response = await api({
         url: fullUrl,
         method: options.method || 'GET',
         data: options.data,
         params: options.params,
-        ...options
+        ...options,
       });
-      
+
       this.performanceMetrics.totalDuration += response.metadata.duration;
+
       return response;
     } catch (error) {
       this.performanceMetrics.errors++;
@@ -57,25 +58,29 @@ class DashboardApiService {
    */
   async getCachedData(key, fetchFunction, cacheTime = this.cacheTimeout) {
     const cached = this.cache.get(key);
-    
+
     if (cached && Date.now() - cached.timestamp < cacheTime) {
       console.log(`📦 Cache hit: ${key}`);
       this.performanceMetrics.cacheHits++;
+
       return { ...cached.data, cached: true };
     }
 
     try {
       const data = await fetchFunction();
+
       this.cache.set(key, {
         data,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
       console.log(`🔄 Cache updated: ${key}`);
+
       return { ...data, cached: false };
     } catch (error) {
       // Return stale cache if available during errors
       if (cached) {
         console.warn(`⚠️ Using stale cache for ${key} due to error:`, error.message);
+
         return { ...cached.data, cached: true, stale: true };
       }
       throw error;
@@ -88,6 +93,7 @@ class DashboardApiService {
   async getDashboardStats() {
     return this.getCachedData('dashboard-stats', async () => {
       const response = await this.makeRequest('task', '/stats');
+
       return response.data;
     });
   }
@@ -97,13 +103,15 @@ class DashboardApiService {
    */
   async getRecentOrders(page = 1, limit = 10) {
     const cacheKey = `orders-${page}-${limit}`;
+
     return this.getCachedData(cacheKey, async () => {
       const response = await this.makeRequest('magento', '/orders', {
         params: {
           'searchCriteria[pageSize]': limit,
-          'searchCriteria[currentPage]': page
-        }
+          'searchCriteria[currentPage]': page,
+        },
       });
+
       return response.data;
     }, 2 * 60 * 1000); // 2 minutes cache for orders
   }
@@ -115,9 +123,10 @@ class DashboardApiService {
     return this.getCachedData('product-stats', async () => {
       const response = await this.makeRequest('magento', '/products', {
         params: {
-          'searchCriteria[pageSize]': 1
-        }
+          'searchCriteria[pageSize]': 1,
+        },
       });
+
       return response.data;
     });
   }
@@ -129,9 +138,10 @@ class DashboardApiService {
     return this.getCachedData('customer-stats', async () => {
       const response = await this.makeRequest('magento', '/customers', {
         params: {
-          'searchCriteria[pageSize]': 1
-        }
+          'searchCriteria[pageSize]': 1,
+        },
       });
+
       return response.data;
     });
   }
@@ -142,12 +152,12 @@ class DashboardApiService {
   async syncPrices() {
     try {
       const response = await this.makeRequest('mdm', '/sync-prices', {
-        method: 'POST'
+        method: 'POST',
       });
-      
+
       // Clear related cache
       this.clearCache(['dashboard-stats', 'product-stats']);
-      
+
       return response.data;
     } catch (error) {
       throw new Error(`Price sync failed: ${error.message}`);
@@ -160,12 +170,12 @@ class DashboardApiService {
   async syncInventory() {
     try {
       const response = await this.makeRequest('mdm', '/sync-stocks', {
-        method: 'POST'
+        method: 'POST',
       });
-      
+
       // Clear related cache
       this.clearCache(['dashboard-stats', 'product-stats']);
-      
+
       return response.data;
     } catch (error) {
       throw new Error(`Inventory sync failed: ${error.message}`);
@@ -178,6 +188,7 @@ class DashboardApiService {
   async getSyncStatus() {
     return this.getCachedData('sync-status', async () => {
       const response = await this.makeRequest('mdm', '/sources');
+
       return response.data;
     }, 30 * 1000); // 30 seconds cache for sync status
   }
@@ -188,18 +199,18 @@ class DashboardApiService {
   async getDashboardHealth() {
     try {
       const response = await this.makeRequest('health', '');
-      
+
       return {
         ...response.data,
         performanceMetrics: this.getPerformanceMetrics(),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     } catch (error) {
       return {
         status: 'unhealthy',
         error: error.message,
         performanceMetrics: this.getPerformanceMetrics(),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
   }
@@ -223,16 +234,16 @@ class DashboardApiService {
    * Get performance metrics
    */
   getPerformanceMetrics() {
-    const avgDuration = this.performanceMetrics.requests > 0 
-      ? this.performanceMetrics.totalDuration / this.performanceMetrics.requests 
+    const avgDuration = this.performanceMetrics.requests > 0
+      ? this.performanceMetrics.totalDuration / this.performanceMetrics.requests
       : 0;
-    
-    const errorRate = this.performanceMetrics.requests > 0 
-      ? (this.performanceMetrics.errors / this.performanceMetrics.requests) * 100 
+
+    const errorRate = this.performanceMetrics.requests > 0
+      ? (this.performanceMetrics.errors / this.performanceMetrics.requests) * 100
       : 0;
-    
-    const cacheHitRate = this.performanceMetrics.requests > 0 
-      ? (this.performanceMetrics.cacheHits / this.performanceMetrics.requests) * 100 
+
+    const cacheHitRate = this.performanceMetrics.requests > 0
+      ? (this.performanceMetrics.cacheHits / this.performanceMetrics.requests) * 100
       : 0;
 
     return {
@@ -240,7 +251,7 @@ class DashboardApiService {
       avgDuration: Math.round(avgDuration),
       errorRate: Math.round(errorRate * 100) / 100,
       cacheHitRate: Math.round(cacheHitRate * 100) / 100,
-      cacheSize: this.cache.size
+      cacheSize: this.cache.size,
     };
   }
 
@@ -254,9 +265,10 @@ class DashboardApiService {
       entries: Array.from(this.cache.entries()).map(([key, value]) => ({
         key,
         age: Date.now() - value.timestamp,
-        size: JSON.stringify(value.data).length
-      }))
+        size: JSON.stringify(value.data).length,
+      })),
     };
+
     return stats;
   }
 
@@ -265,16 +277,17 @@ class DashboardApiService {
    */
   async fetchDashboardData() {
     const startTime = Date.now();
-    
+
     try {
       // Use Promise.allSettled for resilient parallel processing
       const [stats, orders, health] = await Promise.allSettled([
         this.getDashboardStats(),
         this.getRecentOrders(1, 5),
-        this.getDashboardHealth()
+        this.getDashboardHealth(),
       ]);
 
       const duration = Date.now() - startTime;
+
       console.log(`📊 Dashboard batch fetch completed in ${duration}ms`);
 
       return {
@@ -283,7 +296,7 @@ class DashboardApiService {
         health: health.status === 'fulfilled' ? health.value : { error: health.reason?.message },
         fetchTime: duration,
         performanceMetrics: this.getPerformanceMetrics(),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     } catch (error) {
       console.error('❌ Dashboard batch fetch failed:', error);
@@ -296,14 +309,14 @@ class DashboardApiService {
    */
   async preloadDashboardData() {
     console.log('🔄 Preloading dashboard data...');
-    
+
     // Fire and forget - don't wait for completion
     Promise.allSettled([
       this.getDashboardStats(),
       this.getRecentOrders(),
       this.getProductStats(),
       this.getCustomerStats(),
-      this.getSyncStatus()
+      this.getSyncStatus(),
     ]).then(() => {
       console.log('✅ Dashboard data preloaded');
     }).catch((error) => {
@@ -319,7 +332,7 @@ class DashboardApiService {
       requests: 0,
       errors: 0,
       totalDuration: 0,
-      cacheHits: 0
+      cacheHits: 0,
     };
     console.log('📊 Performance metrics reset');
   }

@@ -19,7 +19,7 @@ const DEFAULT_SETTINGS = {
   notifications: {
     email: true,
     push: false,
-    sound: true
+    sound: true,
   },
   performance: {
     cacheEnabled: true,
@@ -27,19 +27,19 @@ const DEFAULT_SETTINGS = {
     defaultPageSize: 25,
     enableVirtualization: true,
     autoRefresh: false,
-    refreshInterval: 30
+    refreshInterval: 30,
   },
   accessibility: {
     highContrast: false,
     largeText: false,
     keyboardNavigation: true,
-    screenReader: false
+    screenReader: false,
   },
   security: {
     sessionTimeout: 30,
     twoFactorEnabled: false,
-    auditLogging: true
-  }
+    auditLogging: true,
+  },
 };
 
 /**
@@ -52,7 +52,7 @@ const LEGACY_KEYS = [
   'density',
   'userSettings',
   'techno-etl-settings',
-  'dashboardSettings'
+  'dashboardSettings',
 ];
 
 /**
@@ -61,13 +61,16 @@ const LEGACY_KEYS = [
 export const getUnifiedSettings = () => {
   try {
     const settings = localStorage.getItem(UNIFIED_SETTINGS_KEY);
+
     if (settings) {
       const parsedSettings = JSON.parse(settings);
+
       return { ...DEFAULT_SETTINGS, ...parsedSettings };
     }
   } catch (error) {
     console.warn('Error parsing unified settings:', error);
   }
+
   return { ...DEFAULT_SETTINGS };
 };
 
@@ -79,6 +82,7 @@ export const saveUnifiedSettings = (settings) => {
     // Validate settings structure
     if (!settings || typeof settings !== 'object') {
       console.warn('Invalid settings provided to saveUnifiedSettings');
+
       return false;
     }
 
@@ -87,7 +91,7 @@ export const saveUnifiedSettings = (settings) => {
       ...currentSettings,
       ...settings,
       lastModified: Date.now(),
-      version: '2.1.0'
+      version: '2.1.0',
     };
 
     // Debounce localStorage writes to prevent excessive I/O
@@ -115,6 +119,7 @@ export const saveUnifiedSettings = (settings) => {
     return updatedSettings;
   } catch (error) {
     console.error('❌ Error saving unified settings:', error);
+
     return null;
   }
 };
@@ -124,17 +129,20 @@ export const saveUnifiedSettings = (settings) => {
  */
 export const getUserSettings = (userId) => {
   if (!userId) return getUnifiedSettings();
-  
+
   try {
     const userKey = `${USER_SETTINGS_PREFIX}${userId}`;
     const settings = localStorage.getItem(userKey);
+
     if (settings) {
       const parsedSettings = JSON.parse(settings);
+
       return { ...DEFAULT_SETTINGS, ...parsedSettings };
     }
   } catch (error) {
     console.warn('Error parsing user settings:', error);
   }
+
   return { ...DEFAULT_SETTINGS };
 };
 
@@ -143,15 +151,18 @@ export const getUserSettings = (userId) => {
  */
 export const saveUserSettings = (userId, settings) => {
   if (!userId) return saveUnifiedSettings(settings);
-  
+
   try {
     const userKey = `${USER_SETTINGS_PREFIX}${userId}`;
     const currentSettings = getUserSettings(userId);
     const updatedSettings = { ...currentSettings, ...settings };
+
     localStorage.setItem(userKey, JSON.stringify(updatedSettings));
+
     return updatedSettings;
   } catch (error) {
     console.error('Error saving user settings:', error);
+
     return null;
   }
 };
@@ -163,15 +174,15 @@ export const applyLanguageSettings = (language) => {
   const languageConfig = {
     en: { dir: 'ltr', code: 'en-US' },
     fr: { dir: 'ltr', code: 'fr-FR' },
-    ar: { dir: 'rtl', code: 'ar-SA' }
+    ar: { dir: 'rtl', code: 'ar-SA' },
   };
 
   const config = languageConfig[language] || languageConfig.en;
-  
+
   // Apply to document
   document.documentElement.setAttribute('dir', config.dir);
   document.documentElement.setAttribute('lang', config.code);
-  
+
   // Add RTL class to body
   if (config.dir === 'rtl') {
     document.body.classList.add('rtl');
@@ -180,9 +191,10 @@ export const applyLanguageSettings = (language) => {
     document.body.classList.add('ltr');
     document.body.classList.remove('rtl');
   }
-  
+
   // Add/remove RTL class to root element
   const root = document.getElementById('root');
+
   if (root) {
     if (config.dir === 'rtl') {
       root.classList.add('rtl-layout');
@@ -201,11 +213,11 @@ export const getSystemPreferences = () => {
   const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const browserLang = navigator.language.split('-')[0];
   const supportedLanguages = ['en', 'fr', 'ar'];
-  
+
   return {
     theme: systemPrefersDark ? 'dark' : 'light',
     language: supportedLanguages.includes(browserLang) ? browserLang : 'en',
-    prefersDark: systemPrefersDark
+    prefersDark: systemPrefersDark,
   };
 };
 
@@ -214,21 +226,22 @@ export const getSystemPreferences = () => {
  */
 export const initializeSettingsSystem = (userId = null) => {
   console.log('🔧 Initializing unified settings system...');
-  
+
   // Check if migration is needed
   const needsMigration = LEGACY_KEYS.some(key => localStorage.getItem(key) !== null);
-  
+
   if (needsMigration) {
     migrateLegacySettings(userId);
   }
-  
+
   // Get current settings
   const settings = userId ? getUserSettings(userId) : getUnifiedSettings();
-  
+
   // Apply language settings immediately
   applyLanguageSettings(settings.language);
-  
+
   console.log('✅ Settings system initialized:', settings);
+
   return settings;
 };
 
@@ -237,36 +250,40 @@ export const initializeSettingsSystem = (userId = null) => {
  */
 const migrateLegacySettings = (userId = null) => {
   console.log('🔄 Migrating legacy settings...');
-  
+
   try {
     // Collect legacy settings
     const legacyData = {};
-    
+
     // Individual keys
     const oldLanguage = localStorage.getItem('language');
     const oldTheme = localStorage.getItem('themeMode');
     const oldFontSize = localStorage.getItem('fontSize');
-    
+
     if (oldLanguage) legacyData.language = oldLanguage;
     if (oldTheme) legacyData.theme = oldTheme;
     if (oldFontSize) legacyData.fontSize = oldFontSize;
-    
+
     // Old unified settings
     const oldUnified = localStorage.getItem('techno-etl-settings');
+
     if (oldUnified) {
       try {
         const parsed = JSON.parse(oldUnified);
+
         Object.assign(legacyData, parsed);
       } catch (e) {
         console.warn('Failed to parse old unified settings');
       }
     }
-    
+
     // Old user settings
     const oldUserSettings = localStorage.getItem('userSettings');
+
     if (oldUserSettings) {
       try {
         const parsed = JSON.parse(oldUserSettings);
+
         if (parsed.preferences) {
           Object.assign(legacyData, parsed.preferences);
         }
@@ -274,7 +291,7 @@ const migrateLegacySettings = (userId = null) => {
         console.warn('Failed to parse old user settings');
       }
     }
-    
+
     // Save migrated settings
     if (Object.keys(legacyData).length > 0) {
       if (userId) {
@@ -284,7 +301,7 @@ const migrateLegacySettings = (userId = null) => {
       }
       console.log('✅ Legacy settings migrated:', legacyData);
     }
-    
+
     // Clean up legacy keys
     LEGACY_KEYS.forEach(key => {
       if (localStorage.getItem(key)) {
@@ -292,7 +309,7 @@ const migrateLegacySettings = (userId = null) => {
         console.log(`🗑️ Removed legacy key: ${key}`);
       }
     });
-    
+
   } catch (error) {
     console.error('❌ Error during migration:', error);
   }
@@ -313,7 +330,7 @@ export const resetToSystemDefaults = (userId = null) => {
   const defaultSettings = {
     ...DEFAULT_SETTINGS,
     theme: 'system',
-    language: systemPrefs.language
+    language: systemPrefs.language,
   };
 
   if (userId) {
@@ -332,21 +349,22 @@ export const exportSettings = (userId = null) => {
     version: '1.0',
     timestamp: new Date().toISOString(),
     userId: userId || 'anonymous',
-    settings
+    settings,
   };
-  
+
   const dataStr = JSON.stringify(exportData, null, 2);
   const dataBlob = new Blob([dataStr], { type: 'application/json' });
   const url = URL.createObjectURL(dataBlob);
-  
+
   const link = document.createElement('a');
+
   link.href = url;
   link.download = `techno-etl-settings-${new Date().toISOString().split('T')[0]}.json`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
-  
+
   return exportData;
 };
 
@@ -356,36 +374,36 @@ export const exportSettings = (userId = null) => {
 export const importSettings = (file, userId = null) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
       try {
         const importData = JSON.parse(e.target.result);
-        
+
         if (!importData.settings) {
           throw new Error('Invalid settings file format');
         }
-        
+
         const mergedSettings = { ...DEFAULT_SETTINGS, ...importData.settings };
-        
+
         if (userId) {
           saveUserSettings(userId, mergedSettings);
         } else {
           saveUnifiedSettings(mergedSettings);
         }
-        
+
         // Apply language settings immediately
         applyLanguageSettings(mergedSettings.language);
-        
+
         resolve(mergedSettings);
       } catch (error) {
         reject(error);
       }
     };
-    
+
     reader.onerror = () => {
       reject(new Error('Failed to read file'));
     };
-    
+
     reader.readAsText(file);
   });
 };
@@ -396,13 +414,15 @@ export const importSettings = (file, userId = null) => {
 export const cleanupUserData = (userId) => {
   if (userId) {
     const userKey = `${USER_SETTINGS_PREFIX}${userId}`;
+
     localStorage.removeItem(userKey);
   }
-  
+
   // Reset to system defaults for anonymous use
   const systemDefaults = resetToSystemDefaults();
+
   applyLanguageSettings(systemDefaults.language);
-  
+
   return systemDefaults;
 };
 
@@ -418,5 +438,5 @@ export default {
   resetToSystemDefaults,
   exportSettings,
   importSettings,
-  cleanupUserData
+  cleanupUserData,
 };

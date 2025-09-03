@@ -20,7 +20,7 @@ import {
   AccordionDetails,
   Button,
   IconButton,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import {
@@ -32,7 +32,7 @@ import {
   Code as CodeIcon,
   CheckCircle as CheckIcon,
   ContentCopy as CopyIcon,
-  Warning as WarningIcon
+  Warning as WarningIcon,
 } from '@mui/icons-material';
 
 const ConfigurationSetup = () => {
@@ -51,12 +51,12 @@ const ConfigurationSetup = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const environmentConfigs = {
@@ -141,7 +141,7 @@ REACT_APP_DOCS_URL=http://localhost:3000
 # UI Configuration
 REACT_APP_DEFAULT_THEME=light
 REACT_APP_DEFAULT_LANGUAGE=en
-REACT_APP_ENABLE_RTL=true`
+REACT_APP_ENABLE_RTL=true`,
     },
     production: {
       backend: `# Production Environment - Backend
@@ -237,8 +237,8 @@ REACT_APP_ENABLE_RTL=true
 
 # Performance
 GENERATE_SOURCEMAP=false
-REACT_APP_ENABLE_SERVICE_WORKER=true`
-    }
+REACT_APP_ENABLE_SERVICE_WORKER=true`,
+    },
   };
 
   const databaseSetup = `-- TECHNO-ETL Database Setup Script
@@ -622,19 +622,19 @@ PRINT 'TECHNO-ETL Database setup completed successfully!';`;
 
   const CodeBlock = ({ code, language, label }) => (
     <Paper sx={{ position: 'relative', mb: 2 }}>
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
         alignItems: 'center',
         p: 1,
         backgroundColor: 'grey.100',
         borderBottom: 1,
-        borderColor: 'divider'
+        borderColor: 'divider',
       }}>
         <Chip label={language} size="small" color="primary" />
         <Tooltip title={copiedText === label ? 'Copied!' : 'Copy to clipboard'}>
-          <IconButton 
-            size="small" 
+          <IconButton
+            size="small"
             onClick={() => copyToClipboard(code, label)}
             color={copiedText === label ? 'success' : 'default'}
           >
@@ -674,8 +674,8 @@ PRINT 'TECHNO-ETL Database setup completed successfully!';`;
         <motion.div variants={itemVariants}>
           <Alert severity="info" sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>🚀 Quick Setup Guide</Typography>
-            Follow the tabs below to configure your TECHNO-ETL environment. Each section includes 
-            copy-paste ready configuration files and step-by-step instructions for development, 
+            Follow the tabs below to configure your TECHNO-ETL environment. Each section includes
+            copy-paste ready configuration files and step-by-step instructions for development,
             staging, and production environments.
           </Alert>
         </motion.div>
@@ -683,8 +683,8 @@ PRINT 'TECHNO-ETL Database setup completed successfully!';`;
         {/* Configuration Tabs */}
         <motion.div variants={itemVariants}>
           <Paper sx={{ mb: 6 }}>
-            <Tabs 
-              value={tabValue} 
+            <Tabs
+              value={tabValue}
               onChange={handleTabChange}
               variant="scrollable"
               scrollButtons="auto"
@@ -699,7 +699,7 @@ PRINT 'TECHNO-ETL Database setup completed successfully!';`;
             <TabPanel value={tabValue} index={0}>
               <Typography variant="h6" gutterBottom>Environment Configuration</Typography>
               <Typography variant="body1" sx={{ mb: 3 }}>
-                Configure environment variables for different deployment environments. 
+                Configure environment variables for different deployment environments.
                 Copy the appropriate configuration for your environment.
               </Typography>
 
@@ -715,16 +715,16 @@ PRINT 'TECHNO-ETL Database setup completed successfully!';`;
                   <Typography variant="subtitle1" fontWeight={600} gutterBottom>
                     Backend Configuration (.env)
                   </Typography>
-                  <CodeBlock 
+                  <CodeBlock
                     code={environmentConfigs.development.backend}
                     language="Environment"
                     label="dev-backend"
                   />
-                  
+
                   <Typography variant="subtitle1" fontWeight={600} gutterBottom sx={{ mt: 3 }}>
                     Frontend Configuration (.env.development)
                   </Typography>
-                  <CodeBlock 
+                  <CodeBlock
                     code={environmentConfigs.development.frontend}
                     language="Environment"
                     label="dev-frontend"
@@ -743,23 +743,23 @@ PRINT 'TECHNO-ETL Database setup completed successfully!';`;
                 <AccordionDetails>
                   <Alert severity="warning" sx={{ mb: 2 }}>
                     <Typography variant="subtitle2" fontWeight={600}>Security Notice:</Typography>
-                    Replace all placeholder values (${VARIABLE_NAME}) with actual secure values. 
+                    Replace all placeholder values (${VARIABLE_NAME}) with actual secure values.
                     Never commit production secrets to version control.
                   </Alert>
-                  
+
                   <Typography variant="subtitle1" fontWeight={600} gutterBottom>
                     Backend Configuration (.env.production)
                   </Typography>
-                  <CodeBlock 
+                  <CodeBlock
                     code={environmentConfigs.production.backend}
                     language="Environment"
                     label="prod-backend"
                   />
-                  
+
                   <Typography variant="subtitle1" fontWeight={600} gutterBottom sx={{ mt: 3 }}>
                     Frontend Configuration (.env.production)
                   </Typography>
-                  <CodeBlock 
+                  <CodeBlock
                     code={environmentConfigs.production.frontend}
                     language="Environment"
                     label="prod-frontend"
@@ -771,7 +771,7 @@ PRINT 'TECHNO-ETL Database setup completed successfully!';`;
             <TabPanel value={tabValue} index={1}>
               <Typography variant="h6" gutterBottom>Database Setup</Typography>
               <Typography variant="body1" sx={{ mb: 3 }}>
-                Complete SQL Server database setup script with tables, indexes, stored procedures, 
+                Complete SQL Server database setup script with tables, indexes, stored procedures,
                 and initial data. Execute this script to set up your TECHNO-ETL database.
               </Typography>
 
@@ -793,7 +793,7 @@ PRINT 'TECHNO-ETL Database setup completed successfully!';`;
                 </List>
               </Alert>
 
-              <CodeBlock 
+              <CodeBlock
                 code={databaseSetup}
                 language="SQL"
                 label="database-setup"
@@ -821,7 +821,7 @@ PRINT 'TECHNO-ETL Database setup completed successfully!';`;
             <TabPanel value={tabValue} index={2}>
               <Typography variant="h6" gutterBottom>Security Configuration</Typography>
               <Typography variant="body1" sx={{ mb: 3 }}>
-                Essential security configurations for production deployment including SSL, 
+                Essential security configurations for production deployment including SSL,
                 authentication, and access control settings.
               </Typography>
 
@@ -904,13 +904,13 @@ PRINT 'TECHNO-ETL Database setup completed successfully!';`;
             <TabPanel value={tabValue} index={3}>
               <Typography variant="h6" gutterBottom>Production Deployment</Typography>
               <Typography variant="body1" sx={{ mb: 3 }}>
-                Step-by-step production deployment guide with Docker, load balancing, 
+                Step-by-step production deployment guide with Docker, load balancing,
                 and monitoring configuration.
               </Typography>
 
               <Alert severity="warning" sx={{ mb: 3 }}>
                 <Typography variant="subtitle2" fontWeight={600}>Production Requirements:</Typography>
-                Ensure you have completed all security configurations and tested the application 
+                Ensure you have completed all security configurations and tested the application
                 in a staging environment before deploying to production.
               </Alert>
 
@@ -924,42 +924,42 @@ PRINT 'TECHNO-ETL Database setup completed successfully!';`;
                       <List>
                         <ListItem>
                           <ListItemIcon><CheckIcon color="primary" /></ListItemIcon>
-                          <ListItemText 
+                          <ListItemText
                             primary="1. Server Preparation"
                             secondary="Set up production servers with required software and security configurations"
                           />
                         </ListItem>
                         <ListItem>
                           <ListItemIcon><CheckIcon color="primary" /></ListItemIcon>
-                          <ListItemText 
+                          <ListItemText
                             primary="2. Database Deployment"
                             secondary="Deploy database schema and configure backup strategies"
                           />
                         </ListItem>
                         <ListItem>
                           <ListItemIcon><CheckIcon color="primary" /></ListItemIcon>
-                          <ListItemText 
+                          <ListItemText
                             primary="3. Application Deployment"
                             secondary="Deploy backend and frontend applications with proper configurations"
                           />
                         </ListItem>
                         <ListItem>
                           <ListItemIcon><CheckIcon color="primary" /></ListItemIcon>
-                          <ListItemText 
+                          <ListItemText
                             primary="4. Load Balancer Setup"
                             secondary="Configure Nginx or cloud load balancer for high availability"
                           />
                         </ListItem>
                         <ListItem>
                           <ListItemIcon><CheckIcon color="primary" /></ListItemIcon>
-                          <ListItemText 
+                          <ListItemText
                             primary="5. Monitoring & Logging"
                             secondary="Set up monitoring, alerting, and centralized logging"
                           />
                         </ListItem>
                         <ListItem>
                           <ListItemIcon><CheckIcon color="primary" /></ListItemIcon>
-                          <ListItemText 
+                          <ListItemText
                             primary="6. Testing & Validation"
                             secondary="Perform comprehensive testing and validation of all systems"
                           />

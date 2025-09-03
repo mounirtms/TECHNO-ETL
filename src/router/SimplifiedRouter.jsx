@@ -4,11 +4,30 @@ import { Box, CircularProgress, Typography } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 import { PublicRouteGuard, RouteGuard } from './RouteGuard';
 
-// Lazy Load Components
-const Layout = lazy(() => import('../components/Layout/Layout.jsx'));
-const Login = lazy(() => import('../pages/Login.jsx'));
-const DocsPage = lazy(() => import('../pages/DocsPage.jsx'));
-const NotFoundPage = lazy(() => import('../pages/NotFoundPage.jsx'));
+// Lazy Load Components with better error handling
+const Layout = lazy(() =>
+  import('../components/Layout/Layout.jsx')
+    .then(module => ({ default: module.default }))
+    .catch(() => ({ default: () => <div>Failed to load layout</div> })),
+);
+
+const Login = lazy(() =>
+  import('../pages/Login.jsx')
+    .then(module => ({ default: module.default }))
+    .catch(() => ({ default: () => <div>Failed to load login</div> })),
+);
+
+const DocsPage = lazy(() =>
+  import('../pages/DocsPage.jsx')
+    .then(module => ({ default: module.default }))
+    .catch(() => ({ default: () => <div>Failed to load docs</div> })),
+);
+
+const NotFoundPage = lazy(() =>
+  import('../pages/NotFoundPage.jsx')
+    .then(module => ({ default: module.default }))
+    .catch(() => ({ default: () => <div>Page not found</div> })),
+);
 
 // Import TabProvider
 import { TabProvider } from '../contexts/TabContext';
@@ -21,7 +40,7 @@ const EnhancedLoadingFallback = ({ routeName = 'page' }) => (
       alignItems: 'center',
       height: '100vh',
       flexDirection: 'column',
-      gap: 2
+      gap: 2,
     }}
   >
     <CircularProgress size={40} />
@@ -31,7 +50,8 @@ const EnhancedLoadingFallback = ({ routeName = 'page' }) => (
   </Box>
 );
 
-const SimplifiedRouter = () => {
+// Memoized router component for better performance
+const SimplifiedRouter = React.memo(() => {
   const { loading } = useAuth();
 
   if (loading) {
@@ -42,26 +62,27 @@ const SimplifiedRouter = () => {
     <Suspense fallback={<EnhancedLoadingFallback routeName="Application" />}>
       <TabProvider>
         <Routes>
-          <Route 
-            path="/login" 
+          <Route
+            path="/login"
             element={
               <PublicRouteGuard>
                 <Login />
               </PublicRouteGuard>
-            } 
+            }
           />
-          
-          <Route 
-            path="/docs/*" 
+
+          <Route
+            path="/docs/*"
             element={
               <RouteGuard>
                 <DocsPage />
               </RouteGuard>
-            } 
+            }
           />
 
-          <Route 
-            path="/dashboard" 
+          {/* All tab-based routes go through Layout */}
+          <Route
+            path="/dashboard"
             element={
               <RouteGuard>
                 <Layout />
@@ -69,8 +90,8 @@ const SimplifiedRouter = () => {
             }
           />
 
-          <Route 
-            path="/charts" 
+          <Route
+            path="/charts"
             element={
               <RouteGuard>
                 <Layout />
@@ -78,8 +99,8 @@ const SimplifiedRouter = () => {
             }
           />
 
-          <Route 
-            path="/products" 
+          <Route
+            path="/products"
             element={
               <RouteGuard>
                 <Layout />
@@ -87,8 +108,8 @@ const SimplifiedRouter = () => {
             }
           />
 
-          <Route 
-            path="/orders" 
+          <Route
+            path="/orders"
             element={
               <RouteGuard>
                 <Layout />
@@ -96,8 +117,8 @@ const SimplifiedRouter = () => {
             }
           />
 
-          <Route 
-            path="/customers" 
+          <Route
+            path="/customers"
             element={
               <RouteGuard>
                 <Layout />
@@ -105,8 +126,8 @@ const SimplifiedRouter = () => {
             }
           />
 
-          <Route 
-            path="/inventory" 
+          <Route
+            path="/inventory"
             element={
               <RouteGuard>
                 <Layout />
@@ -114,8 +135,8 @@ const SimplifiedRouter = () => {
             }
           />
 
-          <Route 
-            path="/mdmproducts" 
+          <Route
+            path="/mdmproducts"
             element={
               <RouteGuard>
                 <Layout />
@@ -123,8 +144,8 @@ const SimplifiedRouter = () => {
             }
           />
 
-          <Route 
-            path="/categories" 
+          <Route
+            path="/categories"
             element={
               <RouteGuard>
                 <Layout />
@@ -132,8 +153,8 @@ const SimplifiedRouter = () => {
             }
           />
 
-          <Route 
-            path="/stocks" 
+          <Route
+            path="/stocks"
             element={
               <RouteGuard>
                 <Layout />
@@ -141,8 +162,8 @@ const SimplifiedRouter = () => {
             }
           />
 
-          <Route 
-            path="/sources" 
+          <Route
+            path="/sources"
             element={
               <RouteGuard>
                 <Layout />
@@ -150,8 +171,8 @@ const SimplifiedRouter = () => {
             }
           />
 
-          <Route 
-            path="/invoices" 
+          <Route
+            path="/invoices"
             element={
               <RouteGuard>
                 <Layout />
@@ -159,8 +180,8 @@ const SimplifiedRouter = () => {
             }
           />
 
-          <Route 
-            path="/cms-pages" 
+          <Route
+            path="/cms-pages"
             element={
               <RouteGuard>
                 <Layout />
@@ -168,8 +189,8 @@ const SimplifiedRouter = () => {
             }
           />
 
-          <Route 
-            path="/cegid-products" 
+          <Route
+            path="/cegid-products"
             element={
               <RouteGuard>
                 <Layout />
@@ -177,8 +198,8 @@ const SimplifiedRouter = () => {
             }
           />
 
-          <Route 
-            path="/mdm-stock" 
+          <Route
+            path="/mdm-stock"
             element={
               <RouteGuard>
                 <Layout />
@@ -186,8 +207,8 @@ const SimplifiedRouter = () => {
             }
           />
 
-          <Route 
-            path="/grid-test" 
+          <Route
+            path="/grid-test"
             element={
               <RouteGuard>
                 <Layout />
@@ -195,8 +216,8 @@ const SimplifiedRouter = () => {
             }
           />
 
-          <Route 
-            path="/bug-bounty" 
+          <Route
+            path="/bug-bounty"
             element={
               <RouteGuard>
                 <Layout />
@@ -204,8 +225,8 @@ const SimplifiedRouter = () => {
             }
           />
 
-          <Route 
-            path="/license-management" 
+          <Route
+            path="/license-management"
             element={
               <RouteGuard>
                 <Layout />
@@ -213,8 +234,8 @@ const SimplifiedRouter = () => {
             }
           />
 
-          <Route 
-            path="/profile" 
+          <Route
+            path="/profile"
             element={
               <RouteGuard>
                 <Layout />
@@ -223,15 +244,24 @@ const SimplifiedRouter = () => {
           />
 
           {/* Redirect root to dashboard */}
-          <Route 
-              path="/" 
-              element={<Navigate to="/dashboard" replace />} 
+          <Route
+            path="/"
+            element={<Navigate to="/dashboard" replace />}
           />
 
+          {/* 404 route */}
+          <Route
+            path="*"
+            element={
+              <RouteGuard>
+                <NotFoundPage />
+              </RouteGuard>
+            }
+          />
         </Routes>
       </TabProvider>
     </Suspense>
   );
-};
+});
 
 export default SimplifiedRouter;

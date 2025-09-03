@@ -13,7 +13,7 @@ export const JOB_STATUS = {
   COMPLETED: 'completed',
   FAILED: 'failed',
   CANCELLED: 'cancelled',
-  RETRYING: 'retrying'
+  RETRYING: 'retrying',
 };
 
 // Job types
@@ -25,7 +25,7 @@ export const JOB_TYPES = {
   CLEANUP: 'cleanup',
   BACKUP: 'backup',
   HEALTH_CHECK: 'health_check',
-  NOTIFICATION: 'notification'
+  NOTIFICATION: 'notification',
 };
 
 class WorkerLogger {
@@ -35,7 +35,7 @@ class WorkerLogger {
     this.workerPools = new Map();
     this.scheduledTasks = new Map();
     this.etlProcesses = new Map();
-    
+
     this.metrics = {
       totalJobs: 0,
       completedJobs: 0,
@@ -46,8 +46,8 @@ class WorkerLogger {
         pending: 0,
         running: 0,
         completed: 0,
-        failed: 0
-      }
+        failed: 0,
+      },
     };
 
     this.startMetricsCollection();
@@ -64,7 +64,7 @@ class WorkerLogger {
       workerId,
       data: this.sanitizeJobData(jobData),
       attempts: 1,
-      logs: []
+      logs: [],
     };
 
     this.activeJobs.set(jobId, jobInfo);
@@ -75,7 +75,7 @@ class WorkerLogger {
       category: 'worker_job',
       action: 'job_start',
       ...jobInfo,
-      timestamp: startTime.toISOString()
+      timestamp: startTime.toISOString(),
     });
 
     return jobInfo;
@@ -84,8 +84,10 @@ class WorkerLogger {
   // Log job progress
   logJobProgress(jobId, progress, message = '', metadata = {}) {
     const job = this.activeJobs.get(jobId);
+
     if (!job) {
       productionLogger.warn('Attempted to log progress for unknown job', { jobId });
+
       return;
     }
 
@@ -93,12 +95,12 @@ class WorkerLogger {
       progress: Math.min(100, Math.max(0, progress)), // Ensure 0-100 range
       message,
       timestamp: new Date().toISOString(),
-      ...metadata
+      ...metadata,
     };
 
     job.logs.push({
       type: 'progress',
-      ...progressInfo
+      ...progressInfo,
     });
 
     productionLogger.info('Job progress update', {
@@ -106,15 +108,17 @@ class WorkerLogger {
       action: 'job_progress',
       jobId,
       jobType: job.jobType,
-      ...progressInfo
+      ...progressInfo,
     });
   }
 
   // Log job completion
   logJobComplete(jobId, result = {}, metadata = {}) {
     const job = this.activeJobs.get(jobId);
+
     if (!job) {
       productionLogger.warn('Attempted to complete unknown job', { jobId });
+
       return;
     }
 
@@ -149,7 +153,7 @@ class WorkerLogger {
       executionTime,
       result: this.sanitizeJobData(result),
       timestamp: endTime.toISOString(),
-      ...metadata
+      ...metadata,
     });
 
     return job;
@@ -158,8 +162,10 @@ class WorkerLogger {
   // Log job failure
   logJobFailure(jobId, error, metadata = {}) {
     const job = this.activeJobs.get(jobId);
+
     if (!job) {
       productionLogger.warn('Attempted to fail unknown job', { jobId });
+
       return;
     }
 
@@ -173,7 +179,7 @@ class WorkerLogger {
       message: error.message,
       stack: error.stack,
       name: error.name,
-      code: error.code
+      code: error.code,
     };
 
     // Update metrics
@@ -193,7 +199,7 @@ class WorkerLogger {
       executionTime,
       error: job.error,
       timestamp: endTime.toISOString(),
-      ...metadata
+      ...metadata,
     });
 
     return job;
@@ -202,8 +208,10 @@ class WorkerLogger {
   // Log job retry
   logJobRetry(jobId, attempt, reason = '', metadata = {}) {
     const job = this.activeJobs.get(jobId);
+
     if (!job) {
       productionLogger.warn('Attempted to retry unknown job', { jobId });
+
       return;
     }
 
@@ -213,7 +221,7 @@ class WorkerLogger {
       type: 'retry',
       attempt,
       reason,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     productionLogger.warn('Background job retry', {
@@ -224,7 +232,7 @@ class WorkerLogger {
       attempt,
       reason,
       timestamp: new Date().toISOString(),
-      ...metadata
+      ...metadata,
     });
   }
 
@@ -237,7 +245,7 @@ class WorkerLogger {
       totalWorkers: metrics.totalWorkers || 0,
       queueSize: metrics.queueSize || 0,
       utilization: metrics.activeWorkers / metrics.totalWorkers * 100,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     this.workerPools.set(poolName, poolMetrics);
@@ -255,36 +263,37 @@ class WorkerLogger {
       status: execution.status || 'completed',
       duration: execution.duration || 0,
       result: execution.result || null,
-      error: execution.error || null
+      error: execution.error || null,
     };
 
     this.scheduledTasks.set(taskName, taskInfo);
 
     productionLogger.info('Scheduled task executed', {
       category: 'scheduled_task',
-      ...taskInfo
+      ...taskInfo,
     });
   }
 
   // Log ETL process
   logETLProcess(processId, processType, phase, data = {}) {
     const timestamp = new Date().toISOString();
-    
+
     if (!this.etlProcesses.has(processId)) {
       this.etlProcesses.set(processId, {
         processId,
         processType,
         startTime: timestamp,
         phases: [],
-        status: 'running'
+        status: 'running',
       });
     }
 
     const process = this.etlProcesses.get(processId);
+
     process.phases.push({
       phase,
       timestamp,
-      data: this.sanitizeJobData(data)
+      data: this.sanitizeJobData(data),
     });
 
     productionLogger.info('ETL process phase', {
@@ -293,13 +302,14 @@ class WorkerLogger {
       processType,
       phase,
       timestamp,
-      ...data
+      ...data,
     });
   }
 
   // Complete ETL process
   completeETLProcess(processId, result = {}) {
     const process = this.etlProcesses.get(processId);
+
     if (process) {
       process.status = 'completed';
       process.endTime = new Date().toISOString();
@@ -308,7 +318,7 @@ class WorkerLogger {
       productionLogger.info('ETL process completed', {
         category: 'etl_process',
         action: 'process_complete',
-        ...process
+        ...process,
       });
     }
   }
@@ -316,18 +326,19 @@ class WorkerLogger {
   // Fail ETL process
   failETLProcess(processId, error) {
     const process = this.etlProcesses.get(processId);
+
     if (process) {
       process.status = 'failed';
       process.endTime = new Date().toISOString();
       process.error = {
         message: error.message,
-        stack: error.stack
+        stack: error.stack,
       };
 
       productionLogger.error('ETL process failed', {
         category: 'etl_process',
         action: 'process_failed',
-        ...process
+        ...process,
       });
     }
   }
@@ -355,6 +366,7 @@ class WorkerLogger {
   // Update average execution time
   updateAverageExecutionTime(executionTime) {
     const totalTime = this.metrics.averageExecutionTime * (this.metrics.completedJobs - 1) + executionTime;
+
     this.metrics.averageExecutionTime = totalTime / this.metrics.completedJobs;
   }
 
@@ -378,7 +390,7 @@ class WorkerLogger {
       workerPoolUtilization: this.metrics.workerPoolUtilization,
       scheduledTasks: this.scheduledTasks.size,
       etlProcesses: this.etlProcesses.size,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     productionLogger.logPerformance('worker_metrics', metrics);
@@ -392,14 +404,14 @@ class WorkerLogger {
       workerPools: Array.from(this.workerPools.values()),
       scheduledTasks: Array.from(this.scheduledTasks.values()),
       etlProcesses: Array.from(this.etlProcesses.values()),
-      metrics: this.metrics
+      metrics: this.metrics,
     };
   }
 
   // Get job status
   getJobStatus(jobId) {
-    return this.activeJobs.get(jobId) || 
-           this.jobHistory.find(job => job.jobId === jobId) || 
+    return this.activeJobs.get(jobId) ||
+           this.jobHistory.find(job => job.jobId === jobId) ||
            null;
   }
 }

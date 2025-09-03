@@ -15,7 +15,7 @@ import {
   Alert,
   Divider,
   Button,
-  Link
+  Link,
 } from '@mui/material';
 import {
   Security as SecurityIcon,
@@ -25,7 +25,7 @@ import {
   Shield as ShieldIcon,
   ContactMail as ContactIcon,
   Description as DocumentIcon,
-  Warning as WarningIcon
+  Warning as WarningIcon,
 } from '@mui/icons-material';
 
 const LicensePage = () => {
@@ -36,7 +36,7 @@ const LicensePage = () => {
     company: 'TECHNO-DZ',
     email: 'mounir.ab@techno-dz.com',
     year: '2024-2025',
-    licenseType: 'Proprietary Commercial License'
+    licenseType: 'Proprietary Commercial License',
   };
 
   const permissions = [
@@ -47,9 +47,9 @@ const LicensePage = () => {
         'Development and testing in authorized environments',
         'Customization for specific business requirements',
         'Integration with approved third-party systems',
-        'Training and documentation for authorized users'
+        'Training and documentation for authorized users',
       ],
-      color: 'success'
+      color: 'success',
     },
     {
       category: 'Restrictions',
@@ -58,9 +58,9 @@ const LicensePage = () => {
         'No reverse engineering or decompilation',
         'No modification of core licensing mechanisms',
         'No use outside of licensed organization',
-        'No creation of derivative works for commercial distribution'
+        'No creation of derivative works for commercial distribution',
       ],
-      color: 'error'
+      color: 'error',
     },
     {
       category: 'Requirements',
@@ -69,10 +69,10 @@ const LicensePage = () => {
         'Report security vulnerabilities to the author',
         'Comply with all applicable laws and regulations',
         'Use only with valid license agreement',
-        'Provide proper attribution in any public documentation'
+        'Provide proper attribution in any public documentation',
       ],
-      color: 'warning'
-    }
+      color: 'warning',
+    },
   ];
 
   const technicalComponents = [
@@ -80,26 +80,26 @@ const LicensePage = () => {
       component: 'Frontend Application',
       technology: 'React 18 + Vite',
       license: 'Proprietary',
-      description: 'User interface and client-side application logic'
+      description: 'User interface and client-side application logic',
     },
     {
       component: 'Backend API',
       technology: 'Node.js + Express',
       license: 'Proprietary',
-      description: 'Server-side API and business logic'
+      description: 'Server-side API and business logic',
     },
     {
       component: 'Database Integration',
       technology: 'Multiple DB Connectors',
       license: 'Proprietary',
-      description: 'Custom database integration and ETL processes'
+      description: 'Custom database integration and ETL processes',
     },
     {
       component: 'Third-Party Libraries',
       technology: 'Various Open Source',
       license: 'Mixed (See package.json)',
-      description: 'Open source dependencies with their respective licenses'
-    }
+      description: 'Open source dependencies with their respective licenses',
+    },
   ];
 
   const supportOptions = [
@@ -107,20 +107,20 @@ const LicensePage = () => {
       type: 'Technical Support',
       description: 'Bug fixes, technical assistance, and troubleshooting',
       contact: 'mounir.ab@techno-dz.com',
-      availability: 'Business hours (GMT+1)'
+      availability: 'Business hours (GMT+1)',
     },
     {
       type: 'Feature Requests',
       description: 'Custom feature development and enhancements',
       contact: 'mounir.webdev.tms@gmail.com',
-      availability: 'By appointment'
+      availability: 'By appointment',
     },
     {
       type: 'Licensing Inquiries',
       description: 'License terms, compliance, and commercial arrangements',
       contact: 'mounir.ab@techno-dz.com',
-      availability: 'Business hours (GMT+1)'
-    }
+      availability: 'Business hours (GMT+1)',
+    },
   ];
 
   return (
@@ -141,7 +141,7 @@ const LicensePage = () => {
           <CopyrightIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
           License Overview
         </Typography>
-        
+
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <Card>
@@ -151,25 +151,25 @@ const LicensePage = () => {
                 </Typography>
                 <List dense>
                   <ListItem>
-                    <ListItemText 
+                    <ListItemText
                       primary="Project Name"
                       secondary={licenseDetails.projectName}
                     />
                   </ListItem>
                   <ListItem>
-                    <ListItemText 
+                    <ListItemText
                       primary="Version"
                       secondary={licenseDetails.version}
                     />
                   </ListItem>
                   <ListItem>
-                    <ListItemText 
+                    <ListItemText
                       primary="License Type"
                       secondary={licenseDetails.licenseType}
                     />
                   </ListItem>
                   <ListItem>
-                    <ListItemText 
+                    <ListItemText
                       primary="Copyright Year"
                       secondary={licenseDetails.year}
                     />
@@ -187,25 +187,25 @@ const LicensePage = () => {
                 </Typography>
                 <List dense>
                   <ListItem>
-                    <ListItemText 
+                    <ListItemText
                       primary="Author"
                       secondary={licenseDetails.author}
                     />
                   </ListItem>
                   <ListItem>
-                    <ListItemText 
+                    <ListItemText
                       primary="Company"
                       secondary={licenseDetails.company}
                     />
                   </ListItem>
                   <ListItem>
-                    <ListItemText 
+                    <ListItemText
                       primary="Contact Email"
                       secondary={licenseDetails.email}
                     />
                   </ListItem>
                   <ListItem>
-                    <ListItemText 
+                    <ListItemText
                       primary="Portfolio"
                       secondary={
                         <Link href="https://mounir1.github.io" target="_blank" rel="noopener">
@@ -237,9 +237,9 @@ const LicensePage = () => {
                     <Typography variant="h6">
                       {section.category}
                     </Typography>
-                    <Chip 
-                      size="small" 
-                      color={section.color} 
+                    <Chip
+                      size="small"
+                      color={section.color}
                       label={section.items.length}
                       sx={{ ml: 1 }}
                     />
@@ -248,14 +248,14 @@ const LicensePage = () => {
                     {section.items.map((item, itemIndex) => (
                       <ListItem key={itemIndex} sx={{ px: 0 }}>
                         <ListItemIcon>
-                          <Chip 
-                            size="small" 
-                            label={itemIndex + 1} 
+                          <Chip
+                            size="small"
+                            label={itemIndex + 1}
                             color={section.color}
                             variant="outlined"
                           />
                         </ListItemIcon>
-                        <ListItemText 
+                        <ListItemText
                           primary={item}
                           primaryTypographyProps={{ variant: 'body2' }}
                         />
@@ -288,15 +288,15 @@ const LicensePage = () => {
                     {component.description}
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                    <Chip 
-                      label={component.technology} 
-                      size="small" 
-                      color="primary" 
+                    <Chip
+                      label={component.technology}
+                      size="small"
+                      color="primary"
                       variant="outlined"
                     />
-                    <Chip 
-                      label={component.license} 
-                      size="small" 
+                    <Chip
+                      label={component.license}
+                      size="small"
                       color={component.license === 'Proprietary' ? 'error' : 'success'}
                     />
                   </Box>
@@ -327,21 +327,21 @@ const LicensePage = () => {
                   </Typography>
                   <List dense>
                     <ListItem sx={{ px: 0 }}>
-                      <ListItemText 
+                      <ListItemText
                         primary="Contact"
                         secondary={support.contact}
                       />
                     </ListItem>
                     <ListItem sx={{ px: 0 }}>
-                      <ListItemText 
+                      <ListItemText
                         primary="Availability"
                         secondary={support.availability}
                       />
                     </ListItem>
                   </List>
-                  <Button 
-                    variant="outlined" 
-                    size="small" 
+                  <Button
+                    variant="outlined"
+                    size="small"
                     href={`mailto:${support.contact}`}
                     startIcon={<ContactIcon />}
                   >
@@ -361,11 +361,11 @@ const LicensePage = () => {
           Important Legal Notice
         </Typography>
         <Typography paragraph>
-          This software is proprietary and confidential. Unauthorized copying, distribution, 
+          This software is proprietary and confidential. Unauthorized copying, distribution,
           modification, or use is strictly prohibited and may result in legal action.
         </Typography>
         <Typography>
-          All rights reserved. No part of this software may be reproduced, distributed, or 
+          All rights reserved. No part of this software may be reproduced, distributed, or
           transmitted in any form or by any means without the prior written permission of the author.
         </Typography>
       </Alert>
@@ -376,7 +376,7 @@ const LicensePage = () => {
           License Compliance
         </Typography>
         <Typography>
-          For questions about license compliance, commercial licensing, or to report violations, 
+          For questions about license compliance, commercial licensing, or to report violations,
           please contact: <strong>mounir.ab@techno-dz.com</strong>
         </Typography>
       </Alert>

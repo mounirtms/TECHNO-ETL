@@ -17,7 +17,7 @@ import {
   Button,
   Card,
   CardContent,
-  Collapse
+  Collapse,
 } from '@mui/material';
 import {
   Settings as SettingsIcon,
@@ -33,7 +33,7 @@ import {
   ShoppingCart,
   People,
   Category,
-  AttachMoney
+  AttachMoney,
 } from '@mui/icons-material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -47,14 +47,14 @@ import { getUnifiedSettings, saveUnifiedSettings } from '../utils/unifiedSetting
 import { StatsCards } from '../components/common/StatsCards';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
-  Legend, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell
+  Legend, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell,
 } from 'recharts';
 
 // Import dashboard controller and services
 import { useDashboardController } from '../services/DashboardController';
 import {
   formatCurrency, formatDate, prepareCustomerChartData,
-  formatChartDate, formatTooltipDate
+  formatChartDate, formatTooltipDate,
 } from '../services/dashboardService';
 
 // Import dashboard components
@@ -70,7 +70,7 @@ import {
   ProfessionalMetricCard,
   ProfessionalChartWidget,
   ProfessionalProgressWidget,
-  ProfessionalStatusWidget
+  ProfessionalStatusWidget,
 } from '../components/dashboard/ProfessionalWidgets';
 import PriceSyncDialog from '../components/dashboard/PriceSyncDialog';
 
@@ -81,7 +81,7 @@ import {
   CategoryTreeChart,
   ProductAttributesChart,
   SalesPerformanceChart,
-  InventoryStatusChart
+  InventoryStatusChart,
 } from '../components/charts';
 
 // Import dashboard data service
@@ -97,24 +97,25 @@ const Dashboard = () => {
   const muiTheme = useTheme(); // MUI theme for shadows and other MUI-specific properties
   const { mode, isDark, colorPreset, density, animations } = useCustomTheme();
   const { currentLanguage, translate, languages } = useLanguage();
-  
+
   // Safely use the tab context with error handling
   let tabContext;
+
   try {
     tabContext = useTab();
   } catch (error) {
     // If useTab fails (outside of TabProvider), create a fallback context
     tabContext = { openTab: () => {} };
   }
-  
+
   const { openTab } = tabContext;
-  
+
   // Check if current language is RTL
   const isRTL = useMemo(() => languages[currentLanguage]?.dir === 'rtl', [languages, currentLanguage]);
-  
+
   // Use custom theme colors based on current color preset and mode
   const customColors = muiTheme.palette; // This will reflect the current theme
-  
+
   // Debug logging for theme persistence issues
   useEffect(() => {
     console.log('🎨 Dashboard theme state:', {
@@ -123,14 +124,16 @@ const Dashboard = () => {
       colorPreset,
       currentLanguage,
       isRTL,
-      paletteMode: muiTheme.palette.mode
+      paletteMode: muiTheme.palette.mode,
     });
   }, [mode, isDark, colorPreset, currentLanguage, isRTL, muiTheme.palette.mode]);
-  
+
   // Date range state
   const [startDate, setStartDate] = useState(() => {
     const date = new Date();
+
     date.setDate(date.getDate() - 30);
+
     return date;
   });
   const [endDate, setEndDate] = useState(new Date());
@@ -145,7 +148,7 @@ const Dashboard = () => {
     customers: true,
     products: true,
     analytics: true,
-    enhanced: true
+    enhanced: true,
   });
 
   // Enhanced dashboard data
@@ -155,7 +158,7 @@ const Dashboard = () => {
     categoryDistribution: [],
     productAttributes: [],
     salesPerformance: [],
-    inventoryStatus: []
+    inventoryStatus: [],
   });
   const [enhancedLoading, setEnhancedLoading] = useState(false);
 
@@ -174,7 +177,7 @@ const Dashboard = () => {
         categories: true,
         brands: true,
         lowStock: true,
-        pendingOrders: true
+        pendingOrders: true,
       },
       charts: {
         orders: true,
@@ -184,21 +187,21 @@ const Dashboard = () => {
         categoryTree: true,
         salesPerformance: true,
         inventoryStatus: true,
-        productAttributes: true
+        productAttributes: true,
       },
       widgets: {
         taskManagement: true,
         recentActivity: true,
         performanceMetrics: true,
         quickActions: true,
-        dashboardOverview: true
+        dashboardOverview: true,
       },
       general: {
         autoRefresh: false,
         animations: true,
         compactMode: false,
-        showTooltips: true
-      }
+        showTooltips: true,
+      },
     };
 
     return savedDashboardSettings ? { ...defaultSettings, ...savedDashboardSettings } : defaultSettings;
@@ -208,7 +211,7 @@ const Dashboard = () => {
   // Price sync dialog state
   const [priceSyncDialogOpen, setPriceSyncDialogOpen] = useState(false);
   const [priceData, setPriceData] = useState([]);
-  
+
   // Dashboard controller
   const {
     stats,
@@ -223,64 +226,65 @@ const Dashboard = () => {
     getPrices,
     syncAllStocks,
     fetchDashboardData,
-    syncProgress
+    syncProgress,
   } = useDashboardController(startDate, endDate, refreshKey);
 
   // Load enhanced dashboard data
   const loadEnhancedData = async () => {
     try {
-        setEnhancedLoading(true);
-        const cacheKey = 'enhancedDashboardData';
-        const cachedData = unifiedMagentoService._getCachedResponse(cacheKey);
+      setEnhancedLoading(true);
+      const cacheKey = 'enhancedDashboardData';
+      const cachedData = unifiedMagentoService._getCachedResponse(cacheKey);
 
-        if (cachedData) {
-            console.log('Loaded enhanced data from cache');
-            setEnhancedData(cachedData);
-        } else {
-            // Use Promise.allSettled to handle failed endpoints gracefully
-            const endpoints = [
-                '/products/stats',
-                '/products/types', 
-                '/brands/distribution',
-                '/categories/distribution',
-                '/products/attributes',
-                '/sales/performance',
-                '/inventory/status'
-            ];
-            
-            const responses = await Promise.allSettled(
-                endpoints.map(endpoint => 
-                    unifiedMagentoService.get(endpoint).catch(error => {
-                        console.warn(`Endpoint ${endpoint} failed:`, error.message);
-                        return { data: null };
-                    })
-                )
-            );
-            
-            const data = {
-                productStats: responses[0].status === 'fulfilled' ? responses[0].value?.data : null,
-                productTypes: responses[1].status === 'fulfilled' ? responses[1].value?.data : [],
-                brandDistribution: responses[2].status === 'fulfilled' ? responses[2].value?.data : [],
-                categoryDistribution: responses[3].status === 'fulfilled' ? responses[3].value?.data : [],
-                productAttributes: responses[4].status === 'fulfilled' ? responses[4].value?.data : [],
-                salesPerformance: responses[5].status === 'fulfilled' ? responses[5].value?.data : null,
-                inventoryStatus: responses[6].status === 'fulfilled' ? responses[6].value?.data : null
-            };
-            
-            setEnhancedData(data);
-            unifiedMagentoService._setCachedResponse(cacheKey, data);
-            console.log('Stored enhanced data to cache');
-        }
+      if (cachedData) {
+        console.log('Loaded enhanced data from cache');
+        setEnhancedData(cachedData);
+      } else {
+        // Use Promise.allSettled to handle failed endpoints gracefully
+        const endpoints = [
+          '/products/stats',
+          '/products/types',
+          '/brands/distribution',
+          '/categories/distribution',
+          '/products/attributes',
+          '/sales/performance',
+          '/inventory/status',
+        ];
+
+        const responses = await Promise.allSettled(
+          endpoints.map(endpoint =>
+            unifiedMagentoService.get(endpoint).catch(error => {
+              console.warn(`Endpoint ${endpoint} failed:`, error.message);
+
+              return { data: null };
+            }),
+          ),
+        );
+
+        const data = {
+          productStats: responses[0].status === 'fulfilled' ? responses[0].value?.data : null,
+          productTypes: responses[1].status === 'fulfilled' ? responses[1].value?.data : [],
+          brandDistribution: responses[2].status === 'fulfilled' ? responses[2].value?.data : [],
+          categoryDistribution: responses[3].status === 'fulfilled' ? responses[3].value?.data : [],
+          productAttributes: responses[4].status === 'fulfilled' ? responses[4].value?.data : [],
+          salesPerformance: responses[5].status === 'fulfilled' ? responses[5].value?.data : null,
+          inventoryStatus: responses[6].status === 'fulfilled' ? responses[6].value?.data : null,
+        };
+
+        setEnhancedData(data);
+        unifiedMagentoService._setCachedResponse(cacheKey, data);
+        console.log('Stored enhanced data to cache');
+      }
     } catch (error) {
-        console.error('Error loading enhanced dashboard data:', error);
-        // Don't show error toast for expected failures
-        if (error.response?.status !== 404) {
-            toast.error('Failed to load some dashboard data');
-        }
+      console.error('Error loading enhanced dashboard data:', error);
+      // Don't show error toast for expected failures
+      if (error.response?.status !== 404) {
+        toast.error('Failed to load some dashboard data');
+      }
     } finally {
-        setEnhancedLoading(false);
+      setEnhancedLoading(false);
     }
-};
+  };
 
   // Load enhanced data on mount and refresh
   useEffect(() => {
@@ -299,12 +303,12 @@ const Dashboard = () => {
       await getPrices();
       toast.success('Prices synced successfully', {
         position: 'top-center',
-        autoClose: 2000
+        autoClose: 2000,
       });
     } catch (error) {
       toast.error('Failed to sync prices', {
         position: 'top-center',
-        autoClose: 3000
+        autoClose: 3000,
       });
     }
   };
@@ -316,7 +320,7 @@ const Dashboard = () => {
     } catch (error) {
       toast.error('Failed to sync stocks', {
         position: 'top-center',
-        autoClose: 3000
+        autoClose: 3000,
       });
     }
   };
@@ -349,7 +353,7 @@ const Dashboard = () => {
         categories: true,
         brands: true,
         lowStock: true,
-        pendingOrders: true
+        pendingOrders: true,
       },
       charts: {
         orders: true,
@@ -359,27 +363,29 @@ const Dashboard = () => {
         categoryTree: true,
         salesPerformance: true,
         inventoryStatus: true,
-        productAttributes: true
+        productAttributes: true,
       },
       widgets: {
         taskManagement: true,
         recentActivity: true,
         performanceMetrics: true,
         quickActions: true,
-        dashboardOverview: true
+        dashboardOverview: true,
       },
       general: {
         autoRefresh: false,
         animations: true,
         compactMode: false,
-        showTooltips: true
-      }
+        showTooltips: true,
+      },
     };
+
     setDashboardSettings(defaultSettings);
 
     // Reset through unified settings manager
     try {
       const currentSettings = getUnifiedSettings();
+
       delete currentSettings.dashboard;
       saveUnifiedSettings(currentSettings);
     } catch (error) {
@@ -403,6 +409,7 @@ const Dashboard = () => {
     try {
       // Use getPrices from the controller, which manages loading
       const pricesData = await getPrices();
+
       console.log('📊 Price data received:', pricesData.data);
 
       if (pricesData.data) {
@@ -431,84 +438,84 @@ const Dashboard = () => {
     console.log('Dashboard: Navigating to section:', section, 'with params:', params);
 
     switch (section) {
-      case 'revenue':
-      case 'analytics':
-        openTab('Charts');
-        break;
-      case 'orders':
-      case 'pendingOrders':
-        openTab('OrdersGrid');
-        break;
-      case 'products':
-      case 'categories':
-      case 'brands':
-        openTab('ProductsGrid');
-        break;
-      case 'customers':
-        openTab('CustomersGrid');
-        break;
-      case 'lowStock':
-        openTab('StocksGrid'); // This is the inventory/stocks tab
-        break;
-      default:
-        console.log('Unknown section:', section);
-        // Try to open the section directly as a tab ID
-        openTab(section);
+    case 'revenue':
+    case 'analytics':
+      openTab('Charts');
+      break;
+    case 'orders':
+    case 'pendingOrders':
+      openTab('OrdersGrid');
+      break;
+    case 'products':
+    case 'categories':
+    case 'brands':
+      openTab('ProductsGrid');
+      break;
+    case 'customers':
+      openTab('CustomersGrid');
+      break;
+    case 'lowStock':
+      openTab('StocksGrid'); // This is the inventory/stocks tab
+      break;
+    default:
+      console.log('Unknown section:', section);
+      // Try to open the section directly as a tab ID
+      openTab(section);
     }
   };
 
   // Handle actions
   const handleAction = (action) => {
     switch (action) {
-      case 'add-product':
-      case 'import-data':
-      case 'bulk-media-upload':
-        openTab('ProductsGrid');
-        break;
-      case 'sync-products':
-        console.log('Sync products');
-        break;
-      case 'export-report':
-        console.log('Export report');
-        break;
-      case 'settings':
-        console.log('Open settings');
-        break;
-      default:
-        console.log('Action:', action);
+    case 'add-product':
+    case 'import-data':
+    case 'bulk-media-upload':
+      openTab('ProductsGrid');
+      break;
+    case 'sync-products':
+      console.log('Sync products');
+      break;
+    case 'export-report':
+      console.log('Export report');
+      break;
+    case 'settings':
+      console.log('Open settings');
+      break;
+    default:
+      console.log('Action:', action);
     }
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Box 
-        sx={{ 
-          p: 3, 
-          minHeight: '100vh', 
+      <Box
+        sx={{
+          p: 3,
+          minHeight: '100vh',
           bgcolor: 'background.default',
           direction: isRTL ? 'rtl' : 'ltr',
           // Ensure the dashboard respects theme changes
-          transition: 'background-color 0.3s ease, color 0.3s ease'
+          transition: 'background-color 0.3s ease, color 0.3s ease',
         }}
       >
         {/* Header */}
-        <Paper 
+        <Paper
           elevation={0}
-          sx={{ 
-            p: 3, 
-            mb: 3, 
+          sx={{
+            p: 3,
+            mb: 3,
             borderRadius: 3,
             background: `linear-gradient(135deg, ${muiTheme.palette.primary.main}15, ${muiTheme.palette.secondary.main}08)`,
             border: `1px solid ${muiTheme.palette.primary.light}20`,
             // Ensure RTL support for the header
             direction: isRTL ? 'rtl' : 'ltr',
-            transition: 'all 0.3s ease'
+            transition: 'all 0.3s ease',
           }}
         >
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center' 
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
           }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <DashboardIcon sx={{ fontSize: 32, color: 'primary.main' }} />
@@ -516,15 +523,15 @@ const Dashboard = () => {
                 {translate('navigation.dashboard') || 'Dashboard'}
               </Typography>
             </Box>
-            
+
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
               {/* Date Range Pickers */}
-              <Box sx={{ 
-                display: 'flex', 
-                gap: 1, 
+              <Box sx={{
+                display: 'flex',
+                gap: 1,
                 mr: isRTL ? 0 : 2,
                 ml: isRTL ? 2 : 0,
-                direction: isRTL ? 'rtl' : 'ltr'
+                direction: isRTL ? 'rtl' : 'ltr',
               }}>
                 <DatePicker
                   label={translate('dashboard.startDate') || 'Start Date'}
@@ -548,9 +555,9 @@ const Dashboard = () => {
                     size="small"
                     onClick={handlePriceSync}
                     startIcon={<PriceIcon />}
-                    sx={{ 
+                    sx={{
                       mr: isRTL ? 0 : 1,
-                      ml: isRTL ? 1 : 0
+                      ml: isRTL ? 1 : 0,
                     }}
                     disabled={loading}
                   >
@@ -565,9 +572,9 @@ const Dashboard = () => {
                   size="small"
                   onClick={handleSyncStocks}
                   startIcon={<StockIcon />}
-                  sx={{ 
+                  sx={{
                     mr: isRTL ? 0 : 1,
-                    ml: isRTL ? 1 : 0
+                    ml: isRTL ? 1 : 0,
                   }}
                 >
                   {translate('dashboard.syncStocks') || 'Stocks'}
@@ -580,9 +587,9 @@ const Dashboard = () => {
                   size="medium"
                   color="secondary"
                   onClick={() => openTab('Charts')}
-                  sx={{ 
+                  sx={{
                     boxShadow: 3,
-                    margin: isRTL ? '0 4px 0 0' : '0 0 0 4px'
+                    margin: isRTL ? '0 4px 0 0' : '0 0 0 4px',
                   }}
                 >
                   <AnalyticsIcon />
@@ -596,9 +603,9 @@ const Dashboard = () => {
                     color="primary"
                     onClick={handleRefresh}
                     disabled={loading}
-                    sx={{ 
+                    sx={{
                       boxShadow: 3,
-                      margin: isRTL ? '0 4px 0 0' : '0 0 0 4px'
+                      margin: isRTL ? '0 4px 0 0' : '0 0 0 4px',
                     }}
                   >
                     {loading ? <CircularProgress size={24} color="inherit" /> : <RefreshIcon />}
@@ -613,7 +620,7 @@ const Dashboard = () => {
                     bgcolor: 'background.paper',
                     boxShadow: 2,
                     '&:hover': { boxShadow: 4 },
-                    margin: isRTL ? '0 4px 0 0' : '0 0 0 4px'
+                    margin: isRTL ? '0 4px 0 0' : '0 0 0 4px',
                   }}
                 >
                   <SettingsIcon />
@@ -633,9 +640,9 @@ const Dashboard = () => {
               sx: {
                 minWidth: 240,
                 borderRadius: 2,
-                boxShadow: muiTheme.shadows[8]
-              }
-            }
+                boxShadow: muiTheme.shadows[8],
+              },
+            },
           }}
         >
           <MenuItem onClick={() => {
@@ -661,11 +668,11 @@ const Dashboard = () => {
 
         {/* Main Content */}
         {loading && (
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'center',
             alignItems: 'center',
-            height: '60vh'
+            height: '60vh',
           }}>
             <CircularProgress size={60} />
           </Box>
@@ -889,7 +896,7 @@ const Dashboard = () => {
                         { label: 'Order Fulfillment', value: 85, color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
                         { label: 'Customer Satisfaction', value: 92, color: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' },
                         { label: 'Inventory Accuracy', value: 78, color: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)' },
-                        { label: 'System Uptime', value: 99, color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }
+                        { label: 'System Uptime', value: 99, color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
                       ]}
                     />
                   </Grid>
@@ -928,7 +935,7 @@ const Dashboard = () => {
                       { label: 'Database Connection', status: 'success', description: 'All systems operational', badge: 'Online' },
                       { label: 'API Services', status: 'success', description: 'Response time: 120ms', badge: 'Healthy' },
                       { label: 'Cache System', status: 'warning', description: 'Memory usage: 78%', badge: 'Monitor' },
-                      { label: 'Background Jobs', status: 'success', description: '12 jobs completed', badge: 'Active' }
+                      { label: 'Background Jobs', status: 'success', description: '12 jobs completed', badge: 'Active' },
                     ]}
                   />
                 </Grid>
@@ -992,7 +999,7 @@ const Dashboard = () => {
           pt: 3,
           borderTop: 1,
           borderColor: 'divider',
-          textAlign: 'center'
+          textAlign: 'center',
         }}>
           <Typography variant="body2" color="text.secondary">
             🚀 <strong>Techno-ETL Dashboard</strong> - Professional e-commerce management system

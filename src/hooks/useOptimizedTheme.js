@@ -14,7 +14,7 @@ export const useOptimizedTheme = () => {
   const themeConfig = useMemo(() => {
     const currentLangConfig = languages[currentLanguage];
     const isRTL = currentLangConfig?.dir === 'rtl';
-    
+
     return {
       theme,
       isRTL,
@@ -30,7 +30,7 @@ export const useOptimizedTheme = () => {
       // Flexbox direction helpers
       flexDirection: isRTL ? 'row-reverse' : 'row',
       // Transform helpers for icons/arrows
-      transform: isRTL ? 'scaleX(-1)' : 'none'
+      transform: isRTL ? 'scaleX(-1)' : 'none',
     };
   }, [theme, currentLanguage, languages]);
 
@@ -50,33 +50,33 @@ export const useOptimizedGridTheme = () => {
     palette: theme.palette,
     spacing: theme.spacing,
     breakpoints: theme.breakpoints,
-    
+
     // RTL properties
     isRTL,
     direction,
-    
+
     // Common grid colors
     headerBackground: theme.palette.background.paper,
     rowHoverColor: theme.palette.action.hover,
     selectedRowColor: theme.palette.action.selected,
     borderColor: theme.palette.divider,
-    
+
     // Grid spacing
     cellPadding: theme.spacing(1),
     headerHeight: 56,
     rowHeight: 52,
-    
+
     // Typography
     headerFontWeight: theme.typography.fontWeightMedium,
     cellFontSize: theme.typography.body2.fontSize,
-    
+
     // Shadows and borders
     elevation: theme.shadows[1],
     borderRadius: theme.shape.borderRadius,
-    
+
     // RTL-aware positioning
     textAlign: isRTL ? 'right' : 'left',
-    iconTransform: isRTL ? 'scaleX(-1)' : 'none'
+    iconTransform: isRTL ? 'scaleX(-1)' : 'none',
   }), [theme, isRTL, direction]);
 
   return gridTheme;
@@ -95,55 +95,55 @@ export const useOptimizedComponentTheme = (componentName) => {
       palette: theme.palette,
       spacing: theme.spacing,
       isRTL,
-      borderRadius: theme.shape.borderRadius
+      borderRadius: theme.shape.borderRadius,
     };
 
     // Component-specific optimizations
     switch (componentName) {
-      case 'dashboard':
-        return {
-          ...baseTheme,
-          cardElevation: theme.shadows[2],
-          cardPadding: theme.spacing(3),
-          statCardHeight: 120,
-          chartColors: [
-            theme.palette.primary.main,
-            theme.palette.secondary.main,
-            theme.palette.success.main,
-            theme.palette.warning.main,
-            theme.palette.error.main
-          ]
-        };
-        
-      case 'sidebar':
-        return {
-          ...baseTheme,
-          width: 280,
-          collapsedWidth: 64,
-          backgroundColor: theme.palette.background.sidebar,
-          itemHeight: 48,
-          iconSize: 24
-        };
-        
-      case 'header':
-        return {
-          ...baseTheme,
-          height: 64,
-          backgroundColor: theme.palette.background.header,
-          elevation: theme.shadows[1]
-        };
-        
-      case 'grid':
-        return {
-          ...baseTheme,
-          headerHeight: 56,
-          rowHeight: 52,
-          borderColor: theme.palette.divider,
-          hoverColor: theme.palette.action.hover
-        };
-        
-      default:
-        return baseTheme;
+    case 'dashboard':
+      return {
+        ...baseTheme,
+        cardElevation: theme.shadows[2],
+        cardPadding: theme.spacing(3),
+        statCardHeight: 120,
+        chartColors: [
+          theme.palette.primary.main,
+          theme.palette.secondary.main,
+          theme.palette.success.main,
+          theme.palette.warning.main,
+          theme.palette.error.main,
+        ],
+      };
+
+    case 'sidebar':
+      return {
+        ...baseTheme,
+        width: 280,
+        collapsedWidth: 64,
+        backgroundColor: theme.palette.background.sidebar,
+        itemHeight: 48,
+        iconSize: 24,
+      };
+
+    case 'header':
+      return {
+        ...baseTheme,
+        height: 64,
+        backgroundColor: theme.palette.background.header,
+        elevation: theme.shadows[1],
+      };
+
+    case 'grid':
+      return {
+        ...baseTheme,
+        headerHeight: 56,
+        rowHeight: 52,
+        borderColor: theme.palette.divider,
+        hoverColor: theme.palette.action.hover,
+      };
+
+    default:
+      return baseTheme;
     }
   }, [theme, isRTL, componentName]);
 

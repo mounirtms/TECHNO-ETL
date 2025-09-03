@@ -6,7 +6,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
  * Sales Performance Chart Component
  * Shows sales trends and performance metrics over time
  */
-const SalesPerformanceChart = ({ data, title = "Sales Performance", type = "line" }) => {
+const SalesPerformanceChart = ({ data, title = 'Sales Performance', type = 'line' }) => {
   // Custom tooltip for performance chart
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -17,7 +17,7 @@ const SalesPerformanceChart = ({ data, title = "Sales Performance", type = "line
             border: '1px solid #ccc',
             borderRadius: 1,
             padding: 1,
-            boxShadow: 2
+            boxShadow: 2,
           }}
         >
           <Typography variant="body2" fontWeight="bold">
@@ -33,6 +33,7 @@ const SalesPerformanceChart = ({ data, title = "Sales Performance", type = "line
         </Box>
       );
     }
+
     return null;
   };
 
@@ -43,13 +44,13 @@ const SalesPerformanceChart = ({ data, title = "Sales Performance", type = "line
           <Typography variant="h6" gutterBottom>
             {title}
           </Typography>
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               height: 300,
-              color: 'text.secondary'
+              color: 'text.secondary',
             }}
           >
             No performance data available
@@ -60,7 +61,7 @@ const SalesPerformanceChart = ({ data, title = "Sales Performance", type = "line
   }
 
   const renderChart = () => {
-    if (type === "area") {
+    if (type === 'area') {
       return (
         <AreaChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />

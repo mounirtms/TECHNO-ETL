@@ -5,11 +5,12 @@
  * @returns {string} The formatted currency string
  */
 export const formatCurrency = (value, currency = 'USD') => {
-    if (value == null) return '';
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: currency
-    }).format(value);
+  if (value == null) return '';
+
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency,
+  }).format(value);
 };
 
 /**
@@ -18,8 +19,9 @@ export const formatCurrency = (value, currency = 'USD') => {
  * @returns {string} The formatted date string
  */
 export const formatDateTime = (dateString) => {
-    if (!dateString) return '';
-    return new Date(dateString).toLocaleString();
+  if (!dateString) return '';
+
+  return new Date(dateString).toLocaleString();
 };
 
 /**
@@ -28,6 +30,7 @@ export const formatDateTime = (dateString) => {
  * @returns {string} The formatted number string
  */
 export const formatNumber = (value) => {
-    if (value == null) return '';
-    return new Intl.NumberFormat('en-US').format(value);
+  if (value == null) return '';
+
+  return new Intl.NumberFormat('en-US').format(value);
 };

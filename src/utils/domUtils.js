@@ -8,7 +8,7 @@ export function safeIsElement(value) {
     if (!value || typeof value !== 'object') {
       return false;
     }
-    
+
     // Then check if it's a DOM element (nodeType === 1 and not a plain object)
     return value.nodeType === 1 && !(value.toString && value.toString() === '[object Object]');
   } catch (e) {

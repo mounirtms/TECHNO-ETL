@@ -1,7 +1,7 @@
 /**
  * Bug Bounty Page
  * Main page for the bug bounty program
- * 
+ *
  * @author Mounir Abderrahmani
  * @email mounir.ab@techno-dz.com
  * @contact mounir.webdev.tms@gmail.com

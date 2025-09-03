@@ -40,16 +40,16 @@ class ErrorBoundary extends React.Component {
           height: '100vh',
           fontFamily: 'Arial, sans-serif',
           textAlign: 'center',
-          padding: '20px'
-        }
+          padding: '20px',
+        },
       }, [
-        React.createElement('h1', { 
+        React.createElement('h1', {
           key: 'title',
-          style: { color: '#d32f2f', marginBottom: '16px' } 
+          style: { color: '#d32f2f', marginBottom: '16px' },
         }, 'Application Error'),
-        React.createElement('p', { 
+        React.createElement('p', {
           key: 'message',
-          style: { color: '#666', marginBottom: '24px' } 
+          style: { color: '#666', marginBottom: '24px' },
         }, `Error: ${this.state.error?.message || 'Unknown error'}`),
         React.createElement('button', {
           key: 'button',
@@ -61,9 +61,9 @@ class ErrorBoundary extends React.Component {
             border: 'none',
             borderRadius: '4px',
             cursor: 'pointer',
-            fontSize: '16px'
-          }
-        }, 'Refresh Page')
+            fontSize: '16px',
+          },
+        }, 'Refresh Page'),
       ]);
     }
 
@@ -74,18 +74,23 @@ class ErrorBoundary extends React.Component {
 // Initialize app with proper context nesting
 function initApp() {
   console.log('🚀 Initializing TECHNO-ETL with fixed contexts...');
-  
+
   const container = document.getElementById('root');
+
   if (!container) {
     console.error('Root container not found');
+
     return;
   }
 
   try {
-    const root = createRoot(container);
-    
+    // Create root only if it doesn't already exist
+    if (!container._root) {
+      container._root = createRoot(container);
+    }
+
     // Proper provider nesting with PermissionProvider after AuthProvider
-    root.render(
+    container._root.render(
       React.createElement(React.StrictMode, null,
         React.createElement(ErrorBoundary, null,
           React.createElement(AuthProvider, null,
@@ -93,33 +98,33 @@ function initApp() {
               React.createElement(LanguageProvider, null,
                 React.createElement(ThemeProvider, null,
                   React.createElement(SettingsProvider, null,
-                    React.createElement(App)
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
+                    React.createElement(App),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
-    
+
     console.log('✅ TECHNO-ETL initialized successfully');
-    
-    // Remove loading screen
-    setTimeout(() => {
+
+    // Remove loading screen with better performance
+    requestAnimationFrame(() => {
       const loadingScreen = document.getElementById('loading-screen');
+
       if (loadingScreen) {
         // Faster removal of loading screen
         loadingScreen.style.transition = 'opacity 0.3s ease-out';
         loadingScreen.style.opacity = '0';
-        loadingScreen.style.visibility = 'hidden';
         setTimeout(() => {
           if (loadingScreen.parentNode) {
             loadingScreen.parentNode.removeChild(loadingScreen);
           }
-        }, 500);
+        }, 300);
       }
-    }, 100);
+    });
   } catch (error) {
     console.error('Failed to initialize app:', error);
     container.innerHTML = `
@@ -140,8 +145,8 @@ function initApp() {
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initApp);
 } else {
-  // Add a small delay to ensure DOM is fully ready
-  setTimeout(initApp, 0);
+  // Use requestAnimationFrame for better performance
+  requestAnimationFrame(initApp);
 }
 
 // Global error handlers

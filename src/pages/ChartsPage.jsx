@@ -12,7 +12,7 @@ import {
   Alert,
   Fab,
   Tooltip,
-  Chip
+  Chip,
 } from '@mui/material';
 import {
   Analytics as AnalyticsIcon,
@@ -20,7 +20,7 @@ import {
   Category,
   Inventory,
   ShoppingCart,
-  Refresh as RefreshIcon
+  Refresh as RefreshIcon,
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 
@@ -31,7 +31,7 @@ import {
   CategoryTreeChart,
   ProductAttributesChart,
   SalesPerformanceChart,
-  InventoryStatusChart
+  InventoryStatusChart,
 } from '../components/charts';
 
 // Import unified service
@@ -49,7 +49,7 @@ const ChartsPage = () => {
     getView,
     getPeriod,
     isRevenueView,
-    params
+    params,
   } = useDashboardParams();
 
   const [activeTab, setActiveTab] = useState(0);
@@ -60,7 +60,7 @@ const ChartsPage = () => {
     categoryDistribution: [],
     productAttributes: [],
     salesPerformance: [],
-    inventoryStatus: []
+    inventoryStatus: [],
   });
 
   // Load chart data
@@ -80,7 +80,7 @@ const ChartsPage = () => {
           unifiedMagentoService.get('/categories/distribution'),
           unifiedMagentoService.get('/products/attributes'),
           unifiedMagentoService.get('/sales/performance'),
-          unifiedMagentoService.get('/inventory/status')
+          unifiedMagentoService.get('/inventory/status'),
         ]);
         const chartData = {
           productStats: responses[0].data,
@@ -88,8 +88,9 @@ const ChartsPage = () => {
           categoryDistribution: responses[2].data,
           productAttributes: responses[3].data,
           salesPerformance: responses[4].data,
-          inventoryStatus: responses[5].data
+          inventoryStatus: responses[5].data,
         };
+
         setData(chartData);
         unifiedMagentoService._setCachedResponse(cacheKey, chartData);
         console.log('Stored charts data to cache');
@@ -118,31 +119,31 @@ const ChartsPage = () => {
       content: (
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
-            <ProductStatsChart 
+            <ProductStatsChart
               data={data.productStats}
               title="Product Status Distribution"
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <BrandDistributionChart 
+            <BrandDistributionChart
               data={data.brandDistribution}
               title="Top Brands"
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <CategoryTreeChart 
+            <CategoryTreeChart
               data={data.categoryDistribution}
               title="Category Distribution"
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <ProductAttributesChart 
+            <ProductAttributesChart
               data={data.productAttributes}
               title="Product Features"
             />
           </Grid>
         </Grid>
-      )
+      ),
     },
     {
       label: 'Sales',
@@ -150,27 +151,27 @@ const ChartsPage = () => {
       content: (
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <SalesPerformanceChart 
+            <SalesPerformanceChart
               data={data.salesPerformance}
               title="Sales Performance Trends"
               type="area"
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <SalesPerformanceChart 
+            <SalesPerformanceChart
               data={data.salesPerformance}
               title="Revenue Analysis"
               type="line"
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <ProductStatsChart 
+            <ProductStatsChart
               data={data.productStats}
               title="Product Performance"
             />
           </Grid>
         </Grid>
-      )
+      ),
     },
     {
       label: 'Inventory',
@@ -178,25 +179,25 @@ const ChartsPage = () => {
       content: (
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <InventoryStatusChart 
+            <InventoryStatusChart
               data={data.inventoryStatus}
               title="Inventory Overview by Category"
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <CategoryTreeChart 
+            <CategoryTreeChart
               data={data.categoryDistribution}
               title="Stock Distribution by Category"
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <ProductAttributesChart 
+            <ProductAttributesChart
               data={data.productAttributes}
               title="Product Attributes Analysis"
             />
           </Grid>
         </Grid>
-      )
+      ),
     },
     {
       label: 'Products',
@@ -204,31 +205,31 @@ const ChartsPage = () => {
       content: (
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
-            <ProductStatsChart 
+            <ProductStatsChart
               data={data.productStats}
               title="Product Status"
             />
           </Grid>
           <Grid item xs={12} md={8}>
-            <BrandDistributionChart 
+            <BrandDistributionChart
               data={data.brandDistribution}
               title="Brand Performance"
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <ProductAttributesChart 
+            <ProductAttributesChart
               data={data.productAttributes}
               title="Product Features Distribution"
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <CategoryTreeChart 
+            <CategoryTreeChart
               data={data.categoryDistribution}
               title="Product Categories"
             />
           </Grid>
         </Grid>
-      )
+      ),
     },
     {
       label: 'Categories',
@@ -236,26 +237,26 @@ const ChartsPage = () => {
       content: (
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <CategoryTreeChart 
+            <CategoryTreeChart
               data={data.categoryDistribution}
               title="Category Hierarchy & Distribution"
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <InventoryStatusChart 
+            <InventoryStatusChart
               data={data.inventoryStatus}
               title="Stock by Category"
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <BrandDistributionChart 
+            <BrandDistributionChart
               data={data.brandDistribution}
               title="Brands by Category"
             />
           </Grid>
         </Grid>
-      )
-    }
+      ),
+    },
   ];
 
   return (
@@ -292,7 +293,7 @@ const ChartsPage = () => {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        mb: 3
+        mb: 3,
       }}>
         <Box>
           <Typography variant="h4" fontWeight={600} gutterBottom>
@@ -302,7 +303,7 @@ const ChartsPage = () => {
             Comprehensive data visualization and business intelligence
           </Typography>
         </Box>
-        
+
         <Tooltip title="Refresh Data">
           <Fab
             color="primary"
@@ -332,8 +333,8 @@ const ChartsPage = () => {
               minHeight: 64,
               textTransform: 'none',
               fontSize: '0.875rem',
-              fontWeight: 500
-            }
+              fontWeight: 500,
+            },
           }}
         >
           {chartTabs.map((tab, index) => (
@@ -350,11 +351,11 @@ const ChartsPage = () => {
         {/* Tab Content */}
         <Box sx={{ p: 3, minHeight: 600 }}>
           {loading ? (
-            <Box sx={{ 
-              display: 'flex', 
-              justifyContent: 'center', 
-              alignItems: 'center', 
-              height: 400 
+            <Box sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: 400,
             }}>
               <CircularProgress size={60} />
             </Box>
@@ -371,14 +372,14 @@ const ChartsPage = () => {
       </Paper>
 
       {/* Footer Info */}
-      <Alert 
-        severity="info" 
-        sx={{ 
-          mt: 3, 
+      <Alert
+        severity="info"
+        sx={{
+          mt: 3,
           borderRadius: 2,
           '& .MuiAlert-message': {
-            width: '100%'
-          }
+            width: '100%',
+          },
         }}
       >
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

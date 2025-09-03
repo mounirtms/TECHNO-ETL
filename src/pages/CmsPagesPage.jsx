@@ -1,11 +1,11 @@
 import React, { useState, useCallback, Suspense } from 'react';
-import { 
+import {
   Description as DescriptionIcon,
   Article,
   ViewModule,
   Settings as SettingsIcon,
   Add as AddIcon,
-  FilterList as FilterIcon
+  FilterList as FilterIcon,
 } from '@mui/icons-material';
 import EnhancedGridPage from '../components/common/EnhancedGridPage';
 import { toast } from 'react-toastify';
@@ -22,7 +22,7 @@ const CmsPagesPage = () => {
     { label: 'Total Pages', value: '0', color: 'primary' },
     { label: 'Active Pages', value: '0', color: 'success' },
     { label: 'Draft Pages', value: '0', color: 'warning' },
-    { label: 'Total Blocks', value: '0', color: 'info' }
+    { label: 'Total Blocks', value: '0', color: 'info' },
   ]);
 
   const handleTabChange = useCallback((newTab) => {
@@ -33,7 +33,7 @@ const CmsPagesPage = () => {
   const handleRefresh = useCallback(async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
       // Simulate refresh - in real implementation, this would refetch data
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -71,7 +71,7 @@ const CmsPagesPage = () => {
         <Suspense fallback={<div>Loading CMS Pages...</div>}>
           <CmsPagesGrid />
         </Suspense>
-      )
+      ),
     },
     {
       id: 'blocks',
@@ -81,8 +81,8 @@ const CmsPagesPage = () => {
         <Suspense fallback={<div>Loading CMS Blocks...</div>}>
           <CmsBlocksGrid />
         </Suspense>
-      )
-    }
+      ),
+    },
   ];
 
   const actions = [
@@ -90,14 +90,14 @@ const CmsPagesPage = () => {
       label: 'Export',
       variant: 'outlined',
       onClick: () => toast.info('Export functionality coming soon'),
-      color: 'secondary'
+      color: 'secondary',
     },
     {
       label: 'Import',
       variant: 'outlined',
       onClick: () => toast.info('Import functionality coming soon'),
-      color: 'secondary'
-    }
+      color: 'secondary',
+    },
   ];
 
   return (

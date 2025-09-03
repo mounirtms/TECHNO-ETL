@@ -22,7 +22,7 @@ import {
   Tooltip,
   Accordion,
   AccordionSummary,
-  AccordionDetails
+  AccordionDetails,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import {
@@ -36,7 +36,7 @@ import {
   Settings as SettingsIcon,
   Storage as DatabaseIcon,
   Security as SecurityIcon,
-  Code as CodeIcon
+  Code as CodeIcon,
 } from '@mui/icons-material';
 
 const GettingStarted = () => {
@@ -63,12 +63,12 @@ const GettingStarted = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const setupSteps = [
@@ -84,7 +84,7 @@ const GettingStarted = () => {
           'Firebase project for authentication services',
           'Magento 2.4+ instance with API access',
           'Git for version control',
-          'Code editor (VS Code recommended)'
+          'Code editor (VS Code recommended)',
         ],
         commands: [
           {
@@ -95,7 +95,7 @@ node --version
 npm --version
 
 # Should show v18.x.x or higher`,
-            language: 'bash'
+            language: 'bash',
           },
           {
             title: 'Install Git',
@@ -106,10 +106,10 @@ git --version
 # Configure Git (replace with your details)
 git config --global user.name "Your Name"
 git config --global user.email "your.email@example.com"`,
-            language: 'bash'
-          }
-        ]
-      }
+            language: 'bash',
+          },
+        ],
+      },
     },
     {
       label: 'Clone & Install Dependencies',
@@ -120,7 +120,7 @@ git config --global user.email "your.email@example.com"`,
           'Git repository access',
           'Stable internet connection for package downloads',
           'Sufficient disk space (minimum 2GB)',
-          'Administrative privileges for global packages'
+          'Administrative privileges for global packages',
         ],
         commands: [
           {
@@ -131,7 +131,7 @@ cd techno-etl
 
 # Check repository structure
 ls -la`,
-            language: 'bash'
+            language: 'bash',
           },
           {
             title: 'Install Backend Dependencies',
@@ -146,7 +146,7 @@ npm install -g pm2 nodemon
 
 # Verify installation
 npm list --depth=0`,
-            language: 'bash'
+            language: 'bash',
           },
           {
             title: 'Install Frontend Dependencies',
@@ -162,10 +162,10 @@ npm install
 
 # Return to project root
 cd ..`,
-            language: 'bash'
-          }
-        ]
-      }
+            language: 'bash',
+          },
+        ],
+      },
     },
     {
       label: 'Database Setup',
@@ -176,7 +176,7 @@ cd ..`,
           'SQL Server 2019+ or Azure SQL Database',
           'Database administrator privileges',
           'SQL Server Management Studio or Azure Data Studio',
-          'Network connectivity to database server'
+          'Network connectivity to database server',
         ],
         commands: [
           {
@@ -192,7 +192,7 @@ GO
 
 -- Verify database creation
 SELECT name FROM sys.databases WHERE name = 'TECHNO_ETL';`,
-            language: 'sql'
+            language: 'sql',
           },
           {
             title: 'Run Setup Script',
@@ -207,10 +207,10 @@ WHERE TABLE_TYPE = 'BASE TABLE'
 ORDER BY TABLE_NAME;
 
 -- Should show: Products, Inventory, Prices, Categories, etc.`,
-            language: 'sql'
-          }
-        ]
-      }
+            language: 'sql',
+          },
+        ],
+      },
     },
     {
       label: 'Environment Configuration',
@@ -221,7 +221,7 @@ ORDER BY TABLE_NAME;
           'Database connection details',
           'Firebase project credentials',
           'Magento API access token',
-          'Redis server connection details'
+          'Redis server connection details',
         ],
         commands: [
           {
@@ -245,7 +245,7 @@ JWT_SECRET=your_jwt_secret_here
 MAGENTO_BASE_URL=https://your-magento-site.com
 MAGENTO_API_TOKEN=your_magento_token
 FIREBASE_PROJECT_ID=your_firebase_project`,
-            language: 'bash'
+            language: 'bash',
           },
           {
             title: 'Frontend Environment (.env.development)',
@@ -259,10 +259,10 @@ REACT_APP_FIREBASE_API_KEY=your_firebase_api_key
 REACT_APP_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
 REACT_APP_FIREBASE_PROJECT_ID=your_firebase_project
 REACT_APP_MAGENTO_BASE_URL=https://your-magento-site.com`,
-            language: 'bash'
-          }
-        ]
-      }
+            language: 'bash',
+          },
+        ],
+      },
     },
     {
       label: 'Start Development Servers',
@@ -273,7 +273,7 @@ REACT_APP_MAGENTO_BASE_URL=https://your-magento-site.com`,
           'All dependencies installed',
           'Database configured and running',
           'Environment variables set',
-          'Ports 3000, 3001 available'
+          'Ports 3000, 3001 available',
         ],
         commands: [
           {
@@ -289,7 +289,7 @@ pm2 start ecosystem.config.cjs --env development
 
 # Verify server is running
 curl http://localhost:3001/api/v1/health`,
-            language: 'bash'
+            language: 'bash',
           },
           {
             title: 'Start Frontend Application',
@@ -301,7 +301,7 @@ npm start
 
 # Application will open at http://localhost:3000
 # Hot reload is enabled for development`,
-            language: 'bash'
+            language: 'bash',
           },
           {
             title: 'Start Documentation Site',
@@ -313,11 +313,11 @@ npm start
 
 # Documentation will open at http://localhost:3000
 # (if frontend is not running on this port)`,
-            language: 'bash'
-          }
-        ]
-      }
-    }
+            language: 'bash',
+          },
+        ],
+      },
+    },
   ];
 
   const quickStartCommands = `# Quick Start - All in One
@@ -346,22 +346,22 @@ cd docs && npm start`;
 
   const CodeBlock = ({ code, language, title }) => (
     <Box sx={{ mb: 2 }}>
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
         alignItems: 'center',
         p: 1,
         backgroundColor: 'grey.100',
         borderTopLeftRadius: 1,
-        borderTopRightRadius: 1
+        borderTopRightRadius: 1,
       }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Chip label={language} size="small" color="primary" />
           {title && <Typography variant="subtitle2">{title}</Typography>}
         </Box>
         <Tooltip title={copiedText === title ? 'Copied!' : 'Copy to clipboard'}>
-          <IconButton 
-            size="small" 
+          <IconButton
+            size="small"
             onClick={() => copyToClipboard(code, title)}
             color={copiedText === title ? 'success' : 'default'}
           >
@@ -369,13 +369,13 @@ cd docs && npm start`;
           </IconButton>
         </Tooltip>
       </Box>
-      <Paper sx={{ 
-        p: 2, 
-        backgroundColor: '#f5f5f5', 
+      <Paper sx={{
+        p: 2,
+        backgroundColor: '#f5f5f5',
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
         overflow: 'auto',
-        maxHeight: 300
+        maxHeight: 300,
       }}>
         <pre style={{ fontSize: '0.875rem', margin: 0, whiteSpace: 'pre-wrap' }}>
           {code}
@@ -411,7 +411,7 @@ cd docs && npm start`;
             <Typography variant="body1" sx={{ mb: 2 }}>
               For experienced developers, here's the quick setup command sequence:
             </Typography>
-            <CodeBlock 
+            <CodeBlock
               code={quickStartCommands}
               language="bash"
               title="quick-start"
@@ -527,7 +527,7 @@ cd docs && npm start`;
                     <Typography variant="body1" sx={{ mb: 2 }}>
                       {step.content.description}
                     </Typography>
-                    
+
                     <Alert severity="info" sx={{ mb: 2 }}>
                       <Typography variant="subtitle2" fontWeight={600}>Requirements:</Typography>
                       <List dense>
@@ -547,7 +547,7 @@ cd docs && npm start`;
                         <Typography variant="subtitle1" fontWeight={600} gutterBottom>
                           {command.title}:
                         </Typography>
-                        <CodeBlock 
+                        <CodeBlock
                           code={command.code}
                           language={command.language}
                           title={`${step.label}-${idx}`}
@@ -582,7 +582,7 @@ cd docs && npm start`;
               <Paper square elevation={0} sx={{ p: 3 }}>
                 <Typography variant="h6" gutterBottom>🎉 Setup Complete!</Typography>
                 <Typography>
-                  Congratulations! You have successfully set up TECHNO-ETL. 
+                  Congratulations! You have successfully set up TECHNO-ETL.
                   Your application should now be running and accessible.
                 </Typography>
                 <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
@@ -608,21 +608,21 @@ cd docs && npm start`;
                   <List>
                     <ListItem>
                       <ListItemIcon><CheckIcon color="success" /></ListItemIcon>
-                      <ListItemText 
+                      <ListItemText
                         primary="Frontend accessible at http://localhost:3000"
                         secondary="Should show the TECHNO-ETL dashboard"
                       />
                     </ListItem>
                     <ListItem>
                       <ListItemIcon><CheckIcon color="success" /></ListItemIcon>
-                      <ListItemText 
+                      <ListItemText
                         primary="Backend API at http://localhost:3001/api/v1/health"
                         secondary="Should return status: 'OK'"
                       />
                     </ListItem>
                     <ListItem>
                       <ListItemIcon><CheckIcon color="success" /></ListItemIcon>
-                      <ListItemText 
+                      <ListItemText
                         primary="Database connection working"
                         secondary="Check backend logs for connection success"
                       />
@@ -640,21 +640,21 @@ cd docs && npm start`;
                   <List>
                     <ListItem>
                       <ListItemIcon><StartIcon color="primary" /></ListItemIcon>
-                      <ListItemText 
+                      <ListItemText
                         primary="Explore the Documentation"
                         secondary="Visit all documentation sections to understand the system"
                       />
                     </ListItem>
                     <ListItem>
                       <ListItemIcon><SettingsIcon color="primary" /></ListItemIcon>
-                      <ListItemText 
+                      <ListItemText
                         primary="Configure Integrations"
                         secondary="Set up Magento and other system integrations"
                       />
                     </ListItem>
                     <ListItem>
                       <ListItemIcon><SecurityIcon color="primary" /></ListItemIcon>
-                      <ListItemText 
+                      <ListItemText
                         primary="Set up Authentication"
                         secondary="Configure Firebase authentication for users"
                       />
@@ -674,8 +674,8 @@ cd docs && npm start`;
               Need Help?
             </Typography>
             <Typography variant="body1">
-              If you encounter any issues during setup, check the 
-              <strong> Troubleshooting Guide</strong> in the documentation or contact support at 
+              If you encounter any issues during setup, check the
+              <strong> Troubleshooting Guide</strong> in the documentation or contact support at
               <strong> mounir.ab@techno-dz.com</strong>
             </Typography>
           </Alert>

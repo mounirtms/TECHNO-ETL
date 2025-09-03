@@ -20,7 +20,7 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
 } from '@mui/material';
 import {
   MoreVert,
@@ -30,7 +30,7 @@ import {
   Settings,
   TrendingUp,
   TrendingDown,
-  Remove
+  Remove,
 } from '@mui/icons-material';
 import {
   PieChart,
@@ -49,7 +49,7 @@ import {
   Legend,
   ResponsiveContainer,
   RadialBarChart,
-  RadialBar
+  RadialBar,
 } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -64,8 +64,8 @@ const COLOR_PALETTES = {
     blue: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     green: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
     orange: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
-    purple: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)'
-  }
+    purple: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+  },
 };
 
 /**
@@ -82,7 +82,7 @@ export const EnhancedPieChart = ({
   onExport,
   subtitle,
   showPercentages = true,
-  animationDuration = 1000
+  animationDuration = 1000,
 }) => {
   const theme = useTheme();
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -91,24 +91,25 @@ export const EnhancedPieChart = ({
   const colors = COLOR_PALETTES[colorPalette] || COLOR_PALETTES.primary;
 
   // Calculate total for percentages
-  const total = useMemo(() => 
-    data.reduce((sum, item) => sum + (item.value || 0), 0), 
-    [data]
+  const total = useMemo(() =>
+    data.reduce((sum, item) => sum + (item.value || 0), 0),
+  [data],
   );
 
   // Enhanced data with percentages
-  const enhancedData = useMemo(() => 
+  const enhancedData = useMemo(() =>
     data.map((item, index) => ({
       ...item,
       percentage: total > 0 ? ((item.value / total) * 100).toFixed(1) : 0,
-      color: colors[index % colors.length]
-    })), 
-    [data, total, colors]
+      color: colors[index % colors.length],
+    })),
+  [data, total, colors],
   );
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
+
       return (
         <Box
           sx={{
@@ -117,7 +118,7 @@ export const EnhancedPieChart = ({
             borderRadius: 2,
             p: 2,
             boxShadow: theme.shadows[8],
-            minWidth: 150
+            minWidth: 150,
           }}
         >
           <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
@@ -132,12 +133,13 @@ export const EnhancedPieChart = ({
         </Box>
       );
     }
+
     return null;
   };
 
   const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }) => {
     if (percent < 0.05) return null; // Hide labels for small slices
-    
+
     const RADIAN = Math.PI / 180;
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -177,7 +179,7 @@ export const EnhancedPieChart = ({
                 </Typography>
               )}
             </Box>
-            
+
             <Box>
               <IconButton
                 size="small"
@@ -185,7 +187,7 @@ export const EnhancedPieChart = ({
               >
                 <MoreVert />
               </IconButton>
-              
+
               <Menu
                 anchorEl={menuAnchor}
                 open={Boolean(menuAnchor)}
@@ -254,7 +256,7 @@ export const EnhancedPieChart = ({
                       strokeWidth={activeIndex === index ? 2 : 0}
                       style={{
                         filter: activeIndex === index ? 'brightness(1.1)' : 'none',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
                       }}
                     />
                   ))}
@@ -295,7 +297,7 @@ export const EnhancedBarChart = ({
   onExport,
   subtitle,
   showGrid = true,
-  animationDuration = 1000
+  animationDuration = 1000,
 }) => {
   const theme = useTheme();
   const [menuAnchor, setMenuAnchor] = useState(null);
@@ -305,6 +307,7 @@ export const EnhancedBarChart = ({
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       const data = payload[0];
+
       return (
         <Box
           sx={{
@@ -313,7 +316,7 @@ export const EnhancedBarChart = ({
             borderRadius: 2,
             p: 2,
             boxShadow: theme.shadows[8],
-            minWidth: 150
+            minWidth: 150,
           }}
         >
           <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
@@ -325,6 +328,7 @@ export const EnhancedBarChart = ({
         </Box>
       );
     }
+
     return null;
   };
 
@@ -347,14 +351,14 @@ export const EnhancedBarChart = ({
                 </Typography>
               )}
             </Box>
-            
+
             <IconButton
               size="small"
               onClick={(e) => setMenuAnchor(e.currentTarget)}
             >
               <MoreVert />
             </IconButton>
-            
+
             <Menu
               anchorEl={menuAnchor}
               open={Boolean(menuAnchor)}
@@ -385,17 +389,17 @@ export const EnhancedBarChart = ({
             <ResponsiveContainer width="100%" height={height}>
               <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
                 {showGrid && (
-                  <CartesianGrid 
-                    strokeDasharray="3 3" 
-                    stroke={alpha(theme.palette.divider, 0.3)} 
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke={alpha(theme.palette.divider, 0.3)}
                   />
                 )}
-                <XAxis 
-                  dataKey={xAxisKey} 
+                <XAxis
+                  dataKey={xAxisKey}
                   stroke={theme.palette.text.secondary}
                   fontSize={12}
                 />
-                <YAxis 
+                <YAxis
                   stroke={theme.palette.text.secondary}
                   fontSize={12}
                 />
@@ -431,7 +435,7 @@ export const EnhancedLineChart = ({
   subtitle,
   showGrid = true,
   showTrend = true,
-  animationDuration = 1000
+  animationDuration = 1000,
 }) => {
   const theme = useTheme();
   const [menuAnchor, setMenuAnchor] = useState(null);
@@ -445,16 +449,18 @@ export const EnhancedLineChart = ({
     const lastValue = data[data.length - 1][yAxisKey];
     const change = lastValue - firstValue;
     const percentage = firstValue !== 0 ? (change / firstValue * 100).toFixed(1) : 0;
+
     return {
       change,
       percentage,
-      isPositive: change >= 0
+      isPositive: change >= 0,
     };
   }, [data, yAxisKey]);
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       const data = payload[0];
+
       return (
         <Box
           sx={{
@@ -463,7 +469,7 @@ export const EnhancedLineChart = ({
             borderRadius: 2,
             p: 2,
             boxShadow: theme.shadows[8],
-            minWidth: 150
+            minWidth: 150,
           }}
         >
           <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
@@ -475,6 +481,7 @@ export const EnhancedLineChart = ({
         </Box>
       );
     }
+
     return null;
   };
 

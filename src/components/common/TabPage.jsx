@@ -7,7 +7,7 @@ import {
   Breadcrumbs,
   Link,
   Chip,
-  Stack
+  Stack,
 } from '@mui/material';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -49,25 +49,25 @@ const TabPage = ({ title, description, icon: Icon, children, showBreadcrumbs = t
               {t(pageTitle)}
             </Typography>
           </Stack>
-          
+
           {pageDescription && (
             <Typography variant="h6" color="text.secondary">
               {t(pageDescription)}
             </Typography>
           )}
-          
+
           <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
-            <Chip 
-              label={t('Real-time Updates')} 
-              color="success" 
-              size="small" 
-              variant="outlined" 
+            <Chip
+              label={t('Real-time Updates')}
+              color="success"
+              size="small"
+              variant="outlined"
             />
-            <Chip 
-              label={t('Auto-save Enabled')} 
-              color="info" 
-              size="small" 
-              variant="outlined" 
+            <Chip
+              label={t('Auto-save Enabled')}
+              color="info"
+              size="small"
+              variant="outlined"
             />
           </Stack>
         </Box>

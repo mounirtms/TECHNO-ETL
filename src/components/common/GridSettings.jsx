@@ -32,7 +32,7 @@ import {
   Card,
   CardContent,
   Grid,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import {
   ExpandMore,
@@ -44,7 +44,7 @@ import {
   Save,
   RestoreFromTrash,
   Download,
-  Upload
+  Upload,
 } from '@mui/icons-material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
@@ -55,10 +55,10 @@ const GridSettings = ({
   gridId,
   columns = [],
   currentSettings = {},
-  onReset
+  onReset,
 }) => {
   const theme = useTheme();
-  
+
   // Settings state
   const [settings, setSettings] = useState({
     // Display settings
@@ -67,41 +67,41 @@ const GridSettings = ({
     showToolbar: true,
     showFooter: true,
     showColumnHeaders: true,
-    
+
     // Column settings
     columnVisibility: {},
     columnOrder: [],
     columnWidths: {},
-    
+
     // Filtering and sorting
     enableFiltering: true,
     enableSorting: true,
     enableColumnReordering: true,
     enableColumnResizing: true,
-    
+
     // Export settings
     enableExport: true,
     exportFormats: ['csv', 'excel', 'pdf'],
-    
+
     // Performance settings
     virtualization: true,
     lazyLoading: true,
     cacheSize: 100,
-    
+
     // Appearance
     theme: 'default',
     alternateRowColors: true,
     showBorders: true,
     headerHeight: 56,
     rowHeight: 52,
-    
+
     // Advanced features
     enableGrouping: false,
     enableAggregation: false,
     enableSelection: true,
     selectionMode: 'multiple', // single, multiple
-    
-    ...currentSettings
+
+    ...currentSettings,
   });
 
   // Initialize settings from props
@@ -109,21 +109,21 @@ const GridSettings = ({
     if (currentSettings) {
       setSettings(prev => ({ ...prev, ...currentSettings }));
     }
-    
+
     // Initialize column visibility and order
     if (columns.length > 0) {
       const visibility = {};
       const order = [];
-      
+
       columns.forEach(col => {
         visibility[col.field] = col.visible !== false;
         order.push(col.field);
       });
-      
+
       setSettings(prev => ({
         ...prev,
         columnVisibility: { ...prev.columnVisibility, ...visibility },
-        columnOrder: prev.columnOrder.length > 0 ? prev.columnOrder : order
+        columnOrder: prev.columnOrder.length > 0 ? prev.columnOrder : order,
       }));
     }
   }, [currentSettings, columns]);
@@ -134,7 +134,7 @@ const GridSettings = ({
   const handleSettingChange = (key, value) => {
     setSettings(prev => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
   };
 
@@ -146,8 +146,8 @@ const GridSettings = ({
       ...prev,
       columnVisibility: {
         ...prev.columnVisibility,
-        [field]: visible
-      }
+        [field]: visible,
+      },
     }));
   };
 
@@ -159,11 +159,12 @@ const GridSettings = ({
 
     const newOrder = Array.from(settings.columnOrder);
     const [reorderedItem] = newOrder.splice(result.source.index, 1);
+
     newOrder.splice(result.destination.index, 0, reorderedItem);
 
     setSettings(prev => ({
       ...prev,
-      columnOrder: newOrder
+      columnOrder: newOrder,
     }));
   };
 
@@ -173,13 +174,14 @@ const GridSettings = ({
   const handleSave = () => {
     // Save to localStorage
     const storageKey = `gridSettings_${gridId}`;
+
     localStorage.setItem(storageKey, JSON.stringify(settings));
-    
+
     // Call parent save handler
     if (onSave) {
       onSave(settings);
     }
-    
+
     onClose();
   };
 
@@ -213,15 +215,16 @@ const GridSettings = ({
       enableGrouping: false,
       enableAggregation: false,
       enableSelection: true,
-      selectionMode: 'multiple'
+      selectionMode: 'multiple',
     };
-    
+
     setSettings(defaultSettings);
-    
+
     // Clear from localStorage
     const storageKey = `gridSettings_${gridId}`;
+
     localStorage.removeItem(storageKey);
-    
+
     if (onReset) {
       onReset();
     }
@@ -233,10 +236,11 @@ const GridSettings = ({
   const handleExportSettings = () => {
     const dataStr = JSON.stringify(settings, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    
+
     const exportFileDefaultName = `grid-settings-${gridId}.json`;
-    
+
     const linkElement = document.createElement('a');
+
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
     linkElement.click();
@@ -247,11 +251,14 @@ const GridSettings = ({
    */
   const handleImportSettings = (event) => {
     const file = event.target.files[0];
+
     if (file) {
       const reader = new FileReader();
+
       reader.onload = (e) => {
         try {
           const importedSettings = JSON.parse(e.target.result);
+
           setSettings(prev => ({ ...prev, ...importedSettings }));
         } catch (error) {
           console.error('Error importing settings:', error);
@@ -270,15 +277,15 @@ const GridSettings = ({
       PaperProps={{
         sx: {
           borderRadius: 2,
-          maxHeight: '90vh'
-        }
+          maxHeight: '90vh',
+        },
       }}
     >
-      <DialogTitle sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
+      <DialogTitle sx={{
+        display: 'flex',
+        alignItems: 'center',
         gap: 1,
-        borderBottom: `1px solid ${theme.palette.divider}`
+        borderBottom: `1px solid ${theme.palette.divider}`,
       }}>
         <Settings />
         Grid Settings - {gridId}
@@ -409,15 +416,16 @@ const GridSettings = ({
               <Typography variant="subtitle2" sx={{ mb: 2 }}>
                 Drag to reorder columns, toggle visibility
               </Typography>
-              
+
               <DragDropContext onDragEnd={handleColumnReorder}>
                 <Droppable droppableId="columns">
                   {(provided) => (
                     <Box {...provided.droppableProps} ref={provided.innerRef}>
                       {settings.columnOrder.map((field, index) => {
                         const column = columns.find(col => col.field === field);
+
                         if (!column) return null;
-                        
+
                         return (
                           <Draggable key={field} draggableId={field} index={index}>
                             {(provided, snapshot) => (
@@ -426,9 +434,9 @@ const GridSettings = ({
                                 {...provided.draggableProps}
                                 sx={{
                                   mb: 1,
-                                  backgroundColor: snapshot.isDragging 
-                                    ? theme.palette.action.hover 
-                                    : 'inherit'
+                                  backgroundColor: snapshot.isDragging
+                                    ? theme.palette.action.hover
+                                    : 'inherit',
                                 }}
                               >
                                 <CardContent sx={{ py: 1, '&:last-child': { pb: 1 } }}>
@@ -436,19 +444,19 @@ const GridSettings = ({
                                     <Box {...provided.dragHandleProps}>
                                       <DragIndicator color="action" />
                                     </Box>
-                                    
+
                                     <Typography sx={{ flexGrow: 1 }}>
                                       {column.headerName || column.field}
                                     </Typography>
-                                    
+
                                     <IconButton
                                       size="small"
                                       onClick={() => handleColumnVisibilityChange(
-                                        field, 
-                                        !settings.columnVisibility[field]
+                                        field,
+                                        !settings.columnVisibility[field],
                                       )}
                                     >
-                                      {settings.columnVisibility[field] ? 
+                                      {settings.columnVisibility[field] ?
                                         <Visibility /> : <VisibilityOff />
                                       }
                                     </IconButton>
@@ -505,7 +513,7 @@ const GridSettings = ({
                     />
                   </Stack>
                 </Grid>
-                
+
                 <Grid item xs={12} sm={6}>
                   <Stack spacing={1}>
                     <FormControlLabel
@@ -574,6 +582,7 @@ export const useGridSettings = (gridId, defaultSettings = {}) => {
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
+
         setSettings(prev => ({ ...prev, ...parsed }));
       } catch (error) {
         console.error('Error loading grid settings:', error);
@@ -595,6 +604,7 @@ export const useGridSettings = (gridId, defaultSettings = {}) => {
   // Reset settings
   const resetSettings = useCallback(() => {
     const storageKey = `gridSettings_${gridId}`;
+
     localStorage.removeItem(storageKey);
     setSettings(defaultSettings);
   }, [gridId, defaultSettings]);
@@ -606,8 +616,9 @@ export const useGridSettings = (gridId, defaultSettings = {}) => {
     resetSettings,
     updateSetting: (key, value) => {
       const newSettings = { ...settings, [key]: value };
+
       saveSettings(newSettings);
-    }
+    },
   };
 };
 

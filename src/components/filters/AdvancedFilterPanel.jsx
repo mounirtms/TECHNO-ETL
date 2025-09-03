@@ -28,7 +28,7 @@ import {
   Popover,
   Card,
   CardContent,
-  CardActions
+  CardActions,
 } from '@mui/material';
 import {
   FilterList as FilterIcon,
@@ -43,7 +43,7 @@ import {
   Search as SearchIcon,
   Tune as TuneIcon,
   Bookmark as PresetIcon,
-  Close as CloseIcon
+  Close as CloseIcon,
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import FilterService from '../../services/FilterService';
@@ -52,12 +52,12 @@ import FilterService from '../../services/FilterService';
  * AdvancedFilterPanel - Comprehensive filtering system
  * Features: Compact design, floating panels, smooth animations, caching
  */
-const AdvancedFilterPanel = ({ 
-  filters, 
-  onFiltersChange, 
+const AdvancedFilterPanel = ({
+  filters,
+  onFiltersChange,
   onSearch,
   compact = false,
-  showPresets = true 
+  showPresets = true,
 }) => {
   // ===== STATE MANAGEMENT =====
   const [expanded, setExpanded] = useState(!compact);
@@ -76,15 +76,15 @@ const AdvancedFilterPanel = ({
 
       const [brandsData, categoriesData] = await Promise.all([
         FilterService.getBrands(),
-        FilterService.getCategories()
+        FilterService.getCategories(),
       ]);
 
       setBrands(brandsData);
       setCategories(categoriesData);
-      
+
       console.log('✅ Filter options loaded:', {
         brands: brandsData.length,
-        categories: categoriesData.length
+        categories: categoriesData.length,
       });
     } catch (error) {
       console.error('❌ Error loading filter options:', error);
@@ -97,8 +97,9 @@ const AdvancedFilterPanel = ({
   // ===== FILTER HANDLERS =====
   const handleFilterChange = useCallback((field, value) => {
     const newFilters = { ...filters, [field]: value };
+
     onFiltersChange(newFilters);
-    
+
     // Trigger debounced search if search field
     if (field === 'search') {
       FilterService.debouncedSearch(value, onSearch);
@@ -114,8 +115,9 @@ const AdvancedFilterPanel = ({
       category: '',
       status: '',
       priceMin: '',
-      priceMax: ''
+      priceMax: '',
     };
+
     onFiltersChange(clearedFilters);
     onSearch(clearedFilters);
     setPriceRange([0, 1000]);
@@ -143,8 +145,8 @@ const AdvancedFilterPanel = ({
 
   // ===== ACTIVE FILTERS COUNT =====
   const activeFiltersCount = useMemo(() => {
-    return Object.values(filters).filter(value => 
-      value !== '' && value !== undefined && value !== null
+    return Object.values(filters).filter(value =>
+      value !== '' && value !== undefined && value !== null,
     ).length;
   }, [filters]);
 
@@ -161,12 +163,13 @@ const AdvancedFilterPanel = ({
           color="primary"
           size="small"
           icon={<SearchIcon />}
-        />
+        />,
       );
     }
 
     if (filters.brand) {
       const brand = brands.find(b => b.value === filters.brand);
+
       activeFilters.push(
         <Chip
           key="brand"
@@ -175,12 +178,13 @@ const AdvancedFilterPanel = ({
           color="primary"
           size="small"
           icon={<BrandIcon />}
-        />
+        />,
       );
     }
 
     if (filters.category) {
       const category = categories.find(c => c.value.toString() === filters.category.toString());
+
       activeFilters.push(
         <Chip
           key="category"
@@ -189,7 +193,7 @@ const AdvancedFilterPanel = ({
           color="primary"
           size="small"
           icon={<CategoryIcon />}
-        />
+        />,
       );
     }
 
@@ -201,13 +205,14 @@ const AdvancedFilterPanel = ({
           onDelete={() => handleFilterChange('status', '')}
           color="primary"
           size="small"
-        />
+        />,
       );
     }
 
     if (filters.priceMin || filters.priceMax) {
       const min = filters.priceMin || '0';
       const max = filters.priceMax || '∞';
+
       activeFilters.push(
         <Chip
           key="price"
@@ -220,7 +225,7 @@ const AdvancedFilterPanel = ({
           color="primary"
           size="small"
           icon={<PriceIcon />}
-        />
+        />,
       );
     }
 
@@ -228,22 +233,22 @@ const AdvancedFilterPanel = ({
   };
 
   return (
-    <Paper 
-      elevation={2} 
-      sx={{ 
-        mb: 2, 
+    <Paper
+      elevation={2}
+      sx={{
+        mb: 2,
         overflow: 'hidden',
-        transition: 'all 0.3s ease-in-out'
+        transition: 'all 0.3s ease-in-out',
       }}
     >
       {/* Filter Header */}
-      <Box sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'space-between', 
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         p: 2,
         backgroundColor: 'primary.main',
-        color: 'primary.contrastText'
+        color: 'primary.contrastText',
       }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <FilterIcon />
@@ -271,7 +276,7 @@ const AdvancedFilterPanel = ({
               </IconButton>
             </Tooltip>
           )}
-          
+
           <Tooltip title="Advanced Options">
             <IconButton
               color="inherit"
@@ -294,7 +299,7 @@ const AdvancedFilterPanel = ({
             </IconButton>
           </Tooltip>
 
-          <Tooltip title={expanded ? "Collapse" : "Expand"}>
+          <Tooltip title={expanded ? 'Collapse' : 'Expand'}>
             <IconButton
               color="inherit"
               onClick={() => setExpanded(!expanded)}
@@ -318,7 +323,7 @@ const AdvancedFilterPanel = ({
                 value={filters.search || ''}
                 onChange={(e) => handleFilterChange('search', e.target.value)}
                 InputProps={{
-                  startAdornment: <SearchIcon sx={{ mr: 1, color: 'action.active' }} />
+                  startAdornment: <SearchIcon sx={{ mr: 1, color: 'action.active' }} />,
                 }}
                 placeholder="Search by name, SKU, description..."
               />
@@ -385,12 +390,12 @@ const AdvancedFilterPanel = ({
                   <MenuItem value="">All Categories</MenuItem>
                   {categories.map((category) => (
                     <MenuItem key={category.value} value={category.value}>
-                      <Box sx={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: 1, 
+                      <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1,
                         width: '100%',
-                        pl: category.level * 2 
+                        pl: category.level * 2,
                       }}>
                         <CategoryIcon fontSize="small" />
                         <span>{category.label}</span>
