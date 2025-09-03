@@ -109,6 +109,8 @@ function initApp() {
     setTimeout(() => {
       const loadingScreen = document.getElementById('loading-screen');
       if (loadingScreen) {
+        // Faster removal of loading screen
+        loadingScreen.style.transition = 'opacity 0.3s ease-out';
         loadingScreen.style.opacity = '0';
         loadingScreen.style.visibility = 'hidden';
         setTimeout(() => {
