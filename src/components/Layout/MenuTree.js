@@ -28,6 +28,8 @@ export const MENU_TREE = [
         labelKey: 'navigation.core',
         icon: DashboardIcon,
         licensed: true,
+        licenseRequired: true,
+        permissions: ['view:dashboard'],
         expanded: true,
         children: [
             {
@@ -38,6 +40,9 @@ export const MENU_TREE = [
                 path: '/dashboard',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:dashboard'],
+                featureId: 'dashboard',
                 category: 'core'
             },
             {
@@ -48,6 +53,9 @@ export const MENU_TREE = [
                 path: '/charts',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:analytics'],
+                featureId: 'analytics',
                 category: 'core'
             }
         ]
@@ -60,6 +68,8 @@ export const MENU_TREE = [
         labelKey: 'navigation.mdm',
         icon: DataObjectIcon,
         licensed: true,
+        licenseRequired: true,
+        permissions: ['view:mdm'],
         expanded: false,
         children: [
             {
@@ -70,6 +80,9 @@ export const MENU_TREE = [
                 path: '/mdmproducts',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:products'],
+                featureId: 'mdm_products',
                 category: 'mdm'
             },
             {
@@ -80,6 +93,9 @@ export const MENU_TREE = [
                 path: '/mdm-stock',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:inventory'],
+                featureId: 'mdm_stock',
                 category: 'mdm'
             },
             {
@@ -90,6 +106,9 @@ export const MENU_TREE = [
                 path: '/mdm-sources',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:sources'],
+                featureId: 'mdm_sources',
                 category: 'mdm'
             }
         ]
@@ -102,6 +121,8 @@ export const MENU_TREE = [
         labelKey: 'navigation.magento',
         icon: StorefrontIcon,
         licensed: true,
+        licenseRequired: true,
+        permissions: ['view:magento'],
         expanded: false,
         children: [
             {
@@ -112,6 +133,9 @@ export const MENU_TREE = [
                 path: '/products',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:products', 'edit:products'],
+                featureId: 'magento_products',
                 category: 'products'
             },
             {
@@ -122,6 +146,9 @@ export const MENU_TREE = [
                 path: '/productsManagement',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:products', 'edit:products'],
+                featureId: 'product_management',
                 category: 'products'
             },
             {
@@ -132,6 +159,22 @@ export const MENU_TREE = [
                 path: '/categories',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:categories'],
+                featureId: 'category_tree',
+                category: 'products'
+            },
+            {
+                id: 'CategoryManagementGrid',
+                label: 'Category Management',
+                labelKey: 'navigation.categoryManagement',
+                icon: CategoryIcon,
+                path: '/category-management',
+                hidden: false,
+                licensed: true,
+                licenseRequired: true,
+                permissions: ['view:categories', 'edit:categories'],
+                featureId: 'category_management',
                 category: 'products'
             },
             {
@@ -142,6 +185,9 @@ export const MENU_TREE = [
                 path: '/stocks',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:inventory'],
+                featureId: 'inventory_management',
                 category: 'inventory'
             },
             {
@@ -152,6 +198,9 @@ export const MENU_TREE = [
                 path: '/sources',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:sources'],
+                featureId: 'source_management',
                 category: 'inventory'
             },
             {
@@ -162,6 +211,9 @@ export const MENU_TREE = [
                 path: '/orders',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:orders'],
+                featureId: 'order_management',
                 category: 'sales'
             },
             {
@@ -172,6 +224,9 @@ export const MENU_TREE = [
                 path: '/invoices',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:invoices'],
+                featureId: 'invoice_management',
                 category: 'sales'
             },
             {
@@ -182,6 +237,9 @@ export const MENU_TREE = [
                 path: '/customers',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:customers'],
+                featureId: 'customer_management',
                 category: 'sales'
             },
             {
@@ -192,6 +250,9 @@ export const MENU_TREE = [
                 path: '/cms-pages',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:content', 'edit:content'],
+                featureId: 'cms_management',
                 category: 'content'
             }
         ]
@@ -200,21 +261,39 @@ export const MENU_TREE = [
     // === CEGID SYSTEM ===
     {
         id: 'cegid',
-        label: 'Cegid',
+        label: 'CEGID',
         labelKey: 'navigation.cegid',
         icon: DataObjectIcon,
         licensed: true,
+        licenseRequired: true,
+        permissions: ['view:cegid'],
         expanded: false,
         children: [
             {
                 id: 'CegidProductsGrid',
-                label: 'Cegid Products',
+                label: 'Products',
                 labelKey: 'navigation.cegidProducts',
-                icon: StorefrontIcon,
+                icon: InventoryIcon,
                 path: '/cegid-products',
                 hidden: false,
                 licensed: true,
-                category: 'integration'
+                licenseRequired: true,
+                permissions: ['view:products'],
+                featureId: 'cegid_products',
+                category: 'products'
+            },
+            {
+                id: 'MDMStockGrid',
+                label: 'MDM Stock',
+                labelKey: 'navigation.mdmStock',
+                icon: Inventory2Icon,
+                path: '/mdm-stock',
+                hidden: false,
+                licensed: true,
+                licenseRequired: true,
+                permissions: ['view:inventory'],
+                featureId: 'cegid_stock',
+                category: 'inventory'
             }
         ]
     },
@@ -226,6 +305,8 @@ export const MENU_TREE = [
         labelKey: 'navigation.analyticsReports',
         icon: AnalyticsIcon,
         licensed: true,
+        licenseRequired: true,
+        permissions: ['view:analytics'],
         expanded: false,
         children: [
             {
@@ -236,6 +317,9 @@ export const MENU_TREE = [
                 path: '/analytics/sales',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:analytics', 'view:sales'],
+                featureId: 'sales_analytics',
                 category: 'analytics'
             },
             {
@@ -246,6 +330,9 @@ export const MENU_TREE = [
                 path: '/analytics/inventory',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:analytics', 'view:inventory'],
+                featureId: 'inventory_analytics',
                 category: 'analytics'
             }
         ]
@@ -258,6 +345,9 @@ export const MENU_TREE = [
         labelKey: 'navigation.lockerStudio',
         icon: LockIcon,
         licensed: true,
+        licenseRequired: true,
+        permissions: ['view:security'],
+        roleRequired: 'manager',
         expanded: false,
         children: [
             {
@@ -268,6 +358,10 @@ export const MENU_TREE = [
                 path: '/locker/vault',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:security', 'edit:security'],
+                featureId: 'secure_vault',
+                roleRequired: 'manager',
                 category: 'security'
             },
             {
@@ -278,6 +372,10 @@ export const MENU_TREE = [
                 path: '/locker/access',
                 hidden: false,
                 licensed: true,
+                licenseRequired: true,
+                permissions: ['view:security', 'manage_users'],
+                featureId: 'access_control',
+                roleRequired: 'admin',
                 category: 'security'
             }
         ]
@@ -289,7 +387,9 @@ export const MENU_TREE = [
         label: 'Development & Testing',
         labelKey: 'navigation.development',
         icon: BugReportIcon,
-        licensed: true,
+        licensed: false, // Available to all users
+        licenseRequired: false,
+        permissions: ['view:development'],
         expanded: false,
         children: [
             {
@@ -299,7 +399,10 @@ export const MENU_TREE = [
                 icon: BugReportIcon,
                 path: '/bug-bounty',
                 hidden: false,
-                licensed: true,
+                licensed: false,
+                licenseRequired: false,
+                permissions: ['view:development'],
+                featureId: 'bug_bounty',
                 category: 'quality'
             },
             {
@@ -309,7 +412,10 @@ export const MENU_TREE = [
                 icon: HowToVoteIcon,
                 path: '/voting',
                 hidden: false,
-                licensed: true,
+                licensed: false,
+                licenseRequired: false,
+                permissions: ['view:development'],
+                featureId: 'feature_voting',
                 category: 'quality'
             },
             {
@@ -319,7 +425,10 @@ export const MENU_TREE = [
                 icon: BugReportIcon,
                 path: '/grid-test',
                 hidden: false,
-                licensed: true,
+                licensed: false,
+                licenseRequired: false,
+                permissions: ['view:development'],
+                featureId: 'grid_testing',
                 category: 'quality'
             }
         ]
@@ -354,7 +463,9 @@ export const MENU_TREE = [
         labelKey: 'navigation.system',
         icon: SettingsIcon,
         licensed: false, // Always accessible
+        licenseRequired: false,
         roleRequired: 'super_admin', // Only super admin can access
+        permissions: ['manage_users', 'assign_roles'],
         expanded: false,
         children: [
             {
@@ -365,6 +476,10 @@ export const MENU_TREE = [
                 path: '/license-management',
                 hidden: false,
                 licensed: false, // Always accessible for admins
+                licenseRequired: false,
+                permissions: ['manage_users', 'assign_roles'],
+                featureId: 'license_management',
+                roleRequired: 'super_admin',
                 category: 'system'
             },
             {
@@ -375,6 +490,9 @@ export const MENU_TREE = [
                 path: '/license',
                 hidden: false,
                 licensed: false, // Always accessible to check license
+                licenseRequired: false,
+                permissions: ['view:license'],
+                featureId: 'license_status',
                 category: 'system'
             }
         ]

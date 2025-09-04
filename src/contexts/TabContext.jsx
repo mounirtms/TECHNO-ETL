@@ -1,7 +1,8 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box } from '@mui/material';
-import { MENU_TREE, MENU_ITEMS } from '../components/Layout/MenuTree.js';
+import { Box, Alert, Snackbar } from '@mui/material';
+import { MENU_ITEMS } from '../components/Layout/MenuTree.js';
+import { usePermissions } from './PermissionContext.jsx';
 
 // Import components lazily to avoid circular dependencies
 import { lazy } from 'react';
@@ -102,228 +103,315 @@ const COMPONENT_MAP = {
     UserProfile: UserProfile
 };
 
-// Safe context creation with error handling
-const TabContext = (() => {
+// Create context with default values - Dashboard is always the first tab
+const DEFAULT_TABS = [{ id: 'Dashboard', title: 'Dashboard', closeable: false }];
+const DEFAULT_ACTIVE_TAB = 'Dashboard';
+
+const TabContext = createContext({
+    tabs: DEFAULT_TABS,
+    activeTab: DEFAULT_ACTIVE_TAB,
+    openTab: () => {},
+    closeTab: () => {},
+    getActiveComponent: () => null,
+    setActiveTab: () => {}
+});
+
+// Navigation throttling to prevent excessive navigation
+let navigationTimestamps = [];
+const MAX_NAVIGATIONS_PER_SECOND = 10;
+
+const isNavigationAllowed = () => {
+    const now = Date.now();
+    // Remove timestamps older than 1 second
+    navigationTimestamps = navigationTimestamps.filter(timestamp => now - timestamp < 1000);
+    
+    // Check if we're under the limit
+    if (navigationTimestamps.length < MAX_NAVIGATIONS_PER_SECOND) {
+        navigationTimestamps.push(now);
+        return true;
+    }
+    
+    console.warn('Navigation throttled to prevent browser hanging');
+    return false;
+};
+
+// Custom hook with error handling
+export const useTab = () => {
     try {
-        const context = createContext();
-        context.displayName = 'TabContext';
+        const context = useContext(TabContext);
+        if (!context) {
+            throw new Error('useTab must be used within a TabProvider');
+        }
         return context;
     } catch (error) {
-        console.error('Failed to create TabContext:', error);
-        throw error;
+        console.error('Error using tab context:', error);
+        // Return a safe fallback context
+        return {
+            tabs: DEFAULT_TABS, 
+            activeTab: DEFAULT_ACTIVE_TAB,
+            openTab: () => {},
+            closeTab: () => {},
+            getActiveComponent: () => null,
+            setActiveTab: () => {}
+        };
     }
-})();
+};
 
-export const TabProvider = ({ children, sidebarOpen }) => {
+// Tab Provider Component
+export const TabProvider = ({ children }) => {
     const location = useLocation();
     const navigate = useNavigate();
+    const { canAccessMenuItem } = usePermissions();
+    
+    // State for tabs and active tab - Dashboard is ALWAYS default and first
+    const [tabs, setTabs] = useState(DEFAULT_TABS);
+    const [activeTab, setActiveTabState] = useState(DEFAULT_ACTIVE_TAB);
+    const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
 
-    // Get initial tab from current URL or default to Dashboard
-    const getInitialTabFromURL = () => {
-        // Ensure MENU_ITEMS is available and not empty
-        if (!MENU_ITEMS || !Array.isArray(MENU_ITEMS) || MENU_ITEMS.length === 0) {
-            console.warn('MENU_ITEMS is empty or undefined, creating default dashboard item');
-            return {
-                id: 'Dashboard',
-                label: 'Dashboard',
-                path: '/dashboard'
-            };
+    // Show snackbar message
+    const showSnackbar = useCallback((message, severity = 'info') => {
+        setSnackbar({ open: true, message, severity });
+    }, []);
+
+    // Close snackbar
+    const closeSnackbar = useCallback(() => {
+        setSnackbar(prev => ({ ...prev, open: false }));
+    }, []);
+
+    // Get component for tab with error handling
+    const getComponentForTab = useCallback((tabId) => {
+        if (!tabId || !COMPONENT_MAP[tabId]) {
+            console.warn(`Component not found for tab: ${tabId}`);
+            return null;
         }
         
-        const tabId = URL_TO_TAB_MAP[location.pathname];
-        if (tabId) {
-            const menuItem = MENU_ITEMS.find(item => item?.id === tabId);
-            if (menuItem) return menuItem;
+        try {
+            const Component = COMPONENT_MAP[tabId];
+            return Component;
+        } catch (error) {
+            console.error(`Error loading component for tab ${tabId}:`, error);
+            return null;
+        }
+    }, []);
+
+    // Get active component
+    const getActiveComponent = useCallback(() => {
+        if (!activeTab) {
+            console.warn('No active tab set');
+            return null;
         }
         
-        // Fallback to Dashboard from MENU_ITEMS
-        const dashboardItem = MENU_ITEMS.find(item => item?.id === 'Dashboard');
-        if (dashboardItem) return dashboardItem;
-        
-        // Create a default dashboard item if none found
-        return {
-            id: 'Dashboard',
-            label: 'Dashboard',
-            path: '/dashboard'
-        };
-    };
-
-    const initialTab = getInitialTabFromURL();
-
-    const [tabs, setTabs] = useState([
-        {
-            id: initialTab.id,
-            label: initialTab.label,
-            component: initialTab.id,
-            closeable: false
+        try {
+            const Component = getComponentForTab(activeTab);
+            if (!Component) {
+                console.warn(`No component found for active tab: ${activeTab}`);
+                return null;
+            }
+            return Component;
+        } catch (error) {
+            console.error('Error getting active component:', error);
+            return null;
         }
-    ]);
-    const [activeTab, setActiveTab] = useState(initialTab.id);
+    }, [activeTab, getComponentForTab]);
 
-    // Sync tab changes with URL
-    useEffect(() => {
-        const currentTabId = URL_TO_TAB_MAP[location.pathname];
+    // Open a new tab
+    const openTab = useCallback((tabId, tabTitle) => {
+        // Ensure Dashboard tab always exists
+        setTabs(prevTabs => {
+            const hasDashboard = prevTabs.some(tab => tab.id === 'Dashboard');
+            if (!hasDashboard) {
+                return [
+                    { id: 'Dashboard', title: 'Dashboard', closeable: false },
+                    ...prevTabs
+                ];
+            }
+            return prevTabs;
+        });
+
+        // Check if tab already exists and is already active
+        const existingTab = tabs.find(tab => tab.id === tabId);
         
-        // If we have a valid tab ID from URL
-        if (currentTabId) {
-            const tabExists = tabs.some(tab => tab.id === currentTabId);
-            
-            // If tab doesn't exist, try to add it
-            if (!tabExists) {
-                const newTab = MENU_ITEMS.find(item => item.id === currentTabId);
-                
-                if (newTab && COMPONENT_MAP[newTab.id]) {
-                    setTabs(prevTabs => [
-                        ...prevTabs,
-                        {
-                            id: newTab.id,
-                            label: newTab.label,
-                            component: newTab.id,
-                            closeable: newTab.id !== 'Dashboard'
-                        }
-                    ]);
-                } else if (!tabExists) {
-                    // Invalid tab, redirect to Dashboard only if no tabs exist
-                    console.warn(`Invalid tab: ${currentTabId}, redirecting to Dashboard`);
-                    if (tabs.length === 0) {
-                        navigate('/dashboard');
-                    }
-                    return;
+        if (existingTab && activeTab === tabId) {
+            // Tab exists and is already active, no need to navigate
+            return;
+        }
+        
+        if (existingTab) {
+            // Tab exists, just activate it
+            setActiveTabState(tabId);
+            const url = TAB_TO_URL_MAP[tabId] || '/';
+            // Only navigate if we're not already on the correct URL
+            if (location.pathname !== url) {
+                if (isNavigationAllowed()) {
+                    navigate(url);
                 }
             }
-            
-            // Set active tab only if it's different
-            if (currentTabId !== activeTab) {
-                setActiveTab(currentTabId);
-            }
-        } else if (tabs.length > 0 && !tabs.some(tab => tab.id === activeTab)) {
-            // Emergency fallback - if activeTab is invalid, switch to first available tab
-            const fallbackTab = tabs[0].id;
-            setActiveTab(fallbackTab);
-            const fallbackUrl = TAB_TO_URL_MAP[fallbackTab];
-            if (fallbackUrl) {
-                navigate(fallbackUrl);
-            }
-        }
-    }, [location.pathname, navigate, activeTab, tabs]);
-
-    const openTab = (tabId, skipNavigation = false) => {
-        // Validate tabId
-        if (!tabId) {
-            console.error('Cannot open tab: tabId is undefined or null');
             return;
         }
 
-        const tabExists = tabs.some(tab => tab.id === tabId);
+        // Check permissions for the tab
+        if (tabId !== 'Dashboard' && !canAccessMenuItem({ id: tabId })) {
+            showSnackbar(`Access denied: ${tabTitle || tabId}`, 'error');
+            return;
+        }
 
-        if (!tabExists) {
-            const newTab = MENU_ITEMS.find(item => item.id === tabId);
-            if (newTab) {
-                if (!COMPONENT_MAP[newTab.id]) {
-                    console.error(`No component found for tab: ${newTab.id}`);
-                    return;
-                }
+        // Add new tab
+        const newTab = { 
+            id: tabId, 
+            title: tabTitle || tabId,
+            closeable: tabId !== 'Dashboard' // Dashboard tab is not closeable
+        };
 
-                setTabs(prevTabs => [
+        setTabs(prevTabs => {
+            // Ensure Dashboard is always the first tab
+            const hasDashboard = prevTabs.some(tab => tab.id === 'Dashboard');
+            if (!hasDashboard) {
+                return [
+                    { id: 'Dashboard', title: 'Dashboard', closeable: false },
                     ...prevTabs,
-                    {
-                        id: newTab.id,
-                        label: newTab.label,
-                        component: newTab.id,
-                        closeable: newTab.id !== 'Dashboard' // Dashboard is never closeable
-                    }
-                ]);
-            } else {
-                console.warn(`Tab ${tabId} not found in MENU_ITEMS`);
-                return;
+                    newTab
+                ];
             }
+            return [...prevTabs, newTab];
+        });
+        
+        setActiveTabState(tabId);
+        const url = TAB_TO_URL_MAP[tabId] || '/';
+        if (isNavigationAllowed()) {
+            navigate(url);
         }
+    }, [tabs, navigate, canAccessMenuItem, showSnackbar, activeTab, location.pathname]);
 
-        setActiveTab(tabId);
-
-        // Navigate to corresponding URL if not skipping navigation
-        if (!skipNavigation) {
-            const url = TAB_TO_URL_MAP[tabId];
-            if (url && location.pathname !== url) {
-                navigate(url);
-            }
-        }
-    };
-
-    const closeTab = (tabId) => {
+    // Close a tab
+    const closeTab = useCallback((tabId) => {
+        // Prevent closing the dashboard tab
         if (tabId === 'Dashboard') return;
 
-        setTabs(prevTabs => prevTabs.filter(tab => tab.id !== tabId));
-
-        if (activeTab === tabId) {
-            setActiveTab('Dashboard');
-            navigate('/dashboard');
-        }
-    };
-
-    const getActiveComponent = () => {
-        // If no tabs, return a default component
-        if (tabs.length === 0) {
-            console.warn('No tabs available');
-            return () => (
-                <Box sx={{ p: 2, textAlign: 'center', color: 'error.main' }}>
-                    No tabs available.
-                </Box>
-            );
-        }
-
-        const activeTabItem = tabs.find(tab => tab.id === activeTab);
-        
-        // If activeTabItem not found, try to find the first tab as fallback
-        if (!activeTabItem) {
-            console.warn(`No tab found for activeTab: ${activeTab}`);
-            const firstTab = tabs[0];
-            if (firstTab) {
-                // Try to set the first tab as active
-                setActiveTab(firstTab.id);
-                const Component = COMPONENT_MAP[firstTab.id];
-                if (Component) {
-                    return Component;
+        setTabs(prevTabs => {
+            const newTabs = prevTabs.filter(tab => tab.id !== tabId);
+            
+            // If we're closing the active tab, activate the previous one or dashboard
+            if (activeTab === tabId) {
+                const currentIndex = prevTabs.findIndex(tab => tab.id === tabId);
+                const newActiveTab = currentIndex > 0 
+                    ? prevTabs[currentIndex - 1].id 
+                    : newTabs.length > 0 
+                        ? newTabs[newTabs.length - 1].id 
+                        : 'Dashboard';
+                
+                setActiveTabState(newActiveTab);
+                const url = TAB_TO_URL_MAP[newActiveTab] || '/';
+                if (isNavigationAllowed()) {
+                    navigate(url);
                 }
             }
-            return () => (
-                <Box sx={{ p: 2, textAlign: 'center', color: 'error.main' }}>
-                    No component found for this tab.
-                </Box>
-            );
-        }
+            
+            // Ensure Dashboard is always the first tab
+            const hasDashboard = newTabs.some(tab => tab.id === 'Dashboard');
+            if (!hasDashboard && newTabs.length > 0) {
+                return [
+                    { id: 'Dashboard', title: 'Dashboard', closeable: false },
+                    ...newTabs
+                ];
+            }
+            
+            return newTabs;
+        });
+    }, [activeTab, navigate]);
 
-        const Component = COMPONENT_MAP[activeTabItem.id];
+    // Handle route changes
+    useEffect(() => {
+        const currentPath = location.pathname;
         
-        if (!Component) {
-            console.warn(`No component mapped for tab: ${activeTabItem.id}`);
-            return () => (
-                <Box sx={{ p: 2, textAlign: 'center', color: 'error.main' }}>
-                    Component not found for {activeTabItem.label}
-                </Box>
-            );
+        // If on root path, ensure dashboard is active
+        if (currentPath === '/' || currentPath === '') {
+            if (activeTab !== 'Dashboard') {
+                setActiveTabState('Dashboard');
+            }
+            if (isNavigationAllowed()) {
+                navigate('/dashboard');
+            }
+            return;
         }
+        
+        const tabId = URL_TO_TAB_MAP[currentPath];
+        
+        if (tabId) {
+            // Only open tab if it's not already the active tab
+            if (tabId !== activeTab) {
+                // Find tab title from menu items
+                const menuItem = MENU_ITEMS.find(item => item.path === currentPath);
+                const tabTitle = menuItem ? menuItem.label : tabId;
+                
+                // Open the tab
+                openTab(tabId, tabTitle);
+            }
+        } else if (currentPath !== '/dashboard') {
+            // If we're on a non-dashboard route but tab is not mapped, redirect to dashboard
+            if (isNavigationAllowed()) {
+                navigate('/dashboard');
+            }
+        }
+    }, [location.pathname, openTab, navigate, activeTab]);
 
-        return Component;
-    };
+    // Additional effect to ensure Dashboard is always first tab
+    useEffect(() => {
+        // Only update if needed to prevent infinite loops
+        if (tabs.length > 0 && tabs[0].id === 'Dashboard') {
+            return;
+        }
+        
+        setTabs(prevTabs => {
+            // Check if Dashboard exists and is first
+            if (prevTabs.length > 0 && prevTabs[0].id === 'Dashboard') {
+                return prevTabs;
+            }
+            
+            // Find Dashboard tab
+            const dashboardTab = prevTabs.find(tab => tab.id === 'Dashboard');
+            if (!dashboardTab) {
+                // Dashboard doesn't exist, add it as first
+                return [
+                    { id: 'Dashboard', title: 'Dashboard', closeable: false },
+                    ...prevTabs.filter(tab => tab.id !== 'Dashboard')
+                ];
+            }
+            
+            // Move Dashboard to first position
+            const otherTabs = prevTabs.filter(tab => tab.id !== 'Dashboard');
+            return [dashboardTab, ...otherTabs];
+        });
+    }, [tabs]);
+
+    // Memoize context value
+    const contextValue = useMemo(() => ({
+        tabs: tabs.length > 0 ? tabs : DEFAULT_TABS,
+        activeTab,
+        openTab,
+        closeTab,
+        getActiveComponent,
+        setActiveTab: setActiveTabState
+    }), [tabs, activeTab, openTab, closeTab, getActiveComponent]);
 
     return (
-        <TabContext.Provider value={{ 
-            tabs, 
-            activeTab, 
-            openTab, 
-            closeTab, 
-            getActiveComponent 
-        }}>
+        <TabContext.Provider value={contextValue}>
             {children}
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={closeSnackbar}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <Alert 
+                    onClose={closeSnackbar} 
+                    severity={snackbar.severity}
+                    sx={{ width: '100%' }}
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </TabContext.Provider>
     );
 };
 
-export const useTab = () => {
-    const context = useContext(TabContext);
-    if (!context) {
-        throw new Error('useTab must be used within a TabProvider');
-    }
-    return context;
-};
+export default TabContext;

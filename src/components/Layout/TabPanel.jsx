@@ -1,136 +1,185 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useMemo } from 'react';
 import {
     Box,
     Tabs,
     Tab,
     Typography,
-    useTheme,
-    CircularProgress
+    CircularProgress,
+    IconButton
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { useTab } from '../../contexts/TabContext';
-import { HEADER_HEIGHT, FOOTER_HEIGHT } from './Constants';
-import { useRoutePerformance, useDocumentTitle } from '../../hooks/useRoutePerformance';
+import { 
+    HEADER_HEIGHT, 
+    FOOTER_HEIGHT, 
+    TAB_HEADER_HEIGHT,
+    GRID_CONTAINER_HEIGHT,
+    DASHBOARD_CONTENT_HEIGHT 
+} from './Constants';
 
+// Simplified Tab Panel Component with Perfect Height Calculations
 const TabPanel = () => {
-    const theme = useTheme();
-    const { tabs, activeTab, openTab, getActiveComponent } = useTab();
-    const [tabPanelHeight, setTabPanelHeight] = useState('100%');
-
-    // Add route performance monitoring
-    const routePerformance = useRoutePerformance();
-    useDocumentTitle();
-
-    useEffect(() => {
-        const calculateHeight = () => {
-            const windowHeight = window.innerHeight;
-            const calculatedHeight = windowHeight - HEADER_HEIGHT - FOOTER_HEIGHT;
-            setTabPanelHeight(`${calculatedHeight}px`);
-        };
-
-        calculateHeight();
-        window.addEventListener('resize', calculateHeight);
-        return () => window.removeEventListener('resize', calculateHeight);
-    }, []);
-
-    const handleChange = (event, newValue) => {
-        // Validate newValue before opening tab
-        if (typeof newValue === 'string' && newValue.trim() !== '') {
-            // Only update if the new value exists in our tabs
-            const tabExists = tabs.some(tab => tab.id === newValue);
-            if (tabExists) {
-                openTab(newValue);
-            } else {
-                // Fallback to first tab if not found
-                openTab(tabs[0]?.id || 'Dashboard');
-            }
+    const { tabs, activeTab, setActiveTab, closeTab, getActiveComponent } = useTab();
+    
+    // Fixed calculated heights for perfect tab layout
+    const totalHeight = `calc(100vh - ${HEADER_HEIGHT}px - ${FOOTER_HEIGHT}px)`;
+    const contentHeight = activeTab === 'Dashboard' 
+        ? `calc(100vh - ${HEADER_HEIGHT}px - ${FOOTER_HEIGHT}px - ${TAB_HEADER_HEIGHT}px)`
+        : `calc(100vh - ${HEADER_HEIGHT}px - ${FOOTER_HEIGHT}px - ${TAB_HEADER_HEIGHT}px)`;
+    
+    // Handle tab change
+    const handleTabChange = (event, newValue) => {
+        setActiveTab(newValue);
+    };
+    
+    // Handle tab close
+    const handleTabClose = (event, tabId) => {
+        event.stopPropagation();
+        if (tabId !== 'Dashboard' && closeTab) {
+            closeTab(tabId);
         }
     };
-
-    // Safety check for activeTab validity
-    const validTabIds = tabs?.map(tab => tab.id) || [];
-    const safeActiveTab = validTabIds.includes(activeTab) ? activeTab : (validTabIds.length > 0 ? validTabIds[0] : 'Dashboard');
     
-    const ActiveComponent = getActiveComponent();
+    // Get active component
+    const ActiveComponent = useMemo(() => getActiveComponent(), [getActiveComponent]);
+
+    // Ensure Dashboard tab is always present
+    const displayedTabs = tabs.length > 0 ? tabs : [{ id: 'Dashboard', title: 'Dashboard', closeable: false }];
 
     return (
-        <Box sx={{
-            width: '100%',
-            marginTop: `${HEADER_HEIGHT}px`,
-            height: tabPanelHeight,
-            display: 'flex',
+        <Box sx={{ 
+            display: 'flex', 
             flexDirection: 'column',
-            overflow: 'hidden'
+            height: totalHeight,
+            width: '100%',
+            bgcolor: 'background.paper',
+            overflow: 'hidden' // Prevent any overflow from container
         }}>
-            {(!tabs || tabs.length === 0) ? (
-                <Box sx={{ 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    alignItems: 'center', 
-                    height: '100%',
-                    flexDirection: 'column'
-                }}>
-                    <CircularProgress />
-                    <Typography sx={{ mt: 2 }}>Loading tabs...</Typography>
-                </Box>
-            ) : (
-                <>
-                    <Box sx={{
-                        borderBottom: 1,
-                        borderColor: 'divider',
-                        backgroundColor: theme.palette.background.paper
-                    }}>
-                        <Tabs
-                            value={safeActiveTab}
-                            onChange={handleChange}
-                            variant="scrollable"
-                            scrollButtons="auto"
-                            allowScrollButtonsMobile
-                            sx={{
-                                '& .MuiTab-root': {
-                                    minWidth: { xs: 80, sm: 120 },
-                                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                                    padding: { xs: '4px 6px', sm: '8px 12px' }
-                                }
-                            }}
-                        >
-                            {tabs.map((tab) => (
-                                <Tab
-                                    key={tab.id}
-                                    label={tab.label}
-                                    value={tab.id}
-                                />
-                            ))}
-                        </Tabs>
-                    </Box>
-                    <Box sx={{
-                        flexGrow: 1,
-                        overflow: 'auto',
-                        p: {
-                            xs: 0.25,
-                            sm: 0.5,
-                            md: 1
-                        },
-                        height: `calc(${tabPanelHeight} - 48px)`,
-                    }}>
-                        <Suspense fallback={
+            {/* Tab Headers - Fixed Height */}
+            <Tabs
+                value={activeTab || 'Dashboard'}
+                onChange={handleTabChange}
+                variant="scrollable"
+                scrollButtons="auto"
+                sx={{
+                    minHeight: TAB_HEADER_HEIGHT,
+                    height: TAB_HEADER_HEIGHT,
+                    maxHeight: TAB_HEADER_HEIGHT,
+                    borderBottom: 1,
+                    borderColor: 'divider',
+                    bgcolor: 'background.paper',
+                    flexShrink: 0, // Prevent shrinking
+                    '& .MuiTabs-indicator': {
+                        height: 3,
+                        borderRadius: '3px 3px 0 0'
+                    },
+                    '& .MuiTab-root': {
+                        minHeight: TAB_HEADER_HEIGHT,
+                        height: TAB_HEADER_HEIGHT,
+                        textTransform: 'none',
+                        fontWeight: 500
+                    }
+                }}
+            >
+                {displayedTabs.map((tab) => (
+                    <Tab
+                        key={tab.id}
+                        label={
+                            <Box sx={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                maxWidth: 180,
+                                gap: 1
+                            }}>
+                                <Typography 
+                                    variant="body2" 
+                                    sx={{ 
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
+                                        fontWeight: activeTab === tab.id ? 600 : 400
+                                    }}
+                                >
+                                    {tab.title}
+                                </Typography>
+                                {tab.closeable && (
+                                    <IconButton
+                                        size="small"
+                                        onMouseDown={(e) => {
+                                            e.stopPropagation();
+                                            e.preventDefault();
+                                            handleTabClose(e, tab.id);
+                                        }}
+                                        sx={{ 
+                                            p: 0.5, 
+                                            ml: 0.5,
+                                            '&:hover': {
+                                                bgcolor: 'action.hover'
+                                            }
+                                        }}
+                                    >
+                                        <CloseIcon fontSize="small" />
+                                    </IconButton>
+                                )}
+                            </Box>
+                        }
+                        value={tab.id}
+                        sx={{
+                            padding: '6px 16px',
+                            minHeight: TAB_HEADER_HEIGHT,
+                            textTransform: 'none'
+                        }
+                    }
+                    />
+                ))}
+            </Tabs>
+
+            {/* Tab Content - Uses remaining height */}
+            <Box 
+                sx={{ 
+                    flexGrow: 1,
+                    height: contentHeight,
+                    maxHeight: contentHeight,
+                    overflow: 'hidden', // Container should not scroll
+                    bgcolor: 'background.default',
+                    position: 'relative'
+                }}
+            >
+                {ActiveComponent ? (
+                    <Suspense
+                        fallback={
                             <Box sx={{ 
                                 display: 'flex', 
                                 justifyContent: 'center', 
                                 alignItems: 'center', 
                                 height: '100%' 
                             }}>
-                                <CircularProgress />
+                                <CircularProgress size={40} />
+                                <Typography sx={{ ml: 2 }}>Loading {displayedTabs.find(t => t.id === activeTab)?.title}...</Typography>
                             </Box>
-                        }>
-                            {ActiveComponent ? <ActiveComponent /> : (
-                                <Box sx={{ p: 2, textAlign: 'center' }}>
-                                    <Typography color="error">Component not available</Typography>
-                                </Box>
-                            )}
-                        </Suspense>
+                        }
+                    >
+                        <Box sx={{ 
+                            height: '100%',
+                            width: '100%',
+                            overflow: activeTab === 'Dashboard' ? 'auto' : 'hidden', // Dashboard scrolls, grids don't
+                            position: 'relative'
+                        }}>
+                            <ActiveComponent />
+                        </Box>
+                    </Suspense>
+                ) : (
+                    <Box sx={{ 
+                        display: 'flex', 
+                        justifyContent: 'center', 
+                        alignItems: 'center', 
+                        height: '100%' 
+                    }}>
+                        <CircularProgress size={40} />
+                        <Typography sx={{ ml: 2 }}>Loading content...</Typography>
                     </Box>
-                </>
-            )}
+                )}
+            </Box>
         </Box>
     );
 };
