@@ -4,7 +4,7 @@
  * Features: Animated metrics, real-time updates, responsive design, accessibility
  */
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Card,
   CardContent,

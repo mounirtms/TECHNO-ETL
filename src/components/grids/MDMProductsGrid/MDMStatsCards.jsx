@@ -7,7 +7,6 @@
  */
 
 import { useMemo } from 'react';
-import { Box, Grid } from '@mui/material';
 import { StatsCards } from '../../common/StatsCards';
 import {
   Category as CategoryIcon,
@@ -100,11 +99,7 @@ const MDMStatsCards = ({ stats }) => {
     }
   ].slice(0, 8), [stats]);
 
-  return (
-    <Box sx={{ mb: 2 }}>
-      <StatsCards cards={statusCards} />
-    </Box>
-  );
+  return <StatsCards cards={statusCards} />;
 };
 
 export default MDMStatsCards;

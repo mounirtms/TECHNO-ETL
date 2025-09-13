@@ -252,7 +252,16 @@ const Dashboard = () => {
                 endpoints.map(endpoint => 
                     unifiedMagentoService.get(endpoint).catch(error => {
                         console.warn(`Endpoint ${endpoint} failed:`, error.message);
-                        return { data: null };
+                        // Return mock data structure for failed endpoints
+                        return { 
+                            data: endpoint.includes('stats') ? { total: 0, active: 0 } :
+                                  endpoint.includes('distribution') ? [] :
+                                  endpoint.includes('types') ? [] :
+                                  endpoint.includes('attributes') ? [] :
+                                  endpoint.includes('performance') ? { revenue: 0, orders: 0 } :
+                                  endpoint.includes('inventory') ? { inStock: 0, outOfStock: 0 } :
+                                  null
+                        };
                     })
                 )
             );

@@ -1,7 +1,7 @@
 /**
- * BaseToolbar - Advanced Base Toolbar Component
- * Providents latest high-tech patterns for powerful toolbar management
- * Features: Adaptive UI, intelligent actions, real-time monitoring, accessibility
+ * BaseToolbar - Enhanced Base Toolbar Component
+ * Combines the best features from UnifiedGridToolbar with standardized patterns
+ * Features: Modular design, responsive layout, comprehensive action support
  */
 
 import React, { useState, useCallback, useMemo } from 'react';
@@ -18,9 +18,15 @@ import {
   ListItemIcon,
   ListItemText,
   ToggleButton,
+  ToggleButtonGroup,
   Chip,
   Badge,
   Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  FormControlLabel,
+  Switch,
   useTheme,
   useMediaQuery,
   Fade,
@@ -37,14 +43,22 @@ import {
   Settings as SettingsIcon,
   MoreVert as MoreIcon,
   Clear as ClearIcon,
-  PlayArrow as RealTimeIcon,
-  Pause as PauseIcon,
-  Speed as PerformanceIcon
+  FilterList as FilterIcon,
+  GridView as GridViewIcon,
+  ViewList as ViewListIcon,
+  Sync as SyncIcon,
+  Info as InfoIcon
 } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 
-// Components
+// Enhanced components
 import TooltipWrapper from '../common/TooltipWrapper';
+import GridToolbarActions from '../common/GridToolbarActions';
+import GridToolbarFilters from '../common/GridToolbarFilters';
+import GridToolbarSettings from '../common/GridToolbarSettings';
+
+// Standard configurations
+import { getStandardToolbarConfig } from '../../config/standardToolbarConfig';
 
 /**
  * Advanced BaseToolbar Component

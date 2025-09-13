@@ -37,9 +37,6 @@ const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 const GridTestPage = lazy(() => import('../pages/GridTestPage'));
 const DataGridsPage = lazy(() => import('../pages/DataGridsPage'));
 
-// MDM Pages
-const MDMProductsPage = lazy(() => import('../pages/MDMProductsPage'));
-
 /**
  * Enhanced Loading Fallback with route information
  */
@@ -337,19 +334,132 @@ const EnhancedRouter = () => {
                 <Route 
                   path="settings" 
                   element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Settings" />}>
+                      <SettingsPage />
+                    </Suspense>
+                  } 
+                />
+
+                {/* MDM Routes */}
+                <Route 
+                  path="mdmproducts" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="MDM Products" />}>
+                      <ProductManagementPage />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="mdm-stock" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="MDM Stock" />}>
+                      <InventoryPage />
+                    </Suspense>
+                  } 
+                />
+
+                {/* Magento Routes */}
+                <Route 
+                  path="categories" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Categories" />}>
+                      <ProductManagementPage />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="stocks" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Stocks" />}>
+                      <InventoryPage />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="sources" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Sources" />}>
+                      <InventoryPage />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="invoices" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Invoices" />}>
+                      <OrdersPage />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="cms-pages" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="CMS Pages" />}>
+                      <ProductManagementPage />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="cegid-products" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Cegid Products" />}>
+                      <ProductManagementPage />
+                    </Suspense>
+                  } 
+                />
+
+                {/* User Routes */}
+                <Route 
+                  path="profile" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="User Profile" />}>
+                      <SettingsPage />
+                    </Suspense>
+                  } 
+                />
+
+                {/* Development Routes */}
+                <Route 
+                  path="bug-bounty" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Bug Bounty" />}>
+                      <Dashboard />
+                    </Suspense>
+                  } 
+                />
+                
+                <Route 
+                  path="voting" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="Feature Voting" />}>
+                      <TaskPage />
+                    </Suspense>
+                  } 
+                />
+
+                {/* License Routes */}
+                <Route 
+                  path="license-management" 
+                  element={
                     <AdminRouteGuard>
-                      <Suspense fallback={<EnhancedLoadingFallback routeName="Settings" />}>
+                      <Suspense fallback={<EnhancedLoadingFallback routeName="License Management" />}>
                         <SettingsPage />
                       </Suspense>
                     </AdminRouteGuard>
                   } 
                 />
-
+                
                 <Route 
-                  path="mdm-products" 
+                  path="license" 
                   element={
-                    <Suspense fallback={<EnhancedLoadingFallback routeName="MDM Products" />}>
-                      <MDMProductsPage />
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="License Status" />}>
+                      <SettingsPage />
                     </Suspense>
                   } 
                 />

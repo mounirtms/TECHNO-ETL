@@ -1,112 +1,279 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
     Drawer,
     Box,
     useTheme,
-    styled
+    alpha,
+    Backdrop,
+    Fade
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-import { DRAWER_WIDTH, COLLAPSED_WIDTH } from './Constants';
+// Enhanced imports
 import { useTab } from '../../contexts/TabContext';
 import { useLanguage } from '../../contexts/LanguageContext';
-import technoIcon from '../../assets/images/techno.png';
-import logoTechno from '../../assets/images/logo_techno.png';
 import { useAuth } from '../../contexts/AuthContext';
+import { useRTL } from '../../contexts/RTLContext';
+import useLayoutResponsive from '../../hooks/useLayoutResponsive';
 import TreeMenuNavigation from './TreeMenuNavigation';
 
+// Assets
+import technoIcon from '../../assets/images/techno.png';
+import logoTechno from '../../assets/images/logo_techno.png';
 
-const StyledDrawer = styled(Drawer, {
-    shouldForwardProp: (prop) => !['isRTL'].includes(prop),
-})(({ theme, open, isRTL }) => ({
-    width: open ? DRAWER_WIDTH : COLLAPSED_WIDTH,
+// ===== STYLED COMPONENTS =====
+
+const ResponsiveDrawer = styled(Drawer, {
+    shouldForwardProp: (prop) => !['sidebarWidth', 'isRTL', 'isCollapsed', 'isTemporary'].includes(prop)
+})(({ theme, sidebarWidth, isRTL, isCollapsed, isTemporary }) => ({
+    width: sidebarWidth,
     flexShrink: 0,
     whiteSpace: 'nowrap',
     boxSizing: 'border-box',
+    
     '& .MuiDrawer-paper': {
-        width: open ? DRAWER_WIDTH : COLLAPSED_WIDTH,
-        transition: theme.transitions.create(['width', 'transform'], {
-            easing: theme.transitions.easing.easeInOut,
-            duration: theme.transitions.duration.standard,
-        }),
+        width: sidebarWidth,
+        position: 'fixed',
+        top: 0,
+        bottom: 0,
+        [isRTL ? 'right' : 'left']: 0,
+        height: '100vh',
         overflowX: 'hidden',
+        overflowY: 'auto',
+        zIndex: theme.zIndex.drawer,
+        
+        // Enhanced background with glassmorphism effect
         background: theme.palette.mode === 'light'
-            ? 'linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%)'
-            : 'linear-gradient(180deg, rgba(18,18,18,0.95) 0%, rgba(32,32,32,0.95) 100%)',
+            ? 'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%)'
+            : 'linear-gradient(180deg, rgba(18,18,18,0.98) 0%, rgba(32,32,32,0.95) 100%)',
+        
         backdropFilter: 'blur(20px)',
-        borderRight: isRTL ? 'none' : `1px solid ${theme.palette.divider}`,
-        borderLeft: isRTL ? `1px solid ${theme.palette.divider}` : 'none',
-        boxShadow: theme.palette.mode === 'light'
-            ? '4px 0 20px rgba(0,0,0,0.08)'
-            : '4px 0 20px rgba(0,0,0,0.3)',
-        [theme.breakpoints.up('sm')]: {
+        WebkitBackdropFilter: 'blur(20px)',
+        
+        // RTL-aware borders and shadows
+        borderRight: isRTL ? 'none' : `1px solid ${alpha(theme.palette.divider, 0.12)}`,
+        borderLeft: isRTL ? `1px solid ${alpha(theme.palette.divider, 0.12)}` : 'none',
+        
+        boxShadow: isRTL 
+            ? theme.palette.mode === 'light'
+                ? '-4px 0 20px rgba(0,0,0,0.08)'
+                : '-4px 0 20px rgba(0,0,0,0.3)'
+            : theme.palette.mode === 'light'
+                ? '4px 0 20px rgba(0,0,0,0.08)'
+                : '4px 0 20px rgba(0,0,0,0.3)',
+        
+        // Smooth transitions
+        transition: theme.transitions.create(['width', 'transform', 'box-shadow'], {
+            easing: theme.transitions.easing.easeInOut,
+            duration: theme.transitions.duration.standard
+        }),
+        
+        // Mobile handling
+        ...(isTemporary && {
             position: 'fixed',
-            height: '100%',
-            ...(isRTL ? { right: 0 } : { left: 0 }),
-        },
-        [theme.breakpoints.down('sm')]: {
-            transform: open ? 'translateX(0)' : 'translateX(-100%)',
-            width: DRAWER_WIDTH,
-            zIndex: theme.zIndex.drawer + 1,
-        },
+            zIndex: theme.zIndex.modal,
+            transform: 'translateX(0)',
+            
+            [theme.breakpoints.down('md')]: {
+                transform: 'translateX(0)',
+                width: 280 // Fixed width for mobile
+            }
+        }),
+        
+        // Custom scrollbar styling
         '&::-webkit-scrollbar': {
-            width: '4px',
+            width: isCollapsed ? 0 : 6,
+            transition: theme.transitions.create('width', {
+                duration: theme.transitions.duration.short
+            })
         },
+        
+        '&::-webkit-scrollbar-track': {
+            background: 'transparent'
+        },
+        
         '&::-webkit-scrollbar-thumb': {
-            backgroundColor: theme.palette.mode === 'light' ? '#E0E0E0' : '#424242',
-            borderRadius: '2px',
+            backgroundColor: alpha(theme.palette.text.primary, 0.2),
+            borderRadius: 3,
+            border: `1px solid ${alpha(theme.palette.background.paper, 0.1)}`,
+            
+            '&:hover': {
+                backgroundColor: alpha(theme.palette.text.primary, 0.3)
+            }
         },
-    },
+        
+        // Hover effects for expanded sidebar
+        ...(!isCollapsed && !isTemporary && {
+            '&:hover': {
+                boxShadow: isRTL 
+                    ? theme.palette.mode === 'light'
+                        ? '-6px 0 30px rgba(0,0,0,0.12)'
+                        : '-6px 0 30px rgba(0,0,0,0.4)'
+                    : theme.palette.mode === 'light'
+                        ? '6px 0 30px rgba(0,0,0,0.12)'
+                        : '6px 0 30px rgba(0,0,0,0.4)'
+            }
+        })
+    }
 }));
 
-
-const LogoContainer = styled(Box)(({ theme }) => ({
+const LogoContainer = styled(Box, {
+    shouldForwardProp: (prop) => !['isCollapsed', 'isRTL'].includes(prop)
+})(({ theme, isCollapsed, isRTL }) => ({
     height: 64,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: theme.spacing(2),
-    borderBottom: `1px solid ${theme.palette.divider}`,
+    padding: theme.spacing(isCollapsed ? 1 : 2),
+    borderBottom: `1px solid ${alpha(theme.palette.divider, 0.12)}`,
+    position: 'relative',
+    overflow: 'hidden',
+    
+    // RTL support
+    direction: isRTL ? 'rtl' : 'ltr',
+    
+    // Hover effect
+    '&:hover': {
+        backgroundColor: alpha(theme.palette.primary.main, 0.04)
+    },
+    
+    transition: theme.transitions.create(['padding', 'background-color'], {
+        duration: theme.transitions.duration.short
+    })
 }));
 
-const Sidebar = ({ open, toggleDrawer, isRTL = false }) => {
+const LogoImage = styled('img')(({ theme }) => ({
+    height: 'auto',
+    width: '100%',
+    maxHeight: 40,
+    objectFit: 'contain',
+    transition: theme.transitions.create(['opacity', 'transform'], {
+        duration: theme.transitions.duration.standard
+    }),
+    
+    '&:hover': {
+        transform: 'scale(1.02)'
+    }
+}));
+
+const NavigationContainer = styled(Box)(({ theme }) => ({
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden'
+}));
+
+const MobileBackdrop = styled(Backdrop)(({ theme }) => ({
+    zIndex: theme.zIndex.drawer - 1,
+    backgroundColor: alpha(theme.palette.common.black, 0.5),
+    backdropFilter: 'blur(4px)'
+}));
+
+// ===== MAIN COMPONENT =====
+
+/**
+ * Enhanced Sidebar Component
+ * 
+ * Features:
+ * - Full RTL support with proper positioning
+ * - Responsive layout integration
+ * - Smooth animations and transitions
+ * - Mobile overlay support
+ * - Enhanced visual design
+ * - Accessibility compliance
+ */
+const Sidebar = () => {
     const theme = useTheme();
     const { activeTab, openTab } = useTab();
     const { translate } = useLanguage();
     const { currentUser } = useAuth();
+    const { isRTL, rtlUtils } = useRTL();
+    
+    const {
+        sidebarState,
+        dimensions,
+        layoutConfig,
+        closeSidebar
+    } = useLayoutResponsive();
 
-    const handleTabClick = (tabId) => {
+    // Handle tab click
+    const handleTabClick = useCallback((tabId) => {
         openTab(tabId);
-    };
+        
+        // Close sidebar on mobile after navigation
+        if (layoutConfig.isMobile && sidebarState.isTemporary) {
+            closeSidebar();
+        }
+    }, [openTab, layoutConfig.isMobile, sidebarState.isTemporary, closeSidebar]);
+
+    // Handle backdrop click (mobile)
+    const handleBackdropClick = useCallback(() => {
+        if (sidebarState.isTemporary) {
+            closeSidebar();
+        }
+    }, [sidebarState.isTemporary, closeSidebar]);
+
+    // Determine logo source
+    const logoSrc = useMemo(() => {
+        return (sidebarState.isOpen && !sidebarState.isCollapsed) ? logoTechno : technoIcon;
+    }, [sidebarState.isOpen, sidebarState.isCollapsed]);
+
+    // Drawer variant
+    const drawerVariant = useMemo(() => {
+        return sidebarState.isTemporary ? 'temporary' : 'permanent';
+    }, [sidebarState.isTemporary]);
 
     return (
-        <StyledDrawer
-            variant="permanent"
-            open={open}
-            isRTL={isRTL}
-        >
-            <LogoContainer>
-                <Box
-                    component="img"
-                    src={open ? logoTechno : technoIcon}
-                    alt="Logo"
-                    sx={{
-                        height: 'auto',
-                        width: '100%',
-                        transition: theme.transitions.create('all'),
-                    }}
-                />
-            </LogoContainer>
-            {/* Tree Menu Navigation */}
-            <TreeMenuNavigation
-                open={open}
+        <>
+            <ResponsiveDrawer
+                variant={drawerVariant}
+                open={sidebarState.isOpen}
+                onClose={handleBackdropClick}
+                sidebarWidth={dimensions.sidebar.width}
                 isRTL={isRTL}
-                activeTab={activeTab}
-                onTabClick={handleTabClick}
-                currentUser={currentUser}
-                translate={translate}
-            />
-        </StyledDrawer>
+                isCollapsed={sidebarState.isCollapsed}
+                isTemporary={sidebarState.isTemporary}
+                anchor={isRTL ? 'right' : 'left'}
+                ModalProps={{
+                    keepMounted: true, // Better mobile performance
+                    BackdropComponent: sidebarState.isTemporary ? MobileBackdrop : undefined
+                }}
+                SlideProps={{
+                    direction: isRTL ? 'left' : 'right'
+                }}
+            >
+                {/* Logo Section */}
+                <LogoContainer 
+                    isCollapsed={sidebarState.isCollapsed}
+                    isRTL={isRTL}
+                >
+                    <Fade in timeout={300}>
+                        <LogoImage
+                            src={logoSrc}
+                            alt="Techno-ETL Logo"
+                            loading="lazy"
+                        />
+                    </Fade>
+                </LogoContainer>
+
+                {/* Navigation Section */}
+                <NavigationContainer>
+                    <TreeMenuNavigation
+                        open={sidebarState.isOpen && !sidebarState.isCollapsed}
+                        isRTL={isRTL}
+                        activeTab={activeTab}
+                        onTabClick={handleTabClick}
+                        currentUser={currentUser}
+                        translate={translate}
+                        isCollapsed={sidebarState.isCollapsed}
+                        isMobile={layoutConfig.isMobile}
+                    />
+                </NavigationContainer>
+            </ResponsiveDrawer>
+        </>
     );
 };
+
+Sidebar.displayName = 'Sidebar';
 
 export default Sidebar;

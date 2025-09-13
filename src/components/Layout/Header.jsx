@@ -1,92 +1,233 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
     AppBar,
     Toolbar,
     IconButton,
     Typography,
-    Avatar,
-    Menu,
-    MenuItem
+    Box,
+    useTheme,
+    Fade,
+    alpha
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import { StyledAppBar } from './styles';
-import { DRAWER_WIDTH, COLLAPSED_WIDTH } from './Constants';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { LanguageProvider, useLanguage } from '../../contexts/LanguageContext';
+import {
+    Menu as MenuIcon,
+    ChevronLeft as ChevronLeftIcon,
+    ChevronRight as ChevronRightIcon
+} from '@mui/icons-material';
+import { styled } from '@mui/material/styles';
 
-import { useAuth } from '../../contexts/AuthContext';
-import { useTab } from '../../contexts/TabContext';
-import UserMenu from './UserMenu'; 
-import AccountCircleIcon from '@mui/icons-material/AccountCircle'; // Import the AccountCircle icon
+// Enhanced imports
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useRTL } from '../../contexts/RTLContext';
+import useLayoutResponsive from '../../hooks/useLayoutResponsive';
+import UserMenu from './UserMenu';
+import TooltipWrapper from '../common/TooltipWrapper';
 
-export const Header = ({
-    isDrawerCollapsed,
-    handleDrawerToggle,
-    handleProfileMenuOpen,
-    handleProfileMenuClose,
-    anchorEl
-}) => {
-    const { currentUser } = useAuth();
-    const { openTab } = useTab();
-    const { currentLanguage, translate } = useLanguage();
-    const isRTL = currentLanguage === 'ar';
- 
-    const handleLogout = async () => {
-        try {
-            await logout();
-            handleProfileMenuClose();
-            // Optionally redirect to login page
-        } catch (error) {
-            console.error('Logout failed', error);
-            // Optionally show an error notification
+// ===== STYLED COMPONENTS =====
+
+const ResponsiveAppBar = styled(AppBar, {
+    shouldForwardProp: (prop) => !['sidebarWidth', 'isRTL', 'isTemporary'].includes(prop)
+})(({ theme, sidebarWidth, isRTL, isTemporary }) => ({
+    position: 'fixed',
+    top: 0,
+    [isRTL ? 'right' : 'left']: isTemporary ? 0 : sidebarWidth,
+    width: `calc(100% - ${isTemporary ? 0 : sidebarWidth}px)`,
+    zIndex: theme.zIndex.appBar,
+    backgroundColor: alpha(theme.palette.background.paper, 0.95),
+    backdropFilter: 'blur(8px)',
+    borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+    boxShadow: theme.shadows[1],
+    
+    transition: theme.transitions.create(['left', 'right', 'width', 'background-color'], {
+        easing: theme.transitions.easing.easeInOut,
+        duration: theme.transitions.duration.standard
+    }),
+    
+    // Hover effect
+    '&:hover': {
+        backgroundColor: alpha(theme.palette.background.paper, 0.98),
+        boxShadow: theme.shadows[2]
+    }
+}));
+
+const HeaderToolbar = styled(Toolbar)(({ theme }) => ({
+    minHeight: 64,
+    padding: theme.spacing(0, 2),
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(1),
+    
+    [theme.breakpoints.down('sm')]: {
+        minHeight: 56,
+        padding: theme.spacing(0, 1)
+    }
+}));
+
+const ToggleButton = styled(IconButton)(({ theme }) => ({
+    padding: theme.spacing(1),
+    borderRadius: theme.spacing(1),
+    transition: theme.transitions.create(['background-color', 'transform'], {
+        duration: theme.transitions.duration.short
+    }),
+    
+    '&:hover': {
+        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+        transform: 'scale(1.05)'
+    },
+    
+    '&:active': {
+        transform: 'scale(0.95)'
+    }
+}));
+
+const AppTitle = styled(Typography)(({ theme }) => ({
+    flexGrow: 1,
+    fontWeight: 600,
+    letterSpacing: '0.5px',
+    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+    backgroundClip: 'text',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    
+    [theme.breakpoints.down('sm')]: {
+        fontSize: '1.1rem'
+    }
+}));
+
+const ActionButtons = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(0.5),
+    
+    [theme.breakpoints.down('sm')]: {
+        gap: theme.spacing(0.25)
+    }
+}));
+
+// ===== MAIN COMPONENT =====
+
+/**
+ * Enhanced Header Component
+ * 
+ * Features:
+ * - Responsive layout with sidebar integration
+ * - RTL support with proper positioning
+ * - Smooth animations and transitions
+ * - Mobile-optimized design
+ * - Accessibility compliance
+ */
+export const Header = () => {
+    const theme = useTheme();
+    const { translate } = useLanguage();
+    const { isRTL, rtlUtils } = useRTL();
+    
+    const {
+        sidebarState,
+        dimensions,
+        layoutConfig,
+        toggleSidebar,
+        toggleSidebarCollapse,
+        toggleSidebarPin
+    } = useLayoutResponsive();
+
+    // Determine which icon to show for sidebar toggle
+    const getSidebarToggleIcon = useMemo(() => {
+        if (!sidebarState.isOpen) {
+            return <MenuIcon />;
+        }
+        
+        if (sidebarState.isCollapsed) {
+            return isRTL ? <ChevronLeftIcon /> : <ChevronRightIcon />;
+        }
+        
+        return isRTL ? <ChevronRightIcon /> : <ChevronLeftIcon />;
+    }, [sidebarState.isOpen, sidebarState.isCollapsed, isRTL]);
+
+    // Get tooltip text for sidebar toggle
+    const getSidebarToggleTooltip = useMemo(() => {
+        if (!sidebarState.isOpen) {
+            return translate('common.openSidebar') || 'Open sidebar';
+        }
+        
+        if (sidebarState.isCollapsed) {
+            return translate('common.expandSidebar') || 'Expand sidebar';
+        }
+        
+        return translate('common.collapseSidebar') || 'Collapse sidebar';
+    }, [sidebarState.isOpen, sidebarState.isCollapsed, translate]);
+
+    // Handle sidebar toggle based on current state
+    const handleSidebarToggle = () => {
+        if (!sidebarState.isOpen) {
+            toggleSidebar();
+        } else if (layoutConfig.isMobile) {
+            toggleSidebar();
+        } else {
+            toggleSidebarCollapse();
         }
     };
 
+    // Handle pin toggle
+    const handlePinToggle = () => {
+        toggleSidebarPin();
+    };
+
     return (
-        <StyledAppBar
-            position="fixed"
-            open={!isDrawerCollapsed}
-            sx={{
-                width: {
-                    xs: '100%',
-                    sm: `calc(100% - ${isDrawerCollapsed ? COLLAPSED_WIDTH : DRAWER_WIDTH}px)`
-                },
-                marginLeft: {
-                    sm: isDrawerCollapsed ? `${COLLAPSED_WIDTH}px` : `${DRAWER_WIDTH}px`
-                },
-                transition: theme => theme.transitions.create(['width', 'margin'], {
-                    easing: theme.transitions.easing.sharp,
-                    duration: theme.transitions.duration.enteringScreen,
-                }),
-            }}
+        <ResponsiveAppBar
+            sidebarWidth={dimensions.sidebar.width}
+            isRTL={isRTL}
+            isTemporary={sidebarState.isTemporary}
+            elevation={0}
         >
-            <Toolbar>
-                <IconButton
-                    size="large"
-                    edge="start"
-                    color="inherit"
-                    aria-label={isDrawerCollapsed ? translate('common.expandMenu') : translate('common.collapseMenu')}
-                    onClick={handleDrawerToggle}
-                    sx={{ 
-                        mr: 2,
-                        
-                        display: 'flex' // Always show the toggle button
+            <HeaderToolbar>
+                {/* Sidebar Toggle Button */}
+                <TooltipWrapper
+                    title={getSidebarToggleTooltip}
+                    placement={isRTL ? 'bottom-end' : 'bottom-start'}
+                >
+                    <ToggleButton
+                        edge="start"
+                        color="inherit"
+                        aria-label={getSidebarToggleTooltip}
+                        onClick={handleSidebarToggle}
+                        size={layoutConfig.isMobile ? 'small' : 'medium'}
+                    >
+                        <Fade in timeout={200}>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                {getSidebarToggleIcon}
+                            </Box>
+                        </Fade>
+                    </ToggleButton>
+                </TooltipWrapper>
+
+                
+                {/* App Title */}
+                <AppTitle 
+                    variant="h6" 
+                    noWrap 
+                    component="div"
+                    sx={{
+                        textAlign: isRTL ? 'right' : 'left',
+                        marginLeft: isRTL ? 0 : theme.spacing(1),
+                        marginRight: isRTL ? theme.spacing(1) : 0
                     }}
                 >
-                    {isDrawerCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                </IconButton>
+                    {translate('common.appTitle') || 'Techno-ETL'}
+                </AppTitle>
 
-                <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-                    {translate('common.appTitle')}
-                </Typography>
+                {/* Spacer for responsive layout */}
+                <Box sx={{ flexGrow: 1 }} />
 
-      
-               
-                <UserMenu  />
-            </Toolbar>
-        </StyledAppBar>
+                {/* Action Buttons */}
+                <ActionButtons>
+                    {/* User Menu */}
+                    <UserMenu />
+                </ActionButtons>
+            </HeaderToolbar>
+        </ResponsiveAppBar>
     );
 };
+
+Header.displayName = 'Header';
 
 export default Header;
