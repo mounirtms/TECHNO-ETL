@@ -80,7 +80,7 @@ const ResponsiveDrawer = styled(Drawer, {
             }
         }),
         
-        // Custom scrollbar styling
+        // Enhanced scrollbar styling
         '&::-webkit-scrollbar': {
             width: isCollapsed ? 0 : 6,
             transition: theme.transitions.create('width', {
@@ -102,16 +102,10 @@ const ResponsiveDrawer = styled(Drawer, {
             }
         },
         
-        // Hover effects for expanded sidebar
+        // Subtle hover effects for expanded sidebar
         ...(!isCollapsed && !isTemporary && {
             '&:hover': {
-                boxShadow: isRTL 
-                    ? theme.palette.mode === 'light'
-                        ? '-6px 0 30px rgba(0,0,0,0.12)'
-                        : '-6px 0 30px rgba(0,0,0,0.4)'
-                    : theme.palette.mode === 'light'
-                        ? '6px 0 30px rgba(0,0,0,0.12)'
-                        : '6px 0 30px rgba(0,0,0,0.4)'
+                boxShadow: `${isRTL ? '-' : ''}6px 0 20px ${alpha(theme.palette.common.black, theme.palette.mode === 'light' ? 0.08 : 0.25)}`
             }
         })
     }
@@ -196,32 +190,30 @@ const Sidebar = () => {
         closeSidebar
     } = useLayoutResponsive();
 
-    // Handle tab click
+    // Optimized tab click handler
     const handleTabClick = useCallback((tabId) => {
         openTab(tabId);
         
-        // Close sidebar on mobile after navigation
+        // Auto-close sidebar on mobile after navigation
         if (layoutConfig.isMobile && sidebarState.isTemporary) {
             closeSidebar();
         }
     }, [openTab, layoutConfig.isMobile, sidebarState.isTemporary, closeSidebar]);
 
-    // Handle backdrop click (mobile)
+    // Simplified backdrop click handler
     const handleBackdropClick = useCallback(() => {
         if (sidebarState.isTemporary) {
             closeSidebar();
         }
     }, [sidebarState.isTemporary, closeSidebar]);
 
-    // Determine logo source
+    // Smart logo selection based on sidebar state
     const logoSrc = useMemo(() => {
         return (sidebarState.isOpen && !sidebarState.isCollapsed) ? logoTechno : technoIcon;
     }, [sidebarState.isOpen, sidebarState.isCollapsed]);
 
-    // Drawer variant
-    const drawerVariant = useMemo(() => {
-        return sidebarState.isTemporary ? 'temporary' : 'permanent';
-    }, [sidebarState.isTemporary]);
+    // Drawer variant optimization
+    const drawerVariant = sidebarState.isTemporary ? 'temporary' : 'permanent';
 
     return (
         <>

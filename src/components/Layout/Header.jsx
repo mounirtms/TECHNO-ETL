@@ -156,20 +156,13 @@ export const Header = () => {
         return translate('common.collapseSidebar') || 'Collapse sidebar';
     }, [sidebarState.isOpen, sidebarState.isCollapsed, translate]);
 
-    // Handle sidebar toggle based on current state
+    // Optimized sidebar toggle handling
     const handleSidebarToggle = () => {
-        if (!sidebarState.isOpen) {
-            toggleSidebar();
-        } else if (layoutConfig.isMobile) {
+        if (!sidebarState.isOpen || layoutConfig.isMobile) {
             toggleSidebar();
         } else {
             toggleSidebarCollapse();
         }
-    };
-
-    // Handle pin toggle
-    const handlePinToggle = () => {
-        toggleSidebarPin();
     };
 
     return (
@@ -180,7 +173,7 @@ export const Header = () => {
             elevation={0}
         >
             <HeaderToolbar>
-                {/* Sidebar Toggle Button */}
+                {/* Enhanced Sidebar Toggle Button */}
                 <TooltipWrapper
                     title={getSidebarToggleTooltip}
                     placement={isRTL ? 'bottom-end' : 'bottom-start'}
@@ -191,36 +184,43 @@ export const Header = () => {
                         aria-label={getSidebarToggleTooltip}
                         onClick={handleSidebarToggle}
                         size={layoutConfig.isMobile ? 'small' : 'medium'}
+                        sx={{
+                            mr: isRTL ? 0 : 1,
+                            ml: isRTL ? 1 : 0
+                        }}
                     >
                         <Fade in timeout={200}>
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Box sx={{ 
+                                display: 'flex', 
+                                alignItems: 'center',
+                                transition: 'transform 0.2s ease'
+                            }}>
                                 {getSidebarToggleIcon}
                             </Box>
                         </Fade>
                     </ToggleButton>
                 </TooltipWrapper>
 
-                
-                {/* App Title */}
+                {/* Optimized App Title */}
                 <AppTitle 
                     variant="h6" 
                     noWrap 
                     component="div"
                     sx={{
                         textAlign: isRTL ? 'right' : 'left',
-                        marginLeft: isRTL ? 0 : theme.spacing(1),
-                        marginRight: isRTL ? theme.spacing(1) : 0
+                        flex: '0 0 auto',
+                        ml: isRTL ? 0 : 1,
+                        mr: isRTL ? 1 : 0
                     }}
                 >
                     {translate('common.appTitle') || 'Techno-ETL'}
                 </AppTitle>
 
-                {/* Spacer for responsive layout */}
+                {/* Flexible spacer */}
                 <Box sx={{ flexGrow: 1 }} />
 
-                {/* Action Buttons */}
+                {/* Streamlined Action Buttons */}
                 <ActionButtons>
-                    {/* User Menu */}
                     <UserMenu />
                 </ActionButtons>
             </HeaderToolbar>

@@ -180,7 +180,7 @@ const Footer = ({ isLoginScreen = false }) => {
         );
     }, [isUsingLocalData]);
 
-    // Compact footer content
+    // Optimized footer content with better mobile handling
     const footerContent = useMemo(() => {
         const versionText = versionInfo ? `v${versionInfo.fullVersion}` : 'v1.0.0';
         
@@ -190,19 +190,16 @@ const Footer = ({ isLoginScreen = false }) => {
                 alignItems: 'center', 
                 justifyContent: 'space-between',
                 width: '100%',
-                gap: 1
+                gap: { xs: 0.5, sm: 1 },
+                flexWrap: isMobile ? 'wrap' : 'nowrap'
             }}>
-                {/* Left: Copyright & Company */}
-                <Box sx={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: 1,
-                    flexDirection: isRTL ? 'row-reverse' : 'row'
-                }}>
+                {/* Left Section: Copyright & Company */}
+                <FooterSection sx={{ flex: isMobile ? '1 1 100%' : '0 0 auto' }}>
                     <CopyrightIcon sx={{ fontSize: 14, opacity: 0.7 }} />
                     <Typography variant="body2" sx={{ 
                         fontSize: isMobile ? '0.7rem' : '0.75rem',
-                        opacity: 0.8
+                        opacity: 0.8,
+                        whiteSpace: 'nowrap'
                     }}>
                         {currentYear} Techno Stationery
                     </Typography>
@@ -214,27 +211,32 @@ const Footer = ({ isLoginScreen = false }) => {
                                 fontSize: '0.7rem',
                                 opacity: 0.6,
                                 fontStyle: 'italic',
-                                fontWeight: 500
+                                fontWeight: 500,
+                                whiteSpace: 'nowrap'
                             }}>
                                 Engineered with 💎 by Techno Innovation Team
                             </Typography>
                         </>
                     )}
-                </Box>
+                </FooterSection>
 
-                {/* Center: Status */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    {statusIndicator}
-                </Box>
+                {/* Center Section: Status (Desktop) or Right Section (Mobile) */}
+                {!isMobile && (
+                    <FooterSection>
+                        {statusIndicator}
+                    </FooterSection>
+                )}
 
-                {/* Right: Version & Links */}
-                <Box sx={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: 1,
-                    flexDirection: isRTL ? 'row-reverse' : 'row'
+                {/* Right Section: Version & Status */}
+                <FooterSection sx={{ 
+                    flex: isMobile ? '1 1 auto' : '0 0 auto',
+                    justifyContent: isMobile ? 'space-between' : 'flex-end'
                 }}>
-                    <VersionInfo>{versionText}</VersionInfo>
+                    {isMobile && statusIndicator}
+                    
+                    <VersionInfo sx={{ order: isMobile ? 2 : 0 }}>
+                        {versionText}
+                    </VersionInfo>
                     
                     {!isMobile && (
                         <>
@@ -249,7 +251,7 @@ const Footer = ({ isLoginScreen = false }) => {
                             </AnimatedLink>
                         </>
                     )}
-                </Box>
+                </FooterSection>
             </Box>
         );
     }, [currentYear, statusIndicator, versionInfo, isMobile, isRTL, translate]);

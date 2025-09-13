@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { Suspense, memo } from 'react';
 import {
     Box,
     Tabs,
@@ -9,27 +9,162 @@ import {
     CircularProgress,
     alpha
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { useTab } from '../../contexts/TabContext';
-import { HEADER_HEIGHT, FOOTER_HEIGHT } from './Constants';
+import useLayoutResponsive from '../../hooks/useLayoutResponsive';
 
+// ===== STYLED COMPONENTS =====
 
-const TabPanel = () => {
+const TabPanelContainer = styled(Box)(({ theme }) => ({
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    position: 'relative'
+}));
+
+const TabsHeader = styled(Box)(({ theme }) => ({
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    backgroundColor: alpha(theme.palette.background.paper, 0.98),
+    backdropFilter: 'blur(8px)',
+    position: 'sticky',
+    top: 0,
+    zIndex: 10,
+    boxShadow: theme.shadows[1],
+    minHeight: 48
+}));
+
+const TabsContainer = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%',
+    px: { xs: 1, sm: 2, md: 3 }
+}));
+
+const StyledTabs = styled(Tabs)(({ theme, isMobile, tabCount }) => ({
+    maxWidth: '100%',
+    '& .MuiTabs-flexContainer': {
+        justifyContent: !isMobile && tabCount <= 8 ? 'center' : 'flex-start'
+    },
+    '& .MuiTab-root': {
+        minWidth: isMobile ? 90 : 120,
+        maxWidth: isMobile ? 140 : 200,
+        fontSize: isMobile ? '0.75rem' : '0.875rem',
+        padding: isMobile ? '8px 12px' : '12px 20px',
+        textTransform: 'none',
+        fontWeight: 500,
+        letterSpacing: '0.02em',
+        transition: theme.transitions.create(['color', 'background-color'], {
+            duration: theme.transitions.duration.short
+        }),
+        '&:hover': {
+            backgroundColor: alpha(theme.palette.primary.main, 0.04),
+            color: theme.palette.primary.main
+        },
+        '&.Mui-selected': {
+            color: theme.palette.primary.main,
+            fontWeight: 600
+        }
+    },
+    '& .MuiTabs-indicator': {
+        height: 3,
+        borderRadius: '3px 3px 0 0',
+        background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`
+    },
+    '& .MuiTabs-scrollButtons': {
+        '&.Mui-disabled': {
+            opacity: 0.3
+        }
+    }
+}));
+
+const ContentArea = styled(Box)(({ theme }) => ({
+    flexGrow: 1,
+    overflow: 'hidden',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    padding: theme.spacing(2),
+    height: 'calc(100% - 48px)', // Subtract tab header height
+    
+    [theme.breakpoints.down('sm')]: {
+        padding: theme.spacing(1)
+    }
+}));
+
+const ContentWrapper = styled(Box)(({ theme }) => ({
+    width: '100%',
+    maxWidth: '100%',
+    height: '100%',
+    overflow: 'auto',
+    borderRadius: theme.spacing(2),
+    backgroundColor: alpha(theme.palette.background.paper, 0.6),
+    backdropFilter: 'blur(10px)',
+    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+    boxShadow: theme.shadows[2],
+    
+    // Enhanced DataGrid styling
+    '& .MuiDataGrid-root': {
+        border: 'none',
+        borderRadius: theme.spacing(2),
+        '& .MuiDataGrid-toolbarContainer': {
+            padding: theme.spacing(2),
+            minHeight: 64,
+            borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+            
+            [theme.breakpoints.down('sm')]: {
+                padding: theme.spacing(1.5),
+                minHeight: 52
+            }
+        },
+        '& .MuiDataGrid-columnHeaders': {
+            minHeight: 52,
+            backgroundColor: alpha(theme.palette.primary.main, 0.02),
+            
+            [theme.breakpoints.down('sm')]: {
+                minHeight: 44
+            }
+        },
+        '& .MuiDataGrid-row': {
+            minHeight: 52,
+            '&:hover': {
+                backgroundColor: alpha(theme.palette.primary.main, 0.04)
+            },
+            
+            [theme.breakpoints.down('sm')]: {
+                minHeight: 44
+            }
+        }
+    }
+}));
+
+const LoadingContainer = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '300px',
+    flexDirection: 'column',
+    gap: theme.spacing(3)
+}));
+
+const ErrorContainer = styled(Box)(({ theme }) => ({
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '300px',
+    flexDirection: 'column',
+    gap: theme.spacing(3),
+    textAlign: 'center'
+}));
+
+// ===== MAIN COMPONENT =====
+
+const TabPanel = memo(() => {
     const theme = useTheme();
     const { tabs, activeTab, openTab, getActiveComponent } = useTab();
-    const [tabPanelHeight, setTabPanelHeight] = useState('100%');
+    const { layoutConfig } = useLayoutResponsive();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-    useEffect(() => {
-        const calculateHeight = () => {
-            const windowHeight = window.innerHeight;
-            const calculatedHeight = windowHeight - HEADER_HEIGHT - FOOTER_HEIGHT;
-            setTabPanelHeight(`${calculatedHeight}px`);
-        };
-
-        calculateHeight();
-        window.addEventListener('resize', calculateHeight);
-        return () => window.removeEventListener('resize', calculateHeight);
-    }, []);
 
     const handleChange = (event, newValue) => {
         openTab(newValue);
@@ -38,74 +173,19 @@ const TabPanel = () => {
     const ActiveComponent = getActiveComponent();
 
     return (
-        <Box sx={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            position: 'relative'
-        }}>
-            {/* Professional Tab Header */}
-            <Box sx={{
-                borderBottom: 1,
-                borderColor: 'divider',
-                backgroundColor: alpha(theme.palette.background.paper, 0.98),
-                backdropFilter: 'blur(8px)',
-                position: 'sticky',
-                top: 0,
-                zIndex: 10,
-                boxShadow: theme.shadows[1]
-            }}>
-                <Box sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    width: '100%',
-                    px: { xs: 1, sm: 2, md: 3 }
-                }}>
-                    <Tabs
+        <TabPanelContainer>
+            {/* Optimized Tab Header */}
+            <TabsHeader>
+                <TabsContainer>
+                    <StyledTabs
                         value={activeTab}
                         onChange={handleChange}
                         variant={isMobile ? "scrollable" : (tabs.length > 8 ? "scrollable" : "standard")}
                         scrollButtons="auto"
                         allowScrollButtonsMobile
                         centered={!isMobile && tabs.length <= 8}
-                        sx={{
-                            maxWidth: '100%',
-                            '& .MuiTabs-flexContainer': {
-                                justifyContent: !isMobile && tabs.length <= 8 ? 'center' : 'flex-start'
-                            },
-                            '& .MuiTab-root': {
-                                minWidth: isMobile ? 90 : 120,
-                                maxWidth: isMobile ? 140 : 200,
-                                fontSize: isMobile ? '0.75rem' : '0.875rem',
-                                padding: isMobile ? '8px 12px' : '12px 20px',
-                                textTransform: 'none',
-                                fontWeight: 500,
-                                letterSpacing: '0.02em',
-                                transition: theme.transitions.create(['color', 'background-color'], {
-                                    duration: theme.transitions.duration.short
-                                }),
-                                '&:hover': {
-                                    backgroundColor: alpha(theme.palette.primary.main, 0.04),
-                                    color: theme.palette.primary.main
-                                },
-                                '&.Mui-selected': {
-                                    color: theme.palette.primary.main,
-                                    fontWeight: 600
-                                }
-                            },
-                            '& .MuiTabs-indicator': {
-                                height: 3,
-                                borderRadius: '3px 3px 0 0',
-                                background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`
-                            },
-                            '& .MuiTabs-scrollButtons': {
-                                '&.Mui-disabled': {
-                                    opacity: 0.3
-                                }
-                            }
-                        }}
+                        isMobile={isMobile}
+                        tabCount={tabs.length}
                     >
                         {tabs.map((tab) => (
                             <Tab
@@ -118,66 +198,20 @@ const TabPanel = () => {
                                 aria-label={`${tab.label} tab`}
                             />
                         ))}
-                    </Tabs>
-                </Box>
-            </Box>
+                    </StyledTabs>
+                </TabsContainer>
+            </TabsHeader>
 
-            {/* Centered Tab Content */}
-            <Box sx={{
-                flexGrow: 1,
-                overflow: 'hidden',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'stretch',
-                p: { xs: 1, sm: 1.5, md: 2 },
-                height: `calc(${tabPanelHeight} - ${isMobile ? '48px' : '56px'})`
-            }}>
-                <Box sx={{
-                    width: '100%',
-                    maxWidth: '100%',
-                    height: '100%',
-                    overflow: 'auto',
-                    borderRadius: 2,
-                    backgroundColor: alpha(theme.palette.background.paper, 0.6),
-                    backdropFilter: 'blur(10px)',
-                    border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-                    boxShadow: theme.shadows[2],
-                    '& .MuiDataGrid-root': {
-                        border: 'none',
-                        borderRadius: 2,
-                        '& .MuiDataGrid-toolbarContainer': {
-                            padding: isMobile ? '12px' : '16px',
-                            minHeight: isMobile ? '52px' : '64px',
-                            borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`
-                        },
-                        '& .MuiDataGrid-columnHeaders': {
-                            minHeight: isMobile ? '44px' : '52px',
-                            backgroundColor: alpha(theme.palette.primary.main, 0.02)
-                        },
-                        '& .MuiDataGrid-row': {
-                            minHeight: isMobile ? '44px' : '52px',
-                            '&:hover': {
-                                backgroundColor: alpha(theme.palette.primary.main, 0.04)
-                            }
-                        }
-                    }
-                }}>
+            {/* Perfectly Centered Content Area */}
+            <ContentArea>
+                <ContentWrapper>
                     {ActiveComponent ? (
                         <Suspense fallback={
-                            <Box sx={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                height: '300px',
-                                flexDirection: 'column',
-                                gap: 3
-                            }}>
+                            <LoadingContainer>
                                 <CircularProgress 
                                     size={48}
                                     thickness={4}
-                                    sx={{
-                                        color: theme.palette.primary.main
-                                    }}
+                                    sx={{ color: theme.palette.primary.main }}
                                 />
                                 <Typography 
                                     variant="body1" 
@@ -186,7 +220,7 @@ const TabPanel = () => {
                                 >
                                     Loading {tabs.find(tab => tab.id === activeTab)?.label || 'Content'}...
                                 </Typography>
-                            </Box>
+                            </LoadingContainer>
                         }>
                             <Box sx={{ 
                                 height: '100%', 
@@ -199,15 +233,7 @@ const TabPanel = () => {
                             </Box>
                         </Suspense>
                     ) : (
-                        <Box sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            height: '300px',
-                            flexDirection: 'column',
-                            gap: 3,
-                            textAlign: 'center'
-                        }}>
+                        <ErrorContainer>
                             <Typography variant="h5" color="error" sx={{ fontWeight: 600 }}>
                                 Component Not Found
                             </Typography>
@@ -217,11 +243,13 @@ const TabPanel = () => {
                             <Typography variant="body2" color="text.secondary">
                                 Please try selecting a different tab or refresh the page.
                             </Typography>
-                        </Box>
+                        </ErrorContainer>
                     )}
-                </Box>
-            </Box>
-        </Box>
+                </ContentWrapper>
+            </ContentArea>
+        </TabPanelContainer>
     );
-};
+});
+
+TabPanel.displayName = 'TabPanel';
 export default TabPanel;

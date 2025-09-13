@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, memo } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Box, useTheme, alpha, Fade } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -88,15 +88,12 @@ const ContentArea = styled(Box, {
   position: 'relative',
   overflow: 'hidden',
   
-  // Dynamic margins based on sidebar
+  // Simplified dynamic margins
   [isRTL ? 'marginRight' : 'marginLeft']: isTemporary ? 0 : sidebarWidth,
   
-  // Height management - no padding for TabPanel to be right under header
+  // Perfect height calculation using CSS variables
   height: 'var(--content-height)',
   minHeight: 'var(--content-height)',
-  
-  // No padding to allow TabPanel to touch header
-  padding: 0,
   
   // Smooth transitions
   transition: theme.transitions.create(['margin-left', 'margin-right'], {
@@ -104,28 +101,11 @@ const ContentArea = styled(Box, {
     duration: theme.transitions.duration.standard
   }),
   
-  // Background with glassmorphism effect
+  // Optional background enhancement
   ...(hasBackground && {
-    background: theme.palette.mode === 'light'
-      ? `linear-gradient(135deg, ${alpha(theme.palette.background.default, 0.8)} 0%, ${alpha(theme.palette.grey[50], 0.9)} 100%)`
-      : `linear-gradient(135deg, ${alpha(theme.palette.background.default, 0.9)} 0%, ${alpha(theme.palette.grey[900], 0.8)} 100%)`,
-    
+    backgroundColor: alpha(theme.palette.background.default, 0.95),
     backdropFilter: 'blur(10px)',
-    WebkitBackdropFilter: 'blur(10px)',
-    
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: theme.palette.mode === 'light'
-        ? 'radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.06) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.06) 0%, transparent 50%)'
-        : 'radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.08) 0%, transparent 50%)',
-      pointerEvents: 'none',
-      zIndex: -1
-    }
+    WebkitBackdropFilter: 'blur(10px)'
   }),
   
   // Custom scrollbar
@@ -145,64 +125,50 @@ const ContentWrapper = styled(Box)(({ theme }) => ({
 // ===== COMPONENTS =====
 
 /**
- * Dynamic Main Content Component
- * Handles routing between TabPanel and direct Outlet rendering
+ * Optimized Main Content Component
+ * Simplified routing with perfect centering
  */
-const DynamicMainContent = () => {
+const DynamicMainContent = memo(() => {
   const location = useLocation();
   const { layoutPreferences } = useLayoutResponsive();
 
-  // Check if current route should show tabs
+  // Optimized route checking with memoization
   const isTabRoute = useMemo(() => {
     if (!layoutPreferences.showTabs) return false;
     
     return TAB_ROUTES.some(route => {
-      // Exact match
-      if (route === location.pathname) return true;
-      
-      // Handle nested routes (e.g., /products/123 should still show tabs)
-      return location.pathname.startsWith(route + '/');
+      return route === location.pathname || location.pathname.startsWith(route + '/');
     });
   }, [location.pathname, layoutPreferences.showTabs]);
 
-  // For tab routes, show TabPanel; for others, show Outlet
+  // Simplified content container with perfect centering
   return (
     <Box sx={{ 
       height: '100%', 
       width: '100%',
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'flex-start',
       overflow: 'hidden'
     }}>
-      <Box sx={{
-        width: '100%',
-        maxWidth: '100%',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden'
-      }}>
-        {isTabRoute ? <TabPanel /> : <Outlet />}
-      </Box>
+      {isTabRoute ? <TabPanel /> : <Outlet />}
     </Box>
   );
-};
+});
+
+DynamicMainContent.displayName = 'DynamicMainContent';
 
 /**
- * Enhanced Layout Component
+ * Optimized Layout Component
  * 
- * Features:
- * - Responsive layout with sidebar integration
+ * Enhanced Features:
+ * - Perfect responsive layout with sidebar integration
  * - RTL support with proper positioning
  * - Smooth animations and transitions
- * - Intelligent height management
- * - Performance optimizations
- * - Custom scrollbars
+ * - Smart height management with CSS variables
+ * - Performance optimizations and memoization
+ * - Clean, maintainable code structure
  */
-const Layout = () => {
-  const theme = useTheme();
+const Layout = memo(() => {
   const { currentLanguage, languages } = useLanguage();
   const { isRTL } = useRTL();
   const location = useLocation();
@@ -210,13 +176,11 @@ const Layout = () => {
   const {
     sidebarState,
     dimensions,
-    layoutConfig,
     layoutPreferences,
     cssVariables
   } = useLayoutResponsive();
 
   const {
-    heights,
     isReady: heightsReady
   } = useViewportHeight({
     includeHeader: true,
@@ -225,19 +189,16 @@ const Layout = () => {
     updateCSSVars: true
   });
 
-  // Check if current language is RTL (fallback)
-  const isRTLFallback = languages[currentLanguage]?.dir === 'rtl';
-  const effectiveRTL = isRTL || isRTLFallback;
+  // RTL language detection (simplified)
+  const effectiveRTL = isRTL || (languages[currentLanguage]?.dir === 'rtl');
 
-  // Determine if we should show background effects
+  // Background effect determination (optimized)
   const hasBackground = useMemo(() => {
-    // Show background for main app routes, not for login/auth pages
-    return !location.pathname.includes('/login') && 
-           !location.pathname.includes('/auth') &&
-           !location.pathname.includes('/error');
+    const authPaths = ['/login', '/auth', '/error'];
+    return !authPaths.some(path => location.pathname.includes(path));
   }, [location.pathname]);
 
-  // Apply CSS variables to root element
+  // Apply CSS variables for dynamic styling
   useEffect(() => {
     if (heightsReady) {
       const root = document.documentElement;
@@ -247,7 +208,7 @@ const Layout = () => {
     }
   }, [cssVariables, heightsReady]);
 
-  // Performance optimization: prevent unnecessary re-renders
+  // Memoized content to prevent unnecessary re-renders
   const memoizedContent = useMemo(() => (
     <DynamicMainContent />
   ), [location.pathname, layoutPreferences.showTabs]);
@@ -288,7 +249,7 @@ const Layout = () => {
       </LayoutContainer>
     </TabProvider>
   );
-};
+});
 
 Layout.displayName = 'Layout';
 

@@ -1,16 +1,28 @@
-// Icon imports removed - they are now in MenuTree.js
+/**
+ * Optimized Layout Constants
+ * Centralized configuration for consistent layout dimensions
+ * Updated to match useLayoutResponsive hook values
+ */
 
-// Drawer (Sidebar) Widths
-export const DRAWER_WIDTH = 240;  // Full sidebar width
+// Sidebar/Drawer Dimensions (synchronized with useLayoutResponsive)
+export const DRAWER_WIDTH = 280;  // Full sidebar width
 export const COLLAPSED_WIDTH = 64;  // Collapsed/minimized sidebar width
 
-// Header and Footer Heights
-export const HEADER_HEIGHT = 50;
-export const FOOTER_HEIGHT = 26;
-export const DASHBOARD_TAB_HEIGHT = 80;
+// Layout Heights (synchronized with layout system)
+export const HEADER_HEIGHT = 64;  // Main header height
+export const FOOTER_HEIGHT = 48;  // Footer height
+export const TAB_HEIGHT = 48;     // Tab panel header height
+export const DASHBOARD_TAB_HEIGHT = 80; // Legacy dashboard tabs
+
+// Z-Index Values
 export const STATS_CARD_ZINDEX = 1200;
+export const SIDEBAR_ZINDEX = 1200;
+export const HEADER_ZINDEX = 1100;
+export const FOOTER_ZINDEX = 1000;
+
+// Animation & Transitions
+export const TRANSITION_DURATION = 300; // Standard transition duration
 export const STATS_CARD_HEIGHT = 80;
-export const TRANSITION_DURATION = 225;
 
 /**
  * Menu Items Configuration

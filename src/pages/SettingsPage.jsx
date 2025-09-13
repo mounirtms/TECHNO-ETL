@@ -22,7 +22,6 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import UserProfile from '../components/UserProfile/index';
-import PermissionTest from '../components/test/PermissionTest';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useCustomTheme } from '../contexts/ThemeContext';
 import ErrorBoundary from '../components/common/ErrorBoundary';
@@ -226,7 +225,9 @@ const SettingsPage = () => {
                   </Box>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <PermissionTest />
+                  <Typography variant="body2" color="text.secondary">
+                    Permission test component is not available in this build.
+                  </Typography>
                 </AccordionDetails>
               </Accordion>
             </Box>
