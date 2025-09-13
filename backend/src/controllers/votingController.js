@@ -20,7 +20,7 @@ class VotingController {
         priority: req.query.priority,
         sortBy: req.query.sortBy || 'vote_count',
         sortOrder: req.query.sortOrder || 'DESC',
-        search: req.query.search
+        search: req.query.search,
       };
 
       const result = await votingService.getFeatures(options);
@@ -32,8 +32,8 @@ class VotingController {
           page: result.page,
           pageSize: result.pageSize,
           total: result.total,
-          totalPages: result.totalPages
-        }
+          totalPages: result.totalPages,
+        },
       });
 
     } catch (error) {
@@ -41,7 +41,7 @@ class VotingController {
       res.status(500).json({
         success: false,
         message: 'Failed to fetch voting features',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined,
       });
     }
   }
@@ -57,16 +57,17 @@ class VotingController {
 
       res.json({
         success: true,
-        data: feature
+        data: feature,
       });
 
     } catch (error) {
       console.error('Error in getFeatureById:', error);
       const statusCode = error.message === 'Feature not found' ? 404 : 500;
+
       res.status(statusCode).json({
         success: false,
         message: error.message,
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined,
       });
     }
   }
@@ -83,7 +84,7 @@ class VotingController {
       res.status(201).json({
         success: true,
         data: feature,
-        message: 'Feature created successfully'
+        message: 'Feature created successfully',
       });
 
     } catch (error) {
@@ -91,7 +92,7 @@ class VotingController {
       res.status(500).json({
         success: false,
         message: 'Failed to create feature',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined,
       });
     }
   }
@@ -113,13 +114,13 @@ class VotingController {
         userId,
         userEmail,
         userName,
-        vote_type
+        vote_type,
       );
 
       res.json({
         success: true,
         data: vote,
-        message: 'Vote recorded successfully'
+        message: 'Vote recorded successfully',
       });
 
     } catch (error) {
@@ -127,7 +128,7 @@ class VotingController {
       res.status(500).json({
         success: false,
         message: 'Failed to record vote',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined,
       });
     }
   }
@@ -142,7 +143,7 @@ class VotingController {
 
       res.json({
         success: true,
-        data: categories
+        data: categories,
       });
 
     } catch (error) {
@@ -150,7 +151,7 @@ class VotingController {
       res.status(500).json({
         success: false,
         message: 'Failed to fetch categories',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined,
       });
     }
   }
@@ -165,7 +166,7 @@ class VotingController {
 
       res.json({
         success: true,
-        data: stats
+        data: stats,
       });
 
     } catch (error) {
@@ -173,7 +174,7 @@ class VotingController {
       res.status(500).json({
         success: false,
         message: 'Failed to fetch voting statistics',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined,
       });
     }
   }
@@ -185,14 +186,14 @@ class VotingController {
   async getUserVotes(req, res) {
     try {
       const userId = req.user?.id || req.query.user_id || 'anonymous';
-      const featureIds = req.query.feature_ids ? 
+      const featureIds = req.query.feature_ids ?
         req.query.feature_ids.split(',').map(id => parseInt(id)) : null;
 
       const votes = await votingService.getUserVotes(userId, featureIds);
 
       res.json({
         success: true,
-        data: votes
+        data: votes,
       });
 
     } catch (error) {
@@ -200,7 +201,7 @@ class VotingController {
       res.status(500).json({
         success: false,
         message: 'Failed to fetch user votes',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        error: process.env.NODE_ENV === 'development' ? error.message : undefined,
       });
     }
   }

@@ -1,3 +1,6 @@
+/* Import RTL animations and comprehensive error handling styles */
+@import './styles/rtl-animations.css';
+
 /* Accessibility styles are now included in global.css */
 
 :root {

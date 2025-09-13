@@ -5,7 +5,7 @@ import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/docs/', // Use relative paths
+  base: '/docs/', // Use relative paths for subdirectory deployment
   publicDir: 'assets', // Directory for public assets
   build: {
     outDir: 'dist', // Output directory for build files
@@ -18,18 +18,20 @@ export default defineConfig({
         assetFileNames: (assetInfo) => {
           const info = assetInfo.name.split('.');
           const extType = info[info.length - 1];
-           if (/\.(woff2?|eot|ttf|otf)(\?.*)?$/i.test(assetInfo.name)) {
-            return `fonts/[name].[hash][extname]`;
+
+          if (/\.(woff2?|eot|ttf|otf)(\?.*)?$/i.test(assetInfo.name)) {
+            return 'fonts/[name].[hash][extname]';
           }
           else if (/\.css$/i.test(assetInfo.name)) {
-            return `css/[name].[hash][extname]`;
+            return 'css/[name].[hash][extname]';
           }
-          return `[name].[hash][extname]`; // Default
+
+          return '[name].[hash][extname]'; // Default
         },
         chunkFileNames: 'js/[name].[hash].js', // Chunk file names
-        entryFileNames: 'js/[name].[hash].js' // Entry file names
-      }
-    }
+        entryFileNames: 'js/[name].[hash].js', // Entry file names
+      },
+    },
   },
   resolve: {
     alias: {
@@ -37,11 +39,13 @@ export default defineConfig({
       '@components': fileURLToPath(new URL('./src/components', import.meta.url)),
       '@pages': fileURLToPath(new URL('./src/pages', import.meta.url)),
       '@styles': fileURLToPath(new URL('./src/styles', import.meta.url)),
-      '@assets': fileURLToPath(new URL('./src/assets', import.meta.url))
-    }
+      '@assets': fileURLToPath(new URL('./src/assets', import.meta.url)),
+    },
   },
   server: {
-    port: 3000, // Development server port
-    open: true // Open the browser on server start
-  }
+    port: 2000, // Development server port
+    open: true, // Open the browser on server start
+    // Ensure the base path is correctly handled in development
+    base: '/docs/',
+  },
 });

@@ -11,7 +11,7 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import {
@@ -19,18 +19,18 @@ import {
   Analytics as AnalyticsIcon,
   TrendingUp as TrendingIcon,
   Speed as SpeedIcon,
-  CheckCircle as CheckIcon
+  CheckCircle as CheckIcon,
 } from '@mui/icons-material';
 
 const DashboardSystem = () => {
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const dashboardFeatures = [
@@ -38,26 +38,26 @@ const DashboardSystem = () => {
       title: 'Real-time Analytics',
       description: 'Live data visualization with automatic updates',
       icon: <AnalyticsIcon />,
-      color: '#1976d2'
+      color: '#1976d2',
     },
     {
       title: 'Performance Metrics',
       description: 'KPI tracking and monitoring dashboards',
       icon: <SpeedIcon />,
-      color: '#388e3c'
+      color: '#388e3c',
     },
     {
       title: 'Interactive Charts',
       description: 'Dynamic data representation with drill-down',
       icon: <TrendingIcon />,
-      color: '#f57c00'
+      color: '#f57c00',
     },
     {
       title: 'Customizable Widgets',
       description: 'User-configurable dashboard components',
       icon: <DashboardIcon />,
-      color: '#7b1fa2'
-    }
+      color: '#7b1fa2',
+    },
   ];
 
   const components = [
@@ -66,7 +66,7 @@ const DashboardSystem = () => {
     'RecentActivityFeed - Activity tracking and notifications',
     'PerformanceMetrics - System performance monitoring',
     'CustomizableWidgets - User-configurable components',
-    'RealTimeUpdates - WebSocket-based live data'
+    'RealTimeUpdates - WebSocket-based live data',
   ];
 
   return (
@@ -93,8 +93,8 @@ const DashboardSystem = () => {
         <motion.div variants={itemVariants}>
           <Alert severity="info" sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>🎯 Dashboard Overview</Typography>
-            The TECHNO-ETL Dashboard System provides comprehensive real-time analytics, performance monitoring, 
-            and interactive data visualization. Built with React and Material-UI, it offers customizable widgets, 
+            The TECHNO-ETL Dashboard System provides comprehensive real-time analytics, performance monitoring,
+            and interactive data visualization. Built with React and Material-UI, it offers customizable widgets,
             live data updates, and professional KPI tracking for enterprise operations.
           </Alert>
         </motion.div>
@@ -107,25 +107,25 @@ const DashboardSystem = () => {
           <Grid container spacing={3} sx={{ mb: 6 }}>
             {dashboardFeatures.map((feature, index) => (
               <Grid item xs={12} md={6} key={index}>
-                <Card 
-                  sx={{ 
+                <Card
+                  sx={{
                     height: '100%',
                     transition: 'transform 0.2s, box-shadow 0.2s',
                     '&:hover': {
                       transform: 'translateY(-4px)',
-                      boxShadow: 4
-                    }
+                      boxShadow: 4,
+                    },
                   }}
                 >
                   <CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Box 
-                        sx={{ 
-                          p: 1, 
-                          borderRadius: 2, 
+                      <Box
+                        sx={{
+                          p: 1,
+                          borderRadius: 2,
                           backgroundColor: `${feature.color}20`,
                           color: feature.color,
-                          mr: 2
+                          mr: 2,
                         }}
                       >
                         {feature.icon}
@@ -241,7 +241,7 @@ const DashboardSystem = () => {
               </Typography>
               <Paper sx={{ p: 2, backgroundColor: '#f5f5f5', overflow: 'auto' }}>
                 <pre style={{ fontSize: '0.875rem', margin: 0, whiteSpace: 'pre-wrap' }}>
-{`Dashboard.jsx
+                  {`Dashboard.jsx
 ├── StatCards/
 │   ├── KPICard.jsx
 │   ├── TrendCard.jsx
@@ -358,7 +358,7 @@ const DashboardSystem = () => {
           </Typography>
           <Paper sx={{ p: 2, backgroundColor: '#f5f5f5', overflow: 'auto', mb: 3 }}>
             <pre style={{ fontSize: '0.875rem', margin: 0, whiteSpace: 'pre-wrap' }}>
-{`// Dashboard.jsx - Main dashboard component
+              {`// Dashboard.jsx - Main dashboard component
 import React, { useState, useEffect } from 'react';
 import { Grid, Box, Container } from '@mui/material';
 import StatCards from './components/StatCards';
@@ -461,7 +461,7 @@ export default Dashboard;`}
           </Typography>
           <Paper sx={{ p: 2, backgroundColor: '#f5f5f5', overflow: 'auto' }}>
             <pre style={{ fontSize: '0.875rem', margin: 0, whiteSpace: 'pre-wrap' }}>
-{`// useWebSocket.js - Real-time data hook
+              {`// useWebSocket.js - Real-time data hook
 import { useState, useEffect, useRef } from 'react';
 
 export const useWebSocket = (url) => {

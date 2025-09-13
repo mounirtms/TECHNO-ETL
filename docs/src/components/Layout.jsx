@@ -14,7 +14,7 @@ import {
   IconButton,
   Tooltip,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
@@ -37,6 +37,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import BuildIcon from '@mui/icons-material/Build';
+import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
+import SecurityIcon from '@mui/icons-material/Security';
 import SearchComponent from './SearchComponent';
 import GlobalSearchModal from './GlobalSearchModal';
 
@@ -53,7 +55,7 @@ const menuItems = [
       { text: 'ETL Integration', path: '/etl-integration', icon: <StorageIcon /> },
       { text: 'JDE Integration', path: '/jde-integration', icon: <InventoryIcon /> },
       { text: 'CEGID Integration', path: '/cegid-integration', icon: <IntegrationInstructionsIcon /> },
-    ]
+    ],
   },
   {
     text: 'Documentation',
@@ -71,7 +73,7 @@ const menuItems = [
       { text: 'Product Management', path: '/docs/product-management', icon: <ShoppingCartIcon /> },
       { text: 'Configuration & Setup', path: '/docs/configuration-setup', icon: <SettingsIcon /> },
       { text: 'Search Help', path: '/docs/search-help', icon: <SearchIcon /> },
-    ]
+    ],
   },
   {
     text: 'Deployment',
@@ -81,8 +83,18 @@ const menuItems = [
       { text: 'Optimized Deployment', path: '/docs/optimized-deployment', icon: <RocketLaunchIcon /> },
       { text: 'Backend Production', path: '/docs/backend-production', icon: <BuildIcon /> },
       { text: 'Troubleshooting', path: '/docs/troubleshooting', icon: <BugReportIcon /> },
-    ]
-  }
+    ],
+  },
+  {
+    text: 'Project Management',
+    icon: <SettingsIcon />,
+    children: [
+      { text: 'Complete Project Summary', path: '/docs/complete-project-summary', icon: <DescriptionIcon /> },
+      { text: 'Project Cleanup', path: '/docs/project-cleanup', icon: <CleaningServicesIcon /> },
+      { text: 'User Settings Guide', path: '/docs/user-settings-guide', icon: <SettingsIcon /> },
+      { text: 'License Information', path: '/docs/license', icon: <SecurityIcon /> },
+    ],
+  },
 ];
 
 const Layout = ({ children }) => {
@@ -102,6 +114,7 @@ const Layout = ({ children }) => {
     };
 
     document.addEventListener('keydown', handleKeyDown);
+
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
@@ -112,7 +125,7 @@ const Layout = ({ children }) => {
   const handleSectionToggle = (sectionText) => {
     setOpenSections(prev => ({
       ...prev,
-      [sectionText]: !prev[sectionText]
+      [sectionText]: !prev[sectionText],
     }));
   };
 
@@ -135,7 +148,7 @@ const Layout = ({ children }) => {
               primary={item.text}
               primaryTypographyProps={{
                 fontWeight: 500,
-                color: 'primary.main'
+                color: 'primary.main',
               }}
             />
             {openSections[item.text] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -164,9 +177,9 @@ const Layout = ({ children }) => {
             backgroundColor: 'primary.light',
             '& .MuiListItemText-primary': {
               color: 'primary.main',
-              fontWeight: 600
-            }
-          }
+              fontWeight: 600,
+            },
+          },
         }}
       >
         <ListItemIcon sx={{ color: level > 0 ? 'text.secondary' : 'inherit' }}>
@@ -175,7 +188,7 @@ const Layout = ({ children }) => {
         <ListItemText
           primary={item.text}
           primaryTypographyProps={{
-            fontSize: level > 0 ? '0.875rem' : '1rem'
+            fontSize: level > 0 ? '0.875rem' : '1rem',
           }}
         />
       </ListItem>
@@ -190,7 +203,7 @@ const Layout = ({ children }) => {
         sx={{
           width: { md: `calc(100% - ${drawerWidth}px)` },
           ml: { md: `${drawerWidth}px` },
-          zIndex: theme.zIndex.drawer + 1
+          zIndex: theme.zIndex.drawer + 1,
         }}
       >
         <Toolbar>

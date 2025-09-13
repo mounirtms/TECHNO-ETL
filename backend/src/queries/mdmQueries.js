@@ -1,7 +1,7 @@
 /**
  * MDM Database Queries
  * Professional SQL query management for MDM operations
- * 
+ *
  * @author Techno-ETL Team
  * @version 1.0.0
  */
@@ -9,7 +9,7 @@
 /**
  * Get updated prices from MDM system
  * Retrieves product prices that have been modified within the specified number of days
- * 
+ *
  * @param {number} days - Number of days to look back for price changes (default: 7)
  * @returns {Array} Array of products with SKU and price
  */
@@ -122,10 +122,10 @@ ORDER BY
 /**
  * Get inventory data with stock levels and product information
  * Retrieves comprehensive inventory data including stock quantities, sources, and product details
- * 
+ *
  * @param {Object} filters - Filter parameters (source, branch, etc.)
  * @returns {Array} Array of inventory records
- 
+
 
 -- sync-stock.sql
 
@@ -143,7 +143,7 @@ WITH DedupedSource AS (
         Source, -- Added the 'Source' column from the source table
         ROW_NUMBER() OVER (PARTITION BY Code_MDM, Code_Source ORDER BY DateDernierMaJ DESC) AS rn
     FROM [MDM_REPORT].[EComm].[ApprovisionnementProduits]
- 
+
 )
 MERGE [MDM_REPORT].[EComm].[StockChanges] AS Target
 USING (
@@ -219,7 +219,7 @@ INSERT INTO Sync_Log (
 /**
  * Get product details by SKU
  * Retrieves detailed product information for a specific SKU
- * 
+ *
  * @param {string} sku - Product SKU to lookup
  * @returns {Object} Product details
  */
@@ -243,7 +243,7 @@ WHERE Code_MDM = ?;
 /**
  * Get low stock products
  * Identifies products with stock levels below the specified threshold
- * 
+ *
  * @param {number} threshold - Minimum stock threshold (default: 10)
  * @returns {Array} Array of low stock products
  */
@@ -263,7 +263,7 @@ ORDER BY QteStock ASC, VenteMoyen DESC;
 /**
  * Get out of stock products
  * Retrieves products that are completely out of stock
- * 
+ *
  * @returns {Array} Array of out of stock products
  */
 export const GET_OUT_OF_STOCK_PRODUCTS = `
@@ -280,7 +280,7 @@ ORDER BY DateDernierMaJ DESC;
 /**
  * Get inventory statistics
  * Provides summary statistics for inventory management
- * 
+ *
  * @returns {Object} Inventory statistics
  */
 export const GET_INVENTORY_STATS = `

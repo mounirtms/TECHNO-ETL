@@ -1,7 +1,7 @@
 /**
  * Order Database Queries
  * Professional SQL query management for order operations
- * 
+ *
  * @author Techno-ETL Team
  * @version 1.0.0
  */
@@ -9,7 +9,7 @@
 /**
  * Get all orders with pagination and filtering
  * Retrieves orders with comprehensive filtering and pagination support
- * 
+ *
  * @param {Object} filters - Filter parameters (status, date range, customer, etc.)
  * @param {number} limit - Number of records to return
  * @param {number} offset - Number of records to skip
@@ -63,7 +63,7 @@ FETCH NEXT @limit ROWS ONLY;
 /**
  * Get order by increment ID
  * Retrieves detailed order information for a specific order
- * 
+ *
  * @param {string} incrementId - Order increment ID
  * @returns {Object} Order details
  */
@@ -110,7 +110,7 @@ WHERE o.increment_id = ?;
 /**
  * Get order items
  * Retrieves all items for a specific order
- * 
+ *
  * @param {number} orderId - Order entity ID
  * @returns {Array} Array of order items
  */
@@ -145,7 +145,7 @@ ORDER BY oi.item_id;
 /**
  * Create new order
  * Inserts a new order into the system
- * 
+ *
  * @param {Object} orderData - Order information to insert
  * @returns {number} New order ID
  */
@@ -176,7 +176,7 @@ INSERT INTO sales_order (
 /**
  * Update order status
  * Updates the status and state of an order
- * 
+ *
  * @param {string} status - New order status
  * @param {string} state - New order state
  * @param {string} incrementId - Order increment ID
@@ -194,7 +194,7 @@ WHERE increment_id = ?;
 /**
  * Get orders by customer
  * Retrieves all orders for a specific customer
- * 
+ *
  * @param {number} customerId - Customer ID
  * @param {number} limit - Number of records to return
  * @param {number} offset - Number of records to skip
@@ -220,7 +220,7 @@ FETCH NEXT ? ROWS ONLY;
 /**
  * Get recent orders
  * Retrieves the most recent orders within the specified time period
- * 
+ *
  * @param {number} hours - Number of hours to look back (default: 24)
  * @param {number} limit - Number of records to return
  * @returns {Array} Array of recent orders
@@ -246,7 +246,7 @@ FETCH NEXT ? ROWS ONLY;
 /**
  * Get order statistics
  * Provides summary statistics for order management
- * 
+ *
  * @param {string} startDate - Start date for statistics (optional)
  * @param {string} endDate - End date for statistics (optional)
  * @returns {Object} Order statistics
@@ -272,7 +272,7 @@ WHERE 1=1
 /**
  * Get orders by status
  * Retrieves orders filtered by specific status
- * 
+ *
  * @param {string} status - Order status to filter by
  * @param {number} limit - Number of records to return
  * @param {number} offset - Number of records to skip
@@ -300,7 +300,7 @@ FETCH NEXT ? ROWS ONLY;
 /**
  * Get top selling products from orders
  * Retrieves products with highest sales volume
- * 
+ *
  * @param {number} days - Number of days to look back (default: 30)
  * @param {number} limit - Number of products to return
  * @returns {Array} Array of top selling products
@@ -326,7 +326,7 @@ FETCH NEXT ? ROWS ONLY;
 /**
  * Get daily sales report
  * Provides daily breakdown of sales metrics
- * 
+ *
  * @param {number} days - Number of days to include in report
  * @returns {Array} Array of daily sales data
  */

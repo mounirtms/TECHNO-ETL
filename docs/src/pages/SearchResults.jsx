@@ -18,7 +18,7 @@ import {
   InputAdornment,
   IconButton,
   Breadcrumbs,
-  Link
+  Link,
 } from '@mui/material';
 import { useSearchParams, useNavigate, Link as RouterLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -28,7 +28,7 @@ import {
   Description as DocumentIcon,
   TrendingUp as TrendingIcon,
   Home as HomeIcon,
-  KeyboardArrowRight as ArrowIcon
+  KeyboardArrowRight as ArrowIcon,
 } from '@mui/icons-material';
 import { useSearch } from '../contexts/SearchContext';
 
@@ -70,12 +70,12 @@ const SearchResults = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const getCategoryColor = (category) => {
@@ -87,8 +87,9 @@ const SearchResults = () => {
       api: 'secondary',
       integration: 'error',
       devops: 'primary',
-      support: 'warning'
+      support: 'warning',
     };
+
     return colors[category?.toLowerCase()] || 'default';
   };
 
@@ -101,17 +102,20 @@ const SearchResults = () => {
       api: <DocumentIcon />,
       integration: <TrendingIcon />,
       devops: <DocumentIcon />,
-      support: <DocumentIcon />
+      support: <DocumentIcon />,
     };
+
     return icons[category?.toLowerCase()] || <DocumentIcon />;
   };
 
   const groupedResults = searchResults.reduce((acc, result) => {
     const category = result.item.category;
+
     if (!acc[category]) {
       acc[category] = [];
     }
     acc[category].push(result);
+
     return acc;
   }, {});
 
@@ -161,12 +165,12 @@ const SearchResults = () => {
                         <ClearIcon />
                       </IconButton>
                     </InputAdornment>
-                  )
+                  ),
                 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
-                    borderRadius: 2
-                  }
+                    borderRadius: 2,
+                  },
                 }}
               />
             </form>
@@ -225,8 +229,8 @@ const SearchResults = () => {
                               transition: 'all 0.2s',
                               '&:hover': {
                                 transform: 'translateY(-4px)',
-                                boxShadow: 6
-                              }
+                                boxShadow: 6,
+                              },
                             }}
                             onClick={() => handleResultClick(result.item)}
                           >
@@ -241,8 +245,8 @@ const SearchResults = () => {
                                   dangerouslySetInnerHTML={{
                                     __html: getHighlightedText(
                                       result.item.title,
-                                      result.matches?.find(m => m.key === 'title')?.indices
-                                    )
+                                      result.matches?.find(m => m.key === 'title')?.indices,
+                                    ),
                                   }}
                                 />
                                 <ArrowIcon color="action" />
@@ -254,8 +258,8 @@ const SearchResults = () => {
                                 dangerouslySetInnerHTML={{
                                   __html: getHighlightedText(
                                     result.item.description,
-                                    result.matches?.find(m => m.key === 'description')?.indices
-                                  )
+                                    result.matches?.find(m => m.key === 'description')?.indices,
+                                  ),
                                 }}
                               />
                               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

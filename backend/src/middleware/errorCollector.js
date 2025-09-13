@@ -5,10 +5,10 @@
 
 // Simple console logger for clean development
 const logger = {
-    info: (message, meta = {}) => console.log(`[INFO] ${message}`, meta),
-    warn: (message, meta = {}) => console.warn(`[WARN] ${message}`, meta),
-    error: (message, meta = {}) => console.error(`[ERROR] ${message}`, meta),
-    debug: (message, meta = {}) => console.log(`[DEBUG] ${message}`, meta)
+  info: (message, meta = {}) => console.log(`[INFO] ${message}`, meta),
+  warn: (message, meta = {}) => console.warn(`[WARN] ${message}`, meta),
+  error: (message, meta = {}) => console.error(`[ERROR] ${message}`, meta),
+  debug: (message, meta = {}) => console.log(`[DEBUG] ${message}`, meta),
 };
 
 // Error categories
@@ -22,7 +22,7 @@ export const ERROR_CATEGORIES = {
   NETWORK: 'network',
   RATE_LIMIT: 'rate_limit',
   TIMEOUT: 'timeout',
-  UNKNOWN: 'unknown'
+  UNKNOWN: 'unknown',
 };
 
 // Warning types
@@ -34,7 +34,7 @@ export const WARNING_TYPES = {
   RATE_LIMIT_APPROACHING: 'rate_limit_approaching',
   EXTERNAL_SERVICE_SLOW: 'external_service_slow',
   CACHE_MISS_HIGH: 'cache_miss_high',
-  DISK_SPACE_LOW: 'disk_space_low'
+  DISK_SPACE_LOW: 'disk_space_low',
 };
 
 class ErrorCollector {
@@ -44,20 +44,20 @@ class ErrorCollector {
       byCategory: {},
       byEndpoint: {},
       byUser: {},
-      recent: []
+      recent: [],
     };
-    
+
     this.warningStats = {
       total: 0,
       byType: {},
-      recent: []
+      recent: [],
     };
 
     this.performanceThresholds = {
       responseTime: 1000, // ms
       memoryUsage: 0.8, // 80% of available memory
       cpuUsage: 0.8, // 80% CPU usage
-      diskUsage: 0.9 // 90% disk usage
+      diskUsage: 0.9, // 90% disk usage
     };
 
     this.startPerformanceMonitoring();
@@ -121,7 +121,7 @@ class ErrorCollector {
   collectError(error, req = null, additionalContext = {}) {
     const category = this.categorizeError(error, additionalContext);
     const timestamp = new Date().toISOString();
-    
+
     const errorData = {
       category,
       message: error.message,
@@ -130,7 +130,7 @@ class ErrorCollector {
       code: error.code,
       status: error.status || error.statusCode,
       timestamp,
-      ...additionalContext
+      ...additionalContext,
     };
 
     // Add request context if available
@@ -142,7 +142,7 @@ class ErrorCollector {
         ip: req.ip,
         correlationId: req.correlationId,
         userId: req.user?.id || req.headers['x-user-id'],
-        sessionId: req.sessionID || req.headers['x-session-id']
+        sessionId: req.sessionID || req.headers['x-session-id'],
       };
     }
 
@@ -151,7 +151,7 @@ class ErrorCollector {
       pid: process.pid,
       memory: process.memoryUsage(),
       uptime: process.uptime(),
-      nodeVersion: process.version
+      nodeVersion: process.version,
     };
 
     // Update statistics
@@ -166,12 +166,12 @@ class ErrorCollector {
   // Collect warning
   collectWarning(type, message, context = {}) {
     const timestamp = new Date().toISOString();
-    
+
     const warningData = {
       type,
       message,
       timestamp,
-      ...context
+      ...context,
     };
 
     // Update statistics
@@ -181,7 +181,7 @@ class ErrorCollector {
     logger.warn('System warning collected', {
       category: 'system_warning',
       warningType: type,
-      ...warningData
+      ...warningData,
     });
 
     return warningData;
@@ -200,6 +200,7 @@ class ErrorCollector {
     // By endpoint
     if (errorData.request?.url) {
       const endpoint = `${errorData.request.method} ${errorData.request.url}`;
+
       if (!this.errorStats.byEndpoint[endpoint]) {
         this.errorStats.byEndpoint[endpoint] = 0;
       }
@@ -252,10 +253,10 @@ class ErrorCollector {
 
     // Memory usage warning
     if (memUsagePercent > this.performanceThresholds.memoryUsage) {
-      this.collectWarning(WARNING_TYPES.HIGH_MEMORY_USAGE, 
+      this.collectWarning(WARNING_TYPES.HIGH_MEMORY_USAGE,
         `Memory usage at ${(memUsagePercent * 100).toFixed(1)}%`, {
           memoryUsage: memUsage,
-          threshold: this.performanceThresholds.memoryUsage
+          threshold: this.performanceThresholds.memoryUsage,
         });
     }
 
@@ -268,7 +269,7 @@ class ErrorCollector {
       ...this.errorStats,
       errorRate: this.calculateErrorRate(),
       topErrors: this.getTopErrors(),
-      recentErrors: this.errorStats.recent.slice(-10)
+      recentErrors: this.errorStats.recent.slice(-10),
     };
   }
 
@@ -276,15 +277,16 @@ class ErrorCollector {
   getWarningStats() {
     return {
       ...this.warningStats,
-      recentWarnings: this.warningStats.recent.slice(-10)
+      recentWarnings: this.warningStats.recent.slice(-10),
     };
   }
 
   // Calculate error rate
   calculateErrorRate() {
     const recentErrors = this.errorStats.recent.filter(
-      error => Date.now() - new Date(error.timestamp).getTime() < 3600000 // Last hour
+      error => Date.now() - new Date(error.timestamp).getTime() < 3600000, // Last hour
     );
+
     return recentErrors.length;
   }
 
@@ -305,7 +307,7 @@ export const errorHandlingMiddleware = (err, req, res, next) => {
   // Collect the error
   const errorData = errorCollector.collectError(err, req, {
     isMiddleware: true,
-    endpoint: `${req.method} ${req.path}`
+    endpoint: `${req.method} ${req.path}`,
   });
 
   // Set correlation ID in response headers
@@ -315,8 +317,8 @@ export const errorHandlingMiddleware = (err, req, res, next) => {
 
   // Send appropriate error response
   const statusCode = err.status || err.statusCode || 500;
-  const message = process.env.NODE_ENV === 'production' 
-    ? 'Internal Server Error' 
+  const message = process.env.NODE_ENV === 'production'
+    ? 'Internal Server Error'
     : err.message;
 
   res.status(statusCode).json({
@@ -324,8 +326,8 @@ export const errorHandlingMiddleware = (err, req, res, next) => {
       message,
       correlationId: req.correlationId,
       timestamp: new Date().toISOString(),
-      ...(process.env.NODE_ENV !== 'production' && { stack: err.stack })
-    }
+      ...(process.env.NODE_ENV !== 'production' && { stack: err.stack }),
+    },
   });
 };
 
@@ -339,8 +341,8 @@ export const warningMiddleware = (req, res, next) => {
         method: req.method,
         url: req.originalUrl,
         correlationId: req.correlationId,
-        userId: req.user?.id
-      }
+        userId: req.user?.id,
+      },
     });
   };
 
@@ -353,14 +355,14 @@ export const performanceMiddleware = (req, res, next) => {
 
   res.on('finish', () => {
     const responseTime = Date.now() - startTime;
-    
+
     // Check for slow responses
     if (responseTime > errorCollector.performanceThresholds.responseTime) {
       errorCollector.collectWarning(WARNING_TYPES.PERFORMANCE_DEGRADATION,
         `Slow response detected: ${responseTime}ms`, {
           responseTime,
           endpoint: `${req.method} ${req.path}`,
-          threshold: errorCollector.performanceThresholds.responseTime
+          threshold: errorCollector.performanceThresholds.responseTime,
         });
     }
   });

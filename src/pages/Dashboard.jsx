@@ -43,6 +43,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '@mui/material/styles';
 import { toast } from 'react-toastify';
 import { useTab } from '../contexts/TabContext';
+import { getUnifiedSettings, saveUnifiedSettings } from '../utils/unifiedSettingsManager';
 import { StatsCards } from '../components/common/StatsCards';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
@@ -96,7 +97,17 @@ const Dashboard = () => {
   const muiTheme = useTheme(); // MUI theme for shadows and other MUI-specific properties
   const { mode, isDark, colorPreset, density, animations } = useCustomTheme();
   const { currentLanguage, translate, languages } = useLanguage();
-  const { openTab } = useTab();
+  
+  // Safely use the tab context with error handling
+  let tabContext;
+  try {
+    tabContext = useTab();
+  } catch (error) {
+    // If useTab fails (outside of TabProvider), create a fallback context
+    tabContext = { openTab: () => {} };
+  }
+  
+  const { openTab } = tabContext;
   
   // Check if current language is RTL
   const isRTL = useMemo(() => languages[currentLanguage]?.dir === 'rtl', [languages, currentLanguage]);
@@ -150,8 +161,8 @@ const Dashboard = () => {
 
   // Dashboard settings with unified settings integration
   const [dashboardSettings, setDashboardSettings] = useState(() => {
-    // Try to load from unified settings first
-    const unifiedSettings = JSON.parse(localStorage.getItem('techno-etl-settings') || '{}');
+    // Use unified settings manager
+    const unifiedSettings = getUnifiedSettings();
     const savedDashboardSettings = unifiedSettings.dashboard;
 
     const defaultSettings = {
@@ -319,19 +330,12 @@ const Dashboard = () => {
   const handleSettingsChange = (newSettings) => {
     setDashboardSettings(newSettings);
 
-    // Save to unified settings
+    // Save through unified settings manager
     try {
-      const currentUnifiedSettings = JSON.parse(localStorage.getItem('techno-etl-settings') || '{}');
-      const updatedUnifiedSettings = {
-        ...currentUnifiedSettings,
-        dashboard: newSettings
-      };
-      localStorage.setItem('techno-etl-settings', JSON.stringify(updatedUnifiedSettings));
-      console.log('Dashboard settings saved to unified settings');
+      saveUnifiedSettings({ dashboard: newSettings });
+      console.log('Dashboard settings saved through unified system');
     } catch (error) {
-      console.error('Failed to save dashboard settings to unified settings:', error);
-      // Fallback to local storage
-      localStorage.setItem('dashboardSettings', JSON.stringify(newSettings));
+      console.error('Failed to save dashboard settings:', error);
     }
   };
 
@@ -373,13 +377,13 @@ const Dashboard = () => {
     };
     setDashboardSettings(defaultSettings);
 
-    // Remove from unified settings
+    // Reset through unified settings manager
     try {
-      const currentUnifiedSettings = JSON.parse(localStorage.getItem('techno-etl-settings') || '{}');
-      delete currentUnifiedSettings.dashboard;
-      localStorage.setItem('techno-etl-settings', JSON.stringify(currentUnifiedSettings));
+      const currentSettings = getUnifiedSettings();
+      delete currentSettings.dashboard;
+      saveUnifiedSettings(currentSettings);
     } catch (error) {
-      console.error('Failed to reset dashboard settings in unified settings:', error);
+      console.error('Failed to reset dashboard settings:', error);
     }
 
     // Also remove old localStorage key for backward compatibility
@@ -388,26 +392,10 @@ const Dashboard = () => {
 
   // Settings are now loaded in the initial state from unified settings
   // This effect is kept for backward compatibility and migration
+  // Migration is now handled by the unified settings manager
   useEffect(() => {
-    const oldSettings = localStorage.getItem('dashboardSettings');
-    if (oldSettings) {
-      try {
-        const parsedOldSettings = JSON.parse(oldSettings);
-        // Migrate old settings to unified settings
-        const currentUnifiedSettings = JSON.parse(localStorage.getItem('techno-etl-settings') || '{}');
-        if (!currentUnifiedSettings.dashboard) {
-          const updatedUnifiedSettings = {
-            ...currentUnifiedSettings,
-            dashboard: parsedOldSettings
-          };
-          localStorage.setItem('techno-etl-settings', JSON.stringify(updatedUnifiedSettings));
-          localStorage.removeItem('dashboardSettings'); // Clean up old storage
-          console.log('Migrated dashboard settings to unified settings');
-        }
-      } catch (error) {
-        console.error('Error migrating dashboard settings:', error);
-      }
-    }
+    // The unified settings manager handles migration automatically
+    console.log('Dashboard component initialized with unified settings');
   }, []);
 
   // Handle price sync

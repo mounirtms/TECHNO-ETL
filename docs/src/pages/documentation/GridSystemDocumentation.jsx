@@ -22,7 +22,7 @@ import {
   TableHead,
   TableRow,
   Button,
-  IconButton
+  IconButton,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import {
@@ -35,7 +35,7 @@ import {
   Settings as SettingsIcon,
   Speed as PerformanceIcon,
   Security as SecurityIcon,
-  CheckCircle as CheckIcon
+  CheckCircle as CheckIcon,
 } from '@mui/icons-material';
 
 const GridSystemDocumentation = () => {
@@ -49,13 +49,13 @@ const GridSystemDocumentation = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
+      transition: { staggerChildren: 0.1 },
+    },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const gridFeatures = [
@@ -63,38 +63,38 @@ const GridSystemDocumentation = () => {
       title: 'Professional UI',
       description: 'Material Design with consistent styling',
       icon: <GridIcon />,
-      color: '#1976d2'
+      color: '#1976d2',
     },
     {
       title: 'Advanced Filtering',
       description: 'Multi-criteria data filtering and search',
       icon: <FilterIcon />,
-      color: '#388e3c'
+      color: '#388e3c',
     },
     {
       title: 'Column Management',
       description: 'Resize, reorder, hide/show columns',
       icon: <ColumnIcon />,
-      color: '#f57c00'
+      color: '#f57c00',
     },
     {
       title: 'Export/Import',
       description: 'Data exchange capabilities',
       icon: <ExportIcon />,
-      color: '#7b1fa2'
+      color: '#7b1fa2',
     },
     {
       title: 'Real-time Updates',
       description: 'Live data synchronization',
       icon: <RefreshIcon />,
-      color: '#d32f2f'
+      color: '#d32f2f',
     },
     {
       title: 'Performance Optimized',
       description: 'Virtualization for large datasets',
       icon: <PerformanceIcon />,
-      color: '#0288d1'
-    }
+      color: '#0288d1',
+    },
   ];
 
   const gridComponents = [
@@ -102,26 +102,26 @@ const GridSystemDocumentation = () => {
       name: 'BaseGrid',
       description: 'Core grid component with all features',
       props: ['columns', 'data', 'loading', 'toolbarConfig', 'showStatsCards'],
-      usage: 'Primary grid component for all data displays'
+      usage: 'Primary grid component for all data displays',
     },
     {
       name: 'GridToolbar',
       description: 'Professional toolbar with actions and controls',
       props: ['config', 'customActions', 'selectedRows', 'onRefresh'],
-      usage: 'Toolbar with search, filters, and bulk actions'
+      usage: 'Toolbar with search, filters, and bulk actions',
     },
     {
       name: 'GridStatsCards',
       description: 'Statistics display cards',
       props: ['cards', 'loading', 'variant', 'showTrends'],
-      usage: 'Display KPIs and metrics above/below grid'
+      usage: 'Display KPIs and metrics above/below grid',
     },
     {
       name: 'GridErrorBoundary',
       description: 'Error handling and recovery',
       props: ['gridName', 'fallbackMessage', 'onRetry'],
-      usage: 'Wrap grids for error protection'
-    }
+      usage: 'Wrap grids for error protection',
+    },
   ];
 
   const configurationOptions = [
@@ -130,32 +130,32 @@ const GridSystemDocumentation = () => {
       options: [
         { name: 'paginationMode', default: 'client', description: 'Client or server-side pagination' },
         { name: 'pageSize', default: '25', description: 'Default page size' },
-        { name: 'pageSizeOptions', default: '[10, 25, 50, 100]', description: 'Available page sizes' }
-      ]
+        { name: 'pageSizeOptions', default: '[10, 25, 50, 100]', description: 'Available page sizes' },
+      ],
     },
     {
       category: 'Performance',
       options: [
         { name: 'enableVirtualization', default: 'true', description: 'Enable row virtualization' },
         { name: 'rowBuffer', default: '3', description: 'Number of rows to render outside viewport' },
-        { name: 'columnBuffer', default: '2', description: 'Number of columns to render outside viewport' }
-      ]
+        { name: 'columnBuffer', default: '2', description: 'Number of columns to render outside viewport' },
+      ],
     },
     {
       category: 'Features',
       options: [
         { name: 'checkboxSelection', default: 'true', description: 'Enable row selection' },
         { name: 'enableColumnResize', default: 'true', description: 'Allow column resizing' },
-        { name: 'enableColumnReorder', default: 'true', description: 'Allow column reordering' }
-      ]
-    }
+        { name: 'enableColumnReorder', default: 'true', description: 'Allow column reordering' },
+      ],
+    },
   ];
 
   const performanceMetrics = [
     { metric: 'Initial Load', value: '< 500ms', description: 'Time to first render' },
     { metric: 'Scroll Performance', value: '60 FPS', description: 'Smooth scrolling with virtualization' },
     { metric: 'Memory Usage', value: '< 50MB', description: 'For 10,000 rows' },
-    { metric: 'Search Response', value: '< 100ms', description: 'Client-side filtering' }
+    { metric: 'Search Response', value: '< 100ms', description: 'Client-side filtering' },
   ];
 
   const codeExamples = {
@@ -235,7 +235,7 @@ const AdvancedGrid = () => {
       }}
     />
   );
-};`
+};`,
   };
 
   const TabPanel = ({ children, value, index, ...other }) => (
@@ -280,8 +280,8 @@ const AdvancedGrid = () => {
             <Typography variant="h6" gutterBottom>
               🎯 Grid System Overview
             </Typography>
-            The TECHNO-ETL Grid System is a professional, unified data grid solution built on top of MUI X DataGrid. 
-            It provides a consistent, feature-rich interface for displaying and managing large datasets across the entire application 
+            The TECHNO-ETL Grid System is a professional, unified data grid solution built on top of MUI X DataGrid.
+            It provides a consistent, feature-rich interface for displaying and managing large datasets across the entire application
             with advanced filtering, sorting, export capabilities, and real-time updates.
           </Alert>
         </motion.div>
@@ -294,25 +294,25 @@ const AdvancedGrid = () => {
           <Grid container spacing={3} sx={{ mb: 6 }}>
             {gridFeatures.map((feature, index) => (
               <Grid item xs={12} md={6} lg={4} key={index}>
-                <Card 
-                  sx={{ 
+                <Card
+                  sx={{
                     height: '100%',
                     transition: 'transform 0.2s, box-shadow 0.2s',
                     '&:hover': {
                       transform: 'translateY(-4px)',
-                      boxShadow: 4
-                    }
+                      boxShadow: 4,
+                    },
                   }}
                 >
                   <CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Box 
-                        sx={{ 
-                          p: 1, 
-                          borderRadius: 2, 
+                      <Box
+                        sx={{
+                          p: 1,
+                          borderRadius: 2,
                           backgroundColor: `${feature.color}20`,
                           color: feature.color,
-                          mr: 2
+                          mr: 2,
                         }}
                       >
                         {feature.icon}
@@ -337,8 +337,8 @@ const AdvancedGrid = () => {
             📖 Detailed Documentation
           </Typography>
           <Paper sx={{ mb: 6 }}>
-            <Tabs 
-              value={tabValue} 
+            <Tabs
+              value={tabValue}
               onChange={handleTabChange}
               variant="scrollable"
               scrollButtons="auto"
@@ -442,7 +442,7 @@ const AdvancedGrid = () => {
                   </Grid>
                 ))}
               </Grid>
-              
+
               <Alert severity="success">
                 <Typography variant="h6" gutterBottom>
                   🚀 Performance Optimizations
@@ -470,7 +470,7 @@ const AdvancedGrid = () => {
 
             <TabPanel value={tabValue} index={3}>
               <Typography variant="h6" gutterBottom>Code Examples</Typography>
-              
+
               <Typography variant="subtitle1" fontWeight={600} gutterBottom sx={{ mt: 3 }}>
                 Basic Grid Implementation:
               </Typography>

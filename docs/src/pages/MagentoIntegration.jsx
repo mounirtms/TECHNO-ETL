@@ -22,7 +22,7 @@ import {
   AccordionDetails,
   Button,
   IconButton,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import CodeBlock from '../components/CodeBlock';
@@ -36,7 +36,7 @@ import {
   CheckCircle as CheckIcon,
   ContentCopy as CopyIcon,
   Warning as WarningIcon,
-  Info as InfoIcon
+  Info as InfoIcon,
 } from '@mui/icons-material';
 
 const MagentoIntegration = () => {
@@ -58,17 +58,17 @@ const MagentoIntegration = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
-      y: 0
-    }
+      y: 0,
+    },
   };
 
   const integrationFeatures = [
@@ -76,26 +76,26 @@ const MagentoIntegration = () => {
       title: 'Product Synchronization',
       description: 'Bidirectional sync of product data, attributes, and media',
       icon: <StorefrontIcon />,
-      color: '#1976d2'
+      color: '#1976d2',
     },
     {
       title: 'Inventory Management',
       description: 'Real-time inventory updates across multiple sources',
       icon: <SyncIcon />,
-      color: '#388e3c'
+      color: '#388e3c',
     },
     {
       title: 'Order Processing',
       description: 'Automated order processing and fulfillment workflows',
       icon: <ApiIcon />,
-      color: '#f57c00'
+      color: '#f57c00',
     },
     {
       title: 'Customer Data Sync',
       description: 'Customer information and segmentation synchronization',
       icon: <SecurityIcon />,
-      color: '#7b1fa2'
-    }
+      color: '#7b1fa2',
+    },
   ];
 
   const apiEndpoints = [
@@ -103,32 +103,32 @@ const MagentoIntegration = () => {
       method: 'GET',
       endpoint: '/rest/V1/products',
       description: 'Retrieve product list with search criteria',
-      example: 'GET /rest/V1/products?searchCriteria[filter_groups][0][filters][0][field]=sku&searchCriteria[filter_groups][0][filters][0][value]=PROD-001'
+      example: 'GET /rest/V1/products?searchCriteria[filter_groups][0][filters][0][field]=sku&searchCriteria[filter_groups][0][filters][0][value]=PROD-001',
     },
     {
       method: 'POST',
       endpoint: '/rest/V1/products',
       description: 'Create a new product',
-      example: 'POST /rest/V1/products with product data payload'
+      example: 'POST /rest/V1/products with product data payload',
     },
     {
       method: 'PUT',
       endpoint: '/rest/V1/products/{sku}',
       description: 'Update existing product by SKU',
-      example: 'PUT /rest/V1/products/PROD-001 with updated product data'
+      example: 'PUT /rest/V1/products/PROD-001 with updated product data',
     },
     {
       method: 'GET',
       endpoint: '/rest/V1/stockItems/{itemId}',
       description: 'Get stock information for a product',
-      example: 'GET /rest/V1/stockItems/123'
+      example: 'GET /rest/V1/stockItems/123',
     },
     {
       method: 'PUT',
       endpoint: '/rest/V1/products/{sku}/stockItems/{itemId}',
       description: 'Update stock quantity for a product',
-      example: 'PUT /rest/V1/products/PROD-001/stockItems/1'
-    }
+      example: 'PUT /rest/V1/products/PROD-001/stockItems/1',
+    },
   ];
 
   return (
@@ -179,8 +179,8 @@ const MagentoIntegration = () => {
                     transition: 'transform 0.2s, box-shadow 0.2s',
                     '&:hover': {
                       transform: 'translateY(-4px)',
-                      boxShadow: 4
-                    }
+                      boxShadow: 4,
+                    },
                   }}
                 >
                   <CardContent>
@@ -191,7 +191,7 @@ const MagentoIntegration = () => {
                           borderRadius: 2,
                           backgroundColor: `${feature.color}20`,
                           color: feature.color,
-                          mr: 2
+                          mr: 2,
                         }}
                       >
                         {feature.icon}
@@ -291,8 +291,8 @@ const MagentoIntegration = () => {
                             label={endpoint.method}
                             color={
                               endpoint.method === 'GET' ? 'info' :
-                              endpoint.method === 'POST' ? 'success' :
-                              endpoint.method === 'PUT' ? 'warning' : 'error'
+                                endpoint.method === 'POST' ? 'success' :
+                                  endpoint.method === 'PUT' ? 'warning' : 'error'
                             }
                             size="small"
                             sx={{ mr: 2 }}

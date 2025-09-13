@@ -24,17 +24,17 @@ const Home = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
-      y: 0
-    }
+      y: 0,
+    },
   };
 
   const integrations = [
@@ -43,62 +43,62 @@ const Home = () => {
       description: 'Comprehensive ETL pipeline for data extraction, transformation, and loading across systems.',
       icon: <IntegrationInstructionsIcon sx={{ fontSize: 60, color: 'primary.main' }} />,
       path: '/etl-integration',
-      color: '#e3f2fd'
+      color: '#e3f2fd',
     },
     {
       title: 'JDE Integration',
       description: 'Seamless integration with JD Edwards EnterpriseOne for business process automation.',
       icon: <BusinessIcon sx={{ fontSize: 60, color: 'secondary.main' }} />,
       path: '/jde-integration',
-      color: '#f3e5f5'
+      color: '#f3e5f5',
     },
     {
       title: 'Magento Integration',
       description: 'Connect your Magento e-commerce platform with enterprise systems for unified commerce.',
       icon: <StorefrontIcon sx={{ fontSize: 60, color: 'error.main' }} />,
       path: '/magento-integration',
-      color: '#fbe9e7'
+      color: '#fbe9e7',
     },
     {
       title: 'CEGID Integration',
       description: 'Integrate CEGID Business Retail with your enterprise ecosystem for retail excellence.',
       icon: <SettingsEthernetIcon sx={{ fontSize: 60, color: 'success.main' }} />,
       path: '/cegid-integration',
-      color: '#e8f5e9'
-    }
+      color: '#e8f5e9',
+    },
   ];
 
   const externalLinks = [
     {
       title: 'Production Environment',
       url: 'https://technostationery.com',
-      description: 'Access the main production environment'
+      description: 'Access the main production environment',
     },
     {
       title: 'Beta Environment',
       url: 'https://beta.technostationery.com',
-      description: 'Test and preview new features'
+      description: 'Test and preview new features',
     },
     {
       title: 'Admin Dashboard',
       url: 'https://dashboard.technostationery.com',
-      description: 'Manage your Techno applications'
+      description: 'Manage your Techno applications',
     },
     {
       title: 'Web Application',
       url: 'https://techno-webapp.web.app',
-      description: 'Access the web application interface'
+      description: 'Access the web application interface',
     },
     {
       title: 'Techno Magento API Documentation',
       url: '    https://doc.echoapi.com/docs/43c070988402000?locale=en&target_id=14e6b4ecb9a468',
-      description: 'Explore our API documentation on Postman'
+      description: 'Explore our API documentation on Postman',
     },
     {
       title: 'API Documentation',
       url: 'https://www.postman.com/techno-e-commerce/techno-e-commerce-workspace/overview',
-      description: 'Explore our API documentation on Postman'
-    }
+      description: 'Explore our API documentation on Postman',
+    },
 
   ];
 
@@ -109,7 +109,7 @@ const Home = () => {
       icon: <DescriptionIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
       path: '/docs/system-overview',
       color: '#e3f2fd',
-      category: 'Overview'
+      category: 'Overview',
     },
     {
       title: 'Getting Started',
@@ -117,7 +117,7 @@ const Home = () => {
       icon: <SettingsIcon sx={{ fontSize: 40, color: 'success.main' }} />,
       path: '/docs/getting-started',
       color: '#e8f5e9',
-      category: 'Setup'
+      category: 'Setup',
     },
     {
       title: 'Features Showcase',
@@ -125,7 +125,7 @@ const Home = () => {
       icon: <DashboardIcon sx={{ fontSize: 40, color: 'warning.main' }} />,
       path: '/docs/features-showcase',
       color: '#fff3e0',
-      category: 'Features'
+      category: 'Features',
     },
     {
       title: 'Project Overview',
@@ -133,7 +133,7 @@ const Home = () => {
       icon: <DescriptionIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
       path: '/docs/project-overview',
       color: '#e3f2fd',
-      category: 'Overview'
+      category: 'Overview',
     },
     {
       title: 'Technical Architecture',
@@ -141,7 +141,7 @@ const Home = () => {
       icon: <ArchitectureIcon sx={{ fontSize: 40, color: 'secondary.main' }} />,
       path: '/docs/technical-architecture',
       color: '#f3e5f5',
-      category: 'Architecture'
+      category: 'Architecture',
     },
     {
       title: 'ETL Process',
@@ -149,7 +149,7 @@ const Home = () => {
       icon: <SyncIcon sx={{ fontSize: 40, color: 'success.main' }} />,
       path: '/docs/etl-process',
       color: '#e8f5e9',
-      category: 'Process'
+      category: 'Process',
     },
     {
       title: 'Grid System',
@@ -157,7 +157,7 @@ const Home = () => {
       icon: <GridOnIcon sx={{ fontSize: 40, color: 'warning.main' }} />,
       path: '/docs/grid-system',
       color: '#fff3e0',
-      category: 'Components'
+      category: 'Components',
     },
     {
       title: 'API Documentation',
@@ -165,7 +165,7 @@ const Home = () => {
       icon: <ApiIcon sx={{ fontSize: 40, color: 'info.main' }} />,
       path: '/docs/api-documentation',
       color: '#e1f5fe',
-      category: 'API'
+      category: 'API',
     },
     {
       title: 'Dashboard System',
@@ -173,7 +173,7 @@ const Home = () => {
       icon: <DashboardIcon sx={{ fontSize: 40, color: 'error.main' }} />,
       path: '/docs/dashboard-system',
       color: '#fbe9e7',
-      category: 'UI'
+      category: 'UI',
     },
     {
       title: 'Product Management',
@@ -181,7 +181,7 @@ const Home = () => {
       icon: <ShoppingCartIcon sx={{ fontSize: 40, color: 'primary.main' }} />,
       path: '/docs/product-management',
       color: '#e8eaf6',
-      category: 'Business'
+      category: 'Business',
     },
     {
       title: 'Configuration & Setup',
@@ -189,7 +189,7 @@ const Home = () => {
       icon: <SettingsIcon sx={{ fontSize: 40, color: 'secondary.main' }} />,
       path: '/docs/configuration-setup',
       color: '#f3e5f5',
-      category: 'Setup'
+      category: 'Setup',
     },
     {
       title: 'Deployment Guide',
@@ -197,7 +197,7 @@ const Home = () => {
       icon: <CloudUploadIcon sx={{ fontSize: 40, color: 'success.main' }} />,
       path: '/docs/deployment-guide',
       color: '#e0f2f1',
-      category: 'DevOps'
+      category: 'DevOps',
     },
     {
       title: 'Troubleshooting',
@@ -205,8 +205,8 @@ const Home = () => {
       icon: <BugReportIcon sx={{ fontSize: 40, color: 'warning.main' }} />,
       path: '/docs/troubleshooting',
       color: '#fffde7',
-      category: 'Support'
-    }
+      category: 'Support',
+    },
   ];
 
   return (
@@ -263,8 +263,8 @@ const Home = () => {
                     textDecoration: 'none',
                     transition: 'transform 0.2s',
                     '&:hover': {
-                      transform: 'translateY(-4px)'
-                    }
+                      transform: 'translateY(-4px)',
+                    },
                   }}
                 >
                   <CardActionArea>
@@ -274,7 +274,7 @@ const Home = () => {
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        bgcolor: integration.color
+                        bgcolor: integration.color,
                       }}
                     >
                       {integration.icon}
@@ -319,8 +319,8 @@ const Home = () => {
                     transition: 'all 0.2s',
                     '&:hover': {
                       transform: 'translateY(-4px)',
-                      boxShadow: 4
-                    }
+                      boxShadow: 4,
+                    },
                   }}
                 >
                   <CardActionArea sx={{ height: '100%' }}>
@@ -331,7 +331,7 @@ const Home = () => {
                         flexDirection: 'column',
                         alignItems: 'center',
                         bgcolor: doc.color,
-                        minHeight: 120
+                        minHeight: 120,
                       }}
                     >
                       {doc.icon}
@@ -380,7 +380,7 @@ const Home = () => {
                         display: 'flex',
                         alignItems: 'center',
                         gap: 0.5,
-                        color: 'primary.main'
+                        color: 'primary.main',
                       }}
                     >
                       Visit {link.title}

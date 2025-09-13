@@ -47,24 +47,37 @@ const TabPanel = ({ sidebarOpen, isMobile = false, isTablet = false }) => {
             flexDirection: 'column',
             overflow: 'hidden'
         }}>
-
-
             <Box sx={{
                 borderBottom: 1,
                 borderColor: 'divider',
-                backgroundColor: theme.palette.background.paper
+                backgroundColor: theme.palette.background.paper,
+                position: 'sticky',
+                top: `${HEADER_HEIGHT}px`,
+                zIndex: 100
             }}>
                 <Tabs
                     value={activeTab}
                     onChange={handleChange}
-                    variant={isMobile ? "scrollable" : "scrollable"}
-                    scrollButtons={isMobile ? "auto" : "auto"}
+                    variant={isMobile ? "scrollable" : "standard"}
+                    scrollButtons={isMobile ? "auto" : false}
                     allowScrollButtonsMobile
                     sx={{
+                        minHeight: isMobile ? 40 : 48,
                         '& .MuiTab-root': {
+                            minHeight: isMobile ? 40 : 48,
                             minWidth: isMobile ? 80 : 120,
                             fontSize: isMobile ? '0.75rem' : '0.875rem',
-                            padding: isMobile ? '4px 6px' : '8px 12px' // Reduced padding
+                            padding: isMobile ? '4px 8px' : '8px 16px',
+                            textTransform: 'none',
+                            fontWeight: 500,
+                            color: theme.palette.text.secondary,
+                            '&.Mui-selected': {
+                                color: theme.palette.primary.main
+                            }
+                        },
+                        '& .MuiTabs-indicator': {
+                            backgroundColor: theme.palette.primary.main,
+                            height: 3
                         }
                     }}
                 >
@@ -81,11 +94,11 @@ const TabPanel = ({ sidebarOpen, isMobile = false, isTablet = false }) => {
                 flexGrow: 1,
                 overflow: 'auto',
                 p: {
-                    xs: 0.25, // Further reduced padding on mobile
-                    sm: 0.5,
-                    md: 1
+                    xs: 0.5,
+                    sm: 1,
+                    md: 1.5
                 },
-                height: `calc(${tabPanelHeight} - ${isMobile ? '40px' : '48px'})`, // Responsive tab header height
+                height: `calc(${tabPanelHeight} - ${isMobile ? '40px' : '48px'})`,
                 '& .MuiDataGrid-root': {
                     '& .MuiDataGrid-toolbarContainer': {
                         padding: isMobile ? '4px' : '8px',

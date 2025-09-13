@@ -20,7 +20,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Button,
-  Divider
+  Divider,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import {
@@ -39,7 +39,7 @@ import {
   GridOn as GridIcon,
   ShoppingCart as ProductIcon,
   Settings as SettingsIcon,
-  BugReport as TroubleshootIcon
+  BugReport as TroubleshootIcon,
 } from '@mui/icons-material';
 
 const SystemOverview = () => {
@@ -51,12 +51,12 @@ const SystemOverview = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const systemFeatures = [
@@ -65,43 +65,43 @@ const SystemOverview = () => {
       description: 'Bidirectional sync between MDM and Magento systems with 99.9% accuracy',
       icon: <IntegrationIcon />,
       color: '#1976d2',
-      metrics: ['10,000+ records/min', '< 1 second latency', '99.9% accuracy']
+      metrics: ['10,000+ records/min', '< 1 second latency', '99.9% accuracy'],
     },
     {
       title: 'Advanced Grid Management',
       description: 'Professional data grids with filtering, sorting, and export capabilities',
       icon: <GridIcon />,
       color: '#388e3c',
-      metrics: ['Virtual scrolling', '100K+ rows', 'Real-time updates']
+      metrics: ['Virtual scrolling', '100K+ rows', 'Real-time updates'],
     },
     {
       title: 'Comprehensive Analytics',
       description: 'Real-time dashboards with KPI tracking and performance monitoring',
       icon: <AnalyticsIcon />,
       color: '#f57c00',
-      metrics: ['Live dashboards', 'Custom widgets', 'Performance metrics']
+      metrics: ['Live dashboards', 'Custom widgets', 'Performance metrics'],
     },
     {
       title: 'Enterprise Security',
       description: 'Role-based access control with Firebase authentication and audit trails',
       icon: <SecurityIcon />,
       color: '#d32f2f',
-      metrics: ['JWT tokens', 'RBAC', 'Audit logging']
+      metrics: ['JWT tokens', 'RBAC', 'Audit logging'],
     },
     {
       title: 'High Performance',
       description: 'Optimized for 1000+ concurrent users and enterprise-scale operations',
       icon: <SpeedIcon />,
       color: '#7b1fa2',
-      metrics: ['< 2s load time', '1000+ users', '< 500ms API']
+      metrics: ['< 2s load time', '1000+ users', '< 500ms API'],
     },
     {
       title: 'Cloud Ready',
       description: 'Production-ready deployment with scalable architecture and monitoring',
       icon: <CloudIcon />,
       color: '#0288d1',
-      metrics: ['Auto-scaling', 'Load balancing', 'Health monitoring']
-    }
+      metrics: ['Auto-scaling', 'Load balancing', 'Health monitoring'],
+    },
   ];
 
   const architectureComponents = [
@@ -109,26 +109,26 @@ const SystemOverview = () => {
       layer: 'Frontend Layer',
       description: 'Modern React.js application with Material-UI components',
       technologies: ['React.js 18+', 'Material-UI', 'Vite', 'React Router', 'Framer Motion'],
-      color: '#1976d2'
+      color: '#1976d2',
     },
     {
       layer: 'Backend Layer',
       description: 'RESTful API server with comprehensive business logic',
       technologies: ['Node.js 18+', 'Express.js', 'JWT Auth', 'Joi Validation', 'Winston Logging'],
-      color: '#388e3c'
+      color: '#388e3c',
     },
     {
       layer: 'Data Layer',
       description: 'Multi-database architecture for different data types',
       technologies: ['SQL Server', 'Firebase', 'Redis Cache', 'File Storage'],
-      color: '#f57c00'
+      color: '#f57c00',
     },
     {
       layer: 'Integration Layer',
       description: 'External system integrations and API connections',
       technologies: ['Magento 2.4+', 'RFID Systems', 'POS Systems', 'Warehouse Management'],
-      color: '#7b1fa2'
-    }
+      color: '#7b1fa2',
+    },
   ];
 
   const performanceMetrics = [
@@ -137,7 +137,7 @@ const SystemOverview = () => {
     { label: 'Data Sync Accuracy', value: '99.9%', progress: 99, color: 'info' },
     { label: 'System Uptime', value: '99.95%', progress: 99, color: 'warning' },
     { label: 'Concurrent Users', value: '1000+', progress: 85, color: 'secondary' },
-    { label: 'ETL Throughput', value: '10K+ records/min', progress: 92, color: 'error' }
+    { label: 'ETL Throughput', value: '10K+ records/min', progress: 92, color: 'error' },
   ];
 
   const businessValue = [
@@ -147,10 +147,10 @@ const SystemOverview = () => {
         '50% reduction in manual data entry',
         '75% faster inventory updates',
         '90% improvement in data accuracy',
-        'Real-time visibility across all systems'
+        'Real-time visibility across all systems',
       ],
       icon: <SpeedIcon />,
-      color: '#4caf50'
+      color: '#4caf50',
     },
     {
       category: 'Cost Savings',
@@ -158,10 +158,10 @@ const SystemOverview = () => {
         'Reduced operational costs through automation',
         'Minimized data errors and associated costs',
         'Improved resource utilization',
-        'Faster time-to-market for new products'
+        'Faster time-to-market for new products',
       ],
       icon: <AnalyticsIcon />,
-      color: '#2196f3'
+      color: '#2196f3',
     },
     {
       category: 'Scalability & Growth',
@@ -169,11 +169,11 @@ const SystemOverview = () => {
         'Support for 1000+ concurrent users',
         'Horizontal scaling capabilities',
         'Multi-tenant architecture ready',
-        'Cloud-native deployment options'
+        'Cloud-native deployment options',
       ],
       icon: <CloudIcon />,
-      color: '#ff9800'
-    }
+      color: '#ff9800',
+    },
   ];
 
   const TabPanel = ({ children, value, index, ...other }) => (
@@ -216,7 +216,7 @@ const SystemOverview = () => {
               🎯 Core Mission
             </Typography>
             <Typography variant="body1">
-              "Streamline data operations between multiple systems while maintaining data integrity, 
+              "Streamline data operations between multiple systems while maintaining data integrity,
               providing real-time analytics, and ensuring scalable performance for enterprise e-commerce operations."
             </Typography>
           </Alert>
@@ -230,26 +230,26 @@ const SystemOverview = () => {
           <Grid container spacing={3} sx={{ mb: 6 }}>
             {systemFeatures.map((feature, index) => (
               <Grid item xs={12} md={6} key={index}>
-                <Card 
-                  sx={{ 
+                <Card
+                  sx={{
                     height: '100%',
                     transition: 'transform 0.2s, box-shadow 0.2s',
                     '&:hover': {
                       transform: 'translateY(-4px)',
-                      boxShadow: 6
+                      boxShadow: 6,
                     },
-                    borderLeft: `4px solid ${feature.color}`
+                    borderLeft: `4px solid ${feature.color}`,
                   }}
                 >
                   <CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Box 
-                        sx={{ 
-                          p: 1.5, 
-                          borderRadius: 2, 
+                      <Box
+                        sx={{
+                          p: 1.5,
+                          borderRadius: 2,
                           backgroundColor: `${feature.color}20`,
                           color: feature.color,
-                          mr: 2
+                          mr: 2,
                         }}
                       >
                         {feature.icon}
@@ -263,10 +263,10 @@ const SystemOverview = () => {
                     </Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                       {feature.metrics.map((metric, idx) => (
-                        <Chip 
-                          key={idx} 
-                          label={metric} 
-                          size="small" 
+                        <Chip
+                          key={idx}
+                          label={metric}
+                          size="small"
                           variant="outlined"
                           sx={{ color: feature.color, borderColor: feature.color }}
                         />
@@ -294,9 +294,9 @@ const SystemOverview = () => {
                   <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
                     {metric.label}
                   </Typography>
-                  <LinearProgress 
-                    variant="determinate" 
-                    value={metric.progress} 
+                  <LinearProgress
+                    variant="determinate"
+                    value={metric.progress}
                     color={metric.color}
                     sx={{ height: 8, borderRadius: 4 }}
                   />
@@ -315,8 +315,8 @@ const SystemOverview = () => {
             🔍 Detailed System Information
           </Typography>
           <Paper sx={{ mb: 6 }}>
-            <Tabs 
-              value={tabValue} 
+            <Tabs
+              value={tabValue}
               onChange={handleTabChange}
               variant="scrollable"
               scrollButtons="auto"
@@ -366,13 +366,13 @@ const SystemOverview = () => {
                     <Card sx={{ height: '100%' }}>
                       <CardContent>
                         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                          <Box 
-                            sx={{ 
-                              p: 1, 
-                              borderRadius: 2, 
+                          <Box
+                            sx={{
+                              p: 1,
+                              borderRadius: 2,
                               backgroundColor: `${value.color}20`,
                               color: value.color,
-                              mr: 2
+                              mr: 2,
                             }}
                           >
                             {value.icon}
@@ -404,7 +404,7 @@ const SystemOverview = () => {
                 <Typography variant="subtitle2" fontWeight={600}>Modern Technology Stack:</Typography>
                 Built with cutting-edge technologies for performance, scalability, and maintainability.
               </Alert>
-              
+
               <Grid container spacing={3}>
                 <Grid item xs={12} md={4}>
                   <Card>

@@ -5,11 +5,12 @@
 
 // Simple console logger for clean development
 const logger = {
-    info: (message, meta = {}) => console.log(`[INFO] ${message}`, meta),
-    warn: (message, meta = {}) => console.warn(`[WARN] ${message}`, meta),
-    error: (message, meta = {}) => console.error(`[ERROR] ${message}`, meta),
-    debug: (message, meta = {}) => console.log(`[DEBUG] ${message}`, meta)
+  info: (message, meta = {}) => console.log(`[INFO] ${message}`, meta),
+  warn: (message, meta = {}) => console.warn(`[WARN] ${message}`, meta),
+  error: (message, meta = {}) => console.error(`[ERROR] ${message}`, meta),
+  debug: (message, meta = {}) => console.log(`[DEBUG] ${message}`, meta),
 };
+
 import os from 'os';
 import fs from 'fs';
 
@@ -23,7 +24,7 @@ class UsageAnalytics {
       userAgents: new Map(),
       ips: new Map(),
       hourlyStats: new Map(),
-      dailyStats: new Map()
+      dailyStats: new Map(),
     };
 
     this.resourceMetrics = {
@@ -31,7 +32,7 @@ class UsageAnalytics {
       memory: [],
       disk: [],
       network: [],
-      database: []
+      database: [],
     };
 
     this.featureUsage = new Map();
@@ -40,7 +41,7 @@ class UsageAnalytics {
       peakConcurrentUsers: 0,
       peakRequestsPerSecond: 0,
       averageResponseTime: 0,
-      errorRate: 0
+      errorRate: 0,
     };
 
     this.startResourceMonitoring();
@@ -62,11 +63,12 @@ class UsageAnalytics {
         averageResponseTime: 0,
         statusCodes: new Map(),
         errors: 0,
-        lastAccessed: null
+        lastAccessed: null,
       });
     }
 
     const endpointMetrics = this.apiMetrics.endpoints.get(endpoint);
+
     endpointMetrics.count++;
     endpointMetrics.totalResponseTime += responseTime;
     endpointMetrics.averageResponseTime = endpointMetrics.totalResponseTime / endpointMetrics.count;
@@ -74,6 +76,7 @@ class UsageAnalytics {
 
     // Track status codes
     const statusCode = res.statusCode;
+
     if (!endpointMetrics.statusCodes.has(statusCode)) {
       endpointMetrics.statusCodes.set(statusCode, 0);
     }
@@ -95,6 +98,7 @@ class UsageAnalytics {
 
     // Track user agents
     const userAgent = req.get('User-Agent') || 'Unknown';
+
     if (!this.apiMetrics.userAgents.has(userAgent)) {
       this.apiMetrics.userAgents.set(userAgent, 0);
     }
@@ -102,6 +106,7 @@ class UsageAnalytics {
 
     // Track IPs
     const ip = req.ip || req.connection.remoteAddress;
+
     if (!this.apiMetrics.ips.has(ip)) {
       this.apiMetrics.ips.set(ip, 0);
     }
@@ -127,31 +132,32 @@ class UsageAnalytics {
       userAgent,
       ip,
       userId: req.user?.id,
-      timestamp: timestamp.toISOString()
+      timestamp: timestamp.toISOString(),
     });
   }
 
   // Track feature usage
   trackFeatureUsage(feature, userId, metadata = {}) {
     const timestamp = new Date();
-    
+
     if (!this.featureUsage.has(feature)) {
       this.featureUsage.set(feature, {
         totalUsage: 0,
         uniqueUsers: new Set(),
         lastUsed: null,
-        metadata: []
+        metadata: [],
       });
     }
 
     const featureMetrics = this.featureUsage.get(feature);
+
     featureMetrics.totalUsage++;
     featureMetrics.uniqueUsers.add(userId);
     featureMetrics.lastUsed = timestamp;
     featureMetrics.metadata.push({
       userId,
       timestamp,
-      ...metadata
+      ...metadata,
     });
 
     // Keep only last 1000 metadata entries
@@ -164,29 +170,30 @@ class UsageAnalytics {
       feature,
       userId,
       timestamp: timestamp.toISOString(),
-      ...metadata
+      ...metadata,
     });
   }
 
   // Track user behavior patterns
   trackUserBehavior(userId, action, context = {}) {
     const timestamp = new Date();
-    
+
     if (!this.userBehavior.has(userId)) {
       this.userBehavior.set(userId, {
         actions: [],
         sessionCount: 0,
         totalTime: 0,
         lastActivity: null,
-        patterns: new Map()
+        patterns: new Map(),
       });
     }
 
     const userMetrics = this.userBehavior.get(userId);
+
     userMetrics.actions.push({
       action,
       timestamp,
-      ...context
+      ...context,
     });
     userMetrics.lastActivity = timestamp;
 
@@ -205,7 +212,7 @@ class UsageAnalytics {
       userId,
       action,
       context,
-      timestamp: timestamp.toISOString()
+      timestamp: timestamp.toISOString(),
     });
   }
 
@@ -226,8 +233,9 @@ class UsageAnalytics {
       user: cpuUsage.user,
       system: cpuUsage.system,
       loadAverage: os.loadavg(),
-      timestamp
+      timestamp,
     };
+
     this.resourceMetrics.cpu.push(cpuMetrics);
 
     // Memory metrics
@@ -240,18 +248,20 @@ class UsageAnalytics {
         total: totalMem,
         free: freeMem,
         used: totalMem - freeMem,
-        usagePercent: ((totalMem - freeMem) / totalMem) * 100
+        usagePercent: ((totalMem - freeMem) / totalMem) * 100,
       },
-      timestamp
+      timestamp,
     };
+
     this.resourceMetrics.memory.push(memMetrics);
 
     // Network metrics (basic)
     const networkInterfaces = os.networkInterfaces();
     const networkMetrics = {
       interfaces: Object.keys(networkInterfaces).length,
-      timestamp
+      timestamp,
     };
+
     this.resourceMetrics.network.push(networkMetrics);
 
     // Keep only last 100 entries for each metric (reduced from 1000)
@@ -265,7 +275,7 @@ class UsageAnalytics {
     logger.info('Resource utilization tracked', {
       cpu: cpuMetrics,
       memory: memMetrics,
-      network: networkMetrics
+      network: networkMetrics,
     });
   }
 
@@ -276,18 +286,18 @@ class UsageAnalytics {
       generatedAt: now.toISOString(),
       period: {
         start: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString(), // Last 24 hours
-        end: now.toISOString()
+        end: now.toISOString(),
       },
       api: this.getApiReport(),
       features: this.getFeatureReport(),
       resources: this.getResourceReport(),
       capacity: this.getCapacityReport(),
-      recommendations: this.generateRecommendations()
+      recommendations: this.generateRecommendations(),
     };
 
     logger.info('Usage report generated', {
       category: 'usage_report',
-      report
+      report,
     });
 
     return report;
@@ -302,7 +312,7 @@ class UsageAnalytics {
         endpoint,
         requests: metrics.count,
         averageResponseTime: Math.round(metrics.averageResponseTime),
-        errorRate: (metrics.errors / metrics.count) * 100
+        errorRate: (metrics.errors / metrics.count) * 100,
       }));
 
     const statusCodeDistribution = Array.from(this.apiMetrics.statusCodes.entries())
@@ -314,7 +324,7 @@ class UsageAnalytics {
       topEndpoints,
       statusCodeDistribution,
       uniqueIPs: this.apiMetrics.ips.size,
-      uniqueUserAgents: this.apiMetrics.userAgents.size
+      uniqueUserAgents: this.apiMetrics.userAgents.size,
     };
   }
 
@@ -325,7 +335,7 @@ class UsageAnalytics {
         feature,
         totalUsage: metrics.totalUsage,
         uniqueUsers: metrics.uniqueUsers.size,
-        lastUsed: metrics.lastUsed
+        lastUsed: metrics.lastUsed,
       }))
       .sort((a, b) => b.totalUsage - a.totalUsage);
 
@@ -337,7 +347,7 @@ class UsageAnalytics {
     const recentCpu = this.resourceMetrics.cpu.slice(-100);
     const recentMemory = this.resourceMetrics.memory.slice(-100);
 
-    const avgCpuLoad = recentCpu.length > 0 
+    const avgCpuLoad = recentCpu.length > 0
       ? recentCpu.reduce((sum, metric) => sum + metric.loadAverage[0], 0) / recentCpu.length
       : 0;
 
@@ -348,13 +358,13 @@ class UsageAnalytics {
     return {
       cpu: {
         averageLoad: avgCpuLoad,
-        cores: os.cpus().length
+        cores: os.cpus().length,
       },
       memory: {
         averageUsagePercent: avgMemoryUsage,
         totalMemory: os.totalmem(),
-        freeMemory: os.freemem()
-      }
+        freeMemory: os.freemem(),
+      },
     };
   }
 
@@ -364,7 +374,7 @@ class UsageAnalytics {
       peakConcurrentUsers: this.capacityMetrics.peakConcurrentUsers,
       peakRequestsPerSecond: this.capacityMetrics.peakRequestsPerSecond,
       averageResponseTime: this.capacityMetrics.averageResponseTime,
-      errorRate: this.capacityMetrics.errorRate
+      errorRate: this.capacityMetrics.errorRate,
     };
   }
 
@@ -382,7 +392,7 @@ class UsageAnalytics {
         type: 'performance',
         priority: 'high',
         message: `Optimize slow endpoints: ${slowEndpoints.join(', ')}`,
-        endpoints: slowEndpoints
+        endpoints: slowEndpoints,
       });
     }
 
@@ -396,7 +406,7 @@ class UsageAnalytics {
         type: 'reliability',
         priority: 'high',
         message: `Fix high error rate endpoints: ${errorEndpoints.join(', ')}`,
-        endpoints: errorEndpoints
+        endpoints: errorEndpoints,
       });
     }
 
@@ -418,7 +428,7 @@ class UsageAnalytics {
       resources: this.resourceMetrics,
       features: this.featureUsage,
       userBehavior: this.userBehavior,
-      capacity: this.capacityMetrics
+      capacity: this.capacityMetrics,
     };
   }
 }

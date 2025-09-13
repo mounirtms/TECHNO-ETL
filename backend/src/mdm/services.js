@@ -7,7 +7,7 @@ import { MDM } from '../queries/index.js';
 
 const magento = new MagentoService(cloudConfig);
 
- 
+
 
 async function syncInventoryToMagento(req) {
   try {
@@ -16,8 +16,9 @@ async function syncInventoryToMagento(req) {
     let { data, totalCount } = await fetchInventoryData({ ...req, query: { ...req.query, page, pageSize } });
 
     if (!totalCount) {
-      console.log("✅ No inventory data to sync.");
-      return { message: "No inventory data to sync" }
+      console.log('✅ No inventory data to sync.');
+
+      return { message: 'No inventory data to sync' };
     }
 
     let totalSynced = 0;
@@ -26,39 +27,44 @@ async function syncInventoryToMagento(req) {
       const sourceItems = data
         .map(item => {
           const sourceInfo = getAllSources().find(s => s.code_source === item.Code_Source);
+
           return {
             sku: item.Code_MDM.toString(),
             source_code: sourceInfo?.magentoSource || '',
             quantity: Math.max(0, Number(item.QteStock) || 0),
-            status: (Number(item.QteStock) || 0) > 0 ? 1 : 0
+            status: (Number(item.QteStock) || 0) > 0 ? 1 : 0,
           };
         })
         .filter(item => item.source_code); // Remove items with invalid source codes
 
       if (sourceItems.length) {
         const batchSize = 300;
+
         for (let i = 0; i < sourceItems.length; i += batchSize) {
           const batch = sourceItems.slice(i, i + batchSize);
+
           console.log(`🚀 Syncing batch (${i + 1}-${Math.min(i + batchSize, sourceItems.length)})...`);
           try {
             // Bulk endpoint, no searchCriteria
-            const response = await magento.post("V1/inventory/source-items", { sourceItems: batch }); // Remove leading slash from endpoint
-            console.log("✅ Batch Synced Successfully:", response);
+            const response = await magento.post('V1/inventory/source-items', { sourceItems: batch }); // Remove leading slash from endpoint
+
+            console.log('✅ Batch Synced Successfully:', response);
             totalSynced += batch.length;
           } catch (error) {
-            console.error("❌ Error syncing batch:", error.response?.data || error.message);
+            console.error('❌ Error syncing batch:', error.response?.data || error.message);
           }
         }
       }
 
       page++;
       const nextBatch = await fetchInventoryData({ ...req, query: { ...req.query, page, pageSize } });
+
       data = nextBatch.data;
     }
 
     console.log(`🎉 Successfully synced ${totalSynced} items.`);
   } catch (error) {
-    console.error("❌ Error syncing inventory:", error);
+    console.error('❌ Error syncing inventory:', error);
     throw error;
   }
 }
@@ -66,26 +72,29 @@ async function syncInventoryToMagento(req) {
 async function syncPricesToMagento(req) {
   try {
     const priceData = req.body;
-    console.log("📦 Starting bulk price sync for", priceData.length, "products...");
+
+    console.log('📦 Starting bulk price sync for', priceData.length, 'products...');
 
     // First, try the Magento bulk API
     try {
       // Transform data for Magento bulk API format
       const bulkOperations = priceData.map(item => ({
-        "product": {
-          "sku": item.sku.toString(),
-          "price": parseFloat(item.price)
-        }
+        'product': {
+          'sku': item.sku.toString(),
+          'price': parseFloat(item.price),
+        },
       }));
 
-      console.log("📦 Sample bulk operation:", JSON.stringify(bulkOperations[0], null, 2));
+      console.log('📦 Sample bulk operation:', JSON.stringify(bulkOperations[0], null, 2));
 
       // Use Magento's async bulk endpoint
-      const endpoint = "async/bulk/V1/products";
-      console.log("📦 Sending bulk price update to endpoint:", endpoint);
+      const endpoint = 'async/bulk/V1/products';
+
+      console.log('📦 Sending bulk price update to endpoint:', endpoint);
 
       const response = await magento.post(endpoint, bulkOperations);
-      console.log("✅ Bulk API Response:", response);
+
+      console.log('✅ Bulk API Response:', response);
 
       return {
         success: true,
@@ -93,12 +102,12 @@ async function syncPricesToMagento(req) {
         total: priceData.length,
         bulkId: response.bulk_uuid || response.id,
         message: 'Bulk operation submitted successfully',
-        response: response
+        response: response,
       };
 
     } catch (bulkError) {
-      console.error("❌ Bulk API failed:", bulkError.message);
-      console.log("🔄 Falling back to individual updates...");
+      console.error('❌ Bulk API failed:', bulkError.message);
+      console.log('🔄 Falling back to individual updates...');
 
       // Fallback to individual updates
       const results = [];
@@ -106,26 +115,28 @@ async function syncPricesToMagento(req) {
 
       for (let i = 0; i < Math.min(priceData.length, 10); i += batchSize) { // Limit to 10 for testing
         const batch = priceData.slice(i, i + batchSize);
+
         console.log(`📦 Processing fallback batch ${Math.floor(i/batchSize) + 1} (${batch.length} products)`);
 
         for (const item of batch) {
           try {
             const endpoint = `products/${encodeURIComponent(item.sku)}`;
             const productData = {
-              "product": {
-                "sku": item.sku.toString(),
-                "price": parseFloat(item.price)
-              }
+              'product': {
+                'sku': item.sku.toString(),
+                'price': parseFloat(item.price),
+              },
             };
 
             console.log(`📦 Updating product: ${item.sku} with price: ${item.price}`);
             const response = await magento.put(endpoint, productData);
+
             results.push({
               sku: item.sku,
               status: 'success',
               price: item.price,
               method: 'individual',
-              response: response?.sku || 'updated'
+              response: response?.sku || 'updated',
             });
 
             // Small delay to avoid rate limiting
@@ -138,7 +149,7 @@ async function syncPricesToMagento(req) {
               status: 'error',
               price: item.price,
               method: 'individual',
-              error: individualError.message
+              error: individualError.message,
             });
           }
         }
@@ -153,6 +164,7 @@ async function syncPricesToMagento(req) {
       const errorCount = results.filter(r => r.status === 'error').length;
 
       console.log(`✅ Fallback sync completed: ${successCount} successful, ${errorCount} failed`);
+
       return {
         success: true,
         method: 'fallback',
@@ -160,81 +172,82 @@ async function syncPricesToMagento(req) {
         successful: successCount,
         failed: errorCount,
         results,
-        bulkError: bulkError.message
+        bulkError: bulkError.message,
       };
     }
 
   } catch (error) {
-    console.error("❌ Error in price sync process:", error.message);
+    console.error('❌ Error in price sync process:', error.message);
     throw error;
   }
 }
 
 async function fetchInventoryData(req) {
-    try {
-        console.log('🚀 [MDM Service] Starting inventory data fetch');
- 
-        let params = { ...req.query };
-        console.log('📋 [MDM Service] Original params:', params);
+  try {
+    console.log('🚀 [MDM Service] Starting inventory data fetch');
 
-        Object.keys(params).forEach(key => {
-            if (params[key] === null || params[key] === '') {
-                delete params[key];
-            }
-        });
+    const params = { ...req.query };
 
-        const sortModel = params.sortModel ? JSON.parse(params.sortModel) : [];
-        const page = params.page ? parseInt(params.page, 10) : 0;
-        const pageSize = params.pageSize ? parseInt(params.pageSize, 10) : 25;
+    console.log('📋 [MDM Service] Original params:', params);
 
-        console.log('📊 [MDM Service] Processed params:', {
-            page,
-            pageSize,
-            sortModel,
-            cleanedParams: params,
-            paramCount: Object.keys(params).length
-        });
+    Object.keys(params).forEach(key => {
+      if (params[key] === null || params[key] === '') {
+        delete params[key];
+      }
+    });
 
-        const { query, inputs } = sqlQueryBuilder.buildQuery(params, sortModel, page, pageSize);
+    const sortModel = params.sortModel ? JSON.parse(params.sortModel) : [];
+    const page = params.page ? parseInt(params.page, 10) : 0;
+    const pageSize = params.pageSize ? parseInt(params.pageSize, 10) : 25;
 
-        console.log('🔍 [MDM Service] SQL Query built:', {
-            queryLength: query.length,
-            inputsCount: Object.keys(inputs).length,
-            inputKeys: Object.keys(inputs)
-        });
+    console.log('📊 [MDM Service] Processed params:', {
+      page,
+      pageSize,
+      sortModel,
+      cleanedParams: params,
+      paramCount: Object.keys(params).length,
+    });
 
-        const pool = await getPool('mdm');
-        const request = pool.request();
+    const { query, inputs } = sqlQueryBuilder.buildQuery(params, sortModel, page, pageSize);
 
-        Object.keys(inputs).forEach(key => {
-            request.input(key, inputs[key].type, inputs[key].value);
-        });
+    console.log('🔍 [MDM Service] SQL Query built:', {
+      queryLength: query.length,
+      inputsCount: Object.keys(inputs).length,
+      inputKeys: Object.keys(inputs),
+    });
 
-        console.log('📡 [MDM Service] Executing SQL query...');
-        const result = await request.query(query);
-        const totalCount = result.recordset.length > 0 ? result.recordset[0].TotalCount : 0;
+    const pool = await getPool('mdm');
+    const request = pool.request();
 
-        console.log('✅ [MDM Service] Query executed successfully:', {
-            recordsReturned: result.recordset.length,
-            totalCount,
-            sampleRecord: result.recordset[0] || null,
-            recordFields: result.recordset.length > 0 ? Object.keys(result.recordset[0]) : []
-        });
+    Object.keys(inputs).forEach(key => {
+      request.input(key, inputs[key].type, inputs[key].value);
+    });
 
-        return { data: result.recordset, totalCount };
-    } catch (error) {
-        console.error('❌ [MDM Service] Error fetching inventory:', {
-            message: error.message,
-            stack: error.stack,
-            sqlState: error.state,
-            sqlNumber: error.number
-        });
-        throw new Error('Failed to fetch inventory data');
-    }
+    console.log('📡 [MDM Service] Executing SQL query...');
+    const result = await request.query(query);
+    const totalCount = result.recordset.length > 0 ? result.recordset[0].TotalCount : 0;
+
+    console.log('✅ [MDM Service] Query executed successfully:', {
+      recordsReturned: result.recordset.length,
+      totalCount,
+      sampleRecord: result.recordset[0] || null,
+      recordFields: result.recordset.length > 0 ? Object.keys(result.recordset[0]) : [],
+    });
+
+    return { data: result.recordset, totalCount };
+  } catch (error) {
+    console.error('❌ [MDM Service] Error fetching inventory:', {
+      message: error.message,
+      stack: error.stack,
+      sqlState: error.state,
+      sqlNumber: error.number,
+    });
+    throw new Error('Failed to fetch inventory data');
+  }
 }
 
 export {
   fetchInventoryData,
   syncInventoryToMagento,
-  syncPricesToMagento
+  syncPricesToMagento,
 };

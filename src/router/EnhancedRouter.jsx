@@ -37,6 +37,9 @@ const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 const GridTestPage = lazy(() => import('../pages/GridTestPage'));
 const DataGridsPage = lazy(() => import('../pages/DataGridsPage'));
 
+// MDM Pages
+const MDMProductsPage = lazy(() => import('../pages/MDMProductsPage'));
+
 /**
  * Enhanced Loading Fallback with route information
  */
@@ -339,6 +342,15 @@ const EnhancedRouter = () => {
                         <SettingsPage />
                       </Suspense>
                     </AdminRouteGuard>
+                  } 
+                />
+
+                <Route 
+                  path="mdm-products" 
+                  element={
+                    <Suspense fallback={<EnhancedLoadingFallback routeName="MDM Products" />}>
+                      <MDMProductsPage />
+                    </Suspense>
                   } 
                 />
 

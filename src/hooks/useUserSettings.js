@@ -9,6 +9,7 @@ import { useCustomTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { toast } from 'react-toastify';
+import { saveUserSettings } from '../utils/unifiedSettingsManager';
 
 export const useUserSettings = () => {
   const { currentUser } = useAuth();
@@ -95,17 +96,8 @@ export const useUserSettings = () => {
       await updateSettings({ preferences: currentPreferences }, 'preferences');
       await saveSettings();
       
-      // Also save to user-specific storage
-      const userSettingsKey = `userSettings_${currentUser.uid}`;
-      const existingSettings = JSON.parse(localStorage.getItem(userSettingsKey) || '{}');
-      const updatedSettings = {
-        ...existingSettings,
-        preferences: {
-          ...existingSettings.preferences,
-          ...currentPreferences
-        }
-      };
-      localStorage.setItem(userSettingsKey, JSON.stringify(updatedSettings));
+      // Save through unified settings manager
+      saveUserSettings(currentUser.uid, { preferences: currentPreferences });
       
       return { success: true };
     } catch (error) {

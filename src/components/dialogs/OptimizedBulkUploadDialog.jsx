@@ -37,8 +37,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  ToggleButton,
-  ToggleButtonGroup,
+
   Divider,
   Badge
 } from '@mui/material';
@@ -52,7 +51,6 @@ import {
   Close as CloseIcon,
   Settings as SettingsIcon,
   PhotoLibrary as MultiImageIcon,
-  Speed as SpeedIcon,
   Tune as TuneIcon,
   Info as InfoIcon,
   ExpandMore as ExpandMoreIcon,
@@ -63,16 +61,15 @@ import {
 } from '@mui/icons-material';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'react-toastify';
-import mediaUploadService, { DEFAULT_MATCHING_SETTINGS } from '../../services/mediaUploadServiceOptimized';
+import mediaUploadService, { DEFAULT_MATCHING_SETTINGS } from '../../services/mediaUploadService';
 
 /**
- * Optimized Bulk Upload Dialog
- * Unified dialog for both Basic and Professional modes
- * Advanced matching settings and real-time configuration
+ * Advanced Bulk Upload Dialog
+ * Unified advanced matching with configurable settings and intelligent CSV detection
+ * Automatically uses all available matching strategies based on CSV structure
  */
-const OptimizedBulkUploadDialog = ({ open, onClose, onComplete, initialMode = 'basic' }) => {
+const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
   const [activeStep, setActiveStep] = useState(0);
-  const [mode, setMode] = useState(initialMode);
   const [csvFile, setCsvFile] = useState(null);
   const [csvData, setCsvData] = useState(null);
   const [imageFiles, setImageFiles] = useState([]);
@@ -86,37 +83,22 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete, initialMode = 'b
   const steps = [
     'Upload CSV File',
     'Upload Images',
-    'Configure Matching',
     'Review Matches',
     'Upload Process'
   ];
 
-  // Mode descriptions for tooltips
-  const modeDescriptions = {
-    basic: {
-      title: 'Basic Upload Mode',
-      description: 'Simple SKU to image name matching. Perfect for straightforward CSV files with direct image name references.',
-      features: ['SKU + Image Name matching', 'Multiple images per SKU (_1, _2, _3)', 'Fuzzy matching for variations', 'Fast processing']
-    },
-    professional: {
-      title: 'Professional Upload Mode',
-      description: 'Advanced matching with REF column support. Ideal for complex product catalogs with reference codes.',
-      features: ['REF column matching (primary)', 'SKU + Image Name matching', 'Product name fallback', 'Advanced fuzzy algorithms', 'Multiple matching strategies']
-    }
-  };
-
-  // CSV Upload
+  // CSV Upload with unified advanced parsing
   const onCSVDrop = useCallback(async (acceptedFiles) => {
     const file = acceptedFiles[0];
     if (!file) return;
 
     setLoading(true);
     try {
-      console.log(`🧪 OPTIMIZED: Parsing CSV in ${mode} mode...`);
-      const data = await mediaUploadService.parseCSVFile(file, mode);
+      console.log('🧪 UNIFIED: Parsing CSV with advanced detection...');
+      const data = await mediaUploadService.parseCSVFile(file, 'auto');
       setCsvFile(file);
       setCsvData(data);
-      toast.success(`CSV parsed successfully: ${data.data.length} products found (${mode} mode)`);
+      toast.success(`CSV parsed successfully: ${data.data.length} products found with advanced matching`);
       setActiveStep(1);
     } catch (error) {
       console.error('❌ OPTIMIZED: CSV parsing failed:', error);
@@ -163,7 +145,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete, initialMode = 'b
       console.log('🔍 OPTIMIZED: Starting advanced matching with settings:', settings);
       const results = mediaUploadService.matchImagesWithCSV(csvData, imageFiles, settings);
       setMatchingResults(results);
-      setActiveStep(3);
+      setActiveStep(2);
       
       toast.success(`Advanced matching complete: ${results.stats.matched} matches found for ${results.stats.uniqueProducts} products`);
     } catch (error) {
@@ -181,7 +163,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete, initialMode = 'b
       return;
     }
 
-    setActiveStep(4);
+    setActiveStep(3);
     setUploadProgress({ current: 0, total: matchingResults.matches.length });
 
     try {
@@ -282,8 +264,15 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete, initialMode = 'b
         <UploadIcon />
         <Box sx={{ flexGrow: 1 }}>
           <Typography variant="h6" component="span">
-            Optimized Bulk Media Upload
+            Advanced Bulk Media Upload
           </Typography>
+          <Box sx={{ display: 'flex', gap: 1, mt: 0.5 }}>
+            <Chip 
+              label="Unified Advanced Matching" 
+              size="small" 
+              sx={{ bgcolor: 'success.main', color: 'white' }} 
+            />
+          </Box>
           <Box sx={{ display: 'flex', gap: 1, mt: 0.5 }}>
             <Chip 
               label={`${mode.charAt(0).toUpperCase() + mode.slice(1)} Mode`}
@@ -329,34 +318,11 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete, initialMode = 'b
               Matching Settings
             </Typography>
             
-            {/* Mode Selection */}
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="subtitle2" gutterBottom>Upload Mode</Typography>
-              <ToggleButtonGroup
-                value={mode}
-                exclusive
-                onChange={(e, newMode) => newMode && setMode(newMode)}
-                size="small"
-                fullWidth
-              >
-                <ToggleButton value="basic">
-                  <Tooltip title={modeDescriptions.basic.description}>
-                    <Box sx={{ textAlign: 'center' }}>
-                      <SpeedIcon fontSize="small" />
-                      <Typography variant="caption" display="block">Basic</Typography>
-                    </Box>
-                  </Tooltip>
-                </ToggleButton>
-                <ToggleButton value="professional">
-                  <Tooltip title={modeDescriptions.professional.description}>
-                    <Box sx={{ textAlign: 'center' }}>
-                      <AIIcon fontSize="small" />
-                      <Typography variant="caption" display="block">Professional</Typography>
-                    </Box>
-                  </Tooltip>
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </Box>
+            <Alert severity="info" sx={{ mb: 3 }}>
+              <Typography variant="body2">
+                <strong>Unified Advanced Matching:</strong> All strategies automatically enabled based on CSV structure
+              </Typography>
+            </Alert>
 
             {/* Matching Strategies */}
             <Accordion defaultExpanded>
@@ -424,7 +390,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete, initialMode = 'b
                       />
                     }
                     label={
-                      <Tooltip title="Match using REF column (Professional mode)">
+                      <Tooltip title="Match using REF column (auto-enabled when REF column detected)">
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                           <CompareIcon fontSize="small" />
                           <Typography variant="body2">REF Column</Typography>
@@ -696,12 +662,12 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete, initialMode = 'b
                     <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
                       <Button
                         variant="contained"
-                        onClick={() => setActiveStep(2)}
-                        disabled={!csvData || imageFiles.length === 0}
-                        startIcon={<TuneIcon />}
-                        color="primary"
+                        onClick={handleMatching}
+                        disabled={!csvData || imageFiles.length === 0 || loading}
+                        startIcon={loading ? <SuccessIcon className="spin" /> : <SearchIcon />}
+                        color="success"
                       >
-                        Configure Matching
+                        {loading ? 'Processing...' : 'Start Advanced Matching'}
                       </Button>
                       <Button
                         variant="outlined"
@@ -716,64 +682,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete, initialMode = 'b
               </StepContent>
             </Step>
 
-            {/* Step 3: Configure Matching */}
-            <Step>
-              <StepLabel>
-                <Typography variant="h6">Configure Matching</Typography>
-              </StepLabel>
-              <StepContent>
-                <Alert severity="info" sx={{ mb: 2 }}>
-                  <Typography variant="body2">
-                    Configure matching strategies and thresholds. Use the settings panel on the left for detailed configuration.
-                  </Typography>
-                </Alert>
-
-                <Grid container spacing={2} sx={{ mb: 3 }}>
-                  <Grid item xs={12} sm={6}>
-                    <Card>
-                      <CardContent>
-                        <Typography variant="h6" gutterBottom>
-                          Active Strategies
-                        </Typography>
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                          {settings.strategies.exact && <Chip label="Exact" color="primary" size="small" />}
-                          {settings.strategies.normalized && <Chip label="Normalized" color="secondary" size="small" />}
-                          {settings.strategies.fuzzy && <Chip label="Fuzzy" color="success" size="small" />}
-                          {settings.strategies.ref && mode === 'professional' && <Chip label="REF" color="warning" size="small" />}
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Card>
-                      <CardContent>
-                        <Typography variant="h6" gutterBottom>
-                          Settings Summary
-                        </Typography>
-                        <Typography variant="body2">
-                          Fuzzy Threshold: {settings.thresholds.fuzzyThreshold}<br/>
-                          Multiple Images: {settings.fileHandling.multipleImages ? 'Yes' : 'No'}<br/>
-                          Process Images: {settings.upload.processImages ? 'Yes' : 'No'}
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                </Grid>
-
-                <Button
-                  variant="contained"
-                  size="large"
-                  onClick={handleMatching}
-                  disabled={!csvData || imageFiles.length === 0 || loading}
-                  startIcon={loading ? <SuccessIcon className="spin" /> : <SearchIcon />}
-                  color="success"
-                >
-                  {loading ? 'Processing...' : 'Start Advanced Matching'}
-                </Button>
-              </StepContent>
-            </Step>
-
-            {/* Step 4: Review Matches */}
+            {/* Step 3: Review Matches */}
             <Step>
               <StepLabel>
                 <Typography variant="h6">Review Matches</Typography>
@@ -921,7 +830,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete, initialMode = 'b
               </StepContent>
             </Step>
 
-            {/* Step 5: Upload Process */}
+            {/* Step 4: Upload Process */}
             <Step>
               <StepLabel>
                 <Typography variant="h6">Upload Process</Typography>

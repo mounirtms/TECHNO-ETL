@@ -20,7 +20,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Button
+  Button,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import {
@@ -33,7 +33,7 @@ import {
   Error as ErrorIcon,
   Speed as PerformanceIcon,
   Visibility as MonitorIcon,
-  CheckCircle as CheckIcon
+  CheckCircle as CheckIcon,
 } from '@mui/icons-material';
 
 const ETLProcessDocumentation = () => {
@@ -43,13 +43,13 @@ const ETLProcessDocumentation = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
+      transition: { staggerChildren: 0.1 },
+    },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const etlSteps = [
@@ -62,7 +62,7 @@ const ETLProcessDocumentation = () => {
         'Magento API - Orders, customers, categories',
         'RFID Systems - Real-time inventory tracking',
         'POS Systems - Sales data integration',
-        'Warehouse Systems - Stock movements'
+        'Warehouse Systems - Stock movements',
       ],
       code: `// Extract product data from MDM
 export async function extractMdmProducts(filters = {}) {
@@ -78,7 +78,7 @@ export async function extractMdmProducts(filters = {}) {
   
   const result = await executeQuery(query, filters);
   return result.recordset;
-}`
+}`,
     },
     {
       label: 'Transform Phase',
@@ -89,7 +89,7 @@ export async function extractMdmProducts(filters = {}) {
         'Format Standardization',
         'Business Rule Application',
         'Conflict Resolution',
-        'Data Enrichment'
+        'Data Enrichment',
       ],
       code: `// Apply business transformation rules
 export function applyBusinessRules(product, context) {
@@ -109,7 +109,7 @@ export function applyBusinessRules(product, context) {
   }
   
   return transformedProduct;
-}`
+}`,
     },
     {
       label: 'Load Phase',
@@ -120,7 +120,7 @@ export function applyBusinessRules(product, context) {
         'Inventory Synchronization',
         'Price Updates',
         'Category Management',
-        'Audit Trail Creation'
+        'Audit Trail Creation',
       ],
       code: `// Load product data to Magento
 export async function loadProductToMagento(productData) {
@@ -143,8 +143,8 @@ export async function loadProductToMagento(productData) {
   
   const result = await magentoService.post('/products', magentoPayload);
   return result;
-}`
-    }
+}`,
+    },
   ];
 
   const syncStrategies = [
@@ -152,27 +152,27 @@ export async function loadProductToMagento(productData) {
       title: 'Real-time Synchronization',
       description: 'WebSocket-based instant data sync',
       features: ['Change Detection', 'Event Broadcasting', 'Immediate Updates'],
-      color: '#1976d2'
+      color: '#1976d2',
     },
     {
       title: 'Batch Synchronization',
       description: 'Scheduled bulk processing',
       features: ['Scheduled Jobs', 'Bulk Operations', 'Performance Optimized'],
-      color: '#388e3c'
+      color: '#388e3c',
     },
     {
       title: 'Hybrid Approach',
       description: 'Combination of real-time and batch',
       features: ['Critical Data Real-time', 'Bulk Data Batched', 'Optimized Performance'],
-      color: '#f57c00'
-    }
+      color: '#f57c00',
+    },
   ];
 
   const performanceMetrics = [
     { label: 'ETL Throughput', value: '10,000+ records/min', color: 'primary' },
     { label: 'Sync Accuracy', value: '99.9%', color: 'success' },
     { label: 'Error Rate', value: '< 0.1%', color: 'info' },
-    { label: 'Recovery Time', value: '< 30 seconds', color: 'warning' }
+    { label: 'Recovery Time', value: '< 30 seconds', color: 'warning' },
   ];
 
   const errorHandlingStrategies = [
@@ -180,26 +180,26 @@ export async function loadProductToMagento(productData) {
       type: 'Network Errors',
       strategy: 'Exponential Backoff',
       maxRetries: 5,
-      description: 'Automatic retry with increasing delays'
+      description: 'Automatic retry with increasing delays',
     },
     {
       type: 'Validation Errors',
       strategy: 'Immediate Failure',
       maxRetries: 0,
-      description: 'Log error and continue with next record'
+      description: 'Log error and continue with next record',
     },
     {
       type: 'Rate Limit Errors',
       strategy: 'Fixed Delay',
       maxRetries: 3,
-      description: 'Wait for rate limit reset'
+      description: 'Wait for rate limit reset',
     },
     {
       type: 'System Errors',
       strategy: 'Circuit Breaker',
       maxRetries: 2,
-      description: 'Temporary system shutdown protection'
-    }
+      description: 'Temporary system shutdown protection',
+    },
   ];
 
   const handleNext = () => {
@@ -244,8 +244,8 @@ export async function loadProductToMagento(productData) {
             <Typography variant="h6" gutterBottom>
               🎯 ETL Process Overview
             </Typography>
-            The TECHNO-ETL system implements a sophisticated Extract, Transform, Load (ETL) process that ensures 
-            seamless data synchronization between Master Data Management (MDM) systems and Magento e-commerce platforms 
+            The TECHNO-ETL system implements a sophisticated Extract, Transform, Load (ETL) process that ensures
+            seamless data synchronization between Master Data Management (MDM) systems and Magento e-commerce platforms
             with 99.9% accuracy and real-time performance.
           </Alert>
         </motion.div>
@@ -275,7 +275,7 @@ export async function loadProductToMagento(productData) {
                     <Typography variant="body1" sx={{ mb: 2 }}>
                       {step.description}
                     </Typography>
-                    
+
                     <Grid container spacing={3}>
                       <Grid item xs={12} md={6}>
                         <Typography variant="subtitle1" fontWeight={600} gutterBottom>
@@ -346,12 +346,12 @@ export async function loadProductToMagento(productData) {
           <Grid container spacing={3} sx={{ mb: 6 }}>
             {syncStrategies.map((strategy, index) => (
               <Grid item xs={12} md={4} key={index}>
-                <Card 
-                  sx={{ 
+                <Card
+                  sx={{
                     height: '100%',
                     borderTop: `4px solid ${strategy.color}`,
                     transition: 'transform 0.2s',
-                    '&:hover': { transform: 'translateY(-4px)' }
+                    '&:hover': { transform: 'translateY(-4px)' },
                   }}
                 >
                   <CardContent>
@@ -367,7 +367,7 @@ export async function loadProductToMagento(productData) {
                           <ListItemIcon sx={{ minWidth: 32 }}>
                             <CheckIcon color="success" fontSize="small" />
                           </ListItemIcon>
-                          <ListItemText 
+                          <ListItemText
                             primary={feature}
                             primaryTypographyProps={{ fontSize: '0.875rem' }}
                           />
@@ -415,9 +415,9 @@ export async function loadProductToMagento(productData) {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       <ErrorIcon color="error" />
                       <Typography variant="h6">{strategy.type}</Typography>
-                      <Chip 
-                        label={`Max Retries: ${strategy.maxRetries}`} 
-                        size="small" 
+                      <Chip
+                        label={`Max Retries: ${strategy.maxRetries}`}
+                        size="small"
                         color={strategy.maxRetries > 0 ? 'warning' : 'error'}
                       />
                     </Box>

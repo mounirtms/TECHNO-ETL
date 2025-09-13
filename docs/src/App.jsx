@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider, CssBaseline, AppBar, Toolbar, Box, Typography } from '@mui/material';
+import { ThemeProvider, CssBaseline, Box, Typography } from '@mui/material';
 import theme from './theme';
 import Layout from './components/Layout';
 import { SearchProvider } from './contexts/SearchContext';
@@ -30,6 +30,10 @@ import GettingStarted from './pages/documentation/GettingStarted';
 import FeaturesShowcase from './pages/documentation/FeaturesShowcase';
 import SearchResults from './pages/SearchResults';
 import SearchHelp from './pages/documentation/SearchHelp';
+import ProjectCleanup from './pages/documentation/ProjectCleanup';
+import UserSettingsGuide from './pages/documentation/UserSettingsGuide';
+import LicensePage from './pages/documentation/LicensePage';
+import CompleteProjectSummary from './pages/documentation/CompleteProjectSummary';
 
 const App = () => {
   return (
@@ -58,15 +62,21 @@ const App = () => {
               <Route path="/docs/getting-started" element={<GettingStarted />} />
               <Route path="/docs/features-showcase" element={<FeaturesShowcase />} />
               <Route path="/docs/product-management" element={<ProductManagement />} />
-              
+
               {/* Deployment Documentation */}
               <Route path="/docs/deployment-guide" element={<DeploymentGuide />} />
               <Route path="/docs/optimized-deployment" element={<OptimizedDeploymentGuide />} />
               <Route path="/docs/backend-production" element={<BackendProductionGuide />} />
-              
+
               <Route path="/docs/troubleshooting" element={<Troubleshooting />} />
               <Route path="/docs/configuration-setup" element={<ConfigurationSetup />} />
               <Route path="/docs/search-help" element={<SearchHelp />} />
+
+              {/* Project Management Documentation */}
+              <Route path="/docs/project-cleanup" element={<ProjectCleanup />} />
+              <Route path="/docs/user-settings-guide" element={<UserSettingsGuide />} />
+              <Route path="/docs/license" element={<LicensePage />} />
+              <Route path="/docs/complete-project-summary" element={<CompleteProjectSummary />} />
             </Routes>
           </Layout>
         </Router>

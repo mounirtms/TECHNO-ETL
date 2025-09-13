@@ -71,20 +71,35 @@ import {
 import { useTheme } from "@mui/material/styles";
 import { useCustomTheme } from "../../contexts/ThemeContext";
 import { useSettings } from "../../contexts/SettingsContext";
+import { useLanguage } from "../../contexts/LanguageContext";
 import BugReportForm from "./BugReportForm.jsx";
 import BugBountyAdmin from "./BugBountyAdmin.jsx";
 import bugBountyService, {
   BUG_CATEGORIES,
   BUG_STATUS,
 } from "../../services/bugBountyService.js";
+import ErrorBoundary from "../common/ErrorBoundary";
+import { LoadingSpinner } from "../common/LoadingStates";
+import { SuccessMessage, useFeedback } from "../common/FeedbackSystem";
+import { getDirectionalAnimation } from "../../utils/rtlAnimations";
 const BugBountyDashboard = () => {
   const theme = useTheme();
   const { mode, isDark, colorPreset, density, animations } = useCustomTheme();
   const { settings } = useSettings();
+  const { translate, currentLanguage, languages } = useLanguage();
+  const isRTL = languages[currentLanguage]?.dir === 'rtl';
+  
   const [reportFormOpen, setReportFormOpen] = useState(false);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
   const [adminPanelOpen, setAdminPanelOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  
+  // Enhanced feedback system
+  const { 
+    feedback, 
+    showSuccess, 
+    hideSuccess 
+  } = useFeedback();
 
   // Use standardized error handling for data fetching
   const {
@@ -163,9 +178,14 @@ const BugBountyDashboard = () => {
     (result) => {
       if (result.success) {
         refresh(); // Refresh data using standardized method
+        showSuccess(
+          translate('feedback.bugBounty.submitted'),
+          'submit',
+          translate('feedback.bugBounty.submitDetails')
+        );
       }
     },
-    [refresh]
+    [refresh, showSuccess, translate]
   );
 
   const handleRefresh = useCallback(async () => {
@@ -211,78 +231,51 @@ const BugBountyDashboard = () => {
     return icons[status] || <BugIcon />;
   }, []);
 
-  // Enhanced loading skeleton
-  const LoadingSkeleton = () => (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Box sx={{ mb: 4 }}>
-        <Skeleton variant="text" width="60%" height={60} />
-        <Skeleton variant="text" width="40%" height={30} />
-        <Skeleton
-          variant="rectangular"
-          width="100%"
-          height={60}
-          sx={{ mt: 2 }}
-        />
-      </Box>
-
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        {[1, 2, 3, 4].map((item) => (
-          <Grid item xs={12} sm={6} md={3} key={item}>
-            <Card>
-              <CardContent>
-                <Skeleton variant="circular" width={40} height={40} />
-                <Skeleton
-                  variant="text"
-                  width="80%"
-                  height={40}
-                  sx={{ mt: 1 }}
-                />
-                <Skeleton variant="text" width="60%" height={20} />
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={8}>
-          <Card>
-            <CardContent>
-              <Skeleton variant="text" width="30%" height={30} />
-              <Skeleton
-                variant="rectangular"
-                width="100%"
-                height={300}
-                sx={{ mt: 2 }}
-              />
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <Card>
-            <CardContent>
-              <Skeleton variant="text" width="40%" height={30} />
-              <Skeleton
-                variant="rectangular"
-                width="100%"
-                height={200}
-                sx={{ mt: 2 }}
-              />
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-    </Container>
-  );
-
   if (loading) {
-    return <LoadingSkeleton />;
+    return (
+      <LoadingSpinner 
+        size={60}
+        message={translate('bugBounty.loading')}
+        fullHeight={true}
+        centered={true}
+      />
+    );
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      {/* Enhanced Header */}
-      <Box sx={{ mb: 4 }}>
+    <ErrorBoundary componentName="BugBountyDashboard">
+      <Container 
+        maxWidth="lg" 
+        sx={{ 
+          mt: 4, 
+          mb: 4,
+          direction: isRTL ? 'rtl' : 'ltr',
+          ...getDirectionalAnimation('fadeIn', 'up', isRTL, {
+            duration: animations ? '0.5s' : '0s',
+            easing: 'ease-out'
+          })
+        }}
+      >
+        {/* Enhanced Success Feedback */}
+        <SuccessMessage
+          open={feedback.success.open}
+          message={feedback.success.message}
+          onClose={hideSuccess}
+          variant="filled"
+          anchorOrigin={{ 
+            vertical: 'top', 
+            horizontal: isRTL ? 'left' : 'right' 
+          }}
+        />
+
+        {/* Enhanced Header */}
+        <Box sx={{ 
+          mb: 4,
+          ...getDirectionalAnimation('slideAndFade', 'down', isRTL, {
+            duration: animations ? '0.4s' : '0s',
+            delay: '0.1s'
+          })
+        }}>
         <Box
           sx={{
             display: "flex",
@@ -908,6 +901,7 @@ const BugBountyDashboard = () => {
         onClose={() => setAdminPanelOpen(false)}
       />
     </Container>
+  </ErrorBoundary>
   );
 };
 

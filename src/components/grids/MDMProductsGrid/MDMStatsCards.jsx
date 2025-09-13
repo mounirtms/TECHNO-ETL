@@ -7,6 +7,7 @@
  */
 
 import { useMemo } from 'react';
+import { Box, Grid } from '@mui/material';
 import { StatsCards } from '../../common/StatsCards';
 import {
   Category as CategoryIcon,
@@ -44,62 +45,66 @@ const MDMStatsCards = ({ stats }) => {
     {
       title: 'Total Products',
       value: stats.total || 0,
-      icon: <CategoryIcon/>,
+      icon: CategoryIcon,
       color: 'primary',
       description: 'Total products in inventory'
     },
     {
       title: 'In Stock',
       value: stats.inStock || 0,
-      icon: <CheckCircleOutlineIcon/>,
+      icon: CheckCircleOutlineIcon,
       color: 'success',
       description: 'Products currently in stock'
     },
     {
       title: 'Out of Stock',
       value: stats.outOfStock || 0,
-      icon: <ErrorOutlineIcon/>,
+      icon: ErrorOutlineIcon,
       color: 'error',
       description: 'Products currently out of stock'
     },
     {
       title: 'Low Stock',
       value: stats.lowStock || 0,
-      icon: <ReportProblemIcon/>,
+      icon: ReportProblemIcon,
       color: 'warning',
       description: 'Products with low stock levels'
     },
     {
       title: 'New Changes',
       value: stats.newChanges || 0,
-      icon: <SyncAltIcon/>,
+      icon: SyncAltIcon,
       color: 'info',
       description: 'Recently updated products'
     },
     {
       title: 'Synced Items',
       value: stats.synced || 0,
-      icon:   <TrendingUpIcon/>,
+      icon: TrendingUpIcon,
       color: 'success',
       description: 'Successfully synced products'
     },
     {
       title: 'Avg Price',
       value: `${(stats.averagePrice || 0).toFixed(2)} DZD`,
-      icon: <AttachMoneyIcon/>,
+      icon: AttachMoneyIcon,
       color: 'secondary',
       description: 'Average product price'
     },
     {
       title: 'Total Value',
       value: `${((stats.totalValue || 0) / 1000).toFixed(1)}K DZD`,
-      icon: <AccountBalanceIcon/>,
+      icon: AccountBalanceIcon,
       color: 'primary',
       description: 'Total inventory value'
     }
   ].slice(0, 8), [stats]);
 
-  return <StatsCards cards={statusCards} />;
+  return (
+    <Box sx={{ mb: 2 }}>
+      <StatsCards cards={statusCards} />
+    </Box>
+  );
 };
 
 export default MDMStatsCards;

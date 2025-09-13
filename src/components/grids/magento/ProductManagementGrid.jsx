@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useId, useTransition, Suspense, memo } from 'react';
 import {
   Box,
   Tabs,
@@ -8,22 +8,15 @@ import {
   Alert,
   Chip,
   IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
   TextField,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
   Grid,
-  Divider,
   Card,
   CardContent,
-  CardActions,
-  Autocomplete,
+  Button,
   Stack,
   Fab,
   Popover,
@@ -31,8 +24,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  CircularProgress,
-  LinearProgress
+  CircularProgress
 } from '@mui/material';
 import {
   Inventory as ProductIcon,
@@ -51,30 +43,44 @@ import {
   Download as DownloadIcon,
   Sync as SyncIcon,
   Close as CloseIcon,
-  ViewColumn as ColumnIcon,
   CheckCircle as ActivateIcon,
   Cancel as DeactivateIcon
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
-// Components
+// Modern Base Components
+import BaseGrid from '../../base/BaseGrid';
+import BaseDialog from '../../base/BaseDialog';
+import ErrorBoundary from '../../common/ErrorBoundary';
+import { SuspenseWrapper } from '../../common/SuspenseWrapper';
+
+// Other Components
 import ProductAttributesGrid from './ProductAttributesGrid';
 import ProductCategoriesGrid from './ProductCategoriesGrid';
 import BrandManagementDialog from '../../dialogs/BrandManagementDialog';
-import UnifiedGrid from '../../common/UnifiedGrid';
 import TooltipWrapper from '../../common/TooltipWrapper';
-import { getStandardGridProps, getStandardToolbarConfig } from '../../../config/gridConfig';
 import { ColumnFactory } from '../../../utils/ColumnFactory.jsx';
 
 // Services
 import magentoApi from '../../../services/magentoApi';
 
 /**
- * ProductManagementGrid - Comprehensive Product Management
- * Combines Products, Attributes, and Categories like Magento Backend
+ * ProductManagementGrid - Modern React 18 Product Management
+ * 
+ * Features:
+ * - BaseGrid integration with React 18 patterns
+ * - Enhanced state management with useTransition
+ * - Comprehensive product, attributes, and categories management
+ * - Modern error boundaries and suspense handling
+ * - Optimized performance with memoization
+ * 
+ * @author Techno-ETL Team
+ * @version 2.0.0
  */
-const ProductManagementGrid = ({ initialProductIds = [] }) => {
-  // ===== STATE MANAGEMENT =====
+const ProductManagementGrid = memo(({ initialProductIds = [] }) => {
+  // ===== REACT 18 HOOKS =====
+  const gridId = useId();
+  const [isPending, startTransition] = useTransition();
   const [currentTab, setCurrentTab] = useState(0);
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
@@ -444,9 +450,71 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
     setStats(newStats);
   }, []);
 
-  // ===== EVENT HANDLERS =====
+  // ===== ENHANCED EVENT HANDLERS FOR BASEGRID =====
+  const handleAddProduct = useCallback(async (data) => {
+    try {
+      console.log('🆕 Adding new product:', data);
+      const newProduct = await magentoApi.createProduct(data);
+      toast.success('Product created successfully');
+      fetchProducts(); // Refresh the grid
+      return newProduct;
+    } catch (error) {
+      console.error('❌ Error creating product:', error);
+      toast.error('Failed to create product');
+      throw error;
+    }
+  }, [fetchProducts]);
+
+  const handleEditProduct = useCallback(async (data) => {
+    try {
+      console.log('✏️ Editing product:', data);
+      const updatedProduct = await magentoApi.updateProduct(data.id, data);
+      toast.success('Product updated successfully');
+      fetchProducts(); // Refresh the grid
+      return updatedProduct;
+    } catch (error) {
+      console.error('❌ Error updating product:', error);
+      toast.error('Failed to update product');
+      throw error;
+    }
+  }, [fetchProducts]);
+
+  const handleDeleteProducts = useCallback(async (productIds) => {
+    try {
+      console.log('🗑️ Deleting products:', productIds);
+      await Promise.all(
+        productIds.map(id => magentoApi.deleteProduct(id))
+      );
+      toast.success(`${productIds.length} product(s) deleted successfully`);
+      fetchProducts(); // Refresh the grid
+    } catch (error) {
+      console.error('❌ Error deleting products:', error);
+      toast.error('Failed to delete products');
+      throw error;
+    }
+  }, [fetchProducts]);
+
+  const handleSearchProducts = useCallback((query) => {
+    console.log('🔍 Searching products:', query);
+    // Search is handled by BaseGrid internally
+  }, []);
+
+  const handleSelectionChange = useCallback((selection) => {
+    startTransition(() => {
+      setSelectedProducts(selection);
+    });
+  }, []);
+
+  const handleGridError = useCallback((error) => {
+    console.error('🚨 Product Management Grid Error:', error);
+    toast.error('Error in product management grid');
+  }, []);
+
+  // ===== ADDITIONAL EVENT HANDLERS =====
   const handleTabChange = useCallback((event, newValue) => {
-    setCurrentTab(newValue);
+    startTransition(() => {
+      setCurrentTab(newValue);
+    });
   }, []);
 
   const handleViewProduct = useCallback((product) => {
@@ -455,16 +523,14 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
     setProductDetailOpen(true);
   }, []);
 
-  const handleEditProduct = useCallback((product) => {
-    console.log('✏️ Editing product:', product);
-    toast.info(`Editing product: ${product.name}`);
-  }, []);
-
-  const handleManageCategories = useCallback((product) => {
-    console.log('📂 Managing categories for product:', product);
-    setSelectedProducts([product.id]);
+  const handleManageCategories = useCallback(() => {
+    if (selectedProducts.length === 0) {
+      toast.warning('Please select products first');
+      return;
+    }
+    console.log('📂 Managing categories for products:', selectedProducts);
     setCurrentTab(2); // Switch to categories tab
-  }, []);
+  }, [selectedProducts]);
 
   // ===== FILTER HANDLERS =====
   const handleFilterChange = useCallback((filterType, value) => {
@@ -519,72 +585,140 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
   }, [filters, fetchProducts, brands.length]);
 
   // ===== RENDER TAB CONTENT =====
-  const renderTabContent = () => {
+  const renderTabContent = useCallback(() => {
     switch (currentTab) {
       case 0: // Products Overview
         return (
-          <UnifiedGrid
-            {...getStandardGridProps('products', {
-              // Data
-              data: products,
-              columns: productColumns,
-              loading,
-              
-              // Grid identification
-              gridName: 'ProductManagementGrid',
-              
-              // Configuration
-              toolbarConfig: getStandardToolbarConfig('products'),
-              
-              // Stats cards
-              showStatsCards: true,
-              gridCards: [
-                {
-                  title: 'Total Products',
-                  value: stats.total,
-                  icon: ProductIcon,
-                  color: 'primary'
-                },
-                {
-                  title: 'Active',
-                  value: stats.active,
-                  icon: SettingsIcon,
-                  color: 'success'
-                },
-                {
-                  title: 'Inactive',
-                  value: stats.inactive,
-                  icon: SettingsIcon,
-                  color: 'warning'
-                },
-                {
-                  title: 'With Categories',
-                  value: stats.withCategories,
-                  icon: CategoryIcon,
-                  color: 'info'
-                }
-              ],
-              
-              // Event handlers
-              onRefresh: fetchProducts,
-              onRowDoubleClick: (params) => handleViewProduct(params.row),
-              
-              // Row configuration
-              getRowId: (row) => row.id,
-              
-              // Selection
-              checkboxSelection: true,
-              onSelectionModelChange: (newSelection) => {
-                setSelectedProducts(newSelection);
-              },
-              
-              // Error handling
-              onError: (error) => {
-                console.error('Product Management Grid Error:', error);
-                toast.error('Error in product management grid');
-              }
-            })}
-          />
+          <ErrorBoundary>
+            <Suspense fallback={<Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}><CircularProgress /></Box>}>
+              <BaseGrid
+                gridName="ProductManagementGrid"
+                columns={productColumns}
+                data={products}
+                loading={loading}
+                
+                // API Configuration
+                apiService={magentoApi}
+                apiEndpoint="products"
+                apiParams={{}}
+                
+                // Feature Configuration
+                enableSuspense={true}
+                enableErrorBoundary={true}
+                enableVirtualization={true}
+                enableSelection={true}
+                enableSorting={true}
+                enableFiltering={true}
+                enableSearch={true}
+                enableStats={true}
+                enableActions={true}
+                
+                // Toolbar Configuration
+                toolbarConfig={{
+                  showRefresh: true,
+                  showAdd: true,
+                  showEdit: true,
+                  showDelete: true,
+                  showExport: true,
+                  showImport: true,
+                  showSearch: true,
+                  showFilters: true,
+                  compact: false
+                }}
+                
+                // Stats Configuration
+                statsConfig={{
+                  stats: [
+                    {
+                      key: 'total',
+                      title: 'Total Products',
+                      color: 'primary',
+                      icon: ProductIcon
+                    },
+                    {
+                      key: 'active',
+                      title: 'Active',
+                      color: 'success',
+                      icon: SettingsIcon
+                    },
+                    {
+                      key: 'inactive',
+                      title: 'Inactive',
+                      color: 'warning',
+                      icon: SettingsIcon
+                    },
+                    {
+                      key: 'withCategories',
+                      title: 'With Categories',
+                      color: 'info',
+                      icon: CategoryIcon
+                    }
+                  ]
+                }}
+                
+                // Dialog Configuration
+                dialogConfig={{
+                  add: {
+                    title: 'Add New Product',
+                    fields: [
+                      { key: 'sku', label: 'SKU', required: true },
+                      { key: 'name', label: 'Product Name', required: true },
+                      { key: 'price', label: 'Price', type: 'number' },
+                      { key: 'status', label: 'Status', type: 'select' }
+                    ]
+                  },
+                  edit: {
+                    title: 'Edit Product',
+                    fields: [
+                      { key: 'sku', label: 'SKU', disabled: true },
+                      { key: 'name', label: 'Product Name', required: true },
+                      { key: 'price', label: 'Price', type: 'number' },
+                      { key: 'status', label: 'Status', type: 'select' }
+                    ]
+                  },
+                  delete: {
+                    title: 'Delete Products',
+                    confirmMessage: 'Are you sure you want to delete the selected products?'
+                  }
+                }}
+                
+                // Event Handlers
+                onRefresh={fetchProducts}
+                onAdd={handleAddProduct}
+                onEdit={handleEditProduct}
+                onDelete={handleDeleteProducts}
+                onSearch={handleSearchProducts}
+                onSelectionChange={handleSelectionChange}
+                onError={handleGridError}
+                
+                // Data Configuration
+                searchFields={['name', 'sku', 'brand']}
+                getRowId={(row) => row.id}
+                
+                // Custom Actions
+                customActions={[
+                  {
+                    key: 'manage-categories',
+                    label: 'Manage Categories',
+                    icon: CategoryIcon,
+                    color: 'primary',
+                    requiresSelection: true,
+                    onClick: handleManageCategories
+                  },
+                  {
+                    key: 'manage-brands',
+                    label: 'Manage Brands',
+                    icon: BrandIcon,
+                    color: 'secondary',
+                    onClick: handleOpenBrandManagement
+                  }
+                ]}
+                
+                // Style
+                sx={{ height: '100%' }}
+              />
+            </Suspense>
+          </ErrorBoundary>
         );
 
       case 1: // Product Attributes
@@ -596,7 +730,7 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
       default:
         return null;
     }
-  };
+  }, [currentTab, productColumns, products, loading, fetchProducts, handleAddProduct, handleEditProduct, handleDeleteProducts, handleSearchProducts, handleSelectionChange, handleGridError, selectedProducts, handleManageCategories, handleOpenBrandManagement]);
 
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -799,11 +933,33 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
         {renderTabContent()}
       </Box>
 
-      {/* Product Detail Dialog */}
-      <ProductDetailDialog
+      {/* Product Detail Dialog using BaseDialog */}
+      <BaseDialog
+        type="form"
         open={productDetailOpen}
         onClose={() => setProductDetailOpen(false)}
-        product={selectedProduct}
+        title={`Product Details: ${selectedProduct?.name || ''}`}
+        maxWidth="md"
+        fields={[
+          { key: 'id', label: 'Product ID', disabled: true },
+          { key: 'sku', label: 'SKU', disabled: true },
+          { key: 'name', label: 'Product Name', disabled: true },
+          { key: 'price', label: 'Price', type: 'number', disabled: true },
+          { key: 'status', label: 'Status', disabled: true },
+          { key: 'type_id', label: 'Type', disabled: true },
+          { key: 'brand', label: 'Brand', disabled: true }
+        ]}
+        data={selectedProduct || {}}
+        config={{
+          title: `Product Details: ${selectedProduct?.name || ''}`,
+          submitLabel: 'Edit Product',
+          submitColor: 'primary'
+        }}
+        onSubmit={async (data) => {
+          // Handle edit action
+          console.log('Edit product:', data);
+          toast.info('Edit functionality to be implemented');
+        }}
       />
 
       {/* Brand Management Dialog */}
@@ -985,77 +1141,9 @@ const ProductManagementGrid = ({ initialProductIds = [] }) => {
       </Popover>
     </Box>
   );
-};
+});
 
-// ===== PRODUCT DETAIL DIALOG =====
-const ProductDetailDialog = ({ open, onClose, product }) => {
-  if (!product) return null;
-
-  return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>
-        Product Details: {product.name}
-      </DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2} sx={{ mt: 1 }}>
-          <Grid item xs={6}>
-            <TextField
-              label="Product ID"
-              value={product.id}
-              fullWidth
-              disabled
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="SKU"
-              value={product.sku}
-              fullWidth
-              disabled
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label="Product Name"
-              value={product.name}
-              fullWidth
-              disabled
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Price"
-              value={product.price || 0}
-              fullWidth
-              disabled
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Status"
-              value={product.status === 1 ? 'Active' : 'Inactive'}
-              fullWidth
-              disabled
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Type"
-              value={product.type_id || 'simple'}
-              fullWidth
-              disabled
-            />
-          </Grid>
-        </Grid>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Close</Button>
-        <Button variant="contained" onClick={onClose}>
-          Edit Product
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
+// Set display name for debugging
+ProductManagementGrid.displayName = 'ProductManagementGrid';
 
 export default ProductManagementGrid;

@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 // Removed unused toast import
 import { useOptimizedGridTheme } from '../../hooks/useOptimizedTheme';
+import { useSettings } from '../../contexts/SettingsContext';
 
 // Unified Grid Components
 import UnifiedGridToolbar from './UnifiedGridToolbar';
@@ -48,6 +49,7 @@ const UnifiedGrid = forwardRef(({
   loading = false,
   onRefresh,
   getRowId = (row) => row.id || row.entity_id,
+  density = 'standard', // Grid density prop with default value
 
   // Feature toggles
   enableCache = true,
@@ -137,6 +139,20 @@ const UnifiedGrid = forwardRef(({
 }, ref) => {
   // Optimized theme and translation hooks
   const gridTheme = useOptimizedGridTheme();
+  
+  // Settings integration
+  const { settings } = useSettings();
+  const userPreferences = settings?.preferences || {};
+  const gridSettings = settings?.gridSettings || {};
+  
+  // Apply user density preference if not explicitly set  
+  const effectiveDensity = (density !== undefined ? density : userPreferences.density) || 'standard';
+  
+  // Apply user page size preference if not explicitly set
+  const effectivePageSize = defaultPageSize || 
+                           gridSettings.defaultPageSize || 
+                           userPreferences.defaultPageSize || 
+                           25;
 
   // Stable translation function that doesn't change on every render
   const safeTranslate = useCallback((key, fallback = key) => {
@@ -148,7 +164,18 @@ const UnifiedGrid = forwardRef(({
     }
   }, [enableI18n]);
 
-  // Grid state management
+  // Grid state management with settings integration
+  const gridState = useGridState(gridName, {
+    enablePersistence: true,
+    initialState: {
+      paginationModel: { page: 0, pageSize: effectivePageSize },
+      selectedRows: [],
+      columnVisibility: {},
+      density: effectiveDensity
+    }
+  });
+
+  // Destructure grid state after initialization
   const {
     paginationModel,
     setPaginationModel,
@@ -160,7 +187,7 @@ const UnifiedGrid = forwardRef(({
     setSelectedRows,
     columnVisibility,
     setColumnVisibility,
-    density,
+    density: gridStateDensity,
     setDensity,
     columnOrder,
     setColumnOrder,
@@ -169,15 +196,10 @@ const UnifiedGrid = forwardRef(({
     exportState,
     importState,
     resetState
-  } = useGridState(gridName, {
-    enablePersistence: true,
-    initialState: {
-      paginationModel: { page: 0, pageSize: defaultPageSize },
-      selectedRows: [],
-      columnVisibility: {},
-      density: 'standard'
-    }
-  });
+  } = gridState;
+
+  // Use the grid state density or fallback to effective density
+  const finalDensity = gridStateDensity || effectiveDensity;
 
   // Cache management
   const {
@@ -441,7 +463,7 @@ const UnifiedGrid = forwardRef(({
         filtersVisible={filtersVisible}
         columnVisibility={columnVisibility}
         onColumnVisibilityChange={setColumnVisibility}
-        density={density}
+        density={finalDensity}
         onDensityChange={setDensity}
         enableI18n={enableI18n}
         isRTL={enableRTL}
@@ -563,7 +585,7 @@ const UnifiedGrid = forwardRef(({
               onPinnedColumnsChange={setPinnedColumns}
 
               // Density
-              density={density}
+              density={finalDensity}
 
               // Features
               disableColumnReorder={!enableColumnReordering}
