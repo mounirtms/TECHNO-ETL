@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import {
     Drawer,
     Box,
+    Typography,
     useTheme,
     alpha,
     Backdrop,
@@ -9,14 +10,24 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
+<<<<<<< HEAD
 // Enhanced imports
 import { useTab } from '../../contexts/TabContext';
 import { useLanguage } from '../../contexts/LanguageContext';
+=======
+import { DRAWER_WIDTH, COLLAPSED_WIDTH } from './Constants';
+import { useTab, TAB_TO_URL_MAP } from '../../contexts/TabContext';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { usePermissions } from '../../contexts/PermissionContext';
+import technoIcon from '../../assets/images/techno.png';
+import logoTechno from '../../assets/images/logo_techno.png';
+>>>>>>> c6441e2e3dfc49039556dc9f20f39448ef505c7e
 import { useAuth } from '../../contexts/AuthContext';
 import { useRTL } from '../../contexts/RTLContext';
 import useLayoutResponsive from '../../hooks/useLayoutResponsive';
 import TreeMenuNavigation from './TreeMenuNavigation';
 
+<<<<<<< HEAD
 // Assets
 import technoIcon from '../../assets/images/techno.png';
 import logoTechno from '../../assets/images/logo_techno.png';
@@ -27,17 +38,30 @@ const ResponsiveDrawer = styled(Drawer, {
     shouldForwardProp: (prop) => !['sidebarWidth', 'isRTL', 'isCollapsed', 'isTemporary'].includes(prop)
 })(({ theme, sidebarWidth, isRTL, isCollapsed, isTemporary }) => ({
     width: sidebarWidth,
+=======
+
+const StyledDrawer = styled(Drawer)(({ theme, open, isRTL }) => ({
+    width: open ? DRAWER_WIDTH : COLLAPSED_WIDTH,
+>>>>>>> c6441e2e3dfc49039556dc9f20f39448ef505c7e
     flexShrink: 0,
     whiteSpace: 'nowrap',
     boxSizing: 'border-box',
     
     '& .MuiDrawer-paper': {
+<<<<<<< HEAD
         width: sidebarWidth,
         position: 'fixed',
         top: 0,
         bottom: 0,
         [isRTL ? 'right' : 'left']: 0,
         height: '100vh',
+=======
+        width: open ? DRAWER_WIDTH : COLLAPSED_WIDTH,
+        transition: theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+>>>>>>> c6441e2e3dfc49039556dc9f20f39448ef505c7e
         overflowX: 'hidden',
         overflowY: 'auto',
         zIndex: theme.zIndex.drawer,
@@ -118,6 +142,7 @@ const LogoContainer = styled(Box, {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+<<<<<<< HEAD
     padding: theme.spacing(isCollapsed ? 1 : 2),
     borderBottom: `1px solid ${alpha(theme.palette.divider, 0.12)}`,
     position: 'relative',
@@ -134,6 +159,14 @@ const LogoContainer = styled(Box, {
     transition: theme.transitions.create(['padding', 'background-color'], {
         duration: theme.transitions.duration.short
     })
+=======
+    padding: theme.spacing(2),
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    transition: theme.transitions.create('opacity', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+    }),
+>>>>>>> c6441e2e3dfc49039556dc9f20f39448ef505c7e
 }));
 
 const LogoImage = styled('img')(({ theme }) => ({
@@ -178,9 +211,9 @@ const MobileBackdrop = styled(Backdrop)(({ theme }) => ({
  */
 const Sidebar = () => {
     const theme = useTheme();
-    const { activeTab, openTab } = useTab();
     const { translate } = useLanguage();
     const { currentUser } = useAuth();
+<<<<<<< HEAD
     const { isRTL, rtlUtils } = useRTL();
     
     const {
@@ -267,6 +300,88 @@ const Sidebar = () => {
                 </NavigationContainer>
             </ResponsiveDrawer>
         </>
+=======
+    const { initialized: permissionsInitialized, loading: permissionsLoading } = usePermissions();
+    
+    // Safely use the tab context with error handling
+    let tabContext;
+    try {
+        tabContext = useTab();
+    } catch (error) {
+        // If useTab fails (outside of TabProvider), create a fallback context
+        tabContext = { activeTab: null, openTab: () => {} };
+    }
+    
+    const { activeTab, openTab } = tabContext;
+
+    const handleTabClick = (tabId, tabTitle) => {
+        try {
+            openTab(tabId, tabTitle);
+        } catch (error) {
+            // Fallback navigation if tab context is not available
+            const tabUrl = TAB_TO_URL_MAP[tabId];
+            if (tabUrl) {
+                window.location.href = tabUrl;
+            }
+        }
+    };
+
+    return (
+        <StyledDrawer
+            variant="permanent"
+            open={open}
+            sx={{
+                ...(isRTL && {
+                    '& .MuiDrawer-paper': {
+                        right: 0,
+                        borderRight: 'none',
+                        borderLeft: `1px solid ${theme.palette.divider}`,
+                        boxShadow: '-4px 0 20px rgba(0,0,0,0.08)',
+                    }
+                })
+            }}
+        >
+            <LogoContainer open={open} sx={{ opacity: open ? 1 : 0 }}>
+                <Box
+                    component="img"
+                    src={open ? logoTechno : technoIcon}
+                    alt="Logo"
+                    sx={{
+                        height: 'auto',
+                        width: '100%',
+                        maxWidth: open ? '120px' : '32px',
+                        transition: theme.transitions.create('all', {
+                            easing: theme.transitions.easing.sharp,
+                            duration: theme.transitions.duration.enteringScreen,
+                        }),
+                    }}
+                />
+            </LogoContainer>
+            {/* Tree Menu Navigation */}
+            {permissionsInitialized && !permissionsLoading ? (
+                <TreeMenuNavigation
+                    open={open}
+                    isRTL={isRTL}
+                    activeTab={activeTab}
+                    onTabClick={handleTabClick}
+                    currentUser={currentUser}
+                    translate={translate}
+                />
+            ) : (
+                <Box 
+                    sx={{ 
+                        display: 'flex', 
+                        justifyContent: 'center', 
+                        alignItems: 'center', 
+                        height: '200px',
+                        color: 'text.secondary'
+                    }}
+                >
+                    <Typography variant="body2">Loading menu...</Typography>
+                </Box>
+            )}
+        </StyledDrawer>
+>>>>>>> c6441e2e3dfc49039556dc9f20f39448ef505c7e
     );
 };
 
