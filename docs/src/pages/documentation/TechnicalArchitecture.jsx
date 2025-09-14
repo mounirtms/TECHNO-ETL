@@ -16,7 +16,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Chip,
-  Alert
+  Alert,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import {
@@ -26,7 +26,7 @@ import {
   Storage as StorageIcon,
   Security as SecurityIcon,
   Speed as SpeedIcon,
-  Cloud as CloudIcon
+  Cloud as CloudIcon,
 } from '@mui/icons-material';
 
 const TechnicalArchitecture = () => {
@@ -40,13 +40,13 @@ const TechnicalArchitecture = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
+      transition: { staggerChildren: 0.1 },
+    },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const architectureLayers = [
@@ -57,9 +57,9 @@ const TechnicalArchitecture = () => {
         'Components Layer - Reusable UI components',
         'Context Layer - State management with React Context',
         'Services Layer - API communication services',
-        'Utils Layer - Helper functions and utilities'
+        'Utils Layer - Helper functions and utilities',
       ],
-      color: '#1976d2'
+      color: '#1976d2',
     },
     {
       title: 'Backend Layer (Node.js + Express)',
@@ -68,9 +68,9 @@ const TechnicalArchitecture = () => {
         'Controllers Layer - Request handling and routing',
         'Services Layer - Business logic implementation',
         'Middleware Layer - Cross-cutting concerns',
-        'Data Access Layer - Database operations'
+        'Data Access Layer - Database operations',
       ],
-      color: '#388e3c'
+      color: '#388e3c',
     },
     {
       title: 'Data Layer',
@@ -79,9 +79,9 @@ const TechnicalArchitecture = () => {
         'SQL Server - MDM and transactional data',
         'Firebase - Authentication and real-time features',
         'Redis - Caching and session storage',
-        'File System - Logs and static assets'
+        'File System - Logs and static assets',
       ],
-      color: '#f57c00'
+      color: '#f57c00',
     },
     {
       title: 'External Integrations',
@@ -90,10 +90,10 @@ const TechnicalArchitecture = () => {
         'Magento 2.4+ - E-commerce platform',
         'RFID Systems - Inventory tracking',
         'POS Systems - Point of sale integration',
-        'Warehouse Management - Inventory systems'
+        'Warehouse Management - Inventory systems',
       ],
-      color: '#7b1fa2'
-    }
+      color: '#7b1fa2',
+    },
   ];
 
   const frontendStructure = {
@@ -104,8 +104,8 @@ const TechnicalArchitecture = () => {
         'grids/ - Professional grid system components',
         'dashboard/ - Dashboard-specific components',
         'Layout/ - Application layout components',
-        'UserProfile/ - User management components'
-      ]
+        'UserProfile/ - User management components',
+      ],
     },
     'src/contexts/': {
       description: 'React Context providers',
@@ -113,8 +113,8 @@ const TechnicalArchitecture = () => {
         'AuthContext.jsx - Authentication management',
         'ThemeContext.jsx - UI theme management',
         'LanguageContext.jsx - Internationalization',
-        'SettingsContext.jsx - Unified settings management'
-      ]
+        'SettingsContext.jsx - Unified settings management',
+      ],
     },
     'src/services/': {
       description: 'API and business logic',
@@ -122,17 +122,17 @@ const TechnicalArchitecture = () => {
         'magentoService.js - Magento API integration',
         'mdmService.js - MDM system integration',
         'unifiedSettingsService.js - Settings management',
-        'authService.js - Authentication services'
-      ]
+        'authService.js - Authentication services',
+      ],
     },
     'src/hooks/': {
       description: 'Custom React hooks',
       items: [
         'useStandardErrorHandling.js - Error management',
         'useGridState.js - Grid state management',
-        'useAuth.js - Authentication hooks'
-      ]
-    }
+        'useAuth.js - Authentication hooks',
+      ],
+    },
   };
 
   const backendStructure = {
@@ -142,8 +142,8 @@ const TechnicalArchitecture = () => {
         'mdmController.js - MDM operations',
         'magentoController.js - Magento operations',
         'syncController.js - Sync operations',
-        'authController.js - Authentication handling'
-      ]
+        'authController.js - Authentication handling',
+      ],
     },
     'backend/src/services/': {
       description: 'Business logic layer',
@@ -151,8 +151,8 @@ const TechnicalArchitecture = () => {
         'syncService.js - ETL orchestration',
         'magentoService.js - Magento business logic',
         'mdmDataService.js - MDM business logic',
-        'cacheService.js - Caching strategies'
-      ]
+        'cacheService.js - Caching strategies',
+      ],
     },
     'backend/src/middleware/': {
       description: 'Cross-cutting concerns',
@@ -160,9 +160,9 @@ const TechnicalArchitecture = () => {
         'auth.js - Authentication middleware',
         'validation.js - Request validation',
         'errorHandler.js - Error handling',
-        'logging.js - Request logging'
-      ]
-    }
+        'logging.js - Request logging',
+      ],
+    },
   };
 
   const securityLayers = [
@@ -171,7 +171,7 @@ const TechnicalArchitecture = () => {
     'Role-Based Access Control (Authorization)',
     'API Rate Limiting (DDoS Protection)',
     'Input Validation (Data Security)',
-    'HTTPS Encryption (Transport Security)'
+    'HTTPS Encryption (Transport Security)',
   ];
 
   const performanceOptimizations = [
@@ -182,8 +182,8 @@ const TechnicalArchitecture = () => {
         'CDN Cache - Global Distribution',
         'Redis Cache - API Responses (5 minutes)',
         'Application Cache - In-Memory',
-        'Database Cache - Query Results'
-      ]
+        'Database Cache - Query Results',
+      ],
     },
     {
       category: 'Database Optimization',
@@ -191,8 +191,8 @@ const TechnicalArchitecture = () => {
         'Connection Pooling (Max: 20, Min: 5)',
         'Query Optimization with Indexes',
         'Read Replicas for Scaling',
-        'Partitioned Tables for Large Datasets'
-      ]
+        'Partitioned Tables for Large Datasets',
+      ],
     },
     {
       category: 'Frontend Optimization',
@@ -200,9 +200,9 @@ const TechnicalArchitecture = () => {
         'Code Splitting with React.lazy()',
         'Component Memoization',
         'Virtual Scrolling for Large Lists',
-        'Image Optimization and Lazy Loading'
-      ]
-    }
+        'Image Optimization and Lazy Loading',
+      ],
+    },
   ];
 
   const TabPanel = ({ children, value, index, ...other }) => (
@@ -260,12 +260,12 @@ const TechnicalArchitecture = () => {
           <Grid container spacing={3} sx={{ mb: 6 }}>
             {architectureLayers.map((layer, index) => (
               <Grid item xs={12} md={6} key={index}>
-                <Card 
-                  sx={{ 
+                <Card
+                  sx={{
                     height: '100%',
                     borderLeft: `4px solid ${layer.color}`,
                     transition: 'transform 0.2s',
-                    '&:hover': { transform: 'translateY(-2px)' }
+                    '&:hover': { transform: 'translateY(-2px)' },
                   }}
                 >
                   <CardContent>
@@ -278,7 +278,7 @@ const TechnicalArchitecture = () => {
                     <List dense>
                       {layer.components.map((component, idx) => (
                         <ListItem key={idx} sx={{ py: 0.25 }}>
-                          <ListItemText 
+                          <ListItemText
                             primary={component}
                             primaryTypographyProps={{ fontSize: '0.875rem' }}
                           />
@@ -298,8 +298,8 @@ const TechnicalArchitecture = () => {
             🔍 Detailed Architecture
           </Typography>
           <Paper sx={{ mb: 6 }}>
-            <Tabs 
-              value={tabValue} 
+            <Tabs
+              value={tabValue}
               onChange={handleTabChange}
               variant="scrollable"
               scrollButtons="auto"
@@ -365,7 +365,7 @@ const TechnicalArchitecture = () => {
               <List>
                 {securityLayers.map((layer, idx) => (
                   <ListItem key={idx}>
-                    <ListItemText 
+                    <ListItemText
                       primary={layer}
                       primaryTypographyProps={{ fontWeight: 500 }}
                     />
@@ -387,7 +387,7 @@ const TechnicalArchitecture = () => {
                         <List dense>
                           {category.items.map((item, itemIdx) => (
                             <ListItem key={itemIdx} sx={{ py: 0.25 }}>
-                              <ListItemText 
+                              <ListItemText
                                 primary={item}
                                 primaryTypographyProps={{ fontSize: '0.875rem' }}
                               />

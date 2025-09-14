@@ -325,28 +325,6 @@ export const MENU_TREE = [
         ]
     },
 
-    // === USER MANAGEMENT ===
-    {
-        id: 'user',
-        label: 'User',
-        labelKey: 'navigation.user',
-        icon: PersonIcon,
-        licensed: false, // Always accessible
-        expanded: false,
-        children: [
-            {
-                id: 'UserProfile',
-                label: 'User Profile',
-                labelKey: 'navigation.userProfile',
-                icon: AccountCircleIcon,
-                path: '/profile',
-                hidden: false,
-                licensed: false, // Always accessible
-                category: 'user'
-            }
-        ]
-    },
-
     // === SYSTEM MANAGEMENT ===
     {
         id: 'system',

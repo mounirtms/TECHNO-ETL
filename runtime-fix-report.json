@@ -1,0 +1,52 @@
+{
+  "timestamp": "2025-09-14T09:48:10.288Z",
+  "fixes": [
+    {
+      "type": "context_imports",
+      "status": "fixed",
+      "files": [
+        "AuthContext.jsx",
+        "PermissionContext.jsx",
+        "LanguageContext.jsx",
+        "RTLContext.jsx",
+        "ThemeContext.jsx",
+        "SettingsContext.jsx",
+        "TabContext.jsx"
+      ]
+    },
+    {
+      "type": "missing_components",
+      "status": "checked",
+      "components": [
+        "components/common/TooltipWrapper.jsx",
+        "components/dialogs/SettingsConflictDialog.jsx",
+        "components/Layout/Header.jsx",
+        "components/Layout/Sidebar.jsx",
+        "components/Layout/TabPanel.jsx"
+      ]
+    },
+    {
+      "type": "service_imports",
+      "status": "fixed",
+      "services": [
+        "services/PermissionService.js",
+        "services/LicenseManager.js"
+      ]
+    },
+    {
+      "type": "cleanup_imports",
+      "status": "skipped",
+      "reason": "Requires AST parsing"
+    },
+    {
+      "type": "route_validation",
+      "status": "validated"
+    }
+  ],
+  "errors": [],
+  "summary": {
+    "totalFixes": 5,
+    "errorsEncountered": 0,
+    "status": "SUCCESS"
+  }
+}

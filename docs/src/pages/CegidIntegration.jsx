@@ -9,17 +9,17 @@ const CegidIntegration = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
-      y: 0
-    }
+      y: 0,
+    },
   };
 
   return (
@@ -46,7 +46,7 @@ const CegidIntegration = () => {
               Overview
             </Typography>
             <Typography paragraph>
-              The CEGID integration enables seamless data exchange between CEGID Business Retail and your enterprise systems. 
+              The CEGID integration enables seamless data exchange between CEGID Business Retail and your enterprise systems.
               This integration focuses on synchronizing retail operations, inventory management, and financial data.
             </Typography>
           </Paper>

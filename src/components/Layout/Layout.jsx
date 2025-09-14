@@ -1,135 +1,268 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useEffect, memo } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { Box, useTheme } from '@mui/material';
+import { Box, useTheme, alpha, Fade, Container, Typography } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+// Enhanced imports
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
 import TabPanel from './TabPanel';
 import { TabProvider } from '../../contexts/TabContext';
-import { HEADER_HEIGHT, DRAWER_WIDTH, COLLAPSED_WIDTH, FOOTER_HEIGHT } from './Constants';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { useRTL } from '../../contexts/RTLContext';
+import useLayoutResponsive from '../../hooks/useLayoutResponsive';
+import useViewportHeight from '../../hooks/useViewportHeight';
+import { defaultScrollbarStyles } from '../../styles/customScrollbars';
+import { TAB_ROUTES as CONFIG_TAB_ROUTES } from '../../router/RouteConfig'; // Import from centralized config
 
-// Dynamically render TabPanel or Outlet based on route
-const tabRoutes = [
-  '/dashboard', '/charts', '/products', '/voting', '/inventory', '/orders', '/customers', 
-  '/products-catalog', '/reports', '/settings', '/bug-bounty', '/profile', '/products/', 
-  '/products/category/', '/mdmproducts', '/cegid-products', '/categories', '/stocks', 
-  '/sources', '/cms-pages', '/grid-test', '/license-management', '/license', '/analytics/',
-  '/locker/'
-];
+// ===== CONSTANTS =====
 
-function DynamicMainContent() {
+// Use the centralized TAB_ROUTES configuration
+const TAB_ROUTES = CONFIG_TAB_ROUTES;
+
+// ===== STYLED COMPONENTS =====
+
+const LayoutContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  minHeight: '100vh',
+  overflow: 'hidden',
+  position: 'relative',
+  
+  // CSS custom properties for dynamic layout
+  '--header-height': 'var(--header-height, 64px)',
+  '--footer-height': 'var(--footer-height, 48px)',
+  '--sidebar-width': 'var(--sidebar-width, 280px)',
+  '--content-height': 'var(--content-height, calc(100vh - 112px))',
+  
+  // Performance optimization
+  willChange: 'transform',
+  backfaceVisibility: 'hidden',
+  
+  // Enhanced responsive behavior
+  '& *': {
+    boxSizing: 'border-box'
+  }
+}));
+
+const MainContainer = styled(Box, {
+  shouldForwardProp: (prop) => !['sidebarWidth', 'isRTL', 'isTemporary'].includes(prop)
+})(({ theme, sidebarWidth, isRTL, isTemporary }) => ({
+  display: 'flex',
+  flex: 1,
+  position: 'relative',
+  overflow: 'hidden',
+  
+  // Dynamic spacing based on header
+  paddingTop: 'var(--header-height)',
+  paddingBottom: 'var(--footer-height)',
+  
+  // Smooth transitions
+  transition: theme.transitions.create(['padding'], {
+    easing: theme.transitions.easing.easeInOut,
+    duration: theme.transitions.duration.standard
+  }),
+  
+  // Enhanced responsive behavior
+  [theme.breakpoints.down('md')]: {
+    flexDirection: 'column'
+  }
+}));
+
+const ContentArea = styled(Box, {
+  shouldForwardProp: (prop) => !['sidebarWidth', 'isRTL', 'isTemporary', 'hasBackground'].includes(prop)
+})(({ theme, sidebarWidth, isRTL, isTemporary, hasBackground }) => ({
+  position: 'relative',
+  overflow: 'hidden',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  
+  // Simplified dynamic margins
+  [isRTL ? 'marginRight' : 'marginLeft']: isTemporary ? 0 : sidebarWidth,
+  
+  // Perfect height calculation - between header and footer
+  height: 'calc(100vh - var(--header-height) - var(--footer-height))',
+  
+  // Smooth transitions
+  transition: theme.transitions.create(['margin-left', 'margin-right'], {
+    easing: theme.transitions.easing.easeInOut,
+    duration: theme.transitions.duration.standard
+  }),
+  
+  // Optional background enhancement
+  ...(hasBackground && {
+    backgroundColor: alpha(theme.palette.background.default, 0.95),
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)'
+  }),
+  
+  // Enhanced responsive behavior
+  [theme.breakpoints.down('md')]: {
+    marginLeft: 0,
+    marginRight: 0,
+    height: 'auto',
+    minHeight: 'calc(100vh - var(--header-height) - var(--footer-height))'
+  }
+}));
+
+const ContentWrapper = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  height: '100%',
+  overflow: 'hidden' // No scrollbar on wrapper - tabs handle their own scrolling
+}));
+
+// ===== COMPONENTS =====
+
+/**
+ * Optimized Main Content Component
+ * Simplified routing with perfect centering
+ */
+const DynamicMainContent = memo(() => {
+  const location = useLocation();
+  const { layoutPreferences } = useLayoutResponsive();
+
+  // Optimized route checking with memoization and early returns
+  const isTabRoute = useMemo(() => {
+    // Early return if tabs are disabled
+    if (!layoutPreferences?.showTabs) return false;
+    
+    // Use the centralized TAB_ROUTES for consistent behavior
+    // Also include profile and settings routes
+    const allTabRoutes = [...CONFIG_TAB_ROUTES, '/profile', '/settings'];
+    return allTabRoutes.some(route => {
+      return location.pathname === route || location.pathname.startsWith(route + '/');
+    });
+  }, [location.pathname, layoutPreferences?.showTabs]);
+
+  // Show TabPanel for tab routes or when on dashboard
+  const shouldShowTabPanel = useMemo(() => {
+    return isTabRoute || location.pathname === '/dashboard';
+  }, [isTabRoute, location.pathname]);
+
+  // Simplified content container with perfect centering
+  return (
+    <Box sx={{ 
+      height: '100%', 
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden'
+    }}>
+      {shouldShowTabPanel ? <TabPanel /> : <Outlet />}
+    </Box>
+  );
+});
+
+DynamicMainContent.displayName = 'DynamicMainContent';
+
+/**
+ * Optimized Layout Component
+ * 
+ * Enhanced Features:
+ * - Perfect responsive layout with sidebar integration
+ * - RTL support with proper positioning
+ * - Smooth animations and transitions
+ * - Smart height management with CSS variables
+ * - Performance optimizations and memoization
+ * - Clean, maintainable code structure
+ */
+const Layout = memo(() => {
+  const { currentLanguage, languages } = useLanguage();
+  const { isRTL } = useRTL();
   const location = useLocation();
   
-  // More robust check for tab routes
-  const isTabRoute = useMemo(() => {
-    return tabRoutes.some(route => {
-      // Handle exact matches
-      if (route === location.pathname) return true;
-      
-      // Handle prefix matches for routes with trailing slashes or parameters
-      if (route.endsWith('/')) {
-        return location.pathname.startsWith(route);
-      }
-      
-      // Handle routes with parameters (ending with :)
-      if (route.endsWith(':')) {
-        const prefix = route.slice(0, -1);
-        return location.pathname.startsWith(prefix);
-      }
-      
-      return false;
+  const {
+    sidebarState,
+    dimensions,
+    layoutPreferences,
+    cssVariables
+  } = useLayoutResponsive();
+
+  const {
+    isReady: heightsReady
+  } = useViewportHeight({
+    includeHeader: true,
+    includeFooter: layoutPreferences.showFooter,
+    includeTabs: layoutPreferences.showTabs,
+    updateCSSVars: true
+  });
+
+  // RTL language detection (simplified)
+  const effectiveRTL = isRTL || (languages[currentLanguage]?.dir === 'rtl');
+
+  // Background effect determination (optimized)
+  const hasBackground = useMemo(() => {
+    const authPaths = ['/login', '/auth', '/error'];
+    return !authPaths.some(path => location.pathname.includes(path));
+  }, [location.pathname]);
+
+  // Determine if we should show tabs based on current route
+  const shouldShowTabs = useMemo(() => {
+    // Always show tabs for dashboard
+    if (location.pathname === '/dashboard') return true;
+    
+    // Show tabs for all configured tab routes
+    return CONFIG_TAB_ROUTES.some(route => {
+      return location.pathname === route || location.pathname.startsWith(route + '/');
     });
   }, [location.pathname]);
 
-  if (isTabRoute) {
-    return <TabPanel />;
-  }
-  
-  return <Outlet />;
-}
+  // Apply CSS variables for dynamic styling
+  useEffect(() => {
+    if (heightsReady) {
+      const root = document.documentElement;
+      Object.entries(cssVariables).forEach(([key, value]) => {
+        root.style.setProperty(key, value);
+      });
+    }
+  }, [cssVariables, heightsReady]);
 
-const LayoutContent = () => {
-  const theme = useTheme();
-  const isRTL = theme.direction === 'rtl';
-  
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  const handleDrawerToggle = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
+  // Memoized content to prevent unnecessary re-renders
+  const memoizedContent = useMemo(() => (
+    <DynamicMainContent />
+  ), [location.pathname, layoutPreferences.showTabs, shouldShowTabs]);
 
   return (
-    <TabProvider sidebarOpen={sidebarOpen}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <Header 
-          sidebarOpen={sidebarOpen} 
-          handleDrawerToggle={handleDrawerToggle} 
-        />
+    <TabProvider>
+      <LayoutContainer>
+        {/* Header */}
+        <Header />
         
-        <Box sx={{ display: 'flex', flex: 1 }}>
-          <Sidebar 
-            open={sidebarOpen} 
-            toggleDrawer={handleDrawerToggle} 
-            isRTL={isRTL}
-          />
+        {/* Main Content Area */}
+        <MainContainer
+          sidebarWidth={dimensions.sidebar.width}
+          isRTL={effectiveRTL}
+          isTemporary={sidebarState.isTemporary}
+        >
+          {/* Sidebar */}
+          <Sidebar />
           
-          <Box
+          {/* Content Area */}
+          <ContentArea
             component="main"
-            sx={{
-              flexGrow: 1,
-              minHeight: `calc(100vh - ${HEADER_HEIGHT}px - ${FOOTER_HEIGHT}px)`,
-              height: `calc(100vh - ${HEADER_HEIGHT}px - ${FOOTER_HEIGHT}px)`,
-              transition: theme.transitions.create(['width', 'margin'], {
-                easing: theme.transitions.easing.sharp,
-                duration: sidebarOpen ? theme.transitions.duration.enteringScreen : theme.transitions.duration.leavingScreen,
-              }),
-              ...(isRTL ? {
-                marginRight: {
-                  xs: 0,
-                  sm: sidebarOpen ? `${DRAWER_WIDTH}px` : `${COLLAPSED_WIDTH}px`
-                }
-              } : {
-                marginLeft: {
-                  xs: 0,
-                  sm: sidebarOpen ? `${DRAWER_WIDTH}px` : `${COLLAPSED_WIDTH}px`
-                }
-              }),
-              padding: {
-                xs: theme.spacing(0.5),
-                sm: theme.spacing(1),
-                md: theme.spacing(1.5)
-              },
-              background: `linear-gradient(135deg, ${theme.palette.background.default} 0%, ${theme.palette.grey[50]} 100%)`,
-              position: 'relative',
-              '&::before': {
-                content: '""',
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.08) 0%, transparent 50%)',
-                pointerEvents: 'none'
-              },
-              [theme.breakpoints.down('sm')]: {
-                minHeight: `calc(100vh - 56px - ${FOOTER_HEIGHT}px)`,
-              },
-              [theme.breakpoints.up('sm')]: {
-                minHeight: `calc(100vh - 64px - ${FOOTER_HEIGHT}px)`,
-              }
-            }}
+            sidebarWidth={dimensions.sidebar.width}
+            isRTL={effectiveRTL}
+            isTemporary={sidebarState.isTemporary}
+            hasBackground={hasBackground}
+            role="main"
+            aria-label="Main content area"
           >
-            <DynamicMainContent />
-          </Box>
-        </Box>
-        <Footer sidebarOpen={sidebarOpen} />
-      </Box>
+            <ContentWrapper>
+              {memoizedContent}
+            </ContentWrapper>
+          </ContentArea>
+        </MainContainer>
+        
+        {/* Footer */}
+        <Footer />
+      </LayoutContainer>
     </TabProvider>
   );
-};
+});
 
-const Layout = () => {
-  return <LayoutContent />;
-};
+Layout.displayName = 'Layout';
 
 export default Layout;

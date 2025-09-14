@@ -1,186 +1,189 @@
 /**
- * BaseGrid - Modern React 18 Base Grid Component
- * 
- * Features:
- * - React 18 Suspense integration
- * - Error Boundaries for robust error handling
- * - useId for unique identifiers
- * - useDeferredValue for search optimization
- * - useTransition for non-blocking updates
- * - Modern state management patterns
- * - Built-in CRUD operations
- * - Comprehensive memoization
- * 
- * @author Techno-ETL Team
- * @version 2.0.0
+ * BaseGrid - Enhanced Grid Component Foundation
+ * Combines the best features from UnifiedGrid and BaseGrid with DRY optimization
+ * Features: Advanced state management, performance optimization, standardized patterns
  */
 
-import React, { 
-  useState, 
-  useCallback, 
-  useMemo, 
-  useEffect, 
-  useId,
-  useDeferredValue,
-  useTransition,
-  Suspense,
-  memo,
-  forwardRef,
-  useImperativeHandle
-} from 'react';
-import { 
-  Box, 
-  Paper, 
-  Skeleton, 
+import React, { useState, useCallback, useMemo, useEffect, useRef, forwardRef, useImperativeHandle, memo } from 'react';
+import {
+  Box,
+  Paper,
+  Typography,
   Alert,
+  Skeleton,
   Fade,
-  CircularProgress,
-  Typography
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { toast } from 'react-toastify';
+import PropTypes from 'prop-types';
 
-// Error Boundary for component-level error handling
-import { ErrorBoundary } from 'react-error-boundary';
+// Enhanced components
+import BaseToolbar from './BaseToolbar';
+import BaseCard from './BaseCard';
+import BaseDialog from './BaseDialog';
+import TooltipWrapper from '../common/TooltipWrapper';
+import GridContextMenu from '../grids/GridContextMenu';
+import FloatingActionButtons from '../grids/FloatingActionButtons';
+import GridCardView from '../common/GridCardView';
+import RecordDetailsDialog from '../common/RecordDetailsDialog';
 
-// Modern hooks and utilities
+// Hooks and utilities
+import { useGridCache } from '../../hooks/useGridCache';
+import { useGridState } from '../../hooks/useGridState';
+import { useGridActions } from '../../hooks/useGridActions';
 import { useOptimizedGridTheme } from '../../hooks/useOptimizedTheme';
 import { useSettings } from '../../contexts/SettingsContext';
-import { useGridState } from '../../hooks/useGridState';
-import { useGridCache } from '../../hooks/useGridCache';
-import { useGridActions } from '../../hooks/useGridActions';
-
-// Base components
-import BaseToolbar from './BaseToolbar';
-import BaseDialog from './BaseDialog';
-import BaseCard from './BaseCard';
-
-// Utilities
-import { enhanceColumns, applySavedColumnSettings } from '../../utils/gridUtils';
+import { enhanceColumns, applySavedColumnSettings, rowNumberColumn } from '../../utils/gridUtils';
+import { HEADER_HEIGHT, FOOTER_HEIGHT, STATS_CARD_HEIGHT } from '../Layout/Constants';
 
 /**
- * Error Fallback Component for Error Boundary
+ * Enhanced BaseGrid Component
+ * 
+ * Combines the best features from UnifiedGrid and BaseGrid with DRY optimization:
+ * - Advanced state management with useGridState
+ * - Performance optimization with caching
+ * - Comprehensive feature set with modular design
+ * - Responsive design and accessibility
+ * - Context menus, floating actions, and card view
  */
-const GridErrorFallback = memo(({ error, resetErrorBoundary }) => (
-  <Alert 
-    severity="error" 
-    sx={{ m: 2 }}
-    action={
-      <Box sx={{ display: 'flex', gap: 1 }}>
-        <Typography variant="body2" color="error">
-          {error.message}
-        </Typography>
-      </Box>
-    }
-  >
-    <Typography variant="h6">Grid Error</Typography>
-    <Typography variant="body2">
-      Something went wrong while loading the grid. Please try refreshing.
-    </Typography>
-  </Alert>
-));
-
-/**
- * Loading Skeleton Component
- */
-const GridLoadingSkeleton = memo(() => (
-  <Box sx={{ p: 2 }}>
-    <Skeleton variant="rectangular" width="100%" height={56} sx={{ mb: 2 }} />
-    <Skeleton variant="rectangular" width="100%" height={300} />
-  </Box>
-));
-
-/**
- * BaseGrid Component with React 18 Features
- */
-const BaseGrid = memo(forwardRef(({
+const BaseGrid = forwardRef(({
   // Core props
-  gridName,
-  columns = [],
+  gridName = 'BaseGrid',
+  columns: gridColumns = [],
   data = [],
   loading = false,
   error = null,
-  
-  // API props
-  apiService,
-  apiEndpoint,
-  apiParams = {},
-  
+  getRowId = (row) => row.id || row.entity_id,
+  density = 'standard',
+
   // Feature toggles
-  enableSuspense = true,
-  enableErrorBoundary = true,
-  enableVirtualization = true,
+  enableCache = true,
+  enableI18n = true,
+  enableRTL = false,
   enableSelection = true,
   enableSorting = true,
   enableFiltering = true,
-  enableSearch = true,
-  enableStats = true,
-  enableActions = true,
-  
+  enableColumnReordering = true,
+  enableColumnResizing = true,
+
+  // Performance options
+  virtualizationThreshold = 1000,
+  enableVirtualization = true,
+  rowBuffer = 10,
+  columnBuffer = 2,
+  rowThreshold = 3,
+  columnThreshold = 3,
+
+  // View options
+  showStatsCards = true,
+  showCardView = true,
+  defaultViewMode = 'grid',
+  gridCards = [],
+  totalCount = 0,
+  defaultPageSize = 25,
+  paginationMode = "client",
+  onPaginationModelChange,
+
   // Toolbar configuration
   toolbarConfig = {},
   customActions = [],
-  
-  // Dialog configuration
-  dialogConfig = {},
-  
-  // Stats configuration
-  statsConfig = {},
-  
+  customLeftActions = [],
+
+  // Context menu configuration
+  contextMenuActions = {},
+
+  // Floating actions configuration
+  floatingActions = {},
+  floatingPosition = 'bottom-right',
+  floatingVariant = 'speedDial',
+  enableFloatingActions = false,
+
+  // Filter configuration
+  filterOptions = [],
+  currentFilter = 'all',
+  onFilterChange,
+  childFilterModel,
+  searchableFields = ['sku', 'name', 'Code_MDM', 'reference'],
+
   // Event handlers
-  onRefresh,
+  onSelectionChange,
+  onError,
+  onExport,
   onAdd,
   onEdit,
   onDelete,
+  onSync,
   onSearch,
-  onSelectionChange,
-  onError,
-  
+  onSortChange,
+  onFilterModelChange,
+  onRowClick,
+  onRowDoubleClick,
+  onRefresh,
+
   // Advanced props
-  searchFields = ['name', 'sku', 'code'],
-  getRowId = (row) => row.id || row.entity_id,
+  preColumns = [],
+  endColumns = [],
+  initialVisibleColumns = [],
   sx = {},
-  
-  // Children for custom content
-  children,
-  
+
+  // Custom filter props for specialized grids
+  succursaleOptions,
+  currentSuccursale,
+  onSuccursaleChange,
+  sourceOptions,
+  currentSource,
+  onSourceChange,
+  showChangedOnly,
+  setShowChangedOnly,
+  onSyncStocksHandler,
+  onSyncAllHandler,
+  canInfo,
+  onInfo,
+  mdmStocks = false,
+
   ...props
 }, ref) => {
-  // Generate unique IDs for accessibility
-  const gridId = useId();
-  const searchId = useId();
-  const toolbarId = useId();
-  
-  // React 18 transitions for non-blocking updates
-  const [isPending, startTransition] = useTransition();
-  
-  // Local state with modern patterns
-  const [localData, setLocalData] = useState(data);
-  const [localLoading, setLocalLoading] = useState(loading);
-  const [localError, setLocalError] = useState(error);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [dialogState, setDialogState] = useState({
-    add: false,
-    edit: false,
-    delete: false,
-    selectedRecord: null
-  });
-  const [stats, setStats] = useState({
-    total: 0,
-    active: 0,
-    inactive: 0,
-    selected: 0
-  });
-  
-  // Deferred value for search optimization
-  const deferredSearchQuery = useDeferredValue(searchQuery);
-  
   // Optimized theme and settings
   const gridTheme = useOptimizedGridTheme();
-  const { settings } = useSettings();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   
-  // Grid state management
+  // Settings integration
+  const { settings } = useSettings();
+  const userPreferences = settings?.preferences || {};
+  const gridSettings = settings?.gridSettings || {};
+  
+  // Apply user density preference if not explicitly set  
+  const effectiveDensity = (density !== undefined ? density : userPreferences.density) || 'standard';
+  
+  // Apply user page size preference if not explicitly set
+  const effectivePageSize = defaultPageSize || 
+                           gridSettings.defaultPageSize || 
+                           userPreferences.defaultPageSize || 
+                           25;
+
+  // Stable translation function
+  const safeTranslate = useCallback((key, fallback = key) => {
+    try {
+      return enableI18n ? (fallback || key) : (fallback || key);
+    } catch (error) {
+      return fallback || key;
+    }
+  }, [enableI18n]);
+
+  // Grid state management with settings integration
+  const gridState = useGridState(gridName, {
+    enablePersistence: true,
+    initialState: {
+      paginationModel: { page: 0, pageSize: effectivePageSize },
+      selectedRows: [],
+      columnVisibility: {},
+      density: effectiveDensity
+    }
+  });
+
+  // Destructure grid state
   const {
     paginationModel,
     setPaginationModel,
@@ -188,325 +191,603 @@ const BaseGrid = memo(forwardRef(({
     setSortModel,
     filterModel,
     setFilterModel,
+    selectedRows,
+    setSelectedRows,
     columnVisibility,
     setColumnVisibility,
-    density,
-    setDensity
-  } = useGridState(gridName);
-  
+    density: gridStateDensity,
+    setDensity,
+    columnOrder,
+    setColumnOrder,
+    pinnedColumns,
+    setPinnedColumns,
+    exportState,
+    importState,
+    resetState
+  } = gridState;
+
+  // Use the grid state density or fallback to effective density
+  const finalDensity = gridStateDensity || effectiveDensity;
+
   // Cache management
   const {
-    getCacheData,
     setCacheData,
-    clearCache
-  } = useGridCache(gridName);
-  
-  // Grid actions
-  const {
-    handleBulkAction,
-    handleExport,
-    handleImport
-  } = useGridActions(gridName);
-  
-  // Enhanced columns with memoization
-  const enhancedColumns = useMemo(() => {
-    return enhanceColumns(columns, {
-      enableSorting,
-      enableFiltering,
-      gridTheme,
-      settings
-    });
-  }, [columns, enableSorting, enableFiltering, gridTheme, settings]);
-  
-  // Filtered data with deferred search
-  const filteredData = useMemo(() => {
-    if (!deferredSearchQuery) return localData;
-    
-    const query = deferredSearchQuery.toLowerCase();
-    return localData.filter(row => 
-      searchFields.some(field => 
-        String(row[field] || '').toLowerCase().includes(query)
-      )
-    );
-  }, [localData, deferredSearchQuery, searchFields]);
-  
-  // Stats calculation
-  const calculatedStats = useMemo(() => {
-    const total = filteredData.length;
-    const active = filteredData.filter(row => row.status === 'active' || row.is_active).length;
-    const inactive = total - active;
-    const selected = selectedRows.length;
-    
-    return { total, active, inactive, selected };
-  }, [filteredData, selectedRows]);
-  
-  // Data fetching with error handling
-  const fetchData = useCallback(async () => {
-    if (!apiService || !apiEndpoint) return;
-    
-    setLocalLoading(true);
-    setLocalError(null);
-    
-    try {
-      // Check cache first
-      const cachedData = getCacheData();
-      if (cachedData && !onRefresh) {
-        setLocalData(cachedData);
-        setLocalLoading(false);
-        return;
-      }
-      
-      const response = await apiService.get(apiEndpoint, { params: apiParams });
-      const responseData = response.data?.items || response.data || response;
-      
-      startTransition(() => {
-        setLocalData(responseData);
-        setCacheData(responseData);
-        setStats(calculatedStats);
-      });
-      
-    } catch (error) {
-      console.error(`Error fetching ${gridName} data:`, error);
-      setLocalError(error);
-      onError?.(error);
-      toast.error(`Failed to load ${gridName} data`);
-    } finally {
-      setLocalLoading(false);
-    }
-  }, [apiService, apiEndpoint, apiParams, gridName, getCacheData, setCacheData, onError, onRefresh, calculatedStats]);
-  
-  // Modern event handlers with transitions
-  const handleRefresh = useCallback(() => {
-    startTransition(() => {
-      clearCache();
-      fetchData();
-    });
-    onRefresh?.();
-  }, [clearCache, fetchData, onRefresh]);
-  
-  const handleSearchChange = useCallback((query) => {
-    startTransition(() => {
-      setSearchQuery(query);
-    });
-    onSearch?.(query);
-  }, [onSearch]);
-  
-  const handleSelectionChange = useCallback((newSelection) => {
-    startTransition(() => {
-      setSelectedRows(newSelection);
-    });
-    onSelectionChange?.(newSelection);
-  }, [onSelectionChange]);
-  
-  const handleAdd = useCallback(() => {
-    setDialogState(prev => ({ ...prev, add: true, selectedRecord: null }));
-    onAdd?.();
-  }, [onAdd]);
-  
-  const handleEdit = useCallback((record) => {
-    setDialogState(prev => ({ ...prev, edit: true, selectedRecord: record }));
-    onEdit?.(record);
-  }, [onEdit]);
-  
-  const handleDelete = useCallback((records) => {
-    setDialogState(prev => ({ ...prev, delete: true, selectedRecord: records }));
-    onDelete?.(records);
-  }, [onDelete]);
-  
-  const handleDialogClose = useCallback((dialogType) => {
-    setDialogState(prev => ({ ...prev, [dialogType]: false, selectedRecord: null }));
-  }, []);
-  
-  // Imperative API for ref
-  useImperativeHandle(ref, () => ({
-    refresh: handleRefresh,
     clearCache,
-    exportData: () => handleExport(filteredData),
+    invalidateCache,
+    cacheStats
+  } = useGridCache(gridName, enableCache);
+
+  // Grid actions hook
+  const {
+    handleRefresh,
+    handleAdd,
+    handleEdit,
+    handleDelete,
+    handleSync,
+    handleExport,
+    handleSearch
+  } = useGridActions({
+    onRefresh,
+    onAdd,
+    onEdit,
+    onDelete,
+    onSync,
+    onExport,
+    onSearch,
+    selectedRows,
+    data,
+    gridName,
+    searchableFields
+  });
+
+  // Local state
+  const [contextMenu, setContextMenu] = useState(null);
+  const [viewMode, setViewMode] = useState(defaultViewMode);
+  const [selectedRecord, setSelectedRecord] = useState(null);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+  const [filtersVisible, setFiltersVisible] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+
+  const gridRef = useRef(null);
+
+  // Memoize data with performance optimizations
+  const memoizedData = useMemo(() => {
+    if (!Array.isArray(data)) {
+      console.warn('BaseGrid: data prop is not an array, using empty array');
+      return [];
+    }
+
+    if (data.length > (virtualizationThreshold || 1000)) {
+      console.info(`BaseGrid: Large dataset detected (${data.length} rows), virtualization enabled`);
+    }
+
+    return data;
+  }, [data, virtualizationThreshold]);
+
+  // Column processing state
+  const [processedColumns, setProcessedColumns] = useState([]);
+
+  // Build base columns synchronously
+  const baseColumns = useMemo(() => {
+    if (!Array.isArray(gridColumns)) {
+      console.warn('BaseGrid: gridColumns is not an array, using empty array');
+      return [];
+    }
+
+    let columns = [...gridColumns];
+
+    // Add row number column if needed
+    if (toolbarConfig.showRowNumbers) {
+      columns = [rowNumberColumn, ...columns];
+    }
+
+    // Add pre and end columns
+    columns = [...preColumns, ...columns, ...endColumns];
+
+    return columns;
+  }, [gridColumns, preColumns, endColumns, toolbarConfig.showRowNumbers]);
+
+  // Processing state to prevent excessive re-renders
+  const processingRef = useRef(false);
+  const lastProcessedRef = useRef('');
+
+  // Apply async column settings and enhancements
+  useEffect(() => {
+    const processingKey = `${baseColumns.length}-${gridName}-${enableI18n}-${enableSorting}-${enableFiltering}`;
+
+    if (processingRef.current || lastProcessedRef.current === processingKey) {
+      return;
+    }
+
+    const processColumns = async () => {
+      processingRef.current = true;
+
+      try {
+        let columns = baseColumns;
+
+        // Apply saved column settings (ASYNC)
+        if (gridName && columns.length > 0) {
+          columns = await applySavedColumnSettings(gridName, columns);
+        }
+
+        // Enhance columns with translations and feature flags (SYNC)
+        columns = enhanceColumns(columns, {
+          enableI18n,
+          translate: safeTranslate,
+          enableSorting,
+          enableFiltering
+        });
+
+        if (!Array.isArray(columns)) {
+          console.warn('BaseGrid: processColumns resulted in non-array, using base columns');
+          columns = baseColumns;
+        }
+
+        setProcessedColumns(columns);
+        lastProcessedRef.current = processingKey;
+
+      } catch (error) {
+        console.error('BaseGrid: Error processing columns:', error);
+        const fallbackColumns = enhanceColumns(baseColumns, {
+          enableI18n,
+          translate: safeTranslate,
+          enableSorting,
+          enableFiltering
+        });
+        setProcessedColumns(fallbackColumns);
+        lastProcessedRef.current = processingKey;
+      } finally {
+        processingRef.current = false;
+      }
+    };
+
+    if (baseColumns.length > 0) {
+      processColumns();
+    } else {
+      setProcessedColumns([]);
+      lastProcessedRef.current = processingKey;
+    }
+  }, [baseColumns, gridName, enableI18n, enableSorting, enableFiltering, safeTranslate]);
+
+  // Calculate grid height
+  const gridHeight = useMemo(() => {
+    const baseHeight = window.innerHeight - HEADER_HEIGHT - FOOTER_HEIGHT;
+    const statsHeight = showStatsCards ? STATS_CARD_HEIGHT : 0;
+    const toolbarHeight = 155;
+    return baseHeight - statsHeight - toolbarHeight;
+  }, [showStatsCards]);
+
+  // Cache management effect
+  useEffect(() => {
+    if (enableCache && memoizedData.length > 0) {
+      setCacheData(memoizedData, {
+        pagination: paginationModel,
+        sort: sortModel,
+        filter: filterModel,
+        timestamp: Date.now()
+      });
+    }
+  }, [memoizedData, paginationModel, sortModel, filterModel, enableCache, setCacheData]);
+
+  // Selection change handler
+  const handleSelectionChange = useCallback((newSelection) => {
+    setSelectedRows(newSelection);
+    onSelectionChange?.(newSelection);
+  }, [setSelectedRows, onSelectionChange]);
+
+  // Context menu handlers
+  const handleContextMenu = useCallback((event, row) => {
+    if (Object.keys(contextMenuActions).length === 0) return;
+
+    event.preventDefault();
+    setContextMenu({
+      mouseX: event.clientX - 2,
+      mouseY: event.clientY - 4,
+      row
+    });
+  }, [contextMenuActions]);
+
+  const handleContextMenuClose = useCallback(() => {
+    setContextMenu(null);
+  }, []);
+
+  // View mode toggle
+  const handleViewModeChange = useCallback((_event, newMode) => {
+    if (newMode !== null) {
+      setViewMode(newMode);
+    }
+  }, []);
+
+  // Imperative handle for ref
+  useImperativeHandle(ref, () => ({
+    exportState,
+    importState,
+    resetState,
+    clearCache,
+    invalidateCache,
     getSelectedRows: () => selectedRows,
-    getStats: () => calculatedStats
-  }), [handleRefresh, clearCache, handleExport, filteredData, selectedRows, calculatedStats]);
-  
-  // Effects
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-  
-  useEffect(() => {
-    setStats(calculatedStats);
-  }, [calculatedStats]);
-  
-  // Error boundary error handler
-  const handleError = useCallback((error, errorInfo) => {
-    console.error('BaseGrid Error:', error, errorInfo);
-    onError?.(error);
-  }, [onError]);
-  
-  // Main grid content
-  const GridContent = memo(() => (
-    <Box 
-      sx={{ 
-        height: '100%', 
-        width: '100%', 
-        display: 'flex', 
-        flexDirection: 'column',
-        opacity: isPending ? 0.7 : 1,
-        transition: 'opacity 0.2s ease',
-        ...sx 
-      }}
-      id={gridId}
-      role="grid"
-      aria-labelledby={toolbarId}
-    >
-      {/* Stats Cards */}
-      {enableStats && (
-        <Box sx={{ mb: 2 }}>
-          <BaseCard
-            stats={stats}
-            config={statsConfig}
-            loading={localLoading}
-          />
-        </Box>
-      )}
-      
-      {/* Toolbar */}
-      {enableActions && (
-        <Box sx={{ mb: 1 }}>
-          <BaseToolbar
-            id={toolbarId}
-            searchId={searchId}
-            config={toolbarConfig}
-            customActions={customActions}
-            selectedCount={selectedRows.length}
-            searchQuery={searchQuery}
-            onSearchChange={handleSearchChange}
-            onRefresh={handleRefresh}
-            onAdd={handleAdd}
-            onEdit={() => handleEdit(selectedRows[0])}
-            onDelete={() => handleDelete(selectedRows)}
-            loading={localLoading}
-            enableSearch={enableSearch}
-          />
-        </Box>
-      )}
-      
-      {/* Error Display */}
-      {localError && (
+    getGridData: () => data,
+    getCacheStats: () => cacheStats,
+    refreshGrid: handleRefresh,
+    setViewMode,
+    toggleFilters: () => setFiltersVisible(!filtersVisible)
+  }), [exportState, importState, resetState, clearCache, invalidateCache, selectedRows, data, cacheStats, handleRefresh, filtersVisible]);
+
+  // Helper function to determine grid type from grid name
+  const getGridType = (name) => {
+    if (name.toLowerCase().includes('mdm')) return 'mdm';
+    if (name.toLowerCase().includes('cegid')) return 'cegid';
+    if (name.toLowerCase().includes('dashboard')) return 'dashboard';
+    return 'magento';
+  };
+
+  // Error boundary
+  if (error) {
+    return (
+      <Paper sx={{ p: 3, ...sx }}>
         <Alert severity="error" sx={{ mb: 2 }}>
-          {localError.message || 'An error occurred while loading data'}
+          <Typography variant="h6" gutterBottom>
+            Grid Error
+          </Typography>
+          <Typography variant="body2">
+            {error.message || 'An unexpected error occurred'}
+          </Typography>
         </Alert>
-      )}
-      
-      {/* Data Grid */}
-      <Paper 
-        elevation={1} 
-        sx={{ 
-          flexGrow: 1, 
-          height: 'auto',
-          '& .MuiDataGrid-root': {
-            border: 'none'
-          }
-        }}
-      >
-        <DataGrid
-          {...props}
-          rows={filteredData}
-          columns={enhancedColumns}
-          loading={localLoading}
-          getRowId={getRowId}
-          
-          // Selection
-          checkboxSelection={enableSelection}
-          rowSelectionModel={selectedRows}
-          onRowSelectionModelChange={handleSelectionChange}
-          
-          // Pagination
-          paginationModel={paginationModel}
-          onPaginationModelChange={setPaginationModel}
-          pageSizeOptions={[10, 25, 50, 100]}
-          
-          // Sorting and filtering
-          sortModel={sortModel}
-          onSortModelChange={setSortModel}
-          filterModel={filterModel}
-          onFilterModelChange={setFilterModel}
-          
-          // Column management
-          columnVisibilityModel={columnVisibility}
-          onColumnVisibilityModelChange={setColumnVisibility}
-          density={density}
-          
-          // Performance
-          virtualization={enableVirtualization}
-          disableRowSelectionOnClick={!enableSelection}
-          
-          // Accessibility
-          aria-labelledby={toolbarId}
-          aria-describedby={searchId}
-          
-          // Styling
-          sx={{
-            '& .MuiDataGrid-cell:focus': {
-              outline: 'solid #2196f3 1px'
-            },
-            '& .MuiDataGrid-row:hover': {
-              backgroundColor: gridTheme.palette.action.hover
-            }
-          }}
-        />
       </Paper>
-      
-      {/* Dialogs */}
-      <BaseDialog
-        type="add"
-        open={dialogState.add}
-        onClose={() => handleDialogClose('add')}
-        config={dialogConfig}
-        data={dialogState.selectedRecord}
+    );
+  }
+
+  return (
+    <>
+      {/* Enhanced Toolbar */}
+      <BaseToolbar
+        gridName={gridName}
+        gridType={getGridType(gridName)}
+        config={toolbarConfig}
+        customActions={customActions}
+        customLeftActions={customLeftActions}
+        selectedRows={selectedRows}
+        onRefresh={handleRefresh}
+        onAdd={handleAdd}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onSync={handleSync}
+        onExport={handleExport}
+        onSearch={handleSearch}
+        searchValue={searchValue}
+        onFiltersToggle={() => setFiltersVisible(!filtersVisible)}
+        filtersVisible={filtersVisible}
+        columnVisibility={columnVisibility}
+        onColumnVisibilityChange={setColumnVisibility}
+        density={finalDensity}
+        onDensityChange={setDensity}
+        enableI18n={enableI18n}
+        isRTL={enableRTL}
+        loading={loading}
+        viewMode={viewMode}
+        onViewModeChange={handleViewModeChange}
+        showCardView={showCardView}
+        mdmStocks={mdmStocks}
+        // Custom filter props
+        succursaleOptions={succursaleOptions}
+        currentSuccursale={currentSuccursale}
+        onSuccursaleChange={onSuccursaleChange}
+        sourceOptions={sourceOptions}
+        currentSource={currentSource}
+        onSourceChange={onSourceChange}
+        showChangedOnly={showChangedOnly}
+        setShowChangedOnly={setShowChangedOnly}
+        onSyncStocksHandler={onSyncStocksHandler}
+        onSyncAllHandler={onSyncAllHandler}
+        canInfo={canInfo}
+        onInfo={onInfo}
       />
-      
-      <BaseDialog
-        type="edit"
-        open={dialogState.edit}
-        onClose={() => handleDialogClose('edit')}
-        config={dialogConfig}
-        data={dialogState.selectedRecord}
+
+      {/* Main Content Area */}
+      {loading && (
+        <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}>
+          <Skeleton variant="rectangular" height={4} />
+        </Box>
+      )}
+
+      <Fade in={!loading} timeout={300}>
+        <Box
+          sx={{
+            flex: 1,
+            minHeight: 0,
+            maxHeight: gridHeight,
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden'
+          }}>
+          {viewMode === 'card' && showCardView ? (
+            <GridCardView
+              data={data}
+              columns={processedColumns}
+              onRowClick={(row) => {
+                setSelectedRecord(row);
+                setDetailsDialogOpen(true);
+              }}
+              loading={loading}
+            />
+          ) : (
+            <DataGrid
+              ref={gridRef}
+              rows={memoizedData}
+              columns={processedColumns}
+              loading={loading}
+
+              // Performance optimizations
+              disableVirtualization={!enableVirtualization || memoizedData.length < virtualizationThreshold}
+              rowBuffer={rowBuffer}
+              columnBuffer={columnBuffer}
+              rowThreshold={rowThreshold}
+              columnThreshold={columnThreshold}
+
+              // Pagination
+              paginationModel={paginationModel || { page: 0, pageSize: defaultPageSize }}
+              onPaginationModelChange={useCallback((model) => {
+                setPaginationModel(model);
+                if (onPaginationModelChange) {
+                  onPaginationModelChange(model);
+                }
+              }, [setPaginationModel, onPaginationModelChange])}
+              pageSizeOptions={[10, 25, 50, 100]}
+              paginationMode={paginationMode || "client"}
+              {...(paginationMode === "server" ? {
+                rowCount: typeof totalCount === 'number' && totalCount >= 0 ? totalCount : memoizedData.length
+              } : {})}
+
+              // Sorting
+              sortModel={sortModel}
+              onSortModelChange={useCallback((model) => {
+                setSortModel(model);
+                onSortChange?.(model);
+              }, [setSortModel, onSortChange])}
+              sortingOrder={['asc', 'desc']}
+
+              // Filtering
+              filterModel={filterModel}
+              onFilterModelChange={useCallback((model) => {
+                setFilterModel(model);
+                onFilterChange?.(model);
+                onFilterModelChange?.(model);
+              }, [setFilterModel, onFilterChange, onFilterModelChange])}
+
+              // Selection
+              checkboxSelection={enableSelection}
+              rowSelectionModel={selectedRows}
+              onRowSelectionModelChange={handleSelectionChange}
+
+              // Column management
+              columnVisibilityModel={columnVisibility}
+              onColumnVisibilityModelChange={setColumnVisibility}
+              columnOrderModel={columnOrder}
+              onColumnOrderModelChange={setColumnOrder}
+              pinnedColumns={pinnedColumns}
+              onPinnedColumnsChange={setPinnedColumns}
+
+              // Density
+              density={finalDensity}
+
+              // Features
+              disableColumnReorder={!enableColumnReordering}
+              disableColumnResize={!enableColumnResizing}
+
+              // Row configuration
+              getRowId={getRowId}
+              onRowClick={(params) => {
+                onRowClick?.(params);
+                setSelectedRecord(params.row);
+                setDetailsDialogOpen(true);
+              }}
+              onRowDoubleClick={(params) => {
+                onRowDoubleClick?.(params);
+              }}
+              onRowContextMenu={(params, event) => handleContextMenu(event, params.row)}
+
+              // Disable default toolbar
+              hideFooter={false}
+              disableColumnMenu={false}
+
+              {...props}
+            />
+          )}
+        </Box>
+      </Fade>
+
+      {/* Stats Cards */}
+      {showStatsCards && gridCards.length > 0 && (
+        <Box
+          className="stats-container"
+          sx={{
+            flexShrink: 0,
+            borderTop: `1px solid ${gridTheme.borderColor}`,
+            p: 2,
+            backgroundColor: 'background.paper'
+          }}
+        >
+          <Box 
+            sx={{ 
+              display: 'grid',
+              gridTemplateColumns: {
+                xs: '1fr',
+                sm: 'repeat(2, 1fr)',
+                md: `repeat(${Math.min(gridCards.length, 4)}, 1fr)`
+              },
+              gap: 2
+            }}
+          >
+            {gridCards.map((card, index) => (
+              <BaseCard
+                key={index}
+                title={card.title}
+                value={card.value}
+                icon={card.icon}
+                color={card.color}
+                loading={loading}
+                {...card}
+              />
+            ))}
+          </Box>
+        </Box>
+      )}
+
+      {/* Context Menu */}
+      {contextMenu && (
+        <GridContextMenu
+          contextMenu={contextMenu}
+          onClose={handleContextMenuClose}
+          actions={contextMenuActions}
+          row={contextMenu.row}
+        />
+      )}
+
+      {/* Floating Action Buttons */}
+      {enableFloatingActions && (
+        <FloatingActionButtons
+          actions={floatingActions}
+          position={floatingPosition}
+          variant={floatingVariant}
+        />
+      )}
+
+      {/* Record Details Dialog */}
+      <RecordDetailsDialog
+        open={detailsDialogOpen}
+        onClose={() => setDetailsDialogOpen(false)}
+        record={selectedRecord}
+        columns={processedColumns}
+        title={safeTranslate('grid.common.recordDetails', 'Record Details')}
       />
-      
-      <BaseDialog
-        type="delete"
-        open={dialogState.delete}
-        onClose={() => handleDialogClose('delete')}
-        config={dialogConfig}
-        data={dialogState.selectedRecord}
-      />
-      
-      {/* Custom content */}
-      {children}
-    </Box>
-  ));
-  
-  // Render with optional Suspense and Error Boundary
-  const content = enableSuspense ? (
-    <Suspense fallback={<GridLoadingSkeleton />}>
-      <GridContent />
-    </Suspense>
-  ) : (
-    <GridContent />
+    </>
   );
-  
-  return enableErrorBoundary ? (
-    <ErrorBoundary
-      FallbackComponent={GridErrorFallback}
-      onError={handleError}
-      resetKeys={[gridName, data]}
-    >
-      {content}
-    </ErrorBoundary>
-  ) : (
-    content
-  );
-}));
+});
 
 BaseGrid.displayName = 'BaseGrid';
 
-export default BaseGrid;
+BaseGrid.propTypes = {
+  // Core props
+  gridName: PropTypes.string,
+  columns: PropTypes.array,
+  data: PropTypes.array,
+  loading: PropTypes.bool,
+  error: PropTypes.object,
+  getRowId: PropTypes.func,
+  density: PropTypes.oneOf(['compact', 'standard', 'comfortable']),
+
+  // Feature toggles
+  enableCache: PropTypes.bool,
+  enableI18n: PropTypes.bool,
+  enableRTL: PropTypes.bool,
+  enableSelection: PropTypes.bool,
+  enableSorting: PropTypes.bool,
+  enableFiltering: PropTypes.bool,
+  enableColumnReordering: PropTypes.bool,
+  enableColumnResizing: PropTypes.bool,
+
+  // Performance options
+  virtualizationThreshold: PropTypes.number,
+  enableVirtualization: PropTypes.bool,
+  rowBuffer: PropTypes.number,
+  columnBuffer: PropTypes.number,
+  rowThreshold: PropTypes.number,
+  columnThreshold: PropTypes.number,
+
+  // View options
+  showStatsCards: PropTypes.bool,
+  showCardView: PropTypes.bool,
+  defaultViewMode: PropTypes.oneOf(['grid', 'card']),
+  gridCards: PropTypes.array,
+  totalCount: PropTypes.number,
+  defaultPageSize: PropTypes.number,
+  paginationMode: PropTypes.oneOf(['client', 'server']),
+  onPaginationModelChange: PropTypes.func,
+
+  // Toolbar configuration
+  toolbarConfig: PropTypes.object,
+  customActions: PropTypes.array,
+  customLeftActions: PropTypes.array,
+
+  // Context menu configuration
+  contextMenuActions: PropTypes.object,
+
+  // Floating actions configuration
+  floatingActions: PropTypes.object,
+  floatingPosition: PropTypes.string,
+  floatingVariant: PropTypes.string,
+  enableFloatingActions: PropTypes.bool,
+
+  // Filter configuration
+  filterOptions: PropTypes.array,
+  currentFilter: PropTypes.string,
+  onFilterChange: PropTypes.func,
+  childFilterModel: PropTypes.object,
+  searchableFields: PropTypes.array,
+
+  // Event handlers
+  onSelectionChange: PropTypes.func,
+  onError: PropTypes.func,
+  onExport: PropTypes.func,
+  onAdd: PropTypes.func,
+  onEdit: PropTypes.func,
+  onDelete: PropTypes.func,
+  onSync: PropTypes.func,
+  onSearch: PropTypes.func,
+  onSortChange: PropTypes.func,
+  onFilterModelChange: PropTypes.func,
+  onRowClick: PropTypes.func,
+  onRowDoubleClick: PropTypes.func,
+  onRefresh: PropTypes.func,
+
+  // Advanced props
+  preColumns: PropTypes.array,
+  endColumns: PropTypes.array,
+  initialVisibleColumns: PropTypes.array,
+  sx: PropTypes.object,
+
+  // Custom filter props
+  succursaleOptions: PropTypes.array,
+  currentSuccursale: PropTypes.string,
+  onSuccursaleChange: PropTypes.func,
+  sourceOptions: PropTypes.array,
+  currentSource: PropTypes.string,
+  onSourceChange: PropTypes.func,
+  showChangedOnly: PropTypes.bool,
+  setShowChangedOnly: PropTypes.func,
+  onSyncStocksHandler: PropTypes.func,
+  onSyncAllHandler: PropTypes.func,
+  canInfo: PropTypes.bool,
+  onInfo: PropTypes.func,
+  mdmStocks: PropTypes.bool
+};
+
+// Memoize the component for performance optimization
+const MemoizedBaseGrid = memo(BaseGrid, (prevProps, nextProps) => {
+  const criticalProps = ['data', 'loading', 'columns', 'totalCount'];
+
+  for (const prop of criticalProps) {
+    if (prevProps[prop] !== nextProps[prop]) {
+      return false;
+    }
+  }
+
+  if (Array.isArray(prevProps.data) && Array.isArray(nextProps.data)) {
+    if (prevProps.data.length !== nextProps.data.length) {
+      return false;
+    }
+    const checkCount = Math.min(5, prevProps.data.length);
+    for (let i = 0; i < checkCount; i++) {
+      if (prevProps.data[i] !== nextProps.data[i]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+});
+
+MemoizedBaseGrid.displayName = 'MemoizedBaseGrid';
+
+export default MemoizedBaseGrid;

@@ -459,7 +459,6 @@ class MagentoApi extends BaseApiService {
   async deleteProductMedia(sku, entryId) {
     try {
       console.log(`🗑️ Deleting media ${entryId} for product: ${sku}`);
-
       const response = await this.delete(
         `/products/${encodeURIComponent(sku)}/media/${entryId}`
       );

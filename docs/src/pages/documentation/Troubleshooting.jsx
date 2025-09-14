@@ -17,7 +17,7 @@ import {
   ListItemText,
   Paper,
   TextField,
-  InputAdornment
+  InputAdornment,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import {
@@ -27,7 +27,7 @@ import {
   Error as ErrorIcon,
   Info as InfoIcon,
   Search as SearchIcon,
-  CheckCircle as SolutionIcon
+  CheckCircle as SolutionIcon,
 } from '@mui/icons-material';
 
 const Troubleshooting = () => {
@@ -35,12 +35,12 @@ const Troubleshooting = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const troubleshootingCategories = [
@@ -58,7 +58,7 @@ const Troubleshooting = () => {
             'Check connection string in .env file',
             'Test connection: `sqlcmd -S localhost -U sa -P password`',
             'Configure firewall: `sudo ufw allow 1433`',
-            'Verify user permissions in SQL Server'
+            'Verify user permissions in SQL Server',
           ],
           code: `-- Test database connection
 SELECT @@VERSION;
@@ -73,7 +73,7 @@ SELECT
     p.state_desc AS permission_state
 FROM sys.database_permissions p
 LEFT JOIN sys.objects o ON p.major_id = o.object_id
-LEFT JOIN sys.database_principals dp ON p.grantee_principal_id = dp.principal_id;`
+LEFT JOIN sys.database_principals dp ON p.grantee_principal_id = dp.principal_id;`,
         },
         {
           problem: 'Database queries timing out',
@@ -84,7 +84,7 @@ LEFT JOIN sys.database_principals dp ON p.grantee_principal_id = dp.principal_id
             'Optimize queries with EXPLAIN PLAN',
             'Implement query pagination',
             'Monitor blocking queries: `sp_who2`',
-            'Increase connection timeout settings'
+            'Increase connection timeout settings',
           ],
           code: `-- Find slow queries
 SELECT TOP 10
@@ -97,9 +97,9 @@ SELECT TOP 10
             ELSE qs.statement_end_offset end - qs.statement_start_offset)/2) AS query_text
 FROM sys.dm_exec_query_stats qs
 CROSS APPLY sys.dm_exec_sql_text(qs.sql_handle) AS qt
-ORDER BY avg_elapsed_time DESC;`
-        }
-      ]
+ORDER BY avg_elapsed_time DESC;`,
+        },
+      ],
     },
     {
       title: 'API & Synchronization Issues',
@@ -115,7 +115,7 @@ ORDER BY avg_elapsed_time DESC;`
             'Verify API credentials in .env file',
             'Check Magento API status in admin panel',
             'Implement token refresh mechanism',
-            'Add retry logic with exponential backoff'
+            'Add retry logic with exponential backoff',
           ],
           code: `// Test Magento API connection
 const testMagentoConnection = async () => {
@@ -138,7 +138,7 @@ const testMagentoConnection = async () => {
     console.error('❌ Magento API connection failed:', error);
     return false;
   }
-};`
+};`,
         },
         {
           problem: 'ETL synchronization failures',
@@ -149,7 +149,7 @@ const testMagentoConnection = async () => {
             'Review sync logs for specific errors',
             'Implement data validation before sync',
             'Add sync job queuing and retry mechanisms',
-            'Monitor system resources during sync'
+            'Monitor system resources during sync',
           ],
           code: `// Sync monitoring and recovery
 const monitorSyncHealth = async () => {
@@ -170,9 +170,9 @@ const monitorSyncHealth = async () => {
   }
   
   return syncStatus;
-};`
-        }
-      ]
+};`,
+        },
+      ],
     },
     {
       title: 'Frontend Application Issues',
@@ -188,7 +188,7 @@ const monitorSyncHealth = async () => {
             'Verify all environment variables are set',
             'Clear browser cache and cookies',
             'Rebuild application: `npm run build`',
-            'Check network connectivity to API endpoints'
+            'Check network connectivity to API endpoints',
           ],
           code: `// Debug frontend issues
 // Check environment variables
@@ -210,7 +210,7 @@ fetch(process.env.REACT_APP_API_BASE_URL + '/health')
   })
   .catch(error => {
     console.error('❌ Network error:', error);
-  });`
+  });`,
         },
         {
           problem: 'Grid performance issues',
@@ -221,7 +221,7 @@ fetch(process.env.REACT_APP_API_BASE_URL + '/health')
             'Implement pagination for data loading',
             'Use React.memo for expensive components',
             'Monitor memory usage in browser dev tools',
-            'Implement proper cleanup in useEffect hooks'
+            'Implement proper cleanup in useEffect hooks',
           ],
           code: `// Optimize grid performance
 const OptimizedGrid = React.memo(({ data, columns }) => {
@@ -247,9 +247,9 @@ const OptimizedGrid = React.memo(({ data, columns }) => {
       {...virtualizedProps}
     />
   );
-});`
-        }
-      ]
+});`,
+        },
+      ],
     },
     {
       title: 'Performance & Resource Issues',
@@ -265,7 +265,7 @@ const OptimizedGrid = React.memo(({ data, columns }) => {
             'Implement proper garbage collection',
             'Use streaming for large data processing',
             'Configure appropriate cache limits',
-            'Restart services periodically if needed'
+            'Restart services periodically if needed',
           ],
           code: `// Memory monitoring script
 const monitorMemoryUsage = () => {
@@ -290,26 +290,26 @@ const monitorMemoryUsage = () => {
 };
 
 // Run every 5 minutes
-setInterval(monitorMemoryUsage, 5 * 60 * 1000);`
-        }
-      ]
-    }
+setInterval(monitorMemoryUsage, 5 * 60 * 1000);`,
+        },
+      ],
+    },
   ];
 
   const filteredCategories = troubleshootingCategories.filter(category =>
     category.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     category.issues.some(issue =>
       issue.problem.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      issue.symptoms.some(symptom => symptom.toLowerCase().includes(searchTerm.toLowerCase()))
-    )
+      issue.symptoms.some(symptom => symptom.toLowerCase().includes(searchTerm.toLowerCase())),
+    ),
   );
 
   const getSeverityColor = (severity) => {
     switch (severity) {
-      case 'error': return 'error';
-      case 'warning': return 'warning';
-      case 'info': return 'info';
-      default: return 'default';
+    case 'error': return 'error';
+    case 'warning': return 'warning';
+    case 'info': return 'info';
+    default: return 'default';
     }
   };
 
@@ -357,8 +357,8 @@ setInterval(monitorMemoryUsage, 5 * 60 * 1000);`
           <Alert severity="info" sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>🆘 Quick Help</Typography>
             <Typography variant="body1">
-              Use the search box above to quickly find solutions to specific issues. Each troubleshooting section includes 
-              symptoms, causes, step-by-step solutions, and code examples. For urgent issues, check the error logs first 
+              Use the search box above to quickly find solutions to specific issues. Each troubleshooting section includes
+              symptoms, causes, step-by-step solutions, and code examples. For urgent issues, check the error logs first
               and follow the diagnostic steps provided.
             </Typography>
           </Alert>
@@ -369,7 +369,7 @@ setInterval(monitorMemoryUsage, 5 * 60 * 1000);`
           <Typography variant="h4" gutterBottom sx={{ mb: 3, fontWeight: 600 }}>
             🔍 Common Issues & Solutions
           </Typography>
-          
+
           {filteredCategories.map((category, categoryIndex) => (
             <Card key={categoryIndex} sx={{ mb: 3 }}>
               <CardContent>
@@ -380,10 +380,10 @@ setInterval(monitorMemoryUsage, 5 * 60 * 1000);`
                   <Typography variant="h5" fontWeight={600}>
                     {category.title}
                   </Typography>
-                  <Chip 
-                    label={category.severity.toUpperCase()} 
-                    color={getSeverityColor(category.severity)} 
-                    size="small" 
+                  <Chip
+                    label={category.severity.toUpperCase()}
+                    color={getSeverityColor(category.severity)}
+                    size="small"
                     sx={{ ml: 2 }}
                   />
                 </Box>

@@ -1,5 +1,5 @@
 
-import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useContext, useEffect,useMemo, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import {
     GoogleAuthProvider,
@@ -411,7 +411,8 @@ export const AuthProvider = ({ children }) => {
         }
     }, [currentUser?.uid]);
 
-    const value = {
+    // Memoize the context value to prevent unnecessary re-renders
+    const value = useMemo(() => ({
         currentUser,
         loading,
         signInWithGoogle,
@@ -426,7 +427,24 @@ export const AuthProvider = ({ children }) => {
         getUserLicenseStatus,
         hasPermission,
         checkFeatureAccess
-    };
+    }), [
+        // State dependencies
+        JSON.stringify(currentUser),
+        loading,
+        adminToken,
+        isUsingLocalData,
+        
+        // Function dependencies (these are already memoized with useCallback)
+        signInWithGoogle,
+        signInWithMagento,
+        logout,
+        validateMagentoToken,
+        saveUserSettings,
+        getUserPermissions,
+        getUserLicenseStatus,
+        hasPermission,
+        checkFeatureAccess
+    ]);
 
     return (
         <AuthContext.Provider value={value}>

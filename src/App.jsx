@@ -12,6 +12,7 @@ import React, { Suspense, lazy } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { CssBaseline, Box, CircularProgress, Typography } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
+import { useRTL } from './contexts/RTLContext';
 import 'react-toastify/dist/ReactToastify.css';
 
 // Lazy load the main router to avoid circular dependencies
@@ -30,10 +31,10 @@ const AppLoading = () => (
       alignItems: 'center',
       height: '100vh',
       gap: 2,
-      backgroundColor: '#f5f5f5'
+      backgroundColor: 'background.default'
     }}
   >
-    <CircularProgress size={40} />
+    <CircularProgress size={40} color="primary" />
     <Typography variant="body2" color="text.secondary">
       Loading TECHNO-ETL...
     </Typography>
@@ -41,10 +42,17 @@ const AppLoading = () => (
 );
 
 const App = () => {
+  const { isRTL } = useRTL();
+
   return (
     <>
       <CssBaseline />
-      <BrowserRouter>
+      <BrowserRouter
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true
+        }}
+      >
         <Suspense fallback={<AppLoading />}>
           <SimplifiedRouter />
         </Suspense>
@@ -54,27 +62,20 @@ const App = () => {
       <SettingsConflictDialog />
       
       <ToastContainer
-        position="top-right"
+        position={isRTL ? "top-left" : "top-right"}
         autoClose={5000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
-        rtl={false}
+        rtl={isRTL}
         pauseOnFocusLoss
         draggable
         pauseOnHover
         theme="colored"
+        style={{
+          direction: isRTL ? 'rtl' : 'ltr'
+        }}
       />
-      {/* Mounir Signature */}
-      <div style={{ position: 'fixed', bottom: 20, right: 20, zIndex: 9999 }}>
-        <a href="https://mounir1.github.io" target="_blank" rel="noopener noreferrer">
-          <img 
-            src="/src/assets/images/mounir-icon.svg" 
-            alt="Mounir Abderrahmani Signature" 
-            style={{ width: 40, height: 40, filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}
-          />
-        </a>
-      </div>
     </>
   );
 };

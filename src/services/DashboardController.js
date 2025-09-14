@@ -6,7 +6,10 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useCustomTheme } from '../contexts/ThemeContext';
 import { useTheme as useMuiTheme } from '@mui/material/styles';
 import { useSettings } from '../contexts/SettingsContext';
-import magentoApi from './magentoApi';
+import MagentoApi from './magentoApi';
+
+// Create instance of MagentoApi
+const magentoApi = new MagentoApi();
 import { toast } from 'react-toastify';
 import axios from 'axios';
 

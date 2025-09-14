@@ -61,7 +61,7 @@ const StatsCardWrapper = styled(Box)(({ theme }) => ({
 const StatCard = memo(({ title, value, icon, color = 'primary', active, onClick }) => {
   return (
     <BaseCard
-      variant="stats"
+      variant="outlined"
       title={title}
       value={value}
       icon={icon}
@@ -127,7 +127,7 @@ const StatsCards = memo(({ cards }) => {
         {processedCards.map((card) => (
           <BaseCard
             key={card.id}
-            variant="stats"
+            variant="outlined"
             title={card.title}
             value={card.value}
             icon={card.icon}

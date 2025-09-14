@@ -252,33 +252,58 @@ const EnhancedSidebar = ({ open, onToggle }) => {
             transition: theme.transitions.create(['width', 'height']),
           }}
         />
-        {open && (
-          <Box sx={{ ml: 2 }}>
-            <Typography variant="h6" noWrap sx={{ fontWeight: 600 }}>
-              TECHNO
-            </Typography>
-            <Typography variant="caption" noWrap sx={{ opacity: 0.8 }}>
-              ETL System
-            </Typography>
-          </Box>
-        )}
+        <Box sx={{ 
+          ml: 2, 
+          overflow: 'hidden',
+          transition: theme.transitions.create('opacity', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+          }),
+          opacity: open ? 1 : 0,
+          width: open ? 'auto' : 0
+        }}>
+          <Typography variant="h6" noWrap sx={{ fontWeight: 600 }}>
+            TECHNO
+          </Typography>
+          <Typography variant="caption" noWrap sx={{ opacity: 0.8 }}>
+            ETL System
+          </Typography>
+        </Box>
       </LogoContainer>
 
       {/* Navigation Menu */}
-      <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
+      <Box sx={{ 
+        flexGrow: 1, 
+        overflow: 'auto',
+        transition: theme.transitions.create('width', {
+          easing: theme.transitions.easing.sharp,
+          duration: theme.transitions.duration.enteringScreen,
+        }),
+        width: open ? '100%' : '100%'
+      }}>
         <List sx={{ pt: 1 }}>
           {menuItems.map((item) => renderMenuItem(item))}
         </List>
       </Box>
 
       {/* Footer Section */}
-      {open && (
-        <Box sx={{ p: 2, borderTop: `1px solid rgba(255, 255, 255, 0.1)` }}>
-          <Typography variant="caption" sx={{ opacity: 0.6 }}>
-            Version 2.0.0
-          </Typography>
-        </Box>
-      )}
+      <Box 
+        sx={{ 
+          p: 2, 
+          borderTop: `1px solid rgba(255, 255, 255, 0.1)`,
+          transition: theme.transitions.create('all', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+          }),
+          opacity: open ? 1 : 0,
+          height: open ? 'auto' : 0,
+          overflow: 'hidden'
+        }}
+      >
+        <Typography variant="caption" sx={{ opacity: 0.6 }}>
+          Version 2.0.0
+        </Typography>
+      </Box>
     </StyledDrawer>
   );
 };

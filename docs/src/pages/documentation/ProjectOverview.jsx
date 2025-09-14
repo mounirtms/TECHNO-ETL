@@ -14,7 +14,7 @@ import {
   ListItemText,
   Divider,
   Alert,
-  LinearProgress
+  LinearProgress,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import {
@@ -25,7 +25,7 @@ import {
   CloudUpload as CloudIcon,
   Analytics as AnalyticsIcon,
   IntegrationInstructions as IntegrationIcon,
-  Storage as StorageIcon
+  Storage as StorageIcon,
 } from '@mui/icons-material';
 
 const ProjectOverview = () => {
@@ -33,13 +33,13 @@ const ProjectOverview = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
+      transition: { staggerChildren: 0.1 },
+    },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const features = [
@@ -47,51 +47,51 @@ const ProjectOverview = () => {
       title: 'Real-time Data Synchronization',
       description: 'Bidirectional sync between MDM and Magento systems',
       icon: <IntegrationIcon />,
-      color: '#1976d2'
+      color: '#1976d2',
     },
     {
       title: 'Advanced Grid Management',
       description: 'Professional data grids with filtering, sorting, and export',
       icon: <StorageIcon />,
-      color: '#388e3c'
+      color: '#388e3c',
     },
     {
       title: 'Comprehensive Analytics',
       description: 'Real-time dashboards with KPI tracking and monitoring',
       icon: <AnalyticsIcon />,
-      color: '#f57c00'
+      color: '#f57c00',
     },
     {
       title: 'Enterprise Security',
       description: 'Role-based access control with Firebase authentication',
       icon: <SecurityIcon />,
-      color: '#d32f2f'
+      color: '#d32f2f',
     },
     {
       title: 'High Performance',
       description: 'Optimized for 1000+ concurrent users and 10K+ records/min',
       icon: <SpeedIcon />,
-      color: '#7b1fa2'
+      color: '#7b1fa2',
     },
     {
       title: 'Cloud Ready',
       description: 'Production-ready deployment with scalable architecture',
       icon: <CloudIcon />,
-      color: '#0288d1'
-    }
+      color: '#0288d1',
+    },
   ];
 
   const metrics = [
     { label: 'Load Time', value: '< 2 seconds', progress: 95 },
     { label: 'API Response', value: '< 500ms', progress: 90 },
     { label: 'Data Sync Accuracy', value: '99.9%', progress: 99 },
-    { label: 'System Uptime', value: '99.95%', progress: 99 }
+    { label: 'System Uptime', value: '99.95%', progress: 99 },
   ];
 
   const techStack = {
     frontend: ['React.js 18+', 'Material-UI (MUI)', 'Vite', 'React Router', 'Framer Motion'],
     backend: ['Node.js 18+', 'Express.js', 'SQL Server', 'Redis', 'Firebase'],
-    tools: ['ESLint', 'Prettier', 'Babel', 'Webpack', 'Jest']
+    tools: ['ESLint', 'Prettier', 'Babel', 'Webpack', 'Jest'],
   };
 
   return (
@@ -124,7 +124,7 @@ const ProjectOverview = () => {
             <Typography variant="h6" gutterBottom>
               🎯 Core Mission
             </Typography>
-            "Streamline data operations between multiple systems while maintaining data integrity, 
+            "Streamline data operations between multiple systems while maintaining data integrity,
             providing real-time analytics, and ensuring scalable performance for enterprise e-commerce operations."
           </Alert>
         </motion.div>
@@ -137,25 +137,25 @@ const ProjectOverview = () => {
           <Grid container spacing={3} sx={{ mb: 6 }}>
             {features.map((feature, index) => (
               <Grid item xs={12} md={6} key={index}>
-                <Card 
-                  sx={{ 
+                <Card
+                  sx={{
                     height: '100%',
                     transition: 'transform 0.2s, box-shadow 0.2s',
                     '&:hover': {
                       transform: 'translateY(-4px)',
-                      boxShadow: 4
-                    }
+                      boxShadow: 4,
+                    },
                   }}
                 >
                   <CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Box 
-                        sx={{ 
-                          p: 1, 
-                          borderRadius: 2, 
+                      <Box
+                        sx={{
+                          p: 1,
+                          borderRadius: 2,
                           backgroundColor: `${feature.color}20`,
                           color: feature.color,
-                          mr: 2
+                          mr: 2,
                         }}
                       >
                         {feature.icon}
@@ -189,9 +189,9 @@ const ProjectOverview = () => {
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                     {metric.label}
                   </Typography>
-                  <LinearProgress 
-                    variant="determinate" 
-                    value={metric.progress} 
+                  <LinearProgress
+                    variant="determinate"
+                    value={metric.progress}
                     sx={{ height: 6, borderRadius: 3 }}
                   />
                 </Paper>

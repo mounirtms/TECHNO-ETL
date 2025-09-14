@@ -19,7 +19,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import {
@@ -30,18 +30,18 @@ import {
   Star as StarIcon,
   CheckCircle as CheckIcon,
   Info as InfoIcon,
-  TrendingUp as TrendingIcon
+  TrendingUp as TrendingIcon,
 } from '@mui/icons-material';
 
 const SearchHelp = () => {
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const searchFeatures = [
@@ -49,26 +49,26 @@ const SearchHelp = () => {
       title: 'Fuzzy Search',
       description: 'Find results even with typos or partial matches',
       icon: <SearchIcon />,
-      examples: ['techno', 'magento', 'api doc', 'setup guide']
+      examples: ['techno', 'magento', 'api doc', 'setup guide'],
     },
     {
       title: 'Category Filtering',
       description: 'Filter results by documentation categories',
       icon: <FilterIcon />,
-      examples: ['Overview', 'Setup', 'API', 'Integration', 'Support']
+      examples: ['Overview', 'Setup', 'API', 'Integration', 'Support'],
     },
     {
       title: 'Search History',
       description: 'Access your recent searches for quick reference',
       icon: <HistoryIcon />,
-      examples: ['Last 10 searches', 'Quick access', 'Auto-complete']
+      examples: ['Last 10 searches', 'Quick access', 'Auto-complete'],
     },
     {
       title: 'Popular Pages',
       description: 'Discover commonly accessed documentation',
       icon: <StarIcon />,
-      examples: ['Getting Started', 'API Docs', 'Troubleshooting']
-    }
+      examples: ['Getting Started', 'API Docs', 'Troubleshooting'],
+    },
   ];
 
   const keyboardShortcuts = [
@@ -76,30 +76,30 @@ const SearchHelp = () => {
     { key: 'Escape', description: 'Close search modal', context: 'Search modal' },
     { key: 'Enter', description: 'Navigate to first result', context: 'Search input' },
     { key: '↑ ↓', description: 'Navigate through results', context: 'Search results' },
-    { key: 'Tab', description: 'Switch between search tabs', context: 'Search modal' }
+    { key: 'Tab', description: 'Switch between search tabs', context: 'Search modal' },
   ];
 
   const searchTips = [
     {
       tip: 'Use specific keywords',
       description: 'Search for "API authentication" instead of just "auth"',
-      example: 'API authentication → Better results than "auth"'
+      example: 'API authentication → Better results than "auth"',
     },
     {
       tip: 'Try different terms',
       description: 'If you don\'t find what you need, try synonyms',
-      example: 'setup, installation, configuration, getting started'
+      example: 'setup, installation, configuration, getting started',
     },
     {
       tip: 'Use category filters',
       description: 'Narrow down results by selecting specific categories',
-      example: 'Filter by "API" to find only API-related documentation'
+      example: 'Filter by "API" to find only API-related documentation',
     },
     {
       tip: 'Check recent searches',
       description: 'Your search history is saved for quick access',
-      example: 'Click on recent searches to repeat previous queries'
-    }
+      example: 'Click on recent searches to repeat previous queries',
+    },
   ];
 
   const searchableContent = [
@@ -107,7 +107,7 @@ const SearchHelp = () => {
     { type: 'Descriptions', weight: 'Medium', description: 'Page descriptions and summaries' },
     { type: 'Content', weight: 'Medium', description: 'Full page content and text' },
     { type: 'Keywords', weight: 'Medium', description: 'Tagged keywords and terms' },
-    { type: 'Categories', weight: 'Low', description: 'Documentation categories' }
+    { type: 'Categories', weight: 'Low', description: 'Documentation categories' },
   ];
 
   return (
@@ -135,8 +135,8 @@ const SearchHelp = () => {
           <Alert severity="success" sx={{ mb: 6 }}>
             <Typography variant="h6" gutterBottom>⚡ Quick Start</Typography>
             <Typography variant="body1">
-              Press <kbd style={{ padding: '4px 8px', backgroundColor: '#fff', border: '1px solid #ccc', borderRadius: '4px', fontFamily: 'monospace' }}>Ctrl+K</kbd> anywhere 
-              to open the global search, or use the search bar in the top navigation. 
+              Press <kbd style={{ padding: '4px 8px', backgroundColor: '#fff', border: '1px solid #ccc', borderRadius: '4px', fontFamily: 'monospace' }}>Ctrl+K</kbd> anywhere
+              to open the global search, or use the search bar in the top navigation.
               Start typing to see instant results with highlighting and category filtering.
             </Typography>
           </Alert>
@@ -165,10 +165,10 @@ const SearchHelp = () => {
                     </Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                       {feature.examples.map((example, idx) => (
-                        <Chip 
-                          key={idx} 
-                          label={example} 
-                          size="small" 
+                        <Chip
+                          key={idx}
+                          label={example}
+                          size="small"
                           variant="outlined"
                           color="primary"
                         />
@@ -203,15 +203,15 @@ const SearchHelp = () => {
                         <TableCell>
                           <Box sx={{ display: 'flex', gap: 0.5 }}>
                             {shortcut.key.split(' ').map((key, idx) => (
-                              <kbd 
+                              <kbd
                                 key={idx}
-                                style={{ 
-                                  padding: '4px 8px', 
-                                  backgroundColor: '#f5f5f5', 
-                                  border: '1px solid #ccc', 
+                                style={{
+                                  padding: '4px 8px',
+                                  backgroundColor: '#f5f5f5',
+                                  border: '1px solid #ccc',
                                   borderRadius: '4px',
                                   fontFamily: 'monospace',
-                                  fontSize: '0.875rem'
+                                  fontSize: '0.875rem',
                                 }}
                               >
                                 {key}
@@ -287,12 +287,12 @@ const SearchHelp = () => {
                       <TableRow key={index}>
                         <TableCell>{content.type}</TableCell>
                         <TableCell>
-                          <Chip 
-                            label={content.weight} 
-                            size="small" 
+                          <Chip
+                            label={content.weight}
+                            size="small"
                             color={
                               content.weight === 'High' ? 'error' :
-                              content.weight === 'Medium' ? 'warning' : 'info'
+                                content.weight === 'Medium' ? 'warning' : 'info'
                             }
                           />
                         </TableCell>
@@ -404,8 +404,8 @@ const SearchHelp = () => {
               Need More Help?
             </Typography>
             <Typography variant="body1">
-              If you can't find what you're looking for, try browsing the documentation categories 
-              in the sidebar navigation, or contact support at <strong>mounir.ab@techno-dz.com</strong> 
+              If you can't find what you're looking for, try browsing the documentation categories
+              in the sidebar navigation, or contact support at <strong>mounir.ab@techno-dz.com</strong>
               for assistance with specific topics.
             </Typography>
           </Alert>

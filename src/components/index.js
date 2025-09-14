@@ -1,257 +1,353 @@
 /**
- * Main Components Barrel Export
- * 
- * Centralized export point for all components
- * Optimized for tree shaking and bundle size
- * 
- * @author Techno-ETL Team
- * @version 2.0.0
+ * Components Index - Centralized Component Exports
+ * Provides clean barrel exports for optimized imports and bundle size
+ * Organized by component categories for better tree-shaking
  */
 
-// ============================================================================
-// BASE COMPONENTS
-// ============================================================================
-
-// Core base components with default and named exports
-export { default as BaseGrid } from './base/BaseGrid';
-export { default as BaseToolbar } from './base/BaseToolbar';
-export { default as BaseDialog } from './base/BaseDialog';
-export { default as BaseCard } from './base/BaseCard';
-
-// Base component factory functions
+// ===== BASE COMPONENTS =====
 export {
-  createDataGrid,
-  createToolbar,
-  createFormDialog,
-  createStatsCards,
-  createGridPage,
-  applyGridPreset,
-  GRID_PRESETS
-} from './base';
+  default as BaseGrid,
+  BaseGrid as EnhancedBaseGrid
+} from './base/BaseGrid';
 
-// ============================================================================
-// COMMON COMPONENTS
-// ============================================================================
+export {
+  default as BaseToolbar,
+  BaseToolbar as EnhancedBaseToolbar
+} from './base/BaseToolbar';
 
-// Common utilities and shared components
-export { default as UnifiedGrid } from './common/UnifiedGrid';
-export { default as UnifiedGridToolbar } from './common/UnifiedGridToolbar';
+export {
+  default as BaseDialog
+} from './base/BaseDialog';
+
+export {
+  default as BaseCard
+} from './base/BaseCard';
+
+// Base components as a group
+export * as BaseComponents from './base';
+
+// ===== COMMON COMPONENTS =====
 export { default as TooltipWrapper } from './common/TooltipWrapper';
-export { default as GridErrorBoundary } from './common/GridErrorBoundary';
-export { default as StatsCards } from './common/StatsCards';
+export { default as ErrorBoundary } from './common/ErrorBoundary';
+export { default as LoadingSpinner } from './common/LoadingSpinner';
 export { default as GridCardView } from './common/GridCardView';
 export { default as RecordDetailsDialog } from './common/RecordDetailsDialog';
 
-// ============================================================================
-// GRID COMPONENTS (LAZY LOADED)
-// ============================================================================
+// Deprecated - use BaseGrid instead
+export { default as UnifiedGrid } from './common/UnifiedGrid';
+export { default as UnifiedGridToolbar } from './common/UnifiedGridToolbar';
 
-// Magento Grids - Lazy loaded for better code splitting
-export const ProductsGrid = React.lazy(() => import('./grids/magento/ProductsGrid'));
-export const ProductManagementGrid = React.lazy(() => import('./grids/magento/ProductManagementGrid'));
-export const CustomersGrid = React.lazy(() => import('./grids/magento/CustomersGrid'));
-export const OrdersGrid = React.lazy(() => import('./grids/magento/OrdersGrid'));
-export const InvoicesGrid = React.lazy(() => import('./grids/magento/InvoicesGrid'));
-export const ProductAttributesGrid = React.lazy(() => import('./grids/magento/ProductAttributesGrid'));
-export const ProductCategoriesGrid = React.lazy(() => import('./grids/magento/ProductCategoriesGrid'));
-export const EnhancedCmsPagesGrid = React.lazy(() => import('./grids/magento/EnhancedCmsPagesGrid'));
-export const CmsBlocksGrid = React.lazy(() => import('./grids/magento/CmsBlocksGrid'));
-export const SourcesGrid = React.lazy(() => import('./grids/magento/SourcesGrid'));
-export const StocksGrid = React.lazy(() => import('./grids/magento/StocksGrid'));
+// Common components as a group
+export const CommonComponents = {
+  TooltipWrapper: () => import('./common/TooltipWrapper'),
+  ErrorBoundary: () => import('./common/ErrorBoundary'),
+  LoadingSpinner: () => import('./common/LoadingSpinner'),
+  GridCardView: () => import('./common/GridCardView'),
+  RecordDetailsDialog: () => import('./common/RecordDetailsDialog')
+};
+
+// ===== GRID COMPONENTS =====
+
+// Magento Grids
+export { default as ProductManagementGrid } from './grids/magento/ProductManagementGrid';
+export { default as ProductsGrid } from './grids/magento/ProductsGrid';
+export { default as ProductAttributesGrid } from './grids/magento/ProductAttributesGrid';
+export { default as ProductCategoriesGrid } from './grids/magento/ProductCategoriesGrid';
+export { default as OrdersGrid } from './grids/magento/OrdersGrid';
+export { default as CustomersGrid } from './grids/magento/CustomersGrid';
+export { default as CategoriesGrid } from './grids/magento/CategoryGrid';
+export { default as StocksGrid } from './grids/magento/StocksGrid';
+export { default as SourcesGrid } from './grids/magento/SourcesGrid';
+export { default as InvoicesGrid } from './grids/magento/InvoicesGrid';
 
 // MDM Grids
-export const MDMProductsGrid = React.lazy(() => import('./grids/MDMProductsGrid/MDMProductsGrid'));
+export { default as MDMProductsGrid } from './grids/MDMProductsGrid/MDMProductsGrid';
+export { default as MDMStockGrid } from './grids/MDMStockGrid';
 
-// ============================================================================
-// DIALOG COMPONENTS
-// ============================================================================
+// Other Grids
+export { default as CegidGrid } from './grids/CegidGrid';
 
-// Dialog components for various operations
-export const CSVImportDialog = React.lazy(() => import('./dialogs/CSVImportDialog'));
-export const CatalogProcessorDialog = React.lazy(() => import('./dialogs/CatalogProcessorDialog'));
-export const ProductInfoDialog = React.lazy(() => import('./common/ProductInfoDialog'));
-export const BrandManagementDialog = React.lazy(() => import('./dialogs/BrandManagementDialog'));
-
-// ============================================================================
-// LAYOUT COMPONENTS
-// ============================================================================
-
-// Layout and navigation components
-export { default as Layout } from './Layout';
-export { default as Navigation } from './Navigation';
-export { default as UserProfile } from './UserProfile';
-
-// ============================================================================
-// SPECIALIZED COMPONENTS
-// ============================================================================
-
-// Analysis and chart components
-export const AnalysisComponents = React.lazy(() => import('./analysis'));
-export const ChartComponents = React.lazy(() => import('./charts'));
-export const DashboardComponents = React.lazy(() => import('./dashboard'));
-
-// Filter components
-export const FilterComponents = React.lazy(() => import('./filters'));
-
-// Media components
-export const MediaComponents = React.lazy(() => import('./media'));
-
-// ============================================================================
-// COMPONENT GROUPS (FOR DYNAMIC IMPORTS)
-// ============================================================================
-
-/**
- * Component groups for dynamic loading
- */
-export const COMPONENT_GROUPS = {
-  // Grid components
-  grids: {
-    magento: () => import('./grids/magento'),
-    mdm: () => import('./grids/MDMProductsGrid'),
-    templates: () => import('./grids/templates')
-  },
-  
-  // Dialog components
-  dialogs: () => import('./dialogs'),
-  
-  // Analysis components
-  analysis: () => import('./analysis'),
-  
-  // Chart components
-  charts: () => import('./charts'),
-  
-  // Dashboard components
-  dashboard: () => import('./dashboard'),
-  
-  // Filter components
-  filters: () => import('./filters'),
-  
-  // Media components
-  media: () => import('./media')
+// Grid components as groups for lazy loading
+export const MagentoGrids = {
+  ProductManagementGrid: () => import('./grids/magento/ProductManagementGrid'),
+  ProductsGrid: () => import('./grids/magento/ProductsGrid'),
+  ProductAttributesGrid: () => import('./grids/magento/ProductAttributesGrid'),
+  ProductCategoriesGrid: () => import('./grids/magento/ProductCategoriesGrid'),
+  OrdersGrid: () => import('./grids/magento/OrdersGrid'),
+  CustomersGrid: () => import('./grids/magento/CustomersGrid'),
+  CategoriesGrid: () => import('./grids/magento/CategoryGrid'),
+  StocksGrid: () => import('./grids/magento/StocksGrid'),
+  SourcesGrid: () => import('./grids/magento/SourcesGrid'),
+  InvoicesGrid: () => import('./grids/magento/InvoicesGrid')
 };
 
-// ============================================================================
-// DYNAMIC COMPONENT LOADER
-// ============================================================================
-
-/**
- * Dynamic component loader utility
- * @param {string} group - Component group name
- * @param {string} [component] - Specific component name
- * @returns {Promise<any>} Component or component group
- */
-export const loadComponent = async (group, component) => {
-  try {
-    if (component) {
-      // Load specific component from group
-      const groupModule = await COMPONENT_GROUPS[group]();
-      return groupModule[component];
-    } else {
-      // Load entire group
-      return await COMPONENT_GROUPS[group]();
-    }
-  } catch (error) {
-    console.error(`Failed to load component group: ${group}`, error);
-    throw error;
-  }
+export const MDMGrids = {
+  MDMProductsGrid: () => import('./grids/MDMProductsGrid/MDMProductsGrid'),
+  MDMStockGrid: () => import('./grids/MDMStockGrid')
 };
 
-// ============================================================================
-// COMPONENT REGISTRY
-// ============================================================================
+export const OtherGrids = {
+  CegidGrid: () => import('./grids/CegidGrid')
+};
+
+// ===== DIALOG COMPONENTS =====
+export { default as BrandManagementDialog } from './dialogs/BrandManagementDialog';
+
+// Dialog components for lazy loading
+export const DialogComponents = {
+  BrandManagementDialog: () => import('./dialogs/BrandManagementDialog'),
+  BaseDialog: () => import('./base/BaseDialog')
+};
+
+// ===== LAYOUT COMPONENTS =====
+export { default as Layout } from './Layout/Layout';
+export { default as Header } from './Layout/Header';
+export { default as Sidebar } from './Layout/Sidebar';
+export { default as Footer } from './Layout/Footer';
+
+// Layout components for lazy loading
+export const LayoutComponents = {
+  Layout: () => import('./Layout/Layout'),
+  Header: () => import('./Layout/Header'),
+  Sidebar: () => import('./Layout/Sidebar'),
+  Footer: () => import('./Layout/Footer')
+};
+
+// ===== COMPONENT CATEGORIES =====
+
+// All grid-related components
+export const GridComponents = {
+  // Base
+  BaseGrid: () => import('./base/BaseGrid'),
+  BaseToolbar: () => import('./base/BaseToolbar'),
+  
+  // Magento
+  ...MagentoGrids,
+  
+  // MDM
+  ...MDMGrids,
+  
+  // Other
+  ...OtherGrids,
+  
+  // Legacy (deprecated)
+  UnifiedGrid: () => import('./common/UnifiedGrid'),
+  UnifiedGridToolbar: () => import('./common/UnifiedGridToolbar')
+};
+
+// All dialog-related components
+export const AllDialogComponents = {
+  BaseDialog: () => import('./base/BaseDialog'),
+  ...DialogComponents
+};
+
+// All display components
+export const DisplayComponents = {
+  BaseCard: () => import('./base/BaseCard'),
+  GridCardView: () => import('./common/GridCardView'),
+  LoadingSpinner: () => import('./common/LoadingSpinner')
+};
+
+// ===== UTILITY EXPORTS =====
+
+// Component types and interfaces
+export * from './base/types';
+
+// Prop validation utilities
+export * from './base/propValidation';
+
+// Configuration utilities
+export * from '../config/baseGridConfig';
+
+// ===== LAZY LOADING UTILITIES =====
 
 /**
- * Component registry for runtime component resolution
+ * Lazy load a component with error boundary
  */
-export const COMPONENT_REGISTRY = {
-  // Base components
-  'BaseGrid': BaseGrid,
-  'BaseToolbar': BaseToolbar,
-  'BaseDialog': BaseDialog,
-  'BaseCard': BaseCard,
+export const lazyLoadComponent = (importFn, fallback = null) => {
+  const LazyComponent = React.lazy(importFn);
   
-  // Common components
-  'UnifiedGrid': UnifiedGrid,
-  'UnifiedGridToolbar': UnifiedGridToolbar,
-  'TooltipWrapper': TooltipWrapper,
+  return (props) => (
+    <React.Suspense fallback={fallback || <LoadingSpinner />}>
+      <ErrorBoundary>
+        <LazyComponent {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  );
+};
+
+/**
+ * Preload a component for better performance
+ */
+export const preloadComponent = (importFn) => {
+  const componentImport = importFn();
+  return componentImport;
+};
+
+/**
+ * Batch preload multiple components
+ */
+export const preloadComponents = (componentMap) => {
+  return Promise.all(
+    Object.values(componentMap).map(importFn => importFn())
+  );
+};
+
+// ===== COMPONENT REGISTRY =====
+
+/**
+ * Central component registry for dynamic imports
+ */
+export const ComponentRegistry = {
+  // Base Components
+  'BaseGrid': () => import('./base/BaseGrid'),
+  'BaseToolbar': () => import('./base/BaseToolbar'),
+  'BaseDialog': () => import('./base/BaseDialog'),
+  'BaseCard': () => import('./base/BaseCard'),
   
-  // Lazy components (resolved at runtime)
+  // Common Components
+  'TooltipWrapper': () => import('./common/TooltipWrapper'),
+  'ErrorBoundary': () => import('./common/ErrorBoundary'),
+  'LoadingSpinner': () => import('./common/LoadingSpinner'),
+  
+  // Grid Components
+  'ProductManagementGrid': () => import('./grids/magento/ProductManagementGrid'),
   'ProductsGrid': () => import('./grids/magento/ProductsGrid'),
-  'CustomersGrid': () => import('./grids/magento/CustomersGrid'),
   'OrdersGrid': () => import('./grids/magento/OrdersGrid'),
-  'MDMProductsGrid': () => import('./grids/MDMProductsGrid/MDMProductsGrid')
+  'CustomersGrid': () => import('./grids/magento/CustomersGrid'),
+  'MDMProductsGrid': () => import('./grids/MDMProductsGrid/MDMProductsGrid'),
+  'MDMStockGrid': () => import('./grids/MDMStockGrid'),
+  'CegidGrid': () => import('./grids/CegidGrid'),
+  
+  // Layout Components
+  'Layout': () => import('./Layout/Layout'),
+  'Header': () => import('./Layout/Header'),
+  'Sidebar': () => import('./Layout/Sidebar'),
+  'Footer': () => import('./Layout/Footer'),
+  
+  // Dialog Components
+  'BrandManagementDialog': () => import('./dialogs/BrandManagementDialog')
 };
 
 /**
- * Get component from registry
- * @param {string} name - Component name
- * @returns {any} Component or import function
+ * Get component by name with lazy loading
  */
-export const getComponent = (name) => {
-  const component = COMPONENT_REGISTRY[name];
-  
-  if (!component) {
-    throw new Error(`Component "${name}" not found in registry`);
+export const getComponent = (componentName) => {
+  const importFn = ComponentRegistry[componentName];
+  if (!importFn) {
+    console.warn(`Component "${componentName}" not found in registry`);
+    return null;
   }
-  
-  // If it's a function (lazy component), return the import
-  if (typeof component === 'function') {
-    return component();
-  }
-  
-  // Return the component directly
-  return component;
+  return lazyLoadComponent(importFn);
 };
 
-// ============================================================================
-// TREE-SHAKING OPTIMIZED EXPORTS
-// ============================================================================
-
 /**
- * Individual component exports for better tree shaking
- * These can be imported directly to avoid loading unnecessary code
+ * Check if component exists in registry
  */
-
-// Base components (always loaded)
-export { BaseGrid, BaseToolbar, BaseDialog, BaseCard };
-
-// Common utilities (lightweight)
-export { UnifiedGrid, TooltipWrapper };
-
-/**
- * Create lazy-loaded grid component
- * @param {Function} importFn - Import function
- * @param {React.ComponentType} [fallback] - Fallback component
- * @returns {React.LazyExoticComponent} Lazy component
- */
-export const createLazyGrid = (importFn, fallback) => {
-  return React.lazy(importFn);
+export const hasComponent = (componentName) => {
+  return componentName in ComponentRegistry;
 };
 
-// ============================================================================
-// DEFAULT EXPORT
-// ============================================================================
+/**
+ * Get all available component names
+ */
+export const getAvailableComponents = () => {
+  return Object.keys(ComponentRegistry);
+};
 
-import React from 'react';
+// ===== BUNDLE OPTIMIZATION =====
 
+/**
+ * Tree-shakable component groups
+ * Import only what you need to reduce bundle size
+ */
+
+// Essential components (always included)
+export const EssentialComponents = {
+  BaseGrid: () => import('./base/BaseGrid'),
+  BaseToolbar: () => import('./base/BaseToolbar'),
+  BaseDialog: () => import('./base/BaseDialog'),
+  TooltipWrapper: () => import('./common/TooltipWrapper'),
+  ErrorBoundary: () => import('./common/ErrorBoundary')
+};
+
+// Feature-specific component groups
+export const ProductManagementComponents = {
+  ProductManagementGrid: () => import('./grids/magento/ProductManagementGrid'),
+  ProductsGrid: () => import('./grids/magento/ProductsGrid'),
+  ProductAttributesGrid: () => import('./grids/magento/ProductAttributesGrid'),
+  ProductCategoriesGrid: () => import('./grids/magento/ProductCategoriesGrid'),
+  BrandManagementDialog: () => import('./dialogs/BrandManagementDialog')
+};
+
+export const OrderManagementComponents = {
+  OrdersGrid: () => import('./grids/magento/OrdersGrid'),
+  InvoicesGrid: () => import('./grids/magento/InvoicesGrid'),
+  CustomersGrid: () => import('./grids/magento/CustomersGrid')
+};
+
+export const DataManagementComponents = {
+  MDMProductsGrid: () => import('./grids/MDMProductsGrid/MDMProductsGrid'),
+  MDMStockGrid: () => import('./grids/MDMStockGrid'),
+  CegidGrid: () => import('./grids/CegidGrid')
+};
+
+// ===== MIGRATION HELPERS =====
+
+/**
+ * Legacy component mappings for migration
+ */
+export const LegacyComponentMap = {
+  // Old UnifiedGrid -> New BaseGrid
+  'UnifiedGrid': 'BaseGrid',
+  'UnifiedGridToolbar': 'BaseToolbar',
+  
+  // Old custom grids -> New standardized grids
+  'CustomProductGrid': 'ProductManagementGrid',
+  'CustomOrderGrid': 'OrdersGrid',
+  'CustomCustomerGrid': 'CustomersGrid'
+};
+
+/**
+ * Get modern component for legacy component name
+ */
+export const getMigratedComponent = (legacyName) => {
+  const modernName = LegacyComponentMap[legacyName] || legacyName;
+  return getComponent(modernName);
+};
+
+// ===== DEFAULT EXPORT =====
+
+/**
+ * Default export with most commonly used components
+ */
 export default {
-  // Base components
+  // Base Components
   BaseGrid,
   BaseToolbar,
   BaseDialog,
   BaseCard,
   
-  // Common components
-  UnifiedGrid,
-  UnifiedGridToolbar,
+  // Common Components
   TooltipWrapper,
+  ErrorBoundary,
+  
+  // Key Grid Components
+  ProductManagementGrid,
+  ProductsGrid,
+  OrdersGrid,
+  CustomersGrid,
+  MDMProductsGrid,
   
   // Utilities
-  loadComponent,
+  lazyLoadComponent,
+  preloadComponent,
   getComponent,
-  createLazyGrid,
+  hasComponent,
   
-  // Registry
-  COMPONENT_REGISTRY,
-  COMPONENT_GROUPS
+  // Component Groups
+  BaseComponents,
+  GridComponents,
+  DialogComponents,
+  LayoutComponents
 };

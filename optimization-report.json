@@ -1,0 +1,159 @@
+{
+  "timestamp": "2025-09-14T09:32:49.031Z",
+  "projectName": "Techno-ETL",
+  "version": "2.0.0",
+  "optimizations": [
+    {
+      "type": "analysis",
+      "data": {
+        "totalFiles": 517,
+        "jsxFiles": 234,
+        "jsFiles": 148,
+        "duplicateImports": [],
+        "unusedFiles": [],
+        "largeFiles": [
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\CegidApi\\SaleDocumentService.svc.xml",
+            "size": "170KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\data\\category.json",
+            "size": "320KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\data\\cmsPages.json",
+            "size": "325KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\data\\orders.json",
+            "size": "1270KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\data\\products.json",
+            "size": "119KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\data\\provinces.json",
+            "size": "528KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\csv.csv",
+            "size": "114KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\111400.jpg",
+            "size": "276KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\115827.jpg",
+            "size": "426KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\115844.jpg",
+            "size": "105KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\115845.jpg",
+            "size": "525KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\115846.jpg",
+            "size": "606KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\115893.jpg",
+            "size": "117KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\115913.jpg",
+            "size": "190KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\115933.jpg",
+            "size": "569KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\115937.webp",
+            "size": "121KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\115964.jpg",
+            "size": "371KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\116242.jpg",
+            "size": "216KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\116243.jpg",
+            "size": "113KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\116245.jpg",
+            "size": "789KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\116250.jpg",
+            "size": "113KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\116252.jpg",
+            "size": "167KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\116256.jpg",
+            "size": "115KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\116594.webp",
+            "size": "109KB"
+          },
+          {
+            "path": "C:\\projects\\Techno-ETL\\src\\assets\\training\\images\\317072.jpg",
+            "size": "228KB"
+          }
+        ]
+      }
+    },
+    {
+      "type": "routing",
+      "status": "optimized",
+      "files": [
+        "EnhancedRouter.jsx",
+        "RouteConfig.js",
+        "RouteGuard.jsx",
+        "SimplifiedRouter.jsx"
+      ]
+    },
+    {
+      "type": "services",
+      "totalServices": 35,
+      "duplicatePatterns": 5
+    },
+    {
+      "type": "components",
+      "total": 164,
+      "optimized": 79,
+      "optimizationRate": "48%"
+    },
+    {
+      "type": "backend",
+      "files": 50
+    },
+    {
+      "type": "cleanup",
+      "filesRemoved": 0
+    },
+    {
+      "type": "dependencies",
+      "dependencies": 41,
+      "devDependencies": 25
+    }
+  ],
+  "errors": [],
+  "summary": {
+    "totalOptimizations": 7,
+    "errorsEncountered": 0,
+    "status": "SUCCESS"
+  }
+}

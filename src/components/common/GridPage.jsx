@@ -34,7 +34,19 @@ const GridPage = ({ title, description, icon: Icon, showBreadcrumbs = true }) =>
   const pageDescription = useMemo(() => description || routeMetadata.description || '', [description, routeMetadata.description]);
   const PageIcon = useMemo(() => Icon || (() => null), [Icon]);
 
-  const ActiveComponent = useMemo(() => getActiveComponent(), [getActiveComponent]);
+  // Optimize ActiveComponent with proper memoization and error handling
+  const ActiveComponent = useMemo(() => {
+    try {
+      // Only call getActiveComponent if tabContext exists and getActiveComponent is a function
+      if (!tabContext || typeof getActiveComponent !== 'function') {
+        return null;
+      }
+      return getActiveComponent();
+    } catch (error) {
+      console.error('Error getting active component:', error);
+      return null;
+    }
+  }, [tabContext, getActiveComponent]);
 
   return (
     <Box
@@ -87,20 +99,22 @@ const GridPage = ({ title, description, icon: Icon, showBreadcrumbs = true }) =>
           </Stack>
         </Box>
 
-        <Paper sx={{ p: 3, borderRadius: 2, minHeight: '60vh' }}>
+        <Paper sx={{ p: 3, borderRadius: 2, minHeight: '60vh', height: '100%' }}>
           <ErrorBoundary fallback={<Alert severity="error">{t('An error occurred while loading the grid.')}</Alert>}>
             <Suspense fallback={
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 200 }}>
                 <Typography>{t('Loading grid...')}</Typography>
               </Box>
             }>
-              {ActiveComponent ? <ActiveComponent /> : (
-                <Alert severity="info">
-                  <Typography variant="body1">
-                    {t('This page is currently under development and will be available soon.')}
-                  </Typography>
-                </Alert>
-              )}
+              <Box sx={{ height: '100%', width: '100%', minHeight: 400 }}>
+                {ActiveComponent ? <ActiveComponent /> : (
+                  <Alert severity="info">
+                    <Typography variant="body1">
+                      {t('This page is currently under development and will be available soon.')}
+                    </Typography>
+                  </Alert>
+                )}
+              </Box>
             </Suspense>
           </ErrorBoundary>
         </Paper>

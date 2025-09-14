@@ -126,9 +126,16 @@ export function OptimizedAppProvider({ children }) {
         state.loading,
         state.error,
         state.notifications.length,
-        state.settings,
+        // Use JSON.stringify for deep comparison of settings object
+        JSON.stringify(state.settings),
         state.performance.renderCount
     ]);
+    
+    // Memoize the entire context value to prevent unnecessary re-renders
+    const contextValue = useMemo(() => ({
+        state: memoizedState,
+        dispatch: actions
+    }), [memoizedState, actions]);
     
     return (
         <AppStateContext.Provider value={memoizedState}>

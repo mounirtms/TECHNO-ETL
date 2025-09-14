@@ -19,7 +19,7 @@ import {
   Badge,
   Tabs,
   Tab,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -28,7 +28,7 @@ import {
   TrendingUp as TrendingIcon,
   History as HistoryIcon,
   Star as StarIcon,
-  KeyboardArrowRight as ArrowIcon
+  KeyboardArrowRight as ArrowIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -45,6 +45,7 @@ const GlobalSearchModal = ({ open, onClose }) => {
     if (open) {
       // Load recent searches
       const saved = localStorage.getItem('techno-etl-recent-searches');
+
       if (saved) {
         setRecentSearches(JSON.parse(saved));
       }
@@ -56,7 +57,7 @@ const GlobalSearchModal = ({ open, onClose }) => {
         documentationContent.find(doc => doc.id === 'api-documentation'),
         documentationContent.find(doc => doc.id === 'features-showcase'),
         documentationContent.find(doc => doc.id === 'magento-integration'),
-        documentationContent.find(doc => doc.id === 'troubleshooting')
+        documentationContent.find(doc => doc.id === 'troubleshooting'),
       ].filter(Boolean));
     }
   }, [open, documentationContent]);
@@ -79,8 +80,9 @@ const GlobalSearchModal = ({ open, onClose }) => {
 
   const saveRecentSearch = (query) => {
     if (!query.trim()) return;
-    
+
     const updated = [query, ...recentSearches.filter(s => s !== query)].slice(0, 10);
+
     setRecentSearches(updated);
     localStorage.setItem('techno-etl-recent-searches', JSON.stringify(updated));
   };
@@ -103,8 +105,9 @@ const GlobalSearchModal = ({ open, onClose }) => {
       api: 'secondary',
       integration: 'error',
       devops: 'primary',
-      support: 'warning'
+      support: 'warning',
     };
+
     return colors[category?.toLowerCase()] || 'default';
   };
 
@@ -117,17 +120,20 @@ const GlobalSearchModal = ({ open, onClose }) => {
       api: <DocumentIcon />,
       integration: <TrendingIcon />,
       devops: <DocumentIcon />,
-      support: <DocumentIcon />
+      support: <DocumentIcon />,
     };
+
     return icons[category?.toLowerCase()] || <DocumentIcon />;
   };
 
   const groupedResults = searchResults.reduce((acc, result) => {
     const category = result.item.category;
+
     if (!acc[category]) {
       acc[category] = [];
     }
     acc[category].push(result);
+
     return acc;
   }, {});
 
@@ -140,8 +146,8 @@ const GlobalSearchModal = ({ open, onClose }) => {
       PaperProps={{
         sx: {
           borderRadius: 2,
-          maxHeight: '80vh'
-        }
+          maxHeight: '80vh',
+        },
       }}
     >
       <DialogContent sx={{ p: 0 }}>
@@ -165,12 +171,12 @@ const GlobalSearchModal = ({ open, onClose }) => {
                   <InputAdornment position="end">
                     <CircularProgress size={20} />
                   </InputAdornment>
-                )
+                ),
               }}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: 2
-                }
+                  borderRadius: 2,
+                },
               }}
             />
             <IconButton onClick={handleClose} size="large">
@@ -198,12 +204,12 @@ const GlobalSearchModal = ({ open, onClose }) => {
         {/* Content Tabs */}
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={tabValue} onChange={handleTabChange}>
-            <Tab 
+            <Tab
               label={
                 <Badge badgeContent={searchResults.length} color="primary" invisible={!searchQuery || searchResults.length === 0}>
                   Results
                 </Badge>
-              } 
+              }
             />
             <Tab label="Recent" />
             <Tab label="Popular" />
@@ -237,8 +243,8 @@ const GlobalSearchModal = ({ open, onClose }) => {
                                   transition: 'all 0.2s',
                                   '&:hover': {
                                     transform: 'translateY(-2px)',
-                                    boxShadow: 4
-                                  }
+                                    boxShadow: 4,
+                                  },
                                 }}
                                 onClick={() => handleResultClick(result.item)}
                               >
@@ -251,8 +257,8 @@ const GlobalSearchModal = ({ open, onClose }) => {
                                       dangerouslySetInnerHTML={{
                                         __html: getHighlightedText(
                                           result.item.title,
-                                          result.matches?.find(m => m.key === 'title')?.indices
-                                        )
+                                          result.matches?.find(m => m.key === 'title')?.indices,
+                                        ),
                                       }}
                                     />
                                     <ArrowIcon color="action" />
@@ -263,8 +269,8 @@ const GlobalSearchModal = ({ open, onClose }) => {
                                     dangerouslySetInnerHTML={{
                                       __html: getHighlightedText(
                                         result.item.description,
-                                        result.matches?.find(m => m.key === 'description')?.indices
-                                      )
+                                        result.matches?.find(m => m.key === 'description')?.indices,
+                                      ),
                                     }}
                                   />
                                   <Box sx={{ mt: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -326,8 +332,8 @@ const GlobalSearchModal = ({ open, onClose }) => {
                         borderRadius: 1,
                         mb: 1,
                         '&:hover': {
-                          backgroundColor: 'action.hover'
-                        }
+                          backgroundColor: 'action.hover',
+                        },
                       }}
                     >
                       <ListItemIcon>
@@ -367,8 +373,8 @@ const GlobalSearchModal = ({ open, onClose }) => {
                         transition: 'all 0.2s',
                         '&:hover': {
                           transform: 'translateY(-2px)',
-                          boxShadow: 4
-                        }
+                          boxShadow: 4,
+                        },
                       }}
                       onClick={() => handleResultClick(page)}
                     >

@@ -19,7 +19,7 @@ import {
   Avatar,
   Badge,
   Divider,
-  Button
+  Button,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import {
@@ -42,7 +42,7 @@ import {
   TrendingUp as TrendingIcon,
   Group as TeamIcon,
   Language as LanguageIcon,
-  Palette as ThemeIcon
+  Palette as ThemeIcon,
 } from '@mui/icons-material';
 
 const FeaturesShowcase = () => {
@@ -54,12 +54,12 @@ const FeaturesShowcase = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const coreFeatures = [
@@ -72,21 +72,21 @@ const FeaturesShowcase = () => {
           name: 'Real-time Bidirectional Sync',
           description: 'Seamless data synchronization between MDM and Magento systems',
           metrics: ['99.9% accuracy', '< 1 second latency', '10,000+ records/min'],
-          status: 'production'
+          status: 'production',
         },
         {
           name: 'Multi-source Inventory Management',
           description: 'Unified inventory tracking across warehouses, POS, and RFID systems',
           metrics: ['Multiple sources', 'Real-time updates', 'Conflict resolution'],
-          status: 'production'
+          status: 'production',
         },
         {
           name: 'Advanced Data Validation',
           description: 'Comprehensive data quality assurance with business rule validation',
           metrics: ['Custom rules', 'Auto-correction', 'Quality scoring'],
-          status: 'production'
-        }
-      ]
+          status: 'production',
+        },
+      ],
     },
     {
       category: 'User Experience',
@@ -97,21 +97,21 @@ const FeaturesShowcase = () => {
           name: 'Professional Grid System',
           description: 'Advanced data grids with filtering, sorting, and virtualization',
           metrics: ['100K+ rows', 'Virtual scrolling', 'Export/Import'],
-          status: 'production'
+          status: 'production',
         },
         {
           name: 'Real-time Dashboards',
           description: 'Interactive dashboards with live KPI tracking and analytics',
           metrics: ['Live updates', 'Custom widgets', 'Drill-down'],
-          status: 'production'
+          status: 'production',
         },
         {
           name: 'Multi-language Support',
           description: 'Full internationalization with RTL support',
           metrics: ['English', 'French', 'Arabic', 'RTL support'],
-          status: 'production'
-        }
-      ]
+          status: 'production',
+        },
+      ],
     },
     {
       category: 'Enterprise Features',
@@ -122,22 +122,22 @@ const FeaturesShowcase = () => {
           name: 'Role-based Access Control',
           description: 'Granular permissions with Firebase authentication',
           metrics: ['Multiple roles', 'Fine-grained', 'Audit trails'],
-          status: 'production'
+          status: 'production',
         },
         {
           name: 'High Performance Architecture',
           description: 'Optimized for 1000+ concurrent users and enterprise scale',
           metrics: ['1000+ users', '< 2s load time', 'Auto-scaling'],
-          status: 'production'
+          status: 'production',
         },
         {
           name: 'Comprehensive Monitoring',
           description: 'Full system monitoring with alerting and health checks',
           metrics: ['Health checks', 'Performance metrics', 'Error tracking'],
-          status: 'production'
-        }
-      ]
-    }
+          status: 'production',
+        },
+      ],
+    },
   ];
 
   const technicalHighlights = [
@@ -151,8 +151,8 @@ const FeaturesShowcase = () => {
         'Material-UI component library',
         'Vite for fast development builds',
         'React Router for client-side routing',
-        'Framer Motion for smooth animations'
-      ]
+        'Framer Motion for smooth animations',
+      ],
     },
     {
       title: 'Robust Backend Services',
@@ -164,8 +164,8 @@ const FeaturesShowcase = () => {
         'RESTful API with OpenAPI documentation',
         'JWT authentication with refresh tokens',
         'Comprehensive input validation',
-        'Structured logging with Winston'
-      ]
+        'Structured logging with Winston',
+      ],
     },
     {
       title: 'Scalable Data Layer',
@@ -177,8 +177,8 @@ const FeaturesShowcase = () => {
         'Firebase for real-time features',
         'Redis for caching and sessions',
         'Optimized database indexes',
-        'Connection pooling and management'
-      ]
+        'Connection pooling and management',
+      ],
     },
     {
       title: 'Production-Ready Deployment',
@@ -190,9 +190,9 @@ const FeaturesShowcase = () => {
         'Load balancing with Nginx',
         'PM2 process management',
         'Health monitoring and alerting',
-        'Automated backup strategies'
-      ]
-    }
+        'Automated backup strategies',
+      ],
+    },
   ];
 
   const performanceMetrics = [
@@ -201,7 +201,7 @@ const FeaturesShowcase = () => {
     { label: 'Data Sync Accuracy', value: '99.9%', progress: 99, color: 'info' },
     { label: 'System Uptime', value: '99.95%', progress: 99, color: 'warning' },
     { label: 'Concurrent Users', value: '1000+', progress: 85, color: 'secondary' },
-    { label: 'ETL Throughput', value: '10K+ records/min', progress: 92, color: 'error' }
+    { label: 'ETL Throughput', value: '10K+ records/min', progress: 92, color: 'error' },
   ];
 
   const integrationCapabilities = [
@@ -210,29 +210,29 @@ const FeaturesShowcase = () => {
       description: 'Complete e-commerce platform integration',
       features: ['Product sync', 'Inventory management', 'Order processing', 'Customer data'],
       status: 'active',
-      icon: <ShoppingCart />
+      icon: <ShoppingCart />,
     },
     {
       system: 'RFID Systems',
       description: 'Real-time inventory tracking integration',
       features: ['Real-time tracking', 'Location mapping', 'Movement history', 'Alerts'],
       status: 'active',
-      icon: <SyncIcon />
+      icon: <SyncIcon />,
     },
     {
       system: 'POS Systems',
       description: 'Point of sale system integration',
       features: ['Sales data', 'Transaction sync', 'Inventory updates', 'Reporting'],
       status: 'active',
-      icon: <TrendingIcon />
+      icon: <TrendingIcon />,
     },
     {
       system: 'Warehouse Management',
       description: 'Multi-location warehouse integration',
       features: ['Stock levels', 'Transfers', 'Picking lists', 'Cycle counts'],
       status: 'active',
-      icon: <StorageIcon />
-    }
+      icon: <StorageIcon />,
+    },
   ];
 
   const TabPanel = ({ children, value, index, ...other }) => (
@@ -249,10 +249,10 @@ const FeaturesShowcase = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'production': return 'success';
-      case 'beta': return 'warning';
-      case 'development': return 'info';
-      default: return 'default';
+    case 'production': return 'success';
+    case 'beta': return 'warning';
+    case 'development': return 'info';
+    default: return 'default';
     }
   };
 
@@ -284,8 +284,8 @@ const FeaturesShowcase = () => {
               🚀 Feature Highlights
             </Typography>
             <Typography variant="body1">
-              TECHNO-ETL delivers enterprise-grade data management with real-time synchronization, 
-              advanced analytics, and professional user interfaces. Built for scalability and performance 
+              TECHNO-ETL delivers enterprise-grade data management with real-time synchronization,
+              advanced analytics, and professional user interfaces. Built for scalability and performance
               with modern technologies and best practices.
             </Typography>
           </Alert>
@@ -306,9 +306,9 @@ const FeaturesShowcase = () => {
                   <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
                     {metric.label}
                   </Typography>
-                  <LinearProgress 
-                    variant="determinate" 
-                    value={metric.progress} 
+                  <LinearProgress
+                    variant="determinate"
+                    value={metric.progress}
                     color={metric.color}
                     sx={{ height: 8, borderRadius: 4 }}
                   />
@@ -347,10 +347,10 @@ const FeaturesShowcase = () => {
                               <Typography variant="h6" fontWeight={600} sx={{ flexGrow: 1 }}>
                                 {feature.name}
                               </Typography>
-                              <Chip 
-                                label={feature.status} 
-                                color={getStatusColor(feature.status)} 
-                                size="small" 
+                              <Chip
+                                label={feature.status}
+                                color={getStatusColor(feature.status)}
+                                size="small"
                               />
                             </Box>
                             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -358,10 +358,10 @@ const FeaturesShowcase = () => {
                             </Typography>
                             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                               {feature.metrics.map((metric, idx) => (
-                                <Chip 
-                                  key={idx} 
-                                  label={metric} 
-                                  size="small" 
+                                <Chip
+                                  key={idx}
+                                  label={metric}
+                                  size="small"
                                   variant="outlined"
                                   sx={{ fontSize: '0.75rem' }}
                                 />
@@ -384,8 +384,8 @@ const FeaturesShowcase = () => {
             🔍 Detailed Feature Information
           </Typography>
           <Paper sx={{ mb: 6 }}>
-            <Tabs 
-              value={tabValue} 
+            <Tabs
+              value={tabValue}
               onChange={handleTabChange}
               variant="scrollable"
               scrollButtons="auto"
@@ -447,8 +447,8 @@ const FeaturesShowcase = () => {
                             <Typography variant="h6" fontWeight={600}>
                               {integration.system}
                             </Typography>
-                            <Badge 
-                              badgeContent={integration.status} 
+                            <Badge
+                              badgeContent={integration.status}
                               color="success"
                               sx={{ '& .MuiBadge-badge': { position: 'static', transform: 'none' } }}
                             />
@@ -480,7 +480,7 @@ const FeaturesShowcase = () => {
                 <Typography variant="subtitle2" fontWeight={600}>Modern User Interface:</Typography>
                 Built with Material-UI components and modern design principles for exceptional user experience.
               </Alert>
-              
+
               <Grid container spacing={3}>
                 <Grid item xs={12} md={4}>
                   <Card>
@@ -551,7 +551,7 @@ const FeaturesShowcase = () => {
                 <Typography variant="subtitle2" fontWeight={600}>Enterprise Ready:</Typography>
                 Built for enterprise environments with security, scalability, and reliability in mind.
               </Alert>
-              
+
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
                   <Card>
@@ -622,19 +622,19 @@ const FeaturesShowcase = () => {
                 🚀 Ready to Experience TECHNO-ETL?
               </Typography>
               <Typography variant="body1" sx={{ mb: 3 }}>
-                Explore our comprehensive documentation and get started with the most advanced 
+                Explore our comprehensive documentation and get started with the most advanced
                 data management platform for enterprise e-commerce operations.
               </Typography>
-              <Button 
-                variant="contained" 
-                color="secondary" 
+              <Button
+                variant="contained"
+                color="secondary"
                 size="large"
                 sx={{ mr: 2 }}
               >
                 Get Started
               </Button>
-              <Button 
-                variant="outlined" 
+              <Button
+                variant="outlined"
                 sx={{ color: 'primary.contrastText', borderColor: 'primary.contrastText' }}
                 size="large"
               >

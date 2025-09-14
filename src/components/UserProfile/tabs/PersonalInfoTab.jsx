@@ -145,7 +145,7 @@ const PersonalInfoTab = ({ userData, onUpdateUserData, loading, error }) => {
                 />
                 <label htmlFor="avatar-upload">
                   <UploadButton
-                    component="span"
+                    component="span" // Change from IconButton to span to avoid nested button issue
                     size="small"
                     color="primary"
                     aria-label="upload picture"

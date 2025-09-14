@@ -23,7 +23,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import {
@@ -34,7 +34,7 @@ import {
   Category as CategoryIcon,
   Sync as SyncIcon,
   CheckCircle as CheckIcon,
-  Code as CodeIcon
+  Code as CodeIcon,
 } from '@mui/icons-material';
 
 const ProductManagement = () => {
@@ -46,12 +46,12 @@ const ProductManagement = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const productFeatures = [
@@ -59,32 +59,32 @@ const ProductManagement = () => {
       title: 'Product CRUD Operations',
       description: 'Complete Create, Read, Update, Delete functionality',
       icon: <ProductIcon />,
-      color: '#1976d2'
+      color: '#1976d2',
     },
     {
       title: 'Inventory Management',
       description: 'Real-time stock tracking across multiple sources',
       icon: <InventoryIcon />,
-      color: '#388e3c'
+      color: '#388e3c',
     },
     {
       title: 'Price Management',
       description: 'Dynamic pricing with customer group support',
       icon: <PriceIcon />,
-      color: '#f57c00'
+      color: '#f57c00',
     },
     {
       title: 'Category Management',
       description: 'Hierarchical category structure with mapping',
       icon: <CategoryIcon />,
-      color: '#7b1fa2'
+      color: '#7b1fa2',
     },
     {
       title: 'MDM-Magento Sync',
       description: 'Bidirectional synchronization between systems',
       icon: <SyncIcon />,
-      color: '#d32f2f'
-    }
+      color: '#d32f2f',
+    },
   ];
 
   const productWorkflow = [
@@ -96,8 +96,8 @@ const ProductManagement = () => {
         'Product information and descriptions',
         'Category and brand assignment',
         'Attribute configuration',
-        'Initial pricing setup'
-      ]
+        'Initial pricing setup',
+      ],
     },
     {
       step: '2. Inventory Setup',
@@ -107,8 +107,8 @@ const ProductManagement = () => {
         'Safety stock configuration',
         'Reorder point settings',
         'Location-based inventory',
-        'Reserved quantity management'
-      ]
+        'Reserved quantity management',
+      ],
     },
     {
       step: '3. Price Configuration',
@@ -118,8 +118,8 @@ const ProductManagement = () => {
         'Customer group pricing',
         'Special price periods',
         'Markup rules application',
-        'Currency conversion'
-      ]
+        'Currency conversion',
+      ],
     },
     {
       step: '4. Magento Synchronization',
@@ -129,9 +129,9 @@ const ProductManagement = () => {
         'Attribute synchronization',
         'Category assignment',
         'Image and media sync',
-        'SEO optimization'
-      ]
-    }
+        'SEO optimization',
+      ],
+    },
   ];
 
   const codeExamples = {
@@ -306,7 +306,7 @@ const bulkUpdateProducts = async (products, operation) => {
   }
   
   return results;
-};`
+};`,
   };
 
   const dataStructures = [
@@ -321,8 +321,8 @@ const bulkUpdateProducts = async (products, operation) => {
         { name: 'brand_id', type: 'integer', description: 'Brand reference' },
         { name: 'status', type: 'enum', description: 'active, inactive, pending' },
         { name: 'created_date', type: 'datetime', description: 'Creation timestamp' },
-        { name: 'modified_date', type: 'datetime', description: 'Last modification' }
-      ]
+        { name: 'modified_date', type: 'datetime', description: 'Last modification' },
+      ],
     },
     {
       name: 'Inventory',
@@ -334,9 +334,9 @@ const bulkUpdateProducts = async (products, operation) => {
         { name: 'reservedQuantity', type: 'integer', description: 'Reserved stock' },
         { name: 'availableQuantity', type: 'integer', description: 'Calculated available' },
         { name: 'lastUpdated', type: 'datetime', description: 'Last update timestamp' },
-        { name: 'changed', type: 'boolean', description: 'Sync flag' }
-      ]
-    }
+        { name: 'changed', type: 'boolean', description: 'Sync flag' },
+      ],
+    },
   ];
 
   const TabPanel = ({ children, value, index, ...other }) => (
@@ -375,8 +375,8 @@ const bulkUpdateProducts = async (products, operation) => {
         <motion.div variants={itemVariants}>
           <Alert severity="info" sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>🎯 Product Management Overview</Typography>
-            The TECHNO-ETL Product Management System provides comprehensive tools for managing product lifecycles, 
-            inventory tracking, pricing strategies, and seamless synchronization between MDM and Magento platforms. 
+            The TECHNO-ETL Product Management System provides comprehensive tools for managing product lifecycles,
+            inventory tracking, pricing strategies, and seamless synchronization between MDM and Magento platforms.
             Built for enterprise-scale operations with real-time updates and advanced workflow automation.
           </Alert>
         </motion.div>
@@ -389,25 +389,25 @@ const bulkUpdateProducts = async (products, operation) => {
           <Grid container spacing={3} sx={{ mb: 6 }}>
             {productFeatures.map((feature, index) => (
               <Grid item xs={12} md={6} lg={4} key={index}>
-                <Card 
-                  sx={{ 
+                <Card
+                  sx={{
                     height: '100%',
                     transition: 'transform 0.2s, box-shadow 0.2s',
                     '&:hover': {
                       transform: 'translateY(-4px)',
-                      boxShadow: 4
-                    }
+                      boxShadow: 4,
+                    },
                   }}
                 >
                   <CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <Box 
-                        sx={{ 
-                          p: 1, 
-                          borderRadius: 2, 
+                      <Box
+                        sx={{
+                          p: 1,
+                          borderRadius: 2,
                           backgroundColor: `${feature.color}20`,
                           color: feature.color,
-                          mr: 2
+                          mr: 2,
                         }}
                       >
                         {feature.icon}
@@ -437,9 +437,9 @@ const bulkUpdateProducts = async (products, operation) => {
                 <Accordion>
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      <Chip 
-                        label={index + 1} 
-                        color="primary" 
+                      <Chip
+                        label={index + 1}
+                        color="primary"
                         sx={{ fontWeight: 'bold' }}
                       />
                       <Typography variant="h6" fontWeight={600}>
@@ -474,8 +474,8 @@ const bulkUpdateProducts = async (products, operation) => {
             📖 Implementation Guide
           </Typography>
           <Paper sx={{ mb: 6 }}>
-            <Tabs 
-              value={tabValue} 
+            <Tabs
+              value={tabValue}
               onChange={handleTabChange}
               variant="scrollable"
               scrollButtons="auto"
@@ -492,7 +492,7 @@ const bulkUpdateProducts = async (products, operation) => {
               <Typography variant="body1" sx={{ mb: 3 }}>
                 Create and manage products with complete attribute support, validation, and automatic SKU generation.
               </Typography>
-              
+
               <Paper sx={{ p: 2, backgroundColor: '#f5f5f5', overflow: 'auto', mb: 3 }}>
                 <pre style={{ fontSize: '0.875rem', margin: 0, whiteSpace: 'pre-wrap' }}>
                   {codeExamples.productCreation}
@@ -520,7 +520,7 @@ const bulkUpdateProducts = async (products, operation) => {
               <Typography variant="body1" sx={{ mb: 3 }}>
                 Manage inventory across multiple sources with real-time updates and automatic synchronization.
               </Typography>
-              
+
               <Paper sx={{ p: 2, backgroundColor: '#f5f5f5', overflow: 'auto', mb: 3 }}>
                 <pre style={{ fontSize: '0.875rem', margin: 0, whiteSpace: 'pre-wrap' }}>
                   {codeExamples.inventoryUpdate}
@@ -551,7 +551,7 @@ const bulkUpdateProducts = async (products, operation) => {
               <Typography variant="body1" sx={{ mb: 3 }}>
                 Configure dynamic pricing with customer group support, special pricing periods, and automatic markup rules.
               </Typography>
-              
+
               <Paper sx={{ p: 2, backgroundColor: '#f5f5f5', overflow: 'auto', mb: 3 }}>
                 <pre style={{ fontSize: '0.875rem', margin: 0, whiteSpace: 'pre-wrap' }}>
                   {codeExamples.priceManagement}
@@ -579,7 +579,7 @@ const bulkUpdateProducts = async (products, operation) => {
               <Typography variant="body1" sx={{ mb: 3 }}>
                 Perform bulk operations on multiple products with batch processing and error handling.
               </Typography>
-              
+
               <Paper sx={{ p: 2, backgroundColor: '#f5f5f5', overflow: 'auto' }}>
                 <pre style={{ fontSize: '0.875rem', margin: 0, whiteSpace: 'pre-wrap' }}>
                   {codeExamples.bulkOperations}
