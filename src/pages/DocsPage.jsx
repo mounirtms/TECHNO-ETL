@@ -1,7 +1,7 @@
 /**
  * Documentation Page Component
  * Serves the interactive documentation website from the same domain
- * 
+ *
  * @author Techno-ETL Team
  * @version 1.0.0
  */
@@ -15,11 +15,11 @@ import {
   CardContent,
   CircularProgress,
   Alert,
-  Link
+  Link,
 } from '@mui/material';
 import {
   Book as BookIcon,
-  Home as HomeIcon
+  Home as HomeIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
@@ -41,7 +41,7 @@ const DocsPage = () => {
         alignItems: 'center',
         minHeight: '100vh',
         backgroundColor: 'background.default',
-        p: 3
+        p: 3,
       }}
     >
       <Card
@@ -49,22 +49,22 @@ const DocsPage = () => {
           maxWidth: 600,
           width: '100%',
           textAlign: 'center',
-          elevation: 3
+          elevation: 3,
         }}
       >
         <CardContent sx={{ p: 4 }}>
-          <BookIcon 
-            sx={{ 
-              fontSize: 80, 
-              color: 'primary.main', 
-              mb: 3 
-            }} 
+          <BookIcon
+            sx={{
+              fontSize: 80,
+              color: 'primary.main',
+              mb: 3,
+            }}
           />
-          
+
           <Typography variant="h4" component="h1" gutterBottom>
             TECHNO-ETL Documentation
           </Typography>
-          
+
           <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
             Access the comprehensive interactive documentation for TECHNO-ETL.
             The documentation includes API guides, component examples, and developer resources.

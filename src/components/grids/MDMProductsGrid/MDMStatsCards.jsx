@@ -1,7 +1,7 @@
 /**
  * MDM Statistics Cards Component
  * Professional statistics display for MDM Products Grid
- * 
+ *
  * @author Techno-ETL Team
  * @version 1.0.0
  */
@@ -16,13 +16,13 @@ import {
   SyncAlt as SyncAltIcon,
   TrendingUp as TrendingUpIcon,
   AttachMoney as AttachMoneyIcon,
-  AccountBalance as AccountBalanceIcon
+  AccountBalance as AccountBalanceIcon,
 } from '@mui/icons-material';
 
 /**
  * MDM Statistics Cards Component
  * Displays comprehensive statistics for MDM inventory data
- * 
+ *
  * @param {Object} props - Component props
  * @param {Object} props.stats - Statistics data object
  * @param {number} props.stats.total - Total number of products
@@ -46,57 +46,57 @@ const MDMStatsCards = ({ stats }) => {
       value: stats.total || 0,
       icon: CategoryIcon,
       color: 'primary',
-      description: 'Total products in inventory'
+      description: 'Total products in inventory',
     },
     {
       title: 'In Stock',
       value: stats.inStock || 0,
       icon: CheckCircleOutlineIcon,
       color: 'success',
-      description: 'Products currently in stock'
+      description: 'Products currently in stock',
     },
     {
       title: 'Out of Stock',
       value: stats.outOfStock || 0,
       icon: ErrorOutlineIcon,
       color: 'error',
-      description: 'Products currently out of stock'
+      description: 'Products currently out of stock',
     },
     {
       title: 'Low Stock',
       value: stats.lowStock || 0,
       icon: ReportProblemIcon,
       color: 'warning',
-      description: 'Products with low stock levels'
+      description: 'Products with low stock levels',
     },
     {
       title: 'New Changes',
       value: stats.newChanges || 0,
       icon: SyncAltIcon,
       color: 'info',
-      description: 'Recently updated products'
+      description: 'Recently updated products',
     },
     {
       title: 'Synced Items',
       value: stats.synced || 0,
       icon: TrendingUpIcon,
       color: 'success',
-      description: 'Successfully synced products'
+      description: 'Successfully synced products',
     },
     {
       title: 'Avg Price',
       value: `${(stats.averagePrice || 0).toFixed(2)} DZD`,
       icon: AttachMoneyIcon,
       color: 'secondary',
-      description: 'Average product price'
+      description: 'Average product price',
     },
     {
       title: 'Total Value',
       value: `${((stats.totalValue || 0) / 1000).toFixed(1)}K DZD`,
       icon: AccountBalanceIcon,
       color: 'primary',
-      description: 'Total inventory value'
-    }
+      description: 'Total inventory value',
+    },
   ].slice(0, 8), [stats]);
 
   return <StatsCards cards={statusCards} />;

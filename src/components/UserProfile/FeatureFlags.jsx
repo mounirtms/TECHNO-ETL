@@ -3,12 +3,12 @@ import {
   Box, Paper, Typography, Switch, FormControlLabel, Alert, Snackbar,
   Grid, Card, CardContent, CardHeader, Divider, Chip, List,
   ListItem, ListItemText, ListItemSecondaryAction, Button,
-  Accordion, AccordionSummary, AccordionDetails, Tooltip
+  Accordion, AccordionSummary, AccordionDetails, Tooltip,
 } from '@mui/material';
 import {
   Flag, Science, BugReport, Analytics, CloudUpload, CloudDownload,
   Notifications, Dashboard, Api, Speed, Security, ExpandMore,
-  Save, RestoreFromTrash, Warning, NewReleases
+  Save, RestoreFromTrash, Warning, NewReleases,
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 
@@ -22,34 +22,34 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
     dataExportImport: false,
     advancedReporting: false,
     customDashboardWidgets: false,
-    
+
     // Real-time Features
     realTimeNotifications: false,
     liveDataSync: false,
     collaborativeEditing: false,
-    
+
     // API & Integration
     apiIntegrations: false,
     webhookSupport: false,
     customConnectors: false,
-    
+
     // Developer Tools
     debugMode: false,
     developerConsole: false,
     performanceProfiler: false,
     apiTesting: false,
-    
+
     // Experimental Features
     experimentalUI: false,
     betaFeatures: false,
     aiAssistant: false,
     predictiveAnalytics: false,
-    
+
     // Security & Compliance
     advancedSecurity: false,
     auditTrail: false,
     dataEncryption: false,
-    complianceReporting: false
+    complianceReporting: false,
   });
 
   const [showSuccess, setShowSuccess] = useState(false);
@@ -67,27 +67,27 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
           name: 'Advanced Bulk Operations',
           description: 'Enable complex bulk operations across multiple grids',
           warning: 'May impact performance with large datasets',
-          requiresRestart: false
+          requiresRestart: false,
         },
         dataExportImport: {
           name: 'Data Export/Import',
           description: 'Advanced data export and import capabilities',
           warning: 'Requires proper data validation',
-          requiresRestart: false
+          requiresRestart: false,
         },
         advancedReporting: {
           name: 'Advanced Reporting',
           description: 'Custom reports and analytics dashboard',
           warning: 'May require additional server resources',
-          requiresRestart: false
+          requiresRestart: false,
         },
         customDashboardWidgets: {
           name: 'Custom Dashboard Widgets',
           description: 'Create and customize dashboard widgets',
           warning: 'Experimental feature',
-          requiresRestart: true
-        }
-      }
+          requiresRestart: true,
+        },
+      },
     },
     realtime: {
       title: 'Real-time Features',
@@ -98,21 +98,21 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
           name: 'Real-time Notifications',
           description: 'Live notifications for data changes',
           warning: 'Requires WebSocket connection',
-          requiresRestart: false
+          requiresRestart: false,
         },
         liveDataSync: {
           name: 'Live Data Synchronization',
           description: 'Real-time data updates across all grids',
           warning: 'High bandwidth usage',
-          requiresRestart: true
+          requiresRestart: true,
         },
         collaborativeEditing: {
           name: 'Collaborative Editing',
           description: 'Multiple users can edit simultaneously',
           warning: 'Beta feature - may have conflicts',
-          requiresRestart: true
-        }
-      }
+          requiresRestart: true,
+        },
+      },
     },
     integration: {
       title: 'API & Integration',
@@ -123,21 +123,21 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
           name: 'API Integrations',
           description: 'Connect with external APIs and services',
           warning: 'Requires API credentials configuration',
-          requiresRestart: false
+          requiresRestart: false,
         },
         webhookSupport: {
           name: 'Webhook Support',
           description: 'Send and receive webhook notifications',
           warning: 'Requires server configuration',
-          requiresRestart: true
+          requiresRestart: true,
         },
         customConnectors: {
           name: 'Custom Connectors',
           description: 'Build custom data connectors',
           warning: 'Advanced feature for developers',
-          requiresRestart: true
-        }
-      }
+          requiresRestart: true,
+        },
+      },
     },
     developer: {
       title: 'Developer Tools',
@@ -148,27 +148,27 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
           name: 'Debug Mode',
           description: 'Enable detailed logging and debugging',
           warning: 'May impact performance',
-          requiresRestart: false
+          requiresRestart: false,
         },
         developerConsole: {
           name: 'Developer Console',
           description: 'Advanced developer tools and console',
           warning: 'For developers only',
-          requiresRestart: false
+          requiresRestart: false,
         },
         performanceProfiler: {
           name: 'Performance Profiler',
           description: 'Monitor and profile application performance',
           warning: 'May slow down the application',
-          requiresRestart: false
+          requiresRestart: false,
         },
         apiTesting: {
           name: 'API Testing Tools',
           description: 'Built-in API testing and debugging tools',
           warning: 'Developer feature',
-          requiresRestart: false
-        }
-      }
+          requiresRestart: false,
+        },
+      },
     },
     experimental: {
       title: 'Experimental Features',
@@ -179,27 +179,27 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
           name: 'Experimental UI',
           description: 'Try new user interface components',
           warning: 'Unstable - may cause issues',
-          requiresRestart: true
+          requiresRestart: true,
         },
         betaFeatures: {
           name: 'Beta Features',
           description: 'Access to beta and preview features',
           warning: 'Not recommended for production',
-          requiresRestart: false
+          requiresRestart: false,
         },
         aiAssistant: {
           name: 'AI Assistant',
           description: 'AI-powered assistance and suggestions',
           warning: 'Requires AI service connection',
-          requiresRestart: true
+          requiresRestart: true,
         },
         predictiveAnalytics: {
           name: 'Predictive Analytics',
           description: 'AI-powered predictive insights',
           warning: 'Experimental AI feature',
-          requiresRestart: true
-        }
-      }
+          requiresRestart: true,
+        },
+      },
     },
     security: {
       title: 'Security & Compliance',
@@ -210,33 +210,34 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
           name: 'Advanced Security',
           description: 'Enhanced security features and monitoring',
           warning: 'May require additional configuration',
-          requiresRestart: true
+          requiresRestart: true,
         },
         auditTrail: {
           name: 'Audit Trail',
           description: 'Comprehensive audit logging',
           warning: 'Increases storage requirements',
-          requiresRestart: false
+          requiresRestart: false,
         },
         dataEncryption: {
           name: 'Data Encryption',
           description: 'Enhanced data encryption at rest',
           warning: 'May impact performance',
-          requiresRestart: true
+          requiresRestart: true,
         },
         complianceReporting: {
           name: 'Compliance Reporting',
           description: 'Generate compliance and regulatory reports',
           warning: 'Requires compliance configuration',
-          requiresRestart: false
-        }
-      }
-    }
+          requiresRestart: false,
+        },
+      },
+    },
   };
 
   // Load feature flags on component mount
   useEffect(() => {
     const savedFlags = localStorage.getItem(`featureFlags_${user?.id}`);
+
     if (savedFlags) {
       setFeatureFlags(JSON.parse(savedFlags));
     }
@@ -245,7 +246,7 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
   const handleFeatureToggle = (featureKey, enabled) => {
     setFeatureFlags(prev => ({
       ...prev,
-      [featureKey]: enabled
+      [featureKey]: enabled,
     }));
     setIsDirty(true);
   };
@@ -253,11 +254,11 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
   const handleSave = async () => {
     try {
       localStorage.setItem(`featureFlags_${user?.id}`, JSON.stringify(featureFlags));
-      
+
       if (onSettingsChange) {
         onSettingsChange({ featureFlags });
       }
-      
+
       setIsDirty(false);
       setShowSuccess(true);
     } catch (error) {
@@ -269,9 +270,10 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
   const handleReset = () => {
     const defaultFlags = Object.keys(featureFlags).reduce((acc, key) => {
       acc[key] = false;
+
       return acc;
     }, {});
-    
+
     setFeatureFlags(defaultFlags);
     setIsDirty(true);
   };
@@ -282,6 +284,7 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
 
   const getFeaturesRequiringRestart = () => {
     const restartFeatures = [];
+
     Object.entries(featureCategories).forEach(([categoryKey, category]) => {
       Object.entries(category.features).forEach(([featureKey, feature]) => {
         if (featureFlags[featureKey] && feature.requiresRestart) {
@@ -289,6 +292,7 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
         }
       });
     });
+
     return restartFeatures;
   };
 
@@ -304,21 +308,21 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
         <Typography variant="body1" color="text.secondary">
           Enable experimental and advanced features for enhanced functionality
         </Typography>
-        
+
         {/* Summary */}
         <Box sx={{ mt: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
-          <Chip 
-            icon={<Flag />} 
-            label={`${getEnabledFeaturesCount()} features enabled`} 
-            color="primary" 
-            variant="outlined" 
+          <Chip
+            icon={<Flag />}
+            label={`${getEnabledFeaturesCount()} features enabled`}
+            color="primary"
+            variant="outlined"
           />
           {restartRequired && (
-            <Chip 
-              icon={<Warning />} 
-              label="Restart required" 
-              color="warning" 
-              variant="filled" 
+            <Chip
+              icon={<Warning />}
+              label="Restart required"
+              color="warning"
+              variant="filled"
             />
           )}
         </Box>
@@ -331,8 +335,8 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               {category.icon}
               <Typography variant="h6">{category.title}</Typography>
-              <Chip 
-                size="small" 
+              <Chip
+                size="small"
                 label={Object.keys(category.features).filter(key => featureFlags[key]).length}
                 color={category.color}
                 variant="outlined"
@@ -406,13 +410,13 @@ const FeatureFlags = ({ user, onSettingsChange }) => {
       )}
 
       {/* Action Buttons */}
-      <Box sx={{ 
-        display: 'flex', 
-        gap: 2, 
+      <Box sx={{
+        display: 'flex',
+        gap: 2,
         justifyContent: 'flex-end',
         pt: 3,
         borderTop: `1px solid ${theme.palette.divider}`,
-        mt: 3
+        mt: 3,
       }}>
         <Button
           variant="outlined"

@@ -16,7 +16,7 @@ const ROLE_HIERARCHY = {
   manager: 3,
   supervisor: 2,
   user: 1,
-  guest: 0
+  guest: 0,
 };
 
 /**
@@ -31,7 +31,7 @@ const ROLE_DEFAULT_ROUTES = {
   inventory: ROUTES.INVENTORY,
   analyst: ROUTES.CHARTS,
   user: ROUTES.DASHBOARD,
-  guest: ROUTES.LOGIN
+  guest: ROUTES.LOGIN,
 };
 
 /**
@@ -46,7 +46,7 @@ const ROUTE_PERMISSIONS = {
   [ROUTES.ORDERS]: ['sales', 'supervisor', 'manager', 'admin', 'super_admin'],
   [ROUTES.CUSTOMERS]: ['sales', 'supervisor', 'manager', 'admin', 'super_admin'],
   [ROUTES.REPORTS]: ['analyst', 'manager', 'admin', 'super_admin'],
-  [ROUTES.SETTINGS]: ['admin', 'super_admin']
+  [ROUTES.SETTINGS]: ['admin', 'super_admin'],
 };
 
 /**
@@ -70,9 +70,9 @@ export const useIntelligentRouting = () => {
   const hasRouteAccess = useCallback((routePath, userRole = null) => {
     const role = userRole || getUserRole();
     const permissions = ROUTE_PERMISSIONS[routePath];
-    
+
     if (!permissions) return true; // No restrictions
-    
+
     return permissions.includes(role);
   }, [getUserRole]);
 
@@ -81,31 +81,35 @@ export const useIntelligentRouting = () => {
    */
   const getPostLoginRoute = useCallback(() => {
     const userRole = getUserRole();
-    
+
     // Priority 1: Intended destination from login redirect
     const intendedRoute = location.state?.from?.pathname;
+
     if (intendedRoute && intendedRoute !== ROUTES.LOGIN && hasRouteAccess(intendedRoute, userRole)) {
       return intendedRoute;
     }
-    
+
     // Priority 2: Last visited route from previous session
     const lastVisitedRoute = localStorage.getItem('lastVisitedRoute');
+
     if (lastVisitedRoute && hasRouteAccess(lastVisitedRoute, userRole)) {
       return lastVisitedRoute;
     }
-    
+
     // Priority 3: User's preferred dashboard (from user preferences)
     const preferredRoute = currentUser?.preferences?.defaultRoute;
+
     if (preferredRoute && hasRouteAccess(preferredRoute, userRole)) {
       return preferredRoute;
     }
-    
+
     // Priority 4: Role-based default route
     const roleDefaultRoute = ROLE_DEFAULT_ROUTES[userRole];
+
     if (roleDefaultRoute && hasRouteAccess(roleDefaultRoute, userRole)) {
       return roleDefaultRoute;
     }
-    
+
     // Fallback: Dashboard
     return ROUTES.DASHBOARD;
   }, [currentUser, location.state, getUserRole, hasRouteAccess]);
@@ -115,13 +119,13 @@ export const useIntelligentRouting = () => {
    */
   const navigateToAppropriateRoute = useCallback(() => {
     if (!currentUser) return;
-    
+
     const targetRoute = getPostLoginRoute();
-    
+
     // Only navigate if we're currently on login page or root
     if (location.pathname === ROUTES.LOGIN || location.pathname === '/') {
       navigate(targetRoute, { replace: true });
-      
+
       // Clear the stored route after successful navigation
       localStorage.removeItem('lastVisitedRoute');
     }
@@ -132,16 +136,17 @@ export const useIntelligentRouting = () => {
    */
   const validateCurrentRoute = useCallback(() => {
     if (!currentUser) return;
-    
+
     const currentPath = location.pathname;
     const userRole = getUserRole();
-    
+
     // Skip validation for public routes
     if (!requiresAuth(currentPath)) return;
-    
+
     // Check if user has access to current route
     if (!hasRouteAccess(currentPath, userRole)) {
       const fallbackRoute = ROLE_DEFAULT_ROUTES[userRole] || ROUTES.DASHBOARD;
+
       navigate(fallbackRoute, { replace: true });
     }
   }, [currentUser, location.pathname, getUserRole, hasRouteAccess, navigate]);
@@ -160,11 +165,11 @@ export const useIntelligentRouting = () => {
    */
   const getAccessibleRoutes = useMemo(() => {
     if (!currentUser) return [];
-    
+
     const userRole = getUserRole();
-    
-    return Object.keys(ROUTE_PERMISSIONS).filter(route => 
-      hasRouteAccess(route, userRole)
+
+    return Object.keys(ROUTE_PERMISSIONS).filter(route =>
+      hasRouteAccess(route, userRole),
     );
   }, [currentUser, getUserRole, hasRouteAccess]);
 
@@ -174,7 +179,7 @@ export const useIntelligentRouting = () => {
   const getNavigationSuggestions = useCallback(() => {
     const userRole = getUserRole();
     const currentPath = location.pathname;
-    
+
     // Get recent routes from localStorage
     const routeVisits = JSON.parse(localStorage.getItem('routeVisits') || '[]');
     const recentRoutes = routeVisits
@@ -183,23 +188,23 @@ export const useIntelligentRouting = () => {
       .map(visit => visit.path)
       .filter((path, index, arr) => arr.indexOf(path) === index) // Remove duplicates
       .filter(path => path !== currentPath && hasRouteAccess(path, userRole));
-    
+
     // Role-based suggestions
     const roleSuggestions = {
       sales: [ROUTES.ORDERS, ROUTES.CUSTOMERS, ROUTES.CHARTS],
       inventory: [ROUTES.INVENTORY, ROUTES.PRODUCTS, ROUTES.REPORTS],
       analyst: [ROUTES.CHARTS, ROUTES.REPORTS, ROUTES.DASHBOARD],
       manager: [ROUTES.REPORTS, ROUTES.DASHBOARD, ROUTES.SETTINGS],
-      admin: [ROUTES.SETTINGS, ROUTES.REPORTS, ROUTES.DASHBOARD]
+      admin: [ROUTES.SETTINGS, ROUTES.REPORTS, ROUTES.DASHBOARD],
     };
-    
+
     const suggestions = roleSuggestions[userRole] || [ROUTES.DASHBOARD];
-    
+
     return {
       recent: recentRoutes.slice(0, 3),
-      suggested: suggestions.filter(route => 
-        route !== currentPath && hasRouteAccess(route, userRole)
-      ).slice(0, 3)
+      suggested: suggestions.filter(route =>
+        route !== currentPath && hasRouteAccess(route, userRole),
+      ).slice(0, 3),
     };
   }, [currentUser, getUserRole, location.pathname, hasRouteAccess]);
 
@@ -209,23 +214,27 @@ export const useIntelligentRouting = () => {
   const handleDeepLink = useCallback((targetPath) => {
     if (!currentUser) {
       // Store intended destination and redirect to login
-      navigate(ROUTES.LOGIN, { 
+      navigate(ROUTES.LOGIN, {
         state: { from: { pathname: targetPath } },
-        replace: true 
+        replace: true,
       });
+
       return false;
     }
-    
+
     const userRole = getUserRole();
-    
+
     if (!hasRouteAccess(targetPath, userRole)) {
       // Redirect to appropriate route if no access
       const fallbackRoute = ROLE_DEFAULT_ROUTES[userRole] || ROUTES.DASHBOARD;
+
       navigate(fallbackRoute, { replace: true });
+
       return false;
     }
-    
+
     navigate(targetPath);
+
     return true;
   }, [currentUser, getUserRole, hasRouteAccess, navigate]);
 
@@ -246,21 +255,21 @@ export const useIntelligentRouting = () => {
     // Route access
     hasRouteAccess,
     getAccessibleRoutes,
-    
+
     // Navigation
     navigateToAppropriateRoute,
     handleDeepLink,
     getNavigationSuggestions,
-    
+
     // User info
     getUserRole,
-    
+
     // Route info
     getPostLoginRoute,
-    
+
     // Utilities
     validateCurrentRoute,
-    storeCurrentRoute
+    storeCurrentRoute,
   };
 };
 
@@ -270,17 +279,18 @@ export const useIntelligentRouting = () => {
 export const useRoleBasedAccess = (requiredRoles = []) => {
   const { currentUser } = useAuth();
   const { getUserRole, hasRouteAccess } = useIntelligentRouting();
-  
+
   const userRole = getUserRole();
   const hasAccess = useMemo(() => {
     if (!requiredRoles.length) return true;
+
     return requiredRoles.includes(userRole);
   }, [requiredRoles, userRole]);
-  
+
   return {
     hasAccess,
     userRole,
-    currentUser
+    currentUser,
   };
 };
 
@@ -301,11 +311,12 @@ export const useNavigationAnalytics = () => {
         timestamp: new Date().toISOString(),
         userId: currentUser.uid,
         userRole: currentUser.role || 'user',
-        ...customData
+        ...customData,
       };
 
       // Store locally (in real app, send to analytics service)
       const analytics = JSON.parse(localStorage.getItem('navigationAnalytics') || '[]');
+
       analytics.push(pageData);
 
       // Keep only last 1000 entries

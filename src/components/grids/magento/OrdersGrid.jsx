@@ -14,14 +14,14 @@ import {
   Paid as PaidIcon,
   TrendingUp as TrendingUpIcon,
   HourglassEmpty as HourglassEmptyIcon,
-  CheckCircleOutline as CheckCircleOutlineIcon
+  CheckCircleOutline as CheckCircleOutlineIcon,
 } from '@mui/icons-material';
 import UnifiedGrid from '../../common/UnifiedGrid';
 import magentoApi from '../../../services/magentoApi';
 import { toast } from 'react-toastify';
 import {
   getStandardGridProps,
-  getStandardToolbarConfig
+  getStandardToolbarConfig,
 } from '../../../config/gridConfig';
 import { ColumnFactory } from '../../../utils/ColumnFactory.jsx';
 /**
@@ -36,9 +36,9 @@ const OrdersGrid = () => {
     paginationSettings,
     getApiParams,
     handleError,
-    savePreferences
+    savePreferences,
   } = useMagentoGridSettings('magentoOrders', {});
-  
+
   // Apply user settings to API service
   useEffect(() => {
     import('../../../services/magentoApi').then(({ setMagentoApiSettings }) => {
@@ -57,16 +57,16 @@ const OrdersGrid = () => {
     processingOrders: 0,
     completedOrders: 0,
     cancelledOrders: 0,
-    totalRevenue: 0
+    totalRevenue: 0,
   });
 
   // Dialog states
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [paginationModel, setPaginationModel] = useState({ 
-    page: 0, 
-    pageSize: paginationSettings.defaultPageSize 
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: paginationSettings.defaultPageSize,
   });
 
   // ===== 2. DATA FETCHING =====
@@ -77,7 +77,7 @@ const OrdersGrid = () => {
       const apiParams = getApiParams({
         pageSize: paginationModel.pageSize,
         currentPage: paginationModel.page + 1,
-        ...filterParams
+        ...filterParams,
       });
 
       // Use settings-aware API method
@@ -85,6 +85,7 @@ const OrdersGrid = () => {
       // Handle {data: {items: []}} response structure
       const ordersData = response?.data || response;
       const orders = ordersData?.items || [];
+
       setData(orders);
 
       // Calculate stats
@@ -101,7 +102,7 @@ const OrdersGrid = () => {
         processingOrders,
         completedOrders,
         cancelledOrders,
-        totalRevenue
+        totalRevenue,
       });
     } catch (error) {
       // Use settings-aware error handling
@@ -116,6 +117,7 @@ const OrdersGrid = () => {
   const handleView = useCallback((records) => {
     if (records.length === 1) {
       const order = data.find(o => o.entity_id === records[0]);
+
       setSelectedOrder(order);
       setViewDialogOpen(true);
     } else {
@@ -126,6 +128,7 @@ const OrdersGrid = () => {
   const handleEdit = useCallback((records) => {
     if (records.length === 1) {
       const order = data.find(o => o.entity_id === records[0]);
+
       setSelectedOrder(order);
       setEditDialogOpen(true);
     } else {
@@ -136,6 +139,7 @@ const OrdersGrid = () => {
   const handleCancel = useCallback(async (records) => {
     if (records.length === 0) {
       toast.warning('Please select orders to cancel');
+
       return;
     }
 
@@ -165,6 +169,7 @@ const OrdersGrid = () => {
   const handleFilterChange = useCallback((newFilter) => {
     setCurrentFilter(newFilter);
     const filterParams = newFilter === 'all' ? {} : { status: newFilter };
+
     fetchOrders(filterParams);
   }, [fetchOrders]);
 
@@ -172,7 +177,7 @@ const OrdersGrid = () => {
     setPaginationModel(newPaginationModel);
     fetchOrders({
       pageSize: newPaginationModel.pageSize,
-      currentPage: newPaginationModel.page + 1
+      currentPage: newPaginationModel.page + 1,
     });
   }, [fetchOrders]);
 
@@ -180,11 +185,11 @@ const OrdersGrid = () => {
   const columns = useMemo(() => [
     ColumnFactory.text('increment_id', {
       headerName: 'Order #',
-      width: 120
+      width: 120,
     }),
     ColumnFactory.text('customer_email', {
       headerName: 'Customer Email',
-      width: 200
+      width: 200,
     }),
     ColumnFactory.status('status', {
       headerName: 'Status',
@@ -195,22 +200,22 @@ const OrdersGrid = () => {
         processing: 'info',
         complete: 'success',
         canceled: 'error',
-        closed: 'default'
-      }
+        closed: 'default',
+      },
     }),
     ColumnFactory.currency('grand_total', {
       headerName: 'Total',
       width: 120,
-      currency: 'USD'
+      currency: 'USD',
     }),
     ColumnFactory.number('total_qty_ordered', {
       headerName: 'Items',
-      width: 80
+      width: 80,
     }),
     ColumnFactory.dateTime('created_at', {
       headerName: 'Order Date',
-      width: 180
-    })
+      width: 180,
+    }),
   ], []);
 
   // ===== 5. CUSTOM ACTIONS (Grid-specific actions not covered by standard config) =====
@@ -223,7 +228,7 @@ const OrdersGrid = () => {
       icon: <ViewIcon />,
       color: 'primary',
       variant: 'outlined',
-      disabled: selectedRows.length !== 1
+      disabled: selectedRows.length !== 1,
     },
     {
       label: 'Cancel Orders',
@@ -231,15 +236,15 @@ const OrdersGrid = () => {
       icon: <CancelIcon />,
       color: 'error',
       variant: 'outlined',
-      disabled: selectedRows.length === 0
+      disabled: selectedRows.length === 0,
     },
     {
       label: 'Sync Orders',
       onClick: handleSync,
       icon: <SyncIcon />,
       color: 'secondary',
-      variant: 'outlined'
-    }
+      variant: 'outlined',
+    },
   ];
 
   // ===== 6. CONTEXT MENU ACTIONS =====
@@ -251,7 +256,7 @@ const OrdersGrid = () => {
       onClick: (row) => {
         setSelectedOrder(row);
         setViewDialogOpen(true);
-      }
+      },
     },
     edit: {
       enabled: true,
@@ -260,15 +265,15 @@ const OrdersGrid = () => {
       onClick: (row) => {
         setSelectedOrder(row);
         setEditDialogOpen(true);
-      }
+      },
     },
     cancel: {
       enabled: true,
       label: 'Cancel Order',
       icon: 'cancel',
       onClick: (row) => handleCancel([row.entity_id]),
-      color: 'error'
-    }
+      color: 'error',
+    },
   }), [handleCancel]);
 
   // ===== 7. STATS CARDS =====
@@ -277,38 +282,38 @@ const OrdersGrid = () => {
       title: 'Total Orders',
       value: stats.totalOrders,
       icon: <ShoppingBagIcon />,
-      color: 'primary'
+      color: 'primary',
     },
     {
       title: 'Pending',
       value: stats.pendingOrders,
       icon: <HourglassEmptyIcon />,
-      color: 'warning'
+      color: 'warning',
     },
     {
       title: 'Processing',
       value: stats.processingOrders,
       icon: <LocalShippingIcon />,
-      color: 'info'
+      color: 'info',
     },
     {
       title: 'Completed',
       value: stats.completedOrders,
       icon: <CheckCircleOutlineIcon />,
-      color: 'success'
+      color: 'success',
     },
     {
       title: 'Cancelled',
       value: stats.cancelledOrders,
       icon: <CancelIcon />,
-      color: 'error'
+      color: 'error',
     },
     {
       title: 'Total Revenue',
       value: `$${stats.totalRevenue.toFixed(2)}`,
       icon: <PaidIcon />,
-      color: 'success'
-    }
+      color: 'success',
+    },
   ];
 
   // ===== 8. FILTER OPTIONS =====
@@ -317,7 +322,7 @@ const OrdersGrid = () => {
     { key: 'pending', label: 'Pending', value: 'pending' },
     { key: 'processing', label: 'Processing', value: 'processing' },
     { key: 'complete', label: 'Completed', value: 'complete' },
-    { key: 'canceled', label: 'Cancelled', value: 'canceled' }
+    { key: 'canceled', label: 'Cancelled', value: 'canceled' },
   ];
 
   // ===== 9. EFFECTS =====
@@ -329,14 +334,14 @@ const OrdersGrid = () => {
   return (
     <UnifiedGrid
       {...getStandardGridProps('magentoOrders', {
-        gridName: "OrdersGrid",
+        gridName: 'OrdersGrid',
         columns,
         data,
         loading,
         totalCount: stats.totalOrders,
 
         // Pagination configuration
-        paginationMode: "server",
+        paginationMode: 'server',
         paginationModel,
         onPaginationModelChange: handlePaginationChange,
         defaultPageSize: 25,
@@ -368,7 +373,7 @@ const OrdersGrid = () => {
         onError: (error) => {
           console.error('Orders Grid Error:', error);
           toast.error('Error loading orders');
-        }
+        },
       })}
     />
   );

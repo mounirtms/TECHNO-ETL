@@ -1,7 +1,7 @@
 /**
  * Bug Bounty Admin Panel
  * Admin interface for managing bug reports and rewards
- * 
+ *
  * @author Mounir Abderrahmani
  * @email mounir.ab@techno-dz.com
  * @contact mounir.webdev.tms@gmail.com
@@ -37,14 +37,14 @@ import {
   List,
   ListItem,
   ListItemText,
-  Divider
+  Divider,
 } from '@mui/material';
 import {
   ExpandMore as ExpandMoreIcon,
   AdminPanelSettings as AdminIcon,
   CheckCircle as ApproveIcon,
   Cancel as RejectIcon,
-  AttachMoney as PayIcon
+  AttachMoney as PayIcon,
 } from '@mui/icons-material';
 import bugBountyService, { BUG_CATEGORIES, BUG_STATUS, QUALITY_SCORES } from '../../services/bugBountyService.js';
 
@@ -65,6 +65,7 @@ const BugBountyAdmin = ({ open, onClose }) => {
     try {
       const filters = filter === 'all' ? {} : { status: filter };
       const result = await bugBountyService.getBugs(filters);
+
       if (result.success) {
         setBugs(result.bugs);
       }
@@ -78,6 +79,7 @@ const BugBountyAdmin = ({ open, onClose }) => {
   const handleStatusUpdate = async (bugId, newStatus, qualityScore = null) => {
     try {
       const result = await bugBountyService.updateBugStatus(bugId, newStatus, qualityScore);
+
       if (result.success) {
         loadBugs(); // Refresh the list
         setSelectedBug(null);
@@ -95,15 +97,16 @@ const BugBountyAdmin = ({ open, onClose }) => {
       [BUG_STATUS.DUPLICATE]: 'default',
       [BUG_STATUS.INVALID]: 'error',
       [BUG_STATUS.FIXED]: 'success',
-      [BUG_STATUS.REWARDED]: 'primary'
+      [BUG_STATUS.REWARDED]: 'primary',
     };
+
     return colors[status] || 'default';
   };
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'USD',
     }).format(amount);
   };
 
@@ -127,19 +130,19 @@ const BugBountyAdmin = ({ open, onClose }) => {
             <Typography variant="h6">Bug Review: {bug.title}</Typography>
           </Box>
         </DialogTitle>
-        
+
         <DialogContent>
           <Box sx={{ mb: 3 }}>
             <Typography variant="h6" gutterBottom>Bug Information</Typography>
             <Typography><strong>ID:</strong> {bug.id}</Typography>
-            <Typography><strong>Category:</strong> 
+            <Typography><strong>Category:</strong>
               <Chip
                 size="small"
                 label={BUG_CATEGORIES[bug.category]?.name || bug.category}
-                sx={{ 
+                sx={{
                   ml: 1,
                   backgroundColor: BUG_CATEGORIES[bug.category]?.color,
-                  color: 'white'
+                  color: 'white',
                 }}
               />
             </Typography>
@@ -207,7 +210,7 @@ const BugBountyAdmin = ({ open, onClose }) => {
 
           <Box sx={{ mt: 3 }}>
             <Typography variant="h6" gutterBottom>Admin Review</Typography>
-            
+
             <FormControl fullWidth sx={{ mb: 2 }}>
               <InputLabel>Status</InputLabel>
               <Select
@@ -251,7 +254,7 @@ const BugBountyAdmin = ({ open, onClose }) => {
                 <strong>Calculated Reward:</strong> {formatCurrency(bug.reward.calculated)}
                 <br />
                 <strong>Final Reward (with quality):</strong> {formatCurrency(
-                  Math.round(bug.reward.calculated * (Object.values(QUALITY_SCORES).find(q => q.score === qualityScore)?.multiplier || 1))
+                  Math.round(bug.reward.calculated * (Object.values(QUALITY_SCORES).find(q => q.score === qualityScore)?.multiplier || 1)),
                 )}
               </Typography>
             </Alert>
@@ -330,7 +333,7 @@ const BugBountyAdmin = ({ open, onClose }) => {
                         label={BUG_CATEGORIES[bug.category]?.name || bug.category}
                         sx={{
                           backgroundColor: BUG_CATEGORIES[bug.category]?.color,
-                          color: 'white'
+                          color: 'white',
                         }}
                       />
                     </TableCell>

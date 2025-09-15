@@ -16,7 +16,7 @@ import {
   TextField,
   InputAdornment,
   Avatar,
-  Divider
+  Divider,
 } from '@mui/material';
 import {
   Assessment as ReportIcon,
@@ -28,7 +28,7 @@ import {
   TrendingUp as TrendingUpIcon,
   BarChart as BarChartIcon,
   PieChart as PieChartIcon,
-  ShowChart as LineChartIcon
+  ShowChart as LineChartIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
@@ -45,7 +45,7 @@ const mockReports = [
     status: 'ready',
     size: '2.4 MB',
     format: 'PDF',
-    chartType: 'line'
+    chartType: 'line',
   },
   {
     id: 'RPT-002',
@@ -58,7 +58,7 @@ const mockReports = [
     status: 'generating',
     size: '1.8 MB',
     format: 'Excel',
-    chartType: 'bar'
+    chartType: 'bar',
   },
   {
     id: 'RPT-003',
@@ -71,7 +71,7 @@ const mockReports = [
     status: 'ready',
     size: '3.2 MB',
     format: 'PDF',
-    chartType: 'pie'
+    chartType: 'pie',
   },
   {
     id: 'RPT-004',
@@ -84,7 +84,7 @@ const mockReports = [
     status: 'ready',
     size: '1.5 MB',
     format: 'PDF',
-    chartType: 'bar'
+    chartType: 'bar',
   },
   {
     id: 'RPT-005',
@@ -97,26 +97,26 @@ const mockReports = [
     status: 'scheduled',
     size: '4.1 MB',
     format: 'Excel',
-    chartType: 'line'
-  }
+    chartType: 'line',
+  },
 ];
 
 const getStatusColor = (status) => {
   switch (status) {
-    case 'ready': return 'success';
-    case 'generating': return 'info';
-    case 'scheduled': return 'warning';
-    case 'error': return 'error';
-    default: return 'default';
+  case 'ready': return 'success';
+  case 'generating': return 'info';
+  case 'scheduled': return 'warning';
+  case 'error': return 'error';
+  default: return 'default';
   }
 };
 
 const getChartIcon = (chartType) => {
   switch (chartType) {
-    case 'line': return <LineChartIcon />;
-    case 'bar': return <BarChartIcon />;
-    case 'pie': return <PieChartIcon />;
-    default: return <ReportIcon />;
+  case 'line': return <LineChartIcon />;
+  case 'bar': return <BarChartIcon />;
+  case 'pie': return <PieChartIcon />;
+  default: return <ReportIcon />;
   }
 };
 
@@ -130,12 +130,13 @@ const ReportsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
   const filteredReports = reports.filter(report =>
     report.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     report.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    report.type.toLowerCase().includes(searchQuery.toLowerCase())
+    report.type.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   // Update badge count for ready reports
   useEffect(() => {
     const readyReports = reports.filter(r => r.status === 'ready').length;
+
     onBadgeUpdate?.(readyReports);
   }, [reports, onBadgeUpdate]);
 
@@ -182,7 +183,7 @@ const ReportsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
             <InputAdornment position="start">
               <SearchIcon />
             </InputAdornment>
-          )
+          ),
         }}
         sx={{ mb: 3 }}
       />
@@ -222,11 +223,11 @@ const ReportsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
                 </Stack>
 
                 {/* Description */}
-                <Typography variant="body2" color="text.secondary" sx={{ 
+                <Typography variant="body2" color="text.secondary" sx={{
                   display: '-webkit-box',
                   WebkitLineClamp: 2,
                   WebkitBoxOrient: 'vertical',
-                  overflow: 'hidden'
+                  overflow: 'hidden',
                 }}>
                   {report.description}
                 </Typography>
@@ -272,8 +273,8 @@ const ReportsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
                 {/* Actions */}
                 <Stack direction="row" spacing={1} sx={{ pt: 1 }}>
                   <Tooltip title={t('View Report')}>
-                    <IconButton 
-                      size="small" 
+                    <IconButton
+                      size="small"
                       onClick={() => handleViewReport(report.id)}
                       disabled={report.status !== 'ready'}
                     >
@@ -281,8 +282,8 @@ const ReportsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
                     </IconButton>
                   </Tooltip>
                   <Tooltip title={t('Download Report')}>
-                    <IconButton 
-                      size="small" 
+                    <IconButton
+                      size="small"
                       onClick={() => handleDownloadReport(report.id)}
                       disabled={report.status !== 'ready'}
                     >
@@ -299,17 +300,17 @@ const ReportsGrid = ({ data, onDataChange, onBadgeUpdate }) => {
                 {/* Progress indicator for generating reports */}
                 {report.status === 'generating' && (
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
-                    <Box sx={{ 
-                      width: 16, 
-                      height: 16, 
+                    <Box sx={{
+                      width: 16,
+                      height: 16,
                       border: '2px solid #f3f3f3',
                       borderTop: '2px solid #1976d2',
                       borderRadius: '50%',
                       animation: 'spin 1s linear infinite',
                       '@keyframes spin': {
                         '0%': { transform: 'rotate(0deg)' },
-                        '100%': { transform: 'rotate(360deg)' }
-                      }
+                        '100%': { transform: 'rotate(360deg)' },
+                      },
                     }} />
                     <Typography variant="caption" color="text.secondary">
                       {t('Generating report...')}

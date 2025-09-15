@@ -1,22 +1,22 @@
 /**
  * MDM Toolbar Component
  * Professional toolbar for MDM Products Grid with standardized actions
- * 
+ *
  * @author Techno-ETL Team
  * @version 1.0.0
  */
 
 import { useMemo } from 'react';
-import { 
+import {
   Refresh as RefreshIcon,
   GetApp as ExportIcon,
-  Sync as SyncIcon
+  Sync as SyncIcon,
 } from '@mui/icons-material';
 
 /**
  * MDM Toolbar Configuration
  * Provides standardized toolbar configuration for MDM grid
- * 
+ *
  * @param {Object} props - Component props
  * @param {Function} props.onRefresh - Refresh handler function
  * @param {Function} props.onSync - Sync handler function
@@ -33,7 +33,7 @@ const useMDMToolbarConfig = ({
   onExport,
   loading = false,
   selectedCount = 0,
-  hasChangedData = false
+  hasChangedData = false,
 }) => {
   return useMemo(() => ({
     showRefresh: true,
@@ -53,27 +53,27 @@ const useMDMToolbarConfig = ({
     spacing: 1,
     maxWidth: '90%',
     actionAreaWidth: '30%',
-    
+
     // Export options in settings menu
     exportOptions: {
       excel: {
         enabled: true,
         label: 'Export to Excel',
         icon: ExportIcon,
-        handler: () => onExport?.('excel')
+        handler: () => onExport?.('excel'),
       },
       csv: {
         enabled: true,
         label: 'Export to CSV',
         icon: ExportIcon,
-        handler: () => onExport?.('csv')
+        handler: () => onExport?.('csv'),
       },
       json: {
         enabled: true,
         label: 'Export to JSON',
         icon: ExportIcon,
-        handler: () => onExport?.('json')
-      }
+        handler: () => onExport?.('json'),
+      },
     },
 
     // Custom actions for MDM-specific operations
@@ -88,7 +88,7 @@ const useMDMToolbarConfig = ({
           ? `Sync ${selectedCount} selected items to Magento`
           : 'Sync selected items to Magento',
         variant: 'contained',
-        color: 'primary'
+        color: 'primary',
       },
       {
         id: 'syncStocks',
@@ -98,7 +98,7 @@ const useMDMToolbarConfig = ({
         disabled: loading,
         tooltip: 'Sync stock quantities from selected source',
         variant: 'outlined',
-        color: 'secondary'
+        color: 'secondary',
       },
       ...(hasChangedData ? [{
         id: 'syncAll',
@@ -108,16 +108,16 @@ const useMDMToolbarConfig = ({
         disabled: loading,
         tooltip: 'Sync all changed data to Magento',
         variant: 'contained',
-        color: 'success'
-      }] : [])
-    ]
+        color: 'success',
+      }] : []),
+    ],
   }), [onRefresh, onSync, onSyncStocks, onSyncAll, onExport, loading, selectedCount, hasChangedData]);
 };
 
 /**
  * MDM Custom Actions Configuration
  * Provides MDM-specific action buttons for the toolbar
- * 
+ *
  * @param {Object} props - Component props
  * @param {Function} props.onRefresh - Refresh handler function
  * @param {Function} props.onSync - Sync handler function
@@ -132,7 +132,7 @@ const useMDMCustomActions = ({
   onSyncAll,
   loading = false,
   selectedCount = 0,
-  hasChangedData = false
+  hasChangedData = false,
 }) => {
   return useMemo(() => [
     {
@@ -146,7 +146,7 @@ const useMDMCustomActions = ({
         : 'Select items to sync to Magento',
       variant: 'contained',
       color: 'primary',
-      size: 'small'
+      size: 'small',
     },
     {
       id: 'sync-stocks',
@@ -157,7 +157,7 @@ const useMDMCustomActions = ({
       tooltip: 'Sync stock quantities from selected source',
       variant: 'outlined',
       color: 'secondary',
-      size: 'small'
+      size: 'small',
     },
     ...(hasChangedData ? [{
       id: 'sync-all',
@@ -168,15 +168,15 @@ const useMDMCustomActions = ({
       tooltip: 'Sync all changed data to Magento',
       variant: 'contained',
       color: 'success',
-      size: 'small'
-    }] : [])
+      size: 'small',
+    }] : []),
   ], [onRefresh, onSync, onSyncStocks, onSyncAll, loading, selectedCount, hasChangedData]);
 };
 
 /**
  * MDM Context Menu Actions
  * Provides context menu actions for MDM grid rows
- * 
+ *
  * @param {Object} props - Component props
  * @param {Function} props.onSync - Sync handler function
  * @param {Function} props.onView - View details handler function
@@ -189,20 +189,20 @@ const useMDMContextMenuActions = ({ onSync, onView, onEdit }) => {
       enabled: true,
       label: 'View Details',
       onClick: onView,
-      icon: 'visibility'
+      icon: 'visibility',
     },
     edit: {
       enabled: true,
       label: 'Edit Product',
       onClick: onEdit,
-      icon: 'edit'
+      icon: 'edit',
     },
     sync: {
       enabled: true,
       label: 'Sync to Magento',
       onClick: onSync,
       icon: 'sync',
-      color: 'primary'
+      color: 'primary',
     },
     divider1: { type: 'divider' },
     export: {
@@ -212,13 +212,13 @@ const useMDMContextMenuActions = ({ onSync, onView, onEdit }) => {
         // Export single item logic
         console.log('Exporting item:', rowData);
       },
-      icon: 'download'
-    }
+      icon: 'download',
+    },
   }), [onSync, onView, onEdit]);
 };
 
 export {
   useMDMToolbarConfig,
   useMDMCustomActions,
-  useMDMContextMenuActions
+  useMDMContextMenuActions,
 };

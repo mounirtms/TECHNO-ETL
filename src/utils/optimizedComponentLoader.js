@@ -23,13 +23,14 @@ export const loadComponent = async (componentPath, componentName) => {
     // Dynamically import the component
     const module = await import(componentPath);
     const Component = module.default || module[componentName];
-    
+
     if (!Component) {
       throw new Error(`Component ${componentName} not found in ${componentPath}`);
     }
-    
+
     // Cache the component
     componentCache.set(componentPath, Component);
+
     return Component;
   } catch (error) {
     console.error(`Failed to load component ${componentName}: `, error);
@@ -40,6 +41,7 @@ export const loadComponent = async (componentPath, componentName) => {
         <p>Failed to load {componentName}</p>
       </div>
     );
+
     return FallbackComponent;
   }
 };
@@ -50,6 +52,7 @@ export const loadComponent = async (componentPath, componentName) => {
  */
 export const preloadComponents = async (components) => {
   const promises = components.map(({ path, name }) => loadComponent(path, name));
+
   try {
     await Promise.all(promises);
     console.log('✅ Preloaded critical components');

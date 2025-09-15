@@ -37,7 +37,7 @@ import {
   TableRow,
   Tabs,
   Tab,
-  Badge
+  Badge,
 } from '@mui/material';
 import {
   CloudUpload as UploadIcon,
@@ -50,7 +50,7 @@ import {
   Transform as ProcessIcon,
   GetApp as DownloadIcon,
   Refresh as RefreshIcon,
-  Info as InfoIcon
+  Info as InfoIcon,
 } from '@mui/icons-material';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'react-toastify';
@@ -64,46 +64,48 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
   // ===== STATE MANAGEMENT =====
   const [activeStep, setActiveStep] = useState(0);
   const [activeTab, setActiveTab] = useState(0);
-  
+
   // File states
   const [csvFile, setCsvFile] = useState(null);
   const [csvData, setCsvData] = useState(null);
   const [imageFiles, setImageFiles] = useState([]);
   const [validationResults, setValidationResults] = useState(null);
-  
+
   // Processing states
   const [matchingResults, setMatchingResults] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(null);
   const [uploadResults, setUploadResults] = useState(null);
   const [processingStats, setProcessingStats] = useState(null);
   const [loading, setLoading] = useState(false);
-  
+
   // Settings
   const [settings, setSettings] = useState({
     processImages: true,
     imageQuality: 90,
     targetSize: 1200,
     batchSize: 3,
-    delayBetweenBatches: 2000
+    delayBetweenBatches: 2000,
   });
-  
+
   const fileInputRef = useRef(null);
 
   const steps = [
     'Upload CSV File',
     'Upload Images',
     'Review & Configure',
-    'Process & Upload'
+    'Process & Upload',
   ];
 
   // ===== CSV UPLOAD HANDLER =====
   const onCSVDrop = useCallback(async (acceptedFiles) => {
     const file = acceptedFiles[0];
+
     if (!file) return;
 
     setLoading(true);
     try {
       const data = await enhancedMediaUploadService.parseCSVFile(file);
+
       setCsvFile(file);
       setCsvData(data);
       toast.success(`CSV parsed: ${data.totalRows} products found`);
@@ -118,19 +120,21 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
   // ===== IMAGE UPLOAD HANDLER =====
   const onImageDrop = useCallback(async (acceptedFiles) => {
     setLoading(true);
-    
+
     try {
       // Validate all files
       const validation = await enhancedMediaUploadService.validateImageFiles(acceptedFiles);
-      
+
       if (validation.invalid.length > 0) {
         const errorMessages = validation.invalid.map(v => `${v.file.name}: ${v.error}`);
+
         toast.error(`${validation.invalid.length} files rejected`);
         console.warn('Rejected files:', errorMessages);
       }
-      
+
       if (validation.valid.length > 0) {
         const validFiles = validation.valid.map(v => v.file);
+
         setImageFiles(prev => [...prev, ...validFiles]);
         setValidationResults(validation);
         toast.success(`${validation.valid.length} images added`);
@@ -146,17 +150,19 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
   const handleMatching = useCallback(() => {
     if (!csvData || imageFiles.length === 0) {
       toast.error('Please upload both CSV and images');
+
       return;
     }
 
     setLoading(true);
     try {
       const results = enhancedMediaUploadService.matchImagesWithCSV(csvData, imageFiles);
+
       setMatchingResults(results);
       setActiveStep(2);
-      
+
       toast.success(
-        `Matching complete: ${results.stats.matched} matches for ${results.stats.uniqueProducts} products`
+        `Matching complete: ${results.stats.matched} matches for ${results.stats.uniqueProducts} products`,
       );
     } catch (error) {
       toast.error(`Matching failed: ${error.message}`);
@@ -169,6 +175,7 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
   const handleStartUpload = async () => {
     if (!matchingResults || matchingResults.matches.length === 0) {
       toast.error('No matches to upload');
+
       return;
     }
 
@@ -184,21 +191,22 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
           imageQuality: settings.imageQuality / 100,
           targetSize: settings.targetSize,
           batchSize: settings.batchSize,
-          delayBetweenBatches: settings.delayBetweenBatches
-        }
+          delayBetweenBatches: settings.delayBetweenBatches,
+        },
       );
 
       setUploadResults(results);
-      
+
       // Generate statistics
       const stats = enhancedMediaUploadService.generateProcessingStats(results);
+
       setProcessingStats(stats);
-      
+
       const successful = results.filter(r => r.status === 'success').length;
       const failed = results.filter(r => r.status === 'error').length;
-      
+
       toast.success(`Upload complete: ${successful} successful, ${failed} failed`);
-      
+
       if (onComplete) {
         onComplete(results);
       }
@@ -228,7 +236,7 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
 
   const downloadResults = () => {
     if (!uploadResults) return;
-    
+
     const data = uploadResults.map(result => ({
       SKU: result.sku,
       OriginalFileName: result.file.name,
@@ -236,17 +244,18 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
       Status: result.status,
       Message: result.result.message,
       OriginalSize: `${(result.originalSize / 1024 / 1024).toFixed(2)}MB`,
-      ProcessedSize: `${(result.processedSize / 1024 / 1024).toFixed(2)}MB`
+      ProcessedSize: `${(result.processedSize / 1024 / 1024).toFixed(2)}MB`,
     }));
-    
+
     const csv = [
       Object.keys(data[0]).join(','),
-      ...data.map(row => Object.values(row).join(','))
+      ...data.map(row => Object.values(row).join(',')),
     ].join('\n');
-    
+
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
+
     a.href = url;
     a.download = `upload-results-${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
@@ -258,44 +267,44 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
     onDrop: onCSVDrop,
     accept: {
       'text/csv': ['.csv'],
-      'application/vnd.ms-excel': ['.csv']
+      'application/vnd.ms-excel': ['.csv'],
     },
     maxFiles: 1,
-    disabled: loading
+    disabled: loading,
   });
 
   const imageDropzone = useDropzone({
     onDrop: onImageDrop,
     accept: {
-      'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.webp']
+      'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.webp'],
     },
     multiple: true,
-    disabled: loading
+    disabled: loading,
   });
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={onClose} 
-      maxWidth="xl" 
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="xl"
       fullWidth
       PaperProps={{
-        sx: { minHeight: '80vh', maxHeight: '90vh' }
+        sx: { minHeight: '80vh', maxHeight: '90vh' },
       }}
     >
-      <DialogTitle sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
+      <DialogTitle sx={{
+        display: 'flex',
+        alignItems: 'center',
         gap: 1,
         bgcolor: 'primary.main',
         color: 'primary.contrastText',
-        position: 'relative'
+        position: 'relative',
       }}>
         <ProcessIcon />
         Professional Bulk Media Upload
         <Box sx={{ position: 'absolute', right: 16 }}>
-          <IconButton 
-            onClick={onClose} 
+          <IconButton
+            onClick={onClose}
             sx={{ color: 'inherit' }}
             size="small"
           >
@@ -315,7 +324,7 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
               <Typography variant="body2" color="text.secondary" gutterBottom>
                 Upload a CSV file with SKU and image filename columns. Supports flexible column naming.
               </Typography>
-              
+
               <Paper
                 {...csvDropzone.getRootProps()}
                 sx={{
@@ -326,7 +335,7 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                   cursor: 'pointer',
                   textAlign: 'center',
                   mt: 2,
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s ease',
                 }}
               >
                 <input {...csvDropzone.getInputProps()} />
@@ -348,7 +357,7 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                     <strong>{csvFile.name}</strong> - {csvData.totalRows} products loaded
                   </Typography>
                   <Typography variant="caption" display="block">
-                    SKU Column: {csvData.skuColumn} | 
+                    SKU Column: {csvData.skuColumn} |
                     {csvData.imageColumn && ` Image Column: ${csvData.imageColumn} |`}
                     {csvData.nameColumn && ` Name Column: ${csvData.nameColumn}`}
                   </Typography>
@@ -366,7 +375,7 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
               <Typography variant="body2" color="text.secondary" gutterBottom>
                 Upload raw product images. Supports reference_1.jpg, reference_2.jpg naming patterns.
               </Typography>
-              
+
               <Paper
                 {...imageDropzone.getRootProps()}
                 sx={{
@@ -377,7 +386,7 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                   cursor: 'pointer',
                   textAlign: 'center',
                   mt: 2,
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s ease',
                 }}
               >
                 <input {...imageDropzone.getInputProps()} />
@@ -405,7 +414,7 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                       </Typography>
                     )}
                   </Box>
-                  
+
                   <Box sx={{ maxHeight: 200, overflow: 'auto', border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 1 }}>
                     <Grid container spacing={1}>
                       {imageFiles.map((file, index) => (
@@ -421,7 +430,7 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                       ))}
                     </Grid>
                   </Box>
-                  
+
                   <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
                     <Button
                       variant="contained"
@@ -503,25 +512,25 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                   {/* Tabs for detailed view */}
                   <Paper sx={{ mb: 3 }}>
                     <Tabs value={activeTab} onChange={(e, v) => setActiveTab(v)}>
-                      <Tab 
+                      <Tab
                         label={
                           <Badge badgeContent={matchingResults.matches.length} color="success">
                             Matches
                           </Badge>
-                        } 
+                        }
                       />
                       <Tab label="Settings" />
                       {matchingResults.stats.unmatchedCSV > 0 && (
-                        <Tab 
+                        <Tab
                           label={
                             <Badge badgeContent={matchingResults.stats.unmatchedCSV} color="warning">
                               Unmatched CSV
                             </Badge>
-                          } 
+                          }
                         />
                       )}
                     </Tabs>
-                    
+
                     <Box sx={{ p: 2 }}>
                       {/* Matches Tab */}
                       {activeTab === 0 && (
@@ -576,7 +585,7 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                               }
                               label="Enable image processing"
                             />
-                            
+
                             {settings.processImages && (
                               <Box sx={{ mt: 2 }}>
                                 <Typography variant="body2" gutterBottom>
@@ -592,10 +601,10 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                                     { value: 800, label: '800px' },
                                     { value: 1200, label: '1200px' },
                                     { value: 1600, label: '1600px' },
-                                    { value: 2000, label: '2000px' }
+                                    { value: 2000, label: '2000px' },
                                   ]}
                                 />
-                                
+
                                 <Typography variant="body2" gutterBottom sx={{ mt: 2 }}>
                                   Quality: {settings.imageQuality}%
                                 </Typography>
@@ -609,13 +618,13 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                                     { value: 60, label: '60%' },
                                     { value: 80, label: '80%' },
                                     { value: 90, label: '90%' },
-                                    { value: 100, label: '100%' }
+                                    { value: 100, label: '100%' },
                                   ]}
                                 />
                               </Box>
                             )}
                           </Grid>
-                          
+
                           <Grid item xs={12} md={6}>
                             <Typography variant="subtitle1" gutterBottom>
                               Upload Settings
@@ -633,10 +642,10 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                                 { value: 1, label: '1' },
                                 { value: 3, label: '3' },
                                 { value: 5, label: '5' },
-                                { value: 10, label: '10' }
+                                { value: 10, label: '10' },
                               ]}
                             />
-                            
+
                             <Typography variant="body2" gutterBottom sx={{ mt: 2 }}>
                               Delay: {settings.delayBetweenBatches}ms between batches
                             </Typography>
@@ -649,7 +658,7 @@ const EnhancedBulkMediaUploadDialog = ({ open, onClose, onComplete }) => {
                               marks={[
                                 { value: 500, label: '0.5s' },
                                 { value: 2000, label: '2s' },
-                                { value: 5000, label: '5s' }
+                                { value: 5000, label: '5s' },
                               ]}
                             />
                           </Grid>

@@ -12,7 +12,7 @@ import {
   Chip,
   IconButton,
   Tooltip,
-  Divider
+  Divider,
 } from '@mui/material';
 import {
   Speed as PerformanceIcon,
@@ -23,7 +23,7 @@ import {
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,
   Refresh as RefreshIcon,
-  Info as InfoIcon
+  Info as InfoIcon,
 } from '@mui/icons-material';
 import { useCustomTheme } from '../../contexts/ThemeContext';
 
@@ -38,46 +38,46 @@ const PerformanceMetricsWidget = () => {
       cpu: { value: 45, status: 'good', trend: 'stable' },
       memory: { value: 68, status: 'warning', trend: 'up' },
       storage: { value: 32, status: 'good', trend: 'down' },
-      network: { value: 89, status: 'excellent', trend: 'up' }
+      network: { value: 89, status: 'excellent', trend: 'up' },
     },
     performance: {
       responseTime: { value: 245, unit: 'ms', status: 'good', trend: 'down' },
       throughput: { value: 1247, unit: 'req/min', status: 'excellent', trend: 'up' },
       errorRate: { value: 0.12, unit: '%', status: 'good', trend: 'stable' },
-      uptime: { value: 99.8, unit: '%', status: 'excellent', trend: 'stable' }
+      uptime: { value: 99.8, unit: '%', status: 'excellent', trend: 'stable' },
     },
     database: {
       connections: { value: 23, max: 100, status: 'good' },
       queryTime: { value: 45, unit: 'ms', status: 'good' },
-      cacheHitRate: { value: 94.5, unit: '%', status: 'excellent' }
-    }
+      cacheHitRate: { value: 94.5, unit: '%', status: 'excellent' },
+    },
   });
 
   const [lastUpdated, setLastUpdated] = useState(new Date());
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'excellent':
-        return 'success';
-      case 'good':
-        return 'info';
-      case 'warning':
-        return 'warning';
-      case 'critical':
-        return 'error';
-      default:
-        return 'default';
+    case 'excellent':
+      return 'success';
+    case 'good':
+      return 'info';
+    case 'warning':
+      return 'warning';
+    case 'critical':
+      return 'error';
+    default:
+      return 'default';
     }
   };
 
   const getTrendIcon = (trend) => {
     switch (trend) {
-      case 'up':
-        return <TrendingUpIcon fontSize="small" color="success" />;
-      case 'down':
-        return <TrendingDownIcon fontSize="small" color="error" />;
-      default:
-        return null;
+    case 'up':
+      return <TrendingUpIcon fontSize="small" color="success" />;
+    case 'down':
+      return <TrendingDownIcon fontSize="small" color="error" />;
+    default:
+      return null;
     }
   };
 
@@ -86,46 +86,47 @@ const PerformanceMetricsWidget = () => {
     setMetrics(prev => ({
       ...prev,
       systemHealth: {
-        cpu: { 
+        cpu: {
           value: Math.max(20, Math.min(80, prev.systemHealth.cpu.value + (Math.random() - 0.5) * 10)),
           status: prev.systemHealth.cpu.value < 60 ? 'good' : 'warning',
-          trend: Math.random() > 0.5 ? 'up' : 'down'
+          trend: Math.random() > 0.5 ? 'up' : 'down',
         },
-        memory: { 
+        memory: {
           value: Math.max(30, Math.min(90, prev.systemHealth.memory.value + (Math.random() - 0.5) * 8)),
           status: prev.systemHealth.memory.value < 70 ? 'good' : 'warning',
-          trend: Math.random() > 0.5 ? 'up' : 'down'
+          trend: Math.random() > 0.5 ? 'up' : 'down',
         },
-        storage: { 
+        storage: {
           value: Math.max(20, Math.min(70, prev.systemHealth.storage.value + (Math.random() - 0.5) * 5)),
           status: 'good',
-          trend: Math.random() > 0.5 ? 'up' : 'down'
+          trend: Math.random() > 0.5 ? 'up' : 'down',
         },
-        network: { 
+        network: {
           value: Math.max(70, Math.min(95, prev.systemHealth.network.value + (Math.random() - 0.5) * 6)),
           status: 'excellent',
-          trend: 'up'
-        }
-      }
+          trend: 'up',
+        },
+      },
     }));
     setLastUpdated(new Date());
   };
 
   useEffect(() => {
     const interval = setInterval(refreshMetrics, 30000); // Update every 30 seconds
+
     return () => clearInterval(interval);
   }, []);
 
   const MetricCard = ({ title, value, unit, status, trend, icon, isPercentage = false }) => (
-    <Card 
-      variant="outlined" 
-      sx={{ 
+    <Card
+      variant="outlined"
+      sx={{
         height: '100%',
         transition: animations ? 'all 0.3s ease' : 'none',
         '&:hover': animations ? {
           transform: 'translateY(-2px)',
-          boxShadow: 2
-        } : {}
+          boxShadow: 2,
+        } : {},
       }}
     >
       <CardContent sx={{ p: density === 'compact' ? 1.5 : 2 }}>
@@ -135,19 +136,19 @@ const PerformanceMetricsWidget = () => {
           </Avatar>
           {trend && getTrendIcon(trend)}
         </Box>
-        
+
         <Typography variant="h6" fontWeight={600} color={`${getStatusColor(status)}.main`}>
           {typeof value === 'number' ? value.toFixed(isPercentage ? 1 : 0) : value}
           {unit && <Typography component="span" variant="body2" color="text.secondary"> {unit}</Typography>}
         </Typography>
-        
+
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
           {title}
         </Typography>
-        
-        <Chip 
-          label={status} 
-          size="small" 
+
+        <Chip
+          label={status}
+          size="small"
           color={getStatusColor(status)}
           sx={{ textTransform: 'capitalize', fontSize: '0.7rem', height: 20 }}
         />
@@ -177,19 +178,19 @@ const PerformanceMetricsWidget = () => {
           borderRadius: 3,
           bgcolor: 'grey.200',
           '& .MuiLinearProgress-bar': {
-            borderRadius: 3
-          }
+            borderRadius: 3,
+          },
         }}
       />
     </Box>
   );
 
   return (
-    <Card sx={{ 
+    <Card sx={{
       borderRadius: density === 'compact' ? 2 : 3,
       height: '100%',
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
     }}>
       <CardHeader
         avatar={
@@ -209,11 +210,11 @@ const PerformanceMetricsWidget = () => {
         sx={{ pb: 1 }}
       />
 
-      <CardContent sx={{ 
-        flexGrow: 1, 
-        pt: 0, 
+      <CardContent sx={{
+        flexGrow: 1,
+        pt: 0,
         p: density === 'compact' ? 1 : 2,
-        '&:last-child': { pb: density === 'compact' ? 1 : 2 }
+        '&:last-child': { pb: density === 'compact' ? 1 : 2 },
       }}>
         {/* System Health */}
         <Typography variant="subtitle2" fontWeight={600} gutterBottom>
@@ -273,12 +274,12 @@ const PerformanceMetricsWidget = () => {
         </Box>
 
         {/* Quick Stats */}
-        <Box sx={{ 
-          bgcolor: 'grey.50', 
-          borderRadius: 2, 
+        <Box sx={{
+          bgcolor: 'grey.50',
+          borderRadius: 2,
           p: 1.5,
           border: '1px solid',
-          borderColor: 'grey.200'
+          borderColor: 'grey.200',
         }}>
           <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1 }}>
             <InfoIcon fontSize="small" />

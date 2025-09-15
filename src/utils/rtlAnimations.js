@@ -16,7 +16,7 @@ export const createSlideAnimation = (direction, distance = '20px') => {
       rtl: keyframes`
         from { opacity: 0; transform: translateX(${distance}); }
         to { opacity: 1; transform: translateX(0); }
-      `
+      `,
     },
     right: {
       ltr: keyframes`
@@ -26,7 +26,7 @@ export const createSlideAnimation = (direction, distance = '20px') => {
       rtl: keyframes`
         from { opacity: 0; transform: translateX(-${distance}); }
         to { opacity: 1; transform: translateX(0); }
-      `
+      `,
     },
     up: {
       ltr: keyframes`
@@ -36,7 +36,7 @@ export const createSlideAnimation = (direction, distance = '20px') => {
       rtl: keyframes`
         from { opacity: 0; transform: translateY(${distance}); }
         to { opacity: 1; transform: translateY(0); }
-      `
+      `,
     },
     down: {
       ltr: keyframes`
@@ -46,8 +46,8 @@ export const createSlideAnimation = (direction, distance = '20px') => {
       rtl: keyframes`
         from { opacity: 0; transform: translateY(-${distance}); }
         to { opacity: 1; transform: translateY(0); }
-      `
-    }
+      `,
+    },
   };
 
   return directions[direction] || directions.right;
@@ -126,6 +126,7 @@ export const bounce = keyframes`
 // Shake animation (direction-aware)
 export const createShakeAnimation = (isRTL = false) => {
   const direction = isRTL ? -1 : 1;
+
   return keyframes`
     0%, 100% { transform: translateX(0); }
     10%, 30%, 50%, 70%, 90% { transform: translateX(${-10 * direction}px); }
@@ -148,16 +149,16 @@ export const spinReverse = keyframes`
 export const createSlideAndFade = (direction, isRTL = false, distance = '30px') => {
   const getTransform = (dir, rtl) => {
     switch (dir) {
-      case 'left':
-        return rtl ? `translateX(${distance})` : `translateX(-${distance})`;
-      case 'right':
-        return rtl ? `translateX(-${distance})` : `translateX(${distance})`;
-      case 'up':
-        return `translateY(-${distance})`;
-      case 'down':
-        return `translateY(${distance})`;
-      default:
-        return rtl ? `translateX(${distance})` : `translateX(-${distance})`;
+    case 'left':
+      return rtl ? `translateX(${distance})` : `translateX(-${distance})`;
+    case 'right':
+      return rtl ? `translateX(-${distance})` : `translateX(${distance})`;
+    case 'up':
+      return `translateY(-${distance})`;
+    case 'down':
+      return `translateY(${distance})`;
+    default:
+      return rtl ? `translateX(${distance})` : `translateX(-${distance})`;
     }
   };
 
@@ -176,19 +177,20 @@ export const createSlideAndFade = (direction, isRTL = false, distance = '30px') 
 // Stagger animation helper
 export const createStaggeredAnimation = (baseAnimation, delay = 100) => {
   return (index) => ({
-    animation: `${baseAnimation} 0.6s ease-out ${index * delay}ms both`
+    animation: `${baseAnimation} 0.6s ease-out ${index * delay}ms both`,
   });
 };
 
 // Direction-aware hover animations
 export const createHoverAnimation = (isRTL = false) => {
   const direction = isRTL ? -4 : 4;
+
   return {
     transition: 'all 0.3s ease-in-out',
     '&:hover': {
       transform: `translateX(${direction}px) translateY(-2px)`,
-      boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
-    }
+      boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+    },
   };
 };
 
@@ -237,38 +239,38 @@ export const getDirectionalAnimation = (animationType, direction, isRTL = false,
   const { distance = '20px', duration = '0.3s', easing = 'ease-out', delay = '0s' } = options;
 
   switch (animationType) {
-    case 'slide':
-      return {
-        animation: `${createSlideAnimation(direction, distance)[isRTL ? 'rtl' : 'ltr']} ${duration} ${easing} ${delay} both`
-      };
-    case 'slideAndFade':
-      return {
-        animation: `${createSlideAndFade(direction, isRTL, distance)} ${duration} ${easing} ${delay} both`
-      };
-    case 'fadeIn':
-      return {
-        animation: `${fadeIn} ${duration} ${easing} ${delay} both`
-      };
-    case 'scaleIn':
-      return {
-        animation: `${scaleIn} ${duration} ${easing} ${delay} both`
-      };
-    case 'bounce':
-      return {
-        animation: `${bounce} ${duration} ${easing} ${delay} both`
-      };
-    case 'pulse':
-      return {
-        animation: `${pulse} ${duration} ${easing} ${delay} infinite`
-      };
-    case 'shake':
-      return {
-        animation: `${createShakeAnimation(isRTL)} ${duration} ${easing} ${delay} both`
-      };
-    default:
-      return {
-        animation: `${fadeIn} ${duration} ${easing} ${delay} both`
-      };
+  case 'slide':
+    return {
+      animation: `${createSlideAnimation(direction, distance)[isRTL ? 'rtl' : 'ltr']} ${duration} ${easing} ${delay} both`,
+    };
+  case 'slideAndFade':
+    return {
+      animation: `${createSlideAndFade(direction, isRTL, distance)} ${duration} ${easing} ${delay} both`,
+    };
+  case 'fadeIn':
+    return {
+      animation: `${fadeIn} ${duration} ${easing} ${delay} both`,
+    };
+  case 'scaleIn':
+    return {
+      animation: `${scaleIn} ${duration} ${easing} ${delay} both`,
+    };
+  case 'bounce':
+    return {
+      animation: `${bounce} ${duration} ${easing} ${delay} both`,
+    };
+  case 'pulse':
+    return {
+      animation: `${pulse} ${duration} ${easing} ${delay} infinite`,
+    };
+  case 'shake':
+    return {
+      animation: `${createShakeAnimation(isRTL)} ${duration} ${easing} ${delay} both`,
+    };
+  default:
+    return {
+      animation: `${fadeIn} ${duration} ${easing} ${delay} both`,
+    };
   }
 };
 
@@ -276,7 +278,7 @@ export const getDirectionalAnimation = (animationType, direction, isRTL = false,
 export const createResponsiveAnimation = (mobileAnimation, desktopAnimation) => {
   return {
     '@media (max-width: 600px)': mobileAnimation,
-    '@media (min-width: 601px)': desktopAnimation
+    '@media (min-width: 601px)': desktopAnimation,
   };
 };
 
@@ -285,34 +287,34 @@ export const animationPresets = {
   modal: {
     enter: scaleIn,
     exit: scaleOut,
-    duration: '0.3s'
+    duration: '0.3s',
   },
   drawer: {
     enter: (isRTL) => createSlideAnimation(isRTL ? 'right' : 'left')[isRTL ? 'rtl' : 'ltr'],
     exit: (isRTL) => createSlideAnimation(isRTL ? 'left' : 'right')[isRTL ? 'rtl' : 'ltr'],
-    duration: '0.3s'
+    duration: '0.3s',
   },
   toast: {
     enter: (isRTL) => createSlideAndFade(isRTL ? 'left' : 'right', isRTL),
     exit: fadeOut,
-    duration: '0.4s'
+    duration: '0.4s',
   },
   card: {
     hover: createHoverAnimation,
     enter: fadeInUp,
-    duration: '0.3s'
+    duration: '0.3s',
   },
   button: {
     hover: {
       transform: 'translateY(-2px)',
-      boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+      boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
     },
     active: {
       transform: 'translateY(0)',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
     },
-    duration: '0.2s'
-  }
+    duration: '0.2s',
+  },
 };
 
 export default {
@@ -338,5 +340,5 @@ export default {
   loadingSpinner,
   loadingPulse,
   successCheckmark,
-  errorX
+  errorX,
 };

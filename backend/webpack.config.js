@@ -31,7 +31,7 @@ export default (env, argv) => {
       path: path.resolve(__dirname, 'dist'),
       filename: 'server.js',
       libraryTarget: 'commonjs2',
-      clean: true
+      clean: true,
     },
     optimization: {
       minimize: isProduction,
@@ -43,12 +43,12 @@ export default (env, argv) => {
             },
             compress: {
               drop_console: isProduction,
-              drop_debugger: isProduction
-            }
+              drop_debugger: isProduction,
+            },
           },
-          extractComments: false
-        })
-      ] : []
+          extractComments: false,
+        }),
+      ] : [],
     },
     module: {
       rules: [
@@ -58,30 +58,30 @@ export default (env, argv) => {
           use: {
             loader: 'babel-loader',
             options: {
-              presets: ['@babel/preset-env']
-            }
-          }
-        }
-      ]
+              presets: ['@babel/preset-env'],
+            },
+          },
+        },
+      ],
     },
     resolve: {
       extensions: ['.js'],
       alias: {
-        '@': path.resolve(__dirname, 'src')
-      }
+        '@': path.resolve(__dirname, 'src'),
+      },
     },
     stats: {
       colors: true,
       modules: false,
       children: false,
       chunks: false,
-      chunkModules: false
+      chunkModules: false,
     },
     cache: {
       type: 'filesystem',
       buildDependencies: {
-        config: [__filename]
-      }
-    }
+        config: [__filename],
+      },
+    },
   };
 };

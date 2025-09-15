@@ -56,7 +56,7 @@ const RoleText = styled(Typography)(({ theme }) => ({
 
 const MounirSignature = ({ type = 'signature', showText = true, showRole = true }) => {
   const theme = useTheme();
-  
+
   const signatureData = {
     signature: {
       src: '/src/assets/images/mounir-signature.svg',
@@ -77,15 +77,15 @@ const MounirSignature = ({ type = 'signature', showText = true, showRole = true 
       src: '/src/assets/images/mounir-banner.svg',
       alt: 'Mounir Professional Banner with Code Elements',
       name: 'Mounir A.',
-    }
+    },
   };
 
   const currentSignature = signatureData[type] || signatureData.signature;
 
   return (
     <SignatureContainer theme={theme}>
-      <SignatureImage 
-        src={currentSignature.src} 
+      <SignatureImage
+        src={currentSignature.src}
         alt={currentSignature.alt}
         type={type}
         theme={theme}

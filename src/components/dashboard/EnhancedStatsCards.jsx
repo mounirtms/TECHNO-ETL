@@ -10,7 +10,7 @@ import {
   Chip,
   IconButton,
   Tooltip,
-  Skeleton
+  Skeleton,
 } from '@mui/material';
 import {
   TrendingUp,
@@ -24,7 +24,7 @@ import {
   Warning,
   Schedule,
   Launch as LaunchIcon,
-  MoreVert as MoreIcon
+  MoreVert as MoreIcon,
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 
@@ -32,12 +32,12 @@ import { useTheme } from '@mui/material/styles';
  * Enhanced Stats Cards Component
  * Professional 8-card dashboard with advanced metrics and animations
  */
-const EnhancedStatsCards = ({ 
-  stats, 
-  settings, 
-  loading = false, 
+const EnhancedStatsCards = ({
+  stats,
+  settings,
+  loading = false,
   onNavigate,
-  onCardAction 
+  onCardAction,
 }) => {
   const theme = useTheme();
 
@@ -55,7 +55,7 @@ const EnhancedStatsCards = ({
       subtitle: 'This month',
       description: 'Monthly revenue growth',
       target: 3000000,
-      current: stats?.totalRevenue || 2800000
+      current: stats?.totalRevenue || 2800000,
     },
     {
       key: 'orders',
@@ -69,7 +69,7 @@ const EnhancedStatsCards = ({
       subtitle: 'This month',
       description: 'Order volume increase',
       target: 1500,
-      current: stats?.totalOrders || 1247
+      current: stats?.totalOrders || 1247,
     },
     {
       key: 'products',
@@ -83,7 +83,7 @@ const EnhancedStatsCards = ({
       subtitle: 'In catalog',
       description: 'Product catalog growth',
       target: 10000,
-      current: stats?.total || 9114
+      current: stats?.total || 9114,
     },
     {
       key: 'customers',
@@ -97,7 +97,7 @@ const EnhancedStatsCards = ({
       subtitle: 'Active users',
       description: 'Customer base expansion',
       target: 5000,
-      current: stats?.totalCustomers || 3892
+      current: stats?.totalCustomers || 3892,
     },
     {
       key: 'categories',
@@ -111,7 +111,7 @@ const EnhancedStatsCards = ({
       subtitle: 'Active categories',
       description: 'Catalog organization',
       target: 200,
-      current: stats?.totalCategories || 156
+      current: stats?.totalCategories || 156,
     },
     {
       key: 'brands',
@@ -125,7 +125,7 @@ const EnhancedStatsCards = ({
       subtitle: 'Partner brands',
       description: 'Brand portfolio growth',
       target: 120,
-      current: stats?.totalBrands || 89
+      current: stats?.totalBrands || 89,
     },
     {
       key: 'lowStock',
@@ -140,7 +140,7 @@ const EnhancedStatsCards = ({
       description: 'Inventory management',
       target: 0,
       current: stats?.lowStockItems || 23,
-      isAlert: true
+      isAlert: true,
     },
     {
       key: 'pendingOrders',
@@ -155,19 +155,20 @@ const EnhancedStatsCards = ({
       description: 'Order fulfillment',
       target: 0,
       current: stats?.pendingOrders || 12,
-      isAlert: true
-    }
+      isAlert: true,
+    },
   ];
 
   // Filter cards based on settings
-  const visibleCards = statCards.filter(card => 
-    settings?.statCards?.[card.key] !== false
+  const visibleCards = statCards.filter(card =>
+    settings?.statCards?.[card.key] !== false,
   );
 
   const getProgressColor = (card) => {
     if (card.isAlert) {
       return card.current <= 10 ? 'success' : card.current <= 20 ? 'warning' : 'error';
     }
+
     return card.color;
   };
 
@@ -175,6 +176,7 @@ const EnhancedStatsCards = ({
     if (card.isAlert) {
       return Math.max(0, 100 - (card.current / 50) * 100);
     }
+
     return (card.current / card.target) * 100;
   };
 
@@ -200,12 +202,12 @@ const EnhancedStatsCards = ({
   return (
     <Grid container spacing={3}>
       {visibleCards.map((card, index) => (
-        <Grid 
-          item 
-          xs={12} 
-          sm={6} 
-          md={4} 
-          lg={visibleCards.length <= 4 ? 3 : visibleCards.length <= 6 ? 4 : 3} 
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          md={4}
+          lg={visibleCards.length <= 4 ? 3 : visibleCards.length <= 6 ? 4 : 3}
           key={card.key}
         >
           <Card
@@ -222,18 +224,18 @@ const EnhancedStatsCards = ({
                 border: `1px solid ${theme.palette[card.color].main}50`,
                 '& .card-actions': {
                   opacity: 1,
-                  transform: 'translateX(0)'
-                }
-              } : {}
+                  transform: 'translateX(0)',
+                },
+              } : {},
             }}
           >
             <CardContent sx={{ p: settings?.general?.compactMode ? 2 : 3, height: '100%' }}>
               {/* Header */}
-              <Box sx={{ 
-                display: 'flex', 
-                alignItems: 'flex-start', 
-                justifyContent: 'space-between', 
-                mb: 2 
+              <Box sx={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                justifyContent: 'space-between',
+                mb: 2,
               }}>
                 <Avatar
                   sx={{
@@ -242,21 +244,21 @@ const EnhancedStatsCards = ({
                     height: settings?.general?.compactMode ? 40 : 56,
                     boxShadow: theme.shadows[4],
                     '& .MuiSvgIcon-root': {
-                      fontSize: settings?.general?.compactMode ? '1.2rem' : '1.5rem'
-                    }
+                      fontSize: settings?.general?.compactMode ? '1.2rem' : '1.5rem',
+                    },
                   }}
                 >
                   <card.icon />
                 </Avatar>
-                
-                <Box 
+
+                <Box
                   className="card-actions"
-                  sx={{ 
-                    display: 'flex', 
+                  sx={{
+                    display: 'flex',
                     gap: 0.5,
                     opacity: 0,
                     transform: 'translateX(10px)',
-                    transition: 'all 0.3s ease'
+                    transition: 'all 0.3s ease',
                   }}
                 >
                   <Tooltip title={`View ${card.title.toLowerCase()}`}>
@@ -267,7 +269,7 @@ const EnhancedStatsCards = ({
                         sx={{
                           bgcolor: 'background.paper',
                           boxShadow: 1,
-                          '&:hover': { boxShadow: 2 }
+                          '&:hover': { boxShadow: 2 },
                         }}
                       >
                         <LaunchIcon fontSize="small" />
@@ -282,7 +284,7 @@ const EnhancedStatsCards = ({
                         sx={{
                           bgcolor: 'background.paper',
                           boxShadow: 1,
-                          '&:hover': { boxShadow: 2 }
+                          '&:hover': { boxShadow: 2 },
                         }}
                       >
                         <MoreIcon fontSize="small" />
@@ -294,33 +296,33 @@ const EnhancedStatsCards = ({
 
               {/* Value and Change */}
               <Box sx={{ mb: 2 }}>
-                <Typography 
-                  variant={settings?.general?.compactMode ? "h5" : "h4"} 
-                  fontWeight={700} 
-                  color="text.primary" 
+                <Typography
+                  variant={settings?.general?.compactMode ? 'h5' : 'h4'}
+                  fontWeight={700}
+                  color="text.primary"
                   gutterBottom
                 >
                   {card.value}
                 </Typography>
-                
+
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                   <Chip
                     label={card.change}
                     size="small"
                     color={card.trend === 'up' ? 'success' : card.isAlert ? 'success' : 'error'}
                     icon={card.trend === 'up' ? <TrendingUp /> : <TrendingDown />}
-                    sx={{ 
+                    sx={{
                       fontWeight: 600,
                       '& .MuiChip-icon': {
-                        fontSize: '0.875rem'
-                      }
+                        fontSize: '0.875rem',
+                      },
                     }}
                   />
                   <Typography variant="body2" color="text.secondary">
                     {card.subtitle}
                   </Typography>
                 </Box>
-                
+
                 <Typography variant="caption" color="text.secondary">
                   {card.description}
                 </Typography>
@@ -328,18 +330,18 @@ const EnhancedStatsCards = ({
 
               {/* Progress */}
               <Box>
-                <Box sx={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center', 
-                  mb: 1 
+                <Box sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  mb: 1,
                 }}>
                   <Typography variant="caption" color="text.secondary">
                     {card.isAlert ? 'Status' : 'Progress'}
                   </Typography>
-                  <Typography 
-                    variant="caption" 
-                    fontWeight={600} 
+                  <Typography
+                    variant="caption"
+                    fontWeight={600}
                     color={`${getProgressColor(card)}.main`}
                   >
                     {Math.round(getProgressValue(card))}%
@@ -355,8 +357,8 @@ const EnhancedStatsCards = ({
                     bgcolor: `${card.color}.light`,
                     '& .MuiLinearProgress-bar': {
                       borderRadius: 4,
-                      boxShadow: `0 2px 4px ${theme.palette[getProgressColor(card)].main}40`
-                    }
+                      boxShadow: `0 2px 4px ${theme.palette[getProgressColor(card)].main}40`,
+                    },
                   }}
                 />
               </Box>

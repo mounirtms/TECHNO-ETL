@@ -24,7 +24,7 @@ import {
   FormControlLabel,
   Divider,
   Stack,
-  Paper
+  Paper,
 } from '@mui/material';
 import {
   MoreVert as MoreIcon,
@@ -42,7 +42,7 @@ import {
   Speed,
   Warning,
   CheckCircle,
-  Error as ErrorIcon
+  Error as ErrorIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -61,7 +61,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip as RechartsTooltip,
-  Legend
+  Legend,
 } from 'recharts';
 
 /**
@@ -72,7 +72,7 @@ const WIDGET_TYPES = {
   CHART: 'chart',
   LIST: 'list',
   PROGRESS: 'progress',
-  STATUS: 'status'
+  STATUS: 'status',
 };
 
 /**
@@ -88,7 +88,7 @@ const DEFAULT_WIDGETS = {
     refreshInterval: 30000,
     size: { xs: 12, sm: 6, md: 3 },
     visible: true,
-    order: 1
+    order: 1,
   },
   orders: {
     id: 'orders',
@@ -99,7 +99,7 @@ const DEFAULT_WIDGETS = {
     refreshInterval: 15000,
     size: { xs: 12, sm: 6, md: 3 },
     visible: true,
-    order: 2
+    order: 2,
   },
   customers: {
     id: 'customers',
@@ -110,7 +110,7 @@ const DEFAULT_WIDGETS = {
     refreshInterval: 60000,
     size: { xs: 12, sm: 6, md: 3 },
     visible: true,
-    order: 3
+    order: 3,
   },
   inventory: {
     id: 'inventory',
@@ -121,7 +121,7 @@ const DEFAULT_WIDGETS = {
     refreshInterval: 45000,
     size: { xs: 12, sm: 6, md: 3 },
     visible: true,
-    order: 4
+    order: 4,
   },
   salesChart: {
     id: 'salesChart',
@@ -131,7 +131,7 @@ const DEFAULT_WIDGETS = {
     refreshInterval: 60000,
     size: { xs: 12, md: 8 },
     visible: true,
-    order: 5
+    order: 5,
   },
   recentOrders: {
     id: 'recentOrders',
@@ -140,8 +140,8 @@ const DEFAULT_WIDGETS = {
     refreshInterval: 30000,
     size: { xs: 12, md: 4 },
     visible: true,
-    order: 6
-  }
+    order: 6,
+  },
 };
 
 /**
@@ -162,17 +162,17 @@ const WidgetSkeleton = memo(({ height = 200 }) => (
 /**
  * Metric Widget Component
  */
-const MetricWidget = memo(({ 
-  widget, 
-  data, 
-  loading, 
-  onRefresh, 
+const MetricWidget = memo(({
+  widget,
+  data,
+  loading,
+  onRefresh,
   onToggleVisibility,
-  onSettings 
+  onSettings,
 }) => {
   const { t } = useTranslation();
   const [menuAnchor, setMenuAnchor] = useState(null);
-  
+
   const IconComponent = widget.icon;
   const trend = data?.trend || 0;
   const TrendIcon = trend > 0 ? TrendingUp : trend < 0 ? TrendingDown : TrendingFlat;
@@ -223,7 +223,7 @@ const MetricWidget = memo(({
             </Typography>
           </Stack>
         </CardContent>
-        
+
         <Menu
           anchorEl={menuAnchor}
           open={Boolean(menuAnchor)}
@@ -252,13 +252,13 @@ const MetricWidget = memo(({
 /**
  * Chart Widget Component
  */
-const ChartWidget = memo(({ 
-  widget, 
-  data, 
-  loading, 
-  onRefresh, 
+const ChartWidget = memo(({
+  widget,
+  data,
+  loading,
+  onRefresh,
   onToggleVisibility,
-  onSettings 
+  onSettings,
 }) => {
   const { t } = useTranslation();
   const [menuAnchor, setMenuAnchor] = useState(null);
@@ -292,10 +292,10 @@ const ChartWidget = memo(({
                 <YAxis />
                 <RechartsTooltip />
                 <Legend />
-                <Line 
-                  type="monotone" 
-                  dataKey="value" 
-                  stroke="#1976d2" 
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#1976d2"
                   strokeWidth={2}
                   dot={{ fill: '#1976d2' }}
                 />
@@ -307,11 +307,11 @@ const ChartWidget = memo(({
                 <XAxis dataKey="name" />
                 <YAxis />
                 <RechartsTooltip />
-                <Area 
-                  type="monotone" 
-                  dataKey="value" 
-                  stroke="#1976d2" 
-                  fill="#1976d2" 
+                <Area
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#1976d2"
+                  fill="#1976d2"
                   fillOpacity={0.3}
                 />
               </AreaChart>
@@ -327,7 +327,7 @@ const ChartWidget = memo(({
             )}
           </ResponsiveContainer>
         </CardContent>
-        
+
         <Menu
           anchorEl={menuAnchor}
           open={Boolean(menuAnchor)}
@@ -356,27 +356,27 @@ const ChartWidget = memo(({
 /**
  * Progress Widget Component
  */
-const ProgressWidget = memo(({ 
-  widget, 
-  data, 
-  loading, 
-  onRefresh, 
+const ProgressWidget = memo(({
+  widget,
+  data,
+  loading,
+  onRefresh,
   onToggleVisibility,
-  onSettings 
+  onSettings,
 }) => {
   const { t } = useTranslation();
   const [menuAnchor, setMenuAnchor] = useState(null);
-  
+
   const IconComponent = widget.icon;
   const progress = data?.progress || 0;
   const status = data?.status || 'normal';
-  
+
   const getStatusColor = (status) => {
     switch (status) {
-      case 'critical': return 'error';
-      case 'warning': return 'warning';
-      case 'good': return 'success';
-      default: return 'primary';
+    case 'critical': return 'error';
+    case 'warning': return 'warning';
+    case 'good': return 'success';
+    default: return 'primary';
     }
   };
 
@@ -424,7 +424,7 @@ const ProgressWidget = memo(({
             </Typography>
           </Stack>
         </CardContent>
-        
+
         <Menu
           anchorEl={menuAnchor}
           open={Boolean(menuAnchor)}
@@ -455,29 +455,29 @@ const ProgressWidget = memo(({
  */
 const WidgetFactory = memo((props) => {
   const { widget } = props;
-  
+
   switch (widget.type) {
-    case WIDGET_TYPES.METRIC:
-      return <MetricWidget {...props} />;
-    case WIDGET_TYPES.CHART:
-      return <ChartWidget {...props} />;
-    case WIDGET_TYPES.PROGRESS:
-      return <ProgressWidget {...props} />;
-    default:
-      return <MetricWidget {...props} />;
+  case WIDGET_TYPES.METRIC:
+    return <MetricWidget {...props} />;
+  case WIDGET_TYPES.CHART:
+    return <ChartWidget {...props} />;
+  case WIDGET_TYPES.PROGRESS:
+    return <ProgressWidget {...props} />;
+  default:
+    return <MetricWidget {...props} />;
   }
 });
 
 /**
  * Main Optimized Dashboard Widgets Component
  */
-const OptimizedDashboardWidgets = ({ 
+const OptimizedDashboardWidgets = ({
   customWidgets = {},
   enableRealTime = true,
-  enableCustomization = true 
+  enableCustomization = true,
 }) => {
   const { t } = useTranslation();
-  
+
   // State management
   const [widgets, setWidgets] = useState(() => ({ ...DEFAULT_WIDGETS, ...customWidgets }));
   const [widgetData, setWidgetData] = useState({});
@@ -494,32 +494,32 @@ const OptimizedDashboardWidgets = ({
   // Mock data fetcher (replace with real API calls)
   const fetchWidgetData = useCallback(async (widgetId) => {
     setLoading(prev => ({ ...prev, [widgetId]: true }));
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     // Mock data based on widget type
     const mockData = {
       sales: {
         value: '€125,430',
         trend: 12.5,
-        description: 'vs last month'
+        description: 'vs last month',
       },
       orders: {
         value: '1,247',
         trend: -3.2,
-        description: 'pending orders'
+        description: 'pending orders',
       },
       customers: {
         value: '8,932',
         trend: 8.1,
-        description: 'active customers'
+        description: 'active customers',
       },
       inventory: {
         progress: 78,
         status: 'warning',
         label: 'Stock Level',
-        description: '22% items low stock'
+        description: '22% items low stock',
       },
       salesChart: {
         chartData: [
@@ -528,11 +528,11 @@ const OptimizedDashboardWidgets = ({
           { name: 'Mar', value: 5000 },
           { name: 'Apr', value: 4500 },
           { name: 'May', value: 6000 },
-          { name: 'Jun', value: 5500 }
-        ]
-      }
+          { name: 'Jun', value: 5500 },
+        ],
+      },
     };
-    
+
     setWidgetData(prev => ({ ...prev, [widgetId]: mockData[widgetId] }));
     setLoading(prev => ({ ...prev, [widgetId]: false }));
   }, []);
@@ -548,8 +548,8 @@ const OptimizedDashboardWidgets = ({
       ...prev,
       [widgetId]: {
         ...prev[widgetId],
-        visible: !prev[widgetId].visible
-      }
+        visible: !prev[widgetId].visible,
+      },
     }));
   }, []);
 
@@ -564,7 +564,7 @@ const OptimizedDashboardWidgets = ({
     if (!enableRealTime) return;
 
     const intervals = {};
-    
+
     visibleWidgets.forEach(widget => {
       if (widget.refreshInterval) {
         intervals[widget.id] = setInterval(() => {
@@ -592,8 +592,8 @@ const OptimizedDashboardWidgets = ({
       <Grid container spacing={3}>
         <AnimatePresence>
           {visibleWidgets.map((widget) => (
-            <Grid 
-              item 
+            <Grid
+              item
               key={widget.id}
               xs={widget.size.xs}
               sm={widget.size.sm}

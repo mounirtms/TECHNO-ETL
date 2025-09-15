@@ -18,7 +18,7 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  Collapse
+  Collapse,
 } from '@mui/material';
 import {
   ExpandMore as ExpandMoreIcon,
@@ -27,7 +27,7 @@ import {
   Assignment as AssignmentIcon,
   Save as SaveIcon,
   Cancel as CancelIcon,
-  ExpandLess as ExpandLessIcon
+  ExpandLess as ExpandLessIcon,
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
@@ -55,32 +55,32 @@ const ProductCategoriesGrid = ({ productIds = [] }) => {
   const [stats, setStats] = useState({
     total: 0,
     assigned: 0,
-    unassigned: 0
+    unassigned: 0,
   });
 
   // ===== COLUMN DEFINITIONS =====
   const columns = useMemo(() => [
-    ColumnFactory.text('id', { 
-      headerName: 'Product ID', 
+    ColumnFactory.text('id', {
+      headerName: 'Product ID',
       width: 120,
       renderCell: (params) => (
         <Typography variant="body2" fontFamily="monospace">
           {params.value}
         </Typography>
-      )
+      ),
     }),
-    ColumnFactory.text('sku', { 
-      headerName: 'SKU', 
+    ColumnFactory.text('sku', {
+      headerName: 'SKU',
       width: 150,
       renderCell: (params) => (
         <Typography variant="body2" fontWeight="medium">
           {params.value}
         </Typography>
-      )
+      ),
     }),
-    ColumnFactory.text('name', { 
-      headerName: 'Product Name', 
-      flex: 1
+    ColumnFactory.text('name', {
+      headerName: 'Product Name',
+      flex: 1,
     }),
     {
       field: 'categories',
@@ -88,6 +88,7 @@ const ProductCategoriesGrid = ({ productIds = [] }) => {
       flex: 1,
       renderCell: (params) => {
         const categories = params.value || [];
+
         return (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
             {categories.length > 0 ? (
@@ -119,7 +120,7 @@ const ProductCategoriesGrid = ({ productIds = [] }) => {
             )}
           </Box>
         );
-      }
+      },
     },
     {
       field: 'actions',
@@ -137,8 +138,8 @@ const ProductCategoriesGrid = ({ productIds = [] }) => {
             <AssignmentIcon fontSize="small" />
           </IconButton>
         </Tooltip>
-      )
-    }
+      ),
+    },
   ], []);
 
   // ===== DATA FETCHING =====
@@ -146,7 +147,7 @@ const ProductCategoriesGrid = ({ productIds = [] }) => {
     try {
       setLoading(true);
       console.log('🔄 Fetching products for category assignment...', params);
-      
+
       // If specific product IDs provided, fetch those
       if (productIds.length > 0) {
         const products = await Promise.all(
@@ -154,50 +155,54 @@ const ProductCategoriesGrid = ({ productIds = [] }) => {
             try {
               const product = await magentoApi.getProduct(id);
               const categories = await magentoApi.getProductCategories(id);
+
               return {
                 ...product,
-                categories: categories?.categories || []
+                categories: categories?.categories || [],
               };
             } catch (error) {
               console.warn(`Failed to fetch product ${id}:`, error);
+
               return {
                 id,
                 sku: `PRODUCT-${id}`,
                 name: `Product ${id}`,
-                categories: []
+                categories: [],
               };
             }
-          })
+          }),
         );
+
         setData(products);
         updateStats(products);
       } else {
         // Fetch all products
         const response = await magentoApi.getProducts(params);
         const products = response?.items || [];
-        
+
         // Fetch categories for each product
         const productsWithCategories = await Promise.all(
           products.map(async (product) => {
             try {
               const categories = await magentoApi.getProductCategories(product.id);
+
               return {
                 ...product,
-                categories: categories?.categories || []
+                categories: categories?.categories || [],
               };
             } catch (error) {
               return {
                 ...product,
-                categories: []
+                categories: [],
               };
             }
-          })
+          }),
         );
-        
+
         setData(productsWithCategories);
         updateStats(productsWithCategories);
       }
-      
+
     } catch (error) {
       console.error('❌ Error fetching products:', error);
       toast.error('Failed to load products');
@@ -211,6 +216,7 @@ const ProductCategoriesGrid = ({ productIds = [] }) => {
       console.log('🔄 Fetching categories tree...');
       const response = await magentoApi.getCategories();
       const categoriesData = response?.data?.items || response?.items || [];
+
       setCategories(categoriesData);
     } catch (error) {
       console.error('❌ Error fetching categories:', error);
@@ -223,12 +229,13 @@ const ProductCategoriesGrid = ({ productIds = [] }) => {
     const newStats = products.reduce((acc, product) => ({
       total: acc.total + 1,
       assigned: acc.assigned + (product.categories?.length > 0 ? 1 : 0),
-      unassigned: acc.unassigned + (product.categories?.length === 0 ? 1 : 0)
+      unassigned: acc.unassigned + (product.categories?.length === 0 ? 1 : 0),
     }), {
       total: 0,
       assigned: 0,
-      unassigned: 0
+      unassigned: 0,
     });
+
     setStats(newStats);
   }, []);
 
@@ -236,11 +243,12 @@ const ProductCategoriesGrid = ({ productIds = [] }) => {
   const handleAssignCategories = useCallback((product) => {
     console.log('📂 Assigning categories to product:', product);
     setSelectedProduct(product);
-    
+
     // Set currently assigned categories as selected
     const currentCategoryIds = new Set(
-      product.categories?.map(cat => cat.id.toString()) || []
+      product.categories?.map(cat => cat.id.toString()) || [],
     );
+
     setSelectedCategories(currentCategoryIds);
     setAssignDialogOpen(true);
   }, []);
@@ -248,32 +256,35 @@ const ProductCategoriesGrid = ({ productIds = [] }) => {
   const handleCategoryToggle = useCallback((categoryId) => {
     setSelectedCategories(prev => {
       const newSet = new Set(prev);
+
       if (newSet.has(categoryId.toString())) {
         newSet.delete(categoryId.toString());
       } else {
         newSet.add(categoryId.toString());
       }
+
       return newSet;
     });
   }, []);
 
   const handleSaveAssignment = useCallback(async () => {
     if (!selectedProduct) return;
-    
+
     try {
       const categoryIds = Array.from(selectedCategories).map(id => parseInt(id));
+
       console.log('💾 Saving category assignment:', {
         productId: selectedProduct.id,
-        categoryIds
+        categoryIds,
       });
-      
+
       await magentoApi.assignProductToCategories(selectedProduct.id, categoryIds);
       toast.success('Categories assigned successfully');
-      
+
       // Refresh data
       await fetchProducts();
       setAssignDialogOpen(false);
-      
+
     } catch (error) {
       console.error('❌ Error assigning categories:', error);
       toast.error('Failed to assign categories');
@@ -301,13 +312,13 @@ const ProductCategoriesGrid = ({ productIds = [] }) => {
           data,
           columns,
           loading,
-          
+
           // Grid identification
           gridName: 'ProductCategoriesGrid',
-          
+
           // Configuration
           toolbarConfig: getStandardToolbarConfig('productCategories'),
-          
+
           // Stats cards
           showStatsCards: true,
           gridCards: [
@@ -315,34 +326,34 @@ const ProductCategoriesGrid = ({ productIds = [] }) => {
               title: 'Total Products',
               value: stats.total,
               icon: AssignmentIcon,
-              color: 'primary'
+              color: 'primary',
             },
             {
               title: 'With Categories',
               value: stats.assigned,
               icon: CategoryIcon,
-              color: 'success'
+              color: 'success',
             },
             {
               title: 'Unassigned',
               value: stats.unassigned,
               icon: CancelIcon,
-              color: 'warning'
-            }
+              color: 'warning',
+            },
           ],
-          
+
           // Event handlers
           onRefresh: fetchProducts,
           onRowDoubleClick: (params) => handleAssignCategories(params.row),
-          
+
           // Row configuration
           getRowId: (row) => row.id,
-          
+
           // Error handling
           onError: (error) => {
             console.error('Product Categories Grid Error:', error);
             toast.error('Error in product categories grid');
-          }
+          },
         })}
       />
 
@@ -368,18 +379,20 @@ const CategoryAssignmentDialog = ({
   categories,
   selectedCategories,
   onCategoryToggle,
-  onSave
+  onSave,
 }) => {
   const [expandedCategories, setExpandedCategories] = useState(new Set([1]));
 
   const handleCategoryExpand = (categoryId) => {
     setExpandedCategories(prev => {
       const newSet = new Set(prev);
+
       if (newSet.has(categoryId)) {
         newSet.delete(categoryId);
       } else {
         newSet.add(categoryId);
       }
+
       return newSet;
     });
   };
@@ -395,7 +408,7 @@ const CategoryAssignmentDialog = ({
             sx={{
               pl: level * 3 + 1,
               py: 0.5,
-              '&:hover': { backgroundColor: 'action.hover' }
+              '&:hover': { backgroundColor: 'action.hover' },
             }}
           >
             <ListItemIcon sx={{ minWidth: 32 }}>
@@ -463,13 +476,13 @@ const CategoryAssignmentDialog = ({
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
             Selected: {selectedCategories.size} categories
           </Typography>
-          
+
           <Box sx={{
             maxHeight: 400,
             overflowY: 'auto',
             border: '1px solid',
             borderColor: 'divider',
-            borderRadius: 1
+            borderRadius: 1,
           }}>
             <List dense>
               {renderCategoryTree(categories)}
@@ -481,9 +494,9 @@ const CategoryAssignmentDialog = ({
         <Button onClick={onClose} startIcon={<CancelIcon />}>
           Cancel
         </Button>
-        <Button 
-          onClick={onSave} 
-          variant="contained" 
+        <Button
+          onClick={onSave}
+          variant="contained"
           startIcon={<SaveIcon />}
         >
           Save Assignment

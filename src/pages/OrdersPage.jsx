@@ -12,7 +12,7 @@ const OrdersPage = () => {
     getSortBy,
     getPriority,
     isPendingOrdersView,
-    params
+    params,
   } = useDashboardParams();
 
   const [gridProps, setGridProps] = useState({});
@@ -25,8 +25,9 @@ const OrdersPage = () => {
       initialSortBy: getSortBy(),
       initialPriority: getPriority(),
       highlightPending: isPendingOrdersView(),
-      dashboardParams: params
+      dashboardParams: params,
     };
+
     setGridProps(newProps);
   }, [getStatus, getView, getSortBy, getPriority, isPendingOrdersView, params]);
 

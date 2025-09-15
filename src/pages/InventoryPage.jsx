@@ -12,7 +12,7 @@ const InventoryPage = () => {
     getSortBy,
     isAlert,
     isLowStockView,
-    params
+    params,
   } = useDashboardParams();
 
   const [gridProps, setGridProps] = useState({});
@@ -25,8 +25,9 @@ const InventoryPage = () => {
       initialSortBy: getSortBy(),
       showAlert: isAlert(),
       highlightLowStock: isLowStockView(),
-      dashboardParams: params
+      dashboardParams: params,
     };
+
     setGridProps(newProps);
   }, [getFilter, getView, getSortBy, isAlert, isLowStockView, params]);
 

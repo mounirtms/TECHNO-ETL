@@ -8,7 +8,7 @@ import {
   List,
   ListItem,
   ListItemText,
-  Divider
+  Divider,
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import calligraphService from '../../services/calligraphMediaUploadServiceFixed';
@@ -24,6 +24,7 @@ const CalligraphCSVTest = () => {
 
   const onDrop = async (acceptedFiles) => {
     const file = acceptedFiles[0];
+
     if (!file) return;
 
     setLoading(true);
@@ -33,6 +34,7 @@ const CalligraphCSVTest = () => {
     try {
       console.log('🧪 Testing CSV parsing with file:', file.name);
       const data = await calligraphService.parseCalligraphCSV(file);
+
       setCsvData(data);
       console.log('✅ CSV parsing successful:', data);
     } catch (err) {
@@ -47,9 +49,9 @@ const CalligraphCSVTest = () => {
     onDrop,
     accept: {
       'text/csv': ['.csv'],
-      'application/vnd.ms-excel': ['.csv']
+      'application/vnd.ms-excel': ['.csv'],
     },
-    maxFiles: 1
+    maxFiles: 1,
   });
 
   return (
@@ -57,7 +59,7 @@ const CalligraphCSVTest = () => {
       <Typography variant="h4" gutterBottom>
         🧪 Calligraph CSV Parser Test
       </Typography>
-      
+
       <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
         This test page helps debug CSV parsing issues. Upload your Calligraph CSV file to see how it's parsed.
       </Typography>
@@ -73,7 +75,7 @@ const CalligraphCSVTest = () => {
           cursor: 'pointer',
           textAlign: 'center',
           mb: 3,
-          transition: 'all 0.2s ease'
+          transition: 'all 0.2s ease',
         }}
       >
         <input {...getInputProps()} />
@@ -107,7 +109,7 @@ const CalligraphCSVTest = () => {
           <Typography variant="h6" gutterBottom>
             ✅ CSV Parsing Results
           </Typography>
-          
+
           <Alert severity="success" sx={{ mb: 2 }}>
             <Typography variant="body2">
               Successfully parsed {csvData.totalRows} products from CSV file
@@ -119,27 +121,27 @@ const CalligraphCSVTest = () => {
           </Typography>
           <List dense>
             <ListItem>
-              <ListItemText 
-                primary="SKU Column" 
-                secondary={csvData.skuColumn || 'Not found'} 
+              <ListItemText
+                primary="SKU Column"
+                secondary={csvData.skuColumn || 'Not found'}
               />
             </ListItem>
             <ListItem>
-              <ListItemText 
-                primary="REF Column" 
-                secondary={csvData.refColumn || 'Not found'} 
+              <ListItemText
+                primary="REF Column"
+                secondary={csvData.refColumn || 'Not found'}
               />
             </ListItem>
             <ListItem>
-              <ListItemText 
-                primary="Image Name Column" 
-                secondary={csvData.imageNameColumn || 'Not found'} 
+              <ListItemText
+                primary="Image Name Column"
+                secondary={csvData.imageNameColumn || 'Not found'}
               />
             </ListItem>
             <ListItem>
-              <ListItemText 
-                primary="Product Name Column" 
-                secondary={csvData.productNameColumn || 'Not found'} 
+              <ListItemText
+                primary="Product Name Column"
+                secondary={csvData.productNameColumn || 'Not found'}
               />
             </ListItem>
           </List>
@@ -151,27 +153,27 @@ const CalligraphCSVTest = () => {
           </Typography>
           <List dense>
             <ListItem>
-              <ListItemText 
-                primary="Total Headers" 
-                secondary={csvData.headers.length} 
+              <ListItemText
+                primary="Total Headers"
+                secondary={csvData.headers.length}
               />
             </ListItem>
             <ListItem>
-              <ListItemText 
-                primary="Valid Products" 
-                secondary={csvData.totalRows} 
+              <ListItemText
+                primary="Valid Products"
+                secondary={csvData.totalRows}
               />
             </ListItem>
             <ListItem>
-              <ListItemText 
-                primary="Processed Rows" 
-                secondary={csvData.processedRows || 'N/A'} 
+              <ListItemText
+                primary="Processed Rows"
+                secondary={csvData.processedRows || 'N/A'}
               />
             </ListItem>
             <ListItem>
-              <ListItemText 
-                primary="Skipped Rows" 
-                secondary={csvData.skippedRows || 'N/A'} 
+              <ListItemText
+                primary="Skipped Rows"
+                secondary={csvData.skippedRows || 'N/A'}
               />
             </ListItem>
           </List>
@@ -184,7 +186,7 @@ const CalligraphCSVTest = () => {
           <List dense>
             {csvData.data.slice(0, 5).map((item, index) => (
               <ListItem key={index}>
-                <ListItemText 
+                <ListItemText
                   primary={`${index + 1}. SKU: ${item.sku}`}
                   secondary={`REF: ${item.ref} | Image: ${item.imageName || 'No image name'} | Product: ${item.productName || 'No product name'}`}
                 />

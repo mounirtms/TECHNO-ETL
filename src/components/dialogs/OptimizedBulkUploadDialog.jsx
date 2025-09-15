@@ -39,7 +39,7 @@ import {
   AccordionDetails,
 
   Divider,
-  Badge
+  Badge,
 } from '@mui/material';
 import {
   CloudUpload as UploadIcon,
@@ -57,7 +57,7 @@ import {
   Psychology as AIIcon,
   Search as SearchIcon,
   CompareArrows as CompareIcon,
-  AutoFixHigh as AutoIcon
+  AutoFixHigh as AutoIcon,
 } from '@mui/icons-material';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'react-toastify';
@@ -84,18 +84,20 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
     'Upload CSV File',
     'Upload Images',
     'Review Matches',
-    'Upload Process'
+    'Upload Process',
   ];
 
   // CSV Upload with unified advanced parsing
   const onCSVDrop = useCallback(async (acceptedFiles) => {
     const file = acceptedFiles[0];
+
     if (!file) return;
 
     setLoading(true);
     try {
       console.log('🧪 UNIFIED: Parsing CSV with advanced detection...');
       const data = await mediaUploadService.parseCSVFile(file, 'auto');
+
       setCsvFile(file);
       setCsvData(data);
       toast.success(`CSV parsed successfully: ${data.data.length} products found with advanced matching`);
@@ -115,6 +117,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
 
     for (const file of acceptedFiles) {
       const validation = mediaUploadService.validateImageFile(file);
+
       if (validation.valid) {
         validFiles.push(file);
       } else {
@@ -127,7 +130,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
     }
 
     setImageFiles(prev => [...prev, ...validFiles]);
-    
+
     if (validFiles.length > 0) {
       toast.success(`${validFiles.length} images added (supports multiple per SKU)`);
     }
@@ -137,6 +140,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
   const handleMatching = () => {
     if (!csvData || imageFiles.length === 0) {
       toast.error('Please upload both CSV and images');
+
       return;
     }
 
@@ -144,9 +148,10 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
     try {
       console.log('🔍 OPTIMIZED: Starting advanced matching with settings:', settings);
       const results = mediaUploadService.matchImagesWithCSV(csvData, imageFiles, settings);
+
       setMatchingResults(results);
       setActiveStep(2);
-      
+
       toast.success(`Advanced matching complete: ${results.stats.matched} matches found for ${results.stats.uniqueProducts} products`);
     } catch (error) {
       console.error('❌ OPTIMIZED: Matching failed:', error);
@@ -160,6 +165,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
   const handleStartUpload = async () => {
     if (!matchingResults || matchingResults.matches.length === 0) {
       toast.error('No matches to upload');
+
       return;
     }
 
@@ -173,16 +179,16 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
         (progress) => {
           setUploadProgress(progress);
         },
-        settings
+        settings,
       );
 
       setUploadResults(results);
-      
+
       const successful = results.filter(r => r.status === 'success').length;
       const failed = results.filter(r => r.status === 'error').length;
-      
+
       toast.success(`Upload complete: ${successful} successful, ${failed} failed`);
-      
+
       if (onComplete) {
         onComplete(results);
       }
@@ -210,12 +216,13 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
       const newSettings = { ...prev };
       const keys = path.split('.');
       let current = newSettings;
-      
+
       for (let i = 0; i < keys.length - 1; i++) {
         current = current[keys[i]];
       }
-      
+
       current[keys[keys.length - 1]] = value;
+
       return newSettings;
     });
   };
@@ -225,18 +232,18 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
     onDrop: onCSVDrop,
     accept: {
       'text/csv': ['.csv'],
-      'application/vnd.ms-excel': ['.csv']
+      'application/vnd.ms-excel': ['.csv'],
     },
     maxFiles: 1,
-    disabled: loading
+    disabled: loading,
   });
 
   const imageDropzone = useDropzone({
     onDrop: onImageDrop,
     accept: {
-      'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.webp']
+      'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.webp'],
     },
-    multiple: true
+    multiple: true,
   });
 
   const removeImage = (index) => {
@@ -244,22 +251,22 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
   };
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={onClose} 
-      maxWidth="xl" 
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="xl"
       fullWidth
       PaperProps={{
-        sx: { minHeight: '90vh', maxHeight: '95vh' }
+        sx: { minHeight: '90vh', maxHeight: '95vh' },
       }}
     >
-      <DialogTitle sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
+      <DialogTitle sx={{
+        display: 'flex',
+        alignItems: 'center',
         gap: 1,
         bgcolor: 'primary.main',
         color: 'primary.contrastText',
-        pr: 1
+        pr: 1,
       }}>
         <UploadIcon />
         <Box sx={{ flexGrow: 1 }}>
@@ -267,31 +274,31 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
             Advanced Bulk Media Upload
           </Typography>
           <Box sx={{ display: 'flex', gap: 1, mt: 0.5 }}>
-            <Chip 
-              label="Unified Advanced Matching" 
-              size="small" 
-              sx={{ bgcolor: 'success.main', color: 'white' }} 
+            <Chip
+              label="Unified Advanced Matching"
+              size="small"
+              sx={{ bgcolor: 'success.main', color: 'white' }}
             />
           </Box>
           <Box sx={{ display: 'flex', gap: 1, mt: 0.5 }}>
-            <Chip 
+            <Chip
               label={`${mode.charAt(0).toUpperCase() + mode.slice(1)} Mode`}
-              size="small" 
-              sx={{ 
+              size="small"
+              sx={{
                 bgcolor: mode === 'professional' ? 'secondary.main' : 'info.main',
-                color: 'white'
-              }} 
+                color: 'white',
+              }}
             />
-            <Chip 
-              label="Advanced Matching" 
-              size="small" 
-              sx={{ bgcolor: 'success.main', color: 'white' }} 
+            <Chip
+              label="Advanced Matching"
+              size="small"
+              sx={{ bgcolor: 'success.main', color: 'white' }}
             />
           </Box>
         </Box>
-        
+
         <Tooltip title="Configure matching settings">
-          <IconButton 
+          <IconButton
             onClick={() => setShowSettings(!showSettings)}
             sx={{ color: 'inherit' }}
           >
@@ -300,9 +307,9 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
             </Badge>
           </IconButton>
         </Tooltip>
-        
-        <IconButton 
-          onClick={onClose} 
+
+        <IconButton
+          onClick={onClose}
           sx={{ color: 'inherit' }}
         >
           <CloseIcon />
@@ -317,7 +324,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
               <TuneIcon color="primary" />
               Matching Settings
             </Typography>
-            
+
             <Alert severity="info" sx={{ mb: 3 }}>
               <Typography variant="body2">
                 <strong>Unified Advanced Matching:</strong> All strategies automatically enabled based on CSV structure
@@ -346,7 +353,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                     </Tooltip>
                   }
                 />
-                
+
                 <FormControlLabel
                   control={
                     <Switch
@@ -363,7 +370,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                     </Tooltip>
                   }
                 />
-                
+
                 <FormControlLabel
                   control={
                     <Switch
@@ -380,7 +387,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                     </Tooltip>
                   }
                 />
-                
+
                 {mode === 'professional' && (
                   <FormControlLabel
                     control={
@@ -421,12 +428,12 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                     marks={[
                       { value: 0.5, label: 'Loose' },
                       { value: 0.7, label: 'Balanced' },
-                      { value: 0.9, label: 'Strict' }
+                      { value: 0.9, label: 'Strict' },
                     ]}
                     size="small"
                   />
                 </Box>
-                
+
                 <TextField
                   label="Partial Match Length"
                   type="number"
@@ -459,7 +466,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                     </Tooltip>
                   }
                 />
-                
+
                 <FormControlLabel
                   control={
                     <Switch
@@ -495,7 +502,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                     </Tooltip>
                   }
                 />
-                
+
                 {settings.upload.processImages && (
                   <>
                     <TextField
@@ -507,7 +514,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                       fullWidth
                       sx={{ mb: 1 }}
                     />
-                    
+
                     <Box sx={{ mb: 2 }}>
                       <Typography variant="body2" gutterBottom>
                         Quality: {Math.round(settings.upload.imageQuality * 100)}%
@@ -523,7 +530,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                     </Box>
                   </>
                 )}
-                
+
                 <TextField
                   label="Batch Size"
                   type="number"
@@ -557,7 +564,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                     ))}
                   </Box>
                 </Alert>
-                
+
                 <Paper
                   {...csvDropzone.getRootProps()}
                   sx={{
@@ -567,7 +574,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                     bgcolor: csvDropzone.isDragActive ? 'primary.light' : 'background.default',
                     cursor: 'pointer',
                     textAlign: 'center',
-                    transition: 'all 0.2s ease'
+                    transition: 'all 0.2s ease',
                   }}
                 >
                   <input {...csvDropzone.getInputProps()} />
@@ -579,7 +586,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                     }
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {mode === 'professional' 
+                    {mode === 'professional'
                       ? 'Requires: SKU, REF, Image Name columns'
                       : 'Requires: SKU, Image Name columns'
                     }
@@ -616,7 +623,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                     bgcolor: imageDropzone.isDragActive ? 'success.light' : 'background.default',
                     cursor: 'pointer',
                     textAlign: 'center',
-                    transition: 'all 0.2s ease'
+                    transition: 'all 0.2s ease',
                   }}
                 >
                   <input {...imageDropzone.getInputProps()} />
@@ -642,7 +649,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                         Total Size: {(imageFiles.reduce((sum, f) => sum + f.size, 0) / 1024 / 1024).toFixed(2)}MB
                       </Typography>
                     </Box>
-                    
+
                     <Box sx={{ maxHeight: 200, overflow: 'auto', border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 1 }}>
                       <Grid container spacing={1}>
                         {imageFiles.map((file, index) => (
@@ -658,7 +665,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                         ))}
                       </Grid>
                     </Box>
-                    
+
                     <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
                       <Button
                         variant="contained"
@@ -741,7 +748,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                     {/* Strategy Breakdown */}
                     <Alert severity="success" sx={{ mb: 3 }}>
                       <Typography variant="body2">
-                        <strong>Advanced Matching Complete:</strong> Found {matchingResults.stats.matched} matches 
+                        <strong>Advanced Matching Complete:</strong> Found {matchingResults.stats.matched} matches
                         using {Object.values(matchingResults.stats.matchStrategies).filter(v => v > 0).length} strategies.
                       </Typography>
                       <Box sx={{ mt: 1, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
@@ -784,13 +791,13 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                                   <TableCell>{match.sku}</TableCell>
                                   <TableCell>{match.file.name}</TableCell>
                                   <TableCell>
-                                    <Chip 
-                                      label={match.matchStrategy} 
-                                      size="small" 
+                                    <Chip
+                                      label={match.matchStrategy}
+                                      size="small"
                                       color={
                                         match.matchStrategy === 'ref' ? 'warning' :
-                                        match.matchStrategy === 'exact' ? 'primary' :
-                                        match.matchStrategy === 'fuzzy' ? 'success' : 'info'
+                                          match.matchStrategy === 'exact' ? 'primary' :
+                                            match.matchStrategy === 'fuzzy' ? 'success' : 'info'
                                       }
                                     />
                                   </TableCell>
@@ -874,7 +881,7 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                         {uploadResults.filter(r => r.status === 'success').length} successful, {uploadResults.filter(r => r.status === 'error').length} failed
                       </Typography>
                     </Alert>
-                    
+
                     <Box sx={{ maxHeight: 400, overflow: 'auto' }}>
                       <TableContainer component={Paper}>
                         <Table size="small">
@@ -901,13 +908,13 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
                                 <TableCell>{result.sku}</TableCell>
                                 <TableCell>{result.file.name}</TableCell>
                                 <TableCell>
-                                  <Chip 
-                                    label={result.matchStrategy} 
-                                    size="small" 
+                                  <Chip
+                                    label={result.matchStrategy}
+                                    size="small"
                                     color={
                                       result.matchStrategy === 'ref' ? 'warning' :
-                                      result.matchStrategy === 'exact' ? 'primary' :
-                                      result.matchStrategy === 'fuzzy' ? 'success' : 'info'
+                                        result.matchStrategy === 'exact' ? 'primary' :
+                                          result.matchStrategy === 'fuzzy' ? 'success' : 'info'
                                     }
                                   />
                                 </TableCell>
@@ -946,8 +953,8 @@ const OptimizedBulkUploadDialog = ({ open, onClose, onComplete }) => {
           </Button>
         )}
         {activeStep > 0 && activeStep < 2 && (
-          <Button 
-            onClick={() => setActiveStep(prev => prev - 1)} 
+          <Button
+            onClick={() => setActiveStep(prev => prev - 1)}
             disabled={loading}
           >
             Back

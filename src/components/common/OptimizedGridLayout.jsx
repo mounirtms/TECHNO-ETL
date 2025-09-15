@@ -30,7 +30,7 @@ const OptimizedGridLayout = memo(({
   children,
   filterPanel = null,
   statsCards = null,
-  gridName = "UnknownGrid",
+  gridName = 'UnknownGrid',
   hasFilterPanel = false,
   hasStatsCards = false,
   loading = false,
@@ -45,9 +45,10 @@ const OptimizedGridLayout = memo(({
 
   // Performance monitoring
   const renderStartTime = useRef(performance.now());
-  
+
   useEffect(() => {
     const renderTime = performance.now() - renderStartTime.current;
+
     if (renderTime > 16) { // Flag renders taking longer than 1 frame (16ms)
       console.warn(`[${gridName}] Slow render detected: ${renderTime.toFixed(2)}ms`);
     }
@@ -56,7 +57,7 @@ const OptimizedGridLayout = memo(({
   // Intersection observer for lazy loading optimization
   useEffect(() => {
     if (!containerRef.current) return;
-    
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -67,10 +68,11 @@ const OptimizedGridLayout = memo(({
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
-    
+
     observer.observe(containerRef.current);
+
     return () => observer.disconnect();
   }, []);
 
@@ -81,14 +83,14 @@ const OptimizedGridLayout = memo(({
     const statsPanelHeight = hasStatsCards ? (window.innerWidth < 768 ? 100 : 120) : 0;
     const headerHeight = window.innerWidth < 768 ? 56 : 64;
     const footerHeight = 48;
-    
+
     return {
       spacing,
       filterPanelHeight,
       statsPanelHeight,
       headerHeight,
       footerHeight,
-      gridHeight: `calc(100vh - ${headerHeight + footerHeight + filterPanelHeight + statsPanelHeight + (spacing * 4)}px)`
+      gridHeight: `calc(100vh - ${headerHeight + footerHeight + filterPanelHeight + statsPanelHeight + (spacing * 4)}px)`,
     };
   }, [density, hasFilterPanel, hasStatsCards]);
 
@@ -104,12 +106,12 @@ const OptimizedGridLayout = memo(({
     contain: 'layout style paint', // CSS containment for performance
     willChange: loading ? 'contents' : 'auto',
     transition: animations ? theme.transitions.create([
-      'background-color', 'gap'
+      'background-color', 'gap',
     ], {
       duration: theme.transitions.duration.short,
     }) : 'none',
     direction: isRTL ? 'rtl' : 'ltr',
-    ...sx
+    ...sx,
   }), [theme, layoutConfig.spacing, loading, animations, isRTL, sx]);
 
   // Optimized grid container styles with GPU acceleration hints
@@ -129,10 +131,10 @@ const OptimizedGridLayout = memo(({
     backfaceVisibility: 'hidden', // Prevent flicker
     WebkitFontSmoothing: 'antialiased',
     transition: animations ? theme.transitions.create([
-      'background-color', 'border-color', 'box-shadow'
+      'background-color', 'border-color', 'box-shadow',
     ], {
       duration: theme.transitions.duration.short,
-    }) : 'none'
+    }) : 'none',
   }), [theme, layoutConfig.gridHeight, animations]);
 
   // Memoized panel styles
@@ -144,10 +146,10 @@ const OptimizedGridLayout = memo(({
     overflow: 'hidden',
     contain: 'layout style paint',
     transition: animations ? theme.transitions.create([
-      'background-color', 'border-color'
+      'background-color', 'border-color',
     ], {
       duration: theme.transitions.duration.shorter,
-    }) : 'none'
+    }) : 'none',
   }), [theme, animations]);
 
   // Loading skeleton component
@@ -166,9 +168,9 @@ const OptimizedGridLayout = memo(({
 
   return (
     <GridErrorBoundary gridName={gridName}>
-      <Box 
+      <Box
         ref={containerRef}
-        sx={containerStyles} 
+        sx={containerStyles}
         {...props}
       >
         {/* Filter Panel with fade transition */}
@@ -183,11 +185,11 @@ const OptimizedGridLayout = memo(({
         {/* Stats Cards with fade transition */}
         {hasStatsCards && (
           <Fade in={!!statsCards} timeout={300}>
-            <Paper 
-              elevation={0} 
+            <Paper
+              elevation={0}
               sx={{
                 ...panelStyles,
-                p: layoutConfig.spacing
+                p: layoutConfig.spacing,
               }}
             >
               {statsCards || <LoadingSkeleton />}
@@ -202,18 +204,18 @@ const OptimizedGridLayout = memo(({
           role="main"
           aria-label={`${gridName} data grid`}
         >
-          <Fade 
-            in={!loading} 
+          <Fade
+            in={!loading}
             timeout={500}
             style={{
-              transitionDelay: loading ? '0ms' : '200ms'
+              transitionDelay: loading ? '0ms' : '200ms',
             }}
           >
             <Box sx={{ height: '100%', width: '100%' }}>
               {children}
             </Box>
           </Fade>
-          
+
           {/* Loading overlay */}
           {loading && (
             <Fade in={loading} timeout={200}>
@@ -228,7 +230,7 @@ const OptimizedGridLayout = memo(({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  zIndex: 1000
+                  zIndex: 1000,
                 }}
               >
                 {LoadingSkeleton}

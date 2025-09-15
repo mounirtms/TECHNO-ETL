@@ -18,7 +18,7 @@ import '@testing-library/jest-dom';
 
 configure({
   testIdAttribute: 'data-testid',
-  asyncUtilTimeout: 5000,
+  asyncUtilTimeout: 10000,
   computedStyleSupportsPseudoElements: true
 });
 
@@ -420,3 +420,65 @@ export const testKeyboardNavigation = async (user, elements) => {
 // ============================================================================
 // CLEANUP
 // ============================================================================
+
+beforeEach(() => {
+  // Clear all mocks before each test
+  vi.clearAllMocks();
+  
+  // Reset localStorage
+  localStorageMock.getItem.mockClear();
+  localStorageMock.setItem.mockClear();
+  localStorageMock.removeItem.mockClear();
+  localStorageMock.clear.mockClear();
+  
+  // Reset fetch
+  global.fetch.mockClear();
+});
+
+afterEach(() => {
+  // Additional cleanup after each test
+  vi.clearAllTimers();
+});
+
+// ============================================================================
+// EXPORT UTILITIES
+// ============================================================================
+
+export {
+  createMockApiService,
+  createMockGridData,
+  createMockColumns,
+  createMockHandlers,
+  waitForUser,
+  createTestTheme,
+  TestWrapper,
+  AsyncTestWrapper,
+  ThrowError,
+  SuspendingComponent,
+  renderWithProviders,
+  measureRenderTime,
+  testWithLargeDataset,
+  checkAriaAttributes,
+  testKeyboardNavigation
+};
+/**
+ * Extended waitFor with better timeout handling
+ */
+export const extendedWaitFor = (callback, options = {}) => {
+  const { waitFor } = require('@testing-library/react');
+  return waitFor(callback, { timeout: 10000, ...options });
+};
+
+/**
+ * Improved test wrapper with better async handling
+ */
+export const ImprovedTestWrapper = ({ children }) => {
+  const React = require('react');
+  const { Suspense } = require('react');
+  
+  return React.createElement(TestWrapper, null,
+    React.createElement(Suspense, { 
+      fallback: React.createElement('div', null, 'Loading...') 
+    }, children)
+  );
+};

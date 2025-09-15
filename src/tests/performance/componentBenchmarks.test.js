@@ -16,32 +16,34 @@ if (typeof performance.mark === 'undefined') {
 // Performance testing utilities
 const measureRenderTime = async (component, testName) => {
   const startTime = performance.now();
+
   performance.mark(`${testName}-start`);
-  
+
   const result = render(component);
-  
+
   performance.mark(`${testName}-end`);
   const endTime = performance.now();
-  
+
   performance.measure(`${testName}-duration`, `${testName}-start`, `${testName}-end`);
-  
+
   return {
     renderTime: endTime - startTime,
-    result
+    result,
   };
 };
 
 const measureAsyncOperation = async (operation, testName) => {
   const startTime = performance.now();
+
   performance.mark(`${testName}-async-start`);
-  
+
   await operation();
-  
+
   performance.mark(`${testName}-async-end`);
   const endTime = performance.now();
-  
+
   performance.measure(`${testName}-async-duration`, `${testName}-async-start`, `${testName}-async-end`);
-  
+
   return endTime - startTime;
 };
 
@@ -50,7 +52,7 @@ const HeavyComponent = ({ itemCount = 1000 }) => {
   const items = Array.from({ length: itemCount }, (_, i) => ({
     id: i,
     name: `Item ${i}`,
-    value: Math.random() * 1000
+    value: Math.random() * 1000,
   }));
 
   return (
@@ -65,12 +67,12 @@ const HeavyComponent = ({ itemCount = 1000 }) => {
 };
 
 const OptimizedHeavyComponent = ({ itemCount = 1000 }) => {
-  const items = React.useMemo(() => 
+  const items = React.useMemo(() =>
     Array.from({ length: itemCount }, (_, i) => ({
       id: i,
       name: `Item ${i}`,
-      value: Math.random() * 1000
-    })), [itemCount]
+      value: Math.random() * 1000,
+    })), [itemCount],
   );
 
   return (
@@ -86,13 +88,13 @@ const OptimizedHeavyComponent = ({ itemCount = 1000 }) => {
 
 const VirtualizedComponent = ({ itemCount = 10000 }) => {
   const [visibleRange, setVisibleRange] = React.useState({ start: 0, end: 50 });
-  
-  const items = React.useMemo(() => 
+
+  const items = React.useMemo(() =>
     Array.from({ length: itemCount }, (_, i) => ({
       id: i,
       name: `Item ${i}`,
-      value: Math.random() * 1000
-    })), [itemCount]
+      value: Math.random() * 1000,
+    })), [itemCount],
   );
 
   const visibleItems = items.slice(visibleRange.start, visibleRange.end);
@@ -113,19 +115,19 @@ const VirtualizedComponent = ({ itemCount = 10000 }) => {
 // Mock settings context for performance testing
 const createMockSettingsContext = (settings = {}) => ({
   settings: {
-    preferences: { 
-      theme: 'light', 
+    preferences: {
+      theme: 'light',
       language: 'en',
       animations: true,
-      ...settings.preferences 
+      ...settings.preferences,
     },
-    gridSettings: { 
+    gridSettings: {
       defaultPageSize: 25,
       enableVirtualization: true,
-      ...settings.gridSettings 
+      ...settings.gridSettings,
     },
-    ...settings
-  }
+    ...settings,
+  },
 });
 
 const theme = createTheme();
@@ -134,7 +136,7 @@ const renderWithTheme = (component) => {
   return render(
     <ThemeProvider theme={theme}>
       {component}
-    </ThemeProvider>
+    </ThemeProvider>,
   );
 };
 
@@ -149,7 +151,7 @@ describe('Component Performance Benchmarks', () => {
     it('measures basic component render time', async () => {
       const { renderTime } = await measureRenderTime(
         renderWithTheme(<div data-testid="simple">Simple Component</div>),
-        'simple-component'
+        'simple-component',
       );
 
       expect(renderTime).toBeLessThan(10); // Should render in less than 10ms
@@ -159,7 +161,7 @@ describe('Component Performance Benchmarks', () => {
     it('measures heavy component render time', async () => {
       const { renderTime } = await measureRenderTime(
         renderWithTheme(<HeavyComponent itemCount={100} />),
-        'heavy-component'
+        'heavy-component',
       );
 
       expect(renderTime).toBeLessThan(100); // Should render 100 items in less than 100ms
@@ -173,7 +175,7 @@ describe('Component Performance Benchmarks', () => {
 
       const { renderTime: nonOptimizedTime } = await measureRenderTime(
         renderWithTheme(<HeavyComponent itemCount={itemCount} />),
-        'non-optimized'
+        'non-optimized',
       );
 
       // Clear the DOM
@@ -181,7 +183,7 @@ describe('Component Performance Benchmarks', () => {
 
       const { renderTime: optimizedTime } = await measureRenderTime(
         renderWithTheme(<OptimizedHeavyComponent itemCount={itemCount} />),
-        'optimized'
+        'optimized',
       );
 
       // Optimized component should be at least as fast (allowing for some variance)
@@ -191,7 +193,7 @@ describe('Component Performance Benchmarks', () => {
     it('measures virtualized component performance with large datasets', async () => {
       const { renderTime } = await measureRenderTime(
         renderWithTheme(<VirtualizedComponent itemCount={10000} />),
-        'virtualized-large'
+        'virtualized-large',
       );
 
       expect(renderTime).toBeLessThan(50); // Should handle 10k items efficiently
@@ -215,8 +217,8 @@ describe('Component Performance Benchmarks', () => {
             ...prev,
             preferences: {
               ...prev.preferences,
-              theme: prev.preferences.theme === 'light' ? 'dark' : 'light'
-            }
+              theme: prev.preferences.theme === 'light' ? 'dark' : 'light',
+            },
           }));
         };
 
@@ -231,7 +233,7 @@ describe('Component Performance Benchmarks', () => {
 
       const { renderTime } = await measureRenderTime(
         renderWithTheme(<TestComponent />),
-        'settings-context'
+        'settings-context',
       );
 
       expect(renderTime).toBeLessThan(20);
@@ -261,7 +263,7 @@ describe('Component Performance Benchmarks', () => {
           id: i,
           name: `Product ${i}`,
           price: Math.random() * 1000,
-          status: i % 2 === 0 ? 'active' : 'inactive'
+          status: i % 2 === 0 ? 'active' : 'inactive',
         }));
 
         return (
@@ -296,14 +298,14 @@ describe('Component Performance Benchmarks', () => {
 
       for (const pageSize of pageSizes) {
         document.body.innerHTML = '';
-        
+
         const { renderTime } = await measureRenderTime(
           renderWithTheme(<GridComponent pageSize={pageSize} />),
-          `grid-${pageSize}`
+          `grid-${pageSize}`,
         );
 
         results.push({ pageSize, renderTime });
-        
+
         expect(screen.getByTestId('page-size')).toHaveTextContent(`Page Size: ${pageSize}`);
         expect(screen.getByTestId(`row-${pageSize - 1}`)).toBeInTheDocument();
       }
@@ -311,7 +313,7 @@ describe('Component Performance Benchmarks', () => {
       // Verify that render time scales reasonably with page size
       const smallPageTime = results.find(r => r.pageSize === 25).renderTime;
       const largePageTime = results.find(r => r.pageSize === 100).renderTime;
-      
+
       // Large page should not be more than 5x slower than small page
       expect(largePageTime).toBeLessThan(smallPageTime * 5);
     });
@@ -319,25 +321,26 @@ describe('Component Performance Benchmarks', () => {
     it('measures grid filtering performance', async () => {
       const FilterableGrid = () => {
         const [filter, setFilter] = React.useState('');
-        const allData = React.useMemo(() => 
+        const allData = React.useMemo(() =>
           Array.from({ length: 1000 }, (_, i) => ({
             id: i,
             name: `Product ${i}`,
-            category: i % 5 === 0 ? 'electronics' : 'other'
-          })), []
+            category: i % 5 === 0 ? 'electronics' : 'other',
+          })), [],
         );
 
         const filteredData = React.useMemo(() => {
           if (!filter) return allData;
-          return allData.filter(item => 
+
+          return allData.filter(item =>
             item.name.toLowerCase().includes(filter.toLowerCase()) ||
-            item.category.toLowerCase().includes(filter.toLowerCase())
+            item.category.toLowerCase().includes(filter.toLowerCase()),
           );
         }, [allData, filter]);
 
         return (
           <div data-testid="filterable-grid">
-            <input 
+            <input
               data-testid="filter-input"
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
@@ -355,7 +358,7 @@ describe('Component Performance Benchmarks', () => {
 
       const { renderTime } = await measureRenderTime(
         renderWithTheme(<FilterableGrid />),
-        'filterable-grid'
+        'filterable-grid',
       );
 
       expect(renderTime).toBeLessThan(100);
@@ -366,11 +369,11 @@ describe('Component Performance Benchmarks', () => {
   describe('Memory Usage Performance', () => {
     it('measures memory usage during component lifecycle', async () => {
       const MemoryTestComponent = ({ shouldUnmount }) => {
-        const [data] = React.useState(() => 
+        const [data] = React.useState(() =>
           Array.from({ length: 1000 }, (_, i) => ({
             id: i,
-            data: new Array(100).fill(`data-${i}`)
-          }))
+            data: new Array(100).fill(`data-${i}`),
+          })),
         );
 
         React.useEffect(() => {
@@ -393,7 +396,7 @@ describe('Component Performance Benchmarks', () => {
       // Initial render
       const { result, renderTime } = await measureRenderTime(
         renderWithTheme(<MemoryTestComponent shouldUnmount={false} />),
-        'memory-test-mount'
+        'memory-test-mount',
       );
 
       expect(renderTime).toBeLessThan(50);
@@ -401,6 +404,7 @@ describe('Component Performance Benchmarks', () => {
 
       // Unmount
       const unmountStartTime = performance.now();
+
       result.rerender(renderWithTheme(<MemoryTestComponent shouldUnmount={true} />));
       const unmountTime = performance.now() - unmountStartTime;
 
@@ -425,11 +429,11 @@ describe('Component Performance Benchmarks', () => {
         }, [animate]);
 
         return (
-          <div 
+          <div
             data-testid="animated-component"
             style={{
               transform: `translateX(${position}px)`,
-              transition: 'transform 0.016s linear'
+              transition: 'transform 0.016s linear',
             }}
           >
             Position: {position}
@@ -439,7 +443,7 @@ describe('Component Performance Benchmarks', () => {
 
       const { renderTime } = await measureRenderTime(
         renderWithTheme(<AnimatedComponent animate={false} />),
-        'animation-test'
+        'animation-test',
       );
 
       expect(renderTime).toBeLessThan(20);
@@ -466,14 +470,14 @@ describe('Component Performance Benchmarks', () => {
 
       for (const depth of depths) {
         document.body.innerHTML = '';
-        
+
         const { renderTime } = await measureRenderTime(
           renderWithTheme(<DeepComponent depth={depth} />),
-          `deep-${depth}`
+          `deep-${depth}`,
         );
 
         results.push({ depth, renderTime });
-        
+
         expect(screen.getByTestId('leaf')).toBeInTheDocument();
         expect(screen.getByTestId(`level-${depth}`)).toBeInTheDocument();
       }
@@ -481,7 +485,7 @@ describe('Component Performance Benchmarks', () => {
       // Verify that render time doesn't grow exponentially with depth
       const shallow = results.find(r => r.depth === 5).renderTime;
       const deep = results.find(r => r.depth === 20).renderTime;
-      
+
       expect(deep).toBeLessThan(shallow * 10); // Should not be more than 10x slower
     });
   });
@@ -494,37 +498,40 @@ describe('Component Performance Benchmarks', () => {
         virtualizedComponent10k: 50,
         settingsUpdate: 20,
         gridRender25Items: 50,
-        gridRender100Items: 200
+        gridRender100Items: 200,
       };
 
       // Test simple component
       const { renderTime: simpleTime } = await measureRenderTime(
         renderWithTheme(<div>Simple</div>),
-        'baseline-simple'
+        'baseline-simple',
       );
+
       expect(simpleTime).toBeLessThan(baselines.simpleComponent);
 
       // Test heavy component
       document.body.innerHTML = '';
       const { renderTime: heavyTime } = await measureRenderTime(
         renderWithTheme(<HeavyComponent itemCount={100} />),
-        'baseline-heavy'
+        'baseline-heavy',
       );
+
       expect(heavyTime).toBeLessThan(baselines.heavyComponent100Items);
 
       // Test virtualized component
       document.body.innerHTML = '';
       const { renderTime: virtualTime } = await measureRenderTime(
         renderWithTheme(<VirtualizedComponent itemCount={10000} />),
-        'baseline-virtual'
+        'baseline-virtual',
       );
+
       expect(virtualTime).toBeLessThan(baselines.virtualizedComponent10k);
 
       // Log results for monitoring
       console.log('Performance Baselines:', {
         simple: simpleTime,
         heavy: heavyTime,
-        virtual: virtualTime
+        virtual: virtualTime,
       });
     });
   });

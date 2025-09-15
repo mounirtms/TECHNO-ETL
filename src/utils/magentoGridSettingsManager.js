@@ -13,28 +13,28 @@ const DEFAULT_MAGENTO_GRID_SETTINGS = {
   pagination: {
     defaultPageSize: 25,
     pageSizeOptions: [10, 25, 50, 100],
-    enableServerSidePagination: true
+    enableServerSidePagination: true,
   },
   density: 'standard', // 'compact', 'standard', 'comfortable'
   sorting: {
     defaultSort: { field: 'created_at', direction: 'DESC' },
-    enableMultiSort: true
+    enableMultiSort: true,
   },
   filtering: {
     enableQuickFilter: true,
     enableAdvancedFilter: true,
-    persistFilters: true
+    persistFilters: true,
   },
   display: {
     showStatsCards: true,
     enableVirtualization: true,
-    virtualizationThreshold: 500
+    virtualizationThreshold: 500,
   },
   performance: {
     cacheEnabled: true,
     autoRefresh: false,
-    refreshInterval: 30000 // 30 seconds
-  }
+    refreshInterval: 30000, // 30 seconds
+  },
 };
 
 /**
@@ -45,45 +45,45 @@ const GRID_SPECIFIC_DEFAULTS = {
     ...DEFAULT_MAGENTO_GRID_SETTINGS,
     pagination: {
       ...DEFAULT_MAGENTO_GRID_SETTINGS.pagination,
-      defaultPageSize: 50
+      defaultPageSize: 50,
     },
     sorting: {
       ...DEFAULT_MAGENTO_GRID_SETTINGS.sorting,
-      defaultSort: { field: 'sku', direction: 'ASC' }
-    }
+      defaultSort: { field: 'sku', direction: 'ASC' },
+    },
   },
   magentoOrders: {
     ...DEFAULT_MAGENTO_GRID_SETTINGS,
     sorting: {
       ...DEFAULT_MAGENTO_GRID_SETTINGS.sorting,
-      defaultSort: { field: 'created_at', direction: 'DESC' }
-    }
+      defaultSort: { field: 'created_at', direction: 'DESC' },
+    },
   },
   magentoCustomers: {
     ...DEFAULT_MAGENTO_GRID_SETTINGS,
     sorting: {
       ...DEFAULT_MAGENTO_GRID_SETTINGS.sorting,
-      defaultSort: { field: 'created_at', direction: 'DESC' }
-    }
+      defaultSort: { field: 'created_at', direction: 'DESC' },
+    },
   },
   magentoInvoices: {
     ...DEFAULT_MAGENTO_GRID_SETTINGS,
     sorting: {
       ...DEFAULT_MAGENTO_GRID_SETTINGS.sorting,
-      defaultSort: { field: 'created_at', direction: 'DESC' }
-    }
+      defaultSort: { field: 'created_at', direction: 'DESC' },
+    },
   },
   magentoCmsPages: {
     ...DEFAULT_MAGENTO_GRID_SETTINGS,
     pagination: {
       ...DEFAULT_MAGENTO_GRID_SETTINGS.pagination,
-      defaultPageSize: 25
+      defaultPageSize: 25,
     },
     sorting: {
       ...DEFAULT_MAGENTO_GRID_SETTINGS.sorting,
-      defaultSort: { field: 'title', direction: 'ASC' }
-    }
-  }
+      defaultSort: { field: 'title', direction: 'ASC' },
+    },
+  },
 };
 
 /**
@@ -96,45 +96,46 @@ export const getMagentoGridConfig = (gridType, userSettings = {}) => {
   try {
     // Get base configuration for the grid type
     const baseConfig = GRID_SPECIFIC_DEFAULTS[gridType] || DEFAULT_MAGENTO_GRID_SETTINGS;
-    
+
     // Extract relevant user preferences
     const preferences = userSettings.preferences || {};
     const performance = userSettings.performance || {};
     const gridSettings = userSettings.gridSettings || {};
-    
+
     // Apply user preferences to grid configuration
     const config = {
       ...baseConfig,
       pagination: {
         ...baseConfig.pagination,
-        defaultPageSize: gridSettings.defaultPageSize || 
-                        performance.defaultPageSize || 
+        defaultPageSize: gridSettings.defaultPageSize ||
+                        performance.defaultPageSize ||
                         baseConfig.pagination.defaultPageSize,
-        enableServerSidePagination: performance.enableServerSidePagination !== false
+        enableServerSidePagination: performance.enableServerSidePagination !== false,
       },
       density: preferences.density || baseConfig.density,
       display: {
         ...baseConfig.display,
         showStatsCards: gridSettings.showStatsCards !== false,
         enableVirtualization: performance.enableVirtualization !== false,
-        virtualizationThreshold: performance.virtualizationThreshold || 
-                                baseConfig.display.virtualizationThreshold
+        virtualizationThreshold: performance.virtualizationThreshold ||
+                                baseConfig.display.virtualizationThreshold,
       },
       performance: {
         ...baseConfig.performance,
         cacheEnabled: performance.cacheEnabled !== false,
         autoRefresh: gridSettings.autoRefresh === true,
-        refreshInterval: gridSettings.refreshInterval || baseConfig.performance.refreshInterval
+        refreshInterval: gridSettings.refreshInterval || baseConfig.performance.refreshInterval,
       },
       filtering: {
         ...baseConfig.filtering,
-        persistFilters: gridSettings.persistFilters !== false
-      }
+        persistFilters: gridSettings.persistFilters !== false,
+      },
     };
-    
+
     return config;
   } catch (error) {
     console.error('Error getting Magento grid config:', error);
+
     return GRID_SPECIFIC_DEFAULTS[gridType] || DEFAULT_MAGENTO_GRID_SETTINGS;
   }
 };
@@ -150,37 +151,38 @@ export const getMagentoApiParams = (gridType, userSettings = {}, additionalParam
   try {
     const gridConfig = getMagentoGridConfig(gridType, userSettings);
     const apiSettings = userSettings.apiSettings?.magento || {};
-    
+
     // Base API parameters
     const baseParams = {
       pageSize: gridConfig.pagination.defaultPageSize,
       currentPage: 1,
       sortOrders: [gridConfig.sorting.defaultSort],
-      ...additionalParams
+      ...additionalParams,
     };
-    
+
     // Apply API-specific settings
     if (apiSettings.timeout) {
       baseParams.timeout = apiSettings.timeout;
     }
-    
+
     if (apiSettings.retryAttempts) {
       baseParams.retryAttempts = apiSettings.retryAttempts;
     }
-    
+
     // Apply performance settings
     if (gridConfig.performance.cacheEnabled) {
       baseParams.useCache = true;
     }
-    
+
     return baseParams;
   } catch (error) {
     console.error('Error getting Magento API params:', error);
+
     return {
       pageSize: 25,
       currentPage: 1,
       sortOrders: [{ field: 'created_at', direction: 'DESC' }],
-      ...additionalParams
+      ...additionalParams,
     };
   }
 };
@@ -195,7 +197,7 @@ export const getMagentoApiParams = (gridType, userSettings = {}, additionalParam
 export const applySettingsToGridProps = (baseProps, gridType, userSettings = {}) => {
   try {
     const gridConfig = getMagentoGridConfig(gridType, userSettings);
-    
+
     return {
       ...baseProps,
       defaultPageSize: gridConfig.pagination.defaultPageSize,
@@ -209,10 +211,11 @@ export const applySettingsToGridProps = (baseProps, gridType, userSettings = {})
       autoRefresh: gridConfig.performance.autoRefresh,
       refreshInterval: gridConfig.performance.refreshInterval,
       enableQuickFilter: gridConfig.filtering.enableQuickFilter,
-      enableAdvancedFilter: gridConfig.filtering.enableAdvancedFilter
+      enableAdvancedFilter: gridConfig.filtering.enableAdvancedFilter,
     };
   } catch (error) {
     console.error('Error applying settings to grid props:', error);
+
     return baseProps;
   }
 };
@@ -225,13 +228,13 @@ export const applySettingsToGridProps = (baseProps, gridType, userSettings = {})
 export const getErrorHandlingConfig = (userSettings = {}) => {
   const preferences = userSettings.preferences || {};
   const notifications = userSettings.notifications || {};
-  
+
   return {
     showToastErrors: notifications.showErrors !== false,
     showDetailedErrors: preferences.showDetailedErrors === true,
     retryOnError: preferences.autoRetryOnError === true,
     maxRetries: preferences.maxRetries || 3,
-    retryDelay: preferences.retryDelay || 1000
+    retryDelay: preferences.retryDelay || 1000,
   };
 };
 
@@ -243,25 +246,25 @@ export const getErrorHandlingConfig = (userSettings = {}) => {
  */
 export const handleMagentoGridError = (error, operation, userSettings = {}) => {
   const errorConfig = getErrorHandlingConfig(userSettings);
-  
+
   console.error(`Magento Grid Error (${operation}):`, error);
-  
+
   if (errorConfig.showToastErrors) {
-    const message = errorConfig.showDetailedErrors 
+    const message = errorConfig.showDetailedErrors
       ? `${operation} failed: ${error.message}`
       : `Failed to ${operation.toLowerCase()}`;
-    
+
     toast.error(message, {
       autoClose: 5000,
       hideProgressBar: false,
       closeOnClick: true,
-      pauseOnHover: true
+      pauseOnHover: true,
     });
   }
-  
+
   // Log error for debugging
   if (process.env.NODE_ENV === 'development') {
-    console.group(`🔴 Magento Grid Error Details`);
+    console.group('🔴 Magento Grid Error Details');
     console.log('Operation:', operation);
     console.log('Error:', error);
     console.log('User Settings:', userSettings);
@@ -278,16 +281,16 @@ export const handleMagentoGridError = (error, operation, userSettings = {}) => {
 export const saveMagentoGridPreferences = (gridType, preferences, updateSettings) => {
   try {
     const gridSettingsKey = `${gridType}Settings`;
-    
+
     updateSettings({
       gridSettings: {
         [gridSettingsKey]: {
           ...preferences,
-          lastModified: Date.now()
-        }
-      }
+          lastModified: Date.now(),
+        },
+      },
     }, 'gridSettings');
-    
+
     console.log(`✅ Saved preferences for ${gridType}:`, preferences);
   } catch (error) {
     console.error(`❌ Failed to save preferences for ${gridType}:`, error);
@@ -304,10 +307,11 @@ export const getMagentoGridPreferences = (gridType, userSettings = {}) => {
   try {
     const gridSettings = userSettings.gridSettings || {};
     const gridSettingsKey = `${gridType}Settings`;
-    
+
     return gridSettings[gridSettingsKey] || {};
   } catch (error) {
     console.error(`Error getting preferences for ${gridType}:`, error);
+
     return {};
   }
 };
@@ -319,5 +323,5 @@ export default {
   getErrorHandlingConfig,
   handleMagentoGridError,
   saveMagentoGridPreferences,
-  getMagentoGridPreferences
+  getMagentoGridPreferences,
 };

@@ -8,13 +8,13 @@ import { column } from 'stylis';
 
 // Row Number Column
 export const rowNumberColumn = {
-    field: 'rowNumber',
-    headerName: '#',
-    disableColumnMenu: true,
-    width: 30,
-    sortable: false,
-    filterable: false,
-    pinned: 'left'
+  field: 'rowNumber',
+  headerName: '#',
+  disableColumnMenu: true,
+  width: 30,
+  sortable: false,
+  filterable: false,
+  pinned: 'left',
 };
 
 
@@ -25,81 +25,82 @@ export const DATE_FORMAT = 'PPp';
 
 // Custom Order statuses
 export const STATUS_COLORS = {
-    // Custom Order statuses
-    'processing': 'info',
-    'Commande_a_livrer': 'info',
-    'pending': 'warning',
-    'Commande_a_recuperer': 'warning',
-    'completed': 'success',
-    'canceled': 'error',
-    'closed': 'default',
-    'fraud': 'error',
-    'Conf_CMD_1': 'warning',
-    'Commande_en_livraison_prestataire': 'info',
-    'Livraison_Confirmee': 'success',
-    'CMD_Done': 'success',
+  // Custom Order statuses
+  'processing': 'info',
+  'Commande_a_livrer': 'info',
+  'pending': 'warning',
+  'Commande_a_recuperer': 'warning',
+  'completed': 'success',
+  'canceled': 'error',
+  'closed': 'default',
+  'fraud': 'error',
+  'Conf_CMD_1': 'warning',
+  'Commande_en_livraison_prestataire': 'info',
+  'Livraison_Confirmee': 'success',
+  'CMD_Done': 'success',
 
-    // Other existing statuses remain unchanged
-    shipped: 'info',
-    active: 'success',
-    inactive: 'error',
-    subscribed: 'info',
-    not_subscribed: 'default',
-    enabled: 'success',
-    disabled: 'error',
-    in_stock: 'success',
-    out_of_stock: 'error',
-    paid: 'success',
-    overdue: 'error',
-    refunded: 'info',
-    true: 'success',
-    false: 'error'
+  // Other existing statuses remain unchanged
+  shipped: 'info',
+  active: 'success',
+  inactive: 'error',
+  subscribed: 'info',
+  not_subscribed: 'default',
+  enabled: 'success',
+  disabled: 'error',
+  in_stock: 'success',
+  out_of_stock: 'error',
+  paid: 'success',
+  overdue: 'error',
+  refunded: 'info',
+  true: 'success',
+  false: 'error',
 };
 
 // Custom Order Statuses
 export const ORDER_STATUSES = [
-    { value: 'processing', label: 'Processing' },
-    { value: 'Commande_a_livrer', label: 'Order to Deliver' },
-    { value: 'pending', label: 'Pending' },
-    { value: 'Commande_a_recuperer', label: 'Order to Pickup' },
-    { value: 'completed', label: 'Completed' },
-    { value: 'canceled', label: 'Canceled' },
-    { value: 'closed', label: 'Closed' },
-    { value: 'fraud', label: 'Fraud' },
-    { value: 'Conf_CMD_1', label: 'Confirmation Pending' },
-    { value: 'Commande_en_livraison_prestataire', label: 'Delivery in Progress' },
-    { value: 'Livraison_Confirmee', label: 'Delivery Confirmed' },
-    { value: 'CMD_Done', label: 'Order Completed' }
+  { value: 'processing', label: 'Processing' },
+  { value: 'Commande_a_livrer', label: 'Order to Deliver' },
+  { value: 'pending', label: 'Pending' },
+  { value: 'Commande_a_recuperer', label: 'Order to Pickup' },
+  { value: 'completed', label: 'Completed' },
+  { value: 'canceled', label: 'Canceled' },
+  { value: 'closed', label: 'Closed' },
+  { value: 'fraud', label: 'Fraud' },
+  { value: 'Conf_CMD_1', label: 'Confirmation Pending' },
+  { value: 'Commande_en_livraison_prestataire', label: 'Delivery in Progress' },
+  { value: 'Livraison_Confirmee', label: 'Delivery Confirmed' },
+  { value: 'CMD_Done', label: 'Order Completed' },
 ];
 
 // Status color mapping for custom classes
 export const STATUS_CLASSES = {
-    'processing': 'inProgress',
-    'Commande_a_livrer': 'inProgress',
-    'pending': 'pending',
-    'Commande_a_recuperer': 'pending',
-    'completed': 'delivered',
-    'canceled': 'canceled',
-    'closed': 'closed',
-    'fraud': 'fraud',
-    'Conf_CMD_1': 'confirmationPending',
-    'Commande_en_livraison_prestataire': 'deliveryInProgress',
-    'Livraison_Confirmee': 'deliveryConfirmed',
-    'CMD_Done': 'orderCompleted'
+  'processing': 'inProgress',
+  'Commande_a_livrer': 'inProgress',
+  'pending': 'pending',
+  'Commande_a_recuperer': 'pending',
+  'completed': 'delivered',
+  'canceled': 'canceled',
+  'closed': 'closed',
+  'fraud': 'fraud',
+  'Conf_CMD_1': 'confirmationPending',
+  'Commande_en_livraison_prestataire': 'deliveryInProgress',
+  'Livraison_Confirmee': 'deliveryConfirmed',
+  'CMD_Done': 'orderCompleted',
 };
 
 // Column Type Checks
 const isDate = (value) => {
-    if (!value) return false;
-    const date = new Date(value);
-    return !isNaN(date) &&
+  if (!value) return false;
+  const date = new Date(value);
+
+  return !isNaN(date) &&
         typeof value === 'string' &&
         (value.match(/^\d{4}-\d{2}-\d{2}/) ||
             value.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/));
 };
 
 const isCurrency = (key, value) => {
-    return isNumeric(value) &&
+  return isNumeric(value) &&
         (key.includes('price') ||
             key.includes('total') ||
             key.includes('amount') ||
@@ -108,15 +109,15 @@ const isCurrency = (key, value) => {
 };
 
 const isNumeric = (value) => {
-    return !isNaN(parseFloat(value)) && isFinite(value);
+  return !isNaN(parseFloat(value)) && isFinite(value);
 };
 
 const isBoolean = (value) => {
-    return typeof value === 'boolean';
+  return typeof value === 'boolean';
 };
 
 const isStatus = (key, value) => {
-    return (typeof value === 'string' || typeof value === 'boolean') &&
+  return (typeof value === 'string' || typeof value === 'boolean') &&
         (key.includes('status') ||
             key.includes('state') ||
             key.includes('active') ||
@@ -125,61 +126,61 @@ const isStatus = (key, value) => {
 
 // Column Generators
 export const getDateColumn = (field, options = {}) => ({
-    field,
-    type: 'date',
-    valueFormatter: (params) =>
-        params.value ? format(new Date(params.value), DATE_FORMAT) : '',
-    width: 180,
-    ...options
+  field,
+  type: 'date',
+  valueFormatter: (params) =>
+    params.value ? format(new Date(params.value), DATE_FORMAT) : '',
+  width: 180,
+  ...options,
 });
 
 export const getCurrencyColumn = (field, options = {}) => ({
-    field,
-    type: 'number',
-    valueFormatter: (params) =>
-        params.value ? new Intl.NumberFormat(LOCALE, {
-            style: 'currency',
-            currency: CURRENCY
-        }).format(params.value) : '',
-    width: 130,
-    ...options
+  field,
+  type: 'number',
+  valueFormatter: (params) =>
+    params.value ? new Intl.NumberFormat(LOCALE, {
+      style: 'currency',
+      currency: CURRENCY,
+    }).format(params.value) : '',
+  width: 130,
+  ...options,
 });
 
 export const getStatusColumn = (field = 'status', options = {}) => ({
-    field,
-    headerName: options.headerName || 'Status',
-    width: options.width || 150,
-    renderCell: (params) => {
-        const value = params.value;
-        const statusClass = STATUS_CLASSES[value] || value;
+  field,
+  headerName: options.headerName || 'Status',
+  width: options.width || 150,
+  renderCell: (params) => {
+    const value = params.value;
+    const statusClass = STATUS_CLASSES[value] || value;
 
-        return StatusCell({
-            value,
-            statusColors: options.statusColors || STATUS_COLORS,
-            className: statusClass
-        });
-    },
-    type: 'singleSelect',
-    valueOptions: options.filterOptions || ORDER_STATUSES,
-    ...options
+    return StatusCell({
+      value,
+      statusColors: options.statusColors || STATUS_COLORS,
+      className: statusClass,
+    });
+  },
+  type: 'singleSelect',
+  valueOptions: options.filterOptions || ORDER_STATUSES,
+  ...options,
 });
 
 export const getBooleanColumn = (field, options = {}) => ({
-    field,
-    type: 'boolean',
-    width: 120,
-    renderCell: (params) => StatusCell({
-        value: params.value ? 'true' : 'false',
-        statusColors: STATUS_COLORS
-    }),
-    ...options
+  field,
+  type: 'boolean',
+  width: 120,
+  renderCell: (params) => StatusCell({
+    value: params.value ? 'true' : 'false',
+    statusColors: STATUS_COLORS,
+  }),
+  ...options,
 });
 
 export const getTreeColumn = (field, options = {}) => ({
-    field,
-    flex: 1,
-    renderCell: options.renderCell,
-    ...options
+  field,
+  flex: 1,
+  renderCell: options.renderCell,
+  ...options,
 });
 
 // Cache management for grid data
@@ -196,327 +197,355 @@ import cmsBlocksData from '../assets/data/cmsBlocks.json';
 
 // Data mapping for static imports
 const DATA_MAP = {
-    'customers': customersData,
-    'products': productsData,
-    'orders': ordersData,
-    'invoices': invoicesData,
-    'category': categoryData,
-    'categories': categoryData,
-    'cmspages': cmsPagesData,
-    'cmsblocks': cmsBlocksData,
-    'cms': cmsPagesData
+  'customers': customersData,
+  'products': productsData,
+  'orders': ordersData,
+  'invoices': invoicesData,
+  'category': categoryData,
+  'categories': categoryData,
+  'cmspages': cmsPagesData,
+  'cmsblocks': cmsBlocksData,
+  'cms': cmsPagesData,
 };
 
 export const getLocalData = async (gridName) => {
-    try {
-        const cachedData = localStorage.getItem(`grid_${gridName}_data`);
-        if (cachedData) {
-            const { data, timestamp } = JSON.parse(cachedData);
-            if (Date.now() - timestamp < CACHE_DURATION) {
-                return data;
-            }
-        }
-        // Use static imports instead of dynamic imports
-        const dataKey = gridName.toLowerCase();
-        const data = DATA_MAP[dataKey];
-        return data || [];
-    } catch (error) {
-        console.error(`Error getting local data for ${gridName}:`, error);
-        return [];
+  try {
+    const cachedData = localStorage.getItem(`grid_${gridName}_data`);
+
+    if (cachedData) {
+      const { data, timestamp } = JSON.parse(cachedData);
+
+      if (Date.now() - timestamp < CACHE_DURATION) {
+        return data;
+      }
     }
+    // Use static imports instead of dynamic imports
+    const dataKey = gridName.toLowerCase();
+    const data = DATA_MAP[dataKey];
+
+    return data || [];
+  } catch (error) {
+    console.error(`Error getting local data for ${gridName}:`, error);
+
+    return [];
+  }
 };
 
 export const setLocalData = (gridName, data) => {
-    try {
-        localStorage.setItem(`grid_${gridName}_data`, JSON.stringify({
-            data,
-            timestamp: Date.now()
-        }));
-    } catch (error) {
-        console.error(`Error caching data for ${gridName}:`, error);
-    }
+  try {
+    localStorage.setItem(`grid_${gridName}_data`, JSON.stringify({
+      data,
+      timestamp: Date.now(),
+    }));
+  } catch (error) {
+    console.error(`Error caching data for ${gridName}:`, error);
+  }
 };
 
 // Default grid columns storage
 const defaultGridColumns = {};
 
 export const saveDefaultColumns = (gridName, columns) => {
-    defaultGridColumns[gridName] = [...columns];
+  defaultGridColumns[gridName] = [...columns];
 };
 
 export const getDefaultColumns = (gridName) => {
-    return defaultGridColumns[gridName] || [];
+  return defaultGridColumns[gridName] || [];
 };
 
 export const resetToDefaultColumns = (gridName) => {
-    const defaultColumns = getDefaultColumns(gridName);
-    saveGridSettings(gridName, defaultColumns);
-    return defaultColumns;
+  const defaultColumns = getDefaultColumns(gridName);
+
+  saveGridSettings(gridName, defaultColumns);
+
+  return defaultColumns;
 };
 
 // Enhanced column processing for existing columns
 export const enhanceColumns = (columns = [], options = {}) => {
-    const {
-        enableI18n = false,
-        translate = (key, fallback) => fallback,
-        enableSorting = true,
-        enableFiltering = true
-    } = options;
+  const {
+    enableI18n = false,
+    translate = (key, fallback) => fallback,
+    enableSorting = true,
+    enableFiltering = true,
+  } = options;
 
-    // Ensure columns is an array
-    if (!Array.isArray(columns)) {
-        console.warn('enhanceColumns: columns parameter must be an array, received:', typeof columns);
-        return [];
+  // Ensure columns is an array
+  if (!Array.isArray(columns)) {
+    console.warn('enhanceColumns: columns parameter must be an array, received:', typeof columns);
+
+    return [];
+  }
+
+  return columns.map(column => {
+    if (!column || typeof column !== 'object') {
+      console.warn('enhanceColumns: Invalid column object:', column);
+
+      return column;
     }
 
-    return columns.map(column => {
-        if (!column || typeof column !== 'object') {
-            console.warn('enhanceColumns: Invalid column object:', column);
-            return column;
-        }
+    const enhancedColumn = { ...column };
 
-        const enhancedColumn = { ...column };
+    // Apply translations if enabled
+    if (enableI18n && translate && column.headerName) {
+      const translationKey = `grid.columns.${column.field}`;
 
-        // Apply translations if enabled
-        if (enableI18n && translate && column.headerName) {
-            const translationKey = `grid.columns.${column.field}`;
-            enhancedColumn.headerName = translate(translationKey, column.headerName);
-        }
+      enhancedColumn.headerName = translate(translationKey, column.headerName);
+    }
 
-        // Apply sorting and filtering settings
-        if (enableSorting !== undefined) {
-            enhancedColumn.sortable = enableSorting;
-        }
-        if (enableFiltering !== undefined) {
-            enhancedColumn.filterable = enableFiltering;
-        }
+    // Apply sorting and filtering settings
+    if (enableSorting !== undefined) {
+      enhancedColumn.sortable = enableSorting;
+    }
+    if (enableFiltering !== undefined) {
+      enhancedColumn.filterable = enableFiltering;
+    }
 
-        return enhancedColumn;
-    });
+    return enhancedColumn;
+  });
 };
 
 // Enhanced column generation with better type detection
 export const generateColumns = (firstRecord = {}, childColumns = []) => {
-    if (!firstRecord || typeof firstRecord !== 'object') {
-        return childColumns;
-    }
-    // Build autoColumns and objectColumns, but ensure objectColumns override autoColumns for object fields
-    const objectFieldSet = new Set(Object.keys(firstRecord).filter(key => typeof firstRecord[key] === 'object' && firstRecord[key] !== null));
+  if (!firstRecord || typeof firstRecord !== 'object') {
+    return childColumns;
+  }
+  // Build autoColumns and objectColumns, but ensure objectColumns override autoColumns for object fields
+  const objectFieldSet = new Set(Object.keys(firstRecord).filter(key => typeof firstRecord[key] === 'object' && firstRecord[key] !== null));
 
-    const autoColumns = Object.keys(firstRecord).map(field => {
-        // If this is an object field, skip it here (will be handled by objectColumns)
-        if (objectFieldSet.has(field)) return null;
-        const value = firstRecord[field];
-        const baseColumn = {
-            field,
-            headerName: field.split('_').map(word =>
-                word.charAt(0).toUpperCase() + word.slice(1)
-            ).join(' '),
-            width: 150,
-            sortable: true,
-            filterable: true
-        };
+  const autoColumns = Object.keys(firstRecord).map(field => {
+    // If this is an object field, skip it here (will be handled by objectColumns)
+    if (objectFieldSet.has(field)) return null;
+    const value = firstRecord[field];
+    const baseColumn = {
+      field,
+      headerName: field.split('_').map(word =>
+        word.charAt(0).toUpperCase() + word.slice(1),
+      ).join(' '),
+      width: 150,
+      sortable: true,
+      filterable: true,
+    };
 
-        if (isDate(value)) {
-            return getDateColumn(field);
-        } else if (isCurrency(field, value)) {
-            return getCurrencyColumn(field);
-        } else if (isStatus(field, value)) {
-            return getStatusColumn(field);
-        } else if (typeof value === 'boolean') {
-            return getBooleanColumn(field);
-        }
-
-        return baseColumn;
-    }).filter(Boolean);
-
-    // Object columns: always override for object fields
-    const objectColumns = Array.from(objectFieldSet).map(key => ({
-        field: key,
-        headerName: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-        width: 120,
-        renderCell: (params) => {
-            const value = params.value;
-            if (value === null || value === undefined) return '';
-            if (typeof value === 'object') {
-                if (value instanceof Date) {
-                    return value.toLocaleString();
-                }
-                return React.createElement(
-                    'button',
-                    {
-                        style: { color: '#1976d2', cursor: 'pointer', textDecoration: 'underline', background: 'none', border: 'none', padding: 0 },
-                        onClick: (e) => {
-                            e.stopPropagation();
-                            const dialog = document.createElement('dialog');
-                            dialog.style.padding = '20px';
-                            dialog.style.maxWidth = '600px';
-                            dialog.innerHTML = `<pre style="white-space:pre-wrap;word-break:break-all;max-height:60vh;overflow:auto;">${
-                                JSON.stringify(value, null, 2)
-                            }</pre><button style="margin-top:10px;float:right;">Close</button>`;
-                            document.body.appendChild(dialog);
-                            const closeBtn = dialog.querySelector('button');
-                            closeBtn.onclick = () => { dialog.close(); dialog.remove(); };
-                            dialog.showModal();
-                        }
-                    },
-                    '[View]'
-                );
-            }
-            return String(value);
-        }
-    }));
-
-    // Filter out null values and merge columns
-    const validAutoColumns = autoColumns.filter(col => col !== null);
-    const validObjectColumns = objectColumns.filter(col => col !== null);
-    const mergedColumns = mergeColumns(childColumns, [...validAutoColumns, ...validObjectColumns]);
-
-    // Save as default columns for this grid
-    if (childColumns.length > 0) {
-        const gridName = childColumns[0]?.gridName;
-        if (gridName) {
-            saveDefaultColumns(gridName, mergedColumns);
-        }
+    if (isDate(value)) {
+      return getDateColumn(field);
+    } else if (isCurrency(field, value)) {
+      return getCurrencyColumn(field);
+    } else if (isStatus(field, value)) {
+      return getStatusColumn(field);
+    } else if (typeof value === 'boolean') {
+      return getBooleanColumn(field);
     }
 
-    // Ensure we always return an array
-    return Array.isArray(mergedColumns) ? mergedColumns : childColumns;
+    return baseColumn;
+  }).filter(Boolean);
+
+  // Object columns: always override for object fields
+  const objectColumns = Array.from(objectFieldSet).map(key => ({
+    field: key,
+    headerName: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+    width: 120,
+    renderCell: (params) => {
+      const value = params.value;
+
+      if (value === null || value === undefined) return '';
+      if (typeof value === 'object') {
+        if (value instanceof Date) {
+          return value.toLocaleString();
+        }
+
+        return React.createElement(
+          'button',
+          {
+            style: { color: '#1976d2', cursor: 'pointer', textDecoration: 'underline', background: 'none', border: 'none', padding: 0 },
+            onClick: (e) => {
+              e.stopPropagation();
+              const dialog = document.createElement('dialog');
+
+              dialog.style.padding = '20px';
+              dialog.style.maxWidth = '600px';
+              dialog.innerHTML = `<pre style="white-space:pre-wrap;word-break:break-all;max-height:60vh;overflow:auto;">${
+                JSON.stringify(value, null, 2)
+              }</pre><button style="margin-top:10px;float:right;">Close</button>`;
+              document.body.appendChild(dialog);
+              const closeBtn = dialog.querySelector('button');
+
+              closeBtn.onclick = () => { dialog.close(); dialog.remove(); };
+              dialog.showModal();
+            },
+          },
+          '[View]',
+        );
+      }
+
+      return String(value);
+    },
+  }));
+
+  // Filter out null values and merge columns
+  const validAutoColumns = autoColumns.filter(col => col !== null);
+  const validObjectColumns = objectColumns.filter(col => col !== null);
+  const mergedColumns = mergeColumns(childColumns, [...validAutoColumns, ...validObjectColumns]);
+
+  // Save as default columns for this grid
+  if (childColumns.length > 0) {
+    const gridName = childColumns[0]?.gridName;
+
+    if (gridName) {
+      saveDefaultColumns(gridName, mergedColumns);
+    }
+  }
+
+  // Ensure we always return an array
+  return Array.isArray(mergedColumns) ? mergedColumns : childColumns;
 };
 
 // Enhanced column settings management
 export const applySavedColumnSettings = async (gridName, columns) => {
-    if (!gridName || !columns || !Array.isArray(columns)) {
-        return columns;
+  if (!gridName || !columns || !Array.isArray(columns)) {
+    return columns;
+  }
+
+  try {
+    // Get saved settings from local storage first
+    const savedSettingsStr = localStorage.getItem(`grid_${gridName}_settings`);
+
+    if (savedSettingsStr) {
+      const savedSettings = JSON.parse(savedSettingsStr);
+
+      return columns.map(column => ({
+        ...column,
+        hide: !savedSettings[column.field]?.visible,
+        width: savedSettings[column.field]?.width || column.width || 150,
+        index: savedSettings[column.field]?.index || columns.findIndex(col => col.field === column.field),
+      })).sort((a, b) => (a.index || 0) - (b.index || 0));
     }
 
-    try {
-        // Get saved settings from local storage first
-        const savedSettingsStr = localStorage.getItem(`grid_${gridName}_settings`);
-        if (savedSettingsStr) {
-            const savedSettings = JSON.parse(savedSettingsStr);
-            return columns.map(column => ({
-                ...column,
-                hide: !savedSettings[column.field]?.visible,
-                width: savedSettings[column.field]?.width || column.width || 150,
-                index: savedSettings[column.field]?.index || columns.findIndex(col => col.field === column.field)
-            })).sort((a, b) => (a.index || 0) - (b.index || 0));
-        }
+    // If no local storage settings, try to get from database
+    const dbSettings = await getGridSettings(gridName);
 
-        // If no local storage settings, try to get from database
-        const dbSettings = await getGridSettings(gridName);
-        if (dbSettings && typeof dbSettings === 'object') {
-            return columns.map(column => ({
-                ...column,
-                hide: !dbSettings[column.field]?.visible,
-                width: dbSettings[column.field]?.width || column.width || 150,
-                index: dbSettings[column.field]?.index || columns.findIndex(col => col.field === column.field)
-            })).sort((a, b) => (a.index || 0) - (b.index || 0));
-        }
-
-        // If no settings found, return original columns with default settings
-        return columns.map((column, index) => ({
-            ...column,
-            hide: false,
-            width: column.width || 150,
-            index
-        }));
-    } catch (error) {
-        console.error('Error applying saved column settings:', error);
-        return columns.map((column, index) => ({
-            ...column,
-            hide: false,
-            width: column.width || 150,
-            index
-        }));
+    if (dbSettings && typeof dbSettings === 'object') {
+      return columns.map(column => ({
+        ...column,
+        hide: !dbSettings[column.field]?.visible,
+        width: dbSettings[column.field]?.width || column.width || 150,
+        index: dbSettings[column.field]?.index || columns.findIndex(col => col.field === column.field),
+      })).sort((a, b) => (a.index || 0) - (b.index || 0));
     }
+
+    // If no settings found, return original columns with default settings
+    return columns.map((column, index) => ({
+      ...column,
+      hide: false,
+      width: column.width || 150,
+      index,
+    }));
+  } catch (error) {
+    console.error('Error applying saved column settings:', error);
+
+    return columns.map((column, index) => ({
+      ...column,
+      hide: false,
+      width: column.width || 150,
+      index,
+    }));
+  }
 };
 
 // Utility function to save column settings specifically
 export const saveColumnSettings = async (gridName, columns) => {
-    if (!gridName || !columns || !Array.isArray(columns)) return false;
+  if (!gridName || !columns || !Array.isArray(columns)) return false;
 
-    try {
-        // Save to local storage
-        localStorage.setItem(`${gridName}-columns`, JSON.stringify(columns));
+  try {
+    // Save to local storage
+    localStorage.setItem(`${gridName}-columns`, JSON.stringify(columns));
 
-        // Save to database if available
-        if (typeof database !== 'undefined') {
-            const settingsRef = ref(database, `gridSettings/${gridName}/columns`);
-            await set(settingsRef, columns);
-        }
+    // Save to database if available
+    if (typeof database !== 'undefined') {
+      const settingsRef = ref(database, `gridSettings/${gridName}/columns`);
 
-        return true;
-    } catch (error) {
-        console.error('Error saving column settings:', error);
-        return false;
+      await set(settingsRef, columns);
     }
+
+    return true;
+  } catch (error) {
+    console.error('Error saving column settings:', error);
+
+    return false;
+  }
 };
 
 // Utility function to save grid settings
 export const saveGridSettings = async (gridName, settings) => {
-    if (!gridName || !settings) return;
+  if (!gridName || !settings) return;
 
-    try {
-        // Save to local storage
-        localStorage.setItem(`grid_${gridName}_settings`, JSON.stringify(settings));
+  try {
+    // Save to local storage
+    localStorage.setItem(`grid_${gridName}_settings`, JSON.stringify(settings));
 
-        // Save to database
-        const settingsRef = ref(database, `gridSettings/${gridName}`);
-        await set(settingsRef, settings);
+    // Save to database
+    const settingsRef = ref(database, `gridSettings/${gridName}`);
 
-        return true;
-    } catch (error) {
-        console.error('Error saving grid settings:', error);
-        return false;
-    }
+    await set(settingsRef, settings);
+
+    return true;
+  } catch (error) {
+    console.error('Error saving grid settings:', error);
+
+    return false;
+  }
 };
 
 // Utility function to get grid settings
 export const getGridSettings = async (gridName) => {
-    try {
-        // First try to get from localStorage
-        const localSettings = localStorage.getItem(`${gridName}-columns`);
-        if (localSettings) {
-            return JSON.parse(localSettings);
-        }
+  try {
+    // First try to get from localStorage
+    const localSettings = localStorage.getItem(`${gridName}-columns`);
 
-        // If not in localStorage, try Firebase
-        const settingsRef = ref(database, `gridSettings/${gridName}`);
-        const snapshot = await get(settingsRef);
-        if (snapshot.exists()) {
-            const settings = snapshot.val();
-            // Cache in localStorage for future use
-            localStorage.setItem(`${gridName}-columns`, JSON.stringify(settings));
-            return settings;
-        }
-    } catch (error) {
-        console.error('Error retrieving grid settings:', error);
+    if (localSettings) {
+      return JSON.parse(localSettings);
     }
-    return null;
+
+    // If not in localStorage, try Firebase
+    const settingsRef = ref(database, `gridSettings/${gridName}`);
+    const snapshot = await get(settingsRef);
+
+    if (snapshot.exists()) {
+      const settings = snapshot.val();
+
+      // Cache in localStorage for future use
+      localStorage.setItem(`${gridName}-columns`, JSON.stringify(settings));
+
+      return settings;
+    }
+  } catch (error) {
+    console.error('Error retrieving grid settings:', error);
+  }
+
+  return null;
 };
 
 // Merging dynamic columns with user columns
 export const mergeColumns = (userColumns, dynamicColumns) => {
-    const columnMap = new Map();
+  const columnMap = new Map();
 
-    // Ensure userColumns and dynamicColumns are arrays
-    const safeUserColumns = Array.isArray(userColumns) ? userColumns : [];
-    const safeDynamicColumns = Array.isArray(dynamicColumns) ? dynamicColumns : [];
+  // Ensure userColumns and dynamicColumns are arrays
+  const safeUserColumns = Array.isArray(userColumns) ? userColumns : [];
+  const safeDynamicColumns = Array.isArray(dynamicColumns) ? dynamicColumns : [];
 
-    // Add user columns to the column map
-    safeUserColumns.forEach(col => {
-        if (col && col.field) {
-            columnMap.set(col.field, { ...col, hide: false });
-        }
-    });
+  // Add user columns to the column map
+  safeUserColumns.forEach(col => {
+    if (col && col.field) {
+      columnMap.set(col.field, { ...col, hide: false });
+    }
+  });
 
-    // Add dynamic columns if they don't exist in user columns
-    safeDynamicColumns.forEach(col => {
-        if (!columnMap.has(col.field)) {
-            columnMap.set(col.field, { ...col, hide: true });  // Set hide: true for dynamic columns by default
-        }
-    });
+  // Add dynamic columns if they don't exist in user columns
+  safeDynamicColumns.forEach(col => {
+    if (!columnMap.has(col.field)) {
+      columnMap.set(col.field, { ...col, hide: true });  // Set hide: true for dynamic columns by default
+    }
+  });
 
-    return Array.from(columnMap.values());
+  return Array.from(columnMap.values());
 };

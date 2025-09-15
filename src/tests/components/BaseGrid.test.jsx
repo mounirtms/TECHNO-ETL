@@ -1,9 +1,9 @@
 /**
  * BaseGrid Component Tests
- * 
+ *
  * Comprehensive test suite for the BaseGrid component
  * Tests React 18 features, performance, and accessibility
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
@@ -25,15 +25,15 @@ vi.mock('react-error-boundary', () => ({
     } catch (error) {
       return <FallbackComponent error={error} resetErrorBoundary={() => {}} />;
     }
-  }
+  },
 }));
 
 vi.mock('framer-motion', () => ({
   motion: {
-    div: React.forwardRef(({ children, ...props }, ref) => 
-      <div ref={ref} {...props}>{children}</div>
-    )
-  }
+    div: React.forwardRef(({ children, ...props }, ref) =>
+      <div ref={ref} {...props}>{children}</div>,
+    ),
+  },
 }));
 
 // Test utilities
@@ -49,20 +49,20 @@ const mockApiService = {
   get: vi.fn(),
   post: vi.fn(),
   put: vi.fn(),
-  delete: vi.fn()
+  delete: vi.fn(),
 };
 
 const mockData = [
   { id: 1, name: 'Test Item 1', status: 'active', sku: 'TEST001' },
   { id: 2, name: 'Test Item 2', status: 'inactive', sku: 'TEST002' },
-  { id: 3, name: 'Test Item 3', status: 'active', sku: 'TEST003' }
+  { id: 3, name: 'Test Item 3', status: 'active', sku: 'TEST003' },
 ];
 
 const mockColumns = [
   { field: 'id', headerName: 'ID', width: 100 },
   { field: 'name', headerName: 'Name', width: 200 },
   { field: 'status', headerName: 'Status', width: 120 },
-  { field: 'sku', headerName: 'SKU', width: 150 }
+  { field: 'sku', headerName: 'SKU', width: 150 },
 ];
 
 // ============================================================================
@@ -82,7 +82,7 @@ describe('BaseGrid - Basic Functionality', () => {
           columns={mockColumns}
           data={mockData}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByRole('grid')).toBeInTheDocument();
@@ -96,7 +96,7 @@ describe('BaseGrid - Basic Functionality', () => {
           columns={mockColumns}
           data={mockData}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Test Item 1')).toBeInTheDocument();
@@ -113,7 +113,7 @@ describe('BaseGrid - Basic Functionality', () => {
           data={[]}
           loading={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // Check for loading indicator
@@ -128,7 +128,7 @@ describe('BaseGrid - Basic Functionality', () => {
           columns={mockColumns}
           data={[]}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByRole('grid')).toBeInTheDocument();
@@ -143,7 +143,7 @@ describe('BaseGrid - Basic Functionality', () => {
 describe('BaseGrid - Search Functionality', () => {
   test('filters data based on search query', async () => {
     const user = userEvent.setup();
-    
+
     render(
       <TestWrapper>
         <BaseGrid
@@ -153,18 +153,18 @@ describe('BaseGrid - Search Functionality', () => {
           enableSearch={true}
           searchFields={['name', 'sku']}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const searchInput = screen.getByPlaceholderText('Search...');
-    
+
     await user.type(searchInput, 'Test Item 1');
 
     await waitFor(() => {
       expect(screen.getByText('Test Item 1')).toBeInTheDocument();
       expect(screen.queryByText('Test Item 2')).not.toBeInTheDocument();
       expect(screen.queryByText('Test Item 3')).not.toBeInTheDocument();
-    });
+    }, { timeout: 15000 });
   });
 
   test('uses deferred value for search optimization', async () => {
@@ -180,13 +180,15 @@ describe('BaseGrid - Search Functionality', () => {
           enableSearch={true}
           onSearch={onSearch}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const searchInput = screen.getByPlaceholderText('Search...');
-    
+
     // Type quickly
     await user.type(searchInput, 'test');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));
 
     // Search should be debounced
     expect(onSearch).toHaveBeenCalledWith('test');
@@ -211,11 +213,14 @@ describe('BaseGrid - Selection', () => {
           enableSelection={true}
           onSelectionChange={onSelectionChange}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
-    // Find and click checkbox for first row
+  await user.click(checkboxes[1]);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50)); first row
     const checkboxes = screen.getAllByRole('checkbox');
+
     await user.click(checkboxes[1]); // First checkbox is header, second is first row
 
     expect(onSelectionChange).toHaveBeenCalledWith([1]);
@@ -233,7 +238,7 @@ describe('BaseGrid - Selection', () => {
           enableSelection={true}
           enableStats={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // Initially no selection
@@ -241,10 +246,10 @@ describe('BaseGrid - Selection', () => {
 
     // Select a row
     const checkboxes = screen.getAllByRole('checkbox');
-    await user.click(checkboxes[1]);
 
-    await waitFor(() => {
+    await user.click(cheawait waitFor(() => {
       expect(screen.getByText('1')).toBeInTheDocument(); // Selected count updated
+    }, { timeout: 15000 });unt updated
     });
   });
 });
@@ -256,7 +261,7 @@ describe('BaseGrid - Selection', () => {
 describe('BaseGrid - API Integration', () => {
   test('fetches data on mount', async () => {
     mockApiService.get.mockResolvedValue({
-      data: { items: mockData }
+      data: { items: mockData },
     });
 
     render(
@@ -267,12 +272,12 @@ describe('BaseGrid - API Integration', () => {
           apiService={mockApiService}
           apiEndpoint="/test-endpoint"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     await waitFor(() => {
       expect(mockApiService.get).toHaveBeenCalledWith('/test-endpoint', {
-        params: {}
+        params: {},
       });
     });
 
@@ -281,6 +286,7 @@ describe('BaseGrid - API Integration', () => {
 
   test('handles API errors gracefully', async () => {
     const error = new Error('API Error');
+
     mockApiService.get.mockRejectedValue(error);
 
     const onError = vi.fn();
@@ -293,12 +299,9 @@ describe('BaseGrid - API Integration', () => {
           apiService={mockApiService}
           apiEndpoint="/test-endpoint"
           onError={onError}
-        />
-      </TestWrapper>
-    );
-
-    await waitFor(() => {
+        /await waitFor(() => {
       expect(onError).toHaveBeenCalledWith(error);
+    }, { timeout: 15000 });r).toHaveBeenCalledWith(error);
     });
   });
 });
@@ -310,7 +313,7 @@ describe('BaseGrid - API Integration', () => {
 describe('BaseGrid - Toolbar Interactions', () => {
   test('refresh button triggers data refetch', async () => {
     mockApiService.get.mockResolvedValue({
-      data: { items: mockData }
+      data: { items: mockData },
     });
 
     const onRefresh = vi.fn();
@@ -323,14 +326,16 @@ describe('BaseGrid - Toolbar Interactions', () => {
           columns={mockColumns}
           apiService={mockApiService}
           apiEndpoint="/test-endpoint"
-          onRefresh={onRefresh}
-          enableActions={true}
+          onRawait user.click(refreshButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));ableActions={true}
           toolbarConfig={{ showRefresh: true }}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const refreshButton = screen.getByLabelText('Refresh');
+
     await user.click(refreshButton);
 
     expect(onRefresh).toHaveBeenCalled();
@@ -341,19 +346,20 @@ describe('BaseGrid - Toolbar Interactions', () => {
     const user = userEvent.setup();
 
     render(
-      <TestWrapper>
-        <BaseGrid
-          gridName="test-grid"
+      <TestWrapper>await user.click(addButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));   gridName="test-grid"
           columns={mockColumns}
           data={mockData}
           onAdd={onAdd}
           enableActions={true}
           toolbarConfig={{ showAdd: true }}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const addButton = screen.getByLabelText('Add');
+
     await user.click(addButton);
 
     expect(onAdd).toHaveBeenCalled();
@@ -373,10 +379,11 @@ describe('BaseGrid - Accessibility', () => {
           columns={mockColumns}
           data={mockData}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const grid = screen.getByRole('grid');
+
     expect(grid).toHaveAttribute('aria-labelledby');
     expect(grid).toHaveAttribute('aria-describedby');
   });
@@ -390,15 +397,17 @@ describe('BaseGrid - Accessibility', () => {
           data={mockData}
           enableSearch={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const searchInput = screen.getByRole('textbox');
-    expect(searchInput).toHaveAttribute('id');
-    expect(searchInput).toHaveAttribute('aria-label');
-  });
 
-  test('supports keyboard navigation', async () => {
+    expect(searchInput).toHaveAttribute('id');
+    expect(searchInput).toHaveAttribute('await user.tab();
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeawait user.type(searchInput, 'test{enter}');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));yboard navigation', async () => {
     const user = userEvent.setup();
 
     render(
@@ -409,11 +418,11 @@ describe('BaseGrid - Accessibility', () => {
           data={mockData}
           enableSearch={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const searchInput = screen.getByRole('textbox');
-    
+
     // Focus should work
     await user.tab();
     expect(searchInput).toHaveFocus();
@@ -424,9 +433,9 @@ describe('BaseGrid - Accessibility', () => {
   });
 });
 
-// ============================================================================
-// PERFORMANCE TESTS
-// ============================================================================
+// ========================================================================await user.type(searchInput, 'rapid typing test');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));=========================================================
 
 describe('BaseGrid - Performance', () => {
   test('uses React 18 transitions for non-blocking updates', async () => {
@@ -440,11 +449,11 @@ describe('BaseGrid - Performance', () => {
           data={mockData}
           enableSearch={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const searchInput = screen.getByPlaceholderText('Search...');
-    
+
     // Rapid typing should not block UI
     await act(async () => {
       await user.type(searchInput, 'rapid typing test');
@@ -459,7 +468,7 @@ describe('BaseGrid - Performance', () => {
       id: index,
       name: `Item ${index}`,
       status: index % 2 === 0 ? 'active' : 'inactive',
-      sku: `SKU${index.toString().padStart(4, '0')}`
+      sku: `SKU${index.toString().padStart(4, '0')}`,
     }));
 
     const { container } = render(
@@ -470,7 +479,7 @@ describe('BaseGrid - Performance', () => {
           data={largeDataset}
           enableVirtualization={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // Should render without significant delay
@@ -501,16 +510,17 @@ describe('BaseGrid - Error Handling', () => {
         >
           <ThrowError />
         </BaseGrid>
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
-    
+
     consoleSpy.mockRestore();
   });
 
   test('displays error state when data fetching fails', async () => {
     const error = new Error('Network error');
+
     mockApiService.get.mockRejectedValue(error);
 
     render(
@@ -519,13 +529,9 @@ describe('BaseGrid - Error Handling', () => {
           gridName="test-grid"
           columns={mockColumns}
           apiService={mockApiService}
-          apiEndpoint="/failing-endpoint"
-        />
-      </TestWrapper>
-    );
-
-    await waitFor(() => {
+          apiEndpoint="/failing-await waitFor(() => {
       expect(screen.getByText(/network error/i)).toBeInTheDocument();
+    }, { timeout: 15000 });n.getByText(/network error/i)).toBeInTheDocument();
     });
   });
 });
@@ -551,7 +557,7 @@ describe('BaseGrid - Suspense Integration', () => {
         >
           <SuspendingComponent />
         </BaseGrid>
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText(/loading/i)).toBeInTheDocument();

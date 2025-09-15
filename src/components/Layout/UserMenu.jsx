@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import {
-    Box,
-    IconButton,
-    Avatar,
-    Menu,
-    MenuItem,
-    ListItemIcon,
-    ListItemText,
-    Divider,
-    Typography,
+  Box,
+  IconButton,
+  Avatar,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Divider,
+  Typography,
 } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -20,124 +20,109 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
 const StyledMenu = styled(Menu)(({ theme }) => ({
-    '& .MuiPaper-root': {
-        borderRadius: 6,
-        minWidth: 200,
-        boxShadow: theme.shadows[3],
-        '& .MuiMenu-list': {
-            padding: '4px 0',
-        },
-        '& .MuiMenuItem-root': {
-            padding: theme.spacing(1, 2),
-            '& .MuiSvgIcon-root': {
-                fontSize: 20,
-                color: theme.palette.text.secondary,
-                marginRight: theme.spacing(1.5),
-            },
-            '&:active': {
-                backgroundColor: theme.palette.primary.light,
-            },
-        },
+  '& .MuiPaper-root': {
+    borderRadius: 6,
+    minWidth: 200,
+    boxShadow: theme.shadows[3],
+    '& .MuiMenu-list': {
+      padding: '4px 0',
     },
+    '& .MuiMenuItem-root': {
+      padding: theme.spacing(1, 2),
+      '& .MuiSvgIcon-root': {
+        fontSize: 20,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+      },
+      '&:active': {
+        backgroundColor: theme.palette.primary.light,
+      },
+    },
+  },
 }));
 
 const UserMenu = () => {
-    const [anchorEl, setAnchorEl] = useState(null);
-    const { currentUser, logout } = useAuth();
-    const { translate } = useLanguage();
-    
-    // Safely use the tab context with error handling
-    let tabContext;
+  const [anchorEl, setAnchorEl] = useState(null);
+  const { currentUser, logout } = useAuth();
+  const { translate } = useLanguage();
+  const { openTab } = useTab();
+  const navigate = useNavigate();
+
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleOpenProfile = () => {
+    navigate('/profile'); // Navigate directly to the profile route
+    handleClose();
+  };
+
+
+  const handleLogout = async () => {
     try {
-        tabContext = useTab();
+      await logout();
+      handleClose();
     } catch (error) {
-        // If useTab fails (outside of TabProvider), create a fallback context
-        tabContext = { openTab: () => {} };
+      console.error('Error logging out:', error);
+      toast.error('Failed to logout. Please try again.');
     }
-    
-    const { openTab } = tabContext;
-    const navigate = useNavigate();
+  };
 
-    const handleMenu = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Typography variant="subtitle1" sx={{ display: { xs: 'none', sm: 'block' } }}>
+          {currentUser?.displayName || currentUser?.email || translate('common.user')}
+        </Typography>
+        <IconButton
+          onClick={handleMenu}
+          size="small"
+          aria-controls={open ? 'user-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+        >
+          <Avatar
+            alt={currentUser?.displayName || translate('common.user')}
+            src={currentUser?.photoURL}
+            sx={{
+              width: 32,
+              height: 32,
+              border: (theme) => `2px solid ${theme.palette.primary.main}`,
+            }}
+          />
+        </IconButton>
+      </Box>
+      <StyledMenu
+        anchorEl={anchorEl}
+        id="user-menu"
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
 
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
 
-    const handleOpenProfile = () => {
-        try {
-            openTab('UserProfile');
-        } catch (error) {
-            // Fallback to direct navigation if tab context is not available
-            navigate('/profile');
-        }
-        handleClose();
-    };
+        <MenuItem onClick={handleOpenProfile}>
+          <ListItemIcon>
+            <AccountCircleIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary={translate('common.profile')} />
+        </MenuItem>
 
-
-    const handleLogout = async () => {
-        try {
-            await logout();
-            handleClose();
-        } catch (error) {
-            console.error('Error logging out:', error);
-            toast.error('Failed to logout. Please try again.');
-        }
-    };
-
-    return (
-        <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Typography variant="subtitle1" sx={{ display: { xs: 'none', sm: 'block' } }}>
-                    {currentUser?.displayName || currentUser?.email || translate('common.user')}
-                </Typography>
-                <IconButton
-                    onClick={handleMenu}
-                    size="small"
-                    aria-controls={open ? 'user-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                >
-                    <Avatar
-                        alt={currentUser?.displayName || translate('common.user')}
-                        src={currentUser?.photoURL}
-                        sx={{ 
-                            width: 32, 
-                            height: 32,
-                            border: (theme) => `2px solid ${theme.palette.primary.main}`
-                        }}
-                    />
-                </IconButton>
-            </Box>
-            <StyledMenu
-                anchorEl={anchorEl}
-                id="user-menu"
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-                transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            >
-         
-               
-                <MenuItem onClick={handleOpenProfile}>
-                    <ListItemIcon>
-                        <AccountCircleIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText primary={translate('common.profile')} />
-                </MenuItem>
-
-                <Divider />
-                <MenuItem onClick={handleLogout}>
-                    <ListItemIcon>
-                        <LogoutIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText primary={translate('common.logout')} />
-                </MenuItem>
-            </StyledMenu>
-        </Box>
-    );
+        <Divider />
+        <MenuItem onClick={handleLogout}>
+          <ListItemIcon>
+            <LogoutIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary={translate('common.logout')} />
+        </MenuItem>
+      </StyledMenu>
+    </Box>
+  );
 };
 
 export default UserMenu;

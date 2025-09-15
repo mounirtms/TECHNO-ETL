@@ -24,7 +24,7 @@ import {
   MenuItem,
   TextField,
   Chip,
-  Paper
+  Paper,
 } from '@mui/material';
 import {
   Visibility as VisibilityIcon,
@@ -36,7 +36,7 @@ import {
   ViewColumn as ColumnIcon,
   FormatAlignLeft as AlignLeftIcon,
   FormatAlignCenter as AlignCenterIcon,
-  FormatAlignRight as AlignRightIcon
+  FormatAlignRight as AlignRightIcon,
 } from '@mui/icons-material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
@@ -44,13 +44,13 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
  * ColumnCustomization - Advanced column management
  * Features: Show/hide, reorder, width adjustment, alignment, formatting
  */
-const ColumnCustomization = ({ 
-  open, 
-  onClose, 
-  columns, 
+const ColumnCustomization = ({
+  open,
+  onClose,
+  columns,
   onColumnsChange,
   columnSettings,
-  onColumnSettingsChange 
+  onColumnSettingsChange,
 }) => {
   // ===== STATE MANAGEMENT =====
   const [localColumns, setLocalColumns] = useState(columns);
@@ -59,12 +59,12 @@ const ColumnCustomization = ({
 
   // ===== COLUMN OPERATIONS =====
   const handleColumnVisibilityToggle = useCallback((columnField) => {
-    setLocalColumns(prev => 
-      prev.map(col => 
-        col.field === columnField 
+    setLocalColumns(prev =>
+      prev.map(col =>
+        col.field === columnField
           ? { ...col, hide: !col.hide }
-          : col
-      )
+          : col,
+      ),
     );
   }, []);
 
@@ -73,6 +73,7 @@ const ColumnCustomization = ({
 
     const items = Array.from(localColumns);
     const [reorderedItem] = items.splice(result.source.index, 1);
+
     items.splice(result.destination.index, 0, reorderedItem);
 
     setLocalColumns(items);
@@ -83,8 +84,8 @@ const ColumnCustomization = ({
       prev.map(col =>
         col.field === columnField
           ? { ...col, width: width }
-          : col
-      )
+          : col,
+      ),
     );
   }, []);
 
@@ -93,8 +94,8 @@ const ColumnCustomization = ({
       prev.map(col =>
         col.field === columnField
           ? { ...col, align: align }
-          : col
-      )
+          : col,
+      ),
     );
   }, []);
 
@@ -103,36 +104,37 @@ const ColumnCustomization = ({
       ...prev,
       [columnField]: {
         ...prev[columnField],
-        format: format
-      }
+        format: format,
+      },
     }));
   }, []);
 
   const handleSave = useCallback(() => {
     onColumnsChange(localColumns);
     onColumnSettingsChange(localSettings);
-    
+
     // Save to localStorage for persistence
     localStorage.setItem('grid_column_config', JSON.stringify({
       columns: localColumns,
-      settings: localSettings
+      settings: localSettings,
     }));
-    
+
     onClose();
   }, [localColumns, localSettings, onColumnsChange, onColumnSettingsChange, onClose]);
 
   const handleReset = useCallback(() => {
     // Reset to default configuration
     const defaultColumns = columns.map(col => ({ ...col, hide: false }));
+
     setLocalColumns(defaultColumns);
     setLocalSettings({});
-    
+
     // Clear localStorage
     localStorage.removeItem('grid_column_config');
   }, [columns]);
 
   // ===== COMPUTED VALUES =====
-  const visibleColumnsCount = useMemo(() => 
+  const visibleColumnsCount = useMemo(() =>
     localColumns.filter(col => !col.hide).length
   , [localColumns]);
 
@@ -150,13 +152,13 @@ const ColumnCustomization = ({
             border: snapshot.isDragging ? '1px dashed' : 'none',
             borderColor: 'primary.main',
             borderRadius: 1,
-            mb: 0.5
+            mb: 0.5,
           }}
         >
           <ListItemIcon {...provided.dragHandleProps}>
             <DragHandleIcon color="action" />
           </ListItemIcon>
-          
+
           <ListItemIcon>
             <Checkbox
               checked={!column.hide}
@@ -164,29 +166,29 @@ const ColumnCustomization = ({
               color="primary"
             />
           </ListItemIcon>
-          
+
           <ListItemText
             primary={column.headerName || column.field}
             secondary={
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
                 <Chip label={column.field} size="small" variant="outlined" />
-                <Chip 
-                  label={`Width: ${column.width || 'Auto'}`} 
-                  size="small" 
-                  variant="outlined" 
+                <Chip
+                  label={`Width: ${column.width || 'Auto'}`}
+                  size="small"
+                  variant="outlined"
                 />
                 {column.type && (
-                  <Chip 
-                    label={column.type} 
-                    size="small" 
-                    color="primary" 
-                    variant="outlined" 
+                  <Chip
+                    label={column.type}
+                    size="small"
+                    color="primary"
+                    variant="outlined"
                   />
                 )}
               </Box>
             }
           />
-          
+
           <ListItemSecondaryAction>
             <Tooltip title="Column Settings">
               <IconButton
@@ -213,7 +215,7 @@ const ColumnCustomization = ({
         <Typography variant="h6" gutterBottom>
           Settings for: {selectedColumn.headerName || selectedColumn.field}
         </Typography>
-        
+
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {/* Width Setting */}
           <Box>
@@ -244,8 +246,8 @@ const ColumnCustomization = ({
                   onClick={() => handleColumnAlignmentChange(selectedColumn.field, align)}
                   startIcon={
                     align === 'left' ? <AlignLeftIcon /> :
-                    align === 'center' ? <AlignCenterIcon /> :
-                    <AlignRightIcon />
+                      align === 'center' ? <AlignCenterIcon /> :
+                        <AlignRightIcon />
                   }
                 >
                   {align}
@@ -294,8 +296,8 @@ const ColumnCustomization = ({
                   prev.map(col =>
                     col.field === selectedColumn.field
                       ? { ...col, sortable: e.target.checked }
-                      : col
-                  )
+                      : col,
+                  ),
                 );
                 setSelectedColumn(prev => ({ ...prev, sortable: e.target.checked }));
               }}
@@ -314,8 +316,8 @@ const ColumnCustomization = ({
                   prev.map(col =>
                     col.field === selectedColumn.field
                       ? { ...col, filterable: e.target.checked }
-                      : col
-                  )
+                      : col,
+                  ),
                 );
                 setSelectedColumn(prev => ({ ...prev, filterable: e.target.checked }));
               }}
@@ -353,7 +355,7 @@ const ColumnCustomization = ({
           </Box>
         </Box>
       </DialogTitle>
-      
+
       <DialogContent>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           Drag to reorder columns, use checkboxes to show/hide, and click settings to customize individual columns.
@@ -376,7 +378,7 @@ const ColumnCustomization = ({
 
         {renderColumnSettings()}
       </DialogContent>
-      
+
       <DialogActions>
         <Button onClick={handleReset} startIcon={<RestoreIcon />}>
           Reset to Default

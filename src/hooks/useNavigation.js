@@ -13,26 +13,26 @@ import { ROUTES, ROUTE_METADATA, NAVIGATION_ITEMS } from '../config/routes';
 export const useNavigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   const [navigationState, setNavigationState] = useState({
     currentRoute: location.pathname,
     previousRoute: null,
     breadcrumbs: [],
     activeMenuItem: null,
-    navigationHistory: []
+    navigationHistory: [],
   });
 
   // Update navigation state when location changes
   useEffect(() => {
     const currentPath = location.pathname;
     const routeMetadata = ROUTE_METADATA[currentPath];
-    
+
     // Find active menu item
     const activeItem = NAVIGATION_ITEMS.find(item => item.path === currentPath);
-    
+
     // Generate breadcrumbs
     const breadcrumbs = generateBreadcrumbs(currentPath);
-    
+
     setNavigationState(prev => ({
       ...prev,
       previousRoute: prev.currentRoute,
@@ -44,16 +44,16 @@ export const useNavigation = () => {
         {
           path: currentPath,
           timestamp: Date.now(),
-          metadata: routeMetadata
-        }
-      ]
+          metadata: routeMetadata,
+        },
+      ],
     }));
   }, [location.pathname]);
 
   // Navigate to a specific route
   const navigateTo = useCallback((path, options = {}) => {
     const { replace = false, state = null } = options;
-    
+
     if (replace) {
       navigate(path, { replace: true, state });
     } else {
@@ -79,6 +79,7 @@ export const useNavigation = () => {
   // Check if route is accessible
   const isRouteAccessible = useCallback((path) => {
     const metadata = ROUTE_METADATA[path];
+
     return metadata && metadata.requiresAuth !== false;
   }, []);
 
@@ -93,7 +94,7 @@ export const useNavigation = () => {
       ...item,
       isActive: isRouteActive(item.path),
       isAccessible: isRouteAccessible(item.path),
-      metadata: getRouteMetadata(item.path)
+      metadata: getRouteMetadata(item.path),
     }));
   }, [isRouteActive, isRouteAccessible, getRouteMetadata]);
 
@@ -104,21 +105,21 @@ export const useNavigation = () => {
     activeMenuItem: navigationState.activeMenuItem,
     breadcrumbs: navigationState.breadcrumbs,
     navigationHistory: navigationState.navigationHistory,
-    
+
     // Navigation actions
     navigateTo,
     goBack,
     goForward,
-    
+
     // Utility functions
     isRouteActive,
     isRouteAccessible,
     getRouteMetadata,
     getMenuItems,
-    
+
     // Route constants
     ROUTES,
-    NAVIGATION_ITEMS
+    NAVIGATION_ITEMS,
   };
 };
 
@@ -128,39 +129,40 @@ export const useNavigation = () => {
 function generateBreadcrumbs(path) {
   const segments = path.split('/').filter(Boolean);
   const breadcrumbs = [];
-  
+
   // Always start with Dashboard
   if (path !== '/dashboard') {
     breadcrumbs.push({
       label: 'Dashboard',
       path: '/dashboard',
-      isActive: false
+      isActive: false,
     });
   }
-  
+
   // Build breadcrumbs from path segments
   let currentPath = '';
+
   segments.forEach((segment, index) => {
     currentPath += `/${segment}`;
     const metadata = ROUTE_METADATA[currentPath];
     const isLast = index === segments.length - 1;
-    
+
     if (metadata) {
       breadcrumbs.push({
         label: metadata.breadcrumb || metadata.title || segment,
         path: currentPath,
-        isActive: isLast
+        isActive: isLast,
       });
     } else {
       // Handle dynamic segments
       breadcrumbs.push({
         label: segment.charAt(0).toUpperCase() + segment.slice(1),
         path: currentPath,
-        isActive: isLast
+        isActive: isLast,
       });
     }
   });
-  
+
   return breadcrumbs;
 }
 
@@ -171,7 +173,7 @@ export const useMenuState = () => {
   const [menuState, setMenuState] = useState({
     isOpen: false,
     activeSubmenu: null,
-    hoveredItem: null
+    hoveredItem: null,
   });
 
   const openMenu = useCallback(() => {
@@ -200,7 +202,7 @@ export const useMenuState = () => {
     closeMenu,
     toggleMenu,
     setActiveSubmenu,
-    setHoveredItem
+    setHoveredItem,
   };
 };
 
@@ -218,7 +220,7 @@ export const useBreadcrumbs = () => {
 
   return {
     breadcrumbs,
-    navigateToBreadcrumb
+    navigateToBreadcrumb,
   };
 };
 
@@ -229,7 +231,7 @@ export const useNavigationPerformance = () => {
   const [performanceData, setPerformanceData] = useState({
     navigationTimes: [],
     averageNavigationTime: 0,
-    slowNavigations: []
+    slowNavigations: [],
   });
 
   const location = useLocation();
@@ -244,14 +246,14 @@ export const useNavigationPerformance = () => {
       setPerformanceData(prev => {
         const newTimes = [...prev.navigationTimes, navigationTime].slice(-20); // Keep last 20
         const average = newTimes.reduce((sum, time) => sum + time, 0) / newTimes.length;
-        const slowNavs = navigationTime > 1000 ? 
+        const slowNavs = navigationTime > 1000 ?
           [...prev.slowNavigations, { path: location.pathname, time: navigationTime }].slice(-10) :
           prev.slowNavigations;
 
         return {
           navigationTimes: newTimes,
           averageNavigationTime: average,
-          slowNavigations: slowNavs
+          slowNavigations: slowNavs,
         };
       });
 

@@ -1,13 +1,13 @@
 /**
  * Professional Bulk Image Upload Service
  * Handles image matching using REF column, renaming, and processing multiple images per product
- * 
+ *
  * This service implements the professional bulk image upload workflow:
  * 1. Parse CSV with REF column detection
  * 2. Match images to products using REF values in filenames
  * 3. Rename images according to Image Name column with proper numbering
  * 4. Prepare images for resizing and upload
- * 
+ *
  * @author Techno-ETL Team
  * @version 1.0.0
  */
@@ -29,16 +29,16 @@ class ProfessionalBulkImageUploadService {
     }
 
     if (!this.allowedTypes.includes(file.type)) {
-      return { 
-        valid: false, 
-        error: 'Invalid file type. Supported: JPG, PNG, GIF, WebP' 
+      return {
+        valid: false,
+        error: 'Invalid file type. Supported: JPG, PNG, GIF, WebP',
       };
     }
 
     if (file.size > this.maxFileSize) {
-      return { 
-        valid: false, 
-        error: `File too large. Maximum size: ${(this.maxFileSize / 1024 / 1024).toFixed(0)}MB` 
+      return {
+        valid: false,
+        error: `File too large. Maximum size: ${(this.maxFileSize / 1024 / 1024).toFixed(0)}MB`,
       };
     }
 
@@ -57,12 +57,12 @@ class ProfessionalBulkImageUploadService {
 
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      
+
       reader.onload = (e) => {
         try {
           const text = e.target.result;
           const lines = text.split('\n').filter(line => line.trim());
-          
+
           if (lines.length === 0) {
             throw new Error('CSV file is empty');
           }
@@ -72,11 +72,11 @@ class ProfessionalBulkImageUploadService {
           const data = lines.slice(1).map((line, index) => {
             const values = this.parseCSVLine(line);
             const row = { _index: index };
-            
+
             headers.forEach((header, headerIndex) => {
               row[header] = values[headerIndex] || '';
             });
-            
+
             return row;
           }).filter(row => Object.values(row).some(val => val !== ''));
 
@@ -91,7 +91,7 @@ class ProfessionalBulkImageUploadService {
             skuColumn: this.findColumn(headers, ['sku', 'reference', 'ref']),
             imageColumn: this.findColumn(headers, ['image', 'image name', 'filename', 'file']),
             nameColumn: this.findColumn(headers, ['name', 'title', 'product_name']),
-            refColumn: this.findColumn(headers, ['ref'])
+            refColumn: this.findColumn(headers, ['ref']),
           };
 
           resolve(result);
@@ -99,7 +99,7 @@ class ProfessionalBulkImageUploadService {
           reject(new Error(`Failed to parse CSV: ${error.message}`));
         }
       };
-      
+
       reader.onerror = () => reject(new Error('Failed to read CSV file'));
       reader.readAsText(file);
     });
@@ -114,10 +114,10 @@ class ProfessionalBulkImageUploadService {
     const values = [];
     let currentValue = '';
     let insideQuotes = false;
-    
+
     for (let i = 0; i < line.length; i++) {
       const char = line[i];
-      
+
       if (char === '"') {
         insideQuotes = !insideQuotes;
       } else if (char === ',' && !insideQuotes) {
@@ -127,8 +127,9 @@ class ProfessionalBulkImageUploadService {
         currentValue += char;
       }
     }
-    
+
     values.push(currentValue.trim());
+
     return values;
   }
 
@@ -140,14 +141,15 @@ class ProfessionalBulkImageUploadService {
    */
   findColumn(headers, possibleNames) {
     const lowerHeaders = headers.map(h => h.toLowerCase());
-    
+
     for (const name of possibleNames) {
       const foundIndex = lowerHeaders.indexOf(name.toLowerCase());
+
       if (foundIndex !== -1) {
         return headers[foundIndex];
       }
     }
-    
+
     return null;
   }
 
@@ -161,45 +163,46 @@ class ProfessionalBulkImageUploadService {
     const matches = [];
     const unmatched = {
       csvRows: [],
-      imageFiles: []
+      imageFiles: [],
     };
-    
+
     // Track which images have been matched to avoid duplicates
     const matchedImages = new Set();
-    
+
     // Process each CSV row
     csvData.data.forEach((row) => {
       const sku = row[csvData.skuColumn];
       const ref = row[csvData.refColumn];
       const imageName = row[csvData.imageColumn];
-      
+
       if (!sku || !ref || !imageName) {
         unmatched.csvRows.push(row);
+
         return;
       }
-      
+
       // Find all images that match this product's REF value
       const productImages = imageFiles.filter(file => {
         // Skip if already matched
         if (matchedImages.has(file.name)) {
           return false;
         }
-        
+
         // Check if filename contains the REF value
         return file.name.includes(ref);
       });
-      
+
       // Sort images to ensure consistent ordering
       productImages.sort((a, b) => a.name.localeCompare(b.name));
-      
+
       // Create matches for each image
       productImages.forEach((file, index) => {
         // For the first image, use the base image name
         // For additional images, append _1, _2, etc.
-        const finalImageName = index === 0 
+        const finalImageName = index === 0
           ? `${imageName}.${this.getFileExtension(file.name)}`
           : `${imageName}_${index}.${this.getFileExtension(file.name)}`;
-        
+
         matches.push({
           sku,
           ref,
@@ -207,26 +210,26 @@ class ProfessionalBulkImageUploadService {
           finalImageName,
           file,
           imageIndex: index,
-          isMainImage: index === 0
+          isMainImage: index === 0,
         });
-        
+
         // Mark this image as matched
         matchedImages.add(file.name);
       });
-      
+
       // If no images matched, add to unmatched
       if (productImages.length === 0) {
         unmatched.csvRows.push(row);
       }
     });
-    
+
     // Find unmatched images
     imageFiles.forEach(file => {
       if (!matchedImages.has(file.name)) {
         unmatched.imageFiles.push(file);
       }
     });
-    
+
     return {
       matches,
       unmatched,
@@ -236,8 +239,8 @@ class ProfessionalBulkImageUploadService {
         matched: matches.length,
         unmatchedCSV: unmatched.csvRows.length,
         unmatchedImages: unmatched.imageFiles.length,
-        uniqueProducts: new Set(matches.map(m => m.sku)).size
-      }
+        uniqueProducts: new Set(matches.map(m => m.sku)).size,
+      },
     };
   }
 
@@ -248,6 +251,7 @@ class ProfessionalBulkImageUploadService {
    */
   getFileExtension(filename) {
     const parts = filename.split('.');
+
     return parts.length > 1 ? parts[parts.length - 1] : 'jpg';
   }
 
@@ -263,11 +267,12 @@ class ProfessionalBulkImageUploadService {
     // 3. Return processed files
     return matches.map(match => ({
       ...match,
-      processed: true
+      processed: true,
     }));
   }
 }
 
 // Export singleton instance
 const professionalBulkImageUploadService = new ProfessionalBulkImageUploadService();
+
 export default professionalBulkImageUploadService;

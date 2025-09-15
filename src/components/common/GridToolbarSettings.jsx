@@ -12,7 +12,7 @@ import {
   FormControlLabel,
   Switch,
   Box,
-  Typography
+  Typography,
 } from '@mui/material';
 import {
   ViewColumn as ColumnsIcon,
@@ -23,7 +23,7 @@ import {
   FileDownload as ExportIcon,
   TableChart as ExcelIcon,
   Description as CsvIcon,
-  Code as JsonIcon
+  Code as JsonIcon,
 } from '@mui/icons-material';
 
 /**
@@ -41,7 +41,7 @@ const GridToolbarSettings = ({
   gridName,
   translate,
   exportOptions = {},
-  onExport
+  onExport,
 }) => {
   const handleDensityChange = (newDensity) => {
     onDensityChange?.(newDensity);
@@ -51,7 +51,7 @@ const GridToolbarSettings = ({
   const densityOptions = [
     { value: 'compact', label: translate('compact', 'Compact') },
     { value: 'standard', label: translate('standard', 'Standard') },
-    { value: 'comfortable', label: translate('comfortable', 'Comfortable') }
+    { value: 'comfortable', label: translate('comfortable', 'Comfortable') },
   ];
 
   return (
@@ -62,7 +62,7 @@ const GridToolbarSettings = ({
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       PaperProps={{
-        sx: { minWidth: 250, maxWidth: 350 }
+        sx: { minWidth: 250, maxWidth: 350 },
       }}
     >
       {/* Density Settings */}
@@ -112,7 +112,7 @@ const GridToolbarSettings = ({
                     onChange={(e) => {
                       onColumnVisibilityChange?.({
                         ...columnVisibility,
-                        [field]: e.target.checked
+                        [field]: e.target.checked,
                       });
                     }}
                     size="small"
@@ -181,6 +181,7 @@ const GridToolbarSettings = ({
       <MenuItem onClick={() => {
         // Reset column visibility to show all columns
         const resetVisibility = {};
+
         Object.keys(columnVisibility).forEach(field => {
           resetVisibility[field] = true;
         });

@@ -3,12 +3,12 @@ import {
   Box, Paper, Typography, Switch, FormControlLabel, Select, MenuItem,
   FormControl, InputLabel, Button, Alert, Snackbar, Grid, Card,
   CardContent, CardHeader, Divider, Chip, Accordion, AccordionSummary,
-  AccordionDetails, TextField, IconButton, Tooltip
+  AccordionDetails, TextField, IconButton, Tooltip,
 } from '@mui/material';
 import {
   Settings, GridView, Speed, Visibility, Download, Upload,
   RestoreFromTrash, PlayArrow, Pause, ExpandMore, BugReport,
-  Analytics, Memory, Timer
+  Analytics, Memory, Timer,
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import UnifiedGrid from '../components/common/UnifiedGrid';
@@ -18,7 +18,7 @@ import VotingGrid from '../components/grids/VotingGrid';
 
 const GridTestPage = () => {
   const theme = useTheme();
-  
+
   // Available grid types for testing
   const gridTypes = {
     mdm: {
@@ -26,61 +26,61 @@ const GridTestPage = () => {
       sampleData: [
         { id: 1, sku: 'MDM001', name: 'Sample Product 1', price: 99.99, quantity: 50, status: 'active' },
         { id: 2, sku: 'MDM002', name: 'Sample Product 2', price: 149.99, quantity: 25, status: 'inactive' },
-        { id: 3, sku: 'MDM003', name: 'Sample Product 3', price: 199.99, quantity: 75, status: 'active' }
+        { id: 3, sku: 'MDM003', name: 'Sample Product 3', price: 199.99, quantity: 75, status: 'active' },
       ],
       columns: [
         { field: 'sku', headerName: 'SKU', width: 150 },
         { field: 'name', headerName: 'Product Name', width: 200 },
         { field: 'price', headerName: 'Price', width: 120, type: 'number' },
         { field: 'quantity', headerName: 'Quantity', width: 100, type: 'number' },
-        { field: 'status', headerName: 'Status', width: 100 }
-      ]
+        { field: 'status', headerName: 'Status', width: 100 },
+      ],
     },
     magentoProducts: {
       name: 'Magento Products',
       sampleData: [
         { id: 1, sku: 'MAG001', name: 'Magento Product 1', price: 79.99, stock: 100, type: 'simple' },
         { id: 2, sku: 'MAG002', name: 'Magento Product 2', price: 129.99, stock: 50, type: 'configurable' },
-        { id: 3, sku: 'MAG003', name: 'Magento Product 3', price: 59.99, stock: 200, type: 'simple' }
+        { id: 3, sku: 'MAG003', name: 'Magento Product 3', price: 59.99, stock: 200, type: 'simple' },
       ],
       columns: [
         { field: 'sku', headerName: 'SKU', width: 150 },
         { field: 'name', headerName: 'Product Name', width: 250 },
         { field: 'price', headerName: 'Price', width: 120, type: 'number' },
         { field: 'stock', headerName: 'Stock', width: 100, type: 'number' },
-        { field: 'type', headerName: 'Type', width: 120 }
-      ]
+        { field: 'type', headerName: 'Type', width: 120 },
+      ],
     },
     customers: {
       name: 'Customers',
       sampleData: [
         { id: 1, firstName: 'John', lastName: 'Doe', email: 'john@example.com', orders: 5, totalSpent: 499.99 },
         { id: 2, firstName: 'Jane', lastName: 'Smith', email: 'jane@example.com', orders: 3, totalSpent: 299.99 },
-        { id: 3, firstName: 'Bob', lastName: 'Johnson', email: 'bob@example.com', orders: 8, totalSpent: 799.99 }
+        { id: 3, firstName: 'Bob', lastName: 'Johnson', email: 'bob@example.com', orders: 8, totalSpent: 799.99 },
       ],
       columns: [
         { field: 'firstName', headerName: 'First Name', width: 150 },
         { field: 'lastName', headerName: 'Last Name', width: 150 },
         { field: 'email', headerName: 'Email', width: 200 },
         { field: 'orders', headerName: 'Orders', width: 100, type: 'number' },
-        { field: 'totalSpent', headerName: 'Total Spent', width: 120, type: 'number' }
-      ]
+        { field: 'totalSpent', headerName: 'Total Spent', width: 120, type: 'number' },
+      ],
     },
     orders: {
       name: 'Orders',
       sampleData: [
         { id: 1, incrementId: 'ORD001', status: 'complete', customerName: 'John Doe', grandTotal: 199.99, items: 3 },
         { id: 2, incrementId: 'ORD002', status: 'pending', customerName: 'Jane Smith', grandTotal: 149.99, items: 2 },
-        { id: 3, incrementId: 'ORD003', status: 'processing', customerName: 'Bob Johnson', grandTotal: 299.99, items: 5 }
+        { id: 3, incrementId: 'ORD003', status: 'processing', customerName: 'Bob Johnson', grandTotal: 299.99, items: 5 },
       ],
       columns: [
         { field: 'incrementId', headerName: 'Order #', width: 120 },
         { field: 'status', headerName: 'Status', width: 120 },
         { field: 'customerName', headerName: 'Customer', width: 180 },
         { field: 'grandTotal', headerName: 'Total', width: 120, type: 'number' },
-        { field: 'items', headerName: 'Items', width: 80, type: 'number' }
-      ]
-    }
+        { field: 'items', headerName: 'Items', width: 80, type: 'number' },
+      ],
+    },
   };
 
   // Test configuration state
@@ -94,7 +94,7 @@ const GridTestPage = () => {
     enableSelection: true,
     enableStats: false,
     pageSize: 25,
-    density: 'standard'
+    density: 'standard',
   });
 
   // Performance metrics
@@ -102,7 +102,7 @@ const GridTestPage = () => {
     renderTime: 0,
     dataLoadTime: 0,
     totalOperations: 0,
-    memoryUsage: 0
+    memoryUsage: 0,
   });
 
   // Test state
@@ -115,7 +115,7 @@ const GridTestPage = () => {
   const handleConfigChange = useCallback((key, value) => {
     setGridConfig(prev => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
   }, []);
 
@@ -126,19 +126,20 @@ const GridTestPage = () => {
         gridType: selectedGridType,
         configuration: gridConfig,
         timestamp: new Date().toISOString(),
-        version: '1.0.0'
+        version: '1.0.0',
       };
-      
+
       const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
+
       a.href = url;
       a.download = `grid-config-${selectedGridType}-${Date.now()}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      
+
       setShowSuccess(true);
     } catch (error) {
       console.error('Export failed:', error);
@@ -149,12 +150,15 @@ const GridTestPage = () => {
   // Import configuration
   const handleImportConfig = useCallback((event) => {
     const file = event.target.files[0];
+
     if (!file) return;
 
     const reader = new FileReader();
+
     reader.onload = (e) => {
       try {
         const config = JSON.parse(e.target.result);
+
         if (config.gridType && config.configuration) {
           setSelectedGridType(config.gridType);
           setGridConfig(config.configuration);
@@ -181,7 +185,7 @@ const GridTestPage = () => {
       enableSelection: true,
       enableStats: false,
       pageSize: 25,
-      density: 'standard'
+      density: 'standard',
     });
   }, []);
 
@@ -189,34 +193,34 @@ const GridTestPage = () => {
   const handleRunPerformanceTest = useCallback(async () => {
     setIsRunningTest(true);
     const startTime = performance.now();
-    
+
     try {
       // Simulate performance testing
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       const endTime = performance.now();
       const renderTime = endTime - startTime;
-      
+
       const newMetrics = {
         renderTime: renderTime.toFixed(2),
         dataLoadTime: (Math.random() * 100).toFixed(2),
         totalOperations: performanceMetrics.totalOperations + 1,
-        memoryUsage: (Math.random() * 50 + 10).toFixed(2)
+        memoryUsage: (Math.random() * 50 + 10).toFixed(2),
       };
-      
+
       setPerformanceMetrics(newMetrics);
-      
+
       const testResult = {
         timestamp: new Date().toISOString(),
         gridType: selectedGridType,
         config: { ...gridConfig },
         metrics: newMetrics,
-        status: 'success'
+        status: 'success',
       };
-      
+
       setTestResults(prev => [testResult, ...prev.slice(0, 9)]);
       setShowSuccess(true);
-      
+
     } catch (error) {
       console.error('Performance test failed:', error);
       setShowError(true);
@@ -230,8 +234,8 @@ const GridTestPage = () => {
   const standardConfig = getGridConfig(selectedGridType, {
     features: gridConfig,
     pagination: {
-      defaultPageSize: gridConfig.pageSize
-    }
+      defaultPageSize: gridConfig.pageSize,
+    },
   });
 
   return (
@@ -484,11 +488,11 @@ const GridTestPage = () => {
                   <Typography variant="h6">
                     {currentGridData.name} Preview
                   </Typography>
-                  <Chip 
-                    label={selectedGridType.toUpperCase()} 
-                    size="small" 
-                    color="primary" 
-                    variant="outlined" 
+                  <Chip
+                    label={selectedGridType.toUpperCase()}
+                    size="small"
+                    color="primary"
+                    variant="outlined"
                   />
                 </Box>
               }
@@ -512,14 +516,14 @@ const GridTestPage = () => {
                   customConfig: {
                     features: {
                       enableVirtualization: gridConfig.enableVirtualization,
-                      enableSearch: gridConfig.enableSearch
+                      enableSearch: gridConfig.enableSearch,
                     },
                     performance: {
-                      DEFAULT_PAGE_SIZE: gridConfig.pageSize
+                      DEFAULT_PAGE_SIZE: gridConfig.pageSize,
                     },
                     theme: {
-                      density: gridConfig.density
-                    }
+                      density: gridConfig.density,
+                    },
                   },
 
                   // Event handlers for testing
@@ -527,7 +531,7 @@ const GridTestPage = () => {
                   onSelectionChange: (selection) => console.log('Selection changed:', selection),
                   onSortChange: (sort) => console.log('Sort changed:', sort),
                   onFilterChange: (filter) => console.log('Filter changed:', filter),
-                  onRefresh: () => console.log('Refresh triggered')
+                  onRefresh: () => console.log('Refresh triggered'),
                 })}
               />
             </CardContent>

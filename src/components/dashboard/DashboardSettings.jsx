@@ -16,7 +16,7 @@ import {
   Card,
   CardContent,
   IconButton,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 import {
   Settings as SettingsIcon,
@@ -25,7 +25,7 @@ import {
   Dashboard as DashboardIcon,
   BarChart as ChartIcon,
   Assessment as StatsIcon,
-  Refresh as RefreshIcon
+  Refresh as RefreshIcon,
 } from '@mui/icons-material';
 import { useCustomTheme } from '../../contexts/ThemeContext';
 import { useSettings } from '../../contexts/SettingsContext';
@@ -40,7 +40,7 @@ const DashboardSettings = ({
   onClose,
   settings,
   onSettingsChange,
-  onResetSettings
+  onResetSettings,
 }) => {
   const { animations, density } = useCustomTheme();
   const { settings: globalSettings, updateSettings } = useSettings();
@@ -56,7 +56,7 @@ const DashboardSettings = ({
       if (globalSettings?.dashboard) {
         setLocalSettings(prev => ({
           ...prev,
-          ...globalSettings.dashboard
+          ...globalSettings.dashboard,
         }));
       }
     }
@@ -72,8 +72,8 @@ const DashboardSettings = ({
           ...prev,
           [category]: {
             ...currentCategory,
-            [key]: value
-          }
+            [key]: value,
+          },
         };
       });
     } catch (error) {
@@ -128,7 +128,7 @@ const DashboardSettings = ({
     { key: 'categories', label: 'Product Categories', icon: '📂' },
     { key: 'brands', label: 'Active Brands', icon: '🏷️' },
     { key: 'lowStock', label: 'Low Stock Items', icon: '⚠️' },
-    { key: 'pendingOrders', label: 'Pending Orders', icon: '⏳' }
+    { key: 'pendingOrders', label: 'Pending Orders', icon: '⏳' },
   ];
 
   const chartSettings = [
@@ -139,7 +139,7 @@ const DashboardSettings = ({
     { key: 'categoryTree', label: 'Category Tree', icon: '🌳' },
     { key: 'salesPerformance', label: 'Sales Performance', icon: '💹' },
     { key: 'inventoryStatus', label: 'Inventory Status', icon: '📦' },
-    { key: 'productAttributes', label: 'Product Attributes', icon: '🔧' }
+    { key: 'productAttributes', label: 'Product Attributes', icon: '🔧' },
   ];
 
   const widgetSettings = [
@@ -147,29 +147,29 @@ const DashboardSettings = ({
     { key: 'taskManagement', label: 'Task Management', icon: '✅' },
     { key: 'recentActivity', label: 'Recent Activity Feed', icon: '📋' },
     { key: 'performanceMetrics', label: 'Performance Metrics', icon: '📊' },
-    { key: 'dashboardOverview', label: 'Dashboard Overview', icon: '🏠' }
+    { key: 'dashboardOverview', label: 'Dashboard Overview', icon: '🏠' },
   ];
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={onClose} 
-      maxWidth="md" 
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
       fullWidth
       PaperProps={{
         sx: {
           borderRadius: density === 'compact' ? 2 : 3,
-          minHeight: density === 'compact' ? '60vh' : '70vh'
-        }
+          minHeight: density === 'compact' ? '60vh' : '70vh',
+        },
       }}
     >
-      <DialogTitle sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: 2, 
+      <DialogTitle sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2,
         pb: 1,
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white'
+        color: 'white',
       }}>
         <SettingsIcon />
         <Box>
@@ -190,22 +190,22 @@ const DashboardSettings = ({
             <Typography variant="h6" fontWeight={600}>
               Statistics Cards
             </Typography>
-            <Chip 
+            <Chip
               label={`${Object.values(localSettings.statCards || {}).filter(Boolean).length}/8 visible`}
               color="primary"
               size="small"
             />
           </Box>
-          
+
           <Grid container spacing={2}>
             {statCardSettings.map((card) => (
               <Grid item xs={12} sm={6} md={4} key={card.key}>
-                <Card 
-                  variant="outlined" 
-                  sx={{ 
-                    p: 2, 
+                <Card
+                  variant="outlined"
+                  sx={{
+                    p: 2,
                     opacity: localSettings.statCards?.[card.key] ? 1 : 0.5,
-                    transition: 'all 0.3s ease'
+                    transition: 'all 0.3s ease',
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -236,22 +236,22 @@ const DashboardSettings = ({
             <Typography variant="h6" fontWeight={600}>
               Analytics Charts
             </Typography>
-            <Chip 
+            <Chip
               label={`${Object.values(localSettings.charts || {}).filter(Boolean).length}/8 visible`}
               color="secondary"
               size="small"
             />
           </Box>
-          
+
           <Grid container spacing={2}>
             {chartSettings.map((chart) => (
               <Grid item xs={12} sm={6} md={4} key={chart.key}>
-                <Card 
-                  variant="outlined" 
-                  sx={{ 
-                    p: 2, 
+                <Card
+                  variant="outlined"
+                  sx={{
+                    p: 2,
                     opacity: localSettings.charts?.[chart.key] ? 1 : 0.5,
-                    transition: 'all 0.3s ease'
+                    transition: 'all 0.3s ease',
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -297,7 +297,7 @@ const DashboardSettings = ({
                   sx={{
                     p: 2,
                     opacity: localSettings.widgets?.[widget.key] ? 1 : 0.5,
-                    transition: 'all 0.3s ease'
+                    transition: 'all 0.3s ease',
                   }}
                 >
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -329,7 +329,7 @@ const DashboardSettings = ({
               General Settings
             </Typography>
           </Box>
-          
+
           <FormGroup>
             <FormControlLabel
               control={
@@ -372,8 +372,8 @@ const DashboardSettings = ({
       </DialogContent>
 
       <DialogActions sx={{ p: 3, gap: 1 }}>
-        <Button 
-          onClick={handleReset} 
+        <Button
+          onClick={handleReset}
           startIcon={<RefreshIcon />}
           color="warning"
         >
@@ -383,8 +383,8 @@ const DashboardSettings = ({
         <Button onClick={onClose}>
           Cancel
         </Button>
-        <Button 
-          onClick={handleSave} 
+        <Button
+          onClick={handleSave}
           variant="contained"
           startIcon={<SettingsIcon />}
         >

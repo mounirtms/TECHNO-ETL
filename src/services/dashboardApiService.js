@@ -1,274 +1,203 @@
 /**
- * Dashboard API Service for TECHNO-ETL
- * 
- * This service provides optimized API calls for dashboard statistics 
- * using local cached endpoints instead of hitting Magento directly.
- * 
- * Features:
- * - Local cache-first strategy
- * - Intelligent retry logic
- * - Performance monitoring
- * - Error resilience
+ * Dashboard API Service
+ * Handles all dashboard-related API calls with caching and error handling
  */
 
-import { BaseApiService } from './BaseApiService';
+import axios from 'axios';
+import { getApiUrl } from '../config/api';
+import { logger } from '../utils/logger';
 
-class DashboardApiService extends BaseApiService {
-    constructor() {
-        super();
-        this.baseUrl = this.getBaseUrl();
-        this.cache = new Map();
-        this.cacheTimeout = 5 * 60 * 1000; // 5 minutes
+class DashboardApiService {
+  constructor() {
+    this.cache = new Map();
+    this.cacheTimeout = 5 * 60 * 1000; // 5 minutes
+  }
+
+  /**
+   * Get API URL with base path
+   * @param {string} endpoint - API endpoint
+   * @returns {string} Full API URL
+   */
+  getApiUrl(endpoint) {
+    return `${getApiUrl()}${endpoint}`;
+  }
+
+  /**
+   * Make API call with error handling
+   * @param {string} endpoint - API endpoint
+   * @param {object} options - Axios options
+   * @returns {Promise<object>} API response data
+   */
+  async apiCall(endpoint, options = {}) {
+    try {
+      const url = this.getApiUrl(endpoint);
+      const response = await axios({
+        url,
+        ...options,
+      });
+
+      if (!response.data?.success) {
+        throw new Error(response.data?.message || 'API call failed');
+      }
+
+      return response.data.data;
+    } catch (error) {
+      logger.error(`Dashboard API error: ${endpoint}`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Make cached API call
+   * @param {string} endpoint - API endpoint
+   * @param {object} options - Axios options
+   * @returns {Promise<object>} Cached or fresh API response data
+   */
+  async cachedApiCall(endpoint, options = {}) {
+    const cacheKey = endpoint;
+    const cached = this.cache.get(cacheKey);
+
+    // Return cached data if still valid
+    if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
+      return cached.data;
     }
 
-    getBaseUrl() {
-        // Use the backend API URL, fallback to localhost if not configured
-        return process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+    try {
+      const data = await this.apiCall(endpoint, options);
+      
+      // Cache the result
+      this.cache.set(cacheKey, {
+        data,
+        timestamp: Date.now(),
+      });
+
+      return data;
+    } catch (error) {
+      // If we have cached data, return it even if stale
+      if (cached) {
+        console.warn(`Using stale cache for ${endpoint}:`, error.message);
+        return cached.data;
+      }
+      
+      throw error;
     }
+  }
 
-    /**
-     * Generic cached API call
-     * @param {string} endpoint - API endpoint 
-     * @param {object} options - Request options
-     * @returns {Promise<object>} API response
-     */
-    async cachedApiCall(endpoint, options = {}) {
-        const cacheKey = `${endpoint}_${JSON.stringify(options)}`;
-        
-        // Check cache first
-        const cached = this.cache.get(cacheKey);
-        if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
-            console.log(`📊 Cache hit for ${endpoint}`);
-            return {
-                ...cached.data,
-                cached: true,
-                cacheAge: Date.now() - cached.timestamp
-            };
-        }
-
-        try {
-            console.log(`📡 API call to ${endpoint}`);
-            const response = await this.makeRequest(`/dashboard${endpoint}`, {
-                method: 'GET',
-                ...options
-            });
-
-            // Cache successful response
-            this.cache.set(cacheKey, {
-                data: response,
-                timestamp: Date.now()
-            });
-
-            return {
-                ...response,
-                cached: false
-            };
-        } catch (error) {
-            // Return cached data if available during error
-            if (cached) {
-                console.warn(`🔄 Using stale cache for ${endpoint} due to error:`, error.message);
-                return {
-                    ...cached.data,
-                    cached: true,
-                    stale: true,
-                    error: error.message
-                };
-            }
-            throw error;
-        }
+  /**
+   * Clear cache for an endpoint or all endpoints
+   * @param {string} endpoint - Specific endpoint to clear, or null to clear all
+   */
+  clearCache(endpoint = null) {
+    if (endpoint) {
+      this.cache.delete(endpoint);
+    } else {
+      this.cache.clear();
     }
+  }
 
-    /**
-     * Get products statistics from local dashboard endpoint
-     * @returns {Promise<object>} Products statistics
-     */
-    async getProductsStats() {
-        return this.cachedApiCall('/products/stats');
+  /**
+   * Get products statistics from local dashboard endpoint
+   * @returns {Promise<object>} Product statistics
+   */
+  async getProductsStats() {
+    return this.cachedApiCall('/dashboard/products/stats');
+  }
+
+  /**
+   * Get brands distribution from local dashboard endpoint
+   * @returns {Promise<object>} Brands distribution
+   */
+  async getBrandsDistribution() {
+    return this.cachedApiCall('/dashboard/brands/distribution');
+  }
+
+  /**
+   * Get sales performance from local dashboard endpoint
+   * @returns {Promise<object>} Sales performance metrics
+   */
+  async getSalesPerformance() {
+    return this.cachedApiCall('/dashboard/sales/performance');
+  }
+
+  /**
+   * Get inventory status from local dashboard endpoint
+   * @returns {Promise<object>} Inventory status
+   */
+  async getInventoryStatus() {
+    return this.cachedApiCall('/dashboard/inventory/status');
+  }
+
+  /**
+   * Get categories distribution from local dashboard endpoint
+   * @returns {Promise<object>} Categories distribution
+   */
+  async getCategoriesDistribution() {
+    return this.cachedApiCall('/dashboard/categories/distribution');
+  }
+
+  /**
+   * Get products attributes from local dashboard endpoint
+   * @returns {Promise<object>} Products attributes analysis
+   */
+  async getProductsAttributes() {
+    return this.cachedApiCall('/dashboard/products/attributes');
+  }
+
+  /**
+   * Get overall dashboard stats
+   * @returns {Promise<object>} Dashboard statistics
+   */
+  async getDashboardStats() {
+    return this.cachedApiCall('/dashboard/stats');
+  }
+
+  /**
+   * Get all dashboard metrics in one call
+   * @returns {Promise<object>} All dashboard metrics
+   */
+  async getAllDashboardMetrics() {
+    try {
+      const [
+        productsStats,
+        brandsDistribution,
+        salesPerformance,
+        inventoryStatus,
+        categoriesDistribution,
+        productsAttributes
+      ] = await Promise.allSettled([
+        this.getProductsStats(),
+        this.getBrandsDistribution(),
+        this.getSalesPerformance(),
+        this.getInventoryStatus(),
+        this.getCategoriesDistribution(),
+        this.getProductsAttributes()
+      ]);
+
+      return {
+        success: true,
+        data: {
+          products: productsStats.status === 'fulfilled' ? productsStats.value : null,
+          brands: brandsDistribution.status === 'fulfilled' ? brandsDistribution.value : null,
+          sales: salesPerformance.status === 'fulfilled' ? salesPerformance.value : null,
+          inventory: inventoryStatus.status === 'fulfilled' ? inventoryStatus.value : null,
+          categories: categoriesDistribution.status === 'fulfilled' ? categoriesDistribution.value : null,
+          attributes: productsAttributes.status === 'fulfilled' ? productsAttributes.value : null,
+        },
+        errors: {
+          products: productsStats.status === 'rejected' ? productsStats.reason.message : null,
+          brands: brandsDistribution.status === 'rejected' ? brandsDistribution.reason.message : null,
+          sales: salesPerformance.status === 'rejected' ? salesPerformance.reason.message : null,
+          inventory: inventoryStatus.status === 'rejected' ? inventoryStatus.reason.message : null,
+          categories: categoriesDistribution.status === 'rejected' ? categoriesDistribution.reason.message : null,
+          attributes: productsAttributes.status === 'rejected' ? productsAttributes.reason.message : null,
+        },
+      };
+    } catch (error) {
+      logger.error('Dashboard metrics error', error);
+      throw error;
     }
-
-    /**
-     * Get brands distribution from local dashboard endpoint
-     * @returns {Promise<object>} Brands distribution
-     */
-    async getBrandsDistribution() {
-        return this.cachedApiCall('/brands/distribution');
-    }
-
-    /**
-     * Get sales performance from local dashboard endpoint
-     * @returns {Promise<object>} Sales performance metrics
-     */
-    async getSalesPerformance() {
-        return this.cachedApiCall('/sales/performance');
-    }
-
-    /**
-     * Get inventory status from local dashboard endpoint
-     * @returns {Promise<object>} Inventory status
-     */
-    async getInventoryStatus() {
-        return this.cachedApiCall('/inventory/status');
-    }
-
-    /**
-     * Get categories distribution from local dashboard endpoint
-     * @returns {Promise<object>} Categories distribution
-     */
-    async getCategoriesDistribution() {
-        return this.cachedApiCall('/categories/distribution');
-    }
-
-    /**
-     * Get products attributes from local dashboard endpoint
-     * @returns {Promise<object>} Products attributes analysis
-     */
-    async getProductsAttributes() {
-        return this.cachedApiCall('/products/attributes');
-    }
-
-    /**
-     * Get overall dashboard stats
-     * @returns {Promise<object>} Dashboard statistics
-     */
-    async getDashboardStats() {
-        return this.cachedApiCall('/stats');
-    }
-
-    /**
-     * Get all dashboard metrics in one call
-     * @returns {Promise<object>} All dashboard metrics
-     */
-    async getAllDashboardMetrics() {
-        try {
-            const [
-                productsStats,
-                brandsDistribution,
-                salesPerformance,
-                inventoryStatus,
-                categoriesDistribution,
-                productsAttributes
-            ] = await Promise.allSettled([
-                this.getProductsStats(),
-                this.getBrandsDistribution(),
-                this.getSalesPerformance(),
-                this.getInventoryStatus(),
-                this.getCategoriesDistribution(),
-                this.getProductsAttributes()
-            ]);
-
-            return {
-                success: true,
-                data: {
-                    products: productsStats.status === 'fulfilled' ? productsStats.value : null,
-                    brands: brandsDistribution.status === 'fulfilled' ? brandsDistribution.value : null,
-                    sales: salesPerformance.status === 'fulfilled' ? salesPerformance.value : null,
-                    inventory: inventoryStatus.status === 'fulfilled' ? inventoryStatus.value : null,
-                    categories: categoriesDistribution.status === 'fulfilled' ? categoriesDistribution.value : null,
-                    attributes: productsAttributes.status === 'fulfilled' ? productsAttributes.value : null
-                },
-                errors: {
-                    products: productsStats.status === 'rejected' ? productsStats.reason.message : null,
-                    brands: brandsDistribution.status === 'rejected' ? brandsDistribution.reason.message : null,
-                    sales: salesPerformance.status === 'rejected' ? salesPerformance.reason.message : null,
-                    inventory: inventoryStatus.status === 'rejected' ? inventoryStatus.reason.message : null,
-                    categories: categoriesDistribution.status === 'rejected' ? categoriesDistribution.reason.message : null,
-                    attributes: productsAttributes.status === 'rejected' ? productsAttributes.reason.message : null
-                },
-                timestamp: new Date().toISOString()
-            };
-        } catch (error) {
-            console.error('Error fetching dashboard metrics:', error);
-            throw error;
-        }
-    }
-
-    /**
-     * Clear cache for specific endpoint or all cache
-     * @param {string} endpoint - Specific endpoint to clear (optional)
-     */
-    clearCache(endpoint = null) {
-        if (endpoint) {
-            // Clear cache entries that match the endpoint
-            const keysToDelete = [];
-            for (const key of this.cache.keys()) {
-                if (key.includes(endpoint)) {
-                    keysToDelete.push(key);
-                }
-            }
-            keysToDelete.forEach(key => this.cache.delete(key));
-            console.log(`🧹 Cleared cache for ${endpoint}`);
-        } else {
-            this.cache.clear();
-            console.log('🧹 Cleared all dashboard API cache');
-        }
-    }
-
-    /**
-     * Get cache statistics
-     * @returns {object} Cache statistics
-     */
-    getCacheStats() {
-        const now = Date.now();
-        let validEntries = 0;
-        let expiredEntries = 0;
-
-        for (const [key, value] of this.cache.entries()) {
-            if (now - value.timestamp < this.cacheTimeout) {
-                validEntries++;
-            } else {
-                expiredEntries++;
-            }
-        }
-
-        return {
-            totalEntries: this.cache.size,
-            validEntries,
-            expiredEntries,
-            cacheTimeoutMs: this.cacheTimeout
-        };
-    }
-
-    /**
-     * Cleanup expired cache entries
-     */
-    cleanupExpiredCache() {
-        const now = Date.now();
-        const keysToDelete = [];
-
-        for (const [key, value] of this.cache.entries()) {
-            if (now - value.timestamp >= this.cacheTimeout) {
-                keysToDelete.push(key);
-            }
-        }
-
-        keysToDelete.forEach(key => this.cache.delete(key));
-        
-        if (keysToDelete.length > 0) {
-            console.log(`🧹 Cleaned up ${keysToDelete.length} expired cache entries`);
-        }
-    }
+  }
 }
 
-// Create and export singleton instance
-const dashboardApiService = new DashboardApiService();
-
-// Setup automatic cache cleanup every 10 minutes
-setInterval(() => {
-    dashboardApiService.cleanupExpiredCache();
-}, 10 * 60 * 1000);
-
-export default dashboardApiService;
-
-// Export individual methods for convenience
-export const {
-    getProductsStats,
-    getBrandsDistribution,
-    getSalesPerformance,
-    getInventoryStatus,
-    getCategoriesDistribution,
-    getProductsAttributes,
-    getDashboardStats,
-    getAllDashboardMetrics,
-    clearCache,
-    getCacheStats
-} = dashboardApiService;
+// Export singleton instance
+export default new DashboardApiService();

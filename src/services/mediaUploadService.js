@@ -2,7 +2,7 @@
  * Consolidated Media Upload Service
  * Unified service with advanced matching capabilities, configurable settings, and intelligent CSV detection
  * Automatically uses all available matching strategies based on CSV structure
- * 
+ *
  * @author Techno-ETL Team
  * @version 3.0.0
  */
@@ -18,18 +18,18 @@ export const DEFAULT_MATCHING_SETTINGS = {
     normalized: true,      // Remove dashes, spaces, special chars
     partial: true,         // Match first N characters
     fuzzy: true,          // Similarity-based matching
-    ref: true             // REF column matching (auto-enabled when REF column detected)
+    ref: true,             // REF column matching (auto-enabled when REF column detected)
   },
-  
+
   // Strategy weights for confidence calculation (higher = more trusted)
   strategyWeights: {
     exact: 1.0,           // Highest confidence for exact matches
     normalized: 0.95,     // Very high confidence for normalized matches
     partial: 0.85,        // Good confidence for partial matches
     fuzzy: 0.8,           // Lower confidence for fuzzy matches
-    ref: 0.9              // High confidence for REF column matches
+    ref: 0.9,              // High confidence for REF column matches
   },
-  
+
   thresholds: {
     partialLength: 30,     // Characters for partial matching
     fuzzyThreshold: 0.7,   // Base similarity threshold (0-1)
@@ -42,9 +42,9 @@ export const DEFAULT_MATCHING_SETTINGS = {
     unicodeNormalizationBonus: 0.05, // Bonus for unicode normalization matches
     lengthDifferenceThreshold: 0.3,   // Max length difference ratio for fuzzy matching
     commonPrefixBonus: 0.1,     // Bonus for matching common prefixes
-    commonSuffixBonus: 0.05     // Bonus for matching common suffixes
+    commonSuffixBonus: 0.05,     // Bonus for matching common suffixes
   },
-  
+
   fileHandling: {
     multipleImages: true,  // Support _1, _2, _3 numbering
     caseSensitive: false,  // Case-insensitive matching
@@ -55,21 +55,21 @@ export const DEFAULT_MATCHING_SETTINGS = {
       '-1', '-2', '-3', '-4', '-5', '-6', '-7', '-8', '-9', '-10',
       '(1)', '(2)', '(3)', '(4)', '(5)', '(6)', '(7)', '(8)', '(9)', '(10)',
       ' 1', ' 2', ' 3', ' 4', ' 5', ' 6', ' 7', ' 8', ' 9', ' 10',
-      '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
+      '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
     ], // Extended numbered patterns
     specialCharHandling: 'normalize', // 'normalize', 'preserve', or 'remove'
     unicodeNormalization: true,       // Enable unicode normalization
     accentInsensitive: true,          // Ignore accents and diacritics
     hyphenHandling: 'normalize',      // How to handle hyphens and dashes
-    underscoreHandling: 'normalize'   // How to handle underscores
+    underscoreHandling: 'normalize',   // How to handle underscores
   },
-  
+
   // Performance optimization settings
   performance: {
     maxCandidates: 50,     // Maximum candidates to evaluate per SKU
     enableCaching: true,   // Cache normalized strings
-    batchSize: 100        // Process images in batches
-  }
+    batchSize: 100,        // Process images in batches
+  },
 };
 
 /**
@@ -81,7 +81,7 @@ class MediaUploadService {
     this.maxFileSize = 10 * 1024 * 1024; // 10MB
     this.allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
     this.defaultSettings = DEFAULT_MATCHING_SETTINGS;
-    
+
     // Performance optimization: string normalization cache
     this.normalizationCache = new Map();
     this.similarityCache = new Map();
@@ -98,16 +98,16 @@ class MediaUploadService {
     }
 
     if (!this.allowedTypes.includes(file.type)) {
-      return { 
-        valid: false, 
-        error: 'Invalid file type. Supported: JPG, PNG, GIF, WebP' 
+      return {
+        valid: false,
+        error: 'Invalid file type. Supported: JPG, PNG, GIF, WebP',
       };
     }
 
     if (file.size > this.maxFileSize) {
-      return { 
-        valid: false, 
-        error: `File too large. Maximum size: ${(this.maxFileSize / 1024 / 1024).toFixed(0)}MB` 
+      return {
+        valid: false,
+        error: `File too large. Maximum size: ${(this.maxFileSize / 1024 / 1024).toFixed(0)}MB`,
       };
     }
 
@@ -127,18 +127,19 @@ class MediaUploadService {
     }
 
     const results = [];
-    
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      
+
       try {
         // Validate file first
         const validation = this.validateImageFile(file);
+
         if (!validation.valid) {
           results.push({
             success: false,
             file: file,
-            error: validation.error
+            error: validation.error,
           });
           continue;
         }
@@ -150,7 +151,7 @@ class MediaUploadService {
             total: files.length,
             sku,
             fileName: file.name,
-            status: 'uploading'
+            status: 'uploading',
           });
         }
 
@@ -161,7 +162,7 @@ class MediaUploadService {
           success: true,
           file: file,
           message: `Successfully uploaded ${file.name}`,
-          url: URL.createObjectURL(file) // Temporary URL for preview
+          url: URL.createObjectURL(file), // Temporary URL for preview
         });
 
       } catch (error) {
@@ -169,7 +170,7 @@ class MediaUploadService {
         results.push({
           success: false,
           file: file,
-          error: error.message
+          error: error.message,
         });
       }
     }
@@ -185,6 +186,7 @@ class MediaUploadService {
   async simulateUpload(file) {
     // Simulate network delay based on file size
     const delay = Math.min(1000 + (file.size / 1024 / 1024) * 500, 3000);
+
     return new Promise(resolve => setTimeout(resolve, delay));
   }
 
@@ -209,23 +211,24 @@ class MediaUploadService {
     }
 
     const allowedTypes = ['text/csv', 'application/vnd.ms-excel', 'text/plain'];
+
     if (!allowedTypes.includes(file.type) && !file.name.toLowerCase().endsWith('.csv')) {
       throw new Error(`Invalid file type: ${file.type}. Please upload a CSV file`);
     }
 
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      
+
       reader.onload = (e) => {
         try {
           const text = e.target.result;
-          
+
           if (!text || text.trim().length === 0) {
             throw new Error('CSV file contains no readable content');
           }
 
           const lines = text.split('\n').filter(line => line.trim());
-          
+
           if (lines.length === 0) {
             throw new Error('CSV file contains no data rows');
           }
@@ -236,9 +239,10 @@ class MediaUploadService {
 
           // Enhanced header parsing with better error handling
           let headers;
+
           try {
             headers = this.parseCSVLine(lines[0]);
-            
+
             if (headers.length === 0) {
               throw new Error('No column headers found in CSV');
             }
@@ -248,9 +252,10 @@ class MediaUploadService {
             }
 
             // Check for duplicate headers
-            const duplicateHeaders = headers.filter((header, index) => 
-              headers.indexOf(header) !== index
+            const duplicateHeaders = headers.filter((header, index) =>
+              headers.indexOf(header) !== index,
             );
+
             if (duplicateHeaders.length > 0) {
               console.warn(`Duplicate headers found: ${duplicateHeaders.join(', ')}`);
             }
@@ -262,12 +267,12 @@ class MediaUploadService {
           // Enhanced data parsing with validation
           const data = [];
           const invalidRows = [];
-          
+
           for (let i = 1; i < lines.length; i++) {
             try {
               const line = lines[i];
               const values = this.parseCSVLine(line);
-              
+
               // Skip completely empty rows
               if (values.every(v => v === '')) {
                 continue;
@@ -279,22 +284,23 @@ class MediaUploadService {
                   rowNumber: i + 1,
                   expected: headers.length,
                   actual: values.length,
-                  content: line.substring(0, 100) + (line.length > 100 ? '...' : '')
+                  content: line.substring(0, 100) + (line.length > 100 ? '...' : ''),
                 });
                 continue;
               }
 
               const row = { _index: i - 1 };
+
               headers.forEach((header, headerIndex) => {
                 row[header] = values[headerIndex] || '';
               });
-              
+
               data.push(row);
             } catch (rowError) {
               invalidRows.push({
                 rowNumber: i + 1,
                 error: rowError.message,
-                content: lines[i].substring(0, 100) + (lines[i].length > 100 ? '...' : '')
+                content: lines[i].substring(0, 100) + (lines[i].length > 100 ? '...' : ''),
               });
             }
           }
@@ -317,22 +323,23 @@ class MediaUploadService {
             skuColumn: this.findColumn(headers, ['sku', 'reference', 'ref', 'product_id', 'id']),
             imageColumn: this.findColumn(headers, ['image', 'filename', 'file', 'image_name', 'photo']),
             nameColumn: this.findColumn(headers, ['name', 'title', 'product_name', 'description']),
-            refColumn: this.findColumn(headers, ['ref']) // Always detect REF column
+            refColumn: this.findColumn(headers, ['ref']), // Always detect REF column
           };
 
           // Enhanced column validation
           if (!result.skuColumn) {
             const availableColumns = headers.join(', ');
+
             throw new Error(
               `No SKU/Reference column found. Available columns: ${availableColumns}. ` +
-              `Expected one of: SKU, Reference, REF, Product_ID, ID`
+              'Expected one of: SKU, Reference, REF, Product_ID, ID',
             );
           }
 
           // Validate SKU column data
           const skuColumnIndex = headers.indexOf(result.skuColumn);
           const emptySKUs = data.filter(row => !row[result.skuColumn] || row[result.skuColumn].trim() === '').length;
-          
+
           if (emptySKUs === data.length) {
             throw new Error(`All rows have empty ${result.skuColumn} values`);
           }
@@ -348,7 +355,7 @@ class MediaUploadService {
             parsedAt: new Date().toISOString(),
             emptySKUs,
             invalidRows: invalidRows.length,
-            duplicateHeaders: headers.filter((h, i) => headers.indexOf(h) !== i).length
+            duplicateHeaders: headers.filter((h, i) => headers.indexOf(h) !== i).length,
           };
 
           resolve(result);
@@ -358,7 +365,7 @@ class MediaUploadService {
       };
 
       reader.onerror = () => reject(new Error('Failed to read CSV file. The file may be corrupted or inaccessible'));
-      
+
       // Add timeout for large files
       const timeout = setTimeout(() => {
         reader.abort();
@@ -366,7 +373,7 @@ class MediaUploadService {
       }, 30000); // 30 second timeout
 
       reader.onloadend = () => clearTimeout(timeout);
-      
+
       try {
         reader.readAsText(file);
       } catch (readError) {
@@ -386,11 +393,11 @@ class MediaUploadService {
     let currentValue = '';
     let insideQuotes = false;
     let i = 0;
-    
+
     while (i < line.length) {
       const char = line[i];
       const nextChar = i + 1 < line.length ? line[i + 1] : '';
-      
+
       if (char === '"' && !insideQuotes && currentValue === '') {
         // Starting a quoted field
         insideQuotes = true;
@@ -409,12 +416,13 @@ class MediaUploadService {
         // Regular character
         currentValue += char;
       }
-      
+
       i++;
     }
-    
+
     // Add the last value
     values.push(currentValue.trim());
+
     return values;
   }
 
@@ -426,25 +434,27 @@ class MediaUploadService {
    */
   findColumn(headers, possibleNames) {
     const lowerHeaders = headers.map(h => h.toLowerCase());
-    
+
     for (const name of possibleNames) {
       const found = lowerHeaders.find(h => {
         // For REF column, match exact 'ref' but not 'reference'
         if (name === 'ref') {
           return h === 'ref' || h.startsWith('ref_') || h.endsWith('_ref');
         }
+
         return h.includes(name.toLowerCase());
       });
+
       if (found) {
         return headers[lowerHeaders.indexOf(found)];
       }
     }
-    
+
     // Only fallback to first column for SKU/main columns, not for optional ones like REF
     if (possibleNames.includes('sku') || possibleNames.includes('reference')) {
       return headers[0] || null;
     }
-    
+
     return null;
   }
 
@@ -483,6 +493,7 @@ class MediaUploadService {
 
     // Validate image files
     const invalidImages = imageFiles.filter(file => !file || !file.name);
+
     if (invalidImages.length > 0) {
       throw new Error(`${invalidImages.length} invalid image files detected`);
     }
@@ -501,8 +512,8 @@ class MediaUploadService {
           normalized: 0,
           partial: 0,
           fuzzy: 0,
-          ref: 0
-        }
+          ref: 0,
+        },
       };
 
       const unmatchedCSVRows = [];
@@ -513,24 +524,25 @@ class MediaUploadService {
       csvData.data.forEach((row, rowIndex) => {
         try {
           const sku = row[csvData.skuColumn];
-          
+
           // Skip rows with empty SKUs but log them
           if (!sku || sku.trim() === '') {
             processingErrors.push({
               type: 'EMPTY_SKU',
               rowIndex: rowIndex + 1,
-              message: 'Row has empty SKU value'
+              message: 'Row has empty SKU value',
             });
+
             return;
           }
 
           const matchingImages = this.findMatchingImages(
-            sku, 
-            row, 
-            imageFiles, 
+            sku,
+            row,
+            imageFiles,
             settings,
             processedImages,
-            csvData
+            csvData,
           );
 
           if (matchingImages.length > 0) {
@@ -540,8 +552,9 @@ class MediaUploadService {
                 processingErrors.push({
                   type: 'INVALID_MATCH',
                   sku,
-                  message: 'Match object missing required properties'
+                  message: 'Match object missing required properties',
                 });
+
                 return;
               }
 
@@ -554,16 +567,16 @@ class MediaUploadService {
                 isMainImage: match.isMainImage || false,
                 matchStrategy: match.strategy,
                 similarity: match.confidence,
-                confidence: match.confidence || 1.0
+                confidence: match.confidence || 1.0,
               });
-              
+
               stats.matchStrategies[match.strategy] = (stats.matchStrategies[match.strategy] || 0) + 1;
               processedImages.add(match.file.name);
             });
 
             stats.matched += matchingImages.length;
             stats.uniqueProducts++;
-            
+
             // Track products with multiple images
             if (matchingImages.length > 1) {
               stats.multipleImagesProducts++;
@@ -574,7 +587,7 @@ class MediaUploadService {
               sku,
               productName: row[csvData.nameColumn] || row.name || '',
               imageName: row[csvData.imageColumn] || 'Not specified',
-              rowIndex: rowIndex + 1
+              rowIndex: rowIndex + 1,
             });
           }
         } catch (rowError) {
@@ -582,15 +595,16 @@ class MediaUploadService {
             type: 'ROW_PROCESSING_ERROR',
             rowIndex: rowIndex + 1,
             sku: row[csvData.skuColumn] || 'Unknown',
-            message: rowError.message
+            message: rowError.message,
           });
         }
       });
 
       // Calculate unmatched images
       const unmatchedImageFiles = imageFiles.filter(
-        file => !processedImages.has(file.name)
+        file => !processedImages.has(file.name),
       );
+
       stats.unmatchedImages = unmatchedImageFiles.length;
 
       // Calculate average similarity with error handling
@@ -599,9 +613,10 @@ class MediaUploadService {
           const validSimilarities = matches
             .map(match => match.similarity)
             .filter(sim => typeof sim === 'number' && !isNaN(sim));
-          
+
           if (validSimilarities.length > 0) {
             const totalSimilarity = validSimilarities.reduce((sum, sim) => sum + sim, 0);
+
             stats.averageSimilarity = Math.round((totalSimilarity / validSimilarities.length) * 100) / 100;
           }
         } catch (similarityError) {
@@ -620,7 +635,7 @@ class MediaUploadService {
         stats,
         unmatched: {
           csvRows: unmatchedCSVRows,
-          imageFiles: unmatchedImageFiles
+          imageFiles: unmatchedImageFiles,
         },
         processingErrors,
         metadata: {
@@ -628,8 +643,8 @@ class MediaUploadService {
           totalCSVRows: csvData.data.length,
           totalImageFiles: imageFiles.length,
           processingErrorCount: processingErrors.length,
-          matchingSettings: settings
-        }
+          matchingSettings: settings,
+        },
       };
 
       // Validate final results
@@ -654,6 +669,7 @@ class MediaUploadService {
    * @param {Object} csvData - CSV metadata including column names
    * @returns {Array} Matching images with metadata
    */
+
   findMatchingImages(sku, row, imageFiles, settings, processedImages, csvData) {
     const matches = [];
     const normalizedSku = this.normalizeString(sku);
@@ -664,15 +680,15 @@ class MediaUploadService {
 
       const fileName = file.name.toLowerCase();
       const baseName = fileName.split('.')[0];
-      
+
       // Remove numbered suffixes for better matching (_1, _2, _3, etc.)
       const baseNameWithoutNumbers = baseName.replace(/_\d+$/, '');
-      
+
       let match = null;
 
       // Strategy 1: Exact match (including numbered variants)
       if (settings.strategies.exact) {
-        if (fileName.includes(sku.toLowerCase()) || 
+        if (fileName.includes(sku.toLowerCase()) ||
             sku.toLowerCase().includes(baseName) ||
             sku.toLowerCase().includes(baseNameWithoutNumbers)) {
           match = { file, strategy: 'exact', confidence: 1.0 };
@@ -683,8 +699,8 @@ class MediaUploadService {
       if (!match && settings.strategies.normalized) {
         const normalizedFileName = this.normalizeString(baseName);
         const normalizedFileNameWithoutNumbers = this.normalizeString(baseNameWithoutNumbers);
-        
-        if (normalizedFileName.includes(normalizedSku) || 
+
+        if (normalizedFileName.includes(normalizedSku) ||
             normalizedSku.includes(normalizedFileName) ||
             normalizedFileNameWithoutNumbers.includes(normalizedSku) ||
             normalizedSku.includes(normalizedFileNameWithoutNumbers)) {
@@ -695,15 +711,15 @@ class MediaUploadService {
       // Strategy 3: Partial match (including numbered variants)
       if (!match && settings.strategies.partial) {
         const partialLength = Math.min(
-          settings.thresholds.partialLength, 
-          Math.min(normalizedSku.length, Math.max(baseName.length, baseNameWithoutNumbers.length))
+          settings.thresholds.partialLength,
+          Math.min(normalizedSku.length, Math.max(baseName.length, baseNameWithoutNumbers.length)),
         );
-        
+
         if (partialLength >= settings.thresholds.minKeyLength) {
           const skuPartial = normalizedSku.substring(0, partialLength);
           const filePartial = this.normalizeString(baseName).substring(0, partialLength);
           const filePartialWithoutNumbers = this.normalizeString(baseNameWithoutNumbers).substring(0, partialLength);
-          
+
           if (skuPartial === filePartial || skuPartial === filePartialWithoutNumbers) {
             match = { file, strategy: 'partial', confidence: 0.8 };
           }
@@ -715,7 +731,7 @@ class MediaUploadService {
         const similarity1 = this.calculateSimilarity(normalizedSku, this.normalizeString(baseName));
         const similarity2 = this.calculateSimilarity(normalizedSku, this.normalizeString(baseNameWithoutNumbers));
         const maxSimilarity = Math.max(similarity1, similarity2);
-        
+
         if (maxSimilarity >= settings.thresholds.fuzzyThreshold) {
           match = { file, strategy: 'fuzzy', confidence: maxSimilarity };
         }
@@ -728,7 +744,7 @@ class MediaUploadService {
         const refSimilarity1 = this.calculateSimilarity(normalizedRef, this.normalizeString(baseName));
         const refSimilarity2 = this.calculateSimilarity(normalizedRef, this.normalizeString(baseNameWithoutNumbers));
         const maxRefSimilarity = Math.max(refSimilarity1, refSimilarity2);
-        
+
         if (maxRefSimilarity >= settings.thresholds.fuzzyThreshold) {
           match = { file, strategy: 'ref', confidence: maxRefSimilarity };
         }
@@ -743,7 +759,7 @@ class MediaUploadService {
 
     // Sort matches by confidence (highest first) and add metadata
     matches.sort((a, b) => b.confidence - a.confidence);
-    
+
     // Add image indexing for multiple images per SKU
     matches.forEach((match, index) => {
       match.imageIndex = index;
@@ -762,23 +778,24 @@ class MediaUploadService {
    */
   normalizeString(str, options = {}) {
     if (!str) return '';
-    
+
     // Check cache first for performance
     const cacheKey = `${str}_${JSON.stringify(options)}`;
+
     if (this.normalizationCache.has(cacheKey)) {
       return this.normalizationCache.get(cacheKey);
     }
-    
+
     let normalized = str;
-    
+
     // Unicode normalization for accents and special characters
     if (options.unicodeNormalization !== false) {
       normalized = normalized.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     }
-    
+
     // Convert to lowercase
     normalized = normalized.toLowerCase();
-    
+
     // Handle special character patterns
     if (options.specialCharHandling !== 'preserve') {
       // Replace common special character combinations
@@ -792,32 +809,32 @@ class MediaUploadService {
         .replace(/€/g, 'euro')
         .replace(/£/g, 'pound');
     }
-    
+
     // Handle hyphens and dashes
     if (options.hyphenHandling === 'normalize') {
       normalized = normalized.replace(/[-–—]/g, '');
     } else if (options.hyphenHandling === 'space') {
       normalized = normalized.replace(/[-–—]/g, ' ');
     }
-    
+
     // Handle underscores
     if (options.underscoreHandling === 'normalize') {
       normalized = normalized.replace(/_/g, '');
     } else if (options.underscoreHandling === 'space') {
       normalized = normalized.replace(/_/g, ' ');
     }
-    
+
     // Remove or normalize spaces
     normalized = normalized.replace(/\s+/g, '');
-    
+
     // Remove remaining special characters but preserve alphanumeric
     if (options.specialCharHandling === 'normalize') {
       normalized = normalized.replace(/[^a-z0-9]/g, '');
     }
-    
+
     // Cache the result
     this.normalizationCache.set(cacheKey, normalized);
-    
+
     return normalized;
   }
 
@@ -829,25 +846,26 @@ class MediaUploadService {
   extractNumberedPattern(filename) {
     const baseName = filename.split('.')[0];
     const patterns = this.defaultSettings.fileHandling.numberedPatterns;
-    
+
     for (const pattern of patterns) {
       if (baseName.endsWith(pattern)) {
         const baseWithoutNumber = baseName.slice(0, -pattern.length);
         const number = pattern.replace(/[^0-9]/g, '');
+
         return {
           baseName: baseWithoutNumber,
           number: parseInt(number) || 1,
           pattern: pattern,
-          hasNumberedPattern: true
+          hasNumberedPattern: true,
         };
       }
     }
-    
+
     return {
       baseName: baseName,
       number: 0,
       pattern: '',
-      hasNumberedPattern: false
+      hasNumberedPattern: false,
     };
   }
 
@@ -864,46 +882,50 @@ class MediaUploadService {
 
     // Check cache first for performance
     const cacheKey = `${str1}_${str2}_${JSON.stringify(options)}`;
+
     if (this.similarityCache.has(cacheKey)) {
       return this.similarityCache.get(cacheKey);
     }
 
     const len1 = str1.length;
     const len2 = str2.length;
-    
+
     // Handle edge cases
     if (len1 === 0) return len2 === 0 ? 1 : 0;
     if (len2 === 0) return 0;
-    
+
     // Check length difference threshold
     const lengthDiff = Math.abs(len1 - len2) / Math.max(len1, len2);
+
     if (lengthDiff > this.defaultSettings.thresholds.lengthDifferenceThreshold) {
       // Still calculate but apply penalty
       const penalty = lengthDiff * 0.3;
       const baseSimilarity = this.levenshteinSimilarity(str1, str2);
       const result = Math.max(0, baseSimilarity - penalty);
+
       this.similarityCache.set(cacheKey, result);
+
       return result;
     }
 
     // Calculate base Levenshtein similarity
     let similarity = this.levenshteinSimilarity(str1, str2);
-    
+
     // Apply bonuses for common patterns
     similarity += this.calculatePatternBonuses(str1, str2);
-    
+
     // Apply Jaro-Winkler similarity for better short string matching
     const jaroWinkler = this.jaroWinklerSimilarity(str1, str2);
-    
+
     // Combine similarities with weights
     const combinedSimilarity = (similarity * 0.7) + (jaroWinkler * 0.3);
-    
+
     // Ensure result is between 0 and 1
     const result = Math.min(1, Math.max(0, combinedSimilarity));
-    
+
     // Cache the result
     this.similarityCache.set(cacheKey, result);
-    
+
     return result;
   }
 
@@ -930,15 +952,17 @@ class MediaUploadService {
     for (let i = 1; i <= len1; i++) {
       for (let j = 1; j <= len2; j++) {
         const cost = str1[i - 1] === str2[j - 1] ? 0 : 1;
+
         matrix[i][j] = Math.min(
           matrix[i - 1][j] + 1,     // deletion
           matrix[i][j - 1] + 1,     // insertion
-          matrix[i - 1][j - 1] + cost // substitution
+          matrix[i - 1][j - 1] + cost, // substitution
         );
       }
     }
 
     const maxLen = Math.max(len1, len2);
+
     return (maxLen - matrix[len1][len2]) / maxLen;
   }
 
@@ -950,26 +974,27 @@ class MediaUploadService {
    */
   jaroWinklerSimilarity(str1, str2) {
     if (str1 === str2) return 1;
-    
+
     const len1 = str1.length;
     const len2 = str2.length;
-    
+
     if (len1 === 0 || len2 === 0) return 0;
-    
+
     const matchWindow = Math.floor(Math.max(len1, len2) / 2) - 1;
+
     if (matchWindow < 0) return 0;
-    
+
     const str1Matches = new Array(len1).fill(false);
     const str2Matches = new Array(len2).fill(false);
-    
+
     let matches = 0;
     let transpositions = 0;
-    
+
     // Find matches
     for (let i = 0; i < len1; i++) {
       const start = Math.max(0, i - matchWindow);
       const end = Math.min(i + matchWindow + 1, len2);
-      
+
       for (let j = start; j < end; j++) {
         if (str2Matches[j] || str1[i] !== str2[j]) continue;
         str1Matches[i] = true;
@@ -978,27 +1003,29 @@ class MediaUploadService {
         break;
       }
     }
-    
+
     if (matches === 0) return 0;
-    
+
     // Find transpositions
     let k = 0;
+
     for (let i = 0; i < len1; i++) {
       if (!str1Matches[i]) continue;
       while (!str2Matches[k]) k++;
       if (str1[i] !== str2[k]) transpositions++;
       k++;
     }
-    
+
     const jaro = (matches / len1 + matches / len2 + (matches - transpositions / 2) / matches) / 3;
-    
+
     // Calculate common prefix length (up to 4 characters)
     let prefix = 0;
+
     for (let i = 0; i < Math.min(len1, len2, 4); i++) {
       if (str1[i] === str2[i]) prefix++;
       else break;
     }
-    
+
     return jaro + (0.1 * prefix * (1 - jaro));
   }
 
@@ -1010,10 +1037,11 @@ class MediaUploadService {
    */
   calculatePatternBonuses(str1, str2) {
     let bonus = 0;
-    
+
     // Common prefix bonus
     let prefixLength = 0;
     const minLen = Math.min(str1.length, str2.length);
+
     for (let i = 0; i < minLen; i++) {
       if (str1[i] === str2[i]) prefixLength++;
       else break;
@@ -1021,9 +1049,10 @@ class MediaUploadService {
     if (prefixLength > 0) {
       bonus += this.defaultSettings.thresholds.commonPrefixBonus * (prefixLength / minLen);
     }
-    
+
     // Common suffix bonus
     let suffixLength = 0;
+
     for (let i = 1; i <= minLen; i++) {
       if (str1[str1.length - i] === str2[str2.length - i]) suffixLength++;
       else break;
@@ -1031,12 +1060,12 @@ class MediaUploadService {
     if (suffixLength > 0) {
       bonus += this.defaultSettings.thresholds.commonSuffixBonus * (suffixLength / minLen);
     }
-    
+
     // Substring containment bonus
     if (str1.includes(str2) || str2.includes(str1)) {
       bonus += 0.1;
     }
-    
+
     return Math.min(0.3, bonus); // Cap bonus at 0.3
   }
 
@@ -1049,10 +1078,10 @@ class MediaUploadService {
    */
   async bulkUploadImages(matches, onProgress, settings = this.defaultSettings) {
     const results = [];
-    
+
     for (let i = 0; i < matches.length; i++) {
       const match = matches[i];
-      
+
       try {
         // Update progress
         if (onProgress) {
@@ -1062,15 +1091,15 @@ class MediaUploadService {
             sku: match.sku,
             fileName: match.file.name,
             status: 'uploading',
-            stage: `Uploading ${match.imageIndex + 1}/${match.totalImagesForSku} for ${match.sku}`
+            stage: `Uploading ${match.imageIndex + 1}/${match.totalImagesForSku} for ${match.sku}`,
           });
         }
 
         // Use the consolidated upload method
         const uploadResult = await this.uploadProductImages(
-          match.sku, 
-          [match.file], 
-          null
+          match.sku,
+          [match.file],
+          null,
         );
 
         if (uploadResult[0]?.success) {
@@ -1082,7 +1111,7 @@ class MediaUploadService {
             imageIndex: match.imageIndex,
             isMainImage: match.isMainImage,
             strategy: match.matchStrategy,
-            confidence: match.similarity
+            confidence: match.similarity,
           });
         } else {
           results.push({
@@ -1091,7 +1120,7 @@ class MediaUploadService {
             status: 'error',
             error: uploadResult[0]?.error || 'Upload failed',
             imageIndex: match.imageIndex,
-            strategy: match.matchStrategy
+            strategy: match.matchStrategy,
           });
         }
 
@@ -1103,7 +1132,7 @@ class MediaUploadService {
           status: 'error',
           error: error.message,
           imageIndex: match.imageIndex,
-          strategy: match.matchStrategy
+          strategy: match.matchStrategy,
         });
       }
     }
@@ -1129,10 +1158,12 @@ class MediaUploadService {
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
+
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 }
 
 // Export singleton instance
 const mediaUploadService = new MediaUploadService();
+
 export default mediaUploadService;

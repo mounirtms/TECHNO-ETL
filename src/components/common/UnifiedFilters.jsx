@@ -1,7 +1,7 @@
 /**
  * Unified Grid Filter System
  * Base filter components with inheritance pattern for consistent filtering
- * 
+ *
  * @author Techno-ETL Team
  * @version 4.0.0
  */
@@ -23,7 +23,7 @@ import {
   Typography,
   Divider,
   Button,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 import {
   FilterList as FilterIcon,
@@ -34,7 +34,7 @@ import {
   Source as SourceIcon,
   ChangeCircle as ChangedIcon,
   Category as CategoryIcon,
-  LocalOffer as BrandIcon
+  LocalOffer as BrandIcon,
 } from '@mui/icons-material';
 
 /**
@@ -66,18 +66,18 @@ export class BaseFilter {
     // Extract key from common props to avoid spreading it to DOM elements
     const commonProps = {
       disabled: !this.enabled,
-      size: this.size
+      size: this.size,
     };
 
     switch (this.type) {
-      case 'select':
-        return this.renderSelect(value, onChange, { ...commonProps, key });
-      case 'switch':
-        return this.renderSwitch(value, onChange, { ...commonProps, key });
-      case 'text':
-        return this.renderTextField(value, onChange, { ...commonProps, key });
-      default:
-        return this.renderSelect(value, onChange, { ...commonProps, key });
+    case 'select':
+      return this.renderSelect(value, onChange, { ...commonProps, key });
+    case 'switch':
+      return this.renderSwitch(value, onChange, { ...commonProps, key });
+    case 'text':
+      return this.renderTextField(value, onChange, { ...commonProps, key });
+    default:
+      return this.renderSelect(value, onChange, { ...commonProps, key });
     }
   }
 
@@ -87,7 +87,7 @@ export class BaseFilter {
   renderSelect(value, onChange, props) {
     const { key, ...restProps } = props; // Extract key to avoid passing it to DOM elements
     const IconComponent = this.getIconComponent();
-    
+
     return (
       <FormControl {...restProps} key={key} sx={{ minWidth: 150 }}>
         <InputLabel>
@@ -115,7 +115,7 @@ export class BaseFilter {
   renderSwitch(value, onChange, props) {
     const { key, ...restProps } = props; // Extract key to avoid passing it to DOM elements
     const IconComponent = this.getIconComponent();
-    
+
     return (
       <FormControlLabel
         key={key}
@@ -142,7 +142,7 @@ export class BaseFilter {
   renderTextField(value, onChange, props) {
     const { key, ...restProps } = props; // Extract key to avoid passing it to DOM elements
     const IconComponent = this.getIconComponent();
-    
+
     return (
       <TextField
         {...restProps}
@@ -152,7 +152,7 @@ export class BaseFilter {
         value={value || this.value}
         onChange={(e) => onChange(e.target.value)}
         InputProps={{
-          startAdornment: IconComponent ? <IconComponent sx={{ mr: 1, fontSize: 16 }} /> : null
+          startAdornment: IconComponent ? <IconComponent sx={{ mr: 1, fontSize: 16 }} /> : null,
         }}
       />
     );
@@ -168,7 +168,7 @@ export class BaseFilter {
       changed: ChangedIcon,
       category: CategoryIcon,
       brand: BrandIcon,
-      filter: FilterIcon
+      filter: FilterIcon,
     };
 
     return iconMap[this.icon] || null;
@@ -193,10 +193,10 @@ export class SourceFilter extends BaseFilter {
       icon: 'source',
       options: [
         { value: 'all', label: 'All Sources' },
-        ...options
+        ...options,
       ],
       value,
-      onChange
+      onChange,
     });
   }
 }
@@ -209,10 +209,10 @@ export class SuccursaleFilter extends BaseFilter {
       icon: 'business',
       options: [
         { value: 'all', label: 'All Branches' },
-        ...options
+        ...options,
       ],
       value,
-      onChange
+      onChange,
     });
   }
 }
@@ -225,10 +225,10 @@ export class CategoryFilter extends BaseFilter {
       icon: 'category',
       options: [
         { value: '', label: 'All Categories' },
-        ...options
+        ...options,
       ],
       value,
-      onChange
+      onChange,
     });
   }
 }
@@ -241,10 +241,10 @@ export class BrandFilter extends BaseFilter {
       icon: 'brand',
       options: [
         { value: '', label: 'All Brands' },
-        ...options
+        ...options,
       ],
       value,
-      onChange
+      onChange,
     });
   }
 }
@@ -256,7 +256,7 @@ export class ChangedOnlyFilter extends BaseFilter {
       label: 'Show Changed Only',
       icon: 'changed',
       value,
-      onChange
+      onChange,
     });
   }
 }
@@ -269,10 +269,10 @@ export class StatusFilter extends BaseFilter {
       options: [
         { value: '', label: 'All Status' },
         { value: '1', label: 'Enabled' },
-        { value: '2', label: 'Disabled' }
+        { value: '2', label: 'Disabled' },
       ],
       value,
-      onChange
+      onChange,
     });
   }
 }
@@ -288,9 +288,9 @@ export class BaseFilterPanel {
       defaultExpanded: false,
       showClearAll: true,
       variant: 'outlined', // outlined, elevation, none
-      ...config
+      ...config,
     };
-    
+
     this.filters = [];
     this.activeFilters = {};
   }
@@ -302,6 +302,7 @@ export class BaseFilterPanel {
     if (filter instanceof BaseFilter) {
       this.filters.push(filter);
     }
+
     return this;
   }
 
@@ -310,6 +311,7 @@ export class BaseFilterPanel {
    */
   addFilters(filters) {
     filters.forEach(filter => this.addFilter(filter));
+
     return this;
   }
 
@@ -318,6 +320,7 @@ export class BaseFilterPanel {
    */
   setFilterValues(values) {
     this.activeFilters = { ...this.activeFilters, ...values };
+
     return this;
   }
 
@@ -338,6 +341,7 @@ export class BaseFilterPanel {
         filter.onChange(filter.type === 'switch' ? false : '');
       }
     });
+
     return this;
   }
 
@@ -348,6 +352,7 @@ export class BaseFilterPanel {
     return Object.values(this.activeFilters).filter(value => {
       if (typeof value === 'boolean') return value;
       if (typeof value === 'string') return value !== '' && value !== 'all';
+
       return value != null;
     }).length;
   }
@@ -378,7 +383,7 @@ export class BaseFilterPanel {
         sx={{
           mb: 1,
           overflow: 'hidden',
-          ...props.sx
+          ...props.sx,
         }}
       >
         {/* Filter Header */}
@@ -391,7 +396,7 @@ export class BaseFilterPanel {
             cursor: this.config.collapsible ? 'pointer' : 'default',
             bgcolor: 'grey.50',
             borderBottom: expanded ? 1 : 0,
-            borderColor: 'divider'
+            borderColor: 'divider',
           }}
           onClick={toggleExpanded}
         >
@@ -424,7 +429,7 @@ export class BaseFilterPanel {
                 </IconButton>
               </Tooltip>
             )}
-            
+
             {this.config.collapsible && (
               <IconButton size="small">
                 {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -441,7 +446,7 @@ export class BaseFilterPanel {
                 display: 'flex',
                 flexWrap: 'wrap',
                 gap: 2,
-                alignItems: 'center'
+                alignItems: 'center',
               }}
             >
               {this.filters.map((filter, index) => {
@@ -480,11 +485,11 @@ export class MagentoFilterPanel extends BaseFilterPanel {
     if (options.categories) {
       this.addFilter(new CategoryFilter(options.categories, '', options.onCategoryChange));
     }
-    
+
     if (options.brands) {
       this.addFilter(new BrandFilter(options.brands, '', options.onBrandChange));
     }
-    
+
     this.addFilter(new StatusFilter('', options.onStatusChange));
   }
 }
@@ -499,23 +504,23 @@ export class MDMFilterPanel extends BaseFilterPanel {
     // Add MDM-specific filters
     if (options.sources) {
       this.addFilter(new SourceFilter(
-        options.sources, 
-        options.sourceFilter || 'all', 
-        options.onSourceChange
+        options.sources,
+        options.sourceFilter || 'all',
+        options.onSourceChange,
       ));
     }
-    
+
     if (options.succursales) {
       this.addFilter(new SuccursaleFilter(
-        options.succursales, 
-        options.succursaleFilter || 'all', 
-        options.onSuccursaleChange
+        options.succursales,
+        options.succursaleFilter || 'all',
+        options.onSuccursaleChange,
       ));
     }
-    
+
     this.addFilter(new ChangedOnlyFilter(
-      options.showChangedOnly || false, 
-      options.onShowChangedOnlyChange
+      options.showChangedOnly || false,
+      options.onShowChangedOnlyChange,
     ));
   }
 }
@@ -527,12 +532,12 @@ export class MDMFilterPanel extends BaseFilterPanel {
 export class FilterFactory {
   static create(gridType, config = {}) {
     switch (gridType) {
-      case 'magento':
-        return new MagentoFilterPanel(config);
-      case 'mdm':
-        return new MDMFilterPanel(config);
-      default:
-        return new BaseFilterPanel(config);
+    case 'magento':
+      return new MagentoFilterPanel(config);
+    case 'mdm':
+      return new MDMFilterPanel(config);
+    default:
+      return new BaseFilterPanel(config);
     }
   }
 }
@@ -542,10 +547,12 @@ export class FilterFactory {
  */
 export function useUnifiedFilters(gridType, options = {}, config = {}) {
   const [filterValues, setFilterValues] = useState({});
-  
+
   const filterPanel = useMemo(() => {
     const panel = FilterFactory.create(gridType, { options, ...config });
+
     panel.setFilterValues(filterValues);
+
     return panel;
   }, [gridType, options, config, filterValues]);
 
@@ -559,7 +566,7 @@ export function useUnifiedFilters(gridType, options = {}, config = {}) {
   const renderFilters = useMemo(() => {
     return (props = {}) => filterPanel.render({
       onFiltersChange: handleFiltersChange,
-      ...props
+      ...props,
     });
   }, [filterPanel, handleFiltersChange]);
 
@@ -578,6 +585,6 @@ export function useUnifiedFilters(gridType, options = {}, config = {}) {
     setFilterValues: (values) => {
       setFilterValues(values);
       filterPanel.setFilterValues(values);
-    }
+    },
   };
 }

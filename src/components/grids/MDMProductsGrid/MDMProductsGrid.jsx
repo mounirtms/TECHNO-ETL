@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
-import { Box, useTheme, Typography } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
@@ -15,7 +15,6 @@ import { useUnifiedToolbar } from '../../common/UnifiedToolbar';
 import { useUnifiedFilters } from '../../common/UnifiedFilters';
 
 // Components
-import MDMStatsCards from './MDMStatsCards';
 import UnifiedGrid from '../../common/UnifiedGrid';
 import GridErrorBoundary from '../../common/GridErrorBoundary';
 
@@ -35,7 +34,7 @@ const MDMProductsGrid = () => {
   // ===== THEME AND UI =====
   const theme = useTheme();
   const { mode, isDark, colorPreset, density, animations } = useCustomTheme();
-  
+
   // ===== DATA FETCHER =====
   const dataFetcher = useCallback(async (params) => {
     try {
@@ -47,14 +46,24 @@ const MDMProductsGrid = () => {
         sortField: params.sortModel?.[0]?.field,
         sortOrder: params.sortModel?.[0]?.sort,
         showChangedOnly: params.showChangedOnly || false,
-        search: params.search || ''
+        search: params.search || '',
       };
 
       console.log('📡 MDM Grid: Making API call with params:', apiParams);
       const response = await axios.get(API_ENDPOINTS.mdmInventory, { params: apiParams });
-      
-      const processedData = response.data.data || [];
+
+      let processedData = response.data.data || [];
       const totalCount = response.data.totalCount || processedData.length;
+
+      // Ensure each item has a unique identifier to prevent duplicate key warnings
+      processedData = processedData.map((item, index) => {
+        // Create a unique ID based on multiple fields to ensure uniqueness
+        const uniqueId = `${item.Code_MDM || ''}-${item.Source || ''}-${item.Succursale || ''}-${index}`;
+        return {
+          ...item,
+          id: uniqueId, // Add an 'id' field for consistent identification
+        };
+      });
 
       // Calculate statistics
       const stats = {
@@ -65,7 +74,7 @@ const MDMProductsGrid = () => {
         newChanges: processedData.filter(item => item.changed === 1).length,
         synced: processedData.filter(item => item.changed === 0).length,
         totalValue: processedData.reduce((acc, curr) => acc + ((curr.Tarif || 0) * (curr.QteStock || 0)), 0),
-        averagePrice: processedData.length > 0 ? processedData.reduce((acc, curr) => acc + (curr.Tarif || 0), 0) / processedData.length : 0
+        averagePrice: processedData.length > 0 ? processedData.reduce((acc, curr) => acc + (curr.Tarif || 0), 0) / processedData.length : 0,
       };
 
       return { data: processedData, stats };
@@ -80,15 +89,16 @@ const MDMProductsGrid = () => {
     enableSyncStocks: true,
     enableSyncAll: true,
     enableSourceFilter: true,
-    enableSuccursaleFilter: true
+    enableSuccursaleFilter: true,
   });
 
   // ===== OPTIONS FOR FILTERS =====
   const succursaleOptions = useMemo(() => {
     const uniqueSuccursales = [...new Set(sourceMapping.map(s => s.succursale))];
+
     return uniqueSuccursales.map(succ => ({
       value: succ.toString(),
-      label: `Branch ${succ}`
+      label: `Branch ${succ}`,
     }));
   }, []);
 
@@ -98,10 +108,10 @@ const MDMProductsGrid = () => {
       : sourceMapping.filter(s => s.succursale.toString() === gridState.succursaleFilter);
 
     return filteredSources.sort((a, b) =>
-      a.code_source.toString().localeCompare(b.code_source.toString())
+      a.code_source.toString().localeCompare(b.code_source.toString()),
     ).map(source => ({
       value: source.code_source.toString(),
-      label: source.source
+      label: source.source,
     }));
   }, [gridState.succursaleFilter]);
 
@@ -115,7 +125,7 @@ const MDMProductsGrid = () => {
     enableSyncAll: gridState.stats?.newChanges > 0,
     syncBadge: gridState.selectedRows?.length || null,
     syncAllBadge: gridState.stats?.newChanges || null,
-    loading: gridState.loading
+    loading: gridState.loading,
   });
 
   // ===== UNIFIED FILTERS =====
@@ -132,18 +142,18 @@ const MDMProductsGrid = () => {
       // Update multiple filters at once
       Object.entries(filters).forEach(([key, value]) => {
         switch (key) {
-          case 'source':
-            gridState.setSourceFilter(value);
-            break;
-          case 'succursale':
-            gridState.setSuccursaleFilter(value);
-            break;
-          case 'showChangedOnly':
-            gridState.setShowChangedOnly(value);
-            break;
+        case 'source':
+          gridState.setSourceFilter(value);
+          break;
+        case 'succursale':
+          gridState.setSuccursaleFilter(value);
+          break;
+        case 'showChangedOnly':
+          gridState.setShowChangedOnly(value);
+          break;
         }
       });
-    }
+    },
   });
 
   // ===== COLUMN DEFINITIONS =====
@@ -155,7 +165,7 @@ const MDMProductsGrid = () => {
       type: 'string',
       sortable: true,
       filterable: true,
-      renderCell: (params) => params.value || ''
+      renderCell: (params) => params.value || '',
     },
     {
       field: 'Code_JDE',
@@ -163,26 +173,26 @@ const MDMProductsGrid = () => {
       width: 120,
       type: 'string',
       sortable: true,
-      renderCell: (params) => params.value || ''
+      renderCell: (params) => params.value || '',
     },
     {
       field: 'TypeProd',
       headerName: 'Type',
       width: 100,
       type: 'string',
-      renderCell: (params) => params.value || ''
+      renderCell: (params) => params.value || '',
     },
     {
       field: 'Source',
       headerName: 'Source',
       width: 100,
-      type: 'string'
+      type: 'string',
     },
     {
       field: 'Succursale',
       headerName: 'Branch',
       width: 100,
-      type: 'number'
+      type: 'number',
     },
     {
       field: 'QteStock',
@@ -192,17 +202,18 @@ const MDMProductsGrid = () => {
       sortable: true,
       renderCell: (params) => {
         const value = Number(params.value) || 0;
+
         return (
           <Box
             sx={{
               color: value === 0 ? 'error.main' : value < 2 ? 'warning.main' : 'success.main',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
             }}
           >
             {value}
           </Box>
         );
-      }
+      },
     },
     {
       field: 'Tarif',
@@ -212,8 +223,9 @@ const MDMProductsGrid = () => {
       sortable: true,
       renderCell: (params) => {
         const value = Number(params.value) || 0;
+
         return `${value.toFixed(2)} DZD`;
-      }
+      },
     },
     {
       field: 'DateDernierMaJ',
@@ -224,11 +236,23 @@ const MDMProductsGrid = () => {
       valueGetter: (params) => {
         if (!params.value) return '';
         try {
-          return new Date(params.value).toLocaleDateString('fr-DZ');
+          // Handle date string in a more robust way
+          const dateStr = params.value?.toString() || '';
+          // Try different date parsing approaches
+          const date = dateStr.includes('T') 
+            ? new Date(dateStr) 
+            : new Date(dateStr.replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$2/$1/$3'));
+          
+          if (isNaN(date.getTime())) {
+            return dateStr;
+          }
+          
+          return date.toLocaleDateString('fr-DZ');
         } catch (error) {
+          console.error('Error formatting date:', error);
           return params.value?.toString() || '';
         }
-      }
+      },
     },
     {
       field: 'changed',
@@ -236,12 +260,12 @@ const MDMProductsGrid = () => {
       width: 100,
       type: 'boolean',
       sortable: true,
-      renderCell: (params) => params.value ? '✓' : ''
-    }
-  ], [theme]);
+      renderCell: (params) => params.value ? '✓' : '',
+    },
+  ], []);
 
   // ===== ROW STYLING =====
-  const getRowClassName = useCallback((params) =>
+  const getRowClassName = React.useCallback((params) =>
     params.row.changed ? 'row-changed' : '', []);
 
   // ===== MAIN RENDER =====
@@ -280,7 +304,7 @@ const MDMProductsGrid = () => {
               console.log('Row double-clicked:', params.row);
               // Handle row double-click
             }}
-            getRowId={(row) => row.Code_MDM}
+            getRowId={(row) => row.id}
             getRowClassName={getRowClassName}
             selectedRows={gridState.selectedRows}
             onRowSelectionModelChange={gridState.onSelectionChange}

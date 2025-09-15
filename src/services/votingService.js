@@ -17,8 +17,9 @@ class VotingService {
   async getFeatures(filters = {}) {
     try {
       const response = await axios.get(`${API_BASE_URL}/features`, {
-        params: filters
+        params: filters,
       });
+
       return response.data;
     } catch (error) {
       console.error('Error fetching features:', error);
@@ -34,6 +35,7 @@ class VotingService {
   async createFeature(featureData) {
     try {
       const response = await axios.post(`${API_BASE_URL}/features`, featureData);
+
       return response.data;
     } catch (error) {
       console.error('Error creating feature:', error);
@@ -50,8 +52,9 @@ class VotingService {
   async voteForFeature(featureId, userId) {
     try {
       const response = await axios.post(`${API_BASE_URL}/features/${featureId}/vote`, {
-        userId
+        userId,
       });
+
       return response.data;
     } catch (error) {
       console.error('Error voting for feature:', error);
@@ -68,8 +71,9 @@ class VotingService {
   async removeVote(featureId, userId) {
     try {
       const response = await axios.delete(`${API_BASE_URL}/features/${featureId}/vote`, {
-        data: { userId }
+        data: { userId },
       });
+
       return response.data;
     } catch (error) {
       console.error('Error removing vote:', error);
@@ -85,8 +89,9 @@ class VotingService {
   async getUserVotes(userId) {
     try {
       const response = await axios.get(`${API_BASE_URL}/votes/user`, {
-        params: { userId }
+        params: { userId },
       });
+
       return response.data;
     } catch (error) {
       console.error('Error fetching user votes:', error);
@@ -101,6 +106,7 @@ class VotingService {
   async getRoadmap() {
     try {
       const response = await axios.get(`${API_BASE_URL}/roadmap`);
+
       return response.data;
     } catch (error) {
       console.error('Error fetching roadmap:', error);
@@ -119,8 +125,9 @@ class VotingService {
     try {
       const response = await axios.put(`${API_BASE_URL}/features/${featureId}/status`, {
         status,
-        ...additionalData
+        ...additionalData,
       });
+
       return response.data;
     } catch (error) {
       console.error('Error updating feature status:', error);
@@ -136,8 +143,9 @@ class VotingService {
   async getReleaseNotes(filters = {}) {
     try {
       const response = await axios.get(`${API_BASE_URL}/release-notes`, {
-        params: filters
+        params: filters,
       });
+
       return response.data;
     } catch (error) {
       console.error('Error fetching release notes:', error);

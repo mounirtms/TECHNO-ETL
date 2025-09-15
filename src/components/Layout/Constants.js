@@ -11,6 +11,7 @@ export const TAB_HEADER_HEIGHT = 48;
 export const DASHBOARD_TAB_HEIGHT = 80;
 export const STATS_CARD_ZINDEX = 1200;
 export const STATS_CARD_HEIGHT = 80;
+export const TOOLBAR_HEIGHT = 64; // Adding the missing export
 export const TRANSITION_DURATION = 225;
 
 // Grid Layout Heights - Calculated for perfect fit
@@ -23,19 +24,19 @@ export const MAX_GRID_HEIGHT = `calc(100vh - ${HEADER_HEIGHT}px - ${FOOTER_HEIGH
 
 /**
  * Menu Items Configuration
- * 
+ *
  * Defines the main navigation items for the admin dashboard
  */
 
 export const staticPrimaryKeys = {
-    OrdersGrid: 'increment_id',
-    InvoicesGrid: 'entity_id',
-    ProductsGrid: 'sku',
-    ProductCatalog: 'id',
-    CustomersGrid: 'id',
-    MDMProductsGrid: 'sku',
-    CegidProductsGrid: 'sku',
-    CategoryGrid: 'id', // Example for CategoryGrid
+  OrdersGrid: 'increment_id',
+  InvoicesGrid: 'entity_id',
+  ProductsGrid: 'sku',
+  ProductCatalog: 'id',
+  CustomersGrid: 'id',
+  MDMProductsGrid: 'sku',
+  CegidProductsGrid: 'sku',
+  CategoryGrid: 'id', // Example for CategoryGrid
 };
 
 // MENU_TREE has been moved to MenuTree.js to avoid duplication

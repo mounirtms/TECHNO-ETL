@@ -1,504 +1,451 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
-    Box,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    Collapse,
-    Tooltip,
-    Typography,
-    Chip,
-    Badge,
-    IconButton,
-    Divider,
-    TextField,
-    InputAdornment,
-    useTheme,
-    styled,
-    alpha
+  Box,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Collapse,
+  Tooltip,
+  Typography,
+  Chip,
+  Badge,
+  IconButton,
+  Divider,
+  TextField,
+  InputAdornment,
+  useTheme,
+  styled,
+  alpha,
 } from '@mui/material';
 import {
-    ExpandMore as ExpandMoreIcon,
-    ChevronRight as ChevronRightIcon,
-    Lock as LockIcon,
-    LockOpen as LockOpenIcon,
-    Star as StarIcon,
-    Verified as VerifiedIcon,
-    Warning as WarningIcon,
-    Search as SearchIcon,
-    Clear as ClearIcon
+  ExpandMore as ExpandMoreIcon,
+  ChevronRight as ChevronRightIcon,
+  Lock as LockIcon,
+  LockOpen as LockOpenIcon,
+  Star as StarIcon,
+  Verified as VerifiedIcon,
+  Warning as WarningIcon,
+  Search as SearchIcon,
+  Clear as ClearIcon,
 } from '@mui/icons-material';
 
-import { MENU_TREE } from './MenuTree';
-import { check_license_status, get_license_details } from '../../utils/licenseUtils';
+import { MENU_TREE } from './MenuTree.js';
+import { usePermissions, useLicense } from '../../contexts/PermissionContext';
 import { USER_ROLES, ROLE_HIERARCHY, getRolePermissions } from '../../config/firebaseDefaults';
 
 // Enhanced Styled Components with Professional Design
 const TreeContainer = styled(Box)(({ theme }) => ({
-    padding: theme.spacing(1, 0),
-    height: 'calc(100vh - 64px)', // Subtract logo container height
-    overflowY: 'auto',
-    overflowX: 'hidden',
-    '&::-webkit-scrollbar': {
-        width: '6px',
-    },
-    '&::-webkit-scrollbar-track': {
-        backgroundColor: 'transparent',
-    },
-    '&::-webkit-scrollbar-thumb': {
-        backgroundColor: alpha(theme.palette.primary.main, 0.2),
-        borderRadius: '3px',
-        '&:hover': {
-            backgroundColor: alpha(theme.palette.primary.main, 0.3),
-        },
-    },
+  padding: theme.spacing(1, 0),
+  height: 'calc(100vh - 64px)', // Subtract logo container height
+  overflowY: 'auto',
+  overflowX: 'hidden',
+  '&::-webkit-scrollbar': {
+    width: '6px',
+  },
+  '&::-webkit-scrollbar-track': {
+    backgroundColor: 'transparent',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    backgroundColor: alpha(theme.palette.primary.main, 0.2),
+    borderRadius: '3px',
+  },
+  '&::-webkit-scrollbar-thumb:hover': {
+    backgroundColor: alpha(theme.palette.primary.main, 0.4),
+  },
 }));
 
-const StyledCategoryItem = styled(ListItem, {
-    shouldForwardProp: (prop) => !['isRTL', 'open', 'expanded'].includes(prop),
-})(({ theme, isRTL, open, expanded }) => ({
-    padding: theme.spacing(1, 1.5),
-    margin: theme.spacing(0.25, 0.5),
-    borderRadius: theme.spacing(1),
-    cursor: 'pointer',
-    position: 'relative',
-    background: expanded 
-        ? alpha(theme.palette.primary.main, 0.08)
-        : 'transparent',
-    borderLeft: expanded 
-        ? `3px solid ${theme.palette.primary.main}`
-        : '3px solid transparent',
-    transition: theme.transitions.create(['all'], {
-        duration: theme.transitions.duration.shorter,
+const StyledCategoryItem = styled(Box)(({ theme, isRTL, open, expanded }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: theme.spacing(1, 2),
+  cursor: 'pointer',
+  borderRadius: '8px',
+  margin: theme.spacing(0, 1),
+  transition: theme.transitions.create(['background-color', 'box-shadow'], {
+    duration: theme.transitions.duration.shortest,
+  }),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.primary.main, 0.08),
+  },
+  '& .category-icon': {
+    color: expanded ? theme.palette.primary.main : theme.palette.text.secondary,
+    transition: theme.transitions.create('color', {
+      duration: theme.transitions.duration.shortest,
     }),
-    '&:hover': {
-        backgroundColor: alpha(theme.palette.primary.main, 0.04),
-        transform: 'translateX(2px)',
-        '& .category-icon': {
-            color: theme.palette.primary.main,
-        },
-        '& .expand-icon': {
-            color: theme.palette.primary.main,
-        },
-    },
-    '& .category-icon': {
-        color: expanded ? theme.palette.primary.main : theme.palette.text.secondary,
-        transition: theme.transitions.create('color'),
-    },
-    '& .expand-icon': {
-        color: theme.palette.text.secondary,
-        transition: theme.transitions.create(['color', 'transform']),
-        transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)',
-    },
+  },
+  ...(isRTL && {
+    flexDirection: 'row-reverse',
+  }),
+  ...(!open && {
+    justifyContent: 'center',
+    padding: theme.spacing(1),
+  }),
 }));
 
 const StyledMenuItem = styled(ListItem, {
-    shouldForwardProp: (prop) => !['isRTL', 'open', 'selected', 'licensed', 'hasAccess'].includes(prop),
-})(({ theme, isRTL, open, selected, licensed, hasAccess }) => ({
-    padding: theme.spacing(0.75, 2),
-    margin: theme.spacing(0.25, 1),
-    marginLeft: theme.spacing(3), // Indent for tree structure
-    borderRadius: theme.spacing(0.75),
-    cursor: hasAccess ? 'pointer' : 'not-allowed',
-    position: 'relative',
-    opacity: hasAccess ? 1 : 0.6,
-    background: selected 
-        ? `linear-gradient(90deg, ${alpha(theme.palette.primary.main, 0.15)} 0%, ${alpha(theme.palette.primary.main, 0.05)} 100%)`
-        : 'transparent',
-    borderLeft: selected 
-        ? `2px solid ${theme.palette.primary.main}`
-        : '2px solid transparent',
-    transition: theme.transitions.create(['all'], {
-        duration: theme.transitions.duration.shorter,
+  shouldForwardProp: (prop) => prop !== 'active' && prop !== 'open',
+})(({ theme, active, open }) => ({
+  borderRadius: '8px',
+  margin: theme.spacing(0.5, 1),
+  padding: theme.spacing(1, 2),
+  cursor: 'pointer',
+  backgroundColor: active ? alpha(theme.palette.primary.main, 0.12) : 'transparent',
+  color: active ? theme.palette.primary.main : 'inherit',
+  transition: theme.transitions.create(['background-color', 'color', 'box-shadow'], {
+    duration: theme.transitions.duration.shortest,
+  }),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.primary.main, 0.08),
+  },
+  '& .MuiListItemIcon-root': {
+    color: active ? theme.palette.primary.main : theme.palette.text.secondary,
+    minWidth: open ? 32 : 'auto',
+  },
+  '& .MuiListItemText-root': {
+    opacity: open ? 1 : 0,
+    transition: theme.transitions.create('opacity', {
+      duration: theme.transitions.duration.shortest,
     }),
-    '&:hover': {
-        backgroundColor: hasAccess 
-            ? alpha(theme.palette.primary.main, 0.08)
-            : alpha(theme.palette.error.main, 0.04),
-        transform: hasAccess ? 'translateX(2px)' : 'none',
-        '& .menu-icon': {
-            color: hasAccess ? theme.palette.primary.main : theme.palette.error.main,
-        },
-        '& .license-indicator': {
-            opacity: 1,
-        },
-    },
-    '& .menu-icon': {
-        color: selected 
-            ? theme.palette.primary.main 
-            : hasAccess 
-                ? theme.palette.text.primary 
-                : theme.palette.text.disabled,
-        transition: theme.transitions.create('color'),
-    },
-    '& .license-indicator': {
-        opacity: 0.7,
-        transition: theme.transitions.create('opacity'),
-    },
-}));
-
-const SearchContainer = styled(Box)(({ theme }) => ({
-    padding: theme.spacing(1, 1.5),
-    marginBottom: theme.spacing(1),
-    borderBottom: `1px solid ${theme.palette.divider}`,
+  },
+  '& .MuiTouchRipple-root': {
+    display: 'none',
+  },
 }));
 
 const HighlightedText = styled('span')(({ theme }) => ({
-    backgroundColor: alpha(theme.palette.warning.main, 0.3),
-    color: theme.palette.warning.contrastText,
-    fontWeight: 600,
-    borderRadius: '2px',
-    padding: '0 2px',
+  backgroundColor: alpha(theme.palette.warning.main, 0.3),
+  borderRadius: '2px',
+  padding: '0 2px',
 }));
 
 const CategoryDivider = styled(Divider)(({ theme }) => ({
-    margin: theme.spacing(1, 2),
-    background: alpha(theme.palette.primary.main, 0.1),
+  margin: theme.spacing(1, 2),
+  background: alpha(theme.palette.primary.main, 0.1),
 }));
 
-const TreeMenuNavigation = ({ 
-    open, 
-    isRTL, 
-    activeTab, 
-    onTabClick, 
-    currentUser, 
-    translate,
-    isCollapsed
+const TreeMenuNavigation = ({
+  open,
+  isRTL,
+  activeTab,
+  onTabClick,
+  currentUser,
+  translate,
 }) => {
-    const theme = useTheme();
-    const [expandedCategories, setExpandedCategories] = useState(new Set(['core']));
-    const [userLicense, setUserLicense] = useState(null);
-    const [userRole, setUserRole] = useState(USER_ROLES.USER);
-    const [licensedItems, setLicensedItems] = useState(new Set());
-    const [searchQuery, setSearchQuery] = useState('');
+  const theme = useTheme();
+  const [expandedCategories, setExpandedCategories] = useState(new Set(['core']));
+  const [searchQuery, setSearchQuery] = useState('');
 
-    // Initialize user license and permissions
-    useEffect(() => {
-        const initializeUserData = async () => {
-            if (!currentUser?.uid) {
-                setUserLicense(null);
-                setLicensedItems(new Set());
-                return;
-            }
+  // Use permission and license hooks
+  const {
+    filterMenuItems,
+    canAccessMenuItem,
+    initialized: permissionsInitialized,
+    loading: permissionsLoading,
+  } = usePermissions();
 
-            try {
-                // Get user role from user data or default to USER
-                const userRole = currentUser.role || USER_ROLES.USER;
-                setUserRole(userRole);
+  const {
+    licenseStatus,
+    isLicenseValid,
+  } = useLicense();
 
-                // Get license details
-                const licenseDetails = await get_license_details(currentUser.uid);
-                setUserLicense(licenseDetails);
+  // Get user role from license status or current user
+  const userRole = licenseStatus?.role || currentUser?.role || USER_ROLES.USER;
 
-                // Check which items are accessible
-                const accessible = new Set();
-                
-                // Check each category and its children
-                for (const category of MENU_TREE) {
-                    if (category.children) {
-                        for (const item of category.children) {
-                            // If item doesn't require license, always include it
-                            if (!item.licensed) {
-                                accessible.add(item.id);
-                                continue;
-                            }
+  const handleCategoryToggle = (categoryId) => {
+    const newExpanded = new Set(expandedCategories);
 
-                            // Check license status
-                            const hasLicense = await check_license_status(currentUser.uid);
-                            const rolePermissions = getRolePermissions(userRole);
-                            
-                            // Grant access based on license or role permissions
-                            if (hasLicense || rolePermissions.canAccessSystem || import.meta.env.DEV) {
-                                accessible.add(item.id);
-                            }
-                        }
-                    }
-                }
+    if (newExpanded.has(categoryId)) {
+      newExpanded.delete(categoryId);
+    } else {
+      newExpanded.add(categoryId);
+    }
+    setExpandedCategories(newExpanded);
+  };
 
-                setLicensedItems(accessible);
-            } catch (error) {
-                console.error('Error initializing user data:', error);
-                // In development, allow access to all items
-                if (import.meta.env.DEV) {
-                    const allItems = new Set();
-                    MENU_TREE.forEach(category => {
-                        if (category.children) {
-                            category.children.forEach(item => allItems.add(item.id));
-                        }
-                    });
-                    setLicensedItems(allItems);
-                }
-            }
-        };
+  const handleMenuItemClick = (item) => {
+    if (canAccessMenuItem(item)) {
+      onTabClick(item.id, item.label);
+    }
+  };
 
-        initializeUserData();
-    }, [currentUser]);
+  const getLicenseStatus = (item) => {
+    if (!item.licenseRequired) {
+      return { icon: LockOpenIcon, color: 'success' };
+    }
 
-    const handleCategoryToggle = (categoryId) => {
-        const newExpanded = new Set(expandedCategories);
-        if (newExpanded.has(categoryId)) {
-            newExpanded.delete(categoryId);
-        } else {
-            newExpanded.add(categoryId);
-        }
-        setExpandedCategories(newExpanded);
-    };
+    if (canAccessMenuItem(item)) {
+      return { icon: VerifiedIcon, color: 'primary' };
+    }
 
-    const handleMenuItemClick = (item) => {
-        // Always allow clicking menu items, regardless of license status
-        // The actual access will be checked in the route guard
-        if (onTabClick && typeof onTabClick === 'function') {
-            onTabClick(item.id);
-        }
-    };
+    return { icon: LockIcon, color: 'error' };
+  };
 
-    const getLicenseStatus = (item) => {
-        if (!item.licensed) {
-            return { icon: <LockOpenIcon />, color: 'success' };
-        }
-        
-        if (licensedItems.has(item.id)) {
-            return { icon: <VerifiedIcon />, color: 'primary' };
-        }
-        
-        return { icon: <LockIcon />, color: 'error' };
-    };
+  // Filter menu tree based on permissions and search
+  const filteredMenuTree = useMemo(() => {
+    if (!permissionsInitialized) {
+      return [];
+    }
 
-    // Filter and highlight search results
-    const filteredMenuTree = useMemo(() => {
-        if (!searchQuery.trim()) {
-            return MENU_TREE;
-        }
+    // First filter by permissions
+    const permissionFilteredTree = filterMenuItems(MENU_TREE);
 
-        const query = searchQuery.toLowerCase().trim();
-        const filtered = [];
+    // Then filter by search query if provided
+    if (!searchQuery.trim()) {
+      return permissionFilteredTree;
+    }
 
-        MENU_TREE.forEach(category => {
-            const matchedChildren = category.children?.filter(item => {
-                const itemText = (translate(item.labelKey) || item.label).toLowerCase();
-                const categoryText = (translate(category.labelKey) || category.label).toLowerCase();
-                return itemText.includes(query) || categoryText.includes(query);
-            }) || [];
+    const query = searchQuery.toLowerCase().trim();
+    const filtered = [];
 
-            if (matchedChildren.length > 0) {
-                filtered.push({
-                    ...category,
-                    children: matchedChildren
-                });
-            }
+    permissionFilteredTree.forEach(category => {
+      const matchedChildren = category.children?.filter(item => {
+        const itemText = (translate(item.labelKey) || item.label).toLowerCase();
+        const categoryText = (translate(category.labelKey) || category.label).toLowerCase();
+
+        return itemText.includes(query) || categoryText.includes(query);
+      }) || [];
+
+      if (matchedChildren.length > 0) {
+        filtered.push({
+          ...category,
+          children: matchedChildren,
         });
+      }
+    });
 
-        return filtered;
-    }, [searchQuery, translate]);
+    return filtered;
+  }, [searchQuery, translate, permissionsInitialized, filterMenuItems]);
 
-    // Auto-expand categories when searching
-    useEffect(() => {
-        if (searchQuery.trim()) {
-            const newExpanded = new Set();
-            filteredMenuTree.forEach(category => {
-                if (category.children?.length > 0) {
-                    newExpanded.add(category.id);
-                }
-            });
-            setExpandedCategories(newExpanded);
+  // Auto-expand categories when searching
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      const newExpanded = new Set();
+
+      filteredMenuTree.forEach(category => {
+        if (category.children?.length > 0) {
+          newExpanded.add(category.id);
         }
-    }, [searchQuery, filteredMenuTree]);
+      });
+      setExpandedCategories(newExpanded);
+    }
+  }, [searchQuery, filteredMenuTree]);
 
-    // Highlight matching text
-    const highlightText = (text, query) => {
-        if (!query.trim()) return text;
-        
-        const parts = text.split(new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'));
-        return parts.map((part, index) => 
-            part.toLowerCase() === query.toLowerCase() ? 
-                <HighlightedText key={index}>{part}</HighlightedText> : 
-                part
-        );
-    };
+  // Highlight matching text
+  const highlightText = (text, query) => {
+    if (!query.trim()) return text;
 
-    const renderCategoryHeader = (category) => {
-        const isExpanded = expandedCategories.has(category.id);
-        const CategoryIcon = category.icon;
-        
-        return (
-            <StyledCategoryItem
-                key={category.id}
-                isRTL={isRTL}
-                open={open && !isCollapsed} // Only show full menu when open and not collapsed
-                expanded={isExpanded}
-                onClick={() => handleCategoryToggle(category.id)}
-            >
-                <ListItemIcon sx={{ minWidth: 32 }}>
-                    <CategoryIcon className="category-icon" fontSize="small" />
-                </ListItemIcon>
-                
-                {open && !isCollapsed && (
-                    <>
-                        <ListItemText
-                            primary={
-                                <Typography variant="body2" fontWeight="600">
-                                    {highlightText(translate(category.labelKey) || category.label, searchQuery)}
-                                </Typography>
-                            }
-                            secondary={
-                                <Typography variant="caption" color="text.secondary">
-                                    {category.children?.length || 0} items
-                                </Typography>
-                            }
-                        />
-                        
-                        <IconButton 
-                            size="small" 
-                            className="expand-icon"
-                            component="span" // Change to span to avoid nested button issues
-                        >
-                            {isExpanded ? <ExpandMoreIcon fontSize="small" /> : <ChevronRightIcon fontSize="small" />}
-                        </IconButton>
-                    </>
-                )}
-                
-                {(!open || isCollapsed) && (
-                    <Tooltip 
-                        title={translate(category.labelKey) || category.label}
-                        placement={isRTL ? "left" : "right"}
-                    >
-                        <Badge
-                            badgeContent={category.children?.length || 0}
-                            color="primary"
-                            variant="dot"
-                            invisible={!category.children?.length}
-                        >
-                            <Box sx={{ width: 24, height: 24 }} />
-                        </Badge>
-                    </Tooltip>
-                )}
-            </StyledCategoryItem>
-        );
-    };
+    const parts = text.split(new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'));
 
-    const renderMenuItem = (item) => {
-        const isSelected = activeTab === item.id;
-        const hasAccess = !item.licensed || licensedItems.has(item.id); // Allow access if not licensed or has license
-        const licenseStatus = getLicenseStatus(item);
-        const ItemIcon = item.icon;
+    return parts.map((part, index) =>
+      part.toLowerCase() === query.toLowerCase() ?
+        <HighlightedText key={index}>{part}</HighlightedText> :
+        part,
+    );
+  };
 
-        return (
-            <StyledMenuItem
-                key={item.id}
-                isRTL={isRTL}
-                open={open && !isCollapsed} // Only show full menu when open and not collapsed
-                selected={isSelected}
-                licensed={item.licensed}
-                hasAccess={hasAccess}
-                onClick={() => handleMenuItemClick(item)}
-            >
-                <ListItemIcon sx={{ minWidth: 28 }}>
-                    <ItemIcon className="menu-icon" fontSize="small" />
-                </ListItemIcon>
-                
-                {open && !isCollapsed && (
-                    <>
-                        <ListItemText
-                            primary={
-                                <Typography variant="body2" noWrap>
-                                    {highlightText(translate(item.labelKey) || item.label, searchQuery)}
-                                </Typography>
-                            }
-                        />
-                        {item.licensed && (
-                            <Chip
-                                icon={licenseStatus.icon}
-                                size="small"
-                                className="license-indicator"
-                                sx={{
-                                    height: 16,
-                                    '& .MuiChip-icon': {
-                                        fontSize: '0.7rem',
-                                        color: `${licenseStatus.color}.main`
-                                    },
-                                    '& .MuiChip-label': {
-                                        paddingLeft: '4px',
-                                        paddingRight: '4px',
-                                        fontSize: '0.6rem'
-                                    }
-                                }}
-                            />
-                        )}
-                    </>
-                )}
-                
-                {(!open || isCollapsed) && (
-                    <Tooltip 
-                        title={translate(item.labelKey) || item.label}
-                        placement={isRTL ? "left" : "right"}
-                    >
-                        <Box sx={{ width: 24, height: 24 }} />
-                    </Tooltip>
-                )}
-            </StyledMenuItem>
-        );
-    };
+  const renderCategoryHeader = (category) => {
+    const isExpanded = expandedCategories.has(category.id);
+    const CategoryIcon = category.icon;
 
     return (
-        <TreeContainer>
-            {/* Search Field */}
-            <SearchContainer>
-                <TextField
-                    fullWidth
-                    size="small"
-                    placeholder={translate('common.search') || "Search..."}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <SearchIcon fontSize="small" />
-                            </InputAdornment>
-                        ),
-                        endAdornment: searchQuery && (
-                            <InputAdornment position="end">
-                                <IconButton 
-                                    size="small" 
-                                    onClick={() => setSearchQuery('')}
-                                    component="span" // Change to span to avoid nested button issues
-                                >
-                                    <ClearIcon fontSize="small" />
-                                </IconButton>
-                            </InputAdornment>
-                        )
-                    }}
-                    sx={{
-                        '& .MuiOutlinedInput-root': {
-                            borderRadius: 2,
-                            fontSize: '0.875rem'
-                        }
-                    }}
-                />
-            </SearchContainer>
+      <StyledCategoryItem
+        key={category.id}
+        onClick={() => handleCategoryToggle(category.id)}
+        sx={{
+          ...(isRTL && {
+            flexDirection: 'row-reverse',
+          }),
+          ...(!open && {
+            justifyContent: 'center',
+            padding: theme.spacing(1),
+          }),
+        }}
+      >
+        <ListItemIcon sx={{ minWidth: 32 }}>
+          <CategoryIcon className="category-icon" fontSize="small" />
+        </ListItemIcon>
 
-            {/* Menu Tree */}
-            <List disablePadding>
-                {filteredMenuTree.map((category) => (
-                    <React.Fragment key={category.id}>
-                        {renderCategoryHeader(category)}
-                        <Collapse 
-                            in={expandedCategories.has(category.id) && (open && !isCollapsed)} 
-                            timeout="auto" 
-                            unmountOnExit
-                        >
-                            <List disablePadding>
-                                {category.children?.map((item) => (
-                                    renderMenuItem(item)
-                                ))}
-                            </List>
-                        </Collapse>
-                        <CategoryDivider />
-                    </React.Fragment>
-                ))}
-            </List>
-        </TreeContainer>
+        {open && (
+          <>
+            <ListItemText
+              primary={
+                <Typography variant="body2" fontWeight="600">
+                  {highlightText(translate(category.labelKey) || category.label, searchQuery)}
+                </Typography>
+              }
+              secondary={
+                <Typography variant="caption" color="text.secondary">
+                  {category.children?.length || 0} items
+                </Typography>
+              }
+              sx={{ flex: 1 }}
+            />
+            <ExpandMoreIcon
+              className="expand-icon"
+              sx={{
+                transform: isExpanded ? 'rotate(0deg)' : (isRTL ? 'rotate(180deg)' : 'rotate(-90deg)'),
+                transition: theme.transitions.create('transform', {
+                  duration: theme.transitions.duration.shortest,
+                }),
+              }}
+            />
+          </>
+        )}
+      </StyledCategoryItem>
     );
+  };
+
+  const renderMenuItem = (item) => {
+    const isActive = activeTab === item.id;
+    const { icon: LicenseIcon, color: licenseColor } = getLicenseStatus(item);
+    const ItemIcon = item.icon;
+
+    return (
+      <Tooltip
+        key={item.id}
+        title={!open ? translate(item.labelKey) || item.label : ''}
+        placement={isRTL ? 'left' : 'right'}
+        arrow
+      >
+        <StyledMenuItem
+          active={isActive}
+          open={open}
+          onClick={() => handleMenuItemClick(item)}
+        >
+          <ListItemIcon>
+            <ItemIcon fontSize="small" />
+          </ListItemIcon>
+
+          {open && (
+            <>
+              <ListItemText
+                primary={
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Typography variant="body2" noWrap>
+                      {highlightText(translate(item.labelKey) || item.label, searchQuery)}
+                    </Typography>
+                    {item.featured && (
+                      <StarIcon sx={{ fontSize: 12, color: 'warning.main' }} />
+                    )}
+                  </Box>
+                }
+                secondary={item.description && (
+                  <Typography variant="caption" noWrap>
+                    {translate(item.descriptionKey) || item.description}
+                  </Typography>
+                )}
+              />
+
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                {item.licenseRequired && (
+                  <LicenseIcon sx={{ fontSize: 16, color: `${licenseColor}.main` }} />
+                )}
+                {item.badge && (
+                  <Chip
+                    label={item.badge}
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                    sx={{
+                      height: 16,
+                      minWidth: 16,
+                      fontSize: '0.625rem',
+                      fontWeight: 'bold',
+                      '& .MuiChip-label': {
+                        px: 0.5,
+                      },
+                    }}
+                  />
+                )}
+              </Box>
+            </>
+          )}
+        </StyledMenuItem>
+      </Tooltip>
+    );
+  };
+
+  const renderCategory = (category) => {
+    const isExpanded = expandedCategories.has(category.id);
+
+    return (
+      <Box key={category.id}>
+        {renderCategoryHeader(category)}
+
+        <Collapse in={isExpanded && open} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            {category.children?.map(item => renderMenuItem(item))}
+          </List>
+        </Collapse>
+      </Box>
+    );
+  };
+
+  return (
+    <TreeContainer>
+      {/* Search Field */}
+      {open && (
+        <Box sx={{ px: 2, pb: 1 }}>
+          <TextField
+            fullWidth
+            size="small"
+            placeholder={translate('navigation.search') || 'Search...'}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ fontSize: 18 }} />
+                </InputAdornment>
+              ),
+              endAdornment: searchQuery && (
+                <InputAdornment position="end">
+                  <IconButton
+                    size="small"
+                    onClick={() => setSearchQuery('')}
+                    sx={{ p: 0.5 }}
+                  >
+                    <ClearIcon sx={{ fontSize: 16 }} />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px',
+                fontSize: '0.875rem',
+              },
+            }}
+          />
+        </Box>
+      )}
+
+      {/* Menu Items */}
+      {filteredMenuTree.map(category => {
+        // Skip empty categories
+        if (!category.children || category.children.length === 0) {
+          return null;
+        }
+
+        return (
+          <Box key={category.id}>
+            {renderCategory(category)}
+            <CategoryDivider />
+          </Box>
+        );
+      })}
+
+      {/* Empty State */}
+      {open && filteredMenuTree.length === 0 && searchQuery && (
+        <Box sx={{ p: 2, textAlign: 'center' }}>
+          <Typography variant="body2" color="text.secondary">
+            {translate('navigation.noResults') || 'No matching items found'}
+          </Typography>
+        </Box>
+      )}
+    </TreeContainer>
+  );
 };
 
 export default TreeMenuNavigation;

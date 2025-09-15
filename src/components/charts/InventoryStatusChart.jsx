@@ -6,7 +6,7 @@ import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Respons
  * Inventory Status Chart Component
  * Shows inventory levels, stock status, and reorder points
  */
-const InventoryStatusChart = ({ data, title = "Inventory Status" }) => {
+const InventoryStatusChart = ({ data, title = 'Inventory Status' }) => {
   // Custom tooltip for inventory chart
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -17,7 +17,7 @@ const InventoryStatusChart = ({ data, title = "Inventory Status" }) => {
             border: '1px solid #ccc',
             borderRadius: 1,
             padding: 1,
-            boxShadow: 2
+            boxShadow: 2,
           }}
         >
           <Typography variant="body2" fontWeight="bold">
@@ -33,6 +33,7 @@ const InventoryStatusChart = ({ data, title = "Inventory Status" }) => {
         </Box>
       );
     }
+
     return null;
   };
 
@@ -43,13 +44,13 @@ const InventoryStatusChart = ({ data, title = "Inventory Status" }) => {
           <Typography variant="h6" gutterBottom>
             {title}
           </Typography>
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               height: 300,
-              color: 'text.secondary'
+              color: 'text.secondary',
             }}
           >
             No inventory data available

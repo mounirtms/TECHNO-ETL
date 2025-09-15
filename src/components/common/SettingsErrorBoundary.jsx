@@ -21,7 +21,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import {
   Settings as SettingsIcon,
@@ -29,7 +29,7 @@ import {
   RestoreFromTrash as ResetIcon,
   Warning as WarningIcon,
   CheckCircle as CheckIcon,
-  Error as ErrorIcon
+  Error as ErrorIcon,
 } from '@mui/icons-material';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useCustomTheme } from '../../contexts/ThemeContext';
@@ -44,7 +44,7 @@ class SettingsErrorBoundary extends React.Component {
       error: null,
       errorInfo: null,
       showResetDialog: false,
-      retryCount: 0
+      retryCount: 0,
     };
   }
 
@@ -55,12 +55,12 @@ class SettingsErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     this.setState({
       error,
-      errorInfo
+      errorInfo,
     });
 
     // Log settings-specific error
     console.error('SettingsErrorBoundary caught an error:', error, errorInfo);
-    
+
     // Check if it's a settings-related error
     const isSettingsError = error?.message?.toLowerCase().includes('settings') ||
                            error?.stack?.toLowerCase().includes('settings') ||
@@ -76,7 +76,7 @@ class SettingsErrorBoundary extends React.Component {
       hasError: false,
       error: null,
       errorInfo: null,
-      retryCount: prevState.retryCount + 1
+      retryCount: prevState.retryCount + 1,
     }));
   };
 
@@ -95,7 +95,7 @@ class SettingsErrorBoundary extends React.Component {
         'techno-etl-settings',
         'techno-etl-unified-settings',
         'techno-etl-theme-settings',
-        'settingsLastModified'
+        'settingsLastModified',
       ];
 
       settingsKeys.forEach(key => {
@@ -103,10 +103,10 @@ class SettingsErrorBoundary extends React.Component {
       });
 
       // Clear user-specific settings if available
-      const userKeys = Object.keys(localStorage).filter(key => 
-        key.startsWith('userSettings_') || key.startsWith('techno-etl-user-')
+      const userKeys = Object.keys(localStorage).filter(key =>
+        key.startsWith('userSettings_') || key.startsWith('techno-etl-user-'),
       );
-      
+
       userKeys.forEach(key => {
         localStorage.removeItem(key);
       });
@@ -116,7 +116,7 @@ class SettingsErrorBoundary extends React.Component {
         error: null,
         errorInfo: null,
         showResetDialog: false,
-        retryCount: 0
+        retryCount: 0,
       });
 
       // Reload the page to reinitialize with defaults
@@ -161,7 +161,7 @@ const SettingsErrorFallback = ({
   onShowResetDialog,
   onCloseResetDialog,
   onResetSettings,
-  componentName
+  componentName,
 }) => {
   const theme = useTheme();
   const { translate } = useLanguage();
@@ -178,15 +178,15 @@ const SettingsErrorFallback = ({
       title: translate('errors.settings.recovery.retry.title'),
       description: translate('errors.settings.recovery.retry.description'),
       action: onRetry,
-      severity: 'info'
+      severity: 'info',
     },
     {
       icon: <ResetIcon color="warning" />,
       title: translate('errors.settings.recovery.reset.title'),
       description: translate('errors.settings.recovery.reset.description'),
       action: onShowResetDialog,
-      severity: 'warning'
-    }
+      severity: 'warning',
+    },
   ];
 
   return (
@@ -203,8 +203,8 @@ const SettingsErrorFallback = ({
           animation: animations ? 'slideIn 0.3s ease-out' : 'none',
           '@keyframes slideIn': {
             from: { opacity: 0, transform: 'translateX(-20px)' },
-            to: { opacity: 1, transform: 'translateX(0)' }
-          }
+            to: { opacity: 1, transform: 'translateX(0)' },
+          },
         }}
       >
         <Paper
@@ -215,7 +215,7 @@ const SettingsErrorFallback = ({
             width: '100%',
             borderRadius: 3,
             border: `2px solid ${theme.palette.warning.light}`,
-            background: `linear-gradient(135deg, ${theme.palette.background.paper}, ${theme.palette.warning.light}05)`
+            background: `linear-gradient(135deg, ${theme.palette.background.paper}, ${theme.palette.warning.light}05)`,
           }}
         >
           <Stack spacing={3} alignItems="center">
@@ -229,47 +229,47 @@ const SettingsErrorFallback = ({
                 '@keyframes bounce': {
                   '0%, 20%, 50%, 80%, 100%': { transform: 'translateY(0)' },
                   '40%': { transform: 'translateY(-10px)' },
-                  '60%': { transform: 'translateY(-5px)' }
-                }
+                  '60%': { transform: 'translateY(-5px)' },
+                },
               }}
             >
-              <SettingsIcon 
-                sx={{ 
-                  fontSize: 48, 
-                  color: theme.palette.warning.main 
-                }} 
+              <SettingsIcon
+                sx={{
+                  fontSize: 48,
+                  color: theme.palette.warning.main,
+                }}
               />
             </Box>
 
             {/* Error Title */}
-            <Typography 
-              variant="h5" 
-              color="warning.main" 
+            <Typography
+              variant="h5"
+              color="warning.main"
               sx={{ fontWeight: 600 }}
             >
               {translate('errors.settings.title')}
             </Typography>
 
             {/* Error Description */}
-            <Alert 
-              severity={isSettingsCorruption ? "warning" : "error"}
-              sx={{ 
+            <Alert
+              severity={isSettingsCorruption ? 'warning' : 'error'}
+              sx={{
                 width: '100%',
                 textAlign: 'left',
                 '& .MuiAlert-message': {
-                  width: '100%'
-                }
+                  width: '100%',
+                },
               }}
             >
               <AlertTitle>
-                {componentName ? 
+                {componentName ?
                   translate('errors.settings.componentError', { component: componentName }) :
                   translate('errors.settings.genericError')
                 }
               </AlertTitle>
-              
+
               <Typography variant="body2" sx={{ mb: 1 }}>
-                {isSettingsCorruption ? 
+                {isSettingsCorruption ?
                   translate('errors.settings.corruption.description') :
                   translate('errors.settings.generic.description')
                 }
@@ -287,8 +287,8 @@ const SettingsErrorFallback = ({
 
             {/* Recovery Options */}
             <Box sx={{ width: '100%' }}>
-              <Typography 
-                variant="h6" 
+              <Typography
+                variant="h6"
                 sx={{ mb: 2, textAlign: 'left' }}
               >
                 {translate('errors.settings.recovery.title')}
@@ -306,8 +306,8 @@ const SettingsErrorFallback = ({
                       transition: 'all 0.2s ease-in-out',
                       '&:hover': {
                         backgroundColor: theme.palette.action.hover,
-                        transform: 'translateX(4px)'
-                      }
+                        transform: 'translateX(4px)',
+                      },
                     }}
                     onClick={step.action}
                   >
@@ -346,15 +346,15 @@ const SettingsErrorFallback = ({
         PaperProps={{
           sx: {
             borderRadius: 3,
-            border: `2px solid ${theme.palette.warning.main}`
-          }
+            border: `2px solid ${theme.palette.warning.main}`,
+          },
         }}
       >
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <WarningIcon color="warning" />
           {translate('errors.settings.reset.dialog.title')}
         </DialogTitle>
-        
+
         <DialogContent>
           <Alert severity="warning" sx={{ mb: 2 }}>
             <AlertTitle>
@@ -372,7 +372,7 @@ const SettingsErrorFallback = ({
               <ListItemIcon>
                 <CheckIcon color="success" fontSize="small" />
               </ListItemIcon>
-              <ListItemText 
+              <ListItemText
                 primary={translate('errors.settings.reset.dialog.benefits.stability')}
               />
             </ListItem>
@@ -380,7 +380,7 @@ const SettingsErrorFallback = ({
               <ListItemIcon>
                 <CheckIcon color="success" fontSize="small" />
               </ListItemIcon>
-              <ListItemText 
+              <ListItemText
                 primary={translate('errors.settings.reset.dialog.benefits.defaults')}
               />
             </ListItem>
@@ -388,7 +388,7 @@ const SettingsErrorFallback = ({
               <ListItemIcon>
                 <ErrorIcon color="error" fontSize="small" />
               </ListItemIcon>
-              <ListItemText 
+              <ListItemText
                 primary={translate('errors.settings.reset.dialog.losses.customizations')}
               />
             </ListItem>

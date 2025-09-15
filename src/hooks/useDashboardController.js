@@ -21,7 +21,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
     error,
     fetchAllData,
     syncPrices,
-    syncInventory
+    syncInventory,
   } = useDashboard();
 
   // Additional state for price sync
@@ -35,7 +35,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
   const getPrices = useCallback(async () => {
     try {
       setSyncLoading(true);
-      
+
       // Mock price data for demonstration
       // In a real app, this would fetch from your backend
       const mockPriceData = [
@@ -47,7 +47,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
           newPrice: 32.99,
           currency: 'USD',
           status: 'pending',
-          lastUpdated: new Date().toISOString()
+          lastUpdated: new Date().toISOString(),
         },
         {
           id: 2,
@@ -57,7 +57,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
           newPrice: 45.99,
           currency: 'USD',
           status: 'pending',
-          lastUpdated: new Date().toISOString()
+          lastUpdated: new Date().toISOString(),
         },
         {
           id: 3,
@@ -67,16 +67,17 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
           newPrice: 22.99,
           currency: 'USD',
           status: 'pending',
-          lastUpdated: new Date().toISOString()
-        }
+          lastUpdated: new Date().toISOString(),
+        },
       ];
 
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       setPriceData(mockPriceData);
+
       return mockPriceData;
-      
+
     } catch (error) {
       console.error('Error fetching price data:', error);
       throw error;
@@ -91,7 +92,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
   const syncAllStocks = useCallback(async () => {
     try {
       setSyncLoading(true);
-      
+
       // Mock stock sync operation
       // In a real app, this would call your backend API
       const mockStockData = [
@@ -102,7 +103,7 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
           currentStock: 100,
           newStock: 95,
           status: 'synced',
-          lastUpdated: new Date().toISOString()
+          lastUpdated: new Date().toISOString(),
         },
         {
           id: 2,
@@ -111,24 +112,24 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
           currentStock: 50,
           newStock: 48,
           status: 'synced',
-          lastUpdated: new Date().toISOString()
-        }
+          lastUpdated: new Date().toISOString(),
+        },
       ];
 
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       setStockData(mockStockData);
-      
+
       // Use the syncInventory from useDashboard hook
       await syncInventory();
-      
+
       return {
         success: true,
         message: 'Stock sync completed successfully',
-        data: mockStockData
+        data: mockStockData,
       };
-      
+
     } catch (error) {
       console.error('Error syncing stocks:', error);
       throw error;
@@ -155,9 +156,10 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
     try {
       setSyncLoading(true);
       await syncPrices();
+
       return {
         success: true,
-        message: 'Price sync completed successfully'
+        message: 'Price sync completed successfully',
       };
     } catch (error) {
       console.error('Error syncing prices:', error);
@@ -187,21 +189,21 @@ export const useDashboardController = (startDate, endDate, refreshKey) => {
     productTypeData,
     priceData,
     stockData,
-    
+
     // Loading states
     loading: loading || syncLoading,
     syncLoading,
     error,
-    
+
     // Actions
     getPrices,
     syncAllStocks,
     fetchDashboardData,
     handlePriceSync,
-    
+
     // Sync operations
     syncPrices: handlePriceSync,
-    syncInventory: syncAllStocks
+    syncInventory: syncAllStocks,
   };
 };
 

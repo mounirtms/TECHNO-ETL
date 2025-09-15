@@ -33,7 +33,7 @@ import {
   DialogContent,
   DialogActions,
   useTheme,
-  alpha
+  alpha,
 } from '@mui/material';
 import {
   ThumbUp,
@@ -54,7 +54,7 @@ import {
   Speed,
   Palette,
   Link,
-  Security
+  Security,
 } from '@mui/icons-material';
 import { DataGrid } from '@mui/x-data-grid';
 import votingApiService from '../../services/votingApiService';
@@ -67,7 +67,7 @@ const CATEGORY_ICONS = {
   'Performance': Speed,
   'UI/UX': Palette,
   'Integration': Link,
-  'Security': Security
+  'Security': Security,
 };
 
 // Status colors mapping
@@ -78,7 +78,7 @@ const STATUS_COLORS = {
   'In Development': '#9C27B0',
   'Testing': '#FF5722',
   'Completed': '#4CAF50',
-  'Rejected': '#F44336'
+  'Rejected': '#F44336',
 };
 
 // Priority colors mapping
@@ -86,7 +86,7 @@ const PRIORITY_COLORS = {
   'Low': '#4CAF50',
   'Medium': '#FF9800',
   'High': '#FF5722',
-  'Critical': '#F44336'
+  'Critical': '#F44336',
 };
 
 const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
@@ -99,7 +99,7 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
     showToolbar: true,
     enableFiltering: true,
     enableSorting: true,
-    enableExport: true
+    enableExport: true,
   });
 
   // State management
@@ -109,7 +109,7 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
-  
+
   // Pagination and filtering
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 25 });
   const [totalCount, setTotalCount] = useState(0);
@@ -118,9 +118,9 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
     category: '',
     status: '',
     priority: '',
-    search: ''
+    search: '',
   });
-  
+
   // UI state
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState(null);
@@ -143,11 +143,11 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
         priority: filterModel.priority || undefined,
         search: filterModel.search || undefined,
         sortBy: sortModel[0]?.field || 'vote_count',
-        sortOrder: sortModel[0]?.sort?.toUpperCase() || 'DESC'
+        sortOrder: sortModel[0]?.sort?.toUpperCase() || 'DESC',
       };
 
       const response = await votingApiService.getFeatures(options);
-      
+
       if (response.success) {
         setFeatures(response.data);
         setTotalCount(response.pagination.total);
@@ -170,6 +170,7 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
   const loadCategories = useCallback(async () => {
     try {
       const response = await votingApiService.getCategories();
+
       if (response.success) {
         setCategories(response.data);
       }
@@ -184,11 +185,14 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
   const loadUserVotes = useCallback(async () => {
     try {
       const featureIds = features.map(f => f.id);
+
       if (featureIds.length === 0) return;
 
       const response = await votingApiService.getUserVotes(userId, featureIds);
+
       if (response.success) {
         const votesMap = {};
+
         response.data.forEach(vote => {
           votesMap[vote.feature_id] = vote.vote_type;
         });
@@ -212,7 +216,9 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
         await votingApiService.removeVote(featureId, userInfo);
         setUserVotes(prev => {
           const updated = { ...prev };
+
           delete updated[featureId];
+
           return updated;
         });
         showSnackbar('Vote removed', 'info');
@@ -264,16 +270,16 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
           <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
             {params.value}
           </Typography>
-          <Typography variant="caption" color="text.secondary" sx={{ 
+          <Typography variant="caption" color="text.secondary" sx={{
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
-            overflow: 'hidden'
+            overflow: 'hidden',
           }}>
             {params.row.description}
           </Typography>
         </Box>
-      )
+      ),
     },
     {
       field: 'category_name',
@@ -281,6 +287,7 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
       width: 140,
       renderCell: (params) => {
         const IconComponent = CATEGORY_ICONS[params.value] || Lightbulb;
+
         return (
           <Chip
             icon={<IconComponent />}
@@ -289,11 +296,11 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
             sx={{
               backgroundColor: alpha(params.row.category_color || '#2196F3', 0.1),
               color: params.row.category_color || '#2196F3',
-              border: `1px solid ${alpha(params.row.category_color || '#2196F3', 0.3)}`
+              border: `1px solid ${alpha(params.row.category_color || '#2196F3', 0.3)}`,
             }}
           />
         );
-      }
+      },
     },
     {
       field: 'priority',
@@ -306,10 +313,10 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
           sx={{
             backgroundColor: alpha(PRIORITY_COLORS[params.value] || '#2196F3', 0.1),
             color: PRIORITY_COLORS[params.value] || '#2196F3',
-            fontWeight: 600
+            fontWeight: 600,
           }}
         />
-      )
+      ),
     },
     {
       field: 'status',
@@ -322,10 +329,10 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
           sx={{
             backgroundColor: alpha(STATUS_COLORS[params.value] || '#2196F3', 0.1),
             color: STATUS_COLORS[params.value] || '#2196F3',
-            fontWeight: 500
+            fontWeight: 500,
           }}
         />
-      )
+      ),
     },
     {
       field: 'vote_count',
@@ -339,13 +346,13 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
           sx={{
             '& .MuiBadge-badge': {
               fontSize: '0.75rem',
-              fontWeight: 600
-            }
+              fontWeight: 600,
+            },
           }}
         >
           <TrendingUp color="action" />
         </Badge>
-      )
+      ),
     },
     {
       field: 'actions',
@@ -355,7 +362,7 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
       renderCell: (params) => {
         const featureId = params.row.id;
         const userVote = userVotes[featureId];
-        
+
         return (
           <Stack direction="row" spacing={0.5}>
             <Tooltip title="Upvote">
@@ -364,7 +371,7 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
                 onClick={() => handleVote(featureId, 'upvote')}
                 sx={{
                   color: userVote === 'upvote' ? theme.palette.success.main : 'inherit',
-                  backgroundColor: userVote === 'upvote' ? alpha(theme.palette.success.main, 0.1) : 'transparent'
+                  backgroundColor: userVote === 'upvote' ? alpha(theme.palette.success.main, 0.1) : 'transparent',
                 }}
               >
                 <ThumbUp fontSize="small" />
@@ -376,7 +383,7 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
                 onClick={() => handleVote(featureId, 'downvote')}
                 sx={{
                   color: userVote === 'downvote' ? theme.palette.error.main : 'inherit',
-                  backgroundColor: userVote === 'downvote' ? alpha(theme.palette.error.main, 0.1) : 'transparent'
+                  backgroundColor: userVote === 'downvote' ? alpha(theme.palette.error.main, 0.1) : 'transparent',
                 }}
               >
                 <ThumbDown fontSize="small" />
@@ -392,8 +399,8 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
             </Tooltip>
           </Stack>
         );
-      }
-    }
+      },
+    },
   ], [userVotes, theme, handleVote]);
 
   // Load data on component mount and when dependencies change
@@ -428,11 +435,11 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
                   <InputAdornment position="start">
                     <Search />
                   </InputAdornment>
-                )
+                ),
               }}
             />
           </Grid>
-          
+
           <Grid item xs={12} md={2}>
             <FormControl fullWidth size="small">
               <InputLabel>Category</InputLabel>
@@ -546,7 +553,7 @@ const ProfessionalVotingGrid = ({ userId = 'anonymous' }) => {
             },
             '& .MuiDataGrid-row:hover': {
               backgroundColor: alpha(theme.palette.primary.main, 0.04),
-            }
+            },
           }}
         />
       </Paper>

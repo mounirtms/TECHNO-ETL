@@ -20,19 +20,19 @@ class SettingsManager {
    */
   initialize(userId) {
     this.userSettings = new UserSettings(userId);
-    
+
     // Load user settings from localStorage
     this.userSettings.loadFromLocal();
-    
+
     // Apply initial theme and language
     this.userSettings.applyTheme();
     this.userSettings.applyLanguage();
-    
+
     // Setup auto-save
     this.userSettings.addListener('*', () => {
       this.userSettings.saveToLocal();
     });
-    
+
     return this;
   }
 
@@ -41,6 +41,7 @@ class SettingsManager {
    */
   setPermissionChecker(checker) {
     this.permissionChecker = checker;
+
     return this;
   }
 
@@ -51,6 +52,7 @@ class SettingsManager {
     if (this.permissionChecker) {
       return this.permissionChecker(key, permission);
     }
+
     return true; // Default to allowing all permissions
   }
 
@@ -60,16 +62,17 @@ class SettingsManager {
   getPageSettings(pageId) {
     if (!this.pageSettings.has(pageId)) {
       const pageSettings = new PageSettings(pageId, this.userSettings);
+
       pageSettings.loadFromLocal();
-      
+
       // Setup auto-save for page settings
       pageSettings.addListener('*', () => {
         pageSettings.saveToLocal();
       });
-      
+
       this.pageSettings.set(pageId, pageSettings);
     }
-    
+
     return this.pageSettings.get(pageId);
   }
 
@@ -79,10 +82,10 @@ class SettingsManager {
   setCurrentPage(pageId) {
     this.currentPageId = pageId;
     const pageSettings = this.getPageSettings(pageId);
-    
+
     // Notify listeners about page change
     this.notifyListeners('pageChanged', { pageId, pageSettings });
-    
+
     return pageSettings;
   }
 
@@ -93,6 +96,7 @@ class SettingsManager {
     if (!this.currentPageId) {
       throw new Error('No current page set. Call setCurrentPage() first.');
     }
+
     return this.getPageSettings(this.currentPageId);
   }
 
@@ -103,6 +107,7 @@ class SettingsManager {
     if (!this.userSettings) {
       throw new Error('Settings manager not initialized. Call initialize() first.');
     }
+
     return this.userSettings;
   }
 
@@ -111,12 +116,13 @@ class SettingsManager {
    */
   get(key, pageId = null) {
     const targetPageId = pageId || this.currentPageId;
-    
+
     if (targetPageId) {
       const pageSettings = this.getPageSettings(targetPageId);
+
       return pageSettings.getEffective(key);
     }
-    
+
     return this.userSettings?.get(key);
   }
 
@@ -125,26 +131,28 @@ class SettingsManager {
    */
   set(key, value, options = {}) {
     const { pageId = null, scope = 'auto', validate = true } = options;
-    
+
     // Check permissions
     if (!this.hasPermission(key, 'write')) {
       throw new Error(`No permission to modify setting: ${key}`);
     }
-    
+
     // Determine scope
     let targetScope = scope;
+
     if (scope === 'auto') {
       targetScope = this.determineScope(key);
     }
-    
+
     if (targetScope === 'page' && (pageId || this.currentPageId)) {
       const targetPageId = pageId || this.currentPageId;
       const pageSettings = this.getPageSettings(targetPageId);
+
       pageSettings.set(key, value, { validate });
     } else {
       this.userSettings.set(key, value, { validate });
     }
-    
+
     return this;
   }
 
@@ -159,26 +167,26 @@ class SettingsManager {
       'layout',
       'filters.defaultFilters',
       'display.showStats',
-      'display.showToolbar'
+      'display.showToolbar',
     ];
-    
+
     const userGlobalKeys = [
       'preferences',
       'personalInfo',
       'apiSettings',
-      'securitySettings'
+      'securitySettings',
     ];
-    
+
     // Check if key starts with any page-specific pattern
     if (pageSpecificKeys.some(pattern => key.startsWith(pattern))) {
       return 'page';
     }
-    
+
     // Check if key starts with any user-global pattern
     if (userGlobalKeys.some(pattern => key.startsWith(pattern))) {
       return 'user';
     }
-    
+
     // Default to user scope
     return 'user';
   }
@@ -188,11 +196,11 @@ class SettingsManager {
    */
   update(updates, options = {}) {
     const { pageId = null, scope = 'auto' } = options;
-    
+
     for (const [key, value] of Object.entries(updates)) {
       this.set(key, value, { pageId, scope });
     }
-    
+
     return this;
   }
 
@@ -204,8 +212,10 @@ class SettingsManager {
       this.userSettings.reset();
     } else if (scope === 'page') {
       const targetPageId = pageId || this.currentPageId;
+
       if (targetPageId) {
         const pageSettings = this.getPageSettings(targetPageId);
+
         pageSettings.resetToDefaults();
       }
     } else if (scope === 'all') {
@@ -214,7 +224,7 @@ class SettingsManager {
         pageSettings.resetToDefaults();
       });
     }
-    
+
     return this;
   }
 
@@ -225,20 +235,20 @@ class SettingsManager {
     const exported = {
       timestamp: new Date().toISOString(),
       version: '1.0.0',
-      scope
+      scope,
     };
-    
+
     if (scope === 'user' || scope === 'all') {
       exported.userSettings = this.userSettings.exportSettings(includePrivate);
     }
-    
+
     if (scope === 'page' || scope === 'all') {
       exported.pageSettings = {};
       this.pageSettings.forEach((settings, pageId) => {
         exported.pageSettings[pageId] = settings.getSettings();
       });
     }
-    
+
     return exported;
   }
 
@@ -247,7 +257,7 @@ class SettingsManager {
    */
   import(data, options = {}) {
     const { merge = true, validate = true } = options;
-    
+
     if (data.userSettings) {
       if (merge) {
         this.userSettings.merge(data.userSettings, { validate });
@@ -255,10 +265,11 @@ class SettingsManager {
         this.userSettings.fromJSON(data.userSettings);
       }
     }
-    
+
     if (data.pageSettings) {
       for (const [pageId, settings] of Object.entries(data.pageSettings)) {
         const pageSettings = this.getPageSettings(pageId);
+
         if (merge) {
           pageSettings.merge(settings, { validate });
         } else {
@@ -266,7 +277,7 @@ class SettingsManager {
         }
       }
     }
-    
+
     return this;
   }
 
@@ -278,16 +289,16 @@ class SettingsManager {
       userSettings: this.userSettings ? {
         userId: this.userSettings.userId,
         settingsCount: Object.keys(this.userSettings.getSettings()).length,
-        lastModified: this.userSettings.getLastModified()
+        lastModified: this.userSettings.getLastModified(),
       } : null,
       pageSettings: Array.from(this.pageSettings.entries()).map(([pageId, settings]) => ({
         pageId,
         settingsCount: Object.keys(settings.getSettings()).length,
         inheritedCount: settings.getInheritedSettings().length,
-        overriddenCount: settings.getOverriddenSettings().length
+        overriddenCount: settings.getOverriddenSettings().length,
       })),
       currentPage: this.currentPageId,
-      totalListeners: this.listeners.size
+      totalListeners: this.listeners.size,
     };
   }
 
@@ -299,6 +310,7 @@ class SettingsManager {
       this.listeners.set(event, new Set());
     }
     this.listeners.get(event).add(callback);
+
     return this;
   }
 
@@ -307,9 +319,11 @@ class SettingsManager {
    */
   removeListener(event, callback) {
     const eventListeners = this.listeners.get(event);
+
     if (eventListeners) {
       eventListeners.delete(callback);
     }
+
     return this;
   }
 
@@ -318,6 +332,7 @@ class SettingsManager {
    */
   notifyListeners(event, data) {
     const eventListeners = this.listeners.get(event);
+
     if (eventListeners) {
       eventListeners.forEach(callback => {
         try {
@@ -335,7 +350,7 @@ class SettingsManager {
   createHook() {
     return (pageId = null) => {
       const targetPageId = pageId || this.currentPageId;
-      
+
       return {
         userSettings: this.userSettings,
         pageSettings: targetPageId ? this.getPageSettings(targetPageId) : null,
@@ -343,7 +358,7 @@ class SettingsManager {
         set: (key, value, options = {}) => this.set(key, value, { ...options, pageId: targetPageId }),
         update: (updates, options = {}) => this.update(updates, { ...options, pageId: targetPageId }),
         reset: (scope = 'page') => this.reset(scope, targetPageId),
-        hasPermission: (key, permission = 'write') => this.hasPermission(key, permission)
+        hasPermission: (key, permission = 'write') => this.hasPermission(key, permission),
       };
     };
   }
@@ -356,17 +371,17 @@ class SettingsManager {
     if (this.userSettings) {
       this.userSettings.saveToLocal();
     }
-    
+
     this.pageSettings.forEach(pageSettings => {
       pageSettings.saveToLocal();
     });
-    
+
     // Clear listeners
     this.listeners.clear();
-    
+
     // Clear page settings
     this.pageSettings.clear();
-    
+
     this.currentPageId = null;
   }
 }

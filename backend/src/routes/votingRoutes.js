@@ -7,8 +7,8 @@ const router = express.Router();
 
 // Simple logging middleware for voting routes
 const logVotingRequest = (req, res, next) => {
-    console.log(`🗳️ Voting request: ${req.method} ${req.originalUrl}`);
-    next();
+  console.log(`🗳️ Voting request: ${req.method} ${req.originalUrl}`);
+  next();
 };
 
 // Apply logging to all voting routes
@@ -16,138 +16,138 @@ router.use(logVotingRequest);
 
 // Mock voting controller for development
 const mockVotingController = {
-    async getFeatures(req, res) {
-        try {
-            console.log('📊 Getting voting features...');
+  async getFeatures(req, res) {
+    try {
+      console.log('📊 Getting voting features...');
 
-            // Mock features data
-            const mockFeatures = [
-                {
-                    id: 1,
-                    title: 'Dark Mode Support',
-                    description: 'Add dark mode theme support to the application',
-                    category_name: 'Feature Request',
-                    priority: 'High',
-                    status: 'Proposed',
-                    vote_count: 25,
-                    created_at: '2024-01-15T10:30:00Z',
-                    created_by: 'user123'
-                },
-                {
-                    id: 2,
-                    title: 'Advanced Filtering',
-                    description: 'Enhanced filtering options for data grids',
-                    category_name: 'Enhancement',
-                    priority: 'Medium',
-                    status: 'In Review',
-                    vote_count: 18,
-                    created_at: '2024-01-14T15:20:00Z',
-                    created_by: 'user456'
-                },
-                {
-                    id: 3,
-                    title: 'Export to Excel',
-                    description: 'Add Excel export functionality for reports',
-                    category_name: 'Feature Request',
-                    priority: 'Low',
-                    status: 'Proposed',
-                    vote_count: 12,
-                    created_at: '2024-01-13T09:15:00Z',
-                    created_by: 'user789'
-                }
-            ];
+      // Mock features data
+      const mockFeatures = [
+        {
+          id: 1,
+          title: 'Dark Mode Support',
+          description: 'Add dark mode theme support to the application',
+          category_name: 'Feature Request',
+          priority: 'High',
+          status: 'Proposed',
+          vote_count: 25,
+          created_at: '2024-01-15T10:30:00Z',
+          created_by: 'user123',
+        },
+        {
+          id: 2,
+          title: 'Advanced Filtering',
+          description: 'Enhanced filtering options for data grids',
+          category_name: 'Enhancement',
+          priority: 'Medium',
+          status: 'In Review',
+          vote_count: 18,
+          created_at: '2024-01-14T15:20:00Z',
+          created_by: 'user456',
+        },
+        {
+          id: 3,
+          title: 'Export to Excel',
+          description: 'Add Excel export functionality for reports',
+          category_name: 'Feature Request',
+          priority: 'Low',
+          status: 'Proposed',
+          vote_count: 12,
+          created_at: '2024-01-13T09:15:00Z',
+          created_by: 'user789',
+        },
+      ];
 
-            res.json({
-                success: true,
-                data: mockFeatures,
-                pagination: {
-                    page: 1,
-                    pageSize: 25,
-                    total: mockFeatures.length,
-                    totalPages: 1
-                }
-            });
+      res.json({
+        success: true,
+        data: mockFeatures,
+        pagination: {
+          page: 1,
+          pageSize: 25,
+          total: mockFeatures.length,
+          totalPages: 1,
+        },
+      });
 
-        } catch (error) {
-            console.error('❌ Error getting voting features:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Failed to retrieve voting features',
-                error: error.message
-            });
-        }
-    },
-
-    async getCategories(req, res) {
-        try {
-            console.log('📂 Getting voting categories...');
-
-            const mockCategories = [
-                {
-                    id: 1,
-                    name: 'Feature Request',
-                    description: 'New feature suggestions',
-                    color: '#2196F3'
-                },
-                {
-                    id: 2,
-                    name: 'Enhancement',
-                    description: 'Improvements to existing features',
-                    color: '#4CAF50'
-                },
-                {
-                    id: 3,
-                    name: 'Bug Report',
-                    description: 'Bug fixes and issues',
-                    color: '#f44336'
-                }
-            ];
-
-            res.json({
-                success: true,
-                data: mockCategories
-            });
-
-        } catch (error) {
-            console.error('❌ Error getting voting categories:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Failed to retrieve voting categories',
-                error: error.message
-            });
-        }
-    },
-
-    async getStats(req, res) {
-        try {
-            console.log('📈 Getting voting stats...');
-
-            const mockStats = {
-                total_features: 150,
-                total_votes: 1250,
-                active_features: 45,
-                completed_features: 25,
-                top_categories: [
-                    { name: 'Feature Request', count: 80 },
-                    { name: 'Enhancement', count: 45 },
-                    { name: 'Bug Report', count: 25 }
-                ]
-            };
-
-            res.json({
-                success: true,
-                data: mockStats
-            });
-
-        } catch (error) {
-            console.error('❌ Error getting voting stats:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Failed to retrieve voting stats',
-                error: error.message
-            });
-        }
+    } catch (error) {
+      console.error('❌ Error getting voting features:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to retrieve voting features',
+        error: error.message,
+      });
     }
+  },
+
+  async getCategories(req, res) {
+    try {
+      console.log('📂 Getting voting categories...');
+
+      const mockCategories = [
+        {
+          id: 1,
+          name: 'Feature Request',
+          description: 'New feature suggestions',
+          color: '#2196F3',
+        },
+        {
+          id: 2,
+          name: 'Enhancement',
+          description: 'Improvements to existing features',
+          color: '#4CAF50',
+        },
+        {
+          id: 3,
+          name: 'Bug Report',
+          description: 'Bug fixes and issues',
+          color: '#f44336',
+        },
+      ];
+
+      res.json({
+        success: true,
+        data: mockCategories,
+      });
+
+    } catch (error) {
+      console.error('❌ Error getting voting categories:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to retrieve voting categories',
+        error: error.message,
+      });
+    }
+  },
+
+  async getStats(req, res) {
+    try {
+      console.log('📈 Getting voting stats...');
+
+      const mockStats = {
+        total_features: 150,
+        total_votes: 1250,
+        active_features: 45,
+        completed_features: 25,
+        top_categories: [
+          { name: 'Feature Request', count: 80 },
+          { name: 'Enhancement', count: 45 },
+          { name: 'Bug Report', count: 25 },
+        ],
+      };
+
+      res.json({
+        success: true,
+        data: mockStats,
+      });
+
+    } catch (error) {
+      console.error('❌ Error getting voting stats:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to retrieve voting stats',
+        error: error.message,
+      });
+    }
+  },
 };
 
 // ===== FEATURE ROUTES =====
@@ -177,11 +177,11 @@ router.get('/stats', mockVotingController.getStats);
  * Body: { title, description, category, priority, created_by }
  */
 router.post('/features', (req, res) => {
-    res.json({
-        success: true,
-        message: 'Feature creation endpoint - mock implementation',
-        data: { id: Date.now(), ...req.body }
-    });
+  res.json({
+    success: true,
+    message: 'Feature creation endpoint - mock implementation',
+    data: { id: Date.now(), ...req.body },
+  });
 });
 
 /**
@@ -190,11 +190,11 @@ router.post('/features', (req, res) => {
  * Body: { status, target_release?, estimated_effort? }
  */
 router.put('/features/:featureId/status', (req, res) => {
-    res.json({
-        success: true,
-        message: 'Feature status update endpoint - mock implementation',
-        data: { id: req.params.featureId, ...req.body }
-    });
+  res.json({
+    success: true,
+    message: 'Feature status update endpoint - mock implementation',
+    data: { id: req.params.featureId, ...req.body },
+  });
 });
 
 // ===== VOTING ROUTES =====
@@ -205,11 +205,11 @@ router.put('/features/:featureId/status', (req, res) => {
  * Body: { userId }
  */
 router.post('/features/:featureId/vote', (req, res) => {
-    res.json({
-        success: true,
-        message: 'Vote added successfully',
-        data: { featureId: req.params.featureId, userId: req.body.userId }
-    });
+  res.json({
+    success: true,
+    message: 'Vote added successfully',
+    data: { featureId: req.params.featureId, userId: req.body.userId },
+  });
 });
 
 /**
@@ -218,11 +218,11 @@ router.post('/features/:featureId/vote', (req, res) => {
  * Body: { userId }
  */
 router.delete('/features/:featureId/vote', (req, res) => {
-    res.json({
-        success: true,
-        message: 'Vote removed successfully',
-        data: { featureId: req.params.featureId, userId: req.body.userId }
-    });
+  res.json({
+    success: true,
+    message: 'Vote removed successfully',
+    data: { featureId: req.params.featureId, userId: req.body.userId },
+  });
 });
 
 /**
@@ -231,16 +231,16 @@ router.delete('/features/:featureId/vote', (req, res) => {
  * Query params: userId
  */
 router.get('/votes/user', (req, res) => {
-    res.json({
-        success: true,
-        data: {
-            userId: req.query.userId,
-            votes: [
-                { featureId: 1, votedAt: new Date().toISOString() },
-                { featureId: 3, votedAt: new Date().toISOString() }
-            ]
-        }
-    });
+  res.json({
+    success: true,
+    data: {
+      userId: req.query.userId,
+      votes: [
+        { featureId: 1, votedAt: new Date().toISOString() },
+        { featureId: 3, votedAt: new Date().toISOString() },
+      ],
+    },
+  });
 });
 
 // ===== ROADMAP ROUTES =====
@@ -250,20 +250,20 @@ router.get('/votes/user', (req, res) => {
  * Get roadmap data with features grouped by status
  */
 router.get('/roadmap', (req, res) => {
-    res.json({
-        success: true,
-        data: {
-            proposed: [
-                { id: 1, title: 'Dark Mode Support', votes: 25 }
-            ],
-            in_review: [
-                { id: 2, title: 'Advanced Filtering', votes: 18 }
-            ],
-            completed: [
-                { id: 4, title: 'User Authentication', votes: 45 }
-            ]
-        }
-    });
+  res.json({
+    success: true,
+    data: {
+      proposed: [
+        { id: 1, title: 'Dark Mode Support', votes: 25 },
+      ],
+      in_review: [
+        { id: 2, title: 'Advanced Filtering', votes: 18 },
+      ],
+      completed: [
+        { id: 4, title: 'User Authentication', votes: 45 },
+      ],
+    },
+  });
 });
 
 /**
@@ -272,17 +272,17 @@ router.get('/roadmap', (req, res) => {
  * Query params: published, version, limit
  */
 router.get('/release-notes', (req, res) => {
-    res.json({
-        success: true,
-        data: [
-            {
-                version: '1.2.0',
-                published: true,
-                releaseDate: '2024-01-15',
-                features: ['Dark Mode Support', 'Advanced Filtering']
-            }
-        ]
-    });
+  res.json({
+    success: true,
+    data: [
+      {
+        version: '1.2.0',
+        published: true,
+        releaseDate: '2024-01-15',
+        features: ['Dark Mode Support', 'Advanced Filtering'],
+      },
+    ],
+  });
 });
 
 // ===== DEMO DATA ROUTES (for testing) =====
@@ -305,7 +305,7 @@ router.post('/demo/seed', async (req, res) => {
         category: 'ui-ux',
         priority: 'medium',
         status: 'proposed',
-        created_by: 'demo_user'
+        created_by: 'demo_user',
       },
       {
         title: 'Advanced Search Filters',
@@ -313,7 +313,7 @@ router.post('/demo/seed', async (req, res) => {
         category: 'features',
         priority: 'high',
         status: 'approved',
-        created_by: 'demo_user'
+        created_by: 'demo_user',
       },
       {
         title: 'Performance Optimization',
@@ -321,7 +321,7 @@ router.post('/demo/seed', async (req, res) => {
         category: 'performance',
         priority: 'high',
         status: 'in_progress',
-        created_by: 'demo_user'
+        created_by: 'demo_user',
       },
       {
         title: 'Mobile Responsive Design',
@@ -329,7 +329,7 @@ router.post('/demo/seed', async (req, res) => {
         category: 'ui-ux',
         priority: 'medium',
         status: 'completed',
-        created_by: 'demo_user'
+        created_by: 'demo_user',
       },
       {
         title: 'Two-Factor Authentication',
@@ -337,7 +337,7 @@ router.post('/demo/seed', async (req, res) => {
         category: 'security',
         priority: 'high',
         status: 'proposed',
-        created_by: 'demo_user'
+        created_by: 'demo_user',
       },
       {
         title: 'API Rate Limiting',
@@ -345,22 +345,22 @@ router.post('/demo/seed', async (req, res) => {
         category: 'security',
         priority: 'medium',
         status: 'completed',
-        created_by: 'demo_user'
-      }
+        created_by: 'demo_user',
+      },
     ];
 
     // Mock demo data creation
     const createdFeatures = demoFeatures.map((feature, index) => ({
       id: index + 1,
       ...feature,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
     }));
 
     res.json({
       success: true,
       message: 'Demo data seeded successfully (mock)',
       features: createdFeatures.length,
-      data: createdFeatures
+      data: createdFeatures,
     });
   } catch (error) {
     console.error('Error seeding demo data:', error);
@@ -377,7 +377,7 @@ router.get('/demo/status', async (req, res) => {
     // Mock demo status
     const features = [
       { id: 1, title: 'Dark Mode Support', status: 'active' },
-      { id: 2, title: 'Advanced Filtering', status: 'active' }
+      { id: 2, title: 'Advanced Filtering', status: 'active' },
     ];
 
     res.json({
@@ -388,14 +388,14 @@ router.get('/demo/status', async (req, res) => {
         features: '/api/taskfeatures',
         roadmap: '/api/taskroadmap',
         vote: '/api/taskfeatures/:id/vote',
-        user_votes: '/api/taskvotes/user'
-      }
+        user_votes: '/api/taskvotes/user',
+      },
     });
   } catch (error) {
     res.json({
       success: false,
       demo_mode: process.env.NODE_ENV !== 'production',
-      error: error.message
+      error: error.message,
     });
   }
 });

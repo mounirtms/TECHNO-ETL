@@ -11,7 +11,7 @@ const useBulkUploadErrorHandling = () => {
   const [errors, setErrors] = useState([]);
   const [isValidating, setIsValidating] = useState(false);
   const [hasValidationErrors, setHasValidationErrors] = useState(false);
-  
+
   const retryCountRef = useRef(0);
   const maxRetries = 3;
 
@@ -20,18 +20,19 @@ const useBulkUploadErrorHandling = () => {
    */
   const validateCSV = useCallback(async (file, content = null) => {
     setIsValidating(true);
-    
+
     try {
       const result = await bulkUploadValidationService.validateCSVFile(file, content);
-      
+
       setValidationResults(prev => ({
         ...prev,
-        csvValidation: result
+        csvValidation: result,
       }));
 
       if (!result.valid) {
         setHasValidationErrors(true);
         const errorMessages = result.errors.map(e => e.message).join(', ');
+
         toast.error(`CSV validation failed: ${errorMessages}`);
       } else if (result.warnings.length > 0) {
         toast.warning(`CSV validation completed with ${result.warnings.length} warnings`);
@@ -46,20 +47,20 @@ const useBulkUploadErrorHandling = () => {
         errors: [{
           type: 'VALIDATION_EXCEPTION',
           message: `CSV validation failed: ${error.message}`,
-          suggestion: 'Check that the file is a valid CSV and try again'
+          suggestion: 'Check that the file is a valid CSV and try again',
         }],
         warnings: [],
-        suggestions: []
+        suggestions: [],
       };
 
       setValidationResults(prev => ({
         ...prev,
-        csvValidation: errorResult
+        csvValidation: errorResult,
       }));
-      
+
       setHasValidationErrors(true);
       toast.error(`CSV validation error: ${error.message}`);
-      
+
       return errorResult;
     } finally {
       setIsValidating(false);
@@ -71,13 +72,13 @@ const useBulkUploadErrorHandling = () => {
    */
   const validateImages = useCallback(async (files) => {
     setIsValidating(true);
-    
+
     try {
       const result = bulkUploadValidationService.validateImageFiles(files);
-      
+
       setValidationResults(prev => ({
         ...prev,
-        imageValidation: result
+        imageValidation: result,
       }));
 
       const hasErrors = result.invalid.length > 0;
@@ -101,22 +102,22 @@ const useBulkUploadErrorHandling = () => {
           valid: false,
           errors: [{
             type: 'VALIDATION_EXCEPTION',
-            message: `Image validation failed: ${error.message}`
-          }]
+            message: `Image validation failed: ${error.message}`,
+          }],
         })),
         warnings: [],
         suggestions: [],
-        metadata: {}
+        metadata: {},
       };
 
       setValidationResults(prev => ({
         ...prev,
-        imageValidation: errorResult
+        imageValidation: errorResult,
       }));
-      
+
       setHasValidationErrors(true);
       toast.error(`Image validation error: ${error.message}`);
-      
+
       return errorResult;
     } finally {
       setIsValidating(false);
@@ -128,22 +129,23 @@ const useBulkUploadErrorHandling = () => {
    */
   const validateMatching = useCallback(async (matchingResults, csvData, imageFiles) => {
     setIsValidating(true);
-    
+
     try {
       const result = bulkUploadValidationService.validateMatchingResults(
-        matchingResults, 
-        csvData, 
-        imageFiles
+        matchingResults,
+        csvData,
+        imageFiles,
       );
-      
+
       setValidationResults(prev => ({
         ...prev,
-        matchingValidation: result
+        matchingValidation: result,
       }));
 
       if (!result.valid) {
         setHasValidationErrors(true);
         const errorMessages = result.errors.map(e => e.message).join(', ');
+
         toast.error(`Matching validation failed: ${errorMessages}`);
       } else if (result.warnings.length > 0) {
         toast.warning(`Matching validation completed with ${result.warnings.length} warnings`);
@@ -158,20 +160,20 @@ const useBulkUploadErrorHandling = () => {
         errors: [{
           type: 'VALIDATION_EXCEPTION',
           message: `Matching validation failed: ${error.message}`,
-          suggestion: 'Review matching results and try again'
+          suggestion: 'Review matching results and try again',
         }],
         warnings: [],
-        suggestions: []
+        suggestions: [],
       };
 
       setValidationResults(prev => ({
         ...prev,
-        matchingValidation: errorResult
+        matchingValidation: errorResult,
       }));
-      
+
       setHasValidationErrors(true);
       toast.error(`Matching validation error: ${error.message}`);
-      
+
       return errorResult;
     } finally {
       setIsValidating(false);
@@ -183,29 +185,30 @@ const useBulkUploadErrorHandling = () => {
    */
   const handleMatchingError = useCallback(async (error, csvData, imageFiles) => {
     console.error('Matching error occurred:', error);
-    
+
     // Add error to tracking
     setErrors(prev => [...prev, {
       type: 'MATCHING_ERROR',
       message: error.message,
       timestamp: new Date().toISOString(),
-      retryCount: retryCountRef.current
+      retryCount: retryCountRef.current,
     }]);
 
     // Attempt fallback matching if retries available
     if (retryCountRef.current < maxRetries) {
       retryCountRef.current++;
-      
+
       toast.warning(`Matching failed, attempting fallback method (${retryCountRef.current}/${maxRetries})`);
-      
+
       try {
         const fallbackResults = bulkUploadValidationService.createMatchingFallback(
-          csvData, 
-          imageFiles, 
-          error
+          csvData,
+          imageFiles,
+          error,
         );
-        
+
         toast.info(`Fallback matching found ${fallbackResults.matches.length} matches`);
+
         return fallbackResults;
       } catch (fallbackError) {
         console.error('Fallback matching also failed:', fallbackError);
@@ -223,12 +226,12 @@ const useBulkUploadErrorHandling = () => {
    */
   const handleUploadError = useCallback(async (error, retryFunction) => {
     console.error('Upload error occurred:', error);
-    
+
     setErrors(prev => [...prev, {
       type: 'UPLOAD_ERROR',
       message: error.message,
       timestamp: new Date().toISOString(),
-      retryCount: retryCountRef.current
+      retryCount: retryCountRef.current,
     }]);
 
     // Determine if error is retryable
@@ -237,19 +240,20 @@ const useBulkUploadErrorHandling = () => {
       'timeout',
       'connection',
       'temporary',
-      'rate limit'
+      'rate limit',
     ];
-    
-    const isRetryable = retryableErrors.some(keyword => 
-      error.message.toLowerCase().includes(keyword)
+
+    const isRetryable = retryableErrors.some(keyword =>
+      error.message.toLowerCase().includes(keyword),
     );
 
     if (isRetryable && retryCountRef.current < maxRetries) {
       retryCountRef.current++;
-      
+
       const delay = Math.pow(2, retryCountRef.current) * 1000; // Exponential backoff
+
       toast.warning(`Upload failed, retrying in ${delay/1000}s (${retryCountRef.current}/${maxRetries})`);
-      
+
       setTimeout(async () => {
         try {
           await retryFunction();
@@ -259,9 +263,9 @@ const useBulkUploadErrorHandling = () => {
         }
       }, delay);
     } else {
-      toast.error(isRetryable 
+      toast.error(isRetryable
         ? 'Maximum retry attempts reached. Please try again later.'
-        : 'Upload failed with non-retryable error. Please check your data.'
+        : 'Upload failed with non-retryable error. Please check your data.',
       );
       throw error;
     }
@@ -290,32 +294,32 @@ const useBulkUploadErrorHandling = () => {
       summary: {
         totalErrors: errors.length,
         hasValidationErrors,
-        retryCount: retryCountRef.current
+        retryCount: retryCountRef.current,
       },
       validationResults,
       errors,
-      recommendations: []
+      recommendations: [],
     };
 
     // Add recommendations based on error patterns
     if (validationResults?.csvValidation?.errors?.length > 0) {
       report.recommendations.push(
         'Review CSV file format and ensure proper column headers',
-        'Check for special characters or encoding issues in CSV'
+        'Check for special characters or encoding issues in CSV',
       );
     }
 
     if (validationResults?.imageValidation?.invalid?.length > 0) {
       report.recommendations.push(
         'Verify image file formats are supported (JPG, PNG, GIF, WebP)',
-        'Check image file sizes are under 10MB'
+        'Check image file sizes are under 10MB',
       );
     }
 
     if (validationResults?.matchingValidation?.errors?.length > 0) {
       report.recommendations.push(
         'Review SKU naming conventions in CSV and image filenames',
-        'Consider adjusting fuzzy matching threshold settings'
+        'Consider adjusting fuzzy matching threshold settings',
       );
     }
 
@@ -327,23 +331,26 @@ const useBulkUploadErrorHandling = () => {
    */
   const downloadErrorReport = useCallback(() => {
     const report = generateErrorReport();
+
     if (!report) {
       toast.warning('No error report available');
+
       return;
     }
 
-    const blob = new Blob([JSON.stringify(report, null, 2)], { 
-      type: 'application/json' 
+    const blob = new Blob([JSON.stringify(report, null, 2)], {
+      type: 'application/json',
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
+
     a.href = url;
     a.download = `bulk-upload-error-report-${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    
+
     toast.success('Error report downloaded');
   }, [generateErrorReport]);
 
@@ -359,20 +366,20 @@ const useBulkUploadErrorHandling = () => {
       validationResults?.csvValidation?.errors?.length || 0,
       validationResults?.imageValidation?.invalid?.length || 0,
       validationResults?.matchingValidation?.errors?.length || 0,
-      errors.length
+      errors.length,
     ].reduce((sum, count) => sum + count, 0);
 
     const totalWarnings = [
       validationResults?.csvValidation?.warnings?.length || 0,
       validationResults?.imageValidation?.warnings?.length || 0,
-      validationResults?.matchingValidation?.warnings?.length || 0
+      validationResults?.matchingValidation?.warnings?.length || 0,
     ].reduce((sum, count) => sum + count, 0);
 
     return {
       totalErrors,
       totalWarnings,
       canProceed: totalErrors === 0,
-      hasIssues: totalErrors > 0 || totalWarnings > 0
+      hasIssues: totalErrors > 0 || totalWarnings > 0,
     };
   }, [validationResults, errors]);
 
@@ -382,21 +389,21 @@ const useBulkUploadErrorHandling = () => {
     errors,
     isValidating,
     hasValidationErrors,
-    
+
     // Validation functions
     validateCSV,
     validateImages,
     validateMatching,
-    
+
     // Error handling functions
     handleMatchingError,
     handleUploadError,
-    
+
     // Utility functions
     clearValidation,
     generateErrorReport,
     downloadErrorReport,
-    getErrorSummary
+    getErrorSummary,
   };
 };
 

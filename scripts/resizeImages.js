@@ -39,15 +39,15 @@ async function resizeImage(inputPath, outputPath, filename) {
         width: targetSize,
         height: targetSize,
         channels: 3,
-        background: { r: 255, g: 255, b: 255 } // White background
-      }
+        background: { r: 255, g: 255, b: 255 }, // White background
+      },
     });
 
     // Resize the original image while preserving aspect ratio
     const resizedImage = sharp(inputPath)
       .resize(newWidth, newHeight, {
         fit: 'inside', // Preserve aspect ratio, no cropping
-        withoutEnlargement: false // Allow enlargement if needed
+        withoutEnlargement: false, // Allow enlargement if needed
       });
 
     // Calculate position to center the image on the canvas
@@ -61,15 +61,17 @@ async function resizeImage(inputPath, outputPath, filename) {
       .composite([{
         input: await resizedImage.toBuffer(),
         left: left,
-        top: top
+        top: top,
       }])
       .jpeg({ quality: 90 }) // Convert to JPEG with 90% quality
       .toFile(outputPath);
 
     console.log(`✅ Resized: ${filename} (preserved all content)`);
+
     return true;
   } catch (error) {
     console.error(`❌ Error resizing ${filename}:`, error.message);
+
     return false;
   }
 }
@@ -79,15 +81,17 @@ async function resizeAllImages(forceResize = false) {
   try {
     // Read all files in the source folder
     const files = fs.readdirSync(sourceFolder);
-    
+
     // Filter for image files
     const imageFiles = files.filter(file => {
       const ext = path.extname(file).toLowerCase();
+
       return ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'].includes(ext);
     });
 
     if (imageFiles.length === 0) {
       console.log('No image files found in the source folder.');
+
       return;
     }
 
@@ -102,7 +106,7 @@ async function resizeAllImages(forceResize = false) {
     for (let i = 0; i < imageFiles.length; i++) {
       const filename = imageFiles[i];
       const inputPath = path.join(sourceFolder, filename);
-      
+
       // Change extension to .jpg for output
       const nameWithoutExt = path.parse(filename).name;
       const outputFilename = `${nameWithoutExt}.jpg`;
@@ -118,7 +122,7 @@ async function resizeAllImages(forceResize = false) {
       console.log(`[${i + 1}/${imageFiles.length}] Processing: ${filename}`);
 
       const success = await resizeImage(inputPath, outputPath, filename);
-      
+
       if (success) {
         successCount++;
       } else {
@@ -134,7 +138,7 @@ async function resizeAllImages(forceResize = false) {
     console.log(`❌ Failed to resize: ${errorCount} images`);
     console.log(`📁 Output folder: ${outputFolder}`);
     console.log(`📐 Target size: ${targetSize}x${targetSize} pixels`);
-    
+
     if (successCount > 0) {
       console.log('\n🎉 All resized images are saved as JPEG files with 90% quality.');
       console.log('📋 Resize method: Preserved all original content with white background padding');

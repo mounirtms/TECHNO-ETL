@@ -1,7 +1,7 @@
 /**
  * Bug Bounty Service
  * Manages bug reports, rewards, and tester interactions
- * 
+ *
  * @author Mounir Abderrahmani
  * @email mounir.ab@techno-dz.com
  * @contact mounir.webdev.tms@gmail.com
@@ -18,7 +18,7 @@ export const BUG_CATEGORIES = {
     baseReward: 500,
     multiplier: 3.0,
     color: '#f44336',
-    priority: 1
+    priority: 1,
   },
   HIGH: {
     name: 'High',
@@ -26,7 +26,7 @@ export const BUG_CATEGORIES = {
     baseReward: 200,
     multiplier: 2.0,
     color: '#ff9800',
-    priority: 2
+    priority: 2,
   },
   MEDIUM: {
     name: 'Medium',
@@ -34,7 +34,7 @@ export const BUG_CATEGORIES = {
     baseReward: 100,
     multiplier: 1.5,
     color: '#2196f3',
-    priority: 3
+    priority: 3,
   },
   LOW: {
     name: 'Low',
@@ -42,7 +42,7 @@ export const BUG_CATEGORIES = {
     baseReward: 50,
     multiplier: 1.0,
     color: '#4caf50',
-    priority: 4
+    priority: 4,
   },
   ENHANCEMENT: {
     name: 'Enhancement',
@@ -50,8 +50,8 @@ export const BUG_CATEGORIES = {
     baseReward: 25,
     multiplier: 0.8,
     color: '#9c27b0',
-    priority: 5
-  }
+    priority: 5,
+  },
 };
 
 // Bug Status Types
@@ -62,7 +62,7 @@ export const BUG_STATUS = {
   DUPLICATE: 'duplicate',
   INVALID: 'invalid',
   FIXED: 'fixed',
-  REWARDED: 'rewarded'
+  REWARDED: 'rewarded',
 };
 
 // Quality Scores
@@ -71,7 +71,7 @@ export const QUALITY_SCORES = {
   GOOD: { score: 4, multiplier: 1.2, description: 'Good report with adequate details' },
   AVERAGE: { score: 3, multiplier: 1.0, description: 'Average report, some details missing' },
   POOR: { score: 2, multiplier: 0.8, description: 'Poor report, lacks important details' },
-  VERY_POOR: { score: 1, multiplier: 0.5, description: 'Very poor report, minimal information' }
+  VERY_POOR: { score: 1, multiplier: 0.5, description: 'Very poor report, minimal information' },
 };
 
 class BugBountyService {
@@ -89,7 +89,7 @@ class BugBountyService {
     try {
       const timestamp = Date.now();
       const bugId = `bug_${timestamp}_${Math.random().toString(36).substr(2, 9)}`;
-      
+
       const bug = {
         id: bugId,
         title: bugData.title,
@@ -104,14 +104,14 @@ class BugBountyService {
           url: bugData.environment?.url || window.location.href,
           timestamp: new Date().toISOString(),
           screenResolution: `${window.screen.width}x${window.screen.height}`,
-          userAgent: navigator.userAgent
+          userAgent: navigator.userAgent,
         },
         attachments: bugData.attachments || [],
         tester: {
           id: bugData.testerId,
           name: bugData.testerName,
           email: bugData.testerEmail,
-          experience: bugData.testerExperience || 'beginner'
+          experience: bugData.testerExperience || 'beginner',
         },
         status: BUG_STATUS.SUBMITTED,
         submittedAt: timestamp,
@@ -120,17 +120,18 @@ class BugBountyService {
         reward: {
           calculated: this.calculateReward(bugData.category, bugData.severity),
           final: null,
-          paid: false
+          paid: false,
         },
         votes: {
           helpful: 0,
-          notHelpful: 0
+          notHelpful: 0,
         },
-        comments: []
+        comments: [],
       };
 
       // Save to Firebase
       const bugRef = ref(database, `bugBounty/bugs/${bugId}`);
+
       await set(bugRef, bug);
 
       // Update tester stats
@@ -142,6 +143,7 @@ class BugBountyService {
       return { success: true, bugId, bug };
     } catch (error) {
       console.error('Error submitting bug:', error);
+
       return { success: false, error: error.message };
     }
   }
@@ -153,13 +155,13 @@ class BugBountyService {
     const categoryData = BUG_CATEGORIES[category] || BUG_CATEGORIES.LOW;
     const baseReward = categoryData.baseReward;
     const multiplier = categoryData.multiplier;
-    
+
     // Additional severity multiplier
     const severityMultiplier = {
       'critical': 2.0,
       'high': 1.5,
       'medium': 1.0,
-      'low': 0.8
+      'low': 0.8,
     }[severity] || 1.0;
 
     return Math.round(baseReward * multiplier * severityMultiplier);
@@ -171,6 +173,7 @@ class BugBountyService {
   async getBugs(filters = {}) {
     try {
       const bugsSnapshot = await get(this.bugsRef);
+
       if (!bugsSnapshot.exists()) {
         return { success: true, bugs: [] };
       }
@@ -194,6 +197,7 @@ class BugBountyService {
       return { success: true, bugs };
     } catch (error) {
       console.error('Error getting bugs:', error);
+
       return { success: false, error: error.message };
     }
   }
@@ -205,7 +209,7 @@ class BugBountyService {
     try {
       const bugRef = ref(database, `bugBounty/bugs/${bugId}`);
       const bugSnapshot = await get(bugRef);
-      
+
       if (!bugSnapshot.exists()) {
         return { success: false, error: 'Bug not found' };
       }
@@ -214,13 +218,14 @@ class BugBountyService {
       const updates = {
         status,
         updatedAt: Date.now(),
-        adminNotes
+        adminNotes,
       };
 
       // Calculate final reward if confirming bug
       if (status === BUG_STATUS.CONFIRMED && qualityScore) {
         const qualityData = Object.values(QUALITY_SCORES).find(q => q.score === qualityScore);
         const qualityMultiplier = qualityData?.multiplier || 1.0;
+
         updates.qualityScore = qualityScore;
         updates['reward/final'] = Math.round(bug.reward.calculated * qualityMultiplier);
       }
@@ -236,6 +241,7 @@ class BugBountyService {
       return { success: true };
     } catch (error) {
       console.error('Error updating bug status:', error);
+
       return { success: false, error: error.message };
     }
   }
@@ -247,28 +253,28 @@ class BugBountyService {
     try {
       const testerRef = ref(database, `bugBounty/testers/${testerId}`);
       const testerSnapshot = await get(testerRef);
-      
-      let stats = testerSnapshot.exists() ? testerSnapshot.val() : {
+
+      const stats = testerSnapshot.exists() ? testerSnapshot.val() : {
         id: testerId,
         totalSubmitted: 0,
         totalConfirmed: 0,
         totalRewarded: 0,
         totalEarnings: 0,
         rank: 'Bronze',
-        joinedAt: Date.now()
+        joinedAt: Date.now(),
       };
 
       // Update based on action
       switch (action) {
-        case 'submitted':
-          stats.totalSubmitted++;
-          break;
-        case BUG_STATUS.CONFIRMED:
-          stats.totalConfirmed++;
-          break;
-        case BUG_STATUS.REWARDED:
-          stats.totalRewarded++;
-          break;
+      case 'submitted':
+        stats.totalSubmitted++;
+        break;
+      case BUG_STATUS.CONFIRMED:
+        stats.totalConfirmed++;
+        break;
+      case BUG_STATUS.REWARDED:
+        stats.totalRewarded++;
+        break;
       }
 
       // Calculate rank based on confirmed bugs
@@ -278,9 +284,11 @@ class BugBountyService {
       else stats.rank = 'Bronze';
 
       await set(testerRef, stats);
+
       return { success: true };
     } catch (error) {
       console.error('Error updating tester stats:', error);
+
       return { success: false, error: error.message };
     }
   }
@@ -291,11 +299,11 @@ class BugBountyService {
   async updateGlobalStats(action, category) {
     try {
       const statsSnapshot = await get(this.statsRef);
-      let stats = statsSnapshot.exists() ? statsSnapshot.val() : {
+      const stats = statsSnapshot.exists() ? statsSnapshot.val() : {
         totalBugs: 0,
         totalRewards: 0,
         byCategory: {},
-        byStatus: {}
+        byStatus: {},
       };
 
       // Update totals
@@ -316,9 +324,11 @@ class BugBountyService {
       stats.byStatus[action]++;
 
       await set(this.statsRef, stats);
+
       return { success: true };
     } catch (error) {
       console.error('Error updating global stats:', error);
+
       return { success: false, error: error.message };
     }
   }
@@ -329,21 +339,23 @@ class BugBountyService {
   async getLeaderboard(limit = 10) {
     try {
       const testersSnapshot = await get(this.testersRef);
+
       if (!testersSnapshot.exists()) {
         return { success: true, leaderboard: [] };
       }
 
       const testers = Object.values(testersSnapshot.val());
-      
+
       // Sort by total confirmed bugs
       testers.sort((a, b) => b.totalConfirmed - a.totalConfirmed);
-      
-      return { 
-        success: true, 
-        leaderboard: testers.slice(0, limit) 
+
+      return {
+        success: true,
+        leaderboard: testers.slice(0, limit),
       };
     } catch (error) {
       console.error('Error getting leaderboard:', error);
+
       return { success: false, error: error.message };
     }
   }
@@ -358,12 +370,13 @@ class BugBountyService {
         totalBugs: 0,
         totalRewards: 0,
         byCategory: {},
-        byStatus: {}
+        byStatus: {},
       };
 
       return { success: true, stats };
     } catch (error) {
       console.error('Error getting stats:', error);
+
       return { success: false, error: error.message };
     }
   }

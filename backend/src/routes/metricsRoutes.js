@@ -16,6 +16,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const metrics = await metricsService.exportMetrics();
+
     res.json(metrics);
   } catch (error) {
     logger.error('Failed to export metrics', { error: error.message });
@@ -30,7 +31,7 @@ router.get('/', async (req, res) => {
 router.get('/prometheus', async (req, res) => {
   try {
     const stats = metricsService.getStatistics();
-    
+
     const prometheusMetrics = `
 # HELP techno_etl_requests_total Total number of HTTP requests
 # TYPE techno_etl_requests_total counter
@@ -101,14 +102,14 @@ techno_etl_uptime_seconds ${(stats.uptime / 1000).toFixed(0)}
 router.get('/cache', async (req, res) => {
   try {
     const stats = metricsService.getStatistics();
-    
+
     // Get additional cache info from Redis
     const cacheInfo = {
       ...stats.cache,
       lastSync: await getFromCache('cron:last_run'),
-      activeKeys: await getFromCache('cache:key_count') || 0
+      activeKeys: await getFromCache('cache:key_count') || 0,
     };
-    
+
     res.json(cacheInfo);
   } catch (error) {
     logger.error('Failed to get cache metrics', { error: error.message });
@@ -125,34 +126,34 @@ router.get('/performance', async (req, res) => {
     const stats = metricsService.getStatistics();
     const memory = process.memoryUsage();
     const cpu = process.cpuUsage();
-    
+
     const performance = {
       requests: {
         rate: stats.requests.rate,
         errorRate: stats.requests.errorRate,
         avgResponseTime: stats.requests.avgResponseTime,
-        p95ResponseTime: stats.requests.p95ResponseTime
+        p95ResponseTime: stats.requests.p95ResponseTime,
       },
       database: {
         avgResponseTime: stats.database.avgResponseTime,
         p95ResponseTime: stats.database.p95ResponseTime,
-        errorRate: stats.database.errorRate
+        errorRate: stats.database.errorRate,
       },
       system: {
         memory: {
           heapUsed: Math.round(memory.heapUsed / 1024 / 1024),
           heapTotal: Math.round(memory.heapTotal / 1024 / 1024),
           external: Math.round(memory.external / 1024 / 1024),
-          usagePercent: Math.round((memory.heapUsed / memory.heapTotal) * 100)
+          usagePercent: Math.round((memory.heapUsed / memory.heapTotal) * 100),
         },
         cpu: {
           user: cpu.user,
-          system: cpu.system
+          system: cpu.system,
         },
-        uptime: process.uptime()
-      }
+        uptime: process.uptime(),
+      },
     };
-    
+
     res.json(performance);
   } catch (error) {
     logger.error('Failed to get performance metrics', { error: error.message });
@@ -168,13 +169,13 @@ router.get('/sync', async (req, res) => {
   try {
     const stats = metricsService.getStatistics();
     const lastRun = await getFromCache('cron:last_run');
-    
+
     const syncMetrics = {
       ...stats.sync,
       lastRun,
-      nextRun: lastRun ? new Date(new Date(lastRun.timestamp).getTime() + 24 * 60 * 60 * 1000) : null
+      nextRun: lastRun ? new Date(new Date(lastRun.timestamp).getTime() + 24 * 60 * 60 * 1000) : null,
     };
-    
+
     res.json(syncMetrics);
   } catch (error) {
     logger.error('Failed to get sync metrics', { error: error.message });
@@ -192,10 +193,10 @@ router.post('/reset', (req, res) => {
     if (process.env.NODE_ENV === 'production') {
       return res.status(403).json({ error: 'Metrics reset not allowed in production' });
     }
-    
+
     metricsService.resetMetrics();
     logger.info('Metrics manually reset');
-    
+
     res.json({ message: 'Metrics reset successfully' });
   } catch (error) {
     logger.error('Failed to reset metrics', { error: error.message });

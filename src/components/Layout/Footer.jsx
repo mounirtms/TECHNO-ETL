@@ -1,310 +1,116 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
-    Box,
-    Typography,
-    Link,
-    Chip,
-    useTheme,
-    alpha,
-    useMediaQuery,
-    Divider
+  Box,
+  Typography,
+  Link,
+  styled,
 } from '@mui/material';
-import {
-    Language as LanguageIcon,
-    Storage as StorageIcon,
-    Copyright as CopyrightIcon
-} from '@mui/icons-material';
-import { styled } from '@mui/material/styles';
-
-// Enhanced imports
-import { useLanguage } from '../../contexts/LanguageContext';
+import { DRAWER_WIDTH, COLLAPSED_WIDTH, FOOTER_HEIGHT } from './Constants';
 import { useAuth } from '../../contexts/AuthContext';
-import { useRTL } from '../../contexts/RTLContext';
-import useLayoutResponsive from '../../hooks/useLayoutResponsive';
 import { useVersion } from '../../hooks/useVersion';
-import TooltipWrapper from '../common/TooltipWrapper';
 
-// ===== STYLED COMPONENTS =====
-
-const ResponsiveFooter = styled(Box, {
-    shouldForwardProp: (prop) => !['sidebarWidth', 'isRTL', 'isTemporary', 'isUsingLocalData', 'isLoginScreen'].includes(prop)
-})(({ theme, sidebarWidth, isRTL, isTemporary, isUsingLocalData, isLoginScreen }) => ({
+const FooterContainer = styled(({
+  component,
+  sidebarOpen,
+  isLoginScreen,
+  isUsingLocalData,
+  ...props
+}) => (
+  <Box
+    component={component}
+    data-login-screen={isLoginScreen}
+    data-local-data={isUsingLocalData}
+    {...props}
+  />
+))(({ theme, sidebarOpen, isLoginScreen, isUsingLocalData }) => {
+  const isRTL = theme.direction === 'rtl';
+  const baseStyles = {
     position: 'fixed',
     bottom: 0,
-    [isRTL ? 'right' : 'left']: isLoginScreen ? 0 : (isTemporary ? 0 : sidebarWidth),
-    width: isLoginScreen ? '100%' : `calc(100% - ${isTemporary ? 0 : sidebarWidth}px)`,
-    height: 48,
-    padding: theme.spacing(0.5, 2),
+    left: 0,
+    right: 0,
+    padding: theme.spacing(1, 2),
+    height: `${FOOTER_HEIGHT}px`,
+    width: isLoginScreen
+      ? '100%'
+      : `calc(100% - ${sidebarOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH}px)`,
+    ...(isRTL ? {
+      marginRight: isLoginScreen ? 0 : `${sidebarOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH}px`,
+    } : {
+      marginLeft: isLoginScreen ? 0 : `${sidebarOpen ? DRAWER_WIDTH : COLLAPSED_WIDTH}px`,
+    }),
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    zIndex: theme.zIndex.appBar - 1,
-    
-    // Dynamic background based on data source
-    backgroundColor: isUsingLocalData 
-        ? alpha(theme.palette.warning.main, 0.95)
-        : alpha(theme.palette.background.paper, 0.95),
-    
-    color: isUsingLocalData 
-        ? theme.palette.warning.contrastText
-        : theme.palette.text.primary,
-    
-    backdropFilter: 'blur(8px)',
-    borderTop: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-    boxShadow: theme.shadows[1],
-    
-    transition: theme.transitions.create(['left', 'right', 'width', 'background-color'], {
-        easing: theme.transitions.easing.easeInOut,
-        duration: theme.transitions.duration.standard
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
     }),
-    
-    // Mobile responsive
-    [theme.breakpoints.down('sm')]: {
-        padding: theme.spacing(0.5, 1),
-        height: 40
-    }
-}));
+    boxShadow: theme.shadows[2],
+    zIndex: theme.zIndex.drawer + 1,
+    backgroundColor: isUsingLocalData ? theme.palette.error.main : theme.palette.primary.main,
+    color: isUsingLocalData ? theme.palette.error.contrastText : theme.palette.primary.contrastText,
+  };
 
-const FooterSection = styled(Box)(({ theme }) => ({
-    display: 'flex',
-    alignItems: 'center',
-    gap: theme.spacing(1),
-    minWidth: 0,
-    
-    [theme.breakpoints.down('sm')]: {
-        gap: theme.spacing(0.5)
-    }
-}));
+  return baseStyles;
+});
 
 const AnimatedLink = styled(Link)(({ theme }) => ({
-    color: 'inherit',
-    textDecoration: 'none',
-    fontSize: '0.875rem',
-    fontWeight: 500,
-    transition: theme.transitions.create(['color', 'transform'], {
-        duration: theme.transitions.duration.short
-    }),
-    
-    '&:hover': {
-        color: theme.palette.primary.main,
-        textDecoration: 'underline',
-        transform: 'translateY(-1px)'
-    },
-    
-    [theme.breakpoints.down('sm')]: {
-        fontSize: '0.75rem'
-    }
+  color: 'inherit',
+  marginLeft: theme.spacing(0.5),
+  marginRight: theme.spacing(0.5),
+  textDecoration: 'none',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    textDecoration: 'underline',
+    transform: 'scale(1.02)',
+  },
 }));
 
-const StatusChip = styled(Chip)(({ theme }) => ({
-    height: 24,
-    fontSize: '0.75rem',
-    fontWeight: 600,
-    
-    [theme.breakpoints.down('sm')]: {
-        height: 20,
-        fontSize: '0.7rem'
-    }
-}));
+const Footer = ({ sidebarOpen, isLoginScreen = false }) => {
+  const { isUsingLocalData } = useAuth();
+  const versionInfo = useVersion();
+  const currentYear = new Date().getFullYear();
 
-const VersionInfo = styled(Typography)(({ theme }) => ({
-    fontSize: '0.75rem',
-    fontWeight: 500,
-    fontFamily: 'monospace',
-    opacity: 0.8,
-    
-    [theme.breakpoints.down('sm')]: {
-        fontSize: '0.7rem'
-    }
-}));
+  return (
+    <FooterContainer
+      component="footer"
+      sidebarOpen={sidebarOpen}
+      isLoginScreen={isLoginScreen}
+      isUsingLocalData={isUsingLocalData}
+    >
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Typography variant="body2">
+          {currentYear}
+          <AnimatedLink
+            href="https://technostationery.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+                        Techno Stationery
+          </AnimatedLink>
+        </Typography>
+      </Box>
 
-// ===== MAIN COMPONENT =====
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Typography variant="body2">
+          <AnimatedLink
+            href="./docs"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+                        Documentation
+          </AnimatedLink>
+        </Typography>
+      </Box>
 
-/**
- * Enhanced Footer Component
- * 
- * Features:
- * - Responsive layout with sidebar integration
- * - RTL support with proper positioning
- * - Data source status indication
- * - Mobile-optimized design
- * - Smooth animations and transitions
- */
-const Footer = ({ isLoginScreen = false }) => {
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const { translate } = useLanguage();
-    const { isUsingLocalData } = useAuth();
-    const { isRTL, rtlUtils } = useRTL();
-    const versionInfo = useVersion();
-    
-    const {
-        sidebarState,
-        dimensions,
-        layoutPreferences
-    } = useLayoutResponsive();
-
-    // Don't render footer if disabled in preferences
-    if (!layoutPreferences.showFooter && !isLoginScreen) {
-        return null;
-    }
-
-    const currentYear = new Date().getFullYear();
-
-    // Status indicator
-    const statusIndicator = useMemo(() => {
-        if (isUsingLocalData) {
-            return (
-                <TooltipWrapper title="Using local data - some features may be limited">
-                    <StatusChip
-                        icon={<StorageIcon />}
-                        label="Local Mode"
-                        color="warning"
-                        variant="filled"
-                        size="small"
-                    />
-                </TooltipWrapper>
-            );
-        }
-        
-        return (
-            <TooltipWrapper title="Connected to server">
-                <StatusChip
-                    icon={<LanguageIcon />}
-                    label="Online"
-                    color="success"
-                    variant="filled"
-                    size="small"
-                />
-            </TooltipWrapper>
-        );
-    }, [isUsingLocalData]);
-
-    // Optimized footer content with better mobile handling
-    const footerContent = useMemo(() => {
-        const versionText = versionInfo ? `v${versionInfo.fullVersion}` : 'v1.0.0';
-        
-        return (
-            <Box sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between',
-                width: '100%',
-                gap: { xs: 0.5, sm: 1 },
-                flexWrap: isMobile ? 'wrap' : 'nowrap'
-            }}>
-                {/* Left Section: Copyright & Company */}
-                <FooterSection sx={{ flex: isMobile ? '1 1 100%' : '0 0 auto' }}>
-                    <CopyrightIcon sx={{ fontSize: 14, opacity: 0.7 }} />
-                    <Typography variant="body2" sx={{ 
-                        fontSize: isMobile ? '0.7rem' : '0.75rem',
-                        opacity: 0.8,
-                        whiteSpace: 'nowrap'
-                    }}>
-                        {currentYear} Techno Stationery
-                    </Typography>
-                    
-                    {!isMobile && (
-                        <>
-                            <Divider orientation="vertical" flexItem sx={{ mx: 0.5, opacity: 0.3 }} />
-                            <Typography variant="body2" sx={{ 
-                                fontSize: '0.7rem',
-                                opacity: 0.6,
-                                fontStyle: 'italic',
-                                fontWeight: 500,
-                                whiteSpace: 'nowrap'
-                            }}>
-                                Engineered with 💎 by Techno Team
-                            </Typography>
-                        </>
-                    )}
-                </FooterSection>
-
-             
-
-                {/* Developer Signature - Positioned after documentation */}
-                {!isMobile && (
-                    <FooterSection sx={{ 
-                        position: 'relative',
-                        [isRTL ? 'left' : 'right']: 16,
-                        bottom: '50%',
-                        transform: 'translateY(50%)',
-                        zIndex: 1
-                    }}>
-                        <TooltipWrapper title="Developed by Mounir Abderrahmani">
-                            <AnimatedLink
-                                href="https://bit.ly/Techno-ETL"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                sx={{ 
-                                    fontSize: '0.7rem',
-                                    fontWeight: 600,
-                                    color: 'primary.main',
-                                    opacity: 0.7,
-                                    '&:hover': {
-                                        opacity: 1,
-                                        transform: 'scale(1.05)'
-                                    }
-                                }}
-                            >
-                                🚀 M.A
-                            </AnimatedLink>
-                        </TooltipWrapper>
-                    </FooterSection>
-                )}
-
-                   {/* Center Section: Status (Desktop) or Right Section (Mobile) */}
-                {!isMobile && (
-                    <FooterSection>
-                        {statusIndicator}
-                    </FooterSection>
-                )}
-
-                {/* Right Section: Version & Status */}
-                <FooterSection sx={{ 
-                    flex: isMobile ? '1 1 auto' : '0 0 auto',
-                    justifyContent: isMobile ? 'space-between' : 'flex-end'
-                }}>
-                    {isMobile && statusIndicator}
-                    
-                    <VersionInfo sx={{ order: isMobile ? 2 : 0 }}>
-                        {versionText}
-                    </VersionInfo>
-                    
-                    {!isMobile && (
-                        <>
-                            <Divider orientation="vertical" flexItem sx={{ mx: 0.5, opacity: 0.3 }} />
-                            <AnimatedLink
-                                href="./docs"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                sx={{ fontSize: '0.7rem' }}
-                            >
-                                {translate('common.documentation') || 'Docs'}
-                            </AnimatedLink>
-                        </>
-                    )}
-                </FooterSection>
-            </Box>
-        );
-    }, [currentYear, statusIndicator, versionInfo, isMobile, isRTL, translate]);
-
-    return (
-        <ResponsiveFooter
-            component="footer"
-            sidebarWidth={dimensions.sidebar.width}
-            isRTL={isRTL}
-            isTemporary={sidebarState.isTemporary}
-            isUsingLocalData={isUsingLocalData}
-            isLoginScreen={isLoginScreen}
-            role="contentinfo"
-            aria-label="Application footer"
-        >
-            {footerContent}
-        </ResponsiveFooter>
-    );
+      <Box>
+        <Typography variant="body2">
+          {versionInfo ? `v${versionInfo.fullVersion}` : 'Loading version...'}
+        </Typography>
+      </Box>
+    </FooterContainer>
+  );
 };
-
-Footer.displayName = 'Footer';
 
 export default Footer;

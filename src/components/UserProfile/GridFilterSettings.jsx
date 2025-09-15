@@ -5,12 +5,12 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   FormControl, InputLabel, Select, MenuItem, Chip,
   List, ListItem, ListItemText, ListItemSecondaryAction,
-  IconButton, Tooltip, Divider, Switch, FormControlLabel
+  IconButton, Tooltip, Divider, Switch, FormControlLabel,
 } from '@mui/material';
 import {
   FilterList, Add, Delete, Edit, Save, RestoreFromTrash,
   DateRange, Numbers, TextFields, Category, Star,
-  PlayArrow, Pause, Clear
+  PlayArrow, Pause, Clear,
 } from '@mui/icons-material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -29,7 +29,7 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
       { value: 'endsWith', label: 'Ends with' },
       { value: 'notEquals', label: 'Not equals' },
       { value: 'isEmpty', label: 'Is empty' },
-      { value: 'isNotEmpty', label: 'Is not empty' }
+      { value: 'isNotEmpty', label: 'Is not empty' },
     ],
     number: [
       { value: 'equals', label: 'Equals' },
@@ -40,7 +40,7 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
       { value: 'lessThanOrEqual', label: 'Less than or equal' },
       { value: 'between', label: 'Between' },
       { value: 'isEmpty', label: 'Is empty' },
-      { value: 'isNotEmpty', label: 'Is not empty' }
+      { value: 'isNotEmpty', label: 'Is not empty' },
     ],
     date: [
       { value: 'equals', label: 'Equals' },
@@ -51,12 +51,12 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
       { value: 'onOrBefore', label: 'On or before' },
       { value: 'between', label: 'Between' },
       { value: 'isEmpty', label: 'Is empty' },
-      { value: 'isNotEmpty', label: 'Is not empty' }
+      { value: 'isNotEmpty', label: 'Is not empty' },
     ],
     boolean: [
       { value: 'equals', label: 'Equals' },
-      { value: 'notEquals', label: 'Not equals' }
-    ]
+      { value: 'notEquals', label: 'Not equals' },
+    ],
   };
 
   // Date range presets
@@ -69,7 +69,7 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
     { value: 'lastMonth', label: 'Last Month' },
     { value: 'thisYear', label: 'This Year' },
     { value: 'lastYear', label: 'Last Year' },
-    { value: 'custom', label: 'Custom Range' }
+    { value: 'custom', label: 'Custom Range' },
   ];
 
   const [filterPresets, setFilterPresets] = useState({});
@@ -79,7 +79,7 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
     name: '',
     gridType: 'mdm',
     filters: [],
-    logic: 'AND'
+    logic: 'AND',
   });
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -93,7 +93,7 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
       { field: 'quantity', label: 'Quantity', type: 'number' },
       { field: 'category', label: 'Category', type: 'text' },
       { field: 'status', label: 'Status', type: 'text' },
-      { field: 'lastUpdated', label: 'Last Updated', type: 'date' }
+      { field: 'lastUpdated', label: 'Last Updated', type: 'date' },
     ],
     magentoProducts: [
       { field: 'sku', label: 'SKU', type: 'text' },
@@ -102,7 +102,7 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
       { field: 'quantity', label: 'Stock', type: 'number' },
       { field: 'status', label: 'Status', type: 'text' },
       { field: 'type', label: 'Type', type: 'text' },
-      { field: 'createdAt', label: 'Created', type: 'date' }
+      { field: 'createdAt', label: 'Created', type: 'date' },
     ],
     customers: [
       { field: 'firstName', label: 'First Name', type: 'text' },
@@ -111,7 +111,7 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
       { field: 'group', label: 'Group', type: 'text' },
       { field: 'orders', label: 'Orders', type: 'number' },
       { field: 'totalSpent', label: 'Total Spent', type: 'number' },
-      { field: 'lastLogin', label: 'Last Login', type: 'date' }
+      { field: 'lastLogin', label: 'Last Login', type: 'date' },
     ],
     orders: [
       { field: 'incrementId', label: 'Order #', type: 'text' },
@@ -119,13 +119,14 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
       { field: 'customerName', label: 'Customer', type: 'text' },
       { field: 'grandTotal', label: 'Total', type: 'number' },
       { field: 'items', label: 'Items', type: 'number' },
-      { field: 'createdAt', label: 'Date', type: 'date' }
-    ]
+      { field: 'createdAt', label: 'Date', type: 'date' },
+    ],
   };
 
   // Load filter presets on component mount
   useEffect(() => {
     const savedPresets = localStorage.getItem(`filterPresets_${user?.id}`);
+
     if (savedPresets) {
       setFilterPresets(JSON.parse(savedPresets));
     }
@@ -141,9 +142,9 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
           field: '',
           operator: 'contains',
           value: '',
-          type: 'text'
-        }
-      ]
+          type: 'text',
+        },
+      ],
     }));
   };
 
@@ -151,21 +152,22 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
     setNewPreset(prev => ({
       ...prev,
       filters: prev.filters.map(filter =>
-        filter.id === filterId ? { ...filter, ...updates } : filter
-      )
+        filter.id === filterId ? { ...filter, ...updates } : filter,
+      ),
     }));
   };
 
   const handleRemoveFilter = (filterId) => {
     setNewPreset(prev => ({
       ...prev,
-      filters: prev.filters.filter(filter => filter.id !== filterId)
+      filters: prev.filters.filter(filter => filter.id !== filterId),
     }));
   };
 
   const handleSavePreset = () => {
     if (!newPreset.name.trim()) {
       setShowError(true);
+
       return;
     }
 
@@ -174,12 +176,12 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
       ...newPreset,
       id: presetId,
       createdAt: editingPreset?.createdAt || new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     setFilterPresets(prev => ({
       ...prev,
-      [presetId]: preset
+      [presetId]: preset,
     }));
 
     setShowPresetDialog(false);
@@ -188,7 +190,7 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
       name: '',
       gridType: 'mdm',
       filters: [],
-      logic: 'AND'
+      logic: 'AND',
     });
     setShowSuccess(true);
   };
@@ -202,7 +204,9 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
   const handleDeletePreset = (presetId) => {
     setFilterPresets(prev => {
       const updated = { ...prev };
+
       delete updated[presetId];
+
       return updated;
     });
   };
@@ -210,11 +214,11 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
   const handleSaveAllSettings = async () => {
     try {
       localStorage.setItem(`filterPresets_${user?.id}`, JSON.stringify(filterPresets));
-      
+
       if (onSettingsChange) {
         onSettingsChange({ filterPresets });
       }
-      
+
       setShowSuccess(true);
     } catch (error) {
       console.error('Failed to save filter settings:', error);
@@ -224,111 +228,114 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
 
   const getFieldType = (gridType, fieldName) => {
     const field = gridFields[gridType]?.find(f => f.field === fieldName);
+
     return field?.type || 'text';
   };
 
   const renderFilterValue = (filter, index) => {
     const fieldType = getFieldType(newPreset.gridType, filter.field);
-    
+
     if (filter.operator === 'isEmpty' || filter.operator === 'isNotEmpty') {
       return null;
     }
 
     switch (fieldType) {
-      case 'number':
-        if (filter.operator === 'between') {
-          return (
-            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-              <TextField
-                size="small"
-                type="number"
-                placeholder="Min"
-                value={filter.value?.min || ''}
-                onChange={(e) => handleUpdateFilter(filter.id, {
-                  value: { ...filter.value, min: e.target.value }
-                })}
-              />
-              <Typography variant="body2">to</Typography>
-              <TextField
-                size="small"
-                type="number"
-                placeholder="Max"
-                value={filter.value?.max || ''}
-                onChange={(e) => handleUpdateFilter(filter.id, {
-                  value: { ...filter.value, max: e.target.value }
-                })}
-              />
-            </Box>
-          );
-        }
+    case 'number':
+      if (filter.operator === 'between') {
         return (
-          <TextField
-            size="small"
-            type="number"
-            placeholder="Value"
-            value={filter.value || ''}
-            onChange={(e) => handleUpdateFilter(filter.id, { value: e.target.value })}
-          />
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            <TextField
+              size="small"
+              type="number"
+              placeholder="Min"
+              value={filter.value?.min || ''}
+              onChange={(e) => handleUpdateFilter(filter.id, {
+                value: { ...filter.value, min: e.target.value },
+              })}
+            />
+            <Typography variant="body2">to</Typography>
+            <TextField
+              size="small"
+              type="number"
+              placeholder="Max"
+              value={filter.value?.max || ''}
+              onChange={(e) => handleUpdateFilter(filter.id, {
+                value: { ...filter.value, max: e.target.value },
+              })}
+            />
+          </Box>
         );
+      }
 
-      case 'date':
-        if (filter.operator === 'between') {
-          return (
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                <DatePicker
-                  label="From"
-                  value={filter.value?.from || null}
-                  onChange={(date) => handleUpdateFilter(filter.id, {
-                    value: { ...filter.value, from: date }
-                  })}
-                  renderInput={(params) => <TextField {...params} size="small" />}
-                />
-                <DatePicker
-                  label="To"
-                  value={filter.value?.to || null}
-                  onChange={(date) => handleUpdateFilter(filter.id, {
-                    value: { ...filter.value, to: date }
-                  })}
-                  renderInput={(params) => <TextField {...params} size="small" />}
-                />
-              </Box>
-            </LocalizationProvider>
-          );
-        }
+      return (
+        <TextField
+          size="small"
+          type="number"
+          placeholder="Value"
+          value={filter.value || ''}
+          onChange={(e) => handleUpdateFilter(filter.id, { value: e.target.value })}
+        />
+      );
+
+    case 'date':
+      if (filter.operator === 'between') {
         return (
           <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              label="Date"
-              value={filter.value || null}
-              onChange={(date) => handleUpdateFilter(filter.id, { value: date })}
-              renderInput={(params) => <TextField {...params} size="small" />}
-            />
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+              <DatePicker
+                label="From"
+                value={filter.value?.from || null}
+                onChange={(date) => handleUpdateFilter(filter.id, {
+                  value: { ...filter.value, from: date },
+                })}
+                renderInput={(params) => <TextField {...params} size="small" />}
+              />
+              <DatePicker
+                label="To"
+                value={filter.value?.to || null}
+                onChange={(date) => handleUpdateFilter(filter.id, {
+                  value: { ...filter.value, to: date },
+                })}
+                renderInput={(params) => <TextField {...params} size="small" />}
+              />
+            </Box>
           </LocalizationProvider>
         );
+      }
 
-      case 'boolean':
-        return (
-          <FormControl size="small" sx={{ minWidth: 120 }}>
-            <Select
-              value={filter.value || 'true'}
-              onChange={(e) => handleUpdateFilter(filter.id, { value: e.target.value })}
-            >
-              <MenuItem value="true">True</MenuItem>
-              <MenuItem value="false">False</MenuItem>
-            </Select>
-          </FormControl>
-        );
-
-      default:
-        return (
-          <TextField
-            size="small"
-            placeholder="Value"
-            value={filter.value || ''}
-            onChange={(e) => handleUpdateFilter(filter.id, { value: e.target.value })}
+      return (
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            label="Date"
+            value={filter.value || null}
+            onChange={(date) => handleUpdateFilter(filter.id, { value: date })}
+            renderInput={(params) => <TextField {...params} size="small" />}
           />
-        );
+        </LocalizationProvider>
+      );
+
+    case 'boolean':
+      return (
+        <FormControl size="small" sx={{ minWidth: 120 }}>
+          <Select
+            value={filter.value || 'true'}
+            onChange={(e) => handleUpdateFilter(filter.id, { value: e.target.value })}
+          >
+            <MenuItem value="true">True</MenuItem>
+            <MenuItem value="false">False</MenuItem>
+          </Select>
+        </FormControl>
+      );
+
+    default:
+      return (
+        <TextField
+          size="small"
+          placeholder="Value"
+          value={filter.value || ''}
+          onChange={(e) => handleUpdateFilter(filter.id, { value: e.target.value })}
+        />
+      );
     }
   };
 
@@ -378,22 +385,22 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
                         <Typography variant="subtitle1" fontWeight={600}>
                           {preset.name}
                         </Typography>
-                        <Chip 
-                          size="small" 
-                          label={preset.gridType.toUpperCase()} 
-                          color="primary" 
-                          variant="outlined" 
+                        <Chip
+                          size="small"
+                          label={preset.gridType.toUpperCase()}
+                          color="primary"
+                          variant="outlined"
                         />
-                        <Chip 
-                          size="small" 
-                          label={`${preset.filters.length} filters`} 
-                          variant="outlined" 
+                        <Chip
+                          size="small"
+                          label={`${preset.filters.length} filters`}
+                          variant="outlined"
                         />
-                        <Chip 
-                          size="small" 
-                          label={preset.logic} 
-                          color="secondary" 
-                          variant="outlined" 
+                        <Chip
+                          size="small"
+                          label={preset.logic}
+                          color="secondary"
+                          variant="outlined"
                         />
                       </Box>
                     }
@@ -419,12 +426,12 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
       </Card>
 
       {/* Action Buttons */}
-      <Box sx={{ 
-        display: 'flex', 
-        gap: 2, 
+      <Box sx={{
+        display: 'flex',
+        gap: 2,
         justifyContent: 'flex-end',
         pt: 3,
-        borderTop: `1px solid ${theme.palette.divider}`
+        borderTop: `1px solid ${theme.palette.divider}`,
       }}>
         <Button
           variant="contained"
@@ -436,8 +443,8 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
       </Box>
 
       {/* Create/Edit Preset Dialog */}
-      <Dialog 
-        open={showPresetDialog} 
+      <Dialog
+        open={showPresetDialog}
         onClose={() => setShowPresetDialog(false)}
         maxWidth="md"
         fullWidth
@@ -481,9 +488,9 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
               control={
                 <Switch
                   checked={newPreset.logic === 'OR'}
-                  onChange={(e) => setNewPreset(prev => ({ 
-                    ...prev, 
-                    logic: e.target.checked ? 'OR' : 'AND' 
+                  onChange={(e) => setNewPreset(prev => ({
+                    ...prev,
+                    logic: e.target.checked ? 'OR' : 'AND',
                   }))}
                 />
               }
@@ -510,10 +517,11 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
                         value={filter.field}
                         onChange={(e) => {
                           const fieldType = getFieldType(newPreset.gridType, e.target.value);
-                          handleUpdateFilter(filter.id, { 
+
+                          handleUpdateFilter(filter.id, {
                             field: e.target.value,
                             type: fieldType,
-                            operator: filterOperators[fieldType]?.[0]?.value || 'contains'
+                            operator: filterOperators[fieldType]?.[0]?.value || 'contains',
                           });
                         }}
                         label="Field"
@@ -526,7 +534,7 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  
+
                   <Grid item xs={12} md={3}>
                     <FormControl fullWidth size="small">
                       <InputLabel>Operator</InputLabel>
@@ -543,13 +551,13 @@ const GridFilterSettings = ({ user, onSettingsChange }) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  
+
                   <Grid item xs={12} md={5}>
                     {renderFilterValue(filter, index)}
                   </Grid>
-                  
+
                   <Grid item xs={12} md={1}>
-                    <IconButton 
+                    <IconButton
                       onClick={() => handleRemoveFilter(filter.id)}
                       color="error"
                       size="small"

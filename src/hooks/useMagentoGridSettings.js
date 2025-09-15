@@ -11,7 +11,7 @@ import {
   applySettingsToGridProps,
   handleMagentoGridError,
   saveMagentoGridPreferences,
-  getMagentoGridPreferences
+  getMagentoGridPreferences,
 } from '../utils/magentoGridSettingsManager';
 
 /**
@@ -53,6 +53,7 @@ export const useMagentoGridSettings = (gridType, baseProps = {}) => {
   // Get saved preferences
   const savedPreferences = useMemo(() => {
     const saved = getMagentoGridPreferences(gridType, settings);
+
     return { ...saved, ...localPreferences };
   }, [gridType, settings, localPreferences]);
 
@@ -60,14 +61,14 @@ export const useMagentoGridSettings = (gridType, baseProps = {}) => {
   const paginationSettings = useMemo(() => ({
     defaultPageSize: gridConfig.pagination.defaultPageSize,
     pageSizeOptions: gridConfig.pagination.pageSizeOptions,
-    enableServerSidePagination: gridConfig.pagination.enableServerSidePagination
+    enableServerSidePagination: gridConfig.pagination.enableServerSidePagination,
   }), [gridConfig.pagination]);
 
   // Density settings
   const densitySettings = useMemo(() => ({
     density: gridConfig.density,
-    rowHeight: gridConfig.density === 'compact' ? 36 : 
-               gridConfig.density === 'comfortable' ? 56 : 46
+    rowHeight: gridConfig.density === 'compact' ? 36 :
+      gridConfig.density === 'comfortable' ? 56 : 46,
   }), [gridConfig.density]);
 
   // Performance settings
@@ -76,14 +77,14 @@ export const useMagentoGridSettings = (gridType, baseProps = {}) => {
     virtualizationThreshold: gridConfig.display.virtualizationThreshold,
     cacheEnabled: gridConfig.performance.cacheEnabled,
     autoRefresh: gridConfig.performance.autoRefresh,
-    refreshInterval: gridConfig.performance.refreshInterval
+    refreshInterval: gridConfig.performance.refreshInterval,
   }), [gridConfig.display, gridConfig.performance]);
 
   // Filter settings
   const filterSettings = useMemo(() => ({
     enableQuickFilter: gridConfig.filtering.enableQuickFilter,
     enableAdvancedFilter: gridConfig.filtering.enableAdvancedFilter,
-    persistFilters: gridConfig.filtering.persistFilters
+    persistFilters: gridConfig.filtering.persistFilters,
   }), [gridConfig.filtering]);
 
   // Display settings
@@ -91,7 +92,7 @@ export const useMagentoGridSettings = (gridType, baseProps = {}) => {
     showStatsCards: gridConfig.display.showStatsCards,
     theme: settings?.preferences?.theme || 'system',
     language: settings?.preferences?.language || 'en',
-    animations: settings?.preferences?.animations !== false
+    animations: settings?.preferences?.animations !== false,
   }), [gridConfig.display, settings?.preferences]);
 
   // Auto-refresh effect
@@ -100,7 +101,7 @@ export const useMagentoGridSettings = (gridType, baseProps = {}) => {
       const interval = setInterval(() => {
         // Trigger refresh event
         window.dispatchEvent(new CustomEvent('magentoGridAutoRefresh', {
-          detail: { gridType }
+          detail: { gridType },
         }));
       }, performanceSettings.refreshInterval);
 
@@ -113,21 +114,21 @@ export const useMagentoGridSettings = (gridType, baseProps = {}) => {
     gridConfig,
     enhancedGridProps,
     savedPreferences,
-    
+
     // Specific settings categories
     paginationSettings,
     densitySettings,
     performanceSettings,
     filterSettings,
     displaySettings,
-    
+
     // Utility functions
     getApiParams,
     handleError,
     savePreferences,
-    
+
     // Raw settings for advanced usage
-    userSettings: settings
+    userSettings: settings,
   };
 };
 
@@ -139,23 +140,23 @@ export const useMagentoGridSettings = (gridType, baseProps = {}) => {
  */
 export const useMagentoGridState = (gridType, initialState = {}) => {
   const { savedPreferences, paginationSettings, savePreferences } = useMagentoGridSettings(gridType);
-  
+
   // Initialize state with saved preferences
   const [paginationModel, setPaginationModel] = useState(() => ({
     page: savedPreferences.currentPage || 0,
-    pageSize: savedPreferences.pageSize || paginationSettings.defaultPageSize
+    pageSize: savedPreferences.pageSize || paginationSettings.defaultPageSize,
   }));
-  
-  const [sortModel, setSortModel] = useState(() => 
-    savedPreferences.sortModel || initialState.sortModel || []
+
+  const [sortModel, setSortModel] = useState(() =>
+    savedPreferences.sortModel || initialState.sortModel || [],
   );
-  
-  const [filterModel, setFilterModel] = useState(() => 
-    savedPreferences.filterModel || initialState.filterModel || { items: [] }
+
+  const [filterModel, setFilterModel] = useState(() =>
+    savedPreferences.filterModel || initialState.filterModel || { items: [] },
   );
-  
-  const [columnVisibilityModel, setColumnVisibilityModel] = useState(() => 
-    savedPreferences.columnVisibilityModel || initialState.columnVisibilityModel || {}
+
+  const [columnVisibilityModel, setColumnVisibilityModel] = useState(() =>
+    savedPreferences.columnVisibilityModel || initialState.columnVisibilityModel || {},
   );
 
   // Save pagination changes
@@ -163,7 +164,7 @@ export const useMagentoGridState = (gridType, initialState = {}) => {
     setPaginationModel(newModel);
     savePreferences({
       currentPage: newModel.page,
-      pageSize: newModel.pageSize
+      pageSize: newModel.pageSize,
     });
   }, [savePreferences]);
 
@@ -193,18 +194,18 @@ export const useMagentoGridState = (gridType, initialState = {}) => {
     sortModel,
     filterModel,
     columnVisibilityModel,
-    
+
     // State setters with persistence
     setPaginationModel: handlePaginationModelChange,
     setSortModel: handleSortModelChange,
     setFilterModel: handleFilterModelChange,
     setColumnVisibilityModel: handleColumnVisibilityModelChange,
-    
+
     // Direct setters (without persistence)
     setPaginationModelDirect: setPaginationModel,
     setSortModelDirect: setSortModel,
     setFilterModelDirect: setFilterModel,
-    setColumnVisibilityModelDirect: setColumnVisibilityModel
+    setColumnVisibilityModelDirect: setColumnVisibilityModel,
   };
 };
 

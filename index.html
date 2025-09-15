@@ -10,7 +10,7 @@
     
     <!-- Preload critical resources -->
     <link rel="preload" href="/src/assets/images/techno.png" as="image">
-
+    
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://etl.techno-dz.com/" />
@@ -38,11 +38,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Google Fonts with preloading -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap"></noscript>
     
     <!-- Material Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="preload" href="https://fonts.googleapis.com/icon?family=Material+Icons" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"></noscript>
     
     <title>TECHNO-ETL v2.1.0 - Advanced ETL Solution</title>
     
@@ -62,6 +64,7 @@
         z-index: 9999;
         font-family: 'Inter', 'Roboto', sans-serif;
         color: white;
+        transition: opacity 0.3s ease-out;
       }
       
       .loading-logo {
@@ -180,7 +183,7 @@
     <script>
       window.addEventListener('load', function() {
         // Faster removal of loading screen
-        setTimeout(function() {
+        requestAnimationFrame(function() {
           const loadingScreen = document.getElementById('loading-screen');
           if (loadingScreen) {
             loadingScreen.style.opacity = '0';
@@ -191,10 +194,10 @@
               }
             }, 300);
           }
-        }, 300);
+        });
       });
       
-      // Fallback: Remove loading screen after 3 seconds
+      // Fallback: Remove loading screen after 2 seconds
       setTimeout(function() {
         const loadingScreen = document.getElementById('loading-screen');
         if (loadingScreen) {
@@ -206,14 +209,22 @@
             }
           }, 300);
         }
-      }, 3000);
+      }, 2000);
     </script>
     
-    <!-- Service Worker Registration - Disabled for now -->
+    <!-- Service Worker Registration -->
     <script>
-      // Service worker registration disabled to prevent 404 errors
-      // Will be enabled when PWA features are implemented
-      console.log('Service worker registration disabled');
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+              console.log('SW registered: ', registration);
+            })
+            .catch(function(registrationError) {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
     </script>
   </body>
 </html>

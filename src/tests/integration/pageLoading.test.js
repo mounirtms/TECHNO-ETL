@@ -13,71 +13,72 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 const mockContexts = {
   auth: {
     currentUser: { uid: 'test-user', email: 'test@example.com' },
-    loading: false
+    loading: false,
   },
   language: {
     translate: (key) => key,
     currentLanguage: 'en',
-    languages: { en: { dir: 'ltr' } }
+    languages: { en: { dir: 'ltr' } },
   },
   theme: {
     mode: 'light',
     isDark: false,
-    animations: true
+    animations: true,
   },
   settings: {
     settings: {
       preferences: { theme: 'light', language: 'en' },
       apiSettings: {},
-      gridSettings: {}
-    }
+      gridSettings: {},
+    },
   },
   tab: {
     openTab: vi.fn(),
-    activeTab: 'dashboard'
-  }
+    activeTab: 'dashboard',
+  },
 };
 
 // Mock all contexts
 vi.mock('../../contexts/AuthContext', () => ({
-  useAuth: () => mockContexts.auth
+  useAuth: () => mockContexts.auth,
 }));
 
 vi.mock('../../contexts/LanguageContext', () => ({
-  useLanguage: () => mockContexts.language
+  useLanguage: () => mockContexts.language,
 }));
 
 vi.mock('../../contexts/ThemeContext', () => ({
-  useCustomTheme: () => mockContexts.theme
+  useCustomTheme: () => mockContexts.theme,
 }));
 
 vi.mock('../../contexts/SettingsContext', () => ({
-  useSettings: () => mockContexts.settings
+  useSettings: () => mockContexts.settings,
 }));
 
 vi.mock('../../contexts/TabContext', () => ({
-  useTab: () => mockContexts.tab
+  useTab: () => mockContexts.tab,
 }));
 
 // Mock services
 vi.mock('../../services/magentoApi', () => ({
   default: {
     getProducts: vi.fn(() => Promise.resolve({ data: { items: [], total_count: 0 } })),
-    getBrands: vi.fn(() => Promise.resolve({ items: [] }))
-  }
+    getBrands: vi.fn(() => Promise.resolve({ items: [] })),
+  },
 }));
 
 vi.mock('../../services/unifiedMagentoService', () => ({
   default: {
     get: vi.fn(() => Promise.resolve({ data: [] })),
     _getCachedResponse: vi.fn(() => null),
-    _setCachedResponse: vi.fn()
-  }
+    _setCachedResponse: vi.fn(),
+  },
 }));
 
 // Test wrapper
 const TestWrapper = ({ children }) => {
   const theme = createTheme();
+
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
@@ -91,9 +92,11 @@ const TestWrapper = ({ children }) => {
 const importPage = async (pageName) => {
   try {
     const module = await import(`../../pages/${pageName}.jsx`);
+
     return module.default;
   } catch (error) {
     console.error(`Failed to import ${pageName}:`, error);
+
     return () => <div data-testid="import-error">Failed to load {pageName}</div>;
   }
 };
@@ -116,13 +119,13 @@ describe('Page Loading Integration Tests', () => {
     'DataGridsPage',
     'GridTestPage',
     'VotingPage',
-    'NotFoundPage'
+    'NotFoundPage',
   ];
 
   pages.forEach(pageName => {
     it(`loads ${pageName} without errors`, async () => {
       const PageComponent = await importPage(pageName);
-      
+
       expect(PageComponent).toBeDefined();
       expect(typeof PageComponent).toBe('function');
 
@@ -130,7 +133,7 @@ describe('Page Loading Integration Tests', () => {
       const { container } = render(
         <TestWrapper>
           <PageComponent />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       // Wait for component to render
@@ -145,11 +148,11 @@ describe('Page Loading Integration Tests', () => {
 
   it('handles page import failures gracefully', async () => {
     const NonExistentPage = await importPage('NonExistentPage');
-    
+
     render(
       <TestWrapper>
         <NonExistentPage />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByTestId('import-error')).toBeInTheDocument();
@@ -159,19 +162,19 @@ describe('Page Loading Integration Tests', () => {
   it('verifies all pages have proper React component structure', async () => {
     for (const pageName of pages) {
       const PageComponent = await importPage(pageName);
-      
+
       // Should be a function (React component)
       expect(typeof PageComponent).toBe('function');
-      
+
       // Should have a name or displayName
       expect(PageComponent.name || PageComponent.displayName).toBeTruthy();
-      
+
       // Should render without throwing
       expect(() => {
         render(
           <TestWrapper>
             <PageComponent />
-          </TestWrapper>
+          </TestWrapper>,
         );
       }).not.toThrow();
     }
@@ -182,23 +185,24 @@ describe('Page Loading Integration Tests', () => {
 
     for (const pageName of pages.slice(0, 5)) { // Test first 5 pages for performance
       const startTime = performance.now();
-      
+
       const PageComponent = await importPage(pageName);
       const importTime = performance.now() - startTime;
-      
+
       const renderStartTime = performance.now();
+
       render(
         <TestWrapper>
           <PageComponent />
-        </TestWrapper>
+        </TestWrapper>,
       );
       const renderTime = performance.now() - renderStartTime;
-      
+
       performanceTests.push({
         page: pageName,
         importTime,
         renderTime,
-        totalTime: importTime + renderTime
+        totalTime: importTime + renderTime,
       });
     }
 
@@ -217,25 +221,25 @@ describe('Page Loading Integration Tests', () => {
 
   it('verifies pages handle missing props gracefully', async () => {
     const criticalPages = ['Dashboard', 'SettingsPage', 'ProductManagementPage'];
-    
+
     for (const pageName of criticalPages) {
       const PageComponent = await importPage(pageName);
-      
+
       // Test with minimal props
       expect(() => {
         render(
           <TestWrapper>
             <PageComponent />
-          </TestWrapper>
+          </TestWrapper>,
         );
       }).not.toThrow();
-      
+
       // Test with undefined props
       expect(() => {
         render(
           <TestWrapper>
             <PageComponent someProp={undefined} />
-          </TestWrapper>
+          </TestWrapper>,
         );
       }).not.toThrow();
     }
@@ -243,18 +247,18 @@ describe('Page Loading Integration Tests', () => {
 
   it('checks for memory leaks in page components', async () => {
     const testPages = ['Dashboard', 'SettingsPage'];
-    
+
     for (const pageName of testPages) {
       const PageComponent = await importPage(pageName);
-      
+
       // Render and unmount multiple times
       for (let i = 0; i < 3; i++) {
         const { unmount } = render(
           <TestWrapper>
             <PageComponent />
-          </TestWrapper>
+          </TestWrapper>,
         );
-        
+
         // Unmount should not throw
         expect(() => unmount()).not.toThrow();
       }

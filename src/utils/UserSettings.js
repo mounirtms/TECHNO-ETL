@@ -27,7 +27,7 @@ class UserSettings extends BaseSettings {
         profilePicture: null,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         dateFormat: 'MM/dd/yyyy',
-        timeFormat: '12h'
+        timeFormat: '12h',
       },
       preferences: {
         theme: 'system',
@@ -40,7 +40,7 @@ class UserSettings extends BaseSettings {
         soundEnabled: true,
         notificationsEnabled: true,
         autoSave: true,
-        confirmActions: true
+        confirmActions: true,
       },
       apiSettings: {
         magento: {
@@ -48,14 +48,14 @@ class UserSettings extends BaseSettings {
           apiKey: '',
           timeout: 30000,
           retryAttempts: 3,
-          enableCache: true
+          enableCache: true,
         },
         cegid: {
           serverUrl: '',
           username: '',
           password: '',
           database: '',
-          timeout: 30000
+          timeout: 30000,
         },
         databases: {
           primary: {
@@ -64,15 +64,15 @@ class UserSettings extends BaseSettings {
             database: '',
             username: '',
             password: '',
-            ssl: true
-          }
+            ssl: true,
+          },
         },
         general: {
           requestTimeout: 30000,
           maxRetries: 3,
           enableLogging: true,
-          logLevel: 'info'
-        }
+          logLevel: 'info',
+        },
       },
       gridSettings: {
         defaultPageSize: 25,
@@ -84,22 +84,22 @@ class UserSettings extends BaseSettings {
         columnDefaults: {
           sortable: true,
           filterable: true,
-          resizable: true
-        }
+          resizable: true,
+        },
       },
       dashboardSettings: {
         layout: 'default',
         widgets: [],
         refreshInterval: 60000, // 1 minute
         showWelcomeMessage: true,
-        compactMode: false
+        compactMode: false,
       },
       securitySettings: {
         sessionTimeout: 3600000, // 1 hour
         requirePasswordConfirmation: true,
         enableTwoFactor: false,
-        loginNotifications: true
-      }
+        loginNotifications: true,
+      },
     };
   }
 
@@ -111,12 +111,14 @@ class UserSettings extends BaseSettings {
     this.addValidationRule('personalInfo.email', (value) => {
       if (!value) return true; // Optional
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
       return emailRegex.test(value);
     });
 
     this.addValidationRule('personalInfo.phone', (value) => {
       if (!value) return true; // Optional
       const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+
       return phoneRegex.test(value.replace(/[\s\-\(\)]/g, ''));
     });
 
@@ -127,6 +129,7 @@ class UserSettings extends BaseSettings {
 
     this.addValidationRule('preferences.language', (value) => {
       const supportedLanguages = ['en', 'fr', 'ar', 'es', 'de'];
+
       return supportedLanguages.includes(value);
     });
 
@@ -143,6 +146,7 @@ class UserSettings extends BaseSettings {
       if (!value) return true; // Optional
       try {
         new URL(value);
+
         return true;
       } catch {
         return false;
@@ -169,11 +173,11 @@ class UserSettings extends BaseSettings {
   setupPermissions() {
     // Admin users can modify all settings
     // Regular users have some restrictions
-    
+
     // API settings might be restricted for some users
     this.setPermission('apiSettings.databases', 'write', this.hasRole('admin'));
     this.setPermission('securitySettings', 'write', this.hasRole('admin'));
-    
+
     // All users can modify personal preferences
     this.setPermission('personalInfo', 'write', true);
     this.setPermission('preferences', 'write', true);
@@ -203,10 +207,11 @@ class UserSettings extends BaseSettings {
 
     // Apply to document root
     const root = document.documentElement;
-    
+
     // Theme
     if (theme === 'system') {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
       root.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
     } else {
       root.setAttribute('data-theme', theme);
@@ -220,16 +225,18 @@ class UserSettings extends BaseSettings {
       'small': '14px',
       'medium': '16px',
       'large': '18px',
-      'extra-large': '20px'
+      'extra-large': '20px',
     };
+
     root.style.setProperty('--base-font-size', fontSizeMap[fontSize]);
 
     // Density
     const densityMap = {
       'compact': '0.8',
       'standard': '1.0',
-      'comfortable': '1.2'
+      'comfortable': '1.2',
     };
+
     root.style.setProperty('--density-scale', densityMap[density]);
 
     // Animations
@@ -240,7 +247,7 @@ class UserSettings extends BaseSettings {
 
     // Notify theme change
     window.dispatchEvent(new CustomEvent('themeChanged', {
-      detail: { theme, colorPreset, fontSize, density, animations, highContrast }
+      detail: { theme, colorPreset, fontSize, density, animations, highContrast },
     }));
   }
 
@@ -258,7 +265,7 @@ class UserSettings extends BaseSettings {
 
     // Notify language change
     window.dispatchEvent(new CustomEvent('languageChanged', {
-      detail: { language, isRTL }
+      detail: { language, isRTL },
     }));
   }
 
@@ -268,10 +275,10 @@ class UserSettings extends BaseSettings {
   getGridSettings(gridType = 'default') {
     const baseGridSettings = this.get('gridSettings');
     const specificSettings = this.get(`gridSettings.${gridType}`) || {};
-    
+
     return {
       ...baseGridSettings,
-      ...specificSettings
+      ...specificSettings,
     };
   }
 
@@ -281,8 +288,9 @@ class UserSettings extends BaseSettings {
   updateGridSettings(gridType, settings) {
     this.set(`gridSettings.${gridType}`, {
       ...this.get(`gridSettings.${gridType}`, {}),
-      ...settings
+      ...settings,
     });
+
     return this;
   }
 
@@ -299,8 +307,9 @@ class UserSettings extends BaseSettings {
   updateApiConfig(service, config) {
     this.set(`apiSettings.${service}`, {
       ...this.get(`apiSettings.${service}`, {}),
-      ...config
+      ...config,
     });
+
     return this;
   }
 
@@ -309,11 +318,11 @@ class UserSettings extends BaseSettings {
    */
   exportSettings(includePrivate = false) {
     const settings = this.getSettings();
-    
+
     if (!includePrivate) {
       // Remove sensitive information
       const filtered = { ...settings };
-      
+
       // Remove passwords and API keys
       if (filtered.apiSettings) {
         Object.keys(filtered.apiSettings).forEach(service => {
@@ -324,10 +333,10 @@ class UserSettings extends BaseSettings {
           }
         });
       }
-      
+
       return filtered;
     }
-    
+
     return settings;
   }
 
@@ -337,11 +346,14 @@ class UserSettings extends BaseSettings {
   saveToLocal() {
     try {
       const key = `userSettings_${this.userId}`;
+
       localStorage.setItem(key, this.toJSON());
       localStorage.setItem(`${key}_lastModified`, Date.now().toString());
+
       return true;
     } catch (error) {
       console.error('Failed to save user settings to localStorage:', error);
+
       return false;
     }
   }
@@ -353,13 +365,17 @@ class UserSettings extends BaseSettings {
     try {
       const key = `userSettings_${this.userId}`;
       const stored = localStorage.getItem(key);
+
       if (stored) {
         this.fromJSON(stored);
+
         return true;
       }
+
       return false;
     } catch (error) {
       console.error('Failed to load user settings from localStorage:', error);
+
       return false;
     }
   }
@@ -369,6 +385,7 @@ class UserSettings extends BaseSettings {
    */
   getLastModified() {
     const key = `userSettings_${this.userId}_lastModified`;
+
     return localStorage.getItem(key);
   }
 }

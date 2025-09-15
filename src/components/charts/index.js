@@ -14,5 +14,5 @@ export { default as InventoryStatusChart } from './InventoryStatusChart';
 export {
   EnhancedPieChart,
   EnhancedBarChart,
-  EnhancedLineChart
+  EnhancedLineChart,
 } from './EnhancedCharts';

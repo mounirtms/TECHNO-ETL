@@ -47,45 +47,47 @@ const PORT = process.env.PORT || productionConfig.server.port || 5000;
 const HOST = process.env.HOST || productionConfig.server.host || '0.0.0.0';
 
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+
 dotenv.config({ path: `../${envFile}` });
 const app = express();
 
 // Global server variable for shutdown handlers
 let server;
 
-// Set a global request timeout to prevent requests from hanging  
+// Set a global request timeout to prevent requests from hanging
 app.use(timeout('120s')); // Increased to 2 minutes for heavy operations
 
 // Optimized rate limiting based on environment
-const rateLimitConfig = process.env.NODE_ENV === 'production' 
-    ? productionConfig.rateLimit 
-    : { windowMs: 15 * 60 * 1000, max: 1000, message: 'Too many requests' }; // Much more lenient in dev
+const rateLimitConfig = process.env.NODE_ENV === 'production'
+  ? productionConfig.rateLimit
+  : { windowMs: 15 * 60 * 1000, max: 1000, message: 'Too many requests' }; // Much more lenient in dev
 
 const apiLimiter = rateLimit({
-    ...rateLimitConfig,
-    message: { error: rateLimitConfig.message }
+  ...rateLimitConfig,
+  message: { error: rateLimitConfig.message },
 });
 
 // Only apply rate limiting in production or when specifically enabled
 if (process.env.NODE_ENV === 'production' || process.env.ENABLE_RATE_LIMIT === 'true') {
-    app.use('/api/', apiLimiter);
+  app.use('/api/', apiLimiter);
 }
 
 // Enhanced CORS configuration for frontend development
 const corsOptions = {
-    ...productionConfig.cors,
-    origin: [
-        'http://localhost:3000', // Primary development port
-        'http://127.0.0.1:3000',
-        'http://localhost:80',    // Production/admin port
-        'http://127.0.0.1:80',
-        'http://localhost:5173',  // Vite default port
-        'http://127.0.0.1:5173',
-        ...(process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : [])
-    ],
-    credentials: true,
-    optionsSuccessStatus: 200
+  ...productionConfig.cors,
+  origin: [
+    'http://localhost:3000', // Primary development port
+    'http://127.0.0.1:3000',
+    'http://localhost:80',    // Production/admin port
+    'http://127.0.0.1:80',
+    'http://localhost:5173',  // Vite default port
+    'http://127.0.0.1:5173',
+    ...(process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : []),
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200,
 };
+
 app.use(cors(corsOptions));
 
 // Add security headers
@@ -104,61 +106,63 @@ app.use(helmet(productionConfig.security.helmet));
 
 // Log server startup with enhanced information
 console.log('🚀 TECHNO-ETL Backend Server starting', {
-    port: PORT,
-    host: HOST,
-    environment: process.env.NODE_ENV || 'development',
-    nodeVersion: process.version,
-    pid: process.pid,
-    corsOrigins: corsOptions.origin,
-    timestamp: new Date().toISOString()
+  port: PORT,
+  host: HOST,
+  environment: process.env.NODE_ENV || 'development',
+  nodeVersion: process.version,
+  pid: process.pid,
+  corsOrigins: corsOptions.origin,
+  timestamp: new Date().toISOString(),
 });
 
 // Enhanced compression with development optimization
 const compressionLevel = process.env.NODE_ENV === 'production' ? 6 : 1;
+
 app.use(compression({
-    threshold: process.env.NODE_ENV === 'production' ? 1024 : 4096, // Larger threshold in dev
-    level: compressionLevel, // Lower compression in dev for speed
-    filter: (req, res) => {
-        if (req.headers['x-no-compression']) {
-            return false;
-        }
-        return compression.filter(req, res);
+  threshold: process.env.NODE_ENV === 'production' ? 1024 : 4096, // Larger threshold in dev
+  level: compressionLevel, // Lower compression in dev for speed
+  filter: (req, res) => {
+    if (req.headers['x-no-compression']) {
+      return false;
     }
+
+    return compression.filter(req, res);
+  },
 }));
 
 // Increase payload limits and optimize parsing
 app.use(express.json({
-    limit: '15mb',
-    verify: (req, res, buf, encoding) => {
-        if (buf.length > 15 * 1024 * 1024) {
-            throw new Error('Payload too large');
-        }
+  limit: '15mb',
+  verify: (req, res, buf, encoding) => {
+    if (buf.length > 15 * 1024 * 1024) {
+      throw new Error('Payload too large');
     }
+  },
 }));
 
 app.use(express.urlencoded({
-    extended: true,
-    limit: '15mb',
-    parameterLimit: 10000
+  extended: true,
+  limit: '15mb',
+  parameterLimit: 10000,
 }));
 
 // Add user-agent middleware for Magento compatibility
 app.use((req, res, next) => {
-    // Set a proper user-agent for Techno ETL system
-    req.headers['user-agent'] = req.headers['user-agent'] || productionConfig.magento.userAgent;
+  // Set a proper user-agent for Techno ETL system
+  req.headers['user-agent'] = req.headers['user-agent'] || productionConfig.magento.userAgent;
 
-    // Add additional headers for Magento API compatibility
-    if (req.path.includes('/api/magento')) {
-        Object.assign(req.headers, productionConfig.magento.headers);
-    }
+  // Add additional headers for Magento API compatibility
+  if (req.path.includes('/api/magento')) {
+    Object.assign(req.headers, productionConfig.magento.headers);
+  }
 
-    // Add CORS headers for all requests
-    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', productionConfig.cors.allowedHeaders.join(', '));
-    res.header('Access-Control-Allow-Credentials', 'true');
+  // Add CORS headers for all requests
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', productionConfig.cors.allowedHeaders.join(', '));
+  res.header('Access-Control-Allow-Credentials', 'true');
 
-    next();
+  next();
 });
 
 // =========================
@@ -178,23 +182,23 @@ app.use((req, res, next) => {
 //     return query;
 // };
 
- 
+
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-    try {
-        res.json({
-            status: 'healthy',
-            timestamp: new Date().toISOString(),
-            uptime: process.uptime(),
-               environment: process.env.NODE_ENV || 'development',
-        port: productionConfig.server.port,
-        version: '1.0.0'
-        });
-    } catch (error) {
-        console.error('Error during health check:', error);
-        res.status(500).json({ error: 'Health check failed' });
-    }
+  try {
+    res.json({
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV || 'development',
+      port: productionConfig.server.port,
+      version: '1.0.0',
+    });
+  } catch (error) {
+    console.error('Error during health check:', error);
+    res.status(500).json({ error: 'Health check failed' });
+  }
 });
 
 
@@ -215,8 +219,8 @@ app.get('/api-docs', swaggerUi.setup(specs, {
     displayRequestDuration: true,
     filter: true,
     showExtensions: true,
-    showCommonExtensions: true
-  }
+    showCommonExtensions: true,
+  },
 }));
 
 // API Routes
@@ -230,14 +234,14 @@ app.use('/api/dashboard', dashboardRoutes);
 
 // Test sync route mounting
 app.get('/api/sync/test', (req, res) => {
-    res.json({ message: 'Sync routes are working!', timestamp: new Date().toISOString() });
+  res.json({ message: 'Sync routes are working!', timestamp: new Date().toISOString() });
 });
 
 try {
-    app.use('/api', apiRoutes);
-    console.log('✅ Sync routes mounted successfully');
+  app.use('/api', apiRoutes);
+  console.log('✅ Sync routes mounted successfully');
 } catch (error) {
-    console.error('❌ Error mounting sync routes:', error.message);
+  console.error('❌ Error mounting sync routes:', error.message);
 }
 
 console.log('✅ API routes mounted successfully');
@@ -248,137 +252,138 @@ console.log('✅ API routes mounted successfully');
 
 // 404 handler
 app.use((req, res, next) => {
-    console.log('404 Not Found:', req.method, req.originalUrl);
+  console.log('404 Not Found:', req.method, req.originalUrl);
 
-    res.status(404).json({
-        error: 'Not Found',
-        timestamp: new Date().toISOString()
-    });
+  res.status(404).json({
+    error: 'Not Found',
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // Enhanced error handling middleware
 app.use((err, req, res, next) => {
-    // Handle timeout errors specifically
-    if (req.timedout) {
-        console.error('Request Timeout:', req.originalUrl, req.method);
-        return res.status(503).json({
-            error: 'Service Unavailable: Request Timed Out',
-            timestamp: new Date().toISOString()
-        });
-    }
+  // Handle timeout errors specifically
+  if (req.timedout) {
+    console.error('Request Timeout:', req.originalUrl, req.method);
 
-    // Basic error handling
-    console.error('Server Error:', err.message);
-    res.status(500).json({
-        error: 'Internal Server Error',
-        timestamp: new Date().toISOString()
+    return res.status(503).json({
+      error: 'Service Unavailable: Request Timed Out',
+      timestamp: new Date().toISOString(),
     });
+  }
+
+  // Basic error handling
+  console.error('Server Error:', err.message);
+  res.status(500).json({
+    error: 'Internal Server Error',
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // Main function to run the operations
 async function main() {
-    try {
-        // Start server immediately in development for faster startup
-        if (process.env.NODE_ENV === 'development') {
-            console.log('🚀 Development mode: Starting server immediately for faster startup');
-            startServer();
-            
-            // Initialize database connections asynchronously in background
-            console.log('🔗 Initializing database connections in background...');
-            try {
-                await connectToDatabases();
-                logger.info('✅ Server initialized with database connections');
-                console.log('✅ Database connections established');
-            } catch (dbError) {
-                console.log('⚠️ Database connection failed, continuing in API-only mode:', dbError.message);
-                logger.warn('⚠️ Database connection failed, continuing in API-only mode');
-            }
-        } else {
-            // Production mode: Initialize database connections first
-            console.log('🔗 Initializing database connections...');
-            try {
-                await connectToDatabases();
-                logger.info('✅ Server initialized with database connections');
-            } catch (dbError) {
-                console.log('⚠️ Database connection failed, continuing in API-only mode:', dbError.message);
-                logger.warn('⚠️ Database connection failed, continuing in API-only mode');
-            }
-            
-            // Start the server
-            startServer();
-        }
-    } catch (err) {
-        logger.error('Failed to initialize server', { error: err.message });
-        console.error('Failed to initialize server:', err.message);
+  try {
+    // Start server immediately in development for faster startup
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🚀 Development mode: Starting server immediately for faster startup');
+      startServer();
+
+      // Initialize database connections asynchronously in background
+      console.log('🔗 Initializing database connections in background...');
+      try {
+        await connectToDatabases();
+        logger.info('✅ Server initialized with database connections');
+        console.log('✅ Database connections established');
+      } catch (dbError) {
+        console.log('⚠️ Database connection failed, continuing in API-only mode:', dbError.message);
+        logger.warn('⚠️ Database connection failed, continuing in API-only mode');
+      }
+    } else {
+      // Production mode: Initialize database connections first
+      console.log('🔗 Initializing database connections...');
+      try {
+        await connectToDatabases();
+        logger.info('✅ Server initialized with database connections');
+      } catch (dbError) {
+        console.log('⚠️ Database connection failed, continuing in API-only mode:', dbError.message);
+        logger.warn('⚠️ Database connection failed, continuing in API-only mode');
+      }
+
+      // Start the server
+      startServer();
     }
+  } catch (err) {
+    logger.error('Failed to initialize server', { error: err.message });
+    console.error('Failed to initialize server:', err.message);
+  }
 }
 
 // Function to start the server
 function startServer() {
-    server = app.listen(PORT, HOST, () => {
-        console.log(`🚀 TECHNO-ETL Backend Server running on ${HOST}:${PORT}`);
-        console.log(`📊 Health check: http://${HOST}:${PORT}/api/health`);
-        console.log(`🔄 Price sync: POST http://${HOST}:${PORT}/api/mdm/sync/prices`);
-        console.log(`📦 Stock sync: POST http://${HOST}:${PORT}/api/mdm/sync/stocks`);
-        console.log(`🏭 Inventory sync: POST http://${HOST}:${PORT}/api/mdm/inventory/sync-all-stocks-sources`);
-        console.log(`🛒 Magento proxy: http://${HOST}:${PORT}/api/magento/*`);
-        console.log(`📚 API Documentation (Swagger): http://${HOST}:${PORT}/api-docs`);
-        logger.info('✅ Server started successfully', { port: PORT, host: HOST });
-    });
+  server = app.listen(PORT, HOST, () => {
+    console.log(`🚀 TECHNO-ETL Backend Server running on ${HOST}:${PORT}`);
+    console.log(`📊 Health check: http://${HOST}:${PORT}/api/health`);
+    console.log(`🔄 Price sync: POST http://${HOST}:${PORT}/api/mdm/sync/prices`);
+    console.log(`📦 Stock sync: POST http://${HOST}:${PORT}/api/mdm/sync/stocks`);
+    console.log(`🏭 Inventory sync: POST http://${HOST}:${PORT}/api/mdm/inventory/sync-all-stocks-sources`);
+    console.log(`🛒 Magento proxy: http://${HOST}:${PORT}/api/magento/*`);
+    console.log(`📚 API Documentation (Swagger): http://${HOST}:${PORT}/api-docs`);
+    logger.info('✅ Server started successfully', { port: PORT, host: HOST });
+  });
 }
 
 // Start the process
 main().catch((err) => {
-    logger.error('Failed to initialize server', { error: err.message });
-    console.error('Failed to initialize server:', err.message);
-    process.exit(1);
+  logger.error('Failed to initialize server', { error: err.message });
+  console.error('Failed to initialize server:', err.message);
+  process.exit(1);
 });
 
 
 
 // Memory optimization and cleanup
 function performMemoryCleanup() {
-    if (global.gc) {
-        global.gc();
-        console.log('🧹 Manual garbage collection performed');
-    }
+  if (global.gc) {
+    global.gc();
+    console.log('🧹 Manual garbage collection performed');
+  }
 }
 
 // Schedule memory cleanup every 5 minutes
 setInterval(() => {
-    const memUsage = process.memoryUsage();
-    const heapUsedMB = Math.round(memUsage.heapUsed / 1024 / 1024);
+  const memUsage = process.memoryUsage();
+  const heapUsedMB = Math.round(memUsage.heapUsed / 1024 / 1024);
 
-    if (heapUsedMB > 50) { // If heap usage > 50MB
-        performMemoryCleanup();
-        console.log(`🧹 Memory cleanup triggered - Heap: ${heapUsedMB}MB`);
-    }
+  if (heapUsedMB > 50) { // If heap usage > 50MB
+    performMemoryCleanup();
+    console.log(`🧹 Memory cleanup triggered - Heap: ${heapUsedMB}MB`);
+  }
 }, 5 * 60 * 1000); // Every 5 minutes
 
 // Graceful shutdown and error handling
 process.on('unhandledRejection', (reason, p) => {
-    console.error('Unhandled Rejection at:', p, 'reason:', reason);
-    // Consider a more robust logging and alerting mechanism here
+  console.error('Unhandled Rejection at:', p, 'reason:', reason);
+  // Consider a more robust logging and alerting mechanism here
 });
 
 process.on('uncaughtException', (err) => {
-    console.error('Uncaught Exception:', err);
-    logger.error('Uncaught Exception', { error: err.message, stack: err.stack });
-    process.exit(1);
+  console.error('Uncaught Exception:', err);
+  logger.error('Uncaught Exception', { error: err.message, stack: err.stack });
+  process.exit(1);
 });
 
 const shutdown = (signal) => {
-    console.log(`🔄 ${signal} received, shutting down gracefully...`);
-    if (server) {
-        server.close(() => {
-            logger.info(`Worker ${process.pid} closed`);
-            // Close database connections, etc.
-            // quitRedisClient();
-            process.exit(0);
-        });
-    } else {
-        process.exit(0);
-    }
+  console.log(`🔄 ${signal} received, shutting down gracefully...`);
+  if (server) {
+    server.close(() => {
+      logger.info(`Worker ${process.pid} closed`);
+      // Close database connections, etc.
+      // quitRedisClient();
+      process.exit(0);
+    });
+  } else {
+    process.exit(0);
+  }
 };
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));

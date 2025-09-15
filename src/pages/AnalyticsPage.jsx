@@ -27,7 +27,7 @@ import {
   Select,
   MenuItem,
   Switch,
-  FormControlLabel
+  FormControlLabel,
 } from '@mui/material';
 import {
   Analytics,
@@ -40,7 +40,7 @@ import {
   VisibilityOff,
   Dashboard,
   TrendingUp,
-  Assessment
+  Assessment,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import ComponentErrorBoundary from '../components/common/ComponentErrorBoundary';
@@ -56,7 +56,7 @@ const LOOKER_DASHBOARDS = {
     url: 'https://lookerstudio.google.com/embed/reporting/45a3e0db-5da3-47c7-8d97-8aaf9ddd87de/page/p_8jvxmorodd',
     category: 'Business Intelligence',
     icon: <Dashboard />,
-    defaultSize: { width: '100%', height: '838px' }
+    defaultSize: { width: '100%', height: '838px' },
   },
   // Add more dashboards here as needed
   sales: {
@@ -66,7 +66,7 @@ const LOOKER_DASHBOARDS = {
     url: 'https://lookerstudio.google.com/embed/reporting/45a3e0db-5da3-47c7-8d97-8aaf9ddd87de/page/p_sales',
     category: 'Sales',
     icon: <TrendingUp />,
-    defaultSize: { width: '100%', height: '700px' }
+    defaultSize: { width: '100%', height: '700px' },
   },
   reports: {
     id: 'reports-dashboard',
@@ -75,8 +75,8 @@ const LOOKER_DASHBOARDS = {
     url: 'https://lookerstudio.google.com/embed/reporting/45a3e0db-5da3-47c7-8d97-8aaf9ddd87de/page/p_reports',
     category: 'Reports',
     icon: <Assessment />,
-    defaultSize: { width: '100%', height: '900px' }
-  }
+    defaultSize: { width: '100%', height: '900px' },
+  },
 };
 
 /**
@@ -108,7 +108,7 @@ const LookerStudioEmbed = ({ dashboard, isFullscreen, onLoad, onError }) => {
         borderColor: 'divider',
         borderRadius: 1,
         overflow: 'hidden',
-        bgcolor: 'background.paper'
+        bgcolor: 'background.paper',
       }}
     >
       {loading && (
@@ -123,7 +123,7 @@ const LookerStudioEmbed = ({ dashboard, isFullscreen, onLoad, onError }) => {
             alignItems: 'center',
             justifyContent: 'center',
             bgcolor: 'background.default',
-            zIndex: 1
+            zIndex: 1,
           }}
         >
           <Stack alignItems="center" spacing={2}>
@@ -147,7 +147,7 @@ const LookerStudioEmbed = ({ dashboard, isFullscreen, onLoad, onError }) => {
             alignItems: 'center',
             justifyContent: 'center',
             bgcolor: 'background.default',
-            zIndex: 1
+            zIndex: 1,
           }}
         >
           <Alert severity="error" sx={{ maxWidth: 400 }}>
@@ -203,8 +203,10 @@ const AnalyticsPage = () => {
     const interval = setInterval(() => {
       // Refresh the iframe by updating its src
       const iframe = document.querySelector('iframe[title="' + currentDashboard.title + '"]');
+
       if (iframe) {
         const src = iframe.src;
+
         iframe.src = '';
         setTimeout(() => {
           iframe.src = src;
@@ -221,8 +223,10 @@ const AnalyticsPage = () => {
 
   const handleRefresh = () => {
     const iframe = document.querySelector('iframe[title="' + currentDashboard.title + '"]');
+
     if (iframe) {
       const src = iframe.src;
+
       iframe.src = '';
       setTimeout(() => {
         iframe.src = src;
@@ -244,7 +248,7 @@ const AnalyticsPage = () => {
           right: 0,
           bottom: 0,
           bgcolor: 'background.default',
-          zIndex: 9999
+          zIndex: 9999,
         }}
       >
         <Box
@@ -254,7 +258,7 @@ const AnalyticsPage = () => {
             right: 16,
             zIndex: 10000,
             display: 'flex',
-            gap: 1
+            gap: 1,
           }}
         >
           <Tooltip title="Exit Fullscreen">
@@ -263,14 +267,14 @@ const AnalyticsPage = () => {
               sx={{
                 bgcolor: 'background.paper',
                 boxShadow: 2,
-                '&:hover': { bgcolor: 'background.paper' }
+                '&:hover': { bgcolor: 'background.paper' },
               }}
             >
               <FullscreenExit />
             </IconButton>
           </Tooltip>
         </Box>
-        
+
         <ComponentErrorBoundary>
           <LookerStudioEmbed
             dashboard={currentDashboard}
@@ -304,7 +308,7 @@ const AnalyticsPage = () => {
                 <Settings />
               </IconButton>
             </Tooltip>
-            
+
             <Tooltip title="Refresh Dashboard">
               <IconButton onClick={handleRefresh}>
                 <Refresh />
@@ -317,7 +321,7 @@ const AnalyticsPage = () => {
               </IconButton>
             </Tooltip>
 
-            <Tooltip title={dashboardVisible ? "Hide Dashboard" : "Show Dashboard"}>
+            <Tooltip title={dashboardVisible ? 'Hide Dashboard' : 'Show Dashboard'}>
               <IconButton onClick={() => setDashboardVisible(!dashboardVisible)}>
                 {dashboardVisible ? <VisibilityOff /> : <Visibility />}
               </IconButton>
@@ -338,8 +342,8 @@ const AnalyticsPage = () => {
               key={key}
               icon={dashboard.icon}
               label={dashboard.title}
-              variant={selectedDashboard === key ? "filled" : "outlined"}
-              color={selectedDashboard === key ? "primary" : "default"}
+              variant={selectedDashboard === key ? 'filled' : 'outlined'}
+              color={selectedDashboard === key ? 'primary' : 'default'}
               onClick={() => setSelectedDashboard(key)}
               sx={{ mb: 1 }}
             />

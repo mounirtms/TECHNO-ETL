@@ -10,46 +10,48 @@ import { loadGridSettings, saveGridSettings } from '../../../utils/gridSettings'
  * @returns {object} - The state and handlers for the grid columns.
  */
 export const useGridColumns = ({ gridName, initialColumns }) => {
-    const [columns, setColumns] = useState(initialColumns);
-    const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
+  const [columns, setColumns] = useState(initialColumns);
+  const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
 
-    useEffect(() => {
-        const savedSettings = loadGridSettings(gridName);
-        if (savedSettings) {
-            const updatedColumns = initialColumns.map(col => ({
-                ...col,
-                hide: savedSettings[col.field]?.hide ?? col.hide,
-                width: savedSettings[col.field]?.width || col.width,
-                index: savedSettings[col.field]?.index
-            })).sort((a, b) => (a.index ?? Infinity) - (b.index ?? Infinity));
-            setColumns(updatedColumns);
-        }
-    }, [gridName, initialColumns]);
+  useEffect(() => {
+    const savedSettings = loadGridSettings(gridName);
 
-    const handleSettingsSave = async (newSettings) => {
-        try {
-            const updatedColumns = columns.map(col => ({
-                ...col,
-                hide: !newSettings[col.field]?.visible,
-                width: newSettings[col.field]?.width || col.width,
-                index: newSettings[col.field]?.index
-            })).sort((a, b) => (a.index || 0) - (b.index || 0));
+    if (savedSettings) {
+      const updatedColumns = initialColumns.map(col => ({
+        ...col,
+        hide: savedSettings[col.field]?.hide ?? col.hide,
+        width: savedSettings[col.field]?.width || col.width,
+        index: savedSettings[col.field]?.index,
+      })).sort((a, b) => (a.index ?? Infinity) - (b.index ?? Infinity));
 
-            setColumns(updatedColumns);
-            saveGridSettings(gridName, newSettings);
-            setSettingsDialogOpen(false);
-        } catch (error) {
-            console.error('Error applying column settings:', error);
-        }
-    };
+      setColumns(updatedColumns);
+    }
+  }, [gridName, initialColumns]);
 
-    const finalColumns = useMemo(() => columns.filter(c => !c.hide), [columns]);
+  const handleSettingsSave = async (newSettings) => {
+    try {
+      const updatedColumns = columns.map(col => ({
+        ...col,
+        hide: !newSettings[col.field]?.visible,
+        width: newSettings[col.field]?.width || col.width,
+        index: newSettings[col.field]?.index,
+      })).sort((a, b) => (a.index || 0) - (b.index || 0));
 
-    return {
-        columns,
-        finalColumns,
-        settingsDialogOpen,
-        setSettingsDialogOpen,
-        handleSettingsSave
-    };
+      setColumns(updatedColumns);
+      saveGridSettings(gridName, newSettings);
+      setSettingsDialogOpen(false);
+    } catch (error) {
+      console.error('Error applying column settings:', error);
+    }
+  };
+
+  const finalColumns = useMemo(() => columns.filter(c => !c.hide), [columns]);
+
+  return {
+    columns,
+    finalColumns,
+    settingsDialogOpen,
+    setSettingsDialogOpen,
+    handleSettingsSave,
+  };
 };

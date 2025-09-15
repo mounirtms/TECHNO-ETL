@@ -18,7 +18,7 @@ import {
   CircularProgress,
   Chip,
   InputAdornment,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -28,7 +28,7 @@ import {
   Cancel as CancelIcon,
   Refresh as RefreshIcon,
   BrandingWatermark as BrandIcon,
-  Search as SearchIcon
+  Search as SearchIcon,
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import magentoApi from '../../services/magentoApi';
@@ -51,14 +51,15 @@ const BrandManagementDialog = ({ open, onClose, onBrandsUpdated }) => {
     try {
       setLoading(true);
       console.log('🔄 Fetching brands for management...');
-      
+
       const response = await magentoApi.getBrands(useCache);
       const brandsData = response?.items || [];
-      
+
       // Sort brands alphabetically
       const sortedBrands = brandsData.sort((a, b) => a.label.localeCompare(b.label));
+
       setBrands(sortedBrands);
-      
+
       console.log('✅ Brands loaded:', sortedBrands.length);
     } catch (error) {
       console.error('❌ Error fetching brands:', error);
@@ -72,40 +73,42 @@ const BrandManagementDialog = ({ open, onClose, onBrandsUpdated }) => {
   const handleAddBrand = useCallback(async () => {
     if (!newBrandName.trim()) {
       toast.warning('Please enter a brand name');
+
       return;
     }
 
     // Check for duplicates
-    const exists = brands.some(brand => 
-      brand.label.toLowerCase() === newBrandName.trim().toLowerCase()
+    const exists = brands.some(brand =>
+      brand.label.toLowerCase() === newBrandName.trim().toLowerCase(),
     );
-    
+
     if (exists) {
       toast.warning('Brand already exists');
+
       return;
     }
 
     try {
       setLoading(true);
-      
+
       const brandData = {
         label: newBrandName.trim(),
         value: newBrandName.trim().toLowerCase().replace(/\s+/g, '_'),
-        sort_order: brands.length + 1
+        sort_order: brands.length + 1,
       };
-      
+
       await magentoApi.addBrand(brandData);
-      
+
       // Refresh brands list
       await fetchBrands(false); // Don't use cache
-      
+
       // Reset form
       setNewBrandName('');
       setShowAddForm(false);
-      
+
       // Notify parent component
       onBrandsUpdated?.();
-      
+
     } catch (error) {
       console.error('❌ Error adding brand:', error);
     } finally {
@@ -116,26 +119,27 @@ const BrandManagementDialog = ({ open, onClose, onBrandsUpdated }) => {
   const handleEditBrand = useCallback(async (brandId, newLabel) => {
     if (!newLabel.trim()) {
       toast.warning('Please enter a brand name');
+
       return;
     }
 
     try {
       setLoading(true);
-      
+
       const brandData = {
         label: newLabel.trim(),
-        value: newLabel.trim().toLowerCase().replace(/\s+/g, '_')
+        value: newLabel.trim().toLowerCase().replace(/\s+/g, '_'),
       };
-      
+
       await magentoApi.updateBrand(brandId, brandData);
-      
+
       // Refresh brands list
       await fetchBrands(false);
       setEditingBrand(null);
-      
+
       // Notify parent component
       onBrandsUpdated?.();
-      
+
     } catch (error) {
       console.error('❌ Error updating brand:', error);
     } finally {
@@ -150,15 +154,15 @@ const BrandManagementDialog = ({ open, onClose, onBrandsUpdated }) => {
 
     try {
       setLoading(true);
-      
+
       await magentoApi.deleteBrand(brandId);
-      
+
       // Refresh brands list
       await fetchBrands(false);
-      
+
       // Notify parent component
       onBrandsUpdated?.();
-      
+
     } catch (error) {
       console.error('❌ Error deleting brand:', error);
     } finally {
@@ -179,13 +183,13 @@ const BrandManagementDialog = ({ open, onClose, onBrandsUpdated }) => {
 
   // ===== FILTERED BRANDS =====
   const filteredBrands = brands.filter(brand =>
-    brand.label.toLowerCase().includes(searchTerm.toLowerCase())
+    brand.label.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   // ===== RENDER BRAND ITEM =====
   const renderBrandItem = (brand, index) => {
     const isEditing = editingBrand === brand.value;
-    
+
     return (
       <ListItem key={brand.value} divider>
         {isEditing ? (
@@ -205,6 +209,7 @@ const BrandManagementDialog = ({ open, onClose, onBrandsUpdated }) => {
               size="small"
               onClick={(e) => {
                 const input = e.target.closest('.MuiBox-root').querySelector('input');
+
                 handleEditBrand(brand.value, input.value);
               }}
               color="primary"
@@ -287,11 +292,11 @@ const BrandManagementDialog = ({ open, onClose, onBrandsUpdated }) => {
           </Tooltip>
         </Box>
       </DialogTitle>
-      
+
       <DialogContent>
         <Box sx={{ mb: 2 }}>
           <Alert severity="info" sx={{ mb: 2 }}>
-            Manage brands for the <code>mgs_brand</code> additional attribute. 
+            Manage brands for the <code>mgs_brand</code> additional attribute.
             Changes will be cached and available immediately in filters.
           </Alert>
 
@@ -307,7 +312,7 @@ const BrandManagementDialog = ({ open, onClose, onBrandsUpdated }) => {
                   <InputAdornment position="start">
                     <SearchIcon fontSize="small" />
                   </InputAdornment>
-                )
+                ),
               }}
               sx={{ flexGrow: 1 }}
             />
@@ -383,7 +388,7 @@ const BrandManagementDialog = ({ open, onClose, onBrandsUpdated }) => {
           )}
         </Box>
       </DialogContent>
-      
+
       <DialogActions>
         <Button onClick={onClose} disabled={loading}>
           Close

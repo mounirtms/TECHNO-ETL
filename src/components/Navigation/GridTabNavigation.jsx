@@ -19,7 +19,7 @@ import {
   Typography,
   Chip,
   Stack,
-  Divider
+  Divider,
 } from '@mui/material';
 import {
   People as CustomersIcon,
@@ -31,7 +31,7 @@ import {
   Refresh as RefreshIcon,
   Settings as SettingsIcon,
   Close as CloseIcon,
-  Add as AddIcon
+  Add as AddIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -57,7 +57,7 @@ const TAB_CONFIG = {
     badge: null,
     refreshable: true,
     closable: false,
-    order: 1
+    order: 1,
   },
   orders: {
     id: 'orders',
@@ -68,7 +68,7 @@ const TAB_CONFIG = {
     badge: 'pending',
     refreshable: true,
     closable: false,
-    order: 2
+    order: 2,
   },
   products: {
     id: 'products',
@@ -79,7 +79,7 @@ const TAB_CONFIG = {
     badge: null,
     refreshable: true,
     closable: false,
-    order: 3
+    order: 3,
   },
   inventory: {
     id: 'inventory',
@@ -90,7 +90,7 @@ const TAB_CONFIG = {
     badge: 'low-stock',
     refreshable: true,
     closable: false,
-    order: 4
+    order: 4,
   },
   reports: {
     id: 'reports',
@@ -101,8 +101,8 @@ const TAB_CONFIG = {
     badge: null,
     refreshable: false,
     closable: true,
-    order: 5
-  }
+    order: 5,
+  },
 };
 
 /**
@@ -116,7 +116,7 @@ const TabLoading = ({ tabName }) => (
       alignItems: 'center',
       height: 400,
       flexDirection: 'column',
-      gap: 2
+      gap: 2,
     }}
   >
     <CircularProgress size={40} />
@@ -159,14 +159,14 @@ const TabPanel = ({ children, value, index, tabId, ...other }) => {
 /**
  * Enhanced Tab with badge and actions
  */
-const EnhancedTab = ({ 
-  tab, 
-  index, 
-  isActive, 
-  onRefresh, 
-  onClose, 
+const EnhancedTab = ({
+  tab,
+  index,
+  isActive,
+  onRefresh,
+  onClose,
   badgeCount = 0,
-  ...props 
+  ...props
 }) => {
   const { t } = useTranslation();
   const IconComponent = tab.icon;
@@ -176,9 +176,9 @@ const EnhancedTab = ({
       {...props}
       icon={
         <Stack direction="row" alignItems="center" spacing={1}>
-          <Badge 
-            badgeContent={badgeCount} 
-            color="error" 
+          <Badge
+            badgeContent={badgeCount}
+            color="error"
             invisible={!badgeCount}
             sx={{ '& .MuiBadge-badge': { fontSize: '0.6rem', minWidth: 16, height: 16 } }}
           >
@@ -220,8 +220,8 @@ const EnhancedTab = ({
       sx={{
         minHeight: 64,
         '&.Mui-selected': {
-          backgroundColor: 'action.selected'
-        }
+          backgroundColor: 'action.selected',
+        },
       }}
     />
   );
@@ -230,15 +230,15 @@ const EnhancedTab = ({
 /**
  * Main Grid Tab Navigation Component
  */
-const GridTabNavigation = ({ 
+const GridTabNavigation = ({
   defaultTabs = ['customers', 'orders', 'products', 'inventory'],
   enableDynamicTabs = true,
-  maxTabs = 8
+  maxTabs = 8,
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // State management
   const [activeTab, setActiveTab] = useState(0);
   const [openTabs, setOpenTabs] = useState(defaultTabs);
@@ -260,17 +260,17 @@ const GridTabNavigation = ({
       for (const tabId of openTabs) {
         // Initialize with empty data
         initialData[tabId] = null;
-        
+
         // Set initial badge counts
         switch (tabId) {
-          case 'orders':
-            initialBadges[tabId] = 5; // Pending orders
-            break;
-          case 'inventory':
-            initialBadges[tabId] = 3; // Low stock items
-            break;
-          default:
-            initialBadges[tabId] = 0;
+        case 'orders':
+          initialBadges[tabId] = 5; // Pending orders
+          break;
+        case 'inventory':
+          initialBadges[tabId] = 3; // Low stock items
+          break;
+        default:
+          initialBadges[tabId] = 0;
         }
       }
 
@@ -285,6 +285,7 @@ const GridTabNavigation = ({
   useEffect(() => {
     const currentPath = location.pathname;
     const tabIndex = availableTabs.findIndex(tab => currentPath.startsWith(tab.path));
+
     if (tabIndex !== -1 && tabIndex !== activeTab) {
       setActiveTab(tabIndex);
     }
@@ -294,6 +295,7 @@ const GridTabNavigation = ({
   const handleTabChange = useCallback((event, newValue) => {
     setActiveTab(newValue);
     const selectedTab = availableTabs[newValue];
+
     if (selectedTab) {
       navigate(selectedTab.path);
     }
@@ -303,14 +305,14 @@ const GridTabNavigation = ({
   const handleTabRefresh = useCallback((tabId) => {
     setTabData(prev => ({
       ...prev,
-      [tabId]: null // Reset data to trigger reload
+      [tabId]: null, // Reset data to trigger reload
     }));
-    
+
     // Simulate data refresh
     setTimeout(() => {
       setTabData(prev => ({
         ...prev,
-        [tabId]: { refreshed: true, timestamp: Date.now() }
+        [tabId]: { refreshed: true, timestamp: Date.now() },
       }));
     }, 1000);
   }, []);
@@ -318,15 +320,16 @@ const GridTabNavigation = ({
   // Handle tab close
   const handleTabClose = useCallback((tabId) => {
     if (openTabs.length <= 1) return; // Don't close last tab
-    
+
     const tabIndex = openTabs.indexOf(tabId);
     const newOpenTabs = openTabs.filter(id => id !== tabId);
-    
+
     setOpenTabs(newOpenTabs);
-    
+
     // Adjust active tab if necessary
     if (tabIndex === activeTab) {
       const newActiveTab = Math.max(0, Math.min(activeTab, newOpenTabs.length - 1));
+
       setActiveTab(newActiveTab);
       navigate(TAB_CONFIG[newOpenTabs[newActiveTab]]?.path || '/dashboard');
     } else if (tabIndex < activeTab) {
@@ -337,18 +340,19 @@ const GridTabNavigation = ({
   // Handle add new tab
   const handleAddTab = useCallback((tabId) => {
     if (openTabs.includes(tabId) || openTabs.length >= maxTabs) return;
-    
-    const newOpenTabs = [...openTabs, tabId].sort((a, b) => 
-      (TAB_CONFIG[a]?.order || 999) - (TAB_CONFIG[b]?.order || 999)
+
+    const newOpenTabs = [...openTabs, tabId].sort((a, b) =>
+      (TAB_CONFIG[a]?.order || 999) - (TAB_CONFIG[b]?.order || 999),
     );
-    
+
     setOpenTabs(newOpenTabs);
-    
+
     // Switch to new tab
     const newTabIndex = newOpenTabs.indexOf(tabId);
+
     setActiveTab(newTabIndex);
     navigate(TAB_CONFIG[tabId]?.path || '/dashboard');
-    
+
     setMenuAnchor(null);
   }, [openTabs, maxTabs, navigate]);
 
@@ -402,6 +406,7 @@ const GridTabNavigation = ({
               >
                 {availableTabsForAdding.map((tab) => {
                   const IconComponent = tab.icon;
+
                   return (
                     <MenuItem
                       key={tab.id}
@@ -424,6 +429,7 @@ const GridTabNavigation = ({
       <AnimatePresence mode="wait">
         {availableTabs.map((tab, index) => {
           const TabComponent = tab.component;
+
           return (
             <TabPanel
               key={tab.id}
@@ -433,7 +439,7 @@ const GridTabNavigation = ({
             >
               <TabComponent
                 data={tabData[tab.id]}
-                onDataChange={(newData) => 
+                onDataChange={(newData) =>
                   setTabData(prev => ({ ...prev, [tab.id]: newData }))
                 }
                 onBadgeUpdate={(count) =>

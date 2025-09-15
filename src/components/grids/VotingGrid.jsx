@@ -26,7 +26,7 @@ import {
   Paper,
   Divider,
   Stack,
-  Badge
+  Badge,
 } from '@mui/material';
 import {
   ThumbUp,
@@ -38,7 +38,7 @@ import {
   Cancel,
   Pause,
   FilterList,
-  Sort
+  Sort,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -51,33 +51,33 @@ const STATUS_CONFIG = {
   proposed: {
     color: 'default',
     icon: Schedule,
-    label: 'Proposed'
+    label: 'Proposed',
   },
   approved: {
     color: 'info',
     icon: TrendingUp,
-    label: 'Approved'
+    label: 'Approved',
   },
   in_progress: {
     color: 'warning',
     icon: Schedule,
-    label: 'In Progress'
+    label: 'In Progress',
   },
   completed: {
     color: 'success',
     icon: CheckCircle,
-    label: 'Completed'
+    label: 'Completed',
   },
   rejected: {
     color: 'error',
     icon: Cancel,
-    label: 'Rejected'
+    label: 'Rejected',
   },
   on_hold: {
     color: 'default',
     icon: Pause,
-    label: 'On Hold'
-  }
+    label: 'On Hold',
+  },
 };
 
 /**
@@ -87,7 +87,7 @@ const PRIORITY_CONFIG = {
   low: { color: 'success', label: 'Low' },
   medium: { color: 'warning', label: 'Medium' },
   high: { color: 'error', label: 'High' },
-  critical: { color: 'error', label: 'Critical' }
+  critical: { color: 'error', label: 'Critical' },
 };
 
 /**
@@ -100,26 +100,26 @@ const VotingGrid = ({ userId = 'current_user' }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
-  
+
   // Dialog states
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [filterDialogOpen, setFilterDialogOpen] = useState(false);
-  
+
   // Filter and sort states
   const [filters, setFilters] = useState({
     status: '',
     category: '',
-    priority: ''
+    priority: '',
   });
   const [sortBy, setSortBy] = useState('vote_count');
   const [sortOrder, setSortOrder] = useState('desc');
-  
+
   // New feature form state
   const [newFeature, setNewFeature] = useState({
     title: '',
     description: '',
     category: 'general',
-    priority: 'medium'
+    priority: 'medium',
   });
 
   /**
@@ -130,9 +130,9 @@ const VotingGrid = ({ userId = 'current_user' }) => {
       setLoading(true);
       const [featuresData, votesData] = await Promise.all([
         votingService.getFeatures(filters),
-        votingService.getUserVotes(userId)
+        votingService.getUserVotes(userId),
       ]);
-      
+
       setFeatures(featuresData);
       setUserVotes(new Set(votesData.map(vote => vote.feature_id)));
     } catch (err) {
@@ -149,12 +149,14 @@ const VotingGrid = ({ userId = 'current_user' }) => {
   const handleVote = async (featureId) => {
     try {
       const hasVoted = userVotes.has(featureId);
-      
+
       if (hasVoted) {
         await votingService.removeVote(featureId, userId);
         setUserVotes(prev => {
           const newSet = new Set(prev);
+
           newSet.delete(featureId);
+
           return newSet;
         });
         showSnackbar('Vote removed', 'info');
@@ -163,15 +165,16 @@ const VotingGrid = ({ userId = 'current_user' }) => {
         setUserVotes(prev => new Set([...prev, featureId]));
         showSnackbar('Vote added', 'success');
       }
-      
+
       // Update vote count in features
       setFeatures(prev => prev.map(feature => {
         if (feature.id === featureId) {
           return {
             ...feature,
-            vote_count: hasVoted ? feature.vote_count - 1 : feature.vote_count + 1
+            vote_count: hasVoted ? feature.vote_count - 1 : feature.vote_count + 1,
           };
         }
+
         return feature;
       }));
     } catch (err) {
@@ -186,9 +189,9 @@ const VotingGrid = ({ userId = 'current_user' }) => {
     try {
       const createdFeature = await votingService.createFeature({
         ...newFeature,
-        created_by: userId
+        created_by: userId,
       });
-      
+
       setFeatures(prev => [createdFeature, ...prev]);
       setCreateDialogOpen(false);
       setNewFeature({ title: '', description: '', category: 'general', priority: 'medium' });
@@ -210,7 +213,7 @@ const VotingGrid = ({ userId = 'current_user' }) => {
    */
   const sortedAndFilteredFeatures = useMemo(() => {
     let filtered = [...features];
-    
+
     // Apply filters
     if (filters.status) {
       filtered = filtered.filter(f => f.status === filters.status);
@@ -221,24 +224,24 @@ const VotingGrid = ({ userId = 'current_user' }) => {
     if (filters.priority) {
       filtered = filtered.filter(f => f.priority === filters.priority);
     }
-    
+
     // Apply sorting
     filtered.sort((a, b) => {
       let aVal = a[sortBy];
       let bVal = b[sortBy];
-      
+
       if (sortBy === 'vote_count') {
         aVal = parseInt(aVal) || 0;
         bVal = parseInt(bVal) || 0;
       }
-      
+
       if (sortOrder === 'asc') {
         return aVal > bVal ? 1 : -1;
       } else {
         return aVal < bVal ? 1 : -1;
       }
     });
-    
+
     return filtered;
   }, [features, filters, sortBy, sortOrder]);
 
@@ -268,7 +271,7 @@ const VotingGrid = ({ userId = 'current_user' }) => {
       {/* Header */}
       <Paper sx={{ p: 3, mb: 3 }}>
         <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-        
+
           <Stack direction="row" spacing={1}>
             <Button
               variant="outlined"
@@ -312,16 +315,16 @@ const VotingGrid = ({ userId = 'current_user' }) => {
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Card 
-                    sx={{ 
+                  <Card
+                    sx={{
                       height: '100%',
                       display: 'flex',
                       flexDirection: 'column',
                       transition: 'transform 0.2s, box-shadow 0.2s',
                       '&:hover': {
                         transform: 'translateY(-4px)',
-                        boxShadow: 4
-                      }
+                        boxShadow: 4,
+                      },
                     }}
                   >
                     <CardContent sx={{ flexGrow: 1 }}>
@@ -345,9 +348,9 @@ const VotingGrid = ({ userId = 'current_user' }) => {
                       <Typography variant="h6" gutterBottom>
                         {feature.title}
                       </Typography>
-                      <Typography 
-                        variant="body2" 
-                        color="text.secondary" 
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
                         sx={{ mb: 2, minHeight: 60 }}
                       >
                         {feature.description}
@@ -373,8 +376,8 @@ const VotingGrid = ({ userId = 'current_user' }) => {
                               sx={{
                                 transition: 'all 0.2s',
                                 '&:hover': {
-                                  transform: 'scale(1.1)'
-                                }
+                                  transform: 'scale(1.1)',
+                                },
                               }}
                             >
                               {hasVoted ? <ThumbUp /> : <ThumbUpOutlined />}
@@ -386,7 +389,7 @@ const VotingGrid = ({ userId = 'current_user' }) => {
                             </Typography>
                           </Badge>
                         </Stack>
-                        
+
                         <Typography variant="caption" color="text.secondary">
                           {new Date(feature.created_date).toLocaleDateString()}
                         </Typography>
@@ -420,8 +423,8 @@ const VotingGrid = ({ userId = 'current_user' }) => {
       )}
 
       {/* Create Feature Dialog */}
-      <Dialog 
-        open={createDialogOpen} 
+      <Dialog
+        open={createDialogOpen}
         onClose={() => setCreateDialogOpen(false)}
         maxWidth="sm"
         fullWidth
@@ -476,7 +479,7 @@ const VotingGrid = ({ userId = 'current_user' }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setCreateDialogOpen(false)}>Cancel</Button>
-          <Button 
+          <Button
             onClick={handleCreateFeature}
             variant="contained"
             disabled={!newFeature.title || !newFeature.description}
@@ -487,8 +490,8 @@ const VotingGrid = ({ userId = 'current_user' }) => {
       </Dialog>
 
       {/* Filter Dialog */}
-      <Dialog 
-        open={filterDialogOpen} 
+      <Dialog
+        open={filterDialogOpen}
         onClose={() => setFilterDialogOpen(false)}
         maxWidth="sm"
         fullWidth
@@ -557,8 +560,8 @@ const VotingGrid = ({ userId = 'current_user' }) => {
         autoHideDuration={4000}
         onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
       >
-        <Alert 
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))} 
+        <Alert
+          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
           severity={snackbar.severity}
         >
           {snackbar.message}

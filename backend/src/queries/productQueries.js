@@ -1,7 +1,7 @@
 /**
  * Product Database Queries
  * Professional SQL query management for product operations
- * 
+ *
  * @author Techno-ETL Team
  * @version 1.0.0
  */
@@ -9,7 +9,7 @@
 /**
  * Get all products with pagination and filtering
  * Retrieves products with comprehensive filtering and pagination support
- * 
+ *
  * @param {Object} filters - Filter parameters (category, status, price range, etc.)
  * @param {number} limit - Number of records to return
  * @param {number} offset - Number of records to skip
@@ -49,7 +49,7 @@ FETCH NEXT @limit ROWS ONLY;
 /**
  * Get product by SKU
  * Retrieves detailed product information for a specific SKU
- * 
+ *
  * @param {string} sku - Product SKU to lookup
  * @returns {Object} Product details
  */
@@ -88,7 +88,7 @@ WHERE p.sku = ?;
 /**
  * Create new product
  * Inserts a new product into the catalog
- * 
+ *
  * @param {Object} productData - Product information to insert
  * @returns {number} New product ID
  */
@@ -119,7 +119,7 @@ INSERT INTO catalog_product_entity (
 /**
  * Update product information
  * Updates existing product with new information
- * 
+ *
  * @param {Object} productData - Updated product information
  * @param {string} sku - Product SKU to update
  * @returns {number} Number of affected rows
@@ -148,7 +148,7 @@ WHERE sku = ?;
 /**
  * Update product stock
  * Updates stock information for a product
- * 
+ *
  * @param {number} qty - New stock quantity
  * @param {boolean} isInStock - Stock availability status
  * @param {string} sku - Product SKU
@@ -166,7 +166,7 @@ WHERE product_id = (SELECT id FROM catalog_product_entity WHERE sku = ?);
 /**
  * Delete product
  * Removes a product from the catalog
- * 
+ *
  * @param {string} sku - Product SKU to delete
  * @returns {number} Number of affected rows
  */
@@ -178,7 +178,7 @@ WHERE sku = ?;
 /**
  * Get products by category
  * Retrieves products belonging to a specific category
- * 
+ *
  * @param {number} categoryId - Category ID
  * @param {number} limit - Number of records to return
  * @param {number} offset - Number of records to skip
@@ -207,7 +207,7 @@ FETCH NEXT ? ROWS ONLY;
 /**
  * Get low stock products
  * Identifies products with stock levels below the specified threshold
- * 
+ *
  * @param {number} threshold - Minimum stock threshold
  * @returns {Array} Array of low stock products
  */
@@ -232,7 +232,7 @@ ORDER BY s.qty ASC, p.name;
 /**
  * Get out of stock products
  * Retrieves products that are completely out of stock
- * 
+ *
  * @returns {Array} Array of out of stock products
  */
 export const GET_OUT_OF_STOCK_PRODUCTS = `
@@ -254,7 +254,7 @@ ORDER BY p.updated_at DESC;
 /**
  * Get product statistics
  * Provides summary statistics for product catalog
- * 
+ *
  * @returns {Object} Product statistics
  */
 export const GET_PRODUCT_STATS = `
@@ -275,7 +275,7 @@ WHERE p.price IS NOT NULL AND p.price > 0;
 /**
  * Search products
  * Full-text search across product name, SKU, and description
- * 
+ *
  * @param {string} searchTerm - Search term
  * @param {number} limit - Number of records to return
  * @param {number} offset - Number of records to skip

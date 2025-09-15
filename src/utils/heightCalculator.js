@@ -13,7 +13,7 @@ export const LAYOUT_DIMENSIONS = {
   TOOLBAR_HEIGHT: 56,
   STATS_CARDS_HEIGHT: 120,
   PADDING: 16,
-  MARGIN: 8
+  MARGIN: 8,
 };
 
 /**
@@ -34,7 +34,7 @@ export const calculateContentHeight = (options = {}) => {
     hasTabHeader = true,
     hasToolbar = false,
     hasStatsCards = false,
-    extraPadding = 0
+    extraPadding = 0,
   } = options;
 
   let totalHeight = 0;
@@ -56,7 +56,7 @@ export const calculateContentHeight = (options = {}) => {
 export const createFlexibleHeightStyles = (options = {}) => {
   const {
     hasStatsCards = false,
-    minHeight = '400px'
+    minHeight = '400px',
   } = options;
 
   return {
@@ -72,7 +72,7 @@ export const createFlexibleHeightStyles = (options = {}) => {
       minHeight: 0,
       display: 'flex',
       flexDirection: 'column',
-      overflow: 'hidden'
+      overflow: 'hidden',
     },
 
     // Stats cards at bottom if present
@@ -81,9 +81,9 @@ export const createFlexibleHeightStyles = (options = {}) => {
         flexShrink: 0,
         borderTop: '1px solid rgba(224, 224, 224, 1)',
         pt: 1,
-        backgroundColor: 'background.paper'
-      }
-    })
+        backgroundColor: 'background.paper',
+      },
+    }),
   };
 };
 
@@ -100,7 +100,7 @@ export const calculateDashboardHeight = (options = {}) => {
     hasToolbar: false,
     hasStatsCards: false,
     extraPadding: 20, // Extra padding for dashboard
-    ...options
+    ...options,
   });
 };
 
@@ -117,7 +117,7 @@ export const calculateGridHeight = (options = {}) => {
     hasToolbar: true,
     hasStatsCards: options.hasStatsCards || false,
     extraPadding: 2,
-    ...options
+    ...options,
   });
 };
 
@@ -130,7 +130,7 @@ export const calculateChartHeight = (options = {}) => {
   const {
     isCollapsed = false,
     minHeight = 300,
-    maxHeight = 500
+    maxHeight = 500,
   } = options;
 
   if (isCollapsed) {
@@ -144,7 +144,7 @@ export const calculateChartHeight = (options = {}) => {
     hasToolbar: false,
     hasStatsCards: false,
     extraPadding: 40,
-    ...options
+    ...options,
   });
 
   // For charts, we want a fixed height within min/max bounds
@@ -159,24 +159,24 @@ export const calculateChartHeight = (options = {}) => {
  */
 export const calculateTabHeight = (tabType, options = {}) => {
   switch (tabType) {
-    case 'dashboard':
-      return calculateDashboardHeight(options);
-    case 'grid':
-      return calculateGridHeight(options);
-    case 'chart':
-      return calculateChartHeight(options);
-    case 'form':
-      return calculateContentHeight({
-        hasHeader: true,
-        hasFooter: true,
-        hasTabHeader: true,
-        hasToolbar: false,
-        hasStatsCards: false,
-        extraPadding: 0,
-        ...options
-      });
-    default:
-      return calculateContentHeight(options);
+  case 'dashboard':
+    return calculateDashboardHeight(options);
+  case 'grid':
+    return calculateGridHeight(options);
+  case 'chart':
+    return calculateChartHeight(options);
+  case 'form':
+    return calculateContentHeight({
+      hasHeader: true,
+      hasFooter: true,
+      hasTabHeader: true,
+      hasToolbar: false,
+      hasStatsCards: false,
+      extraPadding: 0,
+      ...options,
+    });
+  default:
+    return calculateContentHeight(options);
   }
 };
 
@@ -190,12 +190,12 @@ export const getResponsiveHeight = (baseHeight, breakpoints = {}) => {
   return {
     height: baseHeight,
     '@media (max-width: 768px)': {
-      height: breakpoints.mobile || `calc(${baseHeight} - 20px)`
+      height: breakpoints.mobile || `calc(${baseHeight} - 20px)`,
     },
     '@media (max-width: 480px)': {
-      height: breakpoints.small || `calc(${baseHeight} - 40px)`
+      height: breakpoints.small || `calc(${baseHeight} - 40px)`,
     },
-    ...breakpoints.custom
+    ...breakpoints.custom,
   };
 };
 
@@ -207,14 +207,14 @@ export const getResponsiveHeight = (baseHeight, breakpoints = {}) => {
  */
 export const createHeightStyles = (componentType, options = {}) => {
   const height = calculateTabHeight(componentType, options);
-  
+
   return {
     height,
     minHeight: options.minHeight || '200px',
     maxHeight: options.maxHeight || 'auto',
     overflow: options.overflow || 'hidden',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   };
 };
 
@@ -227,12 +227,12 @@ export const createHeightStyles = (componentType, options = {}) => {
 export const useHeightCalculation = (componentType, options = {}) => {
   const height = calculateTabHeight(componentType, options);
   const styles = createHeightStyles(componentType, options);
-  
+
   return {
     height,
     styles,
     dimensions: LAYOUT_DIMENSIONS,
-    calculateHeight: (newOptions) => calculateTabHeight(componentType, { ...options, ...newOptions })
+    calculateHeight: (newOptions) => calculateTabHeight(componentType, { ...options, ...newOptions }),
   };
 };
 
@@ -249,7 +249,7 @@ export const HEIGHT_PRESETS = {
   CHART_SMALL: calculateChartHeight({ minHeight: 200, maxHeight: 300 }),
   FORM: calculateTabHeight('form'),
   MODAL: 'calc(100vh - 120px)',
-  DRAWER: 'calc(100vh - 64px)'
+  DRAWER: 'calc(100vh - 64px)',
 };
 
 export default {
@@ -262,5 +262,5 @@ export default {
   getResponsiveHeight,
   createHeightStyles,
   useHeightCalculation,
-  HEIGHT_PRESETS
+  HEIGHT_PRESETS,
 };

@@ -22,7 +22,7 @@ import {
   Grid,
   Card,
   CardContent,
-  Divider
+  Divider,
 } from '@mui/material';
 import {
   Sync as SyncIcon,
@@ -32,7 +32,7 @@ import {
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
   Refresh as RefreshIcon,
-  Download as DownloadIcon
+  Download as DownloadIcon,
 } from '@mui/icons-material';
 import axios from 'axios';
 
@@ -59,6 +59,7 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
     if (onSync) return onSync();
     if (!priceData || priceData.length === 0) {
       alert('No price data to sync');
+
       return;
     }
     setSyncStatus('loading');
@@ -66,12 +67,13 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
     setSyncResults(null);
     try {
       console.log('🚀 Starting price sync with data:', priceData.slice(0, 2));
-      
+
       // Simulate progress updates
       const progressInterval = setInterval(() => {
         setProgress(prev => Math.min(prev + 10, 90));
       }, 500);
       const response = await axios.post('/api/mdm/sync/prices', priceData);
+
       clearInterval(progressInterval);
       setProgress(100);
       setSyncResults({
@@ -82,7 +84,7 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
         failed: response.data.failed || 0,
         bulkId: response.data.bulkId,
         results: response.data.results || [],
-        message: response.data.message || 'Sync completed successfully'
+        message: response.data.message || 'Sync completed successfully',
       });
       setSyncStatus('success');
     } catch (error) {
@@ -92,7 +94,7 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
         error: error.response?.data?.message || error.message,
         total: priceData.length,
         successful: 0,
-        failed: priceData.length
+        failed: priceData.length,
       });
     }
   };
@@ -107,25 +109,25 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'success': return 'success';
-      case 'error': return 'error';
-      case 'loading': return 'info';
-      default: return 'default';
+    case 'success': return 'success';
+    case 'error': return 'error';
+    case 'loading': return 'info';
+    default: return 'default';
     }
   };
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'success': return <SuccessIcon />;
-      case 'error': return <ErrorIcon />;
-      case 'loading': return <SyncIcon />;
-      default: return <InfoIcon />;
+    case 'success': return <SuccessIcon />;
+    case 'error': return <ErrorIcon />;
+    case 'loading': return <SyncIcon />;
+    default: return <InfoIcon />;
     }
   };
 
   const exportResults = () => {
     if (!syncResults?.results) return;
-    
+
     const csvContent = [
       ['SKU', 'Price', 'Status', 'Method', 'Error'],
       ...syncResults.results.map(result => [
@@ -133,13 +135,14 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
         result.price,
         result.status,
         result.method || 'bulk',
-        result.error || ''
-      ])
+        result.error || '',
+      ]),
     ].map(row => row.join(',')).join('\n');
-    
+
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
+
     a.href = url;
     a.download = `price-sync-results-${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
@@ -147,22 +150,22 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
   };
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={handleClose} 
-      maxWidth="md" 
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="md"
       fullWidth
       PaperProps={{
-        sx: { borderRadius: 3, minHeight: '60vh' }
+        sx: { borderRadius: 3, minHeight: '60vh' },
       }}
     >
-      <DialogTitle sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: 2, 
+      <DialogTitle sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 2,
         pb: 1,
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white'
+        color: 'white',
       }}>
         <SyncIcon />
         <Box>
@@ -190,7 +193,7 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
               </CardContent>
             </Card>
           </Grid>
-          
+
           {syncResults && (
             <>
               <Grid item xs={12} md={4}>
@@ -205,7 +208,7 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
                   </CardContent>
                 </Card>
               </Grid>
-              
+
               <Grid item xs={12} md={4}>
                 <Card variant="outlined">
                   <CardContent sx={{ textAlign: 'center' }}>
@@ -228,9 +231,9 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
             <Typography variant="body2" color="text.secondary" gutterBottom>
               Syncing prices... {progress}%
             </Typography>
-            <LinearProgress 
-              variant="determinate" 
-              value={progress} 
+            <LinearProgress
+              variant="determinate"
+              value={progress}
               sx={{ height: 8, borderRadius: 4 }}
             />
           </Box>
@@ -238,8 +241,8 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
 
         {/* Status Alert */}
         {syncResults && (
-          <Alert 
-            severity={syncResults.success ? 'success' : 'error'} 
+          <Alert
+            severity={syncResults.success ? 'success' : 'error'}
             sx={{ mb: 3 }}
             action={
               syncResults.results && (
@@ -258,7 +261,7 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
             </Typography>
             {syncResults.method && (
               <Typography variant="caption" display="block">
-                Method: {syncResults.method} | 
+                Method: {syncResults.method} |
                 {syncResults.bulkId && ` Bulk ID: ${syncResults.bulkId}`}
               </Typography>
             )}
@@ -279,7 +282,7 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
                 {internalShowDetails ? <ExpandLessIcon /> : <ExpandMoreIcon />}
               </IconButton>
             </Box>
-            
+
             <Collapse in={internalShowDetails}>
               <TableContainer component={Paper} variant="outlined">
                 <Table size="small">
@@ -322,7 +325,7 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
                   </TableBody>
                 </Table>
               </TableContainer>
-              
+
               {syncResults.results.length > 20 && (
                 <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
                   Showing first 20 results. Export CSV for complete data.
@@ -369,8 +372,8 @@ const PriceSyncDialog = ({ open, onClose, priceData = [], syncStatus: propSyncSt
         <Button onClick={handleClose}>
           Close
         </Button>
-        <Button 
-          onClick={handleSync} 
+        <Button
+          onClick={handleSync}
           variant="contained"
           disabled={syncStatus === 'loading' || priceData.length === 0}
           startIcon={syncStatus === 'loading' ? <SyncIcon /> : <RefreshIcon />}

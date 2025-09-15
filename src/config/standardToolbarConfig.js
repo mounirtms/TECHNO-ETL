@@ -27,9 +27,9 @@ export const STANDARD_TOOLBAR_CONFIGS = {
     // MDM-specific features
     mdmStocks: true,
     showSyncStocks: true,
-    showSyncAll: true
+    showSyncAll: true,
   },
-  
+
   // Magento Grid Toolbar Configuration
   magento: {
     showRefresh: true,
@@ -50,9 +50,9 @@ export const STANDARD_TOOLBAR_CONFIGS = {
     // Magento-specific features
     mdmStocks: false,
     showSyncStocks: false,
-    showSyncAll: false
+    showSyncAll: false,
   },
-  
+
   // Cegid Grid Toolbar Configuration
   cegid: {
     showRefresh: true,
@@ -73,9 +73,9 @@ export const STANDARD_TOOLBAR_CONFIGS = {
     // Cegid-specific features
     mdmStocks: false,
     showSyncStocks: false,
-    showSyncAll: false
+    showSyncAll: false,
   },
-  
+
   // Dashboard Grid Toolbar Configuration
   dashboard: {
     showRefresh: true,
@@ -96,8 +96,8 @@ export const STANDARD_TOOLBAR_CONFIGS = {
     // Dashboard-specific features
     mdmStocks: false,
     showSyncStocks: false,
-    showSyncAll: false
-  }
+    showSyncAll: false,
+  },
 };
 
 /**
@@ -108,10 +108,10 @@ export const STANDARD_TOOLBAR_CONFIGS = {
  */
 export const getStandardToolbarConfig = (gridType, overrides = {}) => {
   const baseConfig = STANDARD_TOOLBAR_CONFIGS[gridType] || STANDARD_TOOLBAR_CONFIGS.magento;
-  
+
   return {
     ...baseConfig,
-    ...overrides
+    ...overrides,
   };
 };
 
@@ -129,14 +129,14 @@ export const STANDARD_ACTION_HANDLERS = {
   onImport: null,
   onSearch: null,
   onFiltersToggle: null,
-  
+
   // MDM-specific handlers
   onSyncStocks: null,
   onSyncAll: null,
-  
+
   // Custom handlers
   onInfo: null,
-  onSettings: null
+  onSettings: null,
 };
 
 /**
@@ -152,7 +152,7 @@ export const STANDARD_CUSTOM_ACTIONS = {
       color: 'warning',
       tooltip: 'Mark changed stocks for synchronization',
       requiresSelection: false,
-      mdmOnly: true
+      mdmOnly: true,
     },
     {
       id: 'syncAll',
@@ -162,10 +162,10 @@ export const STANDARD_CUSTOM_ACTIONS = {
       color: 'secondary',
       tooltip: 'Synchronize all data',
       requiresSelection: false,
-      mdmOnly: true
-    }
+      mdmOnly: true,
+    },
   ],
-  
+
   magento: [
     {
       id: 'bulkSync',
@@ -175,13 +175,13 @@ export const STANDARD_CUSTOM_ACTIONS = {
       color: 'primary',
       tooltip: 'Sync selected items to Magento',
       requiresSelection: true,
-      magentoOnly: true
-    }
+      magentoOnly: true,
+    },
   ],
-  
+
   cegid: [],
-  
-  dashboard: []
+
+  dashboard: [],
 };
 
 /**
@@ -197,10 +197,10 @@ export const STANDARD_FILTER_CONFIGS = {
       { value: 'all', label: 'All Products' },
       { value: 'inStock', label: 'In Stock' },
       { value: 'outOfStock', label: 'Out of Stock' },
-      { value: 'changed', label: 'Recently Changed' }
-    ]
+      { value: 'changed', label: 'Recently Changed' },
+    ],
   },
-  
+
   magento: {
     showCustomFilters: true,
     showSourceFilter: false,
@@ -210,10 +210,10 @@ export const STANDARD_FILTER_CONFIGS = {
       { value: 'all', label: 'All Products' },
       { value: 'enabled', label: 'Enabled' },
       { value: 'disabled', label: 'Disabled' },
-      { value: 'local', label: 'Local Products' }
-    ]
+      { value: 'local', label: 'Local Products' },
+    ],
   },
-  
+
   cegid: {
     showCustomFilters: true,
     showSourceFilter: false,
@@ -222,17 +222,17 @@ export const STANDARD_FILTER_CONFIGS = {
     customFilters: [
       { value: 'all', label: 'All Items' },
       { value: 'available', label: 'Available' },
-      { value: 'unavailable', label: 'Unavailable' }
-    ]
+      { value: 'unavailable', label: 'Unavailable' },
+    ],
   },
-  
+
   dashboard: {
     showCustomFilters: false,
     showSourceFilter: false,
     showBranchFilter: false,
     showChangedOnlyFilter: false,
-    customFilters: []
-  }
+    customFilters: [],
+  },
 };
 
 /**
@@ -243,10 +243,10 @@ export const STANDARD_FILTER_CONFIGS = {
  */
 export const getStandardFilterConfig = (gridType, overrides = {}) => {
   const baseConfig = STANDARD_FILTER_CONFIGS[gridType] || STANDARD_FILTER_CONFIGS.magento;
-  
+
   return {
     ...baseConfig,
-    ...overrides
+    ...overrides,
   };
 };
 
@@ -258,26 +258,26 @@ export const STANDARD_EXPORT_OPTIONS = {
     enabled: true,
     label: 'Export to Excel',
     format: 'xlsx',
-    icon: 'FileDownloadIcon'
+    icon: 'FileDownloadIcon',
   },
   csv: {
     enabled: true,
     label: 'Export to CSV',
     format: 'csv',
-    icon: 'FileDownloadIcon'
+    icon: 'FileDownloadIcon',
   },
   json: {
     enabled: true,
     label: 'Export to JSON',
     format: 'json',
-    icon: 'FileDownloadIcon'
+    icon: 'FileDownloadIcon',
   },
   pdf: {
     enabled: false,
     label: 'Export to PDF',
     format: 'pdf',
-    icon: 'PictureAsPdfIcon'
-  }
+    icon: 'PictureAsPdfIcon',
+  },
 };
 
 /**
@@ -290,7 +290,7 @@ export const createToolbarConfig = (gridType, customConfig = {}) => {
   const toolbarConfig = getStandardToolbarConfig(gridType, customConfig.toolbar);
   const filterConfig = getStandardFilterConfig(gridType, customConfig.filters);
   const customActions = STANDARD_CUSTOM_ACTIONS[gridType] || [];
-  
+
   return {
     toolbar: toolbarConfig,
     filters: filterConfig,
@@ -298,8 +298,8 @@ export const createToolbarConfig = (gridType, customConfig = {}) => {
     exportOptions: STANDARD_EXPORT_OPTIONS,
     handlers: {
       ...STANDARD_ACTION_HANDLERS,
-      ...customConfig.handlers
-    }
+      ...customConfig.handlers,
+    },
   };
 };
 
@@ -310,5 +310,5 @@ export default {
   STANDARD_FILTER_CONFIGS,
   getStandardFilterConfig,
   STANDARD_EXPORT_OPTIONS,
-  createToolbarConfig
+  createToolbarConfig,
 };

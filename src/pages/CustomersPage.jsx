@@ -10,7 +10,7 @@ const CustomersPage = () => {
     getStatus,
     getView,
     getSortBy,
-    params
+    params,
   } = useDashboardParams();
 
   const [gridProps, setGridProps] = useState({});
@@ -21,8 +21,9 @@ const CustomersPage = () => {
       initialStatus: getStatus(),
       initialView: getView(),
       initialSortBy: getSortBy(),
-      dashboardParams: params
+      dashboardParams: params,
     };
+
     setGridProps(newProps);
   }, [getStatus, getView, getSortBy, params]);
 

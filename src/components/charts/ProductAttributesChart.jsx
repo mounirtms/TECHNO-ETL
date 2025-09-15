@@ -6,7 +6,7 @@ import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Responsi
  * Product Attributes Chart Component
  * Shows product attributes distribution using radar chart
  */
-const ProductAttributesChart = ({ data, title = "Product Attributes" }) => {
+const ProductAttributesChart = ({ data, title = 'Product Attributes' }) => {
   // Custom tooltip for radar chart
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -17,7 +17,7 @@ const ProductAttributesChart = ({ data, title = "Product Attributes" }) => {
             border: '1px solid #ccc',
             borderRadius: 1,
             padding: 1,
-            boxShadow: 2
+            boxShadow: 2,
           }}
         >
           <Typography variant="body2" fontWeight="bold">
@@ -31,6 +31,7 @@ const ProductAttributesChart = ({ data, title = "Product Attributes" }) => {
         </Box>
       );
     }
+
     return null;
   };
 
@@ -41,13 +42,13 @@ const ProductAttributesChart = ({ data, title = "Product Attributes" }) => {
           <Typography variant="h6" gutterBottom>
             {title}
           </Typography>
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               height: 300,
-              color: 'text.secondary'
+              color: 'text.secondary',
             }}
           >
             No attribute data available
@@ -67,8 +68,8 @@ const ProductAttributesChart = ({ data, title = "Product Attributes" }) => {
           <RadarChart data={data}>
             <PolarGrid />
             <PolarAngleAxis dataKey="attribute" />
-            <PolarRadiusAxis 
-              angle={90} 
+            <PolarRadiusAxis
+              angle={90}
               domain={[0, 'dataMax']}
               tick={false}
             />

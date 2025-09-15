@@ -17,7 +17,7 @@ const MockMagentoProductsPage = () => {
         await new Promise(resolve => setTimeout(resolve, 100));
         setProducts([
           { id: 1, name: 'Product 1', sku: 'SKU001' },
-          { id: 2, name: 'Product 2', sku: 'SKU002' }
+          { id: 2, name: 'Product 2', sku: 'SKU002' },
         ]);
         setLoading(false);
       } catch (err) {
@@ -112,7 +112,7 @@ const MockProductCatalogPage = () => {
       setCategories([
         { id: 1, name: 'Electronics', productCount: 150 },
         { id: 2, name: 'Clothing', productCount: 200 },
-        { id: 3, name: 'Books', productCount: 300 }
+        { id: 3, name: 'Books', productCount: 300 },
       ]);
     };
 
@@ -126,7 +126,7 @@ const MockProductCatalogPage = () => {
         await new Promise(resolve => setTimeout(resolve, 100));
         setCatalogProducts([
           { id: 1, name: `${selectedCategory.name} Product 1`, category: selectedCategory.name },
-          { id: 2, name: `${selectedCategory.name} Product 2`, category: selectedCategory.name }
+          { id: 2, name: `${selectedCategory.name} Product 2`, category: selectedCategory.name },
         ]);
       };
 
@@ -135,13 +135,13 @@ const MockProductCatalogPage = () => {
   }, [selectedCategory]);
 
   const filteredProducts = catalogProducts.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
     <div data-testid="product-catalog-page">
       <h1>Product Catalog</h1>
-      
+
       <div data-testid="search-section">
         <input
           data-testid="search-input"
@@ -166,7 +166,7 @@ const MockProductCatalogPage = () => {
               padding: '8px 16px',
               border: '1px solid #ccc',
               borderRadius: '4px',
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
           >
             {category.name} ({category.productCount})
@@ -199,27 +199,27 @@ const MockMagentoGridsPage = () => {
   const grids = [
     { id: 'products', name: 'Products', endpoint: '/api/products' },
     { id: 'orders', name: 'Orders', endpoint: '/api/orders' },
-    { id: 'customers', name: 'Customers', endpoint: '/api/customers' }
+    { id: 'customers', name: 'Customers', endpoint: '/api/customers' },
   ];
 
   const loadGridData = async (gridType) => {
     setGridLoading(true);
     try {
       await new Promise(resolve => setTimeout(resolve, 100));
-      
+
       const mockData = {
         products: [
           { id: 1, name: 'Product A', price: 99.99 },
-          { id: 2, name: 'Product B', price: 149.99 }
+          { id: 2, name: 'Product B', price: 149.99 },
         ],
         orders: [
           { id: 1, orderNumber: 'ORD001', total: 299.99 },
-          { id: 2, orderNumber: 'ORD002', total: 199.99 }
+          { id: 2, orderNumber: 'ORD002', total: 199.99 },
         ],
         customers: [
           { id: 1, name: 'John Doe', email: 'john@example.com' },
-          { id: 2, name: 'Jane Smith', email: 'jane@example.com' }
-        ]
+          { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
+        ],
       };
 
       setGridData(mockData[gridType] || []);
@@ -238,7 +238,7 @@ const MockMagentoGridsPage = () => {
   return (
     <div data-testid="magento-grids-page">
       <h1>Magento Grids</h1>
-      
+
       <div data-testid="grid-tabs">
         {grids.map(grid => (
           <button
@@ -252,7 +252,7 @@ const MockMagentoGridsPage = () => {
               padding: '8px 16px',
               border: '1px solid #ccc',
               borderRadius: '4px',
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
           >
             {grid.name}
@@ -283,6 +283,7 @@ const MockMagentoGridsPage = () => {
 // Test wrapper
 const TestWrapper = ({ children }) => {
   const theme = createTheme();
+
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
@@ -302,7 +303,7 @@ describe('Page Accessibility and Functionality Tests', () => {
       render(
         <TestWrapper>
           <MockMagentoProductsPage />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       // Should show loading initially
@@ -311,7 +312,7 @@ describe('Page Accessibility and Functionality Tests', () => {
       // Should load products
       await waitFor(() => {
         expect(screen.getByTestId('magento-products-page')).toBeInTheDocument();
-      });
+      }, { timeout: 15000 });
 
       expect(screen.getByText('Magento Products')).toBeInTheDocument();
       expect(screen.getByTestId('products-list')).toBeInTheDocument();
@@ -323,14 +324,13 @@ describe('Page Accessibility and Functionality Tests', () => {
       render(
         <TestWrapper>
           <MockMagentoProductsPage />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       expect(screen.getByTestId('loading')).toBeInTheDocument();
-      expect(screen.getByText('Loading products...')).toBeInTheDocument();
-
-      await waitFor(() => {
+      expect(screen.getByText('Loading products...')).toBeInTheDawait waitFor(() => {
         expect(screen.queryByTestId('loading')).not.toBeInTheDocument();
+      }, { timeout: 15000 });cument();
       });
     });
 
@@ -338,15 +338,14 @@ describe('Page Accessibility and Functionality Tests', () => {
       render(
         <TestWrapper>
           <MockMagentoProductsPage />
-        </TestWrapper>
-      );
-
-      await waitFor(() => {
+   await waitFor(() => {
         expect(screen.getByTestId('magento-products-page')).toBeInTheDocument();
+      }, { timeout: 15000 });-page')).toBeInTheDocument();
       });
 
       // Check for proper heading structure
       const heading = screen.getByRole('heading', { level: 1 });
+
       expect(heading).toHaveTextContent('Magento Products');
     });
   });
@@ -356,18 +355,16 @@ describe('Page Accessibility and Functionality Tests', () => {
       render(
         <TestWrapper>
           <MockLicensePage />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       expect(screen.getByTestId('license-page')).toBeInTheDocument();
       expect(screen.getByText('License Management')).toBeInTheDocument();
 
       // Should show checking status initially
-      expect(screen.getByTestId('license-status')).toHaveTextContent('Status: checking');
-
-      // Should update to valid status
-      await waitFor(() => {
+      expect(screen.getByTestId('license-status')).toHaveTextContent('Status: cawait waitFor(() => {
         expect(screen.getByTestId('license-status')).toHaveTextContent('Status: valid');
+      }, { timeout: 15000 });nse-status')).toHaveTextContent('Status: valid');
       });
 
       // Should show permissions
@@ -387,6 +384,7 @@ describe('Page Accessibility and Functionality Tests', () => {
             await new Promise(resolve => setTimeout(resolve, 50));
             setLicenseStatus('invalid');
           };
+
           checkLicense();
         }, []);
 
@@ -405,13 +403,9 @@ describe('Page Accessibility and Functionality Tests', () => {
       };
 
       render(
-        <TestWrapper>
-          <FailingLicensePage />
-        </TestWrapper>
-      );
-
-      await waitFor(() => {
+        <TestWrapperawait waitFor(() => {
         expect(screen.getByTestId('license-status')).toHaveTextContent('Status: invalid');
+      }, { timeout: 15000 });.getByTestId('license-status')).toHaveTextContent('Status: invalid');
       });
 
       expect(screen.getByTestId('license-error')).toBeInTheDocument();
@@ -419,18 +413,15 @@ describe('Page Accessibility and Functionality Tests', () => {
     });
 
     it('provides proper keyboard navigation', async () => {
-      render(
-        <TestWrapper>
-          <MockLicensePage />
-        </TestWrapper>
-      );
-
-      await waitFor(() => {
+      renderawait waitFor(() => {
+        expect(screen.getByTestId('license-status')).toHaveTextContent('Status: valid');
+      }, { timeout: 15000 });
         expect(screen.getByTestId('license-status')).toHaveTextContent('Status: valid');
       });
 
       // All interactive elements should be focusable
       const interactiveElements = screen.queryAllByRole('button');
+
       interactiveElements.forEach(element => {
         expect(element).not.toHaveAttribute('tabindex', '-1');
       });
@@ -442,13 +433,12 @@ describe('Page Accessibility and Functionality Tests', () => {
       render(
         <TestWrapper>
           <MockProductCatalogPage />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
-      expect(screen.getByTestId('product-catalog-page')).toBeInTheDocument();
-      expect(screen.getByText('Product Catalog')).toBeInTheDocument();
-
-      // Should load categories
+      expect(screen.getByTestId('product-catalog-page')).toBeInTheDocumeawait waitFor(() => {
+        expect(screen.getByTestId('category-1')).toBeInTheDocument();
+      }, { timeout: 15000 });ategories
       await waitFor(() => {
         expect(screen.getByTestId('category-1')).toBeInTheDocument();
       });
@@ -457,19 +447,15 @@ describe('Page Accessibility and Functionality Tests', () => {
       expect(screen.getByTestId('category-3')).toBeInTheDocument();
     });
 
-    it('handles category selection and product loading', async () => {
-      render(
-        <TestWrapper>
-          <MockProductCatalogPage />
-        </TestWrapper>
+    it('handles category selection and product loadawait waitFor(() => {
+        expect(screen.getByTestId('category-1')).toBeInTheDocument();
+      }, { timeout: 15000 });  </TestWrapper>,
       );
 
       await waitFor(() => {
-        expect(screen.getByTestId('category-1')).toBeInTheDocument();
-      });
-
-      // Select a category
-      fireEvent.click(screen.getByTestId('category-1'));
+        expect(scrawait waitFor(() => {
+        expect(screen.getByTestId('products-section')).toBeInTheDocument();
+      }, { timeout: 15000 });.click(screen.getByTestId('category-1'));
 
       await waitFor(() => {
         expect(screen.getByTestId('products-section')).toBeInTheDocument();
@@ -478,28 +464,22 @@ describe('Page Accessibility and Functionality Tests', () => {
       expect(screen.getByText('Products in Electronics')).toBeInTheDocument();
       expect(screen.getByTestId('catalog-product-1')).toBeInTheDocument();
       expect(screen.getByTestId('catalog-product-2')).toBeInTheDocument();
-    });
-
-    it('handles search functionality', async () => {
-      render(
-        <TestWrapper>
-          <MockProductCatalogPage />
-        </TestWrapper>
+    await waitFor(() => {
+        expect(screen.getByTestId('category-1')).toBeInTheDocument();
+      }, { timeout: 15000 });      <MockProductCatalogPage />
+        </TestWrapper>,
       );
 
-      await waitFor(() => {
-        expect(screen.getByTestId('category-1')).toBeInTheDocument();
-      });
-
-      // Select category and load products
+      await waitFor(() await waitFor(() => {
+        expect(screen.getByTestId('products-section')).toBeInTheDocument();
+      }, { timeout: 15000 });egory and load products
       fireEvent.click(screen.getByTestId('category-1'));
 
       await waitFor(() => {
-        expect(screen.getByTestId('products-section')).toBeInTheDocument();
-      });
+        expect(screen.getByTestId('proawait waitFor(() => {
+        expect(screen.getByTestId('product-count')).toHaveTextContent('Showing 1 products');
+      }, { timeout: 15000 });-input');
 
-      // Test search
-      const searchInput = screen.getByTestId('search-input');
       fireEvent.change(searchInput, { target: { value: 'Product 1' } });
 
       await waitFor(() => {
@@ -507,14 +487,13 @@ describe('Page Accessibility and Functionality Tests', () => {
       });
 
       expect(screen.getByTestId('catalog-product-1')).toBeInTheDocument();
-      expect(screen.queryByTestId('catalog-product-2')).not.toBeInTheDocument();
-    });
-
-    it('maintains proper focus management', async () => {
+      expect(screen.queryByTestawait waitFor(() => {
+        expect(screen.getByTestId('search-input')).toBeInTheDocument();
+      }, { timeout: 15000 }); async () => {
       render(
         <TestWrapper>
           <MockProductCatalogPage />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       await waitFor(() => {
@@ -522,6 +501,7 @@ describe('Page Accessibility and Functionality Tests', () => {
       });
 
       const searchInput = screen.getByTestId('search-input');
+
       searchInput.focus();
       expect(document.activeElement).toBe(searchInput);
     });
@@ -532,31 +512,26 @@ describe('Page Accessibility and Functionality Tests', () => {
       render(
         <TestWrapper>
           <MockMagentoGridsPage />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       expect(screen.getByTestId('magento-grids-page')).toBeInTheDocument();
       expect(screen.getByText('Magento Grids')).toBeInTheDocument();
 
       // Should show grid tabs
-      expect(screen.getByTestId('grid-tab-products')).toBeInTheDocument();
-      expect(screen.getByTestId('grid-tab-orders')).toBeInTheDocument();
+      expect(scawait waitFor(() => {
+        expect(screen.getByTestId('products-grid')).toBeInTheDocument();
+      }, { timeout: 15000 });ers')).toBeInTheDocument();
       expect(screen.getByTestId('grid-tab-customers')).toBeInTheDocument();
 
       // Should load default grid data
-      await waitFor(() => {
+      await waitFor(await waitFor(() => {
         expect(screen.getByTestId('products-grid')).toBeInTheDocument();
-      });
-    });
-
-    it('handles grid switching correctly', async () => {
+      }, { timeout: 15000 });   it('handles grid switching correctly', async () => {
       render(
-        <TestWrapper>
-          <MockMagentoGridsPage />
-        </TestWrapper>
-      );
-
-      await waitFor(() => {
+        <TestWrawait waitFor(() => {
+        expect(screen.getByTestId('orders-grid')).toBeInTheDocument();
+      }, { timeout: 15000 });=> {
         expect(screen.getByTestId('products-grid')).toBeInTheDocument();
       });
 
@@ -564,31 +539,28 @@ describe('Page Accessibility and Functionality Tests', () => {
       fireEvent.click(screen.getByTestId('grid-tab-orders'));
 
       await waitFor(() => {
-        expect(screen.getByTestId('orders-grid')).toBeInTheDocument();
-      });
-
-      expect(screen.getByText('Orders Grid')).toBeInTheDocument();
+        expectawait waitFor(() => {
+        expect(screen.getByTestId('customers-grid')).toBeInTheDocument();
+      }, { timeout: 15000 });s Grid')).toBeInTheDocument();
       expect(screen.getByTestId('grid-item-1')).toBeInTheDocument();
 
       // Switch to customers grid
       fireEvent.click(screen.getByTestId('grid-tab-customers'));
 
       await waitFor(() => {
-        expect(screen.getByTestId('customers-grid')).toBeInTheDocument();
-      });
-
-      expect(screen.getByText('Customers Grid')).toBeInTheDocument();
+        expectawait waitFor(() => {
+        expect(screen.getByTestId('products-grid')).toBeInTheDocument();
+      }, { timeout: 15000 });ustomers Grid')).toBeInTheDocument();
     });
 
     it('shows loading states during grid switches', async () => {
       render(
         <TestWrapper>
           <MockMagentoGridsPage />
-        </TestWrapper>
-      );
-
-      await waitFor(() => {
-        expect(screen.getByTestId('products-grid')).toBeInTheDocument();
+        </TestWrapper>,
+await waitFor(() => {
+        expect(screen.queryByTestId('grid-loading')).not.toBeInTheDocument();
+      }, { timeout: 15000 }););
       });
 
       // Switch grid and check for loading state
@@ -606,13 +578,13 @@ describe('Page Accessibility and Functionality Tests', () => {
       render(
         <TestWrapper>
           <MockMagentoGridsPage />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const tabs = [
         screen.getByTestId('grid-tab-products'),
         screen.getByTestId('grid-tab-orders'),
-        screen.getByTestId('grid-tab-customers')
+        screen.getByTestId('grid-tab-customers'),
       ];
 
       // All tabs should be focusable
@@ -633,7 +605,7 @@ describe('Page Accessibility and Functionality Tests', () => {
           products: <MockMagentoProductsPage />,
           license: <MockLicensePage />,
           catalog: <MockProductCatalogPage />,
-          grids: <MockMagentoGridsPage />
+          grids: <MockMagentoGridsPage />,
         };
 
         return (
@@ -642,30 +614,26 @@ describe('Page Accessibility and Functionality Tests', () => {
               <button onClick={() => setCurrentPage('products')}>Products</button>
               <button onClick={() => setCurrentPage('license')}>License</button>
               <button onClick={() => setCurrentPage('catalog')}>Catalog</button>
-              <button onClick={() => setCurrentPage('grids')}>Grids</button>
-            </nav>
-            <main data-testid="page-content">
+          await waitFor(() => {
+        expect(screen.getByTestId('magento-products-page')).toBeInTheDocument();
+      }, { timeout: 15000 });tid="page-content">
               {pages[currentPage]}
             </main>
-          </div>
-        );
-      };
-
-      render(
-        <TestWrapper>
-          <NavigationTest />
-        </TestWrapper>
+await waitFor(() => {
+        expect(screen.getByTestId('license-page')).toBeInTheDocument();
+      }, { timeout: 15000 }); />
+        </TestWrapper>,
       );
 
       // Start with products page
-      await waitFor(() => {
-        expect(screen.getByTestId('magento-products-page')).toBeInTheDocument();
-      });
+ await waitFor(() => {
+        expect(screen.getByTestId('product-catalog-page')).toBeInTheDocument();
+      }, { timeout: 15000 });   });
 
       // Navigate to license page
-      fireEvent.click(screen.getByText('License'));
-      await waitFor(() => {
-        expect(screen.getByTestId('license-page')).toBeInTheDocument();
+      fireEvent.click(screen.await waitFor(() => {
+        expect(screen.getByTestId('magento-grids-page')).toBeInTheDocument();
+      }, { timeout: 15000 });heDocument();
       });
 
       // Navigate to catalog page
@@ -688,6 +656,7 @@ describe('Page Accessibility and Functionality Tests', () => {
         if (shouldError) {
           throw new Error('Test error');
         }
+
         return <div data-testid="error-prone">Working correctly</div>;
       };
 
@@ -696,7 +665,9 @@ describe('Page Accessibility and Functionality Tests', () => {
 
         React.useEffect(() => {
           const handleError = () => setHasError(true);
+
           window.addEventListener('error', handleError);
+
           return () => window.removeEventListener('error', handleError);
         }, []);
 

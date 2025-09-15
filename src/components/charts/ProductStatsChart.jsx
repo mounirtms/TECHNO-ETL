@@ -6,7 +6,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recha
  * Product Statistics Chart Component
  * Shows distribution of products by status, type, and attributes
  */
-const ProductStatsChart = ({ data, title = "Product Statistics" }) => {
+const ProductStatsChart = ({ data, title = 'Product Statistics' }) => {
   // Default colors for different chart segments
   const COLORS = {
     enabled: '#4caf50',
@@ -18,13 +18,14 @@ const ProductStatsChart = ({ data, title = "Product Statistics" }) => {
     trending: '#4caf50',
     best_seller: '#ff9800',
     a_la_une: '#e91e63',
-    normal: '#9e9e9e'
+    normal: '#9e9e9e',
   };
 
   // Custom tooltip for better data display
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       const data = payload[0];
+
       return (
         <Box
           sx={{
@@ -32,7 +33,7 @@ const ProductStatsChart = ({ data, title = "Product Statistics" }) => {
             border: '1px solid #ccc',
             borderRadius: 1,
             padding: 1,
-            boxShadow: 2
+            boxShadow: 2,
           }}
         >
           <Typography variant="body2" fontWeight="bold">
@@ -47,12 +48,14 @@ const ProductStatsChart = ({ data, title = "Product Statistics" }) => {
         </Box>
       );
     }
+
     return null;
   };
 
   // Custom label function
   const renderLabel = (entry) => {
     const percent = ((entry.value / entry.total) * 100).toFixed(1);
+
     return `${percent}%`;
   };
 
@@ -63,13 +66,13 @@ const ProductStatsChart = ({ data, title = "Product Statistics" }) => {
           <Typography variant="h6" gutterBottom>
             {title}
           </Typography>
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               height: 300,
-              color: 'text.secondary'
+              color: 'text.secondary',
             }}
           >
             No data available
@@ -102,15 +105,15 @@ const ProductStatsChart = ({ data, title = "Product Statistics" }) => {
               dataKey="value"
             >
               {dataWithTotal.map((entry, index) => (
-                <Cell 
-                  key={`cell-${index}`} 
+                <Cell
+                  key={`cell-${index}`}
                   fill={COLORS[entry.name.toLowerCase()] || COLORS.normal}
                 />
               ))}
             </Pie>
             <Tooltip content={<CustomTooltip />} />
-            <Legend 
-              verticalAlign="bottom" 
+            <Legend
+              verticalAlign="bottom"
               height={36}
               formatter={(value, entry) => (
                 <span style={{ color: entry.color }}>

@@ -1,7 +1,7 @@
 /**
  * Unified Grid Toolbar System
  * Base toolbar with inheritance pattern for consistent UI and functionality
- * 
+ *
  * @author Techno-ETL Team
  * @version 4.0.0
  */
@@ -18,7 +18,7 @@ import {
   ListItemIcon,
   ListItemText,
   Chip,
-  Badge
+  Badge,
 } from '@mui/material';
 import {
   Refresh as RefreshIcon,
@@ -34,7 +34,7 @@ import {
   MoreVert as MoreIcon,
   Inventory as InventoryIcon,
   SyncAlt as SyncAllIcon,
-  CloudUpload as CloudUploadIcon
+  CloudUpload as CloudUploadIcon,
 } from '@mui/icons-material';
 
 /**
@@ -62,7 +62,7 @@ export class BaseToolbarAction {
     if (!this.visible) return null;
 
     const IconComponent = this.getIconComponent();
-    
+
     const button = (
       <Button
         key={key}
@@ -99,7 +99,7 @@ export class BaseToolbarAction {
     if (!this.visible) return null;
 
     const IconComponent = this.getIconComponent();
-    
+
     const iconButton = (
       <IconButton
         key={key}
@@ -146,7 +146,7 @@ export class BaseToolbarAction {
       inventory: InventoryIcon,
       sync_alt: SyncAllIcon,
       cloud_upload: CloudUploadIcon,
-      default: SettingsIcon
+      default: SettingsIcon,
     };
 
     return iconMap[this.icon] || iconMap.default;
@@ -164,7 +164,7 @@ export class RefreshAction extends BaseToolbarAction {
       color: 'primary',
       tooltip: 'Refresh data',
       enabled,
-      onClick: onRefresh
+      onClick: onRefresh,
     });
   }
 }
@@ -177,7 +177,7 @@ export class SearchAction extends BaseToolbarAction {
       color: 'primary',
       tooltip: 'Search items',
       enabled,
-      onClick: onSearch
+      onClick: onSearch,
     });
   }
 }
@@ -190,7 +190,7 @@ export class ExportAction extends BaseToolbarAction {
       color: 'secondary',
       tooltip: 'Export data',
       enabled,
-      onClick: onExport
+      onClick: onExport,
     });
   }
 }
@@ -204,7 +204,7 @@ export class SyncAction extends BaseToolbarAction {
       tooltip: 'Sync selected items',
       enabled,
       badge,
-      onClick: onSync
+      onClick: onSync,
     });
   }
 }
@@ -217,7 +217,7 @@ export class SyncStocksAction extends BaseToolbarAction {
       color: 'warning',
       tooltip: 'Sync stock levels',
       enabled,
-      onClick: onSyncStocks
+      onClick: onSyncStocks,
     });
   }
 }
@@ -231,7 +231,7 @@ export class SyncAllAction extends BaseToolbarAction {
       tooltip: 'Sync all changes',
       enabled,
       badge,
-      onClick: onSyncAll
+      onClick: onSyncAll,
     });
   }
 }
@@ -244,7 +244,7 @@ export class AddAction extends BaseToolbarAction {
       color: 'success',
       tooltip: 'Add new item',
       enabled,
-      onClick: onAdd
+      onClick: onAdd,
     });
   }
 }
@@ -257,7 +257,7 @@ export class ImportAction extends BaseToolbarAction {
       color: 'info',
       tooltip: 'Import data',
       enabled,
-      onClick: onImport
+      onClick: onImport,
     });
   }
 }
@@ -272,9 +272,9 @@ export class BaseGridToolbar {
       variant: 'standard', // standard, compact, minimal
       showLabels: true,
       groupActions: true,
-      ...config
+      ...config,
     };
-    
+
     this.actions = [];
     this.menuActions = [];
   }
@@ -286,6 +286,7 @@ export class BaseGridToolbar {
     if (action instanceof BaseToolbarAction) {
       this.actions.push(action);
     }
+
     return this;
   }
 
@@ -294,6 +295,7 @@ export class BaseGridToolbar {
    */
   addActions(actions) {
     actions.forEach(action => this.addAction(action));
+
     return this;
   }
 
@@ -304,6 +306,7 @@ export class BaseGridToolbar {
     if (action instanceof BaseToolbarAction) {
       this.menuActions.push(action);
     }
+
     return this;
   }
 
@@ -318,20 +321,20 @@ export class BaseGridToolbar {
     const groups = {
       primary: [],
       secondary: [],
-      tertiary: []
+      tertiary: [],
     };
 
     this.actions.forEach(action => {
       switch (action.color) {
-        case 'primary':
-          groups.primary.push(action);
-          break;
-        case 'secondary':
-        case 'info':
-          groups.secondary.push(action);
-          break;
-        default:
-          groups.tertiary.push(action);
+      case 'primary':
+        groups.primary.push(action);
+        break;
+      case 'secondary':
+      case 'info':
+        groups.secondary.push(action);
+        break;
+      default:
+        groups.tertiary.push(action);
       }
     });
 
@@ -355,7 +358,7 @@ export class BaseGridToolbar {
           borderBottom: 1,
           borderColor: 'divider',
           bgcolor: 'background.paper',
-          ...props.sx
+          ...props.sx,
         }}
       >
         {actionGroups.map((group, groupIndex) => (
@@ -364,17 +367,17 @@ export class BaseGridToolbar {
             <Box sx={{ display: 'flex', gap: 0.5 }}>
               {group.map((action, actionIndex) => {
                 const key = `${groupIndex}-${actionIndex}`;
-                
+
                 if (variant === 'compact' || !showLabels) {
                   return action.renderIcon(key);
                 }
-                
+
                 return action.render(key);
               })}
             </Box>
           </React.Fragment>
         ))}
-        
+
         {this.menuActions.length > 0 && this.renderOverflowMenu()}
       </Box>
     );
@@ -407,11 +410,11 @@ export class MagentoGridToolbar extends BaseGridToolbar {
     if (handlers.onRefresh) {
       this.addAction(new RefreshAction(handlers.onRefresh));
     }
-    
+
     if (handlers.onAdd) {
       this.addAction(new AddAction(handlers.onAdd));
     }
-    
+
     if (handlers.onSync) {
       this.addAction(new SyncAction(handlers.onSync, true, handlers.syncBadge));
     }
@@ -420,7 +423,7 @@ export class MagentoGridToolbar extends BaseGridToolbar {
     if (handlers.onImport) {
       this.addAction(new ImportAction(handlers.onImport));
     }
-    
+
     if (handlers.onExport) {
       this.addMenuAction(new ExportAction(handlers.onExport));
     }
@@ -441,15 +444,15 @@ export class MDMGridToolbar extends BaseGridToolbar {
     if (handlers.onRefresh) {
       this.addAction(new RefreshAction(handlers.onRefresh));
     }
-    
+
     if (handlers.onSync) {
       this.addAction(new SyncAction(handlers.onSync, true, handlers.syncBadge));
     }
-    
+
     if (handlers.onSyncStocks) {
       this.addAction(new SyncStocksAction(handlers.onSyncStocks, handlers.enableSyncStocks));
     }
-    
+
     if (handlers.onSyncAll) {
       this.addAction(new SyncAllAction(handlers.onSyncAll, handlers.enableSyncAll, handlers.syncAllBadge));
     }
@@ -495,7 +498,7 @@ const OverflowMenu = ({ actions }) => {
       >
         {actions.map((action, index) => {
           const IconComponent = action.getIconComponent();
-          
+
           return (
             <MenuItem
               key={index}
@@ -524,12 +527,12 @@ const OverflowMenu = ({ actions }) => {
 export class ToolbarFactory {
   static create(gridType, config = {}) {
     switch (gridType) {
-      case 'magento':
-        return new MagentoGridToolbar(config);
-      case 'mdm':
-        return new MDMGridToolbar(config);
-      default:
-        return new BaseGridToolbar(config);
+    case 'magento':
+      return new MagentoGridToolbar(config);
+    case 'mdm':
+      return new MDMGridToolbar(config);
+    default:
+      return new BaseGridToolbar(config);
     }
   }
 }
@@ -550,6 +553,6 @@ export function useUnifiedToolbar(gridType, handlers = {}, config = {}) {
     toolbar,
     renderToolbar,
     addAction: (action) => toolbar.addAction(action),
-    addMenuAction: (action) => toolbar.addMenuAction(action)
+    addMenuAction: (action) => toolbar.addMenuAction(action),
   };
 }

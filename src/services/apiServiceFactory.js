@@ -42,7 +42,7 @@ const SERVICE_CONFIG = {
     timeout: 5000,
     retries: 1,
     cacheTimeout: 30 * 1000, // 30 seconds
-  }
+  },
 };
 
 /**
@@ -71,7 +71,9 @@ class CircuitBreaker {
 
     try {
       const result = await operation();
+
       this.onSuccess();
+
       return result;
     } catch (error) {
       this.onFailure();
@@ -87,7 +89,7 @@ class CircuitBreaker {
   onFailure() {
     this.failureCount++;
     this.lastFailureTime = Date.now();
-    
+
     if (this.failureCount >= this.threshold) {
       this.state = 'OPEN';
       console.warn(`🚨 Circuit breaker ${this.name} is now OPEN`);
@@ -99,7 +101,7 @@ class CircuitBreaker {
       name: this.name,
       state: this.state,
       failureCount: this.failureCount,
-      lastFailureTime: this.lastFailureTime
+      lastFailureTime: this.lastFailureTime,
     };
   }
 }
@@ -116,9 +118,9 @@ class ApiServiceFactory {
       totalRequests: 0,
       totalErrors: 0,
       totalDuration: 0,
-      serviceMetrics: {}
+      serviceMetrics: {},
     };
-    
+
     // Initialize circuit breakers for each service
     Object.keys(SERVICE_CONFIG).forEach(serviceType => {
       this.circuitBreakers.set(serviceType, new CircuitBreaker(serviceType));
@@ -130,14 +132,15 @@ class ApiServiceFactory {
    */
   getService(serviceType, customConfig = {}) {
     const cacheKey = `${serviceType}_${JSON.stringify(customConfig)}`;
-    
+
     if (this.services.has(cacheKey)) {
       return this.services.get(cacheKey);
     }
 
     const service = this.createService(serviceType, customConfig);
+
     this.services.set(cacheKey, service);
-    
+
     return service;
   }
 
@@ -147,7 +150,7 @@ class ApiServiceFactory {
   createService(serviceType, customConfig = {}) {
     const config = {
       ...SERVICE_CONFIG[serviceType],
-      ...customConfig
+      ...customConfig,
     };
 
     // Handle Magento direct URL override
@@ -165,8 +168,8 @@ class ApiServiceFactory {
         'X-Service-Type': serviceType,
         'X-Client': 'Techno-ETL-Frontend',
         'X-Version': '2.0.0',
-        ...customConfig.headers
-      }
+        ...customConfig.headers,
+      },
     });
 
     // Add request interceptor
@@ -175,26 +178,28 @@ class ApiServiceFactory {
         requestConfig.metadata = {
           startTime: Date.now(),
           serviceType,
-          requestId: `${serviceType}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+          requestId: `${serviceType}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         };
-        
+
         this.globalMetrics.totalRequests++;
         if (!this.globalMetrics.serviceMetrics[serviceType]) {
           this.globalMetrics.serviceMetrics[serviceType] = {
             requests: 0,
             errors: 0,
-            totalDuration: 0
+            totalDuration: 0,
           };
         }
         this.globalMetrics.serviceMetrics[serviceType].requests++;
-        
+
         console.log(`🚀 ${serviceType.toUpperCase()} Request [${requestConfig.metadata.requestId}]: ${requestConfig.method?.toUpperCase()} ${requestConfig.url}`);
+
         return requestConfig;
       },
       (error) => {
         console.error(`❌ ${serviceType.toUpperCase()} Request Error:`, error);
+
         return Promise.reject(error);
-      }
+      },
     );
 
     // Add response interceptor with circuit breaker
@@ -202,50 +207,50 @@ class ApiServiceFactory {
       (response) => {
         const duration = Date.now() - response.config.metadata.startTime;
         const requestId = response.config.metadata.requestId;
-        
+
         this.globalMetrics.totalDuration += duration;
         this.globalMetrics.serviceMetrics[serviceType].totalDuration += duration;
-        
+
         console.log(`✅ ${serviceType.toUpperCase()} Response [${requestId}]: ${response.status} (${duration}ms)`);
-        
+
         // Add metadata to response
         response.metadata = {
           duration,
           requestId,
           serviceType,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
-        
+
         return response;
       },
       (error) => {
         const duration = error.config?.metadata ? Date.now() - error.config.metadata.startTime : 0;
         const requestId = error.config?.metadata?.requestId || 'unknown';
-        
+
         this.globalMetrics.totalErrors++;
         if (this.globalMetrics.serviceMetrics[serviceType]) {
           this.globalMetrics.serviceMetrics[serviceType].errors++;
         }
-        
+
         console.error(`❌ ${serviceType.toUpperCase()} Error [${requestId}]: ${error.message} (${duration}ms)`);
-        
+
         // Add metadata to error
         error.metadata = {
           duration,
           requestId,
           serviceType,
           timestamp: new Date().toISOString(),
-          retryable: this.isRetryableError(error)
+          retryable: this.isRetryableError(error),
         };
-        
+
         return Promise.reject(error);
-      }
+      },
     );
 
     // Add circuit breaker wrapper
     const circuitBreaker = this.circuitBreakers.get(serviceType);
     const originalRequest = axiosInstance.request.bind(axiosInstance);
-    
+
     axiosInstance.request = async (requestConfig) => {
       return circuitBreaker.execute(() => originalRequest(requestConfig));
     };
@@ -267,7 +272,7 @@ class ApiServiceFactory {
     const metrics = this.globalMetrics.serviceMetrics[serviceType] || {
       requests: 0,
       errors: 0,
-      totalDuration: 0
+      totalDuration: 0,
     };
 
     const errorRate = metrics.requests > 0 ? (metrics.errors / metrics.requests) * 100 : 0;
@@ -279,10 +284,10 @@ class ApiServiceFactory {
       metrics: {
         ...metrics,
         errorRate: Math.round(errorRate * 100) / 100,
-        avgDuration: Math.round(avgDuration)
+        avgDuration: Math.round(avgDuration),
       },
       healthy: circuitBreaker.state === 'CLOSED' && errorRate < 10,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -291,27 +296,27 @@ class ApiServiceFactory {
    */
   getSystemMetrics() {
     const services = {};
-    
+
     Object.keys(SERVICE_CONFIG).forEach(serviceType => {
       services[serviceType] = this.getServiceHealth(serviceType);
     });
 
-    const totalErrorRate = this.globalMetrics.totalRequests > 0 
-      ? (this.globalMetrics.totalErrors / this.globalMetrics.totalRequests) * 100 
+    const totalErrorRate = this.globalMetrics.totalRequests > 0
+      ? (this.globalMetrics.totalErrors / this.globalMetrics.totalRequests) * 100
       : 0;
-    
-    const avgDuration = this.globalMetrics.totalRequests > 0 
-      ? this.globalMetrics.totalDuration / this.globalMetrics.totalRequests 
+
+    const avgDuration = this.globalMetrics.totalRequests > 0
+      ? this.globalMetrics.totalDuration / this.globalMetrics.totalRequests
       : 0;
 
     return {
       global: {
         ...this.globalMetrics,
         errorRate: Math.round(totalErrorRate * 100) / 100,
-        avgDuration: Math.round(avgDuration)
+        avgDuration: Math.round(avgDuration),
       },
       services,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -322,6 +327,7 @@ class ApiServiceFactory {
     if (error.code === 'ECONNABORTED') return true; // Timeout
     if (error.response?.status >= 500) return true; // Server errors
     if (error.response?.status === 429) return true; // Rate limiting
+
     return false;
   }
 
@@ -330,12 +336,13 @@ class ApiServiceFactory {
    */
   clearServiceCache(serviceType) {
     const keysToDelete = [];
+
     for (const [key] of this.services) {
       if (key.startsWith(serviceType)) {
         keysToDelete.push(key);
       }
     }
-    
+
     keysToDelete.forEach(key => this.services.delete(key));
     console.log(`🗑️ Cleared cache for ${serviceType} service`);
   }
@@ -356,16 +363,16 @@ class ApiServiceFactory {
       totalRequests: 0,
       totalErrors: 0,
       totalDuration: 0,
-      serviceMetrics: {}
+      serviceMetrics: {},
     };
-    
+
     // Reset circuit breakers
     this.circuitBreakers.forEach(cb => {
       cb.failureCount = 0;
       cb.state = 'CLOSED';
       cb.lastFailureTime = null;
     });
-    
+
     console.log('📊 All metrics and circuit breakers reset');
   }
 
@@ -402,24 +409,24 @@ export default apiServiceFactory;
 
 /**
  * Usage Examples:
- * 
+ *
  * // Get a standard service
  * const dashboardService = apiServiceFactory.getDashboardService();
  * const response = await dashboardService.get('/stats');
- * 
+ *
  * // Get Magento service with direct URL
  * const magentoService = apiServiceFactory.getMagentoService({
  *   directUrl: 'https://magento.example.com/rest/V1'
  * });
- * 
+ *
  * // Get service health
  * const health = apiServiceFactory.getServiceHealth('dashboard');
  * console.log('Service health:', health);
- * 
+ *
  * // Get system metrics
  * const metrics = apiServiceFactory.getSystemMetrics();
  * console.log('System metrics:', metrics);
- * 
+ *
  * // Clear caches
  * apiServiceFactory.clearServiceCache('magento');
  * apiServiceFactory.clearAllCaches();

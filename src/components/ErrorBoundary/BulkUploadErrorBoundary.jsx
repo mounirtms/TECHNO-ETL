@@ -10,13 +10,13 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Chip
+  Chip,
 } from '@mui/material';
 import {
   Error as ErrorIcon,
   Refresh as RefreshIcon,
   ExpandMore as ExpandMoreIcon,
-  BugReport as BugIcon
+  BugReport as BugIcon,
 } from '@mui/icons-material';
 
 /**
@@ -30,7 +30,7 @@ class BulkUploadErrorBoundary extends React.Component {
       hasError: false,
       error: null,
       errorInfo: null,
-      errorId: null
+      errorId: null,
     };
   }
 
@@ -38,24 +38,24 @@ class BulkUploadErrorBoundary extends React.Component {
     return {
       hasError: true,
       error,
-      errorId: `bulk-upload-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      errorId: `bulk-upload-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     };
   }
 
   componentDidCatch(error, errorInfo) {
     this.setState({
-      errorInfo
+      errorInfo,
     });
 
     // Log error for debugging
     console.error('BulkUploadErrorBoundary caught an error:', error, errorInfo);
-    
+
     // Report error to monitoring service if available
     if (window.errorReporting) {
       window.errorReporting.captureException(error, {
         context: 'bulk-media-upload',
         errorInfo,
-        errorId: this.state.errorId
+        errorId: this.state.errorId,
       });
     }
   }
@@ -65,9 +65,9 @@ class BulkUploadErrorBoundary extends React.Component {
       hasError: false,
       error: null,
       errorInfo: null,
-      errorId: null
+      errorId: null,
     });
-    
+
     // Call parent retry handler if provided
     if (this.props.onRetry) {
       this.props.onRetry();
@@ -76,7 +76,7 @@ class BulkUploadErrorBoundary extends React.Component {
 
   getErrorCategory = (error) => {
     const message = error?.message?.toLowerCase() || '';
-    
+
     if (message.includes('csv') || message.includes('parse')) {
       return 'CSV_PROCESSING';
     }
@@ -89,6 +89,7 @@ class BulkUploadErrorBoundary extends React.Component {
     if (message.includes('match') || message.includes('algorithm')) {
       return 'MATCHING_ERROR';
     }
+
     return 'UNKNOWN_ERROR';
   };
 
@@ -98,32 +99,32 @@ class BulkUploadErrorBoundary extends React.Component {
         'Ensure your CSV file has proper headers (SKU, Image, etc.)',
         'Check that the CSV file is not corrupted or empty',
         'Verify the CSV uses comma separators',
-        'Make sure there are no special characters in column names'
+        'Make sure there are no special characters in column names',
       ],
       FILE_PROCESSING: [
         'Check that all image files are valid formats (JPG, PNG, GIF, WebP)',
         'Ensure image files are not corrupted',
         'Verify file sizes are under 10MB',
-        'Check that file names don\'t contain invalid characters'
+        'Check that file names don\'t contain invalid characters',
       ],
       UPLOAD_ERROR: [
         'Check your internet connection',
         'Verify you have sufficient storage space',
         'Try reducing the batch size in settings',
-        'Ensure the server is accessible'
+        'Ensure the server is accessible',
       ],
       MATCHING_ERROR: [
         'Check that SKU values in CSV match image filenames',
         'Verify image naming conventions (SKU.jpg, SKU_1.jpg, etc.)',
         'Try adjusting fuzzy matching threshold in settings',
-        'Ensure CSV and image files are properly formatted'
+        'Ensure CSV and image files are properly formatted',
       ],
       UNKNOWN_ERROR: [
         'Try refreshing the page and starting over',
         'Check browser console for additional error details',
         'Ensure you\'re using a supported browser',
-        'Contact support if the problem persists'
-      ]
+        'Contact support if the problem persists',
+      ],
     };
 
     return suggestions[category] || suggestions.UNKNOWN_ERROR;
@@ -151,13 +152,13 @@ class BulkUploadErrorBoundary extends React.Component {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                 <BugIcon color="error" />
                 <Typography variant="h6">Error Details</Typography>
-                <Chip 
-                  label={errorCategory.replace('_', ' ')} 
-                  color="error" 
-                  size="small" 
+                <Chip
+                  label={errorCategory.replace('_', ' ')}
+                  color="error"
+                  size="small"
                 />
               </Box>
-              
+
               <Typography variant="body1" sx={{ mb: 2, fontFamily: 'monospace', bgcolor: 'grey.100', p: 2, borderRadius: 1 }}>
                 {this.state.error?.message || 'Unknown error occurred'}
               </Typography>
@@ -174,7 +175,7 @@ class BulkUploadErrorBoundary extends React.Component {
                 <RefreshIcon color="primary" />
                 Suggested Solutions
               </Typography>
-              
+
               <Box component="ul" sx={{ pl: 2, mb: 0 }}>
                 {suggestions.map((suggestion, index) => (
                   <Typography component="li" variant="body2" key={index} sx={{ mb: 1 }}>
@@ -191,14 +192,14 @@ class BulkUploadErrorBoundary extends React.Component {
                 <Typography variant="subtitle2">Technical Details (for developers)</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Typography variant="body2" component="pre" sx={{ 
-                  fontFamily: 'monospace', 
+                <Typography variant="body2" component="pre" sx={{
+                  fontFamily: 'monospace',
                   fontSize: '0.75rem',
                   bgcolor: 'grey.50',
                   p: 2,
                   borderRadius: 1,
                   overflow: 'auto',
-                  maxHeight: 200
+                  maxHeight: 200,
                 }}>
                   {this.state.errorInfo.componentStack}
                 </Typography>
@@ -214,14 +215,14 @@ class BulkUploadErrorBoundary extends React.Component {
             >
               Try Again
             </Button>
-            
+
             <Button
               variant="outlined"
               onClick={() => window.location.reload()}
             >
               Refresh Page
             </Button>
-            
+
             {this.props.onClose && (
               <Button
                 variant="text"

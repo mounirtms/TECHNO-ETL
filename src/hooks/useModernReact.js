@@ -1,9 +1,9 @@
 /**
  * Modern React 18 Hooks Collection
- * 
+ *
  * Advanced hooks leveraging React 18 features for optimal performance
  * and user experience. All hooks are TypeScript-ready with JSDoc comments.
- * 
+ *
  * Features:
  * - Deferred value optimization for search
  * - Transition-based state management
@@ -14,22 +14,22 @@
  * - Smart caching with TTL
  * - Error handling utilities
  * - Resource creation patterns
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
 
-import React, { 
-  useState, 
-  useCallback, 
-  useMemo, 
-  useEffect, 
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
   useRef,
   useId,
   useDeferredValue,
   useTransition,
   useSyncExternalStore,
-  Suspense
+  Suspense,
 } from 'react';
 
 // ============================================================================
@@ -82,7 +82,7 @@ export const useDeferredSearch = (searchFn, delay = 300) => {
     deferredQuery,
     isSearching,
     updateQuery,
-    clearQuery: () => updateQuery('')
+    clearQuery: () => updateQuery(''),
   };
 };
 
@@ -133,10 +133,12 @@ export const useSuspenseQuery = (queryFn, dependencies = []) => {
 
     try {
       const result = await promiseRef.current;
+
       startTransition(() => {
         setData(result);
         promiseRef.current = null;
       });
+
       return result;
     } catch (err) {
       promiseRef.current = null;
@@ -158,7 +160,7 @@ export const useSuspenseQuery = (queryFn, dependencies = []) => {
     error,
     isPending,
     refetch: fetchData,
-    isLoading: !!promiseRef.current
+    isLoading: !!promiseRef.current,
   };
 };
 
@@ -176,8 +178,8 @@ export const useUniqueIds = (count = 1, prefix = '') => {
   const baseId = useId();
 
   return useMemo(() => {
-    return Array.from({ length: count }, (_, index) => 
-      `${prefix}${baseId}-${index}`
+    return Array.from({ length: count }, (_, index) =>
+      `${prefix}${baseId}-${index}`,
     );
   }, [baseId, count, prefix]);
 };
@@ -196,8 +198,9 @@ export const useFormIds = (fieldNames) => {
         input: `${baseId}-${fieldName}`,
         label: `${baseId}-${fieldName}-label`,
         error: `${baseId}-${fieldName}-error`,
-        help: `${baseId}-${fieldName}-help`
+        help: `${baseId}-${fieldName}-help`,
       };
+
       return acc;
     }, {});
   }, [baseId, fieldNames]);
@@ -222,7 +225,7 @@ export const useVirtualizedList = (items, itemHeight, containerHeight) => {
     const startIndex = Math.floor(deferredScrollTop / itemHeight);
     const endIndex = Math.min(
       startIndex + Math.ceil(containerHeight / itemHeight) + 1,
-      items.length
+      items.length,
     );
 
     return { startIndex, endIndex };
@@ -238,7 +241,7 @@ export const useVirtualizedList = (items, itemHeight, containerHeight) => {
     totalHeight: items.length * itemHeight,
     onScroll: (e) => {
       setScrollTop(e.currentTarget.scrollTop);
-    }
+    },
   };
 };
 
@@ -255,7 +258,7 @@ export const useExternalStore = (store) => {
   return useSyncExternalStore(
     store.subscribe,
     store.getSnapshot,
-    store.getServerSnapshot
+    store.getServerSnapshot,
   );
 };
 
@@ -281,7 +284,7 @@ export const useOptimisticState = (initialState, updateFn) => {
     try {
       // Perform actual update
       const result = await updateFn(state, action);
-      
+
       startTransition(() => {
         setState(result);
         setOptimisticState(result);
@@ -298,7 +301,7 @@ export const useOptimisticState = (initialState, updateFn) => {
   return {
     state: optimisticState,
     isPending,
-    updateOptimistic
+    updateOptimistic,
   };
 };
 
@@ -319,24 +322,27 @@ export const useSmartCache = (key, fetchFn, ttl = 300000) => {
 
   const getCachedData = useCallback(() => {
     const cached = cache.get(key);
+
     if (!cached) return null;
-    
+
     const isExpired = Date.now() - cached.timestamp > ttl;
+
     return isExpired ? null : cached.data;
   }, [cache, key, ttl]);
 
   const fetchData = useCallback(async (force = false) => {
     if (!force) {
       const cached = getCachedData();
+
       if (cached) return cached;
     }
 
     const data = await fetchFn();
-    
+
     startTransition(() => {
       setCache(prev => new Map(prev.set(key, {
         data,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       })));
     });
 
@@ -347,7 +353,9 @@ export const useSmartCache = (key, fetchFn, ttl = 300000) => {
     startTransition(() => {
       setCache(prev => {
         const newCache = new Map(prev);
+
         newCache.delete(key);
+
         return newCache;
       });
     });
@@ -357,7 +365,7 @@ export const useSmartCache = (key, fetchFn, ttl = 300000) => {
     data: getCachedData(),
     fetchData,
     invalidate,
-    isPending
+    isPending,
   };
 };
 
@@ -389,7 +397,7 @@ export const useErrorHandler = () => {
   return {
     handleError,
     clearError,
-    hasError: !!error
+    hasError: !!error,
   };
 };
 
@@ -408,22 +416,22 @@ export const useRetry = () => {
   const retry = useCallback(async (
     fn,
     maxRetries = 3,
-    delay = 1000
+    delay = 1000,
   ) => {
     let currentRetry = 0;
 
     while (currentRetry <= maxRetries) {
       try {
         const result = await fn();
-        
+
         startTransition(() => {
           setRetryCount(0);
         });
-        
+
         return result;
       } catch (error) {
         currentRetry++;
-        
+
         if (currentRetry > maxRetries) {
           throw error;
         }
@@ -444,7 +452,7 @@ export const useRetry = () => {
   return {
     retry,
     retryCount,
-    isPending
+    isPending,
   };
 };
 
@@ -471,7 +479,7 @@ export const withSuspense = (fallback = <div>Loading...</div>) => {
 export const createResource = (promise) => {
   let status = 'pending';
   let result;
-  let suspender = promise.then(
+  const suspender = promise.then(
     (data) => {
       status = 'success';
       result = data;
@@ -479,7 +487,7 @@ export const createResource = (promise) => {
     (error) => {
       status = 'error';
       result = error;
-    }
+    },
   );
 
   return {
@@ -491,7 +499,7 @@ export const createResource = (promise) => {
       } else if (status === 'success') {
         return result;
       }
-    }
+    },
   };
 };
 
@@ -512,5 +520,5 @@ export default {
   useErrorHandler,
   useRetry,
   withSuspense,
-  createResource
+  createResource,
 };

@@ -11,14 +11,14 @@ class FilterService {
     this.cache = new Map();
     this.cacheExpiry = new Map();
     this.CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-    
+
     // Debounced functions
     this.debouncedSearch = debounce(this.performSearch.bind(this), 300);
     this.debouncedFilter = debounce(this.performFilter.bind(this), 150);
   }
 
   // ===== CACHE MANAGEMENT =====
-  
+
   setCacheData(key, data) {
     this.cache.set(key, data);
     this.cacheExpiry.set(key, Date.now() + this.CACHE_DURATION);
@@ -27,14 +27,17 @@ class FilterService {
 
   getCacheData(key) {
     const expiry = this.cacheExpiry.get(key);
+
     if (expiry && Date.now() < expiry) {
       console.log(`✅ Using cached data for key: ${key}`);
+
       return this.cache.get(key);
     }
-    
+
     // Clean expired cache
     this.cache.delete(key);
     this.cacheExpiry.delete(key);
+
     return null;
   }
 
@@ -59,73 +62,83 @@ class FilterService {
 
   async getBrands(useCache = true) {
     const cacheKey = 'filter_brands';
-    
+
     if (useCache) {
       const cached = this.getCacheData(cacheKey);
+
       if (cached) return cached;
     }
 
     try {
       const response = await magentoApi.getBrands();
       const brands = response?.items || [];
-      
+
       const processedBrands = brands.map(brand => ({
         value: brand.value,
         label: brand.label,
-        count: brand.product_count || 0
+        count: brand.product_count || 0,
       })).sort((a, b) => a.label.localeCompare(b.label));
 
       this.setCacheData(cacheKey, processedBrands);
+
       return processedBrands;
     } catch (error) {
       console.error('❌ Error fetching brands:', error);
+
       return this.getMockBrands();
     }
   }
 
   async getCategories(useCache = true) {
     const cacheKey = 'filter_categories';
-    
+
     if (useCache) {
       const cached = this.getCacheData(cacheKey);
+
       if (cached) return cached;
     }
 
     try {
       const response = await magentoApi.getCategories();
       const categories = response?.data?.items || response?.items || [];
-      
+
       const processedCategories = this.flattenCategories(categories);
+
       this.setCacheData(cacheKey, processedCategories);
+
       return processedCategories;
     } catch (error) {
       console.error('❌ Error fetching categories:', error);
+
       return this.getMockCategories();
     }
   }
 
   async getAttributeOptions(attributeCode, useCache = true) {
     const cacheKey = `filter_attribute_${attributeCode}`;
-    
+
     if (useCache) {
       const cached = this.getCacheData(cacheKey);
+
       if (cached) return cached;
     }
 
     try {
       const response = await magentoApi.getProductAttribute(attributeCode);
       const options = response?.options || [];
-      
+
       const processedOptions = options.map(option => ({
         value: option.value,
         label: option.label,
-        count: option.product_count || 0
+        count: option.product_count || 0,
       })).sort((a, b) => a.label.localeCompare(b.label));
 
       this.setCacheData(cacheKey, processedOptions);
+
       return processedOptions;
     } catch (error) {
       console.error(`❌ Error fetching attribute options for ${attributeCode}:`, error);
+
       return [];
     }
   }
@@ -137,7 +150,7 @@ class FilterService {
       filterGroups: [],
       pageSize: filters.pageSize || 25,
       currentPage: filters.page || 1,
-      sortOrders: []
+      sortOrders: [],
     };
 
     // Brand filter
@@ -146,8 +159,8 @@ class FilterService {
         filters: [{
           field: 'mgs_brand',
           value: filters.brand,
-          condition_type: 'eq'
-        }]
+          condition_type: 'eq',
+        }],
       });
     }
 
@@ -157,8 +170,8 @@ class FilterService {
         filters: [{
           field: 'category_id',
           value: filters.category,
-          condition_type: 'eq'
-        }]
+          condition_type: 'eq',
+        }],
       });
     }
 
@@ -168,26 +181,27 @@ class FilterService {
         filters: [{
           field: 'status',
           value: filters.status,
-          condition_type: 'eq'
-        }]
+          condition_type: 'eq',
+        }],
       });
     }
 
     // Price range filter
     if (filters.priceMin || filters.priceMax) {
       const priceFilters = [];
+
       if (filters.priceMin) {
         priceFilters.push({
           field: 'price',
           value: filters.priceMin,
-          condition_type: 'gteq'
+          condition_type: 'gteq',
         });
       }
       if (filters.priceMax) {
         priceFilters.push({
           field: 'price',
           value: filters.priceMax,
-          condition_type: 'lteq'
+          condition_type: 'lteq',
         });
       }
       searchCriteria.filterGroups.push({ filters: priceFilters });
@@ -199,8 +213,8 @@ class FilterService {
         filters: [{
           field: 'name',
           value: `%${filters.search}%`,
-          condition_type: 'like'
-        }]
+          condition_type: 'like',
+        }],
       });
     }
 
@@ -208,7 +222,7 @@ class FilterService {
     if (filters.sortField) {
       searchCriteria.sortOrders.push({
         field: filters.sortField,
-        direction: filters.sortDirection || 'ASC'
+        direction: filters.sortDirection || 'ASC',
       });
     }
 
@@ -237,13 +251,14 @@ class FilterService {
       // Category filter
       if (filters.category) {
         const productCategories = product.categories || [];
+
         if (!productCategories.some(cat => cat.id.toString() === filters.category.toString())) {
           return false;
         }
       }
 
       // Status filter
-      if (filters.status !== undefined && filters.status !== '' && 
+      if (filters.status !== undefined && filters.status !== '' &&
           product.status.toString() !== filters.status.toString()) {
         return false;
       }
@@ -263,11 +278,11 @@ class FilterService {
           product.name,
           product.sku,
           product.description,
-          product.brand
+          product.brand,
         ].filter(Boolean);
-        
-        if (!searchFields.some(field => 
-          field.toLowerCase().includes(searchLower)
+
+        if (!searchFields.some(field =>
+          field.toLowerCase().includes(searchLower),
         )) {
           return false;
         }
@@ -285,7 +300,7 @@ class FilterService {
         value: category.id,
         label: category.name,
         level: level,
-        count: category.product_count || 0
+        count: category.product_count || 0,
       });
 
       if (category.children_data && category.children_data.length > 0) {
@@ -302,7 +317,7 @@ class FilterService {
       { value: 'adidas', label: 'Adidas', count: 18 },
       { value: 'puma', label: 'Puma', count: 12 },
       { value: 'under_armour', label: 'Under Armour', count: 8 },
-      { value: 'reebok', label: 'Reebok', count: 15 }
+      { value: 'reebok', label: 'Reebok', count: 15 },
     ];
   }
 
@@ -313,7 +328,7 @@ class FilterService {
       { value: '3', label: 'Laptops', level: 1, count: 15 },
       { value: '4', label: 'Clothing', level: 0, count: 35 },
       { value: '5', label: 'Men\'s Clothing', level: 1, count: 18 },
-      { value: '6', label: 'Women\'s Clothing', level: 1, count: 17 }
+      { value: '6', label: 'Women\'s Clothing', level: 1, count: 17 },
     ];
   }
 
@@ -324,28 +339,28 @@ class FilterService {
       {
         id: 'active_products',
         name: 'Active Products',
-        filters: { status: '1' }
+        filters: { status: '1' },
       },
       {
         id: 'inactive_products',
         name: 'Inactive Products',
-        filters: { status: '0' }
+        filters: { status: '0' },
       },
       {
         id: 'nike_products',
         name: 'Nike Products',
-        filters: { brand: 'nike' }
+        filters: { brand: 'nike' },
       },
       {
         id: 'electronics',
         name: 'Electronics',
-        filters: { category: '1' }
+        filters: { category: '1' },
       },
       {
         id: 'high_value',
         name: 'High Value (>$100)',
-        filters: { priceMin: '100' }
-      }
+        filters: { priceMin: '100' },
+      },
     ];
   }
 }

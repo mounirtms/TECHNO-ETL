@@ -8,7 +8,7 @@ import {
   Button,
   Avatar,
   Chip,
-  Divider
+  Divider,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -22,7 +22,7 @@ import {
   People as PeopleIcon,
   Category as CategoryIcon,
   Image as ImageIcon,
-  Assessment as AssessmentIcon
+  Assessment as AssessmentIcon,
 } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
@@ -43,29 +43,29 @@ const QuickActions = ({ onAction }) => {
       description: 'Create new product',
       icon: <AddIcon />,
       color: 'primary',
-      action: () => onAction?.('add-product')
+      action: () => onAction?.('add-product'),
     },
     {
       title: 'Import Data',
       description: 'Upload CSV files',
       icon: <UploadIcon />,
       color: 'info',
-      action: () => onAction?.('import-data')
+      action: () => onAction?.('import-data'),
     },
     {
       title: 'Sync Products',
       description: 'Sync with Magento',
       icon: <SyncIcon />,
       color: 'success',
-      action: () => onAction?.('sync-products')
+      action: () => onAction?.('sync-products'),
     },
     {
       title: 'View Analytics',
       description: 'Open charts page',
       icon: <AnalyticsIcon />,
       color: 'secondary',
-      action: () => navigate('/charts')
-    }
+      action: () => navigate('/charts'),
+    },
   ];
 
   const quickLinks = [
@@ -74,29 +74,29 @@ const QuickActions = ({ onAction }) => {
       count: '9,114',
       icon: <InventoryIcon />,
       color: 'primary',
-      route: '/products'
+      route: '/products',
     },
     {
       title: 'Orders',
       count: '1,247',
       icon: <ShoppingCartIcon />,
       color: 'success',
-      route: '/orders'
+      route: '/orders',
     },
     {
       title: 'Customers',
       count: '3,892',
       icon: <PeopleIcon />,
       color: 'info',
-      route: '/customers'
+      route: '/customers',
     },
     {
       title: 'Categories',
       count: '156',
       icon: <CategoryIcon />,
       color: 'warning',
-      route: '/categories'
-    }
+      route: '/categories',
+    },
   ];
 
   const recentActions = [
@@ -104,26 +104,26 @@ const QuickActions = ({ onAction }) => {
       title: 'Bulk Media Upload',
       description: 'Upload product images',
       icon: <ImageIcon />,
-      action: () => onAction?.('bulk-media-upload')
+      action: () => onAction?.('bulk-media-upload'),
     },
     {
       title: 'Export Report',
       description: 'Download data export',
       icon: <DownloadIcon />,
-      action: () => onAction?.('export-report')
+      action: () => onAction?.('export-report'),
     },
     {
       title: 'System Settings',
       description: 'Configure system',
       icon: <SettingsIcon />,
-      action: () => onAction?.('settings')
+      action: () => onAction?.('settings'),
     },
     {
       title: 'Performance Report',
       description: 'View detailed analytics',
       icon: <AssessmentIcon />,
-      action: () => navigate('/charts')
-    }
+      action: () => navigate('/charts'),
+    },
   ];
 
   return (
@@ -134,7 +134,7 @@ const QuickActions = ({ onAction }) => {
           <Typography variant="h6" fontWeight={600} gutterBottom>
             Quick Actions
           </Typography>
-          
+
           <Grid container spacing={2}>
             {primaryActions.map((action, index) => (
               <Grid item xs={12} sm={6} md={3} key={index}>
@@ -154,19 +154,19 @@ const QuickActions = ({ onAction }) => {
                       borderColor: `${action.color}.main`,
                       bgcolor: `${action.color}.light`,
                       transform: 'translateY(-2px)',
-                      boxShadow: theme.shadows[4]
+                      boxShadow: theme.shadows[4],
                     } : {
                       borderColor: `${action.color}.main`,
-                      bgcolor: `${action.color}.light`
+                      bgcolor: `${action.color}.light`,
                     },
-                    transition: animations ? 'all 0.3s ease' : 'none'
+                    transition: animations ? 'all 0.3s ease' : 'none',
                   }}
                 >
                   <Avatar
                     sx={{
                       bgcolor: `${action.color}.main`,
                       width: 32,
-                      height: 32
+                      height: 32,
                     }}
                   >
                     {action.icon}
@@ -192,7 +192,7 @@ const QuickActions = ({ onAction }) => {
           <Typography variant="h6" fontWeight={600} gutterBottom>
             Quick Navigation
           </Typography>
-          
+
           <Grid container spacing={2}>
             {quickLinks.map((link, index) => (
               <Grid item xs={6} sm={3} key={index}>
@@ -204,8 +204,8 @@ const QuickActions = ({ onAction }) => {
                     '&:hover': {
                       transform: 'translateY(-2px)',
                       boxShadow: theme.shadows[4],
-                      border: `1px solid ${theme.palette[link.color].main}50`
-                    }
+                      border: `1px solid ${theme.palette[link.color].main}50`,
+                    },
                   }}
                   onClick={() => navigate(link.route)}
                 >
@@ -216,7 +216,7 @@ const QuickActions = ({ onAction }) => {
                         width: 40,
                         height: 40,
                         mx: 'auto',
-                        mb: 1
+                        mb: 1,
                       }}
                     >
                       {link.icon}
@@ -241,7 +241,7 @@ const QuickActions = ({ onAction }) => {
           <Typography variant="h6" fontWeight={600} gutterBottom>
             More Actions
           </Typography>
-          
+
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             {recentActions.map((action, index) => (
               <Box key={index}>
@@ -258,9 +258,9 @@ const QuickActions = ({ onAction }) => {
                     textAlign: 'left',
                     '&:hover': {
                       bgcolor: 'action.hover',
-                      transform: 'translateX(4px)'
+                      transform: 'translateX(4px)',
                     },
-                    transition: 'all 0.3s ease'
+                    transition: 'all 0.3s ease',
                   }}
                 >
                   <Avatar
@@ -268,7 +268,7 @@ const QuickActions = ({ onAction }) => {
                       bgcolor: 'grey.100',
                       color: 'text.secondary',
                       width: 36,
-                      height: 36
+                      height: 36,
                     }}
                   >
                     {action.icon}

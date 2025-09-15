@@ -15,7 +15,7 @@ export const useRoutePerformance = () => {
 
     // Track route change
     const currentRoute = location.pathname;
-    
+
     // Log route change for debugging
     console.log(`🔄 Route changed to: ${currentRoute}`);
 
@@ -23,12 +23,12 @@ export const useRoutePerformance = () => {
     const measureRouteLoad = () => {
       if (navigationStartTime.current) {
         const loadTime = performance.now() - navigationStartTime.current;
-        
+
         // Store metrics
         routeMetrics.current[currentRoute] = {
           loadTime,
           timestamp: new Date().toISOString(),
-          pathname: currentRoute
+          pathname: currentRoute,
         };
 
         // Log performance metrics
@@ -40,8 +40,8 @@ export const useRoutePerformance = () => {
             page_title: document.title,
             page_location: window.location.href,
             custom_map: {
-              load_time: loadTime
-            }
+              load_time: loadTime,
+            },
           });
         }
 
@@ -65,7 +65,7 @@ export const useRoutePerformance = () => {
     currentRoute: location.pathname,
     metrics: routeMetrics.current,
     getRouteMetrics: (route) => routeMetrics.current[route],
-    getAllMetrics: () => routeMetrics.current
+    getAllMetrics: () => routeMetrics.current,
   };
 };
 
@@ -91,10 +91,11 @@ export const useRoutePreloader = () => {
         '/orders': () => import('../pages/OrdersPage'),
         '/customers': () => import('../pages/CustomersPage'),
         '/reports': () => import('../pages/ReportsPage'),
-        '/settings': () => import('../pages/SettingsPage')
+        '/settings': () => import('../pages/SettingsPage'),
       };
 
       const loader = routeComponentMap[routePath];
+
       if (loader) {
         await loader();
         preloadedRoutes.current.add(routePath);
@@ -108,6 +109,7 @@ export const useRoutePreloader = () => {
   const preloadCommonRoutes = () => {
     // Preload commonly accessed routes
     const commonRoutes = ['/dashboard', '/products', '/charts'];
+
     commonRoutes.forEach(route => {
       setTimeout(() => preloadRoute(route), 100);
     });
@@ -116,7 +118,7 @@ export const useRoutePreloader = () => {
   return {
     preloadRoute,
     preloadCommonRoutes,
-    isPreloaded: (route) => preloadedRoutes.current.has(route)
+    isPreloaded: (route) => preloadedRoutes.current.has(route),
   };
 };
 
@@ -137,14 +139,16 @@ export const useDocumentTitle = () => {
       '/customers': 'Customer Management - TECHNO-ETL',
       '/reports': 'Reports & Analytics - TECHNO-ETL',
       '/settings': 'System Settings - TECHNO-ETL',
-      '/login': 'Login - TECHNO-ETL'
+      '/login': 'Login - TECHNO-ETL',
     };
 
     const title = routeTitles[location.pathname] || 'TECHNO-ETL';
+
     document.title = title;
 
     // Update meta description based on route
     const metaDescription = document.querySelector('meta[name="description"]');
+
     if (metaDescription) {
       const descriptions = {
         '/dashboard': 'TECHNO-ETL Dashboard - Overview and system statistics',
@@ -155,11 +159,11 @@ export const useDocumentTitle = () => {
         '/orders': 'Order Management - Process and track orders',
         '/customers': 'Customer Management - CRM and customer data',
         '/reports': 'Business Reports - Analytics and intelligence',
-        '/settings': 'System Settings - Configuration and preferences'
+        '/settings': 'System Settings - Configuration and preferences',
       };
-      
-      metaDescription.setAttribute('content', 
-        descriptions[location.pathname] || 'TECHNO-ETL - Enterprise Resource Planning System'
+
+      metaDescription.setAttribute('content',
+        descriptions[location.pathname] || 'TECHNO-ETL - Enterprise Resource Planning System',
       );
     }
   }, [location.pathname]);

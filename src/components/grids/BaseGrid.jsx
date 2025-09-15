@@ -1,7 +1,7 @@
 /**
  * BaseGrid - Professional Unified Grid System
  * Consolidates all grid functionality into a single, optimized component
- * 
+ *
  * @author Mounir Abderrahmani
  * @email mounir.ab@techno-dz.com
  */
@@ -15,7 +15,7 @@ import {
   Skeleton,
   Alert,
   Typography,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import { toast } from 'react-toastify';
 
@@ -51,87 +51,87 @@ const BaseGrid = forwardRef(({
   data = [],
   loading = false,
   error = null,
-  
+
   // Grid configuration
   getRowId = (row) => row.id || row.entity_id || row.sku,
   checkboxSelection = false,
   disableRowSelectionOnClick = false,
-  
+
   // Pagination
   paginationMode = 'client',
   pageSize = 25,
   pageSizeOptions = [10, 25, 50, 100],
-  
+
   // Toolbar configuration
   toolbarConfig = null,
   customActions = [],
   contextMenuActions = [],
-  
+
   // Stats cards
   showStatsCards = false,
   statsCards = [],
   statsPosition = 'bottom', // 'top' | 'bottom'
-  
+
   // Event handlers
   onRefresh,
   onRowClick,
   onRowDoubleClick,
   onSelectionModelChange,
   onError,
-  
+
   // Filtering and sorting
   filterModel,
   onFilterModelChange,
   sortModel,
   onSortModelChange,
-  
+
   // Performance
   enableVirtualization = true,
   virtualizationThreshold = 1000, // Added from OptimizedDataGrid
   rowBuffer = 3,
   columnBuffer = 2,
-  
+
   // Styling
   height = 'auto',
   minHeight = '400px',
   maxHeight = 'calc(100vh - 200px)',
-  
+
   // Additional props
   ...otherProps
 }, ref) => {
   const theme = useTheme();
   const { mode, density, animations } = useCustomTheme();
   const { translate, currentLanguage } = useLanguage();
-  
+
   // Error handling
-  const { 
-    error: gridError, 
-    executeWithErrorHandling, 
-    clearError 
+  const {
+    error: gridError,
+    executeWithErrorHandling,
+    clearError,
   } = useStandardErrorHandling(`${gridName}Grid`, {
     fallbackDataType: 'list',
-    showToast: true
+    showToast: true,
   });
 
   // State management
-  const [paginationModel, setPaginationModel] = useState({ 
-    page: 0, 
-    pageSize 
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize,
   });
   const [selectionModel, setSelectionModel] = useState([]);
   const [columnVisibilityModel, setColumnVisibilityModel] = useState({});
-  
+
   // Refs
   const gridRef = useRef(null);
   const containerRef = useRef(null);
-  
+
   // Expose grid methods via ref
   useImperativeHandle(ref, () => ({
     getSelectedRows: () => selectionModel,
     clearSelection: () => setSelectionModel([]),
     refresh: () => onRefresh?.(),
     exportData: () => gridRef.current?.exportDataAsCsv(),
-    getGridApi: () => gridRef.current
+    getGridApi: () => gridRef.current,
   }), [selectionModel, onRefresh]);
 
   // Calculate grid height based on container and stats cards
@@ -145,10 +145,11 @@ const BaseGrid = forwardRef(({
     const paddingHeight = 32;
     // Subtract all UI elements from viewport
     const calculatedHeight = viewportHeight - statsHeight - toolbarHeight - filterPanelHeight - paddingHeight - 64; // 64 for header/footer if any
+
     // Always enforce min/max
     return Math.max(
       parseInt(minHeight.replace('px', '')),
-      Math.min(calculatedHeight, parseInt(maxHeight.replace(/calc\(100vh - (\d+)px\)/, '$1')))
+      Math.min(calculatedHeight, parseInt(maxHeight.replace(/calc\(100vh - (\d+)px\)/, '$1'))),
     );
   }, [height, minHeight, maxHeight, showStatsCards, otherProps.filterPanelHeight]);
 
@@ -156,13 +157,14 @@ const BaseGrid = forwardRef(({
   const processedData = useMemo(() => {
     if (!Array.isArray(data)) {
       console.warn(`${gridName}: Data is not an array, using empty array`);
+
       return [];
     }
-    
+
     return data.map((row, index) => ({
       ...row,
       _gridIndex: index,
-      _gridId: getRowId(row) || `row-${index}`
+      _gridId: getRowId(row) || `row-${index}`,
     }));
   }, [data, getRowId, gridName]);
 
@@ -173,7 +175,7 @@ const BaseGrid = forwardRef(({
       headerName: translate(col.headerName) || col.headerName,
       sortable: col.sortable !== false,
       filterable: col.filterable !== false,
-      resizable: col.resizable !== false
+      resizable: col.resizable !== false,
     }));
   }, [columns, translate]);
 
@@ -189,9 +191,10 @@ const BaseGrid = forwardRef(({
           return column.renderCell(params);
         } catch (error) {
           console.error(`Error rendering cell for column ${column.field}:`, error);
+
           return <span>Error</span>;
         }
-      } : undefined
+      } : undefined,
     }));
   }, [columns]);
 
@@ -205,7 +208,7 @@ const BaseGrid = forwardRef(({
     if (onRefresh) {
       await executeWithErrorHandling(onRefresh, {
         operation: 'refresh',
-        gridName
+        gridName,
       });
     }
   }, [onRefresh, executeWithErrorHandling, gridName]);
@@ -227,8 +230,8 @@ const BaseGrid = forwardRef(({
   // Error state
   if (error || gridError) {
     return (
-      <Alert 
-        severity="error" 
+      <Alert
+        severity="error"
         action={
           <button onClick={clearError}>
             Retry
@@ -241,7 +244,7 @@ const BaseGrid = forwardRef(({
   }
 
   return (
-    <ComponentErrorBoundary 
+    <ComponentErrorBoundary
       componentName={`${gridName}Grid`}
       fallbackMessage={`Unable to load ${gridName.toLowerCase()} grid`}
     >
@@ -255,12 +258,12 @@ const BaseGrid = forwardRef(({
           display: 'flex',
           flexDirection: 'column',
           gap: 1,
-          p: 1
+          p: 1,
         }}
       >
         {/* Stats Cards - Top Position */}
         {showStatsCards && statsPosition === 'top' && (
-          <GridStatsCards 
+          <GridStatsCards
             cards={statsCards}
             loading={loading}
             gridName={gridName}
@@ -286,7 +289,7 @@ const BaseGrid = forwardRef(({
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
-            borderRadius: density === 'compact' ? 1 : 2
+            borderRadius: density === 'compact' ? 1 : 2,
           }}
         >
           {loading && (
@@ -309,56 +312,56 @@ const BaseGrid = forwardRef(({
               rows={processedData}
               columns={enhancedColumns}
               loading={loading}
-              
+
               // Pagination
               paginationMode={paginationMode}
               paginationModel={paginationModel}
               onPaginationModelChange={setPaginationModel}
               pageSizeOptions={pageSizeOptions}
-              
+
               // Selection
               checkboxSelection={checkboxSelection}
               disableRowSelectionOnClick={disableRowSelectionOnClick}
               rowSelectionModel={selectionModel}
               onRowSelectionModelChange={handleSelectionChange}
-              
+
               // Events
               onRowClick={onRowClick}
               onRowDoubleClick={onRowDoubleClick}
-              
+
               // Filtering and sorting
               filterModel={filterModel}
               onFilterModelChange={onFilterModelChange}
               sortModel={sortModel}
               onSortModelChange={onSortModelChange}
-              
+
               // Column management
               columnVisibilityModel={columnVisibilityModel}
               onColumnVisibilityModelChange={setColumnVisibilityModel}
-              
+
               // Performance
               disableVirtualization={!enableVirtualization}
               rowBuffer={rowBuffer}
               columnBuffer={columnBuffer}
-              
+
               // Styling
               sx={{
                 height: gridHeight,
                 '& .MuiDataGrid-root': {
-                  border: 'none'
+                  border: 'none',
                 },
                 '& .MuiDataGrid-cell': {
-                  borderBottom: `1px solid ${theme.palette.divider}`
+                  borderBottom: `1px solid ${theme.palette.divider}`,
                 },
                 '& .MuiDataGrid-columnHeaders': {
                   backgroundColor: theme.palette.background.paper,
-                  borderBottom: `2px solid ${theme.palette.divider}`
-                }
+                  borderBottom: `2px solid ${theme.palette.divider}`,
+                },
               }}
-              
+
               // Row ID
               getRowId={(row) => row._gridId}
-              
+
               // Additional props
               {...otherProps}
             />
@@ -367,7 +370,7 @@ const BaseGrid = forwardRef(({
 
         {/* Stats Cards - Bottom Position */}
         {showStatsCards && statsPosition === 'bottom' && (
-          <GridStatsCards 
+          <GridStatsCards
             cards={statsCards}
             loading={loading}
             gridName={gridName}

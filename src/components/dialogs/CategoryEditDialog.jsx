@@ -20,7 +20,7 @@ import {
   Alert,
   IconButton,
   Tooltip,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import {
   Save as SaveIcon,
@@ -29,7 +29,7 @@ import {
   Visibility as VisibilityIcon,
   VisibilityOff as VisibilityOffIcon,
   ArrowUpward as ArrowUpwardIcon,
-  ArrowDownward as ArrowDownwardIcon
+  ArrowDownward as ArrowDownwardIcon,
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import categoryService from '../../services/categoryService';
@@ -49,13 +49,13 @@ const CategoryEditDialog = ({ open, onClose, category, onSave }) => {
     meta_title: '',
     meta_keywords: '',
     meta_description: '',
-    include_in_menu: true
+    include_in_menu: true,
   });
-  
+
   const [loading, setLoading] = useState(false);
   const [parentCategories, setParentCategories] = useState([]);
   const [breadcrumb, setBreadcrumb] = useState([]);
-  
+
   // Initialize form data when category changes
   useEffect(() => {
     if (category) {
@@ -69,62 +69,65 @@ const CategoryEditDialog = ({ open, onClose, category, onSave }) => {
         meta_title: category.meta_title || '',
         meta_keywords: category.meta_keywords || '',
         meta_description: category.meta_description || '',
-        include_in_menu: category.include_in_menu !== undefined ? category.include_in_menu : true
+        include_in_menu: category.include_in_menu !== undefined ? category.include_in_menu : true,
       });
-      
+
       // Load breadcrumb
       if (category.id) {
         const breadcrumbData = categoryService.getCategoryBreadcrumb(category.id);
+
         setBreadcrumb(breadcrumbData);
       }
     }
   }, [category]);
-  
+
   // Load parent categories for dropdown
   useEffect(() => {
     const loadParentCategories = () => {
       try {
         // Get all categories except current one and its children
         const allCategories = categoryService.getAllCategories();
-        const filteredCategories = allCategories.filter(cat => 
-          cat.id !== formData.id && 
+        const filteredCategories = allCategories.filter(cat =>
+          cat.id !== formData.id &&
           // Don't include children of current category as potential parents
-          !cat.path?.includes(`${formData.name} >`)
+          !cat.path?.includes(`${formData.name} >`),
         );
-        
+
         setParentCategories(filteredCategories);
       } catch (error) {
         console.error('Error loading parent categories:', error);
       }
     };
-    
+
     if (open) {
       loadParentCategories();
     }
   }, [open, formData.id, formData.name]);
-  
+
   const handleChange = (e) => {
     const { name, value, checked } = e.target;
+
     setFormData(prev => ({
       ...prev,
-      [name]: e.target.type === 'checkbox' ? checked : value
+      [name]: e.target.type === 'checkbox' ? checked : value,
     }));
   };
-  
+
   const handleSave = async () => {
     try {
       setLoading(true);
-      
+
       // Validate form
       if (!formData.name.trim()) {
         toast.error('Category name is required');
+
         return;
       }
-      
+
       // In a real app, this would save to the backend
       // For now, we'll just simulate a save
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       onSave(formData);
       toast.success(`Category "${formData.name}" saved successfully`);
       onClose();
@@ -135,33 +138,33 @@ const CategoryEditDialog = ({ open, onClose, category, onSave }) => {
       setLoading(false);
     }
   };
-  
+
   return (
-    <Dialog 
-      open={open} 
-      onClose={onClose} 
-      maxWidth="md" 
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
       fullWidth
       PaperProps={{
         sx: {
           borderRadius: 2,
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
-        }
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+        },
       }}
     >
-      <DialogTitle sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
+      <DialogTitle sx={{
+        display: 'flex',
+        alignItems: 'center',
         gap: 1,
         bgcolor: 'primary.main',
         color: 'primary.contrastText',
         borderBottom: '1px solid',
-        borderColor: 'divider'
+        borderColor: 'divider',
       }}>
         <CategoryIcon />
         {formData.id ? 'Edit Category' : 'Add New Category'}
       </DialogTitle>
-      
+
       <DialogContent dividers>
         {/* Breadcrumb */}
         {breadcrumb.length > 0 && (
@@ -169,17 +172,17 @@ const CategoryEditDialog = ({ open, onClose, category, onSave }) => {
             {breadcrumb.map((item, index) => (
               <React.Fragment key={item.id}>
                 {index > 0 && <ArrowRightIcon fontSize="small" color="action" />}
-                <Chip 
-                  label={item.name} 
-                  size="small" 
-                  variant={index === breadcrumb.length - 1 ? "filled" : "outlined"}
-                  color={index === breadcrumb.length - 1 ? "primary" : "default"}
+                <Chip
+                  label={item.name}
+                  size="small"
+                  variant={index === breadcrumb.length - 1 ? 'filled' : 'outlined'}
+                  color={index === breadcrumb.length - 1 ? 'primary' : 'default'}
                 />
               </React.Fragment>
             ))}
           </Box>
         )}
-        
+
         <Grid container spacing={2}>
           {/* Basic Information */}
           <Grid item xs={12}>
@@ -187,7 +190,7 @@ const CategoryEditDialog = ({ open, onClose, category, onSave }) => {
               Basic Information
             </Typography>
           </Grid>
-          
+
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
@@ -200,7 +203,7 @@ const CategoryEditDialog = ({ open, onClose, category, onSave }) => {
               helperText={!formData.name.trim() ? 'Name is required' : ''}
             />
           </Grid>
-          
+
           <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <InputLabel>Parent Category</InputLabel>
@@ -221,7 +224,7 @@ const CategoryEditDialog = ({ open, onClose, category, onSave }) => {
               </Select>
             </FormControl>
           </Grid>
-          
+
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
@@ -233,7 +236,7 @@ const CategoryEditDialog = ({ open, onClose, category, onSave }) => {
               InputProps={{ inputProps: { min: 0 } }}
             />
           </Grid>
-          
+
           <Grid item xs={12} sm={6}>
             <Box sx={{ display: 'flex', gap: 2 }}>
               <FormControlLabel
@@ -247,7 +250,7 @@ const CategoryEditDialog = ({ open, onClose, category, onSave }) => {
                 }
                 label="Active"
               />
-              
+
               <FormControlLabel
                 control={
                   <Switch
@@ -261,7 +264,7 @@ const CategoryEditDialog = ({ open, onClose, category, onSave }) => {
               />
             </Box>
           </Grid>
-          
+
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -273,7 +276,7 @@ const CategoryEditDialog = ({ open, onClose, category, onSave }) => {
               rows={3}
             />
           </Grid>
-          
+
           {/* SEO Information */}
           <Grid item xs={12}>
             <Divider sx={{ my: 2 }} />
@@ -281,7 +284,7 @@ const CategoryEditDialog = ({ open, onClose, category, onSave }) => {
               SEO Information
             </Typography>
           </Grid>
-          
+
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -291,7 +294,7 @@ const CategoryEditDialog = ({ open, onClose, category, onSave }) => {
               onChange={handleChange}
             />
           </Grid>
-          
+
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -303,7 +306,7 @@ const CategoryEditDialog = ({ open, onClose, category, onSave }) => {
               rows={2}
             />
           </Grid>
-          
+
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -317,21 +320,21 @@ const CategoryEditDialog = ({ open, onClose, category, onSave }) => {
           </Grid>
         </Grid>
       </DialogContent>
-      
-      <DialogActions sx={{ 
+
+      <DialogActions sx={{
         justifyContent: 'space-between',
         bgcolor: 'background.default',
-        p: 2
+        p: 2,
       }}>
-        <Button 
+        <Button
           onClick={onClose}
           startIcon={<CancelIcon />}
           color="inherit"
         >
           Cancel
         </Button>
-        
-        <Button 
+
+        <Button
           onClick={handleSave}
           variant="contained"
           color="primary"

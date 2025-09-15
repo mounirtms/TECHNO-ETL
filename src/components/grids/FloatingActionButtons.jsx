@@ -7,7 +7,7 @@ import {
   Tooltip,
   Zoom,
   useTheme,
-  Box
+  Box,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -18,7 +18,7 @@ import {
   Refresh as RefreshIcon,
   Settings as SettingsIcon,
   Close as CloseIcon,
-  MoreVert as MoreIcon
+  MoreVert as MoreIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
@@ -33,7 +33,7 @@ const FloatingActionButtons = ({
   enableI18n = true,
   position = 'bottom-right',
   variant = 'speedDial', // 'speedDial' | 'individual'
-  onAction
+  onAction,
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -46,50 +46,50 @@ const FloatingActionButtons = ({
       label: 'Add New',
       color: 'primary',
       enabled: true,
-      priority: 1
+      priority: 1,
     },
     edit: {
       icon: EditIcon,
       label: 'Edit Selected',
       color: 'secondary',
       enabled: (selectedRows) => selectedRows.length === 1,
-      priority: 2
+      priority: 2,
     },
     delete: {
       icon: DeleteIcon,
       label: 'Delete Selected',
       color: 'error',
       enabled: (selectedRows) => selectedRows.length > 0,
-      priority: 3
+      priority: 3,
     },
     export: {
       icon: ExportIcon,
       label: 'Export',
       color: 'info',
       enabled: true,
-      priority: 4
+      priority: 4,
     },
     sync: {
       icon: SyncIcon,
       label: 'Sync Data',
       color: 'warning',
       enabled: true,
-      priority: 5
+      priority: 5,
     },
     refresh: {
       icon: RefreshIcon,
       label: 'Refresh',
       color: 'success',
       enabled: true,
-      priority: 6
+      priority: 6,
     },
     settings: {
       icon: SettingsIcon,
       label: 'Settings',
       color: 'default',
       enabled: true,
-      priority: 7
-    }
+      priority: 7,
+    },
   };
 
   // Merge with custom actions, ensuring icons are provided
@@ -103,7 +103,7 @@ const FloatingActionButtons = ({
       // Ensure icon is always defined
       icon: customAction.icon || defaultAction.icon || MoreIcon,
       // Ensure label is always defined
-      label: customAction.label || defaultAction.label || key
+      label: customAction.label || defaultAction.label || key,
     };
 
     return acc;
@@ -119,6 +119,7 @@ const FloatingActionButtons = ({
     if (typeof actionConfig.enabled === 'function') {
       return actionConfig.enabled(selectedRows);
     }
+
     return actionConfig.enabled !== false;
   }, [selectedRows]);
 
@@ -136,45 +137,45 @@ const FloatingActionButtons = ({
   const getPositionStyles = useCallback(() => {
     const baseStyles = {
       position: 'fixed',
-      zIndex: theme.zIndex.speedDial
+      zIndex: theme.zIndex.speedDial,
     };
 
     switch (position) {
-      case 'bottom-right':
-        return {
-          ...baseStyles,
-          bottom: 16,
-          right: isRTL ? 'auto' : 16,
-          left: isRTL ? 16 : 'auto'
-        };
-      case 'bottom-left':
-        return {
-          ...baseStyles,
-          bottom: 16,
-          left: isRTL ? 'auto' : 16,
-          right: isRTL ? 16 : 'auto'
-        };
-      case 'top-right':
-        return {
-          ...baseStyles,
-          top: 80,
-          right: isRTL ? 'auto' : 16,
-          left: isRTL ? 16 : 'auto'
-        };
-      case 'top-left':
-        return {
-          ...baseStyles,
-          top: 80,
-          left: isRTL ? 'auto' : 16,
-          right: isRTL ? 16 : 'auto'
-        };
-      default:
-        return {
-          ...baseStyles,
-          bottom: 16,
-          right: isRTL ? 'auto' : 16,
-          left: isRTL ? 16 : 'auto'
-        };
+    case 'bottom-right':
+      return {
+        ...baseStyles,
+        bottom: 16,
+        right: isRTL ? 'auto' : 16,
+        left: isRTL ? 16 : 'auto',
+      };
+    case 'bottom-left':
+      return {
+        ...baseStyles,
+        bottom: 16,
+        left: isRTL ? 'auto' : 16,
+        right: isRTL ? 16 : 'auto',
+      };
+    case 'top-right':
+      return {
+        ...baseStyles,
+        top: 80,
+        right: isRTL ? 'auto' : 16,
+        left: isRTL ? 16 : 'auto',
+      };
+    case 'top-left':
+      return {
+        ...baseStyles,
+        top: 80,
+        left: isRTL ? 'auto' : 16,
+        right: isRTL ? 16 : 'auto',
+      };
+    default:
+      return {
+        ...baseStyles,
+        bottom: 16,
+        right: isRTL ? 'auto' : 16,
+        left: isRTL ? 16 : 'auto',
+      };
     }
   }, [position, isRTL, theme.zIndex.speedDial]);
 
@@ -198,11 +199,12 @@ const FloatingActionButtons = ({
         direction={position.includes('top') ? 'down' : 'up'}
         FabProps={{
           color: 'primary',
-          size: 'medium'
+          size: 'medium',
         }}
       >
         {enabledActions.map(([actionKey, actionConfig]) => {
           const IconComponent = actionConfig.icon || MoreIcon;
+
           return (
             <SpeedDialAction
               key={actionKey}
@@ -212,7 +214,7 @@ const FloatingActionButtons = ({
               onClick={() => handleActionClick(actionKey, actionConfig)}
               FabProps={{
                 color: actionConfig.color || 'default',
-                size: 'small'
+                size: 'small',
               }}
             />
           );
@@ -227,14 +229,14 @@ const FloatingActionButtons = ({
       {enabledActions.map(([actionKey, actionConfig], index) => {
         const IconComponent = actionConfig.icon || MoreIcon;
         const bottomOffset = index * 64; // Stack vertically
-        
+
         return (
           <Zoom
             key={actionKey}
             in={true}
             timeout={200 + index * 100}
             style={{
-              transitionDelay: `${index * 100}ms`
+              transitionDelay: `${index * 100}ms`,
             }}
           >
             <Tooltip
@@ -250,12 +252,12 @@ const FloatingActionButtons = ({
                   bottom: bottomOffset,
                   right: 0,
                   transition: theme.transitions.create(['transform', 'box-shadow'], {
-                    duration: theme.transitions.duration.short
+                    duration: theme.transitions.duration.short,
                   }),
                   '&:hover': {
                     transform: 'scale(1.1)',
-                    boxShadow: theme.shadows[8]
-                  }
+                    boxShadow: theme.shadows[8],
+                  },
                 }}
               >
                 <IconComponent />

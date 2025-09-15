@@ -13,25 +13,26 @@
 export const processGridRows = (rows, processors = {}) => {
   // Use WeakMap for caching processed rows
   const processedCache = new WeakMap();
-  
+
   if (processedCache.has(rows)) {
     return processedCache.get(rows);
   }
-  
+
   const processed = rows.map((row, index) => {
     // Apply processors if available
-    let processedRow = { ...row, id: row.id || index };
-    
+    const processedRow = { ...row, id: row.id || index };
+
     Object.keys(processors).forEach(key => {
       if (processors[key] && typeof processors[key] === 'function') {
         processedRow[key] = processors[key](row[key], row);
       }
     });
-    
+
     return processedRow;
   });
-  
+
   processedCache.set(rows, processed);
+
   return processed;
 };
 
@@ -46,19 +47,20 @@ export const generateOptimizedColumns = (baseColumns, overrides = {}) => {
     // Apply overrides
     const overriddenColumn = {
       ...column,
-      ...overrides[column.field]
+      ...overrides[column.field],
     };
-    
+
     // Optimize renderers
     if (overriddenColumn.renderCell) {
       // Memoize renderers to prevent unnecessary re-renders
       const originalRenderer = overriddenColumn.renderCell;
+
       overriddenColumn.renderCell = (params) => {
         // Add performance optimization hints
         return originalRenderer(params);
       };
     }
-    
+
     return overriddenColumn;
   });
 };
@@ -74,7 +76,7 @@ export const getVirtualizedData = (data, startIndex, endIndex) => {
   // Ensure we don't go out of bounds
   const start = Math.max(0, startIndex);
   const end = Math.min(data.length, endIndex);
-  
+
   // Return sliced data
   return data.slice(start, end);
 };
@@ -82,5 +84,5 @@ export const getVirtualizedData = (data, startIndex, endIndex) => {
 export default {
   processGridRows,
   generateOptimizedColumns,
-  getVirtualizedData
+  getVirtualizedData,
 };

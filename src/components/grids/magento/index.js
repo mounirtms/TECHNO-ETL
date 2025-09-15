@@ -1,9 +1,9 @@
 /**
  * Magento Grid Components Barrel Export
- * 
+ *
  * Optimized exports for all Magento-related grid components
  * Enables efficient code splitting and lazy loading
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
@@ -55,7 +55,7 @@ export const MAGENTO_COMPONENTS = {
   'cms-pages': EnhancedCmsPagesGrid,
   'cms-blocks': CmsBlocksGrid,
   'sources': SourcesGrid,
-  'stocks': StocksGrid
+  'stocks': StocksGrid,
 };
 
 // ============================================================================
@@ -70,7 +70,7 @@ export const COMPONENT_GROUPS = {
   customers: [CustomersGrid],
   orders: [OrdersGrid, InvoicesGrid],
   content: [EnhancedCmsPagesGrid, CmsBlocksGrid],
-  inventory: [SourcesGrid, StocksGrid]
+  inventory: [SourcesGrid, StocksGrid],
 };
 
 // ============================================================================
@@ -84,9 +84,11 @@ export const COMPONENT_GROUPS = {
  */
 export const getMagentoComponent = (name) => {
   const component = MAGENTO_COMPONENTS[name];
+
   if (!component) {
     throw new Error(`Magento component "${name}" not found`);
   }
+
   return component;
 };
 
@@ -97,9 +99,11 @@ export const getMagentoComponent = (name) => {
  */
 export const getComponentGroup = (group) => {
   const components = COMPONENT_GROUPS[group];
+
   if (!components) {
     throw new Error(`Component group "${group}" not found`);
   }
+
   return components;
 };
 
@@ -110,6 +114,7 @@ export const getComponentGroup = (group) => {
  */
 export const loadComponentGroup = async (group) => {
   const components = getComponentGroup(group);
+
   return Promise.all(components.map(component => component));
 };
 
@@ -125,7 +130,7 @@ export const loadComponentGroup = async (group) => {
  */
 export const withSuspense = (
   Component,
-  fallback = <div>Loading...</div>
+  fallback = <div>Loading...</div>,
 ) => {
   return React.memo((props) => (
     <React.Suspense fallback={fallback}>
@@ -142,7 +147,7 @@ export const withSuspense = (
  */
 export const withErrorBoundary = (
   Component,
-  fallback
+  fallback,
 ) => {
   return React.memo((props) => (
     <ErrorBoundary fallback={fallback}>
@@ -161,13 +166,13 @@ export const withErrorBoundary = (
  */
 export const withSafeLoading = (
   Component,
-  options = {}
+  options = {},
 ) => {
   const {
     suspenseFallback = <div>Loading...</div>,
-    errorFallback
+    errorFallback,
   } = options;
-  
+
   return React.memo((props) => (
     <ErrorBoundary fallback={errorFallback}>
       <React.Suspense fallback={suspenseFallback}>
@@ -208,13 +213,13 @@ export default {
   CmsBlocksGrid,
   SourcesGrid,
   StocksGrid,
-  
+
   // Safe components
   SafeProductsGrid,
   SafeCustomersGrid,
   SafeOrdersGrid,
   SafeProductManagementGrid,
-  
+
   // Utilities
   getMagentoComponent,
   getComponentGroup,
@@ -222,8 +227,8 @@ export default {
   withSuspense,
   withErrorBoundary,
   withSafeLoading,
-  
+
   // Maps
   MAGENTO_COMPONENTS,
-  COMPONENT_GROUPS
+  COMPONENT_GROUPS,
 };

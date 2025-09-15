@@ -4,52 +4,55 @@ import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
 
 export const useProfileController = () => {
-    const { currentUser } = useAuth();
-    const { settings, updateSettings, saveSettings, loading: settingsLoading, isDirty: settingsIsDirty } = useSettings();
+  const { currentUser } = useAuth();
+  const { settings, updateSettings, saveSettings, loading: settingsLoading, isDirty: settingsIsDirty } = useSettings();
 
-    // Remove duplicate state - use SettingsContext state directly
-    const [error, setError] = useState(null);
+  // Remove duplicate state - use SettingsContext state directly
+  const [error, setError] = useState(null);
 
-    // Simplified initialization - let SettingsContext handle the heavy lifting
-    useEffect(() => {
-        if (!currentUser) {
-            setError(null);
-            return;
-        }
+  // Simplified initialization - let SettingsContext handle the heavy lifting
+  useEffect(() => {
+    if (!currentUser) {
+      setError(null);
 
-        // SettingsContext already handles Firebase sync, just clear any errors
-        setError(null);
-    }, [currentUser]);
+      return;
+    }
 
-    // Remove duplicate effects - SettingsContext handles this
+    // SettingsContext already handles Firebase sync, just clear any errors
+    setError(null);
+  }, [currentUser]);
 
-    const updateUserData = (updates, section) => {
-        if (!currentUser) {
-            toast.error('User not authenticated');
-            return;
-        }
+  // Remove duplicate effects - SettingsContext handles this
 
-        // Use SettingsContext for updates - it handles everything
-        updateSettings(updates, section);
-    };
+  const updateUserData = (updates, section) => {
+    if (!currentUser) {
+      toast.error('User not authenticated');
 
-    const saveUserData = async (forceSave = false) => {
-        if (!currentUser) {
-            toast.error('User not authenticated');
-            return;
-        }
+      return;
+    }
 
-        // Use SettingsContext save function
-        return await saveSettings(forceSave);
-    };
+    // Use SettingsContext for updates - it handles everything
+    updateSettings(updates, section);
+  };
 
-    return {
-        userData: settings, // Use settings directly from SettingsContext
-        loading: settingsLoading, // Use loading from SettingsContext
-        error,
-        updateUserData,
-        saveUserData,
-        isDirty: settingsIsDirty, // Use isDirty from SettingsContext
-        lastSyncTime: settings?.lastSyncTime || localStorage.getItem('lastSettingsSync')
-    };
+  const saveUserData = async (forceSave = false) => {
+    if (!currentUser) {
+      toast.error('User not authenticated');
+
+      return;
+    }
+
+    // Use SettingsContext save function
+    return await saveSettings(forceSave);
+  };
+
+  return {
+    userData: settings, // Use settings directly from SettingsContext
+    loading: settingsLoading, // Use loading from SettingsContext
+    error,
+    updateUserData,
+    saveUserData,
+    isDirty: settingsIsDirty, // Use isDirty from SettingsContext
+    lastSyncTime: settings?.lastSyncTime || localStorage.getItem('lastSettingsSync'),
+  };
 };

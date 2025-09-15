@@ -1,7 +1,7 @@
 /**
  * Standardized Error Handling Hook
  * Provides consistent error handling across all components
- * 
+ *
  * @author Mounir Abderrahmani
  * @email mounir.ab@techno-dz.com
  * @contact mounir.webdev.tms@gmail.com
@@ -24,7 +24,7 @@ export const useStandardErrorHandling = (componentName, options = {}) => {
     maxRetries = 3,
     retryDelay = 1000,
     onError = null,
-    onRetry = null
+    onRetry = null,
   } = options;
 
   const [error, setError] = useState(null);
@@ -38,7 +38,7 @@ export const useStandardErrorHandling = (componentName, options = {}) => {
   const handleComponentError = useCallback((err, context = {}) => {
     const errorInfo = handleError(err, {
       componentName,
-      ...context
+      ...context,
     });
 
     setError(errorInfo);
@@ -102,15 +102,16 @@ export const useStandardErrorHandling = (componentName, options = {}) => {
 
     try {
       const result = await operation();
+
       return result;
     } catch (err) {
       handleComponentError(err, context);
-      
+
       // Return fallback data if specified
       if (fallbackDataType) {
         return getFallbackData(fallbackDataType);
       }
-      
+
       throw err;
     } finally {
       setLoading(false);
@@ -134,6 +135,7 @@ export const useStandardErrorHandling = (componentName, options = {}) => {
    */
   const getErrorMessage = useCallback(() => {
     if (!error) return null;
+
     return error.message || 'An unexpected error occurred';
   }, [error]);
 
@@ -161,7 +163,7 @@ export const useStandardErrorHandling = (componentName, options = {}) => {
     // Utilities
     isError: !!error,
     hasRetried: retryCount > 0,
-    maxRetriesReached: retryCount >= maxRetries
+    maxRetriesReached: retryCount >= maxRetries,
   };
 };
 
@@ -179,15 +181,19 @@ export const useDataFetching = (componentName, options = {}) => {
   const fetchData = useCallback(async (fetchFunction, context = {}) => {
     try {
       const result = await errorHandling.executeWithErrorHandling(fetchFunction, context);
+
       setData(result);
       setInitialized(true);
+
       return result;
     } catch (err) {
       // Error already handled by executeWithErrorHandling
       if (options.fallbackDataType) {
         const fallback = errorHandling.getFallback();
+
         setData(fallback);
         setInitialized(true);
+
         return fallback;
       }
       throw err;
@@ -210,7 +216,7 @@ export const useDataFetching = (componentName, options = {}) => {
     fetchData,
     refresh,
     initialized,
-    isEmpty: initialized && (!data || (Array.isArray(data) && data.length === 0))
+    isEmpty: initialized && (!data || (Array.isArray(data) && data.length === 0)),
   };
 };
 
@@ -220,9 +226,9 @@ export const useDataFetching = (componentName, options = {}) => {
 export const useFormErrorHandling = (componentName, options = {}) => {
   const errorHandling = useStandardErrorHandling(componentName, {
     ...options,
-    showToast: false // Forms usually show inline errors
+    showToast: false, // Forms usually show inline errors
   });
-  
+
   const [fieldErrors, setFieldErrors] = useState({});
 
   /**
@@ -230,11 +236,11 @@ export const useFormErrorHandling = (componentName, options = {}) => {
    */
   const handleSubmit = useCallback(async (submitFunction, formData, context = {}) => {
     setFieldErrors({});
-    
+
     try {
       return await errorHandling.executeWithErrorHandling(
         () => submitFunction(formData),
-        { ...context, formData }
+        { ...context, formData },
       );
     } catch (err) {
       // Handle validation errors
@@ -258,7 +264,7 @@ export const useFormErrorHandling = (componentName, options = {}) => {
   const setFieldError = useCallback((field, message) => {
     setFieldErrors(prev => ({
       ...prev,
-      [field]: message
+      [field]: message,
     }));
   }, []);
 
@@ -268,7 +274,7 @@ export const useFormErrorHandling = (componentName, options = {}) => {
     handleSubmit,
     clearFieldErrors,
     setFieldError,
-    hasFieldErrors: Object.keys(fieldErrors).length > 0
+    hasFieldErrors: Object.keys(fieldErrors).length > 0,
   };
 };
 

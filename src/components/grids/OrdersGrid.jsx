@@ -21,7 +21,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Alert
+  Alert,
 } from '@mui/material';
 import {
   ShoppingCart as OrderIcon,
@@ -31,7 +31,7 @@ import {
   Visibility as ViewIcon,
   LocalShipping as ShippingIcon,
   Payment as PaymentIcon,
-  Person as PersonIcon
+  Person as PersonIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 
@@ -42,12 +42,12 @@ const mockOrders = [
 
 const getStatusColor = (status) => {
   switch (status) {
-    case 'pending': return 'warning';
-    case 'processing': return 'info';
-    case 'shipped': return 'primary';
-    case 'delivered': return 'success';
-    case 'cancelled': return 'error';
-    default: return 'default';
+  case 'pending': return 'warning';
+  case 'processing': return 'info';
+  case 'shipped': return 'primary';
+  case 'delivered': return 'success';
+  case 'cancelled': return 'error';
+  default: return 'default';
   }
 };
 
@@ -60,7 +60,7 @@ const OrdersGrid = ({
   initialSortBy = 'date',
   initialPriority = 'normal',
   highlightPending = false,
-  dashboardParams = {}
+  dashboardParams = {},
 }) => {
   const { t } = useTranslation();
   const [orders, setOrders] = useState(mockOrders);
@@ -74,7 +74,7 @@ const OrdersGrid = ({
     console.log('OrdersGrid: Setting initial state from props:', {
       initialStatus,
       initialSortBy,
-      dashboardParams
+      dashboardParams,
     });
     setStatusFilter(initialStatus);
     setSortBy(initialSortBy);
@@ -91,20 +91,21 @@ const OrdersGrid = ({
     return matchesSearch && matchesStatus;
   }).sort((a, b) => {
     switch (sortBy) {
-      case 'date':
-        return new Date(b.date) - new Date(a.date);
-      case 'amount':
-        return parseFloat(b.total.replace('$', '')) - parseFloat(a.total.replace('$', ''));
-      case 'customer':
-        return a.customerName.localeCompare(b.customerName);
-      default:
-        return 0;
+    case 'date':
+      return new Date(b.date) - new Date(a.date);
+    case 'amount':
+      return parseFloat(b.total.replace('$', '')) - parseFloat(a.total.replace('$', ''));
+    case 'customer':
+      return a.customerName.localeCompare(b.customerName);
+    default:
+      return 0;
     }
   });
 
   // Update badge count for pending orders
   useEffect(() => {
     const pendingOrders = orders.filter(o => o.status === 'pending').length;
+
     onBadgeUpdate?.(pendingOrders);
   }, [orders, onBadgeUpdate]);
 
@@ -163,7 +164,7 @@ const OrdersGrid = ({
               <InputAdornment position="start">
                 <SearchIcon />
               </InputAdornment>
-            )
+            ),
           }}
           sx={{ flex: 1 }}
         />

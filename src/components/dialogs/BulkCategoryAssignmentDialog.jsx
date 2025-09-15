@@ -18,7 +18,7 @@ import {
   Chip,
   LinearProgress,
   Collapse,
-  IconButton
+  IconButton,
 } from '@mui/material';
 import {
   Category as CategoryIcon,
@@ -26,7 +26,7 @@ import {
   ChevronRight as ChevronRightIcon,
   Save as SaveIcon,
   Cancel as CancelIcon,
-  ExpandLess as ExpandLessIcon
+  ExpandLess as ExpandLessIcon,
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import magentoApi from '../../services/magentoApi';
@@ -34,11 +34,11 @@ import magentoApi from '../../services/magentoApi';
 /**
  * BulkCategoryAssignmentDialog - Assign categories to multiple products
  */
-const BulkCategoryAssignmentDialog = ({ 
-  open, 
-  onClose, 
+const BulkCategoryAssignmentDialog = ({
+  open,
+  onClose,
   selectedProducts = [],
-  onAssignmentComplete 
+  onAssignmentComplete,
 }) => {
   // ===== STATE =====
   const [categories, setCategories] = useState([]);
@@ -53,6 +53,7 @@ const BulkCategoryAssignmentDialog = ({
       setLoading(true);
       const response = await magentoApi.getCategories();
       const categoryData = response?.data?.items || response?.items || [];
+
       setCategories(categoryData);
     } catch (error) {
       console.error('Error loading categories:', error);
@@ -66,9 +67,9 @@ const BulkCategoryAssignmentDialog = ({
           children_data: [
             { id: 2, name: 'Electronics', level: 1, children_data: [] },
             { id: 3, name: 'Clothing', level: 1, children_data: [] },
-            { id: 4, name: 'Home & Garden', level: 1, children_data: [] }
-          ]
-        }
+            { id: 4, name: 'Home & Garden', level: 1, children_data: [] },
+          ],
+        },
       ]);
     } finally {
       setLoading(false);
@@ -85,11 +86,13 @@ const BulkCategoryAssignmentDialog = ({
   const handleCategoryToggle = useCallback((categoryId) => {
     setSelectedCategories(prev => {
       const newSet = new Set(prev);
+
       if (newSet.has(categoryId)) {
         newSet.delete(categoryId);
       } else {
         newSet.add(categoryId);
       }
+
       return newSet;
     });
   }, []);
@@ -97,11 +100,13 @@ const BulkCategoryAssignmentDialog = ({
   const handleCategoryExpand = useCallback((categoryId) => {
     setExpandedCategories(prev => {
       const newSet = new Set(prev);
+
       if (newSet.has(categoryId)) {
         newSet.delete(categoryId);
       } else {
         newSet.add(categoryId);
       }
+
       return newSet;
     });
   }, []);
@@ -110,13 +115,14 @@ const BulkCategoryAssignmentDialog = ({
   const handleSave = useCallback(async () => {
     if (selectedCategories.size === 0) {
       toast.warning('Please select at least one category');
+
       return;
     }
 
     try {
       setSaving(true);
       const categoryIds = Array.from(selectedCategories);
-      
+
       // Bulk assign categories to products
       for (const product of selectedProducts) {
         try {
@@ -131,7 +137,7 @@ const BulkCategoryAssignmentDialog = ({
       toast.success(`Categories assigned to ${selectedProducts.length} products`);
       onAssignmentComplete?.();
       handleClose();
-      
+
     } catch (error) {
       console.error('Bulk category assignment error:', error);
       toast.error('Failed to assign categories');
@@ -153,14 +159,14 @@ const BulkCategoryAssignmentDialog = ({
       const hasChildren = category.children_data && category.children_data.length > 0;
       const isExpanded = expandedCategories.has(category.id);
       const isSelected = selectedCategories.has(category.id);
-      
+
       return (
         <React.Fragment key={category.id}>
           <ListItem
-            sx={{ 
+            sx={{
               pl: level * 3 + 1,
               py: 0.5,
-              '&:hover': { backgroundColor: 'action.hover' }
+              '&:hover': { backgroundColor: 'action.hover' },
             }}
           >
             <ListItemIcon sx={{ minWidth: 32 }}>
@@ -175,7 +181,7 @@ const BulkCategoryAssignmentDialog = ({
                 <Box sx={{ width: 32 }} />
               )}
             </ListItemIcon>
-            
+
             <FormControlLabel
               control={
                 <Checkbox
@@ -201,7 +207,7 @@ const BulkCategoryAssignmentDialog = ({
               sx={{ flexGrow: 1, ml: 0 }}
             />
           </ListItem>
-          
+
           {hasChildren && isExpanded && (
             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
               {renderCategoryTree(category.children_data, level + 1)}
@@ -222,7 +228,7 @@ const BulkCategoryAssignmentDialog = ({
           </Typography>
         </Box>
       </DialogTitle>
-      
+
       <DialogContent>
         <Alert severity="info" sx={{ mb: 2 }}>
           Assign categories to {selectedProducts.length} selected products
@@ -263,6 +269,7 @@ const BulkCategoryAssignmentDialog = ({
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
               {Array.from(selectedCategories).map((categoryId) => {
                 const category = findCategoryById(categories, categoryId);
+
                 return (
                   <Chip
                     key={categoryId}
@@ -281,16 +288,16 @@ const BulkCategoryAssignmentDialog = ({
         <Typography variant="subtitle2" gutterBottom>
           Available Categories:
         </Typography>
-        
+
         {loading ? (
           <LinearProgress />
         ) : (
-          <Box sx={{ 
-            maxHeight: 400, 
+          <Box sx={{
+            maxHeight: 400,
             overflowY: 'auto',
             border: '1px solid',
             borderColor: 'divider',
-            borderRadius: 1
+            borderRadius: 1,
           }}>
             <List dense>
               {renderCategoryTree(categories)}
@@ -307,14 +314,14 @@ const BulkCategoryAssignmentDialog = ({
           </Box>
         )}
       </DialogContent>
-      
+
       <DialogActions>
         <Button onClick={handleClose} disabled={saving}>
           Cancel
         </Button>
-        <Button 
-          onClick={handleSave} 
-          variant="contained" 
+        <Button
+          onClick={handleSave}
+          variant="contained"
           disabled={selectedCategories.size === 0 || saving}
           startIcon={<SaveIcon />}
         >
@@ -331,9 +338,11 @@ const findCategoryById = (categories, id) => {
     if (category.id === id) return category;
     if (category.children_data) {
       const found = findCategoryById(category.children_data, id);
+
       if (found) return found;
     }
   }
+
   return null;
 };
 

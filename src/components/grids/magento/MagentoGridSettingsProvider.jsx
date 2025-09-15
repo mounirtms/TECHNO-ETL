@@ -9,16 +9,18 @@ import { useSettings } from '../../../contexts/SettingsContext';
 import { setMagentoApiSettings } from '../../../services/magentoApi';
 import {
   getMagentoGridConfig,
-  getErrorHandlingConfig
+  getErrorHandlingConfig,
 } from '../../../utils/magentoGridSettingsManager';
 
 const MagentoGridSettingsContext = createContext();
 
 export const useMagentoGridSettings = () => {
   const context = useContext(MagentoGridSettingsContext);
+
   if (!context) {
     throw new Error('useMagentoGridSettings must be used within a MagentoGridSettingsProvider');
   }
+
   return context;
 };
 
@@ -54,7 +56,7 @@ export const MagentoGridSettingsProvider = ({ children, gridType }) => {
     updateSettings,
     gridConfig,
     errorConfig,
-    gridType
+    gridType,
   }), [settings, updateSettings, gridConfig, errorConfig, gridType]);
 
   return (
@@ -80,7 +82,7 @@ export const withMagentoGridSettings = (WrappedComponent, gridType) => {
   };
 
   EnhancedComponent.displayName = `withMagentoGridSettings(${WrappedComponent.displayName || WrappedComponent.name})`;
-  
+
   return EnhancedComponent;
 };
 

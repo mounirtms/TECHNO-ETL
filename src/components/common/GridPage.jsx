@@ -8,7 +8,7 @@ import {
   Link,
   Chip,
   Stack,
-  Alert
+  Alert,
 } from '@mui/material';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -79,21 +79,21 @@ const GridPage = ({ title, description, icon: Icon, showBreadcrumbs = true }) =>
               {t(pageTitle)}
             </Typography>
           </Stack>
-          
+
           {pageDescription && (
             <Typography variant="h6" color="text.secondary">
               {t(pageDescription)}
             </Typography>
           )}
-          
+
           <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
             {pageChips.map(chip => (
-              <Chip 
+              <Chip
                 key={chip.key}
-                label={t(chip.label)} 
-                color={chip.color} 
-                size="small" 
-                variant="outlined" 
+                label={t(chip.label)}
+                color={chip.color}
+                size="small"
+                variant="outlined"
               />
             ))}
           </Stack>

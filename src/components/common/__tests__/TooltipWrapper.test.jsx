@@ -31,7 +31,7 @@ describe('TooltipWrapper', () => {
           <TooltipWrapper title="Test tooltip">
             <Button>Test Button</Button>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       expect(screen.getByRole('button', { name: 'Test Button' })).toBeInTheDocument();
@@ -43,10 +43,11 @@ describe('TooltipWrapper', () => {
           <TooltipWrapper title="Test tooltip">
             <Button>Test Button</Button>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const button = screen.getByRole('button', { name: 'Test Button' });
+
       await user.hover(button);
 
       await waitFor(() => {
@@ -61,18 +62,19 @@ describe('TooltipWrapper', () => {
           <TooltipWrapper title="Test tooltip">
             <Button>Test Button</Button>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const button = screen.getByRole('button', { name: 'Test Button' });
+
       await user.hover(button);
-      
+
       await waitFor(() => {
         expect(screen.getByRole('tooltip')).toBeInTheDocument();
       });
 
       await user.unhover(button);
-      
+
       await waitFor(() => {
         expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
       });
@@ -86,10 +88,11 @@ describe('TooltipWrapper', () => {
           <TooltipWrapper title="Disabled tooltip" disabled={true}>
             <Button disabled>Disabled Button</Button>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const span = container.querySelector('span[role="presentation"]');
+
       expect(span).toBeInTheDocument();
       expect(span).toHaveStyle('cursor: not-allowed');
     });
@@ -100,10 +103,11 @@ describe('TooltipWrapper', () => {
           <TooltipWrapper title="Disabled tooltip" disabled={true}>
             <Button disabled>Disabled Button</Button>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const wrapper = container.querySelector('span[role="presentation"]');
+
       fireEvent.mouseEnter(wrapper);
 
       await waitFor(() => {
@@ -120,10 +124,11 @@ describe('TooltipWrapper', () => {
               <EditIcon />
             </IconButton>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const wrapper = container.querySelector('span[role="presentation"]');
+
       expect(wrapper).toHaveStyle('cursor: not-allowed');
     });
   });
@@ -135,14 +140,16 @@ describe('TooltipWrapper', () => {
           <TooltipWrapper title="Bottom tooltip" placement="bottom">
             <Button>Test Button</Button>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const button = screen.getByRole('button', { name: 'Test Button' });
+
       await user.hover(button);
 
       await waitFor(() => {
         const tooltip = screen.getByRole('tooltip');
+
         expect(tooltip).toBeInTheDocument();
       });
     });
@@ -153,10 +160,11 @@ describe('TooltipWrapper', () => {
           <TooltipWrapper title="Delayed tooltip" enterDelay={100} leaveDelay={100}>
             <Button>Test Button</Button>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const button = screen.getByRole('button', { name: 'Test Button' });
+
       await user.hover(button);
 
       // Should appear after enterDelay
@@ -172,10 +180,11 @@ describe('TooltipWrapper', () => {
           <TooltipWrapper title="Styled tooltip" disabled={true} wrapperStyle={customStyle}>
             <Button disabled>Styled Button</Button>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const wrapper = container.querySelector('span[role="presentation"]');
+
       expect(wrapper).toHaveStyle('margin: 10px');
       expect(wrapper).toHaveStyle('padding: 5px');
     });
@@ -186,10 +195,11 @@ describe('TooltipWrapper', () => {
           <TooltipWrapper title="Custom class tooltip" disabled={true} wrapperClassName="custom-wrapper">
             <Button disabled>Custom Button</Button>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const wrapper = container.querySelector('.custom-wrapper');
+
       expect(wrapper).toBeInTheDocument();
     });
   });
@@ -201,10 +211,11 @@ describe('TooltipWrapper', () => {
           <TooltipWrapper title="Accessible tooltip" disabled={true} aria-describedby="custom-desc">
             <Button disabled>Accessible Button</Button>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const wrapper = container.querySelector('span[role="presentation"]');
+
       expect(wrapper).toHaveAttribute('role', 'presentation');
     });
 
@@ -214,10 +225,11 @@ describe('TooltipWrapper', () => {
           <TooltipWrapper title="Keyboard tooltip">
             <Button>Keyboard Button</Button>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const button = screen.getByRole('button', { name: 'Keyboard Button' });
+
       button.focus();
 
       await waitFor(() => {
@@ -233,7 +245,7 @@ describe('TooltipWrapper', () => {
           <TooltipWrapper title="Performance test" disabled={true}>
             <Button disabled>Performance Button</Button>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       // Re-render with same props
@@ -242,7 +254,7 @@ describe('TooltipWrapper', () => {
           <TooltipWrapper title="Performance test" disabled={true}>
             <Button disabled>Performance Button</Button>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       // Component should handle re-renders efficiently
@@ -257,7 +269,7 @@ describe('TooltipWrapper', () => {
           <TooltipWrapper title="">
             <Button>Empty Title Button</Button>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       expect(screen.getByRole('button', { name: 'Empty Title Button' })).toBeInTheDocument();
@@ -274,7 +286,7 @@ describe('TooltipWrapper', () => {
               <span>Complex Content</span>
             </div>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       expect(screen.getByText('Complex Content')).toBeInTheDocument();
@@ -283,7 +295,7 @@ describe('TooltipWrapper', () => {
     it('handles dynamic disabled state changes', async () => {
       const TestComponent = () => {
         const [disabled, setDisabled] = React.useState(false);
-        
+
         return (
           <div>
             <TooltipWrapper title="Dynamic tooltip" disabled={disabled}>
@@ -301,7 +313,7 @@ describe('TooltipWrapper', () => {
       render(
         <TestWrapper>
           <TestComponent />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const toggleButton = screen.getByRole('button', { name: 'Toggle Disabled' });
@@ -329,25 +341,27 @@ describe('TooltipWrapper', () => {
               <EditIcon />
             </IconButton>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const iconButton = screen.getByRole('button');
+
       expect(iconButton).toBeDisabled();
     });
 
     it('preserves button click handlers when enabled', async () => {
       const handleClick = jest.fn();
-      
+
       render(
         <TestWrapper>
           <TooltipWrapper title="Clickable tooltip">
             <Button onClick={handleClick}>Clickable Button</Button>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const button = screen.getByRole('button', { name: 'Clickable Button' });
+
       await user.click(button);
 
       expect(handleClick).toHaveBeenCalledTimes(1);
@@ -355,16 +369,17 @@ describe('TooltipWrapper', () => {
 
     it('prevents click handlers when disabled', async () => {
       const handleClick = jest.fn();
-      
+
       render(
         <TestWrapper>
           <TooltipWrapper title="Disabled tooltip" disabled={true}>
             <Button disabled onClick={handleClick}>Disabled Button</Button>
           </TooltipWrapper>
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const button = screen.getByRole('button', { name: 'Disabled Button' });
+
       await user.click(button);
 
       expect(handleClick).not.toHaveBeenCalled();

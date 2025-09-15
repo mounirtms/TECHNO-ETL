@@ -14,12 +14,13 @@ router.get('/health', async (req, res) => {
       uptime: process.uptime(),
       environment: process.env.NODE_ENV || 'development',
       version: '1.0.0',
-      checks: {}
+      checks: {},
     };
 
     // Database health check
     try {
       const pool = getPool('mdm');
+
       await pool.request().query('SELECT 1');
       health.checks.database = { status: 'healthy', responseTime: Date.now() };
     } catch (error) {
@@ -30,6 +31,7 @@ router.get('/health', async (req, res) => {
     // Redis health check
     try {
       const redis = getRedisClient();
+
       if (redis) {
         await redis.ping();
         health.checks.redis = { status: 'healthy' };
@@ -44,20 +46,22 @@ router.get('/health', async (req, res) => {
     // Memory check
     const memory = process.memoryUsage();
     const memoryUsagePercent = (memory.heapUsed / memory.heapTotal) * 100;
+
     health.checks.memory = {
       status: memoryUsagePercent > 90 ? 'warning' : 'healthy',
       usage: memory,
-      usagePercent: Math.round(memoryUsagePercent)
+      usagePercent: Math.round(memoryUsagePercent),
     };
 
     const statusCode = health.status === 'healthy' ? 200 : 503;
+
     res.status(statusCode).json(health);
   } catch (error) {
     logger.error('Health check failed', { error: error.message });
     res.status(500).json({
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -76,14 +80,14 @@ router.get('/health/detailed', async (req, res) => {
         uptime: process.uptime(),
         memory: process.memoryUsage(),
         cpu: process.cpuUsage(),
-        pid: process.pid
+        pid: process.pid,
       },
       checks: {},
       metrics: {
         responseTime: 0,
         activeConnections: 0,
-        cacheHitRate: 0
-      }
+        cacheHitRate: 0,
+      },
     };
 
     // Database detailed check
@@ -100,13 +104,13 @@ router.get('/health/detailed', async (req, res) => {
         connectionPool: {
           size: pool.size,
           available: pool.available,
-          pending: pool.pending
-        }
+          pending: pool.pending,
+        },
       };
     } catch (error) {
       detailedHealth.checks.database = {
         status: 'unhealthy',
-        error: error.message
+        error: error.message,
       };
       detailedHealth.status = 'degraded';
     }
@@ -114,6 +118,7 @@ router.get('/health/detailed', async (req, res) => {
     // Redis detailed check
     try {
       const redis = getRedisClient();
+
       if (redis) {
         const redisStart = Date.now();
         const info = await redis.info('memory');
@@ -122,19 +127,20 @@ router.get('/health/detailed', async (req, res) => {
         detailedHealth.checks.redis = {
           status: 'healthy',
           responseTime: redisResponseTime,
-          memory: info.split('\r\n').find(line => line.startsWith('used_memory_human'))?.split(':')[1]
+          memory: info.split('\r\n').find(line => line.startsWith('used_memory_human'))?.split(':')[1],
         };
       }
     } catch (error) {
       detailedHealth.checks.redis = {
         status: 'unhealthy',
-        error: error.message
+        error: error.message,
       };
     }
 
     detailedHealth.metrics.responseTime = Date.now() - startTime;
 
     const statusCode = detailedHealth.status === 'healthy' ? 200 : 503;
+
     res.status(statusCode).json(detailedHealth);
 
   } catch (error) {
@@ -142,7 +148,7 @@ router.get('/health/detailed', async (req, res) => {
     res.status(500).json({
       status: 'unhealthy',
       timestamp: new Date().toISOString(),
-      error: error.message
+      error: error.message,
     });
   }
 });

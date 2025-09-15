@@ -5,12 +5,12 @@
 
 import React, { useState } from 'react';
 import {
-    Box, Button, Tooltip, Menu, MenuItem, ListItemIcon, ListItemText,
-    Divider, Chip, CircularProgress, Alert
+  Box, Button, Tooltip, Menu, MenuItem, ListItemIcon, ListItemText,
+  Divider, Chip, CircularProgress, Alert,
 } from '@mui/material';
 import {
-    Refresh, SyncAlt, Settings, BarChart as BarChartIcon,
-    PieChart as PieChartIcon, TableChart, ShowChart
+  Refresh, SyncAlt, Settings, BarChart as BarChartIcon,
+  PieChart as PieChartIcon, TableChart, ShowChart,
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
@@ -28,209 +28,209 @@ import { toast } from 'react-toastify';
  * @returns {JSX.Element} Dashboard actions component
  */
 const DashboardActions = ({
-    onRefresh,
-    getPrices,
-    syncAllStocks,
-    loading,
-    chartType,
-    onChartTypeChange,
-    visibleCharts,
-    onVisibleChartsChange
+  onRefresh,
+  getPrices,
+  syncAllStocks,
+  loading,
+  chartType,
+  onChartTypeChange,
+  visibleCharts,
+  onVisibleChartsChange,
 }) => {
-    const [settingsAnchorEl, setSettingsAnchorEl] = useState(null);
-    const [syncLoading, setSyncLoading] = useState(false);
-    const [priceLoading, setPriceLoading] = useState(false);
+  const [settingsAnchorEl, setSettingsAnchorEl] = useState(null);
+  const [syncLoading, setSyncLoading] = useState(false);
+  const [priceLoading, setPriceLoading] = useState(false);
 
-    const handleSettingsClick = (event) => {
-        setSettingsAnchorEl(event.currentTarget);
-    };
+  const handleSettingsClick = (event) => {
+    setSettingsAnchorEl(event.currentTarget);
+  };
 
-    const handleSettingsClose = () => {
-        setSettingsAnchorEl(null);
-    };
+  const handleSettingsClose = () => {
+    setSettingsAnchorEl(null);
+  };
 
-    const handleChartTypeChange = (type) => {
-        onChartTypeChange(type);
-        handleSettingsClose();
-    };
+  const handleChartTypeChange = (type) => {
+    onChartTypeChange(type);
+    handleSettingsClose();
+  };
 
-    const handleToggleChart = (chartKey) => {
-        onVisibleChartsChange({
-            ...visibleCharts,
-            [chartKey]: !visibleCharts[chartKey]
-        });
-    };
+  const handleToggleChart = (chartKey) => {
+    onVisibleChartsChange({
+      ...visibleCharts,
+      [chartKey]: !visibleCharts[chartKey],
+    });
+  };
 
-    const handleSyncPrices = async () => {
-        setPriceLoading(true);
-        try {
-            await getPrices();
-            toast.success('✅ Prices synced successfully from MDM');
-        } catch (error) {
-            console.error('Price sync error:', error);
-            toast.error('❌ Failed to sync prices: ' + (error.message || 'Unknown error'));
-        } finally {
-            setPriceLoading(false);
-        }
-    };
+  const handleSyncPrices = async () => {
+    setPriceLoading(true);
+    try {
+      await getPrices();
+      toast.success('✅ Prices synced successfully from MDM');
+    } catch (error) {
+      console.error('Price sync error:', error);
+      toast.error('❌ Failed to sync prices: ' + (error.message || 'Unknown error'));
+    } finally {
+      setPriceLoading(false);
+    }
+  };
 
-    const handleSyncStocks = async () => {
-        setSyncLoading(true);
-        try {
-            await syncAllStocks();
-            toast.success('✅ Stock levels synced successfully from MDM');
-        } catch (error) {
-            console.error('Stock sync error:', error);
-            toast.error('❌ Failed to sync stocks: ' + (error.message || 'Unknown error'));
-        } finally {
-            setSyncLoading(false);
-        }
-    };
+  const handleSyncStocks = async () => {
+    setSyncLoading(true);
+    try {
+      await syncAllStocks();
+      toast.success('✅ Stock levels synced successfully from MDM');
+    } catch (error) {
+      console.error('Stock sync error:', error);
+      toast.error('❌ Failed to sync stocks: ' + (error.message || 'Unknown error'));
+    } finally {
+      setSyncLoading(false);
+    }
+  };
 
-    return (
-        <Box sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2,
-            flexWrap: 'wrap'
-        }}>
-            {/* Refresh Button */}
-            <Tooltip title="Refresh Dashboard Data">
-                <Button
-                    variant="outlined"
-                    startIcon={loading ? <CircularProgress size={16} /> : <Refresh />}
-                    onClick={onRefresh}
-                    disabled={loading}
-                    size="small"
-                >
+  return (
+    <Box sx={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: 2,
+      flexWrap: 'wrap',
+    }}>
+      {/* Refresh Button */}
+      <Tooltip title="Refresh Dashboard Data">
+        <Button
+          variant="outlined"
+          startIcon={loading ? <CircularProgress size={16} /> : <Refresh />}
+          onClick={onRefresh}
+          disabled={loading}
+          size="small"
+        >
                     Refresh
-                </Button>
-            </Tooltip>
+        </Button>
+      </Tooltip>
 
-            {/* Sync Prices Button */}
-            <Tooltip title="Sync Prices from MDM Database">
-                <Button
-                    variant="outlined"
-                    color="warning"
-                    startIcon={priceLoading ? <CircularProgress size={16} /> : <SyncAlt />}
-                    onClick={handleSyncPrices}
-                    disabled={loading || priceLoading}
-                    size="small"
-                >
+      {/* Sync Prices Button */}
+      <Tooltip title="Sync Prices from MDM Database">
+        <Button
+          variant="outlined"
+          color="warning"
+          startIcon={priceLoading ? <CircularProgress size={16} /> : <SyncAlt />}
+          onClick={handleSyncPrices}
+          disabled={loading || priceLoading}
+          size="small"
+        >
                     Sync Prices
-                </Button>
-            </Tooltip>
+        </Button>
+      </Tooltip>
 
-            {/* Sync Stocks Button */}
-            <Tooltip title="Sync Stock Levels from MDM Database">
-                <Button
-                    variant="outlined"
-                    color="success"
-                    startIcon={syncLoading ? <CircularProgress size={16} /> : <SyncAlt />}
-                    onClick={handleSyncStocks}
-                    disabled={loading || syncLoading}
-                    size="small"
-                >
+      {/* Sync Stocks Button */}
+      <Tooltip title="Sync Stock Levels from MDM Database">
+        <Button
+          variant="outlined"
+          color="success"
+          startIcon={syncLoading ? <CircularProgress size={16} /> : <SyncAlt />}
+          onClick={handleSyncStocks}
+          disabled={loading || syncLoading}
+          size="small"
+        >
                     Sync Stocks
-                </Button>
-            </Tooltip>
+        </Button>
+      </Tooltip>
 
-            {/* Settings Menu */}
-            <Tooltip title="Dashboard Settings">
-                <Button
-                    variant="outlined"
-                    startIcon={<Settings />}
-                    onClick={handleSettingsClick}
-                    size="small"
-                >
+      {/* Settings Menu */}
+      <Tooltip title="Dashboard Settings">
+        <Button
+          variant="outlined"
+          startIcon={<Settings />}
+          onClick={handleSettingsClick}
+          size="small"
+        >
                     Settings
-                </Button>
-            </Tooltip>
+        </Button>
+      </Tooltip>
 
-            <Menu
-                anchorEl={settingsAnchorEl}
-                open={Boolean(settingsAnchorEl)}
-                onClose={handleSettingsClose}
-                PaperProps={{
-                    sx: { minWidth: 200 }
-                }}
-            >
-                {/* Chart Type Selection */}
-                <MenuItem disabled>
-                    <ListItemText primary="Chart Type" />
-                </MenuItem>
-                <MenuItem
-                    onClick={() => handleChartTypeChange('line')}
-                    selected={chartType === 'line'}
-                >
-                    <ListItemIcon>
-                        <ShowChart />
-                    </ListItemIcon>
-                    <ListItemText primary="Line Chart" />
-                </MenuItem>
-                <MenuItem
-                    onClick={() => handleChartTypeChange('bar')}
-                    selected={chartType === 'bar'}
-                >
-                    <ListItemIcon>
-                        <BarChartIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Bar Chart" />
-                </MenuItem>
+      <Menu
+        anchorEl={settingsAnchorEl}
+        open={Boolean(settingsAnchorEl)}
+        onClose={handleSettingsClose}
+        PaperProps={{
+          sx: { minWidth: 200 },
+        }}
+      >
+        {/* Chart Type Selection */}
+        <MenuItem disabled>
+          <ListItemText primary="Chart Type" />
+        </MenuItem>
+        <MenuItem
+          onClick={() => handleChartTypeChange('line')}
+          selected={chartType === 'line'}
+        >
+          <ListItemIcon>
+            <ShowChart />
+          </ListItemIcon>
+          <ListItemText primary="Line Chart" />
+        </MenuItem>
+        <MenuItem
+          onClick={() => handleChartTypeChange('bar')}
+          selected={chartType === 'bar'}
+        >
+          <ListItemIcon>
+            <BarChartIcon />
+          </ListItemIcon>
+          <ListItemText primary="Bar Chart" />
+        </MenuItem>
 
-                <Divider />
+        <Divider />
 
-                {/* Visible Charts Toggle */}
-                <MenuItem disabled>
-                    <ListItemText primary="Visible Charts" />
-                </MenuItem>
-                <MenuItem onClick={() => handleToggleChart('orders')}>
-                    <ListItemIcon>
-                        <TableChart />
-                    </ListItemIcon>
-                    <ListItemText primary="Orders Chart" />
-                    <Chip
-                        size="small"
-                        label={visibleCharts.orders ? 'ON' : 'OFF'}
-                        color={visibleCharts.orders ? 'success' : 'default'}
-                        variant="outlined"
-                    />
-                </MenuItem>
-                <MenuItem onClick={() => handleToggleChart('customers')}>
-                    <ListItemIcon>
-                        <ShowChart />
-                    </ListItemIcon>
-                    <ListItemText primary="Customers Chart" />
-                    <Chip
-                        size="small"
-                        label={visibleCharts.customers ? 'ON' : 'OFF'}
-                        color={visibleCharts.customers ? 'success' : 'default'}
-                        variant="outlined"
-                    />
-                </MenuItem>
-                <MenuItem onClick={() => handleToggleChart('products')}>
-                    <ListItemIcon>
-                        <PieChartIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Products Chart" />
-                    <Chip
-                        size="small"
-                        label={visibleCharts.products ? 'ON' : 'OFF'}
-                        color={visibleCharts.products ? 'success' : 'default'}
-                        variant="outlined"
-                    />
-                </MenuItem>
-            </Menu>
+        {/* Visible Charts Toggle */}
+        <MenuItem disabled>
+          <ListItemText primary="Visible Charts" />
+        </MenuItem>
+        <MenuItem onClick={() => handleToggleChart('orders')}>
+          <ListItemIcon>
+            <TableChart />
+          </ListItemIcon>
+          <ListItemText primary="Orders Chart" />
+          <Chip
+            size="small"
+            label={visibleCharts.orders ? 'ON' : 'OFF'}
+            color={visibleCharts.orders ? 'success' : 'default'}
+            variant="outlined"
+          />
+        </MenuItem>
+        <MenuItem onClick={() => handleToggleChart('customers')}>
+          <ListItemIcon>
+            <ShowChart />
+          </ListItemIcon>
+          <ListItemText primary="Customers Chart" />
+          <Chip
+            size="small"
+            label={visibleCharts.customers ? 'ON' : 'OFF'}
+            color={visibleCharts.customers ? 'success' : 'default'}
+            variant="outlined"
+          />
+        </MenuItem>
+        <MenuItem onClick={() => handleToggleChart('products')}>
+          <ListItemIcon>
+            <PieChartIcon />
+          </ListItemIcon>
+          <ListItemText primary="Products Chart" />
+          <Chip
+            size="small"
+            label={visibleCharts.products ? 'ON' : 'OFF'}
+            color={visibleCharts.products ? 'success' : 'default'}
+            variant="outlined"
+          />
+        </MenuItem>
+      </Menu>
 
-            {/* Status Indicators */}
-            {(syncLoading || priceLoading) && (
-                <Alert severity="info" sx={{ ml: 2 }}>
-                    {syncLoading && 'Syncing stock levels...'}
-                    {priceLoading && 'Syncing prices...'}
-                </Alert>
-            )}
-        </Box>
-    );
+      {/* Status Indicators */}
+      {(syncLoading || priceLoading) && (
+        <Alert severity="info" sx={{ ml: 2 }}>
+          {syncLoading && 'Syncing stock levels...'}
+          {priceLoading && 'Syncing prices...'}
+        </Alert>
+      )}
+    </Box>
+  );
 };
 
 export default DashboardActions;

@@ -13,11 +13,11 @@
     "url": "https://github.com/mounir/techno-etl.git"
   },
   "scripts": {
-    "start": "vite --host 0.0.0.0 --port 80",
+    "start": "vite --host 0.0.0.0 --port 82",
     "server": "cd backend && npm start",
     "dev": "concurrently \"npm run start\" \"npm run server\"",
     "dev:fast": "concurrently --kill-others --prefix-colors cyan,magenta \"npm run start:fast\" \"npm run server:fast\"",
-    "start:fast": "cross-env NODE_ENV=development VITE_FAST_DEV=true vite --host 0.0.0.0 --port 3000 --force",
+    "start:fast": "cross-env NODE_ENV=development VITE_FAST_DEV=true vite --host 0.0.0.0 --port 80 --force",
     "server:fast": "cd backend && cross-env NODE_ENV=development npm run dev",
     "build": "vite build --mode production",
     "postbuild": "node scripts/post-build.js",

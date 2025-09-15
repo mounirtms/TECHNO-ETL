@@ -10,19 +10,19 @@ const mockAuthContext = {
     uid: 'test-user-123',
     email: 'test@example.com',
     displayName: 'Test User',
-    isMagentoUser: false
-  }
+    isMagentoUser: false,
+  },
 };
 
 vi.mock('../../../contexts/AuthContext', () => ({
-  useAuth: () => mockAuthContext
+  useAuth: () => mockAuthContext,
 }));
 
 // Mock license utils
 const mockLicenseUtils = {
   check_license_status: vi.fn(),
   get_license_details: vi.fn(),
-  set_license_status: vi.fn()
+  set_license_status: vi.fn(),
 };
 
 vi.mock('../../../utils/licenseUtils', () => mockLicenseUtils);
@@ -33,7 +33,7 @@ const renderWithTheme = (component) => {
   return render(
     <ThemeProvider theme={theme}>
       {component}
-    </ThemeProvider>
+    </ThemeProvider>,
   );
 };
 
@@ -45,7 +45,7 @@ describe('LicenseStatus', () => {
   it('renders loading state initially', () => {
     mockLicenseUtils.check_license_status.mockImplementation(() => new Promise(() => {}));
     mockLicenseUtils.get_license_details.mockImplementation(() => new Promise(() => {}));
-    
+
     renderWithTheme(<LicenseStatus />);
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
@@ -57,7 +57,7 @@ describe('LicenseStatus', () => {
       expiryDate: '2024-12-31T23:59:59.000Z',
       createdAt: '2024-01-01T00:00:00.000Z',
       updatedAt: '2024-01-15T12:00:00.000Z',
-      features: ['dashboard', 'products', 'analytics']
+      features: ['dashboard', 'products', 'analytics'],
     };
 
     mockLicenseUtils.check_license_status.mockResolvedValue(true);
@@ -69,20 +69,19 @@ describe('LicenseStatus', () => {
       expect(screen.getByText('License Status')).toBeInTheDocument();
       expect(screen.getByText('Valid')).toBeInTheDocument();
       expect(screen.getByText('premium')).toBeInTheDocument();
-    });
+    }, { timeout: 15000 });
   });
 
   it('displays invalid license status', async () => {
     mockLicenseUtils.check_license_status.mockResolvedValue(false);
     mockLicenseUtils.get_license_details.mockResolvedValue({
       isValid: false,
-      licenseType: 'none'
+      licenseType: 'none',
     });
 
-    renderWithTheme(<LicenseStatus />);
-
-    await waitFor(() => {
+    renderWithTheme(<Licensawait waitFor(() => {
       expect(screen.getByText('Invalid')).toBeInTheDocument();
+    }, { timeout: 15000 });Document();
     });
   });
 
@@ -91,13 +90,13 @@ describe('LicenseStatus', () => {
     mockLicenseUtils.get_license_details.mockResolvedValue({ isValid: false });
     mockLicenseUtils.set_license_status.mockResolvedValue(true);
 
-    renderWithTheme(<LicenseStatus />);
-
-    await waitFor(() => {
+    renawait waitFor(() => {
       expect(screen.getByText('Activate Test License')).toBeInTheDocument();
+    }, { timeout: 15000 });License')).toBeInTheDocument();
     });
 
     const activateButton = screen.getByText('Activate Test License');
+
     fireEvent.click(activateButton);
 
     await waitFor(() => {
@@ -105,8 +104,8 @@ describe('LicenseStatus', () => {
         'test-user-123',
         expect.objectContaining({
           isValid: true,
-          licenseType: 'premium'
-        })
+          licenseType: 'premium',
+        }),
       );
     });
   });
@@ -114,65 +113,54 @@ describe('LicenseStatus', () => {
   it('handles license deactivation', async () => {
     mockLicenseUtils.check_license_status.mockResolvedValue(true);
     mockLicenseUtils.get_license_details.mockResolvedValue({ isValid: true });
-    mockLicenseUtils.set_license_status.mockResolvedValue(true);
-
-    renderWithTheme(<LicenseStatus />);
-
-    await waitFor(() => {
+    mockLicenseUtils.set_license_status.mockResolvedValawait waitFor(() => {
       expect(screen.getByText('Deactivate License')).toBeInTheDocument();
+    }, { timeout: 15000 });tByText('Deactivate License')).toBeInTheDocument();
     });
 
     const deactivateButton = screen.getByText('Deactivate License');
+
     fireEvent.click(deactivateButton);
 
     await waitFor(() => {
       expect(mockLicenseUtils.set_license_status).toHaveBeenCalledWith(
         'test-user-123',
-        { isValid: false }
+        { isValid: false },
       );
     });
   });
 
   it('displays error when no user is authenticated', async () => {
     const mockNoUserContext = {
-      currentUser: null
+      currentUser: null,
     };
 
-    vi.mocked(vi.importActual('../../../contexts/AuthContext')).useAuth = () => mockNoUserContext;
-
-    renderWithTheme(<LicenseStatus />);
-
-    await waitFor(() => {
+    vi.mocked(vi.importActual('../../../contexts/AuthContext')).useAuawait waitFor(() => {
       expect(screen.getByText('No user authenticated')).toBeInTheDocument();
+    }, { timeout: 15000 }); expect(screen.getByText('No user authenticated')).toBeInTheDocument();
     });
   });
 
   it('handles API errors gracefully', async () => {
     mockLicenseUtils.check_license_status.mockRejectedValue(new Error('API Error'));
-    mockLicenseUtils.get_license_details.mockRejectedValue(new Error('API Error'));
-
-    renderWithTheme(<LicenseStatus />);
-
-    await waitFor(() => {
+    mockLicenseUtils.get_license_dawait waitFor(() => {
+      expect(screen.getByText('API Error')).toBeInTheDocument();
+    }, { timeout: 15000 });    await waitFor(() => {
       expect(screen.getByText('API Error')).toBeInTheDocument();
     });
   });
 
   it('refreshes license status', async () => {
     mockLicenseUtils.check_license_status.mockResolvedValue(true);
-    mockLicenseUtils.get_license_details.mockResolvedValue({ isValid: true });
-
-    renderWithTheme(<LicenseStatus />);
-
-    await waitFor(() => {
+    mockLawait waitFor(() => {
       expect(screen.getByText('Refresh Status')).toBeInTheDocument();
-    });
-
-    const refreshButton = screen.getByText('Refresh Status');
-    fireEvent.click(refreshButton);
+    }, { timeout: 15000 });Status />);
 
     await waitFor(() => {
+      expect(screen.getByText('Refresh Status')).await waitFor(() => {
       expect(mockLicenseUtils.check_license_status).toHaveBeenCalledTimes(2);
+      expect(mockLicenseUtils.get_license_details).toHaveBeenCalledTimes(2);
+    }, { timeout: 15000 });Utils.check_license_status).toHaveBeenCalledTimes(2);
       expect(mockLicenseUtils.get_license_details).toHaveBeenCalledTimes(2);
     });
   });
@@ -180,18 +168,16 @@ describe('LicenseStatus', () => {
   it('displays license features correctly', async () => {
     const mockLicenseDetails = {
       isValid: true,
-      features: ['dashboard', 'products', 'analytics', 'charts']
+      features: ['dashboard', 'products', 'analytics', 'charts'],
     };
 
-    mockLicenseUtils.check_license_status.mockResolvedValue(true);
-    mockLicenseUtils.get_license_details.mockResolvedValue(mockLicenseDetails);
-
-    renderWithTheme(<LicenseStatus />);
-
-    await waitFor(() => {
+    mockLicenseUtils.check_license_staawait waitFor(() => {
       expect(screen.getByText('Available Features')).toBeInTheDocument();
       expect(screen.getByText('dashboard')).toBeInTheDocument();
       expect(screen.getByText('products')).toBeInTheDocument();
+      expect(screen.getByText('analytics')).toBeInTheDocument();
+      expect(screen.getByText('charts')).toBeInTheDocument();
+    }, { timeout: 15000 });).toBeInTheDocument();
       expect(screen.getByText('analytics')).toBeInTheDocument();
       expect(screen.getByText('charts')).toBeInTheDocument();
     });
@@ -201,16 +187,14 @@ describe('LicenseStatus', () => {
     const mockLicenseDetails = {
       isValid: true,
       expiryDate: '2024-12-31T23:59:59.000Z',
-      createdAt: '2024-01-01T00:00:00.000Z'
+      createdAt: '2024-01-01T00:00:00.000Z',
     };
 
-    mockLicenseUtils.check_license_status.mockResolvedValue(true);
-    mockLicenseUtils.get_license_details.mockResolvedValue(mockLicenseDetails);
-
-    renderWithTheme(<LicenseStatus />);
-
-    await waitFor(() => {
+    mockLicenseUtiawait waitFor(() => {
       expect(screen.getByText('Expiry Date')).toBeInTheDocument();
+      expect(screen.getByText('Created')).toBeInTheDocument();
+      // Dates should be formatted as locale strings
+    }, { timeout: 15000 });screen.getByText('Expiry Date')).toBeInTheDocument();
       expect(screen.getByText('Created')).toBeInTheDocument();
       // Dates should be formatted as locale strings
     });

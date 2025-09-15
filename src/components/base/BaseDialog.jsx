@@ -1,432 +1,482 @@
 /**
- * BaseDialog - Enhanced Dialog Component Foundation
- * Provides standardized modal behavior for all dialog components
- * Features: Consistent styling, accessibility, responsive design, form handling
+ * BaseDialog - Modern React 18 Base Dialog Component
+ *
+ * Features:
+ * - Standardized dialog patterns (add, edit, delete, confirm)
+ * - Form validation and submission handling
+ * - Loading states and error handling
+ * - Accessibility compliant
+ * - Responsive design
+ * - Modern React patterns (memo, useCallback, useMemo, useId)
+ * - TypeScript-ready interfaces
+ *
+ * @author Techno-ETL Team
+ * @version 2.0.0
  */
 
-import React, { useState, useCallback, useEffect, forwardRef, useImperativeHandle } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useId,
+  useTransition,
+  memo,
+} from 'react';
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   Button,
-  IconButton,
-  Typography,
+  TextField,
   Box,
-  Slide,
-  Fade,
+  Typography,
+  IconButton,
+  Divider,
+  Alert,
+  CircularProgress,
   useTheme,
   useMediaQuery,
-  CircularProgress,
-  Alert
+  Slide,
+  Fade,
 } from '@mui/material';
 import {
   Close as CloseIcon,
   Save as SaveIcon,
-  Cancel as CancelIcon
+  Cancel as CancelIcon,
+  Delete as DeleteIcon,
+  Warning as WarningIcon,
+  Info as InfoIcon,
 } from '@mui/icons-material';
-import PropTypes from 'prop-types';
 
-// Enhanced components
-import TooltipWrapper from '../common/TooltipWrapper';
-
-// Transition components
-const SlideTransition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-const FadeTransition = forwardRef(function Transition(props, ref) {
-  return <Fade ref={ref} {...props} />;
-});
+// Form validation utilities
+import { validateField, validateForm } from '../../utils/formValidation';
 
 /**
- * Enhanced BaseDialog Component
- * 
- * Provides a comprehensive foundation for all dialog components with:
- * - Consistent styling and behavior
- * - Responsive design and mobile optimization
- * - Form handling and validation
- * - Loading states and error handling
- * - Accessibility compliance
- * - Customizable actions and content
+ * Transition component for dialog animations
  */
-const BaseDialog = forwardRef(({
-  // Core props
-  open = false,
+const SlideTransition = memo(React.forwardRef((props, ref) => {
+  return <Slide direction="up" ref={ref} {...props} />;
+}));
+
+/**
+ * Dialog Header Component
+ */
+const DialogHeader = memo(({
+  id,
+  title,
+  subtitle,
   onClose,
-  title = '',
-  children,
-
-  // Dialog configuration
-  maxWidth = 'sm',
-  fullWidth = true,
-  fullScreen = false,
-  disableEscapeKeyDown = false,
-  disableBackdropClick = false,
-
-  // Actions
-  showActions = true,
-  primaryAction = null,
-  secondaryAction = null,
-  customActions = [],
-  
-  // Primary action (Save/Submit)
-  primaryLabel = 'Save',
-  primaryIcon = <SaveIcon />,
-  onPrimaryAction,
-  primaryDisabled = false,
-  primaryLoading = false,
-  primaryColor = 'primary',
-  primaryVariant = 'contained',
-
-  // Secondary action (Cancel)
-  secondaryLabel = 'Cancel',
-  secondaryIcon = <CancelIcon />,
-  onSecondaryAction,
-  secondaryDisabled = false,
-  secondaryColor = 'inherit',
-  secondaryVariant = 'outlined',
-
-  // State management
-  loading = false,
-  error = null,
-  success = false,
-  
-  // Form handling
-  formId = null,
-  onSubmit,
-  
-  // Styling
-  transition = 'slide', // 'slide', 'fade', 'none'
-  sx = {},
-  titleSx = {},
-  contentSx = {},
-  actionsSx = {},
-
-  // Advanced features
   showCloseButton = true,
-  preventClose = false,
-  autoFocus = true,
-  restoreFocus = true,
-
-  // Accessibility
-  ariaLabelledBy,
-  ariaDescribedBy,
-
-  ...otherProps
-}, ref) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  
-  // Local state
-  const [internalLoading, setInternalLoading] = useState(false);
-  const [internalError, setInternalError] = useState(null);
-
-  // Determine if dialog should be fullscreen on mobile
-  const isFullScreen = fullScreen || isMobile;
-
-  // Select transition component
-  const TransitionComponent = transition === 'slide' ? SlideTransition : 
-                             transition === 'fade' ? FadeTransition : 
-                             undefined;
-
-  // Handle close with prevention
-  const handleClose = useCallback((event, reason) => {
-    if (preventClose) return;
-    if (disableBackdropClick && reason === 'backdropClick') return;
-    if (disableEscapeKeyDown && reason === 'escapeKeyDown') return;
-    
-    onClose?.(event, reason);
-  }, [onClose, preventClose, disableBackdropClick, disableEscapeKeyDown]);
-
-  // Handle primary action
-  const handlePrimaryAction = useCallback(async (event) => {
-    if (primaryLoading || internalLoading) return;
-
-    try {
-      setInternalLoading(true);
-      setInternalError(null);
-
-      if (onPrimaryAction) {
-        await onPrimaryAction(event);
-      } else if (onSubmit && formId) {
-        // Submit form if formId is provided
-        const form = document.getElementById(formId);
-        if (form) {
-          form.requestSubmit();
-        }
-      }
-    } catch (error) {
-      console.error('BaseDialog: Primary action error:', error);
-      setInternalError(error.message || 'An error occurred');
-    } finally {
-      setInternalLoading(false);
-    }
-  }, [onPrimaryAction, onSubmit, formId, primaryLoading, internalLoading]);
-
-  // Handle secondary action
-  const handleSecondaryAction = useCallback((event) => {
-    if (onSecondaryAction) {
-      onSecondaryAction(event);
-    } else {
-      handleClose(event, 'secondaryAction');
-    }
-  }, [onSecondaryAction, handleClose]);
-
-  // Clear internal error when dialog opens
-  useEffect(() => {
-    if (open) {
-      setInternalError(null);
-    }
-  }, [open]);
-
-  // Imperative handle for ref
-  useImperativeHandle(ref, () => ({
-    close: () => handleClose(null, 'imperative'),
-    submit: () => handlePrimaryAction(null),
-    setLoading: setInternalLoading,
-    setError: setInternalError,
-    clearError: () => setInternalError(null)
-  }), [handleClose, handlePrimaryAction]);
-
-  // Determine loading state
-  const isLoading = loading || internalLoading || primaryLoading;
-
-  // Determine error state
-  const currentError = error || internalError;
-
-  // Render dialog title
-  const renderTitle = () => {
-    if (!title && !showCloseButton) return null;
-
-    return (
-      <DialogTitle
-        id={ariaLabelledBy || `${title}-dialog-title`}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          pb: 1,
-          ...titleSx
-        }}
-      >
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+  icon: Icon,
+}) => (
+  <DialogTitle
+    id={id}
+    sx={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      pb: 1,
+    }}
+  >
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      {Icon && <Icon color="primary" />}
+      <Box>
+        <Typography variant="h6" component="div">
           {title}
         </Typography>
-        
-        {showCloseButton && (
-          <TooltipWrapper title="Close" disabled={preventClose}>
-            <IconButton
-              onClick={(e) => handleClose(e, 'closeButton')}
-              disabled={preventClose}
-              size="small"
-              sx={{ ml: 1 }}
-            >
-              <CloseIcon />
-            </IconButton>
-          </TooltipWrapper>
+        {subtitle && (
+          <Typography variant="body2" color="text.secondary">
+            {subtitle}
+          </Typography>
         )}
-      </DialogTitle>
-    );
+      </Box>
+    </Box>
+
+    {showCloseButton && (
+      <IconButton
+        onClick={onClose}
+        size="small"
+        aria-label="close dialog"
+        sx={{ color: 'text.secondary' }}
+      >
+        <CloseIcon />
+      </IconButton>
+    )}
+  </DialogTitle>
+));
+
+DialogHeader.displayName = 'DialogHeader';
+
+/**
+ * Form Field Component with validation
+ */
+const FormField = memo(({
+  field,
+  value,
+  onChange,
+  error,
+  disabled,
+  required = false,
+}) => {
+  const fieldId = useId();
+
+  const handleChange = useCallback((event) => {
+    const newValue = event.target.value;
+
+    onChange(field.key, newValue);
+  }, [field.key, onChange]);
+
+  return (
+    <TextField
+      id={fieldId}
+      name={field.key}
+      label={field.label}
+      type={field.type || 'text'}
+      value={value || ''}
+      onChange={handleChange}
+      error={!!error}
+      helperText={error || field.helperText}
+      disabled={disabled}
+      required={required}
+      fullWidth
+      margin="normal"
+      variant="outlined"
+      multiline={field.multiline}
+      rows={field.rows || 1}
+      inputProps={{
+        maxLength: field.maxLength,
+        min: field.min,
+        max: field.max,
+        step: field.step,
+      }}
+      sx={{
+        '& .MuiOutlinedInput-root': {
+          '&:hover fieldset': {
+            borderColor: error ? 'error.main' : 'primary.main',
+          },
+        },
+      }}
+    />
+  );
+});
+
+FormField.displayName = 'FormField';
+
+/**
+ * BaseDialog Component
+ */
+const BaseDialog = memo(({
+  // Core props
+  type = 'form', // 'add', 'edit', 'delete', 'confirm', 'form'
+  open = false,
+  onClose,
+  onSubmit,
+
+  // Content props
+  title,
+  subtitle,
+  content,
+  data = {},
+
+  // Configuration
+  config = {},
+  fields = [],
+  validationRules = {},
+
+  // State props
+  loading = false,
+  error = null,
+
+  // Style props
+  maxWidth = 'sm',
+  fullWidth = true,
+  disableEscapeKeyDown = false,
+
+  // Custom props
+  children,
+  ...props
+}) => {
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const dialogId = useId();
+  const titleId = useId();
+
+  // React 18 transitions
+  const [isPending, startTransition] = useTransition();
+
+  // Local state
+  const [formData, setFormData] = useState(data);
+  const [formErrors, setFormErrors] = useState({});
+  const [localError, setLocalError] = useState(error);
+  const [submitting, setSubmitting] = useState(false);
+
+  // Dialog configuration based on type
+  const dialogConfig = useMemo(() => {
+    const configs = {
+      add: {
+        title: title || 'Add New Item',
+        icon: SaveIcon,
+        submitLabel: 'Add',
+        submitColor: 'primary',
+        submitVariant: 'contained',
+      },
+      edit: {
+        title: title || 'Edit Item',
+        icon: SaveIcon,
+        submitLabel: 'Save Changes',
+        submitColor: 'primary',
+        submitVariant: 'contained',
+      },
+      delete: {
+        title: title || 'Confirm Delete',
+        icon: WarningIcon,
+        submitLabel: 'Delete',
+        submitColor: 'error',
+        submitVariant: 'contained',
+        dangerous: true,
+      },
+      confirm: {
+        title: title || 'Confirm Action',
+        icon: InfoIcon,
+        submitLabel: 'Confirm',
+        submitColor: 'primary',
+        submitVariant: 'contained',
+      },
+      form: {
+        title: title || 'Form',
+        icon: SaveIcon,
+        submitLabel: 'Submit',
+        submitColor: 'primary',
+        submitVariant: 'contained',
+      },
+    };
+
+    return { ...configs[type], ...config };
+  }, [type, title, config]);
+
+  // Form field handlers
+  const handleFieldChange = useCallback((fieldKey, value) => {
+    startTransition(() => {
+      setFormData(prev => ({ ...prev, [fieldKey]: value }));
+
+      // Clear field error on change
+      if (formErrors[fieldKey]) {
+        setFormErrors(prev => ({ ...prev, [fieldKey]: null }));
+      }
+    });
+  }, [formErrors]);
+
+  // Form validation
+  const validateFormData = useCallback(() => {
+    const errors = {};
+    let isValid = true;
+
+    fields.forEach(field => {
+      const value = formData[field.key];
+      const rules = validationRules[field.key];
+
+      if (rules) {
+        const error = validateField(value, rules);
+
+        if (error) {
+          errors[field.key] = error;
+          isValid = false;
+        }
+      }
+    });
+
+    setFormErrors(errors);
+
+    return isValid;
+  }, [formData, fields, validationRules]);
+
+  // Submit handler
+  const handleSubmit = useCallback(async (event) => {
+    event?.preventDefault();
+
+    if (type !== 'delete' && type !== 'confirm') {
+      if (!validateFormData()) {
+        return;
+      }
+    }
+
+    setSubmitting(true);
+    setLocalError(null);
+
+    try {
+      await onSubmit?.(formData, type);
+      onClose?.();
+    } catch (error) {
+      console.error('Dialog submit error:', error);
+      setLocalError(error.message || 'An error occurred');
+    } finally {
+      setSubmitting(false);
+    }
+  }, [formData, type, validateFormData, onSubmit, onClose]);
+
+  // Cancel handler
+  const handleCancel = useCallback(() => {
+    if (submitting) return;
+
+    startTransition(() => {
+      setFormData(data);
+      setFormErrors({});
+      setLocalError(null);
+    });
+
+    onClose?.();
+  }, [submitting, data, onClose]);
+
+  // Keyboard handlers
+  const handleKeyDown = useCallback((event) => {
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault();
+      handleSubmit();
+    }
+  }, [handleSubmit]);
+
+  // Effects
+  useEffect(() => {
+    if (open) {
+      setFormData(data);
+      setFormErrors({});
+      setLocalError(null);
+      setSubmitting(false);
+    }
+  }, [open, data]);
+
+  useEffect(() => {
+    setLocalError(error);
+  }, [error]);
+
+  // Render content based on type
+  const renderContent = () => {
+    if (children) {
+      return children;
+    }
+
+    if (content) {
+      return (
+        <Typography variant="body1" sx={{ mb: 2 }}>
+          {content}
+        </Typography>
+      );
+    }
+
+    if (type === 'delete') {
+      return (
+        <Box sx={{ textAlign: 'center', py: 2 }}>
+          <WarningIcon color="error" sx={{ fontSize: 48, mb: 2 }} />
+          <Typography variant="h6" gutterBottom>
+            Are you sure you want to delete this item?
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            This action cannot be undone.
+          </Typography>
+        </Box>
+      );
+    }
+
+    if (fields.length > 0) {
+      return (
+        <Box component="form" onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
+          {fields.map(field => (
+            <FormField
+              key={field.key}
+              field={field}
+              value={formData[field.key]}
+              onChange={handleFieldChange}
+              error={formErrors[field.key]}
+              disabled={submitting}
+              required={field.required}
+            />
+          ))}
+        </Box>
+      );
+    }
+
+    return null;
   };
 
-  // Render dialog content
-  const renderContent = () => {
-    return (
-      <DialogContent
-        sx={{
-          position: 'relative',
-          ...contentSx
-        }}
-      >
-        {/* Loading overlay */}
-        {isLoading && (
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
-              zIndex: 1
-            }}
-          >
-            <CircularProgress />
-          </Box>
-        )}
+  const isFormDisabled = submitting || loading;
 
+  return (
+    <Dialog
+      {...props}
+      open={open}
+      onClose={handleCancel}
+      maxWidth={maxWidth}
+      fullWidth={fullWidth}
+      fullScreen={fullScreen}
+      disableEscapeKeyDown={disableEscapeKeyDown || submitting}
+      TransitionComponent={SlideTransition}
+      aria-labelledby={titleId}
+      aria-describedby={dialogId}
+      sx={{
+        '& .MuiDialog-paper': {
+          minHeight: '200px',
+          opacity: isPending ? 0.7 : 1,
+          transition: 'opacity 0.2s ease',
+        },
+      }}
+    >
+      {/* Header */}
+      <DialogHeader
+        id={titleId}
+        title={dialogConfig.title}
+        subtitle={subtitle}
+        onClose={handleCancel}
+        icon={dialogConfig.icon}
+        showCloseButton={!submitting}
+      />
+
+      <Divider />
+
+      {/* Content */}
+      <DialogContent id={dialogId} sx={{ pt: 2 }}>
         {/* Error display */}
-        {currentError && (
-          <Alert 
-            severity="error" 
-            sx={{ mb: 2 }}
-            onClose={() => setInternalError(null)}
-          >
-            {currentError}
-          </Alert>
-        )}
-
-        {/* Success display */}
-        {success && (
-          <Alert severity="success" sx={{ mb: 2 }}>
-            Operation completed successfully
+        {localError && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {localError}
           </Alert>
         )}
 
         {/* Main content */}
-        {children}
+        {renderContent()}
       </DialogContent>
-    );
-  };
 
-  // Render dialog actions
-  const renderActions = () => {
-    if (!showActions) return null;
-
-    // Use custom actions if provided
-    if (customActions.length > 0) {
-      return (
-        <DialogActions sx={{ p: 2, pt: 1, ...actionsSx }}>
-          {customActions.map((action, index) => (
-            <Box key={index}>{action}</Box>
-          ))}
-        </DialogActions>
-      );
-    }
-
-    // Use custom primary/secondary actions if provided
-    if (primaryAction || secondaryAction) {
-      return (
-        <DialogActions sx={{ p: 2, pt: 1, ...actionsSx }}>
-          {secondaryAction}
-          {primaryAction}
-        </DialogActions>
-      );
-    }
-
-    // Default actions
-    return (
-      <DialogActions sx={{ p: 2, pt: 1, ...actionsSx }}>
+      {/* Actions */}
+      <DialogActions sx={{ p: 2, gap: 1 }}>
         <Button
-          onClick={handleSecondaryAction}
-          disabled={secondaryDisabled || isLoading}
-          color={secondaryColor}
-          variant={secondaryVariant}
-          startIcon={secondaryIcon}
+          onClick={handleCancel}
+          disabled={isFormDisabled}
+          startIcon={<CancelIcon />}
         >
-          {secondaryLabel}
+          Cancel
         </Button>
-        
+
         <Button
-          onClick={handlePrimaryAction}
-          disabled={primaryDisabled || isLoading}
-          color={primaryColor}
-          variant={primaryVariant}
-          startIcon={isLoading ? <CircularProgress size={16} /> : primaryIcon}
-          type={formId ? 'submit' : 'button'}
-          form={formId}
+          onClick={handleSubmit}
+          variant={dialogConfig.submitVariant}
+          color={dialogConfig.submitColor}
+          disabled={isFormDisabled}
+          startIcon={
+            submitting ? (
+              <CircularProgress size={16} />
+            ) : (
+              dialogConfig.dangerous ? <DeleteIcon /> : <SaveIcon />
+            )
+          }
         >
-          {primaryLabel}
+          {submitting ? 'Processing...' : dialogConfig.submitLabel}
         </Button>
       </DialogActions>
-    );
-  };
-
-  return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      maxWidth={maxWidth}
-      fullWidth={fullWidth}
-      fullScreen={isFullScreen}
-      TransitionComponent={TransitionComponent}
-      disableEscapeKeyDown={disableEscapeKeyDown}
-      aria-labelledby={ariaLabelledBy || `${title}-dialog-title`}
-      aria-describedby={ariaDescribedBy}
-      sx={{
-        '& .MuiDialog-paper': {
-          minHeight: isFullScreen ? '100vh' : 'auto',
-          ...sx
-        }
-      }}
-      {...otherProps}
-    >
-      {renderTitle()}
-      {renderContent()}
-      {renderActions()}
     </Dialog>
   );
 });
 
 BaseDialog.displayName = 'BaseDialog';
-
-BaseDialog.propTypes = {
-  // Core props
-  open: PropTypes.bool,
-  onClose: PropTypes.func,
-  title: PropTypes.string,
-  children: PropTypes.node,
-
-  // Dialog configuration
-  maxWidth: PropTypes.oneOf(['xs', 'sm', 'md', 'lg', 'xl']),
-  fullWidth: PropTypes.bool,
-  fullScreen: PropTypes.bool,
-  disableEscapeKeyDown: PropTypes.bool,
-  disableBackdropClick: PropTypes.bool,
-
-  // Actions
-  showActions: PropTypes.bool,
-  primaryAction: PropTypes.node,
-  secondaryAction: PropTypes.node,
-  customActions: PropTypes.array,
-  
-  // Primary action
-  primaryLabel: PropTypes.string,
-  primaryIcon: PropTypes.node,
-  onPrimaryAction: PropTypes.func,
-  primaryDisabled: PropTypes.bool,
-  primaryLoading: PropTypes.bool,
-  primaryColor: PropTypes.string,
-  primaryVariant: PropTypes.string,
-
-  // Secondary action
-  secondaryLabel: PropTypes.string,
-  secondaryIcon: PropTypes.node,
-  onSecondaryAction: PropTypes.func,
-  secondaryDisabled: PropTypes.bool,
-  secondaryColor: PropTypes.string,
-  secondaryVariant: PropTypes.string,
-
-  // State management
-  loading: PropTypes.bool,
-  error: PropTypes.string,
-  success: PropTypes.bool,
-  
-  // Form handling
-  formId: PropTypes.string,
-  onSubmit: PropTypes.func,
-  
-  // Styling
-  transition: PropTypes.oneOf(['slide', 'fade', 'none']),
-  sx: PropTypes.object,
-  titleSx: PropTypes.object,
-  contentSx: PropTypes.object,
-  actionsSx: PropTypes.object,
-
-  // Advanced features
-  showCloseButton: PropTypes.bool,
-  preventClose: PropTypes.bool,
-  autoFocus: PropTypes.bool,
-  restoreFocus: PropTypes.bool,
-
-  // Accessibility
-  ariaLabelledBy: PropTypes.string,
-  ariaDescribedBy: PropTypes.string
-};
 
 export default BaseDialog;

@@ -16,7 +16,7 @@ import {
   Grid,
   Divider,
   LinearProgress,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import {
   Inventory as ProductIcon,
@@ -30,7 +30,7 @@ import {
   LocalOffer as BrandIcon,
   Settings as SettingsIcon,
   CloudUpload as UploadIcon,
-  Transform as TransformIcon
+  Transform as TransformIcon,
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
@@ -46,7 +46,7 @@ const BulkMediaUploadDialog = React.lazy(() => import('../components/dialogs/Bul
  */
 const ProductManagementPage = () => {
   // ===== STATE MANAGEMENT =====
-  const [productIds, setProductIds] = useState([  ]); // Pre-populated with your provided IDs
+  const [productIds, setProductIds] = useState([]); // Pre-populated with your provided IDs
   const [inputValue, setInputValue] = useState('');
   const [showAllProducts, setShowAllProducts] = useState(false);
   const [bulkMediaDialogOpen, setBulkMediaDialogOpen] = useState(false);
@@ -59,7 +59,7 @@ const ProductManagementPage = () => {
   const [imageProcessing, setImageProcessing] = useState({
     renaming: false,
     resizing: false,
-    uploading: false
+    uploading: false,
   });
 
   // Cached data for performance
@@ -67,7 +67,7 @@ const ProductManagementPage = () => {
     attributes: null,
     brands: null,
     categories: null,
-    lastUpdated: null
+    lastUpdated: null,
   });
 
   // Processing results
@@ -75,7 +75,7 @@ const ProductManagementPage = () => {
     renamed: 0,
     resized: 0,
     uploaded: 0,
-    errors: []
+    errors: [],
   });
 
   // ===== EVENT HANDLERS =====
@@ -125,6 +125,7 @@ const ProductManagementPage = () => {
 
       if (cacheAge < cacheExpiry && cachedData.attributes) {
         console.log('Using cached data');
+
         return cachedData;
       }
 
@@ -135,10 +136,11 @@ const ProductManagementPage = () => {
         attributes: [], // Load from API
         brands: [], // Load from API
         categories: [], // Load from API
-        lastUpdated: Date.now()
+        lastUpdated: Date.now(),
       };
 
       setCachedData(freshData);
+
       return freshData;
     } catch (error) {
       console.error('Error loading cached data:', error);
@@ -161,7 +163,7 @@ const ProductManagementPage = () => {
       const results = {
         renamed: 45,
         skipped: 12,
-        errors: 3
+        errors: 3,
       };
 
       setProcessingResults(prev => ({ ...prev, renamed: results.renamed }));
@@ -187,7 +189,7 @@ const ProductManagementPage = () => {
       const results = {
         resized: 38,
         skipped: 7,
-        errors: 2
+        errors: 2,
       };
 
       setProcessingResults(prev => ({ ...prev, resized: results.resized }));
@@ -209,7 +211,7 @@ const ProductManagementPage = () => {
   return (
     <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', p: 2 }}>
       {/* Enhanced Header */}
-      
+
 
       {/* Enhanced Tabs */}
       <Paper sx={{ borderRadius: 3, overflow: 'hidden', mb: 3 }}>
@@ -223,8 +225,8 @@ const ProductManagementPage = () => {
               minHeight: 72,
               textTransform: 'none',
               fontSize: '1rem',
-              fontWeight: 500
-            }
+              fontWeight: 500,
+            },
           }}
         >
           <Tab
@@ -262,102 +264,102 @@ const ProductManagementPage = () => {
             <Typography variant="h6" gutterBottom>
               Product Selection & Management
             </Typography>
-          
-          {/* Mode Toggle */}
-          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-            <Button
-              variant={!showAllProducts ? 'contained' : 'outlined'}
-              onClick={handleShowSpecificProducts}
-              startIcon={<SearchIcon />}
-            >
+
+            {/* Mode Toggle */}
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <Button
+                variant={!showAllProducts ? 'contained' : 'outlined'}
+                onClick={handleShowSpecificProducts}
+                startIcon={<SearchIcon />}
+              >
               Specific Products
-            </Button>
-            <Button
-              variant={showAllProducts ? 'contained' : 'outlined'}
-              onClick={handleShowAllProducts}
-              startIcon={<ProductIcon />}
-            >
+              </Button>
+              <Button
+                variant={showAllProducts ? 'contained' : 'outlined'}
+                onClick={handleShowAllProducts}
+                startIcon={<ProductIcon />}
+              >
               All Products
-            </Button>
-          </Box>
+              </Button>
+            </Box>
 
-          {/* Specific Products Mode */}
-          {!showAllProducts && (
-            <>
-              {/* Add Product ID Input */}
-              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                <TextField
-                  label="Product ID"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Enter product ID (e.g., 1140659762)"
-                  size="small"
-                  sx={{ minWidth: 200 }}
-                />
-                <Button
-                  variant="contained"
-                  onClick={handleAddProductId}
-                  startIcon={<AddIcon />}
-                  disabled={!inputValue.trim()}
-                >
+            {/* Specific Products Mode */}
+            {!showAllProducts && (
+              <>
+                {/* Add Product ID Input */}
+                <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                  <TextField
+                    label="Product ID"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Enter product ID (e.g., 1140659762)"
+                    size="small"
+                    sx={{ minWidth: 200 }}
+                  />
+                  <Button
+                    variant="contained"
+                    onClick={handleAddProductId}
+                    startIcon={<AddIcon />}
+                    disabled={!inputValue.trim()}
+                  >
                   Add
-                </Button>
-                <Button
-                  variant="outlined"
-                  onClick={handleClearAll}
-                  startIcon={<ClearIcon />}
-                  disabled={productIds.length === 0}
-                  color="warning"
-                >
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={handleClearAll}
+                    startIcon={<ClearIcon />}
+                    disabled={productIds.length === 0}
+                    color="warning"
+                  >
                   Clear All
-                </Button>
-                
-                <Button
-                  variant="outlined"
-                  onClick={() => setBulkMediaDialogOpen(true)}
-                  startIcon={<ImageIcon />}
-                  color="info"
-                >
+                  </Button>
+
+                  <Button
+                    variant="outlined"
+                    onClick={() => setBulkMediaDialogOpen(true)}
+                    startIcon={<ImageIcon />}
+                    color="info"
+                  >
                   Basic Upload
-                </Button>
-              </Box>
-
-              {/* Current Product IDs */}
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Selected Product IDs ({productIds.length}):
-                </Typography>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {productIds.length > 0 ? (
-                    productIds.map((id) => (
-                      <Chip
-                        key={id}
-                        label={id}
-                        onDelete={() => handleRemoveProductId(id)}
-                        color="primary"
-                        variant="outlined"
-                        size="small"
-                      />
-                    ))
-                  ) : (
-                    <Typography variant="body2" color="text.secondary" fontStyle="italic">
-                      No product IDs selected. Add some above or switch to "All Products" mode.
-                    </Typography>
-                  )}
+                  </Button>
                 </Box>
-              </Box>
-            </>
-          )}
 
-          {/* All Products Mode */}
-          {showAllProducts && (
-            <Alert severity="info">
-              <Typography variant="body2">
+                {/* Current Product IDs */}
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                  Selected Product IDs ({productIds.length}):
+                  </Typography>
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    {productIds.length > 0 ? (
+                      productIds.map((id) => (
+                        <Chip
+                          key={id}
+                          label={id}
+                          onDelete={() => handleRemoveProductId(id)}
+                          color="primary"
+                          variant="outlined"
+                          size="small"
+                        />
+                      ))
+                    ) : (
+                      <Typography variant="body2" color="text.secondary" fontStyle="italic">
+                      No product IDs selected. Add some above or switch to "All Products" mode.
+                      </Typography>
+                    )}
+                  </Box>
+                </Box>
+              </>
+            )}
+
+            {/* All Products Mode */}
+            {showAllProducts && (
+              <Alert severity="info">
+                <Typography variant="body2">
                 Working with all products in the system. This may take longer to load.
-              </Typography>
-            </Alert>
-          )}
+                </Typography>
+              </Alert>
+            )}
 
             {/* Main Content */}
             <Box sx={{ flexGrow: 1, overflow: 'hidden', mt: 2 }}>

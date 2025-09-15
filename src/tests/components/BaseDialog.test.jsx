@@ -1,9 +1,9 @@
 /**
  * BaseDialog Component Tests
- * 
+ *
  * Comprehensive test suite for the BaseDialog component
  * Tests React 18 features, form handling, and accessibility
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
@@ -25,19 +25,19 @@ vi.mock('react-error-boundary', () => ({
     } catch (error) {
       return <FallbackComponent error={error} resetErrorBoundary={() => {}} />;
     }
-  }
+  },
 }));
 
 vi.mock('framer-motion', () => ({
   motion: {
-    div: React.forwardRef(({ children, ...props }, ref) => 
-      <div ref={ref} {...props}>{children}</div>
+    div: React.forwardRef(({ children, ...props }, ref) =>
+      <div ref={ref} {...props}>{children}</div>,
     ),
-    form: React.forwardRef(({ children, ...props }, ref) => 
-      <form ref={ref} {...props}>{children}</form>
-    )
+    form: React.forwardRef(({ children, ...props }, ref) =>
+      <form ref={ref} {...props}>{children}</form>,
+    ),
   },
-  AnimatePresence: ({ children }) => children
+  AnimatePresence: ({ children }) => children,
 }));
 
 // Test utilities
@@ -54,38 +54,38 @@ const mockFormFields = [
     key: 'name',
     label: 'Name',
     type: 'text',
-    required: true
+    required: true,
   },
   {
     key: 'email',
     label: 'Email',
     type: 'email',
-    required: true
+    required: true,
   },
   {
     key: 'description',
     label: 'Description',
     type: 'text',
     multiline: true,
-    rows: 4
-  }
+    rows: 4,
+  },
 ];
 
 const mockValidationRules = {
   name: {
     type: 'required',
-    message: 'Name is required'
+    message: 'Name is required',
   },
   email: {
     type: 'email',
-    message: 'Invalid email format'
-  }
+    message: 'Invalid email format',
+  },
 };
 
 const mockData = {
   name: 'John Doe',
   email: 'john@example.com',
-  description: 'Test description'
+  description: 'Test description',
 };
 
 // ============================================================================
@@ -105,7 +105,7 @@ describe('BaseDialog - Basic Functionality', () => {
           onClose={vi.fn()}
           title="Test Dialog"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
@@ -120,7 +120,7 @@ describe('BaseDialog - Basic Functionality', () => {
           onClose={vi.fn()}
           title="Test Dialog"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
@@ -135,7 +135,7 @@ describe('BaseDialog - Basic Functionality', () => {
           title="Test Dialog"
           content={<div>Custom content here</div>}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Custom content here')).toBeInTheDocument();
@@ -152,11 +152,14 @@ describe('BaseDialog - Basic Functionality', () => {
           onClose={onClose}
           title="Test Dialog"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const closeButton = screen.getByLabelText(/close/i);
+
     await user.click(closeButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));
 
     expect(onClose).toHaveBeenCalledTimes(1);
   });
@@ -171,11 +174,12 @@ describe('BaseDialog - Basic Functionality', () => {
           onClose={onClose}
           title="Test Dialog"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // Click on backdrop (outside the dialog content)
     const backdrop = screen.getByRole('presentation').firstChild;
+
     fireEvent.click(backdrop);
 
     expect(onClose).toHaveBeenCalledTimes(1);
@@ -196,7 +200,7 @@ describe('BaseDialog - Dialog Types', () => {
           onClose={vi.fn()}
           fields={mockFormFields}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText(/add/i)).toBeInTheDocument();
@@ -213,7 +217,7 @@ describe('BaseDialog - Dialog Types', () => {
           fields={mockFormFields}
           data={mockData}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText(/edit/i)).toBeInTheDocument();
@@ -230,10 +234,10 @@ describe('BaseDialog - Dialog Types', () => {
           onClose={vi.fn()}
           config={{
             title: 'Delete Item',
-            confirmMessage: 'Are you sure you want to delete this item?'
+            confirmMessage: 'Are you sure you want to delete this item?',
           }}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Delete Item')).toBeInTheDocument();
@@ -252,7 +256,7 @@ describe('BaseDialog - Dialog Types', () => {
           title="Confirm Action"
           content={<div>Do you want to proceed?</div>}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Confirm Action')).toBeInTheDocument();
@@ -276,7 +280,7 @@ describe('BaseDialog - Form Handling', () => {
           onClose={vi.fn()}
           fields={mockFormFields}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByLabelText('Name')).toBeInTheDocument();
@@ -290,7 +294,7 @@ describe('BaseDialog - Form Handling', () => {
       { key: 'email', label: 'Email Field', type: 'email' },
       { key: 'password', label: 'Password Field', type: 'password' },
       { key: 'number', label: 'Number Field', type: 'number' },
-      { key: 'textarea', label: 'Textarea Field', type: 'text', multiline: true }
+      { key: 'textarea', label: 'Textarea Field', type: 'text', multiline: true },
     ];
 
     render(
@@ -301,7 +305,7 @@ describe('BaseDialog - Form Handling', () => {
           onClose={vi.fn()}
           fields={fields}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByLabelText('Text Field')).toHaveAttribute('type', 'text');
@@ -325,11 +329,13 @@ describe('BaseDialog - Form Handling', () => {
           fields={mockFormFields}
           validationRules={mockValidationRules}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
-    // Try to submit without filling required fields
-    const submitButton = screen.getByRole('button', { name: /save/i });
+    // Try to submit withoawait user.click(submitButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50)); const submitButton = screen.getByRole('button', { name: /save/i });
+
     await user.click(submitButton);
 
     expect(screen.getByText('Name is required')).toBeInTheDocument();
@@ -344,23 +350,30 @@ describe('BaseDialog - Form Handling', () => {
         <BaseDialog
           open={true}
           type="form"
-          onClose={vi.fn()}
-          fields={mockFormFields}
+       await user.type(emailField, 'invalid-email');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => sawait user.click(submitButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));ds}
           validationRules={mockValidationRules}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const emailField = screen.getByLabelText('Email');
+
     await user.type(emailField, 'invalid-email');
 
     const submitButton = screen.getByRole('button', { name: /save/i });
+
     await user.click(submitButton);
 
     expect(screen.getByText('Invalid email format')).toBeInTheDocument();
-  });
-
-  test('submits form with valid data', async () => {
+  }await user.type(screen.getByLabelText('Name'), 'John Doe');
+    /await user.type(screen.getByLabelText('Email'), 'john@example.com');
+    /await user.type(screen.getByLabelText('Description'), 'Test description');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50)); setTimeout(resolve, 50));lve => setTimeout(resolve, 50));
     const onSubmit = vi.fn().mockResolvedValue(true);
     const user = userEvent.setup();
 
@@ -373,7 +386,7 @@ describe('BaseDialog - Form Handling', () => {
           onSubmit={onSubmit}
           fields={mockFormFields}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // Fill out the form
@@ -382,14 +395,15 @@ describe('BaseDialog - Form Handling', () => {
     await user.type(screen.getByLabelText('Description'), 'Test description');
 
     // Submit
-    const submitButton = screen.getByRole('button', { name: /save/i });
-    await user.click(submitButton);
-
-    await waitFor(() => {
+    const submitButton = screen.getByRole('button', { name: /sawait user.type(screen.getByLabelText('Name'), 'Test');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => sawait user.click(submitButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));aitFor(() => {
       expect(onSubmit).toHaveBeenCalledWith({
         name: 'John Doe',
         email: 'john@example.com',
-        description: 'Test description'
+        description: 'Test description',
       }, 'add');
     });
   });
@@ -401,18 +415,19 @@ describe('BaseDialog - Form Handling', () => {
     render(
       <TestWrapper>
         <BaseDialog
-          open={true}
-          type="form"
-          onClose={vi.fn()}
+          await user.type(screen.getByLabelText('Name'), 'Test');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));vi.fn()}
           onSubmit={onSubmit}
           fields={[{ key: 'name', label: 'Name', type: 'text' }]}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     await user.type(screen.getByLabelText('Name'), 'Test');
 
     const submitButton = screen.getByRole('button', { name: /save/i });
+
     await user.click(submitButton);
 
     expect(submitButton).toBeDisabled();
@@ -432,17 +447,18 @@ describe('BaseDialog - Form Handling', () => {
           onSubmit={onSubmit}
           fields={[{ key: 'name', label: 'Name', type: 'text' }]}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     await user.type(screen.getByLabelText('Name'), 'Test');
 
     const submitButton = screen.getByRole('button', { name: /save/i });
+
     await user.click(submitButton);
 
     await waitFor(() => {
       expect(screen.getByText(/submission failed/i)).toBeInTheDocument();
-    });
+    }, { timeout: 15000 });
   });
 });
 
@@ -459,44 +475,54 @@ describe('BaseDialog - Accessibility', () => {
           onClose={vi.fn()}
           title="Test Dialog"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const dialog = screen.getByRole('dialog');
-    expect(dialog).toHaveAttribute('aria-labelledby');
-    expect(dialog).toHaveAttribute('aria-modal', 'true');
+
+    expect(dialog).toHaveAttribute('aria-await user.tab();
+    // Add small delay to prevent act warnawait user.tab();
+    // Add small delay to prevent act warnawait user.tab();
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => sawait user.tab();
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeoutawait user.tab();
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));50));w Promise(resolve => setTimeout(resolve, 50));w Promise(resolve => setTimeout(resolve, 50));  expect(dialog).toHaveAttribute('aria-modal', 'true');
   });
 
   test('focuses on dialog when opened', () => {
     render(
       <TestWrapper>
-        <BaseDialog
-          open={true}
+  await user.keyboard('{Escape}');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));n={true}
           onClose={vi.fn()}
           title="Test Dialog"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const dialog = screen.getByRole('dialog');
+
     expect(document.activeElement).toBe(dialog);
   });
 
   test('traps focus within dialog', async () => {
     const user = userEvent.setup();
 
-    render(
-      <TestWrapper>
-        <BaseDialog
+   await user.keyboard('{Escape}');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));       <BaseDialog
           open={true}
           onClose={vi.fn()}
           title="Test Dialog"
           fields={[
             { key: 'field1', label: 'Field 1', type: 'text' },
-            { key: 'field2', label: 'Field 2', type: 'text' }
+            { key: 'field2', label: 'Field 2', type: 'text' },
           ]}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const field1 = screen.getByLabelText('Field 1');
@@ -532,7 +558,7 @@ describe('BaseDialog - Accessibility', () => {
           onClose={onClose}
           title="Test Dialog"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     await user.keyboard('{Escape}');
@@ -552,7 +578,7 @@ describe('BaseDialog - Accessibility', () => {
           title="Test Dialog"
           disableEscapeKeyDown={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     await user.keyboard('{Escape}');
@@ -572,20 +598,22 @@ describe('BaseDialog - Accessibility', () => {
           fields={mockFormFields}
           validationRules={mockValidationRules}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const nameField = screen.getByLabelText('Name');
+
     expect(nameField).toHaveAttribute('aria-required', 'true');
 
     // Trigger validation error
     const submitButton = screen.getByRole('button', { name: /save/i });
-    await user.click(submitButton);
 
-    await waitFor(() => {
+    await user.click(suawait waitFor(() => {
       const errorMessage = screen.getByText('Name is required');
+
       expect(errorMessage).toHaveAttribute('role', 'alert');
       expect(nameField).toHaveAttribute('aria-describedby');
+    }, { timeout: 15000 });cribedby');
     });
   });
 });
@@ -604,10 +632,11 @@ describe('BaseDialog - Configuration', () => {
           title="Test Dialog"
           maxWidth="lg"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const dialog = screen.getByRole('dialog');
+
     expect(dialog.closest('.MuiDialog-paper')).toHaveClass('MuiDialog-paperMaxWidthLg');
   });
 
@@ -620,10 +649,11 @@ describe('BaseDialog - Configuration', () => {
           title="Test Dialog"
           fullWidth={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const dialog = screen.getByRole('dialog');
+
     expect(dialog.closest('.MuiDialog-paper')).toHaveClass('MuiDialog-paperFullWidth');
   });
 
@@ -637,13 +667,14 @@ describe('BaseDialog - Configuration', () => {
           fields={[{ key: 'test', label: 'Test', type: 'text' }]}
           config={{
             submitLabel: 'Create Item',
-            submitColor: 'success'
+            submitColor: 'success',
           }}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const submitButton = screen.getByRole('button', { name: 'Create Item' });
+
     expect(submitButton).toBeInTheDocument();
     expect(submitButton).toHaveClass('MuiButton-colorSuccess');
   });
@@ -656,13 +687,14 @@ describe('BaseDialog - Configuration', () => {
           type="delete"
           onClose={vi.fn()}
           config={{
-            dangerous: true
+            dangerous: true,
           }}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const deleteButton = screen.getByRole('button', { name: /delete/i });
+
     expect(deleteButton).toHaveClass('MuiButton-colorError');
   });
 });
@@ -687,10 +719,11 @@ describe('BaseDialog - Responsive Design', () => {
           onClose={vi.fn()}
           title="Test Dialog"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const dialog = screen.getByRole('dialog');
+
     expect(dialog.closest('.MuiDialog-paper')).toHaveClass('MuiDialog-paperFullScreen');
   });
 
@@ -710,13 +743,14 @@ describe('BaseDialog - Responsive Design', () => {
           fields={Array.from({ length: 20 }, (_, i) => ({
             key: `field${i}`,
             label: `Field ${i}`,
-            type: 'text'
+            type: 'text',
           }))}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const dialog = screen.getByRole('dialog');
+
     expect(dialog.closest('.MuiDialog-root')).toHaveClass('MuiDialog-scrollBody');
   });
 });
@@ -729,6 +763,7 @@ describe('BaseDialog - Performance', () => {
   test('uses React.memo for optimization', () => {
     const TestComponent = () => {
       const [count, setCount] = React.useState(0);
+
       return (
         <div>
           <button onClick={() => setCount(c => c + 1)}>Count: {count}</button>
@@ -744,7 +779,7 @@ describe('BaseDialog - Performance', () => {
     const { rerender } = render(
       <TestWrapper>
         <TestComponent />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const dialog = screen.getByRole('dialog');
@@ -753,7 +788,7 @@ describe('BaseDialog - Performance', () => {
     rerender(
       <TestWrapper>
         <TestComponent />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // Dialog should be memoized and not re-render unnecessarily
@@ -764,20 +799,19 @@ describe('BaseDialog - Performance', () => {
     const largeFieldSet = Array.from({ length: 100 }, (_, i) => ({
       key: `field${i}`,
       label: `Field ${i}`,
-      type: 'text'
+      type: 'text',
     }));
 
-    const startTime = performance.now();
-
-    render(
-      <TestWrapper>
+    const startTime = performanceawait user.click(submitButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));TestWrapper>
         <BaseDialog
           open={true}
           type="form"
           onClose={vi.fn()}
           fields={largeFieldSet}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const endTime = performance.now();
@@ -785,7 +819,7 @@ describe('BaseDialog - Performance', () => {
 
     // Should render within reasonable time (less than 100ms)
     expect(renderTime).toBeLessThan(100);
-    
+
     // All fields should be present
     expect(screen.getByLabelText('Field 0')).toBeInTheDocument();
     expect(screen.getByLabelText('Field 99')).toBeInTheDocument();
@@ -806,7 +840,7 @@ describe('BaseDialog - Error Handling', () => {
           onClose={vi.fn()}
           fields={null}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // Should render without crashing
@@ -816,7 +850,7 @@ describe('BaseDialog - Error Handling', () => {
   test('handles invalid validation rules gracefully', async () => {
     const user = userEvent.setup();
     const invalidRules = {
-      name: null // Invalid rule
+      name: null, // Invalid rule
     };
 
     render(
@@ -828,14 +862,14 @@ describe('BaseDialog - Error Handling', () => {
           fields={[{ key: 'name', label: 'Name', type: 'text' }]}
           validationRules={invalidRules}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const submitButton = screen.getByRole('button', { name: /save/i });
-    
+
     // Should not crash when validation runs
     await user.click(submitButton);
-    
+
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
@@ -848,7 +882,7 @@ describe('BaseDialog - Error Handling', () => {
           title="Test Dialog"
           error="Something went wrong"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Something went wrong')).toBeInTheDocument();

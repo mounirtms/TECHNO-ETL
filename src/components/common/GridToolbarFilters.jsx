@@ -8,7 +8,7 @@ import {
   MenuItem,
   FormControlLabel,
   Switch,
-  Chip
+  Chip,
 } from '@mui/material';
 
 /**
@@ -27,7 +27,7 @@ const GridToolbarFilters = ({
   onSourceChange,
   showChangedOnly,
   setShowChangedOnly,
-  translate
+  translate,
 }) => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

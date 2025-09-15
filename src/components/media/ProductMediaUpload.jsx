@@ -22,7 +22,7 @@ import {
   Select,
   MenuItem,
   FormControl,
-  InputLabel
+  InputLabel,
 } from '@mui/material';
 import {
   CloudUpload as UploadIcon,
@@ -31,7 +31,7 @@ import {
   Visibility as PreviewIcon,
   Star as StarIcon,
   StarBorder as StarBorderIcon,
-  DragIndicator as DragIcon
+  DragIndicator as DragIcon,
 } from '@mui/icons-material';
 import { useDropzone } from 'react-dropzone';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -57,6 +57,7 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
     // Validate files
     for (const file of acceptedFiles) {
       const validation = mediaUploadService.validateImageFile(file);
+
       if (validation.valid) {
         validFiles.push(file);
       } else {
@@ -77,7 +78,7 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
         const results = await mediaUploadService.uploadProductImages(
           sku,
           validFiles,
-          (progress) => setUploadProgress(progress)
+          (progress) => setUploadProgress(progress),
         );
 
         const successful = results.filter(r => r.success);
@@ -85,20 +86,21 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
 
         if (successful.length > 0) {
           toast.success(`${successful.length} images uploaded successfully`);
-          
+
           // Add uploaded images to the list
           const newImages = successful.map((result, index) => ({
             id: Date.now() + index,
             file: validFiles[index],
             url: URL.createObjectURL(validFiles[index]),
-            label: validFiles[index].name.replace(/\.[^/.]+$/, ""),
+            label: validFiles[index].name.replace(/\.[^/.]+$/, ''),
             position: images.length + index,
             types: index === 0 && images.length === 0 ? ['image', 'small_image', 'thumbnail'] : ['image'],
             disabled: false,
-            uploaded: true
+            uploaded: true,
           }));
 
           const updatedImages = [...images, ...newImages];
+
           setImages(updatedImages);
           onImagesChange?.(updatedImages);
         }
@@ -118,14 +120,15 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
         id: Date.now() + index,
         file,
         url: URL.createObjectURL(file),
-        label: file.name.replace(/\.[^/.]+$/, ""),
+        label: file.name.replace(/\.[^/.]+$/, ''),
         position: images.length + index,
         types: index === 0 && images.length === 0 ? ['image', 'small_image', 'thumbnail'] : ['image'],
         disabled: false,
-        uploaded: false
+        uploaded: false,
       }));
 
       const updatedImages = [...images, ...newImages];
+
       setImages(updatedImages);
       onImagesChange?.(updatedImages);
     }
@@ -135,10 +138,10 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.webp']
+      'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.webp'],
     },
     multiple: true,
-    disabled: uploading
+    disabled: uploading,
   });
 
   // Handle drag end for reordering
@@ -147,12 +150,13 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
 
     const reorderedImages = Array.from(images);
     const [removed] = reorderedImages.splice(result.source.index, 1);
+
     reorderedImages.splice(result.destination.index, 0, removed);
 
     // Update positions
     const updatedImages = reorderedImages.map((img, index) => ({
       ...img,
-      position: index
+      position: index,
     }));
 
     setImages(updatedImages);
@@ -162,6 +166,7 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
   // Delete image
   const handleDeleteImage = (index) => {
     const updatedImages = images.filter((_, i) => i !== index);
+
     setImages(updatedImages);
     onImagesChange?.(updatedImages);
     toast.success('Image removed');
@@ -175,6 +180,7 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
   // Save edited image
   const handleSaveEdit = () => {
     const updatedImages = [...images];
+
     updatedImages[editDialog.index] = editDialog.image;
     setImages(updatedImages);
     onImagesChange?.(updatedImages);
@@ -185,6 +191,7 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
   // Toggle image type
   const toggleImageType = (type) => {
     const updatedImage = { ...editDialog.image };
+
     if (updatedImage.types.includes(type)) {
       updatedImage.types = updatedImage.types.filter(t => t !== type);
     } else {
@@ -206,7 +213,7 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
           cursor: uploading ? 'not-allowed' : 'pointer',
           textAlign: 'center',
           mb: 3,
-          opacity: uploading ? 0.6 : 1
+          opacity: uploading ? 0.6 : 1,
         }}
       >
         <input {...getInputProps()} />
@@ -245,7 +252,7 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
           <Typography variant="h6" gutterBottom>
             Product Images ({images.length})
           </Typography>
-          
+
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="images" direction="horizontal">
               {(provided) => (
@@ -275,7 +282,7 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
                             sx={{
                               position: 'relative',
                               transform: snapshot.isDragging ? 'rotate(5deg)' : 'none',
-                              boxShadow: snapshot.isDragging ? 4 : 1
+                              boxShadow: snapshot.isDragging ? 4 : 1,
                             }}
                           >
                             {/* Drag Handle */}
@@ -288,7 +295,7 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
                                 zIndex: 1,
                                 bgcolor: 'rgba(0,0,0,0.5)',
                                 borderRadius: 1,
-                                p: 0.5
+                                p: 0.5,
                               }}
                             >
                               <DragIcon sx={{ color: 'white', fontSize: 16 }} />
@@ -305,7 +312,7 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
                                   position: 'absolute',
                                   top: 4,
                                   right: 4,
-                                  zIndex: 1
+                                  zIndex: 1,
                                 }}
                               />
                             )}
@@ -411,7 +418,7 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
           <Typography variant="h6" gutterBottom>
             Edit Image
           </Typography>
-          
+
           {editDialog.image && (
             <Box>
               <TextField
@@ -420,7 +427,7 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
                 value={editDialog.image.label}
                 onChange={(e) => setEditDialog({
                   ...editDialog,
-                  image: { ...editDialog.image, label: e.target.value }
+                  image: { ...editDialog.image, label: e.target.value },
                 })}
                 sx={{ mb: 2 }}
               />
@@ -449,7 +456,7 @@ const ProductMediaUpload = ({ sku, existingImages = [], onImagesChange }) => {
                     checked={editDialog.image.disabled}
                     onChange={(e) => setEditDialog({
                       ...editDialog,
-                      image: { ...editDialog.image, disabled: e.target.checked }
+                      image: { ...editDialog.image, disabled: e.target.checked },
                     })}
                   />
                 }

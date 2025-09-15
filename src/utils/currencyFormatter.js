@@ -23,7 +23,7 @@ export const formatCurrency = (amount, currency = DEFAULT_CURRENCY, locale = DEF
 
   // Convert to number if string
   const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-  
+
   // Handle invalid numbers
   if (isNaN(numericAmount)) {
     return `0.00 ${currency}`;
@@ -35,22 +35,23 @@ export const formatCurrency = (amount, currency = DEFAULT_CURRENCY, locale = DEF
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
     useGrouping: true,
-    ...options
+    ...options,
   };
 
   try {
     // Format the number
     const formatter = new Intl.NumberFormat(locale, defaultOptions);
     const formattedAmount = formatter.format(numericAmount);
-    
+
     // Return with currency symbol
     return `${formattedAmount} ${currency}`;
   } catch (error) {
     console.warn('Currency formatting error:', error);
+
     // Fallback formatting
-    return `${numericAmount.toLocaleString('en-US', { 
-      minimumFractionDigits: 2, 
-      maximumFractionDigits: 2 
+    return `${numericAmount.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     })} ${currency}`;
   }
 };
@@ -63,7 +64,7 @@ export const formatCurrency = (amount, currency = DEFAULT_CURRENCY, locale = DEF
  */
 export const formatCurrencyCompact = (amount, currency = DEFAULT_CURRENCY) => {
   const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-  
+
   if (isNaN(numericAmount) || numericAmount === null || numericAmount === undefined) {
     return `0 ${currency}`;
   }
@@ -88,7 +89,7 @@ export const formatCurrencyCompact = (amount, currency = DEFAULT_CURRENCY) => {
  */
 export const formatPercentage = (value, decimals = 1) => {
   const numericValue = typeof value === 'string' ? parseFloat(value) : value;
-  
+
   if (isNaN(numericValue) || numericValue === null || numericValue === undefined) {
     return '0.0%';
   }
@@ -104,14 +105,14 @@ export const formatPercentage = (value, decimals = 1) => {
  */
 export const formatNumber = (value, decimals = 0) => {
   const numericValue = typeof value === 'string' ? parseFloat(value) : value;
-  
+
   if (isNaN(numericValue) || numericValue === null || numericValue === undefined) {
     return '0';
   }
 
   return numericValue.toLocaleString('en-US', {
     minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals
+    maximumFractionDigits: decimals,
   });
 };
 
@@ -128,7 +129,7 @@ export const parseCurrency = (currencyString) => {
   // Remove currency symbols and spaces, keep only numbers and decimal point
   const cleanString = currencyString.replace(/[^\d.-]/g, '');
   const parsed = parseFloat(cleanString);
-  
+
   return isNaN(parsed) ? 0 : parsed;
 };
 
@@ -140,20 +141,20 @@ export const CURRENCY_CONFIG = {
     symbol: 'دج',
     name: 'Algerian Dinar',
     locale: 'ar-DZ',
-    decimals: 2
+    decimals: 2,
   },
   USD: {
     symbol: '$',
     name: 'US Dollar',
     locale: 'en-US',
-    decimals: 2
+    decimals: 2,
   },
   EUR: {
     symbol: '€',
     name: 'Euro',
     locale: 'en-EU',
-    decimals: 2
-  }
+    decimals: 2,
+  },
 };
 
 /**

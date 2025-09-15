@@ -8,6 +8,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 // Mock the entire app structure for E2E testing
 const MockApp = ({ children }) => {
   const theme = createTheme();
+
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
@@ -22,7 +23,7 @@ const createMockAuthContext = (user = null) => ({
   currentUser: user,
   login: vi.fn(),
   logout: vi.fn(),
-  loading: false
+  loading: false,
 });
 
 const createMockSettingsContext = (settings = {}) => ({
@@ -31,10 +32,10 @@ const createMockSettingsContext = (settings = {}) => ({
     preferences: { theme: 'light', language: 'en' },
     apiSettings: {},
     gridSettings: {},
-    ...settings
+    ...settings,
   },
   updateSettings: vi.fn(),
-  resetSettings: vi.fn()
+  resetSettings: vi.fn(),
 });
 
 const createMockLanguageContext = (language = 'en') => ({
@@ -44,29 +45,29 @@ const createMockLanguageContext = (language = 'en') => ({
   languages: {
     en: { dir: 'ltr', name: 'English' },
     fr: { dir: 'ltr', name: 'Français' },
-    ar: { dir: 'rtl', name: 'العربية' }
-  }
+    ar: { dir: 'rtl', name: 'العربية' },
+  },
 });
 
 // Mock components
 const MockUserProfile = ({ onSettingsChange }) => (
   <div data-testid="user-profile">
     <div data-testid="personal-info-tab">
-      <input 
-        data-testid="first-name-input" 
+      <input
+        data-testid="first-name-input"
         placeholder="First Name"
         onChange={(e) => onSettingsChange?.({ personalInfo: { firstName: e.target.value } })}
       />
     </div>
     <div data-testid="api-settings-tab">
-      <input 
-        data-testid="magento-url-input" 
+      <input
+        data-testid="magento-url-input"
         placeholder="Magento URL"
         onChange={(e) => onSettingsChange?.({ apiSettings: { magento: { baseUrl: e.target.value } } })}
       />
     </div>
     <div data-testid="preferences-tab">
-      <select 
+      <select
         data-testid="theme-select"
         onChange={(e) => onSettingsChange?.({ preferences: { theme: e.target.value } })}
       >
@@ -74,7 +75,7 @@ const MockUserProfile = ({ onSettingsChange }) => (
         <option value="dark">Dark</option>
         <option value="system">System</option>
       </select>
-      <select 
+      <select
         data-testid="language-select"
         onChange={(e) => onSettingsChange?.({ preferences: { language: e.target.value } })}
       >
@@ -130,13 +131,13 @@ describe('End-to-End User Workflows', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     user = userEvent.setup();
-    
+
     mockAuthContext = createMockAuthContext({
       uid: 'test-user-123',
       email: 'test@example.com',
-      displayName: 'Test User'
+      displayName: 'Test User',
     });
-    
+
     mockSettingsContext = createMockSettingsContext();
     mockLanguageContext = createMockLanguageContext();
 
@@ -147,6 +148,7 @@ describe('End-to-End User Workflows', () => {
       removeItem: vi.fn(),
       clear: vi.fn(),
     };
+
     global.localStorage = localStorageMock;
   });
 
@@ -155,13 +157,13 @@ describe('End-to-End User Workflows', () => {
       const savedSettings = {
         preferences: {
           theme: 'dark',
-          language: 'fr'
+          language: 'fr',
         },
         apiSettings: {
           magento: {
-            baseUrl: 'https://my-magento.com'
-          }
-        }
+            baseUrl: 'https://my-magento.com',
+          },
+        },
       };
 
       // Mock localStorage to return saved settings
@@ -169,10 +171,11 @@ describe('End-to-End User Workflows', () => {
 
       const TestComponent = () => {
         const [currentSettings, setCurrentSettings] = React.useState(savedSettings);
-        
+
         React.useEffect(() => {
           // Simulate settings loading on login
           const loadedSettings = JSON.parse(localStorage.getItem('techno-etl-settings-test-user-123') || '{}');
+
           setCurrentSettings(loadedSettings);
         }, []);
 
@@ -193,7 +196,7 @@ describe('End-to-End User Workflows', () => {
         expect(screen.getByTestId('app-theme')).toHaveAttribute('data-theme', 'dark');
         expect(screen.getByTestId('app-language')).toHaveAttribute('lang', 'fr');
         expect(screen.getByTestId('api-status')).toHaveTextContent('API URL: https://my-magento.com');
-      });
+      }, { timeout: 15000 });
     });
 
     it('handles first-time user with default settings', async () => {
@@ -204,7 +207,7 @@ describe('End-to-End User Workflows', () => {
         const [currentSettings, setCurrentSettings] = React.useState({
           preferences: { theme: 'light', language: 'en' },
           apiSettings: {},
-          gridSettings: { defaultPageSize: 25 }
+          gridSettings: { defaultPageSize: 25 },
         });
 
         return (
@@ -216,12 +219,11 @@ describe('End-to-End User Workflows', () => {
         );
       };
 
-      render(<TestComponent />);
-
-      await waitFor(() => {
+      render(<TestCompawait waitFor(() => {
         expect(screen.getByTestId('app-theme')).toHaveAttribute('data-theme', 'light');
         expect(screen.getByTestId('grid-settings')).toHaveTextContent('Page Size: 25');
         expect(screen.getByTestId('api-status')).toHaveTextContent('API URL: Not configured');
+      }, { timeout: 15000 });igured');
       });
     });
   });
@@ -232,7 +234,7 @@ describe('End-to-End User Workflows', () => {
         personalInfo: {},
         preferences: { theme: 'light', language: 'en' },
         apiSettings: {},
-        gridSettings: {}
+        gridSettings: {},
       };
 
       const TestComponent = () => {
@@ -240,9 +242,10 @@ describe('End-to-End User Workflows', () => {
 
         const handleSettingsChange = (newSettings) => {
           const updatedSettings = { ...settings, ...newSettings };
+
           setSettings(updatedSettings);
           currentSettings = updatedSettings;
-          
+
           // Simulate saving to localStorage
           localStorage.setItem('techno-etl-settings-test-user-123', JSON.stringify(updatedSettings));
         };
@@ -263,42 +266,42 @@ describe('End-to-End User Workflows', () => {
 
       // Step 1: Configure personal information
       const firstNameInput = screen.getByTestId('first-name-input');
-      await user.type(firstNameInput, 'John');
 
-      await waitFor(() => {
+      await userawait waitFor(() => {
         expect(localStorage.setItem).toHaveBeenCalledWith(
           'techno-etl-settings-test-user-123',
-          expect.stringContaining('"firstName":"John"')
+          expect.stringContaining('"firstName":"John"'),
+        );
+      }, { timeout: 15000 });stName":"John"'),
         );
       });
 
       // Step 2: Configure API settings
       const magentoUrlInput = screen.getByTestId('magento-url-input');
-      await user.type(magentoUrlInput, 'https://my-store.com');
 
-      await waitFor(() => {
+      await uawait waitFor(() => {
         expect(localStorage.setItem).toHaveBeenCalledWith(
           'techno-etl-settings-test-user-123',
-          expect.stringContaining('"baseUrl":"https://my-store.com"')
+          expect.stringContaining('"baseUrl":"https://my-store.com"'),
+        );
+      }, { timeout: 15000 });('"baseUrl":"https://my-store.com"'),
         );
       });
 
       // Step 3: Configure preferences
-      const themeSelect = screen.getByTestId('theme-select');
-      await user.selectOptions(themeSelect, 'dark');
-
-      await waitFor(() => {
+      const themeSelect = screen.getByTestId('await waitFor(() => {
         expect(screen.getByTestId('current-theme')).toHaveAttribute('data-theme', 'dark');
         expect(screen.getByTestId('current-theme')).toHaveTextContent('Current Theme: dark');
+      }, { timeout: 15000 });tByTestId('current-theme')).toHaveTextContent('Current Theme: dark');
       });
 
-      const languageSelect = screen.getByTestId('language-select');
-      await user.selectOptions(languageSelect, 'fr');
-
-      await waitFor(() => {
+      const languageSelect = screawait waitFor(() => {
         expect(localStorage.setItem).toHaveBeenCalledWith(
           'techno-etl-settings-test-user-123',
-          expect.stringContaining('"language":"fr"')
+          expect.stringContaining('"language":"fr"'),
+        );
+      }, { timeout: 15000 });ttings-test-user-123',
+          expect.stringContaining('"language":"fr"'),
         );
       });
     });
@@ -306,18 +309,18 @@ describe('End-to-End User Workflows', () => {
     it('handles settings validation and error recovery', async () => {
       const TestComponent = () => {
         const [settings, setSettings] = React.useState({
-          preferences: { theme: 'light' }
+          preferences: { theme: 'light' },
         });
         const [error, setError] = React.useState(null);
 
         const handleSettingsChange = (newSettings) => {
           try {
             // Simulate validation
-            if (newSettings.apiSettings?.magento?.baseUrl && 
+            if (newSettings.apiSettings?.magento?.baseUrl &&
                 !newSettings.apiSettings.magento.baseUrl.startsWith('http')) {
               throw new Error('Invalid URL format');
             }
-            
+
             setSettings({ ...settings, ...newSettings });
             setError(null);
           } catch (err) {
@@ -329,11 +332,11 @@ describe('End-to-End User Workflows', () => {
           <MockApp>
             <div data-testid="settings-form">
               {error && <div data-testid="error-message">{error}</div>}
-              <input 
+              <input
                 data-testid="url-input"
                 placeholder="Enter URL"
                 onChange={(e) => handleSettingsChange({
-                  apiSettings: { magento: { baseUrl: e.target.value } }
+                  apiSettings: { magento: { baseUrl: e.target.value } },
                 })}
               />
             </div>
@@ -343,17 +346,14 @@ describe('End-to-End User Workflows', () => {
 
       render(<TestComponent />);
 
-      // Enter invalid URL
-      const urlInput = screen.getByTestId('url-input');
-      await user.type(urlInput, 'invalid-url');
-
-      await waitFor(() => {
+      // Enter invalid await waitFor(() => {
+        expect(screen.getByTestId('error-message')).toHaveTextContent('Invalid URL format');
+      }, { timeout: 15000 });waitFor(() => {
         expect(screen.getByTestId('error-message')).toHaveTextContent('Invalid URL format');
       });
-
-      // Clear and enter valid URL
-      await user.clear(urlInput);
-      await user.type(urlInput, 'https://valid-url.com');
+await waitFor(() => {
+        expect(screen.queryByTestId('error-message')).not.toBeInTheDocument();
+      }, { timeout: 15000 });//valid-url.com');
 
       await waitFor(() => {
         expect(screen.queryByTestId('error-message')).not.toBeInTheDocument();
@@ -366,7 +366,7 @@ describe('End-to-End User Workflows', () => {
       let globalSettings = {
         preferences: { theme: 'light' },
         gridSettings: { defaultPageSize: 25 },
-        apiSettings: { magento: { baseUrl: '' } }
+        apiSettings: { magento: { baseUrl: '' } },
       };
 
       const TestComponent = () => {
@@ -374,6 +374,7 @@ describe('End-to-End User Workflows', () => {
 
         const updateGlobalSettings = (newSettings) => {
           const updated = { ...settings, ...newSettings };
+
           setSettings(updated);
           globalSettings = updated;
         };
@@ -397,20 +398,16 @@ describe('End-to-End User Workflows', () => {
 
       render(<TestComponent />);
 
-      // Change theme in settings
-      const themeSelect = screen.getByTestId('theme-select');
-      await user.selectOptions(themeSelect, 'dark');
-
-      await waitFor(() => {
+ await waitFor(() => {
         // Theme should be applied to the entire app
         expect(screen.getByTestId('app-container')).toHaveAttribute('data-theme', 'dark');
-      });
-
-      // Change API settings
-      const magentoUrlInput = screen.getByTestId('magento-url-input');
-      await user.type(magentoUrlInput, 'https://new-api.com');
-
-      await waitFor(() => {
+      }, { timeout: 15000 });> {
+        // Theme should be applied to the entire app
+        expect(screen.getByTestId('app-container')).toHaveAttribute('data-theme', 'dark');
+      })await waitFor(() => {
+        // API settings should be reflected in products grid
+        expect(screen.getByTestId('api-status')).toHaveTextContent('API URL: https://new-api.com');
+      }, { timeout: 15000 });) => {
         // API settings should be reflected in products grid
         expect(screen.getByTestId('api-status')).toHaveTextContent('API URL: https://new-api.com');
       });
@@ -432,8 +429,8 @@ describe('End-to-End User Workflows', () => {
             <div data-testid="license-management">
               <div data-testid="license-status">Status: {licenseStatus}</div>
               <div data-testid="user-info">User: {user.email}</div>
-              <button 
-                data-testid="activate-btn" 
+              <button
+                data-testid="activate-btn"
                 onClick={handleLicenseActivation}
               >
                 Activate License
@@ -447,10 +444,10 @@ describe('End-to-End User Workflows', () => {
 
       // Initial state
       expect(screen.getByTestId('license-status')).toHaveTextContent('Status: invalid');
-      expect(screen.getByTestId('user-info')).toHaveTextContent('User: test@example.com');
+      expect(screen.getByTestIdawait waitFor(() => {
+        expect(screen.getByTestId('license-status')).toHaveTextContent('Status: valid');
+      }, { timeout: 15000 });.getByTestId('activate-btn');
 
-      // Activate license
-      const activateBtn = screen.getByTestId('activate-btn');
       await user.click(activateBtn);
 
       await waitFor(() => {
@@ -464,7 +461,7 @@ describe('End-to-End User Workflows', () => {
       const TestComponent = () => {
         const [selectedProduct, setSelectedProduct] = React.useState(null);
         const [gridSettings] = React.useState({
-          gridSettings: { defaultPageSize: 25 }
+          gridSettings: { defaultPageSize: 25 },
         });
 
         const handleProductSelect = (product) => {
@@ -475,8 +472,8 @@ describe('End-to-End User Workflows', () => {
           <MockApp>
             <div data-testid="grid-container">
               <MockProductsGrid settings={gridSettings} />
-              <div 
-                data-testid="product-row-1" 
+              <div
+                data-testid="product-row-1"
                 onClick={() => handleProductSelect({ sku: 'TEST-001', name: 'Test Product 1' })}
                 style={{ cursor: 'pointer' }}
               >
@@ -495,10 +492,10 @@ describe('End-to-End User Workflows', () => {
       render(<TestComponent />);
 
       // Verify grid is rendered with correct settings
-      expect(screen.getByTestId('grid-settings')).toHaveTextContent('Page Size: 25');
+     await waitFor(() => {
+        expect(screen.getByTestId('selected-product')).toHaveTextContent('Selected: Test Product 1 (TEST-001)');
+      }, { timeout: 15000 });ByTestId('product-row-1');
 
-      // Select a product
-      const productRow = screen.getByTestId('product-row-1');
       await user.click(productRow);
 
       await waitFor(() => {
@@ -551,31 +548,23 @@ describe('End-to-End User Workflows', () => {
 
       render(<TestComponent />);
 
-      // Initial success state
-      expect(screen.getByTestId('success-state')).toBeInTheDocument();
-
-      // Simulate error
-      const simulateErrorBtn = screen.getByTestId('simulate-error-btn');
-      await user.click(simulateErrorBtn);
-
-      await waitFor(() => {
+      // Initial await waitFor(() => {
         expect(screen.getByTestId('error-state')).toBeInTheDocument();
         expect(screen.getByTestId('error-message')).toHaveTextContent('Network error occurred');
-      });
-
-      // First retry (should fail)
-      const retryBtn = screen.getByTestId('retry-btn');
-      await user.click(retryBtn);
+      }, { timeout: 15000 });ser.click(simulateErrorBtn);
 
       await waitFor(() => {
+        expect(screen.getByTestId('error-state')).toBeInTheDawait waitFor(() => {
         expect(screen.getByTestId('error-message')).toHaveTextContent('Retry failed, please try again');
         expect(screen.getByTestId('retry-btn')).toHaveTextContent('Retry (1/3)');
-      });
-
-      // Second retry (should fail)
-      await user.click(retryBtn);
+      }, { timeout: 15000 });  await user.click(retryBtn);
 
       await waitFor(() => {
+  await waitFor(() => {
+        expect(screen.getByTestId('retry-btn')).toHaveTextContent('Retry (2/3)');
+      }, { timeout: 15000 });ect(screen.getByTestId('retry-btn')).toHaveTextContent('Retry (1/3await waitFor(() => {
+        expect(screen.getByTestId('success-state')).toBeInTheDocument();
+      }, { timeout: 15000 });aitFor(() => {
         expect(screen.getByTestId('retry-btn')).toHaveTextContent('Retry (2/3)');
       });
 

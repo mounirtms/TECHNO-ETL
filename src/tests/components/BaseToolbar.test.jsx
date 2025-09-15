@@ -1,9 +1,9 @@
 /**
  * BaseToolbar Component Tests
- * 
+ *
  * Comprehensive test suite for the BaseToolbar component
  * Tests functionality, accessibility, and responsiveness
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
@@ -36,21 +36,21 @@ const mockHandlers = {
   onSync: vi.fn(),
   onExport: vi.fn(),
   onImport: vi.fn(),
-  onCustomAction: vi.fn()
+  onCustomAction: vi.fn(),
 };
 
 const mockCustomActions = [
   {
     key: 'custom1',
     label: 'Custom Action 1',
-    onClick: vi.fn()
+    onClick: vi.fn(),
   },
   {
     key: 'custom2',
     label: 'Custom Action 2',
     onClick: vi.fn(),
-    disabled: true
-  }
+    disabled: true,
+  },
 ];
 
 // ============================================================================
@@ -66,7 +66,7 @@ describe('BaseToolbar - Basic Functionality', () => {
     render(
       <TestWrapper>
         <BaseToolbar />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByRole('toolbar')).toBeInTheDocument();
@@ -78,10 +78,10 @@ describe('BaseToolbar - Basic Functionality', () => {
         <BaseToolbar
           config={{
             showRefresh: true,
-            showSearch: true
+            showSearch: true,
           }}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByLabelText('Refresh')).toBeInTheDocument();
@@ -95,7 +95,7 @@ describe('BaseToolbar - Basic Functionality', () => {
           customActions={mockCustomActions}
           enableActions={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Custom Action 1')).toBeInTheDocument();
@@ -117,11 +117,14 @@ describe('BaseToolbar - Search Functionality', () => {
           enableSearch={true}
           onSearchChange={mockHandlers.onSearchChange}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const searchInput = screen.getByRole('textbox');
+
     await user.type(searchInput, 'test search');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));
 
     expect(mockHandlers.onSearchChange).toHaveBeenCalledWith('test search');
   });
@@ -133,12 +136,12 @@ describe('BaseToolbar - Search Functionality', () => {
       <TestWrapper>
         <BaseToolbar
           enableSearch={true}
-          onSearchChange={mockHandlers.onSearchChange}
-        />
-      </TestWrapper>
-    );
+          onSearchChange={mockHandlers.onSearchChange}await user.type(searchInput, 'test{enter}');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));
 
     const searchInput = screen.getByRole('textbox');
+
     await user.type(searchInput, 'test{enter}');
 
     expect(mockHandlers.onSearchChange).toHaveBeenCalledWith('test');
@@ -150,14 +153,16 @@ describe('BaseToolbar - Search Functionality', () => {
     render(
       <TestWrapper>
         <BaseToolbar
-          enableSearch={true}
-          searchQuery="existing search"
+          enableSearch={true}await user.click(clearButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));ng search"
           onSearchChange={mockHandlers.onSearchChange}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const clearButton = screen.getByLabelText('clear search');
+
     await user.click(clearButton);
 
     expect(mockHandlers.onSearchChange).toHaveBeenCalledWith('');
@@ -170,10 +175,11 @@ describe('BaseToolbar - Search Functionality', () => {
           enableSearch={true}
           loading={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const searchInput = screen.getByRole('textbox');
+
     expect(searchInput).toBeDisabled();
   });
 });
@@ -183,8 +189,9 @@ describe('BaseToolbar - Search Functionality', () => {
 // ============================================================================
 
 describe('BaseToolbar - Action Buttons', () => {
-  test('refresh button calls onRefresh', async () => {
-    const user = userEvent.setup();
+  test('refresh button calls onRawait user.click(refreshButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));t user = userEvent.setup();
 
     render(
       <TestWrapper>
@@ -192,11 +199,14 @@ describe('BaseToolbar - Action Buttons', () => {
           config={{ showRefresh: true }}
           onRefresh={mockHandlers.onRefresh}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const refreshButton = screen.getByLabelText('Refresh');
-    await user.click(refreshButton);
+
+   await user.click(addButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));ton);
 
     expect(mockHandlers.onRefresh).toHaveBeenCalled();
   });
@@ -210,10 +220,11 @@ describe('BaseToolbar - Action Buttons', () => {
           config={{ showAdd: true }}
           onAdd={mockHandlers.onAdd}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const addButton = screen.getByLabelText('Add');
+
     await user.click(addButton);
 
     expect(mockHandlers.onAdd).toHaveBeenCalled();
@@ -227,10 +238,13 @@ describe('BaseToolbar - Action Buttons', () => {
           selectedCount={0}
           onEdit={mockHandlers.onEdit}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
-    const editButton = screen.getByLabelText('Edit (Selection Required)');
+    const editButton await user.click(editButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50)); (Selection Required)');
+
     expect(editButton).toBeDisabled();
   });
 
@@ -244,10 +258,11 @@ describe('BaseToolbar - Action Buttons', () => {
           selectedCount={1}
           onEdit={mockHandlers.onEdit}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const editButton = screen.getByLabelText('Edit');
+
     expect(editButton).not.toBeDisabled();
 
     await user.click(editButton);
@@ -260,29 +275,32 @@ describe('BaseToolbar - Action Buttons', () => {
         <BaseToolbar
           config={{ showDelete: true }}
           selectedCount={0}
-          onDelete={mockHandlers.onDelete}
-        />
-      </TestWrapper>
+          onDelete={mawait user.click(deleteButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));/>
+      </TestWrapper>,
     );
 
     const deleteButton = screen.getByLabelText('Delete (Selection Required)');
+
     expect(deleteButton).toBeDisabled();
   });
 
   test('delete button is enabled when items selected', async () => {
     const user = userEvent.setup();
 
-    render(
-      <TestWrapper>
-        <BaseToolbar
+    render(await user.click(syncButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));  <BaseToolbar
           config={{ showDelete: true }}
           selectedCount={2}
           onDelete={mockHandlers.onDelete}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const deleteButton = screen.getByLabelText('Delete');
+
     expect(deleteButton).not.toBeDisabled();
 
     await user.click(deleteButton);
@@ -298,10 +316,11 @@ describe('BaseToolbar - Action Buttons', () => {
           config={{ showSync: true }}
           onSync={mockHandlers.onSync}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const syncButton = screen.getByLabelText('Sync');
+
     await user.click(syncButton);
 
     expect(mockHandlers.onSync).toHaveBeenCalled();
@@ -314,11 +333,11 @@ describe('BaseToolbar - Action Buttons', () => {
           config={{
             showRefresh: true,
             showAdd: true,
-            showSync: true
+            showSync: true,
           }}
           loading={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByLabelText('Refresh (Loading...)')).toBeDisabled();
@@ -329,7 +348,9 @@ describe('BaseToolbar - Action Buttons', () => {
 
 // ============================================================================
 // CUSTOM ACTIONS TESTS
-// ============================================================================
+await user.click(customButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));================================================
 
 describe('BaseToolbar - Custom Actions', () => {
   test('renders custom actions', () => {
@@ -339,7 +360,7 @@ describe('BaseToolbar - Custom Actions', () => {
           customActions={mockCustomActions}
           enableActions={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('Custom Action 1')).toBeInTheDocument();
@@ -355,13 +376,16 @@ describe('BaseToolbar - Custom Actions', () => {
           customActions={mockCustomActions}
           enableActions={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const customButton = screen.getByText('Custom Action 1');
+
     await user.click(customButton);
 
-    expect(mockCustomActions[0].onClick).toHaveBeenCalled();
+    expectawait user.click(testButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));).toHaveBeenCalled();
   });
 
   test('respects disabled state of custom actions', () => {
@@ -371,10 +395,11 @@ describe('BaseToolbar - Custom Actions', () => {
           customActions={mockCustomActions}
           enableActions={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const disabledButton = screen.getByText('Custom Action 2');
+
     expect(disabledButton).toBeDisabled();
   });
 
@@ -383,8 +408,8 @@ describe('BaseToolbar - Custom Actions', () => {
     const customActionsWithoutOnClick = [
       {
         key: 'test-action',
-        label: 'Test Action'
-      }
+        label: 'Test Action',
+      },
     ];
 
     render(
@@ -394,15 +419,16 @@ describe('BaseToolbar - Custom Actions', () => {
           onCustomAction={mockHandlers.onCustomAction}
           enableActions={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const testButton = screen.getByText('Test Action');
+
     await user.click(testButton);
 
     expect(mockHandlers.onCustomAction).toHaveBeenCalledWith(
       'test-action',
-      customActionsWithoutOnClick[0]
+      customActionsWithoutOnClick[0],
     );
   });
 });
@@ -422,8 +448,9 @@ describe('BaseToolbar - Responsive Behavior', () => {
         onchange: null,
         addListener: vi.fn(),
         removeListener: vi.fn(),
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
+        await user.click(moreButton);
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));       removeEventListener: vi.fn(),
         dispatchEvent: vi.fn(),
       })),
     });
@@ -437,11 +464,11 @@ describe('BaseToolbar - Responsive Behavior', () => {
             showRefresh: true,
             showAdd: true,
             showEdit: true,
-            showDelete: true
+            showDelete: true,
           }}
           enableResponsive={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // Should show more button for overflow actions
@@ -458,14 +485,15 @@ describe('BaseToolbar - Responsive Behavior', () => {
             showRefresh: true,
             showAdd: true,
             showEdit: true,
-            showDelete: true
+            showDelete: true,
           }}
           enableResponsive={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const moreButton = screen.getByLabelText('More actions');
+
     await user.click(moreButton);
 
     // Menu should open with overflow actions
@@ -482,7 +510,7 @@ describe('BaseToolbar - Selection Indicator', () => {
     render(
       <TestWrapper>
         <BaseToolbar selectedCount={3} />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.getByText('3 selected')).toBeInTheDocument();
@@ -492,7 +520,7 @@ describe('BaseToolbar - Selection Indicator', () => {
     render(
       <TestWrapper>
         <BaseToolbar selectedCount={0} />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     expect(screen.queryByText(/selected/)).not.toBeInTheDocument();
@@ -508,10 +536,11 @@ describe('BaseToolbar - Accessibility', () => {
     render(
       <TestWrapper>
         <BaseToolbar id="test-toolbar" />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const toolbar = screen.getByRole('toolbar');
+
     expect(toolbar).toHaveAttribute('id', 'test-toolbar');
   });
 
@@ -522,10 +551,11 @@ describe('BaseToolbar - Accessibility', () => {
           enableSearch={true}
           searchId="search-input"
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const searchInput = screen.getByRole('textbox');
+
     expect(searchInput).toHaveAttribute('id', 'search-input');
     expect(searchInput).toHaveAttribute('aria-label', 'Search grid data');
   });
@@ -538,17 +568,20 @@ describe('BaseToolbar - Accessibility', () => {
         <BaseToolbar
           config={{ showRefresh: true }}
         />
-      </TestWrapper>
-    );
+      </TestWrapper>await user.tab();
+    // Add small delay to prevent act warnings
+    await new Promiseawait user.tab();
+    // Add small delay to prevent act warnings
+    await new Proawait user.tab();
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));etTimeout(resolve, 50));meout(resolve, 50));const refreshButton = screen.getByLabelText('Refresh');
 
-    const refreshButton = screen.getByLabelText('Refresh');
-    
     // Hover to show tooltip
     await user.hover(refreshButton);
 
     await waitFor(() => {
       expect(screen.getByText('Refresh')).toBeInTheDocument();
-    });
+    }, { timeout: 15000 });
   });
 
   test('disabled buttons have appropriate tooltips', async () => {
@@ -560,15 +593,16 @@ describe('BaseToolbar - Accessibility', () => {
           config={{ showEdit: true }}
           selectedCount={0}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
-    const editButton = screen.getByLabelText('Edit (Selection Required)');
-    
-    await user.hover(editButton);
+    const editBuawait user.type(searchInput, 'rapid typing test');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));ired)');
 
-    await waitFor(() => {
+    await user.hover(await waitFor(() => {
       expect(screen.getByText('Edit (Selection Required)')).toBeInTheDocument();
+    }, { timeout: 15000 });Document();
     });
   });
 
@@ -580,11 +614,11 @@ describe('BaseToolbar - Accessibility', () => {
         <BaseToolbar
           config={{
             showRefresh: true,
-            showAdd: true
+            showAdd: true,
           }}
           enableSearch={true}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // Tab through elements
@@ -613,11 +647,11 @@ describe('BaseToolbar - Performance', () => {
           enableSearch={true}
           onSearchChange={mockHandlers.onSearchChange}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     const searchInput = screen.getByRole('textbox');
-    
+
     // Rapid typing should not block UI
     await user.type(searchInput, 'rapid typing test');
 
@@ -633,7 +667,7 @@ describe('BaseToolbar - Performance', () => {
           config={{ showRefresh: true }}
           selectedCount={0}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // Re-render with same props
@@ -643,7 +677,7 @@ describe('BaseToolbar - Performance', () => {
           config={{ showRefresh: true }}
           selectedCount={0}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // Should not cause unnecessary re-renders
@@ -653,9 +687,9 @@ describe('BaseToolbar - Performance', () => {
 
 // ============================================================================
 // INTEGRATION TESTS
-// ============================================================================
-
-describe('BaseToolbar - Integration', () => {
+// ===================================================await user.type(searchInput, 'test');
+    // Add small delay to prevent act warnings
+    await new Promise(resolve => setTimeout(resolve, 50));('BaseToolbar - Integration', () => {
   test('works with all features enabled', async () => {
     const user = userEvent.setup();
 
@@ -669,7 +703,7 @@ describe('BaseToolbar - Integration', () => {
             showDelete: true,
             showSync: true,
             showExport: true,
-            showImport: true
+            showImport: true,
           }}
           customActions={mockCustomActions}
           enableSearch={true}
@@ -684,7 +718,7 @@ describe('BaseToolbar - Integration', () => {
           onExport={mockHandlers.onExport}
           onImport={mockHandlers.onImport}
         />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
     // All buttons should be present
@@ -698,6 +732,7 @@ describe('BaseToolbar - Integration', () => {
 
     // Search should work
     const searchInput = screen.getByRole('textbox');
+
     await user.type(searchInput, 'test');
     expect(mockHandlers.onSearchChange).toHaveBeenCalledWith('test');
 

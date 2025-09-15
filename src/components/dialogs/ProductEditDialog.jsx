@@ -21,7 +21,7 @@ import {
   Tabs,
   Tab,
   CircularProgress,
-  Alert
+  Alert,
 } from '@mui/material';
 import {
   Save as SaveIcon,
@@ -30,7 +30,7 @@ import {
   Category as CategoryIcon,
   LocalOffer as BrandingIcon,
   Settings as SettingsIcon,
-  Image as ImageIcon
+  Image as ImageIcon,
 } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 import categoryService from '../../services/categoryService';
@@ -46,7 +46,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
-  
+
   // Basic product data
   const [formData, setFormData] = useState({
     sku: '',
@@ -55,9 +55,9 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
     weight: 0,
     status: 1,
     type_id: 'simple',
-    visibility: 4
+    visibility: 4,
   });
-  
+
   // Additional attributes
   const [additionalAttributes, setAdditionalAttributes] = useState({
     description: '',
@@ -70,15 +70,15 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
     a_la_une: false,
     meta_title: '',
     meta_description: '',
-    meta_keywords: ''
+    meta_keywords: '',
   });
-  
+
   // Selected categories
   const [selectedCategories, setSelectedCategories] = useState([]);
 
   // Product images
   const [productImages, setProductImages] = useState([]);
-  
+
   // Initialize form data when product changes
   useEffect(() => {
     if (product) {
@@ -90,112 +90,117 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
         weight: product.weight || 0,
         status: product.status || 1,
         type_id: product.type_id || 'simple',
-        visibility: product.visibility || 4
+        visibility: product.visibility || 4,
       });
-      
+
       // Extract additional attributes
       const customAttrs = product.custom_attributes || [];
       const attrs = {};
-      
+
       customAttrs.forEach(attr => {
         switch (attr.attribute_code) {
-          case 'description':
-          case 'short_description':
-          case 'techno_ref':
-          case 'country_of_manufacture':
-          case 'mgs_brand':
-          case 'meta_title':
-          case 'meta_description':
-          case 'meta_keywords':
-            attrs[attr.attribute_code] = attr.value || '';
-            break;
-          case 'trending':
-          case 'best_seller':
-          case 'a_la_une':
-            attrs[attr.attribute_code] = attr.value === '1' || attr.value === true;
-            break;
-          case 'category_ids':
-            if (Array.isArray(attr.value)) {
-              setSelectedCategories(attr.value.map(id => id.toString()));
-            }
-            break;
+        case 'description':
+        case 'short_description':
+        case 'techno_ref':
+        case 'country_of_manufacture':
+        case 'mgs_brand':
+        case 'meta_title':
+        case 'meta_description':
+        case 'meta_keywords':
+          attrs[attr.attribute_code] = attr.value || '';
+          break;
+        case 'trending':
+        case 'best_seller':
+        case 'a_la_une':
+          attrs[attr.attribute_code] = attr.value === '1' || attr.value === true;
+          break;
+        case 'category_ids':
+          if (Array.isArray(attr.value)) {
+            setSelectedCategories(attr.value.map(id => id.toString()));
+          }
+          break;
         }
       });
-      
+
       setAdditionalAttributes(prev => ({ ...prev, ...attrs }));
     }
   }, [product]);
-  
+
   // Load categories and brands
   useEffect(() => {
     const loadData = async () => {
       try {
         // Load categories
         const categoryOptions = categoryService.getCategoriesForCombo();
+
         setCategories(categoryOptions);
-        
+
         // Load brands
         const brandsResponse = await magentoApi.getBrands();
+
         setBrands(brandsResponse?.items || []);
       } catch (error) {
         console.error('Error loading data:', error);
       }
     };
-    
+
     if (open) {
       loadData();
     }
   }, [open]);
-  
+
   const handleBasicChange = (e) => {
     const { name, value } = e.target;
+
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-  
+
   const handleAttributeChange = (e) => {
     const { name, value, checked } = e.target;
+
     setAdditionalAttributes(prev => ({
       ...prev,
-      [name]: e.target.type === 'checkbox' ? checked : value
+      [name]: e.target.type === 'checkbox' ? checked : value,
     }));
   };
-  
+
   const handleSave = async () => {
     try {
       setLoading(true);
-      
+
       // Validate required fields
       if (!formData.sku.trim() || !formData.name.trim()) {
         toast.error('SKU and Name are required');
+
         return;
       }
-      
+
       // Prepare custom attributes array
       const customAttributes = [];
-      
+
       Object.entries(additionalAttributes).forEach(([key, value]) => {
         if (value !== '' && value !== null && value !== undefined) {
           customAttributes.push({
             attribute_code: key,
-            value: typeof value === 'boolean' ? (value ? '1' : '0') : value
+            value: typeof value === 'boolean' ? (value ? '1' : '0') : value,
           });
         }
       });
-      
+
       // Add category IDs
       if (selectedCategories.length > 0) {
         customAttributes.push({
           attribute_code: 'category_ids',
-          value: selectedCategories
+          value: selectedCategories,
         });
       }
-      
+
       // Prepare final product data
       const productData = {
         ...formData,
-        custom_attributes: customAttributes
+        custom_attributes: customAttributes,
       };
-      
+
       onSave(productData);
       toast.success(`Product "${formData.name}" saved successfully`);
       onClose();
@@ -206,38 +211,38 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
       setLoading(false);
     }
   };
-  
+
   const TabPanel = ({ children, value, index }) => (
     <div hidden={value !== index} style={{ paddingTop: 16 }}>
       {value === index && children}
     </div>
   );
-  
+
   return (
-    <Dialog 
-      open={open} 
-      onClose={onClose} 
-      maxWidth="lg" 
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="lg"
       fullWidth
       PaperProps={{
         sx: {
           borderRadius: 2,
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-          minHeight: '70vh'
-        }
+          minHeight: '70vh',
+        },
       }}
     >
-      <DialogTitle sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
+      <DialogTitle sx={{
+        display: 'flex',
+        alignItems: 'center',
         gap: 1,
         bgcolor: 'primary.main',
-        color: 'primary.contrastText'
+        color: 'primary.contrastText',
       }}>
         <ProductIcon />
         {product?.sku ? `Edit Product: ${product.sku}` : 'Add New Product'}
       </DialogTitle>
-      
+
       <DialogContent dividers>
         <Tabs
           value={activeTab}
@@ -250,7 +255,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
           <Tab icon={<ImageIcon />} label="Images" />
           <Tab icon={<SettingsIcon />} label="SEO & Meta" />
         </Tabs>
-        
+
         {/* Basic Information Tab */}
         <TabPanel value={activeTab} index={0}>
           <Grid container spacing={2}>
@@ -265,7 +270,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
                 disabled={!!product?.sku} // Don't allow SKU changes for existing products
               />
             </Grid>
-            
+
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -275,7 +280,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
                 onChange={handleAttributeChange}
               />
             </Grid>
-            
+
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -288,7 +293,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
                 rows={2}
               />
             </Grid>
-            
+
             <Grid item xs={12} sm={4}>
               <TextField
                 fullWidth
@@ -300,7 +305,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
                 InputProps={{ inputProps: { min: 0, step: 0.01 } }}
               />
             </Grid>
-            
+
             <Grid item xs={12} sm={4}>
               <TextField
                 fullWidth
@@ -312,7 +317,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
                 InputProps={{ inputProps: { min: 0 } }}
               />
             </Grid>
-            
+
             <Grid item xs={12} sm={4}>
               <FormControl fullWidth>
                 <InputLabel>Status</InputLabel>
@@ -327,7 +332,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
                 </Select>
               </FormControl>
             </Grid>
-            
+
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -339,7 +344,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
                 rows={2}
               />
             </Grid>
-            
+
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -353,13 +358,13 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
             </Grid>
           </Grid>
         </TabPanel>
-        
+
         {/* Categories Tab */}
         <TabPanel value={activeTab} index={1}>
           <Alert severity="info" sx={{ mb: 2 }}>
             Select categories for this product. You can choose multiple categories.
           </Alert>
-          
+
           <Autocomplete
             multiple
             options={categories}
@@ -386,7 +391,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
               ))
             }
           />
-          
+
           {selectedCategories.length > 0 && (
             <Box sx={{ mt: 2 }}>
               <Typography variant="subtitle2" gutterBottom>
@@ -395,6 +400,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                 {selectedCategories.map(catId => {
                   const category = categories.find(cat => cat.id.toString() === catId);
+
                   return category ? (
                     <Chip
                       key={catId}
@@ -409,7 +415,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
             </Box>
           )}
         </TabPanel>
-        
+
         {/* Attributes Tab */}
         <TabPanel value={activeTab} index={2}>
           <Grid container spacing={2}>
@@ -433,7 +439,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
                 </Select>
               </FormControl>
             </Grid>
-            
+
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -444,7 +450,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
                 placeholder="e.g., FR, CN, DE"
               />
             </Grid>
-            
+
             <Grid item xs={12}>
               <Typography variant="subtitle1" gutterBottom>
                 Product Flags
@@ -461,7 +467,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
                   }
                   label="Trending"
                 />
-                
+
                 <FormControlLabel
                   control={
                     <Switch
@@ -473,7 +479,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
                   }
                   label="Best Seller"
                 />
-                
+
                 <FormControlLabel
                   control={
                     <Switch
@@ -515,7 +521,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
                 onChange={handleAttributeChange}
               />
             </Grid>
-            
+
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -528,7 +534,7 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
                 placeholder="keyword1, keyword2, keyword3"
               />
             </Grid>
-            
+
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -543,21 +549,21 @@ const ProductEditDialog = ({ open, onClose, product, onSave }) => {
           </Grid>
         </TabPanel>
       </DialogContent>
-      
-      <DialogActions sx={{ 
+
+      <DialogActions sx={{
         justifyContent: 'space-between',
         bgcolor: 'background.default',
-        p: 2
+        p: 2,
       }}>
-        <Button 
+        <Button
           onClick={onClose}
           startIcon={<CancelIcon />}
           color="inherit"
         >
           Cancel
         </Button>
-        
-        <Button 
+
+        <Button
           onClick={handleSave}
           variant="contained"
           color="primary"

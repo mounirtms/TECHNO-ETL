@@ -1,7 +1,7 @@
 /**
  * SQL Queries used in the application
  * These are stored as constants to avoid file system operations at runtime
- 
+
 
 -- sync-stock.sql
 
@@ -26,7 +26,7 @@ WITH DedupedSource AS (
         Source, -- Added the 'Source' column from the source table
         ROW_NUMBER() OVER (PARTITION BY Code_MDM, Code_Source ORDER BY DateDernierMaJ DESC) AS rn
     FROM [MDM_REPORT].[EComm].[ApprovisionnementProduits]
- 
+
 )
 MERGE [MDM_REPORT].[EComm].[StockChanges] AS Target
 USING (
@@ -52,7 +52,7 @@ WHEN NOT MATCHED BY TARGET THEN
 */
 
 export const SQL_QUERIES = {
-    PRICES: `
+  PRICES: `
         DECLARE @d1 AS DATE
         SET @d1 = DATEADD(DAY, -22, CAST(GETDATE() AS DATE));
 
@@ -156,7 +156,7 @@ export const SQL_QUERIES = {
             END
     `,
 
-    SYNC_STOCK: `
+  SYNC_STOCK: `
         WITH DedupedSource AS (
             SELECT
                 Code_MDM,
@@ -188,7 +188,7 @@ export const SQL_QUERIES = {
             VALUES (Source.Code_MDM, Source.QteStock, Source.DateDernierMaJ, Source.Code_Source,Source.Source, 1);
     `,
 
-    SYNC_SUCCESS: `
+  SYNC_SUCCESS: `
         UPDATE [MDM_REPORT].[EComm].[StockChanges]
         SET
             changed = 0,
@@ -197,7 +197,7 @@ export const SQL_QUERIES = {
             changed = 1 AND (@sourceCode IS NULL OR Code_Source = @sourceCode);
     `,
 
-    SELECT_STOCK_CHANGES: `
+  SELECT_STOCK_CHANGES: `
         SELECT TOP 1000 *
         FROM [MDM_REPORT].[EComm].[StockChanges]
         WHERE 
@@ -205,7 +205,7 @@ export const SQL_QUERIES = {
             AND (@sourceCode IS NULL OR Code_Source = @sourceCode)
         ORDER BY 
             DateDernierMaJ DESC;
-    `
+    `,
 };
 
 export default SQL_QUERIES;

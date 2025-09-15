@@ -1,9 +1,9 @@
 /**
  * Modern Suspense Wrapper Components
- * 
+ *
  * Enhanced Suspense components with React 18 features
  * Includes smart loading states, error handling, and performance optimizations
- * 
+ *
  * @author Techno-ETL Team
  * @version 2.0.0
  */
@@ -18,7 +18,7 @@ import React, {
   useDeferredValue,
   ReactNode,
   ComponentType,
-  lazy
+  lazy,
 } from 'react';
 import {
   Box,
@@ -29,7 +29,7 @@ import {
   Card,
   CardContent,
   Fade,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -106,44 +106,44 @@ const LinearLoader = ({ message }) => (
 const SkeletonLoader = ({ variant = 'card' }) => {
   const renderSkeleton = () => {
     switch (variant) {
-      case 'grid':
-        return (
-          <Box p={2}>
-            <Skeleton variant="rectangular" height={56} sx={{ mb: 2 }} />
-            <Box display="grid" gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={2}>
-              {Array.from({ length: 6 }).map((_, index) => (
-                <Skeleton key={index} variant="rectangular" height={120} />
-              ))}
-            </Box>
-          </Box>
-        );
-      
-      case 'list':
-        return (
-          <Box p={2}>
-            {Array.from({ length: 5 }).map((_, index) => (
-              <Box key={index} display="flex" alignItems="center" mb={2}>
-                <Skeleton variant="circular" width={40} height={40} />
-                <Box ml={2} flex={1}>
-                  <Skeleton variant="text" width="60%" />
-                  <Skeleton variant="text" width="40%" />
-                </Box>
-              </Box>
+    case 'grid':
+      return (
+        <Box p={2}>
+          <Skeleton variant="rectangular" height={56} sx={{ mb: 2 }} />
+          <Box display="grid" gridTemplateColumns="repeat(auto-fill, minmax(200px, 1fr))" gap={2}>
+            {Array.from({ length: 6 }).map((_, index) => (
+              <Skeleton key={index} variant="rectangular" height={120} />
             ))}
           </Box>
-        );
-      
-      default: // card
-        return (
-          <Card>
-            <CardContent>
-              <Skeleton variant="text" width="60%" height={32} />
-              <Skeleton variant="text" width="80%" />
-              <Skeleton variant="text" width="40%" />
-              <Skeleton variant="rectangular" height={200} sx={{ mt: 2 }} />
-            </CardContent>
-          </Card>
-        );
+        </Box>
+      );
+
+    case 'list':
+      return (
+        <Box p={2}>
+          {Array.from({ length: 5 }).map((_, index) => (
+            <Box key={index} display="flex" alignItems="center" mb={2}>
+              <Skeleton variant="circular" width={40} height={40} />
+              <Box ml={2} flex={1}>
+                <Skeleton variant="text" width="60%" />
+                <Skeleton variant="text" width="40%" />
+              </Box>
+            </Box>
+          ))}
+        </Box>
+      );
+
+    default: // card
+      return (
+        <Card>
+          <CardContent>
+            <Skeleton variant="text" width="60%" height={32} />
+            <Skeleton variant="text" width="80%" />
+            <Skeleton variant="text" width="40%" />
+            <Skeleton variant="rectangular" height={200} sx={{ mt: 2 }} />
+          </CardContent>
+        </Card>
+      );
     }
   };
 
@@ -173,7 +173,7 @@ export const EnhancedSuspense = ({
   timeout = 10000,
   onTimeout,
   showProgress = true,
-  progressVariant = 'circular'
+  progressVariant = 'circular',
 }) => {
   const [isDelayed, setIsDelayed] = useState(delay > 0);
   const [isTimedOut, setIsTimedOut] = useState(false);
@@ -210,12 +210,12 @@ export const EnhancedSuspense = ({
     if (!showProgress) return null;
 
     switch (progressVariant) {
-      case 'linear':
-        return <LinearLoader message="Loading component..." />;
-      case 'skeleton':
-        return <SkeletonLoader />;
-      default:
-        return <CircularLoader message="Loading..." />;
+    case 'linear':
+      return <LinearLoader message="Loading component..." />;
+    case 'skeleton':
+      return <SkeletonLoader />;
+    default:
+      return <CircularLoader message="Loading..." />;
     }
   }, [showProgress, progressVariant]);
 
@@ -292,6 +292,7 @@ export const LazyComponent = ({
     if (LazyComp) {
       return LazyComp;
     }
+
     return lazy(loader);
   }, [LazyComp, loader]);
 
@@ -311,7 +312,7 @@ export const LazyComponent = ({
  */
 export const ProgressiveLoader = ({
   stages,
-  onStageChange
+  onStageChange,
 }) => {
   const [currentStage, setCurrentStage] = useState(0);
   const [isPending, startTransition] = useTransition();
@@ -320,6 +321,7 @@ export const ProgressiveLoader = ({
     if (currentStage < stages.length - 1) {
       startTransition(() => {
         const nextStage = currentStage + 1;
+
         setCurrentStage(nextStage);
         onStageChange?.(nextStage);
       });
@@ -363,7 +365,7 @@ export const RetryableSuspense = ({
   fallback,
   maxRetries = 3,
   retryDelay = 1000,
-  onRetry
+  onRetry,
 }) => {
   const [retryCount, setRetryCount] = useState(0);
   const [key, setKey] = useState(0);
@@ -371,10 +373,11 @@ export const RetryableSuspense = ({
   const handleRetry = useCallback(() => {
     if (retryCount < maxRetries) {
       const newRetryCount = retryCount + 1;
+
       setRetryCount(newRetryCount);
       setKey(prev => prev + 1);
       onRetry?.(newRetryCount);
-      
+
       // Delay before retry
       setTimeout(() => {
         // Retry logic here
@@ -407,6 +410,7 @@ export class ComponentPreloader {
     if (!this.cache.has(key)) {
       this.cache.set(key, loader());
     }
+
     return this.cache.get(key);
   }
 
@@ -446,7 +450,7 @@ export const usePreloader = () => {
   return {
     preload,
     getPreloaded,
-    clearPreloaded
+    clearPreloaded,
   };
 };
 
@@ -458,7 +462,7 @@ export const usePreloader = () => {
  */
 export const useLazyComponent = (
   loader,
-  options = {}
+  options = {},
 ) => {
   const { preload = false, key } = options;
   const { preload: preloadFn, getPreloaded } = usePreloader();
@@ -467,6 +471,7 @@ export const useLazyComponent = (
     if (key && preload) {
       preloadFn(key, loader);
     }
+
     return lazy(loader);
   }, [loader, key, preload, preloadFn]);
 
