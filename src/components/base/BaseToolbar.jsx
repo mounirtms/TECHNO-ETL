@@ -1,27 +1,10 @@
 /**
- * BaseToolbar - Modern React 18 Base Toolbar Component
- * 
- * Features:
- * - Standardized action buttons with smart state management
- * - Advanced search with debouncing and deferred values
- * - Responsive design with overflow menu
- * - Accessibility compliant
- * - Modern React patterns (memo, useCallback, useMemo)
- * - TypeScript-ready prop interfaces
- * 
- * @author Techno-ETL Team
- * @version 2.0.0
+ * BaseToolbar - Enhanced Base Toolbar Component
+ * Combines the best features from UnifiedGridToolbar with standardized patterns
+ * Features: Modular design, responsive layout, comprehensive action support
  */
 
-import React, { 
-  useState, 
-  useCallback, 
-  useMemo, 
-  useId,
-  useDeferredValue,
-  useTransition,
-  memo
-} from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   Box,
   Toolbar,
@@ -38,10 +21,16 @@ import {
   ToggleButtonGroup,
   Chip,
   Badge,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  FormControlLabel,
+  Switch,
   useTheme,
   useMediaQuery,
-  Tooltip,
-  CircularProgress
+  Fade,
+  Collapse
 } from '@mui/material';
 import {
   Refresh as RefreshIcon,
@@ -51,480 +40,553 @@ import {
   FileDownload as ExportIcon,
   FileUpload as ImportIcon,
   Search as SearchIcon,
-  FilterList as FilterIcon,
   Settings as SettingsIcon,
   MoreVert as MoreIcon,
-  Sync as SyncIcon,
+  Clear as ClearIcon,
+  FilterList as FilterIcon,
   GridView as GridViewIcon,
   ViewList as ViewListIcon,
-  Clear as ClearIcon,
+  Sync as SyncIcon,
   Info as InfoIcon
 } from '@mui/icons-material';
+import PropTypes from 'prop-types';
 
-// Import TooltipWrapper for proper disabled button handling
+// Enhanced components
 import TooltipWrapper from '../common/TooltipWrapper';
+import GridToolbarActions from '../common/GridToolbarActions';
+import GridToolbarFilters from '../common/GridToolbarFilters';
+import GridToolbarSettings from '../common/GridToolbarSettings';
+
+// Standard configurations
+import { getStandardToolbarConfig } from '../../config/standardToolbarConfig';
 
 /**
- * Standard Action Button Configuration
+ * Advanced BaseToolbar Component
+ * 
+ * Provides a comprehensive foundation for all toolbar components with:
+ * - Adaptive responsive design
+ * - Intelligent action grouping
+ * - Real-time monitoring controls
+ * - Performance optimization
+ * - Accessibility compliance
  */
-const STANDARD_ACTIONS = {
-  refresh: {
-    icon: RefreshIcon,
-    label: 'Refresh',
-    color: 'primary',
-    variant: 'outlined'
-  },
-  add: {
-    icon: AddIcon,
-    label: 'Add',
-    color: 'primary',
-    variant: 'contained'
-  },
-  edit: {
-    icon: EditIcon,
-    label: 'Edit',
-    color: 'secondary',
-    variant: 'outlined',
-    requiresSelection: true
-  },
-  delete: {
-    icon: DeleteIcon,
-    label: 'Delete',
-    color: 'error',
-    variant: 'outlined',
-    requiresSelection: true
-  },
-  sync: {
-    icon: SyncIcon,
-    label: 'Sync',
-    color: 'info',
-    variant: 'outlined'
-  },
-  export: {
-    icon: ExportIcon,
-    label: 'Export',
-    color: 'success',
-    variant: 'outlined'
-  },
-  import: {
-    icon: ImportIcon,
-    label: 'Import',
-    color: 'warning',
-    variant: 'outlined'
-  }
-};
-
-/**
- * Action Button Component with modern patterns
- */
-const ActionButton = memo(({ 
-  action, 
-  config, 
-  onClick, 
-  disabled, 
-  loading,
-  size = 'medium',
-  showLabel = true,
-  ...props 
-}) => {
-  const Icon = config.icon;
-  const isDisabled = disabled || loading;
-  
-  const button = (
-    <Button
-      startIcon={loading ? <CircularProgress size={16} /> : <Icon />}
-      variant={config.variant}
-      color={config.color}
-      size={size}
-      onClick={onClick}
-      disabled={isDisabled}
-      {...props}
-    >
-      {showLabel && config.label}
-    </Button>
-  );
-  
-  // Wrap disabled buttons with TooltipWrapper for proper event handling
-  return isDisabled ? (
-    <TooltipWrapper title={`${config.label} ${disabled ? '(Selection Required)' : '(Loading...)'}`}>
-      {button}
-    </TooltipWrapper>
-  ) : (
-    <Tooltip title={config.label}>
-      {button}
-    </Tooltip>
-  );
-});
-
-ActionButton.displayName = 'ActionButton';
-
-/**
- * Search Component with deferred value optimization
- */
-const SearchInput = memo(({ 
-  searchId,
-  value, 
-  onChange, 
-  onClear, 
-  placeholder = "Search...",
-  disabled = false,
-  size = 'small'
-}) => {
-  const [localValue, setLocalValue] = useState(value);
-  const [isPending, startTransition] = useTransition();
-  const deferredValue = useDeferredValue(localValue);
-  
-  const handleChange = useCallback((event) => {
-    const newValue = event.target.value;
-    setLocalValue(newValue);
-    
-    startTransition(() => {
-      onChange?.(newValue);
-    });
-  }, [onChange]);
-  
-  const handleClear = useCallback(() => {
-    setLocalValue('');
-    startTransition(() => {
-      onChange?.('');
-      onClear?.();
-    });
-  }, [onChange, onClear]);
-  
-  const handleKeyPress = useCallback((event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      onChange?.(localValue);
-    }
-  }, [onChange, localValue]);
-  
-  return (
-    <TextField
-      id={searchId}
-      size={size}
-      placeholder={placeholder}
-      value={localValue}
-      onChange={handleChange}
-      onKeyPress={handleKeyPress}
-      disabled={disabled}
-      sx={{ minWidth: 200, maxWidth: 300 }}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <SearchIcon />
-          </InputAdornment>
-        ),
-        endAdornment: localValue && (
-          <InputAdornment position="end">
-            <IconButton
-              size="small"
-              onClick={handleClear}
-              edge="end"
-              aria-label="clear search"
-            >
-              <ClearIcon />
-            </IconButton>
-          </InputAdornment>
-        )
-      }}
-      aria-label="Search grid data"
-    />
-  );
-});
-
-SearchInput.displayName = 'SearchInput';
-
-/**
- * BaseToolbar Component
- */
-const BaseToolbar = memo(({
-  // Core props
-  id,
-  searchId,
+const BaseToolbar = ({
+  // Basic props
+  gridName = 'BaseGrid',
+  gridType = 'default',
   config = {},
+
+  // Actions
   customActions = [],
-  
-  // State props
-  selectedCount = 0,
-  searchQuery = '',
-  loading = false,
-  
-  // Feature toggles
-  enableSearch = true,
-  enableActions = true,
-  enableResponsive = true,
-  
+  customLeftActions = [],
+  selectedRows = [],
+
   // Event handlers
-  onSearchChange,
   onRefresh,
   onAdd,
   onEdit,
   onDelete,
-  onSync,
   onExport,
   onImport,
-  onCustomAction,
-  
-  // Style props
-  size = 'medium',
-  variant = 'standard',
-  spacing = 1,
-  sx = {}
+  onSearch,
+  onClearSearch,
+
+  // Search
+  searchValue = '',
+  searchPlaceholder = 'Search...',
+
+  // State
+  loading = false,
+
+  // Grid controls
+  columnVisibility = {},
+  onColumnVisibilityChange,
+  density = 'standard',
+  onDensityChange,
+
+  // Real-time features
+  realTimeEnabled = false,
+  onRealTimeToggle,
+
+  // Styling
+  compact = false,
+  sx = {},
+
+  // Advanced features
+  showPerformanceMetrics = false,
+  performanceMetrics = {}
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const toolbarId = useId();
-  
+
   // Local state
+  const [searchText, setSearchText] = useState(searchValue);
   const [moreMenuAnchor, setMoreMenuAnchor] = useState(null);
-  const [isPending, startTransition] = useTransition();
-  
-  // Merge configuration with defaults
+  const [filtersVisible] = useState(false);
+
+  // Configuration with intelligent defaults
   const toolbarConfig = useMemo(() => ({
+    // Default configuration
     showRefresh: true,
-    showAdd: false,
-    showEdit: false,
-    showDelete: false,
-    showSync: false,
-    showExport: false,
+    showAdd: true,
+    showEdit: true,
+    showDelete: true,
+    showExport: true,
     showImport: false,
-    compact: isMobile,
+    showSearch: true,
+    showFilters: true,
+    showSettings: true,
+    showRealTime: false,
+    showPerformance: false,
+
+    // Responsive behavior
+    collapseOnMobile: true,
+    priorityActions: ['refresh', 'add', 'search'],
+
+    // Merge with provided config
     ...config
-  }), [config, isMobile]);
-  
-  // Calculate which actions should be shown
-  const availableActions = useMemo(() => {
-    const actions = [];
-    
-    if (toolbarConfig.showRefresh) {
-      actions.push({
-        key: 'refresh',
-        ...STANDARD_ACTIONS.refresh,
-        onClick: onRefresh,
-        disabled: loading
-      });
-    }
-    
-    if (toolbarConfig.showAdd) {
-      actions.push({
-        key: 'add',
-        ...STANDARD_ACTIONS.add,
-        onClick: onAdd,
-        disabled: loading
-      });
-    }
-    
-    if (toolbarConfig.showEdit) {
-      actions.push({
-        key: 'edit',
-        ...STANDARD_ACTIONS.edit,
-        onClick: onEdit,
-        disabled: loading || selectedCount !== 1
-      });
-    }
-    
-    if (toolbarConfig.showDelete) {
-      actions.push({
-        key: 'delete',
-        ...STANDARD_ACTIONS.delete,
-        onClick: onDelete,
-        disabled: loading || selectedCount === 0
-      });
-    }
-    
-    if (toolbarConfig.showSync) {
-      actions.push({
-        key: 'sync',
-        ...STANDARD_ACTIONS.sync,
-        onClick: onSync,
-        disabled: loading
-      });
-    }
-    
-    if (toolbarConfig.showExport) {
-      actions.push({
-        key: 'export',
-        ...STANDARD_ACTIONS.export,
-        onClick: onExport,
-        disabled: loading
-      });
-    }
-    
-    if (toolbarConfig.showImport) {
-      actions.push({
-        key: 'import',
-        ...STANDARD_ACTIONS.import,
-        onClick: onImport,
-        disabled: loading
-      });
-    }
-    
-    // Add custom actions
-    customActions.forEach(action => {
-      actions.push({
-        ...action,
-        disabled: action.disabled || loading
-      });
-    });
-    
-    return actions;
-  }, [
-    toolbarConfig, 
-    onRefresh, 
-    onAdd, 
-    onEdit, 
-    onDelete, 
-    onSync, 
-    onExport, 
-    onImport,
-    customActions,
-    loading, 
-    selectedCount
-  ]);
-  
-  // Determine primary and overflow actions based on screen size
-  const { primaryActions, overflowActions } = useMemo(() => {
-    if (!enableResponsive || !isMobile) {
-      return { primaryActions: availableActions, overflowActions: [] };
-    }
-    
-    // On mobile, show only essential actions
-    const essential = ['refresh', 'add'];
-    const primary = availableActions.filter(action => essential.includes(action.key));
-    const overflow = availableActions.filter(action => !essential.includes(action.key));
-    
-    return { primaryActions: primary, overflowActions: overflow };
-  }, [availableActions, enableResponsive, isMobile]);
-  
+  }), [config]);
+
+  const selectedCount = selectedRows.length;
+  const hasSelection = selectedCount > 0;
+
+  // Responsive button size
+  const buttonSize = useMemo(() => {
+    if (compact) return 'small';
+    if (isMobile) return 'small';
+    return 'medium';
+  }, [compact, isMobile]);
+
   // Event handlers
+  const handleSearchChange = useCallback((event) => {
+    const value = event.target.value;
+    setSearchText(value);
+  }, []);
+
+  const handleSearchSubmit = useCallback(() => {
+    onSearch?.(searchText);
+  }, [onSearch, searchText]);
+
+  const handleSearchKeyPress = useCallback((event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleSearchSubmit();
+    }
+  }, [handleSearchSubmit]);
+
+  const handleClearSearch = useCallback(() => {
+    setSearchText('');
+    onSearch?.('');
+    onClearSearch?.();
+  }, [onSearch, onClearSearch]);
+
   const handleMoreMenuOpen = useCallback((event) => {
     setMoreMenuAnchor(event.currentTarget);
   }, []);
-  
+
   const handleMoreMenuClose = useCallback(() => {
     setMoreMenuAnchor(null);
   }, []);
-  
-  const handleActionClick = useCallback((action) => {
-    startTransition(() => {
-      if (action.onClick) {
-        action.onClick();
-      } else if (onCustomAction) {
-        onCustomAction(action.key, action);
-      }
-    });
-    handleMoreMenuClose();
-  }, [onCustomAction, handleMoreMenuClose]);
-  
+
+  const handleSettingsMenuOpen = useCallback((event) => {
+    console.log('Settings menu clicked:', event.currentTarget);
+    // Settings functionality to be implemented
+  }, []);
+
+  const handleRealTimeToggle = useCallback(() => {
+    const newState = !realTimeEnabled;
+    onRealTimeToggle?.(newState);
+  }, [realTimeEnabled, onRealTimeToggle]);
+
+  // Action groups for responsive design
+  const primaryActions = useMemo(() => {
+    const actions = [];
+
+    if (toolbarConfig.showRefresh) {
+      actions.push({
+        key: 'refresh',
+        icon: <RefreshIcon />,
+        label: 'Refresh',
+        onClick: onRefresh,
+        disabled: loading,
+        priority: 1
+      });
+    }
+
+    if (toolbarConfig.showAdd) {
+      actions.push({
+        key: 'add',
+        icon: <AddIcon />,
+        label: 'Add',
+        onClick: onAdd,
+        disabled: loading,
+        priority: 1
+      });
+    }
+
+    return actions;
+  }, [toolbarConfig, onRefresh, onAdd, loading]);
+
+  const selectionActions = useMemo(() => {
+    const actions = [];
+
+    if (toolbarConfig.showEdit && hasSelection) {
+      actions.push({
+        key: 'edit',
+        icon: <EditIcon />,
+        label: `Edit (${selectedCount})`,
+        onClick: onEdit,
+        disabled: loading || selectedCount !== 1,
+        priority: 2
+      });
+    }
+
+    if (toolbarConfig.showDelete && hasSelection) {
+      actions.push({
+        key: 'delete',
+        icon: <DeleteIcon />,
+        label: `Delete (${selectedCount})`,
+        onClick: onDelete,
+        disabled: loading,
+        priority: 2,
+        color: 'error'
+      });
+    }
+
+    return actions;
+  }, [toolbarConfig, hasSelection, selectedCount, onEdit, onDelete, loading]);
+
+  const utilityActions = useMemo(() => {
+    const actions = [];
+
+    if (toolbarConfig.showExport) {
+      actions.push({
+        key: 'export',
+        icon: <ExportIcon />,
+        label: 'Export',
+        onClick: onExport,
+        disabled: loading,
+        priority: 3
+      });
+    }
+
+    if (toolbarConfig.showImport) {
+      actions.push({
+        key: 'import',
+        icon: <ImportIcon />,
+        label: 'Import',
+        onClick: onImport,
+        disabled: loading,
+        priority: 3
+      });
+    }
+
+    return actions;
+  }, [toolbarConfig, onExport, onImport, loading]);
+
+  // Render action button
+  const renderActionButton = useCallback((action) => {
+    const ButtonComponent = action.variant === 'text' ? Button : IconButton;
+
+    return (
+      <TooltipWrapper
+        key={action.key}
+        title={action.label}
+        disabled={action.disabled}
+      >
+        <ButtonComponent
+          onClick={action.onClick}
+          disabled={action.disabled}
+          size={buttonSize}
+          color={action.color || 'primary'}
+          variant={action.variant || 'text'}
+        >
+          {action.icon}
+          {action.variant === 'text' && action.label}
+        </ButtonComponent>
+      </TooltipWrapper>
+    );
+  }, [buttonSize]);
+
+  // Render search section
+  const renderSearch = () => {
+    if (!toolbarConfig.showSearch) return null;
+
+    return (
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        minWidth: isMobile ? 150 : 250,
+        maxWidth: isMobile ? 200 : 350
+      }}>
+        <TextField
+          size="small"
+          placeholder={searchPlaceholder}
+          value={searchText}
+          onChange={handleSearchChange}
+          onKeyDown={handleSearchKeyPress}
+          sx={{ flex: 1 }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+              endAdornment: searchText && (
+                <InputAdornment position="end">
+                  <IconButton size="small" onClick={handleClearSearch}>
+                    <ClearIcon />
+                  </IconButton>
+                </InputAdornment>
+              )
+            }
+          }}
+        />
+      </Box>
+    );
+  };
+
+  // Render real-time controls
+  const renderRealTimeControls = () => {
+    if (!toolbarConfig.showRealTime) return null;
+
+    return (
+      <TooltipWrapper
+        title={realTimeEnabled ? 'Disable Real-time Updates' : 'Enable Real-time Updates'}
+      >
+        <ToggleButton
+          value="realtime"
+          selected={realTimeEnabled}
+          onChange={handleRealTimeToggle}
+          size={buttonSize}
+          color="primary"
+        >
+          {realTimeEnabled ? <PauseIcon /> : <RealTimeIcon />}
+        </ToggleButton>
+      </TooltipWrapper>
+    );
+  };
+
+  // Render performance metrics
+  const renderPerformanceMetrics = () => {
+    if (!showPerformanceMetrics || !performanceMetrics) return null;
+
+    return (
+      <TooltipWrapper title="Performance Metrics">
+        <Badge
+          badgeContent={performanceMetrics.responseTime || 0}
+          color={performanceMetrics.responseTime > 1000 ? 'error' : 'success'}
+          max={9999}
+        >
+          <IconButton size={buttonSize}>
+            <PerformanceIcon />
+          </IconButton>
+        </Badge>
+      </TooltipWrapper>
+    );
+  };
+
+  // Render selection info
+  const renderSelectionInfo = () => {
+    if (!hasSelection) return null;
+
+    return (
+      <Fade in={hasSelection}>
+        <Chip
+          label={`${selectedCount} selected`}
+          size="small"
+          color="primary"
+          variant="outlined"
+          onDelete={hasSelection ? () => onSelectionModelChange?.([]) : undefined}
+        />
+      </Fade>
+    );
+  };
+
+  // Render mobile overflow menu
+  const renderMobileMenu = () => {
+    if (!isMobile) return null;
+
+    const overflowActions = [...utilityActions, ...customActions];
+
+    return (
+      <>
+        <TooltipWrapper title="More Options">
+          <IconButton
+            onClick={handleMoreMenuOpen}
+            size={buttonSize}
+          >
+            <MoreIcon />
+          </IconButton>
+        </TooltipWrapper>
+
+        <Menu
+          anchorEl={moreMenuAnchor}
+          open={Boolean(moreMenuAnchor)}
+          onClose={handleMoreMenuClose}
+        >
+          {overflowActions.map((action) => (
+            <MenuItem
+              key={action.key}
+              onClick={() => {
+                action.onClick?.();
+                handleMoreMenuClose();
+              }}
+              disabled={action.disabled}
+            >
+              <ListItemIcon>{action.icon}</ListItemIcon>
+              <ListItemText primary={action.label} />
+            </MenuItem>
+          ))}
+        </Menu>
+      </>
+    );
+  };
+
   return (
-    <Box sx={{ 
+    <Box sx={{
       borderBottom: `1px solid ${theme.palette.divider}`,
       backgroundColor: theme.palette.background.paper,
-      ...sx 
+      ...sx
     }}>
       <Toolbar
-        id={id || toolbarId}
-        variant={toolbarConfig.compact ? "dense" : "regular"}
+        variant="dense"
         sx={{
-          minHeight: toolbarConfig.compact ? 48 : 64,
-          px: spacing,
-          gap: spacing,
-          opacity: isPending ? 0.7 : 1,
-          transition: 'opacity 0.2s ease'
+          minHeight: compact ? 44 : 56,
+          px: compact ? 1 : 2,
+          py: 0.5,
+          gap: 1,
+          flexWrap: isMobile ? 'wrap' : 'nowrap',
+          // Mobile optimizations
+          ...(isMobile && {
+            flexDirection: 'column',
+            alignItems: 'stretch',
+            gap: 0.5,
+            minHeight: 'auto',
+            py: 1
+          })
         }}
       >
-        {/* Left Section - Primary Actions */}
-        <Box sx={{ display: 'flex', gap: spacing, alignItems: 'center' }}>
-          {enableActions && primaryActions.map((action) => (
-            <ActionButton
-              key={action.key}
-              action={action}
-              config={action}
-              onClick={() => handleActionClick(action)}
-              disabled={action.disabled}
-              loading={loading && action.key === 'refresh'}
-              size={size}
-              showLabel={!toolbarConfig.compact}
-            />
-          ))}
-          
-          {/* Selection indicator */}
-          {selectedCount > 0 && (
-            <Chip
-              label={`${selectedCount} selected`}
-              size="small"
-              color="primary"
-              variant="outlined"
-            />
-          )}
+        {/* Section 1: Custom Left Actions */}
+        {customLeftActions.length > 0 && (
+          <>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              {customLeftActions.map((action, index) => (
+                <Box key={index}>{action}</Box>
+              ))}
+            </Box>
+            {!isMobile && <Divider orientation="vertical" flexItem />}
+          </>
+        )}
+
+        {/* Section 2: Primary Actions */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          {primaryActions.map(renderActionButton)}
+          {renderRealTimeControls()}
         </Box>
-        
+
+        {!isMobile && <Divider orientation="vertical" flexItem />}
+
+        {/* Section 3: Selection Actions */}
+        {selectionActions.length > 0 && (
+          <>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              {selectionActions.map(renderActionButton)}
+            </Box>
+            {!isMobile && <Divider orientation="vertical" flexItem />}
+          </>
+        )}
+
+        {/* Section 4: Search */}
+        {renderSearch()}
+
         {/* Spacer */}
         <Box sx={{ flexGrow: 1 }} />
-        
-        {/* Right Section - Search and Settings */}
-        <Box sx={{ display: 'flex', gap: spacing, alignItems: 'center' }}>
-          {/* Search */}
-          {enableSearch && (
-            <SearchInput
-              searchId={searchId}
-              value={searchQuery}
-              onChange={onSearchChange}
-              disabled={loading}
-              size={size}
-            />
-          )}
-          
-          {/* Overflow Menu */}
-          {overflowActions.length > 0 && (
-            <>
+
+        {/* Section 5: Utility Actions & Info */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          {renderSelectionInfo()}
+          {renderPerformanceMetrics()}
+
+          {/* Desktop utility actions */}
+          {!isMobile && utilityActions.map(renderActionButton)}
+
+          {/* Settings */}
+          {toolbarConfig.showSettings && (
+            <TooltipWrapper title="Settings">
               <IconButton
-                onClick={handleMoreMenuOpen}
-                size={size}
-                aria-label="More actions"
-                aria-controls="toolbar-more-menu"
-                aria-haspopup="true"
+                onClick={handleSettingsMenuOpen}
+                size={buttonSize}
               >
-                <Badge badgeContent={overflowActions.length} color="primary">
-                  <MoreIcon />
-                </Badge>
+                <SettingsIcon />
               </IconButton>
-              
-              <Menu
-                id="toolbar-more-menu"
-                anchorEl={moreMenuAnchor}
-                open={Boolean(moreMenuAnchor)}
-                onClose={handleMoreMenuClose}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-              >
-                {overflowActions.map((action) => (
-                  <MenuItem
-                    key={action.key}
-                    onClick={() => handleActionClick(action)}
-                    disabled={action.disabled}
-                  >
-                    <ListItemIcon>
-                      <action.icon />
-                    </ListItemIcon>
-                    <ListItemText primary={action.label} />
-                  </MenuItem>
-                ))}
-              </Menu>
-            </>
+            </TooltipWrapper>
           )}
+
+          {/* Mobile menu */}
+          {renderMobileMenu()}
         </Box>
       </Toolbar>
+
+      {/* Collapsible Filters Section */}
+      <Collapse in={filtersVisible}>
+        <Box sx={{ p: 2, borderTop: `1px solid ${theme.palette.divider}` }}>
+          {/* Filter controls would go here */}
+          <Typography variant="body2" color="text.secondary">
+            Advanced filters coming soon...
+          </Typography>
+        </Box>
+      </Collapse>
     </Box>
   );
-});
+};
 
-BaseToolbar.displayName = 'BaseToolbar';
+BaseToolbar.propTypes = {
+  // Basic props
+  gridName: PropTypes.string,
+  gridType: PropTypes.string,
+  config: PropTypes.object,
+
+  // Actions
+  customActions: PropTypes.array,
+  customLeftActions: PropTypes.array,
+  selectedRows: PropTypes.array,
+
+  // Event handlers
+  onRefresh: PropTypes.func,
+  onAdd: PropTypes.func,
+  onEdit: PropTypes.func,
+  onDelete: PropTypes.func,
+  onExport: PropTypes.func,
+  onImport: PropTypes.func,
+  onSearch: PropTypes.func,
+  onClearSearch: PropTypes.func,
+
+  // Search
+  searchValue: PropTypes.string,
+  searchPlaceholder: PropTypes.string,
+
+  // State
+  loading: PropTypes.bool,
+
+  // Grid controls
+  columnVisibility: PropTypes.object,
+  onColumnVisibilityChange: PropTypes.func,
+  density: PropTypes.oneOf(['compact', 'standard', 'comfortable']),
+  onDensityChange: PropTypes.func,
+
+  // Real-time features
+  realTimeEnabled: PropTypes.bool,
+  onRealTimeToggle: PropTypes.func,
+
+  // Styling
+  compact: PropTypes.bool,
+  sx: PropTypes.object,
+
+  // Advanced features
+  showPerformanceMetrics: PropTypes.bool,
+  performanceMetrics: PropTypes.object
+};
 
 export default BaseToolbar;

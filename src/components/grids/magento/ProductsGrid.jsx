@@ -638,29 +638,20 @@ const ProductsGrid = () => {
   return (
     <>
       <UnifiedGrid
-        {...getStandardGridProps('magentoProducts', {
-          gridName: "MagentoProductsGrid",
-          columns,
+        sx={{
+          height: '100%',
+          width: '100%',
+          minHeight: 400
+        }}
+        {...getStandardGridProps({
+          gridName: 'magento-products',
+          columns: enhancedColumns,
           data,
           loading,
-          totalCount: stats.total,
-
-          // Pagination configuration
-          paginationMode: "server",
           paginationModel,
-          onPaginationModelChange: handlePaginationChange,
-          defaultPageSize: 25,
-
-          // Event handlers
+          onPaginationModelChange: setPaginationModel,
           onRefresh: fetchProducts,
-          onRowDoubleClick: handleRowDoubleClick,
-          onAdd: handleAdd,
-          onEdit: handleEdit,
-          onDelete: handleDelete,
-          onSync: handleSync,
-          onExport: handleExport,
-
-          // Configuration
+          stats,
           toolbarConfig: {
             ...getStandardToolbarConfig('magentoProducts'),
             filters: [
@@ -702,12 +693,8 @@ const ProductsGrid = () => {
           },
           customActions,
           contextMenuActions,
-
-          // Stats
           showStatsCards: true,
           gridCards,
-
-          // Grid props
           getRowId: (row) => row.sku
         })}
       />

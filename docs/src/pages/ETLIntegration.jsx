@@ -1,15 +1,15 @@
 import React from 'react';
-import { 
-  Container, 
-  Typography, 
-  Box, 
-  Paper, 
-  Divider, 
-  Grid, 
-  List, 
-  ListItem, 
+import {
+  Container,
+  Typography,
+  Box,
+  Paper,
+  Divider,
+  Grid,
+  List,
+  ListItem,
   ListItemText,
-  styled 
+  styled,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -64,7 +64,7 @@ const CodeBlock = ({ language, children }) => (
 
 const ETLIntegration = () => {
   const youtubeVideoIds = [
-    'RZhbcneTa-c',  
+    'RZhbcneTa-c',
     '4EwdVm3Enrs',
     'TQplf-9jvgk',
     '9AQnNSahpNg',
@@ -80,7 +80,7 @@ const ETLIntegration = () => {
         Seamlessly synchronize inventory and pricing between your MDM and Magento, ensuring data accuracy and efficiency.
       </CoolSubtitle>
       <Divider sx={{ my: 4, borderColor: 'rgba(0, 0, 0, 0.1)' }} />
-      
+
       {/* System Architecture Diagram */}
       <Box sx={{ my: 2 }}>
         <img
@@ -98,33 +98,33 @@ const ETLIntegration = () => {
         <Typography variant="body1" paragraph>
           Our ETL integration system provides a robust pipeline for synchronizing product data between the Master Data Management (MDM) system and Magento e-commerce platform. The system handles both inventory levels and pricing information with automated nightly syncs and on-demand manual updates.
         </Typography>
-        
+
         <CoolTitle variant="h4" sx={{ mt: 3, mb: 1 }}>
           Key Features ✨
         </CoolTitle>
         <List>
           <CoolListItem>
-            <ListItemText 
-              primary="• Bi-directional data synchronization" 
-              secondary="Supports both MDM → Magento and Magento → MDM flows" 
+            <ListItemText
+              primary="• Bi-directional data synchronization"
+              secondary="Supports both MDM → Magento and Magento → MDM flows"
             />
           </CoolListItem>
           <CoolListItem>
-            <ListItemText 
-              primary="• Multi-source inventory management" 
-              secondary="Handles complex inventory across multiple warehouses" 
+            <ListItemText
+              primary="• Multi-source inventory management"
+              secondary="Handles complex inventory across multiple warehouses"
             />
           </CoolListItem>
           <CoolListItem>
-            <ListItemText 
-              primary="• Price tier synchronization" 
-              secondary="Supports customer group specific pricing" 
+            <ListItemText
+              primary="• Price tier synchronization"
+              secondary="Supports customer group specific pricing"
             />
           </CoolListItem>
           <CoolListItem>
-            <ListItemText 
-              primary="• Conflict resolution" 
-              secondary="Automated handling of data discrepancies" 
+            <ListItemText
+              primary="• Conflict resolution"
+              secondary="Automated handling of data discrepancies"
             />
           </CoolListItem>
         </List>
@@ -259,21 +259,21 @@ router.post('/api/inventory/sync-manual', [
         </CoolTitle>
         <List>
           <CoolListItem>
-            <ListItemText 
-              primary="• Batch Processing" 
-              secondary="Processes 250 items per batch with 1.5s delay between batches" 
+            <ListItemText
+              primary="• Batch Processing"
+              secondary="Processes 250 items per batch with 1.5s delay between batches"
             />
           </CoolListItem>
           <CoolListItem>
-            <ListItemText 
-              primary="• Change Detection" 
-              secondary="Only syncs items changed in last 24 hours (configurable)" 
+            <ListItemText
+              primary="• Change Detection"
+              secondary="Only syncs items changed in last 24 hours (configurable)"
             />
           </CoolListItem>
           <CoolListItem>
-            <ListItemText 
-              primary="• Error Handling" 
-              secondary="3 automatic retries with exponential backoff" 
+            <ListItemText
+              primary="• Error Handling"
+              secondary="3 automatic retries with exponential backoff"
             />
           </CoolListItem>
         </List>
@@ -377,21 +377,21 @@ router.post('/api/prices/update', [
         </CoolTitle>
         <List>
           <CoolListItem>
-            <ListItemText 
-              primary="• Tier Pricing Support" 
-              secondary="Handles customer group specific pricing" 
+            <ListItemText
+              primary="• Tier Pricing Support"
+              secondary="Handles customer group specific pricing"
             />
           </CoolListItem>
           <CoolListItem>
-            <ListItemText 
-              primary="• Special Price Handling" 
-              secondary="Manages sale prices and promotions" 
+            <ListItemText
+              primary="• Special Price Handling"
+              secondary="Manages sale prices and promotions"
             />
           </CoolListItem>
           <CoolListItem>
-            <ListItemText 
-              primary="• Currency Conversion" 
-              secondary="Automatic conversion for international stores" 
+            <ListItemText
+              primary="• Currency Conversion"
+              secondary="Automatic conversion for international stores"
             />
           </CoolListItem>
         </List>
@@ -472,21 +472,21 @@ alert_rules:
         </CoolTitle>
         <List>
           <CoolListItem>
-            <ListItemText 
-              primary="• Technical Architecture Overview" 
-              secondary={<a href="/docs/architecture">/docs/architecture</a>} 
+            <ListItemText
+              primary="• Technical Architecture Overview"
+              secondary={<a href="/docs/architecture">/docs/architecture</a>}
             />
           </CoolListItem>
           <CoolListItem>
-            <ListItemText 
-              primary="• API Reference Guide" 
-              secondary={<a href="/docs/api">/docs/api</a>} 
+            <ListItemText
+              primary="• API Reference Guide"
+              secondary={<a href="/docs/api">/docs/api</a>}
             />
           </CoolListItem>
           <CoolListItem>
-            <ListItemText 
-              primary="• Troubleshooting Handbook" 
-              secondary={<a href="/docs/troubleshooting">/docs/troubleshooting</a>} 
+            <ListItemText
+              primary="• Troubleshooting Handbook"
+              secondary={<a href="/docs/troubleshooting">/docs/troubleshooting</a>}
             />
           </CoolListItem>
         </List>
@@ -496,17 +496,17 @@ alert_rules:
         </CoolTitle>
         <YouTubeContainer>
           {youtubeVideoIds.map((videoId) => (
-            <YouTube 
-              key={videoId} 
-              videoId={videoId} 
-              opts={{ 
-                width: '100%', 
+            <YouTube
+              key={videoId}
+              videoId={videoId}
+              opts={{
+                width: '100%',
                 height: '200',
                 playerVars: {
                   modestbranding: 1,
-                  rel: 0
-                }
-              }} 
+                  rel: 0,
+                },
+              }}
             />
           ))}
         </YouTubeContainer>

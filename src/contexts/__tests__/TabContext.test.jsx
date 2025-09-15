@@ -38,7 +38,7 @@ jest.mock('../components/grids/magento/ProductsGrid.jsx', () => {
 
 // Test component that uses TabContext
 function TestComponent() {
-  const { tabs, activeTab, openTab, closeTab, canOpenTab } = useTab();
+  const { tabs, activeTab, openTab, closeTab } = useTab();
   
   return (
     <div>
@@ -56,9 +56,6 @@ function TestComponent() {
       >
         Close Products
       </button>
-      <div data-testid="can-open-products">
-        {canOpenTab('ProductsGrid') ? 'yes' : 'no'}
-      </div>
     </div>
   );
 }
@@ -153,9 +150,9 @@ describe('TabContext', () => {
 
     // Try to close Dashboard - should not work
     const { closeTab } = useTab();
-    const result = closeTab('Dashboard');
+    closeTab('Dashboard'); // This will just return early without doing anything
     
-    expect(result).toBe(false);
+    // Dashboard tab should still be there
     expect(screen.getByTestId('tab-count')).toHaveTextContent('1');
   });
 

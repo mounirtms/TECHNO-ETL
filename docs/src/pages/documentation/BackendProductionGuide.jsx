@@ -23,7 +23,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Divider
+  Divider,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import {
@@ -37,7 +37,7 @@ import {
   Rocket as RocketIcon,
   Settings as SettingsIcon,
   Storage as DatabaseIcon,
-  Security as SecurityIcon
+  Security as SecurityIcon,
 } from '@mui/icons-material';
 
 const BackendProductionGuide = () => {
@@ -45,12 +45,12 @@ const BackendProductionGuide = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const handlePanelChange = (panel) => (event, isExpanded) => {
@@ -62,32 +62,32 @@ const BackendProductionGuide = () => {
       issue: 'NODE_ENV showing "development"',
       before: 'Server running in development mode',
       after: 'Proper production environment configuration',
-      status: 'fixed'
+      status: 'fixed',
     },
     {
       issue: 'Redis URL not set warnings',
       before: 'Constant Redis warnings in logs',
       after: 'Proper Redis configuration with fallback',
-      status: 'fixed'
+      status: 'fixed',
     },
     {
       issue: 'Multiple confusing build systems',
       before: 'webpack, dist/, dist_prod/, multiple scripts',
       after: 'Single unified build in backend/dist/',
-      status: 'fixed'
+      status: 'fixed',
     },
     {
       issue: 'Manual deployment steps',
       before: 'Multiple manual commands required',
       after: 'Single command deployment',
-      status: 'fixed'
+      status: 'fixed',
     },
     {
       issue: 'Missing cron job system',
       before: 'No automated ETL processes',
       after: 'Professional cron job automation',
-      status: 'fixed'
-    }
+      status: 'fixed',
+    },
   ];
 
   const cronJobs = [
@@ -96,55 +96,55 @@ const BackendProductionGuide = () => {
       schedule: '0 */6 * * *',
       description: 'Synchronizes prices from MDM to Magento',
       frequency: 'Every 6 hours',
-      purpose: 'Keep product prices up to date'
+      purpose: 'Keep product prices up to date',
     },
     {
       name: 'Stock Sync',
       schedule: '0 */4 * * *',
       description: 'Updates inventory levels across systems',
       frequency: 'Every 4 hours',
-      purpose: 'Maintain accurate stock levels'
+      purpose: 'Maintain accurate stock levels',
     },
     {
       name: 'Inventory Sync',
       schedule: '0 2 * * *',
       description: 'Full inventory reconciliation',
       frequency: 'Daily at 2 AM',
-      purpose: 'Complete inventory audit and sync'
-    }
+      purpose: 'Complete inventory audit and sync',
+    },
   ];
 
   const performanceFeatures = [
     {
       feature: 'Cluster Mode',
       description: 'Uses all available CPU cores',
-      benefit: 'Maximum performance and scalability'
+      benefit: 'Maximum performance and scalability',
     },
     {
       feature: 'Memory Management',
       description: '1GB limit per process with automatic restart',
-      benefit: 'Prevents memory leaks and ensures stability'
+      benefit: 'Prevents memory leaks and ensures stability',
     },
     {
       feature: 'Connection Pooling',
       description: 'Optimized database connection management',
-      benefit: 'Reduced latency and better resource usage'
+      benefit: 'Reduced latency and better resource usage',
     },
     {
       feature: 'Redis Caching',
       description: 'Optional Redis with in-memory fallback',
-      benefit: 'Improved response times and reduced database load'
+      benefit: 'Improved response times and reduced database load',
     },
     {
       feature: 'Rate Limiting',
       description: 'Configurable request rate limiting',
-      benefit: 'Protection against abuse and overload'
+      benefit: 'Protection against abuse and overload',
     },
     {
       feature: 'Compression',
       description: 'Gzip compression for all responses',
-      benefit: 'Reduced bandwidth usage and faster responses'
-    }
+      benefit: 'Reduced bandwidth usage and faster responses',
+    },
   ];
 
   const monitoringEndpoints = [
@@ -152,20 +152,20 @@ const BackendProductionGuide = () => {
       endpoint: '/api/health',
       method: 'GET',
       description: 'System health check',
-      response: '{"status":"ok","environment":"production"}'
+      response: '{"status":"ok","environment":"production"}',
     },
     {
       endpoint: '/api/metrics',
       method: 'GET',
       description: 'Performance metrics',
-      response: 'Detailed performance statistics'
+      response: 'Detailed performance statistics',
     },
     {
       endpoint: '/api-docs',
       method: 'GET',
       description: 'Swagger API documentation',
-      response: 'Interactive API documentation'
-    }
+      response: 'Interactive API documentation',
+    },
   ];
 
   const commands = [
@@ -173,8 +173,8 @@ const BackendProductionGuide = () => {
       category: 'Build & Deploy',
       commands: [
         { cmd: 'npm run build:production', desc: 'Build optimized production version' },
-        { cmd: 'cd dist && ./deploy.bat', desc: 'Deploy with all services' }
-      ]
+        { cmd: 'cd dist && ./deploy.bat', desc: 'Deploy with all services' },
+      ],
     },
     {
       category: 'Service Management',
@@ -183,8 +183,8 @@ const BackendProductionGuide = () => {
         { cmd: 'npm run start:cron', desc: 'Start cron jobs' },
         { cmd: 'npm run stop', desc: 'Stop all services' },
         { cmd: 'npm run restart', desc: 'Restart all services' },
-        { cmd: 'npm run reload', desc: 'Zero-downtime reload' }
-      ]
+        { cmd: 'npm run reload', desc: 'Zero-downtime reload' },
+      ],
     },
     {
       category: 'Monitoring',
@@ -193,9 +193,9 @@ const BackendProductionGuide = () => {
         { cmd: 'npm run logs', desc: 'View all logs' },
         { cmd: 'npm run logs:cron', desc: 'View cron logs only' },
         { cmd: 'npm run monit', desc: 'Real-time monitoring' },
-        { cmd: 'npm run health', desc: 'Health check' }
-      ]
-    }
+        { cmd: 'npm run health', desc: 'Health check' },
+      ],
+    },
   ];
 
   return (
@@ -374,28 +374,28 @@ const BackendProductionGuide = () => {
                   The optimized system requires only 2 commands to go from source code to production deployment.
                 </Typography>
               </Alert>
-              
+
               <Paper sx={{ p: 3, backgroundColor: '#1e1e1e', color: '#fff', mb: 3 }}>
                 <Typography variant="h6" gutterBottom sx={{ color: '#4caf50' }}>
                   Step 1: Build Production (from backend folder)
                 </Typography>
                 <pre style={{ fontSize: '1rem', margin: 0 }}>
-{`npm run build:production`}
+                  {'npm run build:production'}
                 </pre>
-                
+
                 <Typography variant="h6" gutterBottom sx={{ color: '#4caf50', mt: 2 }}>
                   Step 2: Deploy (from backend/dist folder)
                 </Typography>
                 <pre style={{ fontSize: '1rem', margin: 0 }}>
-{`./deploy.bat    # Windows
+                  {`./deploy.bat    # Windows
 ./deploy.sh     # Linux`}
                 </pre>
-                
+
                 <Typography variant="h6" gutterBottom sx={{ color: '#4caf50', mt: 2 }}>
                   Verification
                 </Typography>
                 <pre style={{ fontSize: '1rem', margin: 0 }}>
-{`npm run status  # Check all processes
+                  {`npm run status  # Check all processes
 npm run health   # Verify API health`}
                 </pre>
               </Paper>
@@ -439,7 +439,7 @@ npm run health   # Verify API health`}
               <Typography variant="body1" sx={{ mb: 3 }}>
                 The production system includes a professional cron job system that automatically handles ETL processes.
               </Typography>
-              
+
               <Grid container spacing={3}>
                 {cronJobs.map((job, index) => (
                   <Grid item xs={12} md={4} key={index}>
@@ -471,7 +471,7 @@ npm run health   # Verify API health`}
               </Typography>
               <Paper sx={{ p: 2, backgroundColor: '#f5f5f5' }}>
                 <pre style={{ fontSize: '0.875rem', margin: 0 }}>
-{`# Start cron jobs
+                  {`# Start cron jobs
 npm run start:cron
 
 # Check cron status
@@ -562,7 +562,7 @@ pm2 restart techno-etl-cron`}
               </Typography>
               <Paper sx={{ p: 2, backgroundColor: '#f5f5f5' }}>
                 <pre style={{ fontSize: '0.875rem', margin: 0 }}>
-{`# Real-time monitoring
+                  {`# Real-time monitoring
 npm run monit
 
 # Process status

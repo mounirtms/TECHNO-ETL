@@ -9,7 +9,84 @@
         "user": "Utilisateur",
         "expandMenu": "Développer le menu",
         "collapseMenu": "Réduire le menu",
-        "appTitle": "Techno Papeterie"
+        "appTitle": "Techno Papeterie",
+        "openSidebar": "Ouvrir la barre latérale",
+        "closeSidebar": "Fermer la barre latérale",
+        "expandSidebar": "Développer la barre latérale",
+        "collapseSidebar": "Réduire la barre latérale",
+        "pinSidebar": "Épingler la barre latérale",
+        "unpinSidebar": "Désépingler la barre latérale",
+        "loading": "Chargement...",
+        "error": "Erreur",
+        "success": "Succès",
+        "warning": "Avertissement",
+        "info": "Information",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "edit": "Modifier",
+        "add": "Ajouter",
+        "view": "Voir",
+        "close": "Fermer",
+        "open": "Ouvrir",
+        "yes": "Oui",
+        "no": "Non",
+        "ok": "OK",
+        "apply": "Appliquer",
+        "reset": "Réinitialiser",
+        "clear": "Effacer",
+        "search": "Rechercher",
+        "filter": "Filtrer",
+        "sort": "Trier",
+        "export": "Exporter",
+        "import": "Importer",
+        "print": "Imprimer",
+        "copy": "Copier",
+        "paste": "Coller",
+        "cut": "Couper",
+        "undo": "Annuler",
+        "redo": "Refaire",
+        "select": "Sélectionner",
+        "selectAll": "Tout sélectionner",
+        "deselectAll": "Tout désélectionner",
+        "next": "Suivant",
+        "previous": "Précédent",
+        "first": "Premier",
+        "last": "Dernier",
+        "home": "Accueil",
+        "back": "Retour",
+        "forward": "Avancer",
+        "up": "Haut",
+        "down": "Bas",
+        "left": "Gauche",
+        "right": "Droite",
+        "documentation": "Documentation",
+        "help": "Aide",
+        "about": "À propos",
+        "version": "Version",
+        "language": "Langue",
+        "theme": "Thème",
+        "darkMode": "Mode sombre",
+        "lightMode": "Mode clair",
+        "systemMode": "Mode système",
+        "fullscreen": "Plein écran",
+        "exitFullscreen": "Quitter le plein écran",
+        "minimize": "Réduire",
+        "maximize": "Agrandir",
+        "restore": "Restaurer",
+        "online": "En ligne",
+        "offline": "Hors ligne",
+        "connected": "Connecté",
+        "disconnected": "Déconnecté",
+        "syncing": "Synchronisation...",
+        "synced": "Synchronisé",
+        "syncFailed": "Échec de la synchronisation",
+        "retry": "Réessayer",
+        "tryAgain": "Essayer à nouveau",
+        "goHome": "Aller à l'accueil",
+        "reportIssue": "Signaler un problème",
+        "sendFeedback": "Envoyer des commentaires",
+        "contactSupport": "Contacter le support"
     },
     "navigation": {
         "dashboard": "Tableau de Bord",
@@ -237,160 +314,7 @@
     "errors": {
         "networkError": "Erreur réseau",
         "serverError": "Erreur serveur",
-        "notFound": "Page non trouvée",
-        "unknown": "Une erreur inconnue s'est produite",
-        "network": {
-            "title": "Erreur réseau",
-            "description": "Impossible de se connecter au serveur. Veuillez vérifier votre connexion Internet et réessayer.",
-            "offline": "Vous semblez être hors ligne. Veuillez vérifier votre connexion.",
-            "timeout": "Délai d'attente dépassé. Veuillez réessayer.",
-            "serverError": "Erreur serveur. Veuillez réessayer plus tard."
-        },
-        "chunk": {
-            "title": "Erreur de chargement",
-            "description": "Échec du chargement des ressources de l'application. Cela peut être dû à une mise à jour récente.",
-            "reload": "Veuillez recharger la page pour obtenir la dernière version."
-        },
-        "boundary": {
-            "title": "Quelque chose s'est mal passé",
-            "componentError": "Erreur dans le composant {component}",
-            "genericError": "Une erreur inattendue s'est produite",
-            "description": "Nous avons rencontré une erreur inattendue. Vous pouvez essayer de rafraîchir la page ou retourner au tableau de bord.",
-            "retry": "Réessayer",
-            "reload": "Recharger la page",
-            "goHome": "Aller au tableau de bord",
-            "reportBug": "Signaler un bug",
-            "technicalDetails": "Afficher les détails techniques",
-            "errorDetails": "Détails de l'erreur",
-            "copyDetails": "Copier les détails de l'erreur",
-            "retryCount": "Tentative {count}"
-        },
-        "settings": {
-            "title": "Erreur de paramètres",
-            "unknown": "Erreur de paramètres inconnue",
-            "componentError": "Erreur dans les paramètres {component}",
-            "genericError": "Erreur de configuration des paramètres",
-            "corruption": {
-                "title": "Corruption des paramètres détectée",
-                "description": "Vos paramètres semblent corrompus ou invalides. Nous pouvons vous aider à les récupérer."
-            },
-            "generic": {
-                "description": "Une erreur s'est produite lors du chargement ou de la sauvegarde de vos paramètres."
-            },
-            "recovery": {
-                "title": "Options de récupération",
-                "retry": {
-                    "title": "Réessayer le chargement",
-                    "description": "Tenter de recharger vos paramètres depuis le stockage"
-                },
-                "reset": {
-                    "title": "Réinitialiser aux valeurs par défaut",
-                    "description": "Effacer tous les paramètres et restaurer les valeurs par défaut"
-                }
-            },
-            "reset": {
-                "dialog": {
-                    "title": "Réinitialiser tous les paramètres",
-                    "warning": "Attention : Cette action ne peut pas être annulée",
-                    "description": "Cela supprimera définitivement tous vos paramètres personnalisés et restaurera l'application à son état par défaut.",
-                    "consequences": "Ce qui va se passer :",
-                    "benefits": {
-                        "stability": "L'application reviendra à un état stable",
-                        "defaults": "Tous les paramètres seront restaurés par défaut"
-                    },
-                    "losses": {
-                        "customizations": "Toutes vos personnalisations seront perdues"
-                    },
-                    "confirm": "Réinitialiser les paramètres"
-                }
-            },
-            "retryCount": "Tentative {count}/3",
-            "help": {
-                "description": "Si les problèmes persistent, veuillez contacter le support ou signaler un bug."
-            },
-            "operations": {
-                "loading": "Chargement des paramètres...",
-                "saving": "Sauvegarde des paramètres...",
-                "syncing": "Synchronisation des paramètres...",
-                "refreshing": "Actualisation des paramètres...",
-                "exporting": "Exportation des paramètres...",
-                "importing": "Importation des paramètres...",
-                "tabSwitch": "Échec du changement d'onglet"
-            }
-        },
-        "validation": {
-            "required": "Ce champ est requis",
-            "email": "Veuillez saisir une adresse e-mail valide",
-            "minLength": "Doit contenir au moins {min} caractères",
-            "maxLength": "Ne doit pas dépasser {max} caractères",
-            "pattern": "Format invalide",
-            "numeric": "Doit être un nombre",
-            "url": "Veuillez saisir une URL valide",
-            "tabSwitch": "Veuillez corriger les erreurs de validation avant de changer d'onglet"
-        }
-    },
-    "feedback": {
-        "success": {
-            "default": "Opération terminée avec succès",
-            "saved": "Modifications sauvegardées avec succès",
-            "deleted": "Élément supprimé avec succès",
-            "updated": "Élément mis à jour avec succès",
-            "created": "Élément créé avec succès"
-        },
-        "settings": {
-            "saved": "Paramètres sauvegardés avec succès",
-            "synced": "Paramètres synchronisés",
-            "reset": "Paramètres réinitialisés aux valeurs par défaut",
-            "imported": "Paramètres importés avec succès",
-            "exported": "Paramètres exportés avec succès",
-            "autoSaveDetails": "Vos modifications ont été sauvegardées automatiquement",
-            "saveDetails": "Tous les paramètres ont été sauvegardés dans votre profil"
-        },
-        "confirmation": {
-            "title": "Confirmer l'action",
-            "message": "Êtes-vous sûr de vouloir continuer ?"
-        },
-        "progress": {
-            "title": "Traitement en cours...",
-            "message": "Veuillez patienter pendant que nous traitons votre demande"
-        },
-        "multiStep": {
-            "title": "Processus multi-étapes",
-            "completed": "Terminé",
-            "inProgress": "En cours"
-        },
-        "bugBounty": {
-            "submitted": "Rapport de bug soumis avec succès",
-            "submitDetails": "Merci de nous aider à améliorer l'application"
-        }
-    },
-    "settings": {
-        "title": "Paramètres utilisateur",
-        "description": "Gérez vos informations personnelles, configurations API et préférences d'apparence",
-        "operations": {
-            "loading": "Chargement des paramètres...",
-            "saving": "Sauvegarde des paramètres...",
-            "syncing": "Synchronisation des paramètres..."
-        },
-        "status": {
-            "pending": "Modifications en attente...",
-            "saved": "Toutes les modifications sauvegardées"
-        },
-        "lastSync": "Dernière synchronisation"
-    },
-    "bugBounty": {
-        "loading": "Chargement du tableau de bord des primes aux bugs..."
-    },
-    "common": {
-        "loading": "Chargement...",
-        "saving": "Sauvegarde...",
-        "cancel": "Annuler",
-        "confirm": "Confirmer",
-        "retry": "Réessayer",
-        "close": "Fermer",
-        "ok": "OK",
-        "yes": "Oui",
-        "no": "Non"
+        "notFound": "Page non trouvée"
     },
     "grid": {
         "common": {

@@ -9,17 +9,17 @@ const JDEIntegration = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
-      y: 0
-    }
+      y: 0,
+    },
   };
 
   return (
@@ -46,8 +46,8 @@ const JDEIntegration = () => {
               System Architecture
             </Typography>
             <Box sx={{ my: 2 }}>
-              <img 
-                src="/docs/images/system-architecture.svg" 
+              <img
+                src="/docs/images/system-architecture.svg"
                 alt="System Architecture"
                 style={{ maxWidth: '100%', height: 'auto' }}
               />
@@ -117,8 +117,8 @@ const JDEIntegration = () => {
               Inventory Lifecycle
             </Typography>
             <Box sx={{ my: 2 }}>
-              <img 
-                src="/docs/images/inventory-lifecycle.svg" 
+              <img
+                src="/docs/images/inventory-lifecycle.svg"
                 alt="Inventory Lifecycle"
                 style={{ maxWidth: '100%', height: 'auto' }}
               />

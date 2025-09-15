@@ -23,7 +23,7 @@ import {
   AccordionDetails,
   Tabs,
   Tab,
-  Divider
+  Divider,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import {
@@ -38,7 +38,7 @@ import {
   Schedule as CronIcon,
   Monitor as MonitorIcon,
   Build as BuildIcon,
-  Rocket as RocketIcon
+  Rocket as RocketIcon,
 } from '@mui/icons-material';
 
 const OptimizedDeploymentGuide = () => {
@@ -47,12 +47,12 @@ const OptimizedDeploymentGuide = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const optimizedSteps = [
@@ -67,7 +67,7 @@ const OptimizedDeploymentGuide = () => {
           'SQL Server 2019+ with proper configuration',
           'Redis 6+ (Optional but recommended)',
           'Git for version control',
-          'SSL certificates for HTTPS'
+          'SSL certificates for HTTPS',
         ],
         code: `# Install Node.js 18+
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
@@ -92,9 +92,9 @@ redis-cli ping  # Should return PONG`,
         tips: [
           'Node.js 18+ is required for ES module support',
           'PM2 provides professional process management',
-          'Redis significantly improves performance but is optional'
-        ]
-      }
+          'Redis significantly improves performance but is optional',
+        ],
+      },
     },
     {
       label: 'Optimized Backend Build',
@@ -106,7 +106,7 @@ redis-cli ping  # Should return PONG`,
           'Install development dependencies',
           'Run optimized production build',
           'Verify build output',
-          'Test production configuration'
+          'Test production configuration',
         ],
         code: `# Clone repository
 git clone https://github.com/techno-dz/techno-etl.git
@@ -138,9 +138,9 @@ cat .env | grep NODE_ENV
         tips: [
           'Single unified build system replaces all previous methods',
           'Build automatically creates production environment',
-          'All dependencies are optimized for production'
-        ]
-      }
+          'All dependencies are optimized for production',
+        ],
+      },
     },
     {
       label: 'Database Configuration',
@@ -152,7 +152,7 @@ cat .env | grep NODE_ENV
           'Configure MDM and CEGID connections',
           'Set up connection pooling',
           'Create required tables and indexes',
-          'Configure backup strategy'
+          'Configure backup strategy',
         ],
         code: `-- Create main database
 CREATE DATABASE TECHNO_ETL;
@@ -199,9 +199,9 @@ ALTER DATABASE TECHNO_ETL SET AUTO_CREATE_STATISTICS ON;`,
         tips: [
           'Connection pooling is automatically configured in production build',
           'Indexes are crucial for ETL performance',
-          'Regular maintenance plans should be set up'
-        ]
-      }
+          'Regular maintenance plans should be set up',
+        ],
+      },
     },
     {
       label: 'Single Command Deployment',
@@ -213,7 +213,7 @@ ALTER DATABASE TECHNO_ETL SET AUTO_CREATE_STATISTICS ON;`,
           'Database configured',
           'Environment variables set',
           'PM2 installed globally',
-          'Proper permissions configured'
+          'Proper permissions configured',
         ],
         code: `# Navigate to production build directory
 cd backend/dist
@@ -248,9 +248,9 @@ npm run health
         tips: [
           'Single command deployment eliminates manual errors',
           'All services start automatically',
-          'Health checks verify successful deployment'
-        ]
-      }
+          'Health checks verify successful deployment',
+        ],
+      },
     },
     {
       label: 'Cron Job System',
@@ -262,7 +262,7 @@ npm run health
           'Configure cron schedules',
           'Set up monitoring for cron jobs',
           'Configure error handling',
-          'Set up notifications'
+          'Set up notifications',
         ],
         code: `# Cron jobs are automatically configured in production build
 # Default schedules (configurable in .env):
@@ -294,9 +294,9 @@ pm2 monit`,
         tips: [
           'Cron jobs run in separate PM2 process for isolation',
           'All cron activities are logged separately',
-          'Schedules can be customized via environment variables'
-        ]
-      }
+          'Schedules can be customized via environment variables',
+        ],
+      },
     },
     {
       label: 'Monitoring & Performance',
@@ -308,7 +308,7 @@ pm2 monit`,
           'Health check endpoints active',
           'Performance metrics enabled',
           'Log rotation configured',
-          'Alert system set up'
+          'Alert system set up',
         ],
         code: `# Built-in monitoring commands
 npm run monit          # Real-time PM2 monitoring
@@ -341,10 +341,10 @@ pm2 set pm2-logrotate:compress true
         tips: [
           'All monitoring is built into the optimized system',
           'Health checks provide detailed system status',
-          'PM2 provides professional process monitoring'
-        ]
-      }
-    }
+          'PM2 provides professional process monitoring',
+        ],
+      },
+    },
   ];
 
   const environmentConfig = {
@@ -389,7 +389,7 @@ INVENTORY_SYNC_CRON=0 2 * * *
 MAX_MEMORY=1024
 DB_POOL_MAX=10
 RATE_LIMIT_MAX=100`,
-    
+
     pm2Config: `/**
  * TECHNO-ETL Unified PM2 Configuration
  * Author: Mounir Abderrahmani
@@ -442,35 +442,35 @@ module.exports = {
       }
     }
   ]
-};`
+};`,
   };
 
   const troubleshooting = [
     {
       issue: 'Server shows "development" mode',
       solution: 'Fixed in optimized build - automatically sets NODE_ENV=production',
-      status: 'resolved'
+      status: 'resolved',
     },
     {
       issue: 'Redis URL not set warnings',
       solution: 'Proper Redis configuration with fallback to in-memory cache',
-      status: 'resolved'
+      status: 'resolved',
     },
     {
       issue: 'PM2 ES module errors',
       solution: 'Using .cjs extension for PM2 compatibility',
-      status: 'resolved'
+      status: 'resolved',
     },
     {
       issue: 'Multiple build systems confusion',
       solution: 'Single unified build in backend/dist/ only',
-      status: 'resolved'
+      status: 'resolved',
     },
     {
       issue: 'Manual deployment steps',
       solution: 'Single command deployment with automated scripts',
-      status: 'resolved'
-    }
+      status: 'resolved',
+    },
   ];
 
   const handleNext = () => {
@@ -560,7 +560,7 @@ module.exports = {
               </Typography>
               <Paper sx={{ p: 2, backgroundColor: '#1e1e1e', color: '#fff', overflow: 'auto' }}>
                 <pre style={{ fontSize: '0.9rem', margin: 0 }}>
-{`# Step 1: Build production (from backend folder)
+                  {`# Step 1: Build production (from backend folder)
 npm run build:production
 
 # Step 2: Deploy (from backend/dist folder)
@@ -592,7 +592,7 @@ npm run build:production
                     <Typography variant="body1" sx={{ mb: 2 }}>
                       {step.content.description}
                     </Typography>
-                    
+
                     <Typography variant="subtitle1" fontWeight={600} gutterBottom>
                       Requirements:
                     </Typography>
@@ -663,7 +663,7 @@ npm run build:production
                   🎉 Optimized Deployment Completed!
                 </Typography>
                 <Typography>
-                  Your TECHNO-ETL system is now running in production mode with automated cron jobs, 
+                  Your TECHNO-ETL system is now running in production mode with automated cron jobs,
                   professional monitoring, and optimized performance.
                 </Typography>
                 <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>

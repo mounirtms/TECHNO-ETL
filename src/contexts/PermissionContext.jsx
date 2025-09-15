@@ -1,14 +1,40 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import PermissionService from '../services/PermissionService';
-import LicenseManager from '../services/LicenseManager';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import { getServiceWithFallback } from '../services/FallbackServices';
 import { useAuth } from './AuthContext';
+
+// Get services with fallback
+const PermissionService = getServiceWithFallback('PermissionService');
+const LicenseManager = getServiceWithFallback('LicenseManager');
 
 const PermissionContext = createContext();
 
+/**
+ * Enhanced usePermissions hook with better error handling and defaults
+ */
 export const usePermissions = () => {
     const context = useContext(PermissionContext);
     if (!context) {
-        throw new Error('usePermissions must be used within a PermissionProvider');
+        console.warn('usePermissions must be used within a PermissionProvider');
+        // Return safe defaults
+        return {
+            permissions: [],
+            userPermissions: [],
+            userRole: 'user',
+            licenseStatus: null,
+            loading: false,
+            initialized: false,
+            hasPermission: () => false,
+            hasRole: () => false,
+            checkFeatureAccess: () => Promise.resolve(false),
+            filterMenuItems: (items) => [],
+            canAccessMenuItem: () => false,
+            isLicenseValid: () => false,
+            getLicenseLevel: () => 'basic',
+            refreshLicense: () => Promise.resolve(null),
+            isAdmin: () => false,
+            canPerformBulkOperations: () => false,
+            refreshPermissions: () => Promise.resolve()
+        };
     }
     return context;
 };
@@ -30,6 +56,7 @@ export const useLicense = () => {
 export const PermissionProvider = ({ children }) => {
     const { currentUser } = useAuth();
     const [permissions, setPermissions] = useState([]);
+    const [userRole, setUserRole] = useState('user');
     const [licenseStatus, setLicenseStatus] = useState(null);
     const [loading, setLoading] = useState(true);
     const [initialized, setInitialized] = useState(false);
@@ -40,27 +67,51 @@ export const PermissionProvider = ({ children }) => {
             setLoading(true);
             
             if (user?.uid) {
-                // Initialize permission service
-                await PermissionService.initialize(user);
-                
-                // Get current permissions and license status
-                const [userPermissions, userLicenseStatus] = await Promise.all([
-                    PermissionService.getPermissions(),
-                    LicenseManager.checkUserLicense(user.uid)
-                ]);
+                try {
+                    // Try to initialize permission service
+                    if (PermissionService && typeof PermissionService.initialize === 'function') {
+                        await PermissionService.initialize(user);
+                        
+                        // Get current permissions and license status
+                        const [userPermissions, userLicenseStatus] = await Promise.all([
+                            PermissionService.getPermissions(),
+                            LicenseManager?.checkUserLicense ? 
+                                LicenseManager.checkUserLicense(user.uid) : 
+                                Promise.resolve({ isValid: true, level: 'basic' })
+                        ]);
 
-                setPermissions(userPermissions);
-                setLicenseStatus(userLicenseStatus);
-                setInitialized(true);
+                        setPermissions(userPermissions || []);
+                        setUserRole(user.role || 'user');
+                        setLicenseStatus(userLicenseStatus);
+                        setInitialized(true);
+                    } else {
+                        // Fallback: set basic permissions
+                        console.warn('PermissionService not available, using fallback permissions');
+                        setPermissions(['dashboard.view', 'user.profile.view']);
+                        setUserRole(user.role || 'user');
+                        setLicenseStatus({ isValid: true, level: 'basic' });
+                        setInitialized(true);
+                    }
+                } catch (serviceError) {
+                    console.warn('Permission service error, using fallback:', serviceError);
+                    // Fallback permissions for basic functionality
+                    setPermissions(['dashboard.view', 'user.profile.view']);
+                    setUserRole(user.role || 'user');
+                    setLicenseStatus({ isValid: true, level: 'basic' });
+                    setInitialized(true);
+                }
             } else {
                 // Clear permissions when no user
                 setPermissions([]);
+                setUserRole('user');
                 setLicenseStatus(null);
                 setInitialized(false);
             }
         } catch (error) {
             console.error('Error initializing permissions:', error);
+            // Set safe defaults
             setPermissions([]);
+            setUserRole('user');
             setLicenseStatus(null);
             setInitialized(false);
         } finally {
@@ -154,16 +205,22 @@ export const PermissionProvider = ({ children }) => {
         return PermissionService.getPermissionSummary();
     }, [initialized]);
 
+    // Role checking functions
+    const hasRole = useCallback((role) => {
+        if (!initialized) return false;
+        return userRole === role || userRole === 'super_admin';
+    }, [initialized, userRole]);
+
     // Admin functions
     const isAdmin = useCallback(() => {
         if (!initialized) return false;
-        return PermissionService.isAdmin();
-    }, [initialized]);
+        return hasRole('admin') || hasRole('super_admin');
+    }, [initialized, hasRole]);
 
     const canPerformBulkOperations = useCallback(() => {
         if (!initialized) return false;
-        return PermissionService.canPerformBulkOperations();
-    }, [initialized]);
+        return hasPermission('bulk.operations') || isAdmin();
+    }, [initialized, hasPermission, isAdmin]);
 
     // Refresh all permissions and license data
     const refreshPermissions = useCallback(async () => {
@@ -172,15 +229,22 @@ export const PermissionProvider = ({ children }) => {
         }
     }, [currentUser, initializePermissions]);
 
-    const value = {
+    // Memoized user permissions array for compatibility
+    const userPermissions = useMemo(() => permissions, [permissions]);
+
+    // Memoize the context value to prevent unnecessary re-renders
+    const value = useMemo(() => ({
         // State
         permissions,
+        userPermissions,
+        userRole,
         licenseStatus,
         loading,
         initialized,
 
         // Permission functions
         hasPermission,
+        hasRole,
         checkFeatureAccess,
         filterMenuItems,
         canAccessMenuItem,
@@ -197,7 +261,28 @@ export const PermissionProvider = ({ children }) => {
 
         // Utility functions
         refreshPermissions
-    };
+    }), [
+        // State dependencies
+        JSON.stringify(permissions),
+        userRole,
+        JSON.stringify(licenseStatus),
+        loading,
+        initialized,
+        
+        // Function dependencies (these are already memoized with useCallback)
+        hasPermission,
+        hasRole,
+        checkFeatureAccess,
+        filterMenuItems,
+        canAccessMenuItem,
+        getPermissionSummary,
+        isLicenseValid,
+        getLicenseLevel,
+        refreshLicense,
+        isAdmin,
+        canPerformBulkOperations,
+        refreshPermissions
+    ]);
 
     return (
         <PermissionContext.Provider value={value}>

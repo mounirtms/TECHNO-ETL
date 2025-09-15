@@ -440,67 +440,28 @@ const UnifiedGrid = forwardRef(({
   };
 
   return (
-
-
     <>
-      {/* Unified Toolbar */}
-      <UnifiedGridToolbar
-        gridName={gridName}
-        gridType={getGridType(gridName)}
-        config={toolbarConfig}
-        customActions={customActions}
-        customLeftActions={toolbarConfig.customLeftActions || []}
-        selectedRows={selectedRows}
-        onRefresh={handleRefresh}
-        onAdd={handleAdd}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onSync={handleSync}
-        onExport={handleExport}
-        onSearch={handleSearch}
-        searchValue={searchValue}
-        onFiltersToggle={() => setFiltersVisible(!filtersVisible)}
-        filtersVisible={filtersVisible}
-        columnVisibility={columnVisibility}
-        onColumnVisibilityChange={setColumnVisibility}
-        density={finalDensity}
-        onDensityChange={setDensity}
-        enableI18n={enableI18n}
-        isRTL={enableRTL}
-        loading={loading}
-        viewMode={viewMode}
-        onViewModeChange={handleViewModeChange}
-        showCardView={showCardView}
-        mdmStocks={mdmStocks}
-
-
-        // Custom filter props
-        succursaleOptions={succursaleOptions}
-        currentSuccursale={currentSuccursale}
-        onSuccursaleChange={onSuccursaleChange}
-        sourceOptions={sourceOptions}
-        currentSource={currentSource}
-        onSourceChange={onSourceChange}
-        showChangedOnly={showChangedOnly}
-        setShowChangedOnly={setShowChangedOnly}
-        onSyncStocksHandler={onSyncStocksHandler}
-        onSyncAllHandler={onSyncAllHandler}
-        canInfo={canInfo}
-        onInfo={onInfo}
-      />
-
-      {/* Main Content Area */}
-      {loading && (
-        <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}>
-          <Skeleton variant="rectangular" height={4} />
+      {/* Stats Cards */}
+      {showStatsCards && gridCards.length > 0 && (
+        <Box
+          className="stats-container"
+          sx={{
+            flexShrink: 0,
+            borderTop: `1px solid ${gridTheme.borderColor}`,
+            p: 2,
+            backgroundColor: 'background.paper'
+          }}
+        >
+          <StatsCards cards={gridCards} />
         </Box>
       )}
 
-      <Fade in={!loading} timeout={300}>
+      {/* Main Grid Container with proper dimensions */}
+      <Fade in timeout={300}>
         <Box
           sx={{
             flex: 1,
-            minHeight: 0,
+            minHeight: 400, // Minimum height to prevent 0px issue
             maxHeight: gridHeight,
             width: '100%',
             display: 'flex',
@@ -518,12 +479,15 @@ const UnifiedGrid = forwardRef(({
               loading={loading}
             />
           ) : (
-
             <DataGrid
               ref={gridRef}
               rows={memoizedData}
               columns={processedColumns}
               loading={loading}
+              sx={{
+                height: '100%',
+                width: '100%'
+              }}
 
               // Performance optimizations
               disableVirtualization={!enableVirtualization || memoizedData.length < virtualizationThreshold}
@@ -615,20 +579,6 @@ const UnifiedGrid = forwardRef(({
           )}
         </Box>
       </Fade>
-      {/* Stats Cards */}
-      {showStatsCards && gridCards.length > 0 && (
-        <Box
-          className="stats-container"
-          sx={{
-            flexShrink: 0,
-            borderTop: `1px solid ${gridTheme.borderColor}`,
-            p: 2,
-            backgroundColor: 'background.paper'
-          }}
-        >
-          <StatsCards cards={gridCards} />
-        </Box>
-      )}
 
       {/* Context Menu */}
       {contextMenu && (

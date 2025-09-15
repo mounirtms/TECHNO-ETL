@@ -8,6 +8,9 @@
     <meta name="keywords" content="ETL, data synchronization, Magento, MDM, analytics, bug bounty, React, Node.js" />
     <meta name="author" content="Mounir Abderrahmani" />
     
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/src/assets/images/techno.png" as="image">
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://etl.techno-dz.com/" />
@@ -206,19 +209,11 @@
       }, 3000);
     </script>
     
-    <!-- Service Worker Registration -->
+    <!-- Service Worker Registration - Disabled for now -->
     <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js')
-            .then(function(registration) {
-              console.log('SW registered: ', registration);
-            })
-            .catch(function(registrationError) {
-              console.log('SW registration failed: ', registrationError);
-            });
-        });
-      }
+      // Service worker registration disabled to prevent 404 errors
+      // Will be enabled when PWA features are implemented
+      console.log('Service worker registration disabled');
     </script>
   </body>
 </html>

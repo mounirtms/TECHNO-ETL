@@ -340,27 +340,27 @@ export const matchImagesWithCSV = (csvData, imageFiles) => {
     if (imageName) {
       const imageNameLower = imageName.toLowerCase();
       const imageNameBase = imageNameLower.replace(/\.[^/.]+$/, '');
-      
-      const directMatches = imageFileMap.get(imageNameLower) || 
-                           imageFileMap.get(imageNameBase) || 
-                           imageFileMap.get(imageNameBase.replace(/[-_\s]/g, '')) || 
+
+      const directMatches = imageFileMap.get(imageNameLower) ||
+                           imageFileMap.get(imageNameBase) ||
+                           imageFileMap.get(imageNameBase.replace(/[-_\s]/g, '')) ||
                            [];
-      
+
       matchedImages.push(...directMatches);
     }
-    
+
     // Strategy 2: SKU-based matching
     const skuLower = sku.toLowerCase();
-    const skuMatches = imageFileMap.get(skuLower) || 
-                      imageFileMap.get(skuLower.replace(/[-_\s]/g, '')) || 
+    const skuMatches = imageFileMap.get(skuLower) ||
+                      imageFileMap.get(skuLower.replace(/[-_\s]/g, '')) ||
                       [];
-    
+
     matchedImages.push(...skuMatches);
-    
+
     // Strategy 3: Fuzzy matching with product name
     if (productName && matchedImages.length === 0) {
       const productWords = productName.toLowerCase().split(/\s+/).filter(w => w.length > 2);
-      
+
       for (const [key, images] of imageFileMap.entries()) {
         if (productWords.some(word => key.includes(word))) {
           matchedImages.push(...images);
@@ -368,12 +368,12 @@ export const matchImagesWithCSV = (csvData, imageFiles) => {
         }
       }
     }
-    
+
     // Remove duplicates and sort by image number
     const uniqueMatches = Array.from(
       new Map(matchedImages.map(m => [m.file.name, m])).values()
     ).sort((a, b) => a.imageNumber - b.imageNumber);
-    
+
     if (uniqueMatches.length > 0) {
       uniqueMatches.forEach((match, index) => {
         if (!usedFiles.has(match.file.name)) {
@@ -388,9 +388,9 @@ export const matchImagesWithCSV = (csvData, imageFiles) => {
             baseReference: match.baseReference,
             originalImageName: match.originalName
           });
-          
+
           usedFiles.add(match.file.name);
-          
+
           // Remove from unmatched
           const unmatchedIndex = unmatched.imageFiles.findIndex(f => f.name === match.file.name);
           if (unmatchedIndex !== -1) {
@@ -402,7 +402,7 @@ export const matchImagesWithCSV = (csvData, imageFiles) => {
       unmatched.csvRows.push(row);
     }
   });
-  
+
   return {
     matches,
     unmatched,
@@ -423,7 +423,7 @@ export const matchImagesWithCSV = (csvData, imageFiles) => {
     }
   };
 };"${sku}\"`);
-    
+
     // Strategy 1: REF-based matching (auto-enabled when REF column detected)
     if (settings.strategies.ref && ref) {
       const refKeys = generateSearchKeys(ref, settings);

@@ -20,7 +20,7 @@ import {
   Button,
   Accordion,
   AccordionSummary,
-  AccordionDetails
+  AccordionDetails,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import {
@@ -30,7 +30,7 @@ import {
   Security as SecurityIcon,
   Settings as ConfigIcon,
   CheckCircle as CheckIcon,
-  Warning as WarningIcon
+  Warning as WarningIcon,
 } from '@mui/icons-material';
 
 const DeploymentGuide = () => {
@@ -38,12 +38,12 @@ const DeploymentGuide = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   const deploymentSteps = [
@@ -58,7 +58,7 @@ const DeploymentGuide = () => {
           'Redis 6+ for caching',
           'Firebase project for authentication',
           'Magento 2.4+ instance with API access',
-          'SSL certificates for HTTPS'
+          'SSL certificates for HTTPS',
         ],
         code: `# Install Node.js and dependencies
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
@@ -75,8 +75,8 @@ sudo apt-get update
 sudo apt-get install -y mssql-server
 
 # Configure SQL Server
-sudo /opt/mssql/bin/mssql-conf setup`
-      }
+sudo /opt/mssql/bin/mssql-conf setup`,
+      },
     },
     {
       label: 'Database Configuration',
@@ -88,7 +88,7 @@ sudo /opt/mssql/bin/mssql-conf setup`
           'Configure user permissions',
           'Import initial schema',
           'Set up connection pooling',
-          'Configure backup strategy'
+          'Configure backup strategy',
         ],
         code: `-- Create database
 CREATE DATABASE TECHNO_ETL;
@@ -125,8 +125,8 @@ CREATE TABLE Inventory (
 -- Create indexes for performance
 CREATE INDEX IX_Products_SKU ON Products(SKU);
 CREATE INDEX IX_Products_Changed ON Products(Changed, ModifiedDate);
-CREATE INDEX IX_Inventory_SourceCode ON Inventory(SourceCode, Changed);`
-      }
+CREATE INDEX IX_Inventory_SourceCode ON Inventory(SourceCode, Changed);`,
+      },
     },
     {
       label: 'Backend Deployment',
@@ -138,7 +138,7 @@ CREATE INDEX IX_Inventory_SourceCode ON Inventory(SourceCode, Changed);`
           'Configure environment variables',
           'Set up PM2 for process management',
           'Configure reverse proxy (Nginx)',
-          'Set up SSL certificates'
+          'Set up SSL certificates',
         ],
         code: `# Clone and setup backend
 git clone https://github.com/techno-dz/techno-etl.git
@@ -173,8 +173,8 @@ npm install -g pm2
 # Start application with PM2
 pm2 start ecosystem.config.cjs --env production
 pm2 save
-pm2 startup`
-      }
+pm2 startup`,
+      },
     },
     {
       label: 'Frontend Deployment',
@@ -186,7 +186,7 @@ pm2 startup`
           'Configure environment variables',
           'Set up web server (Nginx)',
           'Configure routing and caching',
-          'Set up monitoring'
+          'Set up monitoring',
         ],
         code: `# Frontend deployment
 cd ../frontend
@@ -211,8 +211,8 @@ sudo cp -r build/* /var/www/html/techno-etl/
 
 # Set proper permissions
 sudo chown -R www-data:www-data /var/www/html/techno-etl/
-sudo chmod -R 755 /var/www/html/techno-etl/`
-      }
+sudo chmod -R 755 /var/www/html/techno-etl/`,
+      },
     },
     {
       label: 'Security & SSL Configuration',
@@ -224,7 +224,7 @@ sudo chmod -R 755 /var/www/html/techno-etl/`
           'Configure HTTPS redirects',
           'Set up firewall rules',
           'Configure rate limiting',
-          'Set up monitoring and logging'
+          'Set up monitoring and logging',
         ],
         code: `# Install Certbot for Let's Encrypt
 sudo apt install certbot python3-certbot-nginx
@@ -271,9 +271,9 @@ EOF
 # Enable site and restart Nginx
 sudo ln -s /etc/nginx/sites-available/techno-etl /etc/nginx/sites-enabled/
 sudo nginx -t
-sudo systemctl restart nginx`
-      }
-    }
+sudo systemctl restart nginx`,
+      },
+    },
   ];
 
   const environmentConfigs = [
@@ -285,8 +285,8 @@ sudo systemctl restart nginx`
         'PORT': '3001',
         'DB_HOST': 'localhost',
         'REDIS_HOST': 'localhost',
-        'LOG_LEVEL': 'debug'
-      }
+        'LOG_LEVEL': 'debug',
+      },
     },
     {
       name: 'Staging',
@@ -296,8 +296,8 @@ sudo systemctl restart nginx`
         'PORT': '3001',
         'DB_HOST': 'staging-db.company.com',
         'REDIS_HOST': 'staging-redis.company.com',
-        'LOG_LEVEL': 'info'
-      }
+        'LOG_LEVEL': 'info',
+      },
     },
     {
       name: 'Production',
@@ -307,9 +307,9 @@ sudo systemctl restart nginx`
         'PORT': '3001',
         'DB_HOST': 'prod-db.company.com',
         'REDIS_HOST': 'prod-redis.company.com',
-        'LOG_LEVEL': 'warn'
-      }
-    }
+        'LOG_LEVEL': 'warn',
+      },
+    },
   ];
 
   const monitoringSetup = `# Install monitoring tools
@@ -396,7 +396,7 @@ echo "*/5 * * * * /usr/bin/node /path/to/healthcheck.js" | crontab -`;
         <motion.div variants={itemVariants}>
           <Alert severity="info" sx={{ mb: 4 }}>
             <Typography variant="h6" gutterBottom>🎯 Deployment Overview</Typography>
-            This comprehensive deployment guide covers the complete setup process for TECHNO-ETL in production environments. 
+            This comprehensive deployment guide covers the complete setup process for TECHNO-ETL in production environments.
             Follow these steps to deploy a secure, scalable, and high-performance system with proper monitoring and backup strategies.
           </Alert>
         </motion.div>
@@ -497,7 +497,7 @@ echo "*/5 * * * * /usr/bin/node /path/to/healthcheck.js" | crontab -`;
                     <Typography variant="body1" sx={{ mb: 2 }}>
                       {step.content.description}
                     </Typography>
-                    
+
                     <Typography variant="subtitle1" fontWeight={600} gutterBottom>
                       Requirements:
                     </Typography>
@@ -573,8 +573,8 @@ echo "*/5 * * * * /usr/bin/node /path/to/healthcheck.js" | crontab -`;
                     </Typography>
                     <Paper sx={{ p: 2, backgroundColor: '#f5f5f5' }}>
                       <pre style={{ fontSize: '0.75rem', margin: 0 }}>
-                        {Object.entries(env.config).map(([key, value]) => 
-                          `${key}=${value}\n`
+                        {Object.entries(env.config).map(([key, value]) =>
+                          `${key}=${value}\n`,
                         ).join('')}
                       </pre>
                     </Paper>

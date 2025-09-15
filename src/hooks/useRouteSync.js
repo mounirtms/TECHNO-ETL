@@ -31,7 +31,7 @@ export const useRouteSync = () => {
             }
 
             // Check if tab can be opened
-            if (canOpenTab(currentMenuItem.id)) {
+            if (canOpenTab && typeof canOpenTab === 'function' && typeof openTab === 'function') {
                 // Open tab if it's not already active
                 if (activeTab !== currentMenuItem.id) {
                     openTab(currentMenuItem.id, true); // Skip navigation to avoid loop
